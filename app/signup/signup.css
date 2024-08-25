@@ -1,7 +1,7 @@
 body {
     margin: 0;
     padding: 0;
-    font-family: 'Arial', sans-serif;
+    font-family: 'Poppins', sans-serif;
     background-color: #f7f8fb !important; /* Enforce background color to white */
     display: flex;
     justify-content: center;
@@ -81,15 +81,31 @@ body {
     align-items: center;
     justify-content: center;
     font-weight: bold;
-    font-size: 24px;
+    font-size: 28px;
     color: black;
+}
+
+/* Styling for headings */
+.heading .head {
+    font-family: 'Sora', sans-serif;
+    font-size: 24px; /* Example size */
+    font-weight: bold;
+}
+
+/* Example for other headings if needed */
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'Sora', sans-serif;
+}
+
+/* Ensure that other text elements use Poppins */
+p, span, div {
+    font-family: 'Poppins', sans-serif;
 }
 
 /*Make yourself prepared....."*/
 .tagLine {
-    
-    margin-top: 10px;
-    font-size: 14px;
+    font-weight: 500;
+    font-size: 16px;
     display: flex;
     align-items: center;
     justify-content: center;

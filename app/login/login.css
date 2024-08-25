@@ -37,7 +37,9 @@ body {
     flex-direction: column;
     justify-content: center;
     background: #ffffff;
-    margin: 5px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    margin-right: -3px;
     border-radius: 12px;
     position: relative; /* This allows the godRays to be positioned relative to this container */
     overflow: hidden;
@@ -106,6 +108,7 @@ form {
 .inputdiv {
     display: flex;
     flex-direction: column;
+   
 }
 
 label {
@@ -115,17 +118,6 @@ label {
 }
 
 
-input[type="tel"] {
-    padding: 10px;
-    font-size: 16px;
-    border-radius: 5px;
-    border: 1px solid #ccc;
-    width: 100%;
-    color: #080808;
-
-    /* font-weight: bold; */
-
-}
 
 
 .buttons {
@@ -175,20 +167,9 @@ p {
     text-align: center;
     align-items: center;
     justify-content: center;
-
-
-
 }
 
 
-.react-tel-input .form-control {
-    width: 100%;
-    font-size: 16px;
-    border-radius: 5px;
-    border: 1px solid #ccc;
-    /* Consistent width with other inputs */
-    color: #080808;
-}
 
 /* Placeholder styling */
 .react-tel-input .form-control::placeholder {
@@ -198,9 +179,24 @@ p {
     /* Ensure the placeholder is fully visible */
 }
 
-.inputflex{
-width: 375px;
-border: 1px solid #ccc; /* Adjust border for phone input */
-border-radius: 4px;
+.phone-input-container {
+    width: 375px; /* Set the width for the container */
 }
-/* Container styling to ensure consistency */
+
+.react-tel-input .form-control {
+    width: 100%; /* Ensure the input takes up the full width of its container */
+    max-width: 375px; /* Ensure the input does not exceed the container width */
+    font-size: 16px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    color: #080808;
+}
+
+.inputflex {
+    width: 375px; /* Set width to ensure the container holds the input */
+    display: flex;
+    flex-direction: column;
+}
+.mainpage .react-tel-input .form-control {
+    width: 375px !important; /* Enforce the width */
+}
