@@ -44,35 +44,16 @@ body {
 }
 
 /* BELOW THREE STYLING FOR PHODU CLUB LOGO  */
-.phodu_logo {
-    font-size: 4px;
-    width: 134px;
-    height: 24px;
-    gap: 0px;
-    opacity: 0px;
-    font-weight: bold;
-    margin-top: 20px;
+.phodu_logo{
+    margin-top: 40px;
     margin-left: 40px;
 }
-
-.phodu {
-    font-size: 26px;
-    color: #1d2939;
-
-
-}
-
-.club {
-    font-size: 26px;
-    color: #e39ff6;
-}
-
 /*THIS STYLING FOR "GET STARTED....."*/
 .heading {
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-top: 70px;
+    margin-top: 30px;
     font-weight: 800;
 }
 
@@ -81,7 +62,7 @@ body {
     align-items: center;
     justify-content: center;
     font-weight: bold;
-    font-size: 28px;
+    font-size: 24px;
     color: black;
 }
 
@@ -89,7 +70,7 @@ body {
 .heading .head {
     font-family: 'Sora', sans-serif;
     font-size: 24px; /* Example size */
-    font-weight: bold;
+    font-weight: 700;
 }
 
 /* Example for other headings if needed */
@@ -195,13 +176,14 @@ label[for="terms"] {
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-top: 25px;
-    margin-bottom: 25px;
+    margin-top: 20px;
+    margin-bottom: 20px;
    
 }
 
 /* Button styling */
 .button {
+    font-weight: 500;
     width: 375px;
     height: 40px;
     border: none;

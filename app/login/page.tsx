@@ -11,16 +11,18 @@ export default function Login_Page() {
         <div className="mainpage">
             <div className="login">
                 <div className="phodu_logo">
-                    <p>
-                        <span className="phodu">phodu</span>
-                        <span className="club">.club</span>
-                    </p>
+                <Image
+                src="/images/phoduclublogo.png" // Path to your image file
+              alt="Description of image"
+              width={150} // Desired width
+               height={25} // Desired height
+                 />
                 </div>
                 <div className="heading">
-                    <p className="head">Get Started</p>
+                    <p className="head">Welcome Back!</p>
                 </div>
                 <div className="tagLine">
-                    <p>Make yourself prepared,before time ✌</p>
+                    <p>Make yourself prepared, before time ✌</p>
                 </div>
                 <div>
                     <form>
@@ -45,7 +47,7 @@ export default function Login_Page() {
 
                         </div>
                         <div className="buttons">
-                            <button className="button">Send Verification</button>
+                            <button className="button">Send Verification Code</button>
                         </div>
 
 

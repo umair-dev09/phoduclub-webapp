@@ -79,10 +79,12 @@ export default function Sign() {
         <div className="main_page">
             <div className="signup">
                 <div className="phodu_logo">
-                    <p>
-                        <span className="phodu">phodu</span>
-                        <span className="club">.club</span>
-                    </p>
+                <Image
+                src="/images/phoduclublogo.png" // Path to your image file
+              alt="Description of image"
+              width={150} // Desired width
+               height={25} // Desired height
+                 />
                 </div>
                 <div className="heading">
                     <p className="head">Get Started</p>

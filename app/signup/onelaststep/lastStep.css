@@ -1,0 +1,141 @@
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Arial', sans-serif;
+    background-color: #f5f5f5;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+  }
+  
+  .container{
+    display: flex;
+    flex-direction: row;
+    margin: 0%;
+    padding: 0%;
+    width: 100%;
+    height: 100%;
+  }
+  
+  .verify{
+    float: left;
+    width: 45%;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .logo{
+    margin-left: 20px;
+    margin-top: 30px;
+    font-size: large;
+  }
+  
+  .return{
+    font-size: 12px;
+    margin-left: 20px;
+    margin-top: 20px;
+    color: #98a2b3;
+  }
+  
+  .container-2{
+    height: 100%;
+    justify-content: center;
+  }
+
+  .heading{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 30px;
+    font-weight: 800;
+  }
+
+  .head{
+    font-size: 25px;
+  }
+  
+  .targetyear{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 50%;
+    font-size: 11px;
+    margin-top: 30px;
+    margin-bottom: 5px;
+  }
+  
+  .targetexam{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 50%;
+    font-size: 11px;
+    margin-bottom: 5px;
+  }
+
+  .targetyearselection{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 15px;
+  }
+  
+  .targetexamselection{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .yearselector{
+    min-width: 50%;
+    border: solid;
+    border-width: 1px;
+    border-radius: 5px;
+    height: 30px;
+    border-color: #b6b9be;
+  }
+
+  .examselector{
+    min-width: 50%;
+  }
+
+  .buttons{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 38px;
+    margin-bottom: 50px;
+  }
+
+  .button{
+    width: 50%;
+    height: 40px;
+    border: none;
+    background: #e39ff6;
+    border-radius: 7px;
+    color: white;
+    font-size: 13px;
+    cursor: pointer;
+  }
+
+  .button:hover{
+    background: #7400e0;
+    transition: background 0.15s;
+  }
+  
+.button:active{
+    background: 7400e0;
+    opacity: 0.7;
+}
+
+  .quote-section{
+    width: 55%;
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    background: #0E2138;
+    margin: 5px;
+    border-radius: 10px;
+  }

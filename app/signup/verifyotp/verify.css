@@ -1,7 +1,7 @@
 body {
   margin: 0;
   padding: 0;
-  font-family: 'Arial', sans-serif;
+  font-family: 'Poppins', sans-serif;
   background-color: #ffffff !important; /* Enforce background color to white */
   display: flex;
   justify-content: center;
@@ -9,7 +9,21 @@ body {
   height: 100vh;
   background-image: none; /* Ensure no background image or gradient is applied */
 }
+.heading .head {
+  font-family: 'Sora', sans-serif;
+  font-size: 24px; /* Example size */
+  font-weight: 700;
+}
 
+/* Example for other headings if needed */
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Sora', sans-serif;
+}
+
+/* Ensure that other text elements use Poppins */
+p, span, div {
+  font-family: 'Poppins', sans-serif;
+}
 .container {
   display: flex;
   flex-direction: row;
@@ -40,14 +54,15 @@ body {
 }
 
 .logo {
-  margin-left: 20px;
-  margin-top: 30px;
-  font-size: large;
+  margin-left: 40px;
+  margin-top: 40px;
+
 }
 
 .return {
-  font-size: 12px;
-  margin-left: 20px;
+  font-weight: 500;
+  font-size: 16px;
+  margin-left: 40px;
   margin-top: 20px;
   color: #98a2b3;
 }
@@ -76,7 +91,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #98a2b3;
+  color: #03183d;
 }
 
 .container-3 {
@@ -93,6 +108,7 @@ input::-webkit-outer-spin-button {
 }
 
 .input {
+  font-weight: 500;
   width: 50px;
   height: 50px;
   border: solid;
@@ -101,7 +117,7 @@ input::-webkit-outer-spin-button {
   border-color: #98a2b3;
   margin: 5px;
   text-align: center;
-  font-size: 36px;
+  font-size: 30px;
   color: #000000; /* Set input text color to black */
 }
 
@@ -119,10 +135,11 @@ input::-webkit-outer-spin-button {
 }
 
 .button {
+  font-weight: 500;
   width: 50%;
   height: 40px;
   border: none;
-  background: grey; /* Default color when button is disabled */
+  background: #d4a9fc; /* Default color when button is disabled */
   border-radius: 7px;
   color: white;
   font-size: 13px;
@@ -134,10 +151,6 @@ input::-webkit-outer-spin-button {
 .button.enabled {
   background-color: #7400e0; /* Purple color when button is enabled */
   cursor: pointer;
-}
-
-.button.enabled:hover {
-  background-color: #d4a9fc; /* Hover color when button is enabled */
 }
 
 .button.disabled:hover {
@@ -167,10 +180,19 @@ input::-webkit-outer-spin-button {
   }
 }
 
+/* Add these styles to verify.css */
+
 .resend {
-  color: #7400e0;
-  font-weight: 750;
+  color: #AD72FF; /* Default color */
+  transition: color 0.3s ease;
+  font-weight: 700;
 }
+
+.resend:enabled {
+  color: #9012FF;
+  font-weight: 700; /* Color when resend is enabled */
+}
+
 
 /* Utility class for screen readers */
 .sr-only {

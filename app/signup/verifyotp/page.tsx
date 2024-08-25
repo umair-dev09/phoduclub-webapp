@@ -70,12 +70,12 @@ const InputHandler = ({ onOtpChange }: { onOtpChange: (otp: string) => void }) =
 
   return (
     <div id="inputs" ref={inputsRef} className="inputs">
-      <input className="input" type="text" inputMode="numeric" maxLength={1} />
-      <input className="input" type="text" inputMode="numeric" maxLength={1} />
-      <input className="input" type="text" inputMode="numeric" maxLength={1} />
-      <input className="input" type="text" inputMode="numeric" maxLength={1} />
-      <input className="input" type="text" inputMode="numeric" maxLength={1} />
-      <input className="input" type="text" inputMode="numeric" maxLength={1} />
+      <input className="input" type="text" inputMode="numeric" maxLength={1} placeholder="-"/>
+      <input className="input" type="text" inputMode="numeric" maxLength={1} placeholder="-"/>
+      <input className="input" type="text" inputMode="numeric" maxLength={1} placeholder="-"/>
+      <input className="input" type="text" inputMode="numeric" maxLength={1} placeholder="-"/>
+      <input className="input" type="text" inputMode="numeric" maxLength={1} placeholder="-"/>
+      <input className="input" type="text" inputMode="numeric" maxLength={1} placeholder="-"/>
     </div>
   );
 };
@@ -158,7 +158,12 @@ export default function VerifyOtp() {
     <div className="container">
       <div className="verify">
         <div className="logo">
-          <p>phodu.club</p>
+        <Image
+                src="/images/phoduclublogo.png" // Path to your image file
+              alt="Description of image"
+              width={150} // Desired width
+               height={25} // Desired height
+                 />
         </div>
         <div className="return">
           <a href="">&larr; Back</a>
@@ -174,40 +179,33 @@ export default function VerifyOtp() {
             <InputHandler onOtpChange={setOtp} />
           </div>
           <div className="buttons">
-            <button className="button disabled" onClick={handleSubmit}>Continue</button>
+            <button className={`button ${otp.length === 6 ? 'enabled' : 'disabled'}`} onClick={handleSubmit}>Continue</button>
             {verificationError && <div className="error">{verificationError}</div>}
           </div>
           <div className="instruction">
             <p>
               Didn't receive the code?&#160; 
-              <a href="javascript:void(0)" className="resend" id="request" onClick={handleResend}>Resend(<span>{counter}</span>)</a>
+              <a 
+                href="javascript:void(0)" 
+                className="resend" 
+                id="request" 
+                onClick={handleResend}
+                style={{ color: isResendEnabled ? '#9012FF' : '#AD72FF' }}
+              >
+                {isResendEnabled ? 'Resend' : `Resend(${counter})`}
+              </a>
             </p>
           </div>
         </div>
       </div>
       <div className="quote-section">
-      <Image
-        src="/images/test1.png" // Path to your image file
-        alt="Description of image"
-        width={10000} // Desired width
-        height={10000} // Desired height
-        />
-         {/* <div className="inv_comma"></div>
-        <div className="godRays">
         <Image
-        src="/images/godrays.png" // Path to your image file
-        alt="Description of image"
-        width={900} // Desired width
-        height={900} // Desired height
+          src="/images/test1.png" // Path to your image file
+          alt="Description of image"
+          width={10000} // Desired width
+          height={10000} // Desired height
         />
-        </div>
-        <div className="quote">
-          <p>Education is the foundation upon which we build our future.</p>
-        </div>
-        <div className="teller">
-          <p>— Christine Gregoire</p>
-        </div> */}
-      </div> 
+      </div>
     </div>
   );
 }

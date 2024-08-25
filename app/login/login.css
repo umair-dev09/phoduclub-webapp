@@ -1,7 +1,7 @@
 body {
     margin: 0;
     padding: 0;
-    font-family: 'Arial', sans-serif;
+    font-family: 'Poppins', sans-serif;
     background-color: #ffffff !important; /* Enforce background color to white */
     display: flex;
     justify-content: center;
@@ -10,6 +10,21 @@ body {
     background-image: none; /* Ensure no background image or gradient is applied */
   }
   
+  .heading .head {
+    font-family: 'Sora', sans-serif;
+    font-size: 24px; /* Example size */
+    font-weight: 700;
+}
+
+/* Example for other headings if needed */
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'Sora', sans-serif;
+}
+
+/* Ensure that other text elements use Poppins */
+p, span, div {
+    font-family: 'Poppins', sans-serif;
+}
 
 .mainpage {
     background-color: #F7F8FB;
@@ -36,7 +51,7 @@ body {
     display: flex;
     flex-direction: column;
     justify-content: center;
-    background: #ffffff;
+    background: #f7f8fb;
     margin-top: 5px;
     margin-bottom: 5px;
     margin-right: -3px;
@@ -45,40 +60,21 @@ body {
     overflow: hidden;
 }
 
-.phodu_logo {
-    font-size: 24px;
-    width: 134px;
-    height: 24px;
-    top: 40px;
-    left: 40px;
-    gap: 0px;
-    opacity: 0px;
-    font-weight: bold;
-    padding: 3%;
-
-}
-
-.phodu {
-    color: #1d2939;
-
-
-}
-
-.club {
-    color: #7400E0;
-}
 
 .heading {
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-top: 70px;
+    margin-top: 50px;
     font-weight: 800;
 
 
 
 }
-
+.phodu_logo{
+    margin-top: 40px;
+    margin-left: 40px;
+}
 .head {
     font-weight: bold;
     font-size: 24px;
@@ -86,6 +82,7 @@ body {
 }
 
 .tagLine {
+    font-weight: 500;
     margin-top: 10px;
     font-size: 14px;
     display: flex;
@@ -124,11 +121,12 @@ label {
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-top: 25px;
-    margin-bottom: 25px;
+    margin-top: 30px;
+    margin-bottom: 30px;
 }
 
 .button {
+    font-weight: 500;
     width: 375px;
     height: 40px;
     border: none;
