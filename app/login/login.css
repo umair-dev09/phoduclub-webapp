@@ -1,0 +1,206 @@
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Arial', sans-serif;
+    background-color: #ffffff !important; /* Enforce background color to white */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-image: none; /* Ensure no background image or gradient is applied */
+  }
+  
+
+.mainpage {
+    background-color: #F7F8FB;
+    display: flex;
+    flex-direction: row;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.login {
+    width: 45%;
+    height: 100vh;
+    background: #F7F8FB;
+    float: left;
+    display: flex;
+    flex-direction: column;
+}
+
+.motivation {
+    width: 55%;
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    background: #ffffff;
+    margin: 5px;
+    border-radius: 12px;
+    position: relative; /* This allows the godRays to be positioned relative to this container */
+    overflow: hidden;
+}
+
+.phodu_logo {
+    font-size: 24px;
+    width: 134px;
+    height: 24px;
+    top: 40px;
+    left: 40px;
+    gap: 0px;
+    opacity: 0px;
+    font-weight: bold;
+    padding: 3%;
+
+}
+
+.phodu {
+    color: #1d2939;
+
+
+}
+
+.club {
+    color: #7400E0;
+}
+
+.heading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 70px;
+    font-weight: 800;
+
+
+
+}
+
+.head {
+    font-weight: bold;
+    font-size: 24px;
+    color: black;
+}
+
+.tagLine {
+    margin-top: 10px;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #98a2b3;
+    gap: 0px;
+
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    padding-top: 40px;
+    justify-content: center;
+    align-items: center;
+    
+}
+
+.inputdiv {
+    display: flex;
+    flex-direction: column;
+}
+
+label {
+    font-size: 14px;
+    color: #333;
+    margin-bottom: 5px;
+}
+
+
+input[type="tel"] {
+    padding: 10px;
+    font-size: 16px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    width: 100%;
+    color: #080808;
+
+    /* font-weight: bold; */
+
+}
+
+
+.buttons {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 25px;
+    margin-bottom: 25px;
+}
+
+.button {
+    width: 375px;
+    height: 40px;
+    border: none;
+    background: #e39ff6;
+    border-radius: 7px;
+    color: white;
+    font-size: 13px;
+
+}
+
+
+/* Link styling */
+a {
+    color: #7f4bf1;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+/* Additional styling for the bottom text */
+p {
+    margin-top: 1rem;
+    font-size: 14px;
+    color: #666;
+    align-items: center;
+    justify-content: center;
+}
+
+.page_to_login {
+    font-size: 16px;
+    font-weight: 500;
+    line-height: 24px;
+    text-align: center;
+    align-items: center;
+    justify-content: center;
+
+
+
+}
+
+
+.react-tel-input .form-control {
+    width: 100%;
+    font-size: 16px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    /* Consistent width with other inputs */
+    color: #080808;
+}
+
+/* Placeholder styling */
+.react-tel-input .form-control::placeholder {
+    color: #888;
+    /* Customize the placeholder color */
+    opacity: 1;
+    /* Ensure the placeholder is fully visible */
+}
+
+.inputflex{
+width: 375px;
+border: 1px solid #ccc; /* Adjust border for phone input */
+border-radius: 4px;
+}
+/* Container styling to ensure consistency */
