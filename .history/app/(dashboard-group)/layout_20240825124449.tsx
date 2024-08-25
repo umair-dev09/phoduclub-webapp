@@ -18,7 +18,7 @@ export default function dashboardGroup() {
             <div className="contents"> {/* This is right side contents  */}
                 <div className="content-box">
                     <div className="headtab">
-                        <p>Hey, Siraj Dhanani, Keep up the great work!</p>
+                        <p><span style="font-weight: 700;">Hey, Siraj Dhanani,</span> Keep up the great work!</p>
                     </div>
                     <div className="variable-contents"></div>
                 </div>

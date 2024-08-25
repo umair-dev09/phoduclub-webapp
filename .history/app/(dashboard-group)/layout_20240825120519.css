@@ -1,0 +1,36 @@
+.body {
+    height: 100vh;
+    background-color: #1d2939;
+}
+
+.background {
+    background-color: #eaecf0;
+
+}
+
+.tabs {
+    width: 20%;
+
+}
+
+.logo {}
+
+.divider {}
+
+.dashboard {}
+
+.learn {}
+
+.communities {}
+
+.analytics {}
+
+.settings {}
+
+.contents {
+    width: 80%;
+}
+
+.content-box {
+    background: #eaecf0;
+}
