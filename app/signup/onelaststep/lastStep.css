@@ -1,141 +1,219 @@
 body {
     margin: 0;
     padding: 0;
-    font-family: 'Arial', sans-serif;
-    background-color: #f5f5f5;
+    font-family: 'Poppins', sans-serif;
+    background-color: #ffffff !important; /* Enforce background color to white */
     display: flex;
     justify-content: center;
     align-items: center;
     height: 100vh;
+    background-image: none; /* Ensure no background image or gradient is applied */
+  }
+  .heading .head {
+    font-family: 'Sora', sans-serif;
+    font-size: 24px; /* Example size */
+    font-weight: 700;
   }
   
-  .container{
+  /* Example for other headings if needed */
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Sora', sans-serif;
+  }
+  
+  /* Ensure that other text elements use Poppins */
+  p, span, div {
+    font-family: 'Poppins', sans-serif;
+  }
+  .container {
     display: flex;
     flex-direction: row;
-    margin: 0%;
-    padding: 0%;
+    margin: 0;
+    padding: 0;
     width: 100%;
     height: 100%;
   }
   
-  .verify{
-    float: left;
-    width: 45%;
-    display: flex;
-    flex-direction: column;
-  }
-  
-  .logo{
-    margin-left: 20px;
-    margin-top: 30px;
-    font-size: large;
-  }
-  
-  .return{
-    font-size: 12px;
-    margin-left: 20px;
-    margin-top: 20px;
-    color: #98a2b3;
-  }
-  
-  .container-2{
-    height: 100%;
-    justify-content: center;
-  }
-
-  .heading{
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-top: 30px;
-    font-weight: 800;
-  }
-
-  .head{
-    font-size: 25px;
-  }
-  
-  .targetyear{
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 50%;
-    font-size: 11px;
-    margin-top: 30px;
-    margin-bottom: 5px;
-  }
-  
-  .targetexam{
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 50%;
-    font-size: 11px;
-    margin-bottom: 5px;
-  }
-
-  .targetyearselection{
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-bottom: 15px;
-  }
-  
-  .targetexamselection{
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-
-  .yearselector{
-    min-width: 50%;
-    border: solid;
-    border-width: 1px;
-    border-radius: 5px;
-    height: 30px;
-    border-color: #b6b9be;
-  }
-
-  .examselector{
-    min-width: 50%;
-  }
-
-  .buttons{
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-top: 38px;
-    margin-bottom: 50px;
-  }
-
-  .button{
-    width: 50%;
-    height: 40px;
-    border: none;
-    background: #e39ff6;
-    border-radius: 7px;
-    color: white;
-    font-size: 13px;
-    cursor: pointer;
-  }
-
-  .button:hover{
-    background: #7400e0;
-    transition: background 0.15s;
-  }
-  
-.button:active{
-    background: 7400e0;
-    opacity: 0.7;
-}
-
-  .quote-section{
+  .quote-section {
     width: 55%;
     align-items: center;
     display: flex;
     flex-direction: column;
     justify-content: center;
-    background: #0E2138;
+    background: #ffffff;
     margin: 5px;
-    border-radius: 10px;
-  }
+    border-radius: 12px;
+    position: relative; /* This allows the godRays to be positioned relative to this container */
+    overflow: hidden;
+  }
+  .verify {
+    float: left;
+    width: 45%;
+    display: flex;
+    flex-direction: column;
+   
+  }
+  
+  .logo {
+    margin-left: 40px;
+    margin-top: 40px;
+  
+  }
+  
+  .return {
+    font-weight: 500;
+    font-size: 16px;
+    margin-left: 40px;
+    margin-top: 20px;
+    color: #98a2b3;
+  }
+  
+  .container-2 {
+    height: 100%;
+    justify-content: center;
+  }
+  
+  .heading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 70px;
+    margin-bottom: 50px;
+    font-weight: 800;
+    color: #000000;
+  }
+  
+  .head {
+    font-size: 25px;
+  }
+  
+  .instruction {
+    margin-top: 20px;
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #03183d;
+  }
+  
+  .container-3 {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 30px;
+  }
+  
+  input::-webkit-inner-spin-button,
+  input::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+  
+  .input {
+    font-weight: 500;
+    width: 50px;
+    height: 50px;
+    border: solid;
+    border-width: 1px;
+    border-radius: 5px;
+    border-color: #98a2b3;
+    margin: 5px;
+    text-align: center;
+    font-size: 30px;
+    color: #000000; /* Set input text color to black */
+  }
+  
+  .input:focus {
+    border: 1px solid #7400e0;
+    outline: none;
+  }
+  
+  .buttons {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 50px;
+    margin-bottom: 50px;
+  }
+  
+  .dropDowns{
+    width: 375px; /* This will make the container 50% of the parent's width */
+  /* Make the container a flexbox */
+  justify-content: center; /* Center horizontally */
+  align-items: center; /* Center vertically */
+  margin: 0 auto; /* Center the container itself in the parent */
+  flex-direction: column;
+  }
+  
+
+  .button {
+    font-weight: 500;
+    width: 375px;
+    height: 40px;
+    border: none;
+    background: #d4a9fc; /* Default color when button is disabled */
+    border-radius: 7px;
+    color: white;
+    font-size: 13px;
+    cursor: not-allowed;
+    transition: background 0.15s;
+  }
+  
+  /* Button enabled state */
+  .button.enabled {
+    background-color: #7400e0; /* Purple color when button is enabled */
+    cursor: pointer;
+  }
+  
+  .button.disabled:hover {
+    cursor: not-allowed;
+  }
+  
+  .button:active {
+    background: #7400e0;
+    opacity: 0.5;
+  }
+  
+  
+  
+  @media (max-width: 768px) {
+    .container {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .verify, .quote-section {
+        width: 100%;
+        margin: 10px 0;
+    }
+    
+    .button {
+        width: 80%;
+    }
+  }
+  
+  /* Add these styles to verify.css */
+  
+  .resend {
+    color: #AD72FF; /* Default color */
+    transition: color 0.3s ease;
+    font-weight: 700;
+  }
+  
+  .resend:enabled {
+    color: #9012FF;
+    font-weight: 700; /* Color when resend is enabled */
+  }
+  
+  
+  /* Utility class for screen readers */
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    border-color: 0;
+  }
+  
