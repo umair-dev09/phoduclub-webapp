@@ -1,0 +1,83 @@
+.tabs {
+    display: flex;
+    flex-direction: column;
+    width: 250px;
+    background-color: #1a1a1a;
+    padding: 10px;
+}
+
+.tabs[data-collapse="true"] {
+    width: 80px;
+}
+
+.tabs .logo {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.phodu-logo p {
+    color: white;
+    font-size: 1.2em;
+    margin: 0;
+}
+
+.tabs .icon {
+    cursor: pointer;
+}
+
+.tabs .divider {
+    margin-bottom: 20px;
+}
+
+.divider-line {
+    border-color: #8501FF;
+    border-width: 1px;
+}
+
+.tabs button {
+    background: none;
+    border: none;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 8px;
+    margin-bottom: 15px;
+    margin-left: 12px;
+    margin-right: 4px;
+    padding-top: 5px;
+    padding-bottom: 7px;
+    border-radius: 5px;
+    cursor: pointer;
+    color: white;
+    width: 100%;
+    text-align: left;
+}
+
+.tabs button.active {
+    background-color: #8501FF;
+    color: white;
+}
+
+.tabs button:focus {
+    outline: none;
+}
+
+/* Collapse style updates */
+.tabs[data-collapse="true"] button {
+    justify-content: center;
+}
+
+.tabs[data-collapse="true"] .dashboard-icon,
+.tabs[data-collapse="true"] .learn-icon,
+.tabs[data-collapse="true"] .community-icon,
+.tabs[data-collapse="true"] .analytics-icon,
+.tabs[data-collapse="true"] .setting-icon {
+    margin-right: 0;
+}
+
+/* Hide text when collapsed */
+.tabs[data-collapse="true"] button a {
+    display: none;
+}

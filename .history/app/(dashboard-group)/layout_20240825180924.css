@@ -1,0 +1,161 @@
+.body {
+    height: 100vh;
+    background-color: #1d2939;
+    display: flex;
+    flex-direction: row;
+}
+
+.background {
+    background-color: #eaecf0;
+}
+
+.tabs {
+    width: 250px;
+}
+
+.logo {
+    display: flex;
+    flex-direction: row;
+    margin-top: 25px;
+    margin-left: 8px;
+}
+
+.phodu-logo {
+    width: 100%;
+}
+
+.icon {
+    width: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.collapse-icon {}
+
+.phodu {
+    font-weight: bold;
+}
+
+#club {
+    font-weight: bold;
+    color: #e29ff5;
+}
+
+.divider {
+    margin-top: 18px;
+    margin-left: 10px;
+    margin-right: 3px;
+    margin-bottom: 23px;
+}
+
+.divider-line {
+    border-top: 1px solid #24354a;
+}
+
+.tabs div {
+    margin-bottom: 15px;
+    margin-left: 12px;
+    margin-right: 4px;
+    padding-top: 5px;
+    padding-bottom: 7px;
+    border-radius: 5px;
+
+    /* Default background color */
+    color: white;
+    /* Default text color */
+    cursor: pointer;
+}
+
+/* Highlight the active tab */
+.tabs div.active {
+    background-color: #8501FF;
+    ;
+    /* Highlighted background */
+    color: #0E2138;
+    ;
+    /* Text color for the active tab */
+}
+
+.contents {
+    width: 100%;
+    padding: 7px;
+}
+
+.content-box {
+    background: #eaecf0;
+    width: 100%;
+    height: 100%;
+    border-radius: 5px;
+    color: black;
+    min-width: 480px;
+}
+
+.headtab {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    padding-left: 20px;
+    padding-right: 20px;
+    background: #f7f8fb;
+    height: 60px;
+    border-radius: 5px 5px 0px 0px;
+    margin: auto;
+}
+
+#hi {
+    font-weight: bold;
+}
+
+.greeting {
+    width: 100%;
+}
+
+.notify {
+    width: 50px;
+    align-items: right;
+}
+
+.Question Mark {
+    width: 50px;
+    align-items: right;
+}
+
+.dp {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.actual-dp {
+    background: #e29ff5;
+    font-weight: bold;
+    color: #7a208a;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    padding-left: 7px;
+    padding-right: 7px;
+    border-radius: 50%;
+    margin-left: 25px;
+    margin-right: 8px;
+}
+
+.actual-dp:hover {
+    cursor: pointer;
+}
+
+.actual-dp:active {
+    opacity: 0.5;
+    cursor: pointer;
+}
+
+.name {
+    font-size: small;
+    font-weight: bold;
+}
+
+.email {
+    font-size: x-small;
+    color: #667085;
+}
