@@ -1,0 +1,137 @@
+.body {
+    height: 100vh;
+    background-color: #1d2939;
+    display: flex;
+    flex-direction: row;
+}
+
+.background {
+    background-color: #eaecf0;
+}
+
+.tabs {
+    width: 250px;
+    transition: width 0.3s ease;
+    /* Smooth transition for width change */
+    position: relative;
+    /* Ensure proper layering */
+}
+
+.tabs[data-collapse="true"] {
+    width: 60px;
+    /* Reduced width for collapsed state */
+}
+
+.logo {
+    display: flex;
+    flex-direction: row;
+    margin-top: 25px;
+    margin-left: 8px;
+}
+
+.phodu-logo {
+    width: 100%;
+}
+
+.icon {
+    width: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.collapse-icon {
+    transform: rotate(0deg);
+    transition: transform 0.3s ease;
+}
+
+[data-collapse="true"] .collapse-icon {
+    transform: rotate(180deg);
+}
+
+.phodu {
+    font-weight: bold;
+}
+
+#club {
+    font-weight: bold;
+    color: #e29ff5;
+}
+
+.divider {
+    margin-top: 0px;
+    margin-left: 10px;
+    margin-right: 3px;
+    margin-bottom: 23px;
+}
+
+.divider-line {
+    border-top: 1px solid #24354a;
+}
+
+.dashboard,
+.learn,
+.communities,
+.analytics,
+.settings {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 8px;
+    cursor: pointer;
+    /* Ensure the area is clickable */
+    position: relative;
+    /* Ensure proper layering */
+}
+
+.dashboard-icon,
+.learn-icon,
+.community-icon,
+.analytics-icon,
+.setting-icon {
+    color: white;
+    margin-right: 12px;
+}
+
+.tabs div {
+    margin-bottom: 15px;
+    margin-left: 12px;
+    margin-right: 4px;
+    padding-top: 5px;
+    padding-bottom: 7px;
+    border-radius: 5px;
+    color: white;
+    cursor: pointer;
+}
+
+/* Highlight the active tab */
+.tabs div.active {
+    background-color: #8501FF;
+    color: white;
+}
+
+/* Hide text when collapsed */
+.tabs[data-collapse="true"] .tab-text {
+    display: none;
+}
+
+/* Collapse icon transition */
+.collapse-icon {
+    transition: transform 0.3s ease;
+}
+
+/* Ensure the tabs remain functional */
+[data-collapse="true"] .tabs {
+    z-index: 10;
+    /* Ensure it's above other content */
+    position: relative;
+    /* Ensure proper positioning */
+}
+
+/* Ensure clickable areas are not hidden */
+.tabs a {
+    display: flex;
+    /* Ensure links are clickable */
+    align-items: center;
+}
