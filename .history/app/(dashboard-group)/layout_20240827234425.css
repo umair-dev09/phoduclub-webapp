@@ -1,0 +1,194 @@
+.body {
+    height: 100vh;
+    background-color: #131313;
+    display: flex;
+    flex-direction: row;
+}
+
+.side_bar {
+    position: relative;
+    width: 220px;
+    transition: width 0.3s ease;
+}
+
+.side_bar.collapsed {
+    width: 60px;
+}
+
+.toggle-button {
+    position: absolute;
+    right: -7px;
+    top: 3.4rem;
+    border: none;
+    background-color: #fff;
+    width: 1rem;
+    height: 1rem;
+    border: 1px solid #e5e7eb;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    font-size: 1.5rem;
+    color: black;
+    font-weight: 400;
+    transition: transform 0.3s ease;
+}
+
+.side_bar.collapsed .toggle-button {
+    transform: rotate(180deg);
+}
+
+.tabs {
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.side_bar.collapsed .tabs {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+}
+
+.tabs .logo,
+.tabs .divider,
+.tabs .dashboard,
+.tabs .learn,
+.tabs .communities,
+.tabs .analytics,
+.tabs .settings {
+    opacity: 1;
+    transition: opacity 0.3s ease;
+}
+
+.side_bar.collapsed .tabs .logo,
+.side_bar.collapsed .tabs .divider,
+.side_bar.collapsed .tabs .dashboard,
+.side_bar.collapsed .tabs .learn,
+.side_bar.collapsed .tabs .communities,
+.side_bar.collapsed .tabs .analytics,
+.side_bar.collapsed .tabs .settings {
+    opacity: 0;
+}
+
+.text-label {
+    opacity: 1;
+    transition: opacity 0.3s ease;
+}
+
+.side_bar.collapsed .text-label {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.dashboard,
+.learn,
+.communities,
+.analytics,
+.settings {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 8px;
+    margin-left: 12px;
+    color: white;
+    cursor: pointer;
+    text-align: center;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.dashboard-icon,
+.learn-icon,
+.community-icon,
+.analytics-icon,
+.setting-icon {
+    margin-right: 12px;
+    display: flex;
+    justify-content: center;
+    transition: margin-right 0.3s ease;
+}
+
+.side_bar.collapsed .dashboard-icon,
+.side_bar.collapsed .learn-icon,
+.side_bar.collapsed .community-icon,
+.side_bar.collapsed .analytics-icon,
+.side_bar.collapsed .setting-icon {
+    margin-right: 0;
+}
+
+.tabs div.active {
+    background-color: #8501FF;
+    color: white;
+}
+
+.contents {
+    width: 100%;
+    padding: 7px;
+}
+
+.content-box {
+    background: #eaecf0;
+    width: 100%;
+    height: 100%;
+    border-radius: 5px;
+    color: black;
+    min-width: 480px;
+}
+
+.headtab {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    padding-left: 20px;
+    padding-right: 20px;
+    background: #f7f8fb;
+    height: 60px;
+    border-radius: 5px 5px 0px 0px;
+    margin: auto;
+}
+
+.greeting {
+    width: 100%;
+}
+
+#Head-text {
+    font-weight: bold;
+}
+
+.notify,
+.Question Mark {
+    width: 50px;
+    align-items: right;
+}
+
+.dp {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.actual-dp {
+    background: #e29ff5;
+    font-weight: bold;
+    color: #7a208a;
+    padding: 5px 7px;
+    border-radius: 50%;
+    margin-left: 25px;
+    margin-right: 8px;
+    cursor: pointer;
+    transition: opacity 0.3s ease;
+}
+
+.actual-dp:hover {
+    opacity: 0.5;
+}
+
+.name {
+    font-size: small;
+    font-weight: bold;
+}
+
+.email {
+    font-size: x-small;
+    color: #667085;
+}

@@ -1,0 +1,17 @@
+/* analytics.css */
+.jabir {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    margin-top: 20%;
+    background: #1D2939;
+    color: #fff;
+    /* Optional: Sets text color to white for better contrast */
+
+    /* Ensure the height covers the entire viewport */
+
+    /* Ensure the width covers the entire viewport */
+    overflow: hidden;
+    /* Prevents scrolling issues */
+}

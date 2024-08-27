@@ -1,0 +1,5 @@
+.car {
+    color: blueviolet;
+    display: flex;
+    align-items: end;
+}

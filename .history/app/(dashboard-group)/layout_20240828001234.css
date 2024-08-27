@@ -1,0 +1,272 @@
+.body {
+    height: 100vh;
+    background-color: #131313;
+    display: flex;
+    flex-direction: row;
+}
+
+.side_bar {
+    position: relative;
+    transition: width 0.3s ease;
+}
+
+.tabs {
+    width: 220px;
+    transition: width 0.3s ease, padding 0.3s ease, opacity 0.3s ease;
+    margin-top: 0px;
+}
+
+.logo {
+    display: flex;
+    flex-direction: row;
+}
+
+.phodu-logo {
+    padding-left: 12px;
+    font-size: large;
+}
+
+.icon {
+    width: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.phodu-icon {
+    margin-top: -15px;
+}
+
+.phodu {
+    font-weight: bold;
+}
+
+#club {
+    font-weight: bold;
+    color: #e29ff5;
+}
+
+.phodu-club symbol {
+    margin: 0px;
+    display: flex;
+    justify-content: start;
+}
+
+.sidebar-icon {
+    position: absolute;
+    right: -7px;
+    top: 3.5rem;
+    border: none;
+    background-color: #fff;
+    width: 1rem;
+    height: 1rem;
+    border: 1px solid #e5e7eb;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transform: translateX(50%);
+    font-size: 1.5rem;
+    color: black;
+    font-weight: 400;
+    padding-top: 8.5px;
+    padding-bottom: 11.5px;
+    padding-left: 9px;
+    padding-right: 11px;
+    transition: transform 0.3s ease;
+    /* Added transition for smooth rotation */
+}
+
+.sidebar-toggle-button.rotate .sidebar-icon {
+    transform: rotate(180deg);
+}
+
+.divider {
+    margin-top: 15px;
+    margin-left: 12px;
+    margin-right: 3px;
+    margin-bottom: 23px;
+}
+
+.divider-line {
+    border: 1px solid #E2E5E91A;
+}
+
+.dashboard,
+.learn,
+.communities,
+.analytics,
+.settings {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 8px;
+    margin-left: 12px;
+}
+
+.dashboard-icon,
+.learn-icon,
+.community-icon,
+.analytics-icon,
+.setting-icon {
+    margin-right: 12px;
+    display: flex;
+    justify-content: center;
+}
+
+.dashboard,
+.learn,
+.communities,
+.analytics,
+.settings {
+    margin-right: 6px;
+    padding-bottom: 7px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    color: white;
+    cursor: pointer;
+    text-align: center;
+
+    transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+/* Hover effect */
+.dashboard:hover,
+.learn:hover,
+.communities:hover,
+.analytics:hover,
+.settings:hover {
+    background-color: #98A2B3;
+
+    /* Change to your preferred hover background color */
+    transform: scale(1.05);
+    /* Slightly enlarge the element on hover */
+}
+
+.tabs div.active {
+    background-color: #8501FF;
+    color: white;
+}
+
+.text-label {
+    display: inline-block;
+    transition: opacity 0.3s ease;
+}
+
+.contents {
+    width: 100%;
+    padding: 7px;
+}
+
+.content-box {
+    background: #eaecf0;
+    width: 100%;
+    height: 100%;
+    border-radius: 5px;
+    color: black;
+    min-width: 480px;
+    min-height: 336px;
+}
+
+.headtab {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    padding: 0 20px;
+    background: #f7f8fb;
+    height: 60px;
+    border-radius: 5px 5px 0 0;
+    margin: auto;
+}
+
+.greeting {
+    width: 100%;
+}
+
+#Head-text {
+    font-weight: bold;
+}
+
+.notify,
+.Question Mark {
+    width: 50px;
+    align-items: right;
+}
+
+.dp {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.actual-dp {
+    background: #e29ff5;
+    font-weight: bold;
+    color: #7a208a;
+    padding: 5px 7px;
+    border-radius: 50%;
+    margin-left: 25px;
+    margin-right: 8px;
+    cursor: pointer;
+    transition: opacity 0.3s ease;
+}
+
+.actual-dp:hover {
+    opacity: 0.5;
+}
+
+.name {
+    font-size: small;
+    font-weight: bold;
+}
+
+.email {
+    font-size: x-small;
+    color: #667085;
+}
+
+[data-collapse="true"] {
+    width: 60px;
+    transition: width 0.3s ease;
+}
+
+[data-collapse="true"] .phodu-logo {
+    display: none;
+}
+
+[data-collapse="true"] .text-label {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.tabs[data-collapse="true"] .dashboard-icon,
+.tabs[data-collapse="true"] .learn-icon,
+.tabs[data-collapse="true"] .community-icon,
+.tabs[data-collapse="true"] .analytics-icon,
+.tabs[data-collapse="true"] .setting-icon {
+    margin-right: 0;
+}
+
+[data-collapse="true"] .sidebar-icon {
+    transform: rotate(180deg);
+    margin-right: -11px;
+}
+
+[data-collapse="false"] .phodu-icon {
+    display: none;
+}
+
+[data-collapse="false"] .phodu-logo {
+    display: block;
+}
+
+[data-collapse="true"] .phodu-icon {
+    display: block;
+}
+
+[data-collapse="true"] .divider {
+    margin-top: -3px;
+}
