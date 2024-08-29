@@ -4,7 +4,21 @@
     display: flex;
     flex-direction: row;
 }
-
+.heading .head {
+    font-family: 'Sora', sans-serif;
+    font-size: 24px; /* Example size */
+    font-weight: 700;
+  }
+  
+  /* Example for other headings if needed */
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Sora', sans-serif;
+  }
+  
+  /* Ensure that other text elements use Poppins */
+  p, span, div {
+    font-family: 'Poppins', sans-serif;
+  }
 .side_bar {
     position: relative;
 

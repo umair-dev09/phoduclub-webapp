@@ -1,0 +1,25 @@
+
+// firebase.ts
+
+import { getApps, getApp, initializeApp } from 'firebase/app';
+import { getAuth } from 'firebase/auth';
+import { getAnalytics } from "firebase/analytics";
+
+// Your Firebase configuration object
+const firebaseConfig = {
+    apiKey: "AIzaSyCMz_lLMxo8lKAhc72m-kKiRyOZXrRONrY",
+    authDomain: "phodu-club.firebaseapp.com",
+    projectId: "phodu-club",
+    storageBucket: "phodu-club.appspot.com",
+    messagingSenderId: "169021243686",
+    appId: "1:169021243686:web:1bebef5b42a90ebfb9c1e7",
+    measurementId: "G-KXYLW74J40"
+};
+
+// Initialize Firebase
+const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApp();
+// Get Auth instance
+const auth = getAuth(app);
+auth.useDeviceLanguage;
+const analytics = getAnalytics(app);
+export { auth };

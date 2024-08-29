@@ -89,6 +89,14 @@ export default function VerifyOtp() {
   const [isResendEnabled, setIsResendEnabled] = useState(false);
   const [verificationError, setVerificationError] = useState<string | null>(null);
 
+  // Reset state on component mount or when phoneNumber changes
+  useEffect(() => {
+    setOtp('');
+    setCounter(60);
+    setIsResendEnabled(false);
+    setVerificationError(null);
+  }, [phoneNumber]);
+
   useEffect(() => {
     if (counter > 0) {
       const timer = setInterval(() => {
@@ -158,12 +166,12 @@ export default function VerifyOtp() {
     <div className="container">
       <div className="verify">
         <div className="logo">
-        <Image
-                src="/images/phoduclublogo.png" // Path to your image file
-              alt="Description of image"
-              width={150} // Desired width
-               height={25} // Desired height
-                 />
+          <Image
+            src="/images/phoduclublogo.png" // Path to your image file
+            alt="Description of image"
+            width={150} // Desired width
+            height={25} // Desired height
+          />
         </div>
         <div className="return">
           <a href="">&larr; Back</a>

@@ -1,22 +1,30 @@
 "use client";
 import { useState } from "react";
-import "./login.css"
-import PhoneInput from 'react-phone-input-2'
-import 'react-phone-input-2/lib/style.css'
+import { useRouter } from "next/navigation";
+import "./login.css";
+import PhoneInput from 'react-phone-input-2';
+import 'react-phone-input-2/lib/style.css';
 import Image from 'next/image';
 
 export default function Login_Page() {
     const [phone, setPhone] = useState('');
+    const router = useRouter(); // Initialize useRouter
+
+    const handleSendVerificationCode = () => {
+        // Assuming you want to pass the phone number to the verification page
+        router.push(`/signup/verifyotp?phone=${encodeURIComponent(phone)}`);
+    };
+
     return (
         <div className="mainpage">
             <div className="login">
                 <div className="phodu_logo">
-                <Image
-                src="/images/phoduclublogo.png" // Path to your image file
-              alt="Description of image"
-              width={150} // Desired width
-               height={25} // Desired height
-                 />
+                    <Image
+                        src="/images/phoduclublogo.png" // Path to your image file
+                        alt="Description of image"
+                        width={150} // Desired width
+                        height={25} // Desired height
+                    />
                 </div>
                 <div className="heading">
                     <p className="head">Welcome Back!</p>
@@ -25,8 +33,7 @@ export default function Login_Page() {
                     <p>Make yourself prepared, before time ✌</p>
                 </div>
                 <div>
-                    <form>
-
+                    <form onSubmit={(e) => e.preventDefault()}>
                         <div className="inputdiv">
                             <label htmlFor="Number">Phone Number</label>
                             <div className="inputflex">
@@ -44,28 +51,31 @@ export default function Login_Page() {
                                     inputClass="form-input"
                                 />
                             </div>
-
                         </div>
                         <div className="buttons">
-                            <button className="button">Send Verification Code</button>
+                            <button
+                                type="button"
+                                className="button"
+                                onClick={handleSendVerificationCode}
+                            >
+                                Send Verification Code
+                            </button>
                         </div>
-
-
                         {/* <span className="page_to_sign"><p>Don't have an account?<a href="#">Sign Up</a></p></span> */}
                     </form>
                 </div>
-                <span className="page_to_login"><p>Don't have an account? <a href="./signup">Sign Up</a></p></span>
-
-
+                <span className="page_to_login">
+                    <p>Don't have an account? <a href="./signup">Sign Up</a></p>
+                </span>
             </div>
             <div className="motivation">
-            <Image
-        src="/images/test1.png" // Path to your image file
-        alt="Description of image"
-        width={10000} // Desired width
-        height={10000} // Desired height
-        />
+                <Image
+                    src="/images/test1.png" // Path to your image file
+                    alt="Description of image"
+                    width={10000} // Desired width
+                    height={10000} // Desired height
+                />
             </div>
-        </div>
-    )
+        </div>
+    );
 }

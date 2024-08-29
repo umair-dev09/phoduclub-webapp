@@ -1,11 +1,14 @@
 "use client";
-import { useRouter } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
 import { useState } from "react";
-import { supabase } from "@/utils/supabase/client"; // Corrected import
 import PhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/style.css';
 import './signup.css';
 import Image from 'next/image';
+import { auth } from "../../../firebase"; // Adjust the path according to your Firebase config
+import { RecaptchaVerifier, signInWithPhoneNumber } from "firebase/auth";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 export default function Sign() {
     const router = useRouter();
@@ -14,7 +17,7 @@ export default function Sign() {
     const [email, setEmail] = useState('');
     const [termsAccepted, setTermsAccepted] = useState(false);
     const [errors, setErrors] = useState({ username: '', email: '', phone: '', terms: '' });
-    const [buttonColor, setButtonColor] = useState('#e39ff6'); // Default button color
+    const [isSubmitted, setIsSubmitted] = useState(false);
 
     const validateForm = () => {
         let formIsValid = true;
@@ -41,50 +44,98 @@ export default function Sign() {
         }
 
         setErrors(newErrors);
-        setButtonColor(formIsValid ? 'purple' : 'gray'); // Update button color based on form validity
-
         return formIsValid;
+    };
+
+    const handleInputChange = (field: string, value: string) => {
+        let newErrors = { ...errors };
+        switch (field) {
+            case 'username':
+                setUsername(value);
+                if (value.trim() === '') {
+                    newErrors.username = 'Please enter your name';
+                } else {
+                    newErrors.username = '';
+                }
+                break;
+            case 'email':
+                setEmail(value);
+                if (value.trim() === '') {
+                    newErrors.email = 'Please enter your email';
+                } else if (!/\S+@\S+\.\S+/.test(value)) {
+                    newErrors.email = 'Please enter a valid email';
+                } else {
+                    newErrors.email = '';
+                }
+                break;
+            case 'phone':
+                setPhone(value);
+                if (value.trim() === '' || value.length < 10) {
+                    newErrors.phone = 'Please enter a valid phone number';
+                } else {
+                    newErrors.phone = '';
+                }
+                break;
+            case 'terms':
+                const isChecked = !termsAccepted;
+                setTermsAccepted(isChecked);
+                if (!isChecked) {
+                    newErrors.terms = 'You must agree to the terms and conditions';
+                } else {
+                    newErrors.terms = '';
+                }
+                break;
+        }
+        setErrors(newErrors);
     };
 
     const handleSubmit = async (e: any) => {
         e.preventDefault();
+        setIsSubmitted(true);
 
         if (validateForm()) {
-            // Remove hyphens and spaces from the phone number
-            const formattedPhone = phone.replace(/\D/g, ''); // This will remove all non-digit characters
+            const formattedPhone = `+${phone.replace(/\D/g, '')}`;
+            setUpRecaptcha();
 
             try {
-                const { error } = await supabase.auth.signInWithOtp({
-                    phone: formattedPhone,
-                    options: {
-                        redirectTo: `${window.location.origin}/auth/callback`,
-                    },
-                });
-
-                if (error) {
-                    console.error(error.code + " " + error.message);
-                    alert("Error sending OTP. Please try again.");
-                } else {
-                    // Navigate to verify OTP page with phone number as query parameter
-                    router.push(`/signup/verifyotp?phone=${formattedPhone}`);
-                }
-            } catch (error) {
-                console.error("An unexpected error occurred: ", error);
-                alert("An unexpected error occurred. Please try again.");
+                const confirmationResult = await signInWithPhoneNumber(auth, formattedPhone, window.recaptchaVerifier);
+                window.confirmationResult = confirmationResult;
+                toast.success("OTP sent successfully!");
+                // Navigate to verify OTP page with phone number as query parameter
+                router.push(`/verifyotp`)
+                //?phone=${formattedPhone}
+            
+                
+            } catch (error: any) {
+                console.error("Error sending OTP: ", error);
+                toast.error("Error sending OTP. Please try again.");
             }
         }
+    };
+
+    const setUpRecaptcha = () => {
+        window.recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
+            'size': 'invisible',
+            'callback': (response: any) => {
+                console.log("Recaptcha verified", response);
+            }
+        });
+    };
+
+    const isFormValid = () => {
+        return username.trim() !== '' && email.trim() !== '' && /\S+@\S+\.\S+/.test(email) && phone.trim() !== '' && phone.length >= 10 && termsAccepted;
     };
 
     return (
         <div className="main_page">
             <div className="signup">
                 <div className="phodu_logo">
-                <Image
-                src="/images/phoduclublogo.png" // Path to your image file
-              alt="Description of image"
-              width={150} // Desired width
-               height={25} // Desired height
-                 />
+                    <Image
+                        src="/images/phoduclublogo.png" // Path to your image file
+                        alt="Description of image"
+                        width={150} // Desired width
+                        height={25} // Desired height
+                    />
                 </div>
                 <div className="heading">
                     <p className="head">Get Started</p>
@@ -102,10 +153,10 @@ export default function Sign() {
                                     id='username'
                                     placeholder='Username'
                                     value={username}
-                                    onChange={(e) => setUsername(e.target.value)}
+                                    onChange={(e) => handleInputChange('username', e.target.value)}
                                     className="form-input"
                                 />
-                                {errors.username && <div id="username_error" className="error">{errors.username}</div>}
+                                {isSubmitted && errors.username && <div id="username_error" className="error">{errors.username}</div>}
                             </div>
                         </div>
                         <div className="inputdiv">
@@ -116,10 +167,10 @@ export default function Sign() {
                                     id='Email'
                                     placeholder='Enter email'
                                     value={email}
-                                    onChange={(e) => setEmail(e.target.value)}
+                                    onChange={(e) => handleInputChange('email', e.target.value)}
                                     className="form-input"
                                 />
-                                {errors.email && <div id="email_error" className="error">{errors.email}</div>}
+                                {isSubmitted && errors.email && <div id="email_error" className="error">{errors.email}</div>}
                             </div>
                         </div>
                         <div className="inputdiv">
@@ -128,7 +179,7 @@ export default function Sign() {
                                 <PhoneInput
                                     country={'in'}
                                     value={phone}
-                                    onChange={(phone: any) => setPhone(phone)}
+                                    onChange={(value: any) => handleInputChange('phone', value)}
                                     placeholder="+91 0000000000"
                                     inputProps={{
                                         name: 'phone',
@@ -138,26 +189,30 @@ export default function Sign() {
                                     containerClass="phone-input-container"
                                     inputClass="form-input"
                                 />
-                                {errors.phone && <div id="phone_error" className="error">{errors.phone}</div>}
+                                {isSubmitted && errors.phone && <div id="phone_error" className="error">{errors.phone}</div>}
                             </div>
                         </div>
+                        <div id="recaptcha-container"></div> {/* Recaptcha container */}
                         <div className="checkBoxContainer">
                             <input
                                 type="checkbox"
                                 id="terms"
                                 checked={termsAccepted}
-                                onChange={() => setTermsAccepted(!termsAccepted)}
+                                onChange={() => handleInputChange('terms', '')}
                             />
                             <label htmlFor="terms">
                                 I agree to the Phodu.club <a href="#">privacy policy</a> and <a href="#">terms of use</a>.
                             </label>
-                            {errors.terms && <div id="terms_error" className="error">{errors.terms}</div>}
+                            {isSubmitted && errors.terms && <div id="terms_error" className="error">{errors.terms}</div>}
                         </div>
                         <div className="buttons">
                             <button
                                 className="button"
                                 type="submit"
-                                style={{ backgroundColor: buttonColor }}
+                                style={{
+                                    backgroundColor: isFormValid() ? '#7400e0' : '#d4a9fc',
+                                    cursor: 'pointer'
+                                }}
                             >
                                 Send Verification Code
                             </button>
@@ -169,13 +224,14 @@ export default function Sign() {
                 </span>
             </div>
             <div className="motivation">
-            <Image
-                src="/images/test1.png" // Path to your image file
-              alt="Description of image"
-              width={10000} // Desired width
-               height={10000} // Desired height
-                 />
+                <Image
+                    src="/images/test1.png" // Path to your image file
+                    alt="Description of image"
+                    width={10000} // Desired width
+                    height={10000} // Desired height
+                />
             </div>
+            <ToastContainer /> {/* Toast container */}
         </div>
     );
 }
