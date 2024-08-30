@@ -1,0 +1,9 @@
+.content {
+    background: #eaecf0;
+    width: 100%;
+    height: 100%;
+    border-radius: 5px;
+    color: black;
+    min-width: 480px;
+    min-height: 336px;
+}
