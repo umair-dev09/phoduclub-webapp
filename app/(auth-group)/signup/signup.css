@@ -1,0 +1,144 @@
+
+
+.main_page {
+    display: flex;
+    flex-direction: row;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.signup {
+    float: left;
+    width: 45%;
+    background: #F7F8FB;
+    display: flex;
+    flex-direction: column;
+}
+
+.motivation {
+    width: 55%;
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin: 5px;
+    border-radius: 12px;
+    position: relative;
+    overflow: hidden;
+}
+
+
+
+.heading .head {
+    font-family: 'Sora', sans-serif;
+    font-size: 24px;
+    font-weight: 700;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'Sora', sans-serif;
+}
+
+p, span, div {
+    font-family: 'Poppins', sans-serif;
+}
+
+.tagLine {
+    font-weight: 500;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #98a2b3;
+    gap: 0px;
+}
+
+
+
+a {
+    color: #7f4bf1;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+p {
+    text-align: center;
+    margin-top: 1rem;
+    font-size: 14px;
+    color: #250c0c;
+    align-items: center;
+    justify-content: center;
+}
+
+.page_to_login {
+    align-items: center;
+    justify-content: center;
+    gap: 0px;
+    opacity: 1;
+}
+.phoneinputcontainer .forminput {
+    width: 375px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    height: 40px;
+    color: #000;
+}
+
+/* Media query for smaller screens */
+@media (max-width: 768px) {
+    .main_page {
+        flex-direction: column;
+    }
+
+    .signup {
+        width: 100%;
+    }
+
+    .motivation {
+        width: 100%;
+        margin-top: 20px;
+        margin: 0;
+        border-radius: 0;
+    }
+
+    .signup {
+        padding: 20px;
+    }
+
+    .phodu_logo {
+        font-size: 20px;
+        width: auto;
+        height: auto;
+    }
+
+    .heading .head {
+        font-size: 20px;
+    }
+
+    .tagLine {
+        font-size: 12px;
+    }
+
+    .button {
+        width: 100%;
+    }
+
+    input[type="text"],
+    input[type="email"],
+    input[type="tel"],
+    .phone-input-container .form-input {
+        width: 100%;
+    }
+
+    .checkBoxContainer {
+        align-items: center;
+        justify-items: center;
+        width: 300px;
+    }
+}

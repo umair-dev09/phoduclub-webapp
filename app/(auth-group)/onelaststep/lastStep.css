@@ -1,29 +1,5 @@
-body {
-    margin: 0;
-    padding: 0;
-    font-family: 'Poppins', sans-serif;
-    background-color: #ffffff !important; /* Enforce background color to white */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    background-image: none; /* Ensure no background image or gradient is applied */
-  }
-  .heading .head {
-    font-family: 'Sora', sans-serif;
-    font-size: 24px; /* Example size */
-    font-weight: 700;
-  }
-  
-  /* Example for other headings if needed */
-  h1, h2, h3, h4, h5, h6 {
-    font-family: 'Sora', sans-serif;
-  }
-  
-  /* Ensure that other text elements use Poppins */
-  p, span, div {
-    font-family: 'Poppins', sans-serif;
-  }
+
+
   .container {
     display: flex;
     flex-direction: row;
@@ -127,13 +103,13 @@ body {
     outline: none;
   }
   
-  .buttons {
+  /* .buttons {
     display: flex;
     align-items: center;
     justify-content: center;
     margin-top: 50px;
     margin-bottom: 50px;
-  }
+  } */
   
   .dropDowns{
     width: 375px; /* This will make the container 50% of the parent's width */
@@ -150,7 +126,7 @@ body {
     width: 375px;
     height: 40px;
     border: none;
-    background: #d4a9fc; /* Default color when button is disabled */
+    background: #d4a9fc; 
     border-radius: 7px;
     color: white;
     font-size: 13px;
@@ -158,9 +134,8 @@ body {
     transition: background 0.15s;
   }
   
-  /* Button enabled state */
   .button.enabled {
-    background-color: #7400e0; /* Purple color when button is enabled */
+    background-color: #7400e0; 
     cursor: pointer;
   }
   
