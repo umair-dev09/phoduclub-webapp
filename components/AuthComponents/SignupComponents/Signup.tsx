@@ -1,5 +1,5 @@
 "use client";
-import { redirect, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import PhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/style.css';
@@ -10,14 +10,15 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import styles from './Singnup.module.css'; // Ensure you import the CSS module
 
-function Signup(){
-        const router = useRouter();
+function Signup() {
+    const router = useRouter();
     const [phone, setPhone] = useState('');
     const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
     const [termsAccepted, setTermsAccepted] = useState(false);
     const [errors, setErrors] = useState({ username: '', email: '', phone: '', terms: '' });
     const [isSubmitted, setIsSubmitted] = useState(false);
+    const [isLoading, setIsLoading] = useState(false); // Loading state
 
     const validateForm = () => {
         let formIsValid = true;
@@ -94,21 +95,24 @@ function Signup(){
         setIsSubmitted(true);
 
         if (validateForm()) {
+            setIsLoading(true); // Enable loading indicator
             const formattedPhone = `+${phone.replace(/\D/g, '')}`;
             setUpRecaptcha();
 
             try {
                 const confirmationResult = await signInWithPhoneNumber(auth, formattedPhone, window.recaptchaVerifier);
                 window.confirmationResult = confirmationResult;
+                window.localStorage.setItem('verificationId', confirmationResult.verificationId);
+
                 toast.success("OTP sent successfully!");
+                setIsLoading(false); // Disable loading indicator
                 // Navigate to verify OTP page with phone number as query parameter
-                router.push(`/signup/verifyotp`)
-                //?phone=${formattedPhone}
+                router.push(`/signup/verifyotp?phone=${formattedPhone}&name=${encodeURIComponent(username)}&email=${encodeURIComponent(email)}`);
             
-                
             } catch (error: any) {
                 console.error("Error sending OTP: ", error);
                 toast.error("Error sending OTP. Please try again.");
+                setIsLoading(false); // Disable loading indicator
             }
         }
     };
@@ -126,101 +130,105 @@ function Signup(){
         return username.trim() !== '' && email.trim() !== '' && /\S+@\S+\.\S+/.test(email) && phone.trim() !== '' && phone.length >= 10 && termsAccepted;
     };
 
-    return(
-        
+    return (
         <div>
             <div className={styles.phodulogo}>
-                    <Image
-                        src="/images/phoduclublogo.png" // Path to your image file
-                        alt="Description of image"
-                        width={150} // Desired width
-                        height={25} // Desired height
+                <Image
+                    src="/images/phoduclublogo.png" // Path to your image file
+                    alt="Description of image"
+                    width={150} // Desired width
+                    height={25} // Desired height
+                />
+            </div>
+            <div className={styles.heading}>
+                <p className={styles.head}>Get Started</p>
+            </div>
+            <div className="tagLine">
+                <p>Make yourself prepared, before time ✌</p>
+            </div>
+            <form className={styles.form} onSubmit={handleSubmit}>
+                <div className={styles.inputdiv}>
+                    <label htmlFor="username">Name</label>
+                    <div>
+                        <input
+                            type="text"
+                            id='username'
+                            placeholder='Username'
+                            value={username}
+                            onChange={(e) => handleInputChange('username', e.target.value)}
+                            className={styles.input}
+                        />
+                        {isSubmitted && errors.username && <div id="username_error" className={styles.error}>{errors.username}</div>}
+                    </div>
+                </div>
+                <div >
+                    <label htmlFor="Email">Email</label>
+                    <div className={styles.input}>
+                        <input
+                            type="email"
+                            id='Email'
+                            placeholder='Enter email'
+                            value={email}
+                            onChange={(e) => handleInputChange('email', e.target.value)}
+                            className={styles.input}
+                        />
+                        {isSubmitted && errors.email && <div id="email_error" className={styles.error}>{errors.email}</div>}
+                    </div>
+                </div>
+                <div>
+                    <label htmlFor="Number">Phone Number</label>
+                    <div>
+                        <PhoneInput
+                            country={'in'}
+                            value={phone}
+                            onChange={(value: any) => handleInputChange('phone', value)}
+                            placeholder="+91 000000000"
+                            inputProps={{
+                                name: 'phone',
+                                required: true,
+                                autoFocus: true
+                            }}
+                            containerClass="phoneinputcontainer"
+                            inputClass="forminput"
+                        />
+                        {isSubmitted && errors.phone && <div id="phone_error" className={styles.error}>{errors.phone}</div>}
+                    </div>
+                </div>
+                <div id="recaptcha-container"></div> {/* Recaptcha container */}
+                <div className={styles.checkBoxContainer}>
+                    <input className={styles.input}
+                        type="checkbox"
+                        id="terms"
+                        checked={termsAccepted}
+                        onChange={() => handleInputChange('terms', '')}
                     />
+                    <label className={styles.label} htmlFor="terms">
+                        I agree to the Phodu.club <a href="#">privacy policy</a> and <a href="#">terms of use</a>.
+                    </label>
+                    {isSubmitted && errors.terms && <div id="terms_error" className={styles.error}>{errors.terms}</div>}
                 </div>
-                <div className={styles.heading}>
-                    <p className={styles.head}>Get Started</p>
+                <div className={styles.buttons}>
+                    <button
+                        className={styles.button}
+                        type="submit"
+                        style={{
+                            backgroundColor: isFormValid() ? '#7400e0' : '#d4d4d4',
+                            cursor: isFormValid() ? 'pointer' : 'not-allowed',
+                        }}
+                        disabled={!isFormValid()}
+                    >
+                        Send verification code
+                    </button>
+                    {isLoading && (
+                        <div className={styles.loadingContainer}>
+                            <div className={styles.spinner}></div>
+                        </div>
+                    )}
                 </div>
-                <div className="tagLine">
-                    <p>Make yourself prepared, before time ✌</p>
-                </div>
-                    <form className={styles.form} onSubmit={handleSubmit}>
-                        <div className={styles.inputdiv}>
-                            <label htmlFor="username">Name</label>
-                            <div>
-                                <input
-                                    type="text"
-                                    id='username'
-                                    placeholder='Username'
-                                    value={username}
-                                    onChange={(e) => handleInputChange('username', e.target.value)}
-                                    className={styles.input}
-                                />
-                                {isSubmitted && errors.username && <div id="username_error" className={styles.error}>{errors.username}</div>}
-                            </div>
-                        </div>
-                        <div >
-                            <label htmlFor="Email">Email</label>
-                            <div className={styles.input}>
-                                <input
-                                    type="email"
-                                    id='Email'
-                                    placeholder='Enter email'
-                                    value={email}
-                                    onChange={(e) => handleInputChange('email', e.target.value)}
-                                    className={styles.input}
-                                />
-                                {isSubmitted && errors.email && <div id="email_error" className={styles.error}>{errors.email}</div>}
-                            </div>
-                        </div>
-                        <div>
-                            <label htmlFor="Number">Phone Number</label>
-                            <div>
-                                <PhoneInput
-                                    country={'in'}
-                                    value={phone}
-                                    onChange={(value: any) => handleInputChange('phone', value)}
-                                    placeholder="+91 000000000"
-                                    inputProps={{
-                                        name: 'phone',
-                                        required: true,
-                                        autoFocus: true
-                                    }}
-                                    containerClass="phoneinputcontainer"
-                                    inputClass="forminput"
-                                    
-                                />
-                                {isSubmitted && errors.phone && <div id="phone_error" className={styles.error}>{errors.phone}</div>}
-                            </div>
-                        </div>
-                        <div id="recaptcha-container"></div> {/* Recaptcha container */}
-                        <div className={styles.checkBoxContainer}>
-                            <input className={styles.input}
-                                type="checkbox"
-                                id="terms"
-                                checked={termsAccepted}
-                                onChange={() => handleInputChange('terms', '')}
-                            />
-                            <label className={styles.label} htmlFor="terms">
-                                I agree to the Phodu.club <a href="#">privacy policy</a> and <a href="#">terms of use</a>.
-                            </label>
-                            {isSubmitted && errors.terms && <div id="terms_error" className={styles.error}>{errors.terms}</div>}
-                        </div>
-                        <div className={styles.buttons}>
-                            <button
-                                className={styles.button}
-                                type="submit"
-                                style={{
-                                    backgroundColor: isFormValid() ? '#7400e0' : '#d4a9fc',
-                                    cursor: 'pointer'
-                                }}
-                            >
-                                Send Verification Code
-                            </button>
-                        </div>
-                    </form>
-                </div>
+                <ToastContainer />
+            </form>
+        </div>
     );
-
 }
 
 export default Signup;

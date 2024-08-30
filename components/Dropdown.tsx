@@ -1,6 +1,10 @@
 "use client";
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Select, { MultiValue, SingleValue } from 'react-select';
+import { useRouter, useSearchParams } from "next/navigation";
+import { auth, db } from '../firebase'; // Adjust path as needed
+import { getFirestore, doc, updateDoc } from "firebase/firestore"; // Import Firestore functions
+import { toast } from "react-toastify";
 import styles from './Dropdown.module.css'; // Ensure you import the CSS module
 
 type Option = {
@@ -12,6 +16,7 @@ type CustomState = {
   isSelected: boolean;
   isFocused: boolean;
 };
+
 const years: Option[] = [
   { value: '2024', label: '2024' },
   { value: '2025', label: '2025' },
@@ -29,8 +34,44 @@ const exams: Option[] = [
 ];
 
 const Dropdown = () => {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const userId = searchParams.get('userId') || ''; // Retrieve the userId from the URL
+  // const db = getFirestore(); // Initialize Firestore
+
   const [selectedYear, setSelectedYear] = useState<SingleValue<Option>>(null);
   const [selectedExams, setSelectedExams] = useState<MultiValue<Option>>([]);
+  const [isButtonEnabled, setIsButtonEnabled] = useState(false);
+
+  useEffect(() => {
+    // Enable the button if a year and at least one exam are selected
+    if (selectedYear && selectedExams.length > 0) {
+      setIsButtonEnabled(true);
+    } else {
+      setIsButtonEnabled(false);
+    }
+  }, [selectedYear, selectedExams]);
+
+  const handleSignUp = async () => {
+    if (!userId) {
+      toast.error("User ID not found. Please retry the process.");
+      return;
+    }
+
+    try {
+      // Store the selected year and exams in Firestore
+      await updateDoc(doc(db, "users", userId), {
+        targetYear: selectedYear?.value,
+        targetExams: selectedExams.map(exam => exam.value),
+      });
+
+      toast.success("Data saved successfully.");
+      router.push('/welcome'); // Adjust the route as needed
+    } catch (error) {
+      console.error("Error saving data:", error);
+      toast.error("Error saving data. Please try again.");
+    }
+  };
 
   return (
     <div className={styles.dropdownContainer}>
@@ -48,7 +89,6 @@ const Dropdown = () => {
               ...provided,
               color: 'black',
               backgroundColor: state.isFocused ? '#E39FF6' : 'white', // Purple color when focused
-
             }),
             singleValue: (provided) => ({
               ...provided,
@@ -61,34 +101,6 @@ const Dropdown = () => {
               borderRadius: '8px',
               padding: '4px',
               boxShadow: 'none',
-            }),
-            multiValue: (provided) => ({
-              ...provided,
-              backgroundColor: 'white',
-              border: '2px solid gray',
-              borderRadius: '8px',
-              fontWeight: '500',
-            }),
-            multiValueLabel: (provided) => ({
-              ...provided,
-              color: 'black',
-              fontWeight: '500',
-            }),
-            multiValueRemove: (provided) => ({
-              ...provided,
-              color: 'gray', // Color of the "x" button
-              cursor: 'pointer',
-              ':hover': {
-                backgroundColor: '#f0f0f0', // Optional: background color on hover
-              },
-            }),
-            menu: (provided) => ({
-              ...provided,
-              backgroundColor: 'white',
-            }),
-            menuList: (provided) => ({
-              ...provided,
-              padding: '0',
             }),
           }}
         />
@@ -108,17 +120,6 @@ const Dropdown = () => {
               ...provided,
               color: 'black',
               backgroundColor: state.isFocused ? '#E39FF6' : 'white', // Purple color when focused
-            }),
-            singleValue: (provided) => ({
-              ...provided,
-              color: 'black',
-            }),
-            control: (provided) => ({
-              ...provided,
-              border: '1px solid #e6e6e6',
-              borderRadius: '8px',
-              padding: '4px',
-              boxShadow: 'none',
             }),
             multiValue: (provided) => ({
               ...provided,
@@ -151,17 +152,16 @@ const Dropdown = () => {
           }}
         />
       </div>
-      <div>
-        
+      <div className={styles.buttons}>
+        <button 
+          className={`button ${isButtonEnabled ? 'enabled' : 'disabled'}`} 
+          onClick={handleSignUp} 
+          disabled={!isButtonEnabled}
+        >
+          Sign Up
+        </button>
       </div>
-      <div className='buttons'>
-      <button className = 'button'>
-              Sign Up
-            </button>
-          </div>
-      
     </div>
-    
   );
 };
 

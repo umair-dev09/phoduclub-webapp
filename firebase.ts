@@ -4,6 +4,7 @@
 import { getApps, getApp, initializeApp } from 'firebase/app';
 import { getAuth } from 'firebase/auth';
 import { getAnalytics } from "firebase/analytics";
+import { getFirestore } from 'firebase/firestore';
 
 // Your Firebase configuration object
 const firebaseConfig = {
@@ -22,4 +23,5 @@ const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApp();
 const auth = getAuth(app);
 auth.useDeviceLanguage;
 const analytics = getAnalytics(app);
-export { auth };
+const db = getFirestore(app);
+export { auth ,db};
