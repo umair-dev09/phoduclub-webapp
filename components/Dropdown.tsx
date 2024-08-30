@@ -1,3 +1,4 @@
+"use client";
 import React, { useState } from 'react';
 import Select, { MultiValue, SingleValue } from 'react-select';
 import styles from './Dropdown.module.css'; // Ensure you import the CSS module
@@ -150,7 +151,17 @@ const Dropdown = () => {
           }}
         />
       </div>
+      <div>
+        
+      </div>
+      <div className='buttons'>
+      <button className = 'button'>
+              Sign Up
+            </button>
+          </div>
+      
     </div>
+    
   );
 };
 

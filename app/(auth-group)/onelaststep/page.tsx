@@ -1,16 +1,13 @@
-"use client";
-import { useRouter } from "next/navigation";
+
 import Image from 'next/image';
-import Dropdown from '../../../../components/Dropdown';
+import Dropdown from '../../../components/Dropdown';
 import styles from '../styles/Dropdown.module.css';
 import './lastStep.css';
 
 export default function OneLastStep() {
-  const router = useRouter(); // Initialize useRouter
 
   const handleSignUp = () => {
-    router.refresh();
-    router.push('/signup');
+   
     
   };
 
@@ -33,16 +30,9 @@ export default function OneLastStep() {
             <p className="head">One Last Step</p>
           </div>
           <div className="dropDowns">
-            <Dropdown />
+            <Dropdown/>
           </div>
-          <div className="buttons">
-            <button
-              className="button"
-              onClick={handleSignUp} // Add onClick handler
-            >
-              Sign Up
-            </button>
-          </div>
+          
         </div>
       </div>
       <div className="quote-section">

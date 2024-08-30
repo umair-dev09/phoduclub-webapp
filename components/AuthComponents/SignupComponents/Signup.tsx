@@ -1,0 +1,226 @@
+"use client";
+import { redirect, useRouter } from "next/navigation";
+import { useState } from "react";
+import PhoneInput from 'react-phone-input-2';
+import 'react-phone-input-2/lib/style.css';
+import Image from 'next/image';
+import { auth } from "../../../firebase"; // Adjust the path according to your Firebase config
+import { RecaptchaVerifier, signInWithPhoneNumber } from "firebase/auth";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import styles from './Singnup.module.css'; // Ensure you import the CSS module
+
+function Signup(){
+        const router = useRouter();
+    const [phone, setPhone] = useState('');
+    const [username, setUsername] = useState('');
+    const [email, setEmail] = useState('');
+    const [termsAccepted, setTermsAccepted] = useState(false);
+    const [errors, setErrors] = useState({ username: '', email: '', phone: '', terms: '' });
+    const [isSubmitted, setIsSubmitted] = useState(false);
+
+    const validateForm = () => {
+        let formIsValid = true;
+        let newErrors = { username: '', email: '', phone: '', terms: '' };
+
+        if (username.trim() === '') {
+            formIsValid = false;
+            newErrors.username = 'Please enter your name';
+        }
+        if (email.trim() === '') {
+            formIsValid = false;
+            newErrors.email = 'Please enter your email';
+        } else if (!/\S+@\S+\.\S+/.test(email)) {
+            formIsValid = false;
+            newErrors.email = 'Please enter a valid email';
+        }
+        if (phone.trim() === '' || phone.length < 10) {
+            formIsValid = false;
+            newErrors.phone = 'Please enter a valid phone number';
+        }
+        if (!termsAccepted) {
+            formIsValid = false;
+            newErrors.terms = 'You must agree to the terms and conditions';
+        }
+
+        setErrors(newErrors);
+        return formIsValid;
+    };
+
+    const handleInputChange = (field: string, value: string) => {
+        let newErrors = { ...errors };
+        switch (field) {
+            case 'username':
+                setUsername(value);
+                if (value.trim() === '') {
+                    newErrors.username = 'Please enter your name';
+                } else {
+                    newErrors.username = '';
+                }
+                break;
+            case 'email':
+                setEmail(value);
+                if (value.trim() === '') {
+                    newErrors.email = 'Please enter your email';
+                } else if (!/\S+@\S+\.\S+/.test(value)) {
+                    newErrors.email = 'Please enter a valid email';
+                } else {
+                    newErrors.email = '';
+                }
+                break;
+            case 'phone':
+                setPhone(value);
+                if (value.trim() === '' || value.length < 10) {
+                    newErrors.phone = 'Please enter a valid phone number';
+                } else {
+                    newErrors.phone = '';
+                }
+                break;
+            case 'terms':
+                const isChecked = !termsAccepted;
+                setTermsAccepted(isChecked);
+                if (!isChecked) {
+                    newErrors.terms = 'You must agree to the terms and conditions';
+                } else {
+                    newErrors.terms = '';
+                }
+                break;
+        }
+        setErrors(newErrors);
+    };
+
+    const handleSubmit = async (e: any) => {
+        e.preventDefault();
+        setIsSubmitted(true);
+
+        if (validateForm()) {
+            const formattedPhone = `+${phone.replace(/\D/g, '')}`;
+            setUpRecaptcha();
+
+            try {
+                const confirmationResult = await signInWithPhoneNumber(auth, formattedPhone, window.recaptchaVerifier);
+                window.confirmationResult = confirmationResult;
+                toast.success("OTP sent successfully!");
+                // Navigate to verify OTP page with phone number as query parameter
+                router.push(`/signup/verifyotp`)
+                //?phone=${formattedPhone}
+            
+                
+            } catch (error: any) {
+                console.error("Error sending OTP: ", error);
+                toast.error("Error sending OTP. Please try again.");
+            }
+        }
+    };
+
+    const setUpRecaptcha = () => {
+        window.recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
+            'size': 'invisible',
+            'callback': (response: any) => {
+                console.log("Recaptcha verified", response);
+            }
+        });
+    };
+
+    const isFormValid = () => {
+        return username.trim() !== '' && email.trim() !== '' && /\S+@\S+\.\S+/.test(email) && phone.trim() !== '' && phone.length >= 10 && termsAccepted;
+    };
+
+    return(
+        
+        <div>
+            <div className={styles.phodulogo}>
+                    <Image
+                        src="/images/phoduclublogo.png" // Path to your image file
+                        alt="Description of image"
+                        width={150} // Desired width
+                        height={25} // Desired height
+                    />
+                </div>
+                <div className={styles.heading}>
+                    <p className={styles.head}>Get Started</p>
+                </div>
+                <div className="tagLine">
+                    <p>Make yourself prepared, before time ✌</p>
+                </div>
+                    <form className={styles.form} onSubmit={handleSubmit}>
+                        <div className={styles.inputdiv}>
+                            <label htmlFor="username">Name</label>
+                            <div>
+                                <input
+                                    type="text"
+                                    id='username'
+                                    placeholder='Username'
+                                    value={username}
+                                    onChange={(e) => handleInputChange('username', e.target.value)}
+                                    className={styles.input}
+                                />
+                                {isSubmitted && errors.username && <div id="username_error" className={styles.error}>{errors.username}</div>}
+                            </div>
+                        </div>
+                        <div >
+                            <label htmlFor="Email">Email</label>
+                            <div className={styles.input}>
+                                <input
+                                    type="email"
+                                    id='Email'
+                                    placeholder='Enter email'
+                                    value={email}
+                                    onChange={(e) => handleInputChange('email', e.target.value)}
+                                    className={styles.input}
+                                />
+                                {isSubmitted && errors.email && <div id="email_error" className={styles.error}>{errors.email}</div>}
+                            </div>
+                        </div>
+                        <div>
+                            <label htmlFor="Number">Phone Number</label>
+                            <div>
+                                <PhoneInput
+                                    country={'in'}
+                                    value={phone}
+                                    onChange={(value: any) => handleInputChange('phone', value)}
+                                    placeholder="+91 000000000"
+                                    inputProps={{
+                                        name: 'phone',
+                                        required: true,
+                                        autoFocus: true
+                                    }}
+                                    containerClass="phoneinputcontainer"
+                                    inputClass="forminput"
+                                    
+                                />
+                                {isSubmitted && errors.phone && <div id="phone_error" className={styles.error}>{errors.phone}</div>}
+                            </div>
+                        </div>
+                        <div id="recaptcha-container"></div> {/* Recaptcha container */}
+                        <div className={styles.checkBoxContainer}>
+                            <input className={styles.input}
+                                type="checkbox"
+                                id="terms"
+                                checked={termsAccepted}
+                                onChange={() => handleInputChange('terms', '')}
+                            />
+                            <label className={styles.label} htmlFor="terms">
+                                I agree to the Phodu.club <a href="#">privacy policy</a> and <a href="#">terms of use</a>.
+                            </label>
+                            {isSubmitted && errors.terms && <div id="terms_error" className={styles.error}>{errors.terms}</div>}
+                        </div>
+                        <div className={styles.buttons}>
+                            <button
+                                className={styles.button}
+                                type="submit"
+                                style={{
+                                    backgroundColor: isFormValid() ? '#7400e0' : '#d4a9fc',
+                                    cursor: 'pointer'
+                                }}
+                            >
+                                Send Verification Code
+                            </button>
+                        </div>
+                    </form>
+                </div>
+    );
+
+}
+
+export default Signup;
