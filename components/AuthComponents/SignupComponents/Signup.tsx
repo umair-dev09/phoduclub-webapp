@@ -212,10 +212,9 @@ function Signup() {
                         className={styles.button}
                         type="submit"
                         style={{
-                            backgroundColor: isFormValid() ? '#7400e0' : '#d4d4d4',
-                            cursor: isFormValid() ? 'pointer' : 'not-allowed',
+                            backgroundColor: isFormValid() ? '#7400e0' : '#E39FF6',
+                            cursor: 'pointer',
                         }}
-                        disabled={!isFormValid()}
                     >
                         Send verification code
                     </button>
