@@ -1,0 +1,97 @@
+.content {
+    display: flex;
+    align-items: center;
+    justify-content: start;
+    width: 1280px;
+    height: 630px;
+    margin: 10px;
+    padding: 0px;
+    border-radius: 10px;
+    background: #FFFFFF;
+    border: 2px solid #E5E7EB;
+
+    border-color: #E5E7EB;
+
+}
+
+
+.content1-box {
+    width: 300px;
+    height: 630px;
+    background-color: #FFFFFF;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content: start;
+    border-top-left-radius: 10px;
+    border-bottom-left-radius: 10px;
+    border: 2px solid #E5E7EB;
+
+
+}
+
+
+.my-profile {
+    display: flex;
+
+    align-items: center;
+    justify-content: flex-start;
+    width: 250px;
+    height: 50px;
+    margin: 20px;
+    background-color: #F5F5FF;
+    border-radius: 10px;
+    border: 2px solid #D9D9FF;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+    padding-left: 15px;
+    border-color: #E5E7EB;
+
+
+}
+
+.purchase-history {
+    display: flex;
+
+    align-items: center;
+    justify-content: flex-start;
+    width: 250px;
+    height: 50px;
+    margin: 20px;
+    background-color: #F5F5FF;
+    border-radius: 10px;
+    border: 2px solid #D9D9FF;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+    padding-left: 15px;
+    border-color: #E5E7EB;
+
+
+
+
+
+}
+
+
+.profile-icon {
+    margin-right: 12px;
+    /* Space between the icon and the text */
+}
+
+.purchase-icon {
+    margin-right: 12px;
+}
+
+.content1-box div.active {
+    color: #8501FF;
+
+}
+
+.my-profile:hover,
+.purchase-history:hover {
+    background-color: #DDCDFF;
+    transform: scale(1.05);
+    transition: 0.15s;
+
+
+}

@@ -1,0 +1,12 @@
+.content {
+    width: 100%;
+    padding-right: 10%;
+    height: 598px;
+    margin: 40px;
+    gap: 0px;
+    border-radius: 10px 10px 10px 10px;
+    border: 0.5px 0px 0px 0px;
+    opacity: 0px;
+    background: #FFFFFF;
+    border: 0.5px solid #E5E7EB
+}

@@ -1,0 +1,107 @@
+/* General layout styling */
+.content {
+    display: flex;
+    align-items: stretch;
+    width: 100%;
+    height: 100%;
+    border-radius: 10px;
+}
+
+.content1-box {
+    width: 20%;
+    background-color: #FFFFFF;
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+    border-top-left-radius: 10px;
+    border-bottom-left-radius: 10px;
+    border-right: 2px solid #E5E7EB;
+    padding-left: 20px;
+    padding-right: 20px;
+    padding-top: 30px;
+}
+
+.content2-box {
+    flex: 1;
+    background-color: #FFFFFF;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;
+    border-bottom-color: #E5E7EB;
+}
+
+/* Button styling */
+.my-profile,
+.purchase-history {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    border-radius: 10px;
+    cursor: pointer;
+    padding: 10px 15px;
+    font-weight: 500;
+    margin-bottom: 5px;
+    border: 2px solid #ffffff;
+    /* Default border color */
+    background-color: #FFFFFF;
+    /* Default background color */
+    color: #1D2939;
+    /* Default text color */
+    transition: all 0.3s ease;
+    /* Smooth transition for color changes */
+}
+
+/* Active state for My Profile button */
+.my-profile.active,
+.purchase-history.active {
+    color: #7400e0;
+    /* Text color when active */
+    background-color: #f5f0ff;
+    /* Background color when active */
+    border-color: #dcccff;
+    /* Border color when active */
+}
+
+/* Icon styling */
+.profile-icon,
+.purchase-icon {
+    margin-right: 12px;
+    transition: filter 0.3s ease;
+    /* Smooth transition for icon color change */
+}
+
+/* Change icon color when the button is active */
+.my-profile.active .profile-icon,
+.purchase-history.active .purchase-icon {
+    filter: brightness(0) invert(1);
+    /* Invert icon color to match active text */
+}
+
+/* Hover effects */
+.my-profile:hover,
+.purchase-history:hover {
+    color: #7400e0;
+    /* Text color on hover */
+    background-color: #f5f0ff;
+    /* Background color on hover */
+    border-color: #dcccff;
+    /* Border color on hover */
+}
+
+.my-profile:hover .profile-icon,
+.purchase-history:hover .purchase-icon {
+    filter: brightness(0) invert(1);
+    /* Icon color on hover */
+}
+
+/* Active state for icons and text */
+.text:active {
+    color: #7400e0;
+}
+
+.profile-icon:active,
+.purchase-icon:active {
+    background-color: #7400e0;
+}

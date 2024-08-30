@@ -1,0 +1,118 @@
+.content {
+    display: flex;
+    align-items: center;
+    justify-content: start;
+    width: 1280px;
+    height: 630px;
+    margin: 10px;
+    padding: 0px;
+    border-radius: 10px;
+    background: #FFFFFF;
+    border: 2px solid #E5E7EB;
+
+    border-color: #E5E7EB;
+
+}
+
+
+.content1-box {
+    width: 300px;
+    height: 630px;
+    background-color: #FFFFFF;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content: start;
+    border-top-left-radius: 10px;
+    border-bottom-left-radius: 10px;
+    border: 2px solid #E5E7EB;
+
+
+}
+
+.content2-box {
+    flex: 1;
+    /* Fills remaining space in the content div */
+    height: 630px;
+    color: #ec1e1e;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;
+    border-left: none;
+    /* Ensures no border overlap */
+    border: 2px solid #E5E7EB;
+}
+
+
+
+/*
+
+.my-profile {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    width: 250px;
+    height: 50px;
+    margin: 20px;
+    background-color: #F5F5FF;
+
+    border-radius: 10px;
+    border: 2px solid #D9D9FF;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+    padding-left: 15px;
+    border-color: #E5E7EB;
+    color: #7400E0;
+
+}
+
+.my-profile.active,
+.my-profile:hover {
+    background-color: #DDCDFF;
+
+    border-color: #DDCDFF;
+
+    color: #7400E0;
+
+}
+
+.my-profile.active .profile-icon,
+.my-profile:hover .profile-icon {
+    filter: brightness(0) invert(1);
+
+}
+
+.purchase-history {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    width: 250px;
+    height: 50px;
+    margin: 20px;
+    background-color: #F5F5FF;
+
+    border-radius: 10px;
+    border: 2px solid #D9D9FF;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+    padding-left: 15px;
+    border-color: #E5E7EB;
+    color: #7400E0;
+
+}
+
+.purchase-history.active,
+.purchase-history:hover {
+    background-color: #DDCDFF;
+
+    border-color: #DDCDFF;
+    color: #7400E0;
+}
+
+
+.purchase-history.active .purchase-icon,
+.purchase-history:hover .purchase-icon {
+    filter: brightness(0) invert(1);
+} */
