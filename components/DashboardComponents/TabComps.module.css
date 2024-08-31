@@ -1,10 +1,12 @@
+/* Adjusted styles */
 .tabComps {
     position: relative; /* Set relative position for absolute positioning of button */
     display: flex;
     flex-direction: column;
     width: 220px;
     transition: width 0.3s ease; /* Smooth transition for collapse */
-    padding: 10px;
+    padding: 10px 0px 10px 10px;
+    
 }
 
 .collapsed {
@@ -14,11 +16,8 @@
 .collapseButton {
     position: absolute;
     top: 55px;
-    left: 103%; /* Position right outside the sidebar */
-    transform: translateX(-50%); /* Center the button horizontally */
-}
-
-.collapseButton button {
+    left: 101%; /* Position right outside the sidebar */
+    transform: translateX(-7px); /* Center the button horizontally */
     background: white;
     border: none;
     color: black;
@@ -26,57 +25,85 @@
     font-size: 1.5rem;
     width: 1.5rem;
     height: 1.5rem;
-    border-radius: 50%;
+    border-radius: 100px;
     box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
     display: flex;
     align-items: center;
     justify-content: center;
 }
 
-.theSymbol{
+.collapseIconLeft{
+    padding-left: -3px;
+    padding-right: 3px;
+}
+
+.collapseIconRight{
+    padding-left: 3px;
+    padding-right: -3px;
+}
+
+.theSymbol {
     display: flex;
     justify-content: center;
     align-items: center;
     position: absolute;
     border-radius: 5px;
-    margin-top: 18px;
+    margin-top: 11px;
+    margin-left: 5px;
     width: 2rem;
     height: 2rem;
     background: #3c2f40;
     color: white;
     font-weight: bolder;
+    transition: opacity 0.3s ease, transform 0.3s ease;
 }
 
-.phoduLogo{
+.phoduLogo {
     position: absolute;
     font-weight: bold;
-    margin-top: 20px;
+    margin-top: 15px;
+    margin-left: 9px;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    overflow: hidden;
 }
 
-.phodu{
+.phodu {
     color: white;
 }
 
-.club{
+.club {
     color: #e29ff5;
 }
 
-.divider{
-    margin-top: 4.1rem;
-    margin-bottom: 2rem;
+.tabComps:not(.collapsed) .theSymbol {
+    display: none;
 }
 
-/* Content transitions for smooth collapse */
+.collapsed .phoduLogo {
+    display: none;
+}
+
+.divider {
+    margin-top: 55px;
+    margin-bottom: 2rem;
+    margin-left: 5px;
+    /* Ensure the divider does not hide */
+    opacity: 1;
+    transition: opacity 0.3s ease;
+  
+}
+.actualDivider {
+    border: none;
+    border-top:2px solid #E2E5E91A;/* Set the divider line color to blue */
+}
+
+
+
+/* Content transitions for smooth collapse, without affecting divider */
 .logo,
 .divider,
 .tabs {
     transition: opacity 0.3s ease, transform 0.3s ease;
-}
-
-.collapsed .divider,
-.collapsed .tabs {
-    opacity: 0;
-    transform: translateX(-20px); /* Move the content slightly to the left when collapsed */
 }
 
 .DashboardButton,
@@ -89,6 +116,7 @@
     width: 100%;
     border-radius: 5px;
     margin-bottom: 10px;
+    margin-right: 10px;
     padding-top: 5px;
     padding-bottom: 5px;
     background: transparent;
@@ -97,12 +125,12 @@
     transition: background-color 0.15s ease;
 }
 
-.DashboardButton:hover,
-.LearnButton:hover,
-.CommunitiesButton:hover,
-.AnalyticsButton:hover,
-.SettingsButton:hover {
-    background: #7400e0;
+.DashboardButton:not(.active):hover,
+.LearnButton:not(.active):hover,
+.CommunitiesButton:not(.active):hover,
+.AnalyticsButton:not(.active):hover,
+.SettingsButton:not(.active):hover {
+    background: rgba(255, 255, 255, 0.1);
 }
 
 .dashboardIcon,
@@ -110,8 +138,10 @@
 .communitiesIcon,
 .analyticsIcon,
 .settingsIcon {
-    margin-left: 5px;
+    margin-left: 12px;
     margin-right: 10px;
+    padding-top: 4px;
+    padding-bottom: 4px;
 }
 
 .active {
@@ -120,4 +150,5 @@
 
 .text {
     color: white;
+    transition: opacity 0.3s ease, transform 0.3s ease;
 }
