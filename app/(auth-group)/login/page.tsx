@@ -1,18 +1,54 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import "./login.css";
 import PhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/style.css';
 import Image from 'next/image';
+import { getAuth, RecaptchaVerifier, signInWithPhoneNumber } from "firebase/auth";
 
 export default function Login_Page() {
     const [phone, setPhone] = useState('');
-    const router = useRouter(); // Initialize useRouter
+    const [isPhoneValid, setIsPhoneValid] = useState(false);
+    const [errorMessage, setErrorMessage] = useState('');
+    const [buttonColor, setButtonColor] = useState('#E39FF6'); // Default color
+    const router = useRouter();
+
+    useEffect(() => {
+        if (phone.length >= 10) {
+            setIsPhoneValid(true);
+            setErrorMessage('');
+            setButtonColor('purple');
+        } else {
+            setIsPhoneValid(false);
+            setButtonColor('#E39FF6');
+        }
+    }, [phone]);
 
     const handleSendVerificationCode = () => {
-        // Assuming you want to pass the phone number to the verification page
-        router.push(`/signup/verifyotp?phone=${encodeURIComponent(phone)}`);
+        if (!isPhoneValid) {
+            setErrorMessage('Please enter a valid phone number.');
+            return;
+        }
+
+        const auth = getAuth();
+        window.recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
+            'size': 'invisible',
+            'callback': (response: any) => {
+                // reCAPTCHA solved - will proceed with signInWithPhoneNumber
+            }
+        } );
+
+        const appVerifier = window.recaptchaVerifier;
+
+        signInWithPhoneNumber(auth, `+${phone}`, appVerifier)
+            .then((confirmationResult) => {
+                // SMS sent, redirect to verify OTP page
+                router.push(`/verifyotp?phone=${encodeURIComponent(phone)}`);
+            }).catch((error) => {
+                setErrorMessage("Failed to send verification code. Please try again.");
+                console.error("Error during phone sign-in:", error);
+            });
     };
 
     return (
@@ -20,10 +56,10 @@ export default function Login_Page() {
             <div className="login">
                 <div className="phodu_logo">
                     <Image
-                        src="/images/phoduclublogo.png" // Path to your image file
+                        src="/images/phoduclublogo.png"
                         alt="Description of image"
-                        width={150} // Desired width
-                        height={25} // Desired height
+                        width={150}
+                        height={25}
                     />
                 </div>
                 <div className="heading">
@@ -38,30 +74,33 @@ export default function Login_Page() {
                             <label htmlFor="Number">Phone Number</label>
                             <div className="inputflex">
                                 <PhoneInput
-                                    country={'in'} // Set the default country here
+                                    country={'in'}
                                     value={phone}
                                     onChange={(phone: any) => setPhone(phone)}
                                     inputProps={{
                                         name: 'phone',
                                         required: true,
                                         autoFocus: true,
-                                        placeholder: "+91 00000-00000" // Set placeholder here
+                                        placeholder: "+91 00000-00000"
                                     }}
                                     containerClass="phone-input-container"
                                     inputClass="form-input"
                                 />
                             </div>
+                            {errorMessage && <p className="error-message">{errorMessage}</p>}
                         </div>
+                        <div id="recaptcha-container"></div> {/* Recaptcha container */}
                         <div className="buttons">
                             <button
                                 type="button"
                                 className="button"
                                 onClick={handleSendVerificationCode}
+                                style={{ backgroundColor: buttonColor }}
+                                disabled={!isPhoneValid}
                             >
                                 Send Verification Code
                             </button>
                         </div>
-                        {/* <span className="page_to_sign"><p>Don't have an account?<a href="#">Sign Up</a></p></span> */}
                     </form>
                 </div>
                 <span className="page_to_login">
@@ -70,10 +109,10 @@ export default function Login_Page() {
             </div>
             <div className="motivation">
                 <Image
-                    src="/images/test1.png" // Path to your image file
+                    src="/images/test1.png"
                     alt="Description of image"
-                    width={10000} // Desired width
-                    height={10000} // Desired height
+                    width={10000}
+                    height={10000}
                 />
             </div>
         </div>

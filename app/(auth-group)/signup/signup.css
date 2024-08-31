@@ -79,8 +79,7 @@ p {
 .page_to_login {
     align-items: center;
     justify-content: center;
-    gap: 0px;
-    opacity: 1;
+    padding-bottom: 30px;
 }
 .phoneinputcontainer .forminput {
     width: 375px;

@@ -54,7 +54,7 @@ p, span, div {
     background: #f7f8fb;
     margin-top: 5px;
     margin-bottom: 5px;
-    margin-right: -3px;
+    margin-right: 5px;
     border-radius: 12px;
     position: relative; /* This allows the godRays to be positioned relative to this container */
     overflow: hidden;

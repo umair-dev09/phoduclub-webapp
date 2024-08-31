@@ -80,11 +80,16 @@ const InputHandler = ({ onOtpChange }: { onOtpChange: (otp: string) => void }) =
     );
 };
 
+function getRandomImageUrl(urls: string[]): string {
+    const randomIndex = Math.floor(Math.random() * urls.length);
+    return urls[randomIndex];
+}
 function VerifyOtp() {
     const router = useRouter();
     const searchParams = useSearchParams();
     const phoneNumber = searchParams.get('phone') || '';
-    const name = searchParams.get('name') || '';
+    const firstName = searchParams.get('firstName') || '';
+    const lastName = searchParams.get('lastName') || '';
     const email = searchParams.get('email') || '';
     const [otp, setOtp] = useState('');
     const [counter, setCounter] = useState(60);
@@ -128,14 +133,32 @@ function VerifyOtp() {
       try {
           const userCredential = await signInWithCredential(auth, credential);
           const user = userCredential.user;
-          const userId = user.uid;
-  
+          const authId = user.uid;
+          const firstNamePart = firstName.slice(0, 4).toLowerCase();
+          const lastNamePart = lastName.slice(0, 4).toLowerCase();
+          const phoneNumberPart = phoneNumber.slice(-4);
+          const userId = `${firstNamePart}${lastNamePart}${phoneNumberPart}`;
+          const imageUrls: string[] = [
+            "https://firebasestorage.googleapis.com/v0/b/phodu-club.appspot.com/o/Default%20Avatar%2Favatar1.png?alt=media&token=f794198a-0d5b-4542-a7bd-8c8586e4ef85",
+            "https://firebasestorage.googleapis.com/v0/b/phodu-club.appspot.com/o/Default%20Avatar%2Favatar2.png?alt=media&token=003f3358-5134-49e7-a414-edd89366b5fb",
+            "https://firebasestorage.googleapis.com/v0/b/phodu-club.appspot.com/o/Default%20Avatar%2Favatar3.png?alt=media&token=35414381-9ac0-4742-8661-f4f315a45cc5",
+            "https://firebasestorage.googleapis.com/v0/b/phodu-club.appspot.com/o/Default%20Avatar%2Favatar4.png?alt=media&token=534c8508-01f3-477f-ab71-70c08ce9474f",
+            "https://firebasestorage.googleapis.com/v0/b/phodu-club.appspot.com/o/Default%20Avatar%2Favatar5.png?alt=media&token=57379dbd-e6d2-42de-a628-37c03621dc23",
+            "https://firebasestorage.googleapis.com/v0/b/phodu-club.appspot.com/o/Default%20Avatar%2Favatar6.png?alt=media&token=dac74da1-df0e-4577-9ba5-3fd37a9c1506",
+            "https://firebasestorage.googleapis.com/v0/b/phodu-club.appspot.com/o/Default%20Avatar%2Favatar7.png?alt=media&token=2469737e-d267-48ac-b8de-cc472adf169e",
+            "https://firebasestorage.googleapis.com/v0/b/phodu-club.appspot.com/o/Default%20Avatar%2Favatar8.png?alt=media&token=40cc97cf-aa18-43df-8a5a-254e0a92c603"
+          ]
+
+          const profilePic = getRandomImageUrl(imageUrls);
+
           // Store user data in Firestore
           await setDoc(doc(db, "users", userId), {
-              name: name,
+              name: firstName + " " + lastName,
               phone: phoneNumber,
               email: email,
-              userId: userId
+              authId: authId,
+              userId: userId,
+              profilePic: profilePic
           });
   
           toast.success("Correct OTP! You are logged in.");
