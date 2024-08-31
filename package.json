@@ -12,7 +12,7 @@
     "clsx": "^2.1.1",
     "firebase": "^10.13.0",
     "geist": "^1.2.1",
-    "next": "latest",
+    "next": "^14.2.7",
     "otpless-next-js-auth-sdk": "^1.0.10",
     "postcss": "8.4.33",
     "react": "18.2.0",

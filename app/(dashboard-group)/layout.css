@@ -6,27 +6,31 @@
     flex: 1;
 }
 
-.side_bar {
-    position: relative;
+/* .side_bar {
+    display: flex;
     transition: width 0.5s ease-in-out;
-    /* Updated transition duration for smoothness */
-}
-
-.tabs {
     width: 220px;
+    padding: 10px 10px 0px 10px;
+    /* padding-bottom: 10px;
+    padding-left: 10px;
+    padding-right: 10px; */
+    /* Updated transition duration for smoothness */
+/* }  */
+
+/* .tabs {
     transition: width 0.5s ease-in-out, padding 0.5s ease-in-out, opacity 0.5s ease-in-out;
     /* Updated duration */
-    margin-top: 0px;
-}
-
+    /* margin-top: 0px;
+}  */
+/* 
 .logo {
     display: flex;
     flex-direction: row;
     align-items: center;
     transition: width 0.5s ease-in-out, opacity 0.5s ease-in-out;
-}
+} */
 
-.phodu-logo {
+/* .phodu-logo {
     padding-left: 12px;
     font-size: large;
 }
@@ -37,14 +41,14 @@
     align-items: center;
     justify-content: center;
     cursor: pointer;
-}
+} */
 
-.phodu-icon {
+/* .phodu-icon {
     margin-top: -15px;
     width: 60px;
-}
+} */
 
-.phodu {
+/* .phodu {
     font-weight: bold;
     overflow: hidden;
 }
@@ -95,7 +99,7 @@
     color: black;
     background: #FFFFFF;
     /* font-weight: 400; */
-    padding-left: -3px;
+    /* padding-left: -3px;
     padding-right: 3px;
     padding-top: -3px;
     padding-bottom: 3px;
@@ -105,9 +109,9 @@
 .divider-line {
     border: 1px solid #292929;
 
-}
+}  */
 
-.dashboard,
+/* .dashboard,
 .learn,
 .communities,
 .analytics,
@@ -144,10 +148,10 @@
     text-align: center;
     transition: background-color 0.35s ease, transform 0.35s ease;
     /* Transition for hover effects */
-}
+/* } */
 
 /* Hover effect */
-.dashboard:hover,
+/* .dashboard:hover,
 .learn:hover,
 .communities:hover,
 .analytics:hover,
@@ -155,9 +159,9 @@
     background-color: #4a4a4a;
     transform: scale(1.05);
     transition: 0.15s;
-}
+} */
 
-.tabs div.active {
+/* .tabs div.active {
     background-color: #8501FF;
     color: white;
 }
@@ -166,7 +170,7 @@
     display: inline-block;
     transition: opacity 0.5s ease-in-out;
     /* Smoother transition for label */
-}
+/* }   */
 
 .contents {
     width: 100%;
@@ -211,7 +215,7 @@
 }
 
 .notify,
-.Question Mark {
+.question-mark {
     width: 50px;
     align-items: right;
 }

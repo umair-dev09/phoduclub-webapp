@@ -1,11 +1,7 @@
 .car {
-
     background-color: rgb(170, 15, 205);
     display: flex;
     justify-content: center;
     align-items: center;
     margin: 10%;
-
-
-
 }
