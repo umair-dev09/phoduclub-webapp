@@ -1,7 +1,6 @@
 
 import Image from 'next/image';
-import Dropdown from '../../../../components/Dropdown';
-import styles from '../styles/Dropdown.module.css';
+import Dropdown from '@/components/AuthComponents/OneLastStepComponents/Dropdown';
 import './lastStep.css';
 
 export default function OneLastStep() {

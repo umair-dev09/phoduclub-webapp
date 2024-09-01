@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import Select, { MultiValue, SingleValue } from 'react-select';
 import { useRouter, useSearchParams } from "next/navigation";
-import { auth, db } from '../firebase'; // Adjust path as needed
+import { auth, db } from '../../../firebase'; // Adjust path as needed
 import { getFirestore, doc, updateDoc } from "firebase/firestore"; // Import Firestore functions
 import { toast } from "react-toastify";
 import styles from './Dropdown.module.css'; // Ensure you import the CSS module

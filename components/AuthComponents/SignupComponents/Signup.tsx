@@ -13,20 +13,25 @@ import styles from './Singnup.module.css'; // Ensure you import the CSS module
 function Signup() {
     const router = useRouter();
     const [phone, setPhone] = useState('');
-    const [username, setUsername] = useState('');
+    const [firstName, setFirstname] = useState('');
+    const [lastName, setLastname] = useState('');
     const [email, setEmail] = useState('');
     const [termsAccepted, setTermsAccepted] = useState(false);
-    const [errors, setErrors] = useState({ username: '', email: '', phone: '', terms: '' });
+    const [errors, setErrors] = useState({ firstName: '',lastName: '', email: '', phone: '', terms: '' });
     const [isSubmitted, setIsSubmitted] = useState(false);
     const [isLoading, setIsLoading] = useState(false); // Loading state
 
     const validateForm = () => {
         let formIsValid = true;
-        let newErrors = { username: '', email: '', phone: '', terms: '' };
+        let newErrors = { firstName: '',lastName: '', email: '', phone: '', terms: '' };
 
-        if (username.trim() === '') {
+        if (firstName.trim() === '') {
             formIsValid = false;
-            newErrors.username = 'Please enter your name';
+            newErrors.firstName = 'Please enter your First Name';
+        }
+        if (lastName.trim() === '') {
+            formIsValid = false;
+            newErrors.lastName = 'Please enter your Last Name';
         }
         if (email.trim() === '') {
             formIsValid = false;
@@ -51,14 +56,22 @@ function Signup() {
     const handleInputChange = (field: string, value: string) => {
         let newErrors = { ...errors };
         switch (field) {
-            case 'username':
-                setUsername(value);
+            case 'firstName':
+                setFirstname(value);
                 if (value.trim() === '') {
-                    newErrors.username = 'Please enter your name';
+                    newErrors.firstName = 'Please enter your First Name';
                 } else {
-                    newErrors.username = '';
+                    newErrors.firstName = '';
                 }
                 break;
+            case 'lastName':
+                 setLastname(value);
+                if (value.trim() === '') {
+                    newErrors.lastName = 'Please enter your Last Name';
+                 } else {
+                   newErrors.lastName = '';
+                 }
+                break;    
             case 'email':
                 setEmail(value);
                 if (value.trim() === '') {
@@ -107,7 +120,7 @@ function Signup() {
                 toast.success("OTP sent successfully!");
                 setIsLoading(false); // Disable loading indicator
                 // Navigate to verify OTP page with phone number as query parameter
-                router.push(`/signup/verifyotp?phone=${formattedPhone}&name=${encodeURIComponent(username)}&email=${encodeURIComponent(email)}`);
+                router.push(`/verifyotp?phone=${formattedPhone}&firstName=${encodeURIComponent(firstName)}&lastName=${encodeURIComponent(lastName)}&email=${encodeURIComponent(email)}`);
             
             } catch (error: any) {
                 console.error("Error sending OTP: ", error);
@@ -127,7 +140,7 @@ function Signup() {
     };
 
     const isFormValid = () => {
-        return username.trim() !== '' && email.trim() !== '' && /\S+@\S+\.\S+/.test(email) && phone.trim() !== '' && phone.length >= 10 && termsAccepted;
+        return firstName.trim() !== '' && lastName.trim() !== '' && email.trim() !== '' && /\S+@\S+\.\S+/.test(email) && phone.trim() !== '' && phone.length >= 10 && termsAccepted;
     };
 
     return (
@@ -147,18 +160,33 @@ function Signup() {
                 <p>Make yourself prepared, before time ✌</p>
             </div>
             <form className={styles.form} onSubmit={handleSubmit}>
-                <div className={styles.inputdiv}>
-                    <label htmlFor="username">Name</label>
-                    <div>
+                <div>
+                    <label>Name</label>
+                    <div className={styles.nameDiv}>
+                        <div className={styles.nameLayout}>
                         <input
                             type="text"
-                            id='username'
-                            placeholder='Username'
-                            value={username}
-                            onChange={(e) => handleInputChange('username', e.target.value)}
-                            className={styles.input}
+                            id='firstName'
+                            placeholder='First Name'
+                            value={firstName}
+                            onChange={(e) => handleInputChange('firstName', e.target.value)}
+                            className={styles.firstNameInput}
                         />
-                        {isSubmitted && errors.username && <div id="username_error" className={styles.error}>{errors.username}</div>}
+                        {isSubmitted && errors.firstName && <div id="firstName_error" className={styles.error}>{errors.firstName}</div>}
+                        </div>
+
+                        <div className={styles.nameLayout}>
+                        <input
+                            type="text"
+                            id='lastName'
+                            placeholder='Last Name'
+                            value={lastName}
+                            onChange={(e) => handleInputChange('lastName', e.target.value)}
+                            className={styles.lastNameInput}
+                        />
+                        {isSubmitted && errors.lastName && <div id="username_error" className={styles.error}>{errors.lastName}</div>}
+                        </div>
+                       
                     </div>
                 </div>
                 <div >
@@ -212,10 +240,9 @@ function Signup() {
                         className={styles.button}
                         type="submit"
                         style={{
-                            backgroundColor: isFormValid() ? '#7400e0' : '#d4d4d4',
-                            cursor: isFormValid() ? 'pointer' : 'not-allowed',
+                            backgroundColor: isFormValid() ? '#7400e0' : '#E39FF6',
+                            cursor: 'pointer',
                         }}
-                        disabled={!isFormValid()}
                     >
                         Send verification code
                     </button>
