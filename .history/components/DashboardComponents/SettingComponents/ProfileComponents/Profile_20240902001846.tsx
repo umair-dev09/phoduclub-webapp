@@ -1,0 +1,211 @@
+"use client";
+
+import styles from './Profile.module.css';
+import Image from 'next/image';
+import { useState } from 'react';  // Import useState hook
+import Target from '@/components/DashboardComponents/SettingComponents/ProfileComponents/TargetExamComponents/target';
+
+function Profile() {
+    const [isEditing, setIsEditing] = useState(false); // State to manage edit mode
+
+    const handleEditProfile = () => {
+        setIsEditing(!isEditing); // Toggle edit mode
+    };
+
+    return (
+        <div className={styles.container}>
+            {/* --------------------------------------------------------------------------------------------------------------------- */}
+
+            <div className={styles.info}>
+                <div className={styles.nameSection}>
+                    <div className={styles.nameInfo}>
+                        <div className={styles.dp}>
+                            DP
+                        </div>
+                        <div className={styles.nameId}>
+                            {/* Name and ID */}
+                            {!isEditing && (
+                                <div className={styles.name}>
+                                    <p>John Smith</p>
+                                </div>
+                            )}
+                            {!isEditing && (
+                                <div className={`${styles.actualId} ${isEditing ? styles.hidden : ''}`}>
+                                    <div><p>john#9843</p></div>
+                                    <div className={styles.copyButtons}>
+                                        <div className={styles.copyIcon}><button>CP</button></div>
+                                    </div>
+                                </div>
+                            )}
+
+                            {/* Conditionally show Change and Remove buttons */}
+                            {isEditing && (
+                                <div className={styles.changeRemove}>
+                                    <button className={styles.changeButton}>Change</button>
+                                    <button className={styles.removeButton}>Remove</button>
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                    <div className={styles.editProfile}>
+                        {!isEditing && (  // Conditionally render the Edit Profile button
+                            <button className={styles.editProfileButton} onClick={handleEditProfile}>
+                                Edit Profile
+                            </button>
+                        )}
+                    </div>
+                </div>
+                <div className={styles.examSection}>
+                    <div className={styles.enrolledExams}> <Target /></div>
+                    {isEditing && (
+                        <div className={styles.updateIcon}><button className={styles.updateIconButton}>Update</button></div>
+                    )}
+                </div>
+            </div>
+
+            {/* --------------------------------------------------------------------------------------------------------------------- */}
+
+            <div className={styles.divider}><hr /></div>
+
+            <div className={styles.name}>
+                <div className={styles.label}>
+                    <div className={styles.icon}>
+                        <Image
+                            className={styles.actualIcon}
+                            src="/icons/demo.png"
+                            alt="demo-icon"
+                            height={24}
+                            width={24}
+                        />
+                    </div>
+                    <div className={styles.UserDetail}>
+                        <label htmlFor="Name">Name</label>
+                        {isEditing && (
+                            <input
+                                id="input"
+                                type="text"
+                                className={styles.input}
+                            />
+                        )}
+                    </div>
+                </div>
+                {!isEditing && (
+                    <span className={styles.username}>Jabir Ali</span>
+                )}
+                {isEditing && (
+                    <div className={styles.updateName}><button className={styles.updateNameButton}>Update</button></div>
+                )}
+            </div>
+
+            <div className={styles.divider}><hr /></div>
+
+            <div className={styles.name}>
+                <div className={styles.label}>
+                    <div className={styles.icon}>
+                        <Image
+                            className={styles.actualIcon}
+                            src="/icons/demo.png"
+                            alt="demo-icon"
+                            height={24}
+                            width={24}
+                        />
+                    </div>
+                    <div className={styles.UserDetail}>
+                        <label htmlFor="email">Email</label>
+                        {isEditing && (
+                            <input
+                                id="input"
+                                type="text"
+                                className={styles.input}
+
+                            />
+                        )}
+                    </div>
+                </div>
+                {!isEditing && (
+                    <span className={styles.username}>jabir@gmail.com</span>
+                )}
+                {isEditing && (
+                    <div className={styles.updateEmail}><button className={styles.updateEmailButton}>Update</button></div>
+                )}
+            </div>
+            <div className={styles.divider}><hr /></div>
+
+            <div className={styles.name}>
+                <div className={styles.label}>
+                    <div className={styles.icon}>
+                        <Image
+                            className={styles.actualIcon}
+                            src="/icons/demo.png"
+                            alt="demo-icon"
+                            height={24}
+                            width={24}
+                        />
+                    </div>
+                    <div className={styles.UserDetail}>
+                        <label htmlFor="Phone">Phone Number</label>
+                        {isEditing && (
+                            <input
+                                id="input"
+                                type="numbers"
+                                className={styles.input}
+                            />
+                        )}
+                    </div>
+                </div>
+                {!isEditing && (
+                    <span className={styles.username}>+91 7898525987</span>
+                )}
+                {isEditing && (
+                    <div className={styles.updateMob}><button className={styles.updateMobButton}>Update</button></div>
+                )}
+            </div>
+            <div className={styles.divider}><hr /></div>
+
+            <div className={styles.name}>
+                <div className={styles.label}>
+                    <div className={styles.icon}>
+                        <Image
+                            className={styles.actualIcon}
+                            src="/icons/demo.png"
+                            alt="demo-icon"
+                            height={24}
+                            width={24}
+                        />
+                    </div>
+                    <div className={styles.UserDetail}>
+                        {!isEditing && (
+                            <label htmlFor="Year">Target Year</label>
+                        )}
+                        {isEditing && (
+                            <input
+                                id="input"
+                                type="numbers"
+                                className={styles.input}
+                            />
+                        )}
+                    </div>
+                </div>
+                <span className={styles.username}>2024</span>
+                {isEditing && (
+                    <div className={styles.updateYear}><button className={styles.updateYearButton}>Update</button></div>
+                )}
+            </div>
+
+            {/* --------------------------------------------------------------------------------------------------------------------- */}
+
+            {/* Conditionally render the base section based on isEditing state */}
+            {isEditing && (
+                <div className={styles.base}>
+                    <div className={styles.insideBase}>
+                        <div className={styles.cancel}><button className={styles.cancleButton}>Cancel</button></div>
+                        <div className={styles.saveChanges}><button className={styles.saveChangesButton}>Save Changes</button></div>
+                    </div>
+                </div>
+            )}
+
+        </div >
+    );
+}
+
+export default Profile;

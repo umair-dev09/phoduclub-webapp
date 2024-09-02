@@ -1,0 +1,22 @@
+import "./profile.css";
+import Image from "next/image";
+
+export default function MyProfile() {
+    return (
+        <div className="container">
+            <div className="heading">
+                <Image
+                    className="profile-icon"
+                    src="/icons/my-profile-icon.png"
+                    width={32}
+                    height={32}
+                    alt="profile-icon"
+                />
+                <span id="profile">My Profile</span>
+
+            </div>
+            <div className="divider"><hr className="dividerLine" /></div>
+            <div className="content">this is profile page</div>
+        </div>
+    );
+}

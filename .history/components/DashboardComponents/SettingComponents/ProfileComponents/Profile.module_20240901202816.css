@@ -1,0 +1,174 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    margin: 20px 25px 20px 25px;
+    overflow-y: scroll;
+}
+
+.info {
+    display: flex;
+    flex-direction: column;
+}
+
+.nameSection {
+    display: flex;
+    flex-direction: row;
+}
+
+.nameInfo {
+    display: flex;
+    flex-direction: row;
+    flex: 0.5;
+    margin-bottom: 10px;
+}
+
+.name {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: left;
+}
+
+.changeRemove {
+    position: relative;
+    /* Ensure the container is positioned relative to the document flow */
+    display: flex;
+    flex: 1;
+    align-items: center;
+    flex-direction: row;
+}
+
+.dp {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+.change {
+    margin-right: 10px;
+}
+
+.changeButton {
+    position: absolute;
+    /* Remains absolute */
+    right: 60px;
+    /* Adjust to keep it visually in place */
+    top: -5px;
+    /* Adjust as needed */
+    border: 1px solid black;
+    border-radius: 5px;
+    padding: 5px;
+}
+
+.removeButton {
+    position: absolute;
+    /* Remains absolute */
+    left: 10px;
+    /* Adjust to keep it visually in place */
+    top: -5px;
+    /* Adjust as needed */
+    border: 1px solid black;
+    border-radius: 5px;
+    padding: 5px;
+}
+
+.sizeRecommendation {
+    position: absolute;
+    /* Remains absolute */
+    bottom: 0px;
+    /* Adjust based on current layout */
+    left: 0;
+    /* Adjust based on current layout */
+}
+
+.editProfile {
+    display: flex;
+    align-items: start;
+    justify-content: right;
+    flex: 0.5;
+}
+
+.editProfileButton {
+    border: 1px solid black;
+    border-radius: 5px;
+    padding: 5px;
+}
+
+.id {
+    display: flex;
+    flex-direction: row;
+}
+
+.copyButtons {
+    display: flex;
+    flex-direction: row;
+}
+
+.examSection {
+    display: flex;
+    flex-direction: row;
+}
+
+.enrolledExams {
+    display: flex;
+    flex: 0.5;
+}
+
+.updateIcon {
+    display: flex;
+    justify-content: right;
+    flex: 0.5;
+}
+
+.updateIconButton {
+    border: 1px solid black;
+    border-radius: 5px;
+    padding: 5px;
+}
+
+.divider {
+    margin-top: 15px;
+    margin-bottom: 15px;
+}
+
+.name {
+    display: flex;
+    flex-direction: row;
+}
+
+.label {
+    display: flex;
+    flex: 0.5;
+
+
+}
+
+.username {
+    display: flex;
+    justify-content: right;
+    flex: 0.5;
+}
+
+.icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 15px;
+}
+
+.UserDetail {
+    display: flex;
+    flex-direction: column;
+}
+
+.base {
+    display: flex;
+    flex-direction: row;
+    align-items: end;
+    justify-content: flex-end;
+    margin: 10px;
+    padding-right: 50px;
+}

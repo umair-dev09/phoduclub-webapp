@@ -1,0 +1,41 @@
+.ExamType {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    padding: 10px;
+}
+
+.button {
+    display: flex;
+    align-items: center;
+    padding: 5px 10px;
+    border: 1px solid #d1d1d1;
+    border-radius: 20px;
+    background-color: #fff;
+    font-size: 14px;
+    color: #000;
+    cursor: pointer;
+}
+
+.dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    margin-right: 5px;
+}
+
+.red {
+    background-color: #f44336;
+}
+
+.orange {
+    background-color: #ff9800;
+}
+
+.green {
+    background-color: #4caf50;
+}
+
+.blue {
+    background-color: #2196f3;
+}

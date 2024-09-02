@@ -1,0 +1,112 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+
+.heading {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    height: 60px;
+    max-height: 60px;
+    min-height: 60px;
+    border-radius: 0px 10px 0px 0px;
+    font-weight: 600;
+}
+
+
+.icon-text {
+    display: flex;
+    align-items: center;
+
+    margin: 30px;
+}
+
+.profile-icon {
+    margin-right: 15px;
+
+}
+
+#profile {
+    color: #1D2939;
+
+}
+
+
+
+.divider {
+    /* margin-top: 5px; */
+    margin-left: 25px;
+    margin-right: 25px;
+}
+
+.dividerLine {
+    border-top: 1px solid #EAECF0;
+}
+
+thead {
+
+    background-color: #f1f4f9;
+
+}
+
+thead th {
+    text-align: left;
+    padding: 18px;
+    font-weight: 600;
+    color: #667085;
+
+}
+
+.head-table {
+    margin: 30px;
+
+}
+
+table {
+    border-collapse: separate;
+    /* Ensure border-radius works */
+    border-spacing: 0;
+    /* Prevent gaps between cells */
+    border-radius: 10px 10px 0 0;
+    /* Only round the top-left and top-right corners */
+    overflow: hidden;
+    /* Ensure rounded corners are visible */
+    width: 100%;
+    table-layout: fixed;
+}
+
+table th:first-child,
+table td:first-child {
+    width: 40%;
+    /* Items column */
+}
+
+table th:nth-child(2),
+table td:nth-child(2) {
+    width: 15%;
+    /* Date column */
+}
+
+table th:nth-child(3),
+table td:nth-child(3) {
+    width: 15%;
+    /* Price column */
+}
+
+table th:nth-child(4),
+table td:nth-child(4) {
+    width: 20%;
+    /* Payment Type column */
+}
+
+table th:last-child,
+table td:last-child {
+    width: 12%;
+    /* Actions column */
+}
+
+.content {
+    display: flex;
+}

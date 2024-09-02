@@ -1,0 +1,54 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    margin: 20px 25px 20px 25px;
+}
+
+.info {
+    display: flex;
+    flex-direction: column;
+    background: red;
+}
+
+.nameSection {
+    display: flex;
+    flex-direction: row;
+}
+
+.nameInfo {
+    display: flex;
+    flex-direction: row;
+}
+
+.examSection {
+    display: flex;
+    flex-direction: row;
+}
+
+.divider {
+    margin-top: 50px;
+}
+
+.dividerLine {
+    color: blue;
+}
+
+
+
+.detailitem {
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid #ececec;
+    padding: 15px 0;
+    margin: 14px;
+
+}
+
+.Name,
+.Email,
+.Phone,
+.year {
+    color: #4a4a4a;
+    font-weight: bold;
+}
