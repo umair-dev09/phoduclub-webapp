@@ -5,6 +5,7 @@ import "./login.css";
 import PhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/style.css';
 import Image from 'next/image';
+import { auth } from '../../../firebase'; // Adjust path as needed
 import { getAuth, RecaptchaVerifier, signInWithPhoneNumber } from "firebase/auth";
 
 export default function Login_Page() {
@@ -31,7 +32,6 @@ export default function Login_Page() {
             return;
         }
 
-        const auth = getAuth();
         window.recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
             'size': 'invisible',
             'callback': (response: any) => {

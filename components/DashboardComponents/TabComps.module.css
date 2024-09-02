@@ -15,32 +15,67 @@
 
 .collapseButton {
     position: absolute;
-    top: 55px;
-    left: 101%; /* Position right outside the sidebar */
+    top: 50px;
+    left: 96%; /* Position right outside the sidebar */
     transform: translateX(-7px); /* Center the button horizontally */
     background: white;
-    border: none;
+    border: 1px solid #eaecf0;
     color: black;
     cursor: pointer;
     font-size: 1.5rem;
-    width: 1.5rem;
-    height: 1.5rem;
+    width: 32px;
+    height: 32px;
     border-radius: 100px;
-    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
-    display: flex;
     align-items: center;
     justify-content: center;
+    display: flex;
 }
 
-.collapseIconLeft{
-    padding-left: -3px;
-    padding-right: 3px;
+
+.headerButton{
+    width: 32px;
+    height: 32px;
+    border-radius: 100px;
+    background-color: #f7f8fa;
+    border: 1px solid #EAECF0;
+    align-items: center;
+    justify-content: center;
+    display: flex;
 }
+.help{
+    margin-right: 8px;
+}
+.headtab {
+    display: flex;
+    width: 100%;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    padding: 0 20px;
+    background: #FFFFFF;
+    height: 60px;
+    border-radius: 5px 5px 0 0;
+    margin: auto;
+    border-width: 2px;
+    border-bottom-color: #e9ebf0;
+    border-top-color: #FFFFFF;
+    border-right-color: #FFFFFF;
+    border-left-color: #FFFFFF;
+}
+
 
 .collapseIconRight{
-    padding-left: 3px;
-    padding-right: -3px;
+    width: 10px;
+    height: 12px;
+    margin-right: 1px;
 }
+.collapseIconLeft{
+    width: 10px;
+    height: 12px;
+margin-left: -4px;
+}
+
+
 
 .theSymbol {
     display: flex;

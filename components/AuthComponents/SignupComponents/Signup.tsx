@@ -5,13 +5,25 @@ import PhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/style.css';
 import Image from 'next/image';
 import { auth } from "../../../firebase"; // Adjust the path according to your Firebase config
-import { RecaptchaVerifier, signInWithPhoneNumber } from "firebase/auth";
+import { RecaptchaVerifier, signInWithPhoneNumber,onAuthStateChanged } from "firebase/auth";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import styles from './Singnup.module.css'; // Ensure you import the CSS module
+import { useAuth } from "@/components/authCheck";
+import { useEffect } from "react";
 
 function Signup() {
     const router = useRouter();
+    useEffect(() => {
+         onAuthStateChanged(auth, (user) => {
+            if (user) {
+                // If no user is logged in, redirect to the login page
+                router.push("/welcome");
+            }
+        });
+
+    }, [router]);
+
     const [phone, setPhone] = useState('');
     const [firstName, setFirstname] = useState('');
     const [lastName, setLastname] = useState('');
@@ -20,6 +32,7 @@ function Signup() {
     const [errors, setErrors] = useState({ firstName: '',lastName: '', email: '', phone: '', terms: '' });
     const [isSubmitted, setIsSubmitted] = useState(false);
     const [isLoading, setIsLoading] = useState(false); // Loading state
+
 
     const validateForm = () => {
         let formIsValid = true;

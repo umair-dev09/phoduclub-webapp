@@ -2,8 +2,8 @@
 import { useRouter, useSearchParams } from "next/navigation";
 import { useState, useEffect, useRef } from "react";
 import { auth } from '../../../firebase'; // Adjust path as needed
-import { getAuth, PhoneAuthProvider, signInWithCredential } from "firebase/auth";
-import { getFirestore, doc, setDoc } from "firebase/firestore"; // Import Firestore functions
+import { getAuth, PhoneAuthProvider, signInWithCredential,onAuthStateChanged } from "firebase/auth";
+import { getFirestore, doc, getDoc,setDoc, query, where, getDocs, collection } from "firebase/firestore"; // Import Firestore functions
 import { toast } from "react-toastify";
 import Image from 'next/image';
 import styles from './VerifyOtp.module.css'; // Ensure you import the CSS module
@@ -86,6 +86,15 @@ function getRandomImageUrl(urls: string[]): string {
 }
 function VerifyOtp() {
     const router = useRouter();
+    useEffect(() => {
+        onAuthStateChanged(auth, (user) => {
+           if (user) {
+               // If no user is logged in, redirect to the login page
+               router.push("/welcome");
+           }
+       });
+
+   }, [router]);
     const searchParams = useSearchParams();
     const phoneNumber = searchParams.get('phone') || '';
     const firstName = searchParams.get('firstName') || '';
@@ -134,6 +143,18 @@ function VerifyOtp() {
           const userCredential = await signInWithCredential(auth, credential);
           const user = userCredential.user;
           const authId = user.uid;
+
+          const usersRef = collection(db, "users");
+          const q = query(usersRef, where("authId", "==", authId));
+          const querySnapshot = await getDocs(q);
+  
+          if (!querySnapshot.empty) {
+              // User is already registered, redirect to welcome page
+              toast.success("User already registered, redirecting to welcome page.");
+              router.push("/welcome");
+          }
+
+          else{
           const firstNamePart = firstName.slice(0, 4).toLowerCase();
           const lastNamePart = lastName.slice(0, 4).toLowerCase();
           const phoneNumberPart = phoneNumber.slice(-4);
@@ -165,6 +186,7 @@ function VerifyOtp() {
   
           // Redirect to /signup/onelaststep with userId as a query parameter
           router.push(`/signup/onelaststep?userId=${userId}`);
+        }
       } catch (error) {
           console.error("Error verifying OTP:", error);
           toast.error("Incorrect OTP. Please try again.");

@@ -23,9 +23,9 @@ function TabComps() {
 
     return (
         <div className={`${styles.tabComps} ${isCollapsed ? styles.collapsed : ''}`}>
-            <div className={styles.collapseButton}>
-                <button className={styles.collapseIcon} onClick={handleCollapseClick}>
-                    {isCollapsed ? <Image  className={styles.collapseIconRight} src="/icons/collapseIconRight.png" width={10} height={10}/> : <Image  className={styles.collapseIconLeft} src="/icons/Vector (3).png" width={10} height={10}/>}
+            <div>
+                <button className={styles.collapseButton} onClick={handleCollapseClick}>
+                    {isCollapsed ? <Image  className={styles.collapseIconRight} alt="1" src="/icons/collapseIconRight.png" width={10} height={10}/> : <Image  className={styles.collapseIconLeft} alt="2"src="/icons/Vector (3).png" width={10} height={10}/>}
                 </button>
             </div>
                     <div className={styles.logo}>
