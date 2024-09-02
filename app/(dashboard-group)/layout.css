@@ -23,8 +23,6 @@
     min-height: 336px;
 }
 
-<<<<<<< HEAD
-=======
 .headtab {
     display: flex;
     width: 100%;
@@ -42,7 +40,6 @@
     border-right-color: #FFFFFF;
     border-left-color: #FFFFFF;
 }
->>>>>>> 93f1031b5fb1045ed2c506e6cb10375362b26c3d
 
 .greeting {
     width: 100%;

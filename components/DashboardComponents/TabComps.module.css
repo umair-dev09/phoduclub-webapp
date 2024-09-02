@@ -18,17 +18,11 @@
 
 .collapseButton {
     position: absolute;
-<<<<<<< HEAD
-    top: 50px;
-    left: 96%; /* Position right outside the sidebar */
-    transform: translateX(-7px); /* Center the button horizontally */
-=======
     top: 55px;
     left: 101%;
     /* Position right outside the sidebar */
     transform: translateX(-7px);
     /* Center the button horizontally */
->>>>>>> 93f1031b5fb1045ed2c506e6cb10375362b26c3d
     background: white;
     border: 1px solid #eaecf0;
     color: black;
@@ -37,33 +31,29 @@
     width: 32px;
     height: 32px;
     border-radius: 100px;
-<<<<<<< HEAD
-=======
     border: 1.5px solid #E9EBF0;
     display: flex;
->>>>>>> 93f1031b5fb1045ed2c506e6cb10375362b26c3d
     align-items: center;
     justify-content: center;
     display: flex;
 }
 
-<<<<<<< HEAD
+.collapseIconLeft {
+    padding-left: -3px;
+    padding-right: 3px;
+}
 
 .headerButton{
     width: 32px;
     height: 32px;
+    background-color: #E9EBF0;
+    border: 1px solid #eaecf0;
     border-radius: 100px;
-    background-color: #f7f8fa;
-    border: 1px solid #EAECF0;
+    display: flex;
     align-items: center;
     justify-content: center;
-    display: flex;
-=======
-.collapseIconLeft {
-    padding-left: -3px;
-    padding-right: 3px;
->>>>>>> 93f1031b5fb1045ed2c506e6cb10375362b26c3d
 }
+
 .help{
     margin-right: 8px;
 }
@@ -86,16 +76,9 @@
 }
 
 
-<<<<<<< HEAD
-.collapseIconRight{
-    width: 10px;
-    height: 12px;
-    margin-right: 1px;
-=======
 .collapseIconRight {
     padding-left: 3px;
     padding-right: -3px;
->>>>>>> 93f1031b5fb1045ed2c506e6cb10375362b26c3d
 }
 .collapseIconLeft{
     width: 10px;
@@ -205,8 +188,8 @@ margin-left: -4px;
 .settingsIcon {
     margin-left: 12px;
     margin-right: 12px;
-    padding-top: 4px;
-    padding-bottom: 4px;
+    padding-top: 2px;
+    padding-bottom: 2px;
 }
 
 .active {

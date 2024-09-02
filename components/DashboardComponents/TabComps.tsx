@@ -4,7 +4,7 @@ import styles from './TabComps.module.css';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
-
+import { Icon } from '@/components/Icon';
 function TabComps() {
     const router = useRouter();
     const [isCollapsed, setIsCollapsed] = useState(false);
@@ -25,11 +25,7 @@ function TabComps() {
         <div className={`${styles.tabComps} ${isCollapsed ? styles.collapsed : ''}`}>
             <div>
                 <button className={styles.collapseButton} onClick={handleCollapseClick}>
-<<<<<<< HEAD
-                    {isCollapsed ? <Image  className={styles.collapseIconRight} alt="1" src="/icons/collapseIconRight.png" width={10} height={10}/> : <Image  className={styles.collapseIconLeft} alt="2"src="/icons/Vector (3).png" width={10} height={10}/>}
-=======
                     {isCollapsed ? <Image className={styles.collapseIconRight} alt='collapseIconRight' src="/icons/collapseIconRight.png" width={10} height={10} /> : <Image className={styles.collapseIconLeft} alt="collapseIconLeft" src="/icons/Vector (3).png" width={10} height={10} />}
->>>>>>> 93f1031b5fb1045ed2c506e6cb10375362b26c3d
                 </button>
             </div>
             <div className={styles.logo}>
@@ -47,15 +43,16 @@ function TabComps() {
                 <button
                     onClick={() => handleTabClick('dashboard', '/dashboard')}
                     className={`${styles.DashboardButton} ${activeTab === 'dashboard' ? styles.active : ''}`}
-                >
-                    <Image className={styles.dashboardIcon} src="/icons/dashboard-speed-02.png" width={20} height={20} alt="Dashboard Icon" />
+                >    
+                 <Icon className={styles.dashboardIcon} name='dashboard' width={22} height={22} />
                     {!isCollapsed && <p className={styles.text}>Dashboard</p>}
                 </button>
                 <button
                     onClick={() => handleTabClick('learn', '/learn')}
                     className={`${styles.LearnButton} ${activeTab === 'learn' ? styles.active : ''}`}
                 >
-                    <Image className={styles.learnIcon} src="/icons/book-open-01.png" width={20} height={20} alt="Learn Icon" />
+                     <Icon className={styles.learnIcon} name="learn" width={22} height={22}/>
+  
                     {!isCollapsed && <p className={styles.text}>Learn</p>}
                 </button>
                 <button
