@@ -1,0 +1,201 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    margin: 20px 25px 0px 25px;
+    overflow-y: auto;
+    /* Change scroll to auto for better behavior */
+    padding-bottom: 70px;
+    /* Extra space for the fixed footer */
+}
+
+.info {
+    display: flex;
+    flex-direction: column;
+}
+
+.nameSection {
+    display: flex;
+    flex-direction: row;
+}
+
+.nameInfo {
+    display: flex;
+    flex-direction: row;
+    flex: 0.5;
+    margin-bottom: 10px;
+}
+
+.name {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: left;
+}
+
+.changeRemove {
+    position: relative;
+    display: flex;
+    flex: 1;
+    align-items: center;
+    flex-direction: row;
+}
+
+.dp {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+.change {
+    margin-right: 10px;
+}
+
+.changeButton {
+    position: absolute;
+    right: 60px;
+    top: -5px;
+    border: 1px solid black;
+    border-radius: 5px;
+    padding: 5px;
+}
+
+.removeButton {
+    position: absolute;
+    left: 10px;
+    top: -5px;
+    border: 1px solid black;
+    border-radius: 5px;
+    padding: 5px;
+}
+
+.sizeRecommendation {
+    position: absolute;
+    top: 225px;
+    left: 630px;
+}
+
+.changeButton:not(isEditing),
+.removeButton:not(isEditing),
+.sizeRecommendation:not(isEditing) {
+    display: none;
+}
+
+.editProfile {
+    display: flex;
+    align-items: start;
+    justify-content: right;
+    flex: 0.5;
+}
+
+.editProfileButton {
+    border: 1px solid black;
+    border-radius: 5px;
+    padding: 5px;
+}
+
+.id {
+    display: flex;
+    flex-direction: row;
+}
+
+.copyButtons {
+    display: flex;
+    flex-direction: row;
+}
+
+.examSection {
+    display: flex;
+    flex-direction: row;
+}
+
+.enrolledExams {
+    display: flex;
+    flex: 0.5;
+}
+
+.updateIcon {
+    display: flex;
+    justify-content: right;
+    flex: 0.5;
+}
+
+.updateIconButton {
+    border: 1px solid black;
+    border-radius: 5px;
+    padding: 5px;
+}
+
+.divider {
+    margin-top: 15px;
+    margin-bottom: 15px;
+}
+
+.name {
+    display: flex;
+    flex-direction: row;
+}
+
+.label {
+    display: flex;
+    flex: 0.5;
+}
+
+.username {
+    display: flex;
+    justify-content: right;
+    flex: 0.5;
+}
+
+.icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 15px;
+}
+
+.UserDetail {
+    display: flex;
+    flex-direction: column;
+}
+
+.bottomDivider {
+    width: 100%;
+}
+
+.base {
+    position: fixed;
+    /* Fix to the bottom */
+    bottom: 24px;
+    right: 27px;
+    background-color: #f9f9f9;
+    width: 61.3%;
+    /* Match or change to your desired background */
+    padding: 10px 25px;
+    box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.insideBase {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+.cancleButton {
+    border: 1px solid black;
+    border-radius: 5px;
+    padding: 5px;
+}
+
+.saveChangesButton {
+    border: 1px solid #7400E0;
+    border-radius: 5px;
+    padding: 5px;
+    margin-left: 10px;
+    color: white;
+    background: #7400E0;
+}

@@ -1,0 +1,64 @@
+.profileButton,
+.purchaseButton {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    border-radius: 10px;
+    cursor: pointer;
+    padding: 10px 15px;
+    font-weight: 500;
+    margin-bottom: 8px;
+    border: 2px solid #ffffff;
+    width: 100%;
+    /* Default border color */
+    background-color: #FFFFFF;
+    /* Default background color */
+    color: #1D2939;
+    /* Default text color */
+}
+
+/* Active state for My Profile and Purchase History button */
+.active {
+    color: #7400e0;
+    /* Text color when active */
+    background-color: #f5f0ff;
+    /* Background color when active */
+    border-color: #dcccff;
+    /* Border color when active */
+    transition: 0.15s;
+}
+
+/* Icon styling for SVG */
+.profileIcon,
+.purchaseIcon {
+    margin-right: 8px;
+    transition: color 0.3s;
+    /* Default icon color */
+}
+
+
+
+/* Hover effects */
+.profileButton:hover,
+.purchaseButton:hover {
+    background: #f5f0ff;
+    transition: 0.15s;
+}
+
+.profileButton:hover,
+.profileIcon,
+.purchaseButton:hover,
+.purchaseIcon {
+    fill: #7400e0;
+    transition: 0.15s;
+    /* Icon color on hover */
+}
+
+.text {
+    overflow: hidden;
+}
+
+.activeIcon {
+    color: #7400e0;
+    /* Color for the active state */
+}

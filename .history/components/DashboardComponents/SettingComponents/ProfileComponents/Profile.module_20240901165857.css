@@ -1,0 +1,115 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    margin: 20px 25px 20px 25px;
+    overflow: hidden;
+}
+
+.info {
+    display: flex;
+    flex-direction: column;
+}
+
+.nameSection {
+    display: flex;
+    flex-direction: row;
+}
+
+.nameInfo {
+    display: flex;
+    flex-direction: row;
+    flex: 0.5;
+}
+
+.editProfile {
+    display: flex;
+    justify-content: right;
+    flex: 0.5;
+}
+
+.editProfileButton {
+    border: 1px solid black;
+    border-radius: 5px;
+}
+
+.id {
+    display: flex;
+    flex-direction: row;
+}
+
+.examSection {
+    display: flex;
+    flex-direction: row;
+}
+
+.enrolledExams {
+    display: flex;
+    flex: 0.5;
+}
+
+.updateIcon {
+    display: flex;
+    justify-content: right;
+    flex: 0.5;
+}
+
+.updateIconButton {
+    border: 1px solid black;
+    border-radius: 5px;
+}
+
+.dividerLine {
+    color: blue;
+}
+
+.detailitem {
+    display: flex;
+    align-items: center;
+
+    padding: 15px 0;
+
+}
+
+.Name,
+.Email,
+.Phone,
+.year {
+    color: #1D2939;
+    font-weight: 500;
+}
+
+.value {
+    margin-left: 799px;
+}
+
+/* styles/ProfilePage.module.css */
+#profile {
+    width: 300px;
+    margin: 0 auto;
+    font-family: Arial, sans-serif;
+}
+
+#profile div {
+    margin-bottom: 20px;
+}
+
+#profile span {
+    display: block;
+    cursor: pointer;
+    font-weight: bold;
+    margin-bottom: 5px;
+    color: #333;
+}
+
+#profile input {
+    display: block;
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.hidden {
+    display: none;
+}

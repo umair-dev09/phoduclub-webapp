@@ -1,0 +1,82 @@
+.itemCell {
+    display: flex;
+    flex-direction: column;
+    /* Stack item name and duration vertically */
+}
+
+.itemName {
+    font-weight: 600;
+    color: #000;
+    /* Adjust color as needed */
+}
+
+.itemDuration {
+    font-size: 0.9em;
+    /* Slightly smaller text */
+    color: #667085;
+    /* Greyish color for secondary text */
+    margin-top: 4px;
+    /* Small gap between item and duration */
+}
+
+.date {
+    color: #667085;
+
+}
+
+.price {
+    color: #667085;
+
+}
+
+.payment {
+    color: #667085;
+
+}
+
+.actions {
+    position: relative;
+    display: inline-block;
+    cursor: pointer;
+}
+
+.dots {
+    font-size: 24px;
+    padding: 5px;
+}
+
+.dropdownMenu {
+    display: none;
+    /* Hidden by default */
+    position: absolute;
+    right: 0;
+    top: 100%;
+    background-color: white;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
+    z-index: 1;
+    width: 100px;
+}
+
+.dropdownMenu ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.dropdownMenu ul li {
+    padding: 10px;
+    text-align: left;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.dropdownMenu ul li:hover {
+    background-color: #f1f4f9;
+}
+
+.actions:hover .dropdownMenu {
+    display: block;
+    /* Show the dropdown on hover */
+}

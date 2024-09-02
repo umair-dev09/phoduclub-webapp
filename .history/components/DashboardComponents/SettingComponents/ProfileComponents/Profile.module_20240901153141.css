@@ -1,0 +1,13 @@
+.container {
+    display: flex;
+    flex: 1;
+    margin: 20px 25px 20px 25px;
+}
+
+.divider {
+    margin-top: 50px;
+}
+
+.dividerLine {
+    background-color: blue;
+}

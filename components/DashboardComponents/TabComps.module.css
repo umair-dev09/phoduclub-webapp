@@ -1,23 +1,34 @@
 /* Adjusted styles */
 .tabComps {
-    position: relative; /* Set relative position for absolute positioning of button */
+    position: relative;
+    /* Set relative position for absolute positioning of button */
     display: flex;
     flex-direction: column;
     width: 220px;
-    transition: width 0.3s ease; /* Smooth transition for collapse */
+    transition: width 0.3s ease;
+    /* Smooth transition for collapse */
     padding: 10px 0px 10px 10px;
-    
+
 }
 
 .collapsed {
-    width: 60px; /* Adjust the width when collapsed */
+    width: 60px;
+    /* Adjust the width when collapsed */
 }
 
 .collapseButton {
     position: absolute;
+<<<<<<< HEAD
     top: 50px;
     left: 96%; /* Position right outside the sidebar */
     transform: translateX(-7px); /* Center the button horizontally */
+=======
+    top: 55px;
+    left: 101%;
+    /* Position right outside the sidebar */
+    transform: translateX(-7px);
+    /* Center the button horizontally */
+>>>>>>> 93f1031b5fb1045ed2c506e6cb10375362b26c3d
     background: white;
     border: 1px solid #eaecf0;
     color: black;
@@ -26,11 +37,17 @@
     width: 32px;
     height: 32px;
     border-radius: 100px;
+<<<<<<< HEAD
+=======
+    border: 1.5px solid #E9EBF0;
+    display: flex;
+>>>>>>> 93f1031b5fb1045ed2c506e6cb10375362b26c3d
     align-items: center;
     justify-content: center;
     display: flex;
 }
 
+<<<<<<< HEAD
 
 .headerButton{
     width: 32px;
@@ -41,6 +58,11 @@
     align-items: center;
     justify-content: center;
     display: flex;
+=======
+.collapseIconLeft {
+    padding-left: -3px;
+    padding-right: 3px;
+>>>>>>> 93f1031b5fb1045ed2c506e6cb10375362b26c3d
 }
 .help{
     margin-right: 8px;
@@ -64,10 +86,16 @@
 }
 
 
+<<<<<<< HEAD
 .collapseIconRight{
     width: 10px;
     height: 12px;
     margin-right: 1px;
+=======
+.collapseIconRight {
+    padding-left: 3px;
+    padding-right: -3px;
+>>>>>>> 93f1031b5fb1045ed2c506e6cb10375362b26c3d
 }
 .collapseIconLeft{
     width: 10px;
@@ -125,11 +153,13 @@ margin-left: -4px;
     /* Ensure the divider does not hide */
     opacity: 1;
     transition: opacity 0.3s ease;
-  
+
 }
+
 .actualDivider {
     border: none;
-    border-top:2px solid #E2E5E91A;/* Set the divider line color to blue */
+    border-top: 1px solid #E2E5E91A;
+    /* Set the divider line color to blue */
 }
 
 
@@ -174,13 +204,14 @@ margin-left: -4px;
 .analyticsIcon,
 .settingsIcon {
     margin-left: 12px;
-    margin-right: 10px;
+    margin-right: 12px;
     padding-top: 4px;
     padding-bottom: 4px;
 }
 
 .active {
-    background-color: #7400e0; /* Active button background color */
+    background-color: #7400e0;
+    /* Active button background color */
 }
 
 .text {
