@@ -100,7 +100,6 @@
     justify-content: center;
 }
 
-<<<<<<< HEAD
 .help{
     margin-right: 10px;
 }
@@ -150,11 +149,6 @@
     flex-direction: row;
     align-items: center;
 }
-=======
-.help {
-    margin-right: 8px;
-}
->>>>>>> 87397df3560460a07dc8c6aca4f20fbd702810d9
 
 .headtab {
     display: flex;
