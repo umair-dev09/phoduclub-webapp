@@ -4,27 +4,25 @@ import styles from './TabComps.module.css';
 import Image from 'next/image';
 import { useRouter, usePathname } from 'next/navigation';
 import { useState, useEffect } from 'react';
-import { Icon } from '@/components/Icon';
 
 function TabComps() {
     const router = useRouter();
     const pathname = usePathname();
-    const [isCollapsed, setIsCollapsed] = useState(false);
+
+    // Initialize the state from localStorage, defaulting to false if not set
+    const [isCollapsed, setIsCollapsed] = useState(() => {
+        const savedState = localStorage.getItem('isSidebarCollapsed');
+        return savedState === 'true';
+    });
+
     const [activeTab, setActiveTab] = useState<string>('');
 
     useEffect(() => {
         if (pathname) {
             const currentPath = pathname.split('/')[1]; // Get the first part of the path
-            setActiveTab(currentPath || 'dashboard'); // Default to 'dashboard' if path is empty OR CURRENT PATH
+            setActiveTab(currentPath || 'dashboard'); // Default to 'dashboard' if path is empty
         }
     }, [pathname]);
-
-    useEffect(() => {
-        const savedState = localStorage.getItem('isSidebarCollapsed');
-        if (savedState !== null) {
-            setIsCollapsed(savedState === 'true');
-        }
-    }, []);
 
     // Save sidebar state to localStorage whenever it changes
     useEffect(() => {
@@ -75,7 +73,6 @@ function TabComps() {
                     className={`${styles.LearnButton} ${activeTab === 'learn' ? styles.active : ''}`}
                 >
                     <Image className={styles.learnIcon} src="/icons/learn.svg" width={22} height={22} alt="Learn Icon" />
-
                     {!isCollapsed && <p className={styles.text}>Learn</p>}
                 </button>
                 <button
