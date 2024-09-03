@@ -12,7 +12,7 @@
 }
 
 .collapsed {
-    width: 60px;
+    width: 55px;
     /* Adjust the width when collapsed */
 }
 
@@ -89,12 +89,7 @@
     display: flex;
 }
 
-.collapseIconLeft {
-    padding-left: -3px;
-    padding-right: 3px;
-}
-
-.headerButton{
+.headerButton {
     width: 32px;
     height: 32px;
     background-color: #F7F8FA;
@@ -105,6 +100,7 @@
     justify-content: center;
 }
 
+<<<<<<< HEAD
 .help{
     margin-right: 10px;
 }
@@ -154,6 +150,11 @@
     flex-direction: row;
     align-items: center;
 }
+=======
+.help {
+    margin-right: 8px;
+}
+>>>>>>> 87397df3560460a07dc8c6aca4f20fbd702810d9
 
 .headtab {
     display: flex;
@@ -166,25 +167,35 @@
     height: 60px;
     border-radius: 5px 5px 0 0;
     margin: auto;
-    border-width: 2px;
+    border-width: 1px;
     border-bottom-color: #e9ebf0;
     border-top-color: #FFFFFF;
     border-right-color: #FFFFFF;
     border-left-color: #FFFFFF;
 }
 
-
 .collapseIconRight {
-    padding-left: 3px;
-    padding-right: -3px;
-}
-.collapseIconLeft{
-    width: 10px;
-    height: 12px;
-margin-left: -4px;
+    /* padding: 2px;
+    margin-left: 3px;*/
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    margin: 0px;
+
 }
 
+.collapseIconLeft {
+    /* padding: 2px;
+    margin-right: 5px;
+    */
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    margin: 0px;
 
+}
 
 .theSymbol {
     display: flex;
@@ -202,6 +213,10 @@ margin-left: -4px;
     transition: opacity 0.3s ease, transform 0.3s ease;
 }
 
+.logo {
+    overflow: hidden;
+}
+
 .phoduLogo {
     position: absolute;
     font-weight: bold;
@@ -213,10 +228,12 @@ margin-left: -4px;
 
 .phodu {
     color: white;
+    overflow: hidden;
 }
 
 .club {
     color: #e29ff5;
+    overflow: hidden;
 }
 
 .tabComps:not(.collapsed) .theSymbol {
@@ -228,7 +245,7 @@ margin-left: -4px;
 }
 
 .divider {
-    margin-top: 55px;
+    margin-top: 59px;
     margin-bottom: 2rem;
     margin-left: 5px;
     /* Ensure the divider does not hide */
@@ -260,15 +277,16 @@ margin-left: -4px;
     display: flex;
     align-items: center;
     width: 100%;
+    height: 35px;
     border-radius: 5px;
     margin-bottom: 10px;
     margin-right: 10px;
-    padding-top: 5px;
-    padding-bottom: 5px;
+    /* padding: 5px; */
     background: transparent;
     border: none;
     cursor: pointer;
     transition: background-color 0.15s ease;
+    overflow: hidden;
 }
 
 .DashboardButton:not(.active):hover,
@@ -279,19 +297,39 @@ margin-left: -4px;
     background: rgba(255, 255, 255, 0.1);
 }
 
+/* Ensure text color is red for inactive buttons */
+.DashboardButton:not(.active) .text,
+.LearnButton:not(.active) .text,
+.CommunitiesButton:not(.active) .text,
+.AnalyticsButton:not(.active) .text,
+.SettingsButton:not(.active) .text {
+    color: #a8afb7;
+
+    /* Change inactive text color to red */
+}
+
+/* Ensure text color is white for active buttons */
+.DashboardButton.active .text,
+.LearnButton.active .text,
+.CommunitiesButton.active .text,
+.AnalyticsButton.active .text,
+.SettingsButton.active .text {
+    color: white;
+    /* Or your preferred color for active text */
+}
+
 .dashboardIcon,
 .learnIcon,
 .communitiesIcon,
 .analyticsIcon,
 .settingsIcon {
-    margin-left: 12px;
-    margin-right: 12px;
-    padding-top: 2px;
-    padding-bottom: 2px;
+    margin-left: 10px;
+    margin-right: 10px;
 }
 
 .active {
     background-color: #7400e0;
+
     /* Active button background color */
 }
 

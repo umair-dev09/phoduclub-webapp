@@ -2,30 +2,51 @@
 
 import styles from './TabComps.module.css';
 import Image from 'next/image';
-import { useRouter } from 'next/navigation';
-import { useState } from 'react';
-import { Icon } from '@/components/Icon';
+import { useRouter, usePathname } from 'next/navigation';
+import { useState, useEffect } from 'react';
+
 function TabComps() {
     const router = useRouter();
-    const [isCollapsed, setIsCollapsed] = useState(false);
-    const [activeTab, setActiveTab] = useState('dashboard'); // State to track the active tab
+    const pathname = usePathname();
+
+    // Initialize the state from localStorage, defaulting to false if not set
+    const [isCollapsed, setIsCollapsed] = useState(() => {
+        const savedState = localStorage.getItem('isSidebarCollapsed');
+        return savedState === 'true';
+    });
+
+    const [activeTab, setActiveTab] = useState<string>('');
+
+    useEffect(() => {
+        if (pathname) {
+            const currentPath = pathname.split('/')[1]; // Get the first part of the path
+            setActiveTab(currentPath || 'dashboard'); // Default to 'dashboard' if path is empty
+        }
+    }, [pathname]);
+
+    // Save sidebar state to localStorage whenever it changes
+    useEffect(() => {
+        localStorage.setItem('isSidebarCollapsed', isCollapsed.toString());
+    }, [isCollapsed]);
 
     const handleCollapseClick = () => {
         setIsCollapsed(!isCollapsed);
     };
 
-    // Function to handle tab clicks and set the active tab
     const handleTabClick = (tabName: string, path: string) => {
         setActiveTab(tabName);
         router.push(path);
     };
 
-
     return (
         <div className={`${styles.tabComps} ${isCollapsed ? styles.collapsed : ''}`}>
             <div>
                 <button className={styles.collapseButton} onClick={handleCollapseClick}>
-                    {isCollapsed ? <Image className={styles.collapseIconRight} alt='collapseIconRight' src="/icons/collapseIconRight.png" width={10} height={10} /> : <Image className={styles.collapseIconLeft} alt="collapseIconLeft" src="/icons/Vector (3).png" width={10} height={10} />}
+                    {isCollapsed ? (
+                        <Image className={styles.collapseIconRight} alt='collapseIconRight' src="/icons/collapse-right.svg" width={8} height={8} />
+                    ) : (
+                        <Image className={styles.collapseIconLeft} alt="collapseIconLeft" src="/icons/collapse-left.svg" width={8} height={8} />
+                    )}
                 </button>
             </div>
             <div className={styles.logo}>
@@ -44,36 +65,35 @@ function TabComps() {
                     onClick={() => handleTabClick('dashboard', '/dashboard')}
                     className={`${styles.DashboardButton} ${activeTab === 'dashboard' ? styles.active : ''}`}
                 >
-                    <Icon className={styles.dashboardIcon} name="dashboard" width={22} height={22} />
+                    <Image className={styles.dashboardIcon} src="/icons/dashboard.svg" width={22} height={22} alt="dashboard Icon" />
                     {!isCollapsed && <p className={styles.text}>Dashboard</p>}
                 </button>
                 <button
                     onClick={() => handleTabClick('learn', '/learn')}
                     className={`${styles.LearnButton} ${activeTab === 'learn' ? styles.active : ''}`}
                 >
-                    <Icon className={styles.learnIcon} name="learn" width={22} height={22} />
-
+                    <Image className={styles.learnIcon} src="/icons/learn.svg" width={22} height={22} alt="Learn Icon" />
                     {!isCollapsed && <p className={styles.text}>Learn</p>}
                 </button>
                 <button
                     onClick={() => handleTabClick('community', '/community')}
                     className={`${styles.CommunitiesButton} ${activeTab === 'community' ? styles.active : ''}`}
                 >
-                    <Image className={styles.communitiesIcon} src="/icons/community-icon.png" width={20} height={20} alt="Communities Icon" />
+                    <Image className={styles.communitiesIcon} src="/icons/community.svg" width={22} height={22} alt="Communities Icon" />
                     {!isCollapsed && <p className={styles.text}>Communities</p>}
                 </button>
                 <button
                     onClick={() => handleTabClick('analytics', '/analytics')}
                     className={`${styles.AnalyticsButton} ${activeTab === 'analytics' ? styles.active : ''}`}
                 >
-                    <Image className={styles.analyticsIcon} src="/icons/analytics-icon.png" width={20} height={20} alt="Analytics Icon" />
+                    <Image className={styles.analyticsIcon} src="/icons/Analytics.svg" width={22} height={22} alt="Analytics Icon" />
                     {!isCollapsed && <p className={styles.text}>Analytics</p>}
                 </button>
                 <button
                     onClick={() => handleTabClick('settings', '/settings/profile')}
                     className={`${styles.SettingsButton} ${activeTab === 'settings' ? styles.active : ''}`}
                 >
-                    <Image className={styles.settingsIcon} src="/icons/settings-03.png" width={20} height={20} alt="Settings Icon" />
+                    <Image className={styles.settingsIcon} src="/icons/settings-03.svg" width={22} height={22} alt="Settings Icon" />
                     {!isCollapsed && <p className={styles.text}>Settings</p>}
                 </button>
             </div>

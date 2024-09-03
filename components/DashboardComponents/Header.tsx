@@ -5,6 +5,7 @@ import Image from 'next/image';
 import { Popover,PopoverTrigger, PopoverContent } from '@nextui-org/popover';
 function Header() {
 
+<<<<<<< HEAD
     return(
      <div className={styles.headtab}>
            <div className="greeting">
@@ -59,6 +60,29 @@ function Header() {
                         
 
      </div>
+=======
+    return (
+        <div className={styles.headtab}>
+            <div className="greeting">
+                <p><span id="hi">Hey, <span>Siraj Dhanani</span>,</span> Keep up the great work!</p>
+            </div>
+            <div className={styles.help}>
+                <button className={styles.headerButton}>
+
+                </button>
+            </div>
+            <div className={styles.notification}>
+                <button className={styles.headerButton}>
+
+                </button>
+            </div>
+            <div className="dp"><p className="actual-dp">JS</p></div>
+            <div className="info">
+                <div className="name">John Smith</div>
+                <div className="email">john@acme.com</div>
+            </div>
+        </div>
+>>>>>>> 87397df3560460a07dc8c6aca4f20fbd702810d9
     );
 
 }
