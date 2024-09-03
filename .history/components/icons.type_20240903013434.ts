@@ -1,0 +1,17 @@
+export type IconsType =
+  | 'learn'
+  | '10'
+  | 'dashboard'
+  | 'settings-03.svg'
+  | 'community'
+  | 'Analytics'
+  | 'profile'
+  | 'purchase'
+  | 'profile-voilet'
+  | 'collapse-left'
+  | 'collapse-right'
+  | 'Name'
+  | 'Email'
+  | 'phoneNumber'
+  | 'TargetYear'
+  | 'CopyButton';
