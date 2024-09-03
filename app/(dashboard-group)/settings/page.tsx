@@ -3,8 +3,8 @@ import Layout from '../layout';  // Ensure this path matches the actual file loc
 import MyProfile from './profile/page';  // Import the MyProfile component
 import Purchase from './purchase/page';  // Import the Purchase component
 
-// export default function SettingsPage() {
-//     return (
-//         <div></div>
-//     );
-// }
+export default function SettingsPage() {
+    return (
+        <div></div>
+    );
+}

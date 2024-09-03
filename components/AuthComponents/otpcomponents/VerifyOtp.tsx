@@ -1,6 +1,6 @@
 "use client";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, Suspense } from "react";
 import { auth } from '../../../firebase'; // Adjust path as needed
 import { getAuth, PhoneAuthProvider, signInWithCredential,onAuthStateChanged } from "firebase/auth";
 import { getFirestore, doc, getDoc,setDoc, query, where, getDocs, collection } from "firebase/firestore"; // Import Firestore functions
@@ -262,5 +262,10 @@ function VerifyOtp() {
         </div>
     );
 }
-
-export default VerifyOtp;
+const WrappedVerifyOtp = () => (
+    <Suspense fallback={<div>Loading...</div>}>
+      <VerifyOtp />
+    </Suspense>
+  );
+  
+  export default WrappedVerifyOtp;

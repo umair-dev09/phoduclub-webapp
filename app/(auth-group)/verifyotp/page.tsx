@@ -1,6 +1,6 @@
 import './verify.css';
 import Image from 'next/image';
-import VerifyOtp from '@/components/AuthComponents/OtpComponents/VerifyOtp';
+import VerifyOtp from '@/components/AuthComponents/otpcomponents/VerifyOtp';
 
 
 

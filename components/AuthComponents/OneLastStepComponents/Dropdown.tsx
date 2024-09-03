@@ -1,5 +1,7 @@
+// Use the "use client" directive at the top of the file
 "use client";
-import React, { useState, useEffect } from 'react';
+
+import React, { useState, useEffect, Suspense } from 'react';
 import Select, { MultiValue, SingleValue } from 'react-select';
 import { useRouter, useSearchParams } from "next/navigation";
 import { auth, db } from '../../../firebase'; // Adjust path as needed
@@ -37,7 +39,6 @@ const Dropdown = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const userId = searchParams.get('userId') || ''; // Retrieve the userId from the URL
-  // const db = getFirestore(); // Initialize Firestore
 
   const [selectedYear, setSelectedYear] = useState<SingleValue<Option>>(null);
   const [selectedExams, setSelectedExams] = useState<MultiValue<Option>>([]);
@@ -165,4 +166,11 @@ const Dropdown = () => {
   );
 };
 
-export default Dropdown;
+// Wrap the Dropdown component with Suspense when rendering it
+const WrappedDropdown = () => (
+  <Suspense fallback={<div>Loading...</div>}>
+    <Dropdown />
+  </Suspense>
+);
+
+export default WrappedDropdown;
