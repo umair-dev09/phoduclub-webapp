@@ -4,25 +4,25 @@ const ExamType = () => {
     return (
         <div className={styles.ExamType}>
             <div className={styles.button}>
-                <span className={`${styles.dot} ${styles.red}`}></span> JEE
+                <span className={`${styles.dot} ${styles.red}`}></span> <p className={styles.examText}>JEE</p>
             </div>
             <div className={styles.button}>
-                <span className={`${styles.dot} ${styles.orange}`}></span> BITSAT
+                <span className={`${styles.dot} ${styles.orange}`}></span> <p className={styles.examText}>BITSAT</p>
             </div>
             <div className={styles.button}>
-                <span className={`${styles.dot} ${styles.green}`}></span> VITEEE
+                <span className={`${styles.dot} ${styles.green}`}></span> <p className={styles.examText}>VITEEE</p>
             </div>
             <div className={styles.button}>
-                <span className={`${styles.dot} ${styles.blue}`}></span> SRMJEEE
+                <span className={`${styles.dot} ${styles.blue}`}></span> <p className={styles.examText}>SRMJEEE</p>
             </div>
             <div className={styles.button}>
-                <span className={`${styles.dot} ${styles.blue}`}></span> KCET
+                <span className={`${styles.dot} ${styles.blue}`}></span> <p className={styles.examText}>KCET</p>
             </div>
             <div className={styles.button}>
-                <span className={`${styles.dot} ${styles.red}`}></span> COMEDK
+                <span className={`${styles.dot} ${styles.red}`}></span> <p className={styles.examText}>COMEDK</p>
             </div>
             <div className={styles.button}>
-                <span className={`${styles.dot} ${styles.orange}`}></span> MET
+                <span className={`${styles.dot} ${styles.orange}`}></span> <p className={styles.examText}>MET</p>
             </div>
         </div>
     );

@@ -12,7 +12,7 @@
     margin-right: 20px;
     margin-left: 20px;
     padding-bottom: 100px;
-    overflow-y: scroll;
+    overflow-y: auto;
 }
 
 .info {
@@ -377,13 +377,20 @@
 .button {
     display: flex;
     align-items: center;
-    padding: 3px;
+    padding-top: 3px;
+    padding-bottom: 3px;
+    padding-left: 10px;
+    padding-right: 10px;
     border: 1px solid #d1d1d1;
     border-radius: 20px;
     background-color: #fff;
     font-size: 14px;
     color: #344054;
     font-weight: 500;
+}
+
+.examText{
+    font-size: 14px;
 }
 
 .dot {
