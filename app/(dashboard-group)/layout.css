@@ -4,11 +4,8 @@
     display: flex;
     flex-direction: row;
     flex: 1;
-<<<<<<< HEAD
     overflow-y: scroll;
     
-=======
->>>>>>> 333a66eadb4954687a370221967aba9ab131ffa0
 }
 
 .contents {
