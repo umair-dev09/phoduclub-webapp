@@ -14,12 +14,6 @@ function TabComps() {
         return savedState === 'true';
     });
 
-    useEffect(() => {
-        if (typeof window !== 'undefined') {
-            const savedState = localStorage.getItem('isSidebarCollapsed');
-            setIsCollapsed(savedState === 'true');
-        }
-    }, []);
     const [activeTab, setActiveTab] = useState<string>('');
 
     useEffect(() => {

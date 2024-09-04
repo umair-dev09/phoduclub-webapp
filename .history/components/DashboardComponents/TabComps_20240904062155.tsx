@@ -14,12 +14,6 @@ function TabComps() {
         return savedState === 'true';
     });
 
-    useEffect(() => {
-        if (typeof window !== 'undefined') {
-            const savedState = localStorage.getItem('isSidebarCollapsed');
-            setIsCollapsed(savedState === 'true');
-        }
-    }, []);
     const [activeTab, setActiveTab] = useState<string>('');
 
     useEffect(() => {
@@ -106,7 +100,7 @@ function TabComps() {
                     onClick={() => handleTabClick('settings', '/settings/profile')}
                     className={`${styles.SettingsButton} ${activeTab === 'settings' ? styles.active : ''}`}
                 >
-                    <Image className={styles.settingsIcon} src={activeTab === 'settings' ? "/icons/settings.svg" : "/icons/settings-2.svg"}
+                    <Image className={styles.settingsIcon} src={activeTab === 'settings' ? "/icons/learn.svg" : "/icons/settings.svg"}
                         width={22} height={22} alt="Settings Icon"
                     />
                     {!isCollapsed && <p className={styles.text}>Settings</p>}

@@ -40,7 +40,7 @@ function ContentBox1() {
                         className={`${styles.profileIcon} ${pathname === '/profile' ? styles.activeIcon : ''}`}
                         src={activeTab === "profile" ? "/icons/profile-voilet.svg" : "/icons/profile.svg"}
                         alt="Profile Icon"
-                        width={24}
+                        width={25}
                         height={25}
                     />
                     <p className={styles.text}>My Profile</p>
