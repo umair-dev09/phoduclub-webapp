@@ -33,10 +33,10 @@ function Profile() {
                         <div className={styles.nameInfo}>
                             <div className={styles.dp}>
                                 <Image
-                                    src='/icons/10.svg'
+                                    src='/defaultDP.svg'
                                     alt="profile-image"
-                                    width={50}
-                                    height={50}
+                                    width={100}
+                                    height={100}
                                 />
                             </div>
                             <div className={styles.nameId}>

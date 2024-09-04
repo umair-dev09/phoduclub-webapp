@@ -24,7 +24,7 @@ function Header() {
                         <Popover backdrop='opaque' placement="bottom">
                         <PopoverTrigger>
                         <div className={styles.profileChildLyt}>
-                        <Image className={styles.profilePic} src="/dp1.jpg" width={32} height={32} alt="Notification Icon" />
+                        <Image className={styles.profilePic} src="/defaultDP.svg" width={32} height={32} alt="Notification Icon" />
                         <div className={styles.headerInfo}>
                             <div className="name">John Smith</div>
                             <div className="email">john@acme.com</div>
