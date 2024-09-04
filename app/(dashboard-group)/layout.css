@@ -5,10 +5,10 @@
     flex-direction: row;
     flex: 1;
     overflow-y: scroll;
+    
 }
 
 .contents {
-    width: 100%;
     padding: 10px;
 }
 
@@ -16,11 +16,12 @@
     display: flex;
     flex-direction: column;
     background: #f5f6fa;
-    height: 100%;
     border-radius: 5px;
     color: #131313;
     min-width: 480px;
     min-height: 336px;
+    width: 100%;
+    margin: 10px;
 }
 
 .headtab {

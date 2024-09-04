@@ -1,8 +1,8 @@
-
-import { Icon } from '@/components/Icon';
-import styles from './TabComps.module.css';
+import NotficationDropDown from './NotificationDropdown';
+import styles from '/components/DashboardComponents/TabComps.module.css'
 import Image from 'next/image';
 import { Popover,PopoverTrigger, PopoverContent } from '@nextui-org/popover';
+
 function Header() {
 
     return(
@@ -12,20 +12,16 @@ function Header() {
                         </div>
                         <div className={styles.help}>
                         <button className={styles.headerButton}>
-                        <Image src="/icons/help-.svg" width={16} height={16} alt="Help Icon" />
+                        <Image src="/icons/help-circle.svg" width={16} height={16} alt="Help Icon" />
                                </button>
                         </div>
-                        <div className={styles.notification}>
-                        <div className={styles.notificationIndicator}/>
-                        <button className={styles.headerButton}>
-                        <Image src="/icons/notification.svg" width={16} height={16} alt="Notification Icon" />
-                        </button>
-                        </div>
+                        <NotficationDropDown/> 
+                        
                         <div className={styles.divider1}/>
 
                         <div className={styles.profileParentLyt}>
                         {/* <div className={styles.profileChildLyt}> */}
-                        <Popover placement="bottom">
+                        <Popover backdrop='opaque' placement="bottom">
                         <PopoverTrigger>
                         <div className={styles.profileChildLyt}>
                         <Image className={styles.profilePic} src="/dp1.jpg" width={32} height={32} alt="Notification Icon" />

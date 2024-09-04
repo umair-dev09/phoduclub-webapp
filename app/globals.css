@@ -25,6 +25,10 @@ h1, h2, h3, h4, h5, h6 {
   font-family: 'Sora', sans-serif;
 }
 
+h3{
+  font-size: 18px;
+  font-weight: 600;
+}
 /* Ensure that other text elements use Poppins */
 p, span, div {
   font-family: 'Poppins', sans-serif;

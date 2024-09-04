@@ -1,7 +1,7 @@
 import "./layout.css";
 import { ReactNode } from 'react';
 import TabComps from '@/components/DashboardComponents/TabComps';
-import Header from "@/components/DashboardComponents/Header";
+import Header from "@/components/HeaderComponents/Header";
 interface DashboardGroupProps {
     children: ReactNode;
 }

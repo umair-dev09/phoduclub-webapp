@@ -151,6 +151,75 @@
 
 }
 
+/*  Email Dialog CSS   */
+.emailDialogBox{
+    border-radius: 12px;
+    background-color: white;
+    padding-top: 18px;
+    padding-bottom: 18px;
+    width: 500px;
+    height: auto;
+}
+
+.emailHeader{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    margin-left: 24px;
+    margin-right: 24px;
+}
+
+.emailDivider{
+    width: auto;
+    height: 1px;
+    background-color: #F2F4F7;
+    margin-top: 15px;
+    margin-bottom: 5px;
+}
+.emailInputDiv{
+    margin-left: 24px;
+    margin-right: 24px;
+    margin-top: 12px;
+}
+.emailInput{
+    padding: 7px;
+    font-size: 16px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    /* color: #080808; */
+    width: 100%;
+    height: 40px ;
+}
+.emailButtons{
+    display: flex;
+    flex-direction: row;
+    margin-left: 24px;
+    margin-right: 24px;
+    justify-content: end;
+    margin-top: 12px;
+}
+.emailCancelBtn{
+  width: 95px;
+  height: 42px;
+  border-radius: 8px;
+  border: 1.5px solid #EAECF0;
+  margin-right: 15px;
+  font-weight: 500;
+}
+.emailVerifyBtn{
+    width: 95px;
+    height: 42px;
+    background-color: #8501FF;
+    border-radius: 8px;
+    color: #fff;
+    font-weight: 500;
+}
+/*  Email Dialog CSS   */
+
+
+
 /*  this css is for "File size must be less than 5MB"    */
 .files {
     font-size: 14px;
@@ -172,11 +241,12 @@
 }
 
 .editProfileButton {
-    border: 1px solid black;
     border-radius: 5px;
-    padding: 10px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    padding-left: 15px;
+    padding-right: 15px;
     border: 1.5px solid #EAECF0;
-    box-shadow: 0 0 0 0px #EAECF0;
     display: flex;
     flex-direction: row;
     margin-left: 5px;
@@ -240,9 +310,12 @@
 }
 
 .updateIconButton {
-    border: 1px solid #EAECF0;
+    border: 1.5px solid #EAECF0;
     border-radius: 5px;
-    padding: 10px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    padding-left: 15px;
+    padding-right: 15px;
     max-height: 40px;
     font-size: 14px;
     font-weight: bold;
@@ -294,17 +367,19 @@
     display: flex;
     flex: 1;
     justify-content: right;
-    right: 0px;
+    
 }
 
 .updateNameButton,
 .updateEmailButton,
 .updateMobButton,
 .updateYearButton {
-    border: 1px solid #EAECF0;
-    border-radius: 5px;
-    padding: 10px;
-    max-height: 40px;
+    border: 1.5px solid #EAECF0;
+    border-radius: 8px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    padding-left: 15px;
+    padding-right: 15px;
     font-size: 14px;
     font-weight: bold;
 }

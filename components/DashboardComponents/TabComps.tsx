@@ -9,12 +9,14 @@ function TabComps() {
     const router = useRouter();
     const pathname = usePathname();
 
-    // Initialize the state from localStorage, defaulting to false if not set
-    const [isCollapsed, setIsCollapsed] = useState(() => {
-        const savedState = localStorage.getItem('isSidebarCollapsed');
-        return savedState === 'true';
-    });
+    const [isCollapsed, setIsCollapsed] = useState(false);
 
+    useEffect(() => {
+        if (typeof window !== 'undefined') {
+            const savedState = localStorage.getItem('isSidebarCollapsed');
+            setIsCollapsed(savedState === 'true');
+        }
+    }, []);
     const [activeTab, setActiveTab] = useState<string>('');
 
     useEffect(() => {

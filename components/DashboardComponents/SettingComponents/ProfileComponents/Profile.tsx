@@ -4,7 +4,7 @@ import styles from './Profile.module.css';
 import Image from 'next/image';
 import { useState } from 'react';
 import Target from '@/components/DashboardComponents/SettingComponents/ProfileComponents/Target';
-
+import EmailUpdate from './EditProfileComponents/EmailUpdate';
 function Profile() {
     const [isEditing, setIsEditing] = useState(false);
     const [isNameEditing, setIsNameEditing] = useState(false);
@@ -180,9 +180,7 @@ function Profile() {
                         <span className={styles.username}>jabir@gmail.com</span>
                     )}
                     {isEditing && (
-                        <div className={styles.updateEmail}>
-                            <button className={styles.updateEmailButton} onClick={() => setIsEmailEditing(true)}>Update</button>
-                        </div>
+                        <EmailUpdate/>
                     )}
                 </div>
 
