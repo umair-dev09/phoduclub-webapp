@@ -9,7 +9,6 @@ import { RecaptchaVerifier, signInWithPhoneNumber,onAuthStateChanged } from "fir
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import styles from './Singnup.module.css'; // Ensure you import the CSS module
-import { useAuth } from "@/components/authCheck";
 import { useEffect } from "react";
 
 function Signup() {

@@ -171,9 +171,7 @@ function Profile() {
                             {isEditing && (
                                 <p className={styles.afterEdit}>jabir@gmail.com</p>
                             )}
-                            {isEmailEditing && (
-                                <p>E-mail Pou-up</p>
-                            )}
+                            
                         </div>
                     </div>
                     {!isEditing && (
@@ -206,9 +204,7 @@ function Profile() {
                             {isEditing && (
                                 <p className={styles.afterEdit}>+91 7898525987</p>
                             )}
-                            {isPhoneEditing && (
-                                <p>Phone no Pop-up</p>
-                            )}
+                            
                         </div>
                     </div>
                     {!isEditing && (
@@ -241,9 +237,7 @@ function Profile() {
                             {isEditing && (
                                 <p className={styles.afterEdit}>2024</p>
                             )}
-                            {isYearEditing && (
-                                <p>Target Year Pop-up</p>
-                            )}
+                            
                         </div>
                     </div>
                     {!isEditing && (
