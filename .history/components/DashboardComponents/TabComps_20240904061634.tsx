@@ -1,10 +1,10 @@
-
 "use client";
 
 import styles from './TabComps.module.css';
 import Image from 'next/image';
 import { useRouter, usePathname } from 'next/navigation';
 import { useState, useEffect } from 'react';
+import { Icon } from '@/components/Icon';
 
 function TabComps() {
     const router = useRouter();
@@ -18,11 +18,14 @@ function TabComps() {
 
     useEffect(() => {
         if (pathname) {
-            const currentPath = pathname.split('/')[1];
-            setActiveTab(currentPath || 'dashboard');
+            const currentPath = pathname.split('/')[1]; // Get the first part of the path
+            setActiveTab(currentPath || 'dashboard'); // Default to 'dashboard' if path is empty OR CURRENT PATH
         }
     }, [pathname]);
 
+
+
+    // Save sidebar state to localStorage whenever it changes
     useEffect(() => {
         localStorage.setItem('isSidebarCollapsed', isCollapsed.toString());
     }, [isCollapsed]);
@@ -41,9 +44,9 @@ function TabComps() {
             <div>
                 <button className={styles.collapseButton} onClick={handleCollapseClick}>
                     {isCollapsed ? (
-                        <Image className={styles.collapseIconRight} alt='Collapse Icon Right' src="/icons/collapse-right.svg" width={8} height={8} />
+                        <Image className={styles.collapseIconRight} alt='collapseIconRight' src="/icons/collapse-right.svg" width={8} height={8} />
                     ) : (
-                        <Image className={styles.collapseIconLeft} alt="Collapse Icon Left" src="/icons/collapse-left.svg" width={8} height={8} />
+                        <Image className={styles.collapseIconLeft} alt="collapseIconLeft" src="/icons/collapse-left.svg" width={8} height={8} />
                     )}
                 </button>
             </div>
@@ -64,8 +67,10 @@ function TabComps() {
                     className={`${styles.DashboardButton} ${activeTab === 'dashboard' ? styles.active : ''}`}
                 >
                     <Image className={styles.dashboardIcon} src={activeTab === 'dashboard' ? "/icons/dashboard.svg" : "/icons/dashboard-2.svg"}
-                        width={22} height={22} alt="Dashboard Icon"
+                        width={22} height={22} alt="dashboard Icon"
                     />
+
+
                     {!isCollapsed && <p className={styles.text}>Dashboard</p>}
                 </button>
                 <button
@@ -74,6 +79,10 @@ function TabComps() {
                 >
                     <Image className={styles.learnIcon} src={activeTab === 'learn' ? "/icons/learn.svg" : "/icons/learn-2.svg"}
                         width={22} height={22} alt="Learn Icon" />
+
+
+
+
                     {!isCollapsed && <p className={styles.text}>Learn</p>}
                 </button>
                 <button
@@ -84,6 +93,8 @@ function TabComps() {
                         src={activeTab === 'community' ? "/icons/community.svg" : "/icons/community-2.svg"}
                         width={22} height={22} alt="Communities Icon"
                     />
+
+
                     {!isCollapsed && <p className={styles.text}>Communities</p>}
                 </button>
                 <button
@@ -91,18 +102,20 @@ function TabComps() {
                     className={`${styles.AnalyticsButton} ${activeTab === 'analytics' ? styles.active : ''}`}
                 >
                     <Image className={styles.analyticsIcon}
-                        src={activeTab === 'analytics' ? "/icons/analytics.svg" : "/icons/analytics-2.svg"}
+                        src={activeTab === 'analytics' ? "/icons/Analytics.svg" : "/icons/Analytics-2.svg"}
                         width={22} height={22} alt="Analytics Icon"
                     />
+
                     {!isCollapsed && <p className={styles.text}>Analytics</p>}
                 </button>
                 <button
                     onClick={() => handleTabClick('settings', '/settings/profile')}
                     className={`${styles.SettingsButton} ${activeTab === 'settings' ? styles.active : ''}`}
                 >
-                    <Image className={styles.settingsIcon} src={activeTab === 'settings' ? "/icons/settings.svg" : "/icons/settings-2.svg"}
-                        width={22} height={22} alt="Settings Icon"
-                    />
+                    <Image className={styles.settingsIcon} src={activeTab === 'setting' ? "/icons/settings.svg" : "/icons/settings-2.svg"}
+                        width={22} height={22} alt="Settings Icon" />
+
+
                     {!isCollapsed && <p className={styles.text}>Settings</p>}
                 </button>
             </div>

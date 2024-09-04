@@ -38,7 +38,7 @@ function ContentBox1() {
                     className={`${styles.profileButton} ${activeTab === 'profile' ? styles.active : ''}`}>
                     <Image
                         className={`${styles.profileIcon} ${pathname === '/profile' ? styles.activeIcon : ''}`}
-                        src={activeTab === "profile" ? "/icons/profile-voilet.svg" : "/icons/profile.svg"}
+                        src={activeTab === "profile" ? "/icons/profile.svg" : "/icons/profile-voilet"}
                         alt="Profile Icon"
                         width={24}
                         height={25}
@@ -51,7 +51,7 @@ function ContentBox1() {
                     className={`${styles.purchaseButton} ${activeTab === 'purchase' ? styles.active : ''}`}>
                     <Image
                         className={`${styles.purchaseIcon} ${pathname === '/purchase' ? styles.activeIcon : ''}`}
-                        src={activeTab === "purchase" ? "/icons/purchase-voilet.svg" : "/icons/purchase.svg"}
+                        src={activeTab === "purchase" ? "/icons/purchase.svg" : "/icons/purchase-voilet"}
                         alt="Purchase Icon"
                         width={25}
                         height={25}
