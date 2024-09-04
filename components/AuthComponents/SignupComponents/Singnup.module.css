@@ -78,11 +78,14 @@
     font-size: 16px;
     border-radius: 5px;
     border: 1px solid #ccc;
-    color: #080808;
+    /* color: #080808; */
     width: 375px ;
     height: 40px ;
-    box-sizing: border-box;
-    
+}
+
+.input[type="email"]:hover,
+.input[type="email"]:focus {
+    outline: 1px solid #D6BBFB;
 }
 
 .firstNameInput{
@@ -106,6 +109,15 @@
     height: 40px ;
     box-sizing: border-box;
     
+}
+.firstNameInput:hover,
+.firstNameInput:focus {
+    outline: 1px solid #D6BBFB;
+}
+
+.lastNameInput:hover,
+.lastNameInput:focus {
+    outline: 1px solid #D6BBFB;
 }
 
 .nameDiv{

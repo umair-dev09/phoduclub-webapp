@@ -88,6 +88,10 @@ p {
     height: 40px;
     color: #000;
 }
+.phoneinputcontainer .forminput:hover,
+.phoneinputcontainer .forminput:focus {
+    outline: 1px solid #D6BBFB;
+}
 
 /* Media query for smaller screens */
 @media (max-width: 768px) {
