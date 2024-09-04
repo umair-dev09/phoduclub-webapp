@@ -17,6 +17,7 @@
     "clsx": "^2.1.1",
     "firebase": "^10.13.1",
     "geist": "^1.2.1",
+    "headlessui": "^0.0.0",
     "next": "^14.2.7",
     "otpless-next-js-auth-sdk": "^1.0.10",
     "postcss": "8.4.33",

@@ -12,7 +12,7 @@ interface SettingsLayoutProps {
 export default function SettingsLayout({ children }: SettingsLayoutProps) {
 
     return (
-        <div className="content">
+        <div className="mainContent">
             <div className="content1-box">
                 <ContentBox1 />
             </div>
