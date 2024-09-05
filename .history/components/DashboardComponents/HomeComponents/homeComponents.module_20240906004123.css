@@ -1,0 +1,86 @@
+/* ********Subject Progress Tracker******** */
+.subjectContainer {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    padding: 20px;
+}
+
+.subjectCard {
+    background-color: #FFFFFF;
+    border: 2px solid #EAECF0;
+    padding-right: 24px;
+    padding-left: 24px;
+    padding-top: 30px;
+    padding-bottom: 30px;
+    border-radius: 12px;
+    border: 1px 0px 0px 0px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    /* Smooth hover transition */
+}
+
+.progressValue {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    border: 8px solid #eee;
+    position: relative;
+    margin: 10px auto;
+}
+
+.progressValue::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 72px;
+    height: 72px;
+    background-color: #fff;
+    border-radius: 50%;
+}
+
+.progressValue span {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 16px;
+    font-weight: 700;
+}
+
+.progressValue[data-value="0"] {
+    border-color: #8c8c8c;
+}
+
+.progressValue[data-value="100"] {
+    border-color: purple;
+}
+
+
+
+/* **********XXXXXXXXXX********** */
+
+
+
+
+
+/*ANNOUNCEMENTS COMPONENT*/
+
+.Announcements {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    flex: 1;
+}
+
+.noAnnouncement1 {
+    font-size: 16px;
+}
+
+/*ANNOUNCEMENTS COMPONENT*/

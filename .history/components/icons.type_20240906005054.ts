@@ -21,13 +21,5 @@ export type IconsType =
   | 'TargetYear'
   | 'pencil-edit'
   | 'CopyButton'
-<<<<<<< HEAD
-    'no_announcement_img'
-    'course_img'
-    'suggestion_icon';
-=======
   | 'overall'
-  | 'maths'
-  | 'physics'
-  | 'chemistry';
->>>>>>> a2e920e5482fca934afc12468fb869398c9fbe2b
+  | 'maths';

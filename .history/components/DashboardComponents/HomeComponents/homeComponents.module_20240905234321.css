@@ -1,0 +1,35 @@
+/* ********Subject Progress Tracker******** */
+.overall {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    /* Two columns */
+    gap: 20px;
+    /* Space between the cards */
+    padding: 20px;
+    color: red;
+
+}
+
+
+
+/* **********XXXXXXXXXX********** */
+
+
+
+
+
+/*ANNOUNCEMENTS COMPONENT*/
+
+.Announcements {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    flex: 1;
+}
+
+.noAnnouncement1 {
+    font-size: 16px;
+}
+
+/*ANNOUNCEMENTS COMPONENT*/

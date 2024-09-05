@@ -1,0 +1,65 @@
+/* ********Subject Progress Tracker******** */
+.container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    padding: 20px;
+}
+
+.Buttons {
+    background-color: #FFFFFF;
+    border: 2px solid #EAECF0;
+    padding-right: 24px;
+    padding-left: 24px;
+    padding-top: 25px;
+    padding-bottom: 25px;
+    border-radius: 12px;
+    border: 1px 0px 0px 0px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    /* Smooth hover transition */
+}
+
+.IconContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 10px;
+
+
+}
+
+.overall .physics,
+.maths,
+.hemistry {
+
+    margin-right: 10px;
+
+}
+
+
+
+/* **********XXXXXXXXXX********** */
+
+
+
+
+
+/*ANNOUNCEMENTS COMPONENT*/
+
+.Announcements {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    flex: 1;
+}
+
+.noAnnouncement1 {
+    font-size: 16px;
+}
+
+/*ANNOUNCEMENTS COMPONENT*/
