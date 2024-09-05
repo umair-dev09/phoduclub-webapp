@@ -90,7 +90,7 @@ p {
 }
 .phoneinputcontainer .forminput:hover,
 .phoneinputcontainer .forminput:focus {
-    outline: 1px solid #D6BBFB;
+    outline: 1.5px solid #D6BBFB;
 }
 
 /* Media query for smaller screens */

@@ -24,6 +24,7 @@
   width: 100%; /* Ensure the select input takes the full width of the container */
 }
 
+
 /* Styling for the control (dropdown container) */
 .yearSelect .react-select__control, .examSelect .react-select__control {
   border: 1px solid #e6e6e6;

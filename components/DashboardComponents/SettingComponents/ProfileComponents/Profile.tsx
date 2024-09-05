@@ -5,6 +5,10 @@ import Image from 'next/image';
 import { useState } from 'react';
 import Target from '@/components/DashboardComponents/SettingComponents/ProfileComponents/Target';
 import EmailUpdate from './EditProfileComponents/EmailUpdate';
+import ProfilePicUpdate from './EditProfileComponents/ProfilePicUpdate';
+import TargetExamUpdate from './EditProfileComponents/TargetExamUpdate';
+import TargetYearUpdate from './EditProfileComponents/TargetYearUpdate';
+import PhoneUpdate from './EditProfileComponents/PhoneUpdate';
 function Profile() {
     const [isEditing, setIsEditing] = useState(false);
     const [isNameEditing, setIsNameEditing] = useState(false);
@@ -73,16 +77,7 @@ function Profile() {
                                 {isEditing && (
                                     <div className={styles.changeRemove}>
                                         <div className={styles.buttonGroup}>
-                                            <button className={styles.changeButton}>
-                                                <Image
-                                                    className={styles.editIcon}
-                                                    src="/icons/pencil-edit.svg"
-                                                    alt="edit-icon"
-                                                    width={20}
-                                                    height={20}
-                                                />
-                                                <p className={styles.changeText}>Change</p>
-                                            </button>
+                                           <ProfilePicUpdate/>
                                             <button className={styles.removeButton}>
                                                 <p className={styles.removeText}>Remove</p>
                                             </button>
@@ -113,7 +108,7 @@ function Profile() {
                             <Target />
                         </div>
                         {isEditing && (
-                            <div className={styles.updateIcon}><button className={styles.updateIconButton}>Update</button></div>
+                          <TargetExamUpdate/>
                         )}
                     </div>
                 </div>
@@ -209,9 +204,7 @@ function Profile() {
                         <span className={styles.username}>+91 7898525987</span>
                     )}
                     {isEditing && (
-                        <div className={styles.updateMob}>
-                            <button className={styles.updateMobButton} onClick={() => setIsPhoneEditing(true)}>Update</button>
-                        </div>
+                        <PhoneUpdate/>
                     )}
                 </div>
 
@@ -242,9 +235,7 @@ function Profile() {
                         <span className={styles.username}>2024</span>
                     )}
                     {isEditing && (
-                        <div className={styles.updateYear}>
-                            <button className={styles.updateYearButton} onClick={() => setIsYearEditing(true)}>Update</button>
-                        </div>
+                      <TargetYearUpdate/>
                     )}
                 </div>
             </div>

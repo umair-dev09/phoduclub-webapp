@@ -132,6 +132,7 @@
     font-size: 13px;
     cursor: not-allowed;
     transition: background 0.15s;
+    margin-top: 25px;
   }
   
   .button.enabled {
