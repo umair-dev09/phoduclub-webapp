@@ -1,11 +1,18 @@
 /* ********Subject Progress Tracker******** */
+
 .overall {
     display: flex;
     justify-content: space-between;
     align-items: center;
     color: red;
     padding: 20px;
+}
 
+.container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    padding: 20px;
 }
 
 .Buttons {
@@ -86,7 +93,7 @@
 
 /*ANNOUNCEMENTS COMPONENT*/
 
-.announcementComp {
+.Announcements {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -98,6 +105,7 @@
     font-size: 16px;
     font-weight: 700;
 }
+
 
 .noAnnouncement2 {
     font-size: 14px;
@@ -225,3 +233,7 @@
 
 
 /* COURSE COMPONENT */
+
+
+
+/*ANNOUNCEMENTS COMPONENT*/
