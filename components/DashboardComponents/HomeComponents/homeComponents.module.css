@@ -1,19 +1,18 @@
 /* ********Subject Progress Tracker******** */
-<<<<<<< HEAD
+
 .overall{
     display: flex;
     justify-content:space-between;
     align-items:center;
     color: red;
     padding: 20px;
-    
-=======
+}
+
 .container {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 20px;
     padding: 20px;
->>>>>>> a2e920e5482fca934afc12468fb869398c9fbe2b
 }
 
 .Buttons {
@@ -94,11 +93,7 @@
 
 /*ANNOUNCEMENTS COMPONENT*/
 
-<<<<<<< HEAD
-.announcementComp{
-=======
 .Announcements {
->>>>>>> a2e920e5482fca934afc12468fb869398c9fbe2b
     display: flex;
     align-items: center;
     justify-content: center;
@@ -111,7 +106,7 @@
     font-weight: 700;
 }
 
-<<<<<<< HEAD
+
 .noAnnouncement2{
     font-size: 14px;
     font-weight: 400;
@@ -238,8 +233,8 @@
 
 
 /* COURSE COMPONENT */
-=======
+
 
 
 /*ANNOUNCEMENTS COMPONENT*/
->>>>>>> a2e920e5482fca934afc12468fb869398c9fbe2b
+
