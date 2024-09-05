@@ -1,0 +1,32 @@
+/* ********Subject Progress Tracker******** */
+.overall{
+    display: flex;
+    justify-content:space-between;
+    align-items:center;
+    color: red;
+    
+}
+
+
+
+/* **********XXXXXXXXXX********** */
+
+
+
+
+
+/*ANNOUNCEMENTS COMPONENT*/
+
+.Announcements{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    flex: 1;
+}
+
+.noAnnouncement1{
+    font-size: 16px;
+}
+
+/*ANNOUNCEMENTS COMPONENT*/

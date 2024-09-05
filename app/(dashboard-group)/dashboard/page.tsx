@@ -1,9 +1,40 @@
 import "./dashboard.css"; // Adjust the path if needed
+import Announcement from '@/components/DashboardComponents/HomeComponents/Announcement/Announcement';
+import SubjectComp from '@/components/DashboardComponents/HomeComponents/SubjectComp/subject';
 
 export default function AnalyticsPage() {
      return (
-          <div className="car">
-              <h1>This is dashboard Page</h1>
+          <div className="homeContainer">
+               <div className="topColumn">
+                    <div className="progressTracker">
+                         <div className="title">
+                              <h3>Subject Progress Tracker</h3>
+                         </div>
+                         <div className="progress">
+                              <SubjectComp/>
+                         </div>
+                    </div>
+                    <div className="announcement">
+                         <div className="title">
+                              <h3>Announcements</h3>
+                         </div>
+                         <div className="announcements">
+                              <Announcement/>
+                         </div>
+                    </div>
+               </div>
+               <div className="bottomColumn">
+                    <div className="testSeries">
+                         <div className="title">
+                              <h3>Test Series</h3>
+                         </div>
+                    </div>
+                    <div className="course">
+                         <div className="title">
+                              <h3>Courses</h3>
+                         </div>                        
+                    </div>
+               </div>
           </div>
      );
 }
