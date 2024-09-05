@@ -20,4 +20,7 @@ export type IconsType =
   | 'phoneNumber'
   | 'TargetYear'
   | 'pencil-edit'
-  | 'CopyButton';
+  | 'CopyButton'
+    'no_announcement_img'
+    'course_img'
+    'suggestion_icon';

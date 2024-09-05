@@ -1,6 +1,8 @@
 import "./dashboard.css"; // Adjust the path if needed
 import Announcement from '@/components/DashboardComponents/HomeComponents/Announcement/Announcement';
 import SubjectComp from '@/components/DashboardComponents/HomeComponents/SubjectComp/subject';
+import TestSeries from '@/components/DashboardComponents/HomeComponents/TestSeries/Testseries';
+import Course from '@/components/DashboardComponents/HomeComponents/Course/Course';
 
 export default function AnalyticsPage() {
      return (
@@ -14,7 +16,7 @@ export default function AnalyticsPage() {
                               <SubjectComp/>
                          </div>
                     </div>
-                    <div className="announcement">
+                    <div className="announcementBlock">
                          <div className="title">
                               <h3>Announcements</h3>
                          </div>
@@ -24,14 +26,20 @@ export default function AnalyticsPage() {
                     </div>
                </div>
                <div className="bottomColumn">
-                    <div className="testSeries">
+                    <div className="testSeriesBlock">
                          <div className="title">
                               <h3>Test Series</h3>
+                         </div>
+                         <div className="testSeries">
+                              <TestSeries/>
                          </div>
                     </div>
                     <div className="course">
                          <div className="title">
                               <h3>Courses</h3>
+                         </div>
+                         <div className="courses">
+                              <Course/>
                          </div>                        
                     </div>
                </div>

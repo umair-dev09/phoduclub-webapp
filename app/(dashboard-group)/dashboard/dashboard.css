@@ -29,10 +29,12 @@
     border-radius: 12px;
 }
 
-.announcement{
+.announcementBlock{
+    display: flex;
+    flex-direction: column;
+    flex: 1;
     background: #FFFFFF;
     margin: 5px 10px 10px 10px;
-    flex: 1;
     border-radius: 12px;
 }
 
@@ -41,6 +43,8 @@
     align-items: center;
     justify-content: center;
     flex: 1;
+    overflow-y: auto;
+    border-radius: 0px 0px 12px 12px;
 }
 
 /*xxxxxxxxxxxxxxxxx**************xxxxxxxxxxxx*/
@@ -53,11 +57,21 @@
     flex: 1;
 }
 
-.testSeries{
-    background: #FFFFFF;
+.testSeriesBlock{
+    display: flex;
+    flex-direction: column;
     flex: 1;
+    background: #FFFFFF;
     margin: 10px 10px 5px 10px;
     border-radius: 12px;
+}
+
+.testSeries{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+    border-radius: 0px 0px 12px 12px;
 }
 
 .course{
