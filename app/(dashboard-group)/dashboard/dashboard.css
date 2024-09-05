@@ -75,10 +75,20 @@
 }
 
 .course{
-    background: #FFFFFF;
+    display: flex;
+    flex-direction: column;
     flex: 1;
+    background: #FFFFFF;
     margin: 10px 10px 5px 10px;
     border-radius: 12px;
+}
+
+.courses{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+    border-radius: 0px 0px 12px 12px;
 }
 
 /*++++++++++++++++****************++++++++++++++++*/
