@@ -24,6 +24,8 @@
 .nameSection {
     display: flex;
     flex-direction: row;
+    align-items: center;
+    margin-bottom: 15px;
 }
 
 .nameInfo {
@@ -31,6 +33,8 @@
     flex-direction: row;
     flex: 0.5;
     margin-bottom: 10px;
+    align-items: center;
+
 }
 
 /* .nameId {
@@ -70,6 +74,7 @@
 .actualProfileName {
     display: flex;
     color: #1D2939;
+    font-size: 18px;
     font-weight: 600;
     justify-content: left;
 }
@@ -155,8 +160,8 @@
 .emailDialogBox{
     border-radius: 12px;
     background-color: white;
-    padding-top: 18px;
-    padding-bottom: 18px;
+    padding-top: 20px;
+    padding-bottom: 20px;
     width: 500px;
     height: auto;
 }
@@ -235,17 +240,13 @@
     justify-content: right;
     flex: 0.5;
     color: #1D2939;
-    font-weight: 600;
-    font-size: 14px;
-
 }
 
 .editProfileButton {
-    border-radius: 5px;
-    padding-top: 10px;
-    padding-bottom: 10px;
-    padding-left: 15px;
-    padding-right: 15px;
+    display: flex;
+    align-items: center;
+    border-radius: 8px;
+    padding: 10px 14px 10px 14px;
     border: 1.5px solid #EAECF0;
     display: flex;
     flex-direction: row;
@@ -257,11 +258,19 @@
     margin-right: 5px;
 }
 
+.editText{
+    display: flex;
+    align-items: center;
+    font-size: 14px;
+    font-weight: 600;
+}
+
 .id {
     display: flex;
     flex-direction: row;
     color: #667085;
-
+    font-size: 16px;
+    font-weight: 400;
 }
 
 .actualId {
@@ -346,6 +355,7 @@
     flex: 0.5;
     color: #667085;
     font-size: 16px;
+    font-weight: 400;
 }
 
 .icon {
@@ -385,11 +395,11 @@
 }
 
 .input {
-    border: 2px solid #d0d5dd;
-    border-radius: 5px;
+    border: 1px solid #d0d5dd;
+    border-radius: 8px;
     text-indent: 5px;
-    padding: 5px;
-    width: 120%;
+    height: 40px;
+    width: 320px;
 }
 
 .afterEdit {

@@ -33,16 +33,16 @@ function Profile() {
                         <div className={styles.nameInfo}>
                             <div className={styles.dp}>
                                 <Image
-                                    src='/icons/10.svg'
+                                    src='/defaultDP.svg'
                                     alt="profile-image"
-                                    width={50}
-                                    height={50}
+                                    width={72}
+                                    height={72}
                                 />
                             </div>
                             <div className={styles.nameId}>
                                 {/* Name and ID */}
                                 {!isEditing && (
-                                    <div className={styles.name}>
+                                    <div className={styles.johnName}>
                                         <span className={styles.actualProfileName}>John Smith</span>
                                     </div>
                                 )}
@@ -101,9 +101,9 @@ function Profile() {
                                         className={styles.editIcon}
                                         src="/icons/pencil-edit.svg"
                                         alt="edit-icon"
-                                        width={20}
-                                        height={20} />
-                                    <p>Edit Profile</p>
+                                        width={24}
+                                        height={24} />
+                                    <p className={styles.editText}>Edit Profile</p>
                                 </button>
                             )}
                         </div>

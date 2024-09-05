@@ -10,11 +10,11 @@ export default function MyProfile() {
                     <Image
                         className="profile-icon"
                         src="/icons/profile-voilet.svg"
-                        width={25}
-                        height={25}
+                        width={32}
+                        height={32}
                         alt="profile-icon"
                     />
-                    <span id="profile">My Profile</span>
+                    <h3><span id="profile">My Profile</span></h3>
                 </div>
             </div>
             <div className="divider"><hr className="dividerLine" /></div>
