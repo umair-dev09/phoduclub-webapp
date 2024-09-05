@@ -22,6 +22,4 @@ export type IconsType =
   | 'pencil-edit'
   | 'CopyButton'
   | 'overall'
-  | 'maths'
-  | 'physics'
-  | 'chemistry';
+  | 'maths';

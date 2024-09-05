@@ -23,5 +23,4 @@ export type IconsType =
   | 'CopyButton'
   | 'overall'
   | 'maths'
-  | 'physics'
-  | 'chemistry';
+  | 'physics';

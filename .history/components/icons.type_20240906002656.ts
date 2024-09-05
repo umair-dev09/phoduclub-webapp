@@ -21,7 +21,4 @@ export type IconsType =
   | 'TargetYear'
   | 'pencil-edit'
   | 'CopyButton'
-  | 'overall'
-  | 'maths'
-  | 'physics'
-  | 'chemistry';
+  | 'overall';

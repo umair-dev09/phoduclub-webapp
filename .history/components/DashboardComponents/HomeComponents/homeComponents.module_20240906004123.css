@@ -1,18 +1,18 @@
 /* ********Subject Progress Tracker******** */
-.container {
+.subjectContainer {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 20px;
     padding: 20px;
 }
 
-.Buttons {
+.subjectCard {
     background-color: #FFFFFF;
     border: 2px solid #EAECF0;
     padding-right: 24px;
     padding-left: 24px;
-    padding-top: 10px;
-    padding-bottom: 10px;
+    padding-top: 30px;
+    padding-bottom: 30px;
     border-radius: 12px;
     border: 1px 0px 0px 0px;
     display: flex;
@@ -23,45 +23,34 @@
     /* Smooth hover transition */
 }
 
-.IconContainer {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-bottom: 10px;
-}
-
-.work {
-    color: #667085;
-    font-size: 16px;
-    font-weight: 600;
-    margin: 5px;
-}
-
-
 .progressValue {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: relative;
     width: 80px;
     height: 80px;
     border-radius: 50%;
-    border: 8px solid #eaeef0;
-    margin-top: 20px;
+    border: 8px solid #eee;
+    position: relative;
+    margin: 10px auto;
+}
+
+.progressValue::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 72px;
+    height: 72px;
+    background-color: #fff;
+    border-radius: 50%;
 }
 
 .progressValue span {
-    font-size: 18px;
-    font-weight: 600;
-    color: #333;
     position: absolute;
-    text-align: center;
-}
-
-.totalMarks {
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
     font-size: 16px;
-    color: #6b7280;
-    margin-top: 10px;
+    font-weight: 700;
 }
 
 .progressValue[data-value="0"] {
@@ -71,6 +60,7 @@
 .progressValue[data-value="100"] {
     border-color: purple;
 }
+
 
 
 /* **********XXXXXXXXXX********** */
@@ -92,7 +82,5 @@
 .noAnnouncement1 {
     font-size: 16px;
 }
-
-
 
 /*ANNOUNCEMENTS COMPONENT*/

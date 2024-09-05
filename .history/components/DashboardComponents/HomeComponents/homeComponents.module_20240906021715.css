@@ -34,9 +34,14 @@
     color: #667085;
     font-size: 16px;
     font-weight: 600;
-    margin: 5px;
+    margin-left: 8px;
 }
 
+.subjectName {
+    font-size: 18px;
+    font-weight: 600;
+    color: #333;
+}
 
 .progressValue {
     display: flex;

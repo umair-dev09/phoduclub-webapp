@@ -19,7 +19,7 @@ function SubjectLayout() {
                         />
                         <div className={styles.work}>Overall</div>
                     </div>
-                    <div className={styles.totalMarks}> 0/100</div>
+                    <div className={styles.totalMarks}>Marks 0/100</div>
                 </div>
                 <div className={styles.progressValue} data-value="0">
                     <span>0%</span>
@@ -39,7 +39,7 @@ function SubjectLayout() {
                         />
                         <div className={styles.work}>Physics</div>
                     </div>
-                    <div className={styles.totalMarks}> 0/33</div>
+                    <div className={styles.totalMarks}>Marks 0/33</div>
                 </div>
                 <div className={styles.progressValue} data-value="0">
                     <span>0%</span>
@@ -59,7 +59,7 @@ function SubjectLayout() {
                         />
                         <div className={styles.work}>Chemistry</div>
                     </div>
-                    <div className={styles.totalMarks}> 0/34</div>
+                    <div className={styles.totalMarks}>Marks 0/34</div>
                 </div>
                 <div className={styles.progressValue} data-value="0">
                     <span>0%</span>
@@ -79,7 +79,7 @@ function SubjectLayout() {
                         />
                         <div className={styles.work}>Maths</div>
                     </div>
-                    <div className={styles.totalMarks}> 0/31</div>
+                    <div className={styles.totalMarks}>Marks 0/31</div>
                 </div>
                 <div className={styles.progressValue} data-value="0">
                     <span>0%</span>

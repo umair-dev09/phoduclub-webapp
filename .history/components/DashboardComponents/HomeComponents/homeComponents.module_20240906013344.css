@@ -11,8 +11,8 @@
     border: 2px solid #EAECF0;
     padding-right: 24px;
     padding-left: 24px;
-    padding-top: 10px;
-    padding-bottom: 10px;
+    padding-top: 25px;
+    padding-bottom: 25px;
     border-radius: 12px;
     border: 1px 0px 0px 0px;
     display: flex;
@@ -27,50 +27,19 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    margin-bottom: 10px;
-}
-
-.work {
-    color: #667085;
-    font-size: 16px;
-    font-weight: 600;
-    margin: 5px;
-}
+    padding-left: 0px;
 
 
-.progressValue {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: relative;
-    width: 80px;
-    height: 80px;
-    border-radius: 50%;
-    border: 8px solid #eaeef0;
-    margin-top: 20px;
 }
 
-.progressValue span {
-    font-size: 18px;
-    font-weight: 600;
-    color: #333;
-    position: absolute;
-    text-align: center;
+.overall .physics,
+.maths,
+.hemistry {
+
+    margin-right: 60px;
+
 }
 
-.totalMarks {
-    font-size: 16px;
-    color: #6b7280;
-    margin-top: 10px;
-}
-
-.progressValue[data-value="0"] {
-    border-color: #8c8c8c;
-}
-
-.progressValue[data-value="100"] {
-    border-color: purple;
-}
 
 
 /* **********XXXXXXXXXX********** */
@@ -92,7 +61,5 @@
 .noAnnouncement1 {
     font-size: 16px;
 }
-
-
 
 /*ANNOUNCEMENTS COMPONENT*/
