@@ -102,7 +102,11 @@ const Dropdown = () => {
               borderRadius: '8px',
               padding: '4px',
               boxShadow: 'none',
+              '&:hover': {
+                outline: '1px solid #e5a1f5',
+              },
             }),
+            
           }}
         />
       </div>
@@ -127,7 +131,8 @@ const Dropdown = () => {
               backgroundColor: 'white',
               border: '1.2px solid #D0D5DD',
               borderRadius: '8px',
-              fontWeight: '500'
+              fontWeight: '500',
+              marginRight: '7px',
             }),
             multiValueLabel: (provided) => ({
               ...provided,
@@ -145,10 +150,22 @@ const Dropdown = () => {
             menu: (provided) => ({
               ...provided,
               backgroundColor: 'white',
+              
             }),
             menuList: (provided) => ({
               ...provided,
               padding: '0',
+              
+            }),
+            control: (provided) => ({
+              ...provided,
+              border: '1px solid #e6e6e6',
+              borderRadius: '8px',
+              padding: '4px',
+              boxShadow: 'none',
+              '&:hover': {
+                outline: '1px solid #e5a1f5',
+              },
             }),
           }}
         />

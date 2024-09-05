@@ -155,9 +155,23 @@
     background-color: #f0f0f0;
 
 }
+/*  Common Dialog CSS   */
+.commonUpdateHeader{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 15px;
+    margin-left: 24px;
+    margin-right: 24px;
+}
 
-/*  Email Dialog CSS   */
-.emailDialogBox{
+.commonDivider{
+    width: auto;
+    height: 1px;
+    background-color: #F2F4F7;
+}
+.commonDialogBox{
     border-radius: 12px;
     background-color: white;
     padding-top: 20px;
@@ -165,28 +179,25 @@
     width: 500px;
     height: auto;
 }
-
-.emailHeader{
+.commonButtons{
     display: flex;
     flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 10px;
     margin-left: 24px;
     margin-right: 24px;
+    justify-content: end;
+    margin-top: 16px;
 }
+/*  Common Dialog CSS   */
 
-.emailDivider{
-    width: auto;
-    height: 1px;
-    background-color: #F2F4F7;
-    margin-top: 15px;
-    margin-bottom: 5px;
-}
+/*  Email Dialog CSS   */
+
+
 .emailInputDiv{
+    display: flex;
+    flex-direction: column;
     margin-left: 24px;
     margin-right: 24px;
-    margin-top: 12px;
+    gap: 3px;
 }
 .emailInput{
     padding: 7px;
@@ -197,25 +208,19 @@
     width: 100%;
     height: 40px ;
 }
-.emailButtons{
-    display: flex;
-    flex-direction: row;
-    margin-left: 24px;
-    margin-right: 24px;
-    justify-content: end;
-    margin-top: 12px;
+.emailInput:hover,
+.emailInput:focus {
+    outline: 1.5px solid #D6BBFB;
 }
 .emailCancelBtn{
-  width: 95px;
-  height: 42px;
+  padding: 10px 24px 10px 24px;
   border-radius: 8px;
   border: 1.5px solid #EAECF0;
   margin-right: 15px;
   font-weight: 500;
 }
 .emailVerifyBtn{
-    width: 95px;
-    height: 42px;
+    padding: 10px 24px 10px 24px;
     background-color: #8501FF;
     border-radius: 8px;
     color: #fff;
@@ -223,7 +228,74 @@
 }
 /*  Email Dialog CSS   */
 
+/*  ProfilePic Dialog CSS   */
 
+ .picBox{
+    display: flex;
+    flex-direction: row;
+    margin-top: 15px;
+    margin-left: 24px;
+    margin-right: 24px;
+    margin-bottom: 10px;
+    justify-content: center;
+    column-gap: 28px;
+ }
+ .profOptionBox{
+    display: flex;
+    flex-direction: column;
+    padding: 30px 48px 30px 48px;
+    border-radius: 8px;
+    border: 1px solid #EAECF0;
+    row-gap: 20px;
+    align-items: center;
+ }
+
+
+/*  ProfilePic Dialog CSS   */
+
+/*  TargetExam Dialog CSS   */
+.tExamCancelBtn{
+    padding: 10px 24px 10px 24px;
+    border-radius: 8px;
+    border: 1.5px solid #EAECF0;
+    margin-right: 15px;
+    font-weight: 500;
+  }
+  .tExamContinueBtn{
+      padding: 10px 24px 10px 24px;
+      background-color: #8501FF;
+      border-radius: 8px;
+      color: #fff;
+      font-weight: 500;
+  }
+  .dropdownWrapper{
+    margin: 30px 24px 30px 24px;
+  }
+  .label {
+    margin-bottom: 8px;
+    font-weight: 500;
+    color: #333;
+    font-size: 14px;
+  }
+/*  TargetExam Dialog CSS   */
+
+/*  PhoneNumber Dialog CSS   */
+.phoneinputcontainer .forminput {
+    min-width: 100%;
+    min-height: 42px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    /* height: 40px; */
+    color: #000; 
+}
+
+.phoneinputcontainer .forminput:hover,
+.phoneinputcontainer .forminput:focus {
+    outline: 1.5px solid #D6BBFB;
+}
+
+
+/*  PhoneNumber Dialog CSS   */
 
 /*  this css is for "File size must be less than 5MB"    */
 .files {

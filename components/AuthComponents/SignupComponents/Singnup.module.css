@@ -85,7 +85,7 @@
 
 .input[type="email"]:hover,
 .input[type="email"]:focus {
-    outline: 1px solid #D6BBFB;
+    outline: 1.5px solid #D6BBFB;
 }
 
 .firstNameInput{
@@ -112,12 +112,12 @@
 }
 .firstNameInput:hover,
 .firstNameInput:focus {
-    outline: 1px solid #D6BBFB;
+    outline: 1.5px solid #D6BBFB;
 }
 
 .lastNameInput:hover,
 .lastNameInput:focus {
-    outline: 1px solid #D6BBFB;
+    outline: 1.5px solid #D6BBFB;
 }
 
 .nameDiv{
