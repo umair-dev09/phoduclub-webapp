@@ -31,7 +31,14 @@ const CircularProgress: React.FC<CircularProgressProps> = ({ percentage }) => {
             <div className={styles.label}>
                 {normalizedPercentage}%
             </div>
-
+            <div className={styles.checkIcon} style={{ visibility: iconVisibility }}>
+                <Image
+                    src="/icons/checkmark.svg"
+                    alt="checkmark-icon"
+                    width={14}
+                    height={14}
+                />
+            </div>
         </div>
     );
 };

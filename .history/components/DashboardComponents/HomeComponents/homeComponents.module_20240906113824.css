@@ -3,7 +3,6 @@
 
 .container {
     display: grid;
-    flex: 1;
     grid-template-columns: 1fr 1fr;
     gap: 20px;
     padding: 20px;
@@ -31,8 +30,7 @@
 
 .Buttons:hover {
 
-    border: 1px solid #7400E03D;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    border: 1px solid #7400E03D box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     transform: scale(1.05);
 
 }

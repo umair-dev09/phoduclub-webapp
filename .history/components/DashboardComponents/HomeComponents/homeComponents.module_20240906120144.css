@@ -3,7 +3,6 @@
 
 .container {
     display: grid;
-    flex: 1;
     grid-template-columns: 1fr 1fr;
     gap: 20px;
     padding: 20px;
@@ -122,10 +121,10 @@
 }
 
 /* Progress circle */
-.circleProgress {
+/* .circleProgress {
     stroke: #7400E0;
     transition: stroke-dasharray 0.3s ease;
-}
+} */
 
 /* Label inside the circle */
 .label {

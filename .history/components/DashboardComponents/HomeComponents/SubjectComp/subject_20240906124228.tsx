@@ -43,6 +43,7 @@ const SubjectLayout: React.FC = () => {
     };
 
     return (
+
         <div className={styles.container}>
             {/* Overall */}
             <button className={styles.Buttons} onClick={() => handlebuttonClick('overall')}>
@@ -56,7 +57,7 @@ const SubjectLayout: React.FC = () => {
                             className={styles.overall}
                         />
                         <div className={styles.work}>Overall</div>
-                        <div className={styles.checkIcon} style={{ visibility: 'visible' }}>
+                        <div className={styles.checkIcon} style={{ visibility: normalizedPercentage === 100 ? 'visible' : 'hidden' }}>
                             <Image
                                 src="/icons/checkmark.svg"
                                 alt="checkmark-icon"
@@ -85,7 +86,7 @@ const SubjectLayout: React.FC = () => {
                             className={styles.physics}
                         />
                         <div className={styles.work}>Physics</div>
-                        <div className={styles.checkIcon} style={{ visibility: 'visible' }}>
+                        <div className={styles.checkIcon} style={{ visibility: normalizedPercentage === 100 ? 'visible' : 'hidden' }}>
                             <Image
                                 src="/icons/checkmark.svg"
                                 alt="checkmark-icon"
@@ -114,7 +115,7 @@ const SubjectLayout: React.FC = () => {
                             className={styles.chemistry}
                         />
                         <div className={styles.work}>Chemistry</div>
-                        <div className={styles.checkIcon} style={{ visibility: 'visible' }}>
+                        <div className={styles.checkIcon} style={{ visibility: normalizedPercentage === 100 ? 'visible' : 'hidden' }}>
                             <Image
                                 src="/icons/checkmark.svg"
                                 alt="checkmark-icon"
@@ -143,7 +144,7 @@ const SubjectLayout: React.FC = () => {
                             className={styles.maths}
                         />
                         <div className={styles.work}>Maths</div>
-                        <div className={styles.checkIcon} style={{ visibility: 'visible' }}>
+                        <div className={styles.checkIcon} style={{ visibility: normalizedPercentage === 100 ? 'visible' : 'hidden' }}>
                             <Image
                                 src="/icons/checkmark.svg"
                                 alt="checkmark-icon"

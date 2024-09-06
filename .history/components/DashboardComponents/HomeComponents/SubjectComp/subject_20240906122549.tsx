@@ -3,17 +3,16 @@
 import styles from '../homeComponents.module.css';
 import Image from 'next/image';
 
+
+
 interface CircularProgressProps {
     percentage: number;
 }
-
 const CircularProgress: React.FC<CircularProgressProps> = ({ percentage }) => {
     const normalizedPercentage = Math.min(Math.max(percentage, 0), 100);
-    const progressColor = normalizedPercentage === 100 ? '#98A2B3' : '#7400E0';
+    const progressColor = normalizedPercentage === 100 ? '   #98A2B3' : '#7400E0';
 
-    // Determine the visibility of the checkIcon based on the percentage
     const iconVisibility = normalizedPercentage === 100 ? 'visible' : 'hidden';
-
     return (
         <div className={styles.progressValue}>
             <svg className={styles.circular} viewBox="0 0 36 36">
@@ -31,16 +30,24 @@ const CircularProgress: React.FC<CircularProgressProps> = ({ percentage }) => {
             <div className={styles.label}>
                 {normalizedPercentage}%
             </div>
-
+            <div className={styles.checkIcon} style={{ visibility: 'hidden' }}>
+                <Image
+                    src="/icons/checkmark.svg" // Replace with your right icon path
+                    alt="checkmark-icon"
+                    width={14}
+                    height={14}
+                />
+            </div>
         </div>
     );
-};
+}
+// PUSH FUCNTION FOR BUTTONS 
+const handlebuttonClick = (buttons: string) => {
+    console.log(`${buttons} button clicked`);
+    //WE HAVE WRITE LOGIC HERE 
 
+}
 const SubjectLayout: React.FC = () => {
-    const handlebuttonClick = (buttons: string) => {
-        console.log(`${buttons} button clicked`);
-        // WE HAVE WRITE LOGIC HERE
-    };
 
     return (
         <div className={styles.container}>
@@ -62,19 +69,31 @@ const SubjectLayout: React.FC = () => {
                                 alt="checkmark-icon"
                                 width={14}
                                 height={14} />
+
+
+
                         </div>
+
+
+
                     </div>
                     <div className={styles.totalMarks}>
+
                         <span className={styles.numerator}>0</span><span className={styles.denominator}>/98</span>
+
+
                     </div>
                 </div>
-                <div className={styles.progressValue}>
+                <div className={styles.progressValue} >
                     <CircularProgress percentage={10} /> {/* Example percentage */}
+
+
+
                 </div>
             </button>
 
             {/* Physics */}
-            <button className={styles.Buttons} onClick={() => handlebuttonClick('physics')}>
+            <button className={styles.Buttons} onClick={() => handlebuttonClick('overall')}>
                 <div className={styles.box1}>
                     <div className={styles.IconContainer}>
                         <Image
@@ -91,19 +110,24 @@ const SubjectLayout: React.FC = () => {
                                 alt="checkmark-icon"
                                 width={14}
                                 height={14} />
+
+
+
                         </div>
                     </div>
                     <div className={styles.totalMarks}>
                         <span className={styles.numerator}>0</span><span className={styles.denominator}>/33</span>
+
                     </div>
                 </div>
                 <div className={styles.progressValue}>
                     <CircularProgress percentage={0} /> {/* Example percentage */}
+
                 </div>
             </button>
 
             {/* Chemistry */}
-            <button className={styles.Buttons} onClick={() => handlebuttonClick('chemistry')}>
+            <button className={styles.Buttons} onClick={() => handlebuttonClick('overall')}>
                 <div className={styles.box1}>
                     <div className={styles.IconContainer}>
                         <Image
@@ -113,14 +137,17 @@ const SubjectLayout: React.FC = () => {
                             height={20}
                             className={styles.chemistry}
                         />
-                        <div className={styles.work}>Chemistry</div>
-                        <div className={styles.checkIcon} style={{ visibility: 'visible' }}>
+                        <div className={styles.work} style={{ visibility: 'visible' }}>
+                            Chemistry
+
                             <Image
                                 src="/icons/checkmark.svg"
                                 alt="checkmark-icon"
                                 width={14}
                                 height={14} />
+
                         </div>
+
                     </div>
                     <div className={styles.totalMarks}>
                         <span className={styles.numerator}>0</span><span className={styles.denominator}>/34</span>
@@ -128,11 +155,12 @@ const SubjectLayout: React.FC = () => {
                 </div>
                 <div className={styles.progressValue}>
                     <CircularProgress percentage={100} /> {/* Example percentage */}
+
                 </div>
             </button>
 
             {/* Maths */}
-            <button className={styles.Buttons} onClick={() => handlebuttonClick('maths')}>
+            <button className={styles.Buttons} onClick={() => handlebuttonClick('overall')}>
                 <div className={styles.box1}>
                     <div className={styles.IconContainer}>
                         <Image
@@ -149,6 +177,9 @@ const SubjectLayout: React.FC = () => {
                                 alt="checkmark-icon"
                                 width={14}
                                 height={14} />
+
+
+
                         </div>
                     </div>
                     <div className={styles.totalMarks}>
@@ -157,10 +188,12 @@ const SubjectLayout: React.FC = () => {
                 </div>
                 <div className={styles.progressValue}>
                     <CircularProgress percentage={0} /> {/* Example percentage */}
+
+
                 </div>
             </button>
         </div>
     );
-};
+}
 
 export default SubjectLayout;
