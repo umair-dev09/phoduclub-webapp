@@ -53,7 +53,7 @@ const SubjectLayout: React.FC = () => {
 
     const subjectsData = [
         { name: 'Overall', numerator: 9, denominator: 98, icon: '/icons/overall.svg' },
-        { name: 'Physics', numerator: 33, denominator: 33, icon: '/icons/physics.svg' },
+        { name: 'Physics', numerator: 15, denominator: 33, icon: '/icons/physics.svg' },
         { name: 'Chemistry', numerator: 34, denominator: 34, icon: '/icons/chemistry.svg' },
         { name: 'Maths', numerator: 1, denominator: 31, icon: '/icons/maths.svg' },
     ];
