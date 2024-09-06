@@ -29,18 +29,12 @@ const CircularProgress: React.FC<CircularProgressProps> = ({ percentage }) => {
         </div>
     );
 }
-// PUSH FUCNTION FOR BUTTONS 
-const handlebuttonClick = (buttons: string) => {
-    console.log(`${buttons} button clicked`);
-    //WE HAVE WRITE LOGIC HERE 
-
-}
 const SubjectLayout: React.FC = () => {
 
     return (
         <div className={styles.container}>
             {/* Overall */}
-            <button className={styles.Buttons} onClick={() => handlebuttonClick('overall')}>
+            <button className={styles.Buttons}>
                 <div className={styles.box1}>
                     <div className={styles.IconContainer}>
                         <Image
@@ -68,7 +62,7 @@ const SubjectLayout: React.FC = () => {
             </button>
 
             {/* Physics */}
-            <button className={styles.Buttons} onClick={() => handlebuttonClick('overall')}>
+            <button className={styles.Buttons}>
                 <div className={styles.box1}>
                     <div className={styles.IconContainer}>
                         <Image
@@ -92,7 +86,7 @@ const SubjectLayout: React.FC = () => {
             </button>
 
             {/* Chemistry */}
-            <button className={styles.Buttons} onClick={() => handlebuttonClick('overall')}>
+            <button className={styles.Buttons}>
                 <div className={styles.box1}>
                     <div className={styles.IconContainer}>
                         <Image
@@ -115,7 +109,7 @@ const SubjectLayout: React.FC = () => {
             </button>
 
             {/* Maths */}
-            <button className={styles.Buttons} onClick={() => handlebuttonClick('overall')}>
+            <button className={styles.Buttons}>
                 <div className={styles.box1}>
                     <div className={styles.IconContainer}>
                         <Image

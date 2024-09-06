@@ -26,14 +26,7 @@
 
 
 
-}
-
-.Buttons:hover {
-
-    border: 1px solid #DDCDFF;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    transform: scale(1.05);
-
+    /* Smooth hover transition */
 }
 
 .box1 {
@@ -72,7 +65,7 @@
 }
 
 .numerator {
-    font-size: 28px;
+    font-size: 30px;
     font-weight: 600;
     display: inline;
     color: #1C2536;
@@ -140,7 +133,7 @@
 
 
 
-/* ***********************************************XXXXXXXXXXXXXXXXXXXXXXXXXXXXXX*********************************************** */
+/* **********XXXXXXXXXX********** */
 
 
 

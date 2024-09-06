@@ -26,14 +26,7 @@
 
 
 
-}
-
-.Buttons:hover {
-
-    border: 1px solid #DDCDFF;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    transform: scale(1.05);
-
+    /* Smooth hover transition */
 }
 
 .box1 {
@@ -72,7 +65,7 @@
 }
 
 .numerator {
-    font-size: 28px;
+    font-size: 30px;
     font-weight: 600;
     display: inline;
     color: #1C2536;
@@ -96,13 +89,15 @@
     align-items: center;
     justify-content: center;
     width: 64x;
+    /* Size of the circular progress indicator */
     height: 64px;
-
+    /* Size of the circular progress indicator */
 }
 
 /* Style for the SVG */
 .circular {
-    transform: rotate(360deg);
+    transform: rotate(-90deg);
+    /* Rotate to start the stroke from the top */
     width: 100%;
     height: 100%;
 }
@@ -111,18 +106,19 @@
 .circleBackground,
 .circleProgress {
     fill: none;
-    stroke-width: 3.5;
+    stroke-width: 3;
+    /* Adjust the stroke width for the circle thickness */
     stroke-linecap: round;
 }
 
 /* Background circle */
 .circleBackground {
-    stroke: #EDEFF6;
+    stroke: #e6e6e6;
 }
 
 /* Progress circle */
 .circleProgress {
-    stroke: #7400E0;
+    stroke: #4db8ff;
     transition: stroke-dasharray 0.3s ease;
 }
 
@@ -132,15 +128,14 @@
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    font-size: 14px;
-    font-weight: 600;
+    font-size: 1.2rem;
     /* Font size of the label */
     text-align: center;
 }
 
 
 
-/* ***********************************************XXXXXXXXXXXXXXXXXXXXXXXXXXXXXX*********************************************** */
+/* **********XXXXXXXXXX********** */
 
 
 

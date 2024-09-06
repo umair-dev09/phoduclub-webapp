@@ -29,18 +29,12 @@ const CircularProgress: React.FC<CircularProgressProps> = ({ percentage }) => {
         </div>
     );
 }
-// PUSH FUCNTION FOR BUTTONS 
-const handlebuttonClick = (buttons: string) => {
-    console.log(`${buttons} button clicked`);
-    //WE HAVE WRITE LOGIC HERE 
-
-}
 const SubjectLayout: React.FC = () => {
 
     return (
         <div className={styles.container}>
             {/* Overall */}
-            <button className={styles.Buttons} onClick={() => handlebuttonClick('overall')}>
+            <button className={styles.Buttons}>
                 <div className={styles.box1}>
                     <div className={styles.IconContainer}>
                         <Image
@@ -54,13 +48,13 @@ const SubjectLayout: React.FC = () => {
                     </div>
                     <div className={styles.totalMarks}>
 
-                        <span className={styles.numerator}>0</span><span className={styles.denominator}>/98</span>
+                        <span className={styles.numerator}>0</span><span className={styles.denominator}>/100</span>
 
 
                     </div>
                 </div>
                 <div className={styles.progressValue} >
-                    <CircularProgress percentage={0} /> {/* Example percentage */}
+                    <CircularProgress percentage={75} /> {/* Example percentage */}
 
 
 
@@ -68,7 +62,7 @@ const SubjectLayout: React.FC = () => {
             </button>
 
             {/* Physics */}
-            <button className={styles.Buttons} onClick={() => handlebuttonClick('overall')}>
+            <button className={styles.Buttons}>
                 <div className={styles.box1}>
                     <div className={styles.IconContainer}>
                         <Image
@@ -81,18 +75,17 @@ const SubjectLayout: React.FC = () => {
                         <div className={styles.work}>Physics</div>
                     </div>
                     <div className={styles.totalMarks}>
-                        <span className={styles.numerator}>0</span><span className={styles.denominator}>/33</span>
+                        <span className={styles.numerator}>0</span><span className={styles.denominator}>/100</span>
 
                     </div>
                 </div>
                 <div className={styles.progressValue}>
-                    <CircularProgress percentage={0} /> {/* Example percentage */}
 
                 </div>
             </button>
 
             {/* Chemistry */}
-            <button className={styles.Buttons} onClick={() => handlebuttonClick('overall')}>
+            <button className={styles.Buttons}>
                 <div className={styles.box1}>
                     <div className={styles.IconContainer}>
                         <Image
@@ -105,17 +98,16 @@ const SubjectLayout: React.FC = () => {
                         <div className={styles.work}>Chemistry</div>
                     </div>
                     <div className={styles.totalMarks}>
-                        <span className={styles.numerator}>0</span><span className={styles.denominator}>/34</span>
+                        <span className={styles.numerator}>0</span><span className={styles.denominator}>/100</span>
                     </div>
                 </div>
                 <div className={styles.progressValue}>
-                    <CircularProgress percentage={0} /> {/* Example percentage */}
 
                 </div>
             </button>
 
             {/* Maths */}
-            <button className={styles.Buttons} onClick={() => handlebuttonClick('overall')}>
+            <button className={styles.Buttons}>
                 <div className={styles.box1}>
                     <div className={styles.IconContainer}>
                         <Image
@@ -128,11 +120,10 @@ const SubjectLayout: React.FC = () => {
                         <div className={styles.work}>Maths</div>
                     </div>
                     <div className={styles.totalMarks}>
-                        <span className={styles.numerator}>0</span><span className={styles.denominator}>/31</span>
+                        <span className={styles.numerator}>0</span><span className={styles.denominator}>/100</span>
                     </div>
                 </div>
                 <div className={styles.progressValue}>
-                    <CircularProgress percentage={0} /> {/* Example percentage */}
 
 
                 </div>

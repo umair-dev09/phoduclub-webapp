@@ -11,7 +11,7 @@
 
 .Buttons {
     background-color: #FFFFFF;
-    border: 1px solid #EAECF0;
+    border: 2px solid #EAECF0;
     padding-right: 24px;
     padding-left: 24px;
     padding-top: 10px;
@@ -26,19 +26,7 @@
 
 
 
-}
-
-.Buttons:hover {
-
-    border: 1px solid #DDCDFF;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    transform: scale(1.05);
-
-}
-
-.box1 {
-    padding-top: 10px;
-
+    /* Smooth hover transition */
 }
 
 .IconContainer {
@@ -46,38 +34,30 @@
     align-items: center;
     justify-content: flex-start;
 
-
-
-
-
 }
 
 .work {
     color: #667085;
-    font-size: 12px;
+    font-size: 16px;
     font-weight: 600;
-    margin: 6px;
+    margin: 5px;
 }
 
-.totalMarks {
+.total1Marks {
 
     color: #1D2939;
     font-weight: 600;
     display: flex;
     align-items: center;
     justify-content: flex-start;
-    line-height: 1;
-
 
 }
 
 .numerator {
-    font-size: 28px;
+    font-size: 32px;
     font-weight: 600;
     display: inline;
     color: #1C2536;
-    margin-bottom: 10px;
-
 }
 
 .denominator {
@@ -86,61 +66,12 @@
     color: #1C2536;
     margin-left: 1px;
     font-weight: 600;
-
-}
-
-/* Container for the progress value */
-.progressValue {
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 64x;
-    height: 64px;
-
-}
-
-/* Style for the SVG */
-.circular {
-    transform: rotate(360deg);
-    width: 100%;
-    height: 100%;
-}
-
-/* Style for the circle paths */
-.circleBackground,
-.circleProgress {
-    fill: none;
-    stroke-width: 3.5;
-    stroke-linecap: round;
-}
-
-/* Background circle */
-.circleBackground {
-    stroke: #EDEFF6;
-}
-
-/* Progress circle */
-.circleProgress {
-    stroke: #7400E0;
-    transition: stroke-dasharray 0.3s ease;
-}
-
-/* Label inside the circle */
-.label {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    font-size: 14px;
-    font-weight: 600;
-    /* Font size of the label */
-    text-align: center;
 }
 
 
 
-/* ***********************************************XXXXXXXXXXXXXXXXXXXXXXXXXXXXXX*********************************************** */
+
+/* **********XXXXXXXXXX********** */
 
 
 
