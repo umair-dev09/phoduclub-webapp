@@ -7,7 +7,6 @@
     grid-template-columns: 1fr 1fr;
     gap: 20px;
     padding: 20px;
-
 }
 
 .Buttons {
@@ -24,9 +23,6 @@
     justify-content: space-between;
     cursor: pointer;
     transition: all 0.3s ease;
-
-
-
 }
 
 .Buttons:hover {
@@ -46,11 +42,6 @@
     display: flex;
     align-items: center;
     justify-content: flex-start;
-
-
-
-
-
 }
 
 .work {
@@ -61,15 +52,12 @@
 }
 
 .totalMarks {
-
     color: #1D2939;
     font-weight: 600;
     display: flex;
     align-items: center;
     justify-content: flex-start;
     line-height: 1;
-
-
 }
 
 .numerator {
@@ -78,7 +66,6 @@
     display: inline;
     color: #1C2536;
     margin-bottom: 10px;
-
 }
 
 .denominator {
@@ -87,7 +74,6 @@
     color: #1C2536;
     margin-left: 1px;
     font-weight: 600;
-
 }
 
 /* Container for the progress value */
@@ -98,7 +84,6 @@
     justify-content: center;
     width: 64x;
     height: 64px;
-
 }
 
 /* Style for the SVG */
@@ -149,7 +134,7 @@
 
 /*ANNOUNCEMENTS COMPONENT*/
 
-.Announcements {
+.announcementComp {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -181,23 +166,28 @@
     flex: 1;
 }
 
+.course1{
+    margin: 24px 12px 24px 24px;
+}
+.course2{
+    margin: 24px 24px 24px 12px;
+}
+
 .suggestion {
     display: flex;
     align-items: center;
-    flex-direction: row;
     position: absolute;
-    background: rgba(255, 255, 255, 0.5);
+    top: 12px; /* Adjust as per your requirement */
+    left: 20px; /* Adjust as per your requirement */
+    margin-right: 20px;
+    background: rgba(255, 255, 255, 0.8); /* Slight transparency for effect */
     font-size: 12px;
     font-weight: 500;
-    margin-top: 12px;
-    margin-left: 20px;
-    border: 1px solid;
-    border-color: white;
+    border: 1px solid white;
     border-radius: 41px;
-    padding-top: 3px;
-    padding-bottom: 3px;
-    padding-left: 10px;
-    padding-right: 10px;
+    padding: 4px 10px;
+    z-index: 10; /* Ensure it stays on top */
+    transition: transform 0.3s ease, font-size 0.3s ease;
 }
 
 .suggestionIcon {
@@ -208,6 +198,10 @@
     display: flex;
     width: 100%;
     flex-direction: column;
+    border: 1px solid #EAECF0;
+    border-top: none;
+    border-bottom-right-radius: 12px;
+    border-bottom-left-radius: 12px;
 }
 
 .aboutCourse {
@@ -258,7 +252,9 @@
     flex: 0.5;
     max-width: 239px;
     border-radius: 12px;
-    border: 1px solid #EAECF0;
+    position: relative; /* Ensures .suggestion is positioned within this container */
+    overflow: hidden; /* Hide anything overflowing when shrinking */
+    transition: transform 0.3s ease;
 }
 
 .courseLength,
