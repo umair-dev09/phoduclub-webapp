@@ -9,6 +9,9 @@ import ProfilePicUpdate from './EditProfileComponents/ProfilePicUpdate';
 import TargetExamUpdate from './EditProfileComponents/TargetExamUpdate';
 import TargetYearUpdate from './EditProfileComponents/TargetYearUpdate';
 import PhoneUpdate from './EditProfileComponents/PhoneUpdate';
+
+
+
 function Profile() {
     const [isEditing, setIsEditing] = useState(false);
     const [isNameEditing, setIsNameEditing] = useState(false);

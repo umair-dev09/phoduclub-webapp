@@ -5,10 +5,13 @@ import Image from 'next/image';
 
 function EmailUpdate(){
     let [isOpen, setIsOpen] = useState(false)
+    let [isOpen1, setIsOpen1] = useState(false)
 
   return (
     <div className={styles.updateEmail}>
       <button className={styles.updateEmailButton} onClick={() => setIsOpen(true)}>Update</button>
+      {/* <button className={styles.updateEmailButton} onClick={() => setIsOpen1(true)}>OTP</button> */}
+
       <Dialog open={isOpen} onClose={() => setIsOpen(false)} className="relative z-50">
         <DialogBackdrop className="fixed inset-0 bg-black/30" />
         <div className="fixed inset-0 flex w-screen items-center justify-center p-4 ">
@@ -54,6 +57,28 @@ function EmailUpdate(){
           <div className={styles.commonButtons}>
            <button className={styles.emailCancelBtn}>Cancel</button>
            <button className={styles.emailVerifyBtn}>Verify</button>
+          </div>      
+          </DialogPanel>
+        </div>
+      </Dialog>
+      <Dialog open={isOpen1} onClose={() => setIsOpen1(false)} className="relative z-50">
+        <DialogBackdrop className="fixed inset-0 bg-black/30" />
+        <div className="fixed inset-0 flex w-screen items-center justify-center p-4 ">
+          <DialogPanel transition className={styles.commonDialogBox}>
+           <div className={styles.commonUpdateHeader}> 
+            <h3>OTP Verification</h3>
+            <button onClick={() => setIsOpen1(false)}><Image src='/icons/cancel.svg' alt="profile-image" width={18} height={18} /></button>
+           </div>
+           <p className='text-sm mx-6 text-[#667085] mb-4'>Please enter the verification code we sent to your mobile 99*****99</p>
+           <div className={styles.commonDivider}/> 
+           <div className='mt-4 mb-4'>
+         
+          </div>
+          <div className={styles.commonDivider}/> 
+
+          <div className={styles.commonButtons}>
+           <button className={styles.emailCancelBtn}>Cancel</button>
+           <button className={styles.emailVerifyBtn}>Done</button>
           </div>      
           </DialogPanel>
         </div>

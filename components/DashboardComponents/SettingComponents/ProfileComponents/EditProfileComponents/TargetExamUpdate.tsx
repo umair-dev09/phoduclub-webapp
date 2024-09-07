@@ -40,7 +40,7 @@ function TargetExamUpdate(){
            <div className={styles.commonDivider}/> 
 
            <div className={styles.dropdownWrapper}>
-        <label  htmlFor="target-exam" className={styles.label}>Target Exam</label>
+        <p className={styles.labelTargetExam}>Target Exam</p>
         <Select
           id="target-exam"
           value={selectedExams}
