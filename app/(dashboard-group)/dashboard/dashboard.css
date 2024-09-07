@@ -6,12 +6,22 @@
 }
 
 .title{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
     padding-top: 24px;
     padding-left: 24px;
+    padding-right: 24px;
     color: #1D2939;
     font-size: 18px;
     font-weight: 700;
     width: 100%;
+}
+
+.viewAll{
+    font-size: 14px;
+    font-weight: 600;
+    color: #7400E0;
 }
 
 /*TOP COLUMN*/
@@ -23,10 +33,17 @@
 }
 
 .progressTracker{
+    display: flex;
+    flex-direction: column;
     background: #FFFFFF;
     flex: 1;
-    margin: 5px 10px 20px 10px;
+    margin: 5px 10px 10px 10px;
     border-radius: 12px;
+}
+
+.progress{
+    display: flex;
+    flex: 1;
 }
 
 .announcementBlock{

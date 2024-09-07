@@ -24,7 +24,7 @@ function TestSeries() {
                             src="/images/course_img.svg"
                             alt="course image"
                             width={239}
-                            height={160}
+                            height={160} 
                         />
                     </div>
                 </div>
@@ -34,12 +34,14 @@ function TestSeries() {
                             <p>BITSET Full Course</p>
                         </div>
                         <div className={styles.courseLength}>
-                            <p>3 Lessons</p>&#x2022;<p>3hr 14m</p>
+                            <p>3 Lessons</p>
+                            <span>&#x2022;</span> {/* This adds a bullet between */}
+                            <p>3hr 14m</p>
                         </div>
                     </div>
                     <div className={styles.coursePrice}>
                         <div className={styles.courseAmount}>
-                            <h3>&#8377; 2400</h3>
+                            <h4>&#8377; 2400</h4>
                         </div>
                         <div className={styles.courseBuy}>
                             <button className={styles.buyButton}>Buy Now</button>
@@ -76,12 +78,14 @@ function TestSeries() {
                             <p>BITSET Full Course</p>
                         </div>
                         <div className={styles.courseLength}>
-                            <p>3 Lessons</p>&#x2022;<p>3hr 14m</p>
+                            <p>3 Lessons</p>
+                            <span>&#x2022;</span> {/* This adds a bullet between */}
+                            <p>3hr 14m</p>
                         </div>
                     </div>
                     <div className={styles.coursePrice}>
                         <div className={styles.courseAmount}>
-                            <h3>&#8377; 2400</h3>
+                            <h4>&#8377; 2400</h4>
                         </div>
                         <div className={styles.courseBuy}>
                             <button className={styles.buyButton}>Buy Now</button>
