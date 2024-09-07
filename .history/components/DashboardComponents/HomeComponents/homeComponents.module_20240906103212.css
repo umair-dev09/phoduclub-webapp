@@ -1,0 +1,270 @@
+/* ********Subject Progress Tracker******** */
+
+
+.container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    padding: 20px;
+
+}
+
+.Buttons {
+    background-color: #FFFFFF;
+    border: 1px solid #EAECF0;
+    padding-right: 24px;
+    padding-left: 24px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    border-radius: 12px;
+    border: 1px 0px 0px 0px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    transition: all 0.3s ease;
+
+
+
+    /* Smooth hover transition */
+}
+
+.box1 {
+    padding-top: 10px;
+
+}
+
+.IconContainer {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+
+
+
+
+
+}
+
+.work {
+    color: #667085;
+    font-size: 12px;
+    font-weight: 600;
+    margin: 6px;
+}
+
+.totalMarks {
+
+    color: #1D2939;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    line-height: 1;
+
+
+}
+
+.numerator {
+    font-size: 30px;
+    font-weight: 600;
+    display: inline;
+    color: #1C2536;
+    margin-bottom: 10px;
+
+}
+
+.denominator {
+    font-size: 16px;
+    display: inline;
+    color: #1C2536;
+    margin-left: 1px;
+    font-weight: 600;
+
+}
+
+.circular {
+    transform: rotate(-90deg);
+    width: 100%;
+    height: 100%;
+}
+
+.circleBackground,
+.circleProgress {
+    fill: none;
+    stroke-width: 4;
+    stroke-linecap: round;
+}
+
+.circleBackground {
+    stroke: #e6e6e6;
+}
+
+.circleProgress {
+    stroke: #4db8ff;
+    transition: stroke-dasharray 0.3s ease;
+}
+
+.label {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 1.2rem;
+    text-align: center;
+}
+
+
+
+
+/* **********XXXXXXXXXX********** */
+
+
+
+
+
+/*ANNOUNCEMENTS COMPONENT*/
+
+.Announcements {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    flex: 1;
+}
+
+.noAnnouncement1 {
+    font-size: 16px;
+    font-weight: 700;
+}
+
+
+.noAnnouncement2 {
+    font-size: 14px;
+    font-weight: 400;
+    justify-content: center;
+}
+
+/*ANNOUNCEMENTS COMPONENT*/
+
+
+/*TEST SERIES COMPONENT*/
+
+.testSeriesComp {
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+    flex: 1;
+}
+
+.suggestion {
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+    position: absolute;
+    background: rgba(255, 255, 255, 0.5);
+    font-size: 12px;
+    font-weight: 500;
+    margin-top: 12px;
+    margin-left: 20px;
+    border: 1px solid;
+    border-color: white;
+    border-radius: 41px;
+    padding-top: 3px;
+    padding-bottom: 3px;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+.suggestionIcon {
+    margin-right: 5px;
+}
+
+.courseInfo {
+    display: flex;
+    width: 100%;
+    flex-direction: column;
+}
+
+.aboutCourse {
+    margin-top: 16px;
+}
+
+.courseName {
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 24px;
+    margin-left: 16px;
+}
+
+.courseLength {
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 18px;
+    color: #667085;
+}
+
+.coursePrice {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 8px;
+    margin-bottom: 16px;
+}
+
+.courseAmount {
+    display: flex;
+    align-items: end;
+}
+
+.buyButton {
+    font-size: 12px;
+    font-weight: 600;
+    padding: 10px 14px 10px 14px;
+    border-radius: 6px;
+    border: 1.5px solid #9012FF;
+    color: #9012FF;
+}
+
+.course1,
+.course2 {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    flex: 0.5;
+    max-width: 239px;
+    border-radius: 12px;
+    border: 1px solid #EAECF0;
+}
+
+.courseLength,
+.coursePrice {
+    margin-left: 16px;
+    margin-right: 16px;
+}
+
+.courseLength,
+.coursePrice,
+.courseAmount {
+    display: flex;
+    flex-direction: row;
+}
+
+
+/*TEST SERIES COMPONENT*/
+
+
+/* COURSE COMPONENT */
+
+.courseComp {
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+    flex: 1;
+}
+
+
+/* COURSE COMPONENT */
+
+
+
+/*ANNOUNCEMENTS COMPONENT*/
