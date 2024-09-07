@@ -18,16 +18,12 @@
 
 .profilePic{
     border-radius: 50%;
-    width: 33px;
-    height: 33px;
-    min-width: 33px;
-    min-height: 33px;
-    object-fit: cover;
-    aspect-ratio: square;
     margin-right: 10px;
+    
 }
 .headerInfo{
-    margin-bottom: 2px;
+  margin-left: 3px;
+  margin-right: 3px
 }
 .arrowButton{
     width: 22px;
@@ -156,15 +152,24 @@ align-items: center;
     align-items: center;
     justify-content: center;
 }
+.headerName{
+    font-weight: 600;
+    font-size: 14px;
+    margin-bottom: -2px;
+}
+.headerEmail{
+    font-size: 13px;
+    color: #667085;
+}
 
 .help{
     margin-right: 10px;
 }
 
 .profileParentLyt{
-  position: relative;
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
+  align-items: center;
 }
 .myProfButton{
     display: flex;
@@ -207,22 +212,26 @@ align-items: center;
     align-items: center;
 }
 
+.greeting{
+    font-size: 18px;
+}
 .headtab {
     display: flex;
     width: 100%;
     flex-direction: row;
     align-items: center;
-    justify-content: center;
-    padding: 0 20px;
+    justify-content: space-between;
+    padding-left: 25px;
+    padding-right: 25px;
     background: #FFFFFF;
-    height: 60px;
+    height: 65px;
     border-radius: 5px 5px 0 0;
-    margin: auto;
     border-width: 1px;
     border-bottom-color: #e9ebf0;
     border-top-color: #FFFFFF;
     border-right-color: #FFFFFF;
     border-left-color: #FFFFFF;
+    
 }
 
 .collapseIconRight {

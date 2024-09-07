@@ -173,11 +173,11 @@ function VerifyOtp() {
           const profilePic = getRandomImageUrl(imageUrls);
 
           // Store user data in Firestore
-          await setDoc(doc(db, "users", userId), {
+          await setDoc(doc(db, "users", authId), {
               name: firstName + " " + lastName,
               phone: phoneNumber,
               email: email,
-              authId: authId,
+              uniqueId: authId,
               userId: userId,
               profilePic: profilePic
           });
@@ -185,7 +185,7 @@ function VerifyOtp() {
           toast.success("Correct OTP! You are logged in.");
   
           // Redirect to /signup/onelaststep with userId as a query parameter
-          router.push(`/signup/onelaststep?userId=${userId}`);
+          router.push(`/signup/onelaststep?userId=${authId}`);
         }
       } catch (error) {
           console.error("Error verifying OTP:", error);
