@@ -89,8 +89,8 @@
 /* Style for the SVG */
 .circular {
     transform: rotate(360deg);
-    width: 100%;
-    height: 100%;
+    width: 64px;
+    height: 64px;
 }
 
 /* Style for the circle paths */
@@ -134,12 +134,13 @@
 
 /*ANNOUNCEMENTS COMPONENT*/
 
-.announcementComp {
+.noAnnouncements {
     display: flex;
     align-items: center;
     justify-content: center;
     flex-direction: column;
     flex: 1;
+    display: none;
 }
 
 .noAnnouncement1 {
@@ -162,9 +163,15 @@
 
 .testSeriesComp {
     display: flex;
+    flex: 1;
+}
+
+.beforeBuying {
+    display: flex;
     align-items: center;
     justify-content: space-evenly;
     flex: 1;
+    display: none;
 }
 
 .course1 {
@@ -226,7 +233,10 @@
     font-weight: 400;
     line-height: 18px;
     color: #667085;
-
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    /* Add a gap between elements */
 }
 
 
@@ -259,7 +269,6 @@
     justify-content: center;
     flex-direction: column;
     flex: 0.5;
-    max-width: 239px;
     border-radius: 12px;
     position: relative;
     /* Ensures .suggestion is positioned within this container */
