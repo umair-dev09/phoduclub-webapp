@@ -226,10 +226,8 @@
     font-weight: 400;
     line-height: 18px;
     color: #667085;
-
+    font-size: 12px;
 }
-
-
 
 .coursePrice {
     display: flex;

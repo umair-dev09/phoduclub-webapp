@@ -229,7 +229,10 @@
 
 }
 
+.courseLength1 {
+    font-size: 12px;
 
+}
 
 .coursePrice {
     display: flex;

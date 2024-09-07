@@ -229,7 +229,11 @@
 
 }
 
+.courseLength1,
+.courseLength2 {
+    font-size: 12px;
 
+}
 
 .coursePrice {
     display: flex;
