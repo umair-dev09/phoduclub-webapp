@@ -1,0 +1,96 @@
+/* Container for announcements */
+.announcementContainer {
+    height: 300px;
+
+
+
+
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    padding-top: 20px;
+    border-bottom-right-radius: 10px;
+    border-bottom-right-radius: 10px;
+
+
+}
+
+.allinone {
+    margin-left: 24px;
+
+}
+
+/* Each announcement */
+.announcement {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 20px;
+    padding-bottom: 20px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* Profile image styling */
+.profileImg {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin-right: 15px;
+    /* Space between the image and the text */
+}
+
+/* Announcement text section */
+.announcementContent {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+
+/* Name styling */
+.announcementName {
+    font-weight: 500;
+    font-size: 14px;
+    color: #1F2937;
+    margin: 0;
+}
+
+.announcementTime {
+    font-size: 12px;
+    color: #475467;
+    font-weight: 400;
+    margin-top: 2px;
+}
+
+/* Title of the announcement */
+.announcementTitle {
+    font-weight: 600;
+    font-size: 14px;
+    margin-top: 5px;
+    /* Space between time and title */
+    margin-left: 0px;
+    /* Ensure it's aligned with the profile image */
+    color: #1F2937;
+    margin-top: 10px;
+    margin-left: -55px;
+}
+
+/* Body text */
+.announcementBody {
+    font-size: 14px;
+    color: #4B5563;
+    font-weight: 400;
+    margin-top: 3px;
+
+    /* Space between title and body */
+    margin-left: -55px;
+    /* Ensure body text is aligned to the left */
+}
+
+.divider {
+    border-top: 1px solid #ccc;
+    /* Explicitly set a border */
+    margin: 10px 0;
+    /* Add some space above and below */
+    width: 100%;
+    /* Make sure the line spans the entire width */
+}
