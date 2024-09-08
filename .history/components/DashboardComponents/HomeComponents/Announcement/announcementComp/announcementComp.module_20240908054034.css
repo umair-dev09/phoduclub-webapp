@@ -1,0 +1,5 @@
+.announce1 {
+    display: flex;
+    justify-content: left;
+    align-items: flex-start;
+}

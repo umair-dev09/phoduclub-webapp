@@ -1,4 +1,4 @@
-/* ********Subject Progress Tracker******** */
+/* *******Subject Progress Tracker******* */
 
 
 .container {
@@ -6,7 +6,7 @@
     flex: 1;
     grid-template-columns: 1fr 1fr;
     gap: 20px;
-    padding: 20px;
+    padding: 24px;
 }
 
 .Buttons {
@@ -89,8 +89,8 @@
 /* Style for the SVG */
 .circular {
     transform: rotate(360deg);
-    width: 100%;
-    height: 100%;
+    width: 64px;
+    height: 64px;
 }
 
 /* Style for the circle paths */
@@ -126,20 +126,29 @@
 
 
 
-/* ***********************************************XXXXXXXXXXXXXXXXXXXXXXXXXXXXXX*********************************************** */
+/* **********************************************XXXXXXXXXXXXXXXXXXXXXXXXXXXXXX********************************************** */
 
 
 
 
 
-/*ANNOUNCEMENTS COMPONENT*/
-
+/* ANNOUNCEMENTS COMPONENT */
 .announcementComp {
+
+    display: flex;
+    flex: 1;
+
+
+
+}
+
+.noAnnouncements {
     display: flex;
     align-items: center;
     justify-content: center;
     flex-direction: column;
     flex: 1;
+    display: none;
 }
 
 .noAnnouncement1 {
@@ -154,22 +163,37 @@
     justify-content: center;
 }
 
-/*ANNOUNCEMENTS COMPONENT*/
+
+/* ANNOUNCEMENTS COMPONENT */
 
 
-/*TEST SERIES COMPONENT*/
+/* TEST SERIES COMPONENT */
 
 .testSeriesComp {
+    display: flex;
+    flex: 1;
+}
+
+.beforeBuying {
     display: flex;
     align-items: center;
     justify-content: space-evenly;
     flex: 1;
 }
 
-.course1{
+.afterBuying {
+    display: flex;
+    flex-direction: column;
+    align-items: top;
+    flex: 1;
+    display: none;
+}
+
+.course1 {
     margin: 24px 12px 24px 24px;
 }
-.course2{
+
+.course2 {
     margin: 24px 24px 24px 12px;
 }
 
@@ -177,16 +201,20 @@
     display: flex;
     align-items: center;
     position: absolute;
-    top: 12px; /* Adjust as per your requirement */
-    left: 20px; /* Adjust as per your requirement */
+    top: 12px;
+    /* Adjust as per your requirement */
+    left: 20px;
+    /* Adjust as per your requirement */
     margin-right: 20px;
-    background: rgba(255, 255, 255, 0.8); /* Slight transparency for effect */
+    background: rgba(255, 255, 255, 0.8);
+    /* Slight transparency for effect */
     font-size: 12px;
     font-weight: 500;
     border: 1px solid white;
     border-radius: 41px;
     padding: 4px 10px;
-    z-index: 10; /* Ensure it stays on top */
+    z-index: 10;
+    /* Ensure it stays on top */
     transition: transform 0.3s ease, font-size 0.3s ease;
 }
 
@@ -220,6 +248,10 @@
     font-weight: 400;
     line-height: 18px;
     color: #667085;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    /* Add a gap between elements */
 }
 
 .coursePrice {
@@ -227,6 +259,8 @@
     justify-content: space-between;
     margin-top: 8px;
     margin-bottom: 16px;
+    font-size: 16px;
+    font-weight: 600;
 }
 
 .courseAmount {
@@ -239,7 +273,7 @@
     font-weight: 600;
     padding: 10px 14px 10px 14px;
     border-radius: 6px;
-    border: 1.5px solid #9012FF;
+    border: 2px solid #9012FF;
     color: #9012FF;
 }
 
@@ -250,10 +284,11 @@
     justify-content: center;
     flex-direction: column;
     flex: 0.5;
-    max-width: 239px;
     border-radius: 12px;
-    position: relative; /* Ensures .suggestion is positioned within this container */
-    overflow: hidden; /* Hide anything overflowing when shrinking */
+    position: relative;
+    /* Ensures .suggestion is positioned within this container */
+    overflow: hidden;
+    /* Hide anything overflowing when shrinking */
     transition: transform 0.3s ease;
 }
 
@@ -278,14 +313,139 @@
 
 .courseComp {
     display: flex;
+    flex: 1;
+}
+
+.beforeBuying {
+    display: flex;
     align-items: center;
     justify-content: space-evenly;
     flex: 1;
 }
 
+.afterBuying {
+    display: flex;
+    flex-direction: column;
+    align-items: top;
+    flex: 1;
+    display: none;
+}
+
+.course1 {
+    margin: 24px 12px 24px 24px;
+}
+
+.course2 {
+    margin: 24px 24px 24px 12px;
+}
+
+.suggestion {
+    display: flex;
+    align-items: center;
+    position: absolute;
+    top: 12px;
+    /* Adjust as per your requirement */
+    left: 20px;
+    /* Adjust as per your requirement */
+    margin-right: 20px;
+    background: rgba(255, 255, 255, 0.8);
+    /* Slight transparency for effect */
+    font-size: 12px;
+    font-weight: 500;
+    border: 1px solid white;
+    border-radius: 41px;
+    padding: 4px 10px;
+    z-index: 10;
+    /* Ensure it stays on top */
+    transition: transform 0.3s ease, font-size 0.3s ease;
+}
+
+.suggestionIcon {
+    margin-right: 5px;
+}
+
+.courseInfo {
+    display: flex;
+    width: 100%;
+    flex-direction: column;
+    border: 1px solid #EAECF0;
+    border-top: none;
+    border-bottom-right-radius: 12px;
+    border-bottom-left-radius: 12px;
+}
+
+.aboutCourse {
+    margin-top: 16px;
+}
+
+.courseName {
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 24px;
+    margin-left: 16px;
+}
+
+.courseLength {
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 18px;
+    color: #667085;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    /* Add a gap between elements */
+}
+
+.coursePrice {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 8px;
+    margin-bottom: 16px;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.courseAmount {
+    display: flex;
+    align-items: end;
+}
+
+.buyButton {
+    font-size: 12px;
+    font-weight: 600;
+    padding: 10px 14px 10px 14px;
+    border-radius: 6px;
+    border: 2px solid #9012FF;
+    color: #9012FF;
+}
+
+.course1,
+.course2 {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    flex: 0.5;
+    border-radius: 12px;
+    position: relative;
+    /* Ensures .suggestion is positioned within this container */
+    overflow: hidden;
+    /* Hide anything overflowing when shrinking */
+    transition: transform 0.3s ease;
+}
+
+.courseLength,
+.coursePrice {
+    margin-left: 16px;
+    margin-right: 16px;
+}
+
+.courseLength,
+.coursePrice,
+.courseAmount {
+    display: flex;
+    flex-direction: row;
+}
+
 
 /* COURSE COMPONENT */
-
-
-
-/*ANNOUNCEMENTS COMPONENT*/

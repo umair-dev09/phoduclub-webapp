@@ -1,0 +1,18 @@
+.main {
+    display: flex;
+    flex: 1;
+    width: 100%;
+    position: relative;
+    /* Important to position .announce1 inside .main */
+}
+
+.announce1 {
+    position: absolute;
+
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    /* To align items vertically */
+    gap: 10px;
+    /* Adds space between elements */
+}

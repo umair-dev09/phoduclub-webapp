@@ -29,6 +29,7 @@ export default function AnalyticsPage() {
                     <div className="testSeriesBlock">
                          <div className="title">
                               <h3>Test Series</h3>
+                              <button className="viewAll">View all</button>
                          </div>
                          <div className="testSeries">
                               <TestSeries/>
@@ -37,6 +38,7 @@ export default function AnalyticsPage() {
                     <div className="course">
                          <div className="title">
                               <h3>Courses</h3>
+                              <button className="viewAll">View all</button>
                          </div>
                          <div className="courses">
                               <Course/>

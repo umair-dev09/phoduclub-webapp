@@ -6,12 +6,23 @@
 }
 
 .title{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
     padding-top: 24px;
     padding-left: 24px;
+    padding-right: 24px;
     color: #1D2939;
     font-size: 18px;
     font-weight: 700;
     width: 100%;
+}
+
+.viewAll{
+    font-size: 14px;
+    font-weight: 600;
+    color: #7400E0;
+    cursor: pointer;
 }
 
 /*TOP COLUMN*/
@@ -22,12 +33,25 @@
     flex: 1;
 }
 
+/* PROGRESS TRACKER SECTION */
+
 .progressTracker{
+    display: flex;
+    flex-direction: column;
     background: #FFFFFF;
     flex: 1;
-    margin: 5px 10px 20px 10px;
+    margin: 5px 10px 10px 10px;
     border-radius: 12px;
 }
+
+.progress{
+    display: flex;
+    flex: 1;
+}
+
+/* PROGRESS TRACKER SECTION */
+
+/* ANNOUNCEMENT SCETION */
 
 .announcementBlock{
     display: flex;
@@ -47,6 +71,8 @@
     border-radius: 0px 0px 12px 12px;
 }
 
+/* ANNOUNCEMENT SCETION */
+
 /*xxxxxxxxxxxxxxxxx**************xxxxxxxxxxxx*/
 
 /*bottom column*/
@@ -56,6 +82,8 @@
     flex-direction: row;
     flex: 1;
 }
+
+/* TEST SERIES SECTION */
 
 .testSeriesBlock{
     display: flex;
@@ -68,11 +96,14 @@
 
 .testSeries{
     display: flex;
-    align-items: center;
     justify-content: center;
     flex: 1;
     border-radius: 0px 0px 12px 12px;
 }
+
+/* TEST SERIES SECTION */
+
+/* COURSE SECTION */
 
 .course{
     display: flex;
@@ -85,11 +116,12 @@
 
 .courses{
     display: flex;
-    align-items: center;
     justify-content: center;
     flex: 1;
     border-radius: 0px 0px 12px 12px;
 }
+
+/* COURSE SECTION */
 
 /*++++++++++++++++****************++++++++++++++++*/
 
