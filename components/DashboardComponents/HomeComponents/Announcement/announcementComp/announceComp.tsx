@@ -1,4 +1,3 @@
-
 import React from 'react';
 import styles from './announcementComp.module.css';
 import Image from 'next/image';
