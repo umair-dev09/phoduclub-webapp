@@ -2,14 +2,24 @@
 
 import styles from './Profile.module.css';
 import Image from 'next/image';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Target from '@/components/DashboardComponents/SettingComponents/ProfileComponents/Target';
 import EmailUpdate from './EditProfileComponents/EmailUpdate';
 import ProfilePicUpdate from './EditProfileComponents/ProfilePicUpdate';
 import TargetExamUpdate from './EditProfileComponents/TargetExamUpdate';
 import TargetYearUpdate from './EditProfileComponents/TargetYearUpdate';
 import PhoneUpdate from './EditProfileComponents/PhoneUpdate';
+import { auth } from '@/firebase';
+import { getFirestore, doc, getDoc } from 'firebase/firestore';
+import { onAuthStateChanged, User } from 'firebase/auth'; // Import the User type from Firebase
+import { userAgent } from 'next/server';
+import LoadingData from '@/components/Loading';
 
+type UserData = {
+    name: string | null;
+    // userId: string | null;
+    // profilePic: string | null;
+};
 
 
 function Profile() {
@@ -19,6 +29,61 @@ function Profile() {
     const [isPhoneEditing, setIsPhoneEditing] = useState(false);
     const [isYearEditing, setIsYearEditing] = useState(false);
     const [copied, setCopied] = useState(false);
+
+    const [userData, setUserData] = useState<UserData | null>(null); 
+    const [loading, setLoading] = useState(true); // Track loading state
+    const [error, setError] = useState(false); // Track error state
+    const [user, setUser] = useState<User | null>(null); 
+    const db = getFirestore();
+  
+    useEffect(() => {
+        const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+            if (currentUser) {
+                setUser(currentUser);
+            } else {
+                console.error('No user is logged in');
+                setError(true); // Set error if no user is logged in
+                setLoading(false); // Ensure loading is set to false even when no user is found
+            }
+        });
+    
+        return () => unsubscribe();
+    }, []);
+  
+    useEffect(() => {
+        const fetchUserData = async () => {
+            try {
+                if (user) {
+                    const uniqueId = user.uid;
+                    const userDoc = doc(db, `users/${uniqueId}`);
+                    const userSnapshot = await getDoc(userDoc);
+    
+                    if (userSnapshot.exists()) {
+                        const data = userSnapshot.data() as UserData; 
+                        setUserData(data);
+                    } else {
+                        console.error('No user data found!');
+                        setError(true); // Set error if no user data is found
+                    }
+                }
+            } catch (error) {
+                console.error('Error fetching user data:', error);
+                setError(true); // Set error if fetching data fails
+            } finally {
+                setLoading(false); // Ensure loading is set to false after fetching data
+            }
+        };
+    
+        if (user) {
+            fetchUserData();
+        }
+    }, [user, db]);
+  
+    // Display loading or error component while data is being fetched or if there's an error
+    if (loading || error) {
+        return <LoadingData />;
+    }
+
 
     const handleEditProfile = () => {
         setIsEditing(!isEditing);
@@ -50,7 +115,7 @@ function Profile() {
                                 {/* Name and ID */}
                                 {!isEditing && (
                                     <div className={styles.johnName}>
-                                        <span className={styles.actualProfileName}>John Smith</span>
+                                        <span className={styles.actualProfileName} >{userData?.name}</span>
                                     </div>
                                 )}
                                 {!isEditing && (

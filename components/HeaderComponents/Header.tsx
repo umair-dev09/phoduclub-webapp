@@ -7,6 +7,7 @@ import { auth } from '@/firebase';
 import { getFirestore, doc, getDoc } from 'firebase/firestore';
 import { useEffect, useState } from 'react';
 import { onAuthStateChanged, User } from 'firebase/auth'; // Import the User type from Firebase
+import {Skeleton} from "@nextui-org/skeleton";
 
 type UserData = {
     name: string | null;
