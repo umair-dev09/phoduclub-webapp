@@ -184,21 +184,19 @@ function TabComps() {
                 <hr className={styles.actualDivider} />
             </div>
             <div className={styles.tabs}>
-                <div className={styles.tooltip}>
 
-                    <button
-                        onClick={() => handleTabClick('dashboard', '/dashboard')}
-                        className={`${styles.DashboardButton} ${activeTab === 'dashboard' ? styles.active : ''}`}
-                    >
-                        <Image className={styles.dashboardIcon} src={activeTab === 'dashboard' ? "/icons/dashboard.svg" : "/icons/dashboard-2.svg"}
-                            width={22} height={22} alt="Dashboard Icon"
-                        />
-                        {!isCollapsed && <p className={styles.text}>Dashboard</p>}
-                        {isCollapsed && (
-                            <div className={styles.tooltipText}>Dashboard</div>
-                        )}
-                    </button>
-                </div>
+                <button
+                    onClick={() => handleTabClick('dashboard', '/dashboard')}
+                    className={`${styles.DashboardButton} ${activeTab === 'dashboard' ? styles.active : ''}`}
+                >
+                    <Image className={styles.dashboardIcon} src={activeTab === 'dashboard' ? "/icons/dashboard.svg" : "/icons/dashboard-2.svg"}
+                        width={22} height={22} alt="Dashboard Icon"
+                    />
+                    {!isCollapsed && <p className={styles.text}>Dashboard</p>}
+                    {isCollapsed && (
+                        <div className={styles.tooltipText}>Dashboard</div>
+                    )}
+                </button>
 
                 <div className={styles.tooltip}>
                     <button
