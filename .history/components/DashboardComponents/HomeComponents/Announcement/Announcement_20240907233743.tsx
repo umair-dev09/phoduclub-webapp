@@ -1,6 +1,6 @@
 "use client";
 
-import AnnounceComp from '@/components/DashboardComponents/HomeComponents/Announcement/announcementComp/AnnounceComp';
+import AnnounceComp from '@/components/DashboardComponents/HomeComponents/Announcement/announcementComp/announceComp';
 import styles from '../homeComponents.module.css';
 import Image from 'next/image';
 

@@ -18,23 +18,7 @@ const announcements = [
     time: "3:24 PM",
     title: "Mock test series are LIVE",
     body: "Our new mock test series is now live. Check it out now.",
-    imageUrl: "/icons/RobertFox.png",
-  },
-  {
-    id: 1,
-    name: "Robert Fox",
-    time: "3:24 PM",
-    title: "Mock test series are LIVE",
-    body: "Our new mock test series is now live. Check it out now.",
-    imageUrl: "/icons/RobertFox.png",
-  },
-  {
-    id: 1,
-    name: "Robert Fox",
-    time: "3:24 PM",
-    title: "Mock test series are LIVE",
-    body: "Our new mock test series is now live. Check it out now.",
-    imageUrl: "/icons/RobertFox.png",
+    imageUrl: "/icons/JennyWillsion.png",
   },
 
 

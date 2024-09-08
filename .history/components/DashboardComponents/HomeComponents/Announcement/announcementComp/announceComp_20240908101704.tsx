@@ -2,7 +2,6 @@ import React from 'react';
 import styles from './announcementComp.module.css';
 import Image from 'next/image';
 
-
 const announcements = [
   {
     id: 1,
@@ -13,43 +12,27 @@ const announcements = [
     imageUrl: "/icons/RobertFox.png",
   },
   {
-    id: 1,
-    name: "Robert Fox",
-    time: "3:24 PM",
-    title: "Mock test series are LIVE",
-    body: "Our new mock test series is now live. Check it out now.",
-    imageUrl: "/icons/RobertFox.png",
+    id: 2,
+    name: "Jenny Wilson",
+    time: "Yesterday",
+    title: "Mentorship Program Launch",
+    body: "Get one-on-one guidance from top engineers and educators.",
+    imageUrl: "/icons/JennyWillsion.png",
   },
-  {
-    id: 1,
-    name: "Robert Fox",
-    time: "3:24 PM",
-    title: "Mock test series are LIVE",
-    body: "Our new mock test series is now live. Check it out now.",
-    imageUrl: "/icons/RobertFox.png",
-  },
-  {
-    id: 1,
-    name: "Robert Fox",
-    time: "3:24 PM",
-    title: "Mock test series are LIVE",
-    body: "Our new mock test series is now live. Check it out now.",
-    imageUrl: "/icons/RobertFox.png",
-  },
-
-
-
 ];
 
 const Announcement = () => {
   return (
     <div className={styles.announcementContainer}>
       {announcements.length === 0 ? (
-        <p className={styles.noAnnouncements}><Announcement /></p>
+        <div className={styles.noAnnouncements}>
+          <Image src='/images/no_announcement_img.svg' alt='No announcement image' width={140} height={140} />
+          <h3>No announcements for now</h3>
+          <p>Will show relevant announcements here</p>
+        </div>
       ) : (
-        announcements.map((announcement, index) => (
-          <div key={announcement.id}
-            className={`${styles.announcement} ${index === 0 ? styles.firstAnnouncement : ''}`}>
+        announcements.map(announcement => (
+          <div key={announcement.id} className={styles.announcement}>
             <Image
               className={styles.profileImg}
               src={announcement.imageUrl}

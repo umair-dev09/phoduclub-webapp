@@ -13,31 +13,13 @@ const announcements = [
     imageUrl: "/icons/RobertFox.png",
   },
   {
-    id: 1,
-    name: "Robert Fox",
-    time: "3:24 PM",
-    title: "Mock test series are LIVE",
-    body: "Our new mock test series is now live. Check it out now.",
+    id: 2,
+    name: "Jenny Wilson",
+    time: "Yesterday",
+    title: "Mentorship Program Launch",
+    body: "Get one-on-one guidance from top engineers and educators.",
     imageUrl: "/icons/RobertFox.png",
   },
-  {
-    id: 1,
-    name: "Robert Fox",
-    time: "3:24 PM",
-    title: "Mock test series are LIVE",
-    body: "Our new mock test series is now live. Check it out now.",
-    imageUrl: "/icons/RobertFox.png",
-  },
-  {
-    id: 1,
-    name: "Robert Fox",
-    time: "3:24 PM",
-    title: "Mock test series are LIVE",
-    body: "Our new mock test series is now live. Check it out now.",
-    imageUrl: "/icons/RobertFox.png",
-  },
-
-
 
 ];
 
@@ -47,9 +29,8 @@ const Announcement = () => {
       {announcements.length === 0 ? (
         <p className={styles.noAnnouncements}><Announcement /></p>
       ) : (
-        announcements.map((announcement, index) => (
-          <div key={announcement.id}
-            className={`${styles.announcement} ${index === 0 ? styles.firstAnnouncement : ''}`}>
+        announcements.map(announcement => (
+          <div key={announcement.id} className={styles.announcement}>
             <Image
               className={styles.profileImg}
               src={announcement.imageUrl}

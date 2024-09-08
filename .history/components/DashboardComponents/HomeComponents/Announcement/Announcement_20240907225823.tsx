@@ -1,6 +1,6 @@
 "use client";
 
-import AnnounceComp from '@/components/DashboardComponents/HomeComponents/Announcement/announcementComp/AnnounceComp';
+import announcemComp from '@components/DashboardComponents/HomeComponents/Announcement/announcementComp/announceComp';
 import styles from '../homeComponents.module.css';
 import Image from 'next/image';
 
@@ -13,7 +13,7 @@ function Announcement() {
                 <p className={styles.noAnnouncement2}>Will show relevant announcements here</p>
             </div>
             <div>
-                <AnnounceComp />
+                <announcementComp />
             </div>
         </div>
     )

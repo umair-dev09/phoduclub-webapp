@@ -1,0 +1,13 @@
+.main {
+    display: flex;
+    flex: 1;
+    width: 100%;
+
+
+}
+
+.announce1 {
+    position: absolute;
+    display: flex;
+    justify-content: right;
+}

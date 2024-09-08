@@ -1,21 +1,17 @@
 /* Container for announcements */
-.announcementContainer {
+.announcement-container {
     width: 100%;
     max-width: 600px;
     height: 400px;
     /* Fixed height to enable scrolling */
-
-
-    flex: 1;
+    margin: 0 auto;
+    padding: 20px;
     background-color: #fff;
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    padding-top: 20px;
     overflow-y: auto;
     overflow-x: hidden;
     /* Enable vertical scrolling */
-    display: flex;
-    flex-direction: column;
 }
 
 /* Each announcement */
@@ -23,26 +19,16 @@
     display: flex;
     align-items: flex-start;
     margin-bottom: 20px;
-    padding-bottom: 20px;
-    border-bottom: 1px solid #E0E0E0;
-    /* Divider line */
-    width: 100%;
-    /* Ensure announcements fit the container */
-    box-sizing: border-box;
-    /* Include padding and border in width */
+
 }
 
-
-/* Divider line only for the first announcement */
-/* .firstAnnouncement {
+.firstAnnouncement {
     border-bottom: 1px solid #E0E0E0;
-    margin-left: 10px;
-    margin-right: 10px;
     /* Divider line color and style */
-
+}
 
 /* Profile image styling */
-.profileImg {
+.profile-img {
     width: 40px;
     height: 40px;
     border-radius: 50%;
@@ -50,47 +36,34 @@
 }
 
 /* Announcement text section */
-.announcementContent {
+.announcement-content {
     display: flex;
     flex-direction: column;
-    flex: 1;
 }
 
-/* Updated Name styling */
-.announcementName {
-    font-weight: bolder;
-    /* Updated font-weight */
-    font-size: 14px;
-    /* Updated font-size */
-    color: #1F2937;
-    /* Updated color */
+/* Name and time styling */
+.announcement-name {
+    font-weight: bold;
+    font-size: 16px;
     margin: 0;
 }
 
-.announcementTime {
+.announcement-time {
     font-size: 12px;
     color: #7D7D7D;
     margin-top: 2px;
 }
 
 /* Title of the announcement */
-.announcementTitle {
+.announcement-title {
     font-weight: bold;
     font-size: 18px;
     margin: 10px 0 5px;
 }
 
 /* Body text */
-.announcementBody {
+.announcement-body {
     font-size: 14px;
     color: #4A4A4A;
     margin: 0;
-}
-
-/* No announcements message */
-.noAnnouncements {
-    text-align: center;
-    padding: 20px;
-    color: #888;
-    font-size: 16px;
 }

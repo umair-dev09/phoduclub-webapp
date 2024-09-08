@@ -155,6 +155,10 @@
     justify-content: center;
 }
 
+.main {
+    display: flex;
+    flex: 1;
+}
 
 /*ANNOUNCEMENTS COMPONENT*/
 

@@ -14,8 +14,6 @@
     overflow-y: auto;
     overflow-x: hidden;
     /* Enable vertical scrolling */
-    display: flex;
-    flex-direction: column;
 }
 
 /* Each announcement */
@@ -23,23 +21,15 @@
     display: flex;
     align-items: flex-start;
     margin-bottom: 20px;
+    /* Remove border if not needed */
     padding-bottom: 20px;
-    border-bottom: 1px solid #E0E0E0;
-    /* Divider line */
-    width: 100%;
-    /* Ensure announcements fit the container */
-    box-sizing: border-box;
-    /* Include padding and border in width */
 }
 
-
 /* Divider line only for the first announcement */
-/* .firstAnnouncement {
+.firstAnnouncement {
     border-bottom: 1px solid #E0E0E0;
-    margin-left: 10px;
-    margin-right: 10px;
     /* Divider line color and style */
-
+}
 
 /* Profile image styling */
 .profileImg {
@@ -53,7 +43,6 @@
 .announcementContent {
     display: flex;
     flex-direction: column;
-    flex: 1;
 }
 
 /* Updated Name styling */
