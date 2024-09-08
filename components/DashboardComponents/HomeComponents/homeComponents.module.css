@@ -132,7 +132,7 @@
 
 
 
-/*ANNOUNCEMENTS COMPONENT*/
+/* ANNOUNCEMENTS COMPONENT */
 .announcementComp {
 
     display: flex;
@@ -164,10 +164,10 @@
 }
 
 
-/*ANNOUNCEMENTS COMPONENT*/
+/* ANNOUNCEMENTS COMPONENT */
 
 
-/*TEST SERIES COMPONENT*/
+/* TEST SERIES COMPONENT */
 
 .testSeriesComp {
     display: flex;
@@ -179,7 +179,6 @@
     align-items: center;
     justify-content: space-evenly;
     flex: 1;
-    display: none;
 }
 
 .afterBuying {
@@ -187,6 +186,7 @@
     flex-direction: column;
     align-items: top;
     flex: 1;
+    display: none;
 }
 
 .course1 {
@@ -321,7 +321,6 @@
     align-items: center;
     justify-content: space-evenly;
     flex: 1;
-    display: none;
 }
 
 .afterBuying {
@@ -329,6 +328,7 @@
     flex-direction: column;
     align-items: top;
     flex: 1;
+    display: none;
 }
 
 .course1 {
