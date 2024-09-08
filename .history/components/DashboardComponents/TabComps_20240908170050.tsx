@@ -184,21 +184,28 @@ function TabComps() {
                 <hr className={styles.actualDivider} />
             </div>
             <div className={styles.tabs}>
-                <div className={styles.tooltip}>
 
-                    <button
-                        onClick={() => handleTabClick('dashboard', '/dashboard')}
-                        className={`${styles.DashboardButton} ${activeTab === 'dashboard' ? styles.active : ''}`}
-                    >
-                        <Image className={styles.dashboardIcon} src={activeTab === 'dashboard' ? "/icons/dashboard.svg" : "/icons/dashboard-2.svg"}
-                            width={22} height={22} alt="Dashboard Icon"
-                        />
-                        {!isCollapsed && <p className={styles.text}>Dashboard</p>}
-                        {isCollapsed && (
-                            <div className={styles.tooltipText}>Dashboard</div>
-                        )}
-                    </button>
-                </div>
+                <button
+                    onClick={() => handleTabClick('dashboard', '/dashboard')}
+                    className={`${styles.DashboardButton} ${activeTab === 'dashboard' ? styles.active : ''}`}
+                >
+                    <Image className={styles.dashboardIcon} src={activeTab === 'dashboard' ? "/icons/dashboard.svg" : "/icons/dashboard-2.svg"}
+                        width={22} height={22} alt="Dashboard Icon"
+
+                    />
+                    {!isCollapsed && <p className={styles.text}>Dashboard</p>}
+                    {
+                        isCollapsed && (
+                            <div className={styles.tooltip}>
+                                <span className={styles.tooltipText}>Dashboard</span>
+
+                            </div>
+                        )
+                    }
+
+                </button>
+
+
 
                 <div className={styles.tooltip}>
                     <button
@@ -209,11 +216,8 @@ function TabComps() {
                             width={22} height={22} alt="Learn Icon" />
                         {!isCollapsed && <p className={styles.text}>Learn</p>}
                     </button>
-                    {isCollapsed && (
-                        <div className={styles.tooltipText}>Learn</div>
-                    )}
+                    <div className={styles.tooltipText}>Learn</div>
                 </div>
-
                 <div className={styles.tooltip}>
                     <button
                         onClick={() => handleTabClick('community', '/community')}
@@ -225,11 +229,8 @@ function TabComps() {
                         />
                         {!isCollapsed && <p className={styles.text}>Communities</p>}
                     </button>
-                    {isCollapsed && (
-                        <div className={styles.tooltipText}>Communities</div>
-                    )}
+                    <div className={styles.tooltipText}>Communities</div>
                 </div>
-
                 <div className={styles.tooltip}>
                     <button
                         onClick={() => handleTabClick('analytics', '/analytics')}
@@ -241,11 +242,8 @@ function TabComps() {
                         />
                         {!isCollapsed && <p className={styles.text}>Analytics</p>}
                     </button>
-                    {isCollapsed && (
-                        <div className={styles.tooltipText}>Analytics</div>
-                    )}
+                    <div className={styles.tooltipText}>Analytics</div>
                 </div>
-
                 <div className={styles.tooltip}>
                     <button
                         onClick={() => handleTabClick('settings', '/settings/profile')}
@@ -256,9 +254,7 @@ function TabComps() {
                         />
                         {!isCollapsed && <p className={styles.text}>Settings</p>}
                     </button>
-                    {isCollapsed && (
-                        <div className={styles.tooltipText}>Settings</div>
-                    )}
+                    <div className={styles.tooltipText}>Settings</div>
                 </div>
             </div>
         </div>
