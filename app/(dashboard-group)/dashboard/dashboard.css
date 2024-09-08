@@ -40,7 +40,7 @@
     flex-direction: column;
     background: #FFFFFF;
     flex: 1;
-    margin: 5px 10px 10px 10px;
+    margin: 5px 10px 10px 5px;
     border-radius: 12px;
 }
 
@@ -58,7 +58,7 @@
     flex-direction: column;
     flex: 1;
     background: #FFFFFF;
-    margin: 5px 10px 10px 10px;
+    margin: 5px 5px 10px 10px;
     border-radius: 12px;
 }
 
@@ -91,7 +91,7 @@
     flex-direction: column;
     flex: 1;
     background: #FFFFFF;
-    margin: 10px 10px 5px 10px;
+    margin: 10px 10px 5px 5px;
     border-radius: 12px;
 }
 
@@ -112,7 +112,7 @@
     flex-direction: column;
     flex: 1;
     background: #FFFFFF;
-    margin: 10px 10px 5px 10px;
+    margin: 10px 5px 5px 10px;
     border-radius: 12px;
 }
 
