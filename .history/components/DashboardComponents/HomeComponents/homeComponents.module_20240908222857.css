@@ -172,7 +172,7 @@
 .testSeriesComp {
     display: flex;
     flex: 1;
-    max-height: 300px;
+    max-height: 45%;
     overflow-y: auto;
 }
 

@@ -172,8 +172,8 @@
 .testSeriesComp {
     display: flex;
     flex: 1;
-    max-height: 300px;
-    overflow-y: auto;
+    /* max-height: 400px;
+    overflow-y: auto; */
 }
 
 .beforeBuying {

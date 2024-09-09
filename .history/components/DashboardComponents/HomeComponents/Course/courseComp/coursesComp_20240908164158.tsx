@@ -1,8 +1,7 @@
 import styles from './courseComp.module.css';
 import Image from 'next/image';
 
-function coursesComp() {
-
+function coursesComp(){
     return (
         <div className={styles.messageComp}>
             <div className={styles.sub}>
