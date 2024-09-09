@@ -8,6 +8,8 @@ import { getFirestore, doc, getDoc } from 'firebase/firestore';
 import { useEffect, useState } from 'react';
 import { onAuthStateChanged, User } from 'firebase/auth'; // Import the User type from Firebase
 import {Skeleton} from "@nextui-org/skeleton";
+import LoadingData from '../Loading';
+import HeaderLoading from './HeaderLoading';
 
 type UserData = {
     name: string | null;
@@ -16,56 +18,66 @@ type UserData = {
 };
 
 function Header() {
-    const [userData, setUserData] = useState<UserData>({
-        name: 'Loading...',       // Default dummy values
-        userId: 'Loading...',
-        profilePic: '/defaultDP.svg'
-    }); // Set default values
-    const [loading, setLoading] = useState(true);
-    const [user, setUser] = useState<User | null>(null); // Set the user type to User | null
+    const [userData, setUserData] = useState<UserData | null>(null); 
+    const [loading, setLoading] = useState(true); // Track loading state
+    const [error, setError] = useState(false); // Track error state
+    const [user, setUser] = useState<User | null>(null); 
     const db = getFirestore();
-
+  
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
             if (currentUser) {
-                setUser(currentUser); // Set the user with the correct User type
+                setUser(currentUser);
             } else {
                 console.error('No user is logged in');
-                setLoading(false);
+                setError(true); // Set error if no user is logged in
+                setLoading(false); // Ensure loading is set to false even when no user is found
             }
         });
-
+    
         return () => unsubscribe();
     }, []);
-
+  
     useEffect(() => {
         const fetchUserData = async () => {
-            if (user) {
-                const uniqueId = user.uid;
-                const userDoc = doc(db, `users/${uniqueId}`);
-                const userSnapshot = await getDoc(userDoc);
-
-                if (userSnapshot.exists()) {
-                    const data = userSnapshot.data() as UserData; // Cast Firestore data to UserData type
-                    setUserData(data);
-                } else {
-                    console.error('No user data found!');
+            try {
+                if (user) {
+                    const uniqueId = user.uid;
+                    const userDoc = doc(db, `users/${uniqueId}`);
+                    const userSnapshot = await getDoc(userDoc);
+    
+                    if (userSnapshot.exists()) {
+                        const data = userSnapshot.data() as UserData; 
+                        setUserData(data);
+                    } else {
+                        console.error('No user data found!');
+                        setError(true); // Set error if no user data is found
+                    }
                 }
-                setLoading(false);
+            } catch (error) {
+                console.error('Error fetching user data:', error);
+                setError(true); // Set error if fetching data fails
+            } finally {
+                setLoading(false); // Ensure loading is set to false after fetching data
             }
         };
-
+    
         if (user) {
             fetchUserData();
         }
-    }, [user]);
+    }, [user, db]);
+  
+    // Display loading or error component while data is being fetched or if there's an error
+    if (loading || error) {
+        return <HeaderLoading />;
+    }
 
     return (
         <div>
             <div className={styles.headtab}>
                 <div className={styles.greeting}>
                     <h2>
-                        <span id="hi">Hey, <span>{loading ? 'Loading...' : userData.name}</span>,</span> Keep up the great work!
+                        <span id="hi">Hey, <span>{userData?.name}</span>,</span> Keep up the great work!
                     </h2>
                 </div>
                 
@@ -80,10 +92,10 @@ function Header() {
                     <Popover placement="bottom">
                         <PopoverTrigger>
                             <div className={styles.profileChildLyt}>
-                                <Image className={styles.profilePic} src={loading ? "/defaultDP.svg" : userData.profilePic || "/defaultDP.svg"} width={34} height={34} quality={100} alt="Profile Picture" />
+                                <Image className={styles.profilePic} src={userData?.profilePic || "/defaultDP.svg"} width={34} height={34} quality={100} alt="Profile Picture" />
                                 <div className={styles.headerInfo}>
-                                    <p className={styles.headerName}>{loading ? 'Loading...' : userData.name}</p>
-                                    <p className={styles.headerEmail}>{loading ? 'Loading...' : userData.userId}</p>
+                                    <p className={styles.headerName}>{userData?.name}</p>
+                                    <p className={styles.headerEmail}>{userData?.userId}</p>
                                 </div>
                                 <button className={styles.arrowButton}>
                                     <Image className={styles.arrowIcon} src="/icons/arrowHeader.svg" width={15} height={15} alt="Arrow Icon" />

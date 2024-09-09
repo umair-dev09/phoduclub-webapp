@@ -24,12 +24,9 @@ function TestSeries() {
                             <p>Suggested for you</p>
                         </div>
                         <div className={styles.image}>
-                            <Image
+                            <img
                                 className={styles.courseImage}
                                 src="/images/course_img.svg"
-                                alt="course image"
-                                width={239}
-                                height={160}
                             />
                         </div>
                     </div>

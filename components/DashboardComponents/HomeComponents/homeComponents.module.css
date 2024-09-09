@@ -222,6 +222,12 @@
     margin-right: 5px;
 }
 
+.courseImage1{
+    width: 1000px;
+    height: 200px;
+    
+}
+
 .courseInfo {
     display: flex;
     width: 100%;
