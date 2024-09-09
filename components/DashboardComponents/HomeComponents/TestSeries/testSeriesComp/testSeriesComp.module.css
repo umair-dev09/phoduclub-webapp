@@ -1,9 +1,8 @@
 .messageComp {
     display: flex;
     flex-direction: column;
-    margin: 24px 24px 24px 24px;
-
-
+    margin: 24px 24px 0px 24px;
+    overflow-y: auto;
 }
 
 .sub {
@@ -17,6 +16,16 @@
 .theSub {
     display: flex;
     flex-direction: row;
+}
+
+.slash {
+    color: #6670854D;
+    font-weight: 600;
+}
+
+.subject {
+    font-weight: 400;
+    color: #1D2939;
 }
 
 .progresses {

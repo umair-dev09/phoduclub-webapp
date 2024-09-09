@@ -132,7 +132,7 @@
 
 
 
-/*ANNOUNCEMENTS COMPONENT*/
+/* ANNOUNCEMENTS COMPONENT */
 .announcementComp {
 
     display: flex;
@@ -164,10 +164,10 @@
 }
 
 
-/*ANNOUNCEMENTS COMPONENT*/
+/* ANNOUNCEMENTS COMPONENT */
 
 
-/*TEST SERIES COMPONENT*/
+/* TEST SERIES COMPONENT */
 
 .testSeriesComp {
     display: flex;
@@ -222,6 +222,12 @@
 
 .suggestionIcon {
     margin-right: 5px;
+}
+
+.courseImage1{
+    width: 1000px;
+    height: 200px;
+    
 }
 
 .courseInfo {
