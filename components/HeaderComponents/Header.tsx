@@ -9,7 +9,7 @@ import { useEffect, useState } from 'react';
 import { onAuthStateChanged, User } from 'firebase/auth'; // Import the User type from Firebase
 import {Skeleton} from "@nextui-org/skeleton";
 import LoadingData from '../Loading';
-import HeaderLoading from './HeaderLoading';
+// import HeaderLoading from './HeaderLoading';
 
 type UserData = {
     name: string | null;
@@ -69,7 +69,7 @@ function Header() {
   
     // Display loading or error component while data is being fetched or if there's an error
     if (loading || error) {
-        return <HeaderLoading />;
+        // return <HeaderLoading />;
     }
 
     return (

@@ -35,8 +35,6 @@
 
 }
 
-
-
 .divider {
     /* margin-top: 5px; */
     margin-left: 25px;
@@ -64,10 +62,7 @@ thead th {
 .head-table {
     margin: 30px;
     overflow-x: auto;
-
 }
-
-
 
 table {
     border-collapse: separate;

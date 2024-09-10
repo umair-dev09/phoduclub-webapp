@@ -20,12 +20,16 @@ const config: Config = {
 			},
 			colors: {
 				customWhite: '#fff',
+				purple: '#9012FF',
+				darkPurple: '#800EE2',
+				lightGrey: '#eaecf0',
+				blackLike: '#1d2939'
 			},
 		}
 	},
-	plugins: [
-		require("tailwindcss-animate")
-	],
+	// plugins: [
+	// 	require("tailwindcss-animate")
+	// ],
 };
 
 export default config;
