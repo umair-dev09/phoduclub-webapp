@@ -65,7 +65,7 @@ const BottomSheet: React.FC<BottomSheetProps> = ({ closeModal, subjectName }) =>
                 {getContent()}
                 <button
                     onClick={closeModal}
-                    className="absolute top-10 right-6 bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded"
+                    className="absolute top-14 right-14 bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded"
                 >
                     Close
                 </button>

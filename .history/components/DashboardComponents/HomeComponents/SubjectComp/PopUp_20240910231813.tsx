@@ -60,12 +60,12 @@ const BottomSheet: React.FC<BottomSheetProps> = ({ closeModal, subjectName }) =>
             <div
                 id="bottomSheet"
                 className="w-full bg-white p-6 rounded-t-lg shadow-lg animate-slideUp"
-                style={{ height: '98vh', maxHeight: '98vh', overflowY: 'auto' }}
+                style={{ maxHeight: '80vh', height: 'auto' }}
             >
                 {getContent()}
                 <button
                     onClick={closeModal}
-                    className="absolute top-10 right-6 bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded"
+                    className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded mt-4"
                 >
                     Close
                 </button>

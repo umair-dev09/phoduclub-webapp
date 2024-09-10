@@ -1,13 +1,14 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 
 interface BottomSheetProps {
     closeModal: () => void;
     subjectName: string | null;
 }
 
-const BottomSheet: React.FC<BottomSheetProps> = ({ closeModal, subjectName }) => {
+const PopUp: React.FC<BottomSheetProps> = ({ closeModal, subjectName }) => {
     const getContent = () => {
         switch (subjectName) {
+
             case 'Chemistry':
                 return (
                     <>
@@ -25,7 +26,7 @@ const BottomSheet: React.FC<BottomSheetProps> = ({ closeModal, subjectName }) =>
             case 'Overall':
                 return (
                     <>
-                        <h2 className='text-2xl font-bold mb-4'>Overall</h2>
+                        <h2 className='text-2x1 font-bold mb-4'>Overall</h2>
                         <p className='text-gray-700 mb-6'>Detailed content for Overall</p>
                     </>
                 );
@@ -41,31 +42,13 @@ const BottomSheet: React.FC<BottomSheetProps> = ({ closeModal, subjectName }) =>
         }
     };
 
-    useEffect(() => {
-        const handleOutsideClick = (e: MouseEvent) => {
-            const bottomSheet = document.getElementById('bottomSheet');
-            if (bottomSheet && !bottomSheet.contains(e.target as Node)) {
-                closeModal();
-            }
-        };
-        document.addEventListener('click', handleOutsideClick);
-
-        return () => {
-            document.removeEventListener('click', handleOutsideClick);
-        };
-    }, [closeModal]);
-
     return (
-        <div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-end z-50">
-            <div
-                id="bottomSheet"
-                className="w-full bg-white p-6 rounded-t-lg shadow-lg animate-slideUp"
-                style={{ height: '98vh', maxHeight: '98vh', overflowY: 'auto' }}
-            >
+        <div className="fixed inset-0 bg-white bg-opacity-90 flex justify-center items-center">
+            <div className="w-[30rem] bg-white p-6 rounded-lg shadow-lg">
                 {getContent()}
                 <button
                     onClick={closeModal}
-                    className="absolute top-10 right-6 bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded"
+                    className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded"
                 >
                     Close
                 </button>
@@ -74,4 +57,5 @@ const BottomSheet: React.FC<BottomSheetProps> = ({ closeModal, subjectName }) =>
     );
 };
 
-export default BottomSheet;
+export default PopUp;
+

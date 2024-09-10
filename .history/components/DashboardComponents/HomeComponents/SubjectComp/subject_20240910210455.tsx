@@ -3,7 +3,7 @@
 import styles from '../homeComponents.module.css';
 import Image from 'next/image';
 import { useState } from 'react';
-import BottomSheet from '@/components/DashboardComponents/HomeComponents/SubjectComp/PopUp';
+import PopUp from '@/components/DashboardComponents/HomeComponents/SubjectComp/PopUp';
 
 interface CircularProgressProps {
     percentage: number;
@@ -62,16 +62,16 @@ const SubjectLayout: React.FC = () => {
         if (denominator === 0) return 0;
         return Math.round((numerator / denominator) * 100);
     };
-    const [showBottomSheet, setShowBottomSheet] = useState(false);
-    const [selectedSubject, setSelectedSubject] = useState<string | null>(null);
-
-    const openBottomSheet = (subjectName: string) => {
+    const [ShowModal, setShowModal] = useState(false);
+    const [SelectedSubject, setSelectedSubject] = useState<string | null>(null);
+    const openModal = (subjectName: string) => {
         setSelectedSubject(subjectName);
-        setShowBottomSheet(true);
-    };
+        setShowModal(true);
 
-    const closeBottomSheet = () => {
-        setShowBottomSheet(false);
+
+    }
+    const closeModal = () => {
+        setShowModal(false);
         setSelectedSubject(null);
     };
 
@@ -82,7 +82,7 @@ const SubjectLayout: React.FC = () => {
                 const percentage = calculatePercentage(subject.numerator, subject.denominator);
                 return (
                     <button
-                        onClick={() => openBottomSheet(subject.name)}
+                        onClick={() => openModal(subject.name)}
 
 
 
@@ -112,7 +112,9 @@ const SubjectLayout: React.FC = () => {
                     </button>
                 );
             })}
-            {showBottomSheet && <BottomSheet closeModal={closeBottomSheet} subjectName={selectedSubject} />}
+
+            {ShowModal && <PopUp closeModal={closeModal}
+                subjectName={SelectedSubject} />}
 
 
 
