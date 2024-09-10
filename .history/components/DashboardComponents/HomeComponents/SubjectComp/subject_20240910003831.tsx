@@ -1,9 +1,10 @@
+
 "use client";
 
 import styles from '../homeComponents.module.css';
 import Image from 'next/image';
 import { useState } from 'react';
-import PopUp from '@/components/DashboardComponents/HomeComponents/SubjectComp/PopUp';
+import { BottomSheet } from 'react-spring-bottom-sheet'
 
 interface CircularProgressProps {
     percentage: number;
@@ -12,6 +13,8 @@ interface CircularProgressProps {
 const CircularProgress: React.FC<CircularProgressProps> = ({ percentage }) => {
     const normalizedPercentage = Math.min(Math.max(percentage, 0), 100);
     const progressColor = normalizedPercentage === 100 ? '#98A2B3' : '#7400E0';
+    // function for POPUP
+    const [open, setopen] = useState(false)
 
     return (
         <div className={styles.progressValue}>
@@ -35,9 +38,9 @@ const CircularProgress: React.FC<CircularProgressProps> = ({ percentage }) => {
 };
 
 const SubjectLayout: React.FC = () => {
-
-
-
+    const handleButtonClick = (subject: string) => {
+        console.log(`${subject} button clicked`);
+    };
 
     const renderCheckmark = (percentage: number) => {
         return percentage === 100 ? (
@@ -60,22 +63,9 @@ const SubjectLayout: React.FC = () => {
     ];
 
     const calculatePercentage = (numerator: number, denominator: number) => {
-        if (denominator === 0) return 0;
+        if (denominator == 0) return 0;
         return Math.round((numerator / denominator) * 100);
     };
-    const [ShowModal, setShowModal] = useState(false);
-    const [SelectedSubject, setSelectedSubject] = useState<string | null>(null);
-    const openModal = (subjectName: string) => {
-        setSelectedSubject(subjectName);
-        setShowModal(true);
-
-
-    }
-    const closeModal = () => {
-        setShowModal(false);
-        setSelectedSubject(null);
-    };
-
 
     return (
         <div className={styles.container}>
@@ -83,11 +73,8 @@ const SubjectLayout: React.FC = () => {
                 const percentage = calculatePercentage(subject.numerator, subject.denominator);
                 return (
                     <button
-                        onClick={() => openModal(subject.name)}
-
-
-
                         className={styles.Buttons}
+                        onClick={() => handleButtonClick(subject.name)}
                         key={subject.name}
                     >
                         <div className={styles.box1}>
@@ -113,12 +100,6 @@ const SubjectLayout: React.FC = () => {
                     </button>
                 );
             })}
-
-            {ShowModal && <PopUp closeModal={closeModal}
-                subjectName={SelectedSubject} />}
-
-
-
         </div>
     );
 };

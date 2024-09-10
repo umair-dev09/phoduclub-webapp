@@ -4,68 +4,58 @@
 @tailwind components;
 @tailwind utilities;
 
-body {
+body{
   background-color: #f7f8fb;
   margin: 0;
   padding: 0;
   font-family: 'Poppins', sans-serif;
   display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
 }
-
 .heading .head {
   font-family: 'Sora', sans-serif;
-  font-size: 24px;
-  /* Example size */
+  font-size: 24px; /* Example size */
   font-weight: 700;
 }
 
 /* Example for other headings if needed */
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
+h1, h2, h3, h4, h5, h6 {
   font-family: 'Sora', sans-serif;
 }
 
-h3 {
+h3{
   font-size: 18px;
   font-weight: 600;
 }
-
 /* Ensure that other text elements use Poppins */
-p,
-span,
-div {
+p, span, div {
   font-family: 'Poppins', sans-serif;
 }
-
 /* Custom scrollbar styles */
 
 ::-webkit-scrollbar {
-  width: 7px;
+  width: 7px; 
   height: 7px;
 }
 
 ::-webkit-scrollbar-thumb {
-  background-color: rgba(234, 236, 240, 1);
-  ;
+    background-color: rgba(234, 236, 240, 1);
+    ;
 
-  border-radius: 100px;
+    border-radius: 100px; 
 }
 
 ::-webkit-scrollbar-track {
-  background: "white";
-
+  background: "white"; 
+  
 }
-
 
 @layer base {
   :root {
     --radius: 0.5rem;
   }
 }
+
+

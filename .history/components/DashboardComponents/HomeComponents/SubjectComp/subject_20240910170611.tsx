@@ -64,18 +64,15 @@ const SubjectLayout: React.FC = () => {
         return Math.round((numerator / denominator) * 100);
     };
     const [ShowModal, setShowModal] = useState(false);
-    const [SelectedSubject, setSelectedSubject] = useState<string | null>(null);
-    const openModal = (subjectName: string) => {
-        setSelectedSubject(subjectName);
-        setShowModal(true);
+    const MyModal = () => {
+        return (
+            <>
+                <h2> POP-UP the page</h2>
+                <p> this is the another page </p>
 
-
+            </>
+        )
     }
-    const closeModal = () => {
-        setShowModal(false);
-        setSelectedSubject(null);
-    };
-
 
     return (
         <div className={styles.container}>
@@ -83,8 +80,8 @@ const SubjectLayout: React.FC = () => {
                 const percentage = calculatePercentage(subject.numerator, subject.denominator);
                 return (
                     <button
-                        onClick={() => openModal(subject.name)}
-
+                        onClick={() => setShowModal(true)}
+                        //   {ShowModal && <MyModal/>}
 
 
                         className={styles.Buttons}
@@ -114,8 +111,6 @@ const SubjectLayout: React.FC = () => {
                 );
             })}
 
-            {ShowModal && <PopUp closeModal={closeModal}
-                subjectName={SelectedSubject} />}
 
 
 
