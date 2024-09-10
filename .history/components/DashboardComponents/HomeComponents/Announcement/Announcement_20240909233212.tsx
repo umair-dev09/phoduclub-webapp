@@ -1,4 +1,4 @@
-import Announced from '@/components/DashboardComponents/HomeComponents/Announcement/announcementComp/announceComp';
+import Announced from '@/components/DashboardComponents/HomeComponents/Announcement/announcementComp/Announced';
 import styles from '../homeComponents.module.css';
 import Image from 'next/image';
 

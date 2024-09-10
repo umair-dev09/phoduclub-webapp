@@ -1,9 +1,10 @@
 "use client";
 
-import { useState } from 'react';
-import BottomUpSheet from './bottomUpSheet';
 import styles from '../homeComponents.module.css';
 import Image from 'next/image';
+import { useState } from 'react';
+import { BottomSheet } from 'react-spring-bottom-sheet';
+// import PopUp from '@/components/DashboardComponents/HomeComponents/SubjectComp/PopUp';
 
 interface CircularProgressProps {
     percentage: number;
@@ -12,9 +13,10 @@ interface CircularProgressProps {
 const CircularProgress: React.FC<CircularProgressProps> = ({ percentage }) => {
     const normalizedPercentage = Math.min(Math.max(percentage, 0), 100);
     const progressColor = normalizedPercentage === 100 ? '#98A2B3' : '#7400E0';
+    const [open, setOpen] = useState(false)
 
     return (
-        <button className={styles.progressValue}>
+        <div className={styles.progressValue}>
             <svg className={styles.circular} viewBox="0 0 36 36">
                 <path
                     className={styles.circleBackground}
@@ -30,15 +32,19 @@ const CircularProgress: React.FC<CircularProgressProps> = ({ percentage }) => {
             <div className={styles.label}>
                 {normalizedPercentage}%
             </div>
-        </button>
+        </div>
     );
 };
 
 const SubjectLayout: React.FC = () => {
-    const [isSheetVisible, setSheetVisible] = useState(false);
+    const [isPopupOpen, setIsPopupOpen] = useState(false);
 
-    const toggleBottomUpSheet = () => {
-        setSheetVisible(prev => !prev); // Toggle visibility
+    const handleButtonClick = (subject: string) => {
+        setIsPopupOpen(true); // Open popup when button is clicked
+    };
+
+    const handleClosePopup = () => {
+        setIsPopupOpen(false); // Close popup
     };
 
     const renderCheckmark = (percentage: number) => {
@@ -72,9 +78,9 @@ const SubjectLayout: React.FC = () => {
                 const percentage = calculatePercentage(subject.numerator, subject.denominator);
                 return (
                     <button
+                        onClick={() => handleButtonClick(subject.name)}
                         className={styles.Buttons}
                         key={subject.name}
-                        onClick={toggleBottomUpSheet} // Show/hide bottomUpSheet on click
                     >
                         <div className={styles.box1}>
                             <div className={styles.IconContainer}>
@@ -99,13 +105,14 @@ const SubjectLayout: React.FC = () => {
                     </button>
                 );
             })}
+            <BottomSheet open={isOpen} onDismiss={onClose} className="bg-red-500 p-4 rounded-lg shadow-lg">
+                <h2 className="text-lg font-bold mb-4">Popup Content</h2>
+                <p className="mb-4">Here is some content inside the BottomSheet.</p>
+                <button onClick={onClose} className="bg-red-500 text-white p-2 rounded hover:bg-red-700">
+                    Close
+                </button>
+            </BottomSheet>
 
-            {/* Conditionally render the bottomUpSheet */}
-            {isSheetVisible && (
-                <div className={styles.bottomSheetWrapper}>
-                    <BottomUpSheet onClose={toggleBottomUpSheet} />
-                </div>
-            )}
         </div>
     );
 };

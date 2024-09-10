@@ -1,9 +1,12 @@
+
 "use client";
 
-import { useState } from 'react';
-import BottomUpSheet from './bottomUpSheet';
 import styles from '../homeComponents.module.css';
 import Image from 'next/image';
+import { useState } from 'react';
+import { BottomSheet } from 'react-spring-bottom-sheet';
+import 'react-spring-bottom-sheet/dist/style.css';
+
 
 interface CircularProgressProps {
     percentage: number;
@@ -12,9 +15,10 @@ interface CircularProgressProps {
 const CircularProgress: React.FC<CircularProgressProps> = ({ percentage }) => {
     const normalizedPercentage = Math.min(Math.max(percentage, 0), 100);
     const progressColor = normalizedPercentage === 100 ? '#98A2B3' : '#7400E0';
+    // function for POPUP
 
     return (
-        <button className={styles.progressValue}>
+        <div className={styles.progressValue}>
             <svg className={styles.circular} viewBox="0 0 36 36">
                 <path
                     className={styles.circleBackground}
@@ -30,15 +34,15 @@ const CircularProgress: React.FC<CircularProgressProps> = ({ percentage }) => {
             <div className={styles.label}>
                 {normalizedPercentage}%
             </div>
-        </button>
+        </div>
     );
 };
 
 const SubjectLayout: React.FC = () => {
-    const [isSheetVisible, setSheetVisible] = useState(false);
 
-    const toggleBottomUpSheet = () => {
-        setSheetVisible(prev => !prev); // Toggle visibility
+    const handleButtonClick = (subjectName: string) => {
+        handleButtonClick(subjectName);
+
     };
 
     const renderCheckmark = (percentage: number) => {
@@ -62,7 +66,7 @@ const SubjectLayout: React.FC = () => {
     ];
 
     const calculatePercentage = (numerator: number, denominator: number) => {
-        if (denominator === 0) return 0;
+        if (denominator == 0) return 0;
         return Math.round((numerator / denominator) * 100);
     };
 
@@ -72,9 +76,9 @@ const SubjectLayout: React.FC = () => {
                 const percentage = calculatePercentage(subject.numerator, subject.denominator);
                 return (
                     <button
+                        onClick={() => handleButtonClick(subject.name)}
                         className={styles.Buttons}
                         key={subject.name}
-                        onClick={toggleBottomUpSheet} // Show/hide bottomUpSheet on click
                     >
                         <div className={styles.box1}>
                             <div className={styles.IconContainer}>
@@ -100,14 +104,9 @@ const SubjectLayout: React.FC = () => {
                 );
             })}
 
-            {/* Conditionally render the bottomUpSheet */}
-            {isSheetVisible && (
-                <div className={styles.bottomSheetWrapper}>
-                    <BottomUpSheet onClose={toggleBottomUpSheet} />
-                </div>
-            )}
         </div>
     );
 };
 
 export default SubjectLayout;
+

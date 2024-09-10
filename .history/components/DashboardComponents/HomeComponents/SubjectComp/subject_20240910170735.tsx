@@ -1,9 +1,9 @@
 "use client";
 
-import { useState } from 'react';
-import BottomUpSheet from './bottomUpSheet';
 import styles from '../homeComponents.module.css';
 import Image from 'next/image';
+import { useState } from 'react';
+import PopUp from '@/components/DashboardComponents/HomeComponents/SubjectComp/PopUp';
 
 interface CircularProgressProps {
     percentage: number;
@@ -14,7 +14,7 @@ const CircularProgress: React.FC<CircularProgressProps> = ({ percentage }) => {
     const progressColor = normalizedPercentage === 100 ? '#98A2B3' : '#7400E0';
 
     return (
-        <button className={styles.progressValue}>
+        <div className={styles.progressValue}>
             <svg className={styles.circular} viewBox="0 0 36 36">
                 <path
                     className={styles.circleBackground}
@@ -30,16 +30,14 @@ const CircularProgress: React.FC<CircularProgressProps> = ({ percentage }) => {
             <div className={styles.label}>
                 {normalizedPercentage}%
             </div>
-        </button>
+        </div>
     );
 };
 
 const SubjectLayout: React.FC = () => {
-    const [isSheetVisible, setSheetVisible] = useState(false);
 
-    const toggleBottomUpSheet = () => {
-        setSheetVisible(prev => !prev); // Toggle visibility
-    };
+
+
 
     const renderCheckmark = (percentage: number) => {
         return percentage === 100 ? (
@@ -65,6 +63,16 @@ const SubjectLayout: React.FC = () => {
         if (denominator === 0) return 0;
         return Math.round((numerator / denominator) * 100);
     };
+    const [ShowModal, setShowModal] = useState(false);
+    const MyModal = () => {
+        return (
+            <>
+                <h2> POP-UP the page</h2>
+                <p> this is the another page </p>
+
+            </>
+        )
+    }
 
     return (
         <div className={styles.container}>
@@ -72,9 +80,12 @@ const SubjectLayout: React.FC = () => {
                 const percentage = calculatePercentage(subject.numerator, subject.denominator);
                 return (
                     <button
+                        onClick={() => setShowModal(true)}
+
+
+
                         className={styles.Buttons}
                         key={subject.name}
-                        onClick={toggleBottomUpSheet} // Show/hide bottomUpSheet on click
                     >
                         <div className={styles.box1}>
                             <div className={styles.IconContainer}>
@@ -100,12 +111,10 @@ const SubjectLayout: React.FC = () => {
                 );
             })}
 
-            {/* Conditionally render the bottomUpSheet */}
-            {isSheetVisible && (
-                <div className={styles.bottomSheetWrapper}>
-                    <BottomUpSheet onClose={toggleBottomUpSheet} />
-                </div>
-            )}
+            {ShowModal && <MyModal />}
+
+
+
         </div>
     );
 };
