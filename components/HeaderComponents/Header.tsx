@@ -10,6 +10,7 @@ import { onAuthStateChanged, User } from 'firebase/auth'; // Import the User typ
 import {Skeleton} from "@nextui-org/skeleton";
 import LoadingData from '../Loading';
 import HeaderLoading from './HeaderLoading';
+import HelpDropDown from './HelpDropdown';
 
 type UserData = {
     name: string | null;
@@ -82,17 +83,13 @@ function Header() {
                 </div>
                 
                 <div className={styles.profileParentLyt}>
-                    <div className={styles.help}>
-                        <button className={styles.headerButton}>
-                            <Image src="/icons/help-circle.svg" width={16} height={16} alt="Help Icon" />
-                        </button>
-                    </div>
+                    <HelpDropDown/>
                     <NotficationDropDown />
                     <div className={styles.divider1} />
                     <Popover placement="bottom">
                         <PopoverTrigger>
                             <div className={styles.profileChildLyt}>
-                                <Image className={styles.profilePic} src={userData?.profilePic || "/defaultDP.svg"} width={34} height={34} quality={100} alt="Profile Picture" />
+                                <Image className={styles.profilePic} src={userData?.profilePic || "/defaultDP.svg"} width={38} height={38} quality={100} alt="Profile Picture" />
                                 <div className={styles.headerInfo}>
                                     <p className={styles.headerName}>{userData?.name}</p>
                                     <p className={styles.headerEmail}>{userData?.userId}</p>
