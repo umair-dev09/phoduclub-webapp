@@ -86,15 +86,15 @@ function getRandomImageUrl(urls: string[]): string {
 }
 function VerifyOtp() {
     const router = useRouter();
-    useEffect(() => {
-        onAuthStateChanged(auth, (user) => {
-           if (user) {
-               // If no user is logged in, redirect to the login page
-               router.push("/welcome");
-           }
-       });
+//     useEffect(() => {
+//         onAuthStateChanged(auth, (user) => {
+//            if (user) {
+//                // If no user is logged in, redirect to the login page
+//                router.push("/welcome");
+//            }
+//        });
 
-   }, [router]);
+//    }, [router]);
     const searchParams = useSearchParams();
     const phoneNumber = searchParams.get('phone') || '';
     const firstName = searchParams.get('firstName') || '';
@@ -145,7 +145,7 @@ function VerifyOtp() {
           const authId = user.uid;
 
           const usersRef = collection(db, "users");
-          const q = query(usersRef, where("authId", "==", authId));
+          const q = query(usersRef, where("uniqueId", "==", authId));
           const querySnapshot = await getDocs(q);
   
           if (!querySnapshot.empty) {

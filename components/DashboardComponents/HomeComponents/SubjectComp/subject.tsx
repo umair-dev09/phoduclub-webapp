@@ -3,11 +3,12 @@
 import styles from '../homeComponents.module.css';
 import Image from 'next/image';
 import { useState } from 'react';
-import BottomSheet from '@/components/DashboardComponents/HomeComponents/SubjectComp/PopUp';
+import BottomSheet from './bottomUpSheet';
 
 interface CircularProgressProps {
     percentage: number;
 }
+
 const CircularProgress: React.FC<CircularProgressProps> = ({ percentage }) => {
     const normalizedPercentage = Math.min(Math.max(percentage, 0), 100);
     const progressColor = normalizedPercentage === 100 ? '#98A2B3' : '#7400E0';
@@ -34,23 +35,6 @@ const CircularProgress: React.FC<CircularProgressProps> = ({ percentage }) => {
 };
 
 const SubjectLayout: React.FC = () => {
-
-
-
-
-    const renderCheckmark = (percentage: number) => {
-        return percentage === 100 ? (
-            <div className={styles.checkIcon}>
-                <Image
-                    src="/icons/checkmark.svg"
-                    alt="checkmark-icon"
-                    width={14}
-                    height={14}
-                />
-            </div>
-        ) : null;
-    };
-
     const subjectsData = [
         { name: 'Overall', numerator: 98, denominator: 98, icon: '/icons/overall.svg' },
         { name: 'Physics', numerator: 0, denominator: 33, icon: '/icons/physics.svg' },
@@ -59,9 +43,9 @@ const SubjectLayout: React.FC = () => {
     ];
 
     const calculatePercentage = (numerator: number, denominator: number) => {
-        if (denominator === 0) return 0;
-        return Math.round((numerator / denominator) * 100);
+        return denominator === 0 ? 0 : Math.round((numerator / denominator) * 100);
     };
+
     const [showBottomSheet, setShowBottomSheet] = useState(false);
     const [selectedSubject, setSelectedSubject] = useState<string | null>(null);
 
@@ -75,7 +59,6 @@ const SubjectLayout: React.FC = () => {
         setSelectedSubject(null);
     };
 
-
     return (
         <div className={styles.container}>
             {subjectsData.map(subject => {
@@ -83,9 +66,6 @@ const SubjectLayout: React.FC = () => {
                 return (
                     <button
                         onClick={() => openBottomSheet(subject.name)}
-
-
-
                         className={styles.Buttons}
                         key={subject.name}
                     >
@@ -96,10 +76,8 @@ const SubjectLayout: React.FC = () => {
                                     alt={`${subject.name}-icon`}
                                     width={20}
                                     height={20}
-                                    className={styles[subject.name.toLowerCase()]}
                                 />
                                 <div className={styles.work}>{subject.name}</div>
-                                {renderCheckmark(percentage)}
                             </div>
                             <div className={styles.totalMarks}>
                                 <span className={styles.numerator}>{subject.numerator}</span>
@@ -113,9 +91,6 @@ const SubjectLayout: React.FC = () => {
                 );
             })}
             {showBottomSheet && <BottomSheet closeModal={closeBottomSheet} subjectName={selectedSubject} />}
-
-
-
         </div>
     );
 };

@@ -1,18 +1,17 @@
 .container {
     display: flex;
     flex-direction: column;
-    flex: 1;
+    width: 100%;
+    justify-content: space-between; /* Ensures the base stays at the bottom */
+    
 }
 
 .mainProfileContent {
     display: flex;
     flex-direction: column;
-    flex: 1;
-    margin-top: 20px;
-    margin-right: 20px;
-    margin-left: 20px;
-    padding-bottom: 100px;
-    overflow-y: auto;
+    height: 100%;
+    margin: 20px;
+    overflow-y: auto; /* Enables scrolling */
 }
 
 .info {
@@ -376,12 +375,17 @@
 
 .examSection {
     display: flex;
-    flex-direction: row;
+    flex-wrap: wrap; /* Ensures items wrap to the next line */
+     /* Sets the fixed width */
+    margin-left: 12px;
+    justify-content: space-between;
 }
 
 .enrolledExams {
+    width: 45%;
     display: flex;
-    flex: 0.5;
+    flex-wrap: wrap; /* Allows items to wrap within the available space */
+    gap: 12px; /* Adds gap between the items */
 }
 
 .updateIcon {
@@ -482,12 +486,13 @@
 .base {
     display: flex;
     align-items: center;
-    justify-content: right;
-    flex: 1;
+    justify-content: flex-end;
     width: 100%;
+    padding: 20px; /* Adds padding for better alignment */
     border-top: 1px solid #eaecf0;
-    max-height: 70px;
-    min-height: 70px;
+    height: 70px;
+    background-color: white; /* Ensure it has a background */
+    position: sticky;
 }
 
 .insideBase {

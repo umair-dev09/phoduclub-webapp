@@ -17,8 +17,12 @@ import LoadingData from '@/components/Loading';
 
 type UserData = {
     name: string | null;
-    // userId: string | null;
-    // profilePic: string | null;
+    userId: string | null;
+    profilePic: string | null;
+    phone: string | null;
+    email: string | null;
+    targetYear: string | null;
+    targetExams: string[] | null;
 };
 
 
@@ -97,6 +101,8 @@ function Profile() {
             .catch(err => console.error('Failed to copy text: ', err));
     };
 
+    const colors = [styles.red, styles.orange, styles.green, styles.blue];
+
     return (
         <div className={styles.container}>
             <div className={styles.mainProfileContent}>
@@ -105,11 +111,12 @@ function Profile() {
                         <div className={styles.nameInfo}>
                             <div className={styles.dp}>
                                 <Image
-                                    src='/defaultDP.svg'
+                                    src={userData?.profilePic || '/defaultDP.svg'}
                                     alt="profile-image"
                                     width={72}
                                     height={72}
-                                />
+                                >
+                                </Image>
                             </div>
                             <div className={styles.nameId}>
                                 {/* Name and ID */}
@@ -120,7 +127,7 @@ function Profile() {
                                 )}
                                 {!isEditing && (
                                     <div className={styles.actualId}>
-                                        <div><span className={styles.id}>john#9843</span></div>
+                                        <div><span className={styles.id}>{userData?.userId}</span></div>
                                         <div className={styles.copyButtons}>
                                             <div className={styles.copyIcon}>
                                                 <button className={styles.copyButton} onClick={handleCopy}>
@@ -172,12 +179,18 @@ function Profile() {
                         </div>
                     </div>
                     <div className={styles.examSection}>
-                        <div className={styles.enrolledExams}>
-                            <Target />
-                        </div>
-                        {isEditing && (
-                          <TargetExamUpdate/>
-                        )}
+                    <div className={styles.enrolledExams}>
+        {userData?.targetExams?.map((exam, index) => {
+            const randomColor = colors[Math.floor(Math.random() * colors.length)];
+            return (
+                <div key={index} className={styles.button}>
+                    <span className={`${styles.dot} ${randomColor}`}></span> 
+                    <p className={styles.examText}>{exam}</p> {/* Render each exam */}
+                </div>
+            );
+        })}
+    </div>
+                        {isEditing && <TargetExamUpdate />}
                     </div>
                 </div>
 
@@ -210,7 +223,7 @@ function Profile() {
                         </div>
                     </div>
                     {!isEditing && (
-                        <span className={styles.username}>Jabir Ali</span>
+                        <span className={styles.username}>{userData?.name}</span>
                     )}
                 </div>
 
@@ -232,13 +245,13 @@ function Profile() {
                         <div className={styles.UserDetail}>
                             <p className={styles.label}>Email</p>
                             {isEditing && (
-                                <p className={styles.afterEdit}>jabir@gmail.com</p>
+                                <p className={styles.afterEdit}>{userData?.email}</p>
                             )}
                             
                         </div>
                     </div>
                     {!isEditing && (
-                        <span className={styles.username}>jabir@gmail.com</span>
+                        <span className={styles.username}>{userData?.email}</span>
                     )}
                     {isEditing && (
                         <EmailUpdate/>
@@ -263,13 +276,13 @@ function Profile() {
                         <div className={styles.UserDetail}>
                             <p className={styles.label}>Phone Number</p>
                             {isEditing && (
-                                <p className={styles.afterEdit}>+91 7898525987</p>
+                                <p className={styles.afterEdit}>{userData?.phone}</p>
                             )}
                             
                         </div>
                     </div>
                     {!isEditing && (
-                        <span className={styles.username}>+91 7898525987</span>
+                        <span className={styles.username}>{userData?.phone}</span>
                     )}
                     {isEditing && (
                         <PhoneUpdate/>
@@ -294,13 +307,13 @@ function Profile() {
                         <div className={styles.UserDetail}>
                             <p className={styles.label}>Target Year</p>
                             {isEditing && (
-                                <p className={styles.afterEdit}>2024</p>
+                                <p className={styles.afterEdit}>{userData?.targetYear}</p>
                             )}
                             
                         </div>
                     </div>
                     {!isEditing && (
-                        <span className={styles.username}>2024</span>
+                        <span className={styles.username}>{userData?.targetYear}</span>
                     )}
                     {isEditing && (
                       <TargetYearUpdate/>
