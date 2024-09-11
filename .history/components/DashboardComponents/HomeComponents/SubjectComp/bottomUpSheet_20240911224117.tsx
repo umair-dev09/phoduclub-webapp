@@ -8,7 +8,7 @@ interface BottomUpSheet {
     closeModal: () => void;
     subjectName: string | null;
 }
-//********************SET-UP FOR ALL FUCNTION------------------------------------------------------>
+
 const BottomSheet: React.FC<BottomUpSheet> = ({ closeModal, subjectName }) => {
     const [selectedDate, setSelectedDate] = useState<Date | null>(new Date());
     const [tempDate, setTempDate] = useState<Date | null>(new Date());
@@ -20,20 +20,21 @@ const BottomSheet: React.FC<BottomUpSheet> = ({ closeModal, subjectName }) => {
     const initializeCheckboxes = (rows: number, columns: number): boolean[][] => {
         return Array.from({ length: rows }, () => Array(columns).fill(false));
     };
-    //******************************THE-END--------------------------------------------------------->
 
-    //********************HERE WE CAN CHANGE "Chapter Name" AND PIRIORITY------------------------------------------------------>   
+
+    // const chapterNames = Array.from({ length: numRows }, (_, index) => `Chapter ${index + 1}`);
     const [checkboxes, setCheckboxes] = useState<boolean[][]>(initializeCheckboxes(numRows, numColumns));
     const subjectChapterNames: Record<string, string[]> = {
         'Maths': [
-            'Algebra',
-            'Calculus',
-            'Geometry',
+            ' Algebra',
+            ' Calculus',
+            ' Geometry',
+
             // Add more chapters as needed
         ],
         'Overall': [
             'History',
-            'Geography',
+            ' Geography',
             'Civics',
             // Add more chapters as needed
         ],
@@ -41,45 +42,43 @@ const BottomSheet: React.FC<BottomUpSheet> = ({ closeModal, subjectName }) => {
             'Motion',
             'Energy',
             'Newton',
-            'Momentum',  // Fixed spelling from 'Momentun'
-            'Work Done', // Fixed spacing from 'WorkDone'
+            'Momentun',
+            'WorkDone',
             // Add more chapters as needed
         ],
         'Chemistry': [
             'Organic Chemistry',
             'Inorganic Chemistry',
-            'Physical Chemistry',
+            ' Physical Chemistry',
+
             // Add more chapters as needed
         ],
         // Add other subjects as needed
     };
-
     const chapterPriorityMapping: Record<string, string> = {
         'Algebra': 'High',
-        'Calculus': 'easy',
+        'Calculus': 'Medium',
         'Geometry': 'Low',
         'History': 'High',
-        'Geography': 'easy',
+        'Geography': 'Medium',
         'Civics': 'Low',
-        'Motion': 'easy',
-        'Energy': 'easy',
-        'Newton': 'easy',
-        'Momentum': 'low',    // Fixed spelling from 'Momentun'
-        'Work Done': 'High',  // Fixed spacing from 'WorkDone'
+        'Motion': 'Medium',
+        'Energy': 'Medium',
+        'Newton': 'Medium',
+        'Momentun': 'low',
+        'WorkDone': 'High',
         'Organic Chemistry': 'High',
-        'Inorganic Chemistry': 'easy',
+        'Inorganic Chemistry': 'Medium',
         'Physical Chemistry': 'Low',
     };
 
+    // Get chapter names based on the subject
     const chapterNames = subjectChapterNames[subjectName || ''] || [];
-
     const getPriorityText = (chapterName: string) => {
         return chapterPriorityMapping[chapterName] || 'Priority'; // Default text if chapter name is not found
     };
 
-    //******************************THE-END--------------------------------------------------------->
-
-    //********************HERE WE LENGTH OF CHAPTER NAME SO IT GOES LOOP ONLY {COLUMN IS FIXED TO =5}------------------------------------------------------>
+    // Effect to update rows and columns based on the subjectName
     useEffect(() => {
         if (subjectName === 'Physics') {
             setNumRows(chapterNames.length);
@@ -97,8 +96,6 @@ const BottomSheet: React.FC<BottomUpSheet> = ({ closeModal, subjectName }) => {
         }
     }, [subjectName]);
 
-    //******************************THE-END--------------------------------------------------------->
-
     // Effect to update rows and columns based on the subjectName
     useEffect(() => {
         setCheckboxes(initializeCheckboxes(numRows, numColumns));
@@ -111,7 +108,7 @@ const BottomSheet: React.FC<BottomUpSheet> = ({ closeModal, subjectName }) => {
 
 
 
-    //********************CALENDER-LOGIC------------------------------------------------------>  
+    // Calendar logic
     const applyDate = () => {
         setSelectedDate(tempDate);
         setCalendarVisible(false);
@@ -131,19 +128,19 @@ const BottomSheet: React.FC<BottomUpSheet> = ({ closeModal, subjectName }) => {
             </div>
         </div>
     );
-    //******************************THE-END--------------------------------------------------------->
-    // THIS LOGIC FOR THE CHECKBOX 
+    // End Calendar logic
+
     const handleCheckboxChange = (rowIndex: number, checkboxIndex: number) => {
         const updatedCheckboxes = [...checkboxes];
         updatedCheckboxes[rowIndex][checkboxIndex] = !updatedCheckboxes[rowIndex][checkboxIndex];
         setCheckboxes(updatedCheckboxes);
     };
-    // THIS LOGIC FOR THE GET-PROGRESS PERCENTAGE
+
     const getProgress = (rowIndex: number): number => {
         const checkedCount = checkboxes[rowIndex].filter(checked => checked).length;
         return (checkedCount / checkboxes[rowIndex].length) * 100;
     };
-    // THIS ONLY ONE CONTENT WRITEEN ONLY ONCE CALLED BY RECURSION FUCNTION
+
     const getContent = () => {
         return (
             <>
@@ -195,7 +192,6 @@ const BottomSheet: React.FC<BottomUpSheet> = ({ closeModal, subjectName }) => {
             </>
         );
     };
-    // THIS LOGIC FOR "CANCEL AND BUTTON"-------------------->    
 
     useEffect(() => {
         const handleOutsideClick = (e: MouseEvent) => {
@@ -211,7 +207,6 @@ const BottomSheet: React.FC<BottomUpSheet> = ({ closeModal, subjectName }) => {
         };
     }, [closeModal]);
 
-    //********************MAIN-CONTAITENT------------------------------------------------------>  
     return (
         <div className={styles.container}>
             <div
@@ -267,7 +262,6 @@ const BottomSheet: React.FC<BottomUpSheet> = ({ closeModal, subjectName }) => {
             </div>
         </div>
     );
-    //******************************THE-END--------------------------------------------------------->    
 };
 
 export default BottomSheet;
