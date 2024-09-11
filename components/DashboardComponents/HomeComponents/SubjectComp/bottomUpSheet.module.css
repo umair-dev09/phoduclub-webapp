@@ -11,15 +11,27 @@
     z-index: 10;
 }
 
+/* Updated CSS for bottom-up transition */
 .bottomUpSheet {
+    position: fixed;
+    bottom: 0;
+    left: 0;
     display: grid;
     grid-template-rows: 69px 1fr 76px;
-    background-color: white;
-    border-radius: 12px 12px 0px 0px;
-    height: 98vh;
     width: 100%;
-    transform: translateY(0%);
-    transition: transform 0.5s ease-in-out;
+    height: 98vh;
+    background-color: white;
+    border-radius: 12px 12px 0 0;
+    transform: translateY(100%); /* Start off-screen */
+    transition: transform 0.5s ease-in-out; /* Smooth transition for the transform property */
+}
+
+.bottomUpSheet.open {
+    transform: translateY(0); /* Slide into view */
+}
+
+.bottomUpSheet.close {
+    transform: translateY(100%); /* Slide out of view */
 }
 
 .tableWrapper th {
@@ -47,6 +59,7 @@
 .tableWrapper th:first-child,
 .tableWrapper td:first-child {
     width: 25.5%;
+    border-top: 1px solid #EAECF0;
 }
 
 .tableWrapper th:nth-child(2),
@@ -54,6 +67,8 @@
 .tableWrapper th:nth-child(3),
 .tableWrapper td:nth-child(3) {
     width: 13%;
+    border-top: 1px solid #EAECF0;
+    overflow: hidden;
 }
 
 .tableWrapper th:nth-child(4),
@@ -61,17 +76,26 @@
 .tableWrapper th:nth-child(5),
 .tableWrapper td:nth-child(5),
 .tableWrapper th:nth-child(6),
-.tableWrapper td:nth-child(6) {
+.tableWrapper td:nth-child(6),
+.tableWrapper th:nth-child(7),
+.tableWrapper td:nth-child(7) {
     width: 9.7%;
+    border-top: 1px solid #EAECF0;
 }
 
 .tableWrapper th:last-child,
 .tableWrapper td:last-child {
     width: 9.7%;
+    border-top: 1px solid #EAECF0;
 }
 
 .tableHead {
     height: 44px;
+}
+
+.datePickerInput{
+    max-width: 110px;
+    text-align: center;
 }
 
 .progressBar {
@@ -119,12 +143,11 @@
     /* Light gray background */
     border: 2px solid #D0D5DD;
     /* Purple border */
-    padding-bottom: 0.313rem;
-    padding-left: 0.125rem;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
+    margin-left: 43%;
 }
 
 .customCheckbox:checked {
