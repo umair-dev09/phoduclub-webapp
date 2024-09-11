@@ -184,11 +184,11 @@ const BottomSheet: React.FC<BottomUpSheet> = ({ closeModal, subjectName }) => {
                                 />
 
                             </td>
-                            <td><input className={styles.customCheckbox} type='checkbox' /></td>
-                            <td><input className={styles.customCheckbox} type='checkbox' /></td>
-                            <td><input className={styles.customCheckbox} type='checkbox' /></td>
-                            <td><input className={styles.customCheckbox} type='checkbox' /></td>
-                            <td><input className={styles.customCheckbox} type='checkbox' /></td>
+                            <td className='flex items-center justify-center flex-row'><input className={styles.customCheckbox} type='checkbox' /></td>
+                            <td className='flex items-center justify-center flex-row'><input className={styles.customCheckbox} type='checkbox' /></td>
+                            <td className='flex items-center justify-center flex-row'><input className={styles.customCheckbox} type='checkbox' /></td>
+                            <td className='flex items-center justify-center flex-row'><input className={styles.customCheckbox} type='checkbox' /></td>
+                            <td className='flex items-center justify-center flex-row'><input className={styles.customCheckbox} type='checkbox' /></td>
                         </tr>
 
                         <tr className='h-[84px]'>
@@ -442,4 +442,3 @@ const BottomSheet: React.FC<BottomUpSheet> = ({ closeModal, subjectName }) => {
 };
 
 export default BottomSheet;
-

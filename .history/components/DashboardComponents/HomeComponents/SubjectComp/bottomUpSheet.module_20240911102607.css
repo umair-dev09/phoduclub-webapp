@@ -1,0 +1,257 @@
+.container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    z-index: 10;
+}
+
+.bottomUpSheet {
+    display: grid;
+    grid-template-rows: 69px 1fr 76px;
+    background-color: white;
+    border-radius: 12px 12px 0 0;
+    width: 100%;
+    height: 98%;
+    transform: translateY(0%);
+
+}
+
+.tableWrapper {
+    overflow-y: auto;
+    max-height: calc(100vh - 145px);
+
+}
+
+.tableWrapper table {
+    border-collapse: separate;
+    /* Ensure borders are not collapsed */
+    width: 100%;
+    table-layout: fixed;
+    border-spacing: 0;
+}
+
+.tableWrapper th,
+.tableWrapper td {
+    padding: 20px;
+    border-bottom: 1px solid #D1D5DB;
+    /* Add border below each cell */
+}
+
+.tableWrapper tr:last-child td {
+    border-bottom: none;
+    /* Remove border from the last row's cells */
+}
+
+.tableHead {
+    height: 44px;
+    border: solid;
+    border-width: 1px;
+    border-top-color: #EAECF0;
+    border-bottom-color: #EAECF0;
+}
+
+.tableWrapper tr:not(:last-child) {
+    border-bottom: 1px solid #D1D5DB;
+    /* Add a line after each row except the last one */
+}
+
+.tableWrapper td {
+    text-align: center;
+    vertical-align: middle;
+}
+
+.progressBar {
+    appearance: none;
+    width: 50%;
+    height: 8px;
+    border-radius: 10px;
+    background-color: #F1F5F9;
+}
+
+.progressBar::-webkit-progress-bar {
+    background-color: #F1F5F9;
+    border-radius: 10px;
+}
+
+.progressBar::-webkit-progress-value {
+    background-color: #7B2CBF;
+    border-radius: 10px;
+}
+
+.progressBar::-moz-progress-bar {
+    background-color: #7B2CBF;
+    border-radius: 10px;
+}
+
+.customCheckbox {
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    border-radius: 6px;
+    background-color: #F1F5F9;
+    border: 2px solid #D0D5DD;
+    padding-bottom: 0.313rem;
+    padding-left: 0.125rem;
+}
+
+.customCheckbox:checked {
+    background-color: #7B2CBF;
+    border-color: #7B2CBF;
+}
+
+.customCheckbox:checked::before {
+    content: '✓';
+    color: white;
+}
+
+/* ********************DATE PICKER********************** */
+.root {
+    --Colors-Background-bg-primary: #FFFFFF;
+    --Colors-Border-border-secondary: #EAECF0;
+    --spacing-lg: 16px;
+    --spacing-sm: 8px;
+    --spacing-xs: 4px;
+    --spacing-xl: 24px;
+    --radius-md: 8px;
+}
+
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.bottomUpSheet {
+    width: 100%;
+    background: var(--Colors-Background-bg-primary);
+    border: 1px solid var(--Colors-Border-border-secondary);
+    box-shadow: 0px 8px 8px -4px #10182808, 0px 20px 24px -4px #10182814;
+    border-radius: var(--radius-md);
+    padding: var(--spacing-lg);
+}
+
+.calendar-container {
+    background: var(--Colors-Background-bg-primary);
+    border: 1px solid var(--Colors-Border-border-secondary);
+    box-shadow: 0px 8px 8px -4px #10182808, 0px 20px 24px -4px #10182814;
+    width: 280px;
+    padding: var(--spacing-lg);
+    border-radius: var(--radius-md);
+}
+
+.calendar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    height: 36px;
+}
+
+.calendar-header div {
+    opacity: 1;
+}
+
+.month-button {
+    background-color: var(--Colors-Background-bg-primary);
+    border: none;
+    cursor: pointer;
+    padding: var(--spacing-sm);
+    font-size: 14px;
+}
+
+.calendar-buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-top: var(--spacing-lg);
+}
+
+.calendar-buttons button {
+    border-radius: var(--radius-md);
+    background-color: var(--Colors-Background-bg-primary);
+    border: 1px solid var(--Colors-Border-border-secondary);
+    cursor: pointer;
+    padding: 10px 14px;
+    font-size: 14px;
+}
+
+.calendar-body {
+    width: 100%;
+    height: 304px;
+    margin-top: var(--spacing-lg);
+}
+
+.calendar-body table {
+    width: 100%;
+    border-spacing: 0;
+    text-align: center;
+}
+
+.calendar-body th,
+.calendar-body td {
+    width: 40px;
+    height: 40px;
+    padding: 5px;
+    border-radius: 50%;
+}
+
+.calendar-body td.current-day {
+    background-color: #007BFF;
+    color: white;
+}
+
+.calendar-footer {
+    display: flex;
+    justify-content: space-between;
+    margin-top: var(--spacing-lg);
+    padding-top: var(--spacing-lg);
+    border-top: 1px solid var(--Colors-Border-border-secondary);
+}
+
+.button-primary,
+.button-secondary {
+    border-radius: var(--radius-md);
+    border: 1px solid transparent;
+    padding: 10px 14px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.button-primary {
+    background-color: #007BFF;
+    color: white;
+    width: 191px;
+}
+
+.button-secondary {
+    background-color: #FFFFFF;
+    color: #000;
+    border: 1px solid var(--Colors-Border-border-secondary);
+    width: 77px;
+}
+
+.tableWrapper {
+    overflow-x: auto;
+}
+
+.tableHead th {
+    text-align: left;
+}
+
+.customCheckbox {
+    accent-color: #007BFF;
+}
+
+.datePickerInput {
+    border: 1px solid var(--Colors-Border-border-secondary);
+    border-radius: var(--radius-md);
+    padding: var(--spacing-sm);
+    width: 100%;
+    box-sizing: border-box;
+}

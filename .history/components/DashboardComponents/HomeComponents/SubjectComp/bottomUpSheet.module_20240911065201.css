@@ -1,0 +1,101 @@
+.container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    z-index: 10;
+}
+
+.bottomUpSheet {
+    display: grid;
+    grid-template-rows: 69px 1fr 76px;
+    background-color: white;
+    border-radius: 12px 12px 0 0;
+    width: 100%;
+    height: 98%;
+    transform: translateY(0%);
+}
+
+.tableWrapper {
+    overflow-y: auto;
+    /* Enable vertical scrolling */
+    max-height: calc(100vh - 145px);
+    /* Adjust to ensure it fits within the sheet */
+    padding-bottom: 20px;
+    /* Add space below the table */
+}
+
+.tableWrapper table {
+    border-collapse: separate;
+    width: 100%;
+    table-layout: fixed;
+    border-spacing: 0;
+}
+
+.tableWrapper th,
+.tableWrapper td {
+    padding: 8px;
+    /* Add some padding for better spacing */
+}
+
+.tableHead {
+    height: 44px;
+    border: solid;
+    border-width: 1px;
+    border-top-color: #EAECF0;
+    border-bottom-color: #EAECF0;
+}
+
+.progressBar {
+    appearance: none;
+    width: 50%;
+    height: 8px;
+    border-radius: 10px;
+    background-color: #F1F5F9;
+}
+
+.progressBar::-webkit-progress-bar {
+    background-color: #F1F5F9;
+    border-radius: 10px;
+}
+
+.progressBar::-webkit-progress-value {
+    background-color: #7B2CBF;
+    border-radius: 10px;
+}
+
+.progressBar::-moz-progress-bar {
+    background-color: #7B2CBF;
+    border-radius: 10px;
+}
+
+.tableWrapper td {
+    text-align: center;
+    vertical-align: middle;
+}
+
+.customCheckbox {
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    border-radius: 6px;
+    background-color: #F1F5F9;
+    border: 2px solid #D0D5DD;
+    padding-bottom: 0.313rem;
+    padding-left: 0.125rem;
+}
+
+.customCheckbox:checked {
+    background-color: #7B2CBF;
+    border-color: #7B2CBF;
+}
+
+.customCheckbox:checked::before {
+    content: '✓';
+    color: white;
+}

@@ -2,57 +2,20 @@
 
 import styles from './bottomUpSheet.module.css';
 import Image from 'next/image';
-import { useEffect, useState } from 'react';
-import DatePicker from 'react-datepicker';
-import 'react-datepicker/dist/react-datepicker.css';
+import { useEffect } from 'react';
+
 interface BottomUpSheet {
     closeModal: () => void;
     subjectName: string | null;
 }
 
 const BottomSheet: React.FC<BottomUpSheet> = ({ closeModal, subjectName }) => {
-    // LOGIC FOR THE CALENDER
-    const [selectedDate, setSelectedDate] = useState<Date | null>(new Date());
-    const [tempDate, setTempDate] = useState<Date | null>(new Date());
-    const [calendarVisible, setCalendarVisible] = useState(false);
-
-    const handleDateChange = (date: Date | null) => {
-        setTempDate(date);
-    };
-
-    const applyDate = () => {
-        setSelectedDate(tempDate);
-        setCalendarVisible(false);
-    };
-
-    const cancelDate = () => {
-        setTempDate(selectedDate);
-        setCalendarVisible(false);
-    };
-    const CustomCalendarContainer = ({ className, children }: any) => (
-        <div className={`${className} ${styles.customCalendarContainer}`}>
-            {children}
-            <div className={styles.customButtons}>
-                <button onClick={cancelDate} className={styles.cancelButton}>Cancel</button>
-                <button onClick={applyDate} className={styles.applyButton}>Apply</button>
-            </div>
-        </div>
-    );
-    // ***********************xxxxxxxxxxxxxxxxxxxxxxxxxxxx***************************
-
-
-
-
     const getContent = () => {
         switch (subjectName) {
             case 'Chemistry':
                 return (
                     <>
-
-
-
-
-                        <tr className='h-[84px]'>
+                        <tr>
                             <td>
                                 <div className='ml-6 text-[14px] font-medium'>
                                     <p>Errors and Measurements</p>
@@ -64,13 +27,267 @@ const BottomSheet: React.FC<BottomUpSheet> = ({ closeModal, subjectName }) => {
                                     </div>
                                 </div>
                             </td>
-                            <td><div>
-                                <div className="inline-flex items-center justify-center border border-gray-300 rounded-full bg-white text-sm font-medium text-gray-700 p-2 max-w-full whitespace-nowrap overflow-hidden shadow-sm" style={{ width: '67px', height: '28px' }}>
-                                    <span className="w-2 h-2 bg-red-500 rounded-full mr-2"></span>
-                                    <p className="m-0 text-sm text-gray-700">High</p>
+                            <td></td>
+                            <td className='text-sm font-normal'><p>12-8-2024</p></td>
+                            <td><input className={styles.customCheckbox} type='checkbox' /></td>
+                            <td><input className={styles.customCheckbox} type='checkbox' /></td>
+                            <td><input className={styles.customCheckbox} type='checkbox' /></td>
+                            <td><input className={styles.customCheckbox} type='checkbox' /></td>
+                            <td><input className={styles.customCheckbox} type='checkbox' /></td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div className='ml-6 text-[14px] font-medium'>
+                                    <p>Errors and Measurements</p>
                                 </div>
-
-                            </div></td>
+                                <div className='flex flex-row items-center ml-6'>
+                                    <progress value="80" max="100" className={styles.progressBar} />
+                                    <div className="ml-2 text-sm font-normal">
+                                        <p>80%</p>
+                                    </div>
+                                </div>
+                            </td>
+                            <td></td>
+                            <td className='text-sm font-normal'><p>12-8-2024</p></td>
+                            <td><input className={styles.customCheckbox} type='checkbox' /></td>
+                            <td><input className={styles.customCheckbox} type='checkbox' /></td>
+                            <td><input className={styles.customCheckbox} type='checkbox' /></td>
+                            <td><input className={styles.customCheckbox} type='checkbox' /></td>
+                            <td><input className={styles.customCheckbox} type='checkbox' /></td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div className='ml-6 text-[14px] font-medium'>
+                                    <p>Errors and Measurements</p>
+                                </div>
+                                <div className='flex flex-row items-center ml-6'>
+                                    <progress value="80" max="100" className={styles.progressBar} />
+                                    <div className="ml-2 text-sm font-normal">
+                                        <p>80%</p>
+                                    </div>
+                                </div>
+                            </td>
+                            <td></td>
+                            <td className='text-sm font-normal'><p>12-8-2024</p></td>
+                            <td><input className={styles.customCheckbox} type='checkbox' /></td>
+                            <td><input className={styles.customCheckbox} type='checkbox' /></td>
+                            <td><input className={styles.customCheckbox} type='checkbox' /></td>
+                            <td><input className={styles.customCheckbox} type='checkbox' /></td>
+                            <td><input className={styles.customCheckbox} type='checkbox' /></td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div className='ml-6 text-[14px] font-medium'>
+                                    <p>Errors and Measurements</p>
+                                </div>
+                                <div className='flex flex-row items-center ml-6'>
+                                    <progress value="80" max="100" className={styles.progressBar} />
+                                    <div className="ml-2 text-sm font-normal">
+                                        <p>80%</p>
+                                    </div>
+                                </div>
+                            </td>
+                            <td></td>
+                            <td className='text-sm font-normal'><p>12-8-2024</p></td>
+                            <td><input className={styles.customCheckbox} type='checkbox' /></td>
+                            <td><input className={styles.customCheckbox} type='checkbox' /></td>
+                            <td><input className={styles.customCheckbox} type='checkbox' /></td>
+                            <td><input className={styles.customCheckbox} type='checkbox' /></td>
+                            <td><input className={styles.customCheckbox} type='checkbox' /></td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div className='ml-6 text-[14px] font-medium'>
+                                    <p>Errors and Measurements</p>
+                                </div>
+                                <div className='flex flex-row items-center ml-6'>
+                                    <progress value="80" max="100" className={styles.progressBar} />
+                                    <div className="ml-2 text-sm font-normal">
+                                        <p>80%</p>
+                                    </div>
+                                </div>
+                            </td>
+                            <td></td>
+                            <td className='text-sm font-normal'><p>12-8-2024</p></td>
+                            <td><input className={styles.customCheckbox} type='checkbox' /></td>
+                            <td><input className={styles.customCheckbox} type='checkbox' /></td>
+                            <td><input className={styles.customCheckbox} type='checkbox' /></td>
+                            <td><input className={styles.customCheckbox} type='checkbox' /></td>
+                            <td><input className={styles.customCheckbox} type='checkbox' /></td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div className='ml-6 text-[14px] font-medium'>
+                                    <p>Errors and Measurements</p>
+                                </div>
+                                <div className='flex flex-row items-center ml-6'>
+                                    <progress value="80" max="100" className={styles.progressBar} />
+                                    <div className="ml-2 text-sm font-normal">
+                                        <p>80%</p>
+                                    </div>
+                                </div>
+                            </td>
+                            <td></td>
+                            <td className='text-sm font-normal'><p>12-8-2024</p></td>
+                            <td><input className={styles.customCheckbox} type='checkbox' /></td>
+                            <td><input className={styles.customCheckbox} type='checkbox' /></td>
+                            <td><input className={styles.customCheckbox} type='checkbox' /></td>
+                            <td><input className={styles.customCheckbox} type='checkbox' /></td>
+                            <td><input className={styles.customCheckbox} type='checkbox' /></td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div className='ml-6 text-[14px] font-medium'>
+                                    <p>Errors and Measurements</p>
+                                </div>
+                                <div className='flex flex-row items-center ml-6'>
+                                    <progress value="80" max="100" className={styles.progressBar} />
+                                    <div className="ml-2 text-sm font-normal">
+                                        <p>80%</p>
+                                    </div>
+                                </div>
+                            </td>
+                            <td></td>
+                            <td className='text-sm font-normal'><p>12-8-2024</p></td>
+                            <td><input className={styles.customCheckbox} type='checkbox' /></td>
+                            <td><input className={styles.customCheckbox} type='checkbox' /></td>
+                            <td><input className={styles.customCheckbox} type='checkbox' /></td>
+                            <td><input className={styles.customCheckbox} type='checkbox' /></td>
+                            <td><input className={styles.customCheckbox} type='checkbox' /></td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div className='ml-6 text-[14px] font-medium'>
+                                    <p>Errors and Measurements</p>
+                                </div>
+                                <div className='flex flex-row items-center ml-6'>
+                                    <progress value="80" max="100" className={styles.progressBar} />
+                                    <div className="ml-2 text-sm font-normal">
+                                        <p>80%</p>
+                                    </div>
+                                </div>
+                            </td>
+                            <td></td>
+                            <td className='text-sm font-normal'><p>12-8-2024</p></td>
+                            <td><input className={styles.customCheckbox} type='checkbox' /></td>
+                            <td><input className={styles.customCheckbox} type='checkbox' /></td>
+                            <td><input className={styles.customCheckbox} type='checkbox' /></td>
+                            <td><input className={styles.customCheckbox} type='checkbox' /></td>
+                            <td><input className={styles.customCheckbox} type='checkbox' /></td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div className='ml-6 text-[14px] font-medium'>
+                                    <p>Errors and Measurements</p>
+                                </div>
+                                <div className='flex flex-row items-center ml-6'>
+                                    <progress value="80" max="100" className={styles.progressBar} />
+                                    <div className="ml-2 text-sm font-normal">
+                                        <p>80%</p>
+                                    </div>
+                                </div>
+                            </td>
+                            <td></td>
+                            <td className='text-sm font-normal'><p>12-8-2024</p></td>
+                            <td><input className={styles.customCheckbox} type='checkbox' /></td>
+                            <td><input className={styles.customCheckbox} type='checkbox' /></td>
+                            <td><input className={styles.customCheckbox} type='checkbox' /></td>
+                            <td><input className={styles.customCheckbox} type='checkbox' /></td>
+                            <td><input className={styles.customCheckbox} type='checkbox' /></td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div className='ml-6 text-[14px] font-medium'>
+                                    <p>Errors and Measurements</p>
+                                </div>
+                                <div className='flex flex-row items-center ml-6'>
+                                    <progress value="80" max="100" className={styles.progressBar} />
+                                    <div className="ml-2 text-sm font-normal">
+                                        <p>80%</p>
+                                    </div>
+                                </div>
+                            </td>
+                            <td></td>
+                            <td className='text-sm font-normal'><p>12-8-2024</p></td>
+                            <td><input className={styles.customCheckbox} type='checkbox' /></td>
+                            <td><input className={styles.customCheckbox} type='checkbox' /></td>
+                            <td><input className={styles.customCheckbox} type='checkbox' /></td>
+                            <td><input className={styles.customCheckbox} type='checkbox' /></td>
+                            <td><input className={styles.customCheckbox} type='checkbox' /></td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div className='ml-6 text-[14px] font-medium'>
+                                    <p>Errors and Measurements</p>
+                                </div>
+                                <div className='flex flex-row items-center ml-6'>
+                                    <progress value="80" max="100" className={styles.progressBar} />
+                                    <div className="ml-2 text-sm font-normal">
+                                        <p>80%</p>
+                                    </div>
+                                </div>
+                            </td>
+                            <td></td>
+                            <td className='text-sm font-normal'><p>12-8-2024</p></td>
+                            <td><input className={styles.customCheckbox} type='checkbox' /></td>
+                            <td><input className={styles.customCheckbox} type='checkbox' /></td>
+                            <td><input className={styles.customCheckbox} type='checkbox' /></td>
+                            <td><input className={styles.customCheckbox} type='checkbox' /></td>
+                            <td><input className={styles.customCheckbox} type='checkbox' /></td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div className='ml-6 text-[14px] font-medium'>
+                                    <p>Errors and Measurements</p>
+                                </div>
+                                <div className='flex flex-row items-center ml-6'>
+                                    <progress value="80" max="100" className={styles.progressBar} />
+                                    <div className="ml-2 text-sm font-normal">
+                                        <p>80%</p>
+                                    </div>
+                                </div>
+                            </td>
+                            <td></td>
+                            <td className='text-sm font-normal'><p>12-8-2024</p></td>
+                            <td><input className={styles.customCheckbox} type='checkbox' /></td>
+                            <td><input className={styles.customCheckbox} type='checkbox' /></td>
+                            <td><input className={styles.customCheckbox} type='checkbox' /></td>
+                            <td><input className={styles.customCheckbox} type='checkbox' /></td>
+                            <td><input className={styles.customCheckbox} type='checkbox' /></td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div className='ml-6 text-[14px] font-medium'>
+                                    <p>Errors and Measurements</p>
+                                </div>
+                                <div className='flex flex-row items-center ml-6'>
+                                    <progress value="80" max="100" className={styles.progressBar} />
+                                    <div className="ml-2 text-sm font-normal">
+                                        <p>80%</p>
+                                    </div>
+                                </div>
+                            </td>
+                            <td></td>
+                            <td className='text-sm font-normal'><p>12-8-2024</p></td>
+                            <td><input className={styles.customCheckbox} type='checkbox' /></td>
+                            <td><input className={styles.customCheckbox} type='checkbox' /></td>
+                            <td><input className={styles.customCheckbox} type='checkbox' /></td>
+                            <td><input className={styles.customCheckbox} type='checkbox' /></td>
+                            <td><input className={styles.customCheckbox} type='checkbox' /></td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div className='ml-6 text-[14px] font-medium'>
+                                    <p>Errors and Measurements</p>
+                                </div>
+                                <div className='flex flex-row items-center ml-6'>
+                                    <progress value="80" max="100" className={styles.progressBar} />
+                                    <div className="ml-2 text-sm font-normal">
+                                        <p>80%</p>
+                                    </div>
+                                </div>
+                            </td>
+                            <td></td>
                             <td className='text-sm font-normal'><p>12-8-2024</p></td>
                             <td><input className={styles.customCheckbox} type='checkbox' /></td>
                             <td><input className={styles.customCheckbox} type='checkbox' /></td>
@@ -81,280 +298,19 @@ const BottomSheet: React.FC<BottomUpSheet> = ({ closeModal, subjectName }) => {
                     </>
                 );
             case 'Maths':
-                return <>
-
-                    <tr className='h-[84px]'>
-                        <td>
-                            <div className='ml-6 text-[14px] font-medium'>
-                                <p>Algebra</p>
-                            </div>
-                            <div className='flex flex-row items-center ml-6'>
-                                <progress value="80" max="100" className={styles.progressBar} />
-                                <div className="ml-2 text-sm font-normal">
-                                    <p>80%</p>
-                                </div>
-                            </div>
-                        </td>
-                        <td><div>
-                            <div className="inline-flex items-center justify-center border border-gray-300 rounded-full bg-white text-sm font-medium text-gray-700 p-2 max-w-full whitespace-nowrap overflow-hidden shadow-sm" style={{ width: '67px', height: '28px' }}>
-                                <span className="w-2 h-2 bg-red-500 rounded-full mr-2"></span>
-                                <p className="m-0 text-sm text-gray-700">High</p>
-                            </div>
-
-                        </div></td>
-                        <td className='text-sm font-normal'><p>12-8-2024</p></td>
-                        <td><input className={styles.customCheckbox} type='checkbox' /></td>
-                        <td><input className={styles.customCheckbox} type='checkbox' /></td>
-                        <td><input className={styles.customCheckbox} type='checkbox' /></td>
-                        <td><input className={styles.customCheckbox} type='checkbox' /></td>
-                        <td><input className={styles.customCheckbox} type='checkbox' /></td>
-                    </tr>
-                </>;
+                return <></>;
             case 'Overall':
                 return (
                     <>
-                        <tr className='h-[84px]'>
-                            <td>
-                                <div className='ml-6 text-[14px] font-medium'>
-                                    <p>Errors and Measurements</p>
-                                </div>
-                                <div className='flex flex-row items-center ml-6'>
-                                    <progress value="80" max="100" className={styles.progressBar} />
-                                    <div className="ml-2 text-sm font-normal">
-                                        <p>80%</p>
-                                    </div>
-                                </div>
-
-                            </td>
-                            <td>
-                                <div>
-                                    <div className="inline-flex items-center justify-center border border-gray-300 rounded-full bg-white text-sm font-medium text-gray-700 p-2 max-w-full whitespace-nowrap overflow-hidden shadow-sm" style={{ width: '67px', height: '28px' }}>
-                                        <span className="w-2 h-2 bg-red-500 rounded-full mr-2"></span>
-                                        <p className="m-0 text-sm text-gray-700">High</p>
-                                    </div>
-
-                                </div>
-                            </td>
-
-
-                            <td className='text-sm font-normal'><p>12-8-2024</p></td>
-                            <td><input className={styles.customCheckbox} type='checkbox' /></td>
-                            <td><input className={styles.customCheckbox} type='checkbox' /></td>
-                            <td><input className={styles.customCheckbox} type='checkbox' /></td>
-                            <td><input className={styles.customCheckbox} type='checkbox' /></td>
-                            <td><input className={styles.customCheckbox} type='checkbox' /></td>
-                        </tr>
+                        <h2 className='text-2xl font-bold mb-4'>Overall</h2>
+                        <p className='text-gray-700 mb-6'>Detailed content for Overall</p>
                     </>
                 );
             case 'Physics':
                 return (
                     <>
-
-                        <tr className='h-[84px]'>
-                            <td>
-                                <div className='ml-6 text-[14px] font-medium'>
-                                    <p>Errors and Measurements</p>
-                                </div>
-                                <div className='flex flex-row items-center ml-6'>
-                                    <progress value="80" max="100" className={styles.progressBar} />
-                                    <div className="ml-2 text-sm font-normal">
-                                        <p>80%</p>
-                                    </div>
-                                </div>
-                            </td>
-                            <td><div>
-                                <div className="inline-flex items-center justify-center border border-gray-300 rounded-full bg-white text-sm font-medium text-gray-700 p-2 max-w-full whitespace-nowrap overflow-hidden shadow-sm" style={{ width: '67px', height: '28px' }}>
-                                    <span className="w-2 h-2 bg-red-500 rounded-full mr-2"></span>
-                                    <p className="m-0 text-sm text-gray-700">High</p>
-                                </div>
-
-                            </div>
-                            </td>
-                            <td >
-                                {/* HERE WE HAVE TO IMPLEMENT THE CALANDER */}
-                                <DatePicker
-                                    selected={tempDate}
-                                    onChange={handleDateChange}
-                                    calendarContainer={CustomCalendarContainer}
-                                    onClickOutside={cancelDate}
-                                    onCalendarOpen={() => setCalendarVisible(true)}
-                                    onCalendarClose={() => setCalendarVisible(false)}
-                                    dateFormat="dd-MM-yyyy"
-                                    className={styles.datePickerInput}
-                                />
-
-                            </td>
-                            <td><input className={styles.customCheckbox} type='checkbox' /></td>
-                            <td><input className={styles.customCheckbox} type='checkbox' /></td>
-                            <td><input className={styles.customCheckbox} type='checkbox' /></td>
-                            <td><input className={styles.customCheckbox} type='checkbox' /></td>
-                            <td><input className={styles.customCheckbox} type='checkbox' /></td>
-                        </tr>
-
-                        <tr className='h-[84px]'>
-                            <td>
-                                <div className='ml-6 text-[14px] font-medium'>
-                                    <p>Errors and Measurements</p>
-                                </div>
-                                <div className='flex flex-row items-center ml-6'>
-                                    <progress value="80" max="100" className={styles.progressBar} />
-                                    <div className="ml-2 text-sm font-normal">
-                                        <p>80%</p>
-                                    </div>
-                                </div>
-                            </td>
-                            <td><div>
-                                <div className="inline-flex items-center justify-center border border-gray-300 rounded-full bg-white text-sm font-medium text-gray-700 p-2 max-w-full whitespace-nowrap overflow-hidden shadow-sm" style={{ width: '67px', height: '28px' }}>
-                                    <span className="w-2 h-2 bg-red-500 rounded-full mr-2"></span>
-                                    <p className="m-0 text-sm text-gray-700">High</p>
-                                </div>
-
-                            </div>
-                            </td>
-                            <td >
-                                {/* HERE WE HAVE TO IMPLEMENT THE CALANDER */}
-                                <DatePicker
-                                    selected={tempDate}
-                                    onChange={handleDateChange}
-                                    calendarContainer={CustomCalendarContainer}
-                                    onClickOutside={cancelDate}
-                                    onCalendarOpen={() => setCalendarVisible(true)}
-                                    onCalendarClose={() => setCalendarVisible(false)}
-                                    dateFormat="dd-MM-yyyy"
-                                    className={styles.datePickerInput}
-                                />
-
-                            </td>
-                            <td><input className={styles.customCheckbox} type='checkbox' /></td>
-                            <td><input className={styles.customCheckbox} type='checkbox' /></td>
-                            <td><input className={styles.customCheckbox} type='checkbox' /></td>
-                            <td><input className={styles.customCheckbox} type='checkbox' /></td>
-                            <td><input className={styles.customCheckbox} type='checkbox' /></td>
-                        </tr>
-
-                        <tr className='h-[84px]'>
-                            <td>
-                                <div className='ml-6 text-[14px] font-medium'>
-                                    <p>Errors and Measurements</p>
-                                </div>
-                                <div className='flex flex-row items-center ml-6'>
-                                    <progress value="80" max="100" className={styles.progressBar} />
-                                    <div className="ml-2 text-sm font-normal">
-                                        <p>80%</p>
-                                    </div>
-                                </div>
-                            </td>
-                            <td><div>
-                                <div className="inline-flex items-center justify-center border border-gray-300 rounded-full bg-white text-sm font-medium text-gray-700 p-2 max-w-full whitespace-nowrap overflow-hidden shadow-sm" style={{ width: '67px', height: '28px' }}>
-                                    <span className="w-2 h-2 bg-red-500 rounded-full mr-2"></span>
-                                    <p className="m-0 text-sm text-gray-700">High</p>
-                                </div>
-
-                            </div>
-                            </td>
-                            <td >
-                                {/* HERE WE HAVE TO IMPLEMENT THE CALANDER */}
-                                <DatePicker
-                                    selected={tempDate}
-                                    onChange={handleDateChange}
-                                    calendarContainer={CustomCalendarContainer}
-                                    onClickOutside={cancelDate}
-                                    onCalendarOpen={() => setCalendarVisible(true)}
-                                    onCalendarClose={() => setCalendarVisible(false)}
-                                    dateFormat="dd-MM-yyyy"
-                                    className={styles.datePickerInput}
-                                />
-
-                            </td>
-                            <td><input className={styles.customCheckbox} type='checkbox' /></td>
-                            <td><input className={styles.customCheckbox} type='checkbox' /></td>
-                            <td><input className={styles.customCheckbox} type='checkbox' /></td>
-                            <td><input className={styles.customCheckbox} type='checkbox' /></td>
-                            <td><input className={styles.customCheckbox} type='checkbox' /></td>
-                        </tr>
-
-                        <tr className='h-[84px]'>
-                            <td>
-                                <div className='ml-6 text-[14px] font-medium'>
-                                    <p>Errors and Measurements</p>
-                                </div>
-                                <div className='flex flex-row items-center ml-6'>
-                                    <progress value="80" max="100" className={styles.progressBar} />
-                                    <div className="ml-2 text-sm font-normal">
-                                        <p>80%</p>
-                                    </div>
-                                </div>
-                            </td>
-                            <td><div>
-                                <div className="inline-flex items-center justify-center border border-gray-300 rounded-full bg-white text-sm font-medium text-gray-700 p-2 max-w-full whitespace-nowrap overflow-hidden shadow-sm" style={{ width: '67px', height: '28px' }}>
-                                    <span className="w-2 h-2 bg-red-500 rounded-full mr-2"></span>
-                                    <p className="m-0 text-sm text-gray-700">High</p>
-                                </div>
-
-                            </div>
-                            </td>
-                            <td >
-                                {/* HERE WE HAVE TO IMPLEMENT THE CALANDER */}
-                                <DatePicker
-                                    selected={tempDate}
-                                    onChange={handleDateChange}
-                                    calendarContainer={CustomCalendarContainer}
-                                    onClickOutside={cancelDate}
-                                    onCalendarOpen={() => setCalendarVisible(true)}
-                                    onCalendarClose={() => setCalendarVisible(false)}
-                                    dateFormat="dd-MM-yyyy"
-                                    className={styles.datePickerInput}
-                                />
-
-                            </td>
-                            <td><input className={styles.customCheckbox} type='checkbox' /></td>
-                            <td><input className={styles.customCheckbox} type='checkbox' /></td>
-                            <td><input className={styles.customCheckbox} type='checkbox' /></td>
-                            <td><input className={styles.customCheckbox} type='checkbox' /></td>
-                            <td><input className={styles.customCheckbox} type='checkbox' /></td>
-                        </tr>
-
-                        <tr className='h-[84px]'>
-                            <td>
-                                <div className='ml-6 text-[14px] font-medium'>
-                                    <p>Errors and Measurements</p>
-                                </div>
-                                <div className='flex flex-row items-center ml-6'>
-                                    <progress value="80" max="100" className={styles.progressBar} />
-                                    <div className="ml-2 text-sm font-normal">
-                                        <p>80%</p>
-                                    </div>
-                                </div>
-                            </td>
-                            <td>
-                                <div>
-                                    <div className="inline-flex items-center justify-center border border-gray-300 rounded-full bg-white text-sm font-medium text-gray-700 p-2 max-w-full whitespace-nowrap overflow-hidden shadow-sm" style={{ width: '67px', height: '28px' }}>
-                                        <span className="w-2 h-2 bg-red-500 rounded-full mr-2"></span>
-                                        <p className="m-0 text-sm text-gray-700">High</p>
-                                    </div>
-                                </div>
-                            </td>
-                            <td >
-                                {/* HERE WE HAVE TO IMPLEMENT THE CALANDER */}
-                                <DatePicker
-                                    selected={tempDate}
-                                    onChange={handleDateChange}
-                                    calendarContainer={CustomCalendarContainer}
-                                    onClickOutside={cancelDate}
-                                    onCalendarOpen={() => setCalendarVisible(true)}
-                                    onCalendarClose={() => setCalendarVisible(false)}
-                                    dateFormat="dd-MM-yyyy"
-                                    className={styles.datePickerInput}
-                                />
-
-                            </td>
-                            <td><input className={styles.customCheckbox} type='checkbox' /></td>
-                            <td><input className={styles.customCheckbox} type='checkbox' /></td>
-                            <td><input className={styles.customCheckbox} type='checkbox' /></td>
-                            <td><input className={styles.customCheckbox} type='checkbox' /></td>
-                            <td><input className={styles.customCheckbox} type='checkbox' /></td>
-                        </tr>
-
+                        <h2 className="text-2xl font-bold mb-4">Physics</h2>
+                        <p className="text-gray-700 mb-6">Detailed content for Physics.</p>
                     </>
                 );
             default:
@@ -378,12 +334,7 @@ const BottomSheet: React.FC<BottomUpSheet> = ({ closeModal, subjectName }) => {
 
     return (
         <div className={styles.container}>
-
-            <div
-                className={styles.bottomUpSheet}
-                style={{ height: '98vh', maxHeight: '98vh', overflowY: 'auto' }}
-            >
-
+            <div id="bottomSheet" className={styles.bottomUpSheet}>
                 <div className="flex flex-row items-center justify-between rounded-t-xl">
                     <h3 className="ml-6">{subjectName || "Subject"}</h3>
                     <button onClick={closeModal}>
@@ -417,9 +368,6 @@ const BottomSheet: React.FC<BottomUpSheet> = ({ closeModal, subjectName }) => {
                         </table>
                     </div>
                 </div>
-
-
-
                 <div className="flex flex-row items-center justify-end border-t border-lightGrey">
                     <button
                         className="border rounded-lg py-2.5 px-6 text-sm border-lightGrey text-blackLike"
@@ -430,16 +378,10 @@ const BottomSheet: React.FC<BottomUpSheet> = ({ closeModal, subjectName }) => {
                     <button className="mr-6 ml-2.5 border rounded-lg py-2.5 px-6 text-sm bg-purple text-white border-darkPurple">
                         <p>Save</p>
                     </button>
-
                 </div>
-
             </div>
-
-
         </div>
-
     );
 };
 
 export default BottomSheet;
-

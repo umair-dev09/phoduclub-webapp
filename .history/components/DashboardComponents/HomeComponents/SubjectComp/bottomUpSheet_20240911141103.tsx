@@ -52,7 +52,7 @@ const BottomSheet: React.FC<BottomUpSheet> = ({ closeModal, subjectName }) => {
 
 
 
-                        <tr className='h-[84px]'>
+                        <tr>
                             <td>
                                 <div className='ml-6 text-[14px] font-medium'>
                                     <p>Errors and Measurements</p>
@@ -83,7 +83,7 @@ const BottomSheet: React.FC<BottomUpSheet> = ({ closeModal, subjectName }) => {
             case 'Maths':
                 return <>
 
-                    <tr className='h-[84px]'>
+                    <tr>
                         <td>
                             <div className='ml-6 text-[14px] font-medium'>
                                 <p>Algebra</p>
@@ -113,7 +113,7 @@ const BottomSheet: React.FC<BottomUpSheet> = ({ closeModal, subjectName }) => {
             case 'Overall':
                 return (
                     <>
-                        <tr className='h-[84px]'>
+                        <tr>
                             <td>
                                 <div className='ml-6 text-[14px] font-medium'>
                                     <p>Errors and Measurements</p>
@@ -150,7 +150,7 @@ const BottomSheet: React.FC<BottomUpSheet> = ({ closeModal, subjectName }) => {
                 return (
                     <>
 
-                        <tr className='h-[84px]'>
+                        <tr>
                             <td>
                                 <div className='ml-6 text-[14px] font-medium'>
                                     <p>Errors and Measurements</p>
@@ -191,7 +191,7 @@ const BottomSheet: React.FC<BottomUpSheet> = ({ closeModal, subjectName }) => {
                             <td><input className={styles.customCheckbox} type='checkbox' /></td>
                         </tr>
 
-                        <tr className='h-[84px]'>
+                        <tr>
                             <td>
                                 <div className='ml-6 text-[14px] font-medium'>
                                     <p>Errors and Measurements</p>
@@ -232,7 +232,7 @@ const BottomSheet: React.FC<BottomUpSheet> = ({ closeModal, subjectName }) => {
                             <td><input className={styles.customCheckbox} type='checkbox' /></td>
                         </tr>
 
-                        <tr className='h-[84px]'>
+                        <tr>
                             <td>
                                 <div className='ml-6 text-[14px] font-medium'>
                                     <p>Errors and Measurements</p>
@@ -273,7 +273,7 @@ const BottomSheet: React.FC<BottomUpSheet> = ({ closeModal, subjectName }) => {
                             <td><input className={styles.customCheckbox} type='checkbox' /></td>
                         </tr>
 
-                        <tr className='h-[84px]'>
+                        <tr>
                             <td>
                                 <div className='ml-6 text-[14px] font-medium'>
                                     <p>Errors and Measurements</p>
@@ -314,7 +314,7 @@ const BottomSheet: React.FC<BottomUpSheet> = ({ closeModal, subjectName }) => {
                             <td><input className={styles.customCheckbox} type='checkbox' /></td>
                         </tr>
 
-                        <tr className='h-[84px]'>
+                        <tr>
                             <td>
                                 <div className='ml-6 text-[14px] font-medium'>
                                     <p>Errors and Measurements</p>
@@ -332,6 +332,7 @@ const BottomSheet: React.FC<BottomUpSheet> = ({ closeModal, subjectName }) => {
                                         <span className="w-2 h-2 bg-red-500 rounded-full mr-2"></span>
                                         <p className="m-0 text-sm text-gray-700">High</p>
                                     </div>
+
                                 </div>
                             </td>
                             <td >
@@ -380,7 +381,8 @@ const BottomSheet: React.FC<BottomUpSheet> = ({ closeModal, subjectName }) => {
         <div className={styles.container}>
 
             <div
-                className={styles.bottomUpSheet}
+                id="bottomSheet"
+                className="w-full bg-white p-6 rounded-t-lg shadow-lg animate-slideUp"
                 style={{ height: '98vh', maxHeight: '98vh', overflowY: 'auto' }}
             >
 
@@ -420,7 +422,7 @@ const BottomSheet: React.FC<BottomUpSheet> = ({ closeModal, subjectName }) => {
 
 
 
-                <div className="flex flex-row items-center justify-end border-t border-lightGrey">
+                <div className="flex-row items-center justify-end border-t border-lightGrey">
                     <button
                         className="border rounded-lg py-2.5 px-6 text-sm border-lightGrey text-blackLike"
                         onClick={closeModal}
@@ -442,4 +444,3 @@ const BottomSheet: React.FC<BottomUpSheet> = ({ closeModal, subjectName }) => {
 };
 
 export default BottomSheet;
-

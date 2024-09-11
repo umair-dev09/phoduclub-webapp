@@ -52,7 +52,7 @@ const BottomSheet: React.FC<BottomUpSheet> = ({ closeModal, subjectName }) => {
 
 
 
-                        <tr className='h-[84px]'>
+                        <tr>
                             <td>
                                 <div className='ml-6 text-[14px] font-medium'>
                                     <p>Errors and Measurements</p>
@@ -83,7 +83,7 @@ const BottomSheet: React.FC<BottomUpSheet> = ({ closeModal, subjectName }) => {
             case 'Maths':
                 return <>
 
-                    <tr className='h-[84px]'>
+                    <tr>
                         <td>
                             <div className='ml-6 text-[14px] font-medium'>
                                 <p>Algebra</p>
@@ -113,7 +113,7 @@ const BottomSheet: React.FC<BottomUpSheet> = ({ closeModal, subjectName }) => {
             case 'Overall':
                 return (
                     <>
-                        <tr className='h-[84px]'>
+                        <tr>
                             <td>
                                 <div className='ml-6 text-[14px] font-medium'>
                                     <p>Errors and Measurements</p>
@@ -150,7 +150,7 @@ const BottomSheet: React.FC<BottomUpSheet> = ({ closeModal, subjectName }) => {
                 return (
                     <>
 
-                        <tr className='h-[84px]'>
+                        <tr>
                             <td>
                                 <div className='ml-6 text-[14px] font-medium'>
                                     <p>Errors and Measurements</p>
@@ -168,172 +168,7 @@ const BottomSheet: React.FC<BottomUpSheet> = ({ closeModal, subjectName }) => {
                                     <p className="m-0 text-sm text-gray-700">High</p>
                                 </div>
 
-                            </div>
-                            </td>
-                            <td >
-                                {/* HERE WE HAVE TO IMPLEMENT THE CALANDER */}
-                                <DatePicker
-                                    selected={tempDate}
-                                    onChange={handleDateChange}
-                                    calendarContainer={CustomCalendarContainer}
-                                    onClickOutside={cancelDate}
-                                    onCalendarOpen={() => setCalendarVisible(true)}
-                                    onCalendarClose={() => setCalendarVisible(false)}
-                                    dateFormat="dd-MM-yyyy"
-                                    className={styles.datePickerInput}
-                                />
-
-                            </td>
-                            <td><input className={styles.customCheckbox} type='checkbox' /></td>
-                            <td><input className={styles.customCheckbox} type='checkbox' /></td>
-                            <td><input className={styles.customCheckbox} type='checkbox' /></td>
-                            <td><input className={styles.customCheckbox} type='checkbox' /></td>
-                            <td><input className={styles.customCheckbox} type='checkbox' /></td>
-                        </tr>
-
-                        <tr className='h-[84px]'>
-                            <td>
-                                <div className='ml-6 text-[14px] font-medium'>
-                                    <p>Errors and Measurements</p>
-                                </div>
-                                <div className='flex flex-row items-center ml-6'>
-                                    <progress value="80" max="100" className={styles.progressBar} />
-                                    <div className="ml-2 text-sm font-normal">
-                                        <p>80%</p>
-                                    </div>
-                                </div>
-                            </td>
-                            <td><div>
-                                <div className="inline-flex items-center justify-center border border-gray-300 rounded-full bg-white text-sm font-medium text-gray-700 p-2 max-w-full whitespace-nowrap overflow-hidden shadow-sm" style={{ width: '67px', height: '28px' }}>
-                                    <span className="w-2 h-2 bg-red-500 rounded-full mr-2"></span>
-                                    <p className="m-0 text-sm text-gray-700">High</p>
-                                </div>
-
-                            </div>
-                            </td>
-                            <td >
-                                {/* HERE WE HAVE TO IMPLEMENT THE CALANDER */}
-                                <DatePicker
-                                    selected={tempDate}
-                                    onChange={handleDateChange}
-                                    calendarContainer={CustomCalendarContainer}
-                                    onClickOutside={cancelDate}
-                                    onCalendarOpen={() => setCalendarVisible(true)}
-                                    onCalendarClose={() => setCalendarVisible(false)}
-                                    dateFormat="dd-MM-yyyy"
-                                    className={styles.datePickerInput}
-                                />
-
-                            </td>
-                            <td><input className={styles.customCheckbox} type='checkbox' /></td>
-                            <td><input className={styles.customCheckbox} type='checkbox' /></td>
-                            <td><input className={styles.customCheckbox} type='checkbox' /></td>
-                            <td><input className={styles.customCheckbox} type='checkbox' /></td>
-                            <td><input className={styles.customCheckbox} type='checkbox' /></td>
-                        </tr>
-
-                        <tr className='h-[84px]'>
-                            <td>
-                                <div className='ml-6 text-[14px] font-medium'>
-                                    <p>Errors and Measurements</p>
-                                </div>
-                                <div className='flex flex-row items-center ml-6'>
-                                    <progress value="80" max="100" className={styles.progressBar} />
-                                    <div className="ml-2 text-sm font-normal">
-                                        <p>80%</p>
-                                    </div>
-                                </div>
-                            </td>
-                            <td><div>
-                                <div className="inline-flex items-center justify-center border border-gray-300 rounded-full bg-white text-sm font-medium text-gray-700 p-2 max-w-full whitespace-nowrap overflow-hidden shadow-sm" style={{ width: '67px', height: '28px' }}>
-                                    <span className="w-2 h-2 bg-red-500 rounded-full mr-2"></span>
-                                    <p className="m-0 text-sm text-gray-700">High</p>
-                                </div>
-
-                            </div>
-                            </td>
-                            <td >
-                                {/* HERE WE HAVE TO IMPLEMENT THE CALANDER */}
-                                <DatePicker
-                                    selected={tempDate}
-                                    onChange={handleDateChange}
-                                    calendarContainer={CustomCalendarContainer}
-                                    onClickOutside={cancelDate}
-                                    onCalendarOpen={() => setCalendarVisible(true)}
-                                    onCalendarClose={() => setCalendarVisible(false)}
-                                    dateFormat="dd-MM-yyyy"
-                                    className={styles.datePickerInput}
-                                />
-
-                            </td>
-                            <td><input className={styles.customCheckbox} type='checkbox' /></td>
-                            <td><input className={styles.customCheckbox} type='checkbox' /></td>
-                            <td><input className={styles.customCheckbox} type='checkbox' /></td>
-                            <td><input className={styles.customCheckbox} type='checkbox' /></td>
-                            <td><input className={styles.customCheckbox} type='checkbox' /></td>
-                        </tr>
-
-                        <tr className='h-[84px]'>
-                            <td>
-                                <div className='ml-6 text-[14px] font-medium'>
-                                    <p>Errors and Measurements</p>
-                                </div>
-                                <div className='flex flex-row items-center ml-6'>
-                                    <progress value="80" max="100" className={styles.progressBar} />
-                                    <div className="ml-2 text-sm font-normal">
-                                        <p>80%</p>
-                                    </div>
-                                </div>
-                            </td>
-                            <td><div>
-                                <div className="inline-flex items-center justify-center border border-gray-300 rounded-full bg-white text-sm font-medium text-gray-700 p-2 max-w-full whitespace-nowrap overflow-hidden shadow-sm" style={{ width: '67px', height: '28px' }}>
-                                    <span className="w-2 h-2 bg-red-500 rounded-full mr-2"></span>
-                                    <p className="m-0 text-sm text-gray-700">High</p>
-                                </div>
-
-                            </div>
-                            </td>
-                            <td >
-                                {/* HERE WE HAVE TO IMPLEMENT THE CALANDER */}
-                                <DatePicker
-                                    selected={tempDate}
-                                    onChange={handleDateChange}
-                                    calendarContainer={CustomCalendarContainer}
-                                    onClickOutside={cancelDate}
-                                    onCalendarOpen={() => setCalendarVisible(true)}
-                                    onCalendarClose={() => setCalendarVisible(false)}
-                                    dateFormat="dd-MM-yyyy"
-                                    className={styles.datePickerInput}
-                                />
-
-                            </td>
-                            <td><input className={styles.customCheckbox} type='checkbox' /></td>
-                            <td><input className={styles.customCheckbox} type='checkbox' /></td>
-                            <td><input className={styles.customCheckbox} type='checkbox' /></td>
-                            <td><input className={styles.customCheckbox} type='checkbox' /></td>
-                            <td><input className={styles.customCheckbox} type='checkbox' /></td>
-                        </tr>
-
-                        <tr className='h-[84px]'>
-                            <td>
-                                <div className='ml-6 text-[14px] font-medium'>
-                                    <p>Errors and Measurements</p>
-                                </div>
-                                <div className='flex flex-row items-center ml-6'>
-                                    <progress value="80" max="100" className={styles.progressBar} />
-                                    <div className="ml-2 text-sm font-normal">
-                                        <p>80%</p>
-                                    </div>
-                                </div>
-                            </td>
-                            <td>
-                                <div>
-                                    <div className="inline-flex items-center justify-center border border-gray-300 rounded-full bg-white text-sm font-medium text-gray-700 p-2 max-w-full whitespace-nowrap overflow-hidden shadow-sm" style={{ width: '67px', height: '28px' }}>
-                                        <span className="w-2 h-2 bg-red-500 rounded-full mr-2"></span>
-                                        <p className="m-0 text-sm text-gray-700">High</p>
-                                    </div>
-                                </div>
-                            </td>
+                            </div></td>
                             <td >
                                 {/* HERE WE HAVE TO IMPLEMENT THE CALANDER */}
                                 <DatePicker
@@ -380,7 +215,8 @@ const BottomSheet: React.FC<BottomUpSheet> = ({ closeModal, subjectName }) => {
         <div className={styles.container}>
 
             <div
-                className={styles.bottomUpSheet}
+                id="bottomSheet"
+                className="w-full bg-white p-6 rounded-t-lg shadow-lg animate-slideUp"
                 style={{ height: '98vh', maxHeight: '98vh', overflowY: 'auto' }}
             >
 
@@ -442,4 +278,3 @@ const BottomSheet: React.FC<BottomUpSheet> = ({ closeModal, subjectName }) => {
 };
 
 export default BottomSheet;
-

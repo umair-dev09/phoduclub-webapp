@@ -400,7 +400,7 @@ const BottomSheet: React.FC<BottomUpSheet> = ({ closeModal, subjectName }) => {
                     <div className={styles.tableWrapper}>
                         <table>
                             <thead className={styles.tableHead}>
-                                <tr className='text-xs'>
+                                <tr className='text-xs border-x-2'>
                                     <th><p className='flex justify-start ml-6'>Chapter</p></th>
                                     <th><p>Priority</p></th>
                                     <th><p>Target Date</p></th>
@@ -442,4 +442,3 @@ const BottomSheet: React.FC<BottomUpSheet> = ({ closeModal, subjectName }) => {
 };
 
 export default BottomSheet;
-

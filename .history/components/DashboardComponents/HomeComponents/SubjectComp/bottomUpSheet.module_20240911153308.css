@@ -149,3 +149,155 @@
 }
 
 /* **************xxxxxxxxxxxxxxxxxxx********************* */
+/* calender */
+/* bottomUpSheet.module.css */
+
+/* Main styles for the bottom sheet */
+.bottomUpSheet {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background-color: white;
+    box-shadow: 0 -5px 15px rgba(0, 0, 0, 0.1);
+    border-top-left-radius: 15px;
+    border-top-right-radius: 15px;
+    z-index: 999;
+    overflow: hidden;
+    transition: transform 0.3s ease-in-out;
+}
+
+.customCalendarContainer {
+    position: relative;
+    padding: 16px;
+    border: 1px solid #ddd;
+    background-color: white;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+}
+
+.customButtons {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 10px;
+}
+
+.cancelButton,
+.applyButton {
+    background-color: #f0f0f0;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    color: #333;
+    transition: background-color 0.3s ease;
+}
+
+.cancelButton:hover,
+.applyButton:hover {
+    background-color: #ddd;
+    width: 48%;
+}
+
+.applyButton {
+    background-color: #7B2CBF;
+    color: white;
+}
+
+.applyButton:hover {
+    background-color: #7B2CBF;
+}
+
+/* Progress bar styling */
+.progressBar {
+    width: 200px;
+    height: 10px;
+    border-radius: 5px;
+    background-color: #f3f3f3;
+    overflow: hidden;
+    appearance: none;
+}
+
+.progressBar::-webkit-progress-bar {
+    background-color: #f3f3f3;
+}
+
+.progressBar::-webkit-progress-value {
+    background-color: #7B2CBF;
+}
+
+.progressBar::-moz-progress-bar {
+    background-color: #7B2CBF;
+}
+
+/* Custom Checkbox styling */
+.customCheckbox {
+    width: 16px;
+    height: 16px;
+    border-radius: 4px;
+    background-color: white;
+    border: 1px solid #ccc;
+    appearance: none;
+    cursor: pointer;
+    margin-left: 10px;
+}
+
+.customCheckbox:checked {
+    background-color: #7B2CBF;
+    border-color: #7B2CBF;
+}
+
+/* Table row styling */
+.tr {
+    display: flex;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid #ddd;
+}
+
+.td {
+    flex: 1;
+    text-align: left;
+    padding: 8px;
+}
+
+.td:last-child {
+    text-align: right;
+}
+
+/* Calendar Input Field Styling */
+.datePickerInput {
+    border: 1px solid #ddd;
+    padding: 6px 12px;
+    border-radius: 5px;
+    font-size: 14px;
+    width: 150px;
+    margin: 5px 0;
+}
+
+/* Subject Progress Indicator */
+.subjectProgressIndicator {
+    display: flex;
+    align-items: center;
+}
+
+.subjectProgressIndicator span {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    margin-right: 5px;
+}
+
+.subjectProgressIndicator span.high {
+    background-color: red;
+}
+
+.subjectProgressIndicator span.medium {
+    background-color: orange;
+}
+
+.subjectProgressIndicator span.low {
+    background-color: green;
+}

@@ -26,6 +26,12 @@
     background-color: #F9FAFB;
 }
 
+/* .tableWrapper td {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+} */
+
 .tableWrapper table {
     border-collapse: separate;
     width: 100%;
@@ -72,6 +78,10 @@
 
 .tableHead {
     height: 44px;
+    border: solid;
+    border-width: 1px;
+    border-top-color: #EAECF0;
+    border-bottom-color: #EAECF0;
 }
 
 .progressBar {
@@ -121,10 +131,6 @@
     /* Purple border */
     padding-bottom: 0.313rem;
     padding-left: 0.125rem;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
 }
 
 .customCheckbox:checked {
@@ -136,7 +142,7 @@
 }
 
 .customCheckbox:checked::before {
-    content: 'a';
+    content: '✓';
     color: white;
 }
 
@@ -147,5 +153,3 @@
         width: auto;
     }
 }
-
-/* **************xxxxxxxxxxxxxxxxxxx********************* */

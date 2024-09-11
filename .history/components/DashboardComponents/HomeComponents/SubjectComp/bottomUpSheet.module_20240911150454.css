@@ -122,9 +122,6 @@
     padding-bottom: 0.313rem;
     padding-left: 0.125rem;
     cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
 }
 
 .customCheckbox:checked {
@@ -138,6 +135,7 @@
 .customCheckbox:checked::before {
     content: 'a';
     color: white;
+    padding-top: -3px;
 }
 
 @media (max-width: 768px) {
@@ -147,5 +145,3 @@
         width: auto;
     }
 }
-
-/* **************xxxxxxxxxxxxxxxxxxx********************* */
