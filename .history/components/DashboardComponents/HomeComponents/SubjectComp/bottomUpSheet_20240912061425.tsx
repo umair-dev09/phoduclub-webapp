@@ -109,7 +109,6 @@ const BottomSheet: React.FC<BottomUpSheet> = ({ closeModal, subjectName }) => {
                 <button onClick={applyDate} className={styles.applyButton}>Apply</button>
             </div>
         </div>
-
     );
 
     const handleCheckboxChange = (rowIndex: number, checkboxIndex: number) => {

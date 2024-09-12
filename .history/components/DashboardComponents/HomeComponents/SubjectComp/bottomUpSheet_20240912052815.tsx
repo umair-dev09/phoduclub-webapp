@@ -109,7 +109,6 @@ const BottomSheet: React.FC<BottomUpSheet> = ({ closeModal, subjectName }) => {
                 <button onClick={applyDate} className={styles.applyButton}>Apply</button>
             </div>
         </div>
-
     );
 
     const handleCheckboxChange = (rowIndex: number, checkboxIndex: number) => {
@@ -177,53 +176,53 @@ const BottomSheet: React.FC<BottomUpSheet> = ({ closeModal, subjectName }) => {
 
     return (
         <div className={styles.container}>
-            <div className={`${styles.bottomUpSheet} ${isOpen ? styles.open : ''}`}>
-                <div className="flex flex-row items-center justify-between rounded-t-xl">
-                    <h3 className="ml-6">{subjectName || "Subject"}</h3>
-                    <button onClick={closeModal}>
-                        <Image
-                            className="mr-6"
-                            src="/icons/VectorcloseButton.svg"
-                            alt="close button"
-                            width={11.67}
-                            height={11.67}
-                        />
-                    </button>
-                </div>
-                <div>
-                    <div className={styles.tableWrapper}>
-                        <table>
-                            <thead className={styles.tableHead}>
-                                <tr className='text-xs'>
-                                    <th><p className='flex justify-start ml-6'>Chapter</p></th>
-                                    <th><p>Priority</p></th>
-                                    <th><p>Target Date</p></th>
-                                    <th><p>Theory</p></th>
-                                    <th><p>Practice</p></th>
-                                    <th><p>PYQ's</p></th>
-                                    <th><p>Revision 1</p></th>
-                                    <th><p>Revision 2</p></th>
-                                </tr>
-                            </thead>
-                            <tbody className='h-[84px] border-b'>
-                                {getContent()}
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-                <div className="flex flex-row items-center justify-end border-t border-lightGrey">
-                    <button
-                        className="border rounded-lg py-2.5 px-6 text-sm border-lightGrey text-blackLike"
-                        onClick={closeModal}
-                    >
-                        <p>Cancel</p>
-                    </button>
-                    <button className="mr-6 ml-2.5 border rounded-lg py-2.5 px-6 text-sm bg-purple text-white border-darkPurple">
-                        <p>Save</p>
-                    </button>
+            {/* <div className={`${styles.bottomUpSheet} ${isOpen ? styles.open : ''}`}> */}
+            <div className="flex flex-row items-center justify-between rounded-t-xl animate-slideUp">
+                <h3 className="ml-6">{subjectName || "Subject"}</h3>
+                <button onClick={closeModal}>
+                    <Image
+                        className="mr-6"
+                        src="/icons/VectorcloseButton.svg"
+                        alt="close button"
+                        width={11.67}
+                        height={11.67}
+                    />
+                </button>
+            </div>
+            <div>
+                <div className={styles.tableWrapper}>
+                    <table>
+                        <thead className={styles.tableHead}>
+                            <tr className='text-xs'>
+                                <th><p className='flex justify-start ml-6'>Chapter</p></th>
+                                <th><p>Priority</p></th>
+                                <th><p>Target Date</p></th>
+                                <th><p>Theory</p></th>
+                                <th><p>Practice</p></th>
+                                <th><p>PYQ's</p></th>
+                                <th><p>Revision 1</p></th>
+                                <th><p>Revision 2</p></th>
+                            </tr>
+                        </thead>
+                        <tbody className='h-[84px] border-b'>
+                            {getContent()}
+                        </tbody>
+                    </table>
                 </div>
             </div>
+            <div className="flex flex-row items-center justify-end border-t border-lightGrey">
+                <button
+                    className="border rounded-lg py-2.5 px-6 text-sm border-lightGrey text-blackLike"
+                    onClick={closeModal}
+                >
+                    <p>Cancel</p>
+                </button>
+                <button className="mr-6 ml-2.5 border rounded-lg py-2.5 px-6 text-sm bg-purple text-white border-darkPurple">
+                    <p>Save</p>
+                </button>
+            </div>
         </div>
+        // </div>
     );
 };
 

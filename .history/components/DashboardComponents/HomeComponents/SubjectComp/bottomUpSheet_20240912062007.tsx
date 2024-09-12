@@ -102,14 +102,20 @@ const BottomSheet: React.FC<BottomUpSheet> = ({ closeModal, subjectName }) => {
     };
 
     const CustomCalendarContainer = ({ className, children }: any) => (
-        <div className={`${className} ${styles.customCalendarContainer}`}>
+        // <div className={`${className} ${styles.customCalendarContainer}`}>
+        //     {children}
+        //     <div className={styles.customButtons}>
+        //         <button onClick={cancelDate} className={styles.cancelButton}>Cancel</button>
+        //         <button onClick={applyDate} className={styles.applyButton}>Apply</button>
+        //     </div>
+        // </div>
+        <div className={`${className} bg-gray-100 border border-gray-300 shadow-lg rounded-lg p-4`}>
             {children}
-            <div className={styles.customButtons}>
-                <button onClick={cancelDate} className={styles.cancelButton}>Cancel</button>
-                <button onClick={applyDate} className={styles.applyButton}>Apply</button>
+            <div className="flex justify-between mt-4">
+                <button onClick={cancelDate} className="bg--500 text-white px-4 py-2 rounded-md">Cancel</button>
+                <button onClick={applyDate} className="bg-blue-500 text-white px-4 py-2 rounded-md">Apply</button>
             </div>
         </div>
-
     );
 
     const handleCheckboxChange = (rowIndex: number, checkboxIndex: number) => {

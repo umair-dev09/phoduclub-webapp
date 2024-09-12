@@ -26,7 +26,7 @@ const config: Config = {
 				lightGrey: '#eaecf0',
 				blackLike: '#1d2939',
 				custompurple: '#9012FF',
-				customwhite: '#9012FF',
+				customwhite: '#FFFFFF',
 
 			},
 

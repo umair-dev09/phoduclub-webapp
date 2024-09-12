@@ -153,44 +153,16 @@
     /* Ensure content is vertically centered */
 }
 
-/* .customCheckbox {
-    
-    appearance: none;
-    width: 20px;
-    height: 20px;
-    border-radius: 6px;
-    background-color: #F1F5F9;
-
-    border: 2px solid #D0D5DD;
-  
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-left: 43%;
-}
-
-.customCheckbox:checked {
-    background-color: #7B2CBF;
-  
-    border-color: #7B2CBF;
- 
-}
-
-.customCheckbox:checked::before {
-    content: 'a';
-    color: white;
-} */
 .customCheckbox {
-    appearance: none;
     /* Hide the default checkbox */
+    appearance: none;
     width: 20px;
     height: 20px;
     border-radius: 6px;
     background-color: #F1F5F9;
     /* Light gray background */
     border: 2px solid #D0D5DD;
-    /* Gray border */
+    /* Purple border */
     cursor: pointer;
     display: flex;
     align-items: center;
@@ -203,20 +175,13 @@
     /* Purple background when checked */
     border-color: #7B2CBF;
     /* Purple border */
+    /* position: relative; */
 }
 
 .customCheckbox:checked::before {
-    content: '';
-    display: block;
-    width: 12px;
-    height: 12px;
-    background-image: url('/icons/right.svg');
-    /* Replace with the path to your SVG */
-    background-size: contain;
-    background-repeat: no-repeat;
-    background-position: center;
+    content: 'a';
+    color: white;
 }
-
 
 @media (max-width: 768px) {
 

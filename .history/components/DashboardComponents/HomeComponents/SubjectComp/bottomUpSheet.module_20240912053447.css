@@ -29,6 +29,8 @@
 }
 
 
+
+/* Keyframes for slide-up animation */
 @keyframes slideUp {
     from {
         transform: translateY(100%);
@@ -41,18 +43,29 @@
     }
 }
 
-.bottomUpSheet.open {
-    transform: translateY(0);
-    /* Slide into view */
-    animation: slideUp 0.3s ease-out;
+/* Default state for the bottom-up sheet */
+.bottomUpSheet {
+    transform: translateY(100%);
+    /* Initially off-screen */
+    transition: transform 0.3s ease-out;
+    /* Smooth transition effect */
 }
 
+/* When the sheet is opened */
+.bottomUpSheet.open {
+    animation: slideUp 0.3s ease-out;
+    /* Slide up animation when opened */
+}
+
+/* .bottomUpSheet.open {
+    transform: translateY(0); /* Slide into view */
 
 
+/* 
 .bottomUpSheet.close {
     transform: translateY(100%);
-
-}
+   
+}  */
 
 .tableWrapper th {
     background-color: #F9FAFB;
@@ -153,44 +166,16 @@
     /* Ensure content is vertically centered */
 }
 
-/* .customCheckbox {
-    
-    appearance: none;
-    width: 20px;
-    height: 20px;
-    border-radius: 6px;
-    background-color: #F1F5F9;
-
-    border: 2px solid #D0D5DD;
-  
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-left: 43%;
-}
-
-.customCheckbox:checked {
-    background-color: #7B2CBF;
-  
-    border-color: #7B2CBF;
- 
-}
-
-.customCheckbox:checked::before {
-    content: 'a';
-    color: white;
-} */
 .customCheckbox {
-    appearance: none;
     /* Hide the default checkbox */
+    appearance: none;
     width: 20px;
     height: 20px;
     border-radius: 6px;
     background-color: #F1F5F9;
     /* Light gray background */
     border: 2px solid #D0D5DD;
-    /* Gray border */
+    /* Purple border */
     cursor: pointer;
     display: flex;
     align-items: center;
@@ -203,20 +188,13 @@
     /* Purple background when checked */
     border-color: #7B2CBF;
     /* Purple border */
+    /* position: relative; */
 }
 
 .customCheckbox:checked::before {
-    content: '';
-    display: block;
-    width: 12px;
-    height: 12px;
-    background-image: url('/icons/right.svg');
-    /* Replace with the path to your SVG */
-    background-size: contain;
-    background-repeat: no-repeat;
-    background-position: center;
+    content: 'a';
+    color: white;
 }
-
 
 @media (max-width: 768px) {
 

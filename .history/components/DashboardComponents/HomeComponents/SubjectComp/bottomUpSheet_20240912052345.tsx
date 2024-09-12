@@ -109,7 +109,6 @@ const BottomSheet: React.FC<BottomUpSheet> = ({ closeModal, subjectName }) => {
                 <button onClick={applyDate} className={styles.applyButton}>Apply</button>
             </div>
         </div>
-
     );
 
     const handleCheckboxChange = (rowIndex: number, checkboxIndex: number) => {
@@ -178,7 +177,7 @@ const BottomSheet: React.FC<BottomUpSheet> = ({ closeModal, subjectName }) => {
     return (
         <div className={styles.container}>
             <div className={`${styles.bottomUpSheet} ${isOpen ? styles.open : ''}`}>
-                <div className="flex flex-row items-center justify-between rounded-t-xl">
+                <div className="flex flex-row items-center justify-between rounded-t-xl animate-slideUp">
                     <h3 className="ml-6">{subjectName || "Subject"}</h3>
                     <button onClick={closeModal}>
                         <Image
