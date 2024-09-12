@@ -6,15 +6,48 @@ import PhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/style.css';
 import Image from 'next/image';
 import { auth } from '../../../firebase'; // Adjust path as needed
-import { getAuth, RecaptchaVerifier, signInWithPhoneNumber } from "firebase/auth";
+import { getAuth, onAuthStateChanged, RecaptchaVerifier, signInWithPhoneNumber } from "firebase/auth";
+import LoadingData from "@/components/Loading";
 
 export default function Login_Page() {
+    const router = useRouter();
+    const [loading, setLoading] = useState(true);
     const [phone, setPhone] = useState('');
     const [isPhoneValid, setIsPhoneValid] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
     const [buttonColor, setButtonColor] = useState('#E39FF6'); // Default color
-    const router = useRouter();
 
+onAuthStateChanged(auth, (user) => {
+  if (user) {
+    // User is signed in, see docs for a list of available properties
+    // https://firebase.google.com/docs/reference/js/auth.user
+                    router.push("/dashboard");
+    // ...
+  } else {
+    // User is signed out
+    // ...
+  }
+});
+    // useEffect(() => {
+    //     const unsubscribe = onAuthStateChanged(auth, (user) => {
+    //         if (user) {
+    //             // If no user is logged in, redirect to the login page
+    //             setTimeout(() => {
+    //                 router.push("/dashboard");
+    //             }, 0);
+    //                   } else {
+    //             // User is logged in, stop loading
+    //             setLoading(false);
+    //         }
+    //     });
+
+    //     return () => unsubscribe();
+    // }, [router]);
+    // if (loading) {
+    //     return (
+    //         <LoadingData/>
+    //     );
+    // }  
     useEffect(() => {
         if (phone.length >= 10) {
             setIsPhoneValid(true);

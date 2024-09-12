@@ -1,10 +1,39 @@
+"use client";
 import "./dashboard.css"; // Adjust the path if needed
 import Announcement from '@/components/DashboardComponents/HomeComponents/Announcement/Announcement';
 import SubjectComp from '@/components/DashboardComponents/HomeComponents/SubjectComp/subject';
 import TestSeries from '@/components/DashboardComponents/HomeComponents/TestSeries/Testseries';
 import Course from '@/components/DashboardComponents/HomeComponents/Course/Course';
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { onAuthStateChanged } from "firebase/auth";
+import LoadingData from "@/components/Loading";
+import { auth } from "@/firebase";
 
 export default function AnalyticsPage() {
+     const router = useRouter();
+     const [loading, setLoading] = useState(true);
+     useEffect(() => {
+         const unsubscribe = onAuthStateChanged(auth, (user) => {
+             if (!user) {
+                 // If no user is logged in, redirect to the login page
+                 setTimeout(() => {
+                    router.push("/login")
+                 }, 2000);
+                       } else {
+                 // User is logged in, stop loading
+                 setLoading(false);
+             }
+         });
+ 
+         return () => unsubscribe();
+     }, [router]);
+     if (loading) {
+         return (
+             <LoadingData/>
+         );
+     }  
+     
      return (
           <div className="homeContainer">
                <div className="topColumn">

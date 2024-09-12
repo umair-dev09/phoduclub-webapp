@@ -1,28 +1,21 @@
 "use client";
-import { useRouter } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
 import { useState } from "react";
 import PhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/style.css';
 import Image from 'next/image';
 import { auth } from "../../../firebase"; // Adjust the path according to your Firebase config
 import { RecaptchaVerifier, signInWithPhoneNumber,onAuthStateChanged } from "firebase/auth";
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+// import { ToastContainer, toast } from 'react-toastify';
+// import 'react-toastify/dist/ReactToastify.css';
 import styles from './Singnup.module.css'; // Ensure you import the CSS module
 import { useEffect } from "react";
+import LoadingData from "@/components/Loading";
+import Link from "next/link";
 
 function Signup() {
+
     const router = useRouter();
-    useEffect(() => {
-         onAuthStateChanged(auth, (user) => {
-            if (user) {
-                // If no user is logged in, redirect to the login page
-                router.push("/welcome");
-            }
-        });
-
-    }, [router]);
-
     const [phone, setPhone] = useState('');
     const [firstName, setFirstname] = useState('');
     const [lastName, setLastname] = useState('');
@@ -31,7 +24,8 @@ function Signup() {
     const [errors, setErrors] = useState({ firstName: '',lastName: '', email: '', phone: '', terms: '' });
     const [isSubmitted, setIsSubmitted] = useState(false);
     const [isLoading, setIsLoading] = useState(false); // Loading state
-
+    
+   
 
     const validateForm = () => {
         let formIsValid = true;
@@ -129,14 +123,14 @@ function Signup() {
                 window.confirmationResult = confirmationResult;
                 window.localStorage.setItem('verificationId', confirmationResult.verificationId);
 
-                toast.success("OTP sent successfully!");
+                // toast.success("OTP sent successfully!");
                 setIsLoading(false); // Disable loading indicator
                 // Navigate to verify OTP page with phone number as query parameter
                 router.push(`/verifyotp?phone=${formattedPhone}&firstName=${encodeURIComponent(firstName)}&lastName=${encodeURIComponent(lastName)}&email=${encodeURIComponent(email)}`);
             
             } catch (error: any) {
                 console.error("Error sending OTP: ", error);
-                toast.error("Error sending OTP. Please try again.");
+                // toast.error("Error sending OTP. Please try again.");
                 setIsLoading(false); // Disable loading indicator
             }
         }
@@ -264,7 +258,7 @@ function Signup() {
                         </div>
                     )}
                 </div>
-                <ToastContainer />
+                {/* <ToastContainer /> */}
             </form>
         </div>
     );

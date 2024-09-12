@@ -67,7 +67,7 @@ const Dropdown = () => {
       });
 
       toast.success("Data saved successfully.");
-      router.push('/welcome'); // Adjust the route as needed
+      router.push('/dashboard'); // Adjust the route as needed
     } catch (error) {
       console.error("Error saving data:", error);
       toast.error("Error saving data. Please try again.");

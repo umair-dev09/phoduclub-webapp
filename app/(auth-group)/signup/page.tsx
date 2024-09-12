@@ -1,12 +1,53 @@
+"use client";
 import 'react-phone-input-2/lib/style.css';
 import './signup.css';
 import Image from 'next/image';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Signup from '@/components/AuthComponents/SignupComponents/Signup';
+import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
+import { onAuthStateChanged } from 'firebase/auth';
+import { auth } from '@/firebase';
+import LoadingData from '@/components/Loading';
 
 export default function Sign() {
+    const router = useRouter();
+    const [loading, setLoading] = useState(true);
+    // useEffect(() => {
+    //     const unsubscribe = onAuthStateChanged(auth, (user) => {
+    //         if (user) {
+    //             // If no user is logged in, redirect to the login page
+    //             setTimeout(() => {
+    //                 router.push("/dashboard");
+    //             }, 0);
+    //                   } else {
+    //             // User is logged in, stop loading
+    //             setLoading(false);
+    //         }
+    //     });
 
+    //     return () => unsubscribe();
+    // }, [router]);
+    // if (loading) {
+    //     return (
+    //         <LoadingData/>
+    //     );
+    // }  
+    onAuthStateChanged(auth, (user) => {
+        if (user) {
+           router.push("/dashboard");
+        } 
+        else{
+       setLoading(false);
+        }
+      });
+           
+      if (loading) {
+        return (
+            <LoadingData/>
+        );
+    } 
     return (
         <div className="main_page">
             <div className="signup">
@@ -27,7 +68,7 @@ export default function Sign() {
             
                 />
             </div>
-            <ToastContainer /> {/* Toast container */}
+            {/* <ToastContainer /> Toast container */}
         </div>
     );
 }

@@ -273,7 +273,7 @@
 
 .courseAmount {
     display: flex;
-    align-items: end;
+    align-items: flex-end;
 }
 
 .buyButton {
@@ -415,7 +415,7 @@
 
 .courseAmount {
     display: flex;
-    align-items: end;
+    align-items: flex-end;
 }
 
 .buyButton {
