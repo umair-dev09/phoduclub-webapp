@@ -1,0 +1,17 @@
+.course1 {
+    margin: 24px 12px 24px 24px;
+}
+
+.course1 {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    flex: 0.5;
+    border-radius: 12px;
+    position: relative;
+    /* Ensures .suggestion is positioned within this container */
+    overflow: hidden;
+    /* Hide anything overflowing when shrinking */
+    transition: transform 0.3s ease;
+}

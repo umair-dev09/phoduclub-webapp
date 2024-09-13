@@ -8,6 +8,7 @@
   "dependencies": {
     "@chakra-ui/skeleton": "^2.1.0",
     "@headlessui/react": "^2.1.4",
+    "@nextui-org/accordion": "^2.0.38",
     "@nextui-org/button": "^2.0.37",
     "@nextui-org/modal": "^2.0.39",
     "@nextui-org/popover": "^2.1.27",
@@ -23,7 +24,7 @@
     "geist": "^1.2.1",
     "headlessui": "^0.0.0",
     "lucide-react": "^0.439.0",
-    "next": "^14.2.9",
+    "next": "^14.2.11",
     "otpless-next-js-auth-sdk": "^1.0.10",
     "postcss": "8.4.33",
     "react": "18.2.0",
