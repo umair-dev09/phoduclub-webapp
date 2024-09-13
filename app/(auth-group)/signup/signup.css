@@ -67,14 +67,14 @@ a:hover {
     text-decoration: underline;
 }
 
-p {
+/* p {
     text-align: center;
     margin-top: 1rem;
     font-size: 14px;
     color: #250c0c;
     align-items: center;
     justify-content: center;
-}
+} */
 
 .page_to_login {
     align-items: center;

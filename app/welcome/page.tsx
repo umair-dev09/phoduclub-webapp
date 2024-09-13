@@ -1,26 +1,33 @@
-// app/(auth-pages)/welcome/page.tsx
-
 "use client";
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { auth } from "../../firebase"; // Adjust the path according to your Firebase config
 import { signOut, onAuthStateChanged } from "firebase/auth";
 import { toast } from "react-toastify";
+import LoadingData from "@/components/Loading";
 
 export default function WelcomePage() {
     const router = useRouter();
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, (user) => {
             if (!user) {
                 // If no user is logged in, redirect to the login page
                 router.push("/login");
+            } else {
+                // User is logged in, stop loading
+                setLoading(false);
             }
         });
 
         return () => unsubscribe();
     }, [router]);
-
+    if (loading) {
+        return (
+            <LoadingData/>
+        );
+    }
     const handleLogout = async () => {
         try {
             await signOut(auth);
@@ -31,6 +38,8 @@ export default function WelcomePage() {
             console.error("Error logging out:", error);
         }
     };
+
+   
 
     return (
         <div style={{ textAlign: "center", marginTop: "50px" }}>

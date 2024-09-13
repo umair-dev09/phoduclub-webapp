@@ -7,6 +7,7 @@ import { getFirestore, doc, getDoc,setDoc, query, where, getDocs, collection } f
 import { toast } from "react-toastify";
 import Image from 'next/image';
 import styles from './VerifyOtp.module.css'; // Ensure you import the CSS module
+import LoadingData from "@/components/Loading";
 
 const InputHandler = ({ onOtpChange }: { onOtpChange: (otp: string) => void }) => {
     const inputsRef = useRef<HTMLDivElement>(null);
@@ -86,15 +87,7 @@ function getRandomImageUrl(urls: string[]): string {
 }
 function VerifyOtp() {
     const router = useRouter();
-//     useEffect(() => {
-//         onAuthStateChanged(auth, (user) => {
-//            if (user) {
-//                // If no user is logged in, redirect to the login page
-//                router.push("/welcome");
-//            }
-//        });
-
-//    }, [router]);
+    const [loading, setLoading] = useState(true);
     const searchParams = useSearchParams();
     const phoneNumber = searchParams.get('phone') || '';
     const firstName = searchParams.get('firstName') || '';
@@ -106,6 +99,7 @@ function VerifyOtp() {
     const [verificationError, setVerificationError] = useState<string | null>(null);
     const [isLoading, setIsLoading] = useState(false); // Loading state
     const db = getFirestore(); // Initialize Firestore
+ 
 
     useEffect(() => {
         setOtp('');
@@ -151,7 +145,7 @@ function VerifyOtp() {
           if (!querySnapshot.empty) {
               // User is already registered, redirect to welcome page
               toast.success("User already registered, redirecting to welcome page.");
-              router.push("/welcome");
+              router.push("/dashboard");
           }
 
           else{
