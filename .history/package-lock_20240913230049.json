@@ -27,8 +27,12 @@
         "headlessui": "^0.0.0",
         "https-browserify": "^1.0.0",
         "lucide-react": "^0.439.0",
+<<<<<<< HEAD
+        "next": "^14.2.11",
+=======
         "next": "^14.2.9",
         "os-browserify": "^0.3.0",
+>>>>>>> e1ada25d2c155670244b8043b502a9b9dd5ef171
         "otpless-next-js-auth-sdk": "^1.0.10",
         "postcss": "8.4.33",
         "react": "18.2.0",
