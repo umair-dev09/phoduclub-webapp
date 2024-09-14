@@ -14,15 +14,8 @@ function Main() {
                 <div className="flex flex-1 h-[50%] items-center flex-col">
 
                     {/* Suggestion label positioned absolutely within the container */}
-                    <div className="flex items-center absolute top-3 left-5 mr-5 bg-white bg-opacity-80 text-xs font-medium border border-white rounded-full py-1 px-3 z-10 transition-transform duration-300 ease-in-out">
-                        <Image
-                            className="mr-[5px]"
-                            src="/icons/suggestion_icon.svg"
-                            alt="suggestion icon"
-                            width={16}
-                            height={16}
-                        />
-                        <p>Suggested for you</p>
+                    <div className="flex items-center absolute top-3 left-5 mr-5 bg-[#c74fe6] bg-opacity-80 text-xs font-medium border border-[#c74fe6] text-white rounded-full px-3 py-2 z-10 transition-transform duration-300 ease-in-out">
+                        <p>JEE Mains Course</p>
                     </div>
 
                     {/* Course image */}
