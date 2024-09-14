@@ -71,7 +71,7 @@ function learned() {
                     style={{ fontSize: '16px', fontWeight: '500' }}
                 >
                     Tests
-                    {activeTab === 'test' && (
+                    {activeTab === 'test' && activeTab !== 'test' && (
                         <span
                             className="absolute left-1/2 transform -translate-x-1/2"
                             style={{
@@ -81,7 +81,7 @@ function learned() {
                             }}
                         />
                     )}
-                    {(activeTab == 'test' || activeTab !== 'test') && (
+                    {activeTab == 'test' && (
                         <span
                             className="ml-2 px-2 py-[0px] text-[#9012FF] bg-[#EDE4FF] rounded-full relative"
                             style={{ fontSize: '14px', fontWeight: '500', minWidth: '24px', textAlign: 'center', top: '-1px' }}
@@ -108,7 +108,7 @@ function learned() {
                             }}
                         />
                     )}
-                    {(activeTab == 'Quiz' || activeTab !== 'Quiz') && (
+                    {activeTab == 'Quiz' && (
                         <span
                             className="ml-2 px-2 py-[0px] text-[#9012FF] bg-[#EDE4FF] rounded-full relative"
                             style={{ fontSize: '14px', fontWeight: '500', minWidth: '24px', textAlign: 'center', top: '-1px' }}

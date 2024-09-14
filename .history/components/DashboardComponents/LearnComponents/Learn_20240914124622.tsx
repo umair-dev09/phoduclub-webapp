@@ -54,14 +54,14 @@ function learned() {
                             }}
                         />
                     )}
-                    {/* {activeTab == 'course' && (
+                    {activeTab == 'course' && (
                         <span
                             className="ml-2 px-2 py-[0px] text-[#9012FF] bg-[#EDE4FF] rounded-full relative"
                             style={{ fontSize: '14px', fontWeight: '500', minWidth: '24px', textAlign: 'center', top: '-1px' }}
                         >
                             10
                         </span>
-                    )} */}
+                    )}
                 </button>
             </div>
             <div className="pt-[10px]">
@@ -81,7 +81,7 @@ function learned() {
                             }}
                         />
                     )}
-                    {(activeTab == 'test' || activeTab !== 'test') && (
+                    {activeTab == 'test' && (
                         <span
                             className="ml-2 px-2 py-[0px] text-[#9012FF] bg-[#EDE4FF] rounded-full relative"
                             style={{ fontSize: '14px', fontWeight: '500', minWidth: '24px', textAlign: 'center', top: '-1px' }}
@@ -108,7 +108,7 @@ function learned() {
                             }}
                         />
                     )}
-                    {(activeTab == 'Quiz' || activeTab !== 'Quiz') && (
+                    {activeTab == 'Quiz' && (
                         <span
                             className="ml-2 px-2 py-[0px] text-[#9012FF] bg-[#EDE4FF] rounded-full relative"
                             style={{ fontSize: '14px', fontWeight: '500', minWidth: '24px', textAlign: 'center', top: '-1px' }}
