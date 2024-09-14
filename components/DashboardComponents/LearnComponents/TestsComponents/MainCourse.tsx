@@ -38,7 +38,7 @@ function Main() {
                     <div className="flex h-[60%] items-center flex-col">
 
                         {/* Course name with a collapse icon */}
-                        <div className="flex flex-1 text-base font-semibold leading-6 w-full items-end justify-between">
+                        <div className="flex flex-1 text-base font-semibold leading-6 w-full items-center justify-between mt-3">
                             <div>
                                 <p>Phodu JEE Mains Test Series 2025</p>
                             </div>
@@ -48,7 +48,7 @@ function Main() {
                         </div>
 
                         {/* Course details - number of lessons and total duration */}
-                        <div className="flex flex-1 text-xs font-normal leading-4 gap-1 items-end w-full justify-between">
+                        <div className="flex flex-1 text-xs font-normal leading-4 gap-1 items-center w-full justify-between">
                             <div className="flex flex-col gap-2">
                                 <div className="flex items-center justify-center text-[#667085]">Attempted</div>
                                 <div className="flex items-center justify-center font-semibold">5/10</div>
