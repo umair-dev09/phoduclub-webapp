@@ -48,14 +48,14 @@ function Main() {
                         </div>
 
                         {/* Course details - number of lessons and total duration */}
-                        <div className="flex flex-1 text-xs font-normal leading-4 text-[#667085] gap-1 items-end w-full justify-between">
+                        <div className="flex flex-1 text-xs font-normal leading-4 gap-1 items-end w-full justify-between">
                             <div className="flex flex-col gap-2">
-                                <div className="flex items-center justify-center">Attempted</div>
-                                <div className="flex items-center justify-center">5/10</div>
+                                <div className="flex items-center justify-center text-[#667085]">Attempted</div>
+                                <div className="flex items-center justify-center font-semibold">5/10</div>
                             </div>
                             <div className="flex flex-col gap-2">
-                                <div className="flex items-center justify-center">Expire on</div>
-                                <div className="flex items-center justify-center">22 Aug, 2024</div>
+                                <div className="flex items-center justify-center text-[#667085]">Expire on</div>
+                                <div className="flex items-center justify-center font-semibold">22 Aug, 2024</div>
                             </div>
                         </div>
                     </div>
