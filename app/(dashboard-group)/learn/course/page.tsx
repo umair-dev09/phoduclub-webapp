@@ -1,6 +1,6 @@
-// import Course from '@/components/DashboardComponents/LearnComponents/CourseComponents/Course';
 import MainCourse from '@/components/DashboardComponents/LearnComponents/CourseComponents/MainCourse';
 import MainCourse2 from '@/components/DashboardComponents/LearnComponents/CourseComponents/MainCourse2';
+
 export default function MyCourse() {
     return (
         <div className="flex flex-col flex-1 bg-[#f7f8fb]">
