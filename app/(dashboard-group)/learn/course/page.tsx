@@ -20,8 +20,6 @@ export default function MyCourse() {
                     <MainCourse2 />
                 </div>
             </div>
-
-
         </div>
     );
 }

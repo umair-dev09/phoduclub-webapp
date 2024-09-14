@@ -16,11 +16,9 @@ export default function SettingsLayout({ children }: LearnLayoutProps) {
             <div className="h-[64px] bg-[#FFFFFF]">
                 <Learn />
             </div>
-            <div className="flex flex-1 flex-col overflow-auto">
+            <div className="flex flex-1 flex-col overflow-y-auto pb-8">
                 {children}
             </div>
-
-
         </div>
     );
 }

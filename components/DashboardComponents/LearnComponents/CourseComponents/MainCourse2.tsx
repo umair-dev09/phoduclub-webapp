@@ -3,108 +3,175 @@
 import Image from "next/image";
 import { useState } from "react";
 import { useRouter } from "next/router"; // Import useRouter hook
-import styles from "./maincourse2.module.css";
 
 function Main2() {
-    // Initialize state and router inside the component
+  // Initialize state and router inside the component
 
-
-    return (
-        <div className="flex flex-row w-full">
-            <div className={styles.course1}>
-                <div>
-                    <div className={styles.suggestion}>
-                        <Image
-                            className={styles.suggestionIcon}
-                            src="/icons/suggestion_icon.svg"
-                            alt="suggestion icon"
-                            width={16}
-                            height={16}
-                        />
-                        <p>Suggested for you</p>
-                    </div>
-                    <div>
-                        <img
-                            src="/images/course_img.svg"
-                            alt="Course image"
-                        />
-                    </div>
-                </div>
-                <div className={styles.courseInfo}>
-                    <div className={styles.aboutCourse}>
-                        <div className={styles.courseName}>
-                            <p>BITSET Full Course</p>
-                        </div>
-                        <div className={styles.courseLength}>
-                            <p>3 Lessons</p>
-                            <span>&#x2022;</span> {/* Adds a bullet between */}
-                            <p>3hr 14m</p>
-                        </div>
-                    </div>
-                    <div className={styles.coursePrice}>
-                        <div className={styles.courseAmount}>
-                            <h4>&#8377; 2400</h4>
-                        </div>
-                        <div>
-                            {/* Corrected the button click handler */}
-                            <button
-                                className={styles.buyButton}
-
-                            >
-                                Buy Now
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div className={styles.course1}>
-                <div>
-                    <div className={styles.suggestion}>
-                        <Image
-                            className={styles.suggestionIcon}
-                            src="/icons/suggestion_icon.svg"
-                            alt="suggestion icon"
-                            width={16}
-                            height={16}
-                        />
-                        <p>Suggested for you</p>
-                    </div>
-                    <div>
-                        <img
-                            src="/images/course_img.svg"
-                            alt="Course image"
-                        />
-                    </div>
-                </div>
-                <div className={styles.courseInfo}>
-                    <div className={styles.aboutCourse}>
-                        <div className={styles.courseName}>
-                            <p>BITSET Full Course</p>
-                        </div>
-                        <div className={styles.courseLength}>
-                            <p>3 Lessons</p>
-                            <span>&#x2022;</span> {/* Adds a bullet between */}
-                            <p>3hr 14m</p>
-                        </div>
-                    </div>
-                    <div className={styles.coursePrice}>
-                        <div className={styles.courseAmount}>
-                            <h4>&#8377; 2400</h4>
-                        </div>
-                        <div>
-                            <button
-                                className={styles.buyButton}
-
-                            >
-                                Buy Now
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
+  return (
+    <div className="flex flex-row w-full">
+      {/* Start of Component */}
+      <div className="flex items-center justify-center flex-col flex-[0.5] rounded-lg relative overflow-hidden transition-transform duration-300 max-w-[15.938rem] max-h-[17.625rem] mx-3">
+        {/* Container for the suggestion badge and course image */}
+        <div>
+          {/* Suggestion badge with icon and text */}
+          <div className="flex items-center absolute top-3 left-5 mr-5 bg-[#FFEC45] text-xs font-medium border border-[#FFEC45] rounded-full py-1 px-3 z-10 transition-transform transition-font-size duration-300 ease-in-out">
+            <Image
+              className="mr-[5px]"
+              src="/icons/suggestion_icon.svg"
+              alt="suggestion icon"
+              width={16}
+              height={16}
+            />
+            <p>Suggested for you</p>
+          </div>
+          {/* Course image */}
+          <div>
+            <img src="/images/course_img.svg" alt="Course image" />
+          </div>
         </div>
-    );
+
+        {/* Container for course details and buy button */}
+        <div className="flex w-full flex-col border border-[#EAECF0] bg-white border-t-0 rounded-br-lg rounded-bl-lg">
+          {/* Course name and details */}
+          <div className="mt-4">
+            {/* Course name */}
+            <div className="text-lg font-semibold leading-6 ml-4">
+              <p>BITSET Full Course</p>
+            </div>
+            {/* Course details: lessons, duration */}
+            <div className="text-xs mx-4 font-normal leading-4 text-[#667085] flex items-center gap-1">
+              <p>3 Lessons</p>
+              <span>&#x2022;</span> {/* Bullet point */}
+              <p>3hr 14m</p>
+            </div>
+          </div>
+
+          {/* Pricing and buy button */}
+          <div className="flex justify-between mt-2 mb-4 mx-4 text-lg font-semibold">
+            {/* Price */}
+            <div className="flex items-end">
+              <h4>&#8377; 2400</h4>
+            </div>
+            {/* Buy Now button */}
+            <div>
+              <button className="text-xs font-semibold py-2.5 px-3.5 rounded-md bg-[#9012FF] border-2 border-[#9012FF] text-white">
+                Buy Now
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      {/* End of Component */}
+
+      {/* Start of Component */}
+      <div className="flex items-center justify-center flex-col flex-[0.5] rounded-lg relative overflow-hidden transition-transform duration-300 max-w-[15.938rem] max-h-[17.625rem] mx-3">
+        {/* Container for the suggestion badge and course image */}
+        <div>
+          {/* Suggestion badge with icon and text */}
+          <div className="flex items-center absolute top-3 left-5 mr-5 bg-[#FFEC45] text-xs font-medium border border-[#FFEC45] rounded-full py-1 px-3 z-10 transition-transform transition-font-size duration-300 ease-in-out">
+            <Image
+              className="mr-[5px]"
+              src="/icons/suggestion_icon.svg"
+              alt="suggestion icon"
+              width={16}
+              height={16}
+            />
+            <p>Suggested for you</p>
+          </div>
+          {/* Course image */}
+          <div>
+            <img src="/images/course_img.svg" alt="Course image" />
+          </div>
+        </div>
+
+        {/* Container for course details and buy button */}
+        <div className="flex w-full flex-col border border-[#EAECF0] bg-white border-t-0 rounded-br-lg rounded-bl-lg">
+          {/* Course name and details */}
+          <div className="mt-4">
+            {/* Course name */}
+            <div className="text-lg font-semibold leading-6 ml-4">
+              <p>BITSET Full Course</p>
+            </div>
+            {/* Course details: lessons, duration */}
+            <div className="text-xs mx-4 font-normal leading-4 text-[#667085] flex items-center gap-1">
+              <p>3 Lessons</p>
+              <span>&#x2022;</span> {/* Bullet point */}
+              <p>3hr 14m</p>
+            </div>
+          </div>
+
+          {/* Pricing and buy button */}
+          <div className="flex justify-between mt-2 mb-4 mx-4 text-lg font-semibold">
+            {/* Price */}
+            <div className="flex items-end">
+              <h4>&#8377; 2400</h4>
+            </div>
+            {/* Buy Now button */}
+            <div>
+              <button className="text-xs font-semibold py-2.5 px-3.5 rounded-md bg-[#9012FF] border-2 border-[#9012FF] text-white">
+                Buy Now
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      {/* End of Component */}
+
+      {/* Start of Component */}
+      <div className="flex items-center justify-center flex-col flex-[0.5] rounded-lg relative overflow-hidden transition-transform duration-300 max-w-[15.938rem] max-h-[17.625rem] mx-3">
+        {/* Container for the suggestion badge and course image */}
+        <div>
+          {/* Suggestion badge with icon and text */}
+          <div className="flex items-center absolute top-3 left-5 mr-5 bg-[#FFEC45] text-xs font-medium border border-[#FFEC45] rounded-full py-1 px-3 z-10 transition-transform transition-font-size duration-300 ease-in-out">
+            <Image
+              className="mr-[5px]"
+              src="/icons/suggestion_icon.svg"
+              alt="suggestion icon"
+              width={16}
+              height={16}
+            />
+            <p>Suggested for you</p>
+          </div>
+          {/* Course image */}
+          <div>
+            <img src="/images/course_img.svg" alt="Course image" />
+          </div>
+        </div>
+
+        {/* Container for course details and buy button */}
+        <div className="flex w-full flex-col border border-[#EAECF0] bg-white border-t-0 rounded-br-lg rounded-bl-lg">
+          {/* Course name and details */}
+          <div className="mt-4">
+            {/* Course name */}
+            <div className="text-lg font-semibold leading-6 ml-4">
+              <p>BITSET Full Course</p>
+            </div>
+            {/* Course details: lessons, duration */}
+            <div className="text-xs mx-4 font-normal leading-4 text-[#667085] flex items-center gap-1">
+              <p>3 Lessons</p>
+              <span>&#x2022;</span> {/* Bullet point */}
+              <p>3hr 14m</p>
+            </div>
+          </div>
+
+          {/* Pricing and buy button */}
+          <div className="flex justify-between mt-2 mb-4 mx-4 text-lg font-semibold">
+            {/* Price */}
+            <div className="flex items-end">
+              <h4>&#8377; 2400</h4>
+            </div>
+            {/* Buy Now button */}
+            <div>
+              <button className="text-xs font-semibold py-2.5 px-3.5 rounded-md bg-[#9012FF] border-2 border-[#9012FF] text-white">
+                Buy Now
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      {/* End of Component */}
+    </div>
+  );
 }
 
 export default Main2;
