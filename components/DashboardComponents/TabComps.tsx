@@ -139,6 +139,7 @@ function TabComps() {
         }
     }, []);
 
+
     const [activeTab, setActiveTab] = useState<string>('');
 
     useEffect(() => {
@@ -202,7 +203,7 @@ function TabComps() {
 
                 <div className={styles.tooltip}>
                     <button
-                        onClick={() => handleTabClick('learn', '/learn')}
+                        onClick={() => handleTabClick('learn', '/learn/course')}
                         className={`${styles.LearnButton} ${activeTab === 'learn' ? styles.active : ''}`}
                     >
                         <Image className={styles.learnIcon} src={activeTab === 'learn' ? "/icons/learn.svg" : "/icons/learn-2.svg"}

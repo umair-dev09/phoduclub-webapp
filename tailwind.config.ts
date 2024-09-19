@@ -41,7 +41,8 @@ const config: Config = {
 				blackLike: '#1d2939',
 				custompurple: '#9012FF',
 				customwhite: '#9012FF',
-
+				lavend: '#6941C6',
+				progressPurple: '#7400E0'
 			},
 
 		},

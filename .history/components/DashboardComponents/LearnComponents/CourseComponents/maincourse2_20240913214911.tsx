@@ -1,0 +1,115 @@
+"use client";
+
+import Image from "next/image";
+
+
+import styles from "./maincourse2.module.css";
+import { useRouter } from "next/navigation";
+
+
+
+
+
+function main2() {
+    // const Main2: React.FC = () => {
+    //     const router = useRouter();
+
+    //     const handleBuyNow = (DynamicCourseId: string) => {
+    //         router.push(`/CourseComponents/${DynamicCourseId}`); // Navigate to dynamic route
+    //     };
+
+
+
+    return (
+        <div className="flex flex-row w-full">
+            <div className={styles.course1}>
+                <div>
+                    <div className={styles.suggestion}>
+                        <Image
+                            className={styles.suggestionIcon}
+                            src="/icons/suggestion_icon.svg"
+                            alt="suggestion icon"
+                            width={16}
+                            height={16}
+                        />
+                        <p>Suggested for you</p>
+                    </div>
+                    <div>
+                        <img
+                            src="/images/course_img.svg"
+                        />
+                    </div>
+                </div>
+                <div className={styles.courseInfo}>
+                    <div className={styles.aboutCourse}>
+                        <div className={styles.courseName}>
+                            <p>BITSET Full Course</p>
+                        </div>
+                        <div className={styles.courseLength}>
+                            <p>3 Lessons</p>
+                            <span>&#x2022;</span> {/* This adds a bullet between */}
+                            <p>3hr 14m</p>
+                        </div>
+                    </div>
+                    <div className={styles.coursePrice}>
+                        <div className={styles.courseAmount}>
+                            <h4>&#8377; 2400</h4>
+                        </div>
+                        <div>
+                            <button
+                                className={styles.buyButton}
+                            // onClick={() => handleBuyNow('bitset-full-course')}
+                            >
+                                Buy Now
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div className={styles.course1}>
+                <div>
+                    <div className={styles.suggestion}>
+                        <Image
+                            className={styles.suggestionIcon}
+                            src="/icons/suggestion_icon.svg"
+                            alt="suggestion icon"
+                            width={16}
+                            height={16}
+                        />
+                        <p>Suggested for you</p>
+                    </div>
+                    <div>
+                        <img
+                            src="/images/course_img.svg"
+                        />
+                    </div>
+                </div>
+                <div className={styles.courseInfo}>
+                    <div className={styles.aboutCourse}>
+                        <div className={styles.courseName}>
+                            <p>BITSET Full Course</p>
+                        </div>
+                        <div className={styles.courseLength}>
+                            <p>3 Lessons</p>
+                            <span>&#x2022;</span> {/* This adds a bullet between */}
+                            <p>3hr 14m</p>
+                        </div>
+                    </div>
+                    <div className={styles.coursePrice}>
+                        <div className={styles.courseAmount}>
+                            <h4>&#8377; 2400</h4>
+                        </div>
+                        <div>
+                            <button className={styles.buyButton}>Buy Now</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    )
+}
+}
+export default main2;
+
+
