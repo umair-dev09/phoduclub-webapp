@@ -10,10 +10,12 @@ import TargetExamUpdate from './EditProfileComponents/TargetExamUpdate';
 import TargetYearUpdate from './EditProfileComponents/TargetYearUpdate';
 import PhoneUpdate from './EditProfileComponents/PhoneUpdate';
 import { auth } from '@/firebase';
-import { getFirestore, doc, getDoc } from 'firebase/firestore';
+import { getFirestore, doc, getDoc, updateDoc, onSnapshot } from 'firebase/firestore';
 import { onAuthStateChanged, User } from 'firebase/auth'; // Import the User type from Firebase
 import { userAgent } from 'next/server';
 import LoadingData from '@/components/Loading';
+import { useRouter } from 'next/navigation';
+import { ToastContainer } from 'react-toastify';
 
 type UserData = {
     name: string | null;
@@ -28,24 +30,23 @@ type UserData = {
 
 function Profile() {
     const [isEditing, setIsEditing] = useState(false);
-    const [isNameEditing, setIsNameEditing] = useState(false);
-    const [isEmailEditing, setIsEmailEditing] = useState(false);
-    const [isPhoneEditing, setIsPhoneEditing] = useState(false);
-    const [isYearEditing, setIsYearEditing] = useState(false);
     const [copied, setCopied] = useState(false);
-
     const [userData, setUserData] = useState<UserData | null>(null); 
     const [loading, setLoading] = useState(true); // Track loading state
     const [error, setError] = useState(false); // Track error state
+    const [nameInput, setNameInput] = useState<string>(''); // Track input value
+    const [originalName, setOriginalName] = useState<string>(''); // Track original name from Firestore
+    const [hasChanges, setHasChanges] = useState<boolean>(false); // Track if there are any changes
     const [user, setUser] = useState<User | null>(null); 
     const db = getFirestore();
-  
+    const router = useRouter();
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
             if (currentUser) {
                 setUser(currentUser);
             } else {
                 console.error('No user is logged in');
+                 router.push("/login");
                 setError(true); // Set error if no user is logged in
                 setLoading(false); // Ensure loading is set to false even when no user is found
             }
@@ -55,32 +56,35 @@ function Profile() {
     }, []);
   
     useEffect(() => {
-        const fetchUserData = async () => {
-            try {
-                if (user) {
-                    const uniqueId = user.uid;
-                    const userDoc = doc(db, `users/${uniqueId}`);
-                    const userSnapshot = await getDoc(userDoc);
-    
-                    if (userSnapshot.exists()) {
-                        const data = userSnapshot.data() as UserData; 
-                        setUserData(data);
-                    } else {
-                        console.error('No user data found!');
-                        setError(true); // Set error if no user data is found
-                    }
+        let unsubscribeFromSnapshot: () => void;
+        if (user) {
+            const uniqueId = user.uid;
+            const userDocRef = doc(db, `users/${uniqueId}`);
+
+            unsubscribeFromSnapshot = onSnapshot(userDocRef, (docSnapshot) => {
+                if (docSnapshot.exists()) {
+                    const data = docSnapshot.data() as UserData;
+                    setUserData(data);
+                    setOriginalName(data.name || '');
+                    setNameInput(data.name || '');
+                    setLoading(false);
+                } else {
+                    console.error('No user data found!');
+                    setError(true);
+                    setLoading(false);
                 }
-            } catch (error) {
-                console.error('Error fetching user data:', error);
-                setError(true); // Set error if fetching data fails
-            } finally {
-                setLoading(false); // Ensure loading is set to false after fetching data
+            }, (err) => {
+                console.error('Error fetching real-time updates:', err);
+                setError(true);
+                setLoading(false);
+            });
+        }
+
+        return () => {
+            if (unsubscribeFromSnapshot) {
+                unsubscribeFromSnapshot();
             }
         };
-    
-        if (user) {
-            fetchUserData();
-        }
     }, [user, db]);
   
     // Display loading or error component while data is being fetched or if there's an error
@@ -92,67 +96,97 @@ function Profile() {
     const handleEditProfile = () => {
         setIsEditing(!isEditing);
     };
+  
     const handleCopy = () => {
-        navigator.clipboard.writeText("john#9843")
+        if (userData?.userId) {
+          navigator.clipboard.writeText(userData.userId)
             .then(() => {
-                setCopied(true);
-                setTimeout(() => setCopied(false), 2000); // Hide the message after 2 seconds
+              setCopied(true);
+              setTimeout(() => setCopied(false), 2000); // Hide the message after 2 seconds
             })
             .catch(err => console.error('Failed to copy text: ', err));
+        } else {
+          console.error('No valid userId to copy');
+        }
+      };
+
+        // Handle input change
+    const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setNameInput(e.target.value);
+        setHasChanges(e.target.value !== originalName); // Compare with original name
+    };
+
+    const updateNameInFirestore = async () => {
+        if (user && nameInput !== originalName) {
+            try {
+                const userDocRef = doc(db, `users/${user.uid}`);
+                await updateDoc(userDocRef, {
+                    name: nameInput, // Update the name field
+                });
+                setOriginalName(nameInput); // Reset original name to new value
+                setHasChanges(false); // Disable save button after saving
+                setIsEditing(false); // Exit editing mode
+            } catch (error) {
+                console.error('Error updating name:', error);
+            }
+        }
     };
 
     const colors = [styles.red, styles.orange, styles.green, styles.blue];
 
     return (
-        <div className={styles.container}>
-            <div className={styles.mainProfileContent}>
-                <div className={styles.info}>
-                    <div className={styles.nameSection}>
-                        <div className={styles.nameInfo}>
-                            <div className={styles.dp}>
-                                <Image
-                                    src={userData?.profilePic || '/defaultDP.svg'}
-                                    alt="profile-image"
-                                    width={72}
-                                    height={72}
-                                >
-                                </Image>
-                            </div>
-                            <div className={styles.nameId}>
-                                {/* Name and ID */}
-                                {!isEditing && (
-                                    <div className={styles.johnName}>
-                                        <span className={styles.actualProfileName} >{userData?.name}</span>
-                                    </div>
-                                )}
-                                {!isEditing && (
-                                    <div className={styles.actualId}>
-                                        <div><span className={styles.id}>{userData?.userId}</span></div>
-                                        <div className={styles.copyButtons}>
-                                            <div className={styles.copyIcon}>
-                                                <button className={styles.copyButton} onClick={handleCopy}>
-                                                    <Image
-                                                        src="/icons/CopyButton.svg"
-                                                        alt="copy buttons"
-                                                        height={22}
-                                                        width={22}
-                                                    />
-                                                </button>
-                                                {copied && <span className={styles.copyMessage}>Copied!</span>}
+    // <div>
 
-                                            </div>
+
+        <div className="flex flex-col h-full w-full justify-between">
+        <div className="flex flex-col flex-grow overflow-y-auto pb-[260px] mx-[20px]">
+          {/* Your profile content */}
+         <div className='Info flex flex-col mr-[5px]'>
+         <div className='NameSection flex flex-row items-center my-[15px] justify-between'>
+         <div className='NameInfo flex flex-row flex-[0.5] items-center mb-[15px]'>
+         <div className='DP flex justify-center items-center mx-[10px]'>
+             <Image
+                src={userData?.profilePic || '/defaultDP.svg'}
+                alt="profile-image"
+                width={72}
+                height={72}>
+            </Image>
+         </div>
+          <div>
+           {/* Name and ID */}
+            {!isEditing && (
+                <div className={styles.johnName}>
+                <span className={styles.actualProfileName} >{userData?.name}</span>
+                </div>
+                )}
+                 {!isEditing && (
+                 <div className={styles.actualId}>
+                <div><span className={styles.id}>{userData?.userId}</span></div>
+                <div className={styles.copyButtons}>
+                 <div className={styles.copyIcon}>
+                 <button className={styles.copyButton} onClick={handleCopy}>
+                <Image
+                 src="/icons/CopyButton.svg"
+                 alt="copy buttons"
+                 height={22}
+                 width={22}/>
+                 </button>
+                                        </div>
                                         </div>
                                         {isEditing && (
                                             <div className={styles.sizeRecommendation}>File size must be less than 5MB</div>
                                         )}
+                                        {copied && <span className='flex ml-2 mb-1 px-3 py-[4px] bg-[#1D2939] rounded-[6px] text-white font-medium text-[11px]'>Copied!</span>}
+
                                     </div>
+                                    
                                 )}
 
                                 {/* Conditionally show Change and Remove buttons */}
                                 {isEditing && (
                                     <div className={styles.changeRemove}>
                                         <div className={styles.buttonGroup}>
-                                           <ProfilePicUpdate/>
+                                            <ProfilePicUpdate setIsEditing={setIsEditing} />
                                             <button className={styles.removeButton}>
                                                 <p className={styles.removeText}>Remove</p>
                                             </button>
@@ -160,11 +194,9 @@ function Profile() {
                                         <span className={styles.files}>File size must be less than 5MB</span>
                                     </div>
                                 )}
-
-
-                            </div>
-                        </div>
-                        <div className={styles.editProfile}>
+                </div> 
+         </div>
+         <div className='flex self-start  text-[#1D2939] pt-1'>
                             {!isEditing && (
                                 <button className={styles.editProfileButton} onClick={handleEditProfile}>
                                     <Image
@@ -177,8 +209,8 @@ function Profile() {
                                 </button>
                             )}
                         </div>
-                    </div>
-                    <div className={styles.examSection}>
+         </div>
+         <div className={styles.examSection}>
                     <div className={styles.enrolledExams}>
         {userData?.targetExams?.map((exam, index) => {
             const randomColor = colors[Math.floor(Math.random() * colors.length)];
@@ -190,11 +222,11 @@ function Profile() {
             );
         })}
     </div>
-                        {isEditing && <TargetExamUpdate />}
+                        {isEditing && <TargetExamUpdate setIsEditing={setIsEditing}/>}
                     </div>
-                </div>
+         </div>
 
-                <div className={styles.divider}><hr /></div>
+         <div className={styles.divider}><hr /></div>
 
 
                 <div className={styles.name}>
@@ -211,13 +243,14 @@ function Profile() {
                             </div>
                         )}
                         <div className={styles.UserDetail}>
-                            <p className={styles.label}>Full Name</p>
+                            <p className='font-medium text-[16px] mb-1'>Full Name</p>
                             {isEditing && (
                                 <input
                                     id="input"
                                     type="text"
-
-                                    className={styles.input}
+                                    value={nameInput}
+                                    onChange={handleNameChange} // Handle input changes
+                                    className='w-[320px] h-[40px] rounded-md border-solid border-[1px] border-[#d0d5dd] px-[8px] hover:border-none hover:outline hover:outline-[1.5px] hover:outline-[#D6BBFB] focus:outline focus:outline-[1.5px] focus:outline-[#D6BBFB] focus:border-none'
                                 />
                             )}
                         </div>
@@ -254,7 +287,7 @@ function Profile() {
                         <span className={styles.username}>{userData?.email}</span>
                     )}
                     {isEditing && (
-                        <EmailUpdate/>
+                        <EmailUpdate setIsEditing={setIsEditing}/>
                     )}
                 </div>
 
@@ -316,31 +349,34 @@ function Profile() {
                         <span className={styles.username}>{userData?.targetYear}</span>
                     )}
                     {isEditing && (
-                      <TargetYearUpdate/>
+                      <TargetYearUpdate setIsEditing={setIsEditing}/>
                     )}
                 </div>
-            </div>
 
-            {isEditing && (
-                <div className={styles.base}>
+        </div>
+  
+        {/* Sticky Footer Div */}
+    
+        {isEditing && (
+                <div className='flex w-full sticky bottom-0 items-center justify-end p-5 border-t border-solid border-[#eaecf0] h-[70px] bg-white ' style={{ boxShadow: '0 -2px 10px rgba(0, 0, 0, 0.1)' }}>
                     <div className={styles.insideBase}>
-                        <div className={styles.cancel}>
-                            <button className={styles.cancleButton} onClick={() => {
-                                setIsNameEditing(false);
-                                setIsEmailEditing(false);
-                                setIsPhoneEditing(false);
-                                setIsYearEditing(false);
+                        
+                            <button className="border-[1px] border-solid border-[#D1D5DB]  rounded-[8px] px-[24px] py-[10px] bg-transparent text-[14px] font-semibold" onClick={() => {
+                             
                                 setIsEditing(false);
                             }}>Cancel</button>
-                        </div>
-                        <div className={styles.saveChanges}>
-                            <button className={styles.saveChangesButton}>Save Changes</button>
-                        </div>
+                        
+                            <button  className={`text-sm rounded-[8px] px-[24px] py-[11px] font-semibold ml-4 mr-2 shadow-inner-button  text-white ${hasChanges ? 'bg-[#7400E0]' : 'bg-[#d8acff] '}`}
+                                disabled={!hasChanges}
+                                onClick={updateNameInFirestore} // Call update function on click
+                                >Save Changes</button>
+                        
                     </div>
                 </div>
             )}
+        <ToastContainer />
 
-        </div>
+      </div>
     );
 }
 

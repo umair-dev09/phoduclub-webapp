@@ -9,31 +9,26 @@ import { useEffect, useState } from "react";
 import { onAuthStateChanged } from "firebase/auth";
 import LoadingData from "@/components/Loading";
 import { auth } from "@/firebase";
+import router from "next/router";
 
 export default function AnalyticsPage() {
      const router = useRouter();
      const [loading, setLoading] = useState(true);
-     useEffect(() => {
-         const unsubscribe = onAuthStateChanged(auth, (user) => {
-             if (!user) {
-                 // If no user is logged in, redirect to the login page
-                 setTimeout(() => {
-                    router.push("/login")
-                 }, 2000);
-                       } else {
-                 // User is logged in, stop loading
-                 setLoading(false);
-             }
-         });
- 
-         return () => unsubscribe();
-     }, [router]);
-     if (loading) {
-         return (
-             <LoadingData/>
-         );
-     }  
-     
+
+     onAuthStateChanged(auth, (user) => {
+          if (!user) {
+             router.push("/login");
+          } 
+          else{
+         setLoading(false);
+          }
+        });
+             
+        if (loading) {
+          return (
+              <LoadingData/>
+          );
+      } 
      return (
           <div className="homeContainer">
                <div className="topColumn">

@@ -119,7 +119,7 @@
 // export default TabComps;
 "use client";
 
-import styles from './TabComps.module.css';
+import styles from '../../components/DashboardComponents/TabComps.module.css';
 import Image from 'next/image';
 import { useRouter, usePathname } from 'next/navigation';
 import { useState, useEffect } from 'react';
