@@ -147,7 +147,7 @@ export default function Course() {
             {/* Buy Course Button */}
             <div className="m-7">
               <button
-                className="text-white text-sm font-semibold py-3 px-6 rounded-md shadow-md"
+                className="text-white text-sm font-semibold py-3 px-6 rounded-md shadow-inner-button"
                 style={{
                   width: "182px",
                   height: "44px",
