@@ -203,7 +203,7 @@ function TabComps() {
 
                 <div className={styles.tooltip}>
                     <button
-                        onClick={() => handleTabClick('learn', '/learn/course')}
+                        onClick={() => handleTabClick('learn', '/learn/courses')}
                         className={`${styles.LearnButton} ${activeTab === 'learn' ? styles.active : ''}`}
                     >
                         <Image className={styles.learnIcon} src={activeTab === 'learn' ? "/icons/learn.svg" : "/icons/learn-2.svg"}
