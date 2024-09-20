@@ -1,10 +1,10 @@
 "use client";
 import NotficationDropDown from './NotificationDropdown';
-import styles from '/components/DashboardComponents/TabComps.module.css';
+import styles from '../../components/DashboardComponents/TabComps.module.css';
 import Image from 'next/image';
 import { Popover, PopoverTrigger, PopoverContent } from '@nextui-org/popover';
 import { auth } from '@/firebase';
-import { getFirestore, doc, getDoc } from 'firebase/firestore';
+import { getFirestore, doc, getDoc, onSnapshot } from 'firebase/firestore';
 import { useEffect, useState } from 'react';
 import { onAuthStateChanged, User, signOut} from 'firebase/auth'; // Import the User type from Firebase
 import {Skeleton} from "@nextui-org/skeleton";
@@ -54,32 +54,34 @@ function Header() {
     }, []);
   
     useEffect(() => {
-        const fetchUserData = async () => {
-            try {
-                if (user) {
-                    const uniqueId = user.uid;
-                    const userDoc = doc(db, `users/${uniqueId}`);
-                    const userSnapshot = await getDoc(userDoc);
-    
-                    if (userSnapshot.exists()) {
-                        const data = userSnapshot.data() as UserData; 
-                        setUserData(data);
-                    } else {
-                        console.error('No user data found!');
-                        setError(true); // Set error if no user data is found
-                    }
+        let unsubscribeFromSnapshot: () => void;
+        if (user) {
+            const uniqueId = user.uid;
+            const userDocRef = doc(db, `users/${uniqueId}`);
+
+            unsubscribeFromSnapshot = onSnapshot(userDocRef, (docSnapshot) => {
+                if (docSnapshot.exists()) {
+                    const data = docSnapshot.data() as UserData;
+                    setUserData(data);
+                    
+                    setLoading(false);
+                } else {
+                    console.error('No user data found!');
+                    setError(true);
+                    setLoading(false);
                 }
-            } catch (error) {
-                console.error('Error fetching user data:', error);
-                setError(true); // Set error if fetching data fails
-            } finally {
-                setLoading(false); // Ensure loading is set to false after fetching data
+            }, (error) => {
+                console.error('Error fetching real-time updates:', error);
+                setError(true);
+                setLoading(false);
+            });
+        }
+
+        return () => {
+            if (unsubscribeFromSnapshot) {
+                unsubscribeFromSnapshot();
             }
         };
-    
-        if (user) {
-            fetchUserData();
-        }
     }, [user, db]);
   
     // Display loading or error component while data is being fetched or if there's an error

@@ -70,7 +70,7 @@ onAuthStateChanged(auth, (user) => {
             'callback': (response: any) => {
                 // reCAPTCHA solved - will proceed with signInWithPhoneNumber
             }
-        } );
+        } ); 
 
         const appVerifier = window.recaptchaVerifier;
 

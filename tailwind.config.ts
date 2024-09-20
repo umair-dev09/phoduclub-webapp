@@ -9,14 +9,28 @@ const config: Config = {
 	],
 	theme: {
 		extend: {
+			animation: {
+				'spin-loading': 'spin 0.5s linear infinite',
+			  },
 
+			  keyframes: {
+				spin: {
+				  '0%': { transform: 'rotate(0deg)' },
+				  '100%': { transform: 'rotate(360deg)' },
+		
+				}
+			  },
+
+			boxShadow: {
+				'inner-button': 'inset 0px 3px 2px rgba(255, 255, 255, 0.24)',
+			  },
 			backgroundImage: {
 				'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
 				'gradient-conic': 'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))'
 			},
 			borderRadius: {
 				lg: 'var(--radius)',
-				md: 'calc(var(--radius) - 2px)',
+				md: '8px',
 				sm: 'calc(var(--radius) - 4px)'
 			},
 			colors: {

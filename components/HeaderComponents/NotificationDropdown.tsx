@@ -1,4 +1,4 @@
-import styles from '/components/DashboardComponents/TabComps.module.css'
+import styles from '../../components/DashboardComponents/TabComps.module.css';
 import Image from 'next/image';
 import { Popover,PopoverTrigger, PopoverContent } from '@nextui-org/popover';
 

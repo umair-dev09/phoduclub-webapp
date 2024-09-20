@@ -227,7 +227,7 @@ function VerifyOtp() {
                 <div className={styles.buttons}>
                     <button
                         className={`button ${otp.length === 6 ? 'enabled' : 'disabled'}`}
-                        onClick={handleSubmit}
+                        onClick={handleSubmit} 
                         disabled={isLoading} // Disable button when loading
                     >
                         {isLoading ? (

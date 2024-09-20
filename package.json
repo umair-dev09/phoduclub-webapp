@@ -1,7 +1,7 @@
 {
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev --turbo",
     "build": "next build",
     "start": "next start"
   },
@@ -23,7 +23,7 @@
     "buffer": "^6.0.3",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
-    "crypto-browserify": "^3.12.0",
+    "date-fns": "^3.6.0",
     "firebase": "^10.13.1",
     "firebase-admin": "^12.4.0",
     "geist": "^1.2.1",
@@ -40,6 +40,7 @@
     "react-datepicker": "^7.3.0",
     "react-dom": "18.2.0",
     "react-icons": "^5.3.0",
+    "react-image-crop": "^11.0.7",
     "react-loading-skeleton": "^3.4.0",
     "react-phone-input-2": "^2.15.1",
     "react-rating-stars-component": "^2.2.0",

@@ -185,6 +185,7 @@
     margin-right: 24px;
     justify-content: end;
     margin-top: 16px;
+    gap: 15px;
 }
 /*  Common Dialog CSS   */
 
@@ -215,7 +216,6 @@
   padding: 10px 24px 10px 24px;
   border-radius: 8px;
   border: 1.5px solid #EAECF0;
-  margin-right: 15px;
   font-weight: 500;
 }
 .emailVerifyBtn{
@@ -257,7 +257,6 @@
     padding: 10px 24px 10px 24px;
     border-radius: 8px;
     border: 1.5px solid #EAECF0;
-    margin-right: 15px;
     font-weight: 500;
   }
   .tExamContinueBtn{
@@ -396,7 +395,7 @@
 
 .updateIconButton {
     border: 1.5px solid #EAECF0;
-    border-radius: 5px;
+    border-radius: 8px;
     padding-top: 10px;
     padding-bottom: 10px;
     padding-left: 15px;
@@ -539,8 +538,7 @@
 .button {
     display: flex;
     align-items: center;
-    padding-top: 3px;
-    padding-bottom: 3px;
+    
     padding-left: 10px;
     padding-right: 10px;
     border: 1px solid #d1d1d1;
@@ -549,6 +547,9 @@
     font-size: 14px;
     color: #344054;
     font-weight: 500;
+    min-height: 32px;
+    max-height: 32px;
+
 }
 
 .examText{
