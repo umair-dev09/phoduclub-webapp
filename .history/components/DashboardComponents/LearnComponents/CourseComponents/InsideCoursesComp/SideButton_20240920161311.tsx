@@ -336,18 +336,12 @@
 // export default SideButton;
 function SideButton() {
     return (
-        <div className="flex ">
-            <div className="fixed right-0 w-[362px] h-[729.6px] bg-slate-900 flex flex-col justify-between  mr-2 ">
-                <p className="text-white p-4">Aligned to the bottom right</p>
-                {/* You can add more content here if needed */}
-            </div>
+        <div className=" flex justify-end">
+            feoeneg
         </div>
     );
 }
-
 export default SideButton;
-
-
 
 
 

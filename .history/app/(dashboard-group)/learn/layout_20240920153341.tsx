@@ -57,4 +57,4 @@ export default function LearnLayout({ children }: LearnLayoutProps) {
         return <>{children}</>;
     }
 
-}
+

@@ -336,8 +336,38 @@
 // export default SideButton;
 function SideButton() {
     return (
-        <div className="flex ">
-            <div className="fixed right-0 w-[362px] h-[729.6px] bg-slate-900 flex flex-col justify-between  mr-2 ">
+        <div className="flex h-screen">
+            {/* Main Content Area */}
+            <div className="flex-1 overflow-y-auto">
+                {/* Your main content goes here */}
+            </div>
+
+            {/* Sidebar */}
+            <div className="fixed right-0 w-[362px] h-full bg-slate-900">
+                <p className="text-white p-4">Aligned to the bottom right</p>
+                {/* You can add more content here if needed */}
+            </div>
+            <div className="fixed right-0 w-[362px] h-full bg-slate-900">
+                <p className="text-white p-4">Aligned to the bottom right</p>
+                {/* You can add more content here if needed */}
+            </div>
+            <div className="fixed right-0 w-[362px] h-full bg-slate-900">
+                <p className="text-white p-4">Aligned to the bottom right</p>
+                {/* You can add more content here if needed */}
+            </div>
+            <div className="fixed right-0 w-[362px] h-full bg-slate-900">
+                <p className="text-white p-4">Aligned to the bottom right</p>
+                {/* You can add more content here if needed */}
+            </div>
+            <div className="fixed right-0 w-[362px] h-full bg-slate-900">
+                <p className="text-white p-4">Aligned to the bottom right</p>
+                {/* You can add more content here if needed */}
+            </div>
+            <div className="fixed right-0 w-[362px] h-full bg-slate-900">
+                <p className="text-white p-4">Aligned to the bottom right</p>
+                {/* You can add more content here if needed */}
+            </div>
+            <div className="fixed right-0 w-[362px] h-full bg-slate-900">
                 <p className="text-white p-4">Aligned to the bottom right</p>
                 {/* You can add more content here if needed */}
             </div>

@@ -336,18 +336,19 @@
 // export default SideButton;
 function SideButton() {
     return (
-        <div className="flex ">
-            <div className="fixed right-0 w-[362px] h-[729.6px] bg-slate-900 flex flex-col justify-between  mr-2 ">
-                <p className="text-white p-4">Aligned to the bottom right</p>
-                {/* You can add more content here if needed */}
+        <div className="bg-rose-50 w-screen h-screen">
+
+            <div className="justify-end flex ">
+                <div className="flex flex-col bg-red-600 h-full w-[364px] p-4 justify-center">
+                    <p className="text-black">Aligned to the bottom right</p>
+                </div>
+
             </div>
         </div>
+
     );
 }
-
 export default SideButton;
-
-
 
 
 

@@ -45,7 +45,7 @@ const config: Config = {
 			},
 		},
 		animation: {
-			slideUp: 'slideUp 0.3s ease-out',
+			slideUp: 'slideUp 0.3s ease-in-out',
 			slideDown: 'slideDown 0.5s ease-in-out',
 		},
 	},

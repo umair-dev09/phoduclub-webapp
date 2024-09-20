@@ -38,11 +38,6 @@ const config: Config = {
 				'100%': { transform: 'translateY(0)' },
 
 			},
-
-			slideDown: {
-				'0%': { transform: 'translateY(0)' },
-				'100%': { transform: 'translateY(100%)' },
-			},
 		},
 		animation: {
 			slideUp: 'slideUp 0.3s ease-out',
