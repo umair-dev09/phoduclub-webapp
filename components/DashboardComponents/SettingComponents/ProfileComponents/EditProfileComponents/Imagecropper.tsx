@@ -4,6 +4,7 @@ import 'react-image-crop/dist/ReactCrop.css';
 import { setCanvasPreview } from '../../../../../utils/setCanvasPreview'; // Adjust the path to where the utility file is located
 import { Dialog, DialogBackdrop, DialogPanel } from '@headlessui/react';
 import styles from '../Profile.module.css';
+import Image from 'next/image';
 
 const ASPECT_RATIO = 1;
 const MIN_DIMENSION = 150;
@@ -76,16 +77,17 @@ const ImageCropper = ({ imageFile, setShowCropper, isOpen, setIsOpen }: ImageCro
         <DialogPanel transition className={styles.commonDialogBox}>
           <>
             <div>
-              <button
-                className="text-white font-mono text-xs py-2 px-4 rounded-2xl mt-4 bg-sky-500 hover:bg-sky-600"
-                onClick={handleCropImage}
-              >
-                Crop Image
-              </button>
+            <div className={styles.commonUpdateHeader}>
+            <h3>Crop Image</h3>
+            <button onClick={() => setIsOpen(false)}>
+              <Image src='/icons/cancel.svg' alt="cancel-image" width={18} height={18} />
+            </button>
+          </div>
+          <div className={styles.commonDivider} />
             </div>
             {error && <p className="text-red-400 text-xs">{error}</p>}
             {imgSrc && (
-              <div className="flex flex-col items-center">
+              <div className="flex flex-col items-center my-5">
                 <ReactCrop
                   crop={crop}
                   onChange={handleCropChange} // Handle both PixelCrop and PercentCrop
@@ -98,11 +100,16 @@ const ImageCropper = ({ imageFile, setShowCropper, isOpen, setIsOpen }: ImageCro
                     ref={imgRef}
                     src={imgSrc}
                     alt="Upload"
-                    style={{ maxHeight: '300px' }}
+                    style={{ maxHeight: '350px' }}
                     onLoad={onImageLoad}
                   />
                 </ReactCrop>
-
+                <button
+                className="text-white font-medium py-2 px-4 rounded-2xl mt-4 bg-[#7400E0] hover:bg-[#131313]"
+                onClick={handleCropImage}
+              >
+                Crop Image
+              </button>
                 {/* Cropped image preview */}
                 {croppedImageUrl && (
                   <div className="mt-4">
