@@ -110,7 +110,7 @@ function Quiz({ isOpen, setIsOpen }: QuizProps) {
                         </span>
 
                         <div
-                            className={`w-[150px] h-[44px] bg-[#FFFFFF] border-[1px] border-[#EAECF0] rounded-[8px] flex items-center justify-center transition-transform duration-500 ease-in-out transform ${showBottomSheet ? 'animate-slideUp' : 'animate-slidDown'
+                            className={`w-[150px] h-[44px] bg-[#FFFFFF] border-[1px] border-[#EAECF0] rounded-[8px] flex items-center justify-center transition-transform duration-500 ease-in-out transform ${showBottomSheet ? 'animate-slideUp' : 'animate-slideDown'
                                 } z-50`}
                         >
                             <button

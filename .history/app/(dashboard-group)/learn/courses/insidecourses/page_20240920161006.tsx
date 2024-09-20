@@ -1,0 +1,10 @@
+import SideButton from "@/components/DashboardComponents/LearnComponents/CourseComponents/InsideCoursesComp/SideButton";
+function sidebutton() {
+    return (
+        <div className="flex  flex-1 bg-red-500 w-full h-full">
+            <SideButton />
+
+        </div>
+    )
+}
+export default sidebutton;

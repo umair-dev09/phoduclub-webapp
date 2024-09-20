@@ -110,9 +110,10 @@ function Quiz({ isOpen, setIsOpen }: QuizProps) {
                         </span>
 
                         <div
-                            className={`w-[150px] h-[44px] bg-[#FFFFFF] border-[1px] border-[#EAECF0] rounded-[8px] flex items-center justify-center transition-transform duration-500 ease-in-out transform ${showBottomSheet ? 'animate-slideUp' : 'animate-slidDown'
+                            className={`w-[150px] h-[44px] bg-[#FFFFFF] border-[1px] border-[#EAECF0] rounded-[8px] flex items-center justify-center transition-transform duration-500 ease-in-out transform ${showBottomSheet ? 'translate-y-0' : 'translate-y-full'
                                 } z-50`}
                         >
+
                             <button
                                 onClick={closeBottomSheet}
                                 className="w-full h-full flex items-center justify-center text-sm font-semibold text-[#1D2939] border-none p-[10px_24px]"
