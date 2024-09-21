@@ -1,0 +1,83 @@
+"use client";
+
+import { useRouter, usePathname } from "next/navigation";
+
+import { useState, useEffect } from "react";
+import { Tabs, Tab, Chip } from "@nextui-org/react";
+
+function learned() {
+    // const [activeTab, setActiveTab] = useState<string>('');
+    // const router = useRouter();
+    // const pathname = usePathname();
+    // const handleTabClick = (tabName: string, path: string) => {
+
+    //     setActiveTab(tabName);
+    //     router.push(path);
+    // };
+
+    // useEffect(() => {
+    //     if (pathname) {
+    //         const currentPath = pathname.split('/')[2];
+    //         if (currentPath === 'test') {
+    //             setActiveTab('test');
+    //         } else if (currentPath === 'Quiz') {
+    //             setActiveTab('Quiz');
+    //         } else {
+    //             setActiveTab('courses'); // Default to 'course'
+    //         }
+    //     } else {
+    //         setActiveTab('courses'); // Default to 'course' if pathname is not available
+    //     }
+    // }, [pathname]);
+
+
+
+
+
+
+    return (
+        <div className="h-[80px] ">
+            <div className="flex w-full flex-col">
+                <Tabs
+                    aria-label="Options"
+                    color="primary"
+                    variant="underlined"
+                    classNames={{
+                        tabList: "gap-6 w-full relative rounded-none p-0 border-b border-gray-300", // Adjusted to match the border style from the image
+                        tab: "max-w-fit px-0 h-12 focus:outline-none focus:ring-0", // Removed the focus outline and set the tab height
+                        tabContent: "group-data-[selected=true]:text-[#9012FF] group-data-[selected=true]:font-bold"
+                    }}
+                >
+                    <Tab
+                        key="courses"
+                        title={
+                            <div className="flex items-center space-x-2 ml-[32px]">
+                                <span className="text-gray-500 font-bold">Courss</span> {/* Active tab styled */}
+                            </div>
+                        }
+                    />
+                    <Tab
+                        key="tests"
+                        title={
+                            <div className="flex items-center space-x-2">
+                                <span className="text-gray-500">Tests</span> {/* Inactive tab styled */}
+                                <Chip size="sm" variant="faded" className="bg-[#EDE4FF]"><span className="text-[#9012FF]">10</span></Chip> {/* Chip styled */}
+                            </div>
+                        }
+                    />
+                    <Tab
+                        key="quizzes"
+                        title={
+                            <div className="flex items-center space-x-2">
+                                <span className="text-gray-500">Quizzes</span> {/* Inactive tab styled */}
+                            </div>
+                        }
+                    />
+                </Tabs>
+
+            </div>
+        </div>
+
+    );
+}
+export default learned

@@ -4,7 +4,7 @@ import { useRouter, usePathname } from "next/navigation";
 import { useState, useEffect } from "react";
 
 function Learned() {
-    const [activeTab, setActiveTab] = useState<string>('courses');
+    const [activeTab, setActiveTab] = useState<string>('');
     const router = useRouter();
     const pathname = usePathname();
 
@@ -29,7 +29,7 @@ function Learned() {
     }, [pathname]);
 
     return (
-        <div className="relative flex space-x-2">
+        <div className="flex space-x-2">
             <div className="pt-[10px]">
                 <button
                     onClick={() => handleTabClick('courses', '/learn/courses')}
@@ -37,6 +37,16 @@ function Learned() {
                     style={{ fontSize: '16px', fontWeight: '500', marginLeft: '32px' }}
                 >
                     Courses
+                    {activeTab === 'courses' && (
+                        <span
+                            className="absolute left-1/2 transform -translate-x-1/2"
+                            style={{
+                                borderBottom: '2px solid #7400E0',
+                                width: '70%',
+                                bottom: "-13px"
+                            }}
+                        />
+                    )}
                 </button>
             </div>
             <div className="pt-[10px]">
@@ -46,6 +56,16 @@ function Learned() {
                     style={{ fontSize: '16px', fontWeight: '500' }}
                 >
                     Tests
+                    {activeTab === 'test' && (
+                        <span
+                            className="absolute left-1/2 transform -translate-x-1/2"
+                            style={{
+                                borderBottom: '2px solid #7400E0',
+                                width: '70%',
+                                bottom: "-13px"
+                            }}
+                        />
+                    )}
                     <span
                         className="ml-2 px-2 py-[0px] text-[#9012FF] bg-[#EDE4FF] rounded-full relative"
                         style={{ fontSize: '14px', fontWeight: '500', minWidth: '24px', textAlign: 'center', top: '-1px' }}
@@ -61,6 +81,16 @@ function Learned() {
                     style={{ fontSize: '16px', fontWeight: '500' }}
                 >
                     Quizzes
+                    {activeTab === 'Quiz' && (
+                        <span
+                            className="absolute left-1/2 transform -translate-x-1/2"
+                            style={{
+                                borderBottom: '2px solid #7400E0',
+                                width: '70%',
+                                bottom: "-13px"
+                            }}
+                        />
+                    )}
                     <span
                         className="ml-2 px-2 py-[0px] text-[#9012FF] bg-[#EDE4FF] rounded-full relative"
                         style={{ fontSize: '14px', fontWeight: '500', minWidth: '24px', textAlign: 'center', top: '-1px' }}
@@ -69,17 +99,6 @@ function Learned() {
                     </span>
                 </button>
             </div>
-            <div
-                className="absolute bg-[#7400E0] transition-all duration-300"
-                style={{
-                    height: '1.5px', // Change this value to make the underline thinner or thicker
-                    left: `${activeTab === 'courses' ? '10px' : activeTab === 'test' ? 'calc(10px + 160px)' : 'calc(10px + 320px)'}`,
-                    width: '7%', // You can still adjust the width here as needed
-                    bottom: '-5px',
-
-                }}
-            />
-
         </div>
     );
 }

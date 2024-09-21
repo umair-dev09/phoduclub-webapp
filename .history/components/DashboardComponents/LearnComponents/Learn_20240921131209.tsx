@@ -1,0 +1,85 @@
+"use client";
+
+import { useRouter, usePathname } from "next/navigation";
+import { useState, useEffect } from "react";
+
+function Learned() {
+    const [activeTab, setActiveTab] = useState<string>('courses');
+    const router = useRouter();
+    const pathname = usePathname();
+    const [underlinePosition, setUnderlinePosition] = useState<number>(0);
+
+    const handleTabClick = (tabName: string, path: string) => {
+        setActiveTab(tabName);
+        router.push(path);
+    };
+
+    useEffect(() => {
+        if (pathname) {
+            const currentPath = pathname.split('/')[2];
+            if (currentPath === 'test') {
+                setActiveTab('test');
+                setUnderlinePosition(1); // Position for "Tests"
+            } else if (currentPath === 'Quiz') {
+                setActiveTab('Quiz');
+                setUnderlinePosition(2); // Position for "Quizzes"
+            } else {
+                setActiveTab('courses');
+                setUnderlinePosition(0); // Position for "Courses"
+            }
+        }
+    }, [pathname]);
+
+    const getUnderlineStyle = () => {
+        switch (underlinePosition) {
+            case 0: return { left: '0%', width: '70%' }; // Courses
+            case 1: return { left: 'calc(100% + 32px)', width: '70%' }; // Tests
+            case 2: return { left: 'calc(100% + 64px)', width: '70%' }; // Quizzes
+            default: return { left: '0%', width: '70%' };
+        }
+    };
+
+    return (
+        <div className="relative">
+            <div className="flex space-x-2">
+                <div className="pt-[10px]">
+                    <button
+                        onClick={() => handleTabClick('courses', '/learn/courses')}
+                        className={`relative py-2 px-4 text-base transition duration-200 ${activeTab === 'courses' ? 'text-[#7400E0]' : 'text-[#667085] hover:text-[#7400E0]'} focus:outline-none`}
+                        style={{ fontSize: '16px', fontWeight: '500', marginLeft: '32px' }}
+                    >
+                        Courses
+                    </button>
+                </div>
+                <div className="pt-[10px]">
+                    <button
+                        onClick={() => handleTabClick('test', '/learn/test')}
+                        className={`relative py-2 px-4 text-base transition duration-200 ${activeTab === 'test' ? 'text-[#7400E0]' : 'text-[#667085] hover:text-[#7400E0]'} focus:outline-none`}
+                        style={{ fontSize: '16px', fontWeight: '500' }}
+                    >
+                        Tests
+                    </button>
+                </div>
+                <div className="pt-[10px]">
+                    <button
+                        onClick={() => handleTabClick('Quiz', '/learn/Quiz')}
+                        className={`relative py-2 px-4 text-base transition duration-200 ${activeTab === 'Quiz' ? 'text-[#7400E0]' : 'text-[#667085] hover:text-[#7400E0]'} focus:outline-none`}
+                        style={{ fontSize: '16px', fontWeight: '500' }}
+                    >
+                        Quizzes
+                    </button>
+                </div>
+            </div>
+            <span
+                className="absolute h-[2px] bg-[#7400E0] transition-all duration-300"
+                style={{
+                    ...getUnderlineStyle(),
+                    bottom: '-13px',
+                    position: 'absolute'
+                }}
+            />
+        </div>
+    );
+}
+
+export default Learned;

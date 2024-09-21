@@ -70,16 +70,13 @@ function Learned() {
                 </button>
             </div>
             <div
-                className="absolute bg-[#7400E0] transition-all duration-300"
+                className="absolute h-1 bg-[#7400E0] transition-all duration-300"
                 style={{
-                    height: '1.5px', // Change this value to make the underline thinner or thicker
-                    left: `${activeTab === 'courses' ? '10px' : activeTab === 'test' ? 'calc(10px + 160px)' : 'calc(10px + 320px)'}`,
-                    width: '7%', // You can still adjust the width here as needed
-                    bottom: '-5px',
-
+                    left: `${activeTab === 'courses' ? '32px' : activeTab === 'test' ? 'calc(32px + 160px)' : 'calc(32px + 320px)'}`,
+                    width: '10%',
+                    bottom: '-5px' // Adjust this value to position it closer to the button
                 }}
             />
-
         </div>
     );
 }
