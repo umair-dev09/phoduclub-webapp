@@ -197,7 +197,7 @@ export default function Course() {
 
 
         {[1, 2, 3].map(index => (
-          <div key={index} className="flex flex-col bg-white border border-lightGrey rounded-xl mt-4 ">
+          <div key={index} className="flex flex-col bg-white border border-lightGrey rounded-xl mt-4 gap-[10px]">
             <button onClick={() => toggleCollapse(index)}>
               <div className="flex items-center justify-between h-[56px] mx-5 relative">
                 <p className="text-base font-bold">Lesson {index}: Lorem ipsum dolor sit amet.</p>

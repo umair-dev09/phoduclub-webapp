@@ -6,7 +6,7 @@ function Course() {
 
 
     return (
-        <div className="flex flex-col  mx-1 ">
+        <div className="flex flex-col  mx-1 overflow-y-auto py-4">
             <div className="mx-5 my-5">
                 <div className="text-base font-medium">1. Welcome and Introduction</div>
                 <div className="flex flex-row text-sm font-normal">

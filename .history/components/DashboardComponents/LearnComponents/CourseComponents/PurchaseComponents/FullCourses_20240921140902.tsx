@@ -195,14 +195,71 @@ export default function Course() {
           </div>
         </div>
 
+        {/* Lesson section with dropdown */}
 
+        {/* <div className='flex flex-col bg-white border border-lightGrey rounded-xl mt-4'>
+          <div className='flex items-center justify-between h-[56px] mx-5 relative'>
+            <div className='test-base font-bold'>
+              <p>Lesson 2: Lorem ipsum dolor sit amet consectetur adipisicing elit.</p>
+            </div>
+            <button onClick={() => toggleCollapse(1)}>
+              <Image
+                src={collapsed[2] ? "/icons/arrowup.svg" : "/icons/arrowdown.svg"}
+                width={24}
+                height={24}
+                alt="arrow"
+              />
+            </button>
+          </div>
+          <hr />
+          <div className={`transition-all duration-300 ease-in-out ${collapsed[2] ? 'max-h-0 overflow-hidden' : 'max-h-[500px]'}`}>
+            <Lesson />
+          </div>
+        </div>
+        <div className='flex flex-col bg-white border border-lightGrey rounded-xl mt-4'>
+          <div className='flex items-center justify-between h-[56px] mx-5 relative'>
+            <div className='test-base font-bold'>
+              <p>Lesson 2: Lorem ipsum dolor sit amet consectetur adipisicing elit.</p>
+            </div>
+            <button onClick={() => toggleCollapse(2)}>
+              <Image
+                src={collapsed[2] ? "/icons/arrowup.svg" : "/icons/arrowdown.svg"}
+                width={24}
+                height={24}
+                alt="arrow"
+              />
+            </button>
+          </div>
+          <hr />
+          <div className={`transition-all duration-300 ease-in-out ${collapsed[2] ? 'max-h-0 overflow-hidden' : 'max-h-[500px]'}`}>
+            <Lesson />
+          </div>
+        </div>
+        <div className='flex flex-col bg-white border border-lightGrey rounded-xl mt-4'>
+          <div className='flex items-center justify-between h-[56px] mx-5 relative'>
+            <div className='test-base font-bold'>
+              <p>Lesson 2: Lorem ipsum dolor sit amet consectetur adipisicing elit.</p>
+            </div>
+            <button onClick={() => toggleCollapse(3)}>
+              <Image
+                src={collapsed[2] ? "/icons/arrowup.svg" : "/icons/arrowdown.svg"}
+                width={24}
+                height={24}
+                alt="arrow"
+              />
+            </button>
+          </div>
+          <hr />
+          <div className={`transition-all duration-300 ease-in-out ${collapsed[2] ? 'max-h-0 overflow-hidden' : 'max-h-[500px]'}`}>
+            <Lesson />
+          </div>
+        </div>
+      */}
         {[1, 2, 3].map(index => (
-          <div key={index} className="flex flex-col bg-white border border-lightGrey rounded-xl mt-4 ">
+          <div key={index} className="flex flex-col bg-white border border-lightGrey rounded-xl mt-4 overflow-y-auto">
             <button onClick={() => toggleCollapse(index)}>
               <div className="flex items-center justify-between h-[56px] mx-5 relative">
                 <p className="text-base font-bold">Lesson {index}: Lorem ipsum dolor sit amet.</p>
-
-
 
                 <Image
                   src={collapsed[index] ? "/icons/arrowdown.svg" : "/icons/arrowup.svg"}
@@ -218,8 +275,6 @@ export default function Course() {
               <Lesson />
             </div>
           </div>
-
-
         ))}
 
       </div >
