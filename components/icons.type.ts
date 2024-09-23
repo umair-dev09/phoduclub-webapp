@@ -53,4 +53,7 @@ export type IconsType =
   | "dropdown-icon-1"
   | "dropdown-icon-2"
   | "dropdown-icon-3"
+    "rank-1"
+    "hourglass"
+    "stop-watch";
 
