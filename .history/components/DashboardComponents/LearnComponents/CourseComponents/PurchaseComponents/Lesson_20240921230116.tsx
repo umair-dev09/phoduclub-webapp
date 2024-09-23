@@ -1,13 +1,18 @@
+"use client";
+
 import Image from "next/image";
-function Topic() {
+
+function Course() {
+
+
     return (
-        <div className="flex flex-col">
-            <div className="mx-8 my-5">
+        <div className="flex flex-col  mx-1 ">
+            <div className="mx-5 my-5">
                 <div className="text-base font-medium">1. Welcome and Introduction</div>
                 <div className="flex flex-row text-sm font-normal">
                     <div className="mr-1">
                         <Image
-                            src="/icons/course-learn.svg"
+                            src="/icons/read.svg"
                             alt="test-icon"
                             width={16}
                             height={16} />
@@ -15,7 +20,7 @@ function Topic() {
                     <div>10:00</div>
                 </div>
             </div>
-            <div className="mx-8 my-5">
+            <div className="mx-5 my-5">
                 <div className="text-base font-medium">1. Welcome and Introduction</div>
                 <div className="flex flex-row text-sm font-normal">
                     <div className="mr-1">
@@ -28,7 +33,7 @@ function Topic() {
                     <div>10:00</div>
                 </div>
             </div>
-            <div className="mx-8 my-5">
+            <div className="mx-5 my-5">
                 <div className="text-base font-medium">1. Welcome and Introduction</div>
                 <div className="flex flex-row text-sm font-normal">
                     <div className="mr-1">
@@ -46,4 +51,4 @@ function Topic() {
     );
 }
 
-export default Topic;
+export default Course;

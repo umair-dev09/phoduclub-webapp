@@ -12,7 +12,7 @@ function Course() {
                 <div className="flex flex-row text-sm font-normal">
                     <div className="mr-1">
                         <Image
-                            src="/icons/course-learn.svg"
+                            src="/icons/read.svg"
                             alt="test-icon"
                             width={16}
                             height={16} />
