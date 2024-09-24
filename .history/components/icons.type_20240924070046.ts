@@ -1,0 +1,62 @@
+export type IconsType =
+  | 'learn'
+  | '10'
+  | 'dashboard'
+  | 'settings'
+  | 'community'
+  | 'Analytics'
+  | 'learn-2'
+  | 'dashboard-2'
+  | 'settings-2'
+  | 'community-2'
+  | 'Analytics-2'
+  | 'profile'
+  | 'purchase'
+  | 'profile-voilet'
+  | 'collapse-left'
+  | 'collapse-right'
+  | 'Name'
+  | 'Email'
+  | 'phoneNumber'
+  | 'TargetYear'
+  | 'pencil-edit'
+  | 'CopyButton'
+  | 'no_announcement_img'
+  | 'course_img'
+  | 'suggestion_icon'
+  | 'overall'
+  | 'maths'
+  | 'physics'
+  | 'chemistry'
+  | 'checkmark'
+  | 'announceProfile'
+  | 'right'
+  | 'course-left'
+  | 'read'
+  | 'vedio'
+  | 'test'
+  | 'up'
+  | 'sidebuttongray'
+  | 'sidebuttonrred'
+  | "Green-tick"
+  | "clock"
+  | "questionmark"
+  | "check-list"
+  | "alram-clock"
+  | "arrowdown"
+  | "arrowup"
+  | "profile-pic"
+  | "upvote"
+  | "Bold-icon"
+  | "italic-icon"
+  | "underline-icon"
+  | "dropdown-icon-1"
+  | "dropdown-icon-2"
+  | "dropdown-icon-3"
+  | "align-left"
+  | "align-right"
+  | "align-middle";
+"rank-1"
+"hourglass"
+"stop-watch";
+
