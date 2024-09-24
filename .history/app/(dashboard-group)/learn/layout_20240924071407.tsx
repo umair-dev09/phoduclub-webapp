@@ -19,7 +19,7 @@ export default function LearnLayout({ children }: LearnLayoutProps) {
         pathname === '/learn/courses'
     ) {
         return (
-            <div className={`flex flex-col flex-1 ${isQuiz ? 'bg-white border-b-2 border-[#EAECF0]' : ''}`}>
+            <div className={`flex flex-col flex-1 ${isQuiz ? 'bg-white border-b border-[#EAECF0]' : ''}`}>
                 {isQuiz && (
                     <div className="h-[64px]">
                         <Learn />
