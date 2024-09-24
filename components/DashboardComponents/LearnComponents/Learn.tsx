@@ -18,8 +18,8 @@ function Learned() {
             const currentPath = pathname.split('/')[2];
             if (currentPath === 'test') {
                 setActiveTab('test');
-            } else if (currentPath === 'Quiz') {
-                setActiveTab('Quiz');
+            } else if (currentPath === 'quiz') {
+                setActiveTab('quiz');
             } else {
                 setActiveTab('courses'); // Default to 'courses'
             }
@@ -56,7 +56,7 @@ function Learned() {
             </div>
             <div className="pt-[10px]">
                 <button
-                    onClick={() => handleTabClick('Quiz', '/learn/Quiz')}
+                    onClick={() => handleTabClick('quiz', '/learn/quiz')}
                     className={`relative py-2 px-4 text-base transition duration-200 ${activeTab === 'Quiz' ? 'text-[#7400E0]' : 'text-[#667085] hover:text-[#7400E0]'} focus:outline-none`}
                     style={{ fontSize: '16px', fontWeight: '500' }}
                 >

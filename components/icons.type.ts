@@ -56,4 +56,7 @@ export type IconsType =
   | "align-left"
   | "align-right"
   | "align-middle";
+"rank-1"
+"hourglass"
+"stop-watch";
 
