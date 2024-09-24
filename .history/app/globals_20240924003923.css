@@ -1,0 +1,109 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&family=Sora:wght@400;500;600;700;800&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  background-color: #f7f8fb;
+  margin: 0;
+  padding: 0;
+  font-family: 'Poppins', sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.heading .head {
+  font-family: 'Sora', sans-serif;
+  font-size: 24px;
+  /* Example size */
+  font-weight: 700;
+}
+
+/* Example for other headings if needed */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: 'Sora', sans-serif;
+}
+
+h3 {
+  font-size: 18px;
+  font-weight: 600;
+}
+
+/* Ensure that other text elements use Poppins */
+p,
+span,
+div {
+  font-family: 'Poppins', sans-serif;
+}
+
+/* Custom scrollbar styles */
+
+::-webkit-scrollbar {
+  width: 7px;
+  height: 7px;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: rgba(234, 236, 240, 1);
+  ;
+
+  border-radius: 100px;
+}
+
+::-webkit-scrollbar-track {
+  background: "white";
+
+}
+
+/* THIS IS FOR TEXT-EDITOR IN DISSCUSSION TAB */
+.custom-quill .ql-container {
+  border: none !important;
+  /* Remove the border from the container */
+}
+
+.custom-quill .ql-editor {
+  border: none !important;
+  /* Ensure no border around the editor */
+}
+
+.custom-quill:focus {
+  outline: none;
+  /* Remove outline on focus */
+}
+
+.custom-quill .ql-editor {
+  font-size: 16px;
+  /* Set text size to 16px */
+  font-family: 'Poppins', sans-serif;
+  /* Use the Poppins font */
+}
+
+.custom-quill .ql-editor:empty::before {
+
+  color: #667085;
+  /* Placeholder color */
+  font-family: 'Poppins', sans-serif;
+  /* Use the Poppins font */
+  font-size: 16px;
+  /* Placeholder size */
+  position: absolute;
+  pointer-events: none;
+  /* Ensure it doesn't interfere with typing */
+}
+
+
+
+
+@layer base {
+  :root {
+    --radius: 0.5rem;
+  }
+}
