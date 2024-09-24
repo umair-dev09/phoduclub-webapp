@@ -203,7 +203,7 @@ function TargetYearUpdate({setIsEditing}: TargetYearUpdateProps){
           </DialogPanel>
         </div>
       </Dialog>
-      {showComponent && <OtpForUpdate newEmail={''} isOpen={isOtpOpen} setIsOpen={setIsOtpOpen} targetYear={selectedYear?.value || ''} setIsEditing={setIsEditing} targetExams={['']}/>}
+      {showComponent && <OtpForUpdate newEmail={''} isOpen={isOtpOpen} setIsOpen={setIsOtpOpen} targetYear={selectedYear?.value || ''} setIsEditing={setIsEditing} targetExams={[]}/>}
     </div>
  );
 }

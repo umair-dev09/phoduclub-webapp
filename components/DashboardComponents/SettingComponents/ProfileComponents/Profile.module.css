@@ -83,15 +83,6 @@
     font-weight: 600;
 }
 
-.changeButton,
-.removeButton {
-    border: 1px solid black;
-    border-radius: 5px;
-    padding: 5px 10px;
-    background-color: white;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-}
 
 .changeButton {
 

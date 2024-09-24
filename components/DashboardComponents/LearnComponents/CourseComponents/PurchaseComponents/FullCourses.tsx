@@ -3,8 +3,6 @@
 import Image from 'next/image';
 import Lesson from "./Lesson";
 import React, { useState } from "react";
-
-
 import { useRouter } from 'next/navigation';
 
 

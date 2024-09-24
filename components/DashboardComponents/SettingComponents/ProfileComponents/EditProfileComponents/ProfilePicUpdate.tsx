@@ -25,19 +25,28 @@ function ProfilePicUpdate({ setIsEditing }: ProfilePicProps) {
 
   const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
+    
     if (file) {
+      const maxSizeInMB = 5; // Maximum file size in MB
+      const maxSizeInBytes = maxSizeInMB * 1024 * 1024; // Convert MB to Bytes
+  
+      if (file.size > maxSizeInBytes) {
+        alert(`The image size cannot exceed ${maxSizeInMB}MB.`);
+        return; // Do not proceed if the image size exceeds the limit
+      }
+  
       setUploadedImage(file);
       setShowCropper(true);
       setIsOpen(false); // Close dialog when image is uploaded
       setShowImageCropper(true);
     }
   };
-
+  
   return (
     <div>
-      <button className={styles.changeButton} onClick={() => setIsOpen(true)}>
+      <button className='ml-2 pl-[14px] pr-[16px] py-[8px] rounded-md border-[1.5px] flex flex-row border-[#EAECF0] hover:bg-[#F0F0F0]' onClick={() => setIsOpen(true)}>
         <Image className={styles.editIcon} src="/icons/pencil-edit.svg" alt="edit-icon" width={20} height={20} />
-        <p className={styles.changeText}>Change</p>
+        <p className='font-semibold text-[14px] '>Change</p>
       </button>
       
       <Dialog open={isOpen} onClose={() => setIsOpen(false)} className="relative z-50">
@@ -74,7 +83,7 @@ function ProfilePicUpdate({ setIsEditing }: ProfilePicProps) {
 
       {showAvatarBox && <ChooseAvatarBox isOpen={isAvatarBoxOpen} setIsOpen={setIsAvatarBoxOpen} setIsEditing={setIsEditing} />}
       {showCropper && uploadedImage && (
-        <ImageCropper imageFile={uploadedImage} setShowCropper={setShowCropper} isOpen={showImageCropper} setIsOpen={setShowImageCropper} />
+        <ImageCropper imageFile={uploadedImage} setShowCropper={setShowCropper} isOpen={showImageCropper} setIsOpen={setShowImageCropper} setIsEditing={setIsEditing}/>
       )}
     </div>
   );

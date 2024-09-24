@@ -38,7 +38,7 @@ export default function LearnLayout({ children }: LearnLayoutProps) {
 
     // Check if the pathname matches the root level of quiz, test, and courses but excludes subfolders like bit1, bit2, etc.
     if (
-        pathname === '/learn/quiz' ||
+        pathname === '/learn/Quiz' ||
         pathname === '/learn/test' ||
         pathname === '/learn/courses'
     ) {
@@ -47,7 +47,7 @@ export default function LearnLayout({ children }: LearnLayoutProps) {
                 <div className="h-[64px] bg-[#FFFFFF]">
                     <Learn />
                 </div>
-                <div className="flex flex-1 flex-col overflow-y-auto pb-8">
+                <div className="flex flex-1 flex-col overflow-y-auto pb-8 ">
                     {children}
                 </div>
             </div>
