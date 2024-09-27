@@ -43,9 +43,7 @@ function Main2() {
             <p>Suggested for you</p>
           </div>
           {/* Course image */}
-          <div>
-            <img src="/images/course_img.svg" alt="Course image" />
-          </div>
+            <Image className="flex w-full" src="/images/course_img.svg" alt="Course image" width={0} height={0}/>
         </div>
 
         {/* Container for course details and buy button */}

@@ -29,7 +29,8 @@ function Learned() {
     }, [pathname]);
 
     return (
-        <div className="relative flex space-x-2">
+        <div className="flex flex-col">
+        <div className="relative flex">
             <div className="pt-[10px]">
                 <button
                     onClick={() => handleTabClick('courses', '/learn/courses')}
@@ -72,15 +73,19 @@ function Learned() {
             <div
                 className="absolute bg-[#7400E0] transition-all duration-300"
                 style={{
-                    height: '1.5px', // Change this value to make the underline thinner or thicker
-                    left: `${activeTab === 'courses' ? '10px' : activeTab === 'test' ? 'calc(10px + 160px)' : 'calc(10px + 320px)'}`,
-                    width: '7%', // You can still adjust the width here as needed
-                    bottom: '-5px',
+                    height: '1.8px', // Change this value to make the underline thinner or thicker
+                    left: `${activeTab === 'courses' ? '40px' : activeTab === 'test' ? '142px' : '260px'}`,
+                    width: '85px', // You can still adjust the width here as needed
+                    bottom: '-8px',
 
                 }}
             />
 
         </div>
+        
+        <hr className="h-px bg-black mt-2"/>
+        </div>
+
     );
 }
 

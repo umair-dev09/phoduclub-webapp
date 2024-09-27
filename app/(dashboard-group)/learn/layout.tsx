@@ -4,6 +4,7 @@
 import { usePathname } from 'next/navigation';
 import { ReactNode } from 'react';
 import Learn from '@/components/DashboardComponents/LearnComponents/Learn';
+import Learned from '@/components/DashboardComponents/LearnComponents/Learn';
 
 interface LearnLayoutProps {
     children: ReactNode;
@@ -20,8 +21,8 @@ export default function LearnLayout({ children }: LearnLayoutProps) {
     ) {
         return (
             <div className="flex flex-col flex-1">
-                <div className="h-[64px] bg-[#FFFFFF]">
-                    <Learn />
+                <div className="h-[60px] bg-[#FFFFFF]">
+                    <Learned />
                 </div>
                 <div className="flex flex-1 flex-col overflow-y-auto pb-8 ">
                     {children}
