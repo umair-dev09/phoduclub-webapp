@@ -5,13 +5,20 @@ import Discussion from '@/components/DashboardComponents/LearnComponents/CourseC
 import Video from '@/components/DashboardComponents/LearnComponents/CourseComponents/InsideCoursesComp/VideoComp/Video';
 import Read from '@/components/DashboardComponents/LearnComponents/CourseComponents/InsideCoursesComp/ReadComp/Read';
 import StartQuiz from '@/components/DashboardComponents/LearnComponents/CourseComponents/InsideCoursesComp/StartQuizComp/StartQuiz';
-import { useState } from "react";
-import { Checkbox } from "@nextui-org/react";
+import { useState, useEffect } from "react";
 
-function sidebutton() {
+function SideButton() {
     const router = useRouter();
-    const [activeComponent, setActiveComponent] = useState<string>('Read');
-    const [activetab, setActiveTab] = useState<string>('overview')
+    
+    // Initialize state using localStorage values if they exist, otherwise default values
+    const [activeComponent, setActiveComponent] = useState<string>(() => {
+        return localStorage.getItem('activeComponent') || 'Read';
+    });
+    
+    const [activetab, setActiveTab] = useState<string>(() => {
+        return localStorage.getItem('activetab') || 'overview';
+    });
+
     const [hoverRead, setHoverRead] = useState(false);
     const [hoverVideo, setHoverVideo] = useState(false);
     const [hoverStartQuiz, setHoverStartQuiz] = useState(false);
@@ -19,18 +26,23 @@ function sidebutton() {
     const [iconCheckmarkRead, setIconCheckmarkRead] = useState<string | null>(null);
     const [iconCheckmarkVideo, setIconCheckmarkVideo] = useState({});
     const [iconCheckmarkStartQuiz, setIconCheckmarkStartQuiz] = useState({});
-    // Function to toggle the icon to a checkmark
 
+    // Save the active component and active tab to localStorage when they change
+    useEffect(() => {
+        localStorage.setItem('activeComponent', activeComponent);
+    }, [activeComponent]);
 
+    useEffect(() => {
+        localStorage.setItem('activetab', activetab);
+    }, [activetab]);
 
     return (
-        <div className="flex flex-row w-screen" >
-            <div className="MainCourseLayout flex flex-col w-[75%]  overflow-y-auto pt-3 pb-7">
-                {/* THIS IS THE HEADER PART OF MAIN---COURSE-----LAYOUT */}
-
-                <div className="h-[64px]  ml-8 flex items-center ">
+        <div className="flex flex-row w-screen">
+            <div className="MainCourseLayout flex flex-col w-[75%] overflow-y-auto pt-3 pb-7">
+                {/* Header */}
+                <div className="h-[64px] ml-8 flex items-center">
                     <div className="my-5 flex items-center">
-                        <button className="flex items-center ml-1" onClick={() => router.back()} >
+                        <button className="flex items-center ml-1" onClick={() => router.back()}>
                             <div className="text-[#1D2939] h-[24px] w-auto" style={{ fontSize: "16px", fontWeight: "600" }}>
                                 Courses
                             </div>
@@ -40,342 +52,156 @@ function sidebutton() {
                         </button>
                         <div className="text-[#667085] h-full w-auto -ml-1" style={{ fontSize: "16px", fontWeight: "500" }}>
                             BITSET Full Course
-
-
-
                         </div>
                     </div>
-
                 </div>
 
-                {activeComponent != 'StartQuiz' && (
-
+                {activeComponent !== 'StartQuiz' && (
                     <div className="flex flex-col gap-[17px] ml-8">
                         <span className="font-bold text-[#1D2939] text-1g">1. Welcome and Introduction</span>
                         <div className="flex flex-row items-center gap-[12px] ">
+                            {/* Example of time display */}
                             <span className="font-normal text-sm text-[#1D2939] flex items-center">
-                                <Image
-                                    src="/icons/read.svg"
-                                    width={20}
-                                    height={20}
-                                    alt="" />
+                                <Image src="/icons/read.svg" width={20} height={20} alt="" />
                                 <span className="font-semibold text-sm text-[#1D2939] ml-2">3h 20m</span>
                                 <span className="ml-1">readings left</span>
                             </span>
-                            <span className="font-normal text-sm text-[#1D2939] flex items-center">
-                                <Image
-                                    src="/icons/vedio.svg"
-                                    width={20}
-                                    height={20}
-                                    alt="" />
-                                <span className="font-semibold text-sm text-[#1D2939] ml-2">3h 20m</span>
-                                <span className="ml-1">readings left</span>
-                            </span>
-                            <span className="font-normal text-sm text-[#1D2939] flex items-center">
-                                <Image
-                                    src="/icons/test.svg"
-                                    width={20}
-                                    height={20}
-                                    alt="" />
-                                <span className="font-semibold text-sm text-[#1D2939] ml-2">3h 20m</span>
-                                <span className="ml-1">readings left</span>
-                            </span>
-
-
-
                         </div>
-
                     </div>
-
-
                 )}
 
-
-
-
-
-
-
-                {/* THIS IS END  */}
-                {/* -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- */}
-                {/* THIS IS THE MAIN {MIDDLE} PART OF MAIN---COURSE-----LAYOUT */}
+                {/* Middle Section */}
                 <div className="mr-8 mt-[24px] rounded-md flex flex-col h-auto w-auto ">
                     {activeComponent === 'Read' && <Read />}
                     {activeComponent === 'Video' && <Video />}
                     {activeComponent === 'StartQuiz' && <StartQuiz />}
                 </div>
-                {/* THIS IS END  */}
-                {/* -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- */}
 
-                {/* THIS IS THE FOOTER PART OF MAIN---COURSE-----LAYOUT */}
-                {activeComponent != 'StartQuiz' && (
-                    <div className="ml-8 h-[60px] mr-8 mt-[20px] rounded-md flex items-center justify-center">
-
-                        <div className="flex flex-row justify-between w-full h-[44px]">
-                            <button className="h-full w-[111px] rounded-[8px] bg-[#FFFFFF] opacity-[50%]"
-                                style={{ border: "1.5px solid #EAECF0" }}>
-                                <span className="font-normal text-sm text-[#1D2939]">Previous</span>
-                            </button>
-                            <button
-                                className="h-full w-[111px] rounded-[8px] bg-[#8501FF] shadow-inner-button  opacity-[50%]"
-                                style={{
-                                    border: "1px solid #800EE2",
-                                    boxShadow: "0px -4px 4px 0px #1018281F inset, 0px 3px 2px 0px #FFFFFF3D inset",
-                                }}
-                            >
-                                <span className="font-semibold text-sm text-[#FFFFFF]">Next</span>
-                            </button>
+                {/* Footer */}
+                {activeComponent !== 'StartQuiz' && (
+                    <div>
+                        <div className="ml-8 h-[60px] mr-8 mt-[20px] rounded-md flex items-center justify-center">
+                            <div className="flex flex-row justify-between w-full h-[44px]">
+                                <button className="h-full w-[111px] rounded-[8px] bg-[#FFFFFF] opacity-[50%]" style={{ border: "1.5px solid #EAECF0" }}>
+                                    <span className="font-normal text-sm text-[#1D2939]">Previous</span>
+                                </button>
+                                <button className="h-full w-[111px] rounded-[8px] bg-[#8501FF] shadow-inner-button opacity-[50%]" style={{ border: "1px solid #800EE2" }}>
+                                    <span className="font-semibold text-sm text-[#FFFFFF]">Next</span>
+                                </button>
+                            </div>
                         </div>
 
-                    </div>
-                )}
-
-                {activeComponent != 'StartQuiz' && (
-                    <div>
-                        <div className="ml-8 mr-8 h-[45px]  mt-[20px]  gap-[16px] flex  "
-                            style={{ borderBottom: "2px solid #EAECF0" }}
-                        >
-                            <button
-                                className="font-medium text-1g text-[#667085] mb-3"
-                                onClick={() => setActiveTab('overview')}
-                            >
+                        <div className="ml-8 mr-8 h-[45px] mt-[20px] gap-[16px] flex" style={{ borderBottom: "2px solid #EAECF0" }}>
+                            <button className="font-medium text-1g text-[#667085] mb-3" onClick={() => setActiveTab('overview')}>
                                 <span className={`hover:text-[#8501FF] ${activetab === 'overview' ? 'text-[#8501FF]' : ''}`}>
                                     Overview
                                 </span>
                             </button>
-                            <button className="font-medium text-1g text-[#667085] mb-3 "
-                                onClick={() => setActiveTab('Discussion')}>
+                            <button className="font-medium text-1g text-[#667085] mb-3" onClick={() => setActiveTab('Discussion')}>
                                 <span className={`hover:text-[#8501FF] ${activetab === 'Discussion' ? 'text-[#8501FF]' : ''}`}>
                                     Discussion
                                 </span>
                             </button>
-
                         </div>
 
-
-
-
-
-                        {activetab == 'overview' && (
+                        {activetab === 'overview' && (
                             <div className="mt-4">
-                                <div className=" font-bold text-1g text-[#1D2939] ">
-                                    <span className="ml-8"> Overview</span>
+                                <div className="font-bold text-1g text-[#1D2939]">
+                                    <span className="ml-8">Overview</span>
                                 </div>
                                 <div className="font-normal text-sm text-[#667085] leading-relaxed mt-4">
-                                    <p className="ml-8">Gray Code is a binary numeral system where two successive values differ by only one bit, which is useful in error correction and minimizing transitions in digital circuits. We'll cover how to convert binary numbers to Gray Code and vice versa, and discuss practical applications such as reducing error rates in digital communications and simplifying logic circuits. Next, we'll delve into efficient computation with bitsets, highlighting their memory efficiency and rapid bitwise operations. We'll see how bitsets can represent large sets and facilitate fast membership testing, and demonstrate their implementation in C++, including operations like set, reset, flip, and advanced set operations like intersection and union.</p>
+                                    <p className="ml-8">Gray Code is a binary numeral system where two successive values differ by only one bit...</p>
                                 </div>
                             </div>
                         )}
-                        {activetab == 'Discussion' && (
+                        {activetab === 'Discussion' && (
                             <div className="flex flex-col mt-[30px] ml-8 bg-[#FFFFFF] h-auto w-auto overflow-y-auto mr-8 pb-5 border border-solid border-[#EAECF0] rounded-[12px]">
                                 <Discussion />
                             </div>
                         )}
                     </div>
                 )}
-
-
-
-
-
-                {/* THIS IS END  */}
-                {/* -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- */}
-
             </div>
-            {/* THIS IS SIDE LAYOUT WHERE ALL THE SIDE BUTTONS ARE PLACED */}
+
+            {/* Side Layout with buttons */}
             <div className="SideLayout w-[25%] flex flex-col bg-[#FFFFFF] overflow-y-auto p-3">
-                {/* THIS IS START OF FIRST BUTTON */}
-
+                {/* Side buttons */}
                 <div className="gap-[20px] flex flex-col">
-                    <button
-                        onClick={() => setActiveComponent('Read')}
-                        onMouseEnter={() => setHoverRead(true)}
-                        onMouseLeave={() => setHoverRead(false)}>
-                        <div className={`h-[64px] gap-[16px] rounded-[8px]  hover:bg-[#F8F0FF] ${activeComponent === 'Read' ? 'bg-[#F8F0FF]' : 'bg-[#FFFFFF]'}`}>
-                            <button className="flex justify-between 
-                        ">
-                                <div className=" flex flex-row mt-3 ml-4">
-
-                                    <button
-                                        className="icon-button" // Added a button specifically for the icon
-                                        onClick={(e) => {
-                                            e.stopPropagation(); // Prevent event from bubbling to the outer button
-                                            setIconCheckmarkRead('Read'); // Trigger icon change to checkmark
-                                        }} // Trigger icon change to checkmark on click
-                                    >
+                    <button onClick={() => setActiveComponent('Read')} onMouseEnter={() => setHoverRead(true)} onMouseLeave={() => setHoverRead(false)}>
+                        <div className={`h-[64px] gap-[16px] rounded-[8px] hover:bg-[#F8F0FF] ${activeComponent === 'Read' ? 'bg-[#F8F0FF]' : 'bg-[#FFFFFF]'}`}>
+                            <button className="flex justify-between">
+                                <div className="flex flex-row mt-3 ml-4">
+                                    <button className="icon-button" onClick={(e) => e.stopPropagation()}>
                                         {iconCheckmarkRead === 'Read' ? (
-
-                                            <input
-                                                type="checkbox"
-                                                className="w-5 h-5 rounded-full cursor-pointer flex items-center justify-center checked:bg-[#0B9055] "
-                                                checked={iconCheckmarkRead === 'Read'}
-                                                onChange={() => setIconCheckmarkRead(null)} // To remove checkmark when clicked again
-                                            />
+                                            <input type="checkbox" className="w-5 h-5 rounded-full cursor-pointer checked:bg-[#0B9055]" checked />
                                         ) : (
-                                            <Image
-                                                src={hoverRead || activeComponent === 'Read' ? "/icons/sidebuttonred.svg" : "/icons/sidebuttongray.svg"} // Show red icon when active or hovered
-                                                width={20}
-                                                height={20}
-                                                alt="Icon"
-                                            />
+                                            <Image src={hoverRead || activeComponent === 'Read' ? "/icons/sidebuttonred.svg" : "/icons/sidebuttongray.svg"} width={20} height={20} alt="Icon" />
                                         )}
                                     </button>
-
-
-
                                 </div>
-                                {/* ------------------------------------------------------------------------------------------------------------------------- */}
-                                <div className="flex flex-col h-[52px] gap-[4px]  ml-5 mt-2">
+                                <div className="flex flex-col h-[52px] gap-[4px] ml-5 mt-2">
                                     <span className="gap-[4px] text-1g text-[#1D2939] font-bold">1. Welcome and Introduction</span>
-                                    <div className="flex flex-row items-center ">
-                                        <span >
-                                            <Image
-                                                src="/icons/read.svg"
-                                                width={16}
-                                                height={16}
-                                                alt="" />
-                                        </span>
-                                        <span className=" ml-2 text-sm font-normal text-[#667085]">10:00</span>
+                                    <div className="flex flex-row items-center">
+                                        <Image src="/icons/read.svg" width={16} height={16} alt="" />
+                                        <span className="ml-2 text-sm font-normal text-[#667085]">10:00</span>
                                     </div>
-
                                 </div>
-
-
-
                             </button>
-
                         </div>
                     </button>
-                    {/* THIS IS START OF SECOND BUTTON */}
 
-                    <button
-                        onClick={() => setActiveComponent('Video')}
-                        onMouseEnter={() => setHoverVideo(true)}
-                        onMouseLeave={() => setHoverVideo(false)}>
-
+                    {/* Repeat for Video and StartQuiz buttons */}
+                    {/* Video button */}
+                    <button onClick={() => setActiveComponent('Video')} onMouseEnter={() => setHoverVideo(true)} onMouseLeave={() => setHoverVideo(false)}>
                         <div className={`h-[64px] gap-[16px] rounded-[8px] hover:bg-[#F8F0FF] ${activeComponent === 'Video' ? 'bg-[#F8F0FF]' : 'bg-[#FFFFFF]'}`}>
-                            <button className="flex justify-between
-                        ">
-                                {/* ------------------------------------------------------------------------------------------------------------------- */}
-                                <div className=" flex flex-row mt-3 ml-4">
-
-                                    <button
-                                        className="icon-button" // Added a button specifically for the icon
-                                        onClick={(e) => {
-                                            e.stopPropagation(); // Prevent event from bubbling to the outer button
-                                            setIconCheckmarkVideo('Video'); // Trigger icon change to checkmark
-                                        }}
-                                    >
+                            <button className="flex justify-between">
+                                <div className="flex flex-row mt-3 ml-4">
+                                    <button className="icon-button" onClick={(e) => e.stopPropagation()}>
                                         {iconCheckmarkVideo === 'Video' ? (
-                                            <Image src="/icons/Green-tick.svg" width={20} height={20} alt="Checkmark" />
+                                            <input type="checkbox" className="w-5 h-5 rounded-full cursor-pointer checked:bg-[#0B9055]" checked />
                                         ) : (
-                                            <Image
-                                                src={hoverVideo || activeComponent === 'Video' ? "/icons/sidebuttonred.svg" : "/icons/sidebuttongray.svg"} // Show red icon when active or hovered
-                                                width={20}
-                                                height={20}
-                                                alt="Icon"
-                                            />
+                                            <Image src={hoverVideo || activeComponent === 'Video' ? "/icons/sidebuttonred.svg" : "/icons/sidebuttongray.svg"} width={20} height={20} alt="Icon" />
                                         )}
                                     </button>
-
                                 </div>
-                                {/* --------------------------------------------------------------------------------------------------------------------------- */}
-                                <div className="flex flex-col h-[52px] gap-[4px]  ml-5 mt-2">
-                                    <span className="gap-[4px] text-1g text-[#1D2939] font-bold">2. Chapter 01 Introduction</span>
-                                    <div className="flex flex-row items-center ">
-                                        <span >
-                                            <Image
-                                                src="/icons/vedio.svg"
-                                                width={16}
-                                                height={16}
-                                                alt="" />
-                                        </span>
-                                        <span className=" ml-2 text-sm font-normal text-[#667085]">10:00</span>
+                                <div className="flex flex-col h-[52px] gap-[4px] ml-5 mt-2">
+                                    <span className="gap-[4px] text-1g text-[#1D2939] font-bold">2. Video Introduction</span>
+                                    <div className="flex flex-row items-center">
+                                        <Image src="/icons/video.svg" width={16} height={16} alt="" />
+                                        <span className="ml-2 text-sm font-normal text-[#667085]">15:00</span>
                                     </div>
-
                                 </div>
-
-
-
                             </button>
-
                         </div>
                     </button>
-                    {/* THIS IS START OF THIRD BUTTON */}
 
-
-
-                    <button className="
-                        "        onClick={() => setActiveComponent('StartQuiz')}
-                        onMouseEnter={() => setHoverStartQuiz(true)}
-                        onMouseLeave={() => setHoverStartQuiz(false)}
-                    >
-                        <div className={`h-[64px] gap-[16px] rounded-[8px] hover:bg-[#F8F0FF]  ${activeComponent === 'StartQuiz' ? 'bg-[#F8F0FF]' : 'bg-[#FFFFFF]'}`}>
-                            <button className="flex justify-between"
-
-                            >
-                                {/* ---------------------------------------------------------------------------------------------------------------------------------- */}
-                                <div className=" flex flex-row mt-3 ml-4">
-
-                                    <button
-
-                                        className="icon-button" // Added a button specifically for the icon
-                                        onClick={(e) => {
-                                            e.stopPropagation(); // Prevent event from bubbling to the outer button
-                                            setIconCheckmarkStartQuiz('StartQuiz'); // Trigger icon change to checkmark
-                                        }}
-                                    >
+                    {/* StartQuiz button */}
+                    <button onClick={() => setActiveComponent('StartQuiz')} onMouseEnter={() => setHoverStartQuiz(true)} onMouseLeave={() => setHoverStartQuiz(false)}>
+                        <div className={`h-[64px] gap-[16px] rounded-[8px] hover:bg-[#F8F0FF] ${activeComponent === 'StartQuiz' ? 'bg-[#F8F0FF]' : 'bg-[#FFFFFF]'}`}>
+                            <button className="flex justify-between">
+                                <div className="flex flex-row mt-3 ml-4">
+                                    <button className="icon-button" onClick={(e) => e.stopPropagation()}>
                                         {iconCheckmarkStartQuiz === 'StartQuiz' ? (
-                                            <Image src="/icons/Green-tick.svg" width={20} height={20} alt="Checkmark" />
+                                            <input type="checkbox" className="w-5 h-5 rounded-full cursor-pointer checked:bg-[#0B9055]" checked />
                                         ) : (
-                                            <Image
-                                                src={hoverStartQuiz || activeComponent === 'StartQuiz' ? "/icons/sidebuttonred.svg" : "/icons/sidebuttongray.svg"} // Show red icon when active or hovered
-                                                width={20}
-                                                height={20}
-                                                alt="Icon"
-                                            />
+                                            <Image src={hoverStartQuiz || activeComponent === 'StartQuiz' ? "/icons/sidebuttonred.svg" : "/icons/sidebuttongray.svg"} width={20} height={20} alt="Icon" />
                                         )}
                                     </button>
-
                                 </div>
-                                {/* -------------------------------------------------------------------------------------------------------------------------------- */}
-                                <div className="flex flex-col h-[52px] gap-[4px]  ml-5 mt-2">
-                                    <span className="gap-[4px] text-1g text-[#1D2939] font-bold">3. Test 01</span>
-                                    <div className="flex flex-row items-center ">
-                                        <span >
-                                            <Image
-                                                src="/icons/test.svg"
-                                                width={16}
-                                                height={16}
-                                                alt="" />
-                                        </span>
-                                        <span className=" ml-2 text-sm font-normal text-[#667085]">10:00</span>
+                                <div className="flex flex-col h-[52px] gap-[4px] ml-5 mt-2">
+                                    <span className="gap-[4px] text-1g text-[#1D2939] font-bold">3. Start Quiz</span>
+                                    <div className="flex flex-row items-center">
+                                        <Image src="/icons/quiz.svg" width={16} height={16} alt="" />
+                                        <span className="ml-2 text-sm font-normal text-[#667085]">Start Quiz</span>
                                     </div>
-
                                 </div>
-
-
-
                             </button>
-
                         </div>
-
                     </button>
-
-
-
                 </div>
-                {/* THIS IS  THE END OF OVERALL BUTTON */}
-
             </div>
-            {/* THIS IS THE END OF SIDE--LAYOUT */}
-
-
         </div>
-
-    )
+    );
 }
-export default sidebutton;
 
-
-
+export default SideButton;
