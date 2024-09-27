@@ -5,6 +5,11 @@ import { setCanvasPreview } from '../../../../../utils/setCanvasPreview'; // Adj
 import { Dialog, DialogBackdrop, DialogPanel } from '@headlessui/react';
 import styles from '../Profile.module.css';
 import Image from 'next/image';
+import { getStorage, ref, uploadBytes, getDownloadURL, uploadString } from 'firebase/storage';
+import { auth, db, storage } from '@/firebase';
+import { toast } from 'react-toastify'; // Import react-toastify
+import { doc, updateDoc } from 'firebase/firestore';
+import { onAuthStateChanged, User } from 'firebase/auth';
 
 const ASPECT_RATIO = 1;
 const MIN_DIMENSION = 150;
@@ -14,16 +19,29 @@ type ImageCropperProps = {
   setShowCropper: (show: boolean) => void;
   isOpen: boolean;
   setIsOpen: (isOpen: boolean) => void;
+  setIsEditing: (isEditing: boolean) => void; // Add this prop to update isEditing in Profile
 };
 
-const ImageCropper = ({ imageFile, setShowCropper, isOpen, setIsOpen }: ImageCropperProps) => {
+const ImageCropper = ({ imageFile, setShowCropper, isOpen, setIsOpen, setIsEditing }: ImageCropperProps) => {
   const imgRef = useRef<HTMLImageElement>(null);
   const previewCanvasRef = useRef<HTMLCanvasElement>(null);
   const [imgSrc, setImgSrc] = useState<string>('');
   const [crop, setCrop] = useState<PixelCrop | undefined>();
   const [error, setError] = useState<string>('');
-  const [croppedImageUrl, setCroppedImageUrl] = useState<string | null>(null); // Add state for the cropped image URL
+  const [croppedImageUrl, setCroppedImageUrl] = useState<string | null>(null);
+  const [user, setUser] = useState<User | null>(null); 
+  const [isButtonDisabled, setIsButtonDisabled] = useState(false); // State to disable/enable the button
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+        if (currentUser) {
+            setUser(currentUser);
+        } else {
+            console.error('No user is logged in');
+        }
+    });
 
+    return () => unsubscribe();
+}, []);
   // Read file and set image URL
   useEffect(() => {
     if (imageFile) {
@@ -49,24 +67,84 @@ const ImageCropper = ({ imageFile, setShowCropper, isOpen, setIsOpen }: ImageCro
       height
     );
 
-    // Convert PercentCrop to PixelCrop
     const pixelCrop = convertToPixelCrop(percentCrop, width, height);
-    setCrop(pixelCrop); // Now using PixelCrop, no error will occur here
+    setCrop(pixelCrop);
   };
 
   const handleCropChange = (pixelCrop: PixelCrop, percentCrop: PercentCrop) => {
-    setCrop(pixelCrop); // Set PixelCrop here
+    setCrop(pixelCrop);
   };
 
-  const handleCropImage = () => {
+
+  const handleCropImage = async () => {
+    setIsButtonDisabled(true);
     if (imgRef.current && previewCanvasRef.current && crop) {
       setCanvasPreview(
         imgRef.current,
         previewCanvasRef.current,
-        crop // PixelCrop is now ensured here
+        crop
       );
+  
       const dataUrl = previewCanvasRef.current.toDataURL(); // Get the cropped image as a Data URL
-      setCroppedImageUrl(dataUrl); // Set the cropped image URL
+      setCroppedImageUrl(dataUrl);
+      console.log(user);
+      if(user){
+        toast.promise(
+          new Promise(async (resolve, reject) => { 
+            try {
+              // Upload the cropped image to Firebase Storage
+              const storageRef = ref(storage, `ProfilePicture/${imageFile.name}`);
+              const uploadResult = await uploadString(storageRef, dataUrl, "data_url");
+        
+              // Check if the upload was successful
+              if (uploadResult) {
+                // Get the download URL of the uploaded image
+                const downloadUrl = await getDownloadURL(storageRef);
+        
+                if (downloadUrl) {
+                  // Update Firestore user document with the image URL
+                  const userDocRef = doc(db, "users", user.uid);
+        
+                  await updateDoc(userDocRef, {
+                    profilePic: downloadUrl,
+                    isAvatar: false,
+                  });
+                  setIsEditing(false);
+                  setIsOpen(false);
+                  setIsButtonDisabled(false);
+                  // Toast notifications for success
+                  resolve("Profile Picture Updated!");
+                  
+                  // toast.success("Image uploaded and profile updated!");
+                  // toast.info(`Profile picture URL: ${downloadUrl}`);
+                } else {
+                  setIsButtonDisabled(false);
+                  reject("Failed to Update Profile Picture!")
+                  throw new Error("Failed to get the download URL.");
+                }
+              } else {
+                setIsButtonDisabled(false);
+                reject("Failed to Update Profile Picture!")
+                throw new Error("Image upload failed.");
+              }
+            } catch (error) {
+              setIsButtonDisabled(false);
+              reject("Failed to Update Profile Picture!")
+              // Handle errors in both image upload and Firestore update
+              toast.error("Failed to upload image or update profile.");
+              console.error("Error:", error);
+            }
+
+          }),
+          {
+            pending: 'Updating Profile Picture...',
+            success: 'Profile Picture Updated.',
+            error: 'Failed to Upload Image or Update Profile.',
+          }
+        );
+      
+      }
+      
     }
   };
 
@@ -90,7 +168,7 @@ const ImageCropper = ({ imageFile, setShowCropper, isOpen, setIsOpen }: ImageCro
               <div className="flex flex-col items-center my-5">
                 <ReactCrop
                   crop={crop}
-                  onChange={handleCropChange} // Handle both PixelCrop and PercentCrop
+                  onChange={handleCropChange}
                   circularCrop
                   keepSelection
                   aspect={ASPECT_RATIO}
@@ -105,22 +183,12 @@ const ImageCropper = ({ imageFile, setShowCropper, isOpen, setIsOpen }: ImageCro
                   />
                 </ReactCrop>
                 <button
-                className="text-white font-medium py-2 px-4 rounded-2xl mt-4 bg-[#7400E0] hover:bg-[#131313]"
+                className={`min-w-[100px] mt-4 px-4 py-2 rounded-md text-white font-medium shadow-inner-button ${isButtonDisabled ? 'bg-[#d8acff]' : 'bg-[#8501FF]'}`}
                 onClick={handleCropImage}
+                disabled={isButtonDisabled} // Disable the button if the state is true
               >
-                Crop Image
+                Save Image
               </button>
-                {/* Cropped image preview */}
-                {croppedImageUrl && (
-                  <div className="mt-4">
-                    <h3 className="text-xs text-gray-600">Cropped Image Preview:</h3>
-                    <img
-                      src={croppedImageUrl}
-                      alt="Cropped"
-                      style={{ width: 150, height: 150, borderRadius: '50%', border: '2px solid #000' }}
-                    />
-                  </div>
-                )}
 
                 <canvas
                   ref={previewCanvasRef}

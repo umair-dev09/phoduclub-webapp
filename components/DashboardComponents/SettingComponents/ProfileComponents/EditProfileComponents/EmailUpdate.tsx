@@ -209,7 +209,7 @@ function EmailUpdate({setIsEditing}: EmailUpdateProps) {
           </DialogPanel>
         </div>
       </Dialog>
-      {showComponent && <OtpForUpdate newEmail={newEmail} isOpen={isOtpOpen} setIsOpen={setIsOtpOpen} targetYear='' setIsEditing={setIsEditing} targetExams={['']}/>}
+      {showComponent && <OtpForUpdate newEmail={newEmail} isOpen={isOtpOpen} setIsOpen={setIsOtpOpen} targetYear='' setIsEditing={setIsEditing} targetExams={[]}/>}
       <div id="recaptcha-container"></div>
     </div>
   );

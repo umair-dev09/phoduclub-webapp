@@ -15,7 +15,7 @@ import { onAuthStateChanged, User } from 'firebase/auth'; // Import the User typ
 import { userAgent } from 'next/server';
 import LoadingData from '@/components/Loading';
 import { useRouter } from 'next/navigation';
-import { ToastContainer } from 'react-toastify';
+import { toast, ToastContainer } from 'react-toastify';
 
 type UserData = {
     name: string | null;
@@ -25,8 +25,13 @@ type UserData = {
     email: string | null;
     targetYear: string | null;
     targetExams: string[] | null;
+    isAvatar: boolean | null;
 };
 
+function getRandomImageUrl(urls: string[]): string {
+    const randomIndex = Math.floor(Math.random() * urls.length);
+    return urls[randomIndex];
+}
 
 function Profile() {
     const [isEditing, setIsEditing] = useState(false);
@@ -38,8 +43,11 @@ function Profile() {
     const [originalName, setOriginalName] = useState<string>(''); // Track original name from Firestore
     const [hasChanges, setHasChanges] = useState<boolean>(false); // Track if there are any changes
     const [user, setUser] = useState<User | null>(null); 
+    const [isButtonDisabled, setIsButtonDisabled] = useState(true); // State to disable/enable the button
     const db = getFirestore();
     const router = useRouter();
+  
+
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
             if (currentUser) {
@@ -86,13 +94,20 @@ function Profile() {
             }
         };
     }, [user, db]);
+
+    useEffect(() => {
+        if (userData) {
+            setIsButtonDisabled(!!userData.isAvatar);
+        }
+    }, [userData]);
   
     // Display loading or error component while data is being fetched or if there's an error
     if (loading || error) {
         return <LoadingData />;
     }
 
-
+  
+    
     const handleEditProfile = () => {
         setIsEditing(!isEditing);
     };
@@ -131,7 +146,35 @@ function Profile() {
             }
         }
     };
+    const onRemoveClick = async () => {
+        const imageUrls: string[] = [
+            "https://firebasestorage.googleapis.com/v0/b/phodu-club.appspot.com/o/Default%20Avatar%2Favatar1.png?alt=media&token=f794198a-0d5b-4542-a7bd-8c8586e4ef85",
+            "https://firebasestorage.googleapis.com/v0/b/phodu-club.appspot.com/o/Default%20Avatar%2Favatar2.png?alt=media&token=003f3358-5134-49e7-a414-edd89366b5fb",
+            "https://firebasestorage.googleapis.com/v0/b/phodu-club.appspot.com/o/Default%20Avatar%2Favatar3.png?alt=media&token=35414381-9ac0-4742-8661-f4f315a45cc5",
+            "https://firebasestorage.googleapis.com/v0/b/phodu-club.appspot.com/o/Default%20Avatar%2Favatar4.png?alt=media&token=534c8508-01f3-477f-ab71-70c08ce9474f",
+            "https://firebasestorage.googleapis.com/v0/b/phodu-club.appspot.com/o/Default%20Avatar%2Favatar5.png?alt=media&token=57379dbd-e6d2-42de-a628-37c03621dc23",
+            "https://firebasestorage.googleapis.com/v0/b/phodu-club.appspot.com/o/Default%20Avatar%2Favatar6.png?alt=media&token=dac74da1-df0e-4577-9ba5-3fd37a9c1506",
+            "https://firebasestorage.googleapis.com/v0/b/phodu-club.appspot.com/o/Default%20Avatar%2Favatar7.png?alt=media&token=2469737e-d267-48ac-b8de-cc472adf169e",
+            "https://firebasestorage.googleapis.com/v0/b/phodu-club.appspot.com/o/Default%20Avatar%2Favatar8.png?alt=media&token=40cc97cf-aa18-43df-8a5a-254e0a92c603"
+          ]
 
+          const profilePic = getRandomImageUrl(imageUrls);
+        if(user){
+            try {
+                const userDocRef = doc(db, `users/${user.uid}`);
+                await updateDoc(userDocRef, {
+                    profilePic: profilePic, 
+                    isAvatar: true
+                });
+                toast.success("Profile Picture Removed!");
+                setIsEditing(false);
+            } catch (error) {
+                console.error('Error Removing Profile Pic:', error);
+            }
+        }
+    
+    };
+  
     const colors = [styles.red, styles.orange, styles.green, styles.blue];
 
     return (
@@ -146,10 +189,12 @@ function Profile() {
          <div className='NameInfo flex flex-row flex-[0.5] items-center mb-[15px]'>
          <div className='DP flex justify-center items-center mx-[10px]'>
              <Image
+                className='rounded-[50%]'
                 src={userData?.profilePic || '/defaultDP.svg'}
                 alt="profile-image"
                 width={72}
-                height={72}>
+                height={72}
+                quality={100}>
             </Image>
          </div>
           <div>
@@ -187,8 +232,10 @@ function Profile() {
                                     <div className={styles.changeRemove}>
                                         <div className={styles.buttonGroup}>
                                             <ProfilePicUpdate setIsEditing={setIsEditing} />
-                                            <button className={styles.removeButton}>
-                                                <p className={styles.removeText}>Remove</p>
+                                            <button className='px-[14px] py-[8px] rounded-md border-[1.5px]  border-[#EAECF0] hover:bg-[#F0F0F0]'
+                                             onClick={onRemoveClick}
+                                             disabled={isButtonDisabled}>
+                                                <p className={`font-semibold text-[14px] ${isButtonDisabled ? 'text-[#b0b4ba]' : 'text-black'}`}>Remove</p>
                                             </button>
                                         </div>
                                         <span className={styles.files}>File size must be less than 5MB</span>
@@ -218,7 +265,7 @@ function Profile() {
                 <div key={index} className={styles.button}>
                     <span className={`${styles.dot} ${randomColor}`}></span> 
                     <p className={styles.examText}>{exam}</p> {/* Render each exam */}
-                </div>
+                 </div>
             );
         })}
     </div>
