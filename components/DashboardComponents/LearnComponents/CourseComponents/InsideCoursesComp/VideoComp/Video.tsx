@@ -81,6 +81,29 @@ function Discussion() {
         setShowVolume(!showVolume);  // Toggle the visibility of the volume bar
     };
 
+    // Full-screen toggle function
+    const toggleFullScreen = () => {
+        if (videoRef.current) {
+            if (!document.fullscreenElement) {
+                // Enter full screen
+                if (videoRef.current.requestFullscreen) {
+                    videoRef.current.requestFullscreen();
+                } else if (videoRef.current.mozRequestFullScreen) { // Firefox
+                    videoRef.current.mozRequestFullScreen();
+                } else if (videoRef.current.webkitRequestFullscreen) { // Chrome, Safari, and Opera
+                    videoRef.current.webkitRequestFullscreen();
+                } else if (videoRef.current.msRequestFullscreen) { // IE/Edge
+                    videoRef.current.msRequestFullscreen();
+                }
+            } else {
+                // Exit full screen
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                }
+            }
+        }
+    };
+
     return (
         <div className='flex w-full relative pl-8'>
             <video ref={videoRef} src='/images/demoVideo.mp4' controls={false} className='w-full rounded-xl' onClick={handlePlayPause}></video>  {/* No built-in controls */}
@@ -167,9 +190,11 @@ function Discussion() {
                                 </div>
                             </PopoverContent>
                         </Popover>
-                        {/* full screen btn */}
+                        {/* Full screen button */}
                         <div>
-                            <button className='flex items-center'><Image src='/icons/arrow-expand-01.svg' alt='rewine-btn' width={20} height={20} /></button>
+                            <button onClick={toggleFullScreen} className='flex items-center'>
+                                <Image src='/icons/arrow-expand-01.svg' alt='fullscreen-btn' width={20} height={20} />
+                            </button>
                         </div>
                     </div>
                 </div>
