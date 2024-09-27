@@ -147,7 +147,10 @@ export default function MyQuiz() {
                         <div className="text-xs font-semibold">Jerome Bell</div>
                         <div className="text-[0.688rem] font-medium">2876 Score</div>
                     </div>
-                    <div className="flex flex-1 flex-col items-center justify-end rounded-t-md bg-[#f2f4f7] h-[6.375rem] pb-2">
+                    <div className="flex flex-1 flex-col items-center justify-end rounded-t-md bg-[#f2f4f7] h-[6.375rem] mt-3 pb-2">
+                        <div className="mb-1 mr-1">
+                            <Image src='/icons/actualCrown.svg' alt="crown" width={35.82} height={30} />
+                        </div>
                         <div className="text-2xl relative bottom-0 left-0">
                             <Image src='/images/DP_Lion.svg' alt="DP" width={71} height={72} />
                         </div>
