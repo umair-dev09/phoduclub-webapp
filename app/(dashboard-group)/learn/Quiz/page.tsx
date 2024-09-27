@@ -54,7 +54,7 @@ export default function MyQuiz() {
                     </div>
 
                     {/* Quiz Stats */}
-                    <div className="bg-white p-4 flex flex-col rounded-2xl mt-4">
+                    <div className="bg-white p-4 flex flex-col rounded-2xl mt-4 border border-lightGrey">
                         <div className="flex flex-row justify-between">
                             {/* Total Questions */}
                             <div className="flex flex-1 flex-row justify-between pr-4">
@@ -127,7 +127,7 @@ export default function MyQuiz() {
             </div>
 
             {/* Right side - Leaderboard */}
-            <div className="LEADERBOARD w-1/4 bg-white overflow-y-auto p-4 border-l border-l-lightGrey">
+            <div className="LEADERBOARD w-[360px] bg-white overflow-y-auto p-4 border-l border-l-lightGrey">
                 {/* Leaderboard Header */}
                 <div className="flex flex-row justify-between">
                     <h3>Leaderboard</h3>
@@ -135,18 +135,21 @@ export default function MyQuiz() {
                 </div>
 
                 {/* Top 3 Users */}
-                <div className="flex flex-row w-full h-40 items-end justify-end">
+                <div className="flex flex-row w-full h-40 mt-5 items-end justify-end">
                     <div className="flex flex-1 flex-col items-center justify-end rounded-tl-md bg-[#f9fafb] h-[4.75rem] pb-2">
                         <div className="text-2xl relative bottom-0 left-0">
                             <Image src='/images/DP_Lion.svg' alt="DP" width={51.5} height={51.5} />
                         </div>
                         <div className="relative left-0 bottom-[1rem]">
-                            <Image src="/icons/rank-1.svg" alt="1st rank" width={22} height={22}/>
+                            <Image src="/icons/rank-2.svg" alt="2st rank" width={22} height={22}/>
                         </div>
                         <div className="text-xs font-semibold">Jerome Bell</div>
                         <div className="text-[0.688rem] font-medium">2876 Score</div>
                     </div>
-                    <div className="flex flex-1 flex-col items-center justify-end rounded-t-md bg-[#f2f4f7] h-[6.375rem] pb-2">           
+                    <div className="flex flex-1 flex-col items-center justify-end rounded-t-md bg-[#f2f4f7] h-[6.375rem] pb-2">
+                        <div className="mb-2 relative">
+                            <Image src='/icons/actualCrown.svg' alt="crown" width={35.82} height={30} />   
+                        </div>                      
                         <div className="text-2xl relative bottom-0 left-0">
                             <Image src='/images/DP_Lion.svg' alt="DP" width={71} height={72} />
                         </div>
@@ -161,7 +164,7 @@ export default function MyQuiz() {
                             <Image src='/images/DP_Lion.svg' alt="DP" width={51.5} height={51.5} />
                         </div>
                         <div className="relative left-0 bottom-[1rem]">
-                            <Image src="/icons/rank-1.svg" alt="1st rank" width={22} height={22}/>
+                            <Image src="/icons/rank-3.svg" alt="3st rank" width={22} height={22}/>
                         </div>
                         <div className="text-xs font-semibold">Robert Fox</div>
                         <div className="text-[0.688rem] font-medium">2706 Score</div>
@@ -169,7 +172,7 @@ export default function MyQuiz() {
                 </div>
 
                 {/* Remaining Leaderboard Entries */}
-                <div className="flex justify-between w-full border-t border-lightGrey px-4 py-2">
+                <div className="flex justify-between w-full border-t border-lightGrey px-4 py-3">
                     <div className="flex flex-row gap-2">
                         <div className="flex items-center justify-center">
                             <Image src='/images/DP_Lion.svg' alt="DP" width={40} height={40} />
@@ -182,7 +185,7 @@ export default function MyQuiz() {
                     <h4 className="flex justify-center items-center text-[0.938rem] font-semibold">4</h4>
                 </div>
 
-                <div className="flex justify-between w-full border-t border-lightGrey px-4 py-2">
+                <div className="flex justify-between w-full border-t border-lightGrey px-4 py-3">
                     <div className="flex flex-row gap-2">
                         <div className="flex items-center justify-center">
                             <Image src='/images/DP_Lion.svg' alt="DP" width={40} height={40} />
@@ -195,7 +198,7 @@ export default function MyQuiz() {
                     <h4 className="flex justify-center items-center text-[0.938rem] font-semibold">5</h4>
                 </div>
 
-                <div className="flex justify-between w-full rounded-md bg-[#f8f0ff] py-1 px-4 my-1">
+                <div className="flex justify-between w-full rounded-md bg-[#f8f0ff] px-4 py-1 my-1">
                     <div className="flex flex-row gap-2">
                         <div className="flex items-center justify-center">
                             <Image src='/images/DP_Lion.svg' alt="DP" width={40} height={40} />

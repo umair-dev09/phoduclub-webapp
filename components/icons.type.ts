@@ -55,8 +55,11 @@ export type IconsType =
   | "dropdown-icon-3"
   | "align-left"
   | "align-right"
-  | "align-middle";
+  | "align-middle"
 "rank-1"
 "hourglass"
-"stop-watch";
+"stop-watch"
+'play'
+'pause';
+
 
