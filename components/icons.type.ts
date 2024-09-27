@@ -56,6 +56,11 @@ export type IconsType =
   | "align-left"
   | "align-right"
   | "align-middle"
+<<<<<<< HEAD
+=======
+  | "QuestionMark"
+  | "right-arrow";
+>>>>>>> 170a84665ac1933de6c56a9428803ca3e1edc38b
 "rank-1"
 "hourglass"
 "stop-watch"

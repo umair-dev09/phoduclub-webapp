@@ -45,7 +45,7 @@ function Quiz() {
                     </div>
                     <div className="flex flex-row text-[#DE3024]">
                         <div className="mr-1">
-                            <Image src="/icons/stop-watch.svg" alt="stop watch" width={18} height={18}/>
+                            <Image src="/icons/stop-watch.svg" alt="stop watch" width={18} height={18} />
                         </div>
                         <div className="flex items-center text-xs gap-1">
                             Quiz ends in <span className="font-semibold">{formatTime(quizEndTime)}</span>
@@ -66,7 +66,7 @@ function Quiz() {
                     </div>
                     <div className="flex flex-row text-[#0B9055]">
                         <div className="mr-1">
-                        <Image src="/icons/hourglass.svg" alt="stop watch" width={18} height={18}/>
+                            <Image src="/icons/hourglass.svg" alt="stop watch" width={18} height={18} />
                         </div>
                         <div className="flex items-center text-xs gap-1">
                             Quiz starts in <span className="font-semibold">{formatTime(quizStartTime)}</span>

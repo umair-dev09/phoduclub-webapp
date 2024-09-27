@@ -3,6 +3,7 @@ import { Popover, PopoverTrigger, PopoverContent } from "@nextui-org/popover";
 import Image from "next/image";
 
 export default function MyQuiz() {
+
     return (
         <div className="CONTAINER flex flex-1 flex-row">
             {/* Left side - Quizzes */}
@@ -141,20 +142,27 @@ export default function MyQuiz() {
                             <Image src='/images/DP_Lion.svg' alt="DP" width={51.5} height={51.5} />
                         </div>
                         <div className="relative left-0 bottom-[1rem]">
+<<<<<<< HEAD
                             <Image src="/icons/rank-2.svg" alt="2st rank" width={22} height={22}/>
+=======
+                            <Image src="/icons/rank-1.svg" alt="1st rank" width={22} height={22} />
+>>>>>>> 170a84665ac1933de6c56a9428803ca3e1edc38b
                         </div>
                         <div className="text-xs font-semibold">Jerome Bell</div>
                         <div className="text-[0.688rem] font-medium">2876 Score</div>
                     </div>
                     <div className="flex flex-1 flex-col items-center justify-end rounded-t-md bg-[#f2f4f7] h-[6.375rem] pb-2">
+<<<<<<< HEAD
                         <div className="mb-2 relative">
                             <Image src='/icons/actualCrown.svg' alt="crown" width={35.82} height={30} />   
                         </div>                      
+=======
+>>>>>>> 170a84665ac1933de6c56a9428803ca3e1edc38b
                         <div className="text-2xl relative bottom-0 left-0">
                             <Image src='/images/DP_Lion.svg' alt="DP" width={71} height={72} />
                         </div>
                         <div className="relative left-0 bottom-[1rem]">
-                            <Image src="/icons/rank-1.svg" alt="1st rank" width={22} height={22}/>
+                            <Image src="/icons/rank-1.svg" alt="1st rank" width={22} height={22} />
                         </div>
                         <div className="text-xs font-semibold">John Smith</div>
                         <div className="text-[0.688rem] font-medium">3000 Score</div>
@@ -164,7 +172,11 @@ export default function MyQuiz() {
                             <Image src='/images/DP_Lion.svg' alt="DP" width={51.5} height={51.5} />
                         </div>
                         <div className="relative left-0 bottom-[1rem]">
+<<<<<<< HEAD
                             <Image src="/icons/rank-3.svg" alt="3st rank" width={22} height={22}/>
+=======
+                            <Image src="/icons/rank-1.svg" alt="1st rank" width={22} height={22} />
+>>>>>>> 170a84665ac1933de6c56a9428803ca3e1edc38b
                         </div>
                         <div className="text-xs font-semibold">Robert Fox</div>
                         <div className="text-[0.688rem] font-medium">2706 Score</div>

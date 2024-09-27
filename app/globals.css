@@ -83,6 +83,7 @@ div {
   font-size: 16px;
   /* Set text size to 16px */
   font-family: 'Poppins', sans-serif;
+  font-style: normal;
   /* Use the Poppins font */
 
 }
@@ -93,6 +94,7 @@ div {
   color: #667085;
   /* Placeholder color */
   font-family: 'Poppins', sans-serif;
+  font-style: normal;
   /* Poppins font for placeholder */
   font-size: 16px;
   /* Placeholder size */
