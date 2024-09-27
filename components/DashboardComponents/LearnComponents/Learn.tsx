@@ -83,7 +83,7 @@ function Learned() {
 
         </div>
         
-        <hr className="h-px bg-black mt-2"/>
+        <hr className="h-px bg-[#EAECF0] mt-2"/>
         </div>
 
     );
