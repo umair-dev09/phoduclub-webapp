@@ -153,7 +153,7 @@ function Discussion() {
                                         ) : alignment === 'right' ? (
                                             <Image src="/icons/align-right.svg" width={24} height={26} alt="align-right" />
                                         ) : (
-                                            <Image src="/icons/align-left.svg" width={24} height={26} alt="align-left" />
+                                            <Image src="/icons/dropdown-icon-1.svg" width={32} height={32} alt="align-left" />
                                         )}
                                     </button>
                                 </PopoverTrigger>
@@ -193,7 +193,7 @@ function Discussion() {
                         </div>
                         {/* Button */}
                         <button
-                            className={`bg-[#9012FF] w-[88px] h-[36px] flex justify-center items-center rounded-md shadow-inner-button 
+                            className={` w-[88px] h-[36px] flex justify-center items-center rounded-md shadow-inner-button 
                                   ${isButtonDisabled ? 'bg-[#d8acff]' : 'bg-[#8501FF]'} 
                                      ${isButtonDisabled ? '' : 'border border-solid border-[#800EE2]'}`}
 
