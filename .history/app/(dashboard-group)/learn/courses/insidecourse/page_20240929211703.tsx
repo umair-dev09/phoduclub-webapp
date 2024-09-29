@@ -78,22 +78,22 @@ function SideButton() {
                     <div>
                         <div className="ml-8 h-[60px] mr-8 mt-[20px] rounded-md flex items-center justify-center">
                             <div className="flex flex-row justify-between w-full h-[44px]">
-                                <button className="h-full w-[111px] rounded-[8px] bg-[#FFFFFF] " style={{ border: "1.5px solid #EAECF0" }}>
+                                <button className="h-full w-[111px] rounded-[8px] bg-[#FFFFFF] opacity-[50%]" style={{ border: "1.5px solid #EAECF0" }}>
                                     <span className="font-normal text-sm text-[#1D2939]">Previous</span>
                                 </button>
-                                <button className="h-full w-[111px] rounded-[8px] bg-[#8501FF] shadow-inner-button" style={{ border: "1px solid #800EE2" }}>
+                                <button className="h-full w-[111px] rounded-[8px] bg-[#8501FF] shadow-inner-button opacity-[50%]" style={{ border: "1px solid #800EE2" }}>
                                     <span className="font-semibold text-sm text-[#FFFFFF]">Next</span>
                                 </button>
                             </div>
                         </div>
 
                         <div className="ml-8 mr-8 h-[45px] mt-[20px] gap-[16px] flex" style={{ borderBottom: "2px solid #EAECF0" }}>
-                            <button className="font-medium text-base text-[#667085] mb-3" onClick={() => setActiveTab('overview')}>
+                            <button className="font-medium text-lg text-[#667085] mb-3" onClick={() => setActiveTab('overview')}>
                                 <span className={`hover:text-[#8501FF] ${activetab === 'overview' ? 'text-[#8501FF]' : ''}`}>
                                     Overview
                                 </span>
                             </button>
-                            <button className="font-medium text-base text-[#667085] mb-3" onClick={() => setActiveTab('Discussion')}>
+                            <button className="font-medium text-lg text-[#667085] mb-3" onClick={() => setActiveTab('Discussion')}>
                                 <span className={`hover:text-[#8501FF] ${activetab === 'Discussion' ? 'text-[#8501FF]' : ''}`}>
                                     Discussion
                                 </span>
