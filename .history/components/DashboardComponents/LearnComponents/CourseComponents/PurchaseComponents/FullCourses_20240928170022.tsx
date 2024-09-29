@@ -1,0 +1,253 @@
+"use client";
+import Image from 'next/image';
+import Lesson from "./Lesson";
+import React, { useState } from "react";
+import { useRouter } from 'next/navigation';
+import Collapsible from 'react-collapsible';
+
+
+export default function Course() {
+  const router = useRouter();
+
+  interface StarIconProps {
+    filled: boolean;
+  }
+
+  const StarIcon: React.FC<StarIconProps> = ({ filled }) => (
+    <svg
+      className={`w-4 h-4 ms-1 ${filled ? 'text-[#F78E09]' : 'text-gray-300 dark:text-gray-500'}`}
+      aria-hidden="true"
+      xmlns="http://www.w3.org/2000/svg"
+      fill="currentColor"
+      viewBox="0 0 22 20"
+    >
+      <path d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z" />
+    </svg>
+  );
+
+  const rating = 3.456; // The rating value
+  const totalStars = 5;
+
+
+
+
+  return (
+    <div className="flex flex-col flex-1  px-8 h-auto overflow-y-auto  pb-5">
+      <div className="my-5 flex items-center">
+        <button className="flex items-center ml-1" onClick={() => router.back()}>
+          <div className="text-[#1D2939] h-[24px] w-auto" style={{ fontSize: "16px", fontWeight: "600" }}>
+            Courses
+          </div>
+          <div className="ml-3 w-[24px]">
+            <Image src="/icons/course-left.svg" width={6} height={12} alt="left-arrow" />
+          </div>
+        </button>
+        <div className="text-[#667085] h-full w-auto -ml-1" style={{ fontSize: "16px", fontWeight: "500" }}>
+          BITSET Full Course
+        </div>
+      </div>
+
+      {/* Course content */}
+      <div className="h-[271px] flex items-center gap-4">
+        <div>
+          <Image
+            src="/icons/image.png"
+            width={437}
+            height={271}
+            alt="left-arrow"
+          />
+        </div>
+        <div className="flex flex-col flex-1 h-full bg-[#FFFFFF] border border-lightGrey rounded-xl">
+          <div className="flex flex-1 flex-col h-[105px] p-4">
+            <div className='text-[#1D2939] mt-2 ml-2'>
+              <h3>BITSET Full Course</h3>
+            </div>
+            <div className='mt-4 text-[#667085] text-sm font-normal mt-2 ml-2'>
+              <p>The BITSET Full Course is designed to provide students with an in-depth understanding of bit manipulation techniques and the use of bitsets in data structures.</p>
+            </div>
+          </div>
+
+          {/* Rating Section */}
+          <div className="flex items-center justify-between w-[255px] h-[24px] mt-10">
+            <div className="flex items-center ml-5">
+              {[...Array(Math.floor(rating))].map((_, index) => (
+                <StarIcon key={`filled-${index}`} filled={true} />
+              ))}
+              {/* Render half star if there's a decimal */}
+              {rating % 1 !== 0 && <StarIcon filled={true} />} {/* This should represent the half star */}
+              {/* Render remaining empty stars */}
+              {[...Array(totalStars - Math.ceil(rating))].map((_, index) => (
+                <StarIcon key={`empty-${index}`} filled={false} />
+              ))}
+            </div>
+
+            {/* Rating and Reviews */}
+            <div className="text-[#1D2939] text-sm font-bold flex items-center mt-1 ml-2">
+              {rating.toFixed(1)}
+              <span className="text-[#1D2939] font-normal text-sm ml-1">
+                <span className="flex items-center">
+                  <span className="inline-block">({`500+`}</span>
+                  <span className="inline-block">Ratings)</span>
+                </span>
+              </span>
+            </div>
+          </div>
+
+          {/* Price Section */}
+          <div className="flex items-center justify-between h-full">
+            <div className="flex items-center ml-7 mb-7 mt-7 space-x-3">
+              <div className="text-[#1D2939] text-2xl font-bold">
+                ₹ 3,990
+              </div>
+              <div className="text-[#667085] text-base font-normal line-through">
+                ₹ 7,499
+              </div>
+              <div className="bg-[#DB6704] w-[76px] h-[25px] flex items-center justify-center rounded-full text-white text-xs font-semibold">
+                86% off
+              </div>
+            </div>
+
+            {/* Buy Course Button */}
+            <div className="m-7">
+              <button
+                className="text-white text-sm font-semibold py-3 px-6 rounded-md shadow-inner-button"
+                style={{
+                  width: "182px",
+                  height: "44px",
+                  backgroundColor: "#9012FF",
+                  borderWidth: "1px 0 0 0",
+                  borderColor: "#9012FF",
+                }}
+              >
+                Buy Course
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Course content */}
+      <div className='flex flex-col'>
+        <div className='ml-2'>
+          <div className='mt-4 text-[#1D2939]'>
+            <h3>Course content</h3>
+          </div>
+          <div className='flex flex-row mt-3 text-xs'>
+            <div className='flex flex-row'>
+              <div className='mr-2'>
+                <Image src="/icons/read.svg" alt="learn-icon" width={20} height={20} />
+              </div>
+              <div className='mr-3 font-normal text-sm text-[#1D2939]'>3 Lessons</div>
+            </div>
+            <div className='flex flex-row'>
+              <div className='mr-2'>
+                <Image src="/icons/vedio.svg" alt="video-icon" width={20} height={20} />
+              </div>
+              <div className='mr-3 font-normal text-sm text-[#1D2939]'>4 Videos</div>
+            </div>
+            <div className='flex flex-row'>
+              <div className='mr-2'>
+                <Image src="/icons/test.svg" alt="test-icon" width={20} height={20} />
+              </div>
+              <div className='mr-3 font-normal text-sm text-[#1D2939]'>2 Tests</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+      <div className='  bg-white border border-lightGrey  mt-4 rounded-xl'>
+        <Collapsible className='flex flex-col'
+          trigger={
+
+
+
+            <div className='border-b  border-lightGrey rounded-b-xl'>
+              <div className="flex items-center justify-between h-[56px] mx-5 relative">
+                <p className="text-base font-bold">Lesson: Lorem ipsum dolor sit amet.</p>
+                <Image
+                  src="/icons/arrowdown.svg"
+                  width={24}
+                  height={24}
+                  alt="arrow"
+                />
+              </div>
+            </div>
+          }
+          transitionTime={600}
+
+
+        >
+          <Lesson />
+
+        </Collapsible>
+
+      </div>
+      <div className='  bg-white border border-lightGrey  mt-4 rounded-xl'>
+        <Collapsible className='flex flex-col'
+          trigger={
+
+
+            <div className=''>
+              <div className="flex items-center justify-between h-[56px] mx-5 relative">
+                <p className="text-base font-bold">Lesson: Lorem ipsum dolor sit amet.</p>
+                <Image
+                  src="/icons/arrowdown.svg"
+                  width={24}
+                  height={24}
+                  alt="arrow"
+                />
+              </div>
+            </div>
+          }
+          transitionTime={600}
+
+
+        >
+          <Lesson />
+
+        </Collapsible>
+
+      </div>
+      <div className='  bg-white border border-lightGrey  mt-4 rounded-xl'>
+        <Collapsible className='flex flex-col'
+          trigger={
+
+
+            <div className='border-b border-solid border-[#667085]'>
+              <div className="flex items-center justify-between h-[56px] mx-5 relative">
+                <p className="text-base font-bold">Lesson: Lorem ipsum dolor sit amet.</p>
+                <Image
+                  src="/icons/arrowdown.svg"
+                  width={24}
+                  height={24}
+                  alt="arrow"
+                />
+              </div>
+            </div>
+          }
+          transitionTime={600}
+
+
+        >
+          <Lesson />
+
+        </Collapsible>
+
+      </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+    </div >
+  );
+}
