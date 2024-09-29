@@ -77,7 +77,7 @@ function SideButton() {
                 {activeComponent != 'StartQuiz' && (
                     <div className=" mt-[20px] rounded-md flex items-center justify-center flex-col">
 
-                        <div className="mr-8 ml-8  w-auto flex flex-row justify-between  h-[44px]">
+                        <div className="mr-8 ml-8 flex flex-row justify-between w-full h-[44px]">
                             <button className="h-full w-[111px] rounded-[8px] bg-[#FFFFFF] shadow-inner-button "
                                 style={{ border: "1.5px solid #EAECF0" }}>
                                 <span className="font-normal text-sm text-[#1D2939] ">Previous</span>
@@ -93,7 +93,7 @@ function SideButton() {
                             </button>
                         </div>
 
-                        <div className="h-[45px] mt-[20px] gap-[16px] w-auto ml-8 mr-8 flex" style={{ borderBottom: "2px solid #EAECF0" }}>
+                        <div className="h-[45px] mt-[20px] items-start gap-[16px] flex" style={{ borderBottom: "2px solid #EAECF0" }}>
                             <button className="font-medium text-1g text-[#667085] mb-3" onClick={() => setActiveTab('overview')}>
                                 <span className={`hover:text-[#8501FF] ${activetab === 'overview' ? 'text-[#8501FF]' : ''}`}>
                                     Overview
