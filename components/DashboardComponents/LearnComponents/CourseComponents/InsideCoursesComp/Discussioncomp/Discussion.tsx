@@ -104,13 +104,14 @@ function Discussion() {
                         onKeyDown={handleKeyDown}
                         modules={{ toolbar: false }}
                         placeholder="Type your response here..."
-                        className="bg-transparent text-[#1D2939] focus:outline-none rounded-b-[12px] custom-quill"
+                        className="bg-transparent text-[#1D2939] focus:outline-none rounded-b-[12px] custom-quill placeholder:not-italic"
                         style={{
                             minHeight: "10px", // Initial height
                             maxHeight: "150px", // Maximum height before scrolling
                             overflowY: "auto",  // Enable scrolling if content exceeds max height
                             padding: "1rem",   // Padding to create space inside the editor
                             border: 'none',
+                            fontStyle: 'normal',
                         }}
                     />
 
@@ -144,8 +145,8 @@ function Discussion() {
                                 <Image src="/icons/underline-icon.svg" width={24} height={24} alt="underline-icon" />
                             </button>
                             {/* -------------------------------------------------------------------------------------------------------------------------------- */}
-                            <Popover backdrop="blur" placement="bottom-end" className="flex flex-row justify-end">
-                                <PopoverTrigger>
+                            <Popover backdrop="blur" placement="bottom-start" className="flex flex-row justify-end">
+                                <PopoverTrigger className="">
                                     {/* Display the current alignment icon in the trigger */}
                                     <button className="flex items-center justify-center p-1">
                                         {alignment === 'center' ? (
@@ -158,7 +159,7 @@ function Discussion() {
                                     </button>
                                 </PopoverTrigger>
 
-                                <PopoverContent className="absolute right-0 mt-2 z-10">
+                                <PopoverContent className="ml-1 gap-4">
                                     {/* These buttons will be inside the popover */}
                                     <div className="flex flex-row bg-white rounded-[8px] border-[1px] border-solid border-[#EAECF0] p-2 w-[120px] shadow-[0_2px_4px_#EAECF0] gap-2 ">
                                         <button onClick={() => handleIconClick("align-left")} className="flex items-center justify-center">

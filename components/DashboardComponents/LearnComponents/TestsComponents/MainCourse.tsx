@@ -27,7 +27,7 @@ function Main() {
             {/* Main course container with flex layout and specified dimensions */}
             <button
                 onClick={() => handleTabClick('PhoduTestSeries', '/learn/test/PhoduTestSeries')}>
-                <div className="flex items-center justify-center flex-col rounded-lg relative overflow-hidden transition-transform duration-300 ease-in-out w-[22.333rem] h-[378px] mr-4">
+                <div className="flex ml-4 items-center justify-center flex-col rounded-lg relative overflow-hidden transition-transform duration-300 ease-in-out w-[22.333rem] h-[378px] mr-4">
 
                     {/* Course image and suggestion label container */}
                     <div className="flex flex-1 h-[50%] items-center flex-col">
@@ -38,9 +38,7 @@ function Main() {
                         </div>
 
                         {/* Course image */}
-                        <div>
-                            <img src="/images/course_img.svg" alt="Course" width={300} height={300} />
-                        </div>
+                            <Image className="flex w-full h-[300px]" src="/images/course_img.svg" alt="Course" width={300} height={300} />
                     </div>
 
                     {/* Course details container */}

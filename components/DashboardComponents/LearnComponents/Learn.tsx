@@ -18,8 +18,8 @@ function Learned() {
             const currentPath = pathname.split('/')[2];
             if (currentPath === 'test') {
                 setActiveTab('test');
-            } else if (currentPath === 'Quiz') {
-                setActiveTab('Quiz');
+            } else if (currentPath === 'quiz') {
+                setActiveTab('quiz');
             } else {
                 setActiveTab('courses'); // Default to 'courses'
             }
@@ -29,7 +29,8 @@ function Learned() {
     }, [pathname]);
 
     return (
-        <div className="relative flex space-x-2">
+        <div className="flex flex-col">
+        <div className="relative flex">
             <div className="pt-[10px]">
                 <button
                     onClick={() => handleTabClick('courses', '/learn/courses')}
@@ -56,8 +57,8 @@ function Learned() {
             </div>
             <div className="pt-[10px]">
                 <button
-                    onClick={() => handleTabClick('Quiz', '/learn/Quiz')}
-                    className={`relative py-2 px-4 text-base transition duration-200 ${activeTab === 'Quiz' ? 'text-[#7400E0]' : 'text-[#667085] hover:text-[#7400E0]'} focus:outline-none`}
+                    onClick={() => handleTabClick('quiz', '/learn/quiz')}
+                    className={`relative py-2 px-4 text-base transition duration-200 ${activeTab === 'quiz' ? 'text-[#7400E0]' : 'text-[#667085] hover:text-[#7400E0]'} focus:outline-none`}
                     style={{ fontSize: '16px', fontWeight: '500' }}
                 >
                     Quizzes
@@ -72,15 +73,19 @@ function Learned() {
             <div
                 className="absolute bg-[#7400E0] transition-all duration-300"
                 style={{
-                    height: '1.5px', // Change this value to make the underline thinner or thicker
-                    left: `${activeTab === 'courses' ? '10px' : activeTab === 'test' ? 'calc(10px + 160px)' : 'calc(10px + 320px)'}`,
-                    width: '7%', // You can still adjust the width here as needed
-                    bottom: '-5px',
+                    height: '1.8px', // Change this value to make the underline thinner or thicker
+                    left: `${activeTab === 'courses' ? '40px' : activeTab === 'test' ? '142px' : '260px'}`,
+                    width: '85px', // You can still adjust the width here as needed
+                    bottom: '-8px',
 
                 }}
             />
 
         </div>
+        
+        <hr className="h-px bg-[#EAECF0] mt-2"/>
+        </div>
+
     );
 }
 

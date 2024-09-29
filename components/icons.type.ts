@@ -56,6 +56,7 @@ export type IconsType =
   | "align-left"
   | "align-right"
   | "align-middle"
+
   | "QuestionMark"
   | "right-arrow"
   | "full-star"
@@ -64,5 +65,8 @@ export type IconsType =
   | "Re-attempt";
 "rank-1"
 "hourglass"
-"stop-watch";
+"stop-watch"
+'play'
+'pause';
+
 
