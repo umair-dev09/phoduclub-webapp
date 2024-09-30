@@ -238,9 +238,6 @@ function SideButton() {
                             </button>
                         </div>
                     </button>
-
-
-
                     <button className="
                         "        onClick={() => setActiveComponent('StartQuiz')}
                         onMouseEnter={() => setHoverStartQuiz(true)}

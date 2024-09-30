@@ -6,6 +6,7 @@ import Image from "next/image";
 type QuizProps = {
     isOpen: boolean;
     setIsOpen: (isOpen: boolean) => void;
+    onQuizSubmit: () => void;
 }
 
 function Quiz({ isOpen, setIsOpen }: QuizProps) {
@@ -17,7 +18,6 @@ function Quiz({ isOpen, setIsOpen }: QuizProps) {
         setIsOpen(false); // Close the dialog
         setShowBottomSheet(true); // Show the bottom sheet
     };
-
 
     const [isClosing, setIsClosing] = useState(false);  // Controls the closing animation
 
@@ -46,6 +46,23 @@ function Quiz({ isOpen, setIsOpen }: QuizProps) {
         };
     }, [showBottomSheet]); // Only depend on `showBottomSheet` state
 
+    let [showSubmitQuizDialog, setShowSubmitQuizDialog] = useState(false);
+
+    const onSubmitQuiz = () => {
+        setShowSubmitQuizDialog(true);
+    };
+
+    let [showExitQuizDialog, setShowExitQuizDialog] = useState(false);
+
+    const onExitQuiz = () => {
+        setShowExitQuizDialog(true);
+    };
+
+    const handleSubmitQuiz = () => {
+        setShowSubmitQuizDialog(false);
+        closeBottomSheet();
+        onQuizSubmit();
+    };
 
     return (
         <>
@@ -103,7 +120,6 @@ function Quiz({ isOpen, setIsOpen }: QuizProps) {
                 </div>
             </Dialog>
 
-
             {(showBottomSheet || isClosing) && (
                 <div
                     className={`fixed bottom-0 left-0 w-full h-[98vh] bg-white rounded-t-2xl grid grid-rows-[69px_1fr_76px] transform 
@@ -116,19 +132,16 @@ function Quiz({ isOpen, setIsOpen }: QuizProps) {
                             <Image width={24} height={24} src="/icons/alarm-clock.svg" alt="timer" />
                             00:05
                         </span>
-
                         <div
                             className={`w-[150px] h-[44px] bg-[#FFFFFF] border-[1px] border-[#EAECF0] rounded-[8px] flex items-center justify-center transition-transform duration-500 ease-in-out transform z-50 `}
                         >
                             <button
-                                onClick={closeBottomSheet}
+                                onClick={onExitQuiz}
                                 className="w-full h-full flex items-center justify-center text-sm font-semibold text-[#1D2939] border-none p-[10px_24px] z-50"
                             >
                                 Save and Exit
                             </button>
                         </div>
-
-
                     </div>
 
                     {/* Quiz Content */}
@@ -301,19 +314,122 @@ function Quiz({ isOpen, setIsOpen }: QuizProps) {
                                     </div>
                                 </div>
                             </div>
-
                             {/* End repeat block */}
                         </div>
                     </div>
 
                     {/* Bottom Button Section */}
                     <div className="flex flex-row items-center justify-end border-t border-lightGrey">
-                        <button className="mr-6 ml-2.5 border rounded-lg py-2.5 px-6 text-sm bg-purple text-white border-darkPurple">
+                        <button onClick={onSubmitQuiz} className="mr-6 ml-2.5 border rounded-lg py-2.5 px-6 text-sm bg-purple text-white border-darkPurple shadow-inner-button">
                             <p>Submit</p>
                         </button>
                     </div>
                 </div>
             )}
+
+            <Dialog open={showExitQuizDialog} onClose={() => setShowExitQuizDialog(false)} className="relative z-50">
+                <DialogBackdrop className="fixed inset-0 bg-black/30 " />
+                <div className="fixed inset-0 flex items-center justify-center ">
+                    <DialogPanel transition className="bg-[#FFFFFF] rounded-2xl  w-[480px] h-[306px] ">
+                        <div className="flex flex-1 h-[230px] w-full border-b-2 border-solid border-[#EAECF0] flex-col" style={{
+                            borderTopLeftRadius: '12px',
+                            borderTopRightRadius: '12px',
+                            borderBottomLeftRadius: '0px',
+                            borderBottomRightRadius: '0px',
+                        }}>
+                            <div className="h-[23px]  mt-[23px] mr-[24px] ml-[24px] justify-between flex">
+                                <span className="text-[#1D2939] font-semibold text-lg">Exit Quiz</span>
+                                <button onClick={() => setShowExitQuizDialog(false)}>
+                                    <Image src="/icons/cancel.svg" alt="cancel" width={18} height={18} />
+                                </button>
+                            </div>
+                            <div className=" h-auto mr-[24px] ml-[24px] mt-[13px] ">
+                                <span className="text-sm text-[#667085] font-normal">
+                                    Lorem ipsum is a dummy text widely used in digital industry and lore is anptsu
+                                </span>
+                            </div>
+                        </div>
+                        <div className="w-[480px] h-[76px] "
+                            style={{
+                                borderTopLeftRadius: '0px',
+                                borderTopRightRadius: '0px',
+                                borderBottomLeftRadius: '12px',
+                                borderBottomRightRadius: '12px',
+                            }}>
+                            <div className="ml-[213px] gap-[16px] flex-row flex mt-[16px] h-[44px] ">
+                                <button
+                                    className="bg-[#FFFFFF] text-[#1D2939] text-sm font-semibold py-2 px-5 rounded-md w-[118px] h-[44px] shadow-inner-button"
+                                    style={{ border: "1.5px solid #EAECF0" }}
+                                    onClick={() => setShowExitQuizDialog(false)}>
+                                    Cancel
+                                </button>
+                                <button
+                                    onClick={() => {
+                                        setShowExitQuizDialog(false);
+                                        closeBottomSheet();
+                                    }}
+                                    className="bg-[#8501FF] text-[#FFFFFF] text-sm font-semibold py-2 px-5 rounded-md w-[118px] h-[44px] shadow-inner-button border border-[#800EE2]"
+                                >
+                                    Exit Quiz
+                                </button>
+                            </div>
+                        </div>
+                    </DialogPanel>
+                </div>
+            </Dialog>
+
+            <Dialog open={showSubmitQuizDialog} onClose={() => setShowSubmitQuizDialog(false)} className="relative z-50">
+                <DialogBackdrop className="fixed inset-0 bg-black/30 " />
+                <div className="fixed inset-0 flex items-center justify-center ">
+                    <DialogPanel transition className="bg-[#FFFFFF] rounded-2xl  w-[480px] h-[306px] ">
+                        <div className="flex flex-1 h-[230px] w-full border-b-2 border-solid border-[#EAECF0] flex-col" style={{
+                            borderTopLeftRadius: '12px',
+                            borderTopRightRadius: '12px',
+                            borderBottomLeftRadius: '0px',
+                            borderBottomRightRadius: '0px',
+                        }}>
+                            <div className="h-[23px]  mt-[23px] mr-[24px] ml-[24px] justify-between flex">
+                                <span className="text-[#1D2939] font-semibold text-lg">Submit Quiz</span>
+                                <button onClick={() => setShowSubmitQuizDialog(false)}>
+                                    <Image src="/icons/cancel.svg" alt="cancel" width={18} height={18} />
+                                </button>
+                            </div>
+                            <div className=" h-auto mr-[24px] ml-[24px] mt-[13px] ">
+                                <span className="text-sm text-[#667085] font-normal">
+                                    Lorem ipsum is a dummy text widely used in digital industry and lore is anptsu
+                                </span>
+                            </div>
+                        </div>
+                        <div className="w-[480px] h-[76px] "
+                            style={{
+                                borderTopLeftRadius: '0px',
+                                borderTopRightRadius: '0px',
+                                borderBottomLeftRadius: '12px',
+                                borderBottomRightRadius: '12px',
+                            }}>
+                            <div className="ml-[213px] gap-[16px] flex-row flex mt-[16px] h-[44px] ">
+                                <button
+                                    className="bg-[#FFFFFF] text-[#1D2939] text-sm font-semibold py-2 px-5 rounded-md w-[118px] h-[44px] shadow-inner-button"
+                                    style={{ border: "1.5px solid #EAECF0" }}
+                                    onClick={() => setShowSubmitQuizDialog(false)}>
+                                    Cancel
+                                </button>
+                                <button
+                                    onClick={() => {
+                                        setShowSubmitQuizDialog(false);
+                                        closeBottomSheet();
+                                        handleSubmitQuiz();
+                                    }}
+                                    className="bg-[#8501FF] text-[#FFFFFF] text-sm font-semibold py-2 px-5 rounded-md w-[118px] h-[44px] shadow-inner-button border border-[#800EE2]"
+                                >
+                                    {/* this submit button */}
+                                    Submit
+                                </button>
+                            </div>
+                        </div>
+                    </DialogPanel>
+                </div>
+            </Dialog>
         </>
     );
 }
