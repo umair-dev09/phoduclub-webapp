@@ -72,8 +72,6 @@ function Quizzes() {
                 <div className="w-1/2 bg-white rounded-xl">Donut Graph</div>
             </div>
 
-
-
             <div className="py-5 text-[#1D2939]"><h3>Leaderboard Analytics</h3></div>
             <div className="flex flex-col w-full h-auto gap-2">
                 <table className="flex flex-col w-full h-min border border-lightGrey rounded-xl bg-white text-sm font-medium">
