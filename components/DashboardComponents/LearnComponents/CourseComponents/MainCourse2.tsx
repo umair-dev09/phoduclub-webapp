@@ -26,9 +26,9 @@ function Main2() {
 
 
   return (
-    <div className="flex flex-row w-full">
+    <div className="flex flex-row ">
       {/* Start of Component */}
-      <div className="flex items-center justify-center flex-col flex-[0.5] rounded-lg relative overflow-hidden transition-transform duration-300 max-w-[15.938rem] max-h-[17.625rem] mx-3">
+      <div className="flex items-center justify-center flex-col flex-[0.5] rounded-lg relative overflow-hidden transition-transform duration-300 w-[280px] h-auto mx-4">
         {/* Container for the suggestion badge and course image */}
         <div>
           {/* Suggestion badge with icon and text */}
@@ -43,7 +43,7 @@ function Main2() {
             <p>Suggested for you</p>
           </div>
           {/* Course image */}
-            <Image className="flex w-full" src="/images/course_img.svg" alt="Course image" width={0} height={0}/>
+            <Image className="flex w-[280px] " src="/images/course_img.svg" alt="Course image" width={0} height={0}/>
         </div>
 
         {/* Container for course details and buy button */}
@@ -81,8 +81,8 @@ function Main2() {
       </div>
       {/* End of Component */}
 
-      {/* Start of Component */}
-      <div className="flex items-center justify-center flex-col flex-[0.5] rounded-lg relative overflow-hidden transition-transform duration-300 max-w-[15.938rem] max-h-[17.625rem] mx-3">
+     {/* Start of Component */}
+     <div className="flex items-center justify-center flex-col flex-[0.5] rounded-lg relative overflow-hidden transition-transform duration-300 w-[280px] h-auto mx-4">
         {/* Container for the suggestion badge and course image */}
         <div>
           {/* Suggestion badge with icon and text */}
@@ -97,9 +97,7 @@ function Main2() {
             <p>Suggested for you</p>
           </div>
           {/* Course image */}
-          <div>
-            <img src="/images/course_img.svg" alt="Course image" />
-          </div>
+            <Image className="flex w-[280px] " src="/images/course_img.svg" alt="Course image" width={0} height={0}/>
         </div>
 
         {/* Container for course details and buy button */}
@@ -126,7 +124,9 @@ function Main2() {
             </div>
             {/* Buy Now button */}
             <div>
-              <button className="text-xs font-semibold py-2.5 px-3.5 rounded-md bg-[#9012FF] border-2 border-[#9012FF] text-white">
+              <button className="text-xs font-semibold py-2.5 px-3.5 rounded-md bg-[#9012FF] border-2 border-[#9012FF] text-white"
+                onClick={() => handleTabClick('Bit1', '/learn/courses/purchase/Bit1')}
+              >
                 Buy Now
               </button>
             </div>
@@ -134,9 +134,8 @@ function Main2() {
         </div>
       </div>
       {/* End of Component */}
-
       {/* Start of Component */}
-      <div className="flex items-center justify-center flex-col flex-[0.5] rounded-lg relative overflow-hidden transition-transform duration-300 max-w-[15.938rem] max-h-[17.625rem] mx-3">
+      <div className="flex items-center justify-center flex-col flex-[0.5] rounded-lg relative overflow-hidden transition-transform duration-300 w-[280px] h-auto mx-4">
         {/* Container for the suggestion badge and course image */}
         <div>
           {/* Suggestion badge with icon and text */}
@@ -151,9 +150,7 @@ function Main2() {
             <p>Suggested for you</p>
           </div>
           {/* Course image */}
-          <div>
-            <img src="/images/course_img.svg" alt="Course image" />
-          </div>
+            <Image className="flex w-[280px] " src="/images/course_img.svg" alt="Course image" width={0} height={0}/>
         </div>
 
         {/* Container for course details and buy button */}
@@ -180,7 +177,9 @@ function Main2() {
             </div>
             {/* Buy Now button */}
             <div>
-              <button className="text-xs font-semibold py-2.5 px-3.5 rounded-md bg-[#9012FF] border-2 border-[#9012FF] text-white">
+              <button className="text-xs font-semibold py-2.5 px-3.5 rounded-md bg-[#9012FF] border-2 border-[#9012FF] text-white"
+                onClick={() => handleTabClick('Bit1', '/learn/courses/purchase/Bit1')}
+              >
                 Buy Now
               </button>
             </div>
