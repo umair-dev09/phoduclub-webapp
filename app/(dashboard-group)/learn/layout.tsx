@@ -2,7 +2,6 @@
 
 import { usePathname } from 'next/navigation';
 import { ReactNode } from 'react';
-import Learn from '@/components/DashboardComponents/LearnComponents/Learn';
 import Learned from '@/components/DashboardComponents/LearnComponents/Learn';
 
 interface LearnLayoutProps {
@@ -14,7 +13,7 @@ export default function LearnLayout({ children }: LearnLayoutProps) {
     const isQuiz = pathname === '/learn/quiz';
     // Check if the pathname matches the root level of quiz, test, and courses but excludes subfolders like bit1, bit2, etc.
     if (
-        pathname === '/learn/quiz' ||
+        pathname === '/learn/Quiz' ||
         pathname === '/learn/test' ||
         pathname === '/learn/courses'
     ) {

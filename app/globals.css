@@ -63,7 +63,7 @@ div {
 
 }
 
-/* THIS IS FOR TEXT-EDITOR IN DISSCUSSION TAB */
+/* THIS IS FOR TEXT-EDITOR IN DISSCUSSION TAB --------------------------*/
 .custom-quill .ql-container {
   border: none !important;
   /* Remove the border from the container */
@@ -112,6 +112,53 @@ div {
   display: none;
   /* Hide placeholder on focus */
 }
+
+/* -------------------------------------------------- */
+/* FOR TOOLTIP FOR TEST PAGE ONLY  */
+
+
+.tooltipText {
+  position: absolute;
+  color: white;
+  bottom: 125%;
+  /* Position above the button */
+  left: 50%;
+  /* Center horizontally */
+  transform: translateX(-50%);
+  /* Adjust to center the tooltip */
+
+  z-index: 3;
+  background-color: #131313;
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.3);
+  padding: 6px 14px;
+  /* Padding inside the tooltip */
+  width: 204px;
+  /* Fixed width */
+  height: auto;
+  /* Hug content (height grows with content) */
+  min-height: 78px;
+  /* Minimum height */
+  font-size: 15px;
+  font-weight: 400;
+  border-radius: 5px;
+  white-space: normal;
+  /* Allow text wrapping for longer content */
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.4s ease;
+}
+
+.tooltip:hover .tooltipText {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translate(-50%, -10px);
+  /* Move tooltip slightly up on hover */
+}
+
+/* --------------------------------------------------------------------- */
+
+
+
 
 
 

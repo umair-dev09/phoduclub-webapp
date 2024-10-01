@@ -2,23 +2,25 @@
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import StartQuiz from "./Bottomsheet"
+import StartQuiz from "./DailogAndBottom"
 
 function startquiz() {
 
-
     let [showQuizDialog, setShowQuizDialog] = useState(false);
     let [isQuizOpen, setIsQuizOpen] = useState(false);
+    let [isQuizSubmitted, setIsQuizSubmitted] = useState(false);
     const router = useRouter();
-
 
     const onStartQuiz = () => {
         setShowQuizDialog(true);
         setIsQuizOpen(true);
-
     };
 
-
+    const handleQuizSubmit = () => {
+        setIsQuizSubmitted(true);
+        setShowQuizDialog(false);
+        setIsQuizOpen(false);
+    };
 
     return (
         <div className="relative flex flex-col flex-1 pb-8">
@@ -75,17 +77,25 @@ function startquiz() {
                 </span>
             </div>
             <div className="h-[65px]  " style={{ borderRadius: "5px", position: "relative" }}>
-                <div className="flex justify-between items-end h-full">
-                    <button
-                        onClick={onStartQuiz}
-                        className="bg-[#8501FF] text-[#FFFFFF] text-sm font-semibold py-2 px-5 rounded-md w-[118px] h-[44px] ml-auto"
-                        style={{
-                            border: "1px solid #800EE2",
-                            boxShadow: "0px -4px 4px 0px #1018281F inset, 0px 3px 2px 0px #FFFFFF3D inset"
-                        }}
-                    >
-                        Start Quiz
-                    </button>
+                <div className="relative flex justify-between items-end h-full ml-8">
+                {!isQuizSubmitted && (
+                        <button
+                            onClick={onStartQuiz}
+                            className="bg-[#8501FF] text-[#FFFFFF] text-sm font-semibold py-2 px-5 rounded-md w-[118px] h-[44px] ml-auto"
+                            style={{
+                                border: "1px solid #800EE2",
+                                boxShadow: "0px -4px 4px 0px #1018281F inset, 0px 3px 2px 0px #FFFFFF3D inset"
+                            }}
+                        >
+                            Start Quiz
+                        </button>
+                    )}
+                    {isQuizSubmitted && (
+                        <div className="absolute flex flex-row justify-between w-full">
+                            <button className="border border-[#9012FF] bg-white text-[#1D2939] text-sm font-semibold px-6 py-[0.625rem] rounded-md">Review your attempt</button>
+                            <button className="border border-[#800EE2] bg-[#800EE2] text-white text-sm font-semibold px-6 py-[0.625rem] rounded-md">Re-Attempt</button>
+                        </div>
+                    )}
                 </div>
             </div>
 

@@ -40,7 +40,6 @@ const config: Config = {
 				lightGrey: '#eaecf0',
 				blackLike: '#1d2939',
 				custompurple: '#9012FF',
-				customwhite: '#9012FF',
 				lavend: '#6941C6',
 				progressPurple: '#7400E0'
 			},
@@ -55,14 +54,16 @@ const config: Config = {
 
 			slideDown: {
 				'0%': { transform: 'translateY(0)' },
-				'100%': { transform: 'translateY(100%)' },
+				'100%': { transform: 'translateY(100%)', visibility: 'hidden' },
 			},
+
 		},
 		animation: {
 			slideUp: 'slideUp 0.3s ease-out',
 			slideDown: 'slideDown 0.5s ease-in-out',
 		},
 	},
+
 	// plugins: [
 	// 	require("tailwindcss-animate")
 	// ],
