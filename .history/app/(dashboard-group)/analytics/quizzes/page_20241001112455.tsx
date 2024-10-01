@@ -3,8 +3,7 @@ import Leaderboard from "@/components/DashboardComponents/AnalyticsComponents/Qu
 
 function Quizzes() {
     return (
-        <div className="flex flex-1 flex-col">
-            {/* Outer div with overflow for scrolling */}
+        <div className="flex flex-1 flex-col overflow-hidden">
             <div className="overflow-y-auto h-full flex flex-1 flex-col">
                 <div className="text-[#1D2939]"><h3>Overview</h3></div>
                 <div className="pt-5 pb-3">

@@ -104,7 +104,7 @@ function Discussion() {
                         onKeyDown={handleKeyDown}
                         modules={{ toolbar: false }}
                         placeholder="Type your response here..."
-                        className=" text-[#1D2939] focus:outline-none rounded-b-[12px] custom-quill placeholder:not-italic"
+                        className=" text-[#929394] focus:outline-none rounded-b-[12px] custom-quill placeholder:poppins"
                         style={{
                             minHeight: "10px", // Initial height
                             maxHeight: "150px", // Maximum height before scrolling
