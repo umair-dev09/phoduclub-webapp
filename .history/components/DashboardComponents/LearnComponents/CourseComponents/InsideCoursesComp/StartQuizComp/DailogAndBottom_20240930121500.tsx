@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import { Dialog, DialogBackdrop, DialogPanel } from "@headlessui/react";
 import Image from "next/image";
 
+
 type QuizProps = {
     isOpen: boolean;
     setIsOpen: (isOpen: boolean) => void;
@@ -45,6 +46,7 @@ function Quiz({ isOpen, setIsOpen }: QuizProps) {
             document.removeEventListener("click", handleOutsideClick);
         };
     }, [showBottomSheet]); // Only depend on `showBottomSheet` state
+
 
 
     return (
@@ -146,7 +148,8 @@ function Quiz({ isOpen, setIsOpen }: QuizProps) {
                                         </div>
                                         <div className="w-[168.75px] h-[160px] gap-[20px] flex flex-col mt-4">
                                             <div className="w-[168.75px] h-[160px] gap-[20px] flex flex-col mt-4">
-                                                <span className="font-normal text-base text-[#667085] flex flex-row">
+
+                                                {/* <span className="font-normal text-base text-[#667085] flex flex-row">
                                                     <input
                                                         type="radio"
                                                         name="option"
@@ -185,7 +188,12 @@ function Quiz({ isOpen, setIsOpen }: QuizProps) {
                                                         onChange={(e) => setOption(e.target.value)}
                                                     />
                                                     <label className="ml-2 ">4000</label>
-                                                </span>
+                                                </span> */}
+
+
+
+
+
                                             </div>
                                         </div>
                                     </div>
@@ -319,6 +327,5 @@ function Quiz({ isOpen, setIsOpen }: QuizProps) {
 }
 
 export default Quiz;
-
 
 
