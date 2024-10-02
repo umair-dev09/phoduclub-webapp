@@ -2,7 +2,7 @@
 
 import React from "react";
 import TableComps from '@/components/DashboardComponents/AnalyticsComponents/Test-Series-Components/TestSeriesComp';
-import { LineChart, Line, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer } from "recharts";
+import { LineChart, Line, CartesianGrid, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer } from "recharts";
 
 const data = [
     {
@@ -88,6 +88,7 @@ function TestSeries() {
                                         <LineChart data={data} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
                                             <XAxis dataKey="name" />
                                             <YAxis />
+                                            <CartesianGrid />
                                             <Tooltip />
                                             <Legend
                                                 layout="horizontal"
