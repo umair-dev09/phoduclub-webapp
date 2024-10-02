@@ -1,7 +1,10 @@
+'use client';
+
 import React from "react";
 import Leaderboard from "@/components/DashboardComponents/AnalyticsComponents/Quizzes-Components/Leaderboard";
 
 function Quizzes() {
+
     return (
         <div className="flex flex-1 flex-col pt-6">
             <div className="text-[#1D2939]"><h3>Overview</h3></div>
