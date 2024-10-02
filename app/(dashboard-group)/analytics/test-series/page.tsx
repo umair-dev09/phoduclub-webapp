@@ -95,7 +95,7 @@ function TestSeries() {
                                         data={chartData}
                                         dataKey="visitors"
                                         nameKey="browser"
-                                        innerRadius={50}
+                                        innerRadius={60}
                                         strokeWidth={5}
                                     >
                                         {chartData.map((entry, index) => (

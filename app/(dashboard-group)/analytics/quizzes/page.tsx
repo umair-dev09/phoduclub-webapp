@@ -1,4 +1,5 @@
-import React from "react";
+"use client";
+import React, { useState } from "react";
 import Leaderboard from "@/components/DashboardComponents/AnalyticsComponents/Quizzes-Components/Leaderboard";
 import { Bar, BarChart, CartesianGrid, Legend, ResponsiveContainer, Tooltip, TooltipProps, XAxis, YAxis } from "recharts";
 
@@ -78,6 +79,35 @@ const CustomTooltip: React.FC<CustomTooltipProps> = ({ active, payload, label })
 
 
 function Quizzes() {
+
+
+    const data = [
+        {
+            "name": "Chemistry",
+            "correct": 12,
+            "incorrect": 5
+        },
+        {
+            "name": "Physics",
+            "correct": 4,
+            "incorrect": 1
+        },
+        {
+            "name": "Maths",
+            "correct": 9,
+            "incorrect": 1
+        },
+
+
+
+
+    ];
+
+
+    // Define a color scale for each subject
+   
+
+
     return (
         <div className="flex flex-1 flex-col pt-6">
             <div className="text-[#1D2939]"><h3>Overview</h3></div>
@@ -225,7 +255,14 @@ function Quizzes() {
 
                 </div>
 
-                <div className="w-1/2 bg-white rounded-xl">Donut Graph</div>
+                <div className="w-1/2 rounded-xl h-[320px] flex-col bg-[#FFFFFF] border border-solid border-[#EAECF0]">
+                    
+
+
+
+
+
+                </div>
             </div>
 
             <div className="py-5 text-[#1D2939]"><h3>Leaderboard Analytics</h3></div>
@@ -269,5 +306,3 @@ function Quizzes() {
 }
 
 export default Quizzes;
-
-
