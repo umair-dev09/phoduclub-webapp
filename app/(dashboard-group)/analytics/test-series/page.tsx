@@ -47,6 +47,7 @@ const chartConfig = {
 } satisfies ChartConfig;
 
 function TestSeries() {
+
     const totalVisitors = React.useMemo(() => {
         return chartData.reduce((acc, curr) => acc + curr.visitors, 0);
     }, []);
@@ -55,22 +56,19 @@ function TestSeries() {
         <div className="flex flex-1 flex-col pt-6">
             {/* Table Section */}
             <table className="flex flex-col w-full h-min border border-lightGrey rounded-xl bg-white text-sm font-medium">
-                <thead>
-                    <tr className="flex flex-1 py-3 text-neutral-500">
-                        <th className="w-[30%] px-8">Test</th>
-                        <th className="w-[15%] text-center"><p>Scores</p></th>
-                        <th className="w-[15%] text-center"><p>Attempted Questions</p></th>
-                        <th className="w-[15%] text-center"><p>Accuracy</p></th>
-                        <th className="w-[15%] text-center"><p>Time Taken</p></th>
-                        <th className="w-[15%] text-center"><p>Total Time</p></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <TableComps />
-                    <TableComps />
-                    <TableComps />
-                    <TableComps />
-                </tbody>
+                <tr className="flex flex-1 py-3 text-neutral-500">
+                    <td className="w-[30%] px-8">Test</td>
+                    <td className="w-[15%] text-center"><p>Scores</p></td>
+                    <td className="w-[15%] text-center"><p>Attempted Question</p></td>
+                    <td className="w-[15%] text-center"><p>Accuracy</p></td>
+                    <td className="w-[15%] text-center"><p>Time Taken</p></td>
+                    <td className="w-[15%] text-center"><p>Total Time</p></td>
+                </tr>
+
+                <TableComps />
+
+
+
             </table>
 
             <div className="mb-8">

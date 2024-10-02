@@ -10,6 +10,7 @@ function Quiz() {
     const [quizEndTime, setQuizEndTime] = useState(2 * 3600 + 29 * 60 + 55);
     const [quizStartTime, setQuizStartTime] = useState(2 * 3600 + 29 * 60 + 55);
 
+
     // Utility function to format time in hh:mm:ss
     const formatTime = (timeInSeconds: number) => {
         const hours = Math.floor(timeInSeconds / 3600);
@@ -32,9 +33,18 @@ function Quiz() {
 
     let [showQuizDialog, setShowQuizDialog] = useState(false);
 
+
+
+    const [showDrawer, setShowDrawer] = useState(false);
     const onStartQuiz = () => {
         setShowQuizDialog(true);
     };
+
+    const openDrawer = () => {
+        setShowDrawer(true); // Open the Drawer
+        setShowQuizDialog(false); // Close the dialog when the drawer opens
+    };
+
 
     return (
         <div className="flex flex-1">
@@ -46,28 +56,39 @@ function Quiz() {
 
             <div className="grid grid-cols-3 gap-5 w-full">
                 {/* Quiz 1 */}
-                <div className="flex flex-col justify-between h-[11.25rem] rounded-xl py-6 px-6 bg-white border border-lightGrey">
-                    <div className="flex flex-col gap-1 text-xs">
-                        <div className="text-base font-semibold">Physics</div>
-                        <div>10 Questions</div>
-                    </div>
-                    <div className="flex flex-row text-[#DE3024]">
-                        <div className="mr-1">
-                            <Image src="/icons/stop-watch.svg" alt="stop watch" width={18} height={18} />
-                        </div>
-                        <div className="flex items-center text-xs gap-1">
-                            Quiz ends in <span className="font-semibold">{formatTime(quizEndTime)}</span>
-                        </div>
-                    </div>
-                    <div>
-                        <button onClick={onStartQuiz} className="flex items-center justify-center w-full px-[14px] py-[10px] text-xs text-white font-semibold shadow-inner-button bg-custompurple rounded-[6px] border border-darkPurple ">
-                            Start Quiz
-                        </button>
-                    </div>
-                </div>
+                <div className="relative flex flex-col justify-between h-[11.25rem] rounded-xl py-6 px-6 bg-white border border-lightGrey">
+    {/* Live Banner */}
+    <div className="absolute top-0 right-0 mt-3 mr-[-4.5px]">
+        <Image className="relative" src="/icons/Live-Banner.svg" alt="live banner" width={48} height={30} />
+        <span className="absolute top-[6px] right-1 text-[11px] font-semibold text-white rounded-md px-2 py-1">LIVE</span>
+    </div>
+
+    {/* Quiz Information */}
+    <div className="flex flex-col gap-1 text-xs">
+        <div className="text-base font-semibold">Physics</div>
+        <div>10 Questions</div>
+    </div>
+
+    {/* Countdown Timer */}
+    <div className="flex flex-row text-[#DE3024]">
+        <div className="mr-1">
+            <Image src="/icons/stop-watch.svg" alt="stop watch" width={18} height={18} />
+        </div>
+        <div className="flex items-center text-xs gap-1">
+            Quiz ends in <span className="font-semibold">{formatTime(quizEndTime)}</span>
+        </div>
+    </div>
+
+    {/* Start Quiz Button */}
+    <div>
+        <button className="flex items-center justify-center w-full px-[14px] py-[10px] text-xs text-white font-semibold shadow-inner-button bg-custompurple rounded-[6px] border border-darkPurple">
+            Start Quiz
+        </button>
+    </div>
+</div>
 
                 {/* Quiz 2 */}
-                {/* <div className="flex flex-col justify-between h-[11.25rem] rounded-xl py-6 px-6 bg-white border border-lightGrey">
+                <div className="flex flex-col justify-between h-[11.25rem] rounded-xl py-6 px-6 bg-white border border-lightGrey">
                     <div className="flex flex-col gap-1 text-xs">
                         <div className="text-base font-semibold">Physics</div>
                         <div>10 Questions</div>
@@ -85,7 +106,7 @@ function Quiz() {
                             Start Quiz
                         </button>
                     </div>
-                </div> */}
+                </div>
             </div>
 
             <Dialog open={showQuizDialog} onClose={() => setShowQuizDialog(false)} className="relative z-50">
@@ -168,7 +189,9 @@ function Quiz() {
                                     style={{
                                         border: "1px solid #800EE2",
 
+
                                     }}
+                                    onClick={openDrawer}
 
                                 >
                                     Start Now
@@ -179,10 +202,7 @@ function Quiz() {
                 </div>
             </Dialog>
 
-            <div>
-                <BottomUpSheet />
-            </div>
-
+            <BottomUpSheet isOpen={showDrawer} toggleDrawer={() => setShowDrawer(!showDrawer)} />
         </div>
     );
 }

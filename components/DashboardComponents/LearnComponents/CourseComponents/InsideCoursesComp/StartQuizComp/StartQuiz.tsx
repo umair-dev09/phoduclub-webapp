@@ -2,7 +2,7 @@
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import StartQuiz from "./Bottomsheet"
+import StartQuiz from "./DailogAndBottom"
 
 function startquiz() {
 
