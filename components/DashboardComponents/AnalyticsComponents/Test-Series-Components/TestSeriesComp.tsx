@@ -16,8 +16,8 @@ function TestSeriesComp() {
         <button className="hover:bg-[#EAECF0] "
             onClick={() => handleTabClick("PhoduJeeMainsTestSeries", "/analytics/test-series/PhoduJeeMainsTestSeries")}>
             <div>
-                <tr className="flex flex-1 py-3 pl-8 border-t border-lightGrey text-[#1D2939]">
-                    <td className="flex flex-col w-[30%]">
+                <tr className="flex flex-1 py-3 border-t border-lightGrey text-[#1D2939]">
+                    <td className="flex flex-col px-8 w-[30%] text-left">
                         <div className="text-custompurple font-semibold underline">Phodu JEE Mains Test Series 2025</div>
                         <div className="text-[13px] text-neutral-500">30 Tests</div>
                     </td>
