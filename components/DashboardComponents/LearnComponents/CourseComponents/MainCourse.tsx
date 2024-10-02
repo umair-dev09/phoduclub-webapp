@@ -31,7 +31,6 @@ function Main() {
             {/* Main course container with flex layout and specified dimensions */}
             <button onClick={handleTabClick}
                 className="flex ml-4 items-center justify-center flex-col rounded-lg relative overflow-hidden transition-transform duration-300 ease-in-out w-[350px] h-[330px] mr-4">
-
                 {/* Course image and suggestion label container */}
                 <div className="flex flex-1 h-[60%] items-center flex-col">
 

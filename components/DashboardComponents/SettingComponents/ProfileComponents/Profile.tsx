@@ -404,7 +404,7 @@ function Profile() {
   
         {/* Sticky Footer Div */}
     
-        {isEditing && (
+        {isEditing && ( 
                 <div className='flex w-full sticky bottom-0 items-center justify-end p-5 border-t border-solid border-[#eaecf0] h-[70px] bg-white ' style={{ boxShadow: '0 -2px 10px rgba(0, 0, 0, 0.1)' }}>
                     <div className={styles.insideBase}>
                         
