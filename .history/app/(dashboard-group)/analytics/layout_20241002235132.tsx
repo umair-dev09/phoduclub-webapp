@@ -25,8 +25,8 @@ function Layout({ children }: LayoutProps) {
 
     ) {
         return (
-            <div className='flex flex-1 flex-col mt-8'>
-                <div className='flex w-full flex-row pb-3 border-b gap-3 mx-8'>
+            <div className='flex flex-1 flex-col px-8 mt-8'>
+                <div className='flex w-full flex-row pb-3 border-b gap-3'>
                     <button
                         onClick={() => handleTabClick('test-series', '/analytics/test-series')}
                         className={activeTab === 'test-series' ? 'font-bold' : ''}
@@ -40,7 +40,7 @@ function Layout({ children }: LayoutProps) {
                         Quizzes
                     </button>
                 </div>
-                <div className='flex flex-1 overflow-y-auto'>
+                <div className='flex flex-1'>
                     {children}
                 </div>
             </div>

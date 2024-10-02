@@ -2,41 +2,6 @@
 import React, { useState } from "react";
 import Leaderboard from "@/components/DashboardComponents/AnalyticsComponents/Quizzes-Components/Leaderboard";
 import { Bar, BarChart, CartesianGrid, Legend, ResponsiveContainer, Tooltip, TooltipProps, XAxis, YAxis } from "recharts";
-import { PieChart, Pie, Cell } from 'recharts';
-import { ChartLegend, ChartLegendContent } from "@/components/ui/chart"
-
-import {
-    ChartConfig,
-    ChartContainer,
-    ChartTooltip,
-    ChartTooltipContent,
-} from "@/components/ui/chart"
-
-export const description = "A donut chart with text"
-
-const chartData = [
-    { browser: "Physics", visitors: 275, fill: "#C7A5FF" },
-    { browser: "Chemistry", visitors: 200, fill: "#9012FF" },
-    { browser: "Mathematics", visitors: 287, fill: "#5C02B0" },
-];
-
-const chartConfig = {
-    visitors: {
-        label: "Subjects",
-    },
-    Physics: {
-        label: "Physics",
-        color: "#C7A5FF",
-    },
-    Chemistry: {
-        label: "Chemistry",
-        color: "#9012FF",
-    },
-    Mathematics: {
-        label: "Mathematics",
-        color: "#5C02B0",
-    },
-} satisfies ChartConfig;
 
 interface CustomTooltipProps {
     active?: boolean;
@@ -62,6 +27,12 @@ const CustomTooltip: React.FC<CustomTooltipProps> = ({ active, payload, label })
                 pointerEvents: 'none', // Prevent mouse events from affecting the tooltip
                 boxShadow: "2px 5px 11px 0px #0000001A",
                 padding: '10px'
+
+
+
+
+
+
             }}>
                 {/* Tooltip content */}
                 <div className="m-2">
@@ -73,9 +44,14 @@ const CustomTooltip: React.FC<CustomTooltipProps> = ({ active, payload, label })
                                 height: '10px',
                                 borderRadius: '50%',
                                 backgroundColor: '#17B26A', // Color for "Correct"
+
+
+
+
                             }} />
                             <span className="text-[#667085] font-normal text-sm ml-1">{`Correct `}</span>
                             <span className="ml-14 font-semibold text-base text-[#1D2939]">{correctValue}</span>
+
                         </div>
                     </div>
                     <div style={{ display: 'flex', alignItems: 'center', width: "139px", height: "27px", justifyItems: 'center' }}>
@@ -87,9 +63,63 @@ const CustomTooltip: React.FC<CustomTooltipProps> = ({ active, payload, label })
                                 borderRadius: '50%',
                                 backgroundColor: '#F04438', // Color for "Incorrect"
                                 marginRight: '4px'
+
                             }} />
                             <span className="text-[#667085] font-normal text-sm ml-1">{`Incorrect `}</span>
                             <span className="ml-12 mr-2 font-semibold text-base text-[#1D2939]">{incorrectValue}</span>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        );
+    }
+    return null;
+}
+// ==============================================================================================================
+const CustomTooltip1: React.FC<CustomTooltipProps> = ({ active, payload }) => {
+    if (active && payload && payload.length) {
+        const data = payload[0].payload;
+        const attempts = data.Attempts;
+        const fillColor = data.fill;
+        return (
+            <div style={{
+                position: 'relative',
+                backgroundColor: 'white',
+                border: '1px solid #EAECF0',
+                borderRadius: '8px',
+                width: '150px',
+                height: "50px",
+
+                fontSize: '14px',
+                pointerEvents: 'none', // Prevent mouse events from affecting the tooltip
+                boxShadow: "2px 5px 11px 0px #0000001A",
+
+
+
+
+
+
+
+            }}>
+                {/* Tooltip content */}
+                <div className="mt-3">
+
+                    <div style={{ display: 'flex', alignItems: 'center', width: "full", height: "30px", justifyItems: 'center', }}>
+                        <div style={{ display: 'flex', alignItems: 'center', }}>
+                            <span style={{
+                                display: 'inline-block',
+                                width: '10px',
+                                height: '10px',
+                                borderRadius: '50%',
+                                backgroundColor: fillColor,
+                                marginLeft: "10px"
+
+
+                            }} />
+                            <span className="text-[#667085] font-normal text-sm ml-2">{`Attempts `}</span>
+                            <span className="font-semibold text-base text-[#1D2939] ml-8 ">{attempts}</span>
+
                         </div>
                     </div>
                 </div>
@@ -101,12 +131,7 @@ const CustomTooltip: React.FC<CustomTooltipProps> = ({ active, payload, label })
 
 
 
-
 function Quizzes() {
-
-    const totalVisitors = React.useMemo(() => {
-        return chartData.reduce((acc, curr) => acc + curr.visitors, 0);
-    }, []);
 
 
     const data = [
@@ -125,10 +150,35 @@ function Quizzes() {
             "correct": 9,
             "incorrect": 1
         },
+
+
+
+
     ];
-    
+    const Attempts = [
+        {
+            "subject": "Maths",
+            "Attempts": 2,
+            fill: "#C7A5FF",
+        },
+        {
+            "subject": "Physics",
+            "Attempts": 18,
+            fill: "#5C02B0",
+        },
+        {
+            "subject": "Chemistry",
+            "Attempts": 8,
+            fill: '#9012FF',
+        }
+    ];
+
+    // Define a color scale for each subject
+
+
+
     return (
-        <div className="flex flex-1 flex-col py-6 mx-8">
+        <div className="flex flex-1 flex-col pt-6">
             <div className="text-[#1D2939]"><h3>Overview</h3></div>
             <div className="pt-5 pb-3">
                 <div className="bg-white p-4 flex flex-col rounded-2xl border border-lightGrey">
@@ -143,6 +193,7 @@ function Quizzes() {
                                 <div className="w-px bg-lightGrey h-4/5"></div>
                             </div>
                         </div>
+
                         {/* Attempted Questions */}
                         <div className="flex flex-1 flex-row justify-between pr-4">
                             <div className="flex flex-col gap-2">
@@ -153,12 +204,14 @@ function Quizzes() {
                                 <div className="w-px bg-lightGrey h-4/5"></div>
                             </div>
                         </div>
+
                         {/* Time Taken */}
                         <div className="flex flex-1 flex-col gap-2">
                             <div className="font-normal text-xs text-[#667085]">Time Taken</div>
                             <h3 className="text-[15px]">80 of 100 hrs</h3>
                         </div>
                     </div>
+
                     {/* Additional Stats */}
                     <div className="flex flex-row justify-between mt-9">
                         <div className="flex flex-1 flex-row justify-between pr-4">
@@ -170,6 +223,7 @@ function Quizzes() {
                                 <div className="w-px bg-lightGrey h-4/5"></div>
                             </div>
                         </div>
+
                         <div className="flex flex-1 flex-row justify-between pr-4">
                             <div className="flex flex-col gap-2">
                                 <div className="font-normal text-xs text-[#667085]">Answered Incorrect</div>
@@ -179,6 +233,7 @@ function Quizzes() {
                                 <div className="w-px bg-lightGrey h-4/5"></div>
                             </div>
                         </div>
+
                         <div className="flex flex-1 flex-col gap-2">
                             <div className="font-normal text-xs text-[#667085]">Total Score</div>
                             <h3 className="text-[15px]">568</h3>
@@ -186,11 +241,14 @@ function Quizzes() {
                     </div>
                 </div>
             </div>
+
+
             <div className="flex w-full h-auto flex-row gap-4">
                 <div className="w-1/2 rounded-xl h-[320px] flex-col bg-[#FFFFFF] border border-solid border-[#EAECF0]">
                     <div className="h-[50px] flex flex-row justify-between mt-3 ">
                         <span className="flex items-center justify-center ml-10 font-semibold text-[#1D2939] text-lg">Attempted Questions</span>
                         <div className=" flex flex-row gap-5">
+
                             <div className="flex flex-row gap-2">
                                 <span style={{
                                     display: 'inline-block',
@@ -199,7 +257,12 @@ function Quizzes() {
                                     borderRadius: '50%',
                                     backgroundColor: '#17B26A',
                                     marginTop: "19px" // Color for "Correct"
+
+
+
+
                                 }} />
+
                                 <span className="flex items-center justify-center text-[#667085] font-normal text-sm">Correct</span>
                             </div>
                             <div className="flex flex-row gap-2">
@@ -210,17 +273,27 @@ function Quizzes() {
                                     borderRadius: '50%',
                                     backgroundColor: '#F04438', // Color for "Incorrect"
                                     marginTop: "19px"
+
+
+
                                 }} />
+
                                 <span className="flex items-center justify-center text-[#667085] font-normal text-sm mr-5">Incorrect</span>
                             </div>
+
                         </div>
+
+
                     </div>
+
                     <ResponsiveContainer width="100%" height="80%">
                         <BarChart
+
                             data={data}
                             barGap={5}
                             barCategoryGap="5%"
                             margin={{ right: 20, }} // Set left margin to 0
+
                         >
                             <CartesianGrid strokeDasharray="3 3" horizontal={false} vertical={false} />
                             <XAxis
@@ -245,49 +318,65 @@ function Quizzes() {
                             <Bar dataKey="incorrect" fill="#F04438" barSize={55} />
                         </BarChart>
                     </ResponsiveContainer>
+
+
+
+
                 </div>
 
-                <div className="flex flex-col w-1/2 bg-white rounded-xl p-4">
-                    <div><h3>Score by Subjects</h3></div>
-                    <div className="flex flex-1 items-center">
-                        <ResponsiveContainer className='flex w-[50%]'>
-                            <ChartContainer
-                                config={chartConfig}
-                                className="h-auto w-[70%]"
-                            >
-                                <PieChart>
-                                    <ChartTooltip
-                                        cursor={false}
-                                        content={<ChartTooltipContent />}
-                                    />
-                                    <Pie
-                                        data={chartData}
-                                        dataKey="visitors"
-                                        nameKey="browser"
-                                        innerRadius={60}
-                                        strokeWidth={3}
-                                        stroke="#FFFFFF"
-                                    >
-                                        {chartData.map((entry, index) => (
-                                            <Cell key={`cell-${index}`} fill={entry.fill} />
-                                        ))}
-                                    </Pie>
-                                </PieChart>
-                                <ChartLegend content={<ChartLegendContent />} />
-                            </ChartContainer>
-                        </ResponsiveContainer>
-                        <div className="flex flex-col w-[50%] justify-evenly">
-                            {chartData.map((subject, index) => (
-                                <div key={index} className="flex flex-1">
-                                    <div><span className={`block rounded-full w-3 h-3 mr-2 mt-[23%]`} style={{ backgroundColor: subject.fill }}></span></div>
-                                    <div>
-                                        {subject.browser}
-                                        <h3>{subject.visitors}</h3>
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
-                    </div>
+                <div className="w-1/2 rounded-xl h-[320px] flex-col bg-[#FFFFFF] border border-solid border-[#EAECF0]">
+                    <ResponsiveContainer width="100%" height="60%">
+                        <BarChart
+                            data={Attempts}
+                            layout="vertical"
+
+
+
+                        >
+                            <CartesianGrid strokeDasharray="3 3" horizontal={false} vertical={false} />
+
+                            <XAxis
+                                type="number"  // X-axis will represent the numerical values (Attempts)
+                                fontFamily="poppins"
+                                fontSize={14}
+                                fontWeight={400}
+                                fill="#667085"
+                                domain={[0, 'dataMax']}
+                            />
+
+                            <YAxis
+                                type="category"  // Y-axis represents the subjects
+                                dataKey="subject"  // Use "subject" for the Y-axis labels (Maths, Physics, Chemistry)
+                                fontFamily="poppins"
+                                fontSize={14}
+                                fontWeight={400}
+                                fill="#667085"
+
+
+
+
+
+
+
+
+                            />
+
+                            <Legend wrapperStyle={{ display: 'none' }} />
+                            <Tooltip content={<CustomTooltip1 />} cursor={false} />
+                            <Bar
+                                dataKey="Attempts"
+                                barSize={35} // Adjust this size to create gaps between bars
+
+
+                            />
+
+                        </BarChart>
+                    </ResponsiveContainer>
+
+
+
+
+
                 </div>
             </div>
 
@@ -304,10 +393,6 @@ function Quizzes() {
                         <td className="w-[11%] text-center"><p>Accuracy</p></td>
                         <td className="w-[11%] text-center"><p>Time Spent</p></td>
                     </tr>
-                    <Leaderboard />
-                    <Leaderboard />
-                    <Leaderboard />
-                    <Leaderboard />
                     <Leaderboard />
                 </table>
                 <div>
@@ -336,3 +421,5 @@ function Quizzes() {
 }
 
 export default Quizzes;
+
+

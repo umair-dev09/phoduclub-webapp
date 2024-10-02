@@ -101,11 +101,11 @@ function JeeMains() {
                     </div>
                 </div>
             </div>
-            <div className="flex  h-auto flex-row gap-4 ml-8 mr-5">
+            <div className="flex w-full h-auto flex-row gap-4 ml-8 mr-5">
                 <div className=" rounded-xl h-[320px] flex-col bg-[#FFFFFF] border border-solid border-[#EAECF0]">
 
 
-                    rgre
+
 
                 </div>
 
@@ -116,7 +116,7 @@ function JeeMains() {
 
 
 
-            <div></div>
+
         </div>
     )
 }

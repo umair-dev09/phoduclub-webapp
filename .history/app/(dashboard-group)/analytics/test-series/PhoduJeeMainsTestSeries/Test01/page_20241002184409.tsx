@@ -105,7 +105,7 @@ function JeeMains() {
                 <div className=" rounded-xl h-[320px] flex-col bg-[#FFFFFF] border border-solid border-[#EAECF0]">
 
 
-                    rgre
+
 
                 </div>
 
@@ -116,7 +116,7 @@ function JeeMains() {
 
 
 
-            <div></div>
+
         </div>
     )
 }
