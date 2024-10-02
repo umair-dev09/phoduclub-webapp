@@ -12,6 +12,14 @@ function Layout({ children }: LayoutProps) {
     const router = useRouter();
     const pathname = usePathname();
 
+    // Use effect to check localStorage for the saved tab
+    useEffect(() => {
+        const savedTab = localStorage.getItem('activeTab');
+        if (savedTab) {
+            setActiveTab(savedTab);
+            router.push(`/analytics/${savedTab}`);
+        }
+    }, [router]);
 
     const handleTabClick = (tabName: React.SetStateAction<string>, path: string) => {
         setActiveTab(tabName);

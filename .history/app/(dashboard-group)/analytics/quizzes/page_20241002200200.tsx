@@ -3,10 +3,10 @@ import React, { useState } from "react";
 import Leaderboard from "@/components/DashboardComponents/AnalyticsComponents/Quizzes-Components/Leaderboard";
 import { Bar, BarChart, CartesianGrid, Legend, ResponsiveContainer, Tooltip, TooltipProps, XAxis, YAxis } from "recharts";
 
-interface CustomTooltipProps {
-    active?: boolean;
-    payload?: any[];
-    label?: string;
+interface CustomTooltipProps extends TooltipProps<number, string> {
+    active?: boolean; // Optional boolean for the active state
+    payload?: { value: number; name: string }[]; // Adjusted payload structure
+    label?: string; // Label for the tooltip
 }
 
 const CustomTooltip: React.FC<CustomTooltipProps> = ({ active, payload, label }) => {
@@ -76,7 +76,57 @@ const CustomTooltip: React.FC<CustomTooltipProps> = ({ active, payload, label })
     }
     return null;
 }
+// ==============================================================================================================
+const CustomTooltip1: React.FC<CustomTooltipProps> = ({ active, payload, label }) => {
+    if (active && payload && payload.length) {
+        const Attempts = payload.find(item => item.name === "Attempts")?.value;
 
+
+        return (
+            <div style={{
+                position: 'relative',
+                backgroundColor: 'white',
+                border: '1px solid #EAECF0',
+                borderRadius: '8px',
+                width: '140px',
+                height: "50px",
+
+                fontSize: '14px',
+                pointerEvents: 'none', // Prevent mouse events from affecting the tooltip
+                boxShadow: "2px 5px 11px 0px #0000001A",
+                padding: '10px'
+
+
+
+
+
+
+            }}>
+                {/* Tooltip content */}
+                <div className="m-2">
+
+                    <div style={{ display: 'flex', alignItems: 'center', width: "140px", height: "30px", justifyItems: 'center', margin: "10px" }}>
+                        <div style={{ display: 'flex', alignItems: 'center', }}>
+                            <span style={{
+                                display: 'inline-block',
+                                width: '10px',
+                                height: '10px',
+                                borderRadius: '50%',
+                                backgroundColor: '#C7A5FF', // Color for "Incorrect"
+
+
+                            }} />
+                            <span className="text-[#667085] font-normal text-sm">{`Attempts `}</span>
+                            <span className="font-semibold text-base text-[#1D2939]">{Attempts}</span>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        );
+    }
+    return null;
+}
 
 
 
@@ -104,7 +154,25 @@ function Quizzes() {
 
 
     ];
+    const Attempts = [
+        {
+            "subject": "Maths",
+            "Attempts": 2,
+            fill: "#C7A5FF",
+        },
+        {
+            "subject": "Physics",
+            "Attempts": 18,
+            fill: "#5C02B0",
+        },
+        {
+            "subject": "Chemistry",
+            "Attempts": 8,
+            fill: '#9012FF',
+        }
+    ];
 
+    // Define a color scale for each subject
 
 
 
@@ -256,6 +324,42 @@ function Quizzes() {
                 </div>
 
                 <div className="w-1/2 rounded-xl h-[320px] flex-col bg-[#FFFFFF] border border-solid border-[#EAECF0]">
+                    <ResponsiveContainer width="100%" height="80%">
+                        <BarChart
+                            data={Attempts}
+                            layout="vertical"  // Set the layout to vertical for horizontal bars
+                        >
+                            <CartesianGrid strokeDasharray="3 3" horizontal={false} vertical={false} />
+
+                            <XAxis
+                                type="number"  // X-axis will represent the numerical values (Attempts)
+                                fontFamily="poppins"
+                                fontSize={14}
+                                fontWeight={400}
+                                fill="#667085"
+                                domain={[0, 'dataMax']}
+                            />
+
+                            <YAxis
+                                type="category"  // Y-axis represents the subjects
+                                dataKey="subject"  // Use "subject" for the Y-axis labels (Maths, Physics, Chemistry)
+                                fontFamily="poppins"
+                                fontSize={14}
+                                fontWeight={400}
+                                fill="#667085"
+                            />
+
+                            <Legend wrapperStyle={{ display: 'none' }} />
+                            <Tooltip content={<CustomTooltip1 />} cursor={false} />
+                            <Bar
+                                dataKey="Attempts"
+                                barSize={55}
+
+
+                            />
+
+                        </BarChart>
+                    </ResponsiveContainer>
 
 
 

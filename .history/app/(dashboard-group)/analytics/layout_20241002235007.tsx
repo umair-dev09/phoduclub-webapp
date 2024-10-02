@@ -12,6 +12,7 @@ function Layout({ children }: LayoutProps) {
     const router = useRouter();
     const pathname = usePathname();
 
+    //
 
     const handleTabClick = (tabName: React.SetStateAction<string>, path: string) => {
         setActiveTab(tabName);

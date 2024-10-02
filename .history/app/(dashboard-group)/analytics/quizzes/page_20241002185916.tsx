@@ -3,10 +3,10 @@ import React, { useState } from "react";
 import Leaderboard from "@/components/DashboardComponents/AnalyticsComponents/Quizzes-Components/Leaderboard";
 import { Bar, BarChart, CartesianGrid, Legend, ResponsiveContainer, Tooltip, TooltipProps, XAxis, YAxis } from "recharts";
 
-interface CustomTooltipProps {
-    active?: boolean;
-    payload?: any[];
-    label?: string;
+interface CustomTooltipProps extends TooltipProps<number, string> {
+    active?: boolean; // Optional boolean for the active state
+    payload?: { value: number; name: string }[]; // Adjusted payload structure
+    label?: string; // Label for the tooltip
 }
 
 const CustomTooltip: React.FC<CustomTooltipProps> = ({ active, payload, label }) => {
@@ -78,8 +78,6 @@ const CustomTooltip: React.FC<CustomTooltipProps> = ({ active, payload, label })
 }
 
 
-
-
 function Quizzes() {
 
 
@@ -104,9 +102,27 @@ function Quizzes() {
 
 
     ];
+    const Attempts = [
+        {
+            "subject": "Chemistry",
+            "Attempts": 12,
+
+        },
+        {
+            "subject": "Physics",
+            "Attempts": 20,
+
+        },
+        {
+            "subject": "Maths",
+            "Attempts": 2,
+
+        },
 
 
 
+
+    ];
 
     return (
         <div className="flex flex-1 flex-col pt-6">
@@ -256,9 +272,38 @@ function Quizzes() {
                 </div>
 
                 <div className="w-1/2 rounded-xl h-[320px] flex-col bg-[#FFFFFF] border border-solid border-[#EAECF0]">
+                    <ResponsiveContainer width="100%" height="80%">
+                        <BarChart
 
+                            data={Attempts}
 
+                            margin={{ right: 20, }} // Set left margin to 0
 
+                        >
+                            <CartesianGrid strokeDasharray="3 3" horizontal={false} vertical={false} />
+                            <XAxis
+                                domain={[0, 'dataMax']}
+                                fontFamily="poppins"
+                                fontSize={14}
+                                fontWeight={400}
+                                fill="#667085"
+                                padding={{ left: 10, right: 20 }}
+                            />
+                            <YAxis
+
+                                dataKey="subject"
+                                fontFamily="poppins"
+                                fontSize={14}
+                                fontWeight={400}
+                                fill="#667085"
+
+                            />
+
+                            <Legend wrapperStyle={{ display: 'none' }} />
+                            <Bar dataKey="Attempts" fill="#5C02B0" barSize={55} />
+
+                        </BarChart>
+                    </ResponsiveContainer>
 
 
                 </div>

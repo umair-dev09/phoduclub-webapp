@@ -76,7 +76,58 @@ const CustomTooltip: React.FC<CustomTooltipProps> = ({ active, payload, label })
     }
     return null;
 }
+// ==============================================================================================================
+const CustomTooltip1: React.FC<CustomTooltipProps> = ({ active, payload }) => {
+    if (active && payload && payload.length) {
+        const data = payload[0].payload;
+        const attempts = data.Attempts;
+        const fillColor = data.fill;
+        return (
+            <div style={{
+                position: 'relative',
+                backgroundColor: 'white',
+                border: '1px solid #EAECF0',
+                borderRadius: '8px',
+                width: '150px',
+                height: "50px",
 
+                fontSize: '14px',
+                pointerEvents: 'none', // Prevent mouse events from affecting the tooltip
+                boxShadow: "2px 5px 11px 0px #0000001A",
+
+
+
+
+
+
+
+            }}>
+                {/* Tooltip content */}
+                <div className="mt-3">
+
+                    <div style={{ display: 'flex', alignItems: 'center', width: "full", height: "30px", justifyItems: 'center', }}>
+                        <div style={{ display: 'flex', alignItems: 'center', }}>
+                            <span style={{
+                                display: 'inline-block',
+                                width: '10px',
+                                height: '10px',
+                                borderRadius: '50%',
+                                backgroundColor: fillColor,
+                                marginLeft: "10px"
+
+
+                            }} />
+                            <span className="text-[#667085] font-normal text-sm ml-2">{`Attempts `}</span>
+                            <span className="font-semibold text-base text-[#1D2939] ml-8 ">{attempts}</span>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        );
+    }
+    return null;
+}
 
 
 
@@ -104,7 +155,25 @@ function Quizzes() {
 
 
     ];
+    const Attempts = [
+        {
+            "subject": "Maths",
+            "Attempts": 2,
+            fill: "#C7A5FF",
+        },
+        {
+            "subject": "Physics",
+            "Attempts": 18,
+            fill: "#5C02B0",
+        },
+        {
+            "subject": "Chemistry",
+            "Attempts": 8,
+            fill: '#9012FF',
+        }
+    ];
 
+    // Define a color scale for each subject
 
 
 
@@ -256,6 +325,47 @@ function Quizzes() {
                 </div>
 
                 <div className="w-1/2 rounded-xl h-[320px] flex-col bg-[#FFFFFF] border border-solid border-[#EAECF0]">
+                    <ResponsiveContainer width="100%" height="80%">
+                        <BarChart
+                            data={Attempts}
+                            layout="vertical"
+
+
+                        >
+                            <CartesianGrid strokeDasharray="3 3" horizontal={false} vertical={false} />
+
+                            <XAxis
+                                type="number"  // X-axis will represent the numerical values (Attempts)
+                                fontFamily="poppins"
+                                fontSize={14}
+                                fontWeight={400}
+                                fill="#667085"
+                                domain={[0, 'dataMax']}
+                            />
+
+                            <YAxis
+                                type="category"  // Y-axis represents the subjects
+                                dataKey="subject"  // Use "subject" for the Y-axis labels (Maths, Physics, Chemistry)
+                                fontFamily="poppins"
+                                fontSize={14}
+                                fontWeight={400}
+                                fill="#667085"
+
+
+
+                            />
+
+                            <Legend wrapperStyle={{ display: 'none' }} />
+                            <Tooltip content={<CustomTooltip1 />} cursor={false} />
+                            <Bar
+                                dataKey="Attempts"
+                                barSize={35}
+
+
+                            />
+
+                        </BarChart>
+                    </ResponsiveContainer>
 
 
 
