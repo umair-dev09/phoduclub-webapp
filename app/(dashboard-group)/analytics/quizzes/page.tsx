@@ -22,7 +22,7 @@ const chartData = [
 
 const chartConfig = {
     visitors: {
-        label: "Visitors",
+        label: "Subjects",
     },
     Physics: {
         label: "Physics",
@@ -126,7 +126,7 @@ function Quizzes() {
             "incorrect": 1
         },
     ];
-    // Define a color scale for each subject
+    
     return (
         <div className="flex flex-1 flex-col py-6 mx-8">
             <div className="text-[#1D2939]"><h3>Overview</h3></div>
@@ -265,7 +265,8 @@ function Quizzes() {
                                         dataKey="visitors"
                                         nameKey="browser"
                                         innerRadius={60}
-                                        strokeWidth={10}
+                                        strokeWidth={3}
+                                        stroke="#FFFFFF"
                                     >
                                         {chartData.map((entry, index) => (
                                             <Cell key={`cell-${index}`} fill={entry.fill} />
@@ -277,11 +278,11 @@ function Quizzes() {
                         </ResponsiveContainer>
                         <div className="flex flex-col w-[50%] justify-evenly">
                             {chartData.map((subject, index) => (
-                                <div key={index} className="flex flex-1 items-center">
-                                    <span className={`block items-start rounded-full w-3 h-3 mr-2`} style={{ backgroundColor: subject.fill }}></span>
+                                <div key={index} className="flex flex-1">
+                                    <div><span className={`block rounded-full w-3 h-3 mr-2 mt-[23%]`} style={{ backgroundColor: subject.fill }}></span></div>
                                     <div>
                                         {subject.browser}
-                                        <p>{subject.visitors}</p>
+                                        <h3>{subject.visitors}</h3>
                                     </div>
                                 </div>
                             ))}
@@ -303,6 +304,10 @@ function Quizzes() {
                         <td className="w-[11%] text-center"><p>Accuracy</p></td>
                         <td className="w-[11%] text-center"><p>Time Spent</p></td>
                     </tr>
+                    <Leaderboard />
+                    <Leaderboard />
+                    <Leaderboard />
+                    <Leaderboard />
                     <Leaderboard />
                 </table>
                 <div>
