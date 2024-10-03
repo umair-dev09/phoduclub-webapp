@@ -2,8 +2,7 @@
 
 import React from "react";
 import TableComps from '@/components/DashboardComponents/AnalyticsComponents/Test-Series-Components/TestSeriesComp';
-import { LineChart, Line, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer, CartesianGrid } from "recharts";
-// this is where the code for custom Tooltip
+import { LineChart, Line, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer } from "recharts";
 interface CustomTooltipProps {
     active?: boolean;
     payload?: any[];
@@ -33,50 +32,44 @@ const CustomTooltip: React.FC<CustomTooltipProps> = ({ active, payload, label })
             }}>
                 {/* Tooltip content */}
                 <div className="m-2">
-                    <div style={{ display: 'flex', alignItems: 'center', width: "full", height: "27px", justifyItems: 'center', }}>
-                        <div style={{ display: 'flex', alignItems: 'center', }}>
+                    <div style={{ display: 'flex', alignItems: 'center', width: "199px", height: "27px", justifyItems: 'center', background: "red" }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '3px' }}>
                             <span style={{
                                 display: 'inline-block',
                                 width: '10px',
                                 height: '10px',
                                 borderRadius: '50%',
-                                backgroundColor: "#17B26A"
+                                backgroundColor: "#973AFF"
                             }} />
-
-                            <span className="text-[#667085] font-normal text-sm ml-2 ">{`Correct `}</span>
-
-                            <span className="font-semibold text-base text-[#1D2939]" style={{ marginLeft: '72px' }}>
-                                {correctValue}
-                            </span>
-                        </div>
-
-                    </div>
-                    <div style={{ display: 'flex', alignItems: 'center', width: "full", height: "27px", justifyItems: 'center' }}>
-                        <div style={{ display: 'flex', alignItems: 'center', }}>
-
-                            <span style={{
-                                display: 'inline-block',
-                                width: '10px',
-                                height: '10px',
-                                borderRadius: '50%',
-                                backgroundColor: "#F04438",
-
-                            }} />
-                            <span className="text-[#667085] font-normal text-sm ml-2">{`Incorrect `}</span>
-                            <span className="font-semibold text-base text-[#1D2939]" style={{ marginLeft: '60px' }}>{incorrectValue}</span>
+                            <span className="text-[#667085] font-normal text-sm ml-1">{`Correct `}</span>
+                            <span className="ml-14 font-semibold text-base text-[#1D2939]">{correctValue}</span>
                         </div>
                     </div>
-                    <div style={{ display: 'flex', alignItems: 'center', width: "full", height: "27px", justifyItems: 'center' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', width: "199px", height: "27px", justifyItems: 'center', background: "green" }}>
                         <div style={{ display: 'flex', alignItems: 'center', }}>
                             <span style={{
                                 display: 'inline-block',
                                 width: '10px',
                                 height: '10px',
                                 borderRadius: '50%',
-                                backgroundColor: '#973AFF',
+                                backgroundColor: "#17B26A",
+                                marginRight: '4px'
                             }} />
-                            <span className="text-[#667085] font-normal text-sm ml-2">{`overall `}</span>
-                            <span className="font-semibold text-base text-[#1D2939]" style={{ marginLeft: '76px' }}>{overallValue}</span>
+                            <span className="text-[#667085] font-normal text-sm ml-1">{`Incorrect `}</span>
+                            <span className="ml-15 mr-2 font-semibold text-base text-[#1D2939]">{incorrectValue}</span>
+                        </div>
+                    </div>
+                    <div style={{ display: 'flex', alignItems: 'center', width: "199px", height: "27px", justifyItems: 'center', background: "yellow" }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '3px' }}>
+                            <span style={{
+                                display: 'inline-block',
+                                width: '10px',
+                                height: '10px',
+                                borderRadius: '50%',
+                                backgroundColor: '#F04438',
+                            }} />
+                            <span className="text-[#667085] font-normal text-sm ml-1">{`overall `}</span>
+                            <span className="ml-14 font-semibold text-base text-[#1D2939]">{overallValue}</span>
                         </div>
                     </div>
                 </div>
@@ -85,46 +78,50 @@ const CustomTooltip: React.FC<CustomTooltipProps> = ({ active, payload, label })
     }
     return null;
 }
-// THe End----------------------------------------------------------------------------------------------------------------------------------------------------------
 
 const data = [
     {
-        "name": "First 30 mins",
+        "name": "Page A",
         "correct": 4000,
         "incorrect": 2400,
         "overall": 2400
     },
     {
-        "name": "Next 30 mins",
+        "name": "Page B",
         "correct": 3000,
         "incorrect": 1398,
         "overall": 2210
     },
     {
-        "name": "Next 30 mins",
+        "name": "Page C",
         "correct": 2000,
         "incorrect": 9800,
         "overall": 2290
     },
     {
-        "name": "Next 30 mins",
+        "name": "Page D",
         "correct": 2780,
         "incorrect": 3908,
         "overall": 2000
     },
     {
-        "name": "Next 30 mins",
+        "name": "Page E",
         "correct": 1890,
         "incorrect": 4800,
         "overall": 2181
     },
     {
-        "name": "Next 30 mins",
+        "name": "Page F",
         "correct": 2390,
         "incorrect": 3800,
         "overall": 2500
     },
-
+    {
+        "name": "Page G",
+        "correct": 3490,
+        "incorrect": 4300,
+        "overall": 2100
+    }
 ]
 
 function TestSeries() {
@@ -164,19 +161,8 @@ function TestSeries() {
                                 <div style={{ height: '300px' }}>
                                     <ResponsiveContainer width="100%" height="100%">
                                         <LineChart data={data} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
-                                            <CartesianGrid stroke="#EAECF0" />
-                                            <XAxis dataKey="name"
-                                                fontFamily="poppins"
-                                                fontSize={14}
-                                                fontWeight={400}
-                                                fill="#667085"
-
-                                            />
-                                            <YAxis
-                                                fontFamily="poppins"
-                                                fontSize={14}
-                                                fontWeight={400}
-                                                fill="#667085" />
+                                            <XAxis dataKey="name" />
+                                            <YAxis />
                                             <Tooltip content={<CustomTooltip />} cursor={false} />
                                             <Legend
                                                 layout="horizontal"
@@ -185,11 +171,9 @@ function TestSeries() {
                                                 className="mb-2"
                                                 wrapperStyle={{ display: 'none' }}
                                             />
-                                            <Line type="monotone" dataKey="overall" stroke="#973AFF" dot={false} strokeWidth={2} />
-                                            <Line type="monotone" dataKey="correct" stroke="#17B26A" dot={false} strokeWidth={2} />
-                                            <Line type="monotone" dataKey="incorrect" stroke="#F04438" dot={false} strokeWidth={2} />
-
-
+                                            <Line type="monotone" dataKey="correct" stroke="#973AFF" dot={false} />
+                                            <Line type="monotone" dataKey="incorrect" stroke="#17B26A" dot={false} />
+                                            <Line type="monotone" dataKey="overall" stroke="#F04438" dot={false} />
                                         </LineChart>
                                     </ResponsiveContainer>
                                 </div>

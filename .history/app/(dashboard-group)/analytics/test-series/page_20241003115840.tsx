@@ -3,7 +3,6 @@
 import React from "react";
 import TableComps from '@/components/DashboardComponents/AnalyticsComponents/Test-Series-Components/TestSeriesComp';
 import { LineChart, Line, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer, CartesianGrid } from "recharts";
-// this is where the code for custom Tooltip
 interface CustomTooltipProps {
     active?: boolean;
     payload?: any[];
@@ -85,46 +84,50 @@ const CustomTooltip: React.FC<CustomTooltipProps> = ({ active, payload, label })
     }
     return null;
 }
-// THe End----------------------------------------------------------------------------------------------------------------------------------------------------------
 
 const data = [
     {
-        "name": "First 30 mins",
+        "name": "Page A",
         "correct": 4000,
         "incorrect": 2400,
         "overall": 2400
     },
     {
-        "name": "Next 30 mins",
+        "name": "Page B",
         "correct": 3000,
         "incorrect": 1398,
         "overall": 2210
     },
     {
-        "name": "Next 30 mins",
+        "name": "Page C",
         "correct": 2000,
         "incorrect": 9800,
         "overall": 2290
     },
     {
-        "name": "Next 30 mins",
+        "name": "Page D",
         "correct": 2780,
         "incorrect": 3908,
         "overall": 2000
     },
     {
-        "name": "Next 30 mins",
+        "name": "Page E",
         "correct": 1890,
         "incorrect": 4800,
         "overall": 2181
     },
     {
-        "name": "Next 30 mins",
+        "name": "Page F",
         "correct": 2390,
         "incorrect": 3800,
         "overall": 2500
     },
-
+    {
+        "name": "Page G",
+        "correct": 3490,
+        "incorrect": 4300,
+        "overall": 2100
+    }
 ]
 
 function TestSeries() {
@@ -165,18 +168,8 @@ function TestSeries() {
                                     <ResponsiveContainer width="100%" height="100%">
                                         <LineChart data={data} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
                                             <CartesianGrid stroke="#EAECF0" />
-                                            <XAxis dataKey="name"
-                                                fontFamily="poppins"
-                                                fontSize={14}
-                                                fontWeight={400}
-                                                fill="#667085"
-
-                                            />
-                                            <YAxis
-                                                fontFamily="poppins"
-                                                fontSize={14}
-                                                fontWeight={400}
-                                                fill="#667085" />
+                                            <XAxis dataKey="name" />
+                                            <YAxis />
                                             <Tooltip content={<CustomTooltip />} cursor={false} />
                                             <Legend
                                                 layout="horizontal"
@@ -185,10 +178,9 @@ function TestSeries() {
                                                 className="mb-2"
                                                 wrapperStyle={{ display: 'none' }}
                                             />
-                                            <Line type="monotone" dataKey="overall" stroke="#973AFF" dot={false} strokeWidth={2} />
-                                            <Line type="monotone" dataKey="correct" stroke="#17B26A" dot={false} strokeWidth={2} />
-                                            <Line type="monotone" dataKey="incorrect" stroke="#F04438" dot={false} strokeWidth={2} />
-
+                                            <Line type="monotone" dataKey="overall" stroke="#973AFF" dot={false} />
+                                            <Line type="monotone" dataKey="correct" stroke="#17B26A" dot={false} />
+                                            <Line type="monotone" dataKey="incorrect" stroke="#F04438" dot={false} />
 
                                         </LineChart>
                                     </ResponsiveContainer>

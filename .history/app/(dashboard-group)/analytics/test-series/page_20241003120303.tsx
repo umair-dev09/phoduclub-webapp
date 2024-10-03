@@ -3,7 +3,6 @@
 import React from "react";
 import TableComps from '@/components/DashboardComponents/AnalyticsComponents/Test-Series-Components/TestSeriesComp';
 import { LineChart, Line, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer, CartesianGrid } from "recharts";
-// this is where the code for custom Tooltip
 interface CustomTooltipProps {
     active?: boolean;
     payload?: any[];
@@ -85,7 +84,6 @@ const CustomTooltip: React.FC<CustomTooltipProps> = ({ active, payload, label })
     }
     return null;
 }
-// THe End----------------------------------------------------------------------------------------------------------------------------------------------------------
 
 const data = [
     {
@@ -170,8 +168,7 @@ function TestSeries() {
                                                 fontSize={14}
                                                 fontWeight={400}
                                                 fill="#667085"
-
-                                            />
+                                                style={{ marginLeft: "50px" }} />
                                             <YAxis
                                                 fontFamily="poppins"
                                                 fontSize={14}
@@ -185,10 +182,9 @@ function TestSeries() {
                                                 className="mb-2"
                                                 wrapperStyle={{ display: 'none' }}
                                             />
-                                            <Line type="monotone" dataKey="overall" stroke="#973AFF" dot={false} strokeWidth={2} />
-                                            <Line type="monotone" dataKey="correct" stroke="#17B26A" dot={false} strokeWidth={2} />
-                                            <Line type="monotone" dataKey="incorrect" stroke="#F04438" dot={false} strokeWidth={2} />
-
+                                            <Line type="monotone" dataKey="overall" stroke="#973AFF" dot={false} />
+                                            <Line type="monotone" dataKey="correct" stroke="#17B26A" dot={false} />
+                                            <Line type="monotone" dataKey="incorrect" stroke="#F04438" dot={false} />
 
                                         </LineChart>
                                     </ResponsiveContainer>

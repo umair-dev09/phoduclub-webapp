@@ -3,7 +3,6 @@
 import React from "react";
 import TableComps from '@/components/DashboardComponents/AnalyticsComponents/Test-Series-Components/TestSeriesComp';
 import { LineChart, Line, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer, CartesianGrid } from "recharts";
-// this is where the code for custom Tooltip
 interface CustomTooltipProps {
     active?: boolean;
     payload?: any[];
@@ -85,7 +84,6 @@ const CustomTooltip: React.FC<CustomTooltipProps> = ({ active, payload, label })
     }
     return null;
 }
-// THe End----------------------------------------------------------------------------------------------------------------------------------------------------------
 
 const data = [
     {
