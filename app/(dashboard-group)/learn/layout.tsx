@@ -13,7 +13,7 @@ export default function LearnLayout({ children }: LearnLayoutProps) {
     const isQuiz = pathname === '/learn/quiz';
     // Check if the pathname matches the root level of quiz, test, and courses but excludes subfolders like bit1, bit2, etc.
     if (
-        pathname === '/learn/Quiz' ||
+        pathname === '/learn/quiz' ||
         pathname === '/learn/test' ||
         pathname === '/learn/courses'
     ) {

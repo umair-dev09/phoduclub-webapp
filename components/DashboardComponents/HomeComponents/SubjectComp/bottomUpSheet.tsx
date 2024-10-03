@@ -25,7 +25,7 @@ const BottomSheet: React.FC<BottomUpSheet> = ({ closeModal, subjectName }) => {
             setIsOpen(false); // After the animation, hide the modal 
             closeModal(); // Call parent function to fully close the modal 
             setIsClosing(false); // Reset closing state 
-        }, 500); // Match duration with your closing animation 
+        }, 400); // Match duration with your closing animation 
     };
 
     const initializeCheckboxes = (rows: number, columns: number): boolean[][] => {
@@ -159,16 +159,7 @@ const BottomSheet: React.FC<BottomUpSheet> = ({ closeModal, subjectName }) => {
                             </div>
                         </td>
                         <td>
-                            <DatePicker
-                                selected={tempDate}
-                                onChange={handleDateChange}
-                                calendarContainer={CustomCalendarContainer}
-                                onClickOutside={cancelDate}
-                                onCalendarOpen={() => setCalendarVisible(true)}
-                                onCalendarClose={() => setCalendarVisible(false)}
-                                dateFormat="dd-MM-yyyy"
-                                className={styles.datePickerInput}
-                            />
+                          <p>01-10-2024</p>
                         </td>
                         {checkboxes[rowIndex].map((checked, index) => (
                             <td key={index} className={styles.checkBlock}>
