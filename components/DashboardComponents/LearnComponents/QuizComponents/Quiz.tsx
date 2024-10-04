@@ -86,6 +86,25 @@ function Quiz() {
         </button>
     </div>
 </div>
+                <div className="flex flex-col justify-between h-[11.25rem] rounded-xl py-6 px-6 bg-white border border-lightGrey">
+                    <div className="flex flex-col gap-1 text-xs">
+                        <div className="text-base font-semibold">Physics</div>
+                        <div>10 Questions</div>
+                    </div>
+                    <div className="flex flex-row text-[#DE3024]">
+                        <div className="mr-1">
+                            <Image src="/icons/stop-watch.svg" alt="stop watch" width={18} height={18} />
+                        </div>
+                        <div className="flex items-center text-xs gap-1">
+                            Quiz ends in <span className="font-semibold">{formatTime(quizEndTime)}</span>
+                        </div>
+                    </div>
+                    <div>
+                        <button onClick={onStartQuiz} className="flex items-center justify-center w-full px-[14px] py-[10px] text-xs text-white font-semibold shadow-inner-button bg-custompurple rounded-[6px] border border-darkPurple ">
+                            Start Quiz
+                        </button>
+                    </div>
+                </div>
 
                 {/* Quiz 2 */}
                 <div className="flex flex-col justify-between h-[11.25rem] rounded-xl py-6 px-6 bg-white border border-lightGrey">
