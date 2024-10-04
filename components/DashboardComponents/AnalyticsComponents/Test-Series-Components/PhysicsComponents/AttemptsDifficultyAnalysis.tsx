@@ -12,26 +12,28 @@ import {
 export const description = "A donut chart with text"
 
 const chartData = [
-    { browser: "Physics", visitors: 27, fill: "#C7A5FF" },
-    { browser: "Chemistry", visitors: 200, fill: "#9012FF" },
-    { browser: "Mathematics", visitors: 287, fill: "#5C02B0" },
+    { browser: "Perfect", visitors: 27, fill: "#6080F8" },
+    { browser: "Overtime", visitors: 200, fill: "#D270F3" },
+    { browser: "Wasted", visitors: 287, fill: "#7ACAFA" },
+    { browser: "Confused", visitors: 287, fill: "#D4D9E9" },
 ];
 
 const chartConfig = {
-    visitors: {
-        label: "Subjects",
+    Perfect: {
+        label: "Perfect",
+        color: "#6080F8",
     },
-    Physics: {
-        label: "Physics",
-        color: "#C7A5FF",
+    Overtime: {
+        label: "Overtime",
+        color: "#D270F3",
     },
-    Chemistry: {
-        label: "Chemistry",
-        color: "#9012FF",
+    Wasted: {
+        label: "Wasted",
+        color: "#7ACAFA",
     },
-    Mathematics: {
-        label: "Mathematics",
-        color: "#5C02B0",
+    Confused: {
+        label: "Confused",
+        color: "#D4D9E9",
     },
 } satisfies ChartConfig;
 
@@ -117,14 +119,7 @@ const CustomTooltip: React.FC<CustomTooltipProps> = ({ active, payload, label })
     return null;
 }
 
-
-
-
 function Quizzes() {
-
-
-
-
     const data = [
         {
             "name": "Chemistry",
@@ -150,35 +145,12 @@ function Quizzes() {
         return chartData.reduce((acc, curr) => acc + curr.visitors, 0);
     }, []);
 
-
-    const data1 = [
-        {
-            "name": "Chemistry",
-            "correct": 12,
-            "incorrect": 5
-        },
-        {
-            "name": "Physics",
-            "correct": 4,
-            "incorrect": 1
-        },
-        {
-            "name": "Maths",
-            "correct": 9,
-            "incorrect": 1
-        },
-    ];
     return (
-        <div>
-
-
-
-
-            <div className="flex flex-row gap-4 h-auto mx-8">
+            <div className="flex flex-row mb-6 w-[100%] gap-4 h-auto">
                 <div className="flex flex-col w-1/2 bg-white rounded-xl p-4">
                     <div><h3>Score by Subjects</h3></div>
                     <div className="flex flex-1 items-center">
-                        <ResponsiveContainer className='flex w-[50%]'>
+                        <ResponsiveContainer className='flex w-[20%]'>
                             <ChartContainer
                                 config={chartConfig}
                                 className="h-auto w-[70%]"
@@ -204,9 +176,9 @@ function Quizzes() {
                                 <ChartLegend content={<ChartLegendContent />} />
                             </ChartContainer>
                         </ResponsiveContainer>
-                        <div className="flex flex-col w-[50%] justify-evenly">
+                        <div className="grid grid-cols-2 w-[80%] h-[70%] mr-4 justify-evenly">
                             {chartData.map((subject, index) => (
-                                <div key={index} className="flex flex-1">
+                                <div key={index} className="flex flex-1 items-center">
                                     <div><span className={`block rounded-full w-3 h-3 mr-2 mt-[23%]`} style={{ backgroundColor: subject.fill }}></span></div>
                                     <div>
                                         {subject.browser}
@@ -217,7 +189,10 @@ function Quizzes() {
                         </div>
                     </div>
                 </div>
-                <div className=" w-full rounded-xl h-auto flex-col bg-[#FFFFFF] border border-solid border-[#EAECF0]">
+
+{/* ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ */}
+                
+                <div className="flex flex-col w-1/2 h-auto rounded-xl bg-white border border-[#EAECF0]">
                     <div className="h-[50px] flex flex-row justify-between mt-3 ">
                         <span className="flex items-center justify-center ml-10 font-semibold text-[#1D2939] text-lg">Difficulty Analysis</span>
                         <div className=" flex flex-row gap-5">
@@ -287,19 +262,9 @@ function Quizzes() {
                             <Bar dataKey="Unanswered" fill="#D0D5DD" barSize={55} />
                         </BarChart>
                     </ResponsiveContainer>
-
-
-
                 </div>
-
-
             </div>
 
-
-
-
-
-        </div>
     );
 }
 
