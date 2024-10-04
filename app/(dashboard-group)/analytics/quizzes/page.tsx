@@ -13,9 +13,9 @@ import {
 } from "@/components/ui/chart"
 
 const chartData = [
-    { browser: "Physics", marks: 27, fill: "#C7A5FF" },
+    { browser: "Physics", marks: 30, fill: "#C7A5FF" },
     { browser: "Chemistry", marks: 200, fill: "#9012FF" },
-    { browser: "Mathematics", marks: 287, fill: "#5C02B0" },
+    { browser: "Maths", marks: 287, fill: "#5C02B0" },
 ];
 
 const chartConfig = {
@@ -27,8 +27,8 @@ const chartConfig = {
         label: "Chemistry",
         color: "#9012FF",
     },
-    Mathematics: {
-        label: "Mathematics",
+    Maths: {
+        label: "Maths",
         color: "#5C02B0",
     },
 } satisfies ChartConfig;
@@ -98,15 +98,49 @@ const CustomTooltip: React.FC<CustomTooltipProps> = ({ active, payload, label })
     return null;
 }
 
+interface PieTooltipProps extends TooltipProps<number, string> {
+    active?: boolean;
+    payload?: any[];
+}
 
+const CustomPieTooltip: React.FC<PieTooltipProps> = ({ active, payload }) => {
+    if (active && payload && payload.length) {
+        const { name, value, fill } = payload[0];
 
+        return (
+            <div className="flex flex-row items-center justify-between w-40" style={{
+                backgroundColor: 'white',
+                border: '1px solid #EAECF0',
+                borderRadius: '8px',
+                padding: '10px',
+                boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.1)"
+            }}>
+                <div className="flex flex-row items-center">
+                {/* Color dot */}
+                <span style={{
+                    display: 'inline-block',
+                    width: '12px',
+                    height: '12px',
+                    borderRadius: '50%',
+                    backgroundColor: '#EAECF0',
+                    marginRight: '8px'
+                }} />
+                {/* Name and value */}
+                    <p className="flex items-center text-sm font-semibold text-[#667085]">{name}</p>
+                </div>
+                    <p className="flex items-center text-[0.938rem] font-semibold text-[#1D2939]">{value}</p>
+            </div>
+        );
+    }
+
+    return null;
+};
 
 function Quizzes() {
 
     const totalVisitors = React.useMemo(() => {
         return chartData.reduce((acc, curr) => acc + curr.marks, 0);
     }, []);
-
 
     const data = [
         {
@@ -250,15 +284,9 @@ function Quizzes() {
                     <div><h3>Score by Subjects</h3></div>
                     <div className="flex flex-1 items-center">
                         <ResponsiveContainer className='flex w-[50%]'>
-                            <ChartContainer
-                                config={chartConfig}
-                                className="h-auto w-[70%]"
-                            >
+                            <ChartContainer config={chartConfig} className="h-auto w-[70%]">
                                 <PieChart>
-                                    <ChartTooltip
-                                        cursor={false}
-                                        content={<ChartTooltipContent />}
-                                    />
+                                    <Tooltip content={<CustomPieTooltip />} cursor={false} />
                                     <Pie
                                         data={chartData}
                                         dataKey="marks"
@@ -275,6 +303,7 @@ function Quizzes() {
                                 <ChartLegend content={<ChartLegendContent />} />
                             </ChartContainer>
                         </ResponsiveContainer>
+
                         <div className="flex flex-col w-[50%] justify-evenly">
                             {chartData.map((subject, index) => (
                                 <div key={index} className="flex flex-1 mb-2">
