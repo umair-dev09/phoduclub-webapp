@@ -113,17 +113,28 @@ function JeeMains() {
             <div>
                 < AttemptsDifficultyAnalysis />
             </div>
+            {/* ********************THE END*********************************** */}
             {/* Attempts over the 3 hours */}
             <div id="hours" className="mx-8 h-[44px] flex flex-col justify-end mb-2">
                 <span className="text-[#1D2939] text-lg font-semibold">Attempts over the 3 hours</span>
+
             </div>
             <div>
                 <Attemptsoverthehours />
+
             </div>
-            {/* Complete Analysis */}
+            {/* ********************THE END*********************************** */}
+
+
             <div id="complete-analysis" className="mx-8 h-[44px] flex flex-col justify-end mb-2 ">
                 <span className="text-[#1D2939] text-lg font-semibold">Complete Analysis</span>
             </div>
+
+
+
+
+
+
             <div className="h-auto mx-8 rounded-xl  bg-[#FFFFFF] border border-solid border-[#EAECF0]">
                 <table className="w-full rounded-xl bg-white text-sm font-medium">
                     <thead>
@@ -136,6 +147,8 @@ function JeeMains() {
                             <th className="w-[10%] text-center">Attempted</th>
                             <th className="w-[10%] text-center">Answer</th>
                             <th className="w-[10%] text-center">Remarks</th>
+
+
                         </tr>
                     </thead>
                     <tbody className="border-b border-[#EAECF0]">
@@ -169,10 +182,12 @@ function JeeMains() {
                             <td className="px-8 py-3 text-left text-[#DE3024] font-medium text-sm">Incorrect</td>
                             <td className="px-8 py-3 text-left text-[#C74FE6] font-medium text-sm">Overtime</td>
                         </tr>
+
+
+
                     </tbody>
                 </table>
             </div>
-            {/* Summary */}
             <div id="missed-concept" className="mx-8 h-[44px] flex flex-col justify-end mb-2 ">
                 <span className="text-[#1D2939] text-lg font-semibold">Summary</span>
             </div>

@@ -136,6 +136,8 @@ function JeeMains() {
                             <th className="w-[10%] text-center">Attempted</th>
                             <th className="w-[10%] text-center">Answer</th>
                             <th className="w-[10%] text-center">Remarks</th>
+
+
                         </tr>
                     </thead>
                     <tbody className="border-b border-[#EAECF0]">
@@ -169,10 +171,12 @@ function JeeMains() {
                             <td className="px-8 py-3 text-left text-[#DE3024] font-medium text-sm">Incorrect</td>
                             <td className="px-8 py-3 text-left text-[#C74FE6] font-medium text-sm">Overtime</td>
                         </tr>
+
+
+
                     </tbody>
                 </table>
             </div>
-            {/* Summary */}
             <div id="missed-concept" className="mx-8 h-[44px] flex flex-col justify-end mb-2 ">
                 <span className="text-[#1D2939] text-lg font-semibold">Summary</span>
             </div>

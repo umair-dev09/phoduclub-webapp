@@ -2,13 +2,155 @@
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import React from "react";
+import { LineChart, Line, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer, CartesianGrid } from "recharts";
 import AttemptsDifficultyAnalysis from "@/components/DashboardComponents/AnalyticsComponents/Test-Series-Components/PhysicsComponents/AttemptsDifficultyAnalysis"
 import Attemptsoverthehours from "@/components/DashboardComponents/AnalyticsComponents/Test-Series-Components/PhysicsComponents/Attemptsoverthehours"
+
+// this  is   the code for custom Tooltip
+interface CustomTooltipProps {
+    active?: boolean;
+    payload?: any[];
+    label?: string;
+}
+
+const CustomTooltip: React.FC<CustomTooltipProps> = ({ active, payload, label }) => {
+    if (active && payload && payload.length) {
+        const correctValue = payload.find(item => item.name === "correct")?.value;
+        const incorrectValue = payload.find(item => item.name === "incorrect")?.value;
+        const overallValue = payload.find(item => item.name === "overall")?.value;
+
+
+        return (
+            <div style={{
+                position: 'relative',
+                backgroundColor: 'white',
+                border: '1px solid #EAECF0',
+                borderRadius: '8px',
+                width: 'auto',
+                height: "auto",
+
+                fontSize: '14px',
+                pointerEvents: 'none', // Prevent mouse events from affecting the tooltip
+                boxShadow: "2px 5px 11px 0px #0000001A",
+                padding: '20px'
+
+            }}>
+                {/* Tooltip content */}
+                <div className="  flex flex-col">
+                    <div style={{ display: 'flex', alignItems: 'center', width: "auto", height: "auto", justifyItems: 'center', }}>
+                        <div style={{ display: 'flex', alignItems: 'center', }}>
+                            <span style={{
+                                display: 'inline-block',
+                                width: '12px',
+                                height: '12px',
+                                borderRadius: '50%',
+                                backgroundColor: "#17B26A",
+                                marginRight: '4px',
+                                padding: '3px'
+                            }} />
+
+
+                            <span className="text-[#667085] font-normal text-sm ml-1 ">{`Correct `}</span>
+
+                            <span className="ml-[50px] font-semibold text-base text-[#1D2939]" >
+                                {correctValue}
+                            </span>
+
+
+                        </div>
+
+                    </div>
+                    <div style={{ display: 'flex', alignItems: 'center', width: "auto", height: "auto", justifyItems: 'center' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', }}>
+
+                            <span style={{
+                                display: 'inline-block',
+                                width: '12px',
+                                height: '12px',
+                                borderRadius: '50%',
+                                backgroundColor: "#F04438",
+                                marginRight: '4px',
+                                padding: '3px'
+
+                            }} />
+                            <span className="text-[#667085] font-normal text-sm ml-1">{`Incorrect `}</span>
+                            <span className="ml-10 font-semibold text-base text-[#1D2939]" >{incorrectValue}</span>
+                        </div>
+                    </div>
+                    <div style={{ display: 'flex', alignItems: 'center', width: "auto", height: "auto", justifyItems: 'center' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', }}>
+                            <span style={{
+                                display: 'inline-block',
+                                width: '12px',
+                                height: '12px',
+                                borderRadius: '50%',
+                                backgroundColor: '#973AFF',
+                                marginRight: '4px',
+                                padding: '3px'
+                            }} />
+                            <span className="text-[#667085] font-normal text-sm ml-1">{`overall `}</span>
+                            <span className="ml-14 font-semibold text-base text-[#1D2939]" >{overallValue}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        );
+    }
+    return null;
+}
+// THe End----------------------------------------------------------------------------------------------------------------------------------------------------------
+
+const data = [
+    {
+        "name": "First 30 mins",
+        "correct": 4000,
+        "incorrect": 2400,
+        "overall": 2400
+    },
+    {
+        "name": "Next 30 mins",
+        "correct": 3000,
+        "incorrect": 1398,
+        "overall": 2210
+    },
+    {
+        "name": "Next 30 mins",
+        "correct": 2000,
+        "incorrect": 9800,
+        "overall": 2290
+    },
+    {
+        "name": "Next 30 mins",
+        "correct": 2780,
+        "incorrect": 3908,
+        "overall": 2000
+    },
+    {
+        "name": "Next 30 mins",
+        "correct": 1890,
+        "incorrect": 4800,
+        "overall": 2181
+    },
+    {
+        "name": "Next 30 mins",
+        "correct": 2390,
+        "incorrect": 3800,
+        "overall": 2500
+    },
+
+]
+
+
 function JeeMains() {
     const router = useRouter();
+
+
+
+
+
+
     return (
         <div className="flex flex-1 flex-col h-auto overflow-y-auto pb-2">
-            {/* heading */}
             <div className="h-[64px]flex items-center">
                 <div className="my-5 flex items-center flex-row ">
                     <button className="flex items-center ml-1" onClick={() => router.back()}>
@@ -29,9 +171,14 @@ function JeeMains() {
                     <div className="text-[#667085] h-full w-auto -ml-1" style={{ fontSize: "16px", fontWeight: "500" }}>
                         Physics
                     </div>
+
+
+
+
+
+
                 </div>
             </div>
-            {/* scroll anchoring */}
             <div className="h-[50px]  mx-8 border-b border-solid border-[#EAECF0] flex flex-row gap-[16px] mt-2">
                 <a href="#overview" className="text-[#667085] font-medium text-base">Overview</a>
                 <a href="#attempts" className="text-[#667085] font-medium text-base">Attempts & Difficulty Analysis</a>
@@ -39,11 +186,13 @@ function JeeMains() {
                 <a href="#missed-concept" className="text-[#667085] font-medium text-base">Missed Concept</a>
                 <a href="#complete-analysis" className="text-[#667085] font-medium text-base">Complete Analysis</a>
             </div>
-            {/* overview Line */}
+
+
             <div id="overview" className="mx-8 h-[44px] flex flex-col justify-end mt-5">
                 <span className="text-[#1D2939] text-lg font-semibold">Overview</span>
             </div>
-            {/* Overall Data */}
+
+
             <div className=" pt-2 pb-3 mx-8">
                 <div className="bg-white p-4 flex flex-col rounded-2xl border border-lightGrey">
                     <div className="flex flex-row justify-between">
@@ -113,17 +262,28 @@ function JeeMains() {
             <div>
                 < AttemptsDifficultyAnalysis />
             </div>
+            {/* ********************THE END*********************************** */}
             {/* Attempts over the 3 hours */}
             <div id="hours" className="mx-8 h-[44px] flex flex-col justify-end mb-2">
                 <span className="text-[#1D2939] text-lg font-semibold">Attempts over the 3 hours</span>
+
             </div>
             <div>
                 <Attemptsoverthehours />
+
             </div>
-            {/* Complete Analysis */}
+            {/* ********************THE END*********************************** */}
+
+
             <div id="complete-analysis" className="mx-8 h-[44px] flex flex-col justify-end mb-2 ">
                 <span className="text-[#1D2939] text-lg font-semibold">Complete Analysis</span>
             </div>
+
+
+
+
+
+
             <div className="h-auto mx-8 rounded-xl  bg-[#FFFFFF] border border-solid border-[#EAECF0]">
                 <table className="w-full rounded-xl bg-white text-sm font-medium">
                     <thead>
@@ -136,6 +296,8 @@ function JeeMains() {
                             <th className="w-[10%] text-center">Attempted</th>
                             <th className="w-[10%] text-center">Answer</th>
                             <th className="w-[10%] text-center">Remarks</th>
+
+
                         </tr>
                     </thead>
                     <tbody className="border-b border-[#EAECF0]">
@@ -169,10 +331,12 @@ function JeeMains() {
                             <td className="px-8 py-3 text-left text-[#DE3024] font-medium text-sm">Incorrect</td>
                             <td className="px-8 py-3 text-left text-[#C74FE6] font-medium text-sm">Overtime</td>
                         </tr>
+
+
+
                     </tbody>
                 </table>
             </div>
-            {/* Summary */}
             <div id="missed-concept" className="mx-8 h-[44px] flex flex-col justify-end mb-2 ">
                 <span className="text-[#1D2939] text-lg font-semibold">Summary</span>
             </div>

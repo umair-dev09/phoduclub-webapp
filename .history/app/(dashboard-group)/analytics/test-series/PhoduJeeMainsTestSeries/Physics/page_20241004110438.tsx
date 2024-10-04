@@ -172,7 +172,6 @@ function JeeMains() {
                     </tbody>
                 </table>
             </div>
-            {/* Summary */}
             <div id="missed-concept" className="mx-8 h-[44px] flex flex-col justify-end mb-2 ">
                 <span className="text-[#1D2939] text-lg font-semibold">Summary</span>
             </div>

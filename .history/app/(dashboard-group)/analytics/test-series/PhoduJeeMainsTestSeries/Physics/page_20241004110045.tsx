@@ -8,7 +8,6 @@ function JeeMains() {
     const router = useRouter();
     return (
         <div className="flex flex-1 flex-col h-auto overflow-y-auto pb-2">
-            {/* heading */}
             <div className="h-[64px]flex items-center">
                 <div className="my-5 flex items-center flex-row ">
                     <button className="flex items-center ml-1" onClick={() => router.back()}>
@@ -31,7 +30,6 @@ function JeeMains() {
                     </div>
                 </div>
             </div>
-            {/* scroll anchoring */}
             <div className="h-[50px]  mx-8 border-b border-solid border-[#EAECF0] flex flex-row gap-[16px] mt-2">
                 <a href="#overview" className="text-[#667085] font-medium text-base">Overview</a>
                 <a href="#attempts" className="text-[#667085] font-medium text-base">Attempts & Difficulty Analysis</a>
@@ -39,11 +37,13 @@ function JeeMains() {
                 <a href="#missed-concept" className="text-[#667085] font-medium text-base">Missed Concept</a>
                 <a href="#complete-analysis" className="text-[#667085] font-medium text-base">Complete Analysis</a>
             </div>
-            {/* overview Line */}
+
+
             <div id="overview" className="mx-8 h-[44px] flex flex-col justify-end mt-5">
                 <span className="text-[#1D2939] text-lg font-semibold">Overview</span>
             </div>
-            {/* Overall Data */}
+
+
             <div className=" pt-2 pb-3 mx-8">
                 <div className="bg-white p-4 flex flex-col rounded-2xl border border-lightGrey">
                     <div className="flex flex-row justify-between">
@@ -113,17 +113,28 @@ function JeeMains() {
             <div>
                 < AttemptsDifficultyAnalysis />
             </div>
+            {/* ********************THE END*********************************** */}
             {/* Attempts over the 3 hours */}
             <div id="hours" className="mx-8 h-[44px] flex flex-col justify-end mb-2">
                 <span className="text-[#1D2939] text-lg font-semibold">Attempts over the 3 hours</span>
+
             </div>
             <div>
                 <Attemptsoverthehours />
+
             </div>
-            {/* Complete Analysis */}
+            {/* ********************THE END*********************************** */}
+
+
             <div id="complete-analysis" className="mx-8 h-[44px] flex flex-col justify-end mb-2 ">
                 <span className="text-[#1D2939] text-lg font-semibold">Complete Analysis</span>
             </div>
+
+
+
+
+
+
             <div className="h-auto mx-8 rounded-xl  bg-[#FFFFFF] border border-solid border-[#EAECF0]">
                 <table className="w-full rounded-xl bg-white text-sm font-medium">
                     <thead>
@@ -136,6 +147,8 @@ function JeeMains() {
                             <th className="w-[10%] text-center">Attempted</th>
                             <th className="w-[10%] text-center">Answer</th>
                             <th className="w-[10%] text-center">Remarks</th>
+
+
                         </tr>
                     </thead>
                     <tbody className="border-b border-[#EAECF0]">
@@ -169,10 +182,12 @@ function JeeMains() {
                             <td className="px-8 py-3 text-left text-[#DE3024] font-medium text-sm">Incorrect</td>
                             <td className="px-8 py-3 text-left text-[#C74FE6] font-medium text-sm">Overtime</td>
                         </tr>
+
+
+
                     </tbody>
                 </table>
             </div>
-            {/* Summary */}
             <div id="missed-concept" className="mx-8 h-[44px] flex flex-col justify-end mb-2 ">
                 <span className="text-[#1D2939] text-lg font-semibold">Summary</span>
             </div>
