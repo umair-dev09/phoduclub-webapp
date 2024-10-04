@@ -111,7 +111,7 @@ function TabComps() {
 
                 <div className={styles.tooltip}>
                 <button
-                    onClick={() => handleTabClick('analytics', '/analytics')}
+                    onClick={() => handleTabClick('analytics', '/analytics/test-series')}
                     className={`${styles.AnalyticsButton} ${activeTab === 'analytics' ? styles.active : ''}`}
                 >
                     <Image className={styles.analyticsIcon}
