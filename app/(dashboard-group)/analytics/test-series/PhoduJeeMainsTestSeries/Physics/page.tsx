@@ -8,12 +8,12 @@ import Attemptsoverthehours from "@/components/DashboardComponents/AnalyticsComp
 function JeeMains() {
     const router = useRouter();
     return (
-        <div className="flex flex-1 flex-col h-auto overflow-y-auto pb-2">
+        <div className="flex flex-1 flex-col h-auto overflow-y-auto pb-2 px-8">
             {/* heading */}
-            <div className="h-[64px]flex items-center">
+            <div className="h-[64px] flex items-center">
                 <div className="my-5 flex items-center flex-row ">
                     <button className="flex items-center ml-1" onClick={() => router.back()}>
-                        <div className="text-[#1D2939] h-[24px] w-auto ml-8" style={{ fontSize: "16px", fontWeight: "600" }}>
+                        <div className="text-[#1D2939] h-[24px] w-auto" style={{ fontSize: "16px", fontWeight: "600" }}>
                             Test-Series
                         </div>
                         <div className="ml-3 w-[24px]">
@@ -33,7 +33,7 @@ function JeeMains() {
                 </div>
             </div>
             {/* scroll anchoring */}
-            <div className="h-[50px]  mx-8 border-b border-solid border-[#EAECF0] flex flex-row gap-[16px] mt-2">
+            <div className="h-[50px]border-b border-solid border-[#EAECF0] flex flex-row gap-[16px] mt-2">
                 <a href="#overview" className="text-[#667085] font-medium text-base">Overview</a>
                 <a href="#attempts" className="text-[#667085] font-medium text-base">Attempts & Difficulty Analysis</a>
                 <a href="#hours" className="text-[#667085] font-medium text-base">Attempts over the 3 hours</a>
@@ -41,11 +41,11 @@ function JeeMains() {
                 <a href="#complete-analysis" className="text-[#667085] font-medium text-base">Complete Analysis</a>
             </div>
             {/* overview Line */}
-            <div id="overview" className="mx-8 h-[44px] flex flex-col justify-end mt-5">
+            <div id="overview" className="h-[44px] flex flex-col justify-end mt-5">
                 <span className="text-[#1D2939] text-lg font-semibold">Overview</span>
             </div>
             {/* Overall Data */}
-            <div className=" pt-2 pb-3 mx-8">
+            <div className=" mt-2 mb-6">
                 <div className="bg-white p-4 flex flex-col rounded-2xl border border-lightGrey">
                     <div className="flex flex-row justify-between">
                         {/* Total Questions */}
@@ -107,25 +107,24 @@ function JeeMains() {
                 </div>
             </div>
             {/* Attempts & Difficulty Analysis */}
-            <div id="attempts" className="mx-8 h-[44px] flex flex-col justify-end mb-2">
+            <div id="attempts" className="h-[44px] flex flex-col justify-end mb-2">
                 <span className="text-[#1D2939] text-lg font-semibold">Attempts & Difficulty Analysis</span>
             </div>
-
             <div>
                 < AttemptsDifficultyAnalysis />
             </div>
             {/* Attempts over the 3 hours */}
-            <div id="hours" className="mx-8 h-[44px] flex flex-col justify-end mb-2">
+            <div id="hours" className="h-[44px] flex flex-col justify-end mb-2">
                 <span className="text-[#1D2939] text-lg font-semibold">Attempts over the 3 hours</span>
             </div>
             <div>
                 <Attemptsoverthehours />
             </div>
             {/* Complete Analysis */}
-            <div id="complete-analysis" className="mx-8 h-[44px] flex flex-col justify-end mb-2 ">
+            <div id="complete-analysis" className="h-[44px] flex flex-col justify-end mb-2 ">
                 <span className="text-[#1D2939] text-lg font-semibold">Complete Analysis</span>
             </div>
-            <div className="h-auto mx-8 rounded-xl  bg-[#FFFFFF] border border-solid border-[#EAECF0]">
+            <div className="h-auto rounded-xl mb-6 bg-[#FFFFFF] border border-solid border-[#EAECF0]">
                 <table className="w-full rounded-xl bg-white text-sm font-medium">
                     <thead>
                         <tr className="text-[#667085]">
@@ -174,16 +173,12 @@ function JeeMains() {
                 </table>
             </div>
             {/* Summary */}
-            <div id="missed-concept" className="mx-8 h-[44px] flex flex-col justify-end mb-2 ">
+            <div id="missed-concept" className="h-[44px] flex flex-col justify-end mb-2 ">
                 <span className="text-[#1D2939] text-lg font-semibold">Summary</span>
             </div>
-            <div className="h-[40px] mx-8 rounded-xl bg-[#FFFFFF] border border-solid border-[#EAECF0] text-[#667085] font-normal text-sm flex items-center justify-center">
+            <div className="h-[40px] rounded-xl bg-[#FFFFFF] border border-solid border-[#EAECF0] text-[#667085] font-normal text-sm flex items-center justify-center">
                 Great! You did not miss any concept.
             </div>
-
-
-
-
         </div>
     )
 }

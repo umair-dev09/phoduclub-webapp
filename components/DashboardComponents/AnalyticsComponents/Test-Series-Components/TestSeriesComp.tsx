@@ -13,7 +13,7 @@ function TestSeriesComp() {
 
     return (
 
-        <button className="hover:bg-[#EAECF0] "
+        <button className="hover:bg-[#F9FAFB] "
             onClick={() => handleTabClick("PhoduJeeMainsTestSeries", "/analytics/test-series/PhoduJeeMainsTestSeries")}>
             <div>
                 <tr className="flex flex-1 py-3 border-t border-lightGrey text-[#1D2939]">
@@ -25,10 +25,9 @@ function TestSeriesComp() {
                     <td className="flex justify-center items-center w-[15%]">143/150</td>
                     <td className="flex justify-center items-center w-[15%]">80%</td>
                     <td className="flex justify-center items-center w-[15%]">45h 30m</td>
-                    <td className="flex justify-center items-center w-[15%]"><p className="text-end w-16">90h 20m</p></td>
+                    <td className="flex justify-center items-center w-[15%]"><p className="text-end w-16">2h</p></td>
                 </tr>
             </div>
-
         </button>
     );
 }

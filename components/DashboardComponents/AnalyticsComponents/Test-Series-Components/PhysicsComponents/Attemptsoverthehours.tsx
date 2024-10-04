@@ -139,18 +139,11 @@ const data = [
 
 ]
 
-
 function JeeMains() {
     const router = useRouter();
 
-
-
-
-
-
     return (
-
-        <div className="h-auto mx-8 rounded-xl  bg-[#FFFFFF] border border-solid border-[#EAECF0]">
+        <div className="h-auto rounded-xl mb-6 bg-[#FFFFFF] border border-solid border-[#EAECF0]">
             <table className="w-full rounded-xl bg-white text-sm font-medium">
                 <thead>
                     <tr className="text-[#667085]">
