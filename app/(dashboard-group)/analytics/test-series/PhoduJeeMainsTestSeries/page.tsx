@@ -159,8 +159,6 @@ function JeeMains() {
                     <Accordian />
                     </Collapsible>
                 </div>
-
-
             </div>
         </div>
     )

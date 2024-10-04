@@ -13,15 +13,12 @@ import {
 } from "@/components/ui/chart"
 
 const chartData = [
-    { browser: "Physics", visitors: 27, fill: "#C7A5FF" },
-    { browser: "Chemistry", visitors: 200, fill: "#9012FF" },
-    { browser: "Mathematics", visitors: 287, fill: "#5C02B0" },
+    { browser: "Physics", marks: 27, fill: "#C7A5FF" },
+    { browser: "Chemistry", marks: 200, fill: "#9012FF" },
+    { browser: "Mathematics", marks: 287, fill: "#5C02B0" },
 ];
 
 const chartConfig = {
-    visitors: {
-        label: "Subjects",
-    },
     Physics: {
         label: "Physics",
         color: "#C7A5FF",
@@ -107,7 +104,7 @@ const CustomTooltip: React.FC<CustomTooltipProps> = ({ active, payload, label })
 function Quizzes() {
 
     const totalVisitors = React.useMemo(() => {
-        return chartData.reduce((acc, curr) => acc + curr.visitors, 0);
+        return chartData.reduce((acc, curr) => acc + curr.marks, 0);
     }, []);
 
 
@@ -132,7 +129,7 @@ function Quizzes() {
     return (
         <div className="flex flex-1 flex-col py-6 mx-8">
             <div className="text-[#1D2939]"><h3>Overview</h3></div>
-            <div className="pt-5 pb-3">
+            <div className="mt-5 mb-4">
                 <div className="bg-white p-4 flex flex-col rounded-2xl border border-lightGrey">
                     <div className="flex flex-row justify-between">
                         {/* Total Questions */}
@@ -264,7 +261,7 @@ function Quizzes() {
                                     />
                                     <Pie
                                         data={chartData}
-                                        dataKey="visitors"
+                                        dataKey="marks"
                                         nameKey="browser"
                                         innerRadius={60}
                                         strokeWidth={3}
@@ -280,11 +277,11 @@ function Quizzes() {
                         </ResponsiveContainer>
                         <div className="flex flex-col w-[50%] justify-evenly">
                             {chartData.map((subject, index) => (
-                                <div key={index} className="flex flex-1">
+                                <div key={index} className="flex flex-1 mb-2">
                                     <div><span className={`block rounded-full w-3 h-3 mr-2 mt-[23%]`} style={{ backgroundColor: subject.fill }}></span></div>
                                     <div>
                                         {subject.browser}
-                                        <h3>{subject.visitors}</h3>
+                                        <h3>{subject.marks}</h3>
                                     </div>
                                 </div>
                             ))}
