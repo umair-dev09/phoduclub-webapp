@@ -115,7 +115,7 @@ div {
 }
 
 /* -------------------------------------------------- */
-/* FOR TOOLTIP FOR TEST PAGE ONLY  */
+/* FOR TOOLTIP FOR TEST PAGE ONLY ->learn Tab */
 
 
 .tooltipText {
@@ -156,6 +156,9 @@ div {
   /* Move tooltip slightly up on hover */
 }
 
+
+
+
 @layer base {
   :root {
     --radius: 0.5rem;
@@ -164,7 +167,8 @@ div {
     --chart-3: 197 37% 24%;
     --chart-4: 43 74% 66%;
     --chart-5: 27 87% 67%;
-  } 
+  }
+
   .dark {
     --chart-1: 220 70% 50%;
     --chart-2: 160 60% 45%;

@@ -58,27 +58,224 @@ function JeeMains() {
                                         <p>5 Tests</p>
                                     </div>
                                     <div className="flex flex-row">
-                                        <div className="flex fles-row mr-20">
+                                        <div className="flex fles-row mr-10">
                                             <div className="flex flex-col gap-1.5">
                                                 <p className="text-xs font-normal">Attempted</p>
                                                 <h3 className="text-[15px] font-semibold">5/5</h3>
                                             </div>
                                         </div>
-                                        <div className="flex fles-row mr-20">
+                                        <div className="flex fles-row mr-10">
                                             <div className="w-[1px] bg-lightGrey mr-4"></div>
                                             <div className="flex flex-col gap-1.5">
                                                 <p className="text-xs font-normal">Score</p>
                                                 <h3 className="text-[15px] font-semibold">127</h3>
                                             </div>
                                         </div>
-                                        <div className="flex fles-row mr-20">
+                                        <div className="flex fles-row mr-10">
                                             <div className="w-[1px] bg-lightGrey mr-4"></div>
                                             <div className="flex flex-col gap-1.5">
                                                 <p className="text-xs font-normal">Time taken</p>
                                                 <h3 className="text-[15px] font-semibold">45h 30m</h3>
                                             </div>
                                         </div>
-                                        <div className="flex fles-row mr-20">
+                                        <div className="flex fles-row mr-10">
+                                            <div className="w-[1px] bg-lightGrey mr-4"></div>
+                                            <div className="flex flex-col gap-1.5">
+                                                <p className="text-xs font-normal">Total Time</p>
+                                                <h3 className="text-[15px] font-semibold">90h 20m</h3>
+                                            </div>
+                                        </div>
+
+                                    <Image
+                                        src={isOpenArray[0] ? "/icons/arrowdown.svg" : "/icons/arrowup.svg"} // Arrow based on first accordion state
+                                        width={24}
+                                        height={24}
+                                        alt="arrow"
+                                    />
+                                </div>
+                            </div>
+                        }
+                        transitionTime={350}
+                        onOpening={() => toggleCollapsible(0)}  // Set the state to open when expanding
+                        onClosing={() => toggleCollapsible(0)} // Set the state to closed when collapsing
+                    >
+                        <div className="flex flex-row justify-between ml-5 mr-8 pt-4 pb-2 border-t border-lightGrey">
+                            <div>
+                                <p>Test 01</p>
+                                <p>50 Questions</p>
+                            </div>
+                            <div className="flex items-center justify-center h-auto">
+                                <div className="flex fles-row mr-5">
+                                    <div className="flex flex-row gap-1.5 text-[0.813rem]">
+                                        <p className="font-semibold">44/55</p>
+                                        <p>Attempted</p>
+                                    </div>
+                                </div>
+                                <div className="flex fles-row justify-center items-center mr-5">
+                                    <div className="w-[1px] bg-lightGrey mr-4 h-10"></div>
+                                    <div className="flex flex-row gap-1.5 text-[0.813rem]">
+                                        <p className="font-semibold">38/45</p>
+                                        <p>Corrected</p>
+                                    </div>
+                                </div>
+                                <div className="flex fles-row justify-center items-center mr-5">
+                                    <div className="w-[1px] bg-lightGrey mr-4 h-10"></div>
+                                    <div className="flex flex-row gap-1.5 text-[0.813rem]">
+                                        <p className="font-semibold">7/45</p>
+                                        <p>Incorrect</p>
+                                    </div>
+                                </div>
+                                <div className="flex fles-row justify-center items-center mr-5">
+                                    <div className="w-[1px] bg-lightGrey mr-4 h-10"></div>
+                                    <div className="flex flex-row gap-1.5 text-[0.813rem]">
+                                        <p className="font-semibold">80%</p>
+                                        <p>Accuracy</p>
+                                    </div>
+                                </div>
+                                <div className="flex fles-row justify-center items-center mr-5">
+                                    <div className="w-[1px] bg-lightGrey mr-4 h-10"></div>
+                                    <div className="flex flex-row gap-1.5 text-[0.813rem]">
+                                        <p className="font-semibold">32</p>
+                                        <p>Score</p>
+                                    </div>
+                                </div>
+                                <button
+                                    onClick={() => handleTabClick("Test01", "/analytics/test-series/PhoduJeeMainsTestSeries/Test01")}>
+                                    <span className="font-semibold text-[#9012FF] text-sm">Detail View</span>
+                                </button>
+                            </div>
+                        </div>
+                        <div className="flex flex-row justify-between ml-5 mr-8 pt-2 pb-2 border-t border-lightGrey">
+                            <div>
+                                <p>Test 01</p>
+                                <p>50 Questions</p>
+                            </div>
+                            <div className="flex items-center justify-center h-auto">
+                                <div className="flex fles-row mr-5">
+                                    <div className="flex flex-row gap-1.5 text-[0.813rem]">
+                                        <p className="font-semibold">44/55</p>
+                                        <p>Attempted</p>
+                                    </div>
+                                </div>
+                                <div className="flex fles-row justify-center items-center mr-5">
+                                    <div className="w-[1px] bg-lightGrey mr-4 h-10"></div>
+                                    <div className="flex flex-row gap-1.5 text-[0.813rem]">
+                                        <p className="font-semibold">38/45</p>
+                                        <p>Corrected</p>
+                                    </div>
+                                </div>
+                                <div className="flex fles-row justify-center items-center mr-5">
+                                    <div className="w-[1px] bg-lightGrey mr-4 h-10"></div>
+                                    <div className="flex flex-row gap-1.5 text-[0.813rem]">
+                                        <p className="font-semibold">7/45</p>
+                                        <p>Incorrect</p>
+                                    </div>
+                                </div>
+                                <div className="flex fles-row justify-center items-center mr-5">
+                                    <div className="w-[1px] bg-lightGrey mr-4 h-10"></div>
+                                    <div className="flex flex-row gap-1.5 text-[0.813rem]">
+                                        <p className="font-semibold">80%</p>
+                                        <p>Accuracy</p>
+                                    </div>
+                                </div>
+                                <div className="flex fles-row justify-center items-center mr-5">
+                                    <div className="w-[1px] bg-lightGrey mr-4 h-10"></div>
+                                    <div className="flex flex-row gap-1.5 text-[0.813rem]">
+                                        <p className="font-semibold">32</p>
+                                        <p>Score</p>
+                                    </div>
+                                </div>
+                                <button
+                                    onClick={() => handleTabClick("Test01", "/analytics/test-series/PhoduJeeMainsTestSeries/Test01")}>
+                                    <span className="font-semibold text-[#9012FF] text-sm">Detail View</span>
+                                </button>
+                            </div>
+                        </div>
+                        <div className="flex flex-row justify-between ml-5 mr-8 pt-2 pb-2 border-t border-lightGrey">
+                            <div>
+                                <p>Test 01</p>
+                                <p>50 Questions</p>
+                            </div>
+                            <div className="flex items-center justify-center h-auto">
+                                <div className="flex fles-row mr-5">
+                                    <div className="flex flex-row gap-1.5 text-[0.813rem]">
+                                        <p className="font-semibold">44/55</p>
+                                        <p>Attempted</p>
+                                    </div>
+                                </div>
+                                <div className="flex fles-row justify-center items-center mr-5">
+                                    <div className="w-[1px] bg-lightGrey mr-4 h-10"></div>
+                                    <div className="flex flex-row gap-1.5 text-[0.813rem]">
+                                        <p className="font-semibold">38/45</p>
+                                        <p>Corrected</p>
+                                    </div>
+                                </div>
+                                <div className="flex fles-row justify-center items-center mr-5">
+                                    <div className="w-[1px] bg-lightGrey mr-4 h-10"></div>
+                                    <div className="flex flex-row gap-1.5 text-[0.813rem]">
+                                        <p className="font-semibold">7/45</p>
+                                        <p>Incorrect</p>
+                                    </div>
+                                </div>
+                                <div className="flex fles-row justify-center items-center mr-5">
+                                    <div className="w-[1px] bg-lightGrey mr-4 h-10"></div>
+                                    <div className="flex flex-row gap-1.5 text-[0.813rem]">
+                                        <p className="font-semibold">80%</p>
+                                        <p>Accuracy</p>
+                                    </div>
+                                </div>
+                                <div className="flex fles-row justify-center items-center mr-5">
+                                    <div className="w-[1px] bg-lightGrey mr-4 h-10"></div>
+                                    <div className="flex flex-row gap-1.5 text-[0.813rem]">
+                                        <p className="font-semibold">32</p>
+                                        <p>Score</p>
+                                    </div>
+                                </div>
+                                <button
+                                    onClick={() => handleTabClick("Test01", "/analytics/test-series/PhoduJeeMainsTestSeries/Test01")}>
+                                    <span className="font-semibold text-[#9012FF] text-sm">Detail View</span>
+                                </button>
+                            </div>
+                        </div>
+                    </Collapsible>
+                </div>
+
+
+                {/* Second Accordian */}
+                <div className='bg-white border border-lightGrey rounded-xl '>
+                    <Collapsible
+                        className='flex flex-col'
+                        trigger={
+                                <div
+                                    className="flex items-center justify-between h-auto mx-5 py-4"
+                                    onClick={() => toggleCollapsible(0)} // Toggle first accordion
+                                >
+                                    <div className="flex flex-col">
+                                        <p className="text-base font-bold">Chemistry</p>
+                                        <p>5 Tests</p>
+                                    </div>
+                                    <div className="flex flex-row">
+                                        <div className="flex fles-row mr-10">
+                                            <div className="flex flex-col gap-1.5">
+                                                <p className="text-xs font-normal">Attempted</p>
+                                                <h3 className="text-[15px] font-semibold">5/5</h3>
+                                            </div>
+                                        </div>
+                                        <div className="flex fles-row mr-10">
+                                            <div className="w-[1px] bg-lightGrey mr-4"></div>
+                                            <div className="flex flex-col gap-1.5">
+                                                <p className="text-xs font-normal">Score</p>
+                                                <h3 className="text-[15px] font-semibold">127</h3>
+                                            </div>
+                                        </div>
+                                        <div className="flex fles-row mr-10">
+                                            <div className="w-[1px] bg-lightGrey mr-4"></div>
+                                            <div className="flex flex-col gap-1.5">
+                                                <p className="text-xs font-normal">Time taken</p>
+                                                <h3 className="text-[15px] font-semibold">45h 30m</h3>
+                                            </div>
+                                        </div>
+                                        <div className="flex fles-row mr-10">
                                             <div className="w-[1px] bg-lightGrey mr-4"></div>
                                             <div className="flex flex-col gap-1.5">
                                                 <p className="text-xs font-normal">Total Time</p>
@@ -99,143 +296,137 @@ function JeeMains() {
                         onOpening={() => toggleCollapsible(0)}  // Set the state to open when expanding
                         onClosing={() => toggleCollapsible(0)} // Set the state to closed when collapsing
                     >
-                        <div className="border-t border-lightGrey ml-5 mr-5 py-2">
-                            <div className="flex flex-row justify-between pt-2 pb-2">
-                                <div>
-                                    <p className="text-sm font-semibold">Test 01</p>
-                                    <p className="text-xs font-normal">50 Questions</p>
-                                </div>
-                                <div className="flex items-center justify-center h-auto">
-                                    <div className="flex fles-row mr-5">
-                                        <div className="flex flex-row gap-1.5 text-[0.813rem]">
-                                            <p className="font-semibold">44/55</p>
-                                            <p>Attempted</p>
-                                        </div>
-                                    </div>
-                                    <div className="flex fles-row justify-center items-center mr-5">
-                                        <div className="w-[1px] bg-lightGrey mr-4 h-10"></div>
-                                        <div className="flex flex-row gap-1.5 text-[0.813rem]">
-                                            <p className="font-semibold">38/45</p>
-                                            <p>Corrected</p>
-                                        </div>
-                                    </div>
-                                    <div className="flex fles-row justify-center items-center mr-5">
-                                        <div className="w-[1px] bg-lightGrey mr-4 h-10"></div>
-                                        <div className="flex flex-row gap-1.5 text-[0.813rem]">
-                                            <p className="font-semibold">7/45</p>
-                                            <p>Incorrect</p>
-                                        </div>
-                                    </div>
-                                    <div className="flex fles-row justify-center items-center mr-5">
-                                        <div className="w-[1px] bg-lightGrey mr-4 h-10"></div>
-                                        <div className="flex flex-row gap-1.5 text-[0.813rem]">
-                                            <p className="font-semibold">80%</p>
-                                            <p>Accuracy</p>
-                                        </div>
-                                    </div>
-                                    <div className="flex fles-row justify-center items-center mr-5">
-                                        <div className="w-[1px] bg-lightGrey mr-4 h-10"></div>
-                                        <div className="flex flex-row gap-1.5 text-[0.813rem]">
-                                            <p className="font-semibold">32</p>
-                                            <p>Score</p>
-                                        </div>
-                                    </div>
-                                    <button
-                                        onClick={() => handleTabClick("Test01", "/analytics/test-series/PhoduJeeMainsTestSeries/Test01")}>
-                                        <span className="font-semibold text-[#9012FF] text-sm hover:underline">Detail View</span>
-                                    </button>
-                                </div>
+                        <div className="flex flex-row justify-between ml-5 mr-8 pt-4 pb-2 border-t border-lightGrey">
+                            <div>
+                                <p>Test 01</p>
+                                <p>50 Questions</p>
                             </div>
-                            <div className="flex flex-row justify-between pt-2 pb-2 border-t border-lightGrey">
-                                <div>
-                                    <p className="text-sm font-semibold">Test 01</p>
-                                    <p className="text-xs font-normal">50 Questions</p>
+                            <div className="flex items-center justify-center h-auto">
+                                <div className="flex fles-row mr-5">
+                                    <div className="flex flex-row gap-1.5 text-[0.813rem]">
+                                        <p className="font-semibold">44/55</p>
+                                        <p>Attempted</p>
+                                    </div>
                                 </div>
-                                <div className="flex items-center justify-center h-auto">
-                                    <div className="flex fles-row mr-5">
-                                        <div className="flex flex-row gap-1.5 text-[0.813rem]">
-                                            <p className="font-semibold">44/55</p>
-                                            <p>Attempted</p>
-                                        </div>
+                                <div className="flex fles-row justify-center items-center mr-5">
+                                    <div className="w-[1px] bg-lightGrey mr-4 h-10"></div>
+                                    <div className="flex flex-row gap-1.5 text-[0.813rem]">
+                                        <p className="font-semibold">38/45</p>
+                                        <p>Corrected</p>
                                     </div>
-                                    <div className="flex fles-row justify-center items-center mr-5">
-                                        <div className="w-[1px] bg-lightGrey mr-4 h-10"></div>
-                                        <div className="flex flex-row gap-1.5 text-[0.813rem]">
-                                            <p className="font-semibold">38/45</p>
-                                            <p>Corrected</p>
-                                        </div>
-                                    </div>
-                                    <div className="flex fles-row justify-center items-center mr-5">
-                                        <div className="w-[1px] bg-lightGrey mr-4 h-10"></div>
-                                        <div className="flex flex-row gap-1.5 text-[0.813rem]">
-                                            <p className="font-semibold">7/45</p>
-                                            <p>Incorrect</p>
-                                        </div>
-                                    </div>
-                                    <div className="flex fles-row justify-center items-center mr-5">
-                                        <div className="w-[1px] bg-lightGrey mr-4 h-10"></div>
-                                        <div className="flex flex-row gap-1.5 text-[0.813rem]">
-                                            <p className="font-semibold">80%</p>
-                                            <p>Accuracy</p>
-                                        </div>
-                                    </div>
-                                    <div className="flex fles-row justify-center items-center mr-5">
-                                        <div className="w-[1px] bg-lightGrey mr-4 h-10"></div>
-                                        <div className="flex flex-row gap-1.5 text-[0.813rem]">
-                                            <p className="font-semibold">32</p>
-                                            <p>Score</p>
-                                        </div>
-                                    </div>
-                                    <button
-                                        onClick={() => handleTabClick("Test01", "/analytics/test-series/PhoduJeeMainsTestSeries/Test01")}>
-                                        <span className="font-semibold text-[#9012FF] text-sm hover:underline">Detail View</span>
-                                    </button>
                                 </div>
+                                <div className="flex fles-row justify-center items-center mr-5">
+                                    <div className="w-[1px] bg-lightGrey mr-4 h-10"></div>
+                                    <div className="flex flex-row gap-1.5 text-[0.813rem]">
+                                        <p className="font-semibold">7/45</p>
+                                        <p>Incorrect</p>
+                                    </div>
+                                </div>
+                                <div className="flex fles-row justify-center items-center mr-5">
+                                    <div className="w-[1px] bg-lightGrey mr-4 h-10"></div>
+                                    <div className="flex flex-row gap-1.5 text-[0.813rem]">
+                                        <p className="font-semibold">80%</p>
+                                        <p>Accuracy</p>
+                                    </div>
+                                </div>
+                                <div className="flex fles-row justify-center items-center mr-5">
+                                    <div className="w-[1px] bg-lightGrey mr-4 h-10"></div>
+                                    <div className="flex flex-row gap-1.5 text-[0.813rem]">
+                                        <p className="font-semibold">32</p>
+                                        <p>Score</p>
+                                    </div>
+                                </div>
+                                <button
+                                    onClick={() => handleTabClick("Test01", "/analytics/test-series/PhoduJeeMainsTestSeries/Test01")}>
+                                    <span className="font-semibold text-[#9012FF] text-sm">Detail View</span>
+                                </button>
                             </div>
-                            <div className="flex flex-row justify-between pt-2 pb-2 border-t border-lightGrey">
-                                <div>
-                                    <p className="text-sm font-semibold">Test 01</p>
-                                    <p className="text-xs font-normal">50 Questions</p>
+                        </div>
+                        <div className="flex flex-row justify-between ml-5 mr-8 pt-2 pb-2 border-t border-lightGrey">
+                            <div>
+                                <p>Test 01</p>
+                                <p>50 Questions</p>
+                            </div>
+                            <div className="flex items-center justify-center h-auto">
+                                <div className="flex fles-row mr-5">
+                                    <div className="flex flex-row gap-1.5 text-[0.813rem]">
+                                        <p className="font-semibold">44/55</p>
+                                        <p>Attempted</p>
+                                    </div>
                                 </div>
-                                <div className="flex items-center justify-center h-auto">
-                                    <div className="flex fles-row mr-5">
-                                        <div className="flex flex-row gap-1.5 text-[0.813rem]">
-                                            <p className="font-semibold">44/55</p>
-                                            <p>Attempted</p>
-                                        </div>
+                                <div className="flex fles-row justify-center items-center mr-5">
+                                    <div className="w-[1px] bg-lightGrey mr-4 h-10"></div>
+                                    <div className="flex flex-row gap-1.5 text-[0.813rem]">
+                                        <p className="font-semibold">38/45</p>
+                                        <p>Corrected</p>
                                     </div>
-                                    <div className="flex fles-row justify-center items-center mr-5">
-                                        <div className="w-[1px] bg-lightGrey mr-4 h-10"></div>
-                                        <div className="flex flex-row gap-1.5 text-[0.813rem]">
-                                            <p className="font-semibold">38/45</p>
-                                            <p>Corrected</p>
-                                        </div>
+                                </div>
+                                <div className="flex fles-row justify-center items-center mr-5">
+                                    <div className="w-[1px] bg-lightGrey mr-4 h-10"></div>
+                                    <div className="flex flex-row gap-1.5 text-[0.813rem]">
+                                        <p className="font-semibold">7/45</p>
+                                        <p>Incorrect</p>
                                     </div>
-                                    <div className="flex fles-row justify-center items-center mr-5">
-                                        <div className="w-[1px] bg-lightGrey mr-4 h-10"></div>
-                                        <div className="flex flex-row gap-1.5 text-[0.813rem]">
-                                            <p className="font-semibold">7/45</p>
-                                            <p>Incorrect</p>
-                                        </div>
+                                </div>
+                                <div className="flex fles-row justify-center items-center mr-5">
+                                    <div className="w-[1px] bg-lightGrey mr-4 h-10"></div>
+                                    <div className="flex flex-row gap-1.5 text-[0.813rem]">
+                                        <p className="font-semibold">80%</p>
+                                        <p>Accuracy</p>
                                     </div>
-                                    <div className="flex fles-row justify-center items-center mr-5">
-                                        <div className="w-[1px] bg-lightGrey mr-4 h-10"></div>
-                                        <div className="flex flex-row gap-1.5 text-[0.813rem]">
-                                            <p className="font-semibold">80%</p>
-                                            <p>Accuracy</p>
-                                        </div>
+                                </div>
+                                <div className="flex fles-row justify-center items-center mr-5">
+                                    <div className="w-[1px] bg-lightGrey mr-4 h-10"></div>
+                                    <div className="flex flex-row gap-1.5 text-[0.813rem]">
+                                        <p className="font-semibold">32</p>
+                                        <p>Score</p>
                                     </div>
-                                    <div className="flex fles-row justify-center items-center mr-5">
-                                        <div className="w-[1px] bg-lightGrey mr-4 h-10"></div>
-                                        <div className="flex flex-row gap-1.5 text-[0.813rem]">
-                                            <p className="font-semibold">32</p>
-                                            <p>Score</p>
-                                        </div>
+                                </div>
+                                <button
+                                    onClick={() => handleTabClick("Test01", "/analytics/test-series/PhoduJeeMainsTestSeries/Test01")}>
+                                    <span className="font-semibold text-[#9012FF] text-sm">Detail View</span>
+                                </button>
+                            </div>
+                        </div>
+                        <div className="flex flex-row justify-between ml-5 mr-8 pt-2 pb-2 border-t border-lightGrey">
+                            <div>
+                                <p>Test 01</p>
+                                <p>50 Questions</p>
+                            </div>
+                            <div className="flex items-center justify-center h-auto">
+                                <div className="flex fles-row mr-5">
+                                    <div className="flex flex-row gap-1.5 text-[0.813rem]">
+                                        <p className="font-semibold">44/55</p>
+                                        <p>Attempted</p>
                                     </div>
-                                    <button
-                                        onClick={() => handleTabClick("Test01", "/analytics/test-series/PhoduJeeMainsTestSeries/Test01")}>
-                                        <span className="font-semibold text-[#9012FF] text-sm hover:underline">Detail View</span>
-                                    </button>
+                                </div>
+                                <div className="flex fles-row justify-center items-center mr-5">
+                                    <div className="w-[1px] bg-lightGrey mr-4 h-10"></div>
+                                    <div className="flex flex-row gap-1.5 text-[0.813rem]">
+                                        <p className="font-semibold">38/45</p>
+                                        <p>Corrected</p>
+                                    </div>
+                                </div>
+                                <div className="flex fles-row justify-center items-center mr-5">
+                                    <div className="w-[1px] bg-lightGrey mr-4 h-10"></div>
+                                    <div className="flex flex-row gap-1.5 text-[0.813rem]">
+                                        <p className="font-semibold">7/45</p>
+                                        <p>Incorrect</p>
+                                    </div>
+                                </div>
+                                <div className="flex fles-row justify-center items-center mr-5">
+                                    <div className="w-[1px] bg-lightGrey mr-4 h-10"></div>
+                                    <div className="flex flex-row gap-1.5 text-[0.813rem]">
+                                        <p className="font-semibold">80%</p>
+                                        <p>Accuracy</p>
+                                    </div>
+                                </div>
+                                <div className="flex fles-row justify-center items-center mr-5">
+                                    <div className="w-[1px] bg-lightGrey mr-4 h-10"></div>
+                                    <div className="flex flex-row gap-1.5 text-[0.813rem]">
+                                        <p className="font-semibold">32</p>
+                                        <p>Score</p>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -245,7 +436,204 @@ function JeeMains() {
                 {/* First Accordian */}
                 <div className='bg-white border border-lightGrey rounded-xl '>
                     <Collapsible
-                        className='flex flex-col active:bg-[#F2F4F7]'
+                        className='flex flex-col'
+                        trigger={
+                                <div
+                                    className="flex items-center justify-between h-auto mx-5 py-4"
+                                    onClick={() => toggleCollapsible(0)} // Toggle first accordion
+                                >
+                                    <div className="flex flex-col">
+                                        <p className="text-base font-bold">Maths</p>
+                                        <p>5 Tests</p>
+                                    </div>
+                                    <div className="flex flex-row">
+                                        <div className="flex fles-row mr-10">
+                                            <div className="flex flex-col gap-1.5">
+                                                <p className="text-xs font-normal">Attempted</p>
+                                                <h3 className="text-[15px] font-semibold">5/5</h3>
+                                            </div>
+                                        </div>
+                                        <div className="flex fles-row mr-10">
+                                            <div className="w-[1px] bg-lightGrey mr-4"></div>
+                                            <div className="flex flex-col gap-1.5">
+                                                <p className="text-xs font-normal">Score</p>
+                                                <h3 className="text-[15px] font-semibold">127</h3>
+                                            </div>
+                                        </div>
+                                        <div className="flex fles-row mr-10">
+                                            <div className="w-[1px] bg-lightGrey mr-4"></div>
+                                            <div className="flex flex-col gap-1.5">
+                                                <p className="text-xs font-normal">Time taken</p>
+                                                <h3 className="text-[15px] font-semibold">45h 30m</h3>
+                                            </div>
+                                        </div>
+                                        <div className="flex fles-row mr-10">
+                                            <div className="w-[1px] bg-lightGrey mr-4"></div>
+                                            <div className="flex flex-col gap-1.5">
+                                                <p className="text-xs font-normal">Total Time</p>
+                                                <h3 className="text-[15px] font-semibold">90h 20m</h3>
+                                            </div>
+                                        </div>
+
+                                        <Image
+                                            src={isOpenArray[0] ? "/icons/arrowdown.svg" : "/icons/arrowup.svg"} // Arrow based on first accordion state
+                                            width={24}
+                                            height={24}
+                                            alt="arrow"
+                                        />
+                                    </div>
+                                </div>
+                        }
+                        transitionTime={350}
+                        onOpening={() => toggleCollapsible(0)}  // Set the state to open when expanding
+                        onClosing={() => toggleCollapsible(0)} // Set the state to closed when collapsing
+                    >
+                        <div className="flex flex-row justify-between ml-5 mr-8 pt-4 pb-2 border-t border-lightGrey">
+                            <div>
+                                <p>Test 01</p>
+                                <p>50 Questions</p>
+                            </div>
+                            <div className="flex items-center justify-center h-auto">
+                                <div className="flex fles-row mr-5">
+                                    <div className="flex flex-row gap-1.5 text-[0.813rem]">
+                                        <p className="font-semibold">44/55</p>
+                                        <p>Attempted</p>
+                                    </div>
+                                </div>
+                                <div className="flex fles-row justify-center items-center mr-5">
+                                    <div className="w-[1px] bg-lightGrey mr-4 h-10"></div>
+                                    <div className="flex flex-row gap-1.5 text-[0.813rem]">
+                                        <p className="font-semibold">38/45</p>
+                                        <p>Corrected</p>
+                                    </div>
+                                </div>
+                                <div className="flex fles-row justify-center items-center mr-5">
+                                    <div className="w-[1px] bg-lightGrey mr-4 h-10"></div>
+                                    <div className="flex flex-row gap-1.5 text-[0.813rem]">
+                                        <p className="font-semibold">7/45</p>
+                                        <p>Incorrect</p>
+                                    </div>
+                                </div>
+                                <div className="flex fles-row justify-center items-center mr-5">
+                                    <div className="w-[1px] bg-lightGrey mr-4 h-10"></div>
+                                    <div className="flex flex-row gap-1.5 text-[0.813rem]">
+                                        <p className="font-semibold">80%</p>
+                                        <p>Accuracy</p>
+                                    </div>
+                                </div>
+                                <div className="flex fles-row justify-center items-center mr-5">
+                                    <div className="w-[1px] bg-lightGrey mr-4 h-10"></div>
+                                    <div className="flex flex-row gap-1.5 text-[0.813rem]">
+                                        <p className="font-semibold">32</p>
+                                        <p>Score</p>
+                                    </div>
+                                </div>
+                                <button
+                                    onClick={() => handleTabClick("Test01", "/analytics/test-series/PhoduJeeMainsTestSeries/Test01")}>
+                                    <span className="font-semibold text-[#9012FF] text-sm">Detail View</span>
+                                </button>
+                            </div>
+                        </div>
+                        <div className="flex flex-row justify-between ml-5 mr-8 pt-2 pb-2 border-t border-lightGrey">
+                            <div>
+                                <p>Test 01</p>
+                                <p>50 Questions</p>
+                            </div>
+                            <div className="flex items-center justify-center h-auto">
+                                <div className="flex fles-row mr-5">
+                                    <div className="flex flex-row gap-1.5 text-[0.813rem]">
+                                        <p className="font-semibold">44/55</p>
+                                        <p>Attempted</p>
+                                    </div>
+                                </div>
+                                <div className="flex fles-row justify-center items-center mr-5">
+                                    <div className="w-[1px] bg-lightGrey mr-4 h-10"></div>
+                                    <div className="flex flex-row gap-1.5 text-[0.813rem]">
+                                        <p className="font-semibold">38/45</p>
+                                        <p>Corrected</p>
+                                    </div>
+                                </div>
+                                <div className="flex fles-row justify-center items-center mr-5">
+                                    <div className="w-[1px] bg-lightGrey mr-4 h-10"></div>
+                                    <div className="flex flex-row gap-1.5 text-[0.813rem]">
+                                        <p className="font-semibold">7/45</p>
+                                        <p>Incorrect</p>
+                                    </div>
+                                </div>
+                                <div className="flex fles-row justify-center items-center mr-5">
+                                    <div className="w-[1px] bg-lightGrey mr-4 h-10"></div>
+                                    <div className="flex flex-row gap-1.5 text-[0.813rem]">
+                                        <p className="font-semibold">80%</p>
+                                        <p>Accuracy</p>
+                                    </div>
+                                </div>
+                                <div className="flex fles-row justify-center items-center mr-5">
+                                    <div className="w-[1px] bg-lightGrey mr-4 h-10"></div>
+                                    <div className="flex flex-row gap-1.5 text-[0.813rem]">
+                                        <p className="font-semibold">32</p>
+                                        <p>Score</p>
+                                    </div>
+                                </div>
+                                <button
+                                    onClick={() => handleTabClick("Test01", "/analytics/test-series/PhoduJeeMainsTestSeries/Test01")}>
+                                    <span className="font-semibold text-[#9012FF] text-sm">Detail View</span>
+                                </button>
+                            </div>
+                        </div>
+                        <div className="flex flex-row justify-between ml-5 mr-8 pt-2 pb-2 border-t border-lightGrey">
+                            <div>
+                                <p>Test 01</p>
+                                <p>50 Questions</p>
+                            </div>
+                            <div className="flex items-center justify-center h-auto">
+                                <div className="flex fles-row mr-5">
+                                    <div className="flex flex-row gap-1.5 text-[0.813rem]">
+                                        <p className="font-semibold">44/55</p>
+                                        <p>Attempted</p>
+                                    </div>
+                                </div>
+                                <div className="flex fles-row justify-center items-center mr-5">
+                                    <div className="w-[1px] bg-lightGrey mr-4 h-10"></div>
+                                    <div className="flex flex-row gap-1.5 text-[0.813rem]">
+                                        <p className="font-semibold">38/45</p>
+                                        <p>Corrected</p>
+                                    </div>
+                                </div>
+                                <div className="flex fles-row justify-center items-center mr-5">
+                                    <div className="w-[1px] bg-lightGrey mr-4 h-10"></div>
+                                    <div className="flex flex-row gap-1.5 text-[0.813rem]">
+                                        <p className="font-semibold">7/45</p>
+                                        <p>Incorrect</p>
+                                    </div>
+                                </div>
+                                <div className="flex fles-row justify-center items-center mr-5">
+                                    <div className="w-[1px] bg-lightGrey mr-4 h-10"></div>
+                                    <div className="flex flex-row gap-1.5 text-[0.813rem]">
+                                        <p className="font-semibold">80%</p>
+                                        <p>Accuracy</p>
+                                    </div>
+                                </div>
+                                <div className="flex fles-row justify-center items-center mr-5">
+                                    <div className="w-[1px] bg-lightGrey mr-4 h-10"></div>
+                                    <div className="flex flex-row gap-1.5 text-[0.813rem]">
+                                        <p className="font-semibold">32</p>
+                                        <p>Score</p>
+                                    </div>
+                                </div>
+                                <button
+                                    onClick={() => handleTabClick("Test01", "/analytics/test-series/PhoduJeeMainsTestSeries/Test01")}>
+                                    <span className="font-semibold text-[#9012FF] text-sm">Detail View</span>
+                                </button>
+                            </div>
+                        </div>
+                    </Collapsible>
+                </div>
+
+
+                {/* Fourth Accordian */}
+                <div className='bg-white border border-lightGrey rounded-xl '>
+                    <Collapsible
+                        className='flex flex-col'
                         trigger={
                                 <div
                                     className="flex items-center justify-between h-auto mx-5 py-4"
@@ -256,27 +644,27 @@ function JeeMains() {
                                         <p>5 Tests</p>
                                     </div>
                                     <div className="flex flex-row">
-                                        <div className="flex fles-row mr-20">
+                                        <div className="flex fles-row mr-10">
                                             <div className="flex flex-col gap-1.5">
                                                 <p className="text-xs font-normal">Attempted</p>
                                                 <h3 className="text-[15px] font-semibold">5/5</h3>
                                             </div>
                                         </div>
-                                        <div className="flex fles-row mr-20">
+                                        <div className="flex fles-row mr-10">
                                             <div className="w-[1px] bg-lightGrey mr-4"></div>
                                             <div className="flex flex-col gap-1.5">
                                                 <p className="text-xs font-normal">Score</p>
                                                 <h3 className="text-[15px] font-semibold">127</h3>
                                             </div>
                                         </div>
-                                        <div className="flex fles-row mr-20">
+                                        <div className="flex fles-row mr-10">
                                             <div className="w-[1px] bg-lightGrey mr-4"></div>
                                             <div className="flex flex-col gap-1.5">
                                                 <p className="text-xs font-normal">Time taken</p>
                                                 <h3 className="text-[15px] font-semibold">45h 30m</h3>
                                             </div>
                                         </div>
-                                        <div className="flex fles-row mr-20">
+                                        <div className="flex fles-row mr-10">
                                             <div className="w-[1px] bg-lightGrey mr-4"></div>
                                             <div className="flex flex-col gap-1.5">
                                                 <p className="text-xs font-normal">Total Time</p>
@@ -284,161 +672,160 @@ function JeeMains() {
                                             </div>
                                         </div>
 
-                                        <Image
-                                            src={isOpenArray[0] ? "/icons/arrowdown.svg" : "/icons/arrowup.svg"} // Arrow based on first accordion state
-                                            width={24}
-                                            height={24}
-                                            alt="arrow"
-                                        />
-                                    </div>
+                                    <Image
+                                        src={isOpenArray[0] ? "/icons/arrowdown.svg" : "/icons/arrowup.svg"} // Arrow based on first accordion state
+                                        width={24}
+                                        height={24}
+                                        alt="arrow"
+                                    />
                                 </div>
+                            </div>
                         }
                         transitionTime={350}
                         onOpening={() => toggleCollapsible(0)}  // Set the state to open when expanding
                         onClosing={() => toggleCollapsible(0)} // Set the state to closed when collapsing
                     >
-                        <div className="border-t border-lightGrey ml-5 mr-5 py-2">
-                            <div className="flex flex-row justify-between pt-2 pb-2">
-                                <div>
-                                    <p className="text-sm font-semibold">Test 01</p>
-                                    <p className="text-xs font-normal">50 Questions</p>
-                                </div>
-                                <div className="flex items-center justify-center h-auto">
-                                    <div className="flex fles-row mr-5">
-                                        <div className="flex flex-row gap-1.5 text-[0.813rem]">
-                                            <p className="font-semibold">44/55</p>
-                                            <p>Attempted</p>
-                                        </div>
-                                    </div>
-                                    <div className="flex fles-row justify-center items-center mr-5">
-                                        <div className="w-[1px] bg-lightGrey mr-4 h-10"></div>
-                                        <div className="flex flex-row gap-1.5 text-[0.813rem]">
-                                            <p className="font-semibold">38/45</p>
-                                            <p>Corrected</p>
-                                        </div>
-                                    </div>
-                                    <div className="flex fles-row justify-center items-center mr-5">
-                                        <div className="w-[1px] bg-lightGrey mr-4 h-10"></div>
-                                        <div className="flex flex-row gap-1.5 text-[0.813rem]">
-                                            <p className="font-semibold">7/45</p>
-                                            <p>Incorrect</p>
-                                        </div>
-                                    </div>
-                                    <div className="flex fles-row justify-center items-center mr-5">
-                                        <div className="w-[1px] bg-lightGrey mr-4 h-10"></div>
-                                        <div className="flex flex-row gap-1.5 text-[0.813rem]">
-                                            <p className="font-semibold">80%</p>
-                                            <p>Accuracy</p>
-                                        </div>
-                                    </div>
-                                    <div className="flex fles-row justify-center items-center mr-5">
-                                        <div className="w-[1px] bg-lightGrey mr-4 h-10"></div>
-                                        <div className="flex flex-row gap-1.5 text-[0.813rem]">
-                                            <p className="font-semibold">32</p>
-                                            <p>Score</p>
-                                        </div>
-                                    </div>
-                                    <button
-                                        onClick={() => handleTabClick("Test01", "/analytics/test-series/PhoduJeeMainsTestSeries/Test01")}>
-                                        <span className="font-semibold text-[#9012FF] text-sm hover:underline">Detail View</span>
-                                    </button>
-                                </div>
+                        <div className="flex flex-row justify-between ml-5 mr-8 pt-4 pb-2 border-t border-lightGrey">
+                            <div>
+                                <p>Test 01</p>
+                                <p>50 Questions</p>
                             </div>
-                            <div className="flex flex-row justify-between pt-2 pb-2 border-t border-lightGrey">
-                                <div>
-                                    <p className="text-sm font-semibold">Test 01</p>
-                                    <p className="text-xs font-normal">50 Questions</p>
+                            <div className="flex items-center justify-center h-auto">
+                                <div className="flex fles-row mr-5">
+                                    <div className="flex flex-row gap-1.5 text-[0.813rem]">
+                                        <p className="font-semibold">44/55</p>
+                                        <p>Attempted</p>
+                                    </div>
                                 </div>
-                                <div className="flex items-center justify-center h-auto">
-                                    <div className="flex fles-row mr-5">
-                                        <div className="flex flex-row gap-1.5 text-[0.813rem]">
-                                            <p className="font-semibold">44/55</p>
-                                            <p>Attempted</p>
-                                        </div>
+                                <div className="flex fles-row justify-center items-center mr-5">
+                                    <div className="w-[1px] bg-lightGrey mr-4 h-10"></div>
+                                    <div className="flex flex-row gap-1.5 text-[0.813rem]">
+                                        <p className="font-semibold">38/45</p>
+                                        <p>Corrected</p>
                                     </div>
-                                    <div className="flex fles-row justify-center items-center mr-5">
-                                        <div className="w-[1px] bg-lightGrey mr-4 h-10"></div>
-                                        <div className="flex flex-row gap-1.5 text-[0.813rem]">
-                                            <p className="font-semibold">38/45</p>
-                                            <p>Corrected</p>
-                                        </div>
-                                    </div>
-                                    <div className="flex fles-row justify-center items-center mr-5">
-                                        <div className="w-[1px] bg-lightGrey mr-4 h-10"></div>
-                                        <div className="flex flex-row gap-1.5 text-[0.813rem]">
-                                            <p className="font-semibold">7/45</p>
-                                            <p>Incorrect</p>
-                                        </div>
-                                    </div>
-                                    <div className="flex fles-row justify-center items-center mr-5">
-                                        <div className="w-[1px] bg-lightGrey mr-4 h-10"></div>
-                                        <div className="flex flex-row gap-1.5 text-[0.813rem]">
-                                            <p className="font-semibold">80%</p>
-                                            <p>Accuracy</p>
-                                        </div>
-                                    </div>
-                                    <div className="flex fles-row justify-center items-center mr-5">
-                                        <div className="w-[1px] bg-lightGrey mr-4 h-10"></div>
-                                        <div className="flex flex-row gap-1.5 text-[0.813rem]">
-                                            <p className="font-semibold">32</p>
-                                            <p>Score</p>
-                                        </div>
-                                    </div>
-                                    <button
-                                        onClick={() => handleTabClick("Test01", "/analytics/test-series/PhoduJeeMainsTestSeries/Test01")}>
-                                        <span className="font-semibold text-[#9012FF] text-sm hover:underline">Detail View</span>
-                                    </button>
                                 </div>
+                                <div className="flex fles-row justify-center items-center mr-5">
+                                    <div className="w-[1px] bg-lightGrey mr-4 h-10"></div>
+                                    <div className="flex flex-row gap-1.5 text-[0.813rem]">
+                                        <p className="font-semibold">7/45</p>
+                                        <p>Incorrect</p>
+                                    </div>
+                                </div>
+                                <div className="flex fles-row justify-center items-center mr-5">
+                                    <div className="w-[1px] bg-lightGrey mr-4 h-10"></div>
+                                    <div className="flex flex-row gap-1.5 text-[0.813rem]">
+                                        <p className="font-semibold">80%</p>
+                                        <p>Accuracy</p>
+                                    </div>
+                                </div>
+                                <div className="flex fles-row justify-center items-center mr-5">
+                                    <div className="w-[1px] bg-lightGrey mr-4 h-10"></div>
+                                    <div className="flex flex-row gap-1.5 text-[0.813rem]">
+                                        <p className="font-semibold">32</p>
+                                        <p>Score</p>
+                                    </div>
+                                </div>
+                                <button
+                                    onClick={() => handleTabClick("Test01", "/analytics/test-series/PhoduJeeMainsTestSeries/Test01")}>
+                                    <span className="font-semibold text-[#9012FF] text-sm">Detail View</span>
+                                </button>
                             </div>
-                            <div className="flex flex-row justify-between pt-2 pb-2 border-t border-lightGrey">
-                                <div>
-                                    <p className="text-sm font-semibold">Test 01</p>
-                                    <p className="text-xs font-normal">50 Questions</p>
+                        </div>
+                        <div className="flex flex-row justify-between ml-5 mr-8 pt-2 pb-2 border-t border-lightGrey">
+                            <div>
+                                <p>Test 01</p>
+                                <p>50 Questions</p>
+                            </div>
+                            <div className="flex items-center justify-center h-auto">
+                                <div className="flex fles-row mr-5">
+                                    <div className="flex flex-row gap-1.5 text-[0.813rem]">
+                                        <p className="font-semibold">44/55</p>
+                                        <p>Attempted</p>
+                                    </div>
                                 </div>
-                                <div className="flex items-center justify-center h-auto">
-                                    <div className="flex fles-row mr-5">
-                                        <div className="flex flex-row gap-1.5 text-[0.813rem]">
-                                            <p className="font-semibold">44/55</p>
-                                            <p>Attempted</p>
-                                        </div>
+                                <div className="flex fles-row justify-center items-center mr-5">
+                                    <div className="w-[1px] bg-lightGrey mr-4 h-10"></div>
+                                    <div className="flex flex-row gap-1.5 text-[0.813rem]">
+                                        <p className="font-semibold">38/45</p>
+                                        <p>Corrected</p>
                                     </div>
-                                    <div className="flex fles-row justify-center items-center mr-5">
-                                        <div className="w-[1px] bg-lightGrey mr-4 h-10"></div>
-                                        <div className="flex flex-row gap-1.5 text-[0.813rem]">
-                                            <p className="font-semibold">38/45</p>
-                                            <p>Corrected</p>
-                                        </div>
-                                    </div>
-                                    <div className="flex fles-row justify-center items-center mr-5">
-                                        <div className="w-[1px] bg-lightGrey mr-4 h-10"></div>
-                                        <div className="flex flex-row gap-1.5 text-[0.813rem]">
-                                            <p className="font-semibold">7/45</p>
-                                            <p>Incorrect</p>
-                                        </div>
-                                    </div>
-                                    <div className="flex fles-row justify-center items-center mr-5">
-                                        <div className="w-[1px] bg-lightGrey mr-4 h-10"></div>
-                                        <div className="flex flex-row gap-1.5 text-[0.813rem]">
-                                            <p className="font-semibold">80%</p>
-                                            <p>Accuracy</p>
-                                        </div>
-                                    </div>
-                                    <div className="flex fles-row justify-center items-center mr-5">
-                                        <div className="w-[1px] bg-lightGrey mr-4 h-10"></div>
-                                        <div className="flex flex-row gap-1.5 text-[0.813rem]">
-                                            <p className="font-semibold">32</p>
-                                            <p>Score</p>
-                                        </div>
-                                    </div>
-                                    <button
-                                        onClick={() => handleTabClick("Test01", "/analytics/test-series/PhoduJeeMainsTestSeries/Test01")}>
-                                        <span className="font-semibold text-[#9012FF] text-sm hover:underline">Detail View</span>
-                                    </button>
                                 </div>
+                                <div className="flex fles-row justify-center items-center mr-5">
+                                    <div className="w-[1px] bg-lightGrey mr-4 h-10"></div>
+                                    <div className="flex flex-row gap-1.5 text-[0.813rem]">
+                                        <p className="font-semibold">7/45</p>
+                                        <p>Incorrect</p>
+                                    </div>
+                                </div>
+                                <div className="flex fles-row justify-center items-center mr-5">
+                                    <div className="w-[1px] bg-lightGrey mr-4 h-10"></div>
+                                    <div className="flex flex-row gap-1.5 text-[0.813rem]">
+                                        <p className="font-semibold">80%</p>
+                                        <p>Accuracy</p>
+                                    </div>
+                                </div>
+                                <div className="flex fles-row justify-center items-center mr-5">
+                                    <div className="w-[1px] bg-lightGrey mr-4 h-10"></div>
+                                    <div className="flex flex-row gap-1.5 text-[0.813rem]">
+                                        <p className="font-semibold">32</p>
+                                        <p>Score</p>
+                                    </div>
+                                </div>
+                                <button
+                                    onClick={() => handleTabClick("Test01", "/analytics/test-series/PhoduJeeMainsTestSeries/Test01")}>
+                                    <span className="font-semibold text-[#9012FF] text-sm">Detail View</span>
+                                </button>
+                            </div>
+                        </div>
+                        <div className="flex flex-row justify-between ml-5 mr-8 pt-2 pb-2 border-t border-lightGrey">
+                            <div>
+                                <p>Test 01</p>
+                                <p>50 Questions</p>
+                            </div>
+                            <div className="flex items-center justify-center h-auto">
+                                <div className="flex fles-row mr-5">
+                                    <div className="flex flex-row gap-1.5 text-[0.813rem]">
+                                        <p className="font-semibold">44/55</p>
+                                        <p>Attempted</p>
+                                    </div>
+                                </div>
+                                <div className="flex fles-row justify-center items-center mr-5">
+                                    <div className="w-[1px] bg-lightGrey mr-4 h-10"></div>
+                                    <div className="flex flex-row gap-1.5 text-[0.813rem]">
+                                        <p className="font-semibold">38/45</p>
+                                        <p>Corrected</p>
+                                    </div>
+                                </div>
+                                <div className="flex fles-row justify-center items-center mr-5">
+                                    <div className="w-[1px] bg-lightGrey mr-4 h-10"></div>
+                                    <div className="flex flex-row gap-1.5 text-[0.813rem]">
+                                        <p className="font-semibold">7/45</p>
+                                        <p>Incorrect</p>
+                                    </div>
+                                </div>
+                                <div className="flex fles-row justify-center items-center mr-5">
+                                    <div className="w-[1px] bg-lightGrey mr-4 h-10"></div>
+                                    <div className="flex flex-row gap-1.5 text-[0.813rem]">
+                                        <p className="font-semibold">80%</p>
+                                        <p>Accuracy</p>
+                                    </div>
+                                </div>
+                                <div className="flex fles-row justify-center items-center mr-5">
+                                    <div className="w-[1px] bg-lightGrey mr-4 h-10"></div>
+                                    <div className="flex flex-row gap-1.5 text-[0.813rem]">
+                                        <p className="font-semibold">32</p>
+                                        <p>Score</p>
+                                    </div>
+                                </div>
+                                <button
+                                    onClick={() => handleTabClick("Test01", "/analytics/test-series/PhoduJeeMainsTestSeries/Test01")}>
+                                    <span className="font-semibold text-[#9012FF] text-sm">Detail View</span>
+                                </button>
                             </div>
                         </div>
                     </Collapsible>
                 </div>
+
 
             </div>
         </div>

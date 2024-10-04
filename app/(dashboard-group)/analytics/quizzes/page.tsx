@@ -53,44 +53,48 @@ const CustomTooltip: React.FC<CustomTooltipProps> = ({ active, payload, label })
                 backgroundColor: 'white',
                 border: '1px solid #EAECF0',
                 borderRadius: '8px',
-                width: '169px',
-                height: "89px",
+                width: 'auto',
+                height: "auto",
 
                 fontSize: '14px',
                 pointerEvents: 'none', // Prevent mouse events from affecting the tooltip
-                boxShadow: "2px 5px 11px 0px #0000001A",
-                padding: '10px'
+                boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.1)",
+                padding: '16px'
+
             }}>
                 {/* Tooltip content */}
-                <div className="m-2">
-                    <div style={{ display: 'flex', alignItems: 'center', width: "139px", height: "27px", justifyItems: 'center', }}>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '3px' }}>
-                            <span style={{
-                                display: 'inline-block',
-                                width: '10px',
-                                height: '10px',
-                                borderRadius: '50%',
-                                backgroundColor: '#17B26A', // Color for "Correct"
-                            }} />
-                            <span className="text-[#667085] font-normal text-sm ml-1">{`Correct `}</span>
-                            <span className="ml-14 font-semibold text-base text-[#1D2939]">{correctValue}</span>
-                        </div>
-                    </div>
-                    <div style={{ display: 'flex', alignItems: 'center', width: "139px", height: "27px", justifyItems: 'center' }}>
-                        <div style={{ display: 'flex', alignItems: 'center', }}>
-                            <span style={{
-                                display: 'inline-block',
-                                width: '10px',
-                                height: '10px',
-                                borderRadius: '50%',
-                                backgroundColor: '#F04438', // Color for "Incorrect"
-                                marginRight: '4px'
-                            }} />
-                            <span className="text-[#667085] font-normal text-sm ml-1">{`Incorrect `}</span>
-                            <span className="ml-12 mr-2 font-semibold text-base text-[#1D2939]">{incorrectValue}</span>
-                        </div>
+
+                <div style={{ display: 'flex', alignItems: 'center', width: "auto", height: "auto", justifyItems: 'center', }}>
+                    <div style={{ display: 'flex', alignItems: 'center', }}>
+                        <span style={{
+                            display: 'inline-block',
+                            width: '12px',
+                            height: '12px',
+                            borderRadius: '50%',
+                            backgroundColor: '#17B26A',
+                            padding: '3px',
+                            marginRight: '4px',
+                        }} />
+                        <span className="text-[#667085] font-normal text-sm ml-1">{`Correct `}</span>
+                        <span className=" ml-12 font-semibold text-base text-[#1D2939]">{correctValue}</span>
                     </div>
                 </div>
+                <div style={{ display: 'flex', alignItems: 'center', width: "auto", height: "auto", justifyItems: 'center', }}>
+                    <div style={{ display: 'flex', alignItems: 'center', }}>
+                        <span style={{
+                            display: 'inline-block',
+                            width: '12px',
+                            height: '12px',
+                            borderRadius: '50%',
+                            backgroundColor: '#F04438', // Color for "Incorrect"
+                            marginRight: '4px',
+                            padding: '3px'
+                        }} />
+                        <span className="text-[#667085] font-normal text-sm ml-1">{`Incorrect `}</span>
+                        <span className="ml-10 font-semibold text-base text-[#1D2939]">{incorrectValue}</span>
+                    </div>
+                </div>
+
             </div>
         );
     }
@@ -124,7 +128,7 @@ function Quizzes() {
             "incorrect": 1
         },
     ];
-    
+
     return (
         <div className="flex flex-1 flex-col py-6 mx-8">
             <div className="text-[#1D2939]"><h3>Overview</h3></div>
@@ -237,7 +241,7 @@ function Quizzes() {
                                 fill="#667085"
 
                             />
-                            <Tooltip content={<CustomTooltip />} cursor={false} />
+                            <Tooltip content={<CustomTooltip />} cursor={false} isAnimationActive={true} />
                             <Legend wrapperStyle={{ display: 'none' }} />
                             <Bar dataKey="correct" fill="#17B26A" barSize={55} />
                             <Bar dataKey="incorrect" fill="#F04438" barSize={55} />
