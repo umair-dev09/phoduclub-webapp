@@ -1,10 +1,7 @@
 "use client";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
-import React from "react";
-import AttemptsDifficultyAnalysis from "@/components/DashboardComponents/AnalyticsComponents/Test-Series-Components/PhysicsComponents/AttemptsDifficultyAnalysis"
-import Attemptsoverthehours from "@/components/DashboardComponents/AnalyticsComponents/Test-Series-Components/PhysicsComponents/Attemptsoverthehours"
-
+import Graphicalviewofoverview from "@/components/DashboardComponents/AnalyticsComponents/Test-Series-Components/AllSubjectsComponents/Graphicalviewofoverview";
 function JeeMains() {
     const router = useRouter();
     return (
@@ -20,7 +17,6 @@ function JeeMains() {
                             <Image src="/icons/course-left.svg" width={7} height={12} alt="left-arrow" />
                         </div>
                     </button>
-
                     <div className="text-[#667085] h-full w-auto -ml-1" style={{ fontSize: "16px", fontWeight: "500" }}>
                         Phodu JEE Mains Test Series 2025
                     </div>
@@ -28,21 +24,22 @@ function JeeMains() {
                         <Image src="/icons/course-left.svg" width={7} height={12} alt="left-arrow" />
                     </div>
                     <div className="text-[#667085] h-full w-auto -ml-1" style={{ fontSize: "16px", fontWeight: "500" }}>
-                        Physics
+                        All Subjects
                     </div>
                 </div>
             </div>
             {/* scroll anchoring */}
             <div className="h-[50px]  mx-8 border-b border-solid border-[#EAECF0] flex flex-row gap-[16px] mt-2">
-                <a href="#overview" className="text-[#667085] font-medium text-base">Overview</a>
-                <a href="#attempts" className="text-[#667085] font-medium text-base">Attempts & Difficulty Analysis</a>
-                <a href="#hours" className="text-[#667085] font-medium text-base">Attempts over the 3 hours</a>
-                <a href="#missed-concept" className="text-[#667085] font-medium text-base">Missed Concept</a>
-                <a href="#complete-analysis" className="text-[#667085] font-medium text-base">Complete Analysis</a>
+                <span className="text-[#667085] font-medium text-base">Overview</span>
+                <span className="text-[#667085] font-medium text-base">Attempts & Difficulty Analysis</span>
+                <span className="text-[#667085] font-medium text-base">Attempts over the 3 hours</span>
+                <span className="text-[#667085] font-medium text-base">Missed Concept</span>
+                <span className="text-[#667085] font-medium text-base">Complete Analysis</span>
             </div>
             {/* overview Line */}
-            <div id="overview" className="mx-8 h-[44px] flex flex-col justify-end mt-5">
+            <div id="overview" className="mx-8 h-[44px] flex flex-col justify-end mt-5 gap-1">
                 <span className="text-[#1D2939] text-lg font-semibold">Overview</span>
+                <span className="font-normal text-[#475467] text-sm">Summary of marks scored in the test</span>
             </div>
             {/* Overall Data */}
             <div className=" pt-2 pb-3 mx-8">
@@ -58,7 +55,6 @@ function JeeMains() {
                                 <div className="w-px bg-lightGrey h-4/5"></div>
                             </div>
                         </div>
-
                         {/* Attempted Questions */}
                         <div className="flex flex-1 flex-row justify-between pr-4">
                             <div className="flex flex-col gap-2">
@@ -69,14 +65,12 @@ function JeeMains() {
                                 <div className="w-px bg-lightGrey h-4/5"></div>
                             </div>
                         </div>
-
                         {/* Time Taken */}
                         <div className="flex flex-1 flex-col gap-2">
                             <div className="font-normal text-xs text-[#667085]">Time Taken</div>
                             <h3 className="text-[15px]">80 of 100 hrs</h3>
                         </div>
                     </div>
-
                     {/* Additional Stats */}
                     <div className="flex flex-row justify-between mt-9">
                         <div className="flex flex-1 flex-row justify-between pr-4">
@@ -88,7 +82,6 @@ function JeeMains() {
                                 <div className="w-px bg-lightGrey h-4/5"></div>
                             </div>
                         </div>
-
                         <div className="flex flex-1 flex-row justify-between pr-4">
                             <div className="flex flex-col gap-2">
                                 <div className="font-normal text-xs text-[#667085]">Answered Incorrect</div>
@@ -98,7 +91,6 @@ function JeeMains() {
                                 <div className="w-px bg-lightGrey h-4/5"></div>
                             </div>
                         </div>
-
                         <div className="flex flex-1 flex-col gap-2">
                             <div className="font-normal text-xs text-[#667085]">Total Score</div>
                             <h3 className="text-[15px]">568</h3>
@@ -106,84 +98,62 @@ function JeeMains() {
                     </div>
                 </div>
             </div>
-            {/* Attempts & Difficulty Analysis */}
-            <div id="attempts" className="mx-8 h-[44px] flex flex-col justify-end mb-2">
-                <span className="text-[#1D2939] text-lg font-semibold">Attempts & Difficulty Analysis</span>
-            </div>
-
-            <div>
-                < AttemptsDifficultyAnalysis />
-            </div>
-            {/* Attempts over the 3 hours */}
-            <div id="hours" className="mx-8 h-[44px] flex flex-col justify-end mb-2">
-                <span className="text-[#1D2939] text-lg font-semibold">Attempts over the 3 hours</span>
-            </div>
-            <div>
-                <Attemptsoverthehours />
-            </div>
-            {/* Complete Analysis */}
-            <div id="complete-analysis" className="mx-8 h-[44px] flex flex-col justify-end mb-2 ">
-                <span className="text-[#1D2939] text-lg font-semibold">Complete Analysis</span>
-            </div>
+            {/* Overall Data Table */}
             <div className="h-auto mx-8 rounded-xl  bg-[#FFFFFF] border border-solid border-[#EAECF0]">
                 <table className="w-full rounded-xl bg-white text-sm font-medium">
                     <thead>
                         <tr className="text-[#667085]">
-                            <th className="w-[7%] px-8 py-3 text-left">Q. no.</th>
-                            <th className="w-[10%] text-center">Chapter</th>
-                            <th className="w-[10%] text-center">Difficulty</th>
-                            <th className="w-[10%] text-center">Allotted</th>
-                            <th className="w-[10%] text-center">Spent</th>
-                            <th className="w-[10%] text-center">Attempted</th>
-                            <th className="w-[10%] text-center">Answer</th>
-                            <th className="w-[10%] text-center">Remarks</th>
+                            <th className="w-[10%] px-8 py-3 text-left">Subject</th>
+                            <th className="w-[10%] text-center">Score</th>
+                            <th className="w-[10%] text-center">Correct</th>
+                            <th className="w-[10%] text-center">Incorrect</th>
+                            <th className="w-[10%] text-center">Unattempted</th>
+                            <th className="w-[10%] text-center">Not visted</th>
                         </tr>
                     </thead>
                     <tbody className="border-b border-[#EAECF0]">
                         <tr className="border-t border-[#EAECF0]">
-                            <td className="px-8 py-3 text-left text-[#1D2939] font-normal text-sm">1</td>
-                            <td className="px-8 py-3 text-left text-[#1D2939] font-semibold text-sm">Current Electricity</td>
-                            <td className="px-8 py-3 text-left text-[#1D2939] font-normal text-sm">Easy</td>
-                            <td className="px-8 py-3 text-left text-[#1D2939] font-normal text-sm">217s</td>
-                            <td className="px-8 py-3 text-left text-[#1D2939] font-normal text-sm">50s</td>
-                            <td className="px-8 py-3 text-left text-[#1D2939] font-normal text-sm">Yes</td>
-                            <td className="px-8 py-3 text-left text-[#0B9055] font-medium text-sm">Correct</td>
-                            <td className="px-8 py-3 text-left text-[#0B9055] font-medium text-sm">Perfect</td>
+                            <td className="px-8 py-3 text-left text-[#1D2939] font-semibold text-sm">Overall</td>
+                            <td className="px-8 py-3 text-left text-[#1D2939] font-normal text-sm">200/300</td>
+                            <td className="px-8 py-3 text-left text-[#1D2939] font-normal text-sm">5/75</td>
+                            <td className="px-8 py-3 text-left text-[#1D2939] font-normal text-sm">10/25</td>
+                            <td className="px-8 py-3 text-left text-[#1D2939] font-normal text-sm">20/25</td>
+                            <td className="px-8 py-3 text-left text-[#1D2939] font-normal text-sm">0/75</td>
                         </tr>
                         <tr className="border-t border-[#EAECF0]">
-                            <td className="px-8 py-3 text-left text-[#1D2939] font-normal text-sm">1</td>
-                            <td className="px-8 py-3 text-left text-[#1D2939] font-semibold text-sm">Current Electricity</td>
-                            <td className="px-8 py-3 text-left text-[#1D2939] font-normal text-sm">Easy</td>
-                            <td className="px-8 py-3 text-left text-[#1D2939] font-normal text-sm">217s</td>
-                            <td className="px-8 py-3 text-left text-[#1D2939] font-normal text-sm">50s</td>
-                            <td className="px-8 py-3 text-left text-[#1D2939] font-normal text-sm">Yes</td>
-                            <td className="px-8 py-3 text-left text-[#DE3024] font-medium text-sm">Incorrect</td>
-                            <td className="px-8 py-3 text-left text-[#667085] font-medium text-sm">Confused</td>
+                            <td className="px-8 py-3 text-left text-[#1D2939] font-semibold text-sm">Physics</td>
+                            <td className="px-8 py-3 text-left text-[#1D2939] font-normal text-sm">100/300</td>
+                            <td className="px-8 py-3 text-left text-[#1D2939] font-normal text-sm">5/75</td>
+                            <td className="px-8 py-3 text-left text-[#1D2939] font-normal text-sm">1/25</td>
+                            <td className="px-8 py-3 text-left text-[#1D2939] font-normal text-sm">20/25</td>
+                            <td className="px-8 py-3 text-left text-[#1D2939] font-normal text-sm">0/75</td>
                         </tr>
                         <tr className="border-t border-[#EAECF0]">
-                            <td className="px-8 py-3 text-left text-[#1D2939] font-normal text-sm">1</td>
-                            <td className="px-8 py-3 text-left text-[#1D2939] font-semibold text-sm">Current Electricity</td>
-                            <td className="px-8 py-3 text-left text-[#1D2939] font-normal text-sm">Easy</td>
-                            <td className="px-8 py-3 text-left text-[#1D2939] font-normal text-sm">217s</td>
-                            <td className="px-8 py-3 text-left text-[#1D2939] font-normal text-sm">50s</td>
-                            <td className="px-8 py-3 text-left text-[#1D2939] font-normal text-sm">Yes</td>
-                            <td className="px-8 py-3 text-left text-[#DE3024] font-medium text-sm">Incorrect</td>
-                            <td className="px-8 py-3 text-left text-[#C74FE6] font-medium text-sm">Overtime</td>
+                            <td className="px-8 py-3 text-left text-[#1D2939] font-semibold text-sm">Chemistry</td>
+                            <td className="px-8 py-3 text-left text-[#1D2939] font-normal text-sm">250/300</td>
+                            <td className="px-8 py-3 text-left text-[#1D2939] font-normal text-sm">50/75</td>
+                            <td className="px-8 py-3 text-left text-[#1D2939] font-normal text-sm">10/25</td>
+                            <td className="px-8 py-3 text-left text-[#1D2939] font-normal text-sm">40/25</td>
+                            <td className="px-8 py-3 text-left text-[#1D2939] font-normal text-sm">0/75</td>
+                        </tr>
+                        <tr className="border-t border-[#EAECF0]">
+                            <td className="px-8 py-3 text-left text-[#1D2939] font-semibold text-sm">Mathmatics</td>
+                            <td className="px-8 py-3 text-left text-[#1D2939] font-normal text-sm">20/300</td>
+                            <td className="px-8 py-3 text-left text-[#1D2939] font-normal text-sm">5/75</td>
+                            <td className="px-8 py-3 text-left text-[#1D2939] font-normal text-sm">1/25</td>
+                            <td className="px-8 py-3 text-left text-[#1D2939] font-normal text-sm">16/25</td>
+                            <td className="px-8 py-3 text-left text-[#1D2939] font-normal text-sm">0/75</td>
                         </tr>
                     </tbody>
                 </table>
             </div>
-            {/* Summary */}
-            <div id="missed-concept" className="mx-8 h-[44px] flex flex-col justify-end mb-2 ">
-                <span className="text-[#1D2939] text-lg font-semibold">Summary</span>
+            <div id="hours" className="mx-8 h-[44px] flex flex-col justify-end mb-2">
+                <span className="text-[#1D2939] text-lg font-semibold">Graphical view of overview</span>
             </div>
-            <div className="h-[40px] mx-8 rounded-xl bg-[#FFFFFF] border border-solid border-[#EAECF0] text-[#667085] font-normal text-sm flex items-center justify-center">
-                Great! You did not miss any concept.
+            <div>
+                <Graphicalviewofoverview />
+
             </div>
-
-
-
-
         </div>
     )
 }

@@ -37,12 +37,10 @@ function JeeMains() {
             {/* scroll anchoring */}
             <div className="h-[50px]  mx-8 border-b border-solid border-[#EAECF0] flex flex-row gap-[16px] mt-2">
                 <span className="text-[#667085] font-medium text-base">Overview</span>
-                <span className="text-[#667085] font-medium text-base">Graphical view of overview</span>
-                <span className="text-[#667085] font-medium text-base">Time & Accuracy</span>
-                <span className="text-[#667085] font-medium text-base">Attempts</span>
-                <span className="text-[#667085] font-medium text-base">Difficulty Analysis</span>
+                <span className="text-[#667085] font-medium text-base">Attempts & Difficulty Analysis</span>
                 <span className="text-[#667085] font-medium text-base">Attempts over the 3 hours</span>
-                <span className="text-[#667085] font-medium text-base">Painful Questions</span>
+                <span className="text-[#667085] font-medium text-base">Missed Concept</span>
+                <span className="text-[#667085] font-medium text-base">Complete Analysis</span>
             </div>
             {/* overview Line */}
             <div>
