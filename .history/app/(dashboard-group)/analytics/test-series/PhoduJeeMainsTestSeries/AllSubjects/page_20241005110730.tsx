@@ -79,14 +79,13 @@ function JeeMains() {
                         <thead>
                             <tr className="text-[#667085]">
                                 <th className="w-[20%] py-3">
-                                    <div className="flex flex-row text-left pl-6 ">
+                                    <div className="flex flex-row text-left pl-6">
                                         Subject
                                         <Image
                                             src="/icons/information-circle.svg"
                                             width={16}
                                             height={16}
                                             alt="information-icon"
-                                            className="ml-1"
                                         />
                                     </div>
                                 </th>
@@ -98,7 +97,6 @@ function JeeMains() {
                                             width={16}
                                             height={16}
                                             alt="information-icon"
-                                            className="ml-1"
                                         />
                                     </div>
                                 </th>
@@ -110,7 +108,6 @@ function JeeMains() {
                                             width={16}
                                             height={16}
                                             alt="information-icon"
-                                            className="ml-1"
                                         />
                                     </div>
                                 </th>
@@ -122,7 +119,6 @@ function JeeMains() {
                                             width={16}
                                             height={16}
                                             alt="information-icon"
-                                            className="ml-1"
                                         />
                                     </div>
                                 </th>
@@ -134,7 +130,6 @@ function JeeMains() {
                                             width={16}
                                             height={16}
                                             alt="information-icon"
-                                            className="ml-1"
                                         />
                                     </div>
                                 </th>
@@ -183,8 +178,8 @@ function JeeMains() {
                     <span className="text-[#1D2939] text-lg font-semibold mr-2"> Difficulty Analysis</span>
                     <Image
                         src="/icons/information-circle.svg"
-                        width={20}
-                        height={20}
+                        width={16}
+                        height={16}
                         alt="information-icon"
                     />
                 </div>
@@ -199,8 +194,8 @@ function JeeMains() {
                     <span className="text-[#1D2939] text-lg font-semibold mr-2">  Attempts over the 3 hours</span>
                     <Image
                         src="/icons/information-circle.svg"
-                        width={20}
-                        height={20}
+                        width={16}
+                        height={16}
                         alt="information-icon"
                     />
                 </div>
@@ -220,16 +215,9 @@ function JeeMains() {
                 </div>
                 {/* --------------------------------------******************************************************---------------------------------------------- */}
                 {/* Summary */}
-                <div className="h-[44px] flex flex-row mt-6 mb-2">
-                    <span className="text-[#1D2939] text-lg font-semibold mr-2">Summary</span>
-                    <Image
-                        src="/icons/information-circle.svg"
-                        width={20}
-                        height={20}
-                        alt="information-icon"
-                    />
+                <div id="missed-concept" className="mt-8 h-[44px] flex flex-col justify-end mb-2 ">
+                    <span className="text-[#1D2939] text-lg font-semibold">Summary</span>
                 </div>
-
                 <div className="flex flex-col mb-8 gap-4">
                     <div className="h-auto bg-[#FFFFFF] border border-solid border-[#EAECF0] p-3  rounded-md">
                         <div className=" flex flex-col gap-2 ml-2">

@@ -1,7 +1,7 @@
 import React from 'react';
 import { useRouter } from 'next/navigation';
 
-function AccordianAllSubjects() {
+function AccordianAllSubjects () {
 
     const router = useRouter();
 

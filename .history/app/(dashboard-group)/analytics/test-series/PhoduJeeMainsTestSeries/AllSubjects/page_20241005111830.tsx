@@ -220,8 +220,8 @@ function JeeMains() {
                 </div>
                 {/* --------------------------------------******************************************************---------------------------------------------- */}
                 {/* Summary */}
-                <div className="h-[44px] flex flex-row mt-6 mb-2">
-                    <span className="text-[#1D2939] text-lg font-semibold mr-2">Summary</span>
+                <div className="h-[44px] flex flex-row  mb-2">
+                    <span className="text-[#1D2939] text-lg font-semibold mr-2">  Attempts over the 3 hours</span>
                     <Image
                         src="/icons/information-circle.svg"
                         width={20}
