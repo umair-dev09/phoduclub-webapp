@@ -190,28 +190,28 @@ function Quizzes() {
 
                             </tr>
                         </thead>
-                        <tbody className="border-b border-[#EAECF0]">
+                        <tbody>
                             <tr className="border-t border-[#EAECF0]">
                                 <td className="px-8 py-3 text-left text-[#1D2939] font-semibold text-sm">Overall</td>
-                                <td className=" px-8 py-3 text-left text-[#1D2939] font-normal text-sm">200/300</td>
-                                <td className="px-8 py-3 text-left text-[#1D2939] font-normal text-sm">5/75</td>
+                                <td className=" px-8 py-3 text-center text-[#1D2939] font-normal text-sm">200/300</td>
+                                <td className="px-8 py-3 text-center text-[#1D2939] font-normal text-sm">5/75</td>
 
                             </tr>
                             <tr className="border-t border-[#EAECF0]">
                                 <td className=" px-8 py-3 text-left text-[#1D2939] font-semibold text-sm">Physics</td>
-                                <td className="px-8 py-3 text-left text-[#1D2939] font-normal text-sm">100/300</td>
-                                <td className="px-8 py-3 text-left text-[#1D2939] font-normal text-sm">5/75</td>
+                                <td className="px-8 py-3 text-center text-[#1D2939] font-normal text-sm">100/300</td>
+                                <td className="px-8 py-3 text-center text-[#1D2939] font-normal text-sm">5/75</td>
 
                             </tr>
                             <tr className="border-t border-[#EAECF0]">
                                 <td className="px-8 py-3 text-left text-[#1D2939] font-semibold text-sm">Chemistry</td>
-                                <td className="px-8 py-3 text-left text-[#1D2939] font-normal text-sm">250/300</td>
-                                <td className="px-8 py-3 text-left text-[#1D2939] font-normal text-sm">50/75</td>
+                                <td className="px-8 py-3 text-center text-[#1D2939] font-normal text-sm">250/300</td>
+                                <td className="px-8 py-3 text-center text-[#1D2939] font-normal text-sm">50/75</td>
                             </tr>
                             <tr className="border-t border-[#EAECF0]">
                                 <td className="px-8 py-3 text-left text-[#1D2939] font-semibold text-sm">Maths</td>
-                                <td className="px-8 py-3 text-left text-[#1D2939] font-normal text-sm">250/300</td>
-                                <td className="px-8 py-3 text-left text-[#1D2939] font-normal text-sm">50/75</td>
+                                <td className="px-8 py-3 text-center text-[#1D2939] font-normal text-sm">250/300</td>
+                                <td className="px-8 py-3 text-center text-[#1D2939] font-normal text-sm">50/75</td>
                             </tr>
                         </tbody>
                     </table>

@@ -136,7 +136,6 @@ const data = [
         "incorrect": 3800,
         "overall": 2500
     },
-
 ]
 
 
@@ -193,8 +192,6 @@ function JeeMains() {
                         <td className="text-center text-[#1D2939] font-normal text-sm">8</td>
                         <td className="text-center text-[#1D2939] font-normal text-sm">5</td>
                     </tr>
-
-
                 </tbody>
             </table>
             <div className="flex flex-row justify-center h-[70px] items-center gap-4">
@@ -224,18 +221,24 @@ function JeeMains() {
 
                     <span className="font-normal text-[#667085] text-sm mt-1 ">overall</span>
                 </div>
-
             </div>
             <div style={{ height: '300px' }}>
                 <ResponsiveContainer width="100%" height="100%">
                     <LineChart data={data} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
                         <CartesianGrid stroke="#EAECF0" />
-                        <XAxis dataKey="name"
+                        <XAxis
+                            dataKey="name"
                             fontFamily="poppins"
                             fontSize={14}
                             fontWeight={400}
                             fill="#667085"
-
+                            tickMargin={10}
+                            tick={{
+                                transform: 'translateX(-10px)',  // Adjust X-axis tick position
+                                fontSize: 14,
+                                fontFamily: 'Poppins',
+                                fill: '#667085',
+                            }}
                         />
                         <YAxis
                             fontFamily="poppins"
@@ -253,29 +256,10 @@ function JeeMains() {
                         <Line type="monotone" dataKey="overall" stroke="#973AFF" dot={false} strokeWidth={2} />
                         <Line type="monotone" dataKey="correct" stroke="#17B26A" dot={false} strokeWidth={2} />
                         <Line type="monotone" dataKey="incorrect" stroke="#F04438" dot={false} strokeWidth={2} />
-
-
                     </LineChart>
                 </ResponsiveContainer>
             </div>
-
-
-
         </div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     )
 }
 export default JeeMains;

@@ -23,7 +23,7 @@ function JeeMains() {
     }
 
     return (
-        <div className="flex flex-1 flex-col overflow-y-auto pb-3">
+        <div className="flex flex-1 flex-col pb-3">
             <div className="h-[64px] ml-8 flex items-center">
                 <div className="my-5 flex items-center">
                     <button className="flex items-center ml-1" onClick={() => router.back()}>

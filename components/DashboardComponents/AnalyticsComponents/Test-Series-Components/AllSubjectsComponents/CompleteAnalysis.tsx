@@ -1,6 +1,6 @@
 function CompleteAnalysis() {
     return (
-        <div className="h-auto rounded-xl  bg-[#FFFFFF] border border-solid border-[#EAECF0]">
+        <div className="h-auto rounded-xl bg-[#FFFFFF] border border-solid border-[#EAECF0]">
             <table className="w-full rounded-xl bg-white text-sm font-medium">
                 <thead>
                     <tr className="text-[#667085]">
@@ -14,7 +14,7 @@ function CompleteAnalysis() {
                         <th className="w-[10%] text-center">Remarks</th>
                     </tr>
                 </thead>
-                <tbody className="border-b border-[#EAECF0]">
+                <tbody>
                     <tr className="border-t border-[#EAECF0]">
                         <td className="px-8 py-3 text-center text-[#1D2939] font-normal text-sm">1</td>
                         <td className="py-3 text-left text-[#1D2939] font-semibold text-sm">Current Electricity</td>
