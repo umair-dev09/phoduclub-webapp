@@ -1,12 +1,20 @@
 "use client";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
-import React from "react";
+import React, { useState } from "react";
 import AttemptsDifficultyAnalysis from "@/components/DashboardComponents/AnalyticsComponents/Test-Series-Components/PhysicsComponents/AttemptsDifficultyAnalysis"
 import Attemptsoverthehours from "@/components/DashboardComponents/AnalyticsComponents/Test-Series-Components/PhysicsComponents/Attemptsoverthehours"
+import { Dialog, DialogBackdrop, DialogPanel } from "@headlessui/react";
 
 function JeeMains() {
+
     const router = useRouter();
+
+    let [showQuizDialog, setShowQuizDialog] = useState(false);
+    const onStartQuiz = () => {
+        setShowQuizDialog(true);
+    };
+
     return (
         <div className="flex flex-1 flex-col h-auto overflow-y-auto px-8">
             {/* heading */}
@@ -42,7 +50,7 @@ function JeeMains() {
             </div>
             <div className="overflow-y-auto flex-1 flex flex-col h-auto">
                 {/* overview Line */}
-                <div id="overview" className="h-[44px] flex flex-col justify-end mt-5">
+                <div onClick={onStartQuiz} id="overview" className="h-[44px] flex flex-col justify-end mt-5 cursor-pointer">
                     <span className="text-[#1D2939] text-lg font-semibold">Overview</span>
                 </div>
                 {/* Overall Data */}
@@ -170,6 +178,64 @@ function JeeMains() {
                 <div className="h-auto mb-8 p-4 rounded-xl bg-[#FFFFFF] border border-[#EAECF0] text-[#667085] font-normal text-sm flex">
                     Great! You did not miss any concept.
                 </div>
+            </div>
+            <div>
+                <Dialog open={showQuizDialog} onClose={() => setShowQuizDialog(false)} className="relative z-50">
+                    <DialogBackdrop className="fixed inset-0 bg-black/30 " />
+                    <div className="fixed inset-0 flex items-center justify-center ">
+                        <DialogPanel transition className="bg-[#FFFFFF] rounded-2xl w-[37.5rem]">
+                            <div className="flex flex-1 relative w-full border-b-2 border-solid border-[#EAECF0] flex-col rounded-t-xl">
+                                <div className="absolute right-6 top-6">
+                                    <button onClick={() => setShowQuizDialog(false)}>
+                                        <Image src="/icons/cancel.svg" alt="cancel" width={18} height={18} />
+                                    </button>
+                                </div>
+                                <div className="flex flex-col w-full mt-8">
+                                    <div className="flex justify-center">
+                                        <Image src='/images/physicDailogImg.svg' alt="cool image" width={120} height={120} />
+                                    </div>
+                                    <div className="flex justify-center text-xl font-bold">
+                                        <h2>Upgrade to premium</h2>
+                                    </div>
+                                </div>
+                                <div className="flex flex-col mt-9 mb-6 font-medium text-base text-[#1D2939]">
+                                    <div className="flex flex-row w-full pl-8 mb-6">
+                                        <div className="flex flex-row w-1/2"><div><Image className="mr-2" src='/icons/checkmark-circle-02.svg' alt="tick circle" width={24} height={24} /></div><p>Unlock the premiun <br/> Analytics</p></div>
+                                        <div className="flex flex-row w-1/2 ml-6"><div><Image className="mr-2" src='/icons/checkmark-circle-02.svg' alt="tick circle" width={24} height={24} /></div><p>Special badge for  <br/> premiun users</p></div>
+                                    </div>
+                                    <div className="flex flex-row w-full pl-8">
+                                        <div className="flex flex-row w-1/2"><div><Image className="mr-2" src='/icons/checkmark-circle-02.svg' alt="tick circle" width={24} height={24} /></div><p>Be part of the premium  <br/> groups</p></div>
+                                        <div className="flex flex-row w-1/2 ml-6"><div><Image className="mr-2" src='/icons/checkmark-circle-02.svg' alt="tick circle" width={24} height={24} /></div><p>Get dedicated  <br/> mentorship by IIT/NITians</p></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div
+                                style={{
+                                    borderTopLeftRadius: '0px',
+                                    borderTopRightRadius: '0px',
+                                    borderBottomLeftRadius: '12px',
+                                    borderBottomRightRadius: '12px',
+                                }}>
+                                <div className="flex w-full justify-end my-4">
+                                    <button
+                                        className="bg-[#FFFFFF] text-[#1D2939] text-sm font-semibold py-2 px-5 rounded-md w-[118px] h-[44px] shadow-inner-button"
+                                        style={{ border: "1.5px solid #EAECF0" }}
+                                        onClick={() => setShowQuizDialog(false)}>
+                                        Cancel
+                                    </button>
+                                    <button
+                                        className="bg-[#8501FF] text-[#FFFFFF] text-sm font-semibold mr-6 ml-4 py-2 px-5 rounded-md w-[118px] h-[44px] shadow-inner-button"
+                                        style={{
+                                            border: "1px solid #800EE2",
+                                        }}
+                                    >
+                                        Start Now
+                                    </button>
+                                </div>
+                            </div>
+                        </DialogPanel>
+                    </div>
+                </Dialog>
             </div>
         </div>
     )
