@@ -33,7 +33,7 @@ function JeeMains() {
                 </div>
             </div>
             {/* scroll anchoring */}
-            <div className="h-[50px] border-b border-solid border-[#EAECF0] flex flex-row gap-[16px] mt-2">
+            <div className="h-[50px]border-b border-solid border-[#EAECF0] flex flex-row gap-[16px]  items-center">
                 <a href="#overview" className="text-[#667085] font-medium text-base">Overview</a>
                 <a href="#attempts" className="text-[#667085] font-medium text-base">Attempts & Difficulty Analysis</a>
                 <a href="#hours" className="text-[#667085] font-medium text-base">Attempts over the 3 hours</a>
