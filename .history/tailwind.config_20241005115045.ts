@@ -9,7 +9,7 @@ const config: Config = {
 	],
 	theme: {
 		extend: {
-
+			scrollBehavior: ['smooth'],
 			animation: {
 				'spin-loading': 'spin 0.5s linear infinite',
 			},
