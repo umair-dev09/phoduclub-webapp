@@ -8,7 +8,7 @@ import Attemptsoverthehours from "@/components/DashboardComponents/AnalyticsComp
 function JeeMains() {
     const router = useRouter();
     return (
-        <div className="flex flex-1 flex-col h-auto overflow-y-auto  px-8">
+        <div className="flex flex-1 flex-col h-auto overflow-y-auto px-8">
             {/* heading */}
             <div className="h-[64px] flex items-center">
                 <div className="my-5 flex items-center flex-row ">
