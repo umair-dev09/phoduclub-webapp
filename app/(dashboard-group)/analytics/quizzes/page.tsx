@@ -4,6 +4,7 @@ import Leaderboard from "@/components/DashboardComponents/AnalyticsComponents/Qu
 import { Bar, BarChart, CartesianGrid, Legend, ResponsiveContainer, Tooltip, TooltipProps, XAxis, YAxis } from "recharts";
 import { PieChart, Pie, Cell } from 'recharts';
 import { ChartLegend, ChartLegendContent } from "@/components/ui/chart"
+import Image from "next/image";
 
 import {
     ChartConfig,
@@ -116,19 +117,19 @@ const CustomPieTooltip: React.FC<PieTooltipProps> = ({ active, payload }) => {
                 boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.1)"
             }}>
                 <div className="flex flex-row items-center">
-                {/* Color dot */}
-                <span style={{
-                    display: 'inline-block',
-                    width: '12px',
-                    height: '12px',
-                    borderRadius: '50%',
-                    backgroundColor: '#EAECF0',
-                    marginRight: '8px'
-                }} />
-                {/* Name and value */}
+                    {/* Color dot */}
+                    <span style={{
+                        display: 'inline-block',
+                        width: '12px',
+                        height: '12px',
+                        borderRadius: '50%',
+                        backgroundColor: '#EAECF0',
+                        marginRight: '8px'
+                    }} />
+                    {/* Name and value */}
                     <p className="flex items-center text-sm font-semibold text-[#667085]">{name}</p>
                 </div>
-                    <p className="flex items-center text-[0.938rem] font-semibold text-[#1D2939]">{value}</p>
+                <p className="flex items-center text-[0.938rem] font-semibold text-[#1D2939]">{value}</p>
             </div>
         );
     }
@@ -343,7 +344,12 @@ function Quizzes() {
                         <tr className="flex flex-1 py-3">
                             <td className="flex items-center justify-center w-[8%]"><p>10,545</p></td>
                             <td className="flex flex-row w-[20%] gap-2">
-                                <div className="flex items-center">DP</div>
+                                <div className="flex items-center">
+                                    <div className="relative">
+                                        <Image src='/images/DP_Lion.svg' alt="DP" width={40} height={40} />
+                                        <Image className="absolute right-0 bottom-0" src='/icons/winnerBatch.svg' alt="Batch" width={18} height={18} />
+                                    </div>
+                                </div>
                                 <div className="flex items-start justify-start flex-col">
                                     <div className="font-semibold">You</div>
                                     <div className="flex justify-start items-start text-[13px]">jenny#8547</div>

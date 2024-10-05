@@ -4,6 +4,7 @@ import Image from "next/image";
 import Collapsible from 'react-collapsible';
 import { useState } from "react";
 import Accordian from "@/components/DashboardComponents/AnalyticsComponents/Test-Series-Components/AccordionComps/Accordian";
+import AccordianAllSubjects from "@/components/DashboardComponents/AnalyticsComponents/Test-Series-Components/AccordionComps/AccordianAllSubjects";
 
 function JeeMains() {
     const router = useRouter();
@@ -41,7 +42,7 @@ function JeeMains() {
             <div className="flex flex-col gap-[17px] ml-8 mt-5">
                 <span className="font-bold text-[#1D2939] text-1g">Phodu JEE Mains Test Series 2025</span>
             </div>
-            <div className="gap-2 flex flex-col mr-5 ml-8 mt-5">
+            <div className="gap-2 flex flex-col pr-5 ml-8 mt-5 overflow-y-auto">
                 {/* First Accordian */}
                 <div className='bg-white border border-lightGrey rounded-xl '>
                     <Collapsible
@@ -156,7 +157,7 @@ function JeeMains() {
                         onOpening={() => toggleCollapsible(0)}  // Set the state to open when expanding
                         onClosing={() => toggleCollapsible(0)} // Set the state to closed when collapsing
                     >
-                    <Accordian />
+                    <AccordianAllSubjects />
                     </Collapsible>
                 </div>
             </div>

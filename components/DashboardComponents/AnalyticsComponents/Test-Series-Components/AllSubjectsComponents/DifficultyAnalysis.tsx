@@ -106,9 +106,9 @@ function Attemptsgraph() {
         },
     ];
     return (
-        <div className="gap-3 flex-col flex">
+        <div className="mb-6 gap-4 flex-col flex">
 
-            <div className="flex flex-row gap-4 h-auto mx-8">
+            <div className="flex flex-row gap-4 h-auto">
                 <div className=" w-full rounded-xl h-auto flex  bg-[#FFFFFF] border border-solid border-[#EAECF0]">
 
 
@@ -278,7 +278,7 @@ function Attemptsgraph() {
 
 
             </div>
-            <div className="flex flex-row gap-4 h-auto mx-8">
+            <div className="flex flex-row gap-4 h-auto">
                 <div className=" w-full rounded-xl h-auto flex  bg-[#FFFFFF] border border-solid border-[#EAECF0]">
 
 

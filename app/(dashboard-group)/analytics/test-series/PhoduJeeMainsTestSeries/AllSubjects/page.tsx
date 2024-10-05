@@ -11,12 +11,12 @@ import Overview from "@/components/DashboardComponents/AnalyticsComponents/Test-
 function JeeMains() {
     const router = useRouter();
     return (
-        <div className="flex flex-1 flex-col h-auto overflow-y-auto pb-2">
+        <div className="flex flex-1 flex-col h-auto overflow-y-auto px-8 pb-2">
             {/* heading */}
-            <div className="h-[64px]flex items-center">
+            <div className="h-[64px] flex items-center">
                 <div className="my-5 flex items-center flex-row ">
                     <button className="flex items-center ml-1" onClick={() => router.back()}>
-                        <div className="text-[#1D2939] h-[24px] w-auto ml-8" style={{ fontSize: "16px", fontWeight: "600" }}>
+                        <div className="text-[#1D2939] h-[24px] w-auto" style={{ fontSize: "16px", fontWeight: "600" }}>
                             Test-Series
                         </div>
                         <div className="ml-3 w-[24px]">
@@ -35,7 +35,7 @@ function JeeMains() {
                 </div>
             </div>
             {/* scroll anchoring */}
-            <div className="h-[50px]  mx-8 border-b border-solid border-[#EAECF0] flex flex-row gap-[16px] mt-2">
+            <div className="h-[50px] border-b border-solid border-[#EAECF0] flex flex-row gap-[16px] mt-2">
                 <span className="text-[#667085] font-medium text-base">Overview</span>
                 <span className="text-[#667085] font-medium text-base">Graphical view of overview</span>
                 <span className="text-[#667085] font-medium text-base">Time & Accuracy</span>
@@ -51,112 +51,116 @@ function JeeMains() {
             {/* --------------------------------------******************************************************---------------------------------------------- */}
 
             {/* Graphical view of overview */}
-            <div className="mx-8 h-[44px] flex flex-col justify-end mb-2">
+            <div className="h-[44px] flex flex-col justify-end mb-4">
                 <span className="text-[#1D2939] text-lg font-semibold">Graphical view of overview</span>
             </div>
             <div>
                 <Graphicalviewofoverview />
-
             </div>
             {/* --------------------------------------******************************************************---------------------------------------------- */}
             {/* Time & Accuracy */}
-            <div className="mx-8 h-[44px] flex flex-col justify-end mb-2">
+            <div className="h-[44px] flex flex-col justify-end mb-4">
                 <span className="text-[#1D2939] text-lg font-semibold">Time & Accuracy</span>
             </div>
             <div>
                 <TimeAccuracy />
-
             </div>
             {/* --------------------------------------******************************************************---------------------------------------------- */}
             {/* Attempts */}
-            <div className="mx-8 h-[44px] flex flex-col justify-end mb-2">
+            <div className="h-[44px] flex flex-col justify-end mb-4">
                 <span className="text-[#1D2939] text-lg font-semibold">Attempts</span>
             </div>
+
             {/* Attempts table */}
-            <div className="h-auto mx-8 rounded-xl  bg-[#FFFFFF] border border-solid border-[#EAECF0]">
+            <div className="h-auto w-full mb-4 rounded-xl border border-lightGrey">
                 <table className="w-full rounded-xl bg-white text-sm font-medium">
                     <thead>
-                        <tr className="text-[#667085] flex flex-row gap-2">
-                            <th className="w-[10%] px-8 py-3 text-left flex flex-row gap-2">
-                                Subject
-                                <Image
-                                    src="/icons/information-circle.svg"
-                                    width={16}
-                                    height={16}
-                                    alt="information-icon"
-                                />
+                        <tr className="text-[#667085]">
+                            <th className="w-[20%] py-3">
+                                <div className="flex flex-row text-left pl-6">
+                                    Subject
+                                    <Image
+                                        src="/icons/information-circle.svg"
+                                        width={16}
+                                        height={16}
+                                        alt="information-icon"
+                                    />
+                                </div>
                             </th>
-                            <th className="w-[10%] px-8 py-3 text-left flex flex-row gap-2">
-                                Perfect
-                                <Image
-                                    src="/icons/information-circle.svg"
-                                    width={16}
-                                    height={16}
-                                    alt="information-icon"
-                                />
+                            <th className="w-[20%] py-3">
+                                <div className="flex flex-row justify-center">
+                                    Perfect
+                                    <Image
+                                        src="/icons/information-circle.svg"
+                                        width={16}
+                                        height={16}
+                                        alt="information-icon"
+                                    />
+                                </div>
                             </th>
-                            <th className="w-[10%] px-8 py-3 text-left flex flex-row gap-2">
-                                Wasted
-                                <Image
-                                    src="/icons/information-circle.svg"
-                                    width={16}
-                                    height={16}
-                                    alt="information-icon"
-                                />
+                            <th className="w-[20%] py-3">
+                                <div className="flex flex-row justify-center">
+                                    Wasted
+                                    <Image
+                                        src="/icons/information-circle.svg"
+                                        width={16}
+                                        height={16}
+                                        alt="information-icon"
+                                    />
+                                </div>
                             </th>
-                            <th className="w-[10%] px-8 py-3 text-left flex flex-row gap-2">
-                                Overtime
-                                <Image
-                                    src="/icons/information-circle.svg"
-                                    width={16}
-                                    height={16}
-                                    alt="information-icon"
-                                />
+                            <th className="w-[20%] py-3">
+                                <div className="flex flex-row justify-center">
+                                    Overtime
+                                    <Image
+                                        src="/icons/information-circle.svg"
+                                        width={16}
+                                        height={16}
+                                        alt="information-icon"
+                                    />
+                                </div>
                             </th>
-                            <th className="w-[10%] px-8 py-3 text-left flex flex-row gap-2">
-                                Confused
-                                <Image
-                                    src="/icons/information-circle.svg"
-                                    width={16}
-                                    height={16}
-                                    alt="information-icon"
-                                />
+                            <th className="w-[20%] py-3">
+                                <div className="flex flex-row justify-center">
+                                    Confused
+                                    <Image
+                                        src="/icons/information-circle.svg"
+                                        width={16}
+                                        height={16}
+                                        alt="information-icon"
+                                    />
+                                </div>
                             </th>
                         </tr>
-
                     </thead>
                     <tbody className="border-b border-[#EAECF0]">
                         <tr className="border-t border-[#EAECF0]">
-                            <td className="px- py-3 text-left text-[#1D2939] font-semibold text-sm">Overall</td>
-                            <td className="px-8 py-3 text-left text-[#1D2939] font-normal text-sm">2</td>
-                            <td className="px-8 py-3 text-left text-[#1D2939] font-normal text-sm">5</td>
-                            <td className="px-8 py-3 text-left text-[#1D2939] font-normal text-sm">15</td>
-                            <td className="px-8 py-3 text-left text-[#1D2939] font-normal text-sm">25</td>
-
+                            <td className="py-3 text-left pl-6 text-[#1D2939] font-semibold text-sm">Overall</td>
+                            <td className="py-3 text-center text-[#1D2939] font-normal text-sm">2</td>
+                            <td className="py-3 text-center text-[#1D2939] font-normal text-sm">5</td>
+                            <td className="py-3 text-center text-[#1D2939] font-normal text-sm">15</td>
+                            <td className="py-3 text-center text-[#1D2939] font-normal text-sm">25</td>
                         </tr>
                         <tr className="border-t border-[#EAECF0]">
-                            <td className="px-8 py-3 text-left text-[#1D2939] font-semibold text-sm">Physics</td>
-                            <td className="px-8 py-3 text-left text-[#1D2939] font-normal text-sm">2</td>
-                            <td className="px-8 py-3 text-left text-[#1D2939] font-normal text-sm">5</td>
-                            <td className="px-8 py-3 text-left text-[#1D2939] font-normal text-sm">15</td>
-                            <td className="px-8 py-3 text-left text-[#1D2939] font-normal text-sm">25</td>
-
+                            <td className="py-3 text-left pl-6 text-[#1D2939] font-semibold text-sm">Physics</td>
+                            <td className="py-3 text-center text-[#1D2939] font-normal text-sm">2</td>
+                            <td className="py-3 text-center text-[#1D2939] font-normal text-sm">5</td>
+                            <td className="py-3 text-center text-[#1D2939] font-normal text-sm">15</td>
+                            <td className="py-3 text-center text-[#1D2939] font-normal text-sm">25</td>
                         </tr>
                         <tr className="border-t border-[#EAECF0]">
-                            <td className="px-8 py-3 text-left text-[#1D2939] font-semibold text-sm">Chemistry</td>
-                            <td className="px-8 py-3 text-left text-[#1D2939] font-normal text-sm">2</td>
-                            <td className="px-8 py-3 text-left text-[#1D2939] font-normal text-sm">5</td>
-                            <td className="px-8 py-3 text-left text-[#1D2939] font-normal text-sm">15</td>
-                            <td className="px-8 py-3 text-left text-[#1D2939] font-normal text-sm">25</td>
-
+                            <td className="py-3 text-left pl-6 text-[#1D2939] font-semibold text-sm">Chemistry</td>
+                            <td className="py-3 text-center text-[#1D2939] font-normal text-sm">2</td>
+                            <td className="py-3 text-center text-[#1D2939] font-normal text-sm">5</td>
+                            <td className="py-3 text-center text-[#1D2939] font-normal text-sm">15</td>
+                            <td className="py-3 text-center text-[#1D2939] font-normal text-sm">25</td>
                         </tr>
                         <tr className="border-t border-[#EAECF0]">
-                            <td className="px-8 py-3 text-left text-[#1D2939] font-semibold text-sm">Mathmatics</td>
-                            <td className="px-8 py-3 text-left text-[#1D2939] font-normal text-sm">2</td>
-                            <td className="px-8 py-3 text-left text-[#1D2939] font-normal text-sm">5</td>
-                            <td className="px-8 py-3 text-left text-[#1D2939] font-normal text-sm">15</td>
-                            <td className="px-8 py-3 text-left text-[#1D2939] font-normal text-sm">25</td>
-
+                            <td className="py-3 text-left pl-6 text-[#1D2939] font-semibold text-sm">Mathematics</td>
+                            <td className="py-3 text-center text-[#1D2939] font-normal text-sm">2</td>
+                            <td className="py-3 text-center text-[#1D2939] font-normal text-sm">5</td>
+                            <td className="py-3 text-center text-[#1D2939] font-normal text-sm">15</td>
+                            <td className="py-3 text-center text-[#1D2939] font-normal text-sm">25</td>
                         </tr>
                     </tbody>
                 </table>
@@ -165,11 +169,10 @@ function JeeMains() {
             {/* Attempts Graph */}
             <div>
                 <Attempts />
-
             </div>
             {/* --------------------------------------******************************************************---------------------------------------------- */}
             {/* Difficulty Analysis */}
-            <div className="mx-8 h-[44px] flex flex-row  mb-2">
+            <div className="h-[44px] flex flex-row  mb-2">
                 <span className="text-[#1D2939] text-lg font-semibold"> Difficulty Analysis</span>
                 <Image
                     src="/icons/information-circle.svg"
@@ -185,7 +188,7 @@ function JeeMains() {
             </div>
             {/* --------------------------------------******************************************************---------------------------------------------- */}
             {/* Attempts over the 3 hours */}
-            <div className="mx-8 h-[44px] flex flex-row  mb-2">
+            <div className="h-[44px] flex flex-row  mb-2">
                 <span className="text-[#1D2939] text-lg font-semibold">  Attempts over the 3 hours</span>
                 <Image
                     src="/icons/information-circle.svg"
@@ -198,25 +201,23 @@ function JeeMains() {
             {/* Line graph and Attemptsoverthehours data table */}
             <div>
                 <  Attemptsoverthehours />
-
             </div>
             {/* --------------------------------------******************************************************---------------------------------------------- */}
             {/* Complete Analysis */}
-            <div className="mx-8 h-[44px] flex flex-col  mb-2">
+            <div className="h-[44px] flex flex-col  mb-2">
                 <span className="text-[#1D2939] text-lg font-semibold">Complete Analysis </span>
 
             </div>
             <div>
                 <CompleteAnalysis />
-
             </div>
             {/* --------------------------------------******************************************************---------------------------------------------- */}
             {/* Summary */}
-            <div id="missed-concept" className="mx-8 h-[44px] flex flex-col justify-end mb-2 ">
+            <div id="missed-concept" className="mt-8 h-[44px] flex flex-col justify-end mb-2 ">
                 <span className="text-[#1D2939] text-lg font-semibold">Summary</span>
             </div>
-            <div className="flex flex-col gap-4">
-                <div className="h-auto  mx-8 bg-[#FFFFFF] border border-solid border-[#EAECF0] p-3  rounded-md">
+            <div className="flex flex-col mb-8 gap-4">
+                <div className="h-auto bg-[#FFFFFF] border border-solid border-[#EAECF0] p-3  rounded-md">
                     <div className=" flex flex-col gap-2 ml-2">
                         <span className="font-semibold text-[#1D2939] text-sm">Physics</span>
                         <span className="font-normal text-[#667085] text-sm">Great! You did not miss any concept.</span>
@@ -224,7 +225,7 @@ function JeeMains() {
                     </div>
 
                 </div>
-                <div className="h-auto  mx-8 bg-[#FFFFFF] border border-solid border-[#EAECF0] p-3  rounded-md">
+                <div className="h-auto bg-[#FFFFFF] border border-solid border-[#EAECF0] p-3  rounded-md">
                     <div className=" flex flex-col gap-2 ml-2">
                         <span className="font-semibold text-[#1D2939] text-sm">Chemistry</span>
                         <span className="font-normal text-[#667085] text-sm ml-2">1.Extraction of Aluminum by Purification of Bauxite</span>
@@ -233,7 +234,7 @@ function JeeMains() {
                     </div>
 
                 </div>
-                <div className="h-auto  mx-8 bg-[#FFFFFF] border border-solid border-[#EAECF0] p-3  rounded-md">
+                <div className="h-auto bg-[#FFFFFF] border border-solid border-[#EAECF0] p-3  rounded-md">
                     <div className=" flex flex-col gap-2 ml-2">
                         <span className="font-semibold text-[#1D2939] text-sm">Mathematics</span>
                         <span className="font-normal text-[#667085] text-sm ml-2">1.Condition of one common root</span>
@@ -242,11 +243,7 @@ function JeeMains() {
                         <span className="font-normal text-[#667085] text-sm ml-2">4.When limit tends to 0 or finite number</span>
 
                     </div>
-
                 </div>
-
-
-
             </div>
             {/* --------------------------------------******************************************************---------------------------------------------- */}
 
