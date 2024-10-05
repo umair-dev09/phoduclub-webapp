@@ -60,7 +60,7 @@ const CustomPieTooltip: React.FC<PieTooltipProps> = ({ active, payload }) => {
                         width: '12px',
                         height: '12px',
                         borderRadius: '50%',
-                        backgroundColor: '#EAECF0',
+                        backgroundColor: fill,
                         marginRight: '8px'
                     }} />
                     {/* Name and value */}
@@ -84,7 +84,7 @@ function Attemptsgraph() {
                             <ResponsiveContainer width="100%" height={250}>
                                 <ChartContainer config={chartConfig} className="h-auto w-full">
                                     <PieChart>
-                                        <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
+                                        <Tooltip content={<CustomPieTooltip />} cursor={false} />
                                         <Pie data={chartData} dataKey="visitors" nameKey="browser" innerRadius={60} strokeWidth={3} stroke="#FFFFFF">
                                             {chartData.map((entry, index) => (
                                                 <Cell key={`cell-${index}`} fill={entry.fill} />
@@ -116,10 +116,7 @@ function Attemptsgraph() {
                                     className="h-auto w-[70%]"
                                 >
                                     <PieChart>
-                                        <ChartTooltip
-                                            cursor={false}
-                                            content={<ChartTooltipContent />}
-                                        />
+                                        <Tooltip content={<CustomPieTooltip />} cursor={false} />
                                         <Pie
                                             data={chartData}
                                             dataKey="visitors"
@@ -159,7 +156,8 @@ function Attemptsgraph() {
                             <ResponsiveContainer width="100%" height={250}>
                                 <ChartContainer config={chartConfig} className="h-auto w-full">
                                     <PieChart>
-                                        <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
+                                        <Tooltip content={<CustomPieTooltip />} cursor={false} />
+
                                         <Pie data={chartData} dataKey="visitors" nameKey="browser" innerRadius={60} strokeWidth={3} stroke="#FFFFFF">
                                             {chartData.map((entry, index) => (
                                                 <Cell key={`cell-${index}`} fill={entry.fill} />
@@ -191,9 +189,8 @@ function Attemptsgraph() {
                                     className="h-auto w-[70%]"
                                 >
                                     <PieChart>
-                                        <ChartTooltip
-                                            cursor={false}
-                                            content={<ChartTooltipContent />}
+                                        <Tooltip content={<CustomPieTooltip />} cursor={false} />
+
                                         />
                                         <Pie
                                             data={chartData}

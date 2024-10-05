@@ -75,7 +75,7 @@ function overview() {
                             <th className="w-[10%] text-center">Not visted</th>
                         </tr>
                     </thead>
-                    <tbody className="border-b border-[#EAECF0]">
+                    <tbody>
                         <tr className="border-t border-[#EAECF0]">
                             <td className="px-8 py-3 text-left text-[#1D2939] font-semibold text-sm">Overall</td>
                             <td className="px-8 py-3 text-center text-[#1D2939] font-normal text-sm">200/300</td>
