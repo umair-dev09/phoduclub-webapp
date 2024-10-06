@@ -48,23 +48,10 @@ const CustomPieTooltip: React.FC<PieTooltipProps> = ({ active, payload }) => {
         const { name, value, payload: { fill } } = payload[0];
 
         return (
-            <div className="flex flex-row items-center justify-between w-40" style={{
-                backgroundColor: 'white',
-                border: '1px solid #EAECF0',
-                borderRadius: '8px',
-                padding: '10px',
-                boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.1)"
-            }}>
+            <div className="flex flex-row items-center justify-between w-40 bg-white border border-lightGrey rounded-md p-[10px]" style={{boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.1)"}}>
                 <div className="flex flex-row items-center">
                     {/* Color dot */}
-                    <span style={{
-                        display: 'inline-block',
-                        width: '12px',
-                        height: '12px',
-                        borderRadius: '50%',
-                        backgroundColor: fill,
-                        marginRight: '8px'
-                    }} />
+                    <span className="inline-block w-3 h-3 rounded-full mr-2" style={{backgroundColor: fill}} />
                     {/* Name and value */}
                     <p className="flex items-center text-sm font-semibold text-[#667085]">{name}</p>
                 </div>

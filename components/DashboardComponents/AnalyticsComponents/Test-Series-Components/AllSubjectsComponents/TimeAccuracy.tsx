@@ -35,23 +35,10 @@ const CustomPieTooltipforpie: React.FC<PieTooltipProps> = ({ active, payload }) 
     if (active && payload && payload.length) {
         const { name, value, payload: { fill } } = payload[0];
         return (
-            <div className="flex flex-row items-center justify-between w-40" style={{
-                backgroundColor: 'white',
-                border: '1px solid #EAECF0',
-                borderRadius: '8px',
-                padding: '10px',
-                boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.1)"
-            }}>
+            <div className="flex flex-row items-center justify-between w-40 bg-white border border-lightGrey rounded-md p-[10px] shadow-md">
                 <div className="flex flex-row items-center">
                     {/* Color dot dynamically based on fill */}
-                    <span style={{
-                        display: 'inline-block',
-                        width: '12px', // Set equal width
-                        height: '12px', // Set equal height
-                        borderRadius: '50%', // This ensures it's a perfect circle
-                        backgroundColor: fill, // Set the fill color here
-                        marginRight: '8px'
-                    }} />
+                    <span className="inline-block w-3 h-3 rounded-full mr-2" style={{backgroundColor: fill}} />
                     {/* Name and value */}
                     <p className="flex items-center text-sm font-semibold text-[#667085]">{name}</p>
                 </div>
@@ -59,18 +46,8 @@ const CustomPieTooltipforpie: React.FC<PieTooltipProps> = ({ active, payload }) 
             </div>
         );
     }
-
     return null;
 };
-
-
-
-
-
-
-
-
-
 
 // this below code for Horizontal Graph tooltip design code
 interface CustomTooltipforAttemptsProps {
@@ -84,32 +61,13 @@ const CustomTooltipforAttempts: React.FC<CustomTooltipforAttemptsProps> = ({ act
         const attempts = data.Attempts;
         const fillColor = data.fill;
         return (
-            <div style={{
-                position: 'relative',
-                backgroundColor: 'white',
-                border: '1px solid #EAECF0',
-                borderRadius: '8px',
-                width: 'auto',
-                height: "auto",
-                fontSize: '14px',
-                pointerEvents: 'none', // Prevent mouse events from affecting the tooltip
-                boxShadow: "2px 5px 11px 0px #0000001A",
-
-            }}>
+            <div className="relative bg-white border border-lightGrey rounded-md w-auto h-auto text-sm pointer-events-none" style={{boxShadow: "2px 5px 11px 0px #0000001A"}}>
                 {/* Tooltip content */}
                 <div className="p-2">
 
-                    <div style={{ display: 'flex', alignItems: 'center', width: "auto", height: "auto", justifyItems: 'center', }}>
-                        <div style={{ display: 'flex', alignItems: 'center', }}>
-                            <span style={{
-                                display: 'inline-block',
-                                width: '10px',
-                                height: '10px',
-                                borderRadius: '50%',
-                                backgroundColor: fillColor,
-
-
-                            }} />
+                    <div className="flex items-center w-auto h-auto justify-center">
+                        <div className="flex items-center">
+                            <span className="inline-block w-[10px] h-[10px] rounded-full" style={{backgroundColor: fillColor}} />
                             <span className="text-[#667085] font-normal text-sm ml-2">{`Attempts `}</span>
                             <span className="font-semibold text-base text-[#1D2939] ml-5 ">{attempts}</span>
                         </div>
@@ -250,7 +208,7 @@ function Quizzes() {
                     <div className=" m-5">
                         <span className="font-semibold text-[#1D2939] text-lg">Attempts</span>
                     </div>
-                    <ResponsiveContainer width="100%" height="65%" style={{ marginRight: "10px" }}>
+                    <ResponsiveContainer width="100%" height="65%" className='mr-[10px]'>
                         <BarChart
                             data={Attempts}
                             layout="vertical"
@@ -288,7 +246,7 @@ function Quizzes() {
                     <div className=" m-5">
                         <span className="font-semibold text-[#1D2939] text-lg">Accuracy</span>
                     </div>
-                    <ResponsiveContainer width="100%" height="65%" style={{ marginRight: "10px" }}>
+                    <ResponsiveContainer width="100%" height="65%" className='mr-[10px]'>
                         <BarChart
                             data={Accuracy}
                             layout="vertical"

@@ -52,7 +52,7 @@ function JeeMains() {
                                 className="flex items-center justify-between h-auto mx-5 py-4"
                                 onClick={() => toggleCollapsible(0)} // Toggle first accordion
                             >
-                                <div className="flex flex-col">
+                                <div className="flex flex-col gap-1">
                                     <p className="text-base font-bold text-[#1D2939]">Physics</p>
                                     <p>5 Tests</p>
                                 </div>
@@ -105,13 +105,13 @@ function JeeMains() {
                 {/* All Subjects Accordian */}
                 <div className='bg-white border border-lightGrey rounded-xl '>
                     <Collapsible
-                        className='flex flex-col'
+                        className='flex flex-col active:bg-[#F2F4F7]'
                         trigger={
                             <div
                                 className="flex items-center justify-between h-auto mx-5 py-4"
                                 onClick={() => toggleCollapsible(0)} // Toggle first accordion
                             >
-                                <div className="flex flex-col">
+                                <div className="flex flex-col gap-1">
                                     <p className="text-base font-bold text-[#1D2939]">All Subjects</p>
                                     <p>5 Tests</p>
                                 </div>

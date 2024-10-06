@@ -73,8 +73,6 @@ const CustomPieTooltip: React.FC<PieTooltipProps> = ({ active, payload }) => {
     return null;
 };
 
-
-
 interface CustomTooltipProps {
     active?: boolean;
     payload?: any[];
@@ -89,63 +87,26 @@ const CustomTooltip: React.FC<CustomTooltipProps> = ({ active, payload, label })
         const UnansweredValue = payload.find(item => item.name === "Unanswered")?.value;
 
         return (
-            <div style={{
-                position: 'relative',
-                backgroundColor: 'white',
-                border: '1px solid #EAECF0',
-                borderRadius: '8px',
-                width: 'auto',
-                height: "auto",
-
-                fontSize: '14px',
-                pointerEvents: 'none', // Prevent mouse events from affecting the tooltip
-                boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.1)",
-                padding: '16px'
-
-            }}>
+            <div className="relative bg-white border border-lightGrey rounded-md w-auto h-auto text-sm pointer-events-none shadow-md p-4">
                 {/* Tooltip content */}
 
-                <div style={{ display: 'flex', alignItems: 'center', width: "auto", height: "auto", justifyItems: 'center', }}>
-                    <div style={{ display: 'flex', alignItems: 'center', }}>
-                        <span style={{
-                            display: 'inline-block',
-                            width: '12px',
-                            height: '12px',
-                            borderRadius: '50%',
-                            backgroundColor: fill,
-                            padding: '3px',
-                            marginRight: '4px',
-                        }} />
+                <div className="flex items-center w-auto h-auto justify-center pb-1">
+                    <div className="flex items-center">
+                        <span className="inline-block w-3 h-3 rounded-full p-[3px] mr-1" style={{backgroundColor: fill}} />
                         <span className="text-[#667085] font-normal text-sm ml-1">{`Correct `}</span>
                         <span className=" ml-12 font-semibold text-base text-[#1D2939]">{correctValue}</span>
                     </div>
                 </div>
-                <div style={{ display: 'flex', alignItems: 'center', width: "auto", height: "auto", justifyItems: 'center', }}>
-                    <div style={{ display: 'flex', alignItems: 'center', }}>
-                        <span style={{
-                            display: 'inline-block',
-                            width: '12px',
-                            height: '12px',
-                            borderRadius: '50%',
-                            backgroundColor: '#F04438', // Color for "Incorrect"
-                            marginRight: '4px',
-                            padding: '3px'
-                        }} />
+                <div className="flex items-center w-auto h-auto justify-center pb-1">
+                    <div className="flex items-center">
+                        <span className="inline-block w-3 h-3 rounded-full p-[3px] mr-1 bg-[#F04438]" />
                         <span className="text-[#667085] font-normal text-sm ml-1">{`Incorrect `}</span>
                         <span className="ml-10 font-semibold text-base text-[#1D2939]">{incorrectValue}</span>
                     </div>
                 </div>
-                <div style={{ display: 'flex', alignItems: 'center', width: "auto", height: "auto", justifyItems: 'center', }}>
-                    <div style={{ display: 'flex', alignItems: 'center', }}>
-                        <span style={{
-                            display: 'inline-block',
-                            width: '12px',
-                            height: '12px',
-                            borderRadius: '50%',
-                            backgroundColor: '#F04438', // Color for "Incorrect"
-                            marginRight: '4px',
-                            padding: '3px'
-                        }} />
+                <div className="flex items-center w-auto h-auto justify-center">
+                    <div className="flex items-center">
+                        <span className="inline-block w-3 h-3 rounded-full p-[3px] mr-1 bg-[#D0D5DD]" />
                         <span className="text-[#667085] font-normal text-sm ml-1">{`Unaswered `}</span>
                         <span className="ml-6 font-semibold text-base text-[#1D2939]">{UnansweredValue}</span>
                     </div>
@@ -227,39 +188,18 @@ function Quizzes() {
 
             <div className="flex flex-col w-1/2 h-[320px] rounded-xl bg-white border border-[#EAECF0]">
                 <div className="h-[50px] flex flex-row justify-between mt-3 ">
-                    <span className="flex items-center justify-center ml-10 font-semibold text-[#1D2939] text-lg">Difficulty Analysis</span>
+                    <span className="flex items-center justify-center ml-5 font-semibold text-[#1D2939] text-lg">Difficulty Analysis</span>
                     <div className=" flex flex-row gap-5">
                         <div className="flex flex-row gap-2">
-                            <span style={{
-                                display: 'inline-block',
-                                width: '10px',
-                                height: '10px',
-                                borderRadius: '50%',
-                                backgroundColor: '#17B26A',
-                                marginTop: "19px" // Color for "Correct"
-                            }} />
+                            <span className="inline-block w-[10px] h-[10px] rounded-full bg-[#17B26A] mt-[19px]" />
                             <span className="flex items-center justify-center text-[#667085] font-normal text-sm">Correct</span>
                         </div>
                         <div className="flex flex-row gap-2">
-                            <span style={{
-                                display: 'inline-block',
-                                width: '10px',
-                                height: '10px',
-                                borderRadius: '50%',
-                                backgroundColor: '#F04438', // Color for "Incorrect"
-                                marginTop: "19px"
-                            }} />
-                            <span className="flex items-center justify-center text-[#667085] font-normal text-sm ">Incorrect</span>
+                            <span className="inline-block w-[10px] h-[10px] rounded-full bg-[#F04438] mt-[19px]" />
+                            <span className="flex items-center justify-center text-[#667085] font-normal text-sm">Incorrect</span>
                         </div>
                         <div className="flex flex-row gap-2">
-                            <span style={{
-                                display: 'inline-block',
-                                width: '10px',
-                                height: '10px',
-                                borderRadius: '50%',
-                                backgroundColor: '#17B26A',
-                                marginTop: "19px" // Color for "Correct"
-                            }} />
+                            <span className="inline-block w-[10px] h-[10px] rounded-full bg-[#17B26A] mt-[19px]" />
                             <span className="flex items-center justify-center text-[#667085] font-normal text-sm mr-3">Unanswered</span>
                         </div>
                     </div>
@@ -269,7 +209,7 @@ function Quizzes() {
                         data={data}
                         barGap={5}
                         barCategoryGap="30%"
-                        margin={{ right: 20, }} // Set left margin to 0
+                        margin={{ right: 20, left: -20}} // Set left margin to 0
                     >
                         <CartesianGrid strokeDasharray="3 3" horizontal={false} vertical={false} />
                         <XAxis

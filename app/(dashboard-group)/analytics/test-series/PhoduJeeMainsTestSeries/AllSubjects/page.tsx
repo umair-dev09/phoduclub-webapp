@@ -11,11 +11,11 @@ import Overview from "@/components/DashboardComponents/AnalyticsComponents/Test-
 function JeeMains() {
     const router = useRouter();
     return (
-        <div className="flex flex-1 flex-col h-auto overflow-y-auto px-8 pb-2">
+        <div className="flex flex-1 flex-col h-auto overflow-y-auto pb-2">
 
             <div>
                 {/* heading */}
-                <div className="h-[64px] flex items-center">
+                <div className="h-[64px] flex items-center mx-8">
                     <div className="my-5 flex items-center flex-row ">
                         <button className="flex items-center ml-1" onClick={() => router.back()}>
                             <div className="text-[#1D2939] h-[24px] w-auto" style={{ fontSize: "16px", fontWeight: "600" }}>
@@ -37,7 +37,7 @@ function JeeMains() {
                     </div>
                 </div>
                 {/* scroll anchoring */}
-                <div className="h-[50px] border-b border-solid border-[#EAECF0] flex flex-row gap-[16px] mt-2">
+                <div className="h-[50px] border-b border-solid border-[#EAECF0] flex flex-row gap-[16px] mt-2 mx-8">
                     <span className="text-[#667085] font-medium text-base">Overview</span>
                     <span className="text-[#667085] font-medium text-base">Graphical view of overview</span>
                     <span className="text-[#667085] font-medium text-base">Time & Accuracy</span>
@@ -47,7 +47,7 @@ function JeeMains() {
                     <span className="text-[#667085] font-medium text-base">Painful Questions</span>
                 </div>
             </div>
-            <div className="overflow-y-auto flex-1 flex flex-col h-auto">
+            <div className="overflow-y-auto flex-1 flex flex-col h-auto px-8">
                 {/* overview Line */}
                 <div>
                     <Overview />

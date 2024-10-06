@@ -12,7 +12,7 @@ function AccordianAllSubjects() {
     return (
         <div className=' border-t border-lightGrey mx-5 py-2'>
             <div className="flex flex-row justify-between pt-2 pb-2">
-                <div>
+                <div className='flex flex-col gap-1.5'>
                     <p className="font-semibold text-[#1D2939]">Test 01</p>
                     <p className="text-xs text-[#667085]">50 Questions</p>
                 </div>
@@ -58,7 +58,7 @@ function AccordianAllSubjects() {
                 </div>
             </div>
             <div className="flex flex-row justify-between pt-2 pb-2 border-t border-lightGrey">
-                <div>
+                <div className='flex flex-col gap-1.5'>
                     <p className="font-semibold text-[#1D2939]">Test 01</p>
                     <p className="text-xs text-[#667085]">50 Questions</p>
                 </div>
@@ -104,7 +104,7 @@ function AccordianAllSubjects() {
                 </div>
             </div>
             <div className="flex flex-row justify-between pt-2 pb-2 border-t border-lightGrey">
-                <div>
+                <div className='flex flex-col gap-1.5'>
                     <p className="font-semibold text-[#1D2939]">Test 01</p>
                     <p className="text-xs text-[#667085]">50 Questions</p>
                 </div>
@@ -150,7 +150,7 @@ function AccordianAllSubjects() {
                 </div>
             </div>
             <div className="flex flex-row justify-between pt-2 pb-2 border-t border-lightGrey">
-                <div>
+                <div className='flex flex-col gap-1.5'>
                     <p className="font-semibold text-[#1D2939]">Test 01</p>
                     <p className="text-xs text-[#667085]">50 Questions</p>
                 </div>

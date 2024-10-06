@@ -16,10 +16,10 @@ function JeeMains() {
     };
 
     return (
-        <div className="flex flex-1 flex-col h-auto overflow-y-auto px-8">
+        <div className="flex flex-1 flex-col h-auto overflow-y-auto">
             {/* heading */}
-            <div className="h-[64px] flex items-center">
-                <div className="my-5 flex items-center flex-row ">
+            <div className="h-[64px] flex items-center mx-8">
+                <div className="my-5 flex items-center flex-row">
                     <button className="flex items-center ml-1" onClick={() => router.back()}>
                         <div className="text-[#1D2939] h-[24px] w-auto" style={{ fontSize: "16px", fontWeight: "600" }}>
                             Test-Series
@@ -41,14 +41,14 @@ function JeeMains() {
                 </div>
             </div>
             {/* scroll anchoring */}
-            <div className="h-[50px] border-b border-solid border-[#EAECF0] flex flex-row gap-[16px] mt-2">
+            <div className="h-[50px] border-b border-solid border-[#EAECF0] flex flex-row gap-[16px] mt-2 mx-8">
                 <a href="#overview" className="text-[#667085] font-medium text-base">Overview</a>
                 <a href="#attempts" className="text-[#667085] font-medium text-base">Attempts & Difficulty Analysis</a>
                 <a href="#hours" className="text-[#667085] font-medium text-base">Attempts over the 3 hours</a>
                 <a href="#missed-concept" className="text-[#667085] font-medium text-base">Missed Concept</a>
                 <a href="#complete-analysis" className="text-[#667085] font-medium text-base">Complete Analysis</a>
             </div>
-            <div className="overflow-y-auto flex-1 flex flex-col h-auto">
+            <div className="overflow-y-auto flex-1 flex flex-col h-auto px-8">
                 {/* overview Line */}
                 <div onClick={onStartQuiz} id="overview" className="h-[44px] flex flex-col justify-end mt-5 cursor-pointer">
                     <span className="text-[#1D2939] text-lg font-semibold">Overview</span>

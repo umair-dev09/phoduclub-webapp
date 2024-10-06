@@ -17,63 +17,26 @@ const CustomTooltip: React.FC<CustomTooltipProps> = ({ active, payload, label })
         const UnansweredValue = payload.find(item => item.name === "Unanswered")?.value;
 
         return (
-            <div style={{
-                position: 'relative',
-                backgroundColor: 'white',
-                border: '1px solid #EAECF0',
-                borderRadius: '8px',
-                width: 'auto',
-                height: "auto",
-
-                fontSize: '14px',
-                pointerEvents: 'none', // Prevent mouse events from affecting the tooltip
-                boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.1)",
-                padding: '16px'
-
-            }}>
+            <div className="relative bg-white border border-lightGrey rounded-md w-auto h-auto text-sm pointer-events-none p-4" style={{boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.1)"}}>
                 {/* Tooltip content */}
 
-                <div style={{ display: 'flex', alignItems: 'center', width: "auto", height: "auto", justifyItems: 'center', }}>
-                    <div style={{ display: 'flex', alignItems: 'center', }}>
-                        <span style={{
-                            display: 'inline-block',
-                            width: '12px',
-                            height: '12px',
-                            borderRadius: '50%',
-                            backgroundColor: '#17B26A',
-                            padding: '3px',
-                            marginRight: '4px',
-                        }} />
+                <div className="flex items-center w-auto h-auto justify-center">
+                    <div className="flex items-center">
+                        <span className="inline-block w-3 h-3 rounded-full bg-[#17B26A] p-[3px] mr-1" />
                         <span className="text-[#667085] font-normal text-sm ml-1">{`Correct `}</span>
                         <span className=" ml-12 font-semibold text-base text-[#1D2939]">{correctValue}</span>
                     </div>
                 </div>
-                <div style={{ display: 'flex', alignItems: 'center', width: "auto", height: "auto", justifyItems: 'center', }}>
-                    <div style={{ display: 'flex', alignItems: 'center', }}>
-                        <span style={{
-                            display: 'inline-block',
-                            width: '12px',
-                            height: '12px',
-                            borderRadius: '50%',
-                            backgroundColor: '#F04438', // Color for "Incorrect"
-                            marginRight: '4px',
-                            padding: '3px'
-                        }} />
+                <div className="flex items-center w-auto h-auto justify-center">
+                    <div className="flex items-center">
+                        <span className="inline-block w-3 h-3 rounded-full bg-[#F04438] p-[3px] mr-1" />
                         <span className="text-[#667085] font-normal text-sm ml-1">{`Incorrect `}</span>
                         <span className="ml-10 font-semibold text-base text-[#1D2939]">{incorrectValue}</span>
                     </div>
                 </div>
-                <div style={{ display: 'flex', alignItems: 'center', width: "auto", height: "auto", justifyItems: 'center', }}>
-                    <div style={{ display: 'flex', alignItems: 'center', }}>
-                        <span style={{
-                            display: 'inline-block',
-                            width: '12px',
-                            height: '12px',
-                            borderRadius: '50%',
-                            backgroundColor: '#F04438', // Color for "Incorrect"
-                            marginRight: '4px',
-                            padding: '3px'
-                        }} />
+                <div className="flex items-center w-auto h-auto justify-center">
+                    <div className="flex items-center">
+                        <span className="inline-block w-3 h-3 rounded-full bg-[#D0D5DD] p-[3px] mr-1" />
                         <span className="text-[#667085] font-normal text-sm ml-1">{`Unaswered `}</span>
                         <span className="ml-6 font-semibold text-base text-[#1D2939]">{UnansweredValue}</span>
                     </div>
@@ -182,7 +145,7 @@ function Attemptsgraph() {
                 {/* content of Overall Difficulty Analysis */}
                 <div className=" w-full rounded-xl h-[320px] flex  bg-[#FFFFFF] border border-solid border-[#EAECF0] pr-3 ">
                     <div className="flex flex-1 flex-col  p-2">
-                        <span className="font-semibold text-[#1D2939] text-lg ml-10 pt-4">Difficulty Analysis</span>
+                        <span className="font-semibold text-[#1D2939] text-lg ml-5 pt-4">Difficulty Analysis</span>
 
                         <div className="h-[40px] flex flex-row items-center justify-center py-1">
 
@@ -224,7 +187,7 @@ function Attemptsgraph() {
                                 data={OverallDifficultyAnalysis}
                                 barGap={5}
                                 barCategoryGap="30%"
-                                margin={{ right: 20, }} // Set left margin to 0
+                                margin={{ right: 20, left: -20}} // Set left margin to 0
                             >
                                 <CartesianGrid strokeDasharray="3 3" horizontal={false} vertical={false} />
                                 <XAxis
@@ -255,7 +218,7 @@ function Attemptsgraph() {
                 {/* content for  Physics Difficulty Analysis */}
                 <div className=" w-full rounded-xl h-[320px] flex  bg-[#FFFFFF] border border-solid border-[#EAECF0] pr-3 ">
                     <div className="flex flex-1 flex-col  p-2">
-                        <span className="font-semibold text-[#1D2939] text-lg ml-10 pt-4">Physics Difficulty Analysis</span>
+                        <span className="font-semibold text-[#1D2939] text-lg ml-5 pt-4">Physics Difficulty Analysis</span>
 
                         <div className="h-[40px] flex flex-row items-center justify-center py-1">
 
@@ -297,7 +260,7 @@ function Attemptsgraph() {
                                 data={PhysicsDifficultyAnalysis}
                                 barGap={5}
                                 barCategoryGap="30%"
-                                margin={{ right: 20, }} // Set left margin to 0
+                                margin={{ right: 20, left: -20}} // Set left margin to 0
                             >
                                 <CartesianGrid strokeDasharray="3 3" horizontal={false} vertical={false} />
                                 <XAxis
@@ -332,7 +295,7 @@ function Attemptsgraph() {
                 {/*  content for Chemistry Difficulty Analysis */}
                 <div className=" w-full rounded-xl h-[320px] flex  bg-[#FFFFFF] border border-solid border-[#EAECF0] pr-3 ">
                     <div className="flex flex-1 flex-col  p-2">
-                        <span className="font-semibold text-[#1D2939] text-lg ml-10 pt-4">Chemistry Difficulty Analysis</span>
+                        <span className="font-semibold text-[#1D2939] text-lg ml-5 pt-4">Chemistry Difficulty Analysis</span>
 
                         <div className="h-[40px] flex flex-row items-center justify-center py-1">
 
@@ -374,7 +337,7 @@ function Attemptsgraph() {
                                 data={ChemistryDifficultyAnalysis}
                                 barGap={5}
                                 barCategoryGap="30%"
-                                margin={{ right: 20, }} // Set left margin to 0
+                                margin={{ right: 20, left: -20}} // Set left margin to 0
                             >
                                 <CartesianGrid strokeDasharray="3 3" horizontal={false} vertical={false} />
                                 <XAxis
@@ -405,7 +368,7 @@ function Attemptsgraph() {
                 {/* Mathematics Difficulty Analysis */}
                 <div className=" w-full rounded-xl h-[320px] flex  bg-[#FFFFFF] border border-solid border-[#EAECF0] pr-3 ">
                     <div className="flex flex-1 flex-col  p-2">
-                        <span className="font-semibold text-[#1D2939] text-lg ml-10 pt-4"> Mathematics Difficulty Analysis</span>
+                        <span className="font-semibold text-[#1D2939] text-lg ml-5 pt-4"> Mathematics Difficulty Analysis</span>
 
                         <div className="h-[40px] flex flex-row items-center justify-center py-1">
 
@@ -447,7 +410,7 @@ function Attemptsgraph() {
                                 data={MathematicsDifficultyAnalysis}
                                 barGap={5}
                                 barCategoryGap="30%"
-                                margin={{ right: 20, }} // Set left margin to 0
+                                margin={{ right: 20, left: -20}} // Set left margin to 0
                             >
                                 <CartesianGrid strokeDasharray="3 3" horizontal={false} vertical={false} />
                                 <XAxis
@@ -475,13 +438,7 @@ function Attemptsgraph() {
                         </ResponsiveContainer>
                     </div>
                 </div>
-
-
-
             </div>
-
-
-
         </div>
 
     )
