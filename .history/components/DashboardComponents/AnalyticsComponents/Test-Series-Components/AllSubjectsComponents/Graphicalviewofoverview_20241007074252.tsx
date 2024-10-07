@@ -55,7 +55,7 @@ const CustomTooltip: React.FC<CustomTooltipProps> = ({ active, payload, label })
                         <span className=" ml-12 font-semibold text-base text-[#1D2939]">{correctValue}</span>
                     </div>
                 </div>
-                <div className="flex items-center w-auto h-auto justify-center mb-1 ">
+                <div className="flex items-center w-auto h-auto justify-center mb-1">
                     <div className="flex items-center">
                         <span className="inline-block w-3 h-3 rounded-full bg-[#F04438] p-[3px] mr-1" />
                         <span className="text-[#667085] font-normal text-sm ml-1">{`Incorrect `}</span>
@@ -136,7 +136,7 @@ function Quizzes() {
         <div className="mb-8">
             <div className="flex w-full h-auto flex-row gap-4">
                 <div className="w-1/2 rounded-xl h-[320px] flex-col bg-[#FFFFFF] border border-[#EAECF0]">
-                    <div className="h-[50px] flex flex-row justify-start mt-3 ml-5 ">
+                    <div className="h-[50px] flex flex-row justify-start mt-3 mr-5 ">
                         <div className=" flex flex-row gap-5">
                             <div className="flex flex-row gap-2">
                                 <span className="inline-block w-[10px] h-[10px] rounded-full bg-[#17B26A] mt-[19px]" />

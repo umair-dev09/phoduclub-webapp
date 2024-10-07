@@ -55,7 +55,7 @@ const CustomTooltip: React.FC<CustomTooltipProps> = ({ active, payload, label })
                         <span className=" ml-12 font-semibold text-base text-[#1D2939]">{correctValue}</span>
                     </div>
                 </div>
-                <div className="flex items-center w-auto h-auto justify-center mb-1 ">
+                <div className="flex items-center w-auto h-auto justify-center mb-1">
                     <div className="flex items-center">
                         <span className="inline-block w-3 h-3 rounded-full bg-[#F04438] p-[3px] mr-1" />
                         <span className="text-[#667085] font-normal text-sm ml-1">{`Incorrect `}</span>
@@ -106,29 +106,29 @@ function Quizzes() {
 
     const data = [
         {
-            "name": "Easy",
+            "name": "Chemistry",
             "correct": 12,
             "incorrect": 5,
             "Unanswered": 3
 
         },
         {
-            "name": "Moderate",
+            "name": "Physics",
             "correct": 4,
             "incorrect": 1,
             "Unanswered": 8
         },
         {
-            "name": "Tough",
+            "name": "Maths",
             "correct": 9,
             "incorrect": 1,
             "Unanswered": 5
         },
     ];
 
-    // const totalVisitors = React.useMemo(() => {
-    //     return chartData.reduce((acc, curr) => acc + curr.marks, 0);
-    // }, []);
+    const totalVisitors = React.useMemo(() => {
+        return chartData.reduce((acc, curr) => acc + curr.marks, 0);
+    }, []);
 
 
 
@@ -136,7 +136,8 @@ function Quizzes() {
         <div className="mb-8">
             <div className="flex w-full h-auto flex-row gap-4">
                 <div className="w-1/2 rounded-xl h-[320px] flex-col bg-[#FFFFFF] border border-[#EAECF0]">
-                    <div className="h-[50px] flex flex-row justify-start mt-3 ml-5 ">
+                    <div className="h-[50px] flex flex-row justify-between mt-3 ">
+                        <span className="flex items-center justify-center ml-5 font-semibold text-[#1D2939] text-lg">Attempted Questions</span>
                         <div className=" flex flex-row gap-5">
                             <div className="flex flex-row gap-2">
                                 <span className="inline-block w-[10px] h-[10px] rounded-full bg-[#17B26A] mt-[19px]" />
@@ -146,13 +147,9 @@ function Quizzes() {
                                 <span className="inline-block w-[10px] h-[10px] rounded-full bg-[#F04438] mt-[19px]" />
                                 <span className="flex items-center justify-center text-[#667085] font-normal text-sm mr-5">Incorrect</span>
                             </div>
-                            <div className="flex flex-row gap-2">
-                                <span className="inline-block w-[10px] h-[10px] rounded-full bg-[#D0D5DD] mt-[19px]" />
-                                <span className="flex items-center justify-center text-[#667085] font-normal text-sm">Unanswered</span>
-                            </div>
                         </div>
                     </div>
-                    <ResponsiveContainer width="100%" height="80%" className="pb-3">
+                    <ResponsiveContainer width="100%" height="80%">
                         <BarChart
                             data={data}
                             barGap={5}
@@ -180,7 +177,6 @@ function Quizzes() {
                             <Legend wrapperStyle={{ display: 'none' }} />
                             <Bar dataKey="correct" fill="#17B26A" barSize={55} />
                             <Bar dataKey="incorrect" fill="#F04438" barSize={55} />
-                            <Bar dataKey="Unanswered" fill="#D0D5DD" barSize={55} />
                         </BarChart>
                     </ResponsiveContainer>
                 </div>
