@@ -93,12 +93,12 @@ const Page = () => {
                                 value={message}
                                 onChange={handleInputChange}
                                 placeholder='Type your message here...'
-                                className='outline-none placeholder-[#667085] font-normal w-full bg-[#FFFFFF] resize-none overflow-y-auto'
+                                className='outline-none placeholder-[#667085] font-normal w-full bg-[#FCFCFD] resize-none overflow-y-auto'
                                 style={{
                                     padding: '8px',      // Add some padding for better UX
-                                    lineHeight: '1',   // Adjust line height for better spacing
-                                    height: '52px',      // Set initial height to 52px
-                                    minHeight: '52px',   // Ensure it doesn’t shrink below 52px
+                                    lineHeight: '1.5',   // Adjust line height for better spacing
+                                    height: '42px',      // Set initial height to 52px
+                                    minHeight: '42px',   // Ensure it doesn’t shrink below 52px
                                 }}
                             />
                         </div>
