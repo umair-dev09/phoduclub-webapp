@@ -9,7 +9,7 @@ import "react-modern-drawer/dist/index.css";
 
 const Page = () => {
     // Step 1: Manage the state of the drawer
-    const [isOpen, setIsOpen] = useState(true);
+    const [isOpen, setIsOpen] = useState(false); // Initially closed
 
     // Toggle drawer function
     const toggleDrawer = () => {
@@ -18,6 +18,7 @@ const Page = () => {
 
     return (
         <div className='flex flex-1 flex-row'>
+            {/* Left Sidebar */}
             <div className='flex flex-col w-[90px] bg-white border-t border-r border-b border-lightGrey'>
                 <div className='flex items-center justify-center h-[72px] border-b border-lightGrey'>
                     <div className='flex items-center justify-center w-[42px] h-[42px] bg-[#C74FE6] rounded-full'>
@@ -28,6 +29,8 @@ const Page = () => {
                     <GroupIcons />
                 </div>
             </div>
+
+            {/* Middle Sidebar */}
             <div className='flex flex-col w-[270px] bg-white border-t border-r border-b border-lightGrey'>
                 <div className='flex flex-row items-center justify-between h-[72px] border-b border-lightGrey'>
                     <div className='flex flex-row gap-2 ml-6'>
@@ -51,16 +54,18 @@ const Page = () => {
                     <MockTest />
                 </div>
             </div>
-            <div className='flex  flex-col border-t border-r border-b border-lightGrey'>
+
+            {/* Main Content Area */}
+            <div className={`flex flex-1 flex-col border-t border-r border-b border-lightGrey`}>
+                {/* Upper Layout */}
                 <div className='flex items-center justify-between h-[72px] bg-white border-b border-lightGrey'>
                     <div className="flex flex-row items-center gap-2 ml-6 rounded-[7px] transition-colors hover:bg-[#F8F0FF]">
                         <Image src='/icons/PhyiscsQuicktest.png' alt="bookstack icon" width={16} height={24} />
                         <p className="text-[13px] font-semibold text-[#4B5563]">Physics 101</p>
-                        <Image src='/icons/arrowup.svg' alt='arrow down' width={20} height={20} />
                     </div>
-                    <div className=' flex flex-row mr-6 gap-4'>
+                    <div className='flex flex-row mr-6 gap-4'>
                         <Image src='/icons/search.svg' alt='search icon' width={18} height={18} />
-                        <button onClick={toggleDrawer}>
+                        <button onClick={toggleDrawer} className='flex items-center'>
                             {/* Rotate the icon when the drawer is open */}
                             <Image
                                 src='/icons/collapseDetails.svg'
@@ -72,7 +77,29 @@ const Page = () => {
                         </button>
                     </div>
                 </div>
-                <div className='flex flex-1'></div>
+
+                {/* Content Area */}
+                <div className='flex flex-1'>
+                    {/* This area can hold your main content */}
+                </div>
+
+                {/* Drawer Component */}
+                <Drawer
+                    open={isOpen}
+                    onClose={toggleDrawer}
+                    direction="bottom" // Change the direction if needed
+                    className="rounded-tl-md rounded-tr-md flex h-full"
+                    overlayClassName="drawer-overlay"
+                    style={{ position: 'absolute', bottom: '0', left: '0', right: '0' }} // Ensure it appears inside the main content
+                >
+                    <div className='h-[72px] border-b border-lightGrey bg-slate-800'></div>
+                    <div className='bg-emerald-500 h-full flex-1 flex justify-center items-center'>
+                        {/* Drawer Content */}
+                        <h2 className='text-white'>Drawer Content</h2>
+                    </div>
+                </Drawer>
+
+                {/* Down Layout */}
                 <div className='flex flex-row items-center justify-center h-[100px] bg-white gap-3'>
                     <div className='flex flex-row justify-between w-full h-auto ml-6 px-4 py-[0.625rem] gap-2 bg-[#FCFCFD] border border-[#D0D5DD] rounded-[9px]'>
                         <div>
@@ -80,19 +107,14 @@ const Page = () => {
                         </div>
                         <div className='flex flex-row gap-3'>
                             <Image src='/icons/emojies.svg' alt='emojies icon' width={20} height={20} />
-                            <Image src='/icons/files.svg' alt='emojies icon' width={20} height={20} />
+                            <Image src='/icons/files.svg' alt='files icon' width={20} height={20} />
                         </div>
                     </div>
                     <div className='mr-6'>
                         <Image src='/icons/send.svg' alt='files icon' width={24} height={24} />
                     </div>
                 </div>
-
-
             </div>
-
-            {/* Drawer Component */}
-
         </div>
     );
 };

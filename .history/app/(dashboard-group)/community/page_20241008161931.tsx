@@ -90,7 +90,77 @@ const Page = () => {
 
 
             </div>
+            <Drawer
+                open={isOpen}
+                onClose={toggleDrawer}
+                direction="right"
+                className="rounded-tl-md rounded-tr-md  flex h-full"
+                overlayClassName="drawer-overlay"
 
+            >
+                <div className='flex flex-col w-[270px] bg-[#FFFFFF] border-t border-r border-b border-lightGrey'>
+                    <div className='h-[72px] border-b border-lightGrey bg-[#FFFFFF] flex flex-row justify-between p-6'>
+                        <span className='text-[#182230] text-base font-semibold'>Details</span>
+                        <div className='gap-1 flex flex-row'>
+                            <Image
+                                src="/icons/details.svg"
+                                alt="ebfeibfe"
+                                width={18}
+                                height={18}
+                            />
+
+                            <span>57</span>
+
+                        </div>
+
+                    </div>
+                    <div className='bg-[#FFFFFF] h-full  mt-6 ml-4 mr-4'>
+                        <div className='flex justify-between'>
+                            <span className='text-[#182230] text-base font-semibold'>Details</span>
+                            <Image
+                                src="/icons/details.svg"
+                                alt="ebfeibfe"
+                                width={18}
+                                height={18}
+                            />
+
+                        </div>
+                        <div className='flex justify-between'>
+                            <span className='text-[#182230] text-base font-semibold'>Teachers</span>
+                            <Image
+                                src="/icons/details.svg"
+                                alt="ebfeibfe"
+                                width={18}
+                                height={18}
+                            />
+
+                        </div>
+                        <div className='flex justify-between'>
+                            <span className='text-[#182230] text-base font-semibold'>Premium Members</span>
+                            <Image
+                                src="/icons/details.svg"
+                                alt="ebfeibfe"
+                                width={18}
+                                height={18}
+                            />
+
+                        </div>
+                        <div className='flex justify-between'>
+                            <span className='text-[#182230] text-base font-semibold'>Club Members</span>
+                            <Image
+                                src="/icons/details.svg"
+                                alt="ebfeibfe"
+                                width={18}
+                                height={18}
+                            />
+
+                        </div>
+
+
+                    </div>
+
+                </div>
+            </Drawer>
             {/* Drawer Component */}
 
         </div>

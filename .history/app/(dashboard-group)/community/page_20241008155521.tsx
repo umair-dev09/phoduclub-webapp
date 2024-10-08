@@ -51,7 +51,7 @@ const Page = () => {
                     <MockTest />
                 </div>
             </div>
-            <div className='flex  flex-col border-t border-r border-b border-lightGrey'>
+            <div className='flex flex-1 flex-col border-t border-r border-b border-lightGrey'>
                 <div className='flex items-center justify-between h-[72px] bg-white border-b border-lightGrey'>
                     <div className="flex flex-row items-center gap-2 ml-6 rounded-[7px] transition-colors hover:bg-[#F8F0FF]">
                         <Image src='/icons/PhyiscsQuicktest.png' alt="bookstack icon" width={16} height={24} />
@@ -87,12 +87,44 @@ const Page = () => {
                         <Image src='/icons/send.svg' alt='files icon' width={24} height={24} />
                     </div>
                 </div>
-
-
             </div>
-
             {/* Drawer Component */}
+            <Drawer
+                open={isOpen}
+                onClose={toggleDrawer}
+                direction="right"
+                className="rounded-tl-md rounded-tr-md  flex h-full"
+                overlayClassName="drawer-overlay"
 
+            >
+                <div className='flex flex-col w-[270px] bg-red-700 border-t border-r border-b border-lightGrey'>
+                    <div className='h-[72px] border-b border-lightGrey bg-[#FFFFFF] flex flex-row justify-between p-6'>
+                        <span className='text-[#182230] text-base font-semibold'>Details</span>
+                        <div className='gap-1 flex flex-row'>
+                            <Image
+                                src="/icons/details.svg"
+                                alt="ebfeibfe"
+                                width={18}
+                                height={18}
+                            />
+
+                            <span>57</span>
+
+                        </div>
+
+                    </div>
+                    <div className='py-4 pt-20'>
+                        <div className='bg-emerald-500 h-full '>
+                            nofoef
+
+
+                        </div>
+
+                    </div>
+
+
+                </div>
+            </Drawer>
         </div>
     );
 };
