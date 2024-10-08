@@ -6,9 +6,8 @@ import General from '@/components/DashboardComponents/CommunityComponents/genera
 import MockTest from '@/components/DashboardComponents/CommunityComponents/mockTest';
 import Details from '@/components/DashboardComponents/CommunityComponents/details';
 import { PopoverContent, PopoverTrigger, Popover } from '@nextui-org/popover';
-import InsideGrp from '@/components/DashboardComponents/CommunityComponents/insideGrp';
 
-const CommunityPage = () => {
+const Page = () => {
     // State to track if the section is collapsed
     const [isCollapsed, setIsCollapsed] = useState(false);
 
@@ -71,13 +70,10 @@ const CommunityPage = () => {
                         <p className="font-semibold text-[#182230]">Physics 101</p>
                         <Image src='/icons/chevron-down.svg' alt='arrow down' width={20} height={20} />
                     </div>
-                    <button>
-                        <div className='flex flex-row mr-6 gap-4' onClick={toggleCollapse}>
-                            <Image src='/icons/search.svg' alt='search icon' width={18} height={18} />
-                            <Image src='/icons/collapseDetails.svg' alt='collapse details icon' width={24} height={24} />
-                        </div>
-                    </button>
-
+                    <div className=' flex flex-row mr-6 gap-4'>
+                        <Image src='/icons/search.svg' alt='search icon' width={18} height={18} />
+                        <Image src='/icons/collapseDetails.svg' alt='collapde details icon' width={24} height={24} />
+                    </div>
                 </div>
                 <div className='flex flex-1'></div>
                 <div className="flex flex-row items-center justify-center h-auto bg-[#FFFFFF] gap-3 py-8">
@@ -167,4 +163,4 @@ const CommunityPage = () => {
     );
 }
 
-export default CommunityPage
+export default page
