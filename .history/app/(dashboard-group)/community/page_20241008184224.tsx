@@ -1,5 +1,5 @@
 "use client"
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useState } from 'react';
 import Image from 'next/image';
 import GroupIcons from '@/components/DashboardComponents/CommunityComponents/groupIcons';
 import General from '@/components/DashboardComponents/CommunityComponents/general';
@@ -7,25 +7,7 @@ import MockTest from '@/components/DashboardComponents/CommunityComponents/mockT
 
 
 const Page = () => {
-    const [message, setMessage] = useState('');
-    const textareaRef = useRef<HTMLTextAreaElement | null>(null);
-    const [containerHeight, setContainerHeight] = useState('52px'); // Set initial height
-
-    // Function to handle input change
-    const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-        setMessage(e.target.value);
-    };
-
-    useEffect(() => {
-        if (textareaRef.current) {
-            // Reset height to auto to calculate the new height
-            textareaRef.current.style.height = 'auto';
-            // Set height based on scroll height
-            const newHeight = `${Math.min(textareaRef.current.scrollHeight, 150)}px`; // Max height set to 150px
-            textareaRef.current.style.height = newHeight;
-            setContainerHeight(newHeight); // Update the container height based on the textarea height
-        }
-    }, [message]); // Run effect on message change
+    // Step 1: Manage the state of the drawer
 
 
     return (
@@ -86,24 +68,18 @@ const Page = () => {
                 </div>
                 <div className='flex flex-1'></div>
                 <div className='flex flex-row items-center justify-center h-[100px] bg-white gap-3'>
-                    <div className={`flex flex-row justify-between items-center w-full ml-6 px-4 py-[0.625rem] gap-2 bg-[#FCFCFD] border border-[#D0D5DD] rounded-[9px]`} style={{ height: containerHeight }}>
+                    <div className='flex flex-row justify-between w-full h-auto ml-6 px-4 py-[0.625rem] gap-2 bg-[#FCFCFD] border border-[#D0D5DD] rounded-[9px]'>
                         <div className='w-full'>
                             <textarea
-                                ref={textareaRef}
-                                value={message}
-                                onChange={handleInputChange}
                                 placeholder='Type your message here...'
-                                className='outline-none placeholder-[#667085] font-normal w-full bg-[#FFFFFF] resize-none overflow-y-auto'
+                                className='outline-none placeholder-[#667085] font-normal w-full bg-[#FCFCFD] max-h-[150px] min-h-[20px] resize-none overflow-y-auto'
                                 style={{
-                                    padding: '8px',      // Add some padding for better UX
-                                    lineHeight: '1',   // Adjust line height for better spacing
-                                    height: '52px',      // Set initial height to 52px
-                                    minHeight: '52px',   // Ensure it doesn’t shrink below 52px
+                                    lineHeight: '0.8', // Adjust line height for better spacing between lines
                                 }}
                             />
                         </div>
                         <div className='flex flex-row gap-3 items-end'>
-                            <Image src='/icons/emojies.svg' alt='emojis icon' width={20} height={20} />
+                            <Image src='/icons/emojies.svg' alt='emojies icon' width={20} height={20} />
                             <Image src='/icons/files.svg' alt='files icon' width={20} height={20} />
                         </div>
                     </div>

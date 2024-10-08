@@ -1,32 +1,20 @@
 "use client"
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useState } from 'react';
 import Image from 'next/image';
 import GroupIcons from '@/components/DashboardComponents/CommunityComponents/groupIcons';
 import General from '@/components/DashboardComponents/CommunityComponents/general';
 import MockTest from '@/components/DashboardComponents/CommunityComponents/mockTest';
-
+import Drawer from "react-modern-drawer";
+import "react-modern-drawer/dist/index.css";
 
 const Page = () => {
-    const [message, setMessage] = useState('');
-    const textareaRef = useRef<HTMLTextAreaElement | null>(null);
-    const [containerHeight, setContainerHeight] = useState('52px'); // Set initial height
+    // Step 1: Manage the state of the drawer
+    const [isOpen, setIsOpen] = useState(true);
 
-    // Function to handle input change
-    const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-        setMessage(e.target.value);
+    // Toggle drawer function
+    const toggleDrawer = () => {
+        setIsOpen(!isOpen);
     };
-
-    useEffect(() => {
-        if (textareaRef.current) {
-            // Reset height to auto to calculate the new height
-            textareaRef.current.style.height = 'auto';
-            // Set height based on scroll height
-            const newHeight = `${Math.min(textareaRef.current.scrollHeight, 150)}px`; // Max height set to 150px
-            textareaRef.current.style.height = newHeight;
-            setContainerHeight(newHeight); // Update the container height based on the textarea height
-        }
-    }, [message]); // Run effect on message change
-
 
     return (
         <div className='flex flex-1 flex-row'>
@@ -72,49 +60,106 @@ const Page = () => {
                     </div>
                     <div className=' flex flex-row mr-6 gap-4'>
                         <Image src='/icons/search.svg' alt='search icon' width={18} height={18} />
-                        <button >
+                        <button onClick={toggleDrawer}>
                             {/* Rotate the icon when the drawer is open */}
                             <Image
                                 src='/icons/collapseDetails.svg'
                                 alt='collapse details icon'
                                 width={24}
                                 height={24}
-
+                                className={`transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`}
                             />
                         </button>
                     </div>
                 </div>
                 <div className='flex flex-1'></div>
                 <div className='flex flex-row items-center justify-center h-[100px] bg-white gap-3'>
-                    <div className={`flex flex-row justify-between items-center w-full ml-6 px-4 py-[0.625rem] gap-2 bg-[#FCFCFD] border border-[#D0D5DD] rounded-[9px]`} style={{ height: containerHeight }}>
-                        <div className='w-full'>
-                            <textarea
-                                ref={textareaRef}
-                                value={message}
-                                onChange={handleInputChange}
-                                placeholder='Type your message here...'
-                                className='outline-none placeholder-[#667085] font-normal w-full bg-[#FFFFFF] resize-none overflow-y-auto'
-                                style={{
-                                    padding: '8px',      // Add some padding for better UX
-                                    lineHeight: '1',   // Adjust line height for better spacing
-                                    height: '52px',      // Set initial height to 52px
-                                    minHeight: '52px',   // Ensure it doesn’t shrink below 52px
-                                }}
-                            />
+                    <div className='flex flex-row justify-between w-full h-auto ml-6 px-4 py-[0.625rem] gap-2 bg-[#FCFCFD] border border-[#D0D5DD] rounded-[9px]'>
+                        <div>
+                            <input placeholder='Type your message here...' className='outline-none placeholder-[#667085] font-normal w-full bg-[#FCFCFD]' />
                         </div>
-                        <div className='flex flex-row gap-3 items-end'>
-                            <Image src='/icons/emojies.svg' alt='emojis icon' width={20} height={20} />
-                            <Image src='/icons/files.svg' alt='files icon' width={20} height={20} />
+                        <div className='flex flex-row gap-3'>
+                            <Image src='/icons/emojies.svg' alt='emojies icon' width={20} height={20} />
+                            <Image src='/icons/files.svg' alt='emojies icon' width={20} height={20} />
                         </div>
                     </div>
-
                     <div className='mr-6'>
                         <Image src='/icons/send.svg' alt='files icon' width={24} height={24} />
                     </div>
                 </div>
             </div>
             {/* Drawer Component */}
+            <Drawer
+                open={isOpen}
+                onClose={toggleDrawer}
+                direction="right"
+                className="rounded-tl-md rounded-tr-md  flex h-full"
+                overlayClassName="drawer-overlay"
 
+            >
+                <div className='flex flex-col w-[270px] bg-[#FFFFFF] border-t border-r border-b border-lightGrey'>
+                    <div className='h-[72px] border-b border-lightGrey bg-[#FFFFFF] flex flex-row justify-between p-6'>
+                        <span className='text-[#182230] text-base font-semibold'>Details</span>
+                        <div className='gap-1 flex flex-row'>
+                            <Image
+                                src="/icons/details.svg"
+                                alt="ebfeibfe"
+                                width={18}
+                                height={18}
+                            />
+
+                            <span>57</span>
+
+                        </div>
+
+                    </div>
+                    <div className='bg-[#FFFFFF] h-full  mt-6 ml-4 mr-4'>
+                        <div className='flex justify-between'>
+                            <span className='text-[#182230] text-base font-semibold'>Details</span>
+                            <Image
+                                src="/icons/details.svg"
+                                alt="ebfeibfe"
+                                width={18}
+                                height={18}
+                            />
+
+                        </div>
+                        <div className='flex justify-between'>
+                            <span className='text-[#182230] text-base font-semibold'>Teachers</span>
+                            <Image
+                                src="/icons/details.svg"
+                                alt="ebfeibfe"
+                                width={18}
+                                height={18}
+                            />
+
+                        </div>
+                        <div className='flex justify-between'>
+                            <span className='text-[#182230] text-base font-semibold'>Premium Members</span>
+                            <Image
+                                src="/icons/details.svg"
+                                alt="ebfeibfe"
+                                width={18}
+                                height={18}
+                            />
+
+                        </div>
+                        <div className='flex justify-between'>
+                            <span className='text-[#182230] text-base font-semibold'>Club Members</span>
+                            <Image
+                                src="/icons/details.svg"
+                                alt="ebfeibfe"
+                                width={18}
+                                height={18}
+                            />
+
+                        </div>
+
+
+                    </div>
+
+                </div>
+            </Drawer>
         </div>
     );
 };

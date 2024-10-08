@@ -9,7 +9,6 @@ import MockTest from '@/components/DashboardComponents/CommunityComponents/mockT
 const Page = () => {
     const [message, setMessage] = useState('');
     const textareaRef = useRef<HTMLTextAreaElement | null>(null);
-    const [containerHeight, setContainerHeight] = useState('52px'); // Set initial height
 
     // Function to handle input change
     const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -21,9 +20,7 @@ const Page = () => {
             // Reset height to auto to calculate the new height
             textareaRef.current.style.height = 'auto';
             // Set height based on scroll height
-            const newHeight = `${Math.min(textareaRef.current.scrollHeight, 150)}px`; // Max height set to 150px
-            textareaRef.current.style.height = newHeight;
-            setContainerHeight(newHeight); // Update the container height based on the textarea height
+            textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
         }
     }, [message]); // Run effect on message change
 
@@ -86,19 +83,19 @@ const Page = () => {
                 </div>
                 <div className='flex flex-1'></div>
                 <div className='flex flex-row items-center justify-center h-[100px] bg-white gap-3'>
-                    <div className={`flex flex-row justify-between items-center w-full ml-6 px-4 py-[0.625rem] gap-2 bg-[#FCFCFD] border border-[#D0D5DD] rounded-[9px]`} style={{ height: containerHeight }}>
+                    <div className='flex flex-row justify-between items-center w-full h-auto ml-6 px-4 py-[0.625rem] gap-2 bg-[#FCFCFD] border border-[#D0D5DD] rounded-[9px]'>
                         <div className='w-full'>
                             <textarea
                                 ref={textareaRef}
                                 value={message}
                                 onChange={handleInputChange}
                                 placeholder='Type your message here...'
-                                className='outline-none placeholder-[#667085] font-normal w-full bg-[#FFFFFF] resize-none overflow-y-auto'
+                                className='outline-none placeholder-[#667085] font-normal w-full bg-[#FCFCFD] max-h-[50px] resize-none overflow-y-auto'
                                 style={{
-                                    padding: '8px',      // Add some padding for better UX
-                                    lineHeight: '1',   // Adjust line height for better spacing
-                                    height: '52px',      // Set initial height to 52px
-                                    minHeight: '52px',   // Ensure it doesn’t shrink below 52px
+                                    padding: '8px', // Add some padding for better UX
+
+                                    // Set initial height to fit the placeholder
+                                    height: 'auto', // This will be adjusted dynamically
                                 }}
                             />
                         </div>
