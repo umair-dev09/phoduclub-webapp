@@ -1,4 +1,5 @@
 "use client";
+import React, { useState } from "react";
 import Leaderboard from "@/components/DashboardComponents/AnalyticsComponents/Quizzes-Components/Leaderboard";
 import { Bar, BarChart, CartesianGrid, Legend, ResponsiveContainer, Tooltip, TooltipProps, XAxis, YAxis } from "recharts";
 import { PieChart, Pie, Cell } from 'recharts';
@@ -45,19 +46,48 @@ const CustomTooltip: React.FC<CustomTooltipProps> = ({ active, payload, label })
         const incorrectValue = payload.find(item => item.name === "incorrect")?.value;
 
         return (
-            <div className="relative bg-white border border-[#EAFCF0] rounded-md w-auto h-auto text-sm pointer-events-none shadow-md p-4">
+            <div style={{
+                position: 'relative',
+                backgroundColor: 'white',
+                border: '1px solid #EAECF0',
+                borderRadius: '8px',
+                width: 'auto',
+                height: "auto",
+
+                fontSize: '14px',
+                pointerEvents: 'none', // Prevent mouse events from affecting the tooltip
+                boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.1)",
+                padding: '16px'
+
+            }}>
                 {/* Tooltip content */}
 
-                <div className="flex items-center w-auto h-auto justify-center">
-                    <div className="flex items-center py-[3px]">
-                        <span className="inline-block w-3 h-3 mr-[2px] rounded-full bg-[#17B26A]"/>
+                <div style={{ display: 'flex', alignItems: 'center', width: "auto", height: "auto", justifyItems: 'center', }}>
+                    <div style={{ display: 'flex', alignItems: 'center', }}>
+                        <span style={{
+                            display: 'inline-block',
+                            width: '12px',
+                            height: '12px',
+                            borderRadius: '50%',
+                            backgroundColor: '#17B26A',
+                            padding: '3px',
+                            marginRight: '4px',
+                        }} />
                         <span className="text-[#667085] font-normal text-sm ml-1">{`Correct `}</span>
                         <span className=" ml-12 font-semibold text-base text-[#1D2939]">{correctValue}</span>
                     </div>
                 </div>
-                <div className="flex items-center w-auto h-auto justify-center">
-                    <div className="flex items-center py-[3px]">
-                        <span className="inline-block w-3 h-3 mr-[2px] rounded-full bg-[#F04438]"/>
+                <div style={{ display: 'flex', alignItems: 'center', width: "auto", height: "auto", justifyItems: 'center', }}>
+                    <div style={{ display: 'flex', alignItems: 'center', }}>
+                        <span style={{
+                            display: 'inline-block',
+                            width: '12px',
+                            height: '12px',
+                            borderRadius: '50%',
+                            backgroundColor: '#F04438', // Color for "Incorrect"
+                            marginRight: '4px',
+                            padding: '3px'
+                        }} />
                         <span className="text-[#667085] font-normal text-sm ml-1">{`Incorrect `}</span>
                         <span className="ml-10 font-semibold text-base text-[#1D2939]">{incorrectValue}</span>
                     </div>
@@ -77,10 +107,23 @@ const CustomPieTooltip: React.FC<PieTooltipProps> = ({ active, payload }) => {
     if (active && payload && payload.length) {
         const { name, value, payload: { fill } } = payload[0];
         return (
-            <div className="flex flex-row items-center justify-between w-40 bg-white border border-lightGrey rounded-md p-[10px] shadow-md">
+            <div className="flex flex-row items-center justify-between w-40" style={{
+                backgroundColor: 'white',
+                border: '1px solid #EAECF0',
+                borderRadius: '8px',
+                padding: '10px',
+                boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.1)"
+            }}>
                 <div className="flex flex-row items-center">
                     {/* Color dot dynamically based on fill */}
-                    <span className="inline-block w-3 h-3 rounded-full mr-2" style={{backgroundColor: fill}} />
+                    <span style={{
+                        display: 'inline-block',
+                        width: '12px', // Set equal width
+                        height: '12px', // Set equal height
+                        borderRadius: '50%', // This ensures it's a perfect circle
+                        backgroundColor: fill, // Set the fill color here
+                        marginRight: '8px'
+                    }} />
                     {/* Name and value */}
                     <p className="flex items-center text-sm font-semibold text-[#667085]">{name}</p>
                 </div>
@@ -95,7 +138,9 @@ const CustomPieTooltip: React.FC<PieTooltipProps> = ({ active, payload }) => {
 
 function Quizzes() {
 
-
+    const totalVisitors = React.useMemo(() => {
+        return chartData.reduce((acc, curr) => acc + curr.marks, 0);
+    }, []);
 
     const data = [
         {
@@ -176,15 +221,29 @@ function Quizzes() {
             </div>
             <div className="flex w-full h-auto flex-row gap-4">
                 <div className="w-1/2 rounded-xl h-[320px] flex-col bg-[#FFFFFF] border border-[#EAECF0]">
-                    <div className="h-[50px] flex flex-row justify-between mt-3 mb-1">
-                        <span className="flex items-center justify-center ml-5 font-semibold text-[#1D2939] text-lg">Attempted Questions</span>
+                    <div className="h-[50px] flex flex-row justify-between mt-3 ">
+                        <span className="flex items-center justify-center ml-10 font-semibold text-[#1D2939] text-lg">Attempted Questions</span>
                         <div className=" flex flex-row gap-5">
                             <div className="flex flex-row gap-2">
-                                <span className="inline-block w-[10px] h-[10px] rounded-full bg-[#17B26A] mt-[19px]"/>
+                                <span style={{
+                                    display: 'inline-block',
+                                    width: '10px',
+                                    height: '10px',
+                                    borderRadius: '50%',
+                                    backgroundColor: '#17B26A',
+                                    marginTop: "19px" // Color for "Correct"
+                                }} />
                                 <span className="flex items-center justify-center text-[#667085] font-normal text-sm">Correct</span>
                             </div>
                             <div className="flex flex-row gap-2">
-                                <span className="inline-block w-[10px] h-[10px] rounded-full bg-[#F04438] mt-[19px]"/>
+                                <span style={{
+                                    display: 'inline-block',
+                                    width: '10px',
+                                    height: '10px',
+                                    borderRadius: '50%',
+                                    backgroundColor: '#F04438', // Color for "Incorrect"
+                                    marginTop: "19px"
+                                }} />
                                 <span className="flex items-center justify-center text-[#667085] font-normal text-sm mr-5">Incorrect</span>
                             </div>
                         </div>
@@ -194,7 +253,7 @@ function Quizzes() {
                             data={data}
                             barGap={5}
                             barCategoryGap="5%"
-                            margin={{ right: 20, left: -20}} // Set left margin to 0
+                            margin={{ right: 20, }} // Set left margin to 0
                         >
                             <CartesianGrid strokeDasharray="3 3" horizontal={false} vertical={false} />
                             <XAxis
@@ -211,6 +270,7 @@ function Quizzes() {
                                 fontSize={14}
                                 fontWeight={400}
                                 fill="#667085"
+
                             />
                             <Tooltip content={<CustomTooltip />} cursor={false} isAnimationActive={true} />
                             <Legend wrapperStyle={{ display: 'none' }} />
@@ -225,7 +285,6 @@ function Quizzes() {
                     <div className="flex flex-1 items-center">
                         <ResponsiveContainer className='flex w-[50%]'>
                             <ChartContainer config={chartConfig} className="h-auto w-[70%]">
-
                                 <PieChart>
                                     <Tooltip content={<CustomPieTooltip />} cursor={false} />
                                     <Pie
@@ -241,9 +300,9 @@ function Quizzes() {
                                         ))}
                                     </Pie>
                                 </PieChart>
-
                             </ChartContainer>
                         </ResponsiveContainer>
+
                         <div className="flex flex-col w-[50%] justify-evenly">
                             {chartData.map((subject, index) => (
                                 <div key={index} className="flex flex-1 mb-2">
@@ -273,9 +332,13 @@ function Quizzes() {
                         <td className="w-[12%] text-center"><p>Time Spent</p></td>
                     </tr>
                     <Leaderboard />
+                    <Leaderboard />
+                    <Leaderboard />
+                    <Leaderboard />
+                    <Leaderboard />
                 </table>
                 <div>
-                    <table className="flex flex-col w-full h-min mb-8 border border-lightGrey rounded-xl bg-[#973AFF] text-white text-sm font-medium">
+                    <table className="flex flex-col w-full h-min border border-lightGrey rounded-xl bg-[#973AFF] text-white text-sm font-medium">
                         <tr className="flex flex-1 py-3">
                             <td className="flex items-center justify-center w-[8%]"><p>10,545</p></td>
                             <td className="flex flex-row w-[20%] gap-2">
