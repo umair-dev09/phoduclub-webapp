@@ -70,10 +70,7 @@ export type IconsType =
   | "unanswered"
   | "QuizTalk"
   | "MathsQuicktest"
-  | "studymaterial.png"
-  | "PhyiscsQuicktest"
-  | "ChemistryQuicktest"
-  | "MathsQuicktest.png";
+  | "studymaterial.png";
 
 
 

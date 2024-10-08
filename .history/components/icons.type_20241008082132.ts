@@ -68,13 +68,7 @@ export type IconsType =
   | "overal"
   | "information-circle"
   | "unanswered"
-  | "QuizTalk"
-  | "MathsQuicktest"
-  | "studymaterial.png"
-  | "PhyiscsQuicktest"
-  | "ChemistryQuicktest"
-  | "MathsQuicktest.png";
-
+  | "QuizTalk";
 
 
 

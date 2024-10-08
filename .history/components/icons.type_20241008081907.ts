@@ -68,13 +68,12 @@ export type IconsType =
   | "overal"
   | "information-circle"
   | "unanswered"
-  | "QuizTalk"
-  | "MathsQuicktest"
-  | "studymaterial.png"
-  | "PhyiscsQuicktest"
-  | "ChemistryQuicktest"
-  | "MathsQuicktest.png";
+  | "QuizTalk";
 
-
+"rank-1"
+"hourglass"
+"stop-watch"
+'play'
+'pause';
 
 

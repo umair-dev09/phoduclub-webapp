@@ -69,11 +69,7 @@ export type IconsType =
   | "information-circle"
   | "unanswered"
   | "QuizTalk"
-  | "MathsQuicktest"
-  | "studymaterial.png"
-  | "PhyiscsQuicktest"
-  | "ChemistryQuicktest"
-  | "MathsQuicktest.png";
+  | "MathsQuicktest";
 
 
 
