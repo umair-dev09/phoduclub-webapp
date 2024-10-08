@@ -6,9 +6,8 @@ import General from '@/components/DashboardComponents/CommunityComponents/genera
 import MockTest from '@/components/DashboardComponents/CommunityComponents/mockTest';
 import Details from '@/components/DashboardComponents/CommunityComponents/details';
 import { PopoverContent, PopoverTrigger, Popover } from '@nextui-org/popover';
-import InsideGrp from '@/components/DashboardComponents/CommunityComponents/insideGrp';
 
-const CommunityPage = () => {
+const Page = () => {
     // State to track if the section is collapsed
     const [isCollapsed, setIsCollapsed] = useState(false);
 
@@ -164,4 +163,4 @@ const CommunityPage = () => {
     );
 }
 
-export default CommunityPage
+export default page
