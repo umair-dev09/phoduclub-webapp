@@ -133,7 +133,7 @@ const Page = () => {
                                     </button>
                                 </PopoverTrigger>
                                 <PopoverContent>
-                                    <div className='flex flex-col bg-[#FFFFFF] mr-6 w-auto h-auto gap-4' onClick={toggleCollapse}>
+                                    <div className='flex flex-col bg-[#FFFFFF] mr-6 gap-4' onClick={toggleCollapse}>
                                         <div className='flex flex-row gap-2'>
                                             <Image src='/icons/search.svg' alt='search icon' width={18} height={18} />
                                             <span>files</span>

@@ -126,34 +126,7 @@ const Page = () => {
 
                         <div className="flex flex-row gap-3">
                             <Image src='/icons/emojies.svg' alt='emojis icon' width={20} height={20} />
-                            <Popover placement="bottom-end">
-                                <PopoverTrigger>
-                                    <button>
-                                        <Image src='/icons/files.svg' alt='files icon' width={20} height={20} />
-                                    </button>
-                                </PopoverTrigger>
-                                <PopoverContent>
-                                    <div className='flex flex-col bg-[#FFFFFF] mr-6 w-auto h-auto gap-4' onClick={toggleCollapse}>
-                                        <div className='flex flex-row gap-2'>
-                                            <Image src='/icons/search.svg' alt='search icon' width={18} height={18} />
-                                            <span>files</span>
-
-                                        </div>
-                                        <div className='flex flex-row gap-2'>
-                                            <Image src='/icons/search.svg' alt='search icon' width={18} height={18} />
-                                            <span>files</span>
-
-                                        </div>
-                                        <div className='flex flex-row gap-2'>
-                                            <Image src='/icons/search.svg' alt='search icon' width={18} height={18} />
-                                            <span>files</span>
-
-                                        </div>
-
-                                    </div>
-                                </PopoverContent>
-                            </Popover>
-
+                            <Image src='/icons/files.svg' alt='files icon' width={20} height={20} />
                         </div>
                     </div>
                     <div className="mr-6">

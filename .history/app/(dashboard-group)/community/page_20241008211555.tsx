@@ -126,34 +126,7 @@ const Page = () => {
 
                         <div className="flex flex-row gap-3">
                             <Image src='/icons/emojies.svg' alt='emojis icon' width={20} height={20} />
-                            <Popover placement="bottom-end">
-                                <PopoverTrigger>
-                                    <button>
-                                        <Image src='/icons/files.svg' alt='files icon' width={20} height={20} />
-                                    </button>
-                                </PopoverTrigger>
-                                <PopoverContent>
-                                    <div className='flex flex-col bg-[#FFFFFF] mr-6 w-auto h-auto gap-4' onClick={toggleCollapse}>
-                                        <div className='flex flex-row gap-2'>
-                                            <Image src='/icons/search.svg' alt='search icon' width={18} height={18} />
-                                            <span>files</span>
-
-                                        </div>
-                                        <div className='flex flex-row gap-2'>
-                                            <Image src='/icons/search.svg' alt='search icon' width={18} height={18} />
-                                            <span>files</span>
-
-                                        </div>
-                                        <div className='flex flex-row gap-2'>
-                                            <Image src='/icons/search.svg' alt='search icon' width={18} height={18} />
-                                            <span>files</span>
-
-                                        </div>
-
-                                    </div>
-                                </PopoverContent>
-                            </Popover>
-
+                            <Image src='/icons/files.svg' alt='files icon' width={20} height={20} />
                         </div>
                     </div>
                     <div className="mr-6">
@@ -168,27 +141,22 @@ const Page = () => {
                 </div>
             </div>
             {!isCollapsed && (
-                <div className={` h-auto  bg-red-600'transition-all duration-300 ease-in-out ${isCollapsed ? 'max-h-0 opacity-0' : 'max-h-[500px] opacity-100'}`}>
-                    <div
-                        className="w-[270px] h-full bg-slate-50 border-t border-r border-b border-lightGrey overflow-hidden "
-                    >
-                        <div className='flex items-center justify-center h-[72px] border-b border-lightGrey'>
-                            <div className='flex flex-row justify-between w-full mx-6'>
-                                <div><h3 className='text-base'>Details</h3></div>
-                                <div className='flex flex-row items-center gap-[6px]'>
-                                    <Image src='/icons/membersIcon.svg' alt='members icon' width={18} height={18} />
-                                    <p className='text-sm text-[#4B5563]'>57</p>
-                                </div>
+                <div
+                    className={`w-[270px] h-full bg-red-500 border-t border-r border-b border-lightGrey overflow-hidden transition-all duration-300 ease-in-out ${isCollapsed ? 'max-h-0 opacity-0' : 'max-h-[500px] opacity-100'}`}
+                >
+                    <div className='flex items-center justify-center h-[72px] border-b border-lightGrey'>
+                        <div className='flex flex-row justify-between w-full mx-6'>
+                            <div><h3 className='text-base'>Details</h3></div>
+                            <div className='flex flex-row items-center gap-[6px]'>
+                                <Image src='/icons/membersIcon.svg' alt='members icon' width={18} height={18} />
+                                <p className='text-sm text-[#4B5563]'>57</p>
                             </div>
                         </div>
-
-                        <div className='overflow-y-auto h-auto'>
+                    </div>
+                    <div className='h-screen overflow-y-auto bg-[#FFFFFF]'>
+                        <div className='flex items-start justify-center '>
                             <Details />
-
                         </div>
-
-
-
                     </div>
                 </div>
             )}
