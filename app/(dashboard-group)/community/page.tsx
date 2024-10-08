@@ -5,7 +5,6 @@ import General from '@/components/DashboardComponents/CommunityComponents/genera
 import MockTest from '@/components/DashboardComponents/CommunityComponents/mockTest'
 import Details from '@/components/DashboardComponents/CommunityComponents/details'
 import InsideGrp from '@/components/DashboardComponents/CommunityComponents/insideGrp'
-import { PopoverContent, PopoverTrigger, Popover } from '@nextui-org/popover'
 
 const page = () => {
     return (
