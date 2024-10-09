@@ -66,13 +66,13 @@ function bottomtext() {
                                             <span className='font-normal text-[#0C111D] text-sm'>Image</span>
 
                                         </button>
-                                        <button className='flex flex-row items-center gap-2 w-30 px-4 py-[10px] transition-colors hover:bg-neutral-100 '>
+                                        <button className='flex flex-row items-center gap-2 w-30 px-4 py-[10px] transition-colors hover:bg-neutral-100 rounded-tr-md rounded-tl-md'>
 
                                             <Image src='/icons/video-icon.svg' alt='search icon' width={20} height={20} />
                                             <span className='font-normal text-[#0C111D] text-sm'>Video</span>
 
                                         </button>
-                                        <button className='flex flex-row items-center gap-2 w-30 px-4 py-[10px] transition-colors hover:bg-neutral-100 rounded-br-md rounded-bl-md'>
+                                        <button className='flex flex-row items-center gap-2 w-30 px-4 py-[10px] transition-colors hover:bg-neutral-100 rounded-tr-md rounded-tl-md'>
 
                                             <Image src='/icons/documents.svg' alt='search icon' width={20} height={20} />
                                             <span className='font-normal text-[#0C111D] text-sm'>Documents</span>

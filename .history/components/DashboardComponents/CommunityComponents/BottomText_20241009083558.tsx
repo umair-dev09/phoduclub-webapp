@@ -60,19 +60,19 @@ function bottomtext() {
                                             boxShadow: '0px 4px 6px -2px rgba(16, 24, 40, 0.08), 0px 12px 16px -4px rgba(16, 24, 40, 0.14)'
                                         }}>
 
-                                        <button className='flex flex-row items-center gap-2 w-30 px-4 py-[10px] transition-colors hover:bg-neutral-100 rounded-tr-md rounded-tl-md  '>
+                                        <button className='flex flex-row items-center gap-2 w-30 px-4 py-[10px] transition-colors hover:bg-neutral-100 rounded-tr-tl-md '>
 
                                             <Image src='/icons/image.svg' alt='search icon' width={20} height={20} />
                                             <span className='font-normal text-[#0C111D] text-sm'>Image</span>
 
                                         </button>
-                                        <button className='flex flex-row items-center gap-2 w-30 px-4 py-[10px] transition-colors hover:bg-neutral-100 '>
+                                        <button className='flex flex-row items-center gap-2 w-30 px-4 py-[10px] transition-colors hover:bg-neutral-100 rounded-md'>
 
                                             <Image src='/icons/video-icon.svg' alt='search icon' width={20} height={20} />
                                             <span className='font-normal text-[#0C111D] text-sm'>Video</span>
 
                                         </button>
-                                        <button className='flex flex-row items-center gap-2 w-30 px-4 py-[10px] transition-colors hover:bg-neutral-100 rounded-br-md rounded-bl-md'>
+                                        <button className='flex flex-row items-center gap-2 w-30 px-4 py-[10px] transition-colors hover:bg-neutral-100 rounded-md'>
 
                                             <Image src='/icons/documents.svg' alt='search icon' width={20} height={20} />
                                             <span className='font-normal text-[#0C111D] text-sm'>Documents</span>
