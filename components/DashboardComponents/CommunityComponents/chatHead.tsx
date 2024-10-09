@@ -1,10 +1,9 @@
-"use client";
-
-import React, { useState } from "react";
+import React, { useState } from 'react';
 import { PopoverContent, PopoverTrigger, Popover } from '@nextui-org/popover';
 import Image from "next/image";
 
-function InsideGrp() {
+function ChatHead() {
+
     const [isPopoverOpen, setIsPopoverOpen] = useState(false);
     const [isMutePopoverOpen, setIsMutePopoverOpen] = useState(false);
     const [isMuted, setIsMuted] = useState(false); // Tracks mute state
@@ -21,25 +20,17 @@ function InsideGrp() {
     const toggleMute = () => setIsMuted(prev => !prev);
 
     return (
-        <div className='flex flex-row items-center justify-between h-[72px] border-b border-lightGrey'>
-            <div className='flex flex-row gap-2 ml-6'>
-                <div className="flex items-center justify-center w-[46px] h-[46px] rounded-full">
-                    <div className="flex items-center justify-center w-[42px] h-[42px] rounded-full bg-[#C0D5FF] border-2 border-[#C0D5FF] text-[#124B68] font-bold">
-                        <h3>J</h3>
-                    </div>
-                </div>
-                <div className='flex flex-col justify-evenly text-sm'>
-                    <div className='font-semibold'><h4>JEE-2024</h4></div>
-                    <div className='flex flex-row gap-2 text-[#4B5563]'>
-                        <Image src='/icons/membersIcon.svg' alt='members icon' width={18} height={18} />
-                        <div>100</div>
-                    </div>
-                </div>
-            </div>
-            <div className='flex items-center justify-center mr-6 gap-2'>
+        <div className='flex items-center justify-between h-[72px] bg-white border-b border-lightGrey gap-2'>
+            <div className="flex flex-row items-center gap-2 ml-6 rounded-[7px] transition-colors">
+                <Image src='/icons/PhyiscsQuicktest.png' alt="bookstack icon" width={16} height={24} />
+                <p className="font-semibold text-[#182230]">Physics 101</p>
+                {/* Conditional rendering of the mute icon */}
                 {isMuted && (
-                    <Image className={`{isMuted ? 'flex : 'none'}`} src='/icons/notification-off-02.svg' alt="Muted" width={16} height={16} />
+                    <Image src='/icons/notification-off-02.svg' alt="Muted" width={16} height={16} />
                 )}
+            </div>
+
+            <div className='flex items-center justify-center mr-6'>
                 <Popover
                     placement="bottom-end"
                     isOpen={isPopoverOpen}
@@ -59,6 +50,7 @@ function InsideGrp() {
                                 <Image src='/icons/bubble-chat-notification.svg' alt='mark as read' width={18} height={18} />
                                 <p className='text-sm'>Mark as read</p>
                             </button>
+
                             <Popover
                                 placement='right-start'
                                 isOpen={isMutePopoverOpen}
@@ -90,6 +82,14 @@ function InsideGrp() {
                                     )}
                                 </PopoverContent>
                             </Popover>
+
+                            <button
+                                className='flex flex-row items-center gap-2 w-48 px-4 py-[10px] transition-colors hover:bg-neutral-100'
+                                onClick={closePopover}
+                            >
+                                <Image src='/icons/folder-02.svg' alt='media' width={18} height={18} />
+                                <p className='text-sm'>Media</p>
+                            </button>
                             <button
                                 className='flex flex-row items-center gap-2 w-48 px-4 py-[10px] transition-colors hover:bg-neutral-100'
                                 onClick={closePopover}
@@ -105,4 +105,4 @@ function InsideGrp() {
     );
 }
 
-export default InsideGrp;
+export default ChatHead;

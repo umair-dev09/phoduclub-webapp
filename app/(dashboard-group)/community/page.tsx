@@ -4,9 +4,11 @@ import Image from 'next/image';
 import GroupIcons from '@/components/DashboardComponents/CommunityComponents/groupIcons';
 import General from '@/components/DashboardComponents/CommunityComponents/general';
 import MockTest from '@/components/DashboardComponents/CommunityComponents/mockTest';
-import Details from '@/components/DashboardComponents/CommunityComponents/details';
+import DetailsHead from '@/components/DashboardComponents/CommunityComponents/detailsHead';
+import DetailsContent from '@/components/DashboardComponents/CommunityComponents/detailsContent';
 import Bottomtext from '@/components/DashboardComponents/CommunityComponents/BottomText';
 import InsideGrp from '@/components/DashboardComponents/CommunityComponents/insideGrp';
+import ChatHead from '@/components/DashboardComponents/CommunityComponents/chatHead';
 
 const CommunityPage = () => {
     // State to track if the section is collapsed
@@ -43,38 +45,26 @@ const CommunityPage = () => {
             </div>
             <div className='flex flex-1 flex-col border-t border-r border-b border-lightGrey h-auto'>
                 <div className='flex items-center justify-between h-[72px] bg-white border-b border-lightGrey'>
-                    <div className="flex flex-row items-center gap-2 ml-6 rounded-[7px] transition-colors">
-                        <Image src='/icons/PhyiscsQuicktest.png' alt="bookstack icon" width={16} height={24} />
-                        <p className="font-semibold text-[#182230]">Physics 101</p>
-                        <Image src='/icons/chevron-down.svg' alt='arrow down' width={20} height={20} />
-                    </div>
-
+                    <ChatHead />
                     <div className='flex flex-row mr-6 gap-4'>
                         <button>
                             <Image src='/icons/search.svg' alt='search icon' width={18} height={18} />
                         </button>
-
                         <button className='transition-colors hover:bg-neutral-100' onClick={toggleCollapse}>
                             <Image src='/icons/collapseDetails.svg' alt='collapse details icon' width={24} height={24} />
-
                         </button>
-
                     </div>
-
-
                 </div>
                 <div className='flex flex-1'></div>
                 {/* this is the bottom text  */}
                 <div>
                     <Bottomtext />
-
                 </div>
                 {/* The End----------------------------------------------------------------------------> */}
             </div>
             {!isCollapsed && (
-                <div className={` h-auto  bg-red-600'transition-all  ${isCollapsed ? 'max-h-0 opacity-0' : 'max-h-[500px] opacity-100'}`}>
-
-                    <div className='flex items-center justify-center h-[72px] border-b border-lightGrey'>
+                <div className={`flex flex-col w-[270px] h-auto bg-white border-t border-lightGrey transition-all duration-300 ease-in-out ${isCollapsed ? 'max-w-0 opacity-0' : 'max-w-[270px] opacity-100'}`}>
+                    <div className='flex items-center justify-center min-h-[72px] border-b border-lightGrey'>
                         <div className='flex flex-row justify-between w-full mx-6'>
                             <div><h3 className='text-base'>Details</h3></div>
                             <div className='flex flex-row items-center gap-[6px]'>
@@ -84,13 +74,28 @@ const CommunityPage = () => {
                         </div>
                     </div>
 
-                    <div className='overflow-y-auto h-auto'>
-                        <Details />
-
+                    <div className='overflow-y-auto'>
+                        <DetailsHead />
+                        <DetailsContent />
+                        <DetailsHead />
+                        <DetailsContent />
+                        <DetailsHead />
+                        <DetailsContent />
+                        <DetailsHead />
+                        <DetailsContent />
+                        <DetailsHead />
+                        <DetailsContent />
+                        <DetailsHead />
+                        <DetailsContent />
+                        <DetailsHead />
+                        <DetailsContent />
+                        <DetailsHead />
+                        <DetailsContent />
+                        <DetailsHead />
+                        <DetailsContent />
+                        <DetailsHead />
+                        <DetailsContent />
                     </div>
-
-
-
                 </div>
             )}
         </div>
