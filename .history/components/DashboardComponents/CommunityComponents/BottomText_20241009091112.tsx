@@ -28,13 +28,14 @@ function bottomtext() {
                 <div className="flex flex-row items-center justify-center h-auto bg-[#FFFFFF] gap-3">
                     <div
                         className={`flex flex-row justify-between items-center w-full bg-[#FFFFFF] 
-              border ${text.trim() ? 'border-[#D6BBFB]' : 'border-[#D0D5DD] '} 
-              rounded-[9px] overflow-hidden`}
+                                       border ${text.trim() ? 'border-[#D6BBFB]' : 'border-[#D0D5DD] '} 
+                                       rounded-[9px] overflow-hidden`}
                         style={{
                             minHeight: '52px',
                             maxHeight: '150px',
-                            boxShadow: text.trim() ? '0px 1px 2px 0px rgba(16, 24, 40, 0.05), 0px 0px 0px 4px rgba(158, 119, 237, 0.12)' : 'none'
+                            boxShadow: '0px 1px 2px 0px rgba(16, 24, 40, 0.05), 0px 0px 0px 4px rgba(158, 119, 237, 0.12)'
                         }}
+
                     >
 
 
@@ -43,17 +44,19 @@ function bottomtext() {
                             value={text}
                             onChange={handleChange}
                             placeholder="Type your message here..."
-                            className="outline-none placeholder-[#667085] font-normal w-full bg-[#FCFCFD] resize-none ml-6"
-                            style={{ maxHeight: '150px', overflowY: 'auto' }}
+                            className="outline-none placeholder-[#667085] font-normal w-full bg-[#FCFCFD] resize-none ml-6 "
+                            style={{ minHeight: '24px', maxHeight: '150px', overflowY: 'auto' }}
                         />
+
 
                         <div className="flex flex-row gap-3 mr-6">
                             <Image src='/icons/emojies.svg' alt='emojis icon' width={20} height={20} />
                             <Popover placement="bottom-end">
                                 <PopoverTrigger>
                                     <button className='transition-colors hover:bg-neutral-100 hover:rounded-[100px] focus:outline-none'>
-                                        <Image src='/icons/files.svg' alt='files icon' width={20} height={20} />
+                                        <Image src='/icons/files.svg' alt='files icon' width={22} height={22} />
                                     </button>
+
                                 </PopoverTrigger>
                                 <PopoverContent>
                                     <div

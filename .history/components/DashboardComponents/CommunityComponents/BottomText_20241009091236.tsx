@@ -43,17 +43,19 @@ function bottomtext() {
                             value={text}
                             onChange={handleChange}
                             placeholder="Type your message here..."
-                            className="outline-none placeholder-[#667085] font-normal w-full bg-[#FCFCFD] resize-none ml-6"
-                            style={{ maxHeight: '150px', overflowY: 'auto' }}
+                            className="outline-none placeholder-[#667085] font-normal w-full bg-[#FCFCFD] resize-none ml-6 "
+                            style={{ minHeight: '24px', maxHeight: '150px', overflowY: 'auto' }}
                         />
+
 
                         <div className="flex flex-row gap-3 mr-6">
                             <Image src='/icons/emojies.svg' alt='emojis icon' width={20} height={20} />
                             <Popover placement="bottom-end">
                                 <PopoverTrigger>
                                     <button className='transition-colors hover:bg-neutral-100 hover:rounded-[100px] focus:outline-none'>
-                                        <Image src='/icons/files.svg' alt='files icon' width={20} height={20} />
+                                        <Image src='/icons/files.svg' alt='files icon' width={22} height={22} />
                                     </button>
+
                                 </PopoverTrigger>
                                 <PopoverContent>
                                     <div
