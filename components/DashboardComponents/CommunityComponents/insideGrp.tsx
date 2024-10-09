@@ -7,19 +7,18 @@ import Image from "next/image";
 function InsideGrp() {
     const [isPopoverOpen, setIsPopoverOpen] = useState(false);
     const [isMutePopoverOpen, setIsMutePopoverOpen] = useState(false);
+    const [isMuted, setIsMuted] = useState(false); // Tracks mute state
 
-    const closePopover = () => {
-        setIsPopoverOpen(false);
-    };
-
-    const closeMutePopover = () => {
-        setIsMutePopoverOpen(false);
-    };
-
+    // Function to close both popovers
+    const closePopover = () => setIsPopoverOpen(false);
+    const closeMutePopover = () => setIsMutePopoverOpen(false);
     const closeBothPopovers = () => {
         closeMutePopover();
         closePopover();
     };
+
+    // Toggles mute state
+    const toggleMute = () => setIsMuted(prev => !prev);
 
     return (
         <div className='flex flex-row items-center justify-between h-[72px] border-b border-lightGrey'>
@@ -65,25 +64,27 @@ function InsideGrp() {
                                 <PopoverTrigger>
                                     <button className='flex flex-row items-center justify-between w-48 px-4 py-[10px] transition-colors hover:bg-neutral-100'>
                                         <div className='flex flex-row items-center gap-2'>
-                                            <Image src='/icons/bell.svg' alt='Mute' width={18} height={18} />
-                                            <Image src='/icons/cancleBell.svg' alt='Unute' width={18} height={18} />
-                                            <p className='text-sm'>Mute</p>
-                                            <p className='text-sm'>Muted</p>
+                                            <Image src={isMuted ? '/icons/cancleBell.svg' : '/icons/bell.svg'} alt={isMuted ? 'Unmute' : 'Mute'} width={18} height={18} />
+                                            <p className='text-sm'>{isMuted ? 'Muted' : 'Mute'}</p>
                                         </div>
                                         <Image src='/icons/collapse-right.svg' alt='mute options' width={8} height={8} />
                                     </button>
                                 </PopoverTrigger>
                                 <PopoverContent>
-                                    <div>
+                                    {!isMuted && (
                                         <div className='flex flex-col w-32 h-auto bg-white border border-lightGrey rounded-md py-1'>
-                                            <button onClick={closeBothPopovers} className='text-sm text-[#0C111D] text-start px-4 py-[10px] hover:bg-[#F2F4F7]'>For 8 hours</button>
-                                            <button onClick={closeBothPopovers} className='text-sm text-[#0C111D] text-start px-4 py-[10px] hover:bg-[#F2F4F7]'>For 1 week</button>
-                                            <button onClick={closeBothPopovers} className='text-sm text-[#0C111D] text-start px-4 py-[10px] hover:bg-[#F2F4F7]'>Always</button>
+                                            <button onClick={() => { toggleMute(); closeBothPopovers(); }} className='text-sm text-[#0C111D] text-start px-4 py-[10px] hover:bg-[#F2F4F7]'>For 8 hours</button>
+                                            <button onClick={() => { toggleMute(); closeBothPopovers(); }} className='text-sm text-[#0C111D] text-start px-4 py-[10px] hover:bg-[#F2F4F7]'>For 1 week</button>
+                                            <button onClick={() => { toggleMute(); closeBothPopovers(); }} className='text-sm text-[#0C111D] text-start px-4 py-[10px] hover:bg-[#F2F4F7]'>Always</button>
                                         </div>
-                                        <div className="w-[">
+                                    )}
 
+                                    {isMuted && (
+                                        <div className="flex flex-col w-[182px] h-auto bg-white border border-lightGrey rounded-md py-1">
+                                            <p className="text-sm font-normal text-[#667085] px-4 py-[10px]">Muted until 05:57 pm</p>
+                                            <button onClick={() => { toggleMute(); closeBothPopovers(); }} className='text-sm text-[#0C111D] text-start px-4 py-[10px] hover:bg-[#F2F4F7]'>Unmute</button>
                                         </div>
-                                    </div>
+                                    )}
                                 </PopoverContent>
                             </Popover>
                             <button
