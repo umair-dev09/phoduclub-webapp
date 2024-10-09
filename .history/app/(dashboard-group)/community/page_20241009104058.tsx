@@ -7,7 +7,6 @@ import MockTest from '@/components/DashboardComponents/CommunityComponents/mockT
 import Details from '@/components/DashboardComponents/CommunityComponents/details';
 import Bottomtext from '@/components/DashboardComponents/CommunityComponents/BottomText';
 import InsideGrp from '@/components/DashboardComponents/CommunityComponents/insideGrp';
-import ChatArea from '@/components/DashboardComponents/CommunityComponents/ChatArea'
 
 const CommunityPage = () => {
     // State to track if the section is collapsed
@@ -66,7 +65,11 @@ const CommunityPage = () => {
                 </div>
                 {/* chat Area */}
                 <div className='flex flex-1 '>
-                    <ChatArea />
+                    <div>
+                        <button className='text-[#182230] font-semibold text-base'>
+                            Report
+                        </button>
+                    </div>
 
                 </div>
                 {/* The End ----------------------------------------------------------------------------->*/}

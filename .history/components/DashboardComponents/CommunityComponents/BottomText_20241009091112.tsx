@@ -28,13 +28,14 @@ function bottomtext() {
                 <div className="flex flex-row items-center justify-center h-auto bg-[#FFFFFF] gap-3">
                     <div
                         className={`flex flex-row justify-between items-center w-full bg-[#FFFFFF] 
-              border ${text.trim() ? 'border-[#D6BBFB]' : 'border-[#D0D5DD] '} 
-              rounded-[9px] overflow-hidden`}
+                                       border ${text.trim() ? 'border-[#D6BBFB]' : 'border-[#D0D5DD] '} 
+                                       rounded-[9px] overflow-hidden`}
                         style={{
                             minHeight: '52px',
                             maxHeight: '150px',
-                            boxShadow: text.trim() ? '0px 1px 2px 0px rgba(16, 24, 40, 0.05), 0px 0px 0px 4px rgba(158, 119, 237, 0.12)' : 'none'
+                            boxShadow: '0px 1px 2px 0px rgba(16, 24, 40, 0.05), 0px 0px 0px 4px rgba(158, 119, 237, 0.12)'
                         }}
+
                     >
 
 
