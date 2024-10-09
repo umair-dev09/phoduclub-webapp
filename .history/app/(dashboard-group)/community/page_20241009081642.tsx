@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
 import GroupIcons from '@/components/DashboardComponents/CommunityComponents/groupIcons';
 import General from '@/components/DashboardComponents/CommunityComponents/general';
@@ -67,12 +67,10 @@ const CommunityPage = () => {
 
                 </div>
                 <div className='flex flex-1'></div>
-                {/* this is the bottom text  */}
                 <div>
                     <Bottomtext />
 
                 </div>
-                {/* The End----------------------------------------------------------------------------> */}
             </div>
             {!isCollapsed && (
                 <div className={` h-auto  bg-red-600'transition-all  ${isCollapsed ? 'max-h-0 opacity-0' : 'max-h-[500px] opacity-100'}`}>

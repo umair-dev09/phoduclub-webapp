@@ -1,0 +1,170 @@
+"use client";
+import React, { useEffect, useRef, useState } from 'react';
+import Image from 'next/image';
+import GroupIcons from '@/components/DashboardComponents/CommunityComponents/groupIcons';
+import General from '@/components/DashboardComponents/CommunityComponents/general';
+import MockTest from '@/components/DashboardComponents/CommunityComponents/mockTest';
+import Details from '@/components/DashboardComponents/CommunityComponents/details';
+import { PopoverContent, PopoverTrigger, Popover } from '@nextui-org/popover';
+import InsideGrp from '@/components/DashboardComponents/CommunityComponents/insideGrp';
+import Quill from 'quill'; // Ensure you've installed Quill: npm install quill
+
+const CommunityPage = () => {
+    // State to track if the section is collapsed
+    const [isCollapsed, setIsCollapsed] = useState(false);
+
+    // Function to toggle collapse
+    const toggleCollapse = () => {
+        setIsCollapsed(!isCollapsed);
+    };
+
+    // State to store the text input value
+    const [value, setValue] = useState('');
+
+    // Quill reference and state
+    const quillRef = useRef(null);
+    const [quill, setQuill] = useState<Quill | null>(null);
+
+    useEffect(() => {
+        if (quillRef.current) {
+            const editor = new Quill(quillRef.current, {
+                theme: 'snow',
+            });
+            setQuill(editor);
+        }
+    }, []);
+
+    // Handle change for textarea
+    const handleChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+        setValue(event.target.value);
+    };
+
+    // State to manage button disabled state
+    const [isButtonDisabled, setIsButtonDisabled] = useState(true);
+
+    useEffect(() => {
+        // Disable the button if the input is empty
+        setIsButtonDisabled(value.trim() === '');
+    }, [value]);
+
+    return (
+        <div className='flex flex-1 flex-row'>
+            <div className='flex flex-col w-[90px] bg-white border-t border-r border-b border-lightGrey'>
+                <div className='flex items-center justify-center h-[72px] border-b border-lightGrey'>
+                    <div className='flex items-center justify-center w-[42px] h-[42px] bg-[#C74FE6] rounded-full'>
+                        <Image src='/icons/messageIcon.svg' alt='message icon' width={18} height={18} />
+                    </div>
+                </div>
+                <div>
+                    <GroupIcons />
+                </div>
+            </div>
+            <div className='flex flex-col w-[270px] bg-white border-t border-r border-b border-lightGrey'>
+                <InsideGrp />
+                <div className='flex flex-col justify-start items-center mx-4 mt-[15px] gap-6'>
+                    <General />
+                    <MockTest />
+                </div>
+            </div>
+            <div className='flex flex-1 flex-col border-t border-r border-b border-lightGrey h-auto'>
+                <div className='flex items-center justify-between h-[72px] bg-white border-b border-lightGrey'>
+                    <div className="flex flex-row items-center gap-2 ml-6 rounded-[7px] transition-colors">
+                        <Image src='/icons/PhyiscsQuicktest.png' alt="bookstack icon" width={16} height={24} />
+                        <p className="font-semibold text-[#182230]">Physics 101</p>
+                        <Image src='/icons/chevron-down.svg' alt='arrow down' width={20} height={20} />
+                    </div>
+                    <button>
+                        <div className='flex flex-row mr-6 gap-4' onClick={toggleCollapse}>
+                            <Image src='/icons/search.svg' alt='search icon' width={18} height={18} />
+                            <Image src='/icons/collapseDetails.svg' alt='collapse details icon' width={24} height={24} />
+                        </div>
+                    </button>
+                </div>
+                <div className='flex flex-1'></div>
+                <div className="flex flex-row items-center justify-center h-auto bg-[#FFFFFF] gap-3 py-4">
+                    <div className="flex flex-row items-center justify-center h-auto bg-[#FFFFFF] gap-3 ">
+                        <div
+                            className={`flex flex-row justify-between w-full  bg-[#FFFFFF] 
+        border ${value.trim() ? 'border-[#D6BBFB]' : 'border-[#D0D5DD]'} rounded-[9px]`}
+                            style={{
+                                minHeight: 'auto', // Allows outer container to adjust its height dynamically
+                                maxHeight: '200px', // Optional: limit the max height of the outer container
+                            }}
+                        >
+                            <textarea
+                                value={value}
+                                onChange={handleChange}
+                                placeholder="Type your message here..."
+                                className="outline-none placeholder-[#667085] font-normal w-full bg-[#FCFCFD] resize-none" // Disable resize to keep height control programmatic
+                                style={{
+                                    minHeight: "40px", // Start with a small initial height
+                                    maxHeight: "150px", // Grow until 150px
+                                    height: value.trim() ? `${Math.min(value.split('\n').length * 24, 150)}px` : 'auto', // Dynamically adjust height based on content, limiting at 150px
+                                    overflowY: value.split('\n').length > 6 ? "scroll" : "hidden", // Enable scroll if more than 6 lines
+                                    padding: "1rem",
+                                    border: 'none',
+                                    fontStyle: 'normal',
+                                }}
+                            />
+
+                            <div className="flex flex-row gap-3">
+                                <Image src='/icons/emojies.svg' alt='emojis icon' width={20} height={20} />
+                                <Popover placement="bottom-end">
+                                    <PopoverTrigger>
+                                        <button>
+                                            <Image src='/icons/files.svg' alt='files icon' width={20} height={20} />
+                                        </button>
+                                    </PopoverTrigger>
+                                    <PopoverContent>
+                                        <div className='flex flex-col bg-[#FFFFFF] mr-6 w-auto h-auto gap-4' onClick={toggleCollapse}>
+                                            <div className='flex flex-row gap-2'>
+                                                <Image src='/icons/search.svg' alt='search icon' width={18} height={18} />
+                                                <span>files</span>
+                                            </div>
+                                            <div className='flex flex-row gap-2'>
+                                                <Image src='/icons/search.svg' alt='search icon' width={18} height={18} />
+                                                <span>files</span>
+                                            </div>
+                                            <div className='flex flex-row gap-2'>
+                                                <Image src='/icons/search.svg' alt='search icon' width={18} height={18} />
+                                                <span>files</span>
+                                            </div>
+                                        </div>
+                                    </PopoverContent>
+                                </Popover>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="mr-6">
+                        <Image
+                            src={value.trim() ? '/icons/sendCommunity.svg' : '/icons/send.svg'} // Change icon based on value input
+                            alt='send icon'
+                            width={24}
+                            height={24}
+                            style={{ cursor: value.trim() ? 'pointer' : 'not-allowed' }} // Change cursor based on input
+                        />
+                    </div>
+                </div>
+            </div>
+            {!isCollapsed && (
+                <div className={`h-auto bg-red-600 transition-all ${isCollapsed ? 'max-h-0 opacity-0' : 'max-h-[500px] opacity-100'}`}>
+                    <div className='flex items-center justify-center h-[72px] border-b border-lightGrey'>
+                        <div className='flex flex-row justify-between w-full mx-6'>
+                            <div><h3 className='text-base'>Details</h3></div>
+                            <div className='flex flex-row items-center gap-[6px]'>
+                                <Image src='/icons/membersIcon.svg' alt='members icon' width={18} height={18} />
+                                <p className='text-sm text-[#4B5563]'>57</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div className='overflow-y-auto h-auto'>
+                        <Details />
+                    </div>
+                </div>
+            )}
+        </div>
+    );
+}
+
+export default CommunityPage;
