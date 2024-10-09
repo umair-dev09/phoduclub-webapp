@@ -100,32 +100,34 @@ const CommunityPage = () => {
                             style={{ minHeight: '40px', maxHeight: '100px', overflowY: 'auto' }} // Added maxHeight and overflowY for scrolling
                         />
 
-                        <div className="flex flex-row gap-3">
+                        <div className="flex flex-row items-center gap-3">
                             <Image src='/icons/emojies.svg' alt='emojis icon' width={20} height={20} />
                             <Popover placement="bottom-end">
                                 <PopoverTrigger>
-                                    <button>
+                                    <button className='rounded-full hover:bg-gray-200'>
                                         <Image src='/icons/files.svg' alt='files icon' width={20} height={20} />
                                     </button>
                                 </PopoverTrigger>
                                 <PopoverContent>
-                                    <div className='flex flex-col bg-[#FFFFFF] mr-6 w-auto h-auto gap-4' onClick={toggleCollapse}>
-                                        <div className='flex flex-row gap-2'>
-                                            <Image src='/icons/search.svg' alt='search icon' width={18} height={18} />
-                                            <span>files</span>
-
-                                        </div>
-                                        <div className='flex flex-row gap-2'>
-                                            <Image src='/icons/search.svg' alt='search icon' width={18} height={18} />
-                                            <span>files</span>
-
-                                        </div>
-                                        <div className='flex flex-row gap-2'>
-                                            <Image src='/icons/search.svg' alt='search icon' width={18} height={18} />
-                                            <span>files</span>
-
-                                        </div>
-
+                                    <div className='flex flex-col bg-[#FFFFFF] mr-6 w-[139px] h-auto py-1 rounded-md border border-lightGrey'>
+                                        <button>
+                                            <div className='flex flex-row items-center gap-2 px-4 py-[10px] hover:bg-neutral-100'>
+                                                <Image src='/icons/image-01.svg' alt='image icon' width={18} height={18} />
+                                                <span className='text-sm text-[#0C111D]'>Image</span>
+                                            </div>
+                                        </button>
+                                        <button>
+                                            <div className='flex flex-row items-center gap-2 px-4 py-[10px] hover:bg-neutral-100'>
+                                                <Image src='/icons/video-replay.svg' alt='video icon' width={18} height={18} />
+                                                <span className='text-sm text-[#0C111D]'>Video</span>
+                                            </div>
+                                        </button>
+                                        <button>
+                                            <div className='flex flex-row items-center gap-2 px-4 py-[10px] transition-colors hover:bg-neutral-100'>
+                                                <Image src='/icons/file-02.svg' alt='file icon' width={18} height={18} />
+                                                <span className='text-sm text-[#0C111D]'>Document</span>
+                                            </div>
+                                        </button>
                                     </div>
                                 </PopoverContent>
                             </Popover>
