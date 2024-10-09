@@ -3,7 +3,7 @@ import Image from "next/image";
 
 function DetailsContent() {
     return (
-        <div className="px-6">
+        <div className="px-6 transition-all">
             <div className="h-auto">
                 <div className="flex flex-row items-center my-1 gap-2">
                     <div className="relative w-9 h-9 group">
