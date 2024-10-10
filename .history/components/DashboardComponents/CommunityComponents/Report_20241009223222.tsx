@@ -237,7 +237,7 @@ const ChatArea: React.FC<ChatAreaProps> = ({ isOpen, setIsOpen }) => {
                                 {/* Section Buttons */}
                                 <button
                                     className={`w-full rounded-md my-[2px] ml-[2px] ${activeSection === 'Images'
-                                        ? 'bg-[#FFFFFF] text-[#182230] font-semibold rounded-md shadow-[0px_1px_3px_0px_rgba(16,_24,_40,_0.10),_0px_1px_2px_0px_rgba(16,_24,_40,_0.06)]'
+                                        ? 'bg-[#FFFFFF] text-[#182230] font-semibold rounded-sm shadow-[0px_1px_3px_0px_rgba(16,_24,_40,_0.10),_0px_1px_2px_0px_rgba(16,_24,_40,_0.06)]'
                                         : 'hover:bg-[#EAECF0] text-[#667085] font-semibold'
                                         }`}
                                     onClick={() => setActiveSection('Images')}
@@ -246,7 +246,7 @@ const ChatArea: React.FC<ChatAreaProps> = ({ isOpen, setIsOpen }) => {
                                 </button>
                                 <button
                                     className={`w-full rounded-md my-[2px] ml-[2px] ${activeSection === 'Videos'
-                                        ? 'bg-[#FFFFFF] text-[#182230] font-semibold rounded-md shadow-[0px_1px_3px_0px_rgba(16,_24,_40,_0.10),_0px_1px_2px_0px_rgba(16,_24,_40,_0.06)]'
+                                        ? 'bg-[#FFFFFF] text-[#182230] font-semibold rounded-sm shadow-[0px_1px_3px_0px_rgba(16,_24,_40,_0.10),_0px_1px_2px_0px_rgba(16,_24,_40,_0.06)]'
                                         : 'hover:bg-[#EAECF0] text-[#667085] font-semibold'
                                         }`}
                                     onClick={() => setActiveSection('Videos')}
@@ -255,7 +255,7 @@ const ChatArea: React.FC<ChatAreaProps> = ({ isOpen, setIsOpen }) => {
                                 </button>
                                 <button
                                     className={`w-full rounded-md my-[2px] ml-[2px] ${activeSection === 'Documents'
-                                        ? 'bg-[#FFFFFF] text-[#182230] font-semibold rounded-md shadow-[0px_1px_3px_0px_rgba(16,_24,_40,_0.10),_0px_1px_2px_0px_rgba(16,_24,_40,_0.06)]'
+                                        ? 'bg-[#FFFFFF] text-[#182230] font-semibold rounded-sm shadow-[0px_1px_3px_0px_rgba(16,_24,_40,_0.10),_0px_1px_2px_0px_rgba(16,_24,_40,_0.06)]'
                                         : 'hover:bg-[#EAECF0] text-[#667085] font-semibold'
                                         }`}
                                     onClick={() => setActiveSection('Documents')}
@@ -264,7 +264,7 @@ const ChatArea: React.FC<ChatAreaProps> = ({ isOpen, setIsOpen }) => {
                                 </button>
                                 <button
                                     className={`w-full rounded-md my-[2px] ml-[2px] ${activeSection === 'Links'
-                                        ? 'bg-[#FFFFFF] text-[#182230] font-semibold rounded-md shadow-[0px_1px_3px_0px_rgba(16,_24,_40,_0.10),_0px_1px_2px_0px_rgba(16,_24,_40,_0.06)]'
+                                        ? 'bg-[#FFFFFF] text-[#182230] font-semibold rounded-sm shadow-[0px_1px_3px_0px_rgba(16,_24,_40,_0.10),_0px_1px_2px_0px_rgba(16,_24,_40,_0.06)]'
                                         : 'hover:bg-[#EAECF0] text-[#667085] font-semibold'
                                         }`}
                                     onClick={() => setActiveSection('Links')}

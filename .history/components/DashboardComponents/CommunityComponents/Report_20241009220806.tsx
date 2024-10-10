@@ -236,45 +236,29 @@ const ChatArea: React.FC<ChatAreaProps> = ({ isOpen, setIsOpen }) => {
                             <div className="rounded-lg h-[44px] bg-[#F9FAFB] border border-solid border-[#EAECF0] gap-1 flex flex-row">
                                 {/* Section Buttons */}
                                 <button
-                                    className={`w-full rounded-md my-[2px] ml-[2px] ${activeSection === 'Images'
-                                        ? 'bg-[#FFFFFF] text-[#182230] font-semibold rounded-md shadow-[0px_1px_3px_0px_rgba(16,_24,_40,_0.10),_0px_1px_2px_0px_rgba(16,_24,_40,_0.06)]'
-                                        : 'hover:bg-[#EAECF0] text-[#667085] font-semibold'
-                                        }`}
+                                    className={`w-full hover:bg-[#EAECF0] rounded-md my-[2px] ml-[2px] ${activeSection === 'Images' ? 'bg-[#EAECF0]' : ''}`}
                                     onClick={() => setActiveSection('Images')}
                                 >
-                                    <span className="text-sm">{activeSection === 'Images' ? 'Images' : 'Images'}</span>
+                                    <span className="text-[#667085] font-semibold text-sm">Images</span>
                                 </button>
                                 <button
-                                    className={`w-full rounded-md my-[2px] ml-[2px] ${activeSection === 'Videos'
-                                        ? 'bg-[#FFFFFF] text-[#182230] font-semibold rounded-md shadow-[0px_1px_3px_0px_rgba(16,_24,_40,_0.10),_0px_1px_2px_0px_rgba(16,_24,_40,_0.06)]'
-                                        : 'hover:bg-[#EAECF0] text-[#667085] font-semibold'
-                                        }`}
+                                    className={`w-full hover:bg-[#EAECF0] rounded-md my-[2px] ${activeSection === 'Videos' ? 'bg-[#EAECF0]' : ''}`}
                                     onClick={() => setActiveSection('Videos')}
                                 >
-                                    <span className="text-sm">{activeSection === 'Videos' ? 'Videos' : 'Videos'}</span>
+                                    <span className="text-[#667085] font-semibold text-sm">Videos</span>
                                 </button>
                                 <button
-                                    className={`w-full rounded-md my-[2px] ml-[2px] ${activeSection === 'Documents'
-                                        ? 'bg-[#FFFFFF] text-[#182230] font-semibold rounded-md shadow-[0px_1px_3px_0px_rgba(16,_24,_40,_0.10),_0px_1px_2px_0px_rgba(16,_24,_40,_0.06)]'
-                                        : 'hover:bg-[#EAECF0] text-[#667085] font-semibold'
-                                        }`}
+                                    className={`w-full hover:bg-[#EAECF0] rounded-md my-[2px] ${activeSection === 'Documents' ? 'bg-[#EAECF0]' : ''}`}
                                     onClick={() => setActiveSection('Documents')}
                                 >
-                                    <span className="text-sm">{activeSection === 'Documents' ? 'Documents' : 'Documents'}</span>
+                                    <span className="text-[#667085] font-semibold text-sm">Documents</span>
                                 </button>
                                 <button
-                                    className={`w-full rounded-md my-[2px] ml-[2px] ${activeSection === 'Links'
-                                        ? 'bg-[#FFFFFF] text-[#182230] font-semibold rounded-md shadow-[0px_1px_3px_0px_rgba(16,_24,_40,_0.10),_0px_1px_2px_0px_rgba(16,_24,_40,_0.06)]'
-                                        : 'hover:bg-[#EAECF0] text-[#667085] font-semibold'
-                                        }`}
+                                    className={`w-full hover:bg-[#EAECF0] rounded-md my-[2px] mr-[2px] ${activeSection === 'Links' ? 'bg-[#EAECF0]' : ''}`}
                                     onClick={() => setActiveSection('Links')}
                                 >
-                                    <span className="text-sm">{activeSection === 'Links' ? 'Links' : 'Links'}</span>
+                                    <span className="text-[#667085] font-semibold text-sm">Links</span>
                                 </button>
-
-
-
-
                             </div>
                         </div>
 
@@ -287,24 +271,6 @@ const ChatArea: React.FC<ChatAreaProps> = ({ isOpen, setIsOpen }) => {
 
                                     {/* First tab (hidden content) */}
                                     <div className="hidden">
-                                        <h1>jabir is great</h1>
-                                        <h1>jabir is great</h1>
-                                        <h1>jabir is great</h1>
-                                        <h1>jabir is great</h1>
-                                        <h1>jabir is great</h1>
-                                        <h1>jabir is great</h1>
-                                        <h1>jabir is great</h1>
-                                        <h1>jabir is great</h1>
-                                        <h1>jabir is great</h1>
-                                        <h1>jabir is great</h1>
-                                        <h1>jabir is great</h1>
-                                        <h1>jabir is great</h1>
-                                        <h1>jabir is great</h1>
-                                        <h1>jabir is great</h1>
-                                        <h1>jabir is great</h1>
-                                        <h1>jabir is great</h1>
-                                        <h1>jabir is great</h1>
-                                        <h1>jabir is great</h1>
                                         <h1>jabir is great</h1>
                                         <h1>jabir is great</h1>
                                         {/* Other repeated text */}
@@ -330,142 +296,22 @@ const ChatArea: React.FC<ChatAreaProps> = ({ isOpen, setIsOpen }) => {
 
                             )}
                             {activeSection === 'Videos' && (
-                                <div className="mx-[24px] overflow-y-auto flex flex-col h-[428px] ">
-
-                                    {/* First tab (hidden content) */}
-                                    <div className="hidden">
-                                        <h1>jabir is great</h1>
-                                        <h1>jabir is great</h1>
-                                        <h1>jabir is great</h1>
-                                        <h1>jabir is great</h1>
-                                        <h1>jabir is great</h1>
-                                        <h1>jabir is great</h1>
-                                        <h1>jabir is great</h1>
-                                        <h1>jabir is great</h1>
-                                        <h1>jabir is great</h1>
-                                        <h1>jabir is great</h1>
-                                        <h1>jabir is great</h1>
-                                        <h1>jabir is great</h1>
-                                        <h1>jabir is great</h1>
-                                        <h1>jabir is great</h1>
-                                        <h1>jabir is great</h1>
-                                        <h1>jabir is great</h1>
-                                        <h1>jabir is great</h1>
-                                        <h1>jabir is great</h1>
-                                        <h1>jabir is great</h1>
-                                        <h1>jabir is great</h1>
-                                        {/* Other repeated text */}
-                                    </div>
-
-                                    {/* Second tab (centered content) */}
-                                    <div className="flex flex-col justify-center items-center flex-grow">
-                                        <Image
-                                            src="/icons/Media-No-Videos.svg"
-                                            alt="Media-No-Videos"
-                                            width={122}
-                                            height={122} />
-
-                                        <div className="flex gap-[6px] flex-col justify-center items-center mt-4">
-                                            <span className="font-semibold text-sm text-[#0C111D]">No videos</span>
-                                            <span className="font-normal text-xs text-[#667085]">
-                                                You’ll see here all shared videos here
-                                            </span>
-                                        </div>
-                                    </div>
+                                <div>
+                                    {/* Videos section content */}
+                                    <p>Display Videos here.</p>
                                 </div>
-
-
                             )}
                             {activeSection === 'Documents' && (
-                                <div className="mx-[24px] overflow-y-auto flex flex-col h-[428px] ">
-
-                                    {/* First tab (hidden content) */}
-                                    <div className="hidden">
-                                        <h1>jabir is great</h1>
-                                        <h1>jabir is great</h1>
-                                        <h1>jabir is great</h1>
-                                        <h1>jabir is great</h1>
-                                        <h1>jabir is great</h1>
-                                        <h1>jabir is great</h1>
-                                        <h1>jabir is great</h1>
-                                        <h1>jabir is great</h1>
-                                        <h1>jabir is great</h1>
-                                        <h1>jabir is great</h1>
-                                        <h1>jabir is great</h1>
-                                        <h1>jabir is great</h1>
-                                        <h1>jabir is great</h1>
-                                        <h1>jabir is great</h1>
-                                        <h1>jabir is great</h1>
-                                        <h1>jabir is great</h1>
-                                        <h1>jabir is great</h1>
-                                        <h1>jabir is great</h1>
-                                        <h1>jabir is great</h1>
-                                        <h1>jabir is great</h1>
-                                        {/* Other repeated text */}
-                                    </div>
-
-                                    {/* Second tab (centered content) */}
-                                    <div className="flex flex-col justify-center items-center flex-grow">
-                                        <Image
-                                            src="/icons/Media-No-Documents.svg"
-                                            alt="Media-No-Videos"
-                                            width={122}
-                                            height={122} />
-
-                                        <div className="flex gap-[6px] flex-col justify-center items-center mt-4">
-                                            <span className="font-semibold text-sm text-[#0C111D]">No documents</span>
-                                            <span className="font-normal text-xs text-[#667085]">
-                                                You’ll see here all shared documents here
-                                            </span>
-                                        </div>
-                                    </div>
+                                <div>
+                                    {/* Documents section content */}
+                                    <p>Display Documents here.</p>
                                 </div>
                             )}
                             {activeSection === 'Links' && (
-                                <div className="mx-[24px] overflow-y-auto flex flex-col h-[428px] ">
-
-                                    {/* First tab (hidden content) */}
-                                    <div className="hidden">
-                                        <h1>jabir is great</h1>
-                                        <h1>jabir is great</h1>
-                                        <h1>jabir is great</h1>
-                                        <h1>jabir is great</h1>
-                                        <h1>jabir is great</h1>
-                                        <h1>jabir is great</h1>
-                                        <h1>jabir is great</h1>
-                                        <h1>jabir is great</h1>
-                                        <h1>jabir is great</h1>
-                                        <h1>jabir is great</h1>
-                                        <h1>jabir is great</h1>
-                                        <h1>jabir is great</h1>
-                                        <h1>jabir is great</h1>
-                                        <h1>jabir is great</h1>
-                                        <h1>jabir is great</h1>
-                                        <h1>jabir is great</h1>
-                                        <h1>jabir is great</h1>
-                                        <h1>jabir is great</h1>
-                                        <h1>jabir is great</h1>
-                                        <h1>jabir is great</h1>
-                                        {/* Other repeated text */}
-                                    </div>
-
-                                    {/* Second tab (centered content) */}
-                                    <div className="flex flex-col justify-center items-center flex-grow">
-                                        <Image
-                                            src="/icons/Media-No-Links.svg"
-                                            alt="Media-No-Videos"
-                                            width={122}
-                                            height={122} />
-
-                                        <div className="flex gap-[6px] flex-col justify-center items-center mt-4">
-                                            <span className="font-semibold text-sm text-[#0C111D]">No links</span>
-                                            <span className="font-normal text-xs text-[#667085]">
-                                                You’ll see here all shared links here
-                                            </span>
-                                        </div>
-                                    </div>
+                                <div>
+                                    {/* Links section content */}
+                                    <p>Display Links here.</p>
                                 </div>
-
                             )}
                         </div>
                     </DialogPanel>
