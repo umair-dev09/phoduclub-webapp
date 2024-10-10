@@ -3,7 +3,7 @@ import Image from "next/image";
 
 function DetailsHead() {
     return (
-        <div className="mt-6 px-6">
+        <div className="mt-6 px-6 transition-all">
             <div className="group h-auto">
                 <div className="flex flex-row justify-between mb-3">
                     <div className="flex flex-row gap-2">
