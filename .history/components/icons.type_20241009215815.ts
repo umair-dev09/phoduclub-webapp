@@ -79,10 +79,7 @@ export type IconsType =
   | "image"
   | "video-icon"
   | "documents"
-  | "Media-Images"
-  | "Media-No-Videos"
-  | "Media-No-Documents"
-  | "Media-No-Links";
+  | "Media-Images";
 
 
 

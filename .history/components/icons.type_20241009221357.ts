@@ -80,9 +80,7 @@ export type IconsType =
   | "video-icon"
   | "documents"
   | "Media-Images"
-  | "Media-No-Videos"
-  | "Media-No-Documents"
-  | "Media-No-Links";
+  | "Media-No-Videos";
 
 
 
