@@ -1,12 +1,31 @@
+"use client";
+
 import React, { ReactNode } from "react";
 import Image from "next/image";
 import ChatMembers from "@/components/DashboardComponents/CommunityComponents/chatMembers";
+import { Popover, PopoverContent, PopoverTrigger } from "@nextui-org/popover";
+import { useState } from "react";
 
 interface GeneralChatLayoutProps {
     children: ReactNode;
 }
 
 function GeneralChatLayout({ children }: GeneralChatLayoutProps) {
+    const [isPopoverOpen, setIsPopoverOpen] = useState(false);
+    const [isMutePopoverOpen, setIsMutePopoverOpen] = useState(false);
+    const [isMuted, setIsMuted] = useState(false); // Tracks mute state
+
+    // Function to close both popovers
+    const closePopover = () => setIsPopoverOpen(false);
+    const closeMutePopover = () => setIsMutePopoverOpen(false);
+    const closeBothPopovers = () => {
+        closeMutePopover();
+        closePopover();
+    };
+
+    // Toggles mute state
+    const toggleMute = () => setIsMuted(prev => !prev);
+
     return (
         <div className="flex flex-row h-full">
             <div className="flex flex-col w-[270px] bg-white border-t border-r border-lightGrey">
@@ -24,7 +43,81 @@ function GeneralChatLayout({ children }: GeneralChatLayoutProps) {
                     <ChatMembers />
                 </div>
             </div>
-            <div>
+            <div className="flex flex-1 flex-col border-t border-lightGrey">
+                <div className="flex flex-row items-center justify-between px-6 h-[72px] bg-white border-b border-lightGrey">
+                    <div className="flex flex-row items-center gap-2">
+                        <div className="relative w-9 h-9">
+                            <Image src='/images/DP.png' alt="DP" width={36} height={36} />
+                            <div className="absolute right-0 bottom-0 w-3 h-3 bg-neutral-400 rounded-full border-2 border-white group-hover:bg-green-500"></div>
+                        </div>
+                        <p className="text-[#4B5563] text-[13px] font-medium">Darlene Robertson</p>
+                    </div>
+                    <Popover placement="bottom-end">
+                        <PopoverTrigger>
+                            <button className="border-none outline-none p-0 bg-transparent">
+                                <Image src='/icons/more-vertical.svg' alt="more options" width={24} height={24} />
+                            </button>
+                        </PopoverTrigger>
+                        <PopoverContent>
+                            <div className='flex flex-col bg-white w-auto h-auto py-1 border border-lightGrey rounded-md shadow-md'>
+                                <button
+                                    className='flex flex-row items-center gap-2 w-[183px] px-4 py-[10px] transition-colors  hover:bg-neutral-100'
+                                    onClick={closePopover}
+                                >
+                                    <Image src='/icons/user-sharing.svg' alt='mark as read' width={18} height={18} />
+                                    <p className='text-sm'>View profile</p>
+                                </button>
+
+                                <Popover
+                                    placement='right-start'
+                                    isOpen={isMutePopoverOpen}
+                                    onOpenChange={setIsMutePopoverOpen}
+                                >
+                                    <PopoverTrigger>
+                                        <button className='flex flex-row items-center justify-between w-[183px] px-4 py-[10px] transition-colors  hover:bg-neutral-100'>
+                                            <div className='flex flex-row items-center gap-2'>
+                                                <Image src={isMuted ? '/icons/cancleBell.svg' : '/icons/bell.svg'} alt={isMuted ? 'Unmute' : 'Mute'} width={18} height={18} />
+                                                <p className='text-sm'>{isMuted ? 'Muted' : 'Mute'}</p>
+                                            </div>
+                                            <Image src='/icons/collapse-right.svg' alt='mute options' width={8} height={8} />
+                                        </button>
+                                    </PopoverTrigger>
+                                    <PopoverContent>
+                                        {!isMuted && (
+                                            <div className='flex flex-col w-32 h-auto bg-white border border-lightGrey rounded-md py-1'>
+                                                <button onClick={() => { toggleMute(); closeBothPopovers(); }} className='text-sm text-[#0C111D] text-start px-4 py-[10px] hover:bg-[#F2F4F7]'>For 8 hours</button>
+                                                <button onClick={() => { toggleMute(); closeBothPopovers(); }} className='text-sm text-[#0C111D] text-start px-4 py-[10px] hover:bg-[#F2F4F7]'>For 1 week</button>
+                                                <button onClick={() => { toggleMute(); closeBothPopovers(); }} className='text-sm text-[#0C111D] text-start px-4 py-[10px] hover:bg-[#F2F4F7]'>Always</button>
+                                            </div>
+                                        )}
+
+                                        {isMuted && (
+                                            <div className="flex flex-col w-[182px] h-auto bg-white border border-lightGrey rounded-md py-1">
+                                                <p className="text-sm font-normal text-[#667085] px-4 py-[10px]">Muted until 05:57 pm</p>
+                                                <button onClick={() => { toggleMute(); closeBothPopovers(); }} className='text-sm text-[#0C111D] text-start px-4 py-[10px] hover:bg-[#F2F4F7]'>Unmute</button>
+                                            </div>
+                                        )}
+                                    </PopoverContent>
+                                </Popover>
+
+                                <button
+                                    className='flex flex-row items-center gap-2 w-[183px] px-4 py-[10px] transition-colors  hover:bg-neutral-100'
+                                    onClick={closePopover}
+                                >
+                                    <Image src='/icons/folder-02.svg' alt='media' width={18} height={18} />
+                                    <p className='text-sm'>Media</p>
+                                </button>
+                                <button
+                                    className='flex flex-row items-center gap-2 w-[183px] px-4 py-[10px] transition-colors  hover:bg-neutral-100'
+                                    onClick={closePopover}
+                                >
+                                    <Image src='/icons/user-block-red-01.svg' alt='exit group' width={18} height={18} />
+                                    <p className='text-sm text-red-600'>Block user</p>
+                                </button>
+                            </div>
+                        </PopoverContent>
+                    </Popover>
+                </div>
                 {children}
             </div>
         </div>
