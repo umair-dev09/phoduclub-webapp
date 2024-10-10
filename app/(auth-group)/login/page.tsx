@@ -134,7 +134,7 @@ onAuthStateChanged(auth, (user) => {
                                 Send Verification Code
                             </button>
                         </div>
-                    </form>
+                    </form> 
                 </div>
                 <span className="page_to_login">
                     <p>Don't have an account? <a href="./signup">Sign Up</a></p>

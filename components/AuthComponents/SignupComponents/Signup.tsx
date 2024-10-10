@@ -256,7 +256,7 @@ function Signup() {
                         <div className={styles.loadingContainer}>
                             <div className={styles.spinner}></div>
                         </div>
-                    )}
+                    )} 
                 </div>
                 {/* <ToastContainer /> */}
             </form>
