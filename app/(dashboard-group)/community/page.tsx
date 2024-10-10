@@ -141,7 +141,7 @@ const CommunityPage = () => {
             {!isCollapsed && (
                 <div className={` h-auto  bg-red-600'transition-all duration-300 ease-in-out ${isCollapsed ? 'max-h-0 opacity-0' : 'max-h-[500px] opacity-100'}`}>
                     <div
-                        className="w-[270px] h-full bg-slate-50 border-t border-r border-b border-lightGrey overflow-hidden "
+                        className="flex flex-col w-[270px] h-auto bg-white border-t border-r border-b border-lightGrey "
                     >
                         <div className='flex items-center justify-center h-[72px] border-b border-lightGrey'>
                             <div className='flex flex-row justify-between w-full mx-6'>
@@ -153,7 +153,7 @@ const CommunityPage = () => {
                             </div>
                         </div>
 
-                        <div className='overflow-y-auto h-auto'>
+                        <div className='flex flex-col justify-between h-screen overflow-y-auto '>
                             <Details />
 
                         </div>
