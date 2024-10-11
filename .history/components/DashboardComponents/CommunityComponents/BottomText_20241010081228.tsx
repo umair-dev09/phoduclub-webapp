@@ -43,7 +43,7 @@ function bottomtext() {
                             value={text}
                             onChange={handleChange}
                             placeholder="Type your message here..."
-                            className="outline-none placeholder-[#667085] font-normal w-full bg-[#FCFCFD] resize-none ml-6 "
+                            className="outline-none placeholder-[#667085] font-normal w-full bg-[#FCFCFD] resize-none ml-6 h-auto py-[11px]"
                             style={{ maxHeight: '150px', overflowY: 'auto' }}
                         />
 

@@ -43,7 +43,7 @@ function bottomtext() {
                             value={text}
                             onChange={handleChange}
                             placeholder="Type your message here..."
-                            className="outline-none placeholder-[#667085] font-normal w-full bg-[#FCFCFD] resize-none ml-6 "
+                            className="outline-none placeholder-[#667085] font-normal w-full bg-[#FCFCFD] resize-none ml-6 h-auto py-[11px]"
                             style={{ maxHeight: '150px', overflowY: 'auto' }}
                         />
 
@@ -52,7 +52,7 @@ function bottomtext() {
                             <Popover placement="bottom-end">
                                 <PopoverTrigger>
                                     <button className='transition-colors hover:bg-neutral-100 hover:rounded-[100px] focus:outline-none'>
-                                        <Image src='/icons/files.svg' alt='files icon' width={20} height={20} />
+                                        <Image src='/icons/files.svg' alt='files icon' width={26} height={26} />
                                     </button>
                                 </PopoverTrigger>
                                 <PopoverContent>
