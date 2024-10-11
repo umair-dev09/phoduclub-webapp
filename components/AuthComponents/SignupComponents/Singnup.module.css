@@ -110,10 +110,7 @@
     box-sizing: border-box;
     
 }
-.firstNameInput:hover,
-.firstNameInput:focus {
-    outline: 1.5px solid #D6BBFB;
-}
+
 
 .lastNameInput:hover,
 .lastNameInput:focus {

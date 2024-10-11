@@ -1,7 +1,8 @@
 "use client";
+
 import React, { useState } from 'react';
 import Image from 'next/image';
-import GroupIcons from '@/components/DashboardComponents/CommunityComponents/groupIcons';
+// import GroupIcons from '@/components/DashboardComponents/CommunityComponents/groupIcons';
 import General from '@/components/DashboardComponents/CommunityComponents/general';
 import MockTest from '@/components/DashboardComponents/CommunityComponents/mockTest';
 import DetailsHead from '@/components/DashboardComponents/CommunityComponents/detailsHead';
@@ -21,9 +22,9 @@ const CommunityPage = () => {
     };
 
     return (
-        <div className="flex flex-1 flex-row">
+        <div className="flex h-full flex-row">
             {/* Left Sidebar */}
-            <div className="flex flex-col w-[90px] bg-white border-t border-r border-b border-lightGrey">
+            {/* <div className="flex flex-col w-[90px] bg-white border-t border-r border-b border-lightGrey">
                 <div className="flex items-center justify-center h-[72px] border-b border-lightGrey">
                     <div className="group flex items-center justify-center relative w-[46px] h-[46px] rounded-full border-[#C74FE6] border-2 hover:border-darkPurple">
                         <div className="flex items-center justify-center w-[42px] h-[42px] rounded-full bg-[#C74FE6] border-[#C74FE6] border-2 text-[#624C18] font-bold group-hover:border-white">
@@ -37,7 +38,7 @@ const CommunityPage = () => {
                 <div>
                     <GroupIcons />
                 </div>
-            </div>
+            </div> */}
 
             {/* Middle Section */}
             <div className="flex flex-col w-[270px] bg-white border-t border-r border-b border-lightGrey">
