@@ -62,7 +62,7 @@ const CommunityPage = () => {
                         </button>
                     </div>
                 </div>
-                <div className="flex flex-1 overflow-y-auto ">
+                <div className="flex flex-1 overflow-y-auto sticky top-0 bg-white">
                     <Otherchat />
                 </div>
 
