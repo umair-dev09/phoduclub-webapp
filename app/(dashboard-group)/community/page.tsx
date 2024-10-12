@@ -11,6 +11,7 @@ import Bottomtext from '@/components/DashboardComponents/CommunityComponents/Bot
 import InsideGrp from '@/components/DashboardComponents/CommunityComponents/insideGrp';
 import ChatHead from '@/components/DashboardComponents/CommunityComponents/chatHead';
 import ChartArea from '@/components/DashboardComponents/CommunityComponents/ChatArea';
+import OwnChat from '@/components/DashboardComponents/CommunityComponents/ownChat';
 
 const CommunityPage = () => {
     // State to track if the section is collapsed
@@ -62,7 +63,7 @@ const CommunityPage = () => {
                         </button>
                     </div>
                 </div>
-                <div className="flex flex-1">
+                <div className="flex flex-1 items-start justify-center">
                     <ChartArea />
                 </div>
                 <div>
