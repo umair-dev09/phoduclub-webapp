@@ -18,9 +18,16 @@ function BeforeChatComp() {
         <div className="flex flex-1 flex-col">
             <div className="flex flex-1 flex-col items-center justify-center gap-4">
                 <Image src='/images/Content-Media-Mobile-App--Streamline-Brooklyn.svg' alt="new conversation image" width={112} height={112} />
-                <p className="w-[30.125rem] text-center text-sm font-normal text-[#667085]">
-                    To start a conversation, please send a chat request in the community. Once your request is accepted, you will be able to send messages and communicate privately.
-                </p>
+                {!showChatArea && (
+                    <p className="w-[30.125rem] text-center text-sm font-normal text-[#667085]">
+                        To start a conversation, please send a chat request in the community. Once your request is accepted, you will be able to send messages and communicate privately.
+                    </p>
+                )}
+                {showChatArea && (
+                    <p className="w-[30.125rem] text-center text-sm font-normal text-[#667085]">
+                        Your chat is empty. Start the conversation now and send a message!
+                    </p>
+                )}
                 {!showChatArea && (
                     <button
                         onClick={handleSendChatRequest}
@@ -45,6 +52,31 @@ function BeforeChatComp() {
 }
 
 export default BeforeChatComp;
+
+// ---------------------------------------------------------------------------------------------------
+
+// import React from "react";
+// import Image from "next/image";
+
+// function BeforeChatComp() {
+
+//     return (
+//         <div className="flex flex-1 flex-col items-center justify-center gap-4">
+//             <Image src='/images/user-block-01.svg' alt="unblock user" width={122} height={122} />
+//             <p className="w-[30.125rem] text-center text-sm font-normal text-[#667085]">
+//                 You have blocked this user. To resume the conversation, unblock them first.
+//             </p>
+//             <button
+//                 className="px-6 py-[10px] bg-[#9012FF] shadow-inner-button text-white text-sm font-semibold border border-[#800EE2] transition-colors rounded-md hover:bg-[#8501FF]"
+//             >
+//                 Unblock User
+//             </button>
+
+//         </div>
+//     );
+// }
+
+// export default BeforeChatComp;
 
 // ---------------------------------------------------------------------------------------------------
 
