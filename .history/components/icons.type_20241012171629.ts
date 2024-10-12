@@ -90,14 +90,12 @@ export type IconsType =
   | "copy"
   | "Bookmark"
   | "Report"
-  | "plus-icon"
+  | "Reaction-plus-icon"
   | "emoji-1"
   | "emoji-2"
   | "emoji-3"
   | "emoji-4"
   | "emoji-5"
-  | "profile-3"
-  | "profile-4";
 
 
 

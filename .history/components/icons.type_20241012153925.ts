@@ -83,22 +83,7 @@ export type IconsType =
   | "Media-No-Videos"
   | "Media-No-Documents"
   | "Media-No-Links"
-  | "profile-pic2"
-  | "arrow-down"
-  | "smile"
-  | "Reply"
-  | "copy"
-  | "Bookmark"
-  | "Report"
-  | "plus-icon"
-  | "emoji-1"
-  | "emoji-2"
-  | "emoji-3"
-  | "emoji-4"
-  | "emoji-5"
-  | "profile-3"
-  | "profile-4";
-
+  | "profile-pic2";
 
 
 

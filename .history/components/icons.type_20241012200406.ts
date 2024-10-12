@@ -96,8 +96,7 @@ export type IconsType =
   | "emoji-3"
   | "emoji-4"
   | "emoji-5"
-  | "profile-3"
-  | "profile-4";
+  | "profile-3";
 
 
 

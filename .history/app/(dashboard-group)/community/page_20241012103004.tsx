@@ -62,10 +62,9 @@ const CommunityPage = () => {
                         </button>
                     </div>
                 </div>
-                <div className="flex flex-1 overflow-y-auto ">
+                <div className="flex flex-1 overflow-y-auto">
                     <Otherchat />
                 </div>
-
                 <div>
                     <Bottomtext />
                 </div>
