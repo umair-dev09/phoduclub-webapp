@@ -1,13 +1,67 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { PopoverContent, PopoverTrigger, Popover } from '@nextui-org/popover';
 import Image from "next/image";
+import { onAuthStateChanged, User } from "firebase/auth";
+import { auth, db } from "@/firebase";
+import { doc, getDoc } from "firebase/firestore";
 
-function InsideGrp() {
+type GroupData = {
+    communityName: string | null;
+    membersId: string[] | null;
+  };
+
+type groupNameProps = {
+    communityId: string | null;
+  };
+
+function GroupName({communityId}:groupNameProps) {
+    const [groupData, setGroupData] = useState<GroupData | null>(null);
+    const [user, setUser] = useState<User | null>(null);
     const [isPopoverOpen, setIsPopoverOpen] = useState(false);
     const [isMutePopoverOpen, setIsMutePopoverOpen] = useState(false);
     const [isMuted, setIsMuted] = useState(false); // Tracks mute state
+
+    useEffect(() => {
+        const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+          if (currentUser) {
+            setUser(currentUser);
+          } else {
+            console.error('No user is logged in');
+            setError(true);
+          }
+        });
+    
+        return () => unsubscribe();
+      }, []);
+      useEffect(() => {
+        const fetchGroupData = async () => {
+          try {
+            if (user) {
+              const groupDoc = doc(db, `communities/${communityId}`);
+              const groupSnapshot = await getDoc(groupDoc);
+    
+              if (groupSnapshot.exists()) {
+                const data = groupSnapshot.data() as GroupData;
+                setGroupData(data);
+              } else {
+                console.error('No user data found!');
+                setError(true);
+              }
+            }
+          } catch (error) {
+            console.error('Error fetching user data:', error);
+            setError(true);
+          } finally {
+            // setLoading(false);
+          }
+        };
+    
+        if (user) {
+          fetchGroupData();
+        }
+      }, [user, communityId]);
 
     // Function to close both popovers
     const closePopover = () => setIsPopoverOpen(false);
@@ -20,19 +74,21 @@ function InsideGrp() {
     // Toggles mute state
     const toggleMute = () => setIsMuted(prev => !prev);
 
+
+
     return (
         <div className='flex flex-row items-center justify-between h-[72px] border-b border-lightGrey'>
             <div className='flex flex-row gap-2 ml-6'>
                 <div className="flex items-center justify-center w-[46px] h-[46px] rounded-full">
                     <div className="flex items-center justify-center w-[42px] h-[42px] rounded-full bg-[#C0D5FF] border-2 border-[#C0D5FF] text-[#124B68] font-bold">
-                        <h3>J</h3>
+                    <h3>{groupData?.communityName ? groupData.communityName.charAt(0).toUpperCase() : '?'}</h3>
                     </div>
                 </div>
                 <div className='flex flex-col justify-evenly text-sm'>
-                    <div className='font-semibold'><h4>JEE-2024</h4></div>
+                    <div className='font-semibold'><h4>{groupData?.communityName}</h4></div>
                     <div className='flex flex-row gap-2 text-[#4B5563]'>
                         <Image src='/icons/membersIcon.svg' alt='members icon' width={18} height={18} />
-                        <div>100</div>
+                        <p>{groupData?.membersId ? groupData.membersId.length : 0}</p> {/* Display the number of members */}
                     </div>
                 </div>
             </div>
@@ -51,7 +107,7 @@ function InsideGrp() {
                         </button>
                     </PopoverTrigger>
                     <PopoverContent>
-                        <div className='flex flex-col bg-white w-auto h-auto py-1 border border-lightGrey rounded-md shadow-md'>
+                        <div className='flex flex-col bg-white mt-2 w-auto h-auto py-1 border border-lightGrey rounded-md shadow-md'>
                             <button
                                 className='flex flex-row items-center gap-2 w-48 px-4 py-[10px] transition-colors hover:bg-neutral-100'
                                 onClick={closePopover}
@@ -105,4 +161,8 @@ function InsideGrp() {
     );
 }
 
-export default InsideGrp;
+export default GroupName;
+function setError(arg0: boolean) {
+    throw new Error("Function not implemented.");
+}
+

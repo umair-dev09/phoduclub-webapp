@@ -48,7 +48,7 @@ function Profile() {
     const router = useRouter();
   
 
-    useEffect(() => {
+    useEffect(() => { 
         const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
             if (currentUser) {
                 setUser(currentUser);
