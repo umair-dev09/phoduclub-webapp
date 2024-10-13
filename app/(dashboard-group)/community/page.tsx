@@ -11,6 +11,7 @@ import Bottomtext from '@/components/DashboardComponents/CommunityComponents/Bot
 import InsideGrp from '@/components/DashboardComponents/CommunityComponents/insideGrp';
 import ChatHead from '@/components/DashboardComponents/CommunityComponents/chatHead';
 import Otherchat from '@/components/DashboardComponents/CommunityComponents/otherchat';
+import OwnChat from '@/components/DashboardComponents/CommunityComponents/otherchat';
 
 const CommunityPage = () => {
     // State to track if the section is collapsed
@@ -23,22 +24,6 @@ const CommunityPage = () => {
 
     return (
         <div className="flex h-full flex-row">
-            {/* Left Sidebar */}
-            {/* <div className="flex flex-col w-[90px] bg-white border-t border-r border-b border-lightGrey">
-                <div className="flex items-center justify-center h-[72px] border-b border-lightGrey">
-                    <div className="group flex items-center justify-center relative w-[46px] h-[46px] rounded-full border-[#C74FE6] border-2 hover:border-darkPurple">
-                        <div className="flex items-center justify-center w-[42px] h-[42px] rounded-full bg-[#C74FE6] border-[#C74FE6] border-2 text-[#624C18] font-bold group-hover:border-white">
-                            <Image src="/icons/messageIcon.svg" alt="message icon" width={18} height={18} />
-                        </div>
-                        <div className="absolute top-6 left-6 px-2 py-1 bg-red-600 rounded-full text-white text-xs font-medium hidden group-hover:flex">
-                            6
-                        </div>
-                    </div>
-                </div>
-                <div>
-                    <GroupIcons />
-                </div>
-            </div> */}
 
             {/* Middle Section */}
             <div className="flex flex-col w-[270px] bg-white border-t border-r border-b border-lightGrey">
@@ -62,10 +47,10 @@ const CommunityPage = () => {
                         </button>
                     </div>
                 </div>
-                <div className="flex flex-1 overflow-y-auto ">
-                    <Otherchat />
+                <div className="flex flex-1 flex-col overflow-y-auto overflow-x-hidden">
+                    <OwnChat />
+                    {/* <Otherchat /> */}
                 </div>
-
                 <div>
                     <Bottomtext />
                 </div>
