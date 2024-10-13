@@ -17,35 +17,7 @@ const CommunityPage = () => {
             
             <h3>Select a group to explore </h3>
 
-            {/* Middle Section */}
-            {/* <div className="flex flex-col w-[270px] bg-white border-t border-r border-b border-lightGrey">
-                <InsideGrp />
-                <div className="flex flex-col justify-start items-center mx-4 mt-[15px] gap-6">
-                    <General />
-                    <MockTest />
-                </div>
-            </div> */}
-
-            {/* Chat Area */}
-            {/* <div className="flex flex-1 flex-col border-t border-r border-b border-lightGrey h-auto">
-                <div className="flex items-center justify-between h-[72px] bg-white border-b border-lightGrey">
-                    <ChatHead />
-                    <div className="flex flex-row mr-6 gap-4">
-                        <button>
-                            <Image src="/icons/search.svg" alt="search icon" width={18} height={18} />
-                        </button>
-                        <button className="transition-colors hover:bg-neutral-100" onClick={toggleCollapse}>
-                            <Image src="/icons/collapseDetails.svg" alt="collapse details icon" width={24} height={24} />
-                        </button>
-                    </div>
-                </div>
-                <div className="flex flex-1">
-                    <ChartArea />
-                </div>
-                <div>
-                    <Bottomtext />
-                </div>
-            </div> */}
+          
 
             {/* Right Sidebar with smoother collapse transition */}
             {/* <div
