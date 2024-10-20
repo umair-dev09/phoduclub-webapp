@@ -31,7 +31,7 @@ function Login() {
         setUsernameError('');
         setPhoneError('');
 
-
+        // Simple validation logic
         if (Name.trim() === '') {
             setUsernameError('Incorrect username');
         }

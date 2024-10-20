@@ -28,10 +28,10 @@ function Login() {
         e.preventDefault();
 
         // Reset error messages
-        setUsernameError('');
-        setPhoneError('');
+        setUsernameError('jabir');
+        setPhoneError('8431823329');
 
-
+        // Simple validation logic
         if (Name.trim() === '') {
             setUsernameError('Incorrect username');
         }

@@ -23,7 +23,7 @@ function Login() {
         }
     }, [Name, phone]);
 
-    // logic for  incorrect phone and name
+    // logic for 
     const handleSubmit = (e: { preventDefault: () => void; }) => {
         e.preventDefault();
 
@@ -31,7 +31,7 @@ function Login() {
         setUsernameError('');
         setPhoneError('');
 
-
+        // Simple validation logic
         if (Name.trim() === '') {
             setUsernameError('Incorrect username');
         }

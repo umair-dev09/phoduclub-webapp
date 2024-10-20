@@ -31,12 +31,12 @@ function Login() {
         setUsernameError('');
         setPhoneError('');
 
-
-        if (Name.trim() === '') {
+        // Simple validation logic
+        if (Name.trim() === 'jabir') {
             setUsernameError('Incorrect username');
         }
 
-        if (phone.trim() === '') {
+        if (phone.trim() === '8431823329') {
             setPhoneError('Please enter a correct mobile number');
         }
 
