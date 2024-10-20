@@ -40,7 +40,7 @@ const config: Config = {
 				darkPurple: '#800EE2',
 				lightGrey: '#eaecf0',
 				blackLike: '#1d2939',
-				custompurple: '#9012FF',
+				customPurple: '#9012FF',
 				lavend: '#6941C6',
 				progressPurple: '#7400E0'
 			},
