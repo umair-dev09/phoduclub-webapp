@@ -4,7 +4,6 @@ const page = () => {
     return (
         <div>
             jabir ali
-
         </div>
     )
 }

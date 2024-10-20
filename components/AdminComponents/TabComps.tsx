@@ -10,6 +10,7 @@ function TabComps() {
     const router = useRouter();
     const pathname = usePathname();
     const [isCollapsed, setIsCollapsed] = useState<boolean>(false);
+    const [isOpenArray, setIsOpenArray] = useState([false, false, false]); // Initialize collapsible states
 
     useEffect(() => {
         if (typeof window !== 'undefined') {
@@ -41,17 +42,16 @@ function TabComps() {
         setActiveTab(tabName);
         router.push(path);
     };
-    const [isOpenArray, setIsOpenArray] = useState([false, false, false]); // Initialize with false for each collapsible
 
-    // Function to toggle a specific collapsible's state
     const toggleCollapsible = (index: number) => {
         const newIsOpenArray = [...isOpenArray];
-        newIsOpenArray[index] = !newIsOpenArray[index]; // Toggle the specific index
+        newIsOpenArray[index] = !newIsOpenArray[index];
         setIsOpenArray(newIsOpenArray);
     };
 
     return (
         <div className={`${styles.tabComps} ${isCollapsed ? styles.collapsed : ''}`}>
+            {/* Header Section */}
             <div>
                 <button className={styles.collapseButton} onClick={handleCollapseClick}>
                     {isCollapsed ? (
@@ -61,131 +61,105 @@ function TabComps() {
                     )}
                 </button>
             </div>
+
             <div className={styles.logo}>
                 <div className={styles.phoduClubSymbol}>
                     <p className={styles.theSymbol}>P</p>
                 </div>
                 <div className={styles.phoduLogo}>
                     <p className={styles.phodu}>phodu<span className={styles.club}>.club</span></p>
+                    <p className='text-sm text-[#98A2B3] font-normal'>Admin</p>
                 </div>
             </div>
+
             <div className={styles.divider}>
                 <hr className={styles.actualDivider} />
             </div>
+
+            {/* Tabs Section */}
             <div className={styles.tabs}>
+                {/* Dashboard Button */}
                 <div className={styles.tooltip}>
                     <button
                         onClick={() => handleTabClick('dashboard', '/admin/dashboard')}
-                        className={`${styles.DashboardButton} ${activeTab === 'dashboard' ? styles.active : ''}`}
+                        className={`flex flex-row w-full rounded-md mb-2 py-2 px-3 ${activeTab === 'dashboard' ? 'bg-[#7400E0]' : 'hover:bg-[#e1ffe11a]'}`}
                     >
-                        <Image className={styles.dashboardIcon} src={activeTab === 'dashboard' ? "/icons/dashboard.svg" : "/icons/dashboard-2.svg"}
+                        <Image className='mr-2' src={activeTab === 'dashboard' ? "/icons/admin-dashboard.svg" : "/icons/admin-dashboard-2.svg"}
                             width={22} height={22} alt="Dashboard Icon"
                         />
-                        {!isCollapsed && <p className={styles.text}>Dashboard</p>}
-                        {isCollapsed && (
-                            <div className={styles.tooltipText}>Dashboard</div>
-                        )}
+                        {!isCollapsed && <p className={`${activeTab === 'dashboard' ? 'text-white' : 'text-[#AAAAAA]'}`}>Dashboard</p>}
+                        {isCollapsed && <div className={styles.tooltipText}>Dashboard</div>}
                     </button>
                 </div>
 
-
+                {/* Content Collapsible */}
                 <div className={styles.tooltip}>
                     <Collapsible
                         trigger={
-                            <div className=''>
-                                <div
-                                    className="flex items-center justify-between relative"
-                                    onClick={() => toggleCollapsible(0)} // Toggle first accordion
-                                >
-
-                                    <button>
-                                        <span className=' text-[#a8afb7]'>Content</span>
-
-                                    </button>
-                                    {isCollapsed && (
-                                        <div className={styles.tooltipText}>content</div>
-                                    )}
-
-                                    <Image
-                                        src={isOpenArray[0] ? "/icons/arrowdown.svg" : "/icons/arrowup.svg"} // Arrow based on first accordion state
-                                        width={24}
-                                        height={24}
-                                        alt="arrow"
+                            <div className="flex items-center justify-between py-2 px-3 rounded-md hover:bg-[#e1ffe11a]" onClick={() => toggleCollapsible(0)}>
+                                <div className='flex flex-row'>
+                                    <Image className='mr-2' src={activeTab === 'content' ? "/icons/admin-content.svg" : "/icons/admin-content-2.svg"}
+                                        width={22} height={22} alt="Content Icon"
                                     />
+                                    <span className={`${activeTab === 'content' ? 'text-white' : 'text-[#AAAAAA]'}`}>Content</span>
                                 </div>
+                                {isCollapsed && <div className={styles.tooltipText}>Content</div>}
+                                <Image src={isOpenArray[0] ? "/icons/arrowdown.svg" : "/icons/arrowup.svg"} width={24} height={24} alt="arrow" />
                             </div>
                         }
+                        open={isOpenArray[0]}
                         transitionTime={350}
-                        onOpening={() => toggleCollapsible(0)}  // Set the state to open when expanding
-                        onClosing={() => toggleCollapsible(0)} // Set the state to closed when collapsing
                     >
-                        {/* First Button  QUIZZES MANAGEMENT*/}
+                        {/* Quizzes Management */}
                         <button
                             onClick={() => handleTabClick('quizzesmanagement', '/admin/content/quizzesmanagement')}
                             className={`${styles.CommunitiesButton} ${activeTab === 'quizzesmanagement' ? styles.active : ''}`}
                         >
-
-                            {!isCollapsed && <p className="ml-9 text-[#F7F8FB]">Quizzes Management</p>}
+                            {!isCollapsed && <p className="w-full pl-9 text-[#AAAAAA] text-[13px] text-left py-2 px-3 hover:bg-[#444444]">Quizzes Management</p>}
                         </button>
-                        {/* Second Button */}
+                        {/* Test Series Management */}
                         <button
                             onClick={() => handleTabClick('testseriesmanagement', '/admin/content/testseriesmanagement')}
                             className={`${styles.CommunitiesButton} ${activeTab === 'testseriesmanagement' ? styles.active : ''}`}
                         >
-
-                            {!isCollapsed && <p className="ml-9 text-[#F7F8FB]">Test Series Management</p>}
+                            {!isCollapsed && <p className="w-full pl-9 text-[#AAAAAA] text-[13px] text-left py-2 px-3 hover:bg-[#444444]">Test Series Management</p>}
                         </button>
-                        {/* third Button  */}
+                        {/* Course Creation */}
                         <button
                             onClick={() => handleTabClick('coursecreation', '/admin/content/coursecreation')}
                             className={`${styles.CommunitiesButton} ${activeTab === 'coursecreation' ? styles.active : ''}`}
                         >
-
-                            {!isCollapsed && <p className="ml-9 text-[#F7F8FB]">Course Creation</p>}
+                            {!isCollapsed && <p className="w-full pl-9 text-[#AAAAAA] text-[13px] text-left py-2 px-3 hover:bg-[#444444]">Course Creation</p>}
                         </button>
-
-
                     </Collapsible>
                 </div>
 
+                {/* User Management Button */}
                 <div className={styles.tooltip}>
                     <button
-                        onClick={() => handleTabClick('usermangement', '/admin/usermangement')}
-                        className={`${styles.CommunitiesButton} ${activeTab === 'usermangement' ? styles.active : ''}`}
+                        onClick={() => handleTabClick('usermanagement', '/admin/usermanagement')}
+                        className={`flex flex-row w-full rounded-md mb-2 py-2 px-3 ${activeTab === 'usermanagement' ? 'bg-[#7400E0]' : 'hover:bg-[#e1ffe11a]'}`}
                     >
-                        <Image className={styles.communitiesIcon}
-                            src={activeTab === 'usermangement' ? "/icons/community.svg" : "/icons/community-2.svg"}
-                            width={22} height={22} alt="Communities Icon"
-                        />
-                        {!isCollapsed && <p className={styles.text}>User Management</p>}
+                        <Image className='mr-2' src={activeTab === 'usermanagement' ? "/icons/community.svg" : "/icons/community-2.svg"} width={22} height={22} alt="User Management Icon" />
+                        {!isCollapsed && <p className={`${activeTab === 'usermanagement' ? 'text-white' : 'text-[#AAAAAA]'}`}>User Management</p>}
                     </button>
-                    {isCollapsed && (
-                        <div className={styles.tooltipText}>User Management</div>
-                    )}
+                    {isCollapsed && <div className={styles.tooltipText}>User Management</div>}
                 </div>
 
+                {/* Learn CMS Button */}
                 <div className={styles.tooltip}>
                     <button
                         onClick={() => handleTabClick('learncms', '/admin/learncms')}
-                        className={`${styles.AnalyticsButton} ${activeTab === 'learncms' ? styles.active : ''}`}
+                        className={`flex flex-row w-full rounded-md py-2 px-3 ${activeTab === 'learncms' ? 'bg-[#7400E0]' : 'hover:bg-[#e1ffe11a]'}`}
                     >
-                        <Image className={styles.analyticsIcon}
-                            src={activeTab === 'learncms' ? "/icons/analytics.svg" : "/icons/analytics-2.svg"}
-                            width={22} height={22} alt="Analytics Icon"
-                        />
-                        {!isCollapsed && <p className={styles.text}>Learn CMS</p>}
+                        <Image className='mr-2' src={activeTab === 'learncms' ? "/icons/admin-learn.svg" : "/icons/admin-learn-2.svg"} width={22} height={22} alt="Learn CMS Icon" />
+                        {!isCollapsed && <p className={`${activeTab === 'learncms' ? 'text-white' : 'text-[#AAAAAA]'}`}>Learn CMS</p>}
                     </button>
-                    {isCollapsed && (
-                        <div className={styles.tooltipText}>Learn CMS</div>
-                    )}
+                    {isCollapsed && <div className={styles.tooltipText}>Learn CMS</div>}
                 </div>
-
-
             </div>
         </div>
     );
 }
 
 export default TabComps;
-
-

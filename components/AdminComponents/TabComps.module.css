@@ -302,7 +302,7 @@
 .phoduLogo {
     position: absolute;
     font-weight: bold;
-    margin-top: 15px;
+    top: 0;
     margin-left: 9px;
     transition: opacity 0.3s ease, transform 0.3s ease;
     overflow: hidden;
@@ -327,7 +327,7 @@
 }
 
 .divider {
-    margin-top: 59px;
+    margin-top: 0px;
     margin-bottom: 2rem;
     margin-left: 5px;
     /* Ensure the divider does not hide */

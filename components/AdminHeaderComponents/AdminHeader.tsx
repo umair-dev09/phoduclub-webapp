@@ -1,29 +1,23 @@
 "use client";
+
 import styles from '../../components/DashboardComponents/TabComps.module.css';
 
+interface HeaderProps {
+    currentPage: string;
+}
 
-
-
-
-function Header() {
-
-
-
-
+function Header({ currentPage }: HeaderProps) {
     return (
         <div>
             <div className={styles.headtab}>
                 <div className={styles.greeting}>
                     <h2>
-                        Keep up the great work!
+                        {currentPage}
                     </h2>
                 </div>
-
                 <div className={styles.profileParentLyt}>
-
                     <div className={styles.divider1} />
-                    <span> jabir ali</span>
-
+                    <span>jabir ali</span> {/* Display the current page name */}
                 </div>
             </div>
         </div>
@@ -31,3 +25,4 @@ function Header() {
 }
 
 export default Header;
+
