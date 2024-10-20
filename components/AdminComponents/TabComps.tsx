@@ -101,10 +101,10 @@ function TabComps() {
                                     <Image className='mr-2' src={activeTab === 'content' ? "/icons/admin-content.svg" : "/icons/admin-content-2.svg"}
                                         width={22} height={22} alt="Content Icon"
                                     />
-                                    <span className={`${activeTab === 'content' ? 'text-white' : 'text-[#AAAAAA]'}`}>Content</span>
+                                    {!isCollapsed && <span className={`${activeTab === 'content' ? 'text-white' : 'text-[#AAAAAA]'}`}>Content</span>}
                                 </div>
                                 {isCollapsed && <div className={styles.tooltipText}>Content</div>}
-                                <Image src={isOpenArray[0] ? "/icons/arrowdown.svg" : "/icons/arrowup.svg"} width={24} height={24} alt="arrow" />
+                                {!isCollapsed && <Image src={isOpenArray[0] ? "/icons/arrowdown.svg" : "/icons/arrowup.svg"} width={24} height={24} alt="arrow" />}
                             </div>
                         }
                         open={isOpenArray[0]}
