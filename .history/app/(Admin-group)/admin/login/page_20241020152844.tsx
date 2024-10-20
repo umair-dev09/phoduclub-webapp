@@ -23,14 +23,35 @@ function Login() {
         }
     }, [Name, phone]);
 
-    // logic for  incorrect phone and name
+    useEffect(() => {
+        // Request notification permission when the component mounts
+        Notification.requestPermission().then((permission) => {
+            if (permission === "granted") {
+                console.log("Notification permission granted.");
+            } else {
+                console.log("Notification permission denied.");
+            }
+        });
+    }, []);
+
+    const showNotification = () => {
+        if (Notification.permission === "granted") {
+            const notification = new Notification("Verification Code Sent", {
+                body: `A verification code has been sent to ${phone}.`,
+                icon: "/images/phoduclublogo.png" // Optional: Add an icon for the notification
+            });
+            notification.onclick = () => {
+                console.log("Notification clicked!");
+            };
+        }
+    };
+
     const handleSubmit = (e: { preventDefault: () => void; }) => {
         e.preventDefault();
 
         // Reset error messages
         setUsernameError('');
         setPhoneError('');
-
 
         if (Name.trim() === '') {
             setUsernameError('Incorrect username');
@@ -44,11 +65,11 @@ function Login() {
         if (Name.trim() !== '' && phone.trim() !== '') {
             // Handle successful submission (e.g., routing)
             console.log('Form submitted with:', { Name, phone });
+            showNotification(); // Show notification on successful submission
             // Optionally navigate to another page
             // router.push('/next-page');
         }
     };
-
 
     return (
         <div className="bg-[#f7f8fb] h-screen w-screen flex justify-center items-center">

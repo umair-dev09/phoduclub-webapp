@@ -48,7 +48,28 @@ function Login() {
             // router.push('/next-page');
         }
     };
+    useEffect(() => {
+        // Request notification permission when the component mounts
+        Notification.requestPermission().then((permission) => {
+            if (permission === "granted") {
+                console.log("Notification permission granted.");
+            } else {
+                console.log("Notification permission denied.");
+            }
+        });
+    }, []);
 
+    const showNotification = () => {
+        if (Notification.permission === "granted") {
+            const notification = new Notification("Verification Code Sent", {
+                body: `A verification code has been sent to ${phone}.`,
+                icon: "/images/phoduclublogo.png" // Optional: Add an icon for the notification
+            });
+            notification.onclick = () => {
+                console.log("Notification clicked!");
+            };
+        }
+    };
 
     return (
         <div className="bg-[#f7f8fb] h-screen w-screen flex justify-center items-center">
