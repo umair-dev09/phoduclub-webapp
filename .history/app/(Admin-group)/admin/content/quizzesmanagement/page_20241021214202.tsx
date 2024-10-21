@@ -1,7 +1,6 @@
 "use client";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import ReactPaginate from 'react-paginate';
 
 function Quizz() {
     const router = useRouter();
@@ -10,7 +9,7 @@ function Quizz() {
         router.push(path);
     };
     return (
-        <div className="mx-[32px] mt-4 w-full h-auto flex overflow-y-auto flex-col ">
+        <div className="mx-[32px] mt-4 w-full h-auto flex overflow-y-auto flex-col">
             <div className="flex flex-row justify-between items-center">
                 <span className="text-lg font-semibold text-[#1D2939]">Quizzes</span>
 
@@ -63,37 +62,12 @@ function Quizz() {
                     </button>
                 </div>
             </div>
-            <div className=" bg-[#FFFFFF] border border-solid border-[#EAECF0] rounded-md mt-3 flex h-[672px]">
-                <table className="w-full rounded-xl bg-white text-sm font-medium">
-                    <thead>
-                        <tr>
-                            <th>Quizzes</th>
-                            <th>Questions</th>
-                            <th>Published on</th>
-                            <th>Students Attempted</th>
-                            <th>Status</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>First 30 mins</td>
-                            <td>14</td>
-                            <td>8</td>
-                            <td>5</td>
-                            <td>8</td>
-                            <td>5</td>
-                        </tr>
-
-                    </tbody>
-                </table>
-
+            <div className="h-[972px] bg-[#FFFFFF] border border-solid border-[#EAECF0] rounded-md mt-3 flex overflow-y-auto">
 
 
 
 
             </div>
-
         </div>
     );
 }

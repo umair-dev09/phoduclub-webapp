@@ -1,7 +1,6 @@
 "use client";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import ReactPaginate from 'react-paginate';
 
 function Quizz() {
     const router = useRouter();
@@ -64,7 +63,7 @@ function Quizz() {
                 </div>
             </div>
             <div className=" bg-[#FFFFFF] border border-solid border-[#EAECF0] rounded-md mt-3 flex h-[672px]">
-                <table className="w-full rounded-xl bg-white text-sm font-medium">
+                <table>
                     <thead>
                         <tr>
                             <th>Quizzes</th>
@@ -75,17 +74,15 @@ function Quizz() {
                             <th>Action</th>
                         </tr>
                     </thead>
-                    <tbody>
-                        <tr>
-                            <td>First 30 mins</td>
-                            <td>14</td>
-                            <td>8</td>
-                            <td>5</td>
-                            <td>8</td>
-                            <td>5</td>
+                    {/* <tbody className="border-b border-[#EAECF0]">
+                        <tr className="border-t border-[#EAECF0]">
+                            <td className="px-8 py-3 text-left text-[#1D2939] font-semibold text-sm">First 30 mins</td>
+                            <td className="text-center text-[#1D2939] font-normal text-sm">14</td>
+                            <td className="text-center text-[#1D2939] font-normal text-sm">8</td>
+                            <td className="text-center text-[#1D2939] font-normal text-sm">5</td>
                         </tr>
 
-                    </tbody>
+                    </tbody> */}
                 </table>
 
 
