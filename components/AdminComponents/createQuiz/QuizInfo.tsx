@@ -68,9 +68,6 @@ const Publish = () => {
                 if (currentFormats.underline) {
                     quill.format('underline', false);
                 }
-
-
-
             }
         }
     };
