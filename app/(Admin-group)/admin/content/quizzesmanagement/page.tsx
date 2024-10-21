@@ -9,7 +9,7 @@ function Quizz() {
         router.push(path);
     };
     return (
-        <div className="mx-[32px] mt-4 w-full">
+        <div className="px-[32px] mt-4 w-full">
             <div className="flex flex-row justify-between items-center">
                 <span className="text-lg font-semibold text-[#1D2939]">Quizzes</span>
 

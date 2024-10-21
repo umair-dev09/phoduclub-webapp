@@ -3,7 +3,7 @@ import React from 'react'
 const Publish = () => {
     return (
         <div>
-            page 1
+            page 4
 
         </div>
     )

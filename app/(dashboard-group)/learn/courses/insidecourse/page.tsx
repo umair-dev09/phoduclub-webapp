@@ -160,10 +160,6 @@ function SideButton() {
                                             <Image src={hoverRead || activeComponent === 'Read' ? "/icons/sidebuttonred.svg" : "/icons/sidebuttongray.svg"} width={20} height={20} alt="Icon" />
                                         )}
                                     </button>
-
-
-
-
                                 </div>
                                 {/* ------------------------------------------------------------------------------------------------------------------------- */}
                                 <div className="flex flex-col my-2 ml-5 ">
@@ -238,6 +234,9 @@ function SideButton() {
                             </button>
                         </div>
                     </button>
+
+                    {/* THIS IS START OF THIRD BUTTON */}
+
                     <button className="
                         "        onClick={() => setActiveComponent('StartQuiz')}
                         onMouseEnter={() => setHoverStartQuiz(true)}
@@ -249,9 +248,7 @@ function SideButton() {
                             >
                                 {/* ---------------------------------------------------------------------------------------------------------------------------------- */}
                                 <div className=" flex flex-row mt-3 ml-4">
-
                                     <button
-
                                         className="icon-button" // Added a button specifically for the icon
                                         onClick={(e) => {
                                             e.stopPropagation(); // Prevent event from bubbling to the outer button
