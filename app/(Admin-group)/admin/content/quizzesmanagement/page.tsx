@@ -62,7 +62,7 @@ function Quizz() {
                     </button>
                 </div>
             </div>
-            <div>
+            <div className="overflow-y-auto">
                 <table className="w-full bg-white rounded-xl">
                     <thead>
                         <tr>
