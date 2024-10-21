@@ -9,7 +9,7 @@ function Quizz() {
         router.push(path);
     };
     return (
-        <div className="px-[32px] mt-4 w-full">
+        <div className="flex flex-col px-[32px] mt-4 w-full gap-4">
             <div className="flex flex-row justify-between items-center">
                 <span className="text-lg font-semibold text-[#1D2939]">Quizzes</span>
 
@@ -61,6 +61,46 @@ function Quizz() {
                         <span className="text-[#FFFFFF] font-semibold text-sm">Create Quiz</span>
                     </button>
                 </div>
+            </div>
+            <div>
+                <table className="w-full bg-white rounded-xl">
+                    <thead>
+                        <tr>
+                            <th className="w-1/4 text-left px-8 py-4 pl-8 rounded-tl-xl">Quizzes</th>
+                            <th className="w-[17%] text-center px-8 py-4">Questions</th>
+                            <th className="w-[17%] text-center px-8 py-4">Published on</th>
+                            <th className="w-[17%] text-center px-8 py-4">Students Attempted</th>
+                            <th className="w-[17%] text-center px-8 py-4">Status</th>
+                            <th className="w-[7%] text-center px-8 py-4 pr-8 rounded-tr-xl">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr className="">
+                            <td className="w-1/4 text-left px-8 py-4 pl-8 rounded-bl-xl border-t border-t-lightGrey">Quizzes</td>
+                            <td className="w-[17%] text-center px-8 py-4 border-t border-t-lightGrey">Questions</td>
+                            <td className="w-[17%] text-center px-8 py-4 border-t border-t-lightGrey">Published on</td>
+                            <td className="w-[17%] text-center px-8 py-4 border-t border-t-lightGrey">Students Attempted</td>
+                            <td className="w-[17%] text-center px-8 py-4 border-t border-t-lightGrey">Status</td>
+                            <td className="w-[7%] text-center px-8 py-4 pr-8 rounded-br-xl border-t border-t-lightGrey">Action</td>
+                        </tr>
+                        <tr className="">
+                            <td className="w-1/4 text-left px-8 py-4 pl-8 rounded-bl-xl border-t border-t-lightGrey">Quizzes</td>
+                            <td className="w-[17%] text-center px-8 py-4 border-t border-t-lightGrey">Questions</td>
+                            <td className="w-[17%] text-center px-8 py-4 border-t border-t-lightGrey">Published on</td>
+                            <td className="w-[17%] text-center px-8 py-4 border-t border-t-lightGrey">Students Attempted</td>
+                            <td className="w-[17%] text-center px-8 py-4 border-t border-t-lightGrey">Status</td>
+                            <td className="w-[7%] text-center px-8 py-4 pr-8 rounded-br-xl border-t border-t-lightGrey">Action</td>
+                        </tr>
+                        <tr className="">
+                            <td className="w-1/4 text-left px-8 py-4 pl-8 rounded-bl-xl border-t border-t-lightGrey">Quizzes</td>
+                            <td className="w-[17%] text-center px-8 py-4 border-t border-t-lightGrey">Questions</td>
+                            <td className="w-[17%] text-center px-8 py-4 border-t border-t-lightGrey">Published on</td>
+                            <td className="w-[17%] text-center px-8 py-4 border-t border-t-lightGrey">Students Attempted</td>
+                            <td className="w-[17%] text-center px-8 py-4 border-t border-t-lightGrey">Status</td>
+                            <td className="w-[7%] text-center px-8 py-4 pr-8 rounded-br-xl border-t border-t-lightGrey">Action</td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
         </div>
     );
