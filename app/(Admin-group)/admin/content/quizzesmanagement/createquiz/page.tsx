@@ -57,8 +57,8 @@ function CreateQuiz() {
                 </div>
             </div>
 
-            <div className="flex flex-col w-full ml-[20px] mr-[32px] mt-8">
-                <div className="h-15 ml-1 mr-[32px]   w-full border-b border-solid border-[#D0D5DD] ">
+            <div className="flex flex-col w-full ml-[20px] mr-8 mt-8">
+                <div className="h-15 ml-1 w-full border-b border-solid border-[#D0D5DD] ">
                     <div className="flex flex-row justify-between ">
                         <span className="text-lg font-semibold text-[#1D2939]  flex items-center">Quiz info</span>
 
@@ -87,7 +87,7 @@ function CreateQuiz() {
                     </div>
                 </div>
 
-                <div>
+                <div className="overflow-y-auto">
                     {renderStepContent()}
                 </div>
             </div>

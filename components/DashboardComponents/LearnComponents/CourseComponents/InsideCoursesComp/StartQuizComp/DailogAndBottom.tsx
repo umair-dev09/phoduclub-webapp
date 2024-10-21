@@ -7,9 +7,6 @@ import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 
-
-
-
 type QuizProps = {
     isOpen: boolean;
     setIsOpen: (isOpen: boolean) => void;
@@ -158,10 +155,6 @@ function Quiz({ isOpen, setIsOpen }: QuizProps) {
                                         </div>
                                         <div className="w-[168.75px] h-[160px] gap-[20px] flex flex-col">
                                             <div className="w-[168.75px] h-[160px] gap-[15px] flex flex-col mt-4">
-
-
-
-
                                                 <RadioGroup>
                                                     <FormControlLabel
                                                         value="option1"
@@ -220,7 +213,6 @@ function Quiz({ isOpen, setIsOpen }: QuizProps) {
                                                         label="Option 3"
                                                     />
                                                 </RadioGroup>
-
                                             </div>
                                         </div>
                                     </div>
