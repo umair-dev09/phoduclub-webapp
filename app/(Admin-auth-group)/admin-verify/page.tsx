@@ -55,7 +55,7 @@ const AdminVerify: React.FC = () => {
                         key={index}
                         ref={(el) => (inputRefs.current[index] = el)}
                         className="w-16 h-16 border border-gray-300 rounded-lg py-1 px-2 text-center text-4xl font-semibold text-[#0E2138] placeholder-gray-400 focus:border-[#8601FF] focus:outline-none focus:ring-4 focus:ring-[#D3A7FC]"
-                        type="number"
+                        type="text"
                         inputMode="numeric"
                         maxLength={1}
                         placeholder="-"
