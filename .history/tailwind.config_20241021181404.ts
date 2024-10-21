@@ -9,7 +9,9 @@ const config: Config = {
 	],
 	theme: {
 		extend: {
-
+			boxShadow: {
+				'custom': '0px 1px 2px 0px rgba(16, 24, 40, 0.05)', // #1018280D is rgba(16, 24, 40, 0.05)
+			},
 
 			animation: {
 				'spin-loading': 'spin 0.5s linear infinite',

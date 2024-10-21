@@ -98,9 +98,7 @@ export type IconsType =
   | "emoji-5"
   | "profile-3"
   | "profile-4"
-  | "search-button"
-  | "selectdate-Arrowdown";
-
+  | "search-button";
 
 
 
