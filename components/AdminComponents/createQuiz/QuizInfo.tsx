@@ -68,9 +68,6 @@ const Publish = () => {
                 if (currentFormats.underline) {
                     quill.format('underline', false);
                 }
-
-
-
             }
         }
     };
@@ -123,19 +120,8 @@ const Publish = () => {
                             onKeyDown={handleKeyDown}
                             modules={{ toolbar: false }}
                             placeholder="Description"
-                            className=" text-[#1D2939] focus:outline-none rounded-b-[12px] custom-quill placeholder:not-italic"
-                            style={{
-                                minHeight: "10px", // Initial height
-                                maxHeight: "150px", // Maximum height before scrolling
-                                overflowY: "auto",  // Enable scrolling if content exceeds max height
-                                padding: "1rem",   // Padding to create space inside the editor
-                                border: 'none',
-                                fontStyle: 'normal',
-                            }}
+                            className=" text-[#1D2939] focus:outline-none rounded-b-[12px] custom-quill placeholder:not-italic min-h-[10px] max-h-[150px] overflow-y-auto p-4 border-none font-normal"
                         />
-
-
-
                     </div>
 
 
