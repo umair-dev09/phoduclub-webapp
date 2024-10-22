@@ -18,20 +18,18 @@ function Header({ currentPage }: HeaderProps) {
 
     return (
         <div>
-            <div className={styles.headtab}>
-                <button className='flex flex-row text-lg gap-2'
-                    onClick={handleBackClick}>
-                    {/* Conditionally render the back button if the current page is 'Back to Quizzes Management' */}
-                    {currentPage === 'Back to Quizzes Management' && (
-
+            <div className='flex flex-row text-lg gap-2'>
+                {/* Conditionally render the back button if the current page is 'Back to Quizzes Management' */}
+                {currentPage === 'Back to Quizzes Management' && (
+                    <button onClick={handleBackClick}>
                         <Image src='/icons/arrow-left-02-round.svg' alt='back' width={24} height={24} />
-
-                    )}
-                    <h2>
-                        {currentPage}
-                    </h2>
-                </button>
+                    </button>
+                )}
+                <h2 className='text-[#667085] font-medium text-[16px]'>
+                    {currentPage}
+                </h2>
             </div>
+
         </div>
     );
 }
