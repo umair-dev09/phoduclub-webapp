@@ -200,9 +200,9 @@
 // export default Quizz;
 "use client";
 import Image from "next/image";
+import ReactPaginate from "react-paginate";
 import { Pagination, PaginationItem, PaginationCursor } from "@nextui-org/pagination";
-import { useRouter } from "next/navigation";
-import React from "react";
+import { useRouter } from "next/router";
 
 function Quizz() {
     const router = useRouter();
@@ -211,7 +211,7 @@ function Quizz() {
     const handleTabClick = (tab: string, path: string) => {
         router.push(path);
     };
-    const [currentPage, setCurrentPage] = React.useState(1);
+
     return (
         <div className="flex flex-col px-[32px] mt-4 w-full gap-4">
             <div className="flex flex-row justify-between items-center">
@@ -288,12 +288,7 @@ function Quizz() {
                             { name: "Maths", questions: 10, date: "Jan 6, 2024", students: 2147, status: "Live" },
                             { name: "Maths", questions: 10, date: "Jan 6, 2024", students: 2147, status: "Cancelled" },
                             { name: "Maths", questions: 10, date: "Jan 6, 2024", students: 2147, status: "Paused" },
-                            { name: "Maths", questions: 10, date: "Jan 6, 2024", students: 2147, status: "Scheduled" },
-                            { name: "Maths", questions: 10, date: "Jan 6, 2024", students: 2147, status: "Saved" },
-                            { name: "Maths", questions: 10, date: "Jan 6, 2024", students: 2147, status: "Live" },
-                            { name: "Maths", questions: 10, date: "Jan 6, 2024", students: 2147, status: "Cancelled" },
-                            { name: "Maths", questions: 10, date: "Jan 6, 2024", students: 2147, status: "Paused" },
-                            { name: "Maths", questions: 10, date: "Jan 6, 2024", students: 2147, status: "Scheduled" },
+                            { name: "Maths", questions: 10, date: "Jan 6, 2024", students: 2147, status: "Scheduled" }
                         ].map((quiz, index) => (
                             <tr key={index}>
                                 <td className="w-1/4 text-left px-8 py-4 pl-8 rounded-bl-xl border-t border-t-lightGrey text-[#9012FF] font-semibold text-sm underline">
@@ -325,30 +320,9 @@ function Quizz() {
             </div>
 
             {/* Pagination */}
-            <div className="flex justify-end flex-col gap-5">
-
-                <Pagination
-                    total={10}
-                    color="secondary"
-                    page={currentPage}
-                    onChange={setCurrentPage}
-                />
-                <div className="flex gap-2">
-                    <button
-                        className="bg-secondary text-white py-2 px-4 rounded"
-                        onClick={() => setCurrentPage((prev) => (prev > 1 ? prev - 1 : prev))}
-                    >
-                        Previous
-                    </button>
-                    <button
-                        className="bg-secondary text-white py-2 px-4 rounded"
-                        onClick={() => setCurrentPage((prev) => (prev < 10 ? prev + 1 : prev))}
-                    >
-                        Next
-                    </button>
-                </div>
+            <div className=" flex justify-end">
+                <Pagination total={10} initialPage={1} />
             </div>
-
         </div>
     );
 }

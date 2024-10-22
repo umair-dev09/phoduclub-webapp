@@ -325,8 +325,9 @@ function Quizz() {
             </div>
 
             {/* Pagination */}
-            <div className="flex justify-end flex-col gap-5">
+            <div className=" flex justify-end  flex-col gap-5">
 
+                <p className="text-small text-default-500">Selected Page: {currentPage}</p>
                 <Pagination
                     total={10}
                     color="secondary"
@@ -335,20 +336,25 @@ function Quizz() {
                 />
                 <div className="flex gap-2">
                     <button
-                        className="bg-secondary text-white py-2 px-4 rounded"
-                        onClick={() => setCurrentPage((prev) => (prev > 1 ? prev - 1 : prev))}
+                        size="sm"
+                        variant="flat"
+                        color="secondary"
+                        onPress={() => setCurrentPage((prev) => (prev > 1 ? prev - 1 : prev))}
                     >
                         Previous
                     </button>
                     <button
-                        className="bg-secondary text-white py-2 px-4 rounded"
-                        onClick={() => setCurrentPage((prev) => (prev < 10 ? prev + 1 : prev))}
+                        size="sm"
+                        variant="flat"
+                        color="secondary"
+                        onPress={() => setCurrentPage((prev) => (prev < 10 ? prev + 1 : prev))}
                     >
                         Next
                     </button>
                 </div>
-            </div>
 
+
+            </div>
         </div>
     );
 }

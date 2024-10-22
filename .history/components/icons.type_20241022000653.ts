@@ -102,11 +102,7 @@ export type IconsType =
   | "selectdate-Arrowdown"
   | "three-dots"
   | "Saved"
-  | "Live"
-  | "secheduled"
-  | "Paused"
-  | "Finished"
-  | "cancelled";
+  | "Live";
 
 
 

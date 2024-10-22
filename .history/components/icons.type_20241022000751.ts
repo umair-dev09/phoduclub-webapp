@@ -103,10 +103,7 @@ export type IconsType =
   | "three-dots"
   | "Saved"
   | "Live"
-  | "secheduled"
-  | "Paused"
-  | "Finished"
-  | "cancelled";
+  | "secheduled";
 
 
 

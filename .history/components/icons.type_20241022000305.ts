@@ -101,12 +101,7 @@ export type IconsType =
   | "search-button"
   | "selectdate-Arrowdown"
   | "three-dots"
-  | "Saved"
-  | "Live"
-  | "secheduled"
-  | "Paused"
-  | "Finished"
-  | "cancelled";
+  | "Saved";
 
 
 

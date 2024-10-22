@@ -202,7 +202,6 @@
 import Image from "next/image";
 import { Pagination, PaginationItem, PaginationCursor } from "@nextui-org/pagination";
 import { useRouter } from "next/navigation";
-import React from "react";
 
 function Quizz() {
     const router = useRouter();
@@ -211,7 +210,7 @@ function Quizz() {
     const handleTabClick = (tab: string, path: string) => {
         router.push(path);
     };
-    const [currentPage, setCurrentPage] = React.useState(1);
+
     return (
         <div className="flex flex-col px-[32px] mt-4 w-full gap-4">
             <div className="flex flex-row justify-between items-center">
@@ -325,30 +324,9 @@ function Quizz() {
             </div>
 
             {/* Pagination */}
-            <div className="flex justify-end flex-col gap-5">
-
-                <Pagination
-                    total={10}
-                    color="secondary"
-                    page={currentPage}
-                    onChange={setCurrentPage}
-                />
-                <div className="flex gap-2">
-                    <button
-                        className="bg-secondary text-white py-2 px-4 rounded"
-                        onClick={() => setCurrentPage((prev) => (prev > 1 ? prev - 1 : prev))}
-                    >
-                        Previous
-                    </button>
-                    <button
-                        className="bg-secondary text-white py-2 px-4 rounded"
-                        onClick={() => setCurrentPage((prev) => (prev < 10 ? prev + 1 : prev))}
-                    >
-                        Next
-                    </button>
-                </div>
+            <div className=" flex justify-end">
+                <Pagination total={10} initialPage={1} />
             </div>
-
         </div>
     );
 }

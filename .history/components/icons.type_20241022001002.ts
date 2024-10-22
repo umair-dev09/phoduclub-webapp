@@ -105,8 +105,7 @@ export type IconsType =
   | "Live"
   | "secheduled"
   | "Paused"
-  | "Finished"
-  | "cancelled";
+  | "Finished";
 
 
 

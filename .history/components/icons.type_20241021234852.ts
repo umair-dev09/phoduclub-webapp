@@ -100,13 +100,7 @@ export type IconsType =
   | "profile-4"
   | "search-button"
   | "selectdate-Arrowdown"
-  | "three-dots"
-  | "Saved"
-  | "Live"
-  | "secheduled"
-  | "Paused"
-  | "Finished"
-  | "cancelled";
+  | "three-dots";
 
 
 

@@ -1,18 +1,21 @@
 "use client";
 import { useState } from "react";
+import { useRouter } from "next/router";
 import Quizinfo from "@/components/AdminComponents/createQuiz/QuizInfo";
 import Questions from "@/components/AdminComponents/createQuiz/Questions";
 import Review from "@/components/AdminComponents/createQuiz/Review";
 import Publish from "@/components/AdminComponents/createQuiz/Publish";
-import QuizCreated from "@/components/AdminComponents/createQuiz/QuizCreated";
 
 function CreateQuiz() {
-    // Step states: 0 = Quizinfo, 1 = Questions, 2 = Review, 3 = Publish, 4 = QuizCreated
     const [currentStep, setCurrentStep] = useState(0);
+    const router = useRouter();  // Hook to handle navigation
 
     const handleNextClick = () => {
-        if (currentStep < 4) {
+        if (currentStep < 3) {
             setCurrentStep(currentStep + 1);
+        } else if (currentStep === 3) {
+            // When the "Publish Quiz" button is clicked, redirect to the QuizCreated page
+            router.push("/quizCreated");
         }
     };
 
@@ -32,17 +35,10 @@ function CreateQuiz() {
                 return <Review />;
             case 3:
                 return <Publish />;
-            case 4:
-                return <QuizCreated />;
             default:
                 return <Quizinfo />;
         }
     };
-
-    // Hide everything if the current step is QuizCreated (step 4)
-    if (currentStep === 4) {
-        return <QuizCreated />;
-    }
 
     return (
         <>
@@ -62,11 +58,7 @@ function CreateQuiz() {
             <div className="flex flex-col w-full ml-[20px] mr-8 mt-8">
                 <div className="h-15 ml-1 w-full border-b border-solid border-[#D0D5DD] ">
                     <div className="flex flex-row justify-between ">
-                        <span className="text-lg font-semibold text-[#1D2939] flex items-center">
-                            {currentStep === 0 ? "Quiz Info" :
-                                currentStep === 1 ? "Questions" :
-                                    currentStep === 2 ? "Review" : "Publish"}
-                        </span>
+                        <span className="text-lg font-semibold text-[#1D2939]  flex items-center">Quiz info</span>
 
                         <div className="flex flex-row gap-3 mb-3">
                             {currentStep > 0 && (
@@ -79,21 +71,18 @@ function CreateQuiz() {
                             )}
 
                             <button
-                                className={`h-[44px] w-[135px] ${currentStep === 3 ? "bg-[#8501FF]" : "bg-[#8501FF]"
-                                    } rounded-md shadow-inner-button border border-solid border-[#800EE2] flex items-center justify-center`}
+                                className={`h-[44px] w-[135px] ${currentStep === 3 ? "bg-[#8501FF]" : "bg-[#8501FF]"} rounded-md shadow-inner-button border border-solid border-[#800EE2] flex items-center justify-center`}
                                 onClick={handleNextClick}
                             >
                                 <span className="text-[#FFFFFF] font-semibold text-sm">
-                                    {currentStep === 3 ? "Publish" : "Next"}
+                                    {currentStep === 3 ? "Publish Quiz" : "Next"}
                                 </span>
                             </button>
                         </div>
                     </div>
                 </div>
 
-                <div className="overflow-y-auto">
-                    {renderStepContent()}
-                </div>
+                <div className="overflow-y-auto">{renderStepContent()}</div>
             </div>
         </>
     );

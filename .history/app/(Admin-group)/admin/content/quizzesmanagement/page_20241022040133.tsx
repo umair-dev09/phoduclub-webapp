@@ -326,7 +326,7 @@ function Quizz() {
 
             {/* Pagination */}
             <div className="flex justify-end flex-col gap-5">
-
+                <p className="text-small text-default-500">Selected Page: {currentPage}</p>
                 <Pagination
                     total={10}
                     color="secondary"
