@@ -5,6 +5,7 @@ import Quizinfo from "@/components/AdminComponents/createQuiz/QuizInfo";
 import Questions from "@/components/AdminComponents/createQuiz/Questions";
 import Review from "@/components/AdminComponents/createQuiz/Review";
 import Publish from "@/components/AdminComponents/createQuiz/Publish";
+import QuizCreated from "@/components/AdminComponents/createQuiz/QuizCreated";
 
 // Define an enum for the steps
 enum Step {
@@ -12,14 +13,16 @@ enum Step {
     Questions = 1,
     Review = 2,
     Publish = 3,
+    QuizCreated = 4, // New step for Quiz Created
 }
 
 function CreateQuiz() {
-    // Step states using the enum
     const [currentStep, setCurrentStep] = useState<Step>(Step.QuizInfo);
 
     const handleNextClick = () => {
-        if (currentStep < Step.Publish) {
+        if (currentStep === Step.Publish) {
+            setCurrentStep(Step.QuizCreated); // Set to Quiz Created when publishing
+        } else if (currentStep < Step.Publish) {
             setCurrentStep(currentStep + 1);
         }
     };
@@ -40,6 +43,8 @@ function CreateQuiz() {
                 return <Review />;
             case Step.Publish:
                 return <Publish />;
+            case Step.QuizCreated:
+                return <QuizCreated />; // Render the Quiz Created component
             default:
                 return <Quizinfo />;
         }
@@ -54,6 +59,11 @@ function CreateQuiz() {
             return "border-2 border-[#D0D5DE]"; // Upcoming step
         }
     };
+
+    // Render nothing but the Quiz Created component if it's the current step
+    if (currentStep === Step.QuizCreated) {
+        return <QuizCreated />;
+    }
 
     return (
         <>
