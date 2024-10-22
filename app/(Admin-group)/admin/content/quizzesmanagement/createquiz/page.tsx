@@ -68,9 +68,9 @@ function CreateQuiz() {
     return (
         <>
             <div className="ml-[32px] w-[250px] my-[32px] bg-[#FFFFFF] border border-solid border-[#EAECF0] rounded-md">
-                <div className="flex flex-row justify-between m-4">
+                <div className="flex flex-row items-center justify-between m-4">
                     <span className="text-[#1D2939] text-base font-semibold">Create Quiz</span>
-                    <div>
+                    <div className="flex items-center justify-center w-10 h-8 text-sm text-[#475467] font-medium bg-[#F9FAFB] border border-lightGrey rounded-[6px]">
                         {currentStep + 1}/4
                     </div>
                 </div>
