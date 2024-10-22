@@ -68,17 +68,17 @@ function CreateQuiz() {
                     {["Quiz info", "Questions", "Review", "Publish"].map((label, index) => (
                         <div key={index}>
                             <div className="flex flex-row items-center gap-2">
-                                <div className={`flex items-center justify-center w-8 h-8 ${getStepStyles(index as Step)} rounded-full`}>
+                                <div className={`flex items-center justify-center w-8 h-8 transition-all ${getStepStyles(index as Step)} rounded-full`}>
                                     {currentStep > index ? (
                                         <Image src='/icons/Tick.svg' alt="done" width={16} height={14.01} />
                                     ) : (
                                         <div className={`${currentStep === index ? "bg-white" : "bg-[#D0D5DE]"} w-[0.625rem] h-[0.625rem] rounded-full`}></div>
                                     )}
                                 </div>
-                                <p className={`text-base font-semibold ${currentStep === index ? "text-[#9012FF]" : "text-[#344054]"}`}>{label}</p>
+                                <p className={`text-base font-semibold transition-all ${currentStep === index ? "text-[#9012FF]" : "text-[#344054]"}`}>{label}</p>
                             </div>
                             {index < Step.Publish && (
-                                <div className={`w-0 h-5 my-1 ml-[15px] ${currentStep > index ? "border-[#9012FF]" : "border-lightGrey"} border rounded-full`}></div>
+                                <div className={`w-0 h-5 my-1 ml-[15px] transition-all ${currentStep > index ? "border-[#9012FF]" : "border-lightGrey"} border rounded-full`}></div>
                             )}
                         </div>
                     ))}
