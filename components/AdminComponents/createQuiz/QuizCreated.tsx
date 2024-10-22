@@ -43,7 +43,7 @@ function QuizCreated() {
 
 
                     </div>
-                    <div className="h-[48px] w-auto flex flex-row items-center gap-[23px]">
+                    <div className="h-[48px] w-auto flex flex-row items-center justify-evenly gap-[23px]">
                         <div className="flex flex-col justify-between h-full ">
                             <span className="text-sm font-normal text-[#667085]">Time Duration</span>
                             <span className="text-lg font-semibold text-[#1D2939] ml-3">
@@ -51,7 +51,7 @@ function QuizCreated() {
                             </span>
                         </div>
 
-                        <div className="w-[35px] h-12 border-l border-[#EAECF0]"></div>
+                        <div className="w-0 h-12 border-l border-[#EAECF0]"></div>
 
                         <div className="flex flex-col justify-between h-full ">
                             <span className="text-sm font-normal text-[#667085]">No. of Questions</span>
@@ -60,7 +60,7 @@ function QuizCreated() {
                             </span>
                         </div>
 
-                        <div className="w-[35px] h-12 border-l border-[#EAECF0]"></div>
+                        <div className="w-0 h-12 border-l border-[#EAECF0]"></div>
 
                         <div className="flex flex-col justify-between h-full ml-3">
                             <span className="text-sm font-normal text-[#667085]">Marks Per Question</span>

@@ -5,6 +5,7 @@ import { ReactNode, useEffect, useState } from 'react';
 import TabComps from '@/components/AdminComponents/TabComps';
 import Header from '@/components/AdminHeaderComponents/AdminHeader';
 import { usePathname } from 'next/navigation';
+import Image from "next/image";
 
 interface DashboardGroupProps {
     children: ReactNode;
@@ -39,6 +40,9 @@ export default function DashboardGroup({ children }: DashboardGroupProps) {
             case 'coursecreation':
                 pageName = 'Course Creation';
                 break;
+            case 'createquiz':
+                pageName = 'Back to Quizzes Management';
+                break;
             default:
                 pageName = 'Dashboard'; // Default page name
         }
@@ -54,7 +58,7 @@ export default function DashboardGroup({ children }: DashboardGroupProps) {
             <div className="contents">
                 <div className="content-box">
                     <div>
-                        <Header currentPage={currentPage} /> {/* Pass current page name */}
+                        <Header currentPage={currentPage} />
                     </div>
                     <div className="variable-contents">
                         {children}

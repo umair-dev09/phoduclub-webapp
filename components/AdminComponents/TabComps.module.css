@@ -233,10 +233,6 @@
     align-items: center;
 }
 
-.greeting {
-    font-size: 18px;
-}
-
 .headtab {
     display: flex;
     width: 100%;
