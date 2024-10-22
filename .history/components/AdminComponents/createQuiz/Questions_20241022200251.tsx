@@ -472,11 +472,20 @@ function Questions() {
                         />
                     </div>
                     <div className="flex flex-row gap-2">
-                        <input
-                            type="checkbox"
-                            checked={q.isChecked}
-                            onChange={() => handleCheckboxChange(index)}
-                        />
+                        <label className="flex items-center cursor-pointer">
+                            <input
+                                type="checkbox"
+                                checked={q.isChecked}
+                                onChange={() => handleCheckboxChange(index)}
+                                className="absolute opacity-0 cursor-pointer" // Hide the checkbox
+                            />
+                            <div className="flex items-center justify-center h-6 w-6 border border-gray-400 rounded-[8px] 
+        bg-white checked:bg-[#9012FF] checked:border-transparent 
+        before:content-[''] before:w-2 before:h-2 before:bg-white before:rounded-full before:transition-all 
+        checked:before:content-['✓'] checked:before:text-white checked:before:font-bold 
+        checked:before:text-sm"
+                            />
+                        </label>
                         <span className="font-medium text-sm text-[#182230]">Upload image (optional)</span>
                     </div>
 
@@ -673,7 +682,7 @@ function Questions() {
                 </div>
 
             ))}
-            <div className="flex justify-center items-center mt-4">
+            <div className="flex justify-center items-center">
                 <button className="h-[36px] w-[127px] rounded-[8px] bg-[#FFFFFF] border border-solid border-[#8501FF] flex justify-center items-center"
                     onClick={handleAddQuestion}>
                     <span className="text-[#8501FF] text-sm font-semibold">Add Question</span>

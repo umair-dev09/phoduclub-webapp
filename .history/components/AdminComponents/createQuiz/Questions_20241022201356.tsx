@@ -673,7 +673,7 @@ function Questions() {
                 </div>
 
             ))}
-            <div className="flex justify-center items-center mt-4">
+            <div className="flex justify-center items-center">
                 <button className="h-[36px] w-[127px] rounded-[8px] bg-[#FFFFFF] border border-solid border-[#8501FF] flex justify-center items-center"
                     onClick={handleAddQuestion}>
                     <span className="text-[#8501FF] text-sm font-semibold">Add Question</span>

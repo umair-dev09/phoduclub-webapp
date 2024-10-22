@@ -476,6 +476,7 @@ function Questions() {
                             type="checkbox"
                             checked={q.isChecked}
                             onChange={() => handleCheckboxChange(index)}
+                            className="appearance-none h-[16px] w-[16px] border border-gray-400 rounded-[6px] checked:bg-[url('/icons/uploadcheckmark.svg')]  checked:border-transparent focus:outline-none"
                         />
                         <span className="font-medium text-sm text-[#182230]">Upload image (optional)</span>
                     </div>
@@ -673,7 +674,7 @@ function Questions() {
                 </div>
 
             ))}
-            <div className="flex justify-center items-center mt-4">
+            <div className="flex justify-center items-center">
                 <button className="h-[36px] w-[127px] rounded-[8px] bg-[#FFFFFF] border border-solid border-[#8501FF] flex justify-center items-center"
                     onClick={handleAddQuestion}>
                     <span className="text-[#8501FF] text-sm font-semibold">Add Question</span>
