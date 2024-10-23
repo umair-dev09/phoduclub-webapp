@@ -163,14 +163,7 @@ function Questions() {
                                 <span className="font-semibold text-base text-[#1D2939]">Question</span>
                                 <input
                                     className="font-medium pl-3 text-[#101828] text-sm placeholder:text-[#A1A1A1] rounded-md placeholder:font-normal
-                                                                           focus:outline-none focus:ring-0 
-                                                                        border border-solid border-[#D0D5DD] h-[40px] 
-                                                                               shadow-[0px_1px_2px_0px_rgba(16,24,40,0.05)] 
-                                                                                 transition duration-200 ease-in-out 
-                                                                               focus:border-[#D6BBFB] 
-                                                                               focus:shadow-[0px_0px_0px_4px_rgba(158,119,237,0.25),0px_1px_2px_0px_rgba(16,24,40,0.05)]
-                                   focus:text-[#1D2939]
-                                                                               focus:font-medium"
+                                        focus:outline-none focus:ring-0 border border-solid border-[#D0D5DD] h-[40px]"
                                     placeholder="Enter question"
                                     type="text"
                                     value={question.question}
@@ -210,12 +203,18 @@ function Questions() {
                             <span className="font-semibold text-base text-[#1D2939]">Options</span>
                             <div className="flex flex-col gap-3">
                                 {(Object.keys(question.options) as Array<keyof Options>).map((optionKey) => (
-                                    <div key={optionKey} className="flex flex-row gap-2">
+                                    <div key={optionKey} className="flex flex-row items-center gap-2">
                                         <div className="h-8 w-8 bg-[#F9FAFB] border border-solid border-[#D0D5DD] rounded-[6px]">
                                             <span className="text-[#475467] text-sm font-medium flex justify-center items-center h-full w-full">
                                                 {optionKey}
                                             </span>
                                         </div>
+                                        <Image
+                                            src="/icons/three-double-dots.svg"
+                                            width={20}
+                                            height={20}
+                                            alt="Three-dots"
+                                        />
                                         <input
                                             className="font-medium pl-3 text-[#101828] text-sm placeholder:text-[#A1A1A1] rounded-md w-full placeholder:font-normal
                                                 focus:outline-none focus:ring-0 border border-solid border-[#D0D5DD] h-[40px]"
@@ -238,7 +237,7 @@ function Questions() {
                                     </button>
                                 </PopoverTrigger>
                                 <PopoverContent>
-                                    <div className="w-[973px] rounded-md border border-solid border-[#EAECF0] bg-[#FFFFFF] flex flex-col pt-[8px]">
+                                    <div className="w-[60.813rem] rounded-md border border-solid border-[#EAECF0] bg-[#FFFFFF] flex flex-col pt-[8px]">
                                         {(Object.keys(question.options) as Array<keyof Options>).map((optionKey) => (
                                             <div
                                                 key={optionKey}
