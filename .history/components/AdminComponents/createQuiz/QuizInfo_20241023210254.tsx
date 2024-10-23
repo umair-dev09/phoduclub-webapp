@@ -1,14 +1,12 @@
 
 import Image from "next/image";
-import React, { useState, useEffect, useRef, SetStateAction, Dispatch } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import 'react-quill/dist/quill.snow.css';
 import ReactQuill from 'react-quill'; // Ensure correct import
 import Quill from 'quill'; // Import Quill to use it for types
 import { Popover, PopoverTrigger, PopoverContent } from '@nextui-org/popover';
 type DataProps = {
     QuizName: string;
-    setQuizName: React.Dispatch<React.SetStateAction<string>>; // Add this line
-
 
 }
 
@@ -19,7 +17,7 @@ function quizinfo({ QuizName }: DataProps) {
     const [quill, setQuill] = useState<Quill | null>(null);
     const [alignment, setAlignment] = useState<string | null>(null); // State to hold Quill instance
     const [isWriting, setIsWriting] = useState(false); // Track if text is being written
-    const [localQuizName, setLocalQuizName] = useState<string>(QuizName); // State to store QuizName
+    const [quizName, setQuizName] = useState<string>(""); // State to store QuizName
 
 
 
@@ -90,7 +88,6 @@ function quizinfo({ QuizName }: DataProps) {
             }
         }
     };
-
     return (
         <div className='mt-2 h-auto rounded-md border border-solid border-[#EAECF0] bg-[#FFFFFF] flex flex-col p-5 gap-2'>
             <div className=' flex flex-col gap-2'>
@@ -108,7 +105,7 @@ function quizinfo({ QuizName }: DataProps) {
                     placeholder="Quiz Name"
                     type="text"
                     value={localQuizName}
-                    onChange={(e) => setLocalQuizName(e.target.value)}
+                    onChange={(e) => setQuizName(e.target.value)}
 
                 />
             </div>

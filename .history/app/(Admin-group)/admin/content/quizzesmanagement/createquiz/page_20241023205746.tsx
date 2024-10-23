@@ -117,7 +117,6 @@ function CreateQuiz() {
                                 className={`h-[44px] w-[135px] ${currentStep === Step.Publish ? "bg-[#8501FF]" : "bg-[#8501FF]"
                                     } rounded-md shadow-inner-button border border-solid border-[#800EE2] flex items-center justify-center`}
                                 onClick={handleNextClick}
-
                             >
                                 <span className="text-[#FFFFFF] font-semibold text-sm">
                                     {currentStep === Step.Publish ? "Publish" : "Next"}

@@ -1,6 +1,6 @@
 
 import Image from "next/image";
-import React, { useState, useEffect, useRef, SetStateAction, Dispatch } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import 'react-quill/dist/quill.snow.css';
 import ReactQuill from 'react-quill'; // Ensure correct import
 import Quill from 'quill'; // Import Quill to use it for types
@@ -8,7 +8,6 @@ import { Popover, PopoverTrigger, PopoverContent } from '@nextui-org/popover';
 type DataProps = {
     QuizName: string;
     setQuizName: React.Dispatch<React.SetStateAction<string>>; // Add this line
-
 
 }
 
@@ -90,7 +89,6 @@ function quizinfo({ QuizName }: DataProps) {
             }
         }
     };
-
     return (
         <div className='mt-2 h-auto rounded-md border border-solid border-[#EAECF0] bg-[#FFFFFF] flex flex-col p-5 gap-2'>
             <div className=' flex flex-col gap-2'>

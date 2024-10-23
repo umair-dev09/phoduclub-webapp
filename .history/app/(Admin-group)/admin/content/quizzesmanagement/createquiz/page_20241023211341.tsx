@@ -19,6 +19,7 @@ enum Step {
 function CreateQuiz() {
     const [currentStep, setCurrentStep] = useState<Step>(Step.QuizInfo);
     const [QuizName, setQuizName] = useState<string>("");
+    const [isQuizInfoValid, setIsQuizInfoValid] = useState<boolean>(false);
 
     const handleNextClick = () => {
         if (currentStep === Step.Publish) {
@@ -37,7 +38,7 @@ function CreateQuiz() {
     const renderStepContent = () => {
         switch (currentStep) {
             case Step.QuizInfo:
-                return <Quizinfo QuizName={QuizName} setQuizName={setQuizName} />;
+                return <Quizinfo QuizName={QuizName} setQuizName={setQuizName} setIsQuizInfoValid={setIsQuizInfoValid} />;
             case Step.Questions:
                 return <Questions />;
             case Step.Review:
@@ -47,7 +48,7 @@ function CreateQuiz() {
             case Step.QuizCreated:
                 return <QuizCreated />; // Render the Quiz Created component
             default:
-                return <Quizinfo QuizName={QuizName} setQuizName={setQuizName} />;
+                return <Quizinfo QuizName={QuizName} setQuizName={setQuizName} setIsQuizInfoValid={setIsQuizInfoValid} />;
         }
     };
 
@@ -117,7 +118,7 @@ function CreateQuiz() {
                                 className={`h-[44px] w-[135px] ${currentStep === Step.Publish ? "bg-[#8501FF]" : "bg-[#8501FF]"
                                     } rounded-md shadow-inner-button border border-solid border-[#800EE2] flex items-center justify-center`}
                                 onClick={handleNextClick}
-
+                                disabled={currentStep === Step.QuizInfo && !isQuizInfoValid} // Disable if QuizInfo is not valid
                             >
                                 <span className="text-[#FFFFFF] font-semibold text-sm">
                                     {currentStep === Step.Publish ? "Publish" : "Next"}

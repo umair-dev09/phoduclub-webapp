@@ -8,7 +8,7 @@ import { Popover, PopoverTrigger, PopoverContent } from '@nextui-org/popover';
 type DataProps = {
     QuizName: string;
     setQuizName: React.Dispatch<React.SetStateAction<string>>; // Add this line
-
+    setIsQuizInfoValid: Dispatch<SetStateAction<boolean>>
 
 }
 

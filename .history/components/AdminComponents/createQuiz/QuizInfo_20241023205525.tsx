@@ -1,15 +1,13 @@
 
 import Image from "next/image";
-import React, { useState, useEffect, useRef, SetStateAction, Dispatch } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import 'react-quill/dist/quill.snow.css';
 import ReactQuill from 'react-quill'; // Ensure correct import
 import Quill from 'quill'; // Import Quill to use it for types
 import { Popover, PopoverTrigger, PopoverContent } from '@nextui-org/popover';
 type DataProps = {
     QuizName: string;
-    setQuizName: React.Dispatch<React.SetStateAction<string>>; // Add this line
-
-
+    setQuizName: (name: string) => void;
 }
 
 
@@ -18,21 +16,17 @@ function quizinfo({ QuizName }: DataProps) {
     const quillRef = useRef<ReactQuill | null>(null); // Ref to hold ReactQuill instance
     const [quill, setQuill] = useState<Quill | null>(null);
     const [alignment, setAlignment] = useState<string | null>(null); // State to hold Quill instance
-    const [isWriting, setIsWriting] = useState(false); // Track if text is being written
-    const [localQuizName, setLocalQuizName] = useState<string>(QuizName); // State to store QuizName
+
+    const [quizName, setQuizName] = useState<string>(""); // State to store QuizName
 
 
 
 
     const handleChange = (content: string) => {
         setValue(content);
-        checkTextContent(content);
+
     };
-    const checkTextContent = (content: string) => {
-        // Trim the content and check if there's actual text (excluding HTML tags like <p></p>)
-        const plainText = content.replace(/<[^>]+>/g, '').trim();
-        setIsWriting(plainText.length > 0);
-    };
+
 
 
 
@@ -90,7 +84,6 @@ function quizinfo({ QuizName }: DataProps) {
             }
         }
     };
-
     return (
         <div className='mt-2 h-auto rounded-md border border-solid border-[#EAECF0] bg-[#FFFFFF] flex flex-col p-5 gap-2'>
             <div className=' flex flex-col gap-2'>
@@ -107,8 +100,7 @@ function quizinfo({ QuizName }: DataProps) {
                         focus:font-medium"
                     placeholder="Quiz Name"
                     type="text"
-                    value={localQuizName}
-                    onChange={(e) => setLocalQuizName(e.target.value)}
+                    value={QuizName} // Bind the state to the input value
 
                 />
             </div>
@@ -131,8 +123,8 @@ function quizinfo({ QuizName }: DataProps) {
             <div className="flex flex-col gap-2">
                 <span className='text-[#1D2939] text-sm font-medium pt-1'>Description</span>
                 <div
-                    className={`pt-2 bg-[#FFFFFF] border ${isWriting ? 'border-[#D6BBFB]  shadow-[0px_0px_0px_4px_rgba(158,119,237,0.25),0px_1px_2px_0px_rgba(16,24,40,0.05)]' : 'border-[#EAECF0]'
-                        } rounded-[12px] h-auto`}>
+                    className="pt-2 bg-[#FFFFFF] border-[#D6BBFB]  shadow-[0px_0px_0px_4px_rgba(158,119,237,0.25),0px_1px_2px_0px_rgba(16,24,40,0.05)] 
+                         rounded-[12px] h-auto">
 
                     {/* Textarea for writing the comment */}
                     <div className="bg-[#FFFFFF] ">

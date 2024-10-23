@@ -10,6 +10,12 @@ function Questions() {
         question: string;
         isChecked: boolean;
         isActive: boolean;
+        options: {
+            A: string;
+            B: string;
+            C: string;
+            D: string;
+        };
     }
     // ---------------------------------------------------------------------------------------------------------------------------------
     const [questionsList, setQuestionsList] = useState([
@@ -17,6 +23,7 @@ function Questions() {
             question: '',
             isChecked: false,
             isActive: false,
+            options: { A: '', B: '', C: '', D: '' },
         },
     ]); // This will hold the questions
     // ---------------------------------------------------------------------------------------------------------------------------------
@@ -39,7 +46,6 @@ function Questions() {
         setQuestionsList((prevQuestionsList) => [
             ...prevQuestionsList,
             {
-
                 question: '',
                 isChecked: false,
                 isActive: false,
@@ -59,7 +65,13 @@ function Questions() {
     // ---------------------------------------------------------------------------------------------------------------------------------
     // THIS USED TO HOVER THE " select correct answer(DIV)" and LIST OF POPOVER CONTENT
     const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
-    const options = ['A. 1000', 'B. 2000', 'C. 3000', 'D. 4000'];
+    const [options, setOptions] = useState({
+        A: '',
+        B: '',
+        C: '',
+        D: ''
+    });
+
     // ---------------------------------------------------------------------------------------------------------------------------------
     // THIS WILL MAKE THE POPOVER CONTENT CHNAGE ON PARTICULAR QUESTIONS
     const handlePopoverToggle = (index: number) => {
@@ -179,121 +191,47 @@ function Questions() {
                                     </div>
                                 </div>
                             )}
-                            <span className="font-semibold text-base text-[#1D2939]">options</span>
+                            <span className="font-semibold text-base text-[#1D2939]">Options</span>
                             <div className="flex flex-col gap-3">
-                                <div className="flex flex-row gap-2">
-                                    <div className="h-8 w-8 bg-[#F9FAFB] border border-solid border-[#D0D5DD] rounded-[6px]">
-                                        <span className="text-[#475467] text-sm font-medium flex justify-center items-center h-full w-full">A</span>
+                                {['A', 'B', 'C', 'D'].map((option, idx) => (
+                                    <div className="flex flex-row gap-2" key={idx}>
+                                        <div className="h-8 w-8 bg-[#F9FAFB] border border-solid border-[#D0D5DD] rounded-[6px]">
+                                            <span className="text-[#475467] text-sm font-medium flex justify-center items-center h-full w-full">
+                                                {option}
+                                            </span>
+                                        </div>
+                                        <Image
+                                            src="/icons/three-double-dots.svg"
+                                            width={20}
+                                            height={20}
+                                            alt="Three-dots"
+                                        />
+                                        <input
+                                            className="font-medium pl-3 text-[#101828] text-sm placeholder:text-[#A1A1A1] rounded-md w-full placeholder:font-normal
+                                focus:outline-none focus:ring-0 
+                                border border-solid border-[#D0D5DD] h-[40px] 
+                                shadow-[0px_1px_2px_0px_rgba(16,24,40,0.05)] 
+                                transition duration-200 ease-in-out 
+                                focus:border-[#D6BBFB] 
+                                focus:shadow-[0px_0px_0px_4px_rgba(158,119,237,0.25),0px_1px_2px_0px_rgba(16,24,40,0.05)]
+                                focus:text-[#1D2939]
+                                focus:font-medium"
+                                            placeholder={`Option ${idx + 1}`}
+                                            value={options[option]} // bind value to state
+                                            onChange={(e) => handleInputChange(e, option)} // update state on change
+                                            type="text"
+                                        />
                                     </div>
-                                    <Image
-                                        src="/icons/three-double-dots.svg"
-                                        width={20}
-                                        height={20}
-                                        alt="Three-dots"
-                                    />
-
-                                    <input
-                                        className="font-medium pl-3 text-[#101828]  text-sm placeholder:text-[#A1A1A1] rounded-md w-full placeholder:font-normal
-                        focus:outline-none focus:ring-0 
-                        border border-solid border-[#D0D5DD] h-[40px] 
-                        shadow-[0px_1px_2px_0px_rgba(16,24,40,0.05)] 
-                        transition duration-200 ease-in-out 
-                        focus:border-[#D6BBFB] 
-                        focus:shadow-[0px_0px_0px_4px_rgba(158,119,237,0.25),0px_1px_2px_0px_rgba(16,24,40,0.05)]
-                        focus:text-[#1D2939]
-                        focus:font-medium"
-                                        placeholder="Option 1"
-                                        type="text"
-                                    />
-                                </div>
-                                <div className="flex flex-row gap-2">
-                                    <div className="h-8 w-8 bg-[#F9FAFB] border border-solid border-[#D0D5DD] rounded-[6px]">
-                                        <span className="text-[#475467] text-sm font-medium flex justify-center items-center h-full w-full">B</span>
-                                    </div>
-
-                                    <Image
-                                        src="/icons/three-double-dots.svg"
-                                        width={20}
-                                        height={20}
-                                        alt="Three-dots"
-                                    />
-
-                                    <input
-                                        className="font-medium pl-3 text-[#101828]  text-sm placeholder:text-[#A1A1A1] rounded-md w-full placeholder:font-normal
-                        focus:outline-none focus:ring-0 
-                        border border-solid border-[#D0D5DD] h-[40px] 
-                        shadow-[0px_1px_2px_0px_rgba(16,24,40,0.05)] 
-                        transition duration-200 ease-in-out 
-                        focus:border-[#D6BBFB] 
-                        focus:shadow-[0px_0px_0px_4px_rgba(158,119,237,0.25),0px_1px_2px_0px_rgba(16,24,40,0.05)]
-                        focus:text-[#1D2939]
-                        focus:font-medium"
-                                        placeholder="Option 1"
-                                        type="text"
-                                    />
-                                </div>
-                                <div className="flex flex-row gap-2">
-                                    <div className="h-8 w-8 bg-[#F9FAFB] border border-solid border-[#D0D5DD] rounded-[6px]">
-                                        <span className="text-[#475467] text-sm font-medium flex justify-center items-center h-full w-full">C</span>
-                                    </div>
-                                    <Image
-                                        src="/icons/three-double-dots.svg"
-                                        width={20}
-                                        height={20}
-                                        alt="Three-dots"
-                                    />
-
-                                    <input
-                                        className="font-medium pl-3 text-[#101828]  text-sm placeholder:text-[#A1A1A1] rounded-md w-full placeholder:font-normal
-                        focus:outline-none focus:ring-0 
-                        border border-solid border-[#D0D5DD] h-[40px] 
-                        shadow-[0px_1px_2px_0px_rgba(16,24,40,0.05)] 
-                        transition duration-200 ease-in-out 
-                        focus:border-[#D6BBFB] 
-                        focus:shadow-[0px_0px_0px_4px_rgba(158,119,237,0.25),0px_1px_2px_0px_rgba(16,24,40,0.05)]
-                        focus:text-[#1D2939]
-                        focus:font-medium"
-                                        placeholder="Option 1"
-                                        type="text"
-                                    />
-                                </div>
-                                <div className="flex flex-row gap-2">
-                                    <div className="h-8 w-8 bg-[#F9FAFB] border border-solid border-[#D0D5DD] rounded-[6px]">
-                                        <span className="text-[#475467] text-sm font-medium flex justify-center items-center h-full w-full">D</span>
-                                    </div>
-                                    <Image
-                                        src="/icons/three-double-dots.svg"
-                                        width={20}
-                                        height={20}
-                                        alt="Three-dots"
-                                    />
-
-                                    <input
-                                        className="font-medium pl-3 text-[#101828]  text-sm placeholder:text-[#A1A1A1] rounded-md w-full placeholder:font-normal
-                        focus:outline-none focus:ring-0 
-                        border border-solid border-[#D0D5DD] h-[40px] 
-                        shadow-[0px_1px_2px_0px_rgba(16,24,40,0.05)] 
-                        transition duration-200 ease-in-out 
-                        focus:border-[#D6BBFB] 
-                        focus:shadow-[0px_0px_0px_4px_rgba(158,119,237,0.25),0px_1px_2px_0px_rgba(16,24,40,0.05)]
-                        focus:text-[#1D2939]
-                        focus:font-medium"
-                                        placeholder="Option 1"
-                                        type="text"
-                                    />
-                                </div>
-
-
-
+                                ))}
                             </div>
                             <span className="font-semibold text-base text-[#1D2939]">Correct answer</span>
                             <Popover placement="bottom">
                                 <PopoverTrigger>
                                     <button
                                         className={`h-[40px] px-3 items-center w-full justify-between flex flex-row rounded-md popover 
-                    border border-solid ${activeQuestionIndex === index ? 'border-[#D6BBFB]' : 'border-[#D0D5DD]'} 
-                    bg-[#FFFFFF] ${activeQuestionIndex === index ? 'shadow-[0px_0px_0px_4px_rgba(158,119,237,0.25),0px_1px_2px_0px_rgba(16,24,40,0.05)]' : ''}`}
-                                        onClick={() => handlePopoverToggle(index)}
+                            border border-solid ${activeQuestionIndex === 0 ? 'border-[#D6BBFB]' : 'border-[#D0D5DD]'} 
+                            bg-[#FFFFFF] ${activeQuestionIndex === 0 ? 'shadow-[0px_0px_0px_4px_rgba(158,119,237,0.25),0px_1px_2px_0px_rgba(16,24,40,0.05)]' : ''}`}
+                                        onClick={() => handlePopoverToggle(0)}
                                     >
                                         <span className="font-normal text-sm text-[#667085] flex items-center">Select correct answer</span>
                                         <Image
@@ -311,14 +249,14 @@ function Questions() {
                                             boxShadow: '0px 4px 6px -2px rgba(16, 24, 40, 0.05), 0px 12px 16px -4px rgba(16, 24, 40, 0.08)',
                                         }}
                                     >
-                                        {options.map((item, index) => (
+                                        {Object.entries(options).map(([option, value], index) => (
                                             <div
-                                                key={index} // use a unique identifier for keys
-                                                className={`flex flex-row justify-between w-full h-[40px] items-center hover:bg-[#F2F4F7] px-2 ${index === options.length - 1 ? 'rounded-bl-md rounded-br-md' : ''}`}
+                                                key={index}
+                                                className={`flex flex-row justify-between w-full h-[40px] items-center hover:bg-[#F2F4F7] px-2 ${index === Object.keys(options).length - 1 ? 'rounded-bl-md rounded-br-md' : ''}`}
                                                 onMouseEnter={() => setHoveredIndex(index)}
                                                 onMouseLeave={() => setHoveredIndex(null)}
                                             >
-                                                <span className="font-normal text-[#0C111D] text-sm">{item}</span>
+                                                <span className="font-normal text-[#0C111D] text-sm">{`${option}: ${value}`}</span>
                                                 <div className="relative">
                                                     <Image
                                                         src="/icons/tick-02.svg"
@@ -332,7 +270,6 @@ function Questions() {
                                         ))}
                                     </div>
                                 </PopoverContent>
-
                             </Popover>
                             <input
                                 className="font-medium pl-3 text-[#101828]  text-sm placeholder:text-[#A1A1A1] rounded-md w-full placeholder:font-normal
