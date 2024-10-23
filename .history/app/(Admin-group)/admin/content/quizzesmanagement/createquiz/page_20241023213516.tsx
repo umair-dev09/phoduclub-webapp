@@ -18,7 +18,7 @@ enum Step {
 
 function CreateQuiz() {
     const [currentStep, setCurrentStep] = useState<Step>(Step.QuizInfo);
-
+    const [QuizName, setQuizName] = useState<string>("");
 
     const handleNextClick = () => {
         if (currentStep === Step.Publish) {
@@ -37,8 +37,7 @@ function CreateQuiz() {
     const renderStepContent = () => {
         switch (currentStep) {
             case Step.QuizInfo:
-                return <Quizinfo />;
-
+                return <Quizinfo QuizName={QuizName} setQuizName={setQuizName} />;
             case Step.Questions:
                 return <Questions />;
             case Step.Review:
@@ -48,7 +47,7 @@ function CreateQuiz() {
             case Step.QuizCreated:
                 return <QuizCreated />; // Render the Quiz Created component
             default:
-                return <Quizinfo />;
+                return <Quizinfo QuizName={QuizName} setQuizName={setQuizName} />;
         }
     };
 
