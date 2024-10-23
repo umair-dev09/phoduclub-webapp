@@ -38,6 +38,7 @@ function CreateQuiz() {
         switch (currentStep) {
             case Step.QuizInfo:
                 return <Quizinfo QuizName={QuizName} setQuizName={setQuizName} />;
+                return <Quizinfo quizName="Dummy" quizTitle="" />;
             case Step.Questions:
                 return <Questions />;
             case Step.Review:
