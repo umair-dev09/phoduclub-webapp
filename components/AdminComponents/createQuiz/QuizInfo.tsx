@@ -6,7 +6,12 @@ import ReactQuill from 'react-quill'; // Ensure correct import
 import Quill from 'quill'; // Import Quill to use it for types
 import { Popover, PopoverTrigger, PopoverContent } from '@nextui-org/popover';
 
-const Publish = () => {
+type QuizInfoProps = {
+    quizName: string;
+    quizTitle: string;
+}
+
+function Publish({ quizName, quizTitle }: QuizInfoProps) {
     const [value, setValue] = useState('');
     const quillRef = useRef<ReactQuill | null>(null); // Ref to hold ReactQuill instance
     const [quill, setQuill] = useState<Quill | null>(null);
@@ -84,7 +89,7 @@ const Publish = () => {
     return (
         <div className='mt-2 h-auto rounded-md border border-solid border-[#EAECF0] bg-[#FFFFFF] flex flex-col p-5 gap-2'>
             <div className=' flex flex-col gap-2'>
-                <span className='text-[#1D2939] text-sm font-medium'>Quiz Name</span>
+                <span className='text-[#1D2939] text-sm font-medium'>{quizName}</span>
                 <input
                     className="font-medium pl-3 text-[#1D2939] text-sm placeholder:text-[#A1A1A1] rounded-md  placeholder:font-normal
                         focus:outline-none focus:ring-0 

@@ -13,7 +13,6 @@ const Publish = () => {
                         <h3 className='text-base font-semibold'>Q4.</h3>
                         <div className='flex flex-col gap-4'>
                             <h3 className='text-base font-semibold'> What is the result of the bitwise AND operation between 1010 and 1100?</h3>
-
                         </div>
                     </div>
                     <div className='flex items-start'>

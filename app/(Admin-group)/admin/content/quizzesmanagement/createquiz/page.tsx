@@ -36,7 +36,7 @@ function CreateQuiz() {
     const renderStepContent = () => {
         switch (currentStep) {
             case Step.QuizInfo:
-                return <Quizinfo />;
+                return <Quizinfo quizName="Dummy" quizTitle="" />;
             case Step.Questions:
                 return <Questions />;
             case Step.Review:
@@ -46,7 +46,7 @@ function CreateQuiz() {
             case Step.QuizCreated:
                 return <QuizCreated />; // Render the Quiz Created component
             default:
-                return <Quizinfo />;
+                return <Quizinfo quizName="efeswf" quizTitle="" />;
         }
     };
 
