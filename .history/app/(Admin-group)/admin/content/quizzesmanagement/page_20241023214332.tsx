@@ -306,7 +306,6 @@ function Quizz() {
                     total={Math.ceil(totalQuizzes / pageSize)}  // Calculate total pages based on new pageSize
                     initialPage={currentPage}
                     onChange={(page) => setCurrentPage(page)}  // Handle page change
-                    className="bg-[#FFFFFF]"
                 />
             </div>
         </div>
