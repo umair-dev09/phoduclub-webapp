@@ -8,19 +8,19 @@ const Publish = () => {
                 <div className='flex flex-row w-full gap-4'>
                     <div className='flex flex-col w-1/2 gap-1'>
                         <span className='font-medium text-[#1D2939] text-sm'>Start Date</span>
-                        <div className='w-full py-2 px-3 border border-lightGrey rounded-md'>
+                        <button className='w-full py-2 px-3 border border-lightGrey rounded-md'>
                             <span className='font-normal text-[#667085] text-sm'>Select Date & Time</span>
-                        </div>
+                        </button>
                     </div>
                     <div className='flex flex-col w-1/2 gap-1'>
                         <span className='font-medium text-[#1D2939] text-sm'>End Date</span>
-                        <div className='w-full py-2 px-3 border border-lightGrey rounded-md'>
+                        <button className='w-full py-2 px-3 border border-lightGrey rounded-md'>
                             <span className='font-normal text-[#667085] text-sm'>Select Date & Time</span>
-                        </div>
+                        </button>
                     </div>
                 </div>
             </div>
-            <div className='flex flex-col w-full h-auto p-5 bg-white border border-lightGrey rounded-xl gap-3'>
+            <div className='flex flex-col w-full h-auto p-6 bg-white border border-lightGrey rounded-xl gap-4'>
                 <span className='font-semibold text-lg text-[#1D2939]'>About quiz</span>
                 <div className='flex flex-row w-full gap-4'>
                     {/* Time Duration */}

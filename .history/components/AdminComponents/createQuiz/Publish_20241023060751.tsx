@@ -4,24 +4,24 @@ const Publish = () => {
     return (
         <div className='flex flex-col pt-4 pb-8 gap-4'>
             <div className='flex flex-col w-full h-auto p-6 bg-white border border-lightGrey rounded-xl gap-4'>
-                <span className='font-semibold text-lg text-[#1D2939]'>Set Quiz Time</span>
+                <h3>Set Quiz Time</h3>
                 <div className='flex flex-row w-full gap-4'>
                     <div className='flex flex-col w-1/2 gap-1'>
-                        <span className='font-medium text-[#1D2939] text-sm'>Start Date</span>
+                        <p>Start Date</p>
                         <div className='w-full py-2 px-3 border border-lightGrey rounded-md'>
-                            <span className='font-normal text-[#667085] text-sm'>Select Date & Time</span>
+                            hi
                         </div>
                     </div>
                     <div className='flex flex-col w-1/2 gap-1'>
-                        <span className='font-medium text-[#1D2939] text-sm'>End Date</span>
+                        <p>End Date</p>
                         <div className='w-full py-2 px-3 border border-lightGrey rounded-md'>
-                            <span className='font-normal text-[#667085] text-sm'>Select Date & Time</span>
+                            hi
                         </div>
                     </div>
                 </div>
             </div>
-            <div className='flex flex-col w-full h-auto p-5 bg-white border border-lightGrey rounded-xl gap-3'>
-                <span className='font-semibold text-lg text-[#1D2939]'>About quiz</span>
+            <div className='flex flex-col w-full h-auto p-6 bg-white border border-lightGrey rounded-xl gap-4'>
+                <h3>About quiz</h3>
                 <div className='flex flex-row w-full gap-4'>
                     {/* Time Duration */}
                     <div className='flex flex-col w-full gap-1'>

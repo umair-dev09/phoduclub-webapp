@@ -333,7 +333,6 @@ import Collapsible from 'react-collapsible';
 function Questions() {
     // Define the Question type to include isActive
     interface Question {
-
         question: string;
         isChecked: boolean;
         isActive: boolean; // Include isActive here
@@ -343,7 +342,6 @@ function Questions() {
     const [isActive, setIsActive] = useState(false);
     const [questionsList, setQuestionsList] = useState([
         {
-
             question: '',
             isChecked: false,
             isActive: false,
@@ -365,7 +363,6 @@ function Questions() {
         setQuestionsList((prevQuestionsList) => [
             ...prevQuestionsList,
             {
-
                 question: '',
                 isChecked: false,
                 isActive: false,
@@ -403,7 +400,7 @@ function Questions() {
                 <Collapsible className=""
                     key={index}
                     trigger={
-                        <div className='mt-4 h-auto rounded-tl-md rounded-tr-md border-t border-l border-r border-solid border-[#EAECF0] bg-[#FFFFFF] flex flex-col p-5 gap-2 '>
+                        <div className='mt-2 h-auto rounded-md border border-solid border-[#EAECF0] bg-[#FFFFFF] flex flex-col p-5 gap-2 mb-5'>
                             <div className="h-auto flex flex-row justify-between">
                                 <div className="flex gap-2">
                                     <div className="h-6 w-6 rounded-[4px] bg-[#EAECF0] flex justify-center">
@@ -460,7 +457,7 @@ function Questions() {
                         </div>
                     }
                 >
-                    <div className=' h-auto rounded-bl-md rounded-br-md border-b border-l border-r border-solid border-[#EAECF0] bg-[#FFFFFF] flex flex-col p-5 gap-2 mb-5'>
+                    <div className='mt-2 h-auto rounded-md border border-solid border-[#EAECF0] bg-[#FFFFFF] flex flex-col p-5 gap-2 mb-5'>
                         <div className="flex flex-col gap-2">
                             <span className="font-semibold text-base text-[#1D2939]">Questions</span>
                             <input
@@ -633,34 +630,11 @@ function Questions() {
                                 </button>
                             </PopoverTrigger>
                             <PopoverContent>
-                                <div
-                                    className="w-[973px] h-[168px] rounded-md border border-solid border-[#EAECF0] bg-[#FFFFFF] flex flex-col pt-[8px]"
-                                    style={{
-                                        boxShadow: '0px 4px 6px -2px rgba(16, 24, 40, 0.05), 0px 12px 16px -4px rgba(16, 24, 40, 0.08)',
-                                    }}
-                                >
-                                    {options.map((item, index) => (
-                                        <div
-                                            key={index} // use a unique identifier for keys
-                                            className={`flex flex-row justify-between w-full h-[40px] items-center hover:bg-[#F2F4F7] px-2 ${index === options.length - 1 ? 'rounded-bl-md rounded-br-md' : ''}`}
-                                            onMouseEnter={() => setHoveredIndex(index)}
-                                            onMouseLeave={() => setHoveredIndex(null)}
-                                        >
-                                            <span className="font-normal text-[#0C111D] text-sm">{item}</span>
-                                            <div className="relative">
-                                                <Image
-                                                    src="/icons/tick-02.svg"
-                                                    width={18}
-                                                    height={18}
-                                                    alt="right mark"
-                                                    className={`transition-opacity duration-300 ${hoveredIndex === index ? 'opacity-100' : 'opacity-0'}`}
-                                                />
-                                            </div>
-                                        </div>
-                                    ))}
+                                <div>
+                                    jabir
                                 </div>
-                            </PopoverContent>
 
+                            </PopoverContent>
                         </Popover>
                         <input
                             className="font-medium pl-3 text-[#101828]  text-sm placeholder:text-[#A1A1A1] rounded-md w-full placeholder:font-normal

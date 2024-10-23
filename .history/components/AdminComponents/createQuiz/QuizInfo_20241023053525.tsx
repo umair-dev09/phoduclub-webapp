@@ -86,7 +86,7 @@ const Publish = () => {
             <div className=' flex flex-col gap-2'>
                 <span className='text-[#1D2939] text-sm font-medium'>Quiz Name</span>
                 <input
-                    className="font-medium pl-3 text-[#1D2939] text-sm placeholder:text-[#A1A1A1] rounded-md  placeholder:font-normal
+                    className="font-medium pl-3 text-[#1D2939] text-sm placeholder:text-[#A1A1A1] rounded-md 
                         focus:outline-none focus:ring-0 
                         border border-solid border-[#D0D5DD] h-[40px] 
                         shadow-[0px_1px_2px_0px_rgba(16,24,40,0.05)] 

@@ -403,7 +403,7 @@ function Questions() {
                 <Collapsible className=""
                     key={index}
                     trigger={
-                        <div className='mt-4 h-auto rounded-tl-md rounded-tr-md border-t border-l border-r border-solid border-[#EAECF0] bg-[#FFFFFF] flex flex-col p-5 gap-2 '>
+                        <div className='mt-2 h-auto rounded-tl-md rounded-tr-md border-t border-l border-r border-solid border-[#EAECF0] bg-[#FFFFFF] flex flex-col p-5 gap-2 '>
                             <div className="h-auto flex flex-row justify-between">
                                 <div className="flex gap-2">
                                     <div className="h-6 w-6 rounded-[4px] bg-[#EAECF0] flex justify-center">
@@ -447,8 +447,8 @@ function Questions() {
                                                 onClick={() => handleDeleteQuestion(index)}>
                                                 <Image
                                                     src="/icons/delete.svg"
-                                                    width={18}
-                                                    height={18}
+                                                    width={24}
+                                                    height={24}
                                                     alt="Delete"
                                                 />
                                                 <span className="text-[#DE3024] text-sm font-medium">Delete</span>

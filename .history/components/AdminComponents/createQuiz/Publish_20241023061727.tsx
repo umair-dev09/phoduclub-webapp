@@ -20,7 +20,7 @@ const Publish = () => {
                     </div>
                 </div>
             </div>
-            <div className='flex flex-col w-full h-auto p-5 bg-white border border-lightGrey rounded-xl gap-3'>
+            <div className='flex flex-col w-full h-auto p-5 bg-white border border-lightGrey rounded-xl gap-4'>
                 <span className='font-semibold text-lg text-[#1D2939]'>About quiz</span>
                 <div className='flex flex-row w-full gap-4'>
                     {/* Time Duration */}

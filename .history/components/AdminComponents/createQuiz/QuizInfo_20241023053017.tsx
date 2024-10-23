@@ -86,7 +86,7 @@ const Publish = () => {
             <div className=' flex flex-col gap-2'>
                 <span className='text-[#1D2939] text-sm font-medium'>Quiz Name</span>
                 <input
-                    className="font-medium pl-3 text-[#1D2939] text-sm placeholder:text-[#A1A1A1] rounded-md  placeholder:font-normal
+                    className="font-normal pl-3 text-[#667085] text-sm placeholder:text-[#A1A1A1] rounded-md 
                         focus:outline-none focus:ring-0 
                         border border-solid border-[#D0D5DD] h-[40px] 
                         shadow-[0px_1px_2px_0px_rgba(16,24,40,0.05)] 
@@ -116,7 +116,7 @@ const Publish = () => {
                 />
             </div> */}
             <div className="flex flex-col gap-2">
-                <span className='text-[#1D2939] text-sm font-medium pt-1'>Description</span>
+                <span className='text-[#1D2939] text-sm font-medium pt-2'>Description</span>
                 <div
                     className={`pt-2 bg-[#FFFFFF] border ${isWriting ? 'border-[#D6BBFB]  shadow-[0px_0px_0px_4px_rgba(158,119,237,0.25),0px_1px_2px_0px_rgba(16,24,40,0.05)]' : 'border-[#EAECF0]'
                         } rounded-[12px] h-auto`}>

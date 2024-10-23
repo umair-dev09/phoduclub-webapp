@@ -20,7 +20,7 @@ const Publish = () => {
                         <Image src='/icons/edit-icon.svg' alt='edit' width={18} height={18} />
                     </div>
                 </div>
-                <div className='flex pt-4  items-start justify-start '>
+                <div className='flex pt-3  items-start justify-start '>
                     <Image className='border border-lightGrey rounded-sm ' src='/images/Rectangle 2338.png' alt='img' width={264} height={214} />
 
                 </div>

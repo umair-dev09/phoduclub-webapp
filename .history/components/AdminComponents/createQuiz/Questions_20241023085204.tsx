@@ -403,7 +403,7 @@ function Questions() {
                 <Collapsible className=""
                     key={index}
                     trigger={
-                        <div className='mt-4 h-auto rounded-tl-md rounded-tr-md border-t border-l border-r border-solid border-[#EAECF0] bg-[#FFFFFF] flex flex-col p-5 gap-2 '>
+                        <div className='mt-2 h-auto rounded-md border border-solid border-[#EAECF0] bg-[#FFFFFF] flex flex-col p-5 gap-2 '>
                             <div className="h-auto flex flex-row justify-between">
                                 <div className="flex gap-2">
                                     <div className="h-6 w-6 rounded-[4px] bg-[#EAECF0] flex justify-center">
@@ -460,7 +460,7 @@ function Questions() {
                         </div>
                     }
                 >
-                    <div className=' h-auto rounded-bl-md rounded-br-md border-b border-l border-r border-solid border-[#EAECF0] bg-[#FFFFFF] flex flex-col p-5 gap-2 mb-5'>
+                    <div className=' h-auto rounded-md border border-solid border-[#EAECF0] bg-[#FFFFFF] flex flex-col p-5 gap-2 mb-5'>
                         <div className="flex flex-col gap-2">
                             <span className="font-semibold text-base text-[#1D2939]">Questions</span>
                             <input

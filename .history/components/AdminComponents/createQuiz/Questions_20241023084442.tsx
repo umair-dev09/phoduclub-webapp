@@ -333,7 +333,7 @@ import Collapsible from 'react-collapsible';
 function Questions() {
     // Define the Question type to include isActive
     interface Question {
-
+        id: string; // Add an id property
         question: string;
         isChecked: boolean;
         isActive: boolean; // Include isActive here
@@ -343,7 +343,7 @@ function Questions() {
     const [isActive, setIsActive] = useState(false);
     const [questionsList, setQuestionsList] = useState([
         {
-
+            id: '1', // Assign a unique id
             question: '',
             isChecked: false,
             isActive: false,
@@ -365,7 +365,7 @@ function Questions() {
         setQuestionsList((prevQuestionsList) => [
             ...prevQuestionsList,
             {
-
+                id: (prevQuestionsList.length + 1).toString(),
                 question: '',
                 isChecked: false,
                 isActive: false,
@@ -403,7 +403,7 @@ function Questions() {
                 <Collapsible className=""
                     key={index}
                     trigger={
-                        <div className='mt-4 h-auto rounded-tl-md rounded-tr-md border-t border-l border-r border-solid border-[#EAECF0] bg-[#FFFFFF] flex flex-col p-5 gap-2 '>
+                        <div className='mt-2 h-auto rounded-md border border-solid border-[#EAECF0] bg-[#FFFFFF] flex flex-col p-5 gap-2 mb-5'>
                             <div className="h-auto flex flex-row justify-between">
                                 <div className="flex gap-2">
                                     <div className="h-6 w-6 rounded-[4px] bg-[#EAECF0] flex justify-center">
@@ -460,7 +460,7 @@ function Questions() {
                         </div>
                     }
                 >
-                    <div className=' h-auto rounded-bl-md rounded-br-md border-b border-l border-r border-solid border-[#EAECF0] bg-[#FFFFFF] flex flex-col p-5 gap-2 mb-5'>
+                    <div className='mt-2 h-auto rounded-md border border-solid border-[#EAECF0] bg-[#FFFFFF] flex flex-col p-5 gap-2 mb-5'>
                         <div className="flex flex-col gap-2">
                             <span className="font-semibold text-base text-[#1D2939]">Questions</span>
                             <input
@@ -641,7 +641,7 @@ function Questions() {
                                 >
                                     {options.map((item, index) => (
                                         <div
-                                            key={index} // use a unique identifier for keys
+                                            key={item.id} // use a unique identifier for keys
                                             className={`flex flex-row justify-between w-full h-[40px] items-center hover:bg-[#F2F4F7] px-2 ${index === options.length - 1 ? 'rounded-bl-md rounded-br-md' : ''}`}
                                             onMouseEnter={() => setHoveredIndex(index)}
                                             onMouseLeave={() => setHoveredIndex(null)}
