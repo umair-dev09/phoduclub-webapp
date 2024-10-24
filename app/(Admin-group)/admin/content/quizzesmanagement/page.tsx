@@ -1,7 +1,7 @@
 "use client";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { Pagination } from "@nextui-org/react";
+import { Pagination, PaginationCursor, PaginationItem } from "@nextui-org/react";
 import { useState, useEffect } from "react";
 
 // Define types for quiz data and response
@@ -299,18 +299,46 @@ function Quizz() {
                 </table>
             </div>
 
-            <div className="flex justify-end">
+            <div className="flex justify-between items-center">
+                {/* Previous Button */}
+                <button
+                    className="bg-[#E5E5E5] text-[#667085] rounded-md px-4 py-2"
+                    onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+                    disabled={currentPage === 1}
+                >
+                    Previous
+                </button>
+
                 {/* Pagination Control */}
                 <Pagination
-                    showControls
-                    total={Math.ceil(totalQuizzes / pageSize)}  // Calculate total pages based on new pageSize
+                    isCompact
+                    total={Math.ceil(totalQuizzes / pageSize)}
                     initialPage={currentPage}
-                    onChange={(page) => setCurrentPage(page)}  // Handle page change
-                    className="bg-[#FFFFFF]"
-                />
+                    onChange={(page) => setCurrentPage(page)}
+                >
+                    {Array.from({ length: Math.ceil(totalQuizzes / pageSize) }, (_, index) => (
+                        <Pagination.Item
+                            key={index + 1}
+                            isActive={currentPage === index + 1}
+                            onClick={() => setCurrentPage(index + 1)}
+                        >
+                            {index + 1}
+                        </Pagination.Item>
+                    ))}
+                </Pagination>
+
+                {/* Next Button */}
+                <button
+                    className="bg-[#E5E5E5] text-[#667085] rounded-md px-4 py-2"
+                    onClick={() => setCurrentPage((prev) => Math.min(prev + 1, Math.ceil(totalQuizzes / pageSize)))}
+                    disabled={currentPage === Math.ceil(totalQuizzes / pageSize)}
+                >
+                    Next
+                </button>
             </div>
         </div>
     );
 }
 
 export default Quizz;
+

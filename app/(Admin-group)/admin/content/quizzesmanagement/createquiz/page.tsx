@@ -1,4 +1,5 @@
 "use client";
+
 import { useState } from "react";
 import Image from "next/image";
 import Quizinfo from "@/components/AdminComponents/createQuiz/QuizInfo";
@@ -13,16 +14,17 @@ enum Step {
     Questions = 1,
     Review = 2,
     Publish = 3,
-    QuizCreated = 4, // New step for Quiz Created
+    QuizCreated = 4,
 }
 
 function CreateQuiz() {
     const [currentStep, setCurrentStep] = useState<Step>(Step.QuizInfo);
-
+    const [quizName, setQuizName] = useState<string>('');
+    const [quizDescription, setQuizDescription] = useState<string>('');
 
     const handleNextClick = () => {
         if (currentStep === Step.Publish) {
-            setCurrentStep(Step.QuizCreated); // Set to Quiz Created when publishing
+            setCurrentStep(Step.QuizCreated);
         } else if (currentStep < Step.Publish) {
             setCurrentStep(currentStep + 1);
         }
@@ -37,8 +39,14 @@ function CreateQuiz() {
     const renderStepContent = () => {
         switch (currentStep) {
             case Step.QuizInfo:
-                return <Quizinfo />;
-
+                return (
+                    <Quizinfo
+                        quizName={quizName}
+                        setQuizName={setQuizName}
+                        quizDescription={quizDescription}
+                        setQuizDescription={setQuizDescription}
+                    />
+                );
             case Step.Questions:
                 return <Questions />;
             case Step.Review:
@@ -46,23 +54,33 @@ function CreateQuiz() {
             case Step.Publish:
                 return <Publish />;
             case Step.QuizCreated:
-                return <QuizCreated />; // Render the Quiz Created component
+                return <QuizCreated />;
             default:
-                return <Quizinfo />;
+                return (
+                    <Quizinfo
+                        quizName={quizName}
+                        setQuizName={setQuizName}
+                        quizDescription={quizDescription}
+                        setQuizDescription={setQuizDescription}
+                    />
+                );
         }
     };
 
     const getStepStyles = (step: Step) => {
         if (currentStep > step) {
-            return "bg-[#9012FF]"; // Completed step
+            return "bg-[#9012FF]";
         } else if (currentStep === step) {
-            return "bg-[#9012FF] ring-4 ring-[#E8DFFB]"; // Active step
+            return "bg-[#9012FF] ring-4 ring-[#E8DFFB]";
         } else {
-            return "border-2 border-[#D0D5DE]"; // Upcoming step
+            return "border-2 border-[#D0D5DE]";
         }
     };
 
-    // Render nothing but the Quiz Created component if it's the current step
+    // Check if both fields have content for the Quiz Info step
+    const isQuizInfoComplete = quizName.trim() !== '' && quizDescription.trim() !== '';
+    const isNextButtonDisabled = currentStep === Step.QuizInfo && !isQuizInfoComplete;
+
     if (currentStep === Step.QuizCreated) {
         return <QuizCreated />;
     }
@@ -96,14 +114,12 @@ function CreateQuiz() {
                     ))}
                 </div>
             </div>
-
             <div className="flex flex-col w-full ml-[20px] mr-8 mt-8">
                 <div className="h-15 ml-1 w-full border-b border-solid border-[#D0D5DD] ">
                     <div className="flex flex-row justify-between ">
                         <span className="text-lg font-semibold text-[#1D2939] flex items-center">
                             {["Quiz info", "Questions", "Review", "Publish"][currentStep]}
                         </span>
-
                         <div className="flex flex-row gap-3 mb-3">
                             {currentStep > Step.QuizInfo && (
                                 <button
@@ -113,21 +129,23 @@ function CreateQuiz() {
                                     <span className="text-[#1D2939] font-semibold text-sm">Previous</span>
                                 </button>
                             )}
-
                             <button
-                                className={`h-[44px] w-[135px] ${currentStep === Step.Publish ? "bg-[#8501FF]" : "bg-[#8501FF]"
-                                    } rounded-md shadow-inner-button border border-solid border-[#800EE2] flex items-center justify-center`}
+                                className={`h-[44px] w-[135px] rounded-md shadow-inner-button border border-solid 
+                                    ${isNextButtonDisabled
+                                        ? 'text-white bg-[#8501FF] border-[#800EE2] opacity-35 cursor-not-allowed'
+                                        : 'text-white bg-[#8501FF] border-[#800EE2] hover:bg-[#7001D1]'
+                                    } 
+                                    flex items-center justify-center transition-colors`}
                                 onClick={handleNextClick}
-
+                                disabled={isNextButtonDisabled}
                             >
-                                <span className="text-[#FFFFFF] font-semibold text-sm">
+                                <span className={`font-semibold text-sm ${isNextButtonDisabled ? 'text-[#9CA3AF]' : 'text-[#FFFFFF]'}`}>
                                     {currentStep === Step.Publish ? "Publish" : "Next"}
                                 </span>
                             </button>
                         </div>
                     </div>
                 </div>
-
                 <div className="overflow-y-auto">
                     {renderStepContent()}
                 </div>
