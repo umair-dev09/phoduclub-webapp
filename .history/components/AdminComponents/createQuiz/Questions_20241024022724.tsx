@@ -20,13 +20,17 @@ interface Options {
     C: string;
     D: string;
 }
-// Sending the Data to the CreateQuiz
-interface QuestionsProps {
-    questionsList: Question[];
-    setQuestionsList: React.Dispatch<React.SetStateAction<Question[]>>;
-}
 
-function Questions({ questionsList, setQuestionsList }: QuestionsProps) {
+function Questions() {
+    // Initialize state with proper typing
+    const [questionsList, setQuestionsList] = useState<Question[]>([{
+        question: '',
+        isChecked: false,
+        isActive: false,
+        options: { A: '', B: '', C: '', D: '' },
+        correctAnswer: null,
+        explanation: ''
+    }]);
 
     // Handler for input change
     const handleInputChange = (index: number, e: React.ChangeEvent<HTMLInputElement>) => {
@@ -34,14 +38,14 @@ function Questions({ questionsList, setQuestionsList }: QuestionsProps) {
         newQuestionsList[index].question = e.target.value;
         setQuestionsList(newQuestionsList);
     };
-    // -----------------------------------------------------------------------------------------------------------
+
     // Handler for checkbox change
     const handleCheckboxChange = (index: number) => {
         const newQuestionsList = [...questionsList];
         newQuestionsList[index].isChecked = !newQuestionsList[index].isChecked;
         setQuestionsList(newQuestionsList);
     };
-    // -----------------------------------------------------------------------------------------------------------
+
     // Handler for adding new question
     const handleAddQuestion = () => {
         setQuestionsList([
@@ -57,7 +61,6 @@ function Questions({ questionsList, setQuestionsList }: QuestionsProps) {
         ]);
     };
 
-    // Handler for adding the Questions
     const handleAddQuestionduplicate = (duplicateQuestion?: Question) => {
         const newQuestion = duplicateQuestion
             ? { ...duplicateQuestion } // Duplicate all properties of the question
@@ -72,7 +75,6 @@ function Questions({ questionsList, setQuestionsList }: QuestionsProps) {
 
         setQuestionsList([...questionsList, newQuestion]);
     };
-
     // Handler for deleting question
     const handleDeleteQuestion = (index: number) => {
         console.log("Deleting question at index:", index); // Debugging
@@ -82,6 +84,13 @@ function Questions({ questionsList, setQuestionsList }: QuestionsProps) {
             return updatedList.filter((_, i) => i !== index); // Delete the question
         });
     };
+    const handleSetActive = (index: number, isActive: boolean) => {
+        setQuestionsList(prevList =>
+            prevList.map((q, i) => (i === index ? { ...q, isActive } : q))
+        );
+    };
+
+
 
     // Handler for option change
     const handleOptionChange = (questionIndex: number, optionKey: keyof Options, value: string) => {
@@ -102,7 +111,6 @@ function Questions({ questionsList, setQuestionsList }: QuestionsProps) {
         const newQuestionsList = [...questionsList];
         newQuestionsList[questionIndex].correctAnswer = optionKey;
         setQuestionsList(newQuestionsList);
-        handlePopoverClose();
     };
     const getSelectedAnswerDisplay = (question: Question) => {
         if (!question.correctAnswer) return "Select correct answer";
@@ -115,17 +123,6 @@ function Questions({ questionsList, setQuestionsList }: QuestionsProps) {
             : `Option ${question.correctAnswer}`;
     };
 
-    // function for the change color of border and shadow when the "select the correct answer div is active"
-    const handleclickonselectbutton = () => {
-        setIsPopoverOpen(!isPopoverOpen); // Toggle the popover
-    };
-    const [isPopoverOpen, setIsPopoverOpen] = useState(false);
-    const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
-
-    const handlePopoverClose = () => {
-        setIsPopoverOpen(false);
-    };
-    const isActive = isPopoverOpen || !!selectedAnswer;
 
     return (
         <div className="pb-4 h-auto">
@@ -155,9 +152,8 @@ function Questions({ questionsList, setQuestionsList }: QuestionsProps) {
                                             </button>
                                         </PopoverTrigger>
                                         <PopoverContent>
-                                            <div className="h-[88px] w-[167px] border border-solid border-[#EAECF0] bg-[#FFFFFF] rounded-md flex flex-col py-[4px] shadow-lg">
+                                            <div className="h-[88px] w-[167px] border border-solid border-[#EAECF0] bg-[#FFFFFF] rounded-md flex flex-col py-[4px]">
                                                 <button
-
                                                     className="flex flex-row h-[40px] w-full px-3 gap-2 hover:bg-[#F2F4F7] items-center"
                                                     onClick={() => handleAddQuestionduplicate(question)}
                                                 >
@@ -187,15 +183,16 @@ function Questions({ questionsList, setQuestionsList }: QuestionsProps) {
                                 </div>
                             </div>
                         }
-
+                        open={question.isActive}
+                        onOpening={() => handleSetActive(index, true)}
+                        onClosing={() => handleSetActive(index, false)}
                     >
                         <div className='h-auto bg-[#FFFFFF] flex flex-col pb-5 px-5 gap-2 rounded-br-md rounded-bl-md'>
                             <div className="flex flex-col gap-2">
                                 <span className="font-semibold text-base text-[#1D2939]">Question</span>
                                 <input
                                     className="font-medium pl-3 text-[#101828] text-sm placeholder:text-[#A1A1A1] rounded-md placeholder:font-normal
-                                        focus:outline-none focus:ring-0 border border-solid border-[#D0D5DD] h-[40px] focus:border-[#D6BBFB]
-                                              focus:shadow-[0px_0px_0px_4px_rgba(158,119,237,0.25),0px_1px_2px_0px_rgba(16,24,40,0.05)]"
+                                        focus:outline-none focus:ring-0 border border-solid border-[#D0D5DD] h-[40px]"
                                     placeholder="Enter question"
                                     type="text"
                                     value={question.question}
@@ -249,8 +246,7 @@ function Questions({ questionsList, setQuestionsList }: QuestionsProps) {
                                         />
                                         <input
                                             className="font-medium pl-3 text-[#101828] text-sm placeholder:text-[#A1A1A1] rounded-md w-full placeholder:font-normal
-                                                focus:outline-none focus:ring-0 border border-solid border-[#D0D5DD] h-[40px] focus:border-[#D6BBFB]
-                                              focus:shadow-[0px_0px_0px_4px_rgba(158,119,237,0.25),0px_1px_2px_0px_rgba(16,24,40,0.05)]"
+                                                focus:outline-none focus:ring-0 border border-solid border-[#D0D5DD] h-[40px]"
                                             placeholder={`Option ${optionKey}`}
                                             value={question.options[optionKey]}
                                             onChange={(e) => handleOptionChange(index, optionKey, e.target.value)}
@@ -260,33 +256,27 @@ function Questions({ questionsList, setQuestionsList }: QuestionsProps) {
                             </div>
 
                             <span className="font-semibold text-base text-[#1D2939]">Correct answer</span>
-                            <Popover placement="bottom" isOpen={isPopoverOpen} onClose={handlePopoverClose}>
+                            <Popover placement="bottom">
                                 <PopoverTrigger>
-                                    <button
-                                        className={`h-[40px] px-3 items-center w-full justify-between flex flex-row rounded-md border border-solid
-                                ${isActive ? 'border-[#D6BBFB] shadow-[0px_0px_0px_4px_rgba(158,119,237,0.25),0px_1px_2px_0px_rgba(16,24,40,0.05)]' : ' border-[#D0D5DD]'}
-                                bg-[#FFFFFF] focus:outline-none`}
-                                        onClick={handleclickonselectbutton}
-                                    >
-                                        <span className={`font-normal text-sm ${selectedAnswer ? 'text-[#101828]' : 'text-[#667085]'}`}>
+                                    <button className="h-[40px] px-3 items-center w-full justify-between flex flex-row rounded-md border border-solid border-[#D0D5DD] bg-[#FFFFFF]">
+                                        <span className={`font-normal text-sm ${question.correctAnswer ? 'text-[#101828]' : 'text-[#667085]'}`}>
                                             {getSelectedAnswerDisplay(question)}
                                         </span>
+
                                     </button>
                                 </PopoverTrigger>
                                 <PopoverContent>
-                                    <div className="w-[60.813rem] rounded-md border border-solid border-[#EAECF0] bg-[#FFFFFF] flex flex-col pt-[8px] shadow-lg">
+                                    <div className="w-[60.813rem] rounded-md border border-solid border-[#EAECF0] bg-[#FFFFFF] flex flex-col pt-[8px]">
                                         {(Object.keys(question.options) as Array<keyof Options>).map((optionKey) => (
                                             <div
                                                 key={optionKey}
                                                 className="flex flex-row justify-between w-full h-[40px] items-center hover:bg-[#F2F4F7] px-2 cursor-pointer"
-
                                                 onClick={() => handleCorrectAnswerSelect(index, optionKey)}
-
                                             >
                                                 <span className="font-normal text-[#0C111D] text-sm">
                                                     {optionKey}. {question.options[optionKey] || `Option ${optionKey}`}
                                                 </span>
-                                                {selectedAnswer === optionKey && (
+                                                {question.correctAnswer === optionKey && (
                                                     <Image
                                                         src="/icons/tick-02.svg"
                                                         width={18}
@@ -301,8 +291,7 @@ function Questions({ questionsList, setQuestionsList }: QuestionsProps) {
                             </Popover>
                             <input
                                 className="font-medium pl-3 text-[#101828] text-sm placeholder:text-[#A1A1A1] rounded-md w-full placeholder:font-normal
-                                    focus:outline-none focus:ring-0 border border-solid border-[#D0D5DD] h-[40px] focus:border-[#D6BBFB]
-                                              focus:shadow-[0px_0px_0px_4px_rgba(158,119,237,0.25),0px_1px_2px_0px_rgba(16,24,40,0.05)]"
+                                    focus:outline-none focus:ring-0 border border-solid border-[#D0D5DD] h-[40px]"
                                 placeholder="Add explanation for this correct answer"
                                 type="text"
                                 value={question.explanation}
@@ -326,4 +315,3 @@ function Questions({ questionsList, setQuestionsList }: QuestionsProps) {
 }
 
 export default Questions;
-

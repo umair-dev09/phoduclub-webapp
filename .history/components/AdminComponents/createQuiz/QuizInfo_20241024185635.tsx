@@ -5,7 +5,7 @@ import ReactQuill from 'react-quill'; // Ensure correct import
 import Quill from 'quill'; // Import Quill to use it for types
 import { Popover, PopoverTrigger, PopoverContent } from '@nextui-org/popover';
 
-// Sending Data the to Createquiz
+// Define prop types for the component
 interface QuizInfoProps {
     quizName: string;
     setQuizName: Dispatch<SetStateAction<string>>;

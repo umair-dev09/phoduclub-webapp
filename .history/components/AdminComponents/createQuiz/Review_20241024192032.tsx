@@ -4,7 +4,7 @@ import Image from 'next/image';
 import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
-// Receving the data from CreateQuiz
+
 interface Options {
     A: string;
     B: string;
@@ -24,8 +24,8 @@ interface Question {
 interface ReviewProps {
     questionsList: Question[];
 }
-// --------------------------------------------------------------------------------------------------------------
-function Review({ questionsList }: ReviewProps) {
+
+const Review: React.FC<ReviewProps> = ({ questionsList }) => {
     return (
         <div className='flex flex-col w-full h-auto overflow-y-auto pt-5 pb-8 gap-4'>
             {questionsList.map((question, index) => (

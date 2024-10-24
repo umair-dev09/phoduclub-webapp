@@ -4,7 +4,7 @@ import Image from 'next/image';
 import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
-// Receving the data from CreateQuiz
+
 interface Options {
     A: string;
     B: string;
@@ -24,8 +24,8 @@ interface Question {
 interface ReviewProps {
     questionsList: Question[];
 }
-// --------------------------------------------------------------------------------------------------------------
-function Review({ questionsList }: ReviewProps) {
+
+const Review: React.FC<ReviewProps> = ({ questionsList }) => {
     return (
         <div className='flex flex-col w-full h-auto overflow-y-auto pt-5 pb-8 gap-4'>
             {questionsList.map((question, index) => (
@@ -41,6 +41,7 @@ function Review({ questionsList }: ReviewProps) {
                             <Image src='/icons/edit-icon.svg' alt='edit' width={18} height={18} />
                         </div> */}
                     </div>
+
                     {question.isChecked && (
                         <div className='flex pt-4 items-start justify-start'>
                             <Image
@@ -52,6 +53,7 @@ function Review({ questionsList }: ReviewProps) {
                             />
                         </div>
                     )}
+
                     <RadioGroup className='mt-4' value={question.correctAnswer}>
                         {Object.entries(question.options).map(([key, value]) => (
                             <FormControlLabel
@@ -72,6 +74,7 @@ function Review({ questionsList }: ReviewProps) {
                             />
                         ))}
                     </RadioGroup>
+
                     <hr className='my-4' />
                     <div className='flex flex-row items-center gap-1'>
                         <p className='text-[#667085] text-base font-normal'>Correct Answer :</p>

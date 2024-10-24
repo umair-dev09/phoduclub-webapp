@@ -1,5 +1,4 @@
 "use client";
-
 import { useState } from "react";
 import Image from "next/image";
 import Quizinfo from "@/components/AdminComponents/createQuiz/QuizInfo";
@@ -114,11 +113,11 @@ function CreateQuiz() {
 
     const getStepStyles = (step: Step) => {
         if (currentStep > step) {
-            return "bg-[#9012FF]";
+            return "bg-[#9012FF]"; // Completed step
         } else if (currentStep === step) {
-            return "bg-[#9012FF] ring-4 ring-[#E8DFFB]";
+            return "bg-[#9012FF] ring-4 ring-[#E8DFFB]"; // Active step
         } else {
-            return "border-2 border-[#D0D5DE]";
+            return "border-2 border-[#D0D5DE]"; // Upcoming step
         }
     };
     return (
@@ -150,6 +149,7 @@ function CreateQuiz() {
                     ))}
                 </div>
             </div>
+
             <div className="flex flex-col w-full ml-[20px] mr-8 mt-8">
                 <div className="h-15 ml-1 w-full border-b border-solid border-[#D0D5DD]">
                     <div className="flex flex-row justify-between ">

@@ -1,5 +1,4 @@
 "use client";
-
 import { useState } from "react";
 import Image from "next/image";
 import Quizinfo from "@/components/AdminComponents/createQuiz/QuizInfo";
@@ -45,25 +44,12 @@ function CreateQuiz() {
         explanation: ''
     }]);
 
+
+
+
+
     const [quizName, setQuizName] = useState<string>('');
     const [quizDescription, setQuizDescription] = useState<string>('');
-    // Validation function to check if all fields are filled for the Questions step
-    const isFormValid = () => {
-        if (currentStep === Step.QuizInfo) {
-            return quizName.trim() !== '' && quizDescription.trim() !== '';
-        }
-        return questionsList.every(question =>
-            question.question.trim() !== '' &&
-            question.options.A.trim() !== '' &&
-            question.options.B.trim() !== '' &&
-            question.options.C.trim() !== '' &&
-            question.options.D.trim() !== '' &&
-            question.correctAnswer !== null &&
-            question.explanation.trim() !== ''
-        );
-    };
-
-    const isNextButtonDisabled = !isFormValid();
 
     const handleNextClick = () => {
         if (currentStep === Step.Publish) {
@@ -114,13 +100,32 @@ function CreateQuiz() {
 
     const getStepStyles = (step: Step) => {
         if (currentStep > step) {
-            return "bg-[#9012FF]";
+            return "bg-[#9012FF]"; // Completed step
         } else if (currentStep === step) {
-            return "bg-[#9012FF] ring-4 ring-[#E8DFFB]";
+            return "bg-[#9012FF] ring-4 ring-[#E8DFFB]"; // Active step
         } else {
-            return "border-2 border-[#D0D5DE]";
+            return "border-2 border-[#D0D5DE]"; // Upcoming step
         }
     };
+
+    // Validation function to check if all fields are filled for the Questions step
+    const isFormValid = () => {
+        if (currentStep === Step.QuizInfo) {
+            return quizName.trim() !== '' && quizDescription.trim() !== '';
+        }
+        return questionsList.every(question =>
+            question.question.trim() !== '' &&
+            question.options.A.trim() !== '' &&
+            question.options.B.trim() !== '' &&
+            question.options.C.trim() !== '' &&
+            question.options.D.trim() !== '' &&
+            question.correctAnswer !== null &&
+            question.explanation.trim() !== ''
+        );
+    };
+
+    const isNextButtonDisabled = !isFormValid();
+
     return (
         <>
             <div className="ml-[32px] w-[250px] my-[32px] bg-[#FFFFFF] border border-solid border-[#EAECF0] rounded-md">
@@ -150,6 +155,7 @@ function CreateQuiz() {
                     ))}
                 </div>
             </div>
+
             <div className="flex flex-col w-full ml-[20px] mr-8 mt-8">
                 <div className="h-15 ml-1 w-full border-b border-solid border-[#D0D5DD]">
                     <div className="flex flex-row justify-between ">

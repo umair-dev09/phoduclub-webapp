@@ -12,6 +12,7 @@ interface Question {
     options: Options;
     correctAnswer: string | null;
     explanation: string;
+    selectedAnswer?: string | null; // Add this line
 }
 
 interface Options {
@@ -56,7 +57,7 @@ function Questions({ questionsList, setQuestionsList }: QuestionsProps) {
             }
         ]);
     };
-
+    // -----------------------------------------------------------------------------------------------------------
     // Handler for adding the Questions
     const handleAddQuestionduplicate = (duplicateQuestion?: Question) => {
         const newQuestion = duplicateQuestion
@@ -72,7 +73,7 @@ function Questions({ questionsList, setQuestionsList }: QuestionsProps) {
 
         setQuestionsList([...questionsList, newQuestion]);
     };
-
+    // -----------------------------------------------------------------------------------------------------------
     // Handler for deleting question
     const handleDeleteQuestion = (index: number) => {
         console.log("Deleting question at index:", index); // Debugging
@@ -82,49 +83,64 @@ function Questions({ questionsList, setQuestionsList }: QuestionsProps) {
             return updatedList.filter((_, i) => i !== index); // Delete the question
         });
     };
-
+    // -----------------------------------------------------------------------------------------------------------
     // Handler for option change
     const handleOptionChange = (questionIndex: number, optionKey: keyof Options, value: string) => {
         const newQuestionsList = [...questionsList];
         newQuestionsList[questionIndex].options[optionKey] = value;
         setQuestionsList(newQuestionsList);
     };
-
+    // -----------------------------------------------------------------------------------------------------------
     // Handler for explanation change
     const handleExplanationChange = (index: number, value: string) => {
         const newQuestionsList = [...questionsList];
         newQuestionsList[index].explanation = value;
         setQuestionsList(newQuestionsList);
     };
-
+    // -----------------------------------------------------------------------------------------------------------
     // Handler for setting correct answer
     const handleCorrectAnswerSelect = (questionIndex: number, optionKey: keyof Options) => {
         const newQuestionsList = [...questionsList];
         newQuestionsList[questionIndex].correctAnswer = optionKey;
+        newQuestionsList[questionIndex].selectedAnswer = optionKey; // Update the selected answer
         setQuestionsList(newQuestionsList);
-        handlePopoverClose();
+
     };
+
     const getSelectedAnswerDisplay = (question: Question) => {
-        if (!question.correctAnswer) return "Select correct answer";
+        const selectedAnswer = question.selectedAnswer;
 
-        // Assert that correctAnswer is a valid key in the options object
-        const selectedAnswer = question.options[question.correctAnswer as keyof Options];
+        if (!selectedAnswer) return "Select correct answer";
 
-        return selectedAnswer
-            ? `${question.correctAnswer}. ${selectedAnswer}`
-            : `Option ${question.correctAnswer}`;
+        // Assert that selectedAnswer is a valid key in the options object
+        const answerDisplay = question.options[selectedAnswer as keyof Options];
+
+        return answerDisplay
+            ? `${selectedAnswer}. ${answerDisplay}`
+            : `Option ${selectedAnswer}`;
     };
 
+    // -----------------------------------------------------------------------------------------------------------
     // function for the change color of border and shadow when the "select the correct answer div is active"
-    const handleclickonselectbutton = () => {
-        setIsPopoverOpen(!isPopoverOpen); // Toggle the popover
+    const handleclickonselectbutton = (index: number) => {
+        setQuestionsList((prev) => {
+            const updatedList = [...prev];
+            updatedList[index].isActive = !updatedList[index].isActive; // Toggle isActive for this question
+            return updatedList;
+        });
     };
+
     const [isPopoverOpen, setIsPopoverOpen] = useState(false);
     const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
 
-    const handlePopoverClose = () => {
-        setIsPopoverOpen(false);
+    const handlePopoverClose = (index: number) => {
+        setQuestionsList((prev) => {
+            const updatedList = [...prev];
+            updatedList[index].isActive = false; // Close the popover for this question
+            return updatedList;
+        });
     };
+
     const isActive = isPopoverOpen || !!selectedAnswer;
 
     return (
@@ -194,7 +210,7 @@ function Questions({ questionsList, setQuestionsList }: QuestionsProps) {
                                 <span className="font-semibold text-base text-[#1D2939]">Question</span>
                                 <input
                                     className="font-medium pl-3 text-[#101828] text-sm placeholder:text-[#A1A1A1] rounded-md placeholder:font-normal
-                                        focus:outline-none focus:ring-0 border border-solid border-[#D0D5DD] h-[40px] focus:border-[#D6BBFB]
+                                        focus:outline-none focus:ring-0 border border-solid border-[#D0D5DD] h-[40px] focus:border-[#D6BBFB] 
                                               focus:shadow-[0px_0px_0px_4px_rgba(158,119,237,0.25),0px_1px_2px_0px_rgba(16,24,40,0.05)]"
                                     placeholder="Enter question"
                                     type="text"
@@ -249,7 +265,7 @@ function Questions({ questionsList, setQuestionsList }: QuestionsProps) {
                                         />
                                         <input
                                             className="font-medium pl-3 text-[#101828] text-sm placeholder:text-[#A1A1A1] rounded-md w-full placeholder:font-normal
-                                                focus:outline-none focus:ring-0 border border-solid border-[#D0D5DD] h-[40px] focus:border-[#D6BBFB]
+                                                focus:outline-none focus:ring-0 border border-solid border-[#D0D5DD] h-[40px] focus:border-[#D6BBFB] 
                                               focus:shadow-[0px_0px_0px_4px_rgba(158,119,237,0.25),0px_1px_2px_0px_rgba(16,24,40,0.05)]"
                                             placeholder={`Option ${optionKey}`}
                                             value={question.options[optionKey]}
@@ -260,13 +276,13 @@ function Questions({ questionsList, setQuestionsList }: QuestionsProps) {
                             </div>
 
                             <span className="font-semibold text-base text-[#1D2939]">Correct answer</span>
-                            <Popover placement="bottom" isOpen={isPopoverOpen} onClose={handlePopoverClose}>
+                            <Popover placement="bottom" isOpen={question.isActive} onClose={() => handlePopoverClose(index)}>
                                 <PopoverTrigger>
                                     <button
-                                        className={`h-[40px] px-3 items-center w-full justify-between flex flex-row rounded-md border border-solid
-                                ${isActive ? 'border-[#D6BBFB] shadow-[0px_0px_0px_4px_rgba(158,119,237,0.25),0px_1px_2px_0px_rgba(16,24,40,0.05)]' : ' border-[#D0D5DD]'}
+                                        className={`h-[40px] px-3 items-center w-full justify-between flex flex-row rounded-md border border-solid 
+                                ${isActive ? 'border-[#D6BBFB] shadow-[0px_0px_0px_4px_rgba(158,119,237,0.25),0px_1px_2px_0px_rgba(16,24,40,0.05)]' : ' border-[#D0D5DD]'} 
                                 bg-[#FFFFFF] focus:outline-none`}
-                                        onClick={handleclickonselectbutton}
+                                        onClick={() => handleclickonselectbutton(index)}
                                     >
                                         <span className={`font-normal text-sm ${selectedAnswer ? 'text-[#101828]' : 'text-[#667085]'}`}>
                                             {getSelectedAnswerDisplay(question)}
@@ -301,7 +317,7 @@ function Questions({ questionsList, setQuestionsList }: QuestionsProps) {
                             </Popover>
                             <input
                                 className="font-medium pl-3 text-[#101828] text-sm placeholder:text-[#A1A1A1] rounded-md w-full placeholder:font-normal
-                                    focus:outline-none focus:ring-0 border border-solid border-[#D0D5DD] h-[40px] focus:border-[#D6BBFB]
+                                    focus:outline-none focus:ring-0 border border-solid border-[#D0D5DD] h-[40px] focus:border-[#D6BBFB] 
                                               focus:shadow-[0px_0px_0px_4px_rgba(158,119,237,0.25),0px_1px_2px_0px_rgba(16,24,40,0.05)]"
                                 placeholder="Add explanation for this correct answer"
                                 type="text"
