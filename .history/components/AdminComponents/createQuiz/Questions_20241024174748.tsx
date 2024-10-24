@@ -20,7 +20,8 @@ interface Options {
     C: string;
     D: string;
 }
-// Sending the Data to the CreateQuiz
+
+
 interface QuestionsProps {
     questionsList: Question[];
     setQuestionsList: React.Dispatch<React.SetStateAction<Question[]>>;
@@ -34,14 +35,16 @@ function Questions({ questionsList, setQuestionsList }: QuestionsProps) {
         newQuestionsList[index].question = e.target.value;
         setQuestionsList(newQuestionsList);
     };
-    // -----------------------------------------------------------------------------------------------------------
+
+
+
     // Handler for checkbox change
     const handleCheckboxChange = (index: number) => {
         const newQuestionsList = [...questionsList];
         newQuestionsList[index].isChecked = !newQuestionsList[index].isChecked;
         setQuestionsList(newQuestionsList);
     };
-    // -----------------------------------------------------------------------------------------------------------
+
     // Handler for adding new question
     const handleAddQuestion = () => {
         setQuestionsList([
@@ -57,7 +60,6 @@ function Questions({ questionsList, setQuestionsList }: QuestionsProps) {
         ]);
     };
 
-    // Handler for adding the Questions
     const handleAddQuestionduplicate = (duplicateQuestion?: Question) => {
         const newQuestion = duplicateQuestion
             ? { ...duplicateQuestion } // Duplicate all properties of the question
@@ -72,7 +74,6 @@ function Questions({ questionsList, setQuestionsList }: QuestionsProps) {
 
         setQuestionsList([...questionsList, newQuestion]);
     };
-
     // Handler for deleting question
     const handleDeleteQuestion = (index: number) => {
         console.log("Deleting question at index:", index); // Debugging
@@ -82,6 +83,9 @@ function Questions({ questionsList, setQuestionsList }: QuestionsProps) {
             return updatedList.filter((_, i) => i !== index); // Delete the question
         });
     };
+
+
+
 
     // Handler for option change
     const handleOptionChange = (questionIndex: number, optionKey: keyof Options, value: string) => {
@@ -114,8 +118,8 @@ function Questions({ questionsList, setQuestionsList }: QuestionsProps) {
             ? `${question.correctAnswer}. ${selectedAnswer}`
             : `Option ${question.correctAnswer}`;
     };
-
     // function for the change color of border and shadow when the "select the correct answer div is active"
+
     const handleclickonselectbutton = () => {
         setIsPopoverOpen(!isPopoverOpen); // Toggle the popover
     };
@@ -125,7 +129,10 @@ function Questions({ questionsList, setQuestionsList }: QuestionsProps) {
     const handlePopoverClose = () => {
         setIsPopoverOpen(false);
     };
-    const isActive = isPopoverOpen || !!selectedAnswer;
+
+
+
+    const isActive = !!selectedAnswer; // Button is active if an answer is selected
 
     return (
         <div className="pb-4 h-auto">
@@ -194,7 +201,7 @@ function Questions({ questionsList, setQuestionsList }: QuestionsProps) {
                                 <span className="font-semibold text-base text-[#1D2939]">Question</span>
                                 <input
                                     className="font-medium pl-3 text-[#101828] text-sm placeholder:text-[#A1A1A1] rounded-md placeholder:font-normal
-                                        focus:outline-none focus:ring-0 border border-solid border-[#D0D5DD] h-[40px] focus:border-[#D6BBFB]
+                                        focus:outline-none focus:ring-0 border border-solid border-[#D0D5DD] h-[40px] focus:border-[#D6BBFB] 
                                               focus:shadow-[0px_0px_0px_4px_rgba(158,119,237,0.25),0px_1px_2px_0px_rgba(16,24,40,0.05)]"
                                     placeholder="Enter question"
                                     type="text"
@@ -249,7 +256,7 @@ function Questions({ questionsList, setQuestionsList }: QuestionsProps) {
                                         />
                                         <input
                                             className="font-medium pl-3 text-[#101828] text-sm placeholder:text-[#A1A1A1] rounded-md w-full placeholder:font-normal
-                                                focus:outline-none focus:ring-0 border border-solid border-[#D0D5DD] h-[40px] focus:border-[#D6BBFB]
+                                                focus:outline-none focus:ring-0 border border-solid border-[#D0D5DD] h-[40px] focus:border-[#D6BBFB] 
                                               focus:shadow-[0px_0px_0px_4px_rgba(158,119,237,0.25),0px_1px_2px_0px_rgba(16,24,40,0.05)]"
                                             placeholder={`Option ${optionKey}`}
                                             value={question.options[optionKey]}
@@ -263,8 +270,8 @@ function Questions({ questionsList, setQuestionsList }: QuestionsProps) {
                             <Popover placement="bottom" isOpen={isPopoverOpen} onClose={handlePopoverClose}>
                                 <PopoverTrigger>
                                     <button
-                                        className={`h-[40px] px-3 items-center w-full justify-between flex flex-row rounded-md border border-solid
-                                ${isActive ? 'border-[#D6BBFB] shadow-[0px_0px_0px_4px_rgba(158,119,237,0.25),0px_1px_2px_0px_rgba(16,24,40,0.05)]' : ' border-[#D0D5DD]'}
+                                        className={`h-[40px] px-3 items-center w-full justify-between flex flex-row rounded-md border border-solid 
+                                ${isActive ? 'border-[#D0D5DD]' : 'border-[#D6BBFB] shadow-[0px_0px_0px_4px_rgba(158,119,237,0.25),0px_1px_2px_0px_rgba(16,24,40,0.05)]'} 
                                 bg-[#FFFFFF] focus:outline-none`}
                                         onClick={handleclickonselectbutton}
                                     >
@@ -301,7 +308,7 @@ function Questions({ questionsList, setQuestionsList }: QuestionsProps) {
                             </Popover>
                             <input
                                 className="font-medium pl-3 text-[#101828] text-sm placeholder:text-[#A1A1A1] rounded-md w-full placeholder:font-normal
-                                    focus:outline-none focus:ring-0 border border-solid border-[#D0D5DD] h-[40px] focus:border-[#D6BBFB]
+                                    focus:outline-none focus:ring-0 border border-solid border-[#D0D5DD] h-[40px] focus:border-[#D6BBFB] 
                                               focus:shadow-[0px_0px_0px_4px_rgba(158,119,237,0.25),0px_1px_2px_0px_rgba(16,24,40,0.05)]"
                                 placeholder="Add explanation for this correct answer"
                                 type="text"

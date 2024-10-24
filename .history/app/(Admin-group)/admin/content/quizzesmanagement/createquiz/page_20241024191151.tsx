@@ -120,6 +120,9 @@ function CreateQuiz() {
             return "border-2 border-[#D0D5DE]"; // Upcoming step
         }
     };
+
+
+
     return (
         <>
             <div className="ml-[32px] w-[250px] my-[32px] bg-[#FFFFFF] border border-solid border-[#EAECF0] rounded-md">

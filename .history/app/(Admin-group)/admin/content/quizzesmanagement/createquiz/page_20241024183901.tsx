@@ -7,13 +7,14 @@ import Review from "@/components/AdminComponents/createQuiz/Review";
 import Publish from "@/components/AdminComponents/createQuiz/Publish";
 import QuizCreated from "@/components/AdminComponents/createQuiz/QuizCreated";
 
-// Define interfaces for question options and structure
+// Define interfaces here in the same file
 interface Options {
     A: string;
     B: string;
     C: string;
     D: string;
 }
+
 interface Question {
     question: string;
     isChecked: boolean;
@@ -22,7 +23,7 @@ interface Question {
     correctAnswer: string | null;
     explanation: string;
 }
-// Define an enum for the steps
+
 enum Step {
     QuizInfo = 0,
     Questions = 1,
@@ -33,6 +34,19 @@ enum Step {
 
 function CreateQuiz() {
     // Validation function to check if all fields are filled
+    const isFormValid = () => {
+        if (currentStep === Step.QuizInfo) {
+            return true; // Always allow "Next" in QuizInfo step
+        }
+        return questionsList.every(question =>
+            question.question.trim() !== '' &&  // Question should not be empty
+            question.options.A.trim() !== '' && // Option A should not be empty
+            question.options.B.trim() !== '' && // Option B should not be empty
+            question.options.C.trim() !== '' && // Option C should not be empty
+            question.options.D.trim() !== '' && // Option D should not be empty
+            question.correctAnswer !== null      // Correct answer should be selected
+        );
+    };
     const [currentStep, setCurrentStep] = useState<Step>(Step.QuizInfo);
     // Add questionsList state here
     const [questionsList, setQuestionsList] = useState<Question[]>([{
@@ -43,26 +57,6 @@ function CreateQuiz() {
         correctAnswer: null,
         explanation: ''
     }]);
-
-    const [quizName, setQuizName] = useState<string>('');
-    const [quizDescription, setQuizDescription] = useState<string>('');
-    // Validation function to check if all fields are filled for the Questions step
-    const isFormValid = () => {
-        if (currentStep === Step.QuizInfo) {
-            return quizName.trim() !== '' && quizDescription.trim() !== '';
-        }
-        return questionsList.every(question =>
-            question.question.trim() !== '' &&
-            question.options.A.trim() !== '' &&
-            question.options.B.trim() !== '' &&
-            question.options.C.trim() !== '' &&
-            question.options.D.trim() !== '' &&
-            question.correctAnswer !== null &&
-            question.explanation.trim() !== ''
-        );
-    };
-
-    const isNextButtonDisabled = !isFormValid();
 
     const handleNextClick = () => {
         if (currentStep === Step.Publish) {
@@ -81,21 +75,12 @@ function CreateQuiz() {
     const renderStepContent = () => {
         switch (currentStep) {
             case Step.QuizInfo:
-                return (
-                    <Quizinfo
-                        quizName={quizName}
-                        setQuizName={setQuizName}
-                        quizDescription={quizDescription}
-                        setQuizDescription={setQuizDescription}
-                    />
-                );
+                return <Quizinfo />;
             case Step.Questions:
-                return (
-                    <Questions
-                        questionsList={questionsList}
-                        setQuestionsList={setQuestionsList}
-                    />
-                );
+                return <Questions
+                    questionsList={questionsList}
+                    setQuestionsList={setQuestionsList}
+                />;
             case Step.Review:
                 return <Review questionsList={questionsList} />;
             case Step.Publish:
@@ -103,11 +88,7 @@ function CreateQuiz() {
             case Step.QuizCreated:
                 return <QuizCreated />;
             default:
-                return <Quizinfo
-                    quizName={quizName}
-                    setQuizName={setQuizName}
-                    quizDescription={quizDescription}
-                    setQuizDescription={setQuizDescription} />;
+                return <Quizinfo />;
         }
     };
 
@@ -120,6 +101,12 @@ function CreateQuiz() {
             return "border-2 border-[#D0D5DE]"; // Upcoming step
         }
     };
+
+    // Render nothing but the Quiz Created component if it's the current step
+    if (currentStep === Step.QuizCreated) {
+        return <QuizCreated />;
+    }
+
     return (
         <>
             <div className="ml-[32px] w-[250px] my-[32px] bg-[#FFFFFF] border border-solid border-[#EAECF0] rounded-md">
@@ -151,11 +138,12 @@ function CreateQuiz() {
             </div>
 
             <div className="flex flex-col w-full ml-[20px] mr-8 mt-8">
-                <div className="h-15 ml-1 w-full border-b border-solid border-[#D0D5DD]">
+                <div className="h-15 ml-1 w-full border-b border-solid border-[#D0D5DD] ">
                     <div className="flex flex-row justify-between ">
                         <span className="text-lg font-semibold text-[#1D2939] flex items-center">
                             {["Quiz info", "Questions", "Review", "Publish"][currentStep]}
                         </span>
+
                         <div className="flex flex-row gap-3 mb-3">
                             {currentStep > Step.QuizInfo && (
                                 <button
@@ -165,23 +153,20 @@ function CreateQuiz() {
                                     <span className="text-[#1D2939] font-semibold text-sm">Previous</span>
                                 </button>
                             )}
+
                             <button
-                                className={`h-[44px] w-[135px] rounded-md shadow-inner-button border border-solid 
-                                    ${isNextButtonDisabled
-                                        ? 'text-white bg-[#8501FF] border-[#800EE2] opacity-35 cursor-not-allowed'
-                                        : 'text-white bg-[#8501FF] border-[#800EE2] hover:bg-[#7001D1]'
-                                    }
-                                    flex items-center justify-center transition-colors`}
+                                className={`h-[44px] w-[135px] ${currentStep === Step.Publish ? "bg-[#8501FF]" : "bg-[#8501FF]"} rounded-md shadow-inner-button border border-solid border-[#800EE2] flex items-center justify-center`}
                                 onClick={handleNextClick}
-                                disabled={isNextButtonDisabled}
+                                disabled={!isFormValid()}
                             >
-                                <span className={`font-semibold text-sm ${isNextButtonDisabled ? 'text-[#9CA3AF]' : 'text-[#FFFFFF]'}`}>
+                                <span className="text-[#FFFFFF] font-semibold text-sm">
                                     {currentStep === Step.Publish ? "Publish" : "Next"}
                                 </span>
                             </button>
                         </div>
                     </div>
                 </div>
+
                 <div className="overflow-y-auto">
                     {renderStepContent()}
                 </div>
@@ -191,4 +176,3 @@ function CreateQuiz() {
 }
 
 export default CreateQuiz;
-

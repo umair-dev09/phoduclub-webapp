@@ -46,23 +46,6 @@ function CreateQuiz() {
 
     const [quizName, setQuizName] = useState<string>('');
     const [quizDescription, setQuizDescription] = useState<string>('');
-    // Validation function to check if all fields are filled for the Questions step
-    const isFormValid = () => {
-        if (currentStep === Step.QuizInfo) {
-            return quizName.trim() !== '' && quizDescription.trim() !== '';
-        }
-        return questionsList.every(question =>
-            question.question.trim() !== '' &&
-            question.options.A.trim() !== '' &&
-            question.options.B.trim() !== '' &&
-            question.options.C.trim() !== '' &&
-            question.options.D.trim() !== '' &&
-            question.correctAnswer !== null &&
-            question.explanation.trim() !== ''
-        );
-    };
-
-    const isNextButtonDisabled = !isFormValid();
 
     const handleNextClick = () => {
         if (currentStep === Step.Publish) {
@@ -120,6 +103,9 @@ function CreateQuiz() {
             return "border-2 border-[#D0D5DE]"; // Upcoming step
         }
     };
+
+
+
     return (
         <>
             <div className="ml-[32px] w-[250px] my-[32px] bg-[#FFFFFF] border border-solid border-[#EAECF0] rounded-md">
