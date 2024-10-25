@@ -231,10 +231,12 @@ function PaginationSection({
     };
 
     return (
-        <Pagination className="mt-4">
+        <Pagination className="mt-4 justify-end">
             <PaginationContent className="bg-white rounded-md">
                 <PaginationItem>
-                    <PaginationPrevious onClick={handlePrevPage} />
+                    <button>
+                        <PaginationPrevious onClick={handlePrevPage} />
+                    </button>
                 </PaginationItem>
                 {[...Array(totalPages)].map((_, idx) => (
                     <PaginationItem key={idx}>
@@ -250,7 +252,9 @@ function PaginationSection({
                     </PaginationItem>
                 ))}
                 <PaginationItem>
-                    <PaginationNext onClick={handleNextPage} />
+                    <button>
+                        <PaginationNext onClick={handleNextPage} />
+                    </button>
                 </PaginationItem>
             </PaginationContent>
         </Pagination>
