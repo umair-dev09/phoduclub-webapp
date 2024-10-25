@@ -150,60 +150,64 @@ function Quizz() {
                     <span className="text-lg">Loading quizzes...</span>
                 </div>
             ) : (
-                <>
-                    <div className="border border-solid border-[#EAECF0] rounded-md">
-                        <table className="w-full bg-white rounded-xl">
-                            <thead>
-                                <tr>
-                                    <th className="w-1/4 text-left px-8 py-4 pl-8 rounded-tl-xl text-[#667085] font-medium text-sm">Quizzes</th>
-                                    <th className="w-[17%] text-center px-8 py-4 text-[#667085] font-medium text-sm">Questions</th>
-                                    <th className="w-[17%] text-center px-8 py-4 text-[#667085] font-medium text-sm">Published on</th>
-                                    <th className="w-[17%] text-center px-8 py-4 text-[#667085] font-medium text-sm">Students Attempted</th>
-                                    <th className="w-[17%] text-center px-8 py-4 rounded-tr-xl text-[#667085] font-medium text-sm">Status</th>
-                                    <th className="w-[12%] text-center px-8 py-4 rounded-tr-xl text-[#667085] font-medium text-sm">Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {currentItems.map((quiz, index) => (
-                                    <tr key={index} className="border-t border-solid border-[#EAECF0]">
-                                        <td className="px-8 py-4 text-[#101828] text-sm font-medium">{quiz.title}</td>
-                                        <td className="px-8 py-4 text-center text-[#101828] text-sm">{quiz.questions}</td>
-                                        <td className="px-8 py-4 text-center text-[#101828] text-sm">{quiz.date}</td>
-                                        <td className="px-8 py-4 text-center text-[#101828] text-sm">{quiz.students}</td>
-                                        <td className="px-8 py-4 text-center text-[#101828] text-sm">
-                                            <span className={`inline-flex items-center justify-center rounded-full`}>
-                                                <Image
-                                                    src={`/icons/${quiz.status}.svg`}
-                                                    width={74}
-                                                    height={24}
-                                                    alt={quiz.status}
-                                                />
-                                            </span>
-                                        </td>
-                                        <td className="px-8 py-4 text-center text-[#101828] text-sm">
-                                            <Image
-                                                src="/icons/three-dots.svg"
-                                                width={20}
-                                                height={20}
-                                                alt="More Actions"
-                                            />
-                                        </td>
+                <div className="flex flex-1 flex-col">
+                    <div className="h-full">
+                        <div className="border border-[#EAECF0] rounded-xl">
+                            <table className="w-full bg-white rounded-xl">
+                                <thead>
+                                    <tr>
+                                        <th className="w-1/4 text-left px-8 py-4 pl-8 rounded-tl-xl text-[#667085] font-medium text-sm">Quizzes</th>
+                                        <th className="w-[17%] text-center px-8 py-4 text-[#667085] font-medium text-sm">Questions</th>
+                                        <th className="w-[17%] text-center px-8 py-4 text-[#667085] font-medium text-sm">Published on</th>
+                                        <th className="w-[17%] text-center px-8 py-4 text-[#667085] font-medium text-sm">Students Attempted</th>
+                                        <th className="w-[17%] text-center px-8 py-4 rounded-tr-xl text-[#667085] font-medium text-sm">Status</th>
+                                        <th className="w-[12%] text-center px-8 py-4 rounded-tr-xl text-[#667085] font-medium text-sm">Actions</th>
                                     </tr>
-                                ))}
-                            </tbody>
-                        </table>
+                                </thead>
+                                <tbody>
+                                    {currentItems.map((quiz, index) => (
+                                        <tr key={index} className="border-t border-solid border-[#EAECF0]">
+                                            <td className="px-8 py-4 text-[#101828] text-sm font-medium">{quiz.title}</td>
+                                            <td className="px-8 py-4 text-center text-[#101828] text-sm">{quiz.questions}</td>
+                                            <td className="px-8 py-4 text-center text-[#101828] text-sm">{quiz.date}</td>
+                                            <td className="px-8 py-4 text-center text-[#101828] text-sm">{quiz.students}</td>
+                                            <td className="px-8 py-4 text-center text-[#101828] text-sm">
+                                                <span className={`inline-flex items-center justify-center rounded-full`}>
+                                                    <Image
+                                                        src={`/icons/${quiz.status}.svg`}
+                                                        width={74}
+                                                        height={24}
+                                                        alt={quiz.status}
+                                                    />
+                                                </span>
+                                            </td>
+                                            <td className="px-8 py-4 text-center text-[#101828] text-sm">
+                                                <Image
+                                                    src="/icons/three-dots.svg"
+                                                    width={20}
+                                                    height={20}
+                                                    alt="More Actions"
+                                                />
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
 
                     {/* Pagination Section */}
-                    <div className="flex justify-right">
-                        <PaginationSection
-                            totalItems={data.length}
-                            itemsPerPage={itemsPerPage}
-                            currentPage={currentPage}
-                            setCurrentPage={setCurrentPage}
-                        />
+                    <div>
+                        <div className="flex justify-right">
+                            <PaginationSection
+                                totalItems={data.length}
+                                itemsPerPage={itemsPerPage}
+                                currentPage={currentPage}
+                                setCurrentPage={setCurrentPage}
+                            />
+                        </div>
                     </div>
-                </>
+                </div>
             )}
         </div>
     );
@@ -300,7 +304,7 @@ function PaginationSection({
 
     return (
         <Pagination className="mt-4 justify-end">
-            <PaginationContent className="bg-white rounded-md flex flex-row items-center">
+            <PaginationContent className="bg-white border border-lightGrey rounded-md flex flex-row items-center">
                 <PaginationItem>
                     <button
                         onClick={handlePrevPage}
