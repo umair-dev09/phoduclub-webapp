@@ -327,8 +327,6 @@ function Quizz() {
                     ))}
                 </Pagination>
 
-
-
                 {/* Next Button */}
                 <button
                     className="bg-[#E5E5E5] text-[#667085] rounded-md px-4 py-2"

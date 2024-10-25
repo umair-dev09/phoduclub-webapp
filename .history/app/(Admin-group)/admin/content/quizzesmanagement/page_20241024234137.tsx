@@ -310,7 +310,7 @@ function Quizz() {
                 </button>
 
                 {/* Pagination Control */}
-                <Pagination
+                {/* <Pagination
                     isCompact
                     total={Math.ceil(totalQuizzes / pageSize)}
                     initialPage={currentPage}
@@ -325,8 +325,28 @@ function Quizz() {
                             {index + 1}
                         </Pagination.Item>
                     ))}
+                </Pagination> */}
+                <Pagination
+                    isCompact
+                    total={Math.ceil(totalQuizzes / pageSize)}
+                    initialPage={currentPage}
+                    onChange={(page) => setCurrentPage(page)}
+                >
+                    {Array.from({ length: Math.ceil(totalQuizzes / pageSize) }, (_, index) => (
+                        <Pagination.Item
+                            key={index + 1}
+                            isActive={currentPage === index + 1}
+                            onClick={() => setCurrentPage(index + 1)}
+                            className={`transition-colors duration-200 rounded-full w-8 h-8 flex items-center justify-center mx-2 cursor-pointer 
+        ${currentPage === index + 1
+                                    ? 'bg-purple-600 text-white'
+                                    : 'bg-gray-100 hover:bg-gray-300 text-gray-600'
+                                }`}
+                        >
+                            {index + 1}
+                        </Pagination.Item>
+                    ))}
                 </Pagination>
-
 
 
                 {/* Next Button */}

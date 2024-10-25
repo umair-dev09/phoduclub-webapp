@@ -56,7 +56,7 @@ function Questions({ questionsList, setQuestionsList }: QuestionsProps) {
             }
         ]);
     };
-    // -----------------------------------------------------------------------------------------------------------
+
     // Handler for adding the Questions
     const handleAddQuestionduplicate = (duplicateQuestion?: Question) => {
         const newQuestion = duplicateQuestion
@@ -72,7 +72,7 @@ function Questions({ questionsList, setQuestionsList }: QuestionsProps) {
 
         setQuestionsList([...questionsList, newQuestion]);
     };
-    // -----------------------------------------------------------------------------------------------------------
+
     // Handler for deleting question
     const handleDeleteQuestion = (index: number) => {
         console.log("Deleting question at index:", index); // Debugging
@@ -82,24 +82,22 @@ function Questions({ questionsList, setQuestionsList }: QuestionsProps) {
             return updatedList.filter((_, i) => i !== index); // Delete the question
         });
     };
-    // -----------------------------------------------------------------------------------------------------------
+
     // Handler for option change
     const handleOptionChange = (questionIndex: number, optionKey: keyof Options, value: string) => {
         const newQuestionsList = [...questionsList];
         newQuestionsList[questionIndex].options[optionKey] = value;
         setQuestionsList(newQuestionsList);
     };
-    // -----------------------------------------------------------------------------------------------------------
+
     // Handler for explanation change
     const handleExplanationChange = (index: number, value: string) => {
         const newQuestionsList = [...questionsList];
         newQuestionsList[index].explanation = value;
         setQuestionsList(newQuestionsList);
     };
-    // -----------------------------------------------------------------------------------------------------------
-    // STATE MANGEMENT FOR SELECT ANSWER AND POPOVER 
-    // Track popover state for each question
-    const [popoverOpenStates, setPopoverOpenStates] = useState<boolean[]>([]);
+
+    const [popoverOpenStates, setPopoverOpenStates] = useState<boolean[]>([]); // Track popover state for each question
 
     // Handler for setting correct answer
     const handleCorrectAnswerSelect = (questionIndex: number, optionKey: keyof Options) => {
@@ -135,7 +133,7 @@ function Questions({ questionsList, setQuestionsList }: QuestionsProps) {
 
     const isActive = (questionIndex: number) =>
         popoverOpenStates[questionIndex];
-    // -----------------------------------------------------------------------------------------------------------
+
 
 
     return (

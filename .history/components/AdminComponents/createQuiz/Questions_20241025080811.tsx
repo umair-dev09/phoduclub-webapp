@@ -56,7 +56,7 @@ function Questions({ questionsList, setQuestionsList }: QuestionsProps) {
             }
         ]);
     };
-    // -----------------------------------------------------------------------------------------------------------
+
     // Handler for adding the Questions
     const handleAddQuestionduplicate = (duplicateQuestion?: Question) => {
         const newQuestion = duplicateQuestion
@@ -72,7 +72,7 @@ function Questions({ questionsList, setQuestionsList }: QuestionsProps) {
 
         setQuestionsList([...questionsList, newQuestion]);
     };
-    // -----------------------------------------------------------------------------------------------------------
+
     // Handler for deleting question
     const handleDeleteQuestion = (index: number) => {
         console.log("Deleting question at index:", index); // Debugging
@@ -82,33 +82,28 @@ function Questions({ questionsList, setQuestionsList }: QuestionsProps) {
             return updatedList.filter((_, i) => i !== index); // Delete the question
         });
     };
-    // -----------------------------------------------------------------------------------------------------------
+
     // Handler for option change
     const handleOptionChange = (questionIndex: number, optionKey: keyof Options, value: string) => {
         const newQuestionsList = [...questionsList];
         newQuestionsList[questionIndex].options[optionKey] = value;
         setQuestionsList(newQuestionsList);
     };
-    // -----------------------------------------------------------------------------------------------------------
+
     // Handler for explanation change
     const handleExplanationChange = (index: number, value: string) => {
         const newQuestionsList = [...questionsList];
         newQuestionsList[index].explanation = value;
         setQuestionsList(newQuestionsList);
     };
-    // -----------------------------------------------------------------------------------------------------------
-    // STATE MANGEMENT FOR SELECT ANSWER AND POPOVER 
-    // Track popover state for each question
-    const [popoverOpenStates, setPopoverOpenStates] = useState<boolean[]>([]);
 
     // Handler for setting correct answer
     const handleCorrectAnswerSelect = (questionIndex: number, optionKey: keyof Options) => {
         const newQuestionsList = [...questionsList];
         newQuestionsList[questionIndex].correctAnswer = optionKey;
         setQuestionsList(newQuestionsList);
-        handlePopoverClose(questionIndex);
+        handlePopoverClose();
     };
-
     const getSelectedAnswerDisplay = (question: Question) => {
         if (!question.correctAnswer) return "Select correct answer";
 
@@ -120,23 +115,17 @@ function Questions({ questionsList, setQuestionsList }: QuestionsProps) {
             : `Option ${question.correctAnswer}`;
     };
 
-    // Handle click on select button for a specific question
-    const handleclickonselectbutton = (questionIndex: number) => {
-        const updatedPopoverStates = [...popoverOpenStates];
-        updatedPopoverStates[questionIndex] = !popoverOpenStates[questionIndex];
-        setPopoverOpenStates(updatedPopoverStates); // Toggle the popover for the specific question
+    // function for the change color of border and shadow when the "select the correct answer div is active"
+    const handleclickonselectbutton = () => {
+        setIsPopoverOpen(!isPopoverOpen); // Toggle the popover
     };
+    const [isPopoverOpen, setIsPopoverOpen] = useState(false);
+    const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
 
-    const handlePopoverClose = (questionIndex: number) => {
-        const updatedPopoverStates = [...popoverOpenStates];
-        updatedPopoverStates[questionIndex] = false;
-        setPopoverOpenStates(updatedPopoverStates);
+    const handlePopoverClose = () => {
+        setIsPopoverOpen(false);
     };
-
-    const isActive = (questionIndex: number) =>
-        popoverOpenStates[questionIndex];
-    // -----------------------------------------------------------------------------------------------------------
-
+    const isActive = isPopoverOpen || !!selectedAnswer;
 
     return (
         <div className="pb-4 h-auto">
@@ -272,23 +261,20 @@ function Questions({ questionsList, setQuestionsList }: QuestionsProps) {
 
                             <span className="font-semibold text-base text-[#1D2939]">Correct answer</span>
                             <Popover
-                                key={index}
                                 placement="bottom"
-                                isOpen={popoverOpenStates[index]} // Check the specific state for this question
-                                onClose={() => handlePopoverClose(index)}
+                                isOpen={openPopoverIndex === index}
+                                onClose={handlePopoverClose}
                             >
                                 <PopoverTrigger>
                                     <button
-                                        className={`h-[40px] px-3 items-center w-full justify-between flex flex-row rounded-md border border-solid ${isActive(index)
-                                            ? 'border-[#D6BBFB] shadow-[0px_0px_0px_4px_rgba(158,119,237,0.25),0px_1px_2px_0px_rgba(16,24,40,0.05)]'
-                                            : 'border-[#D0D5DD]'
+                                        className={`h-[40px] px-3 items-center w-full justify-between flex flex-row rounded-md border border-solid 
+            ${isActive
+                                                ? 'border-[#D6BBFB] shadow-[0px_0px_0px_4px_rgba(158,119,237,0.25),0px_1px_2px_0px_rgba(16,24,40,0.05)]'
+                                                : 'border-[#D0D5DD]'
                                             } bg-[#FFFFFF] focus:outline-none`}
-                                        onClick={() => handleclickonselectbutton(index)} // Pass the index
+                                        onClick={() => handleClickOnSelectButton(index)}
                                     >
-                                        <span
-                                            className={`font-normal text-sm ${questionsList[index].correctAnswer ? 'text-[#101828]' : 'text-[#667085]'
-                                                }`}
-                                        >
+                                        <span className={`font-normal text-sm ${question.correctAnswer ? 'text-[#101828]' : 'text-[#667085]'}`}>
                                             {getSelectedAnswerDisplay(question)}
                                         </span>
                                     </button>
@@ -299,17 +285,16 @@ function Questions({ questionsList, setQuestionsList }: QuestionsProps) {
                                             <div
                                                 key={optionKey}
                                                 className="flex flex-row justify-between w-full h-[40px] items-center hover:bg-[#F2F4F7] px-2 cursor-pointer"
-                                                onClick={() => handleCorrectAnswerSelect(index, optionKey)} // Pass the index
+                                                onClick={() => handleCorrectAnswerSelect(index, optionKey)}
                                             >
                                                 <span className="font-normal text-[#0C111D] text-sm">
                                                     {optionKey}. {question.options[optionKey] || `Option ${optionKey}`}
                                                 </span>
-                                                {questionsList[index].correctAnswer === optionKey && (
-                                                    <Image
+                                                {question.correctAnswer === optionKey && (
+                                                    <img
                                                         src="/icons/tick-02.svg"
-                                                        width={18}
-                                                        height={18}
                                                         alt="right mark"
+                                                        className="w-[18px] h-[18px]"
                                                     />
                                                 )}
                                             </div>

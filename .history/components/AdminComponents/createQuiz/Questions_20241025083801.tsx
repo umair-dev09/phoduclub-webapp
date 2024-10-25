@@ -97,7 +97,6 @@ function Questions({ questionsList, setQuestionsList }: QuestionsProps) {
         setQuestionsList(newQuestionsList);
     };
     // -----------------------------------------------------------------------------------------------------------
-    // STATE MANGEMENT FOR SELECT ANSWER AND POPOVER 
     // Track popover state for each question
     const [popoverOpenStates, setPopoverOpenStates] = useState<boolean[]>([]);
 
