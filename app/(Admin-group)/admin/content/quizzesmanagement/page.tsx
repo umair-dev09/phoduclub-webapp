@@ -12,6 +12,8 @@ import {
     PaginationNext,
     PaginationPrevious,
 } from "@/components/ui/pagination";
+import { Popover, PopoverContent, PopoverTrigger } from "@nextui-org/popover";
+import { Pause } from "lucide-react";
 
 // Define types for quiz data
 interface Quiz {
@@ -26,25 +28,36 @@ interface Quiz {
 const fetchQuizzes = async (): Promise<Quiz[]> => {
     const allQuizzes: Quiz[] = [
         { title: 'Maths', questions: 10, date: 'Jan 6, 2024', students: 2147, status: 'Live' },
+        { title: 'Ancient Civilizations', questions: 10, date: 'Mar 15, 2024', students: 900, status: 'Saved' },
         { title: 'Science', questions: 8, date: 'Jan 8, 2024', students: 1875, status: 'Paused' },
+        { title: 'Astronomy', questions: 7, date: 'Mar 17, 2024', students: 1250, status: 'Saved' },
         { title: 'History', questions: 12, date: 'Jan 10, 2024', students: 1290, status: 'Finished' },
         { title: 'Geography', questions: 6, date: 'Jan 12, 2024', students: 950, status: 'Cancelled' },
         { title: 'Physics', questions: 15, date: 'Feb 1, 2024', students: 1800, status: 'Scheduled' },
         { title: 'Chemistry', questions: 9, date: 'Feb 3, 2024', students: 1600, status: 'Live' },
+        { title: 'Creative Writing', questions: 12, date: 'Mar 22, 2024', students: 1400, status: 'Saved' },
         { title: 'English Literature', questions: 12, date: 'Feb 5, 2024', students: 1950, status: 'Paused' },
+        { title: 'Marine Biology', questions: 9, date: 'Mar 20, 2024', students: 1150, status: 'Saved' },
         { title: 'Biology', questions: 10, date: 'Feb 8, 2024', students: 2100, status: 'Finished' },
         { title: 'Computer Science', questions: 8, date: 'Feb 10, 2024', students: 2200, status: 'Cancelled' },
+        { title: 'Anthropology', questions: 6, date: 'Mar 28, 2024', students: 1100, status: 'Saved' },
         { title: 'Art History', questions: 7, date: 'Feb 12, 2024', students: 1700, status: 'Live' },
         { title: 'Philosophy', questions: 10, date: 'Feb 15, 2024', students: 1300, status: 'Scheduled' },
         { title: 'Economics', questions: 11, date: 'Feb 18, 2024', students: 1450, status: 'Finished' },
+        { title: 'Public Health', questions: 10, date: 'Apr 2, 2024', students: 1450, status: 'Saved' },
         { title: 'Political Science', questions: 9, date: 'Feb 20, 2024', students: 1900, status: 'Paused' },
+        { title: 'Neuroscience', questions: 10, date: 'Apr 6, 2024', students: 1250, status: 'Saved' },
         { title: 'Sociology', questions: 12, date: 'Feb 25, 2024', students: 1750, status: 'Live' },
         { title: 'Psychology', questions: 8, date: 'Mar 1, 2024', students: 2000, status: 'Cancelled' },
         { title: 'Environmental Science', questions: 7, date: 'Mar 3, 2024', students: 1500, status: 'Scheduled' },
         { title: 'World History', questions: 10, date: 'Mar 5, 2024', students: 1850, status: 'Finished' },
+        { title: 'Ethics', questions: 11, date: 'Mar 30, 2024', students: 1000, status: 'Saved' },
         { title: 'Statistics', questions: 9, date: 'Mar 8, 2024', students: 1700, status: 'Live' },
+        { title: 'Robotics', questions: 8, date: 'Apr 4, 2024', students: 1350, status: 'Saved' },
         { title: 'Business Studies', questions: 8, date: 'Mar 10, 2024', students: 1400, status: 'Paused' },
-        { title: 'Maths', questions: 6, date: 'Mar 12, 2024', students: 1200, status: 'Cancelled' },
+        { title: 'Music Theory', questions: 6, date: 'Mar 12, 2024', students: 1200, status: 'Cancelled' },
+        { title: 'Genetics', questions: 8, date: 'Mar 25, 2024', students: 1300, status: 'Saved' },
+        { title: 'Linguistics', questions: 7, date: 'Apr 10, 2024', students: 1050, status: 'Saved' }
     ];
     return allQuizzes;
 };
@@ -53,7 +66,7 @@ function Quizz() {
     const [data, setData] = useState<Quiz[]>([]);
     const [quizzes, setQuizzes] = useState<Quiz[]>([]);
     const [currentPage, setCurrentPage] = useState(1);
-    const [itemsPerPage] = useState(2);
+    const [itemsPerPage] = useState(5);
     const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState('');
     const router = useRouter();
@@ -172,22 +185,99 @@ function Quizz() {
                                             <td className="px-8 py-4 text-center text-[#101828] text-sm">{quiz.date}</td>
                                             <td className="px-8 py-4 text-center text-[#101828] text-sm">{quiz.students}</td>
                                             <td className="px-8 py-4 text-center text-[#101828] text-sm">
-                                                <span className={`inline-flex items-center justify-center rounded-full`}>
+                                                <span className='flex items-center justify-center rounded-full'>
                                                     <Image
                                                         src={`/icons/${quiz.status}.svg`}
                                                         width={74}
                                                         height={24}
                                                         alt={quiz.status}
+                                                        className="text-xs font-medium"
                                                     />
                                                 </span>
                                             </td>
-                                            <td className="px-8 py-4 text-center text-[#101828] text-sm">
-                                                <Image
-                                                    src="/icons/three-dots.svg"
-                                                    width={20}
-                                                    height={20}
-                                                    alt="More Actions"
-                                                />
+                                            <td className="flex items-center justify-center px-8 py-4 text-[#101828] text-sm">
+                                                <Popover placement="bottom-end">
+                                                    <PopoverTrigger className="outline-none">
+                                                        <button>
+                                                            <Image
+                                                                src="/icons/three-dots.svg"
+                                                                width={20}
+                                                                height={20}
+                                                                alt="More Actions"
+                                                            />
+                                                        </button>
+                                                    </PopoverTrigger>
+                                                    <PopoverContent className={`flex flex-col items-start text-sm font-normal py-1 px-0 bg-white border border-lightGrey rounded-md ${quiz.status === 'Paused' ? 'w-[11.563rem]' : 'w-[10.438rem]'}`}>
+                                                        {/* Option 1: Edit Quiz */}
+                                                        <div>
+                                                            {quiz.status === 'Paused' && (
+                                                                <div className="flex flex-row w-[11.563rem] px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors">
+                                                                    <Image src='/icons/edit-icon.svg' alt="edit" width={18} height={18} />
+                                                                    <p>Edit Quiz</p>
+                                                                </div>
+                                                            )}
+                                                            {(quiz.status === 'Scheduled' || quiz.status === 'Saved') && (
+                                                                <div className="flex flex-row w-[10.438rem] px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors">
+                                                                    <Image src='/icons/edit-icon.svg' alt="edit" width={18} height={18} />
+                                                                    <p>Edit Quiz</p>
+                                                                </div>
+                                                            )}
+                                                            {quiz.status === 'Live' && (
+                                                                <div className="flex flex-row w-[10.438rem] px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors">
+                                                                    <Image src='/icons/pause-dark.svg' alt="pause quiz" width={18} height={18} />
+                                                                    <p>Paused Quiz</p>
+                                                                </div>
+                                                            )}
+                                                            {quiz.status === 'Finished' && (
+                                                                <div className="flex flex-row w-[10.438rem] px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors">
+                                                                    <Image src='/icons/analytics-01.svg' alt="view analytics" width={18} height={18} />
+                                                                    <p>View Analytics</p>
+                                                                </div>
+                                                            )}
+                                                        </div>
+
+                                                        {/* Option 2: Schedule Quiz (only if status is Paused) */}
+                                                        {quiz.status === 'Paused' && (
+                                                            <Popover placement="left-start">
+                                                                <PopoverTrigger>
+                                                                    <div className="flex flex-row justify-between w-[11.563rem] px-4 py-[0.625rem] hover:bg-[#F2F4F7] transition-colors">
+                                                                        <div className="flex flex-row gap-2">
+                                                                            <Image src='/icons/calendar-03.svg' alt="schedule" width={18} height={18} />
+                                                                            <p>Schedule quiz</p>
+                                                                        </div>
+                                                                        <Image src='/icons/collapse-right-02.svg' alt="schedule popup" width={18} height={18} />
+                                                                    </div>
+                                                                </PopoverTrigger>
+                                                                <PopoverContent className="flex flex-col items-start text-sm font-normal py-1 px-0 bg-white border border-lightGrey rounded-md w-[11.25rem]">
+                                                                    <div className="w-full px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors">Schedule Quiz</div>
+                                                                    <div className="w-full px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors">Make Live Now</div>
+                                                                </PopoverContent>
+                                                            </Popover>
+                                                        )}
+
+                                                        {/* Option 3: Delete Quiz */}
+                                                        <div>
+                                                            {quiz.status === 'Paused' && (
+                                                                <div className="flex flex-row w-[11.563rem] px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors">
+                                                                    <Image src='/icons/delete.svg' alt="delete" width={18} height={18} />
+                                                                    <p className="text-[#DE3024]">Delete Quiz</p>
+                                                                </div>
+                                                            )}
+                                                            {(quiz.status === 'Scheduled' || quiz.status === 'Finished' || quiz.status === 'Saved') && (
+                                                                <div className="flex flex-row w-[10.438rem] px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors">
+                                                                    <Image src='/icons/delete.svg' alt="delete" width={18} height={18} />
+                                                                    <p className="text-[#DE3024]">Delete Quiz</p>
+                                                                </div>
+                                                            )}
+                                                            {quiz.status === 'Live' && (
+                                                                <div className="flex flex-row w-[10.438rem] px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors">
+                                                                    <Image src='/icons/license-no.svg' alt="end quiz" width={18} height={18} />
+                                                                    <p className="text-[#DE3024]">End Quiz</p>
+                                                                </div>
+                                                            )}
+                                                        </div>
+                                                    </PopoverContent>
+                                                </Popover>
                                             </td>
                                         </tr>
                                     ))}
