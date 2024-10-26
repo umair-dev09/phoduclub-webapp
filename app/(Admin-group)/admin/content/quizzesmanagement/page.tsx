@@ -207,28 +207,29 @@ function Quizz() {
                                                             />
                                                         </button>
                                                     </PopoverTrigger>
-
-                                                    {/* Apply conditional width inline */}
-                                                    <PopoverContent
-                                                        className="flex flex-col items-start text-sm font-normal py-1 px-0 bg-white border border-lightGrey rounded-md"
-                                                        style={{ width: quiz.status === 'Paused' ? '11.563rem' : '10.438rem' }}
-                                                    >
+                                                    <PopoverContent className={`flex flex-col items-start text-sm font-normal py-1 px-0 bg-white border border-lightGrey rounded-md ${quiz.status === 'Paused' ? 'w-[11.563rem]' : 'w-[10.438rem]'}`}>
                                                         {/* Option 1: Edit Quiz */}
                                                         <div>
-                                                            {(quiz.status === 'Paused' || quiz.status === 'Scheduled' || quiz.status === 'Saved') && (
-                                                                <div className="flex flex-row px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors">
+                                                            {quiz.status === 'Paused' && (
+                                                                <div className="flex flex-row w-[11.563rem] px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors">
+                                                                    <Image src='/icons/edit-icon.svg' alt="edit" width={18} height={18} />
+                                                                    <p>Edit Quiz</p>
+                                                                </div>
+                                                            )}
+                                                            {(quiz.status === 'Scheduled' || quiz.status === 'Saved') && (
+                                                                <div className="flex flex-row w-[10.438rem] px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors">
                                                                     <Image src='/icons/edit-icon.svg' alt="edit" width={18} height={18} />
                                                                     <p>Edit Quiz</p>
                                                                 </div>
                                                             )}
                                                             {quiz.status === 'Live' && (
-                                                                <div className="flex flex-row px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors">
+                                                                <div className="flex flex-row w-[10.438rem] px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors">
                                                                     <Image src='/icons/pause-dark.svg' alt="pause quiz" width={18} height={18} />
                                                                     <p>Paused Quiz</p>
                                                                 </div>
                                                             )}
                                                             {quiz.status === 'Finished' && (
-                                                                <div className="flex flex-row px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors">
+                                                                <div className="flex flex-row w-[10.438rem] px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors">
                                                                     <Image src='/icons/analytics-01.svg' alt="view analytics" width={18} height={18} />
                                                                     <p>View Analytics</p>
                                                                 </div>
@@ -239,7 +240,7 @@ function Quizz() {
                                                         {quiz.status === 'Paused' && (
                                                             <Popover placement="left-start">
                                                                 <PopoverTrigger>
-                                                                    <div className="flex flex-row justify-between px-4 py-[0.625rem] hover:bg-[#F2F4F7] transition-colors">
+                                                                    <div className="flex flex-row justify-between w-[11.563rem] px-4 py-[0.625rem] hover:bg-[#F2F4F7] transition-colors">
                                                                         <div className="flex flex-row gap-2">
                                                                             <Image src='/icons/calendar-03.svg' alt="schedule" width={18} height={18} />
                                                                             <p>Schedule quiz</p>
@@ -248,22 +249,28 @@ function Quizz() {
                                                                     </div>
                                                                 </PopoverTrigger>
                                                                 <PopoverContent className="flex flex-col items-start text-sm font-normal py-1 px-0 bg-white border border-lightGrey rounded-md w-[11.25rem]">
-                                                                    <div className="px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors">Schedule Quiz</div>
-                                                                    <div className="px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors">Make Live Now</div>
+                                                                    <div className="w-full px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors">Schedule Quiz</div>
+                                                                    <div className="w-full px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors">Make Live Now</div>
                                                                 </PopoverContent>
                                                             </Popover>
                                                         )}
 
                                                         {/* Option 3: Delete Quiz */}
                                                         <div>
-                                                            {(quiz.status === 'Paused' || quiz.status === 'Scheduled' || quiz.status === 'Finished' || quiz.status === 'Saved') && (
-                                                                <div className="flex flex-row px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors">
+                                                            {quiz.status === 'Paused' && (
+                                                                <div className="flex flex-row w-[11.563rem] px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors">
+                                                                    <Image src='/icons/delete.svg' alt="delete" width={18} height={18} />
+                                                                    <p className="text-[#DE3024]">Delete Quiz</p>
+                                                                </div>
+                                                            )}
+                                                            {(quiz.status === 'Scheduled' || quiz.status === 'Finished' || quiz.status === 'Saved') && (
+                                                                <div className="flex flex-row w-[10.438rem] px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors">
                                                                     <Image src='/icons/delete.svg' alt="delete" width={18} height={18} />
                                                                     <p className="text-[#DE3024]">Delete Quiz</p>
                                                                 </div>
                                                             )}
                                                             {quiz.status === 'Live' && (
-                                                                <div className="flex flex-row px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors">
+                                                                <div className="flex flex-row w-[10.438rem] px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors">
                                                                     <Image src='/icons/license-no.svg' alt="end quiz" width={18} height={18} />
                                                                     <p className="text-[#DE3024]">End Quiz</p>
                                                                 </div>
