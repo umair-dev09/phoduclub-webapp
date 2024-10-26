@@ -12,6 +12,8 @@ import {
     PaginationNext,
     PaginationPrevious,
 } from "@/components/ui/pagination";
+import { Popover, PopoverContent, PopoverTrigger } from "@nextui-org/popover";
+import { Pause } from "lucide-react";
 
 // Define types for quiz data
 interface Quiz {
@@ -53,7 +55,7 @@ function Quizz() {
     const [data, setData] = useState<Quiz[]>([]);
     const [quizzes, setQuizzes] = useState<Quiz[]>([]);
     const [currentPage, setCurrentPage] = useState(1);
-    const [itemsPerPage] = useState(2);
+    const [itemsPerPage] = useState(5);
     const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState('');
     const router = useRouter();
@@ -172,22 +174,66 @@ function Quizz() {
                                             <td className="px-8 py-4 text-center text-[#101828] text-sm">{quiz.date}</td>
                                             <td className="px-8 py-4 text-center text-[#101828] text-sm">{quiz.students}</td>
                                             <td className="px-8 py-4 text-center text-[#101828] text-sm">
-                                                <span className={`inline-flex items-center justify-center rounded-full`}>
+                                                <span className='flex items-center justify-center rounded-full'>
                                                     <Image
                                                         src={`/icons/${quiz.status}.svg`}
                                                         width={74}
                                                         height={24}
                                                         alt={quiz.status}
+                                                        className="text-xs font-medium"
                                                     />
                                                 </span>
                                             </td>
-                                            <td className="px-8 py-4 text-center text-[#101828] text-sm">
-                                                <Image
-                                                    src="/icons/three-dots.svg"
-                                                    width={20}
-                                                    height={20}
-                                                    alt="More Actions"
-                                                />
+                                            <td className="flex items-center justify-center px-8 py-4 text-[#101828] text-sm">
+                                                <Popover placement="bottom-end">
+                                                    <PopoverTrigger className="outline-none">
+                                                        <button>
+                                                            <Image
+                                                                src="/icons/three-dots.svg"
+                                                                width={20}
+                                                                height={20}
+                                                                alt="More Actions"
+                                                            />
+                                                        </button>
+                                                    </PopoverTrigger>
+
+                                                    {/* Apply conditional width inline */}
+                                                    <PopoverContent
+                                                        className="flex flex-col items-start text-sm font-normal py-1 px-0 bg-white border border-lightGrey rounded-md"
+                                                        style={{ width: quiz.status === 'Paused' ? '11.563rem' : '10.438rem' }}
+                                                    >
+                                                        {/* Option 1: Edit Quiz */}
+                                                        <div className="flex flex-row px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors">
+                                                            <Image src='/icons/edit-icon.svg' alt="edit" width={18} height={18} />
+                                                            <p>Edit Quiz</p>
+                                                        </div>
+
+                                                        {/* Option 2: Schedule Quiz (only if status is Paused) */}
+                                                        {quiz.status === 'Paused' && (
+                                                            <Popover placement="left-start">
+                                                                <PopoverTrigger>
+                                                                    <div className="flex flex-row justify-between px-4 py-[0.625rem] hover:bg-[#F2F4F7] transition-colors">
+                                                                        <div className="flex flex-row gap-2">
+                                                                            <Image src='/icons/calendar-03.svg' alt="schedule" width={18} height={18} />
+                                                                            <p>Schedule quiz</p>
+                                                                        </div>
+                                                                        <Image src='/icons/collapse-right-02.svg' alt="schedule popup" width={18} height={18} />
+                                                                    </div>
+                                                                </PopoverTrigger>
+                                                                <PopoverContent className="flex flex-col items-start text-sm font-normal py-1 px-0 bg-white border border-lightGrey rounded-md w-[11.25rem]">
+                                                                    <div className="px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors">Schedule Quiz</div>
+                                                                    <div className="px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors">Make Live Now</div>
+                                                                </PopoverContent>
+                                                            </Popover>
+                                                        )}
+
+                                                        {/* Option 3: Delete Quiz */}
+                                                        <div className="flex flex-row px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors">
+                                                            <Image src='/icons/delete.svg' alt="delete" width={18} height={18} />
+                                                            <p className="text-[#DE3024]">Delete Quiz</p>
+                                                        </div>
+                                                    </PopoverContent>
+                                                </Popover>
                                             </td>
                                         </tr>
                                     ))}
