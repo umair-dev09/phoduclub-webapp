@@ -55,8 +55,8 @@ export default function DashboardGroup({ children }: DashboardGroupProps) {
             <div className="contents">
                 <div className="content-box">
                     <div className="font-bold text-[#1D2939] text-lg">
-
-                        <Header currentPage={currentPage} />
+                        {/* Only render Header if pathname does not include 'quizinfo' */}
+                        {!pathname?.includes('quizinfo') && <Header currentPage={currentPage} />}
                     </div>
                     <div className="variable-contents">
                         {children}
