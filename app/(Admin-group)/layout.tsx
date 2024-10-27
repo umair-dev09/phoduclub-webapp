@@ -40,6 +40,9 @@ export default function DashboardGroup({ children }: DashboardGroupProps) {
             case 'createquiz':
                 pageName = 'Back to Quizzes Management';
                 break;
+            case 'quizinfo':
+                pageName = 'Back to Quizzes Management';
+                break;
             default:
                 pageName = 'Dashboard';
         }
@@ -55,7 +58,6 @@ export default function DashboardGroup({ children }: DashboardGroupProps) {
             <div className="contents">
                 <div className="content-box">
                     <div className="font-bold text-[#1D2939] text-lg">
-
                         <Header currentPage={currentPage} />
                     </div>
                     <div className="variable-contents">

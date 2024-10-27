@@ -225,7 +225,7 @@ function Quizz() {
                                 <tbody>
                                     {currentItems.map((quiz, index) => (
                                         <tr key={index} className="border-t border-solid border-[#EAECF0]">
-                                            <td className="px-8 py-4 text-[#9012FF] underline text-sm font-medium">{quiz.title}</td>
+                                            <td onClick={() => handleTabClick('/admin/content/quizzesmanagement/quizinfo')}><button className="px-8 py-4 text-[#9012FF] underline text-sm font-medium">{quiz.title}</button></td>
                                             <td className="px-8 py-4 text-center text-[#101828] text-sm">{quiz.questions}</td>
                                             <td className="px-8 py-4 text-center text-[#101828] text-sm">{quiz.date}</td>
                                             <td className="px-8 py-4 text-center text-[#101828] text-sm">{quiz.students}</td>
@@ -256,19 +256,22 @@ function Quizz() {
                                                         {/* Option 1: Edit Quiz */}
                                                         <div>
                                                             {quiz.status === 'Paused' && (
-                                                                <div className="flex flex-row w-[11.563rem] px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors">
+                                                                <div className="flex flex-row w-[11.563rem] px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors"
+                                                                    onClick={() => handleTabClick('/admin/content/quizzesmanagement/createquiz')}>
                                                                     <Image src='/icons/edit-icon.svg' alt="edit" width={18} height={18} />
                                                                     <p>Edit Quiz</p>
                                                                 </div>
                                                             )}
                                                             {quiz.status === 'Scheduled' && (
-                                                                <div className="flex flex-row w-[10.438rem] px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors">
+                                                                <div className="flex flex-row w-[10.438rem] px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors"
+                                                                    onClick={() => handleTabClick('/admin/content/quizzesmanagement/createquiz')}>
                                                                     <Image src='/icons/edit-icon.svg' alt="edit" width={18} height={18} />
                                                                     <p>Edit Quiz</p>
                                                                 </div>
                                                             )}
                                                             {quiz.status === 'Saved' && (
-                                                                <div className="flex flex-row w-[10.438rem] px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors">
+                                                                <div className="flex flex-row w-[10.438rem] px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors"
+                                                                    onClick={() => handleTabClick('/admin/content/quizzesmanagement/createquiz')}>
                                                                     <Image src='/icons/edit-icon.svg' alt="edit" width={18} height={18} />
                                                                     <p>Edit Quiz</p>
                                                                 </div>
