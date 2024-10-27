@@ -116,8 +116,7 @@ export type IconsType =
   | "uploadcheckmark"
   | "publish-quiz"
   | "expandall"
-  | "endquiz"
-  | "pausequiz";
+  | "endquiz";
 
 
 

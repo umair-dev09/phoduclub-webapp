@@ -114,10 +114,7 @@ export type IconsType =
   | "duplicate"
   | "delete"
   | "uploadcheckmark"
-  | "publish-quiz"
-  | "expandall"
-  | "endquiz"
-  | "pausequiz";
+  | "publish-quiz";
 
 
 

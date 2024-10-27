@@ -1,0 +1,10 @@
+function Quizinfo() {
+    return (
+        <div className="flex w-full h-auto overflow-y-auto">
+            <h1>jabir ur are handsome</h1>
+            <h1>jabir ur are handsome</h1>    <h1>jabir ur are handsome</h1>    <h1>jabir ur are handsome</h1>    <h1>jabir ur are handsome</h1>    <h1>jabir ur are handsome</h1>    <h1>jabir ur are handsome</h1>    <h1>jabir ur are handsome</h1>    <h1>jabir ur are handsome</h1>    <h1>jabir ur are handsome</h1>    <h1>jabir ur are handsome</h1>    <h1>jabir ur are handsome</h1>    <h1>jabir ur are handsome</h1>    <h1>jabir ur are handsome</h1>    <h1>jabir ur are handsome</h1>    <h1>jabir ur are handsome</h1>    <h1>jabir ur are handsome</h1>    <h1>jabir ur are handsome</h1>    <h1>jabir ur are handsome</h1>    <h1>jabir ur are handsome</h1>    <h1>jabir ur are handsome</h1>    <h1>jabir ur are handsome</h1>    <h1>jabir ur are handsome</h1>    <h1>jabir ur are handsome</h1>    <h1>jabir ur are handsome</h1>    <h1>jabir ur are handsome</h1>    <h1>jabir ur are handsome</h1>    <h1>jabir ur are handsome</h1>    <h1>jabir ur are handsome</h1>    <h1>jabir ur are handsome</h1>    <h1>jabir ur are handsome</h1>    <h1>jabir ur are handsome</h1>    <h1>jabir ur are handsome</h1>    <h1>jabir ur are handsome</h1>    <h1>jabir ur are handsome</h1>    <h1>jabir ur are handsome</h1>    <h1>jabir ur are handsome</h1>    <h1>jabir ur are handsome</h1>    <h1>jabir ur are handsome</h1>    <h1>jabir ur are handsome</h1>    <h1>jabir ur are handsome</h1>    <h1>jabir ur are handsome</h1>    <h1>jabir ur are handsome</h1>    <h1>jabir ur are handsome</h1>    <h1>jabir ur are handsome</h1>    <h1>jabir ur are handsome</h1>    <h1>jabir ur are handsome</h1>    <h1>jabir ur are handsome</h1>    <h1>jabir ur are handsome</h1>    <h1>jabir ur are handsome</h1>    <h1>jabir ur are handsome</h1>    <h1>jabir ur are handsome</h1>    <h1>jabir ur are handsome</h1>    <h1>jabir ur are handsome</h1>    <h1>jabir ur are handsome</h1>    <h1>jabir ur are handsome</h1>    <h1>jabir ur are handsome</h1>    <h1>jabir ur are handsome</h1>
+        </div>
+    )
+
+}
+export default Quizinfo;
