@@ -282,6 +282,7 @@ import DeleteQuiz from "@/components/AdminComponents/QuizInfoDailogs/DeleteQuiz"
 import EndQuiz from "@/components/AdminComponents/QuizInfoDailogs/EndQuiz";
 import PausedQuiz from "@/components/AdminComponents/QuizInfoDailogs/PausedQuiz";
 import MakeLiveNow from "@/components/AdminComponents/QuizInfoDailogs/MakeLiveNow";
+import ResumeQuiz from "@/components/AdminComponents/QuizInfoDailogs/ResumeQuiz";
 import { Popover, PopoverContent, PopoverTrigger } from "@nextui-org/popover";
 function Quizinfo() {
     const questionCount = 2; // Adjust this if you have more questions
@@ -317,6 +318,7 @@ function Quizinfo() {
     const [isEndDialogOpen, setIsEndDialogOpen] = useState(false);
     const [isPausedDialogOpen, setIsPausedDialogOpen] = useState(false);
     const [isMakeLiveNowDialogOpen, setIsMakeLiveNowDialogOpen] = useState(false);
+    const [isResumeQuizOpen, setIsResumeQuizOpen] = useState(false);
 
 
     // Handlers for ScheduledDialog
@@ -338,6 +340,10 @@ function Quizinfo() {
     // Handlers for  MakeLiveNow dialog
     const openMakeLiveNowQuiz = () => setIsMakeLiveNowDialogOpen(true);
     const closeMakeLiveNowQuiz = () => setIsMakeLiveNowDialogOpen(false);
+
+    // Handlers for ResumeQuiz dialog
+    const openResumeQuiz = () => setIsResumeQuizOpen(true);
+    const closeResumeQuiz = () => setIsResumeQuizOpen(false);
 
     return (
         <div className="flex w-full h-auto overflow-y-auto flex-col p-8">
@@ -385,7 +391,7 @@ function Quizinfo() {
                                     <Image src="/icons/selectdate-Arrowdown.svg" width={20} height={20} alt="Arrow-Down" />
                                 </button>
                             </PopoverTrigger>
-                            <PopoverContent className="flex flex-col text-sm font-normal bg-white border border-lightGrey rounded-md w-[180px] shadow-md"
+                            <PopoverContent className="flex flex-col px-0 text-sm font-normal bg-white border border-lightGrey rounded-md w-[180px] shadow-md"
                                 onClick={openScheduledDialog}>
                                 <button className="h-[40px] hover:bg-[#F2F4F7] w-full">
                                     <span className="font-normal text-[#0C111D] text-sm">Schedule Quiz</span>
@@ -397,7 +403,8 @@ function Quizinfo() {
                             </PopoverContent>
                         </Popover>
                         {/* Button for Publish Quiz */}
-                        <button className="w-auto p-3 gap-2 flex-row flex">
+                        <button className="w-auto p-3 gap-2 flex-row flex"
+                            onClick={openResumeQuiz}>
                             <Image src="/icons/publish-quiz.svg" width={18} height={18} alt="publish-quiz" />
                             <span className="text-sm text-[#0C111D] font-normal">Publish Quiz</span>
                         </button>
@@ -549,6 +556,7 @@ function Quizinfo() {
             {isEndDialogOpen && <EndQuiz onClose={closeEndQuiz} />}
             {isPausedDialogOpen && <PausedQuiz onClose={closePausedQuiz} />}
             {isMakeLiveNowDialogOpen && < MakeLiveNow onClose={closeMakeLiveNowQuiz} open={true} />}
+            {isResumeQuizOpen && < ResumeQuiz onClose={closeResumeQuiz} open={true} />}
 
         </div>
     );

@@ -13,31 +13,21 @@ function DeleteQuiz({ open, onClose }: DeleteQuizProps) { // Use the interface
         <Dialog open={open} onClose={onClose} className="relative z-50" aria-label="Delete Quiz Dialog">
             <DialogBackdrop className="fixed inset-0 bg-black/30" />
             <div className="fixed inset-0 flex items-center justify-center">
-                <DialogPanel transition className="bg-white rounded-2xl w-[422px] h-auto">
+                <DialogPanel transition className="bg-white rounded-2xl w-[480px] h-auto">
                     <div className="flex flex-col relative">
-                        <button className="absolute right-4 top-4" onClick={onClose}>
-                            <Image src="/icons/cancel-01.svg" alt="Cancel" width={18} height={18} />
+                        <button className="absolute right-6 top-6" onClick={onClose}>
+                            <Image src="/icons/cancel.svg" alt="Cancel" width={20} height={20} />
                         </button>
-                        <div className="flex flex-col p-4 bg-[#9012FF] rounded-t-2xl gap-4">
-                            <div className="flex flex-row items-center gap-3 text-white">
-                                <Image src='/images/photo.png' alt="DP" width={96} height={96} />
-                                <div className="flex flex-col">
-                                    <h2 className="text-xl font-semibold">Leslie Alexander</h2>
-                                    <p className="text-sm">leslie#9843</p>
-                                    <div className="flex flex-row items-center justify-center mt-2 px-2 py-1 rounded-full bg-white bg-opacity-20">
-                                        <Image className="mr-1" src="/icons/book-edit.svg" alt="Exam Year" width={16} height={16} />
-                                        <p className="text-xs font-medium mr-2">Exam Year</p>
-                                        <h3 className="text-normal">2025</h3>
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="text-white mt-4">
-                                <p>Are you sure you want to delete this quiz?</p>
-                            </div>
-                            <div className="flex flex-row gap-2 mt-4">
-                                <button className="w-full bg-red-600 rounded-md px-4 py-2 text-white">Delete</button>
-                                <button className="w-full bg-gray-300 rounded-md px-4 py-2" onClick={onClose}>Cancel</button>
-                            </div>
+                        <div className="mx-6">
+                            <h3 className="mt-6 font-bold task-[#1D2939]">Pause quiz "Physics"?</h3>
+                            <p className="my-4 text-sm font-normal text-[#667085]">All data inside this quiz will be gone.</p>
+                            <p className="text-sm font-normal mb-2">To confirm, please enter the name of the quiz.</p>
+                            <input className="w-full h-10 mb-6 px-4 text-sm font-normal outline-none border border-[#D0D5DD] rounded-md" />
+                        </div>
+                        <hr />
+                        <div className="flex flex-row justify-end mx-6 my-4 gap-4">
+                            <button className="py-[0.625rem] px-6 border-[1.5px] border-lightGrey rounded-md" onClick={onClose}>Cancel</button>
+                            <button className="py-[0.625rem] px-6 text-white shadow-inner-button bg-[#BB241A] border border-[#DE3024] rounded-md">Pause Quiz</button>
                         </div>
                     </div>
                 </DialogPanel>

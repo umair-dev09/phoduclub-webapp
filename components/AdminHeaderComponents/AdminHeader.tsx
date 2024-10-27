@@ -23,13 +23,18 @@ function Header({ currentPage }: HeaderProps) {
                     onClick={handleBackClick}>
                     {/* Conditionally render the back button if the current page is 'Back to Quizzes Management' */}
                     {currentPage === 'Back to Quizzes Management' && (
-
                         <Image src='/icons/arrow-left-02-round.svg' alt='back' width={24} height={24} />
-
                     )}
-                    <h2>
-                        {currentPage}
-                    </h2>
+                    {currentPage !== 'Back to Quizzes Management' && (
+                        <h2>
+                            {currentPage}
+                        </h2>
+                    )}
+                    {currentPage === 'Back to Quizzes Management' && (
+                        <p className='text-[#667085] text-base font-medium'>
+                            {currentPage}
+                        </p>
+                    )}
                 </button>
             </div>
         </div>
