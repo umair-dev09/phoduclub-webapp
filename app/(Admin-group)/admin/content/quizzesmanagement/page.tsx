@@ -421,5 +421,4 @@ function PaginationSection({
     );
 }
 
-
 export default Quizz;
