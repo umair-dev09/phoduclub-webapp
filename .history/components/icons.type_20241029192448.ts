@@ -118,8 +118,7 @@ export type IconsType =
   | "expandall"
   | "endquiz"
   | "pausequiz"
-  | "resume"
-  | "collaspe-all";
+  | "play-dark";
 
 
 

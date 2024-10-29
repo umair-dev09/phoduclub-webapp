@@ -1,6 +1,10 @@
 "use client";
 import Image from "next/image";
+import Collapsible from "react-collapsible";
 import React, { useState } from "react";
+import Radio from "@mui/material/Radio";
+import RadioGroup from "@mui/material/RadioGroup";
+import FormControlLabel from "@mui/material/FormControlLabel";
 import ScheduledDialog from "@/components/AdminComponents/QuizInfoDailogs/scheduledDailog";
 import DeleteQuiz from "@/components/AdminComponents/QuizInfoDailogs/DeleteQuiz";
 import EndQuiz from "@/components/AdminComponents/QuizInfoDailogs/EndQuiz";
@@ -8,15 +12,35 @@ import PausedQuiz from "@/components/AdminComponents/QuizInfoDailogs/PausedQuiz"
 import MakeLiveNow from "@/components/AdminComponents/QuizInfoDailogs/MakeLiveNow";
 import ResumeQuiz from "@/components/AdminComponents/QuizInfoDailogs/ResumeQuiz";
 import Questions from "@/components/AdminComponents/QuizInfo/Questions";
-import StudentsAttempts from "@/components/AdminComponents/QuizInfo/StudentsAttempts";
 import { Popover, PopoverContent, PopoverTrigger } from "@nextui-org/popover";
 function Quizinfo() {
+    const questionCount = 2; // Adjust this if you have more questions
+    const [expandedStates, setExpandedStates] = useState(
+        Array(questionCount).fill(false)
+    );
 
-    const [activeTab, setActiveTab] = useState('Questions');
-
-    const handleTabClick = (tabName: React.SetStateAction<string>) => {
-        setActiveTab(tabName);
+    // Toggle expand/collapse for all accordions
+    const toggleExpandAll = () => {
+        const areAllExpanded = expandedStates.every((state) => state);
+        const newStates = expandedStates.map(() => !areAllExpanded);
+        setExpandedStates(newStates);
     };
+
+    // Toggle individual accordion
+    const toggleAccordion = (index: number) => {
+        const newStates = [...expandedStates];
+        newStates[index] = !newStates[index];
+        setExpandedStates(newStates);
+    };
+    // Check if all are expanded
+    const areAllExpanded = expandedStates.every((state) => state);
+
+    // function changing the color border and shadow
+    const [isPopoverOpen, setIsPopoverOpen] = useState(false);
+
+    const handlePopoverOpen = () => setIsPopoverOpen(true);
+    const handlePopoverClose = () => setIsPopoverOpen(false);
+
     // State to manage each dialog's visibility
     const [isScheduledDialogOpen, setIsScheduledDialogOpen] = useState(false);
     const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
@@ -211,58 +235,18 @@ function Quizinfo() {
                     <span className="font-medium text-[#1D2939] text-base">10 min</span>
                 </div>
             </div>
-            <div className="flex flex-col">
-                <div className="relative flex">
-                    <div className="pt-[10px]">
-                        <button
-                            onClick={() => handleTabClick('Questions')}
-                            className={`relative py-2 pr-4 text-base transition duration-200 ${activeTab === 'Questions' ? 'text-[#7400E0]' : 'text-[#667085] hover:text-[#7400E0]'
-                                } focus:outline-none`}
-                            style={{ fontSize: '16px', fontWeight: '500' }}
-                        >
-                            Questions
-                        </button>
-                    </div>
-                    <div className="pt-[10px]">
-                        <button
-                            onClick={() => handleTabClick('StudentsAttempts')}
-                            className={`relative py-2 px-4 text-base transition duration-200 ${activeTab === 'StudentsAttempts' ? 'text-[#7400E0]' : 'text-[#667085] hover:text-[#7400E0]'
-                                } focus:outline-none`}
-                            style={{ fontSize: '16px', fontWeight: '500' }}
-                        >
-                            StudentsAttempts
-                            <span
-                                className="ml-2 px-2 py-[0px] text-[#9012FF] bg-[#EDE4FF] rounded-full relative"
-                                style={{ fontSize: '14px', fontWeight: '500', minWidth: '24px', textAlign: 'center', top: '-1px' }}
-                            >
-                                10
-                            </span>
-                        </button>
-                    </div>
-                    <div
-                        className="absolute bg-[#7400E0] transition-all duration-300"
-                        style={{
-                            height: '1.8px',
-                            width: activeTab === 'Questions' ? '80px' : '180px', // Adjusted width to match the text
-                            left: activeTab === 'Questions' ? '0px' : '113px', // Adjust left position to match each button
-                            bottom: '-8px',
-                        }}
-                    />
-                </div>
-                <hr className="h-px bg-[#EAECF0] mt-2" />
+            <div className="flex flex-row mt-6 w-full h-[40px] justify-between items-center">
+                <span className="font-semibold text-lg text-[#1D2939]">Questions</span>
+                <button className="flex flex-row gap-1 h-[40px] items-center px-3" onClick={toggleExpandAll}>
+                    <Image src="/icons/expandall.svg" width={18} height={18} alt="Expand all icon" />
+                    <span className="font-normal text-[#475467] text-sm">
+                        {areAllExpanded ? "Collapse all" : "Expand all"}
+                    </span>
+                </button>
             </div>
-            {activeTab === 'Questions' && (
-                <div>
-                    <Questions />
-                </div>
-            )}
-            {activeTab === 'StudentsAttempts' && (
-                <div>
-                    <StudentsAttempts />
-                </div>
-            )}
-
-
+            <div>
+                <Questions />
+            </div>
             {/* Dialog components with conditional rendering */}
             {isScheduledDialogOpen && <ScheduledDialog onClose={closeScheduledDialog} />}
             {isDeleteDialogOpen && <DeleteQuiz onClose={closeDeleteDialog} open={true} />}

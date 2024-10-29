@@ -51,7 +51,7 @@ function Quizinfo() {
     const closeResumeQuiz = () => setIsResumeQuizOpen(false);
 
     return (
-        <div className="flex w-full h-auto overflow-y-auto flex-col p-8">
+        <div className="flex w-full h-auto flex-col p-8">
             <div className="w-full h-auto flex flex-col  pb-2">
                 <div className="flex flex-row justify-between">
                     <div className="flex flex-row gap-3 py-1 items-center">

@@ -243,8 +243,8 @@ function Quizinfo() {
                         className="absolute bg-[#7400E0] transition-all duration-300"
                         style={{
                             height: '1.8px',
-                            width: activeTab === 'Questions' ? '80px' : '180px', // Adjusted width to match the text
-                            left: activeTab === 'Questions' ? '0px' : '113px', // Adjust left position to match each button
+                            width: activeTab === 'Questions' ? '85px' : '120px', // Adjusted width to match the text
+                            left: activeTab === 'Questions' ? '0px' : '120px', // Adjust left position to match each button
                             bottom: '-8px',
                         }}
                     />

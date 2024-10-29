@@ -218,7 +218,7 @@ function Quizinfo() {
                             onClick={() => handleTabClick('Questions')}
                             className={`relative py-2 pr-4 text-base transition duration-200 ${activeTab === 'Questions' ? 'text-[#7400E0]' : 'text-[#667085] hover:text-[#7400E0]'
                                 } focus:outline-none`}
-                            style={{ fontSize: '16px', fontWeight: '500' }}
+                            style={{ fontSize: '16px', fontWeight: '500', }}
                         >
                             Questions
                         </button>
@@ -242,15 +242,17 @@ function Quizinfo() {
                     <div
                         className="absolute bg-[#7400E0] transition-all duration-300"
                         style={{
-                            height: '1.8px',
-                            width: activeTab === 'Questions' ? '80px' : '180px', // Adjusted width to match the text
-                            left: activeTab === 'Questions' ? '0px' : '113px', // Adjust left position to match each button
+                            height: '1.8px', // Change this value to make the underline thinner or thicker
+                            left: `${activeTab === 'courses' ? '40px' : activeTab === 'test' ? '142px' : '260px'}`,
+                            width: '85px', // You can still adjust the width here as needed
                             bottom: '-8px',
+
                         }}
                     />
                 </div>
                 <hr className="h-px bg-[#EAECF0] mt-2" />
             </div>
+
             {activeTab === 'Questions' && (
                 <div>
                     <Questions />

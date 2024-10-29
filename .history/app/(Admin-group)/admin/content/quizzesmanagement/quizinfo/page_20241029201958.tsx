@@ -211,46 +211,35 @@ function Quizinfo() {
                     <span className="font-medium text-[#1D2939] text-base">10 min</span>
                 </div>
             </div>
-            <div className="flex flex-col">
-                <div className="relative flex">
-                    <div className="pt-[10px]">
-                        <button
-                            onClick={() => handleTabClick('Questions')}
-                            className={`relative py-2 pr-4 text-base transition duration-200 ${activeTab === 'Questions' ? 'text-[#7400E0]' : 'text-[#667085] hover:text-[#7400E0]'
-                                } focus:outline-none`}
-                            style={{ fontSize: '16px', fontWeight: '500' }}
-                        >
-                            Questions
-                        </button>
-                    </div>
-                    <div className="pt-[10px]">
-                        <button
-                            onClick={() => handleTabClick('StudentsAttempts')}
-                            className={`relative py-2 px-4 text-base transition duration-200 ${activeTab === 'StudentsAttempts' ? 'text-[#7400E0]' : 'text-[#667085] hover:text-[#7400E0]'
-                                } focus:outline-none`}
-                            style={{ fontSize: '16px', fontWeight: '500' }}
-                        >
-                            StudentsAttempts
-                            <span
-                                className="ml-2 px-2 py-[0px] text-[#9012FF] bg-[#EDE4FF] rounded-full relative"
-                                style={{ fontSize: '14px', fontWeight: '500', minWidth: '24px', textAlign: 'center', top: '-1px' }}
-                            >
-                                10
-                            </span>
-                        </button>
-                    </div>
-                    <div
-                        className="absolute bg-[#7400E0] transition-all duration-300"
-                        style={{
-                            height: '1.8px',
-                            width: activeTab === 'Questions' ? '80px' : '180px', // Adjusted width to match the text
-                            left: activeTab === 'Questions' ? '0px' : '113px', // Adjust left position to match each button
-                            bottom: '-8px',
-                        }}
-                    />
+            <div className="relative flex">
+                <div className="pt-[10px]">
+                    <button
+                        onClick={() => handleTabClick('Questions')}
+                        className={`relative py-2 px-4 text-base transition duration-200 ${activeTab === 'Questions' ? 'text-[#7400E0]' : 'text-[#667085] hover:text-[#7400E0]'
+                            } focus:outline-none`}
+                        style={{ fontSize: '16px', fontWeight: '500', marginLeft: '32px' }}
+                    >
+                        Questions
+                    </button>
                 </div>
-                <hr className="h-px bg-[#EAECF0] mt-2" />
+                <div className="pt-[10px]">
+                    <button
+                        onClick={() => handleTabClick('StudentsAttempts')}
+                        className={`relative py-2 px-4 text-base transition duration-200 ${activeTab === 'StudentsAttempts' ? 'text-[#7400E0]' : 'text-[#667085] hover:text-[#7400E0]'
+                            } focus:outline-none`}
+                        style={{ fontSize: '16px', fontWeight: '500' }}
+                    >
+                        StudentsAttempts
+                        <span
+                            className="ml-2 px-2 py-[0px] text-[#9012FF] bg-[#EDE4FF] rounded-full relative"
+                            style={{ fontSize: '14px', fontWeight: '500', minWidth: '24px', textAlign: 'center', top: '-1px' }}
+                        >
+                            10
+                        </span>
+                    </button>
+                </div>
             </div>
+
             {activeTab === 'Questions' && (
                 <div>
                     <Questions />
