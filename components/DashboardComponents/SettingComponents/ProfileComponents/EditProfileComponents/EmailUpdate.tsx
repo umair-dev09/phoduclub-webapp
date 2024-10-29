@@ -14,7 +14,7 @@ type UserData = {
   email: string | null;
   phone: string | null;
 };
-type EmailUpdateProps = {
+type EmailUpdateProps = { 
     setIsEditing: (isEditing: boolean) => void; // Add this prop to update isEditing in Profile
   
   }
