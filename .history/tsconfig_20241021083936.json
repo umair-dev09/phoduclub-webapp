@@ -1,0 +1,44 @@
+{
+  "compilerOptions": {
+    "target": "ES5", // Change from ES5 to ES2020 for better compatibility with modern JS features
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
+    "allowJs": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
+    "noEmit": true,
+    "esModuleInterop": true,
+    "module": "ESNext", // Change from ESNext to CommonJS for better Firebase Admin compatibility
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "jsx": "preserve",
+    "incremental": true,
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ],
+    "paths": {
+      "@/*": [
+        "./*"
+      ]
+    }
+  },
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts",
+    "app/(Admin-group)/admin/content/testseriesmanagement",
+    "app/(Admin-group)/admin/content/quizzesmanagement",
+    "app/(Admin-group)/admin/content/coursecreation"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
+}
