@@ -1,8 +1,11 @@
+import BeforeChatComp from "@/components/DashboardComponents/CommunityComponents/BeforeChatComp";
 import React from "react";
 
 function GeneralChat() {
     return (
-        <div></div>
+        <div>
+            <BeforeChatComp/>
+        </div>
     );
 }
 

@@ -2,36 +2,135 @@ import React from "react";
 import Image from "next/image";
 import { PopoverContent, PopoverTrigger, Popover } from '@nextui-org/popover';
 import { useState, useRef, useEffect, forwardRef } from "react";
+import EmojiPicker, { EmojiClickData } from "emoji-picker-react";
+import { deleteDoc, doc, Timestamp } from "firebase/firestore";
+import { db } from "@/firebase";
 
-
-function OwnChat() {
+type OwnChatProps = {
+    message: string | null;
+    messageType: string | null;
+    isReplying: boolean ;
+    replyingToId: string | null;
+    replyingToChatId: string | null;
+    replyingToMsg: string | null;
+    replyingToMsgType: string | null;
+    replyingToFileUrl: string ;
+    replyingToFileName: string | null;
+    fileUrl: string ;
+    fileName: string | null;
+    fileSize: number ;
+    senderId: string | null;
+    timestamp: Timestamp | null;
+    chatId: string ;
+    communityId: string ;
+    headingId: string ;
+    channelId: string ;
+    setShowReplyLayout: (value: boolean) => void;
+    handleReply: (message: string | null, senderId: string | null, messageType: string | null, fileUrl: string | null, fileName: string | null,  chatId: string | null) => void; // New prop to handle reply data
+}
+function OwnChat({message, messageType, fileUrl, fileName, fileSize, senderId, timestamp, communityId, headingId, channelId, chatId, isReplying, replyingToId, replyingToFileName, replyingToFileUrl, replyingToMsg, replyingToMsgType, setShowReplyLayout, handleReply}:OwnChatProps) {
 
     const [activeButtonIndex, setActiveButtonIndex] = useState<number | null>(null); // Use a single index to track the active button
+    const [copySuccess, setCopySuccess] = useState<string | null>(null);
+    const [isOpen, setIsOpen] = useState(false);
+    const [showBookmark, setShowBookmark] = useState(false); // Use a single index to track the active button
+    const [showEmojiLyt, setShowEmojiLyt] = useState(false); // Use a single index to track the active button
+
 
     const handleClick = (index: number) => {
         setActiveButtonIndex(index); // Set the clicked button as active
     };
+    const handleDeleteMessage = async () => {
+        try {
+            // Delete the message from Firestore
+            const messageRef = doc(db, `communities/${communityId}/channelsHeading/${headingId}/channels/${channelId}/chats`, chatId);
+            await deleteDoc(messageRef);
+            console.log("Message deleted successfully");
+        } catch (error) {
+            console.error("Error deleting message: ", error);
+        }
+    };
+    const handleReplyMessage = () =>{
+       setShowReplyLayout(true);
+       setIsOpen(false);
+       handleReply(message, senderId, messageType,fileUrl, fileName, chatId); // Pass the message and senderId to the parent
+    }
+    // Check if firestoreTimestamp is null or undefined
+  if (!timestamp) {
+    return <p>Loading...</p>; // or any placeholder while waiting for data
+  }
 
+  // Convert Firestore timestamp to JavaScript Date object
+  const date = timestamp.toDate();
+
+  // Format the date to 3:24 PM format
+  const formattedTime = new Intl.DateTimeFormat('en-US', {
+    hour: 'numeric',
+    minute: 'numeric',
+    hour12: true,
+  }).format(date);
+const handleCopy = async () => {
+        if (message) {
+            try {
+                await navigator.clipboard.writeText(message);
+                setCopySuccess("Message copied!"); // Show success message
+                setTimeout(() => setCopySuccess(null), 2000); // Hide success message after 2 seconds
+                setIsOpen(false);
+            } catch (error) {
+                console.error("Failed to copy message: ", error);
+            }
+        }
+    };
+    const formatFileSize = (size: number): string => {
+        if (size < 1024) return `${size} bytes`;
+        else if (size >= 1024 && size < 1024 * 1024) return `${(size / 1024).toFixed(2)} KB`;
+        else if (size >= 1024 * 1024 && size < 1024 * 1024 * 1024) return `${(size / (1024 * 1024)).toFixed(2)} MB`;
+        else return `${(size / (1024 * 1024 * 1024)).toFixed(2)} GB`;
+    };
+    const handleDownload = (fileUrl: string, fileName: string) => {
+        // Create an anchor element
+        const link = document.createElement('a');
+        link.href = fileUrl;
+        link.download = fileName; // This ensures the file is downloaded, not opened
+        link.target = '_blank'; // Optional: in case the file is large, it opens in a new tab
+        document.body.appendChild(link); // Append the link to the body
+        link.click(); // Trigger the download
+        document.body.removeChild(link); // Remove the link after download starts
+    };
+    
+    const handleBookMarkClick = () =>{
+        setIsOpen(false);
+         }
+         const handleEmojiClick = (emoji: EmojiClickData) => {
+            setIsOpen(false);
+            setShowEmojiLyt(true);
+        };
     return (
-        <div className="mx-6 h-full my-6 flex flex-col gap-6">
-            FIRST MESSAGE
-            <div className="flex flex-col items-end w-full text-white">
-                <div className="text-xs text-neutral-600 mb-2">3:24 PM</div>
-                <div className="flex flex-row items-center justify-end gap-3 w-full group">
+        <div className="flex mr-3 justify-end pl-[15%] ">
+            
+            {/* -------------------------------------------------- OWN CHAT -------------------------------------------------- */}
+            
+            <div className="flex flex-col items-end  text-white">
+                <div className="flex flex-row gap-1 justify-center mb-2">
+               {showBookmark && (<Image src='/icons/bookmark1.svg' alt='Bookmark icon' width={12} height={12} />)} 
+                <div className="text-xs text-neutral-600">{formattedTime}</div>
+                </div>
+                <div className="flex flex-row items-center justify-end gap-3 group">
 
                     <Popover
                         placement="bottom-end"
-                    >
+                        isOpen={isOpen} onOpenChange={(open) => setIsOpen(open)}>
                         <PopoverTrigger>
                             <button
-                                className='w-[48px] h-[26px] rounded-[54px] border border-solid border-[#6770A9]  hover:bg-[#D0D5DD] hidden items-center justify-center focus:outline-none bg-[#F2F4F7] ml-1 transition-all group-hover:flex'
-                            >
+                                className='w-[48px] h-[26px] rounded-[54px] border border-solid border-[#6770A9]  hover:bg-[#D0D5DD] flex min-w-[46px]  invisible items-center justify-center focus:outline-none bg-[#F2F4F7] ml-1 transition-all group-hover:flex group-hover:visible '
+                           
+                           >
                                 <Image
                                     src="/icons/arrow-down.svg"
                                     width={12}
                                     height={12}
                                     alt="Arrow-down"
-                                    className="mr-1"
+                                    className="mr-1" 
                                 />
                                 <Image
                                     src="/icons/smile.svg"
@@ -44,234 +143,119 @@ function OwnChat() {
 
                         <PopoverContent>
                             <div
-                                className='flex flex-col bg-[#FFFFFF] w-auto h-auto border border-[#EAECF0] rounded-md'
+                                className='flex flex-col bg-[#FFFFFF] w-auto h-auto border border-[#EAECF0] rounded-md '
                                 style={{
                                     boxShadow: '0px 4px 6px -2px rgba(16, 24, 40, 0.08), 0px 12px 16px -4px rgba(16, 24, 40, 0.14)',
                                 }}>
                                 {/* Emoji list */}
-                                <div className="flex flex-row border-b border-solid border-[#EAECF0] gap-3 items-center w-30 px-4 py-[10px] transition-colors hover:bg-neutral-100 rounded-tr-md rounded-tl-md">
-                                    <button>
-                                        <Image
-                                            src="/icons/emoji-1.png"
-                                            width={20}
-                                            height={20}
-                                            alt="thumbs-emoji"
-                                        />
-                                    </button>
-                                    <button>
-                                        <Image
-                                            src="/icons/emoji-2.png"
-                                            width={20}
-                                            height={20}
-                                            alt="Heart-emoji"
-                                        />
-                                    </button>
-                                    <button>
-                                        <Image
-                                            src="/icons/emoji-3.png"
-                                            width={20}
-                                            height={20}
-                                            alt="laugh-emoji"
-                                        />
-                                    </button>
-                                    <button>
-                                        <Image
-                                            src="/icons/emoji-4.png"
-                                            width={20}
-                                            height={20}
-                                            alt="smile-face with heart-emoji"
-                                        />
-                                    </button>
-                                    <button>
-                                        <Image
-                                            src="/icons/emoji-5.png"
-                                            width={20}
-                                            height={20}
-                                            alt="ohh-reaction-emoji"
-                                        />
-                                    </button>
-                                    <button>
-                                        <Image
-                                            src="/icons/plus-icon.svg"
-                                            width={20}
-                                            height={20}
-                                            alt="thumbs-emoji"
-                                        />
-                                    </button>
-                                </div>
+                                <EmojiPicker onEmojiClick={handleEmojiClick} height={280} searchDisabled={true} reactions={['1f44d','1f496','1f602','1f60d','1f62e']}
+                                    style={{
+                                           border: "none", 
+                        
+                                        }}
+                                   previewConfig={
+                                    {
+                                        showPreview: false, // defaults to: true
+                                      }
+                                   }
+                                //  onEmojiClick={handleEmojiClick} 
+                                reactionsDefaultOpen={true} allowExpandReactions={true} hiddenEmojis={['1f595']}/>
 
                                 {/* Other options */}
-                                <button className='flex flex-row items-center gap-2 w-30 px-4 py-[10px] transition-colors hover:bg-neutral-100'>
-                                    <Image src='/icons/Reply.svg' alt='search icon' width={15} height={15} />
+                                <button onClick={handleReplyMessage} className='flex flex-row items-center gap-2 w-30 px-4 py-[10px] transition-colors hover:bg-neutral-100'>
+                                    <Image src='/icons/Reply.svg' alt='search icon' width={19} height={19} />
                                     <span className='font-normal text-[#0C111D] text-sm'>Reply</span>
                                 </button>
-                                <button className='flex flex-row items-center gap-2 w-30 px-4 py-[10px] transition-colors hover:bg-neutral-100'>
-                                    <Image src='/icons/copy.svg' alt='search icon' width={20} height={20} />
+                                <button onClick={handleCopy} className='flex flex-row items-center gap-2 w-30 px-4 py-[10px] transition-colors hover:bg-neutral-100'>
+                                    <Image src='/icons/copy.svg' alt='search icon' width={18} height={18} />
                                     <span className='font-normal text-[#0C111D] text-sm'>Copy</span>
                                 </button>
-                                <button className='flex flex-row items-center gap-2 w-30 px-4 py-[10px] transition-colors hover:bg-neutral-100'>
-                                    <Image src='/icons/Bookmark.svg' alt='search icon' width={20} height={20} />
+                                <button className='flex flex-row items-center gap-2 w-30 px-4 py-[10px] transition-colors hover:bg-neutral-100' onClick={() => {setShowBookmark(true); setIsOpen(false); }}>
+                                    <Image src='/icons/Bookmark.svg' alt='search icon' width={18} height={18} />
                                     <span className='font-normal text-[#0C111D] text-sm'>Bookmark</span>
                                 </button>
-                                <button className='flex flex-row items-center gap-2 w-30 px-4 py-[10px] transition-colors hover:bg-neutral-100 rounded-br-md rounded-bl-md'>
-                                    <Image src='/icons/Report.svg' alt='search icon' width={20} height={20} />
-                                    <span className='font-normal text-[#0C111D] text-sm'>Report Message</span>
+                                {/* Delete Message Button */}
+                                <button onClick={handleDeleteMessage}  className='flex flex-row items-center gap-2 w-30 px-4 pt-[10px] pb-3 transition-colors hover:bg-[#FEE4E2] rounded-br-md rounded-bl-md'>
+                                    <Image src='/icons/delete.svg' alt='search icon' width={17} height={17} />
+                                    <span className='font-normal text-[#DE3024] text-sm'>Delete Message</span>
                                 </button>
                             </div>
                         </PopoverContent>
                     </Popover>
 
-                    <div className="flex px-4 py-3 text-sm bg-purple rounded-xl">
-                        Hello Guys, Looking forward to learning with all of you
+                    <div className={`flex flex-col px-4 py-3 bg-purple rounded-xl gap-[8px] ${messageType === 'image' || messageType === 'document' ? 'max-w-[380px]' :'max-w-[600px]'} `}
+                    >
+                        {/*Image Layout*/}
+                        {messageType === 'image' && fileUrl && (
+                            <Image className='w-[360px] self-end h-[320px] mt-[3px] object-cover' src={fileUrl} alt="image" width={360} height={320} quality={100} />
+                        )}
+                        {/* {messageType === 'video' && fileUrl && (
+                            // <ReactPlayer url={fileUrl} controls/> 
+                                  
+                         )} */}
+                        {/*Document Layout*/}
+                        {messageType === 'document' && fileUrl && (
+                            <div className="w-[350px] h-auto rounded-md mt-[3px] bg-[#973AFF] border border-[#AD72FF] flex flex-row p-3 justify-between">
+                                <div className="flex flex-row gap-2 items-start mr-[10px] w-[300px]">
+                                    <Image className="mt-1" src="/icons/file-white.svg" width={16} height={16} alt="File" />
+                                    <div className="flex flex-col break-all">
+                                        <p className="text-[13px]">{fileName}</p>
+                                        <p className="text-[11px]">{formatFileSize(fileSize)}</p>
+                                    </div>
+                                </div>
+                                <button className="w-[24px] h-[24px]" onClick={() => handleDownload(fileUrl, fileName ?? '')}>
+                                    <Image className='w-[24px] h-[24px]' src="/icons/download-white.svg" width={24} height={24} alt="Download" />
+                                </button>
+                            </div>
+                        )}
+
+                {/* */}
+                   {isReplying && (
+                    <div className="flex flex-row p-[10px] bg-[#973AFF] border border-[#AD72FF] rounded-md text-xs gap-1 justify-between cursor-pointer" >
+                        <div className="flex flex-col mr-6 justify-center">
+                        <div className="flex flex-row gap-2">
+                        <h4 className="font-semibold">Marvin McKinney</h4>
+                        {/* <div className="">Admin</div> */}
                     </div>
-                </div>
-                <div className="flex flex-row justify-end mt-1 gap-2 h-auto w-full ml-11">
-                    {Array.from({ length: 10 }).map((_, index) => ( // Create 10 buttons
-                        <button
-                            key={index}
-                            onClick={() => handleClick(index)}
-                            className={`rounded-[54px] border border-solid border-[#D0D5DD] h-[26px] w-[48px] p-1 flex flex-row justify-center gap-1 transition-colors duration-200 ${activeButtonIndex === index // Check if this button is active
-                                ? 'bg-[#F8F0FF] border-[#7400E0] text-[#7400E0]' // Active styles
-                                : 'bg-[#F2F4F7] text-[#475467] hover:bg-[#F8F0FF] hover:border-[#7400E0]' // Default and hover styles
-                                }`}
-                        >
-                            <Image
-                                src="/icons/emoji-5.png"
-                                width={15}
-                                height={15}
-                                alt="ohh-reaction-emoji"
-                            />
-                            <span className="font-medium text-xs">12</span>
-                        </button>
-                    ))}
-                </div>
-            </div>
-
-            {/* SECOND MESSAGE */}
-            <div className="flex flex-col items-end w-full text-white">
-                <div className="text-xs text-neutral-600 mb-2">3:24 PM</div>
-                <div className="flex flex-row items-center justify-end gap-3 w-full group">
-
-                    <Popover
-                        placement="bottom-end"
-                    >
-                        <PopoverTrigger>
-                            <button
-                                className='w-[48px] h-[26px] rounded-[54px] border border-solid border-[#6770A9]  hover:bg-[#D0D5DD] hidden items-center justify-center focus:outline-none bg-[#F2F4F7] ml-1 transition-all group-hover:flex'
-                            >
-                                <Image
-                                    src="/icons/arrow-down.svg"
-                                    width={12}
-                                    height={12}
-                                    alt="Arrow-down"
-                                    className="mr-1"
-                                />
-                                <Image
-                                    src="/icons/smile.svg"
-                                    width={16}
-                                    height={16}
-                                    alt="Smile"
-                                />
-                            </button>
-                        </PopoverTrigger>
-
-                        <PopoverContent>
-                            <div
-                                className='flex flex-col bg-[#FFFFFF] w-auto h-auto border border-[#EAECF0] rounded-md'
-                                style={{
-                                    boxShadow: '0px 4px 6px -2px rgba(16, 24, 40, 0.08), 0px 12px 16px -4px rgba(16, 24, 40, 0.14)',
-                                }}>
-                                {/* Emoji list */}
-                                <div className="flex flex-row border-b border-solid border-[#EAECF0] gap-3 items-center w-30 px-4 py-[10px] transition-colors hover:bg-neutral-100 rounded-tr-md rounded-tl-md">
-                                    <button>
-                                        <Image
-                                            src="/icons/emoji-1.png"
-                                            width={20}
-                                            height={20}
-                                            alt="thumbs-emoji"
-                                        />
-                                    </button>
-                                    <button>
-                                        <Image
-                                            src="/icons/emoji-2.png"
-                                            width={20}
-                                            height={20}
-                                            alt="Heart-emoji"
-                                        />
-                                    </button>
-                                    <button>
-                                        <Image
-                                            src="/icons/emoji-3.png"
-                                            width={20}
-                                            height={20}
-                                            alt="laugh-emoji"
-                                        />
-                                    </button>
-                                    <button>
-                                        <Image
-                                            src="/icons/emoji-4.png"
-                                            width={20}
-                                            height={20}
-                                            alt="smile-face with heart-emoji"
-                                        />
-                                    </button>
-                                    <button>
-                                        <Image
-                                            src="/icons/emoji-5.png"
-                                            width={20}
-                                            height={20}
-                                            alt="ohh-reaction-emoji"
-                                        />
-                                    </button>
-                                    <button>
-                                        <Image
-                                            src="/icons/plus-icon.svg"
-                                            width={20}
-                                            height={20}
-                                            alt="thumbs-emoji"
-                                        />
-                                    </button>
-                                </div>
-
-                                {/* Other options */}
-                                <button className='flex flex-row items-center gap-2 w-30 px-4 py-[10px] transition-colors hover:bg-neutral-100'>
-                                    <Image src='/icons/Reply.svg' alt='search icon' width={15} height={15} />
-                                    <span className='font-normal text-[#0C111D] text-sm'>Reply</span>
-                                </button>
-                                <button className='flex flex-row items-center gap-2 w-30 px-4 py-[10px] transition-colors hover:bg-neutral-100'>
-                                    <Image src='/icons/copy.svg' alt='search icon' width={20} height={20} />
-                                    <span className='font-normal text-[#0C111D] text-sm'>Copy</span>
-                                </button>
-                                <button className='flex flex-row items-center gap-2 w-30 px-4 py-[10px] transition-colors hover:bg-neutral-100'>
-                                    <Image src='/icons/Bookmark.svg' alt='search icon' width={20} height={20} />
-                                    <span className='font-normal text-[#0C111D] text-sm'>Bookmark</span>
-                                </button>
-                                <button className='flex flex-row items-center gap-2 w-30 px-4 py-[10px] transition-colors hover:bg-neutral-100 rounded-br-md rounded-bl-md'>
-                                    <Image src='/icons/Report.svg' alt='search icon' width={20} height={20} />
-                                    <span className='font-normal text-[#0C111D] text-sm'>Report Message</span>
-                                </button>
-                            </div>
-                        </PopoverContent>
-                    </Popover>
-
-                    <div className="flex flex-col px-4 py-3 bg-purple rounded-xl gap-[10px]">
-                        <div className="flex flex-col p-4 bg-[#973AFF] border border-[#AD72FF] rounded-md text-xs gap-1">
-                            <div className="flex flex-row gap-2">
-                                <h4 className="font-semibold">Marvin McKinney</h4>
-                                <div className="">Admin</div>
-                                <div>3:24 PM</div>
-                            </div>
-                            <div>Hello Guys, Looking forward to learning with all of you</div>
+                    <div className="flex flex-row gap-1 mt-[2px] ">
+                    {replyingToMsgType === 'image' && (
+                    <Image src='/icons/image-white.svg' alt='attachment icon' width={12} height={12} />
+                    )}
+                    {replyingToMsgType === 'video' && (
+                    <Image src='/icons/video-icon.svg' alt='attachment icon' width={12} height={12} />
+                    )}
+                    {replyingToMsgType === 'document' && (
+                    <Image src='/icons/file-white.svg' alt='attachment icon' width={12} height={12} />
+                    )}    
+                    <div className="break-all">
+                    {replyingToMsg !== null && replyingToMsgType !== 'document'
+    ? replyingToMsg // Show message if it's not null and not a document
+    : replyingToMsgType === 'document'
+    ? replyingToFileName // Always show fileName for document
+    : (replyingToMsgType === 'image' && 'Image') ||
+      (replyingToMsgType === 'video' && 'Video') ||
+      'Unknown Type'}</div>
+                    </div>
                         </div>
-                        <div className="text-sm">Loerum ipsum content</div>
+                        {replyingToMsgType === 'image' &&(
+                        <Image className="rounded-sm min-h-[40px] object-cover" src={replyingToFileUrl} alt='Image' width={50} height={45} />
+                        )}
+                    </div>
+                   )}
+                {/* */}
+                        <div className="text-sm break-all w-full max-w-full">
+                            {message}
+                        </div>
                     </div>
                 </div>
-                <div className="flex flex-row justify-end mt-1 gap-2 h-auto w-full ml-11">
-                    {Array.from({ length: 10 }).map((_, index) => ( // Create 10 buttons
+                {/* */}
+               
+              {showEmojiLyt && (<div className="flex flex-row justify-end mt-1 gap-2 h-auto w-full ml-11 flex-wrap">
+                    {Array.from({ length: 1 }).map((_, index) => ( // Create 10 buttons
                         <button
                             key={index}
                             onClick={() => handleClick(index)}
-                            className={`rounded-[54px] border border-solid border-[#D0D5DD] h-[26px] w-[48px] p-1 flex flex-row justify-center gap-1 transition-colors duration-200 ${activeButtonIndex === index // Check if this button is active
+                            className={`rounded-[54px] border border-solid border-[#D0D5DD] h-[26px] w-auto p-1 flex flex-row justify-center gap-1 transition-colors duration-200 ${activeButtonIndex === index // Check if this button is active
                                 ? 'bg-[#F8F0FF] border-[#7400E0] text-[#7400E0]' // Active styles
                                 : 'bg-[#F2F4F7] text-[#475467] hover:bg-[#F8F0FF] hover:border-[#7400E0]' // Default and hover styles
                                 }`}
@@ -282,14 +266,14 @@ function OwnChat() {
                                 height={15}
                                 alt="ohh-reaction-emoji"
                             />
-                            <span className="font-medium text-xs">12</span>
+                            <span className="font-medium text-xs">1</span>
                         </button>
                     ))}
-                </div>
+                </div>)}  
             </div>
 
             {/* THIRD MESSAGE */}
-            <div className="flex flex-col items-end w-full text-white">
+            {/* <div className="flex flex-col items-end w-full text-white pb-4">
                 <div className="text-xs text-neutral-600 mb-2">3:24 PM</div>
                 <div className="flex flex-row items-center justify-end gap-3 w-full group">
                     <div className="flex px-4 py-3 text-sm bg-[#EDE4FF] rounded-xl gap-2">
@@ -297,18 +281,7 @@ function OwnChat() {
                         <button className="text-purple italic hover:underline">Undo</button>
                     </div>
                 </div>
-            </div>
-
-            {/* FOURTH MESSAGE */}
-            <div className="flex flex-col items-end w-full text-white">
-                <div className="text-xs text-neutral-600 mb-2">3:24 PM</div>
-                <div className="flex flex-row items-center justify-end gap-3 w-full group">
-                    <div className="flex px-4 py-3 text-sm bg-[#EDE4FF] rounded-xl gap-2">
-                        <p className="text-[#475467]">Message deleted.</p>
-                        <button className="text-purple italic hover:underline">Undo</button>
-                    </div>
-                </div>
-            </div>
+            </div> */}
         </div>
     );
 }

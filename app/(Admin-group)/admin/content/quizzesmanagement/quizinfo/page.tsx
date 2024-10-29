@@ -25,7 +25,6 @@ function Quizinfo() {
     const [isMakeLiveNowDialogOpen, setIsMakeLiveNowDialogOpen] = useState(false);
     const [isResumeQuizOpen, setIsResumeQuizOpen] = useState(false);
 
-
     // Handlers for ScheduledDialog
     const openScheduledDialog = () => setIsScheduledDialogOpen(true);
     const closeScheduledDialog = () => setIsScheduledDialogOpen(false);

@@ -2,7 +2,14 @@ import React, { useState } from 'react';
 import { PopoverContent, PopoverTrigger, Popover } from '@nextui-org/popover';
 import Image from "next/image";
 
-function ChatHead() {
+type chatHeadProps = {
+    channelName: string | null; 
+    channelId: string | null; 
+    channelEmoji: string | null; 
+  
+  }
+
+function ChatHead({channelName,channelId,channelEmoji}:chatHeadProps) {
 
     const [isPopoverOpen, setIsPopoverOpen] = useState(false);
     const [isMutePopoverOpen, setIsMutePopoverOpen] = useState(false);
@@ -20,10 +27,12 @@ function ChatHead() {
     const toggleMute = () => setIsMuted(prev => !prev);
 
     return (
+
+    
         <div className='flex items-center justify-between h-[72px] bg-white border-b border-lightGrey gap-2'>
             <div className="flex flex-row items-center gap-2 ml-6 rounded-[7px] transition-colors">
-                <Image src='/icons/PhyiscsQuicktest.png' alt="bookstack icon" width={16} height={24} />
-                <p className="font-semibold text-[#182230]">Physics 101</p>
+                <p>{channelEmoji}</p>
+                <p className="font-semibold text-[#182230]">{channelName}</p>
                 {/* Conditional rendering of the mute icon */}
                 {isMuted && (
                     <Image src='/icons/notification-off-02.svg' alt="Muted" width={16} height={16} />

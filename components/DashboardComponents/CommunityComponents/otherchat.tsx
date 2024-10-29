@@ -3,7 +3,14 @@ import Image from "next/image";
 import { useState, useRef, useEffect, forwardRef } from "react";
 import { PopoverContent, PopoverTrigger, Popover } from '@nextui-org/popover';
 
-const OwnChat = () => {
+type OtherChatProps = {
+    message: string | null;
+    senderId: string | null;
+    timestamp: any | null;
+
+}
+
+const OtherChat = ({message, senderId, timestamp}:OtherChatProps) => {
     const messageStart = `Hey 
 In publishing and graphic design, Lorem ipsum is a placeholder text commonly used to demonstrate the visual form of a document or a typeface without relying on meaningful content. Lorem ipsum may be used as a placeholder before the final copy is available.`;
     const messageStart1 = `Hey everyone,
@@ -36,52 +43,53 @@ Welcome to the channel`;
     };
 
     return (
-        <div className="mx-6 h-full my-6 flex flex-col gap-6">
-            {/* First message */}
-            <div className="w-full h-auto flex flex-col mb-1">
+            <>
+            <div className="w-full h-auto flex flex-col pr-[10%] ml-3 ">
                 <div className="gap-2 flex items-center">
-                    <div className="relative">
+                <div className="relative">
                         <Image src='/icons/profile-pic2.svg' alt="DP" width={40} height={40} />
                         <Image className="absolute right-0 bottom-0" src='/icons/winnerBatch.svg' alt="Batch" width={18} height={18} />
                     </div>
-                    <span className="text-[#182230] font-semibold text-sm">Brooklyn Simmons</span>
-                    <span className="font-normal text-sm text-[#475467]">3:24 PM</span>
-                </div>
-                <div className="ml-11 flex">
-                    <div className="bg-white rounded-md border border-solid border-[#EAECF0] max-w-[400px] px-4 py-3 inline-block">
-                        <span className="break-words whitespace-pre-wrap font-normal text-[#182230] text-sm">
-                            {isExpanded ? messageStart : messageStart.slice(0, 150) + '...'}
-                        </span>
-                        <button
-                            onClick={handleToggle}
-                            className="text-[#9012FF] font-semibold text-sm ml-[2px]"
-                        >
-                            {isExpanded ? 'Show Less' : 'Show More'}
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            {/* Second message with hover functionality and persistent popover */}
-            <div className="w-full h-auto flex flex-col">
-                <div className="gap-2 flex items-center">
-                    <Image
-                        src="/icons/JennyWillsion.png"
-                        width={36}
-                        height={36}
-                        alt="Others-chat-profile"
-                    />
                     <span className="text-[#182230] font-semibold text-sm">Brooklyn Simmons</span>
                     <span className="font-normal text-sm text-[#475467]">Admin</span>
                     <span className="font-normal text-sm text-[#475467]">3:24 PM</span>
                 </div>
 
                 <div className="ml-11 flex flex-row gap-2 items-center relative group">
-                    <div className="bg-white rounded-md border border-solid border-[#EAECF0] max-w-[400px] px-4 py-3 inline-block text-left">
-                        <span className="break-words whitespace-pre-wrap font-normal text-[#182230] text-sm">
-                            {messageStart1}
-                        </span>
+                <div className="bg-white rounded-md border border-solid border-[#EAECF0] px-4 py-3 inline-block">
+                  {/* */}
+                {/* <Image src='/images/impNotes.png' alt="image" width={359} height={293} /> */}
+                    {/* */}
+                {/* <div className="w-full h-auto rounded-md border border-solid border-[#D0D5DD] flex flex-col bg-[#F2F4F7] p-4">
+                            <div className="gap-2 flex items-center">
+
+                                <span className="text-[#182230] font-semibold text-sm">Brooklyn Simmons</span>
+                                <span className="font-normal text-sm text-[#475467]">Admin</span>
+                                <span className="font-normal text-sm text-[#475467]">3:24 PM</span>
+                            </div>
+                            <span className="break-words whitespace-pre-wrap font-normal text-[#182230] text-sm">
+                             {messageStart1}
+                            </span>
+                </div> */}
+                                   {/* */}
+                {/* <div className="w-full h-auto rounded-md border border-solid border-[#D0D5DD] flex flex-row bg-[#F2F4F7] p-4 justify-between">
+                    <div className="flex flex-row gap-2 items-start">
+                    <Image className="mt-1" src="/icons/file-02.svg" width={16} height={16} alt="File" />
+                    <div className="flex flex-col ">
+                        <p className="text-sm">History of Skate.pdf</p>
+                        <p className="text-[11px]">16.53KB</p>
                     </div>
+                    </div>
+                    <button>
+                    <Image src="/icons/download.svg" width={22} height={22} alt="Download" />
+                    </button>
+                </div> */}
+                   {/* */}
+                 <span className="break-all whitespace-pre-wrap font-normal text-[#182230] text-sm ">
+                            {messageStart}
+                  </span>
+                        
+                 </div>
 
 
                     <Popover
@@ -90,7 +98,7 @@ Welcome to the channel`;
                         <PopoverTrigger>
                             <button
                                 onClick={handlePopoverToggle}
-                                className='w-[48px] h-[26px] rounded-[54px] border border-solid border-[#6770A9]  hover:bg-[#D0D5DD] hidden items-center justify-center focus:outline-none bg-[#F2F4F7] ml-1 group-hover:flex'
+                                className='w-[48px] h-[26px] rounded-[54px] border border-solid border-[#6770A9]  hover:bg-[#D0D5DD] flex invisible min-w-[46px] items-center justify-center focus:outline-none bg-[#F2F4F7] ml-1 group-hover:flex group-hover:visible'
                             >
                                 <Image
                                     src="/icons/arrow-down.svg"
@@ -115,56 +123,7 @@ Welcome to the channel`;
                                     boxShadow: '0px 4px 6px -2px rgba(16, 24, 40, 0.08), 0px 12px 16px -4px rgba(16, 24, 40, 0.14)',
                                 }}>
                                 {/* Emoji list */}
-                                <div className="flex flex-row border-b border-solid border-[#EAECF0] gap-3 items-center w-30 px-4 py-[10px] transition-colors hover:bg-neutral-100 rounded-tr-md rounded-tl-md">
-                                    <button>
-                                        <Image
-                                            src="/icons/emoji-1.png"
-                                            width={20}
-                                            height={20}
-                                            alt="thumbs-emoji"
-                                        />
-                                    </button>
-                                    <button>
-                                        <Image
-                                            src="/icons/emoji-2.png"
-                                            width={20}
-                                            height={20}
-                                            alt="Heart-emoji"
-                                        />
-                                    </button>
-                                    <button>
-                                        <Image
-                                            src="/icons/emoji-3.png"
-                                            width={20}
-                                            height={20}
-                                            alt="laugh-emoji"
-                                        />
-                                    </button>
-                                    <button>
-                                        <Image
-                                            src="/icons/emoji-4.png"
-                                            width={20}
-                                            height={20}
-                                            alt="smile-face with heart-emoji"
-                                        />
-                                    </button>
-                                    <button>
-                                        <Image
-                                            src="/icons/emoji-5.png"
-                                            width={20}
-                                            height={20}
-                                            alt="ohh-reaction-emoji"
-                                        />
-                                    </button>
-                                    <button>
-                                        <Image
-                                            src="/icons/plus-icon.svg"
-                                            width={20}
-                                            height={20}
-                                            alt="thumbs-emoji"
-                                        />
-                                    </button>
-                                </div>
+                                
 
                                 {/* Other options */}
                                 <button className='flex flex-row items-center gap-2 w-30 px-4 py-[10px] transition-colors hover:bg-neutral-100'>
@@ -188,7 +147,7 @@ Welcome to the channel`;
                     </Popover>
 
                 </div>
-                <div className="flex flex-row mt-1 gap-2 h-auto w-full ml-11">
+                {/* <div className="flex flex-row mt-1 gap-2 h-auto w-full ml-11 flex-wrap">
                     {Array.from({ length: 10 }).map((_, index) => ( // Create 10 buttons
                         <button
                             key={index}
@@ -207,617 +166,10 @@ Welcome to the channel`;
                             <span className="font-medium text-xs">12</span>
                         </button>
                     ))}
-                </div>
+                </div> */}
             </div>
-
-            <div className="w-full h-auto flex flex-col">
-                <div className="gap-2 flex items-center">
-                    <Image src='/icons/profile-3.svg' alt="DP" width={36} height={36} />
-                    <span className="text-[#182230] font-semibold text-sm">Kathryn Murphy</span>
-                    <span className="font-normal text-sm text-[#475467]">3:24 PM</span>
-                </div>
-                <div className="ml-11 flex">
-                    <div className="bg-white rounded-md border border-solid border-[#EAECF0] max-w-[400px] px-4 py-3 inline-block">
-                        <span className="break-words whitespace-pre-wrap font-normal text-[#182230] text-sm">
-                            Hey @marvin#2456 thanks for the intro.
-                        </span>
-                    </div>
-                </div>
-            </div>
-
-            <div className="w-full h-auto flex flex-col">
-                <div className="gap-2 flex items-center">
-                    <Image src='/icons/profile-4.svg' alt="DP" width={36} height={36} />
-                    <span className="text-[#182230] font-semibold text-sm">Kathryn Murphy</span>
-                    <span className="font-normal text-sm text-[#475467]">3:24 PM</span>
-                </div>
-                <div className="ml-11 flex">
-                    <div className="bg-white rounded-md border border-solid border-[#EAECF0] max-w-[400px] px-4 py-3 flex flex-col">
-                        <div className="w-full h-full rounded-md border border-solid border-[#D0D5DD] flex flex-col bg-[#F2F4F7] p-4">
-                            <div className="gap-2 flex items-center">
-
-                                <span className="text-[#182230] font-semibold text-sm">Brooklyn Simmons</span>
-                                <span className="font-normal text-sm text-[#475467]">Admin</span>
-                                <span className="font-normal text-sm text-[#475467]">3:24 PM</span>
-                            </div>
-                            <span className="break-words whitespace-pre-wrap font-normal text-[#182230] text-sm">
-                                Hey @marvin#2456 thanks for the intro.
-                            </span>
-                        </div>
-                        <span className="break-words whitespace-pre-wrap font-normal text-[#182230] text-sm mt-1">
-                            Hey @marvin#2456
-                        </span>
-                    </div>
-                </div>
-            </div>
-
-            {/* -------------------------------------------------- OWN CHAT -------------------------------------------------- */}
-
-            {/* FIRST MESSAGE */}
-            <div className="flex flex-col items-end w-full text-white">
-                <div className="text-xs text-neutral-600 mb-2">3:24 PM</div>
-                <div className="flex flex-row items-center justify-end gap-3 w-full group">
-
-                    <Popover
-                        placement="bottom-end"
-                    >
-                        <PopoverTrigger>
-                            <button
-                                onClick={handlePopoverToggle}
-                                className='w-[48px] h-[26px] rounded-[54px] border border-solid border-[#6770A9]  hover:bg-[#D0D5DD] hidden items-center justify-center focus:outline-none bg-[#F2F4F7] ml-1 transition-all group-hover:flex'
-                            >
-                                <Image
-                                    src="/icons/arrow-down.svg"
-                                    width={12}
-                                    height={12}
-                                    alt="Arrow-down"
-                                    className="mr-1"
-                                />
-                                <Image
-                                    src="/icons/smile.svg"
-                                    width={16}
-                                    height={16}
-                                    alt="Smile"
-                                />
-                            </button>
-                        </PopoverTrigger>
-
-                        <PopoverContent>
-                            <div
-                                className='flex flex-col bg-[#FFFFFF] w-auto h-auto border border-[#EAECF0] rounded-md'
-                                style={{
-                                    boxShadow: '0px 4px 6px -2px rgba(16, 24, 40, 0.08), 0px 12px 16px -4px rgba(16, 24, 40, 0.14)',
-                                }}>
-                                {/* Emoji list */}
-                                <div className="flex flex-row border-b border-solid border-[#EAECF0] gap-3 items-center w-30 px-4 py-[10px] transition-colors hover:bg-neutral-100 rounded-tr-md rounded-tl-md">
-                                    <button>
-                                        <Image
-                                            src="/icons/emoji-1.png"
-                                            width={20}
-                                            height={20}
-                                            alt="thumbs-emoji"
-                                        />
-                                    </button>
-                                    <button>
-                                        <Image
-                                            src="/icons/emoji-2.png"
-                                            width={20}
-                                            height={20}
-                                            alt="Heart-emoji"
-                                        />
-                                    </button>
-                                    <button>
-                                        <Image
-                                            src="/icons/emoji-3.png"
-                                            width={20}
-                                            height={20}
-                                            alt="laugh-emoji"
-                                        />
-                                    </button>
-                                    <button>
-                                        <Image
-                                            src="/icons/emoji-4.png"
-                                            width={20}
-                                            height={20}
-                                            alt="smile-face with heart-emoji"
-                                        />
-                                    </button>
-                                    <button>
-                                        <Image
-                                            src="/icons/emoji-5.png"
-                                            width={20}
-                                            height={20}
-                                            alt="ohh-reaction-emoji"
-                                        />
-                                    </button>
-                                    <button>
-                                        <Image
-                                            src="/icons/plus-icon.svg"
-                                            width={20}
-                                            height={20}
-                                            alt="thumbs-emoji"
-                                        />
-                                    </button>
-                                </div>
-
-                                {/* Other options */}
-                                <button className='flex flex-row items-center gap-2 w-30 px-4 py-[10px] transition-colors hover:bg-neutral-100'>
-                                    <Image src='/icons/Reply.svg' alt='search icon' width={15} height={15} />
-                                    <span className='font-normal text-[#0C111D] text-sm'>Reply</span>
-                                </button>
-                                <button className='flex flex-row items-center gap-2 w-30 px-4 py-[10px] transition-colors hover:bg-neutral-100'>
-                                    <Image src='/icons/copy.svg' alt='search icon' width={20} height={20} />
-                                    <span className='font-normal text-[#0C111D] text-sm'>Copy</span>
-                                </button>
-                                <button className='flex flex-row items-center gap-2 w-30 px-4 py-[10px] transition-colors hover:bg-neutral-100'>
-                                    <Image src='/icons/Bookmark.svg' alt='search icon' width={20} height={20} />
-                                    <span className='font-normal text-[#0C111D] text-sm'>Bookmark</span>
-                                </button>
-                                <button className='flex flex-row items-center gap-2 w-30 px-4 py-[10px] transition-colors hover:bg-neutral-100 rounded-br-md rounded-bl-md'>
-                                    <Image src='/icons/Report.svg' alt='search icon' width={20} height={20} />
-                                    <span className='font-normal text-[#0C111D] text-sm'>Report Message</span>
-                                </button>
-                            </div>
-                        </PopoverContent>
-                    </Popover>
-
-                    <div className="flex px-4 py-3 text-sm bg-purple rounded-xl">
-                        Hello Guys, Looking forward to learning with all of you
-                    </div>
-                </div>
-                <div className="flex flex-row justify-end mt-1 gap-2 h-auto w-full ml-11">
-                    {Array.from({ length: 10 }).map((_, index) => ( // Create 10 buttons
-                        <button
-                            key={index}
-                            onClick={() => handleClick(index)}
-                            className={`rounded-[54px] border border-solid border-[#D0D5DD] h-[26px] w-[48px] p-1 flex flex-row justify-center gap-1 transition-colors duration-200 ${activeButtonIndex === index // Check if this button is active
-                                ? 'bg-[#F8F0FF] border-[#7400E0] text-[#7400E0]' // Active styles
-                                : 'bg-[#F2F4F7] text-[#475467] hover:bg-[#F8F0FF] hover:border-[#7400E0]' // Default and hover styles
-                                }`}
-                        >
-                            <Image
-                                src="/icons/emoji-5.png"
-                                width={15}
-                                height={15}
-                                alt="ohh-reaction-emoji"
-                            />
-                            <span className="font-medium text-xs">12</span>
-                        </button>
-                    ))}
-                </div>
-            </div>
-
-            {/* SECOND MESSAGE */}
-            <div className="flex flex-col items-end w-full text-white">
-                <div className="text-xs text-neutral-600 mb-2">3:24 PM</div>
-                <div className="flex flex-row items-center justify-end gap-3 w-full group">
-
-                    <Popover
-                        placement="bottom-end"
-                    >
-                        <PopoverTrigger>
-                            <button
-                                onClick={handlePopoverToggle}
-                                className='w-[48px] h-[26px] rounded-[54px] border border-solid border-[#6770A9]  hover:bg-[#D0D5DD] hidden items-center justify-center focus:outline-none bg-[#F2F4F7] ml-1 transition-all group-hover:flex'
-                            >
-                                <Image
-                                    src="/icons/arrow-down.svg"
-                                    width={12}
-                                    height={12}
-                                    alt="Arrow-down"
-                                    className="mr-1"
-                                />
-                                <Image
-                                    src="/icons/smile.svg"
-                                    width={16}
-                                    height={16}
-                                    alt="Smile"
-                                />
-                            </button>
-                        </PopoverTrigger>
-
-                        <PopoverContent>
-                            <div
-                                className='flex flex-col bg-[#FFFFFF] w-auto h-auto border border-[#EAECF0] rounded-md'
-                                style={{
-                                    boxShadow: '0px 4px 6px -2px rgba(16, 24, 40, 0.08), 0px 12px 16px -4px rgba(16, 24, 40, 0.14)',
-                                }}>
-                                {/* Emoji list */}
-                                <div className="flex flex-row border-b border-solid border-[#EAECF0] gap-3 items-center w-30 px-4 py-[10px] transition-colors hover:bg-neutral-100 rounded-tr-md rounded-tl-md">
-                                    <button>
-                                        <Image
-                                            src="/icons/emoji-1.png"
-                                            width={20}
-                                            height={20}
-                                            alt="thumbs-emoji"
-                                        />
-                                    </button>
-                                    <button>
-                                        <Image
-                                            src="/icons/emoji-2.png"
-                                            width={20}
-                                            height={20}
-                                            alt="Heart-emoji"
-                                        />
-                                    </button>
-                                    <button>
-                                        <Image
-                                            src="/icons/emoji-3.png"
-                                            width={20}
-                                            height={20}
-                                            alt="laugh-emoji"
-                                        />
-                                    </button>
-                                    <button>
-                                        <Image
-                                            src="/icons/emoji-4.png"
-                                            width={20}
-                                            height={20}
-                                            alt="smile-face with heart-emoji"
-                                        />
-                                    </button>
-                                    <button>
-                                        <Image
-                                            src="/icons/emoji-5.png"
-                                            width={20}
-                                            height={20}
-                                            alt="ohh-reaction-emoji"
-                                        />
-                                    </button>
-                                    <button>
-                                        <Image
-                                            src="/icons/plus-icon.svg"
-                                            width={20}
-                                            height={20}
-                                            alt="thumbs-emoji"
-                                        />
-                                    </button>
-                                </div>
-
-                                {/* Other options */}
-                                <button className='flex flex-row items-center gap-2 w-30 px-4 py-[10px] transition-colors hover:bg-neutral-100'>
-                                    <Image src='/icons/Reply.svg' alt='search icon' width={15} height={15} />
-                                    <span className='font-normal text-[#0C111D] text-sm'>Reply</span>
-                                </button>
-                                <button className='flex flex-row items-center gap-2 w-30 px-4 py-[10px] transition-colors hover:bg-neutral-100'>
-                                    <Image src='/icons/copy.svg' alt='search icon' width={20} height={20} />
-                                    <span className='font-normal text-[#0C111D] text-sm'>Copy</span>
-                                </button>
-                                <button className='flex flex-row items-center gap-2 w-30 px-4 py-[10px] transition-colors hover:bg-neutral-100'>
-                                    <Image src='/icons/Bookmark.svg' alt='search icon' width={20} height={20} />
-                                    <span className='font-normal text-[#0C111D] text-sm'>Bookmark</span>
-                                </button>
-                                <button className='flex flex-row items-center gap-2 w-30 px-4 py-[10px] transition-colors hover:bg-neutral-100 rounded-br-md rounded-bl-md'>
-                                    <Image src='/icons/Report.svg' alt='search icon' width={20} height={20} />
-                                    <span className='font-normal text-[#0C111D] text-sm'>Report Message</span>
-                                </button>
-                            </div>
-                        </PopoverContent>
-                    </Popover>
-
-                    <div className="flex flex-col px-4 py-3 bg-purple rounded-xl gap-[10px]">
-                        <div className="flex flex-col p-4 bg-[#973AFF] border border-[#AD72FF] rounded-md text-xs gap-1">
-                            <div className="flex flex-row gap-2">
-                                <h4 className="font-semibold">Marvin McKinney</h4>
-                                <div className="">Admin</div>
-                                <div>3:24 PM</div>
-                            </div>
-                            <div>Hello Guys, Looking forward to learning with all of you</div>
-                        </div>
-                        <div className="text-sm">Loerum ipsum content</div>
-                    </div>
-                </div>
-                <div className="flex flex-row justify-end mt-1 gap-2 h-auto w-full ml-11">
-                    {Array.from({ length: 10 }).map((_, index) => ( // Create 10 buttons
-                        <button
-                            key={index}
-                            onClick={() => handleClick(index)}
-                            className={`rounded-[54px] border border-solid border-[#D0D5DD] h-[26px] w-[48px] p-1 flex flex-row justify-center gap-1 transition-colors duration-200 ${activeButtonIndex === index // Check if this button is active
-                                ? 'bg-[#F8F0FF] border-[#7400E0] text-[#7400E0]' // Active styles
-                                : 'bg-[#F2F4F7] text-[#475467] hover:bg-[#F8F0FF] hover:border-[#7400E0]' // Default and hover styles
-                                }`}
-                        >
-                            <Image
-                                src="/icons/emoji-5.png"
-                                width={15}
-                                height={15}
-                                alt="ohh-reaction-emoji"
-                            />
-                            <span className="font-medium text-xs">12</span>
-                        </button>
-                    ))}
-                </div>
-            </div>
-
-            {/* THIRD MESSAGE */}
-            <div className="flex flex-col items-end w-full text-white">
-                <div className="text-xs text-neutral-600 mb-2">3:24 PM</div>
-                <div className="flex flex-row items-center justify-end gap-3 w-full group">
-                    <div className="flex px-4 py-3 text-sm bg-[#EDE4FF] rounded-xl gap-2">
-                        <p className="text-[#475467]">Message deleted.</p>
-                        <button className="text-purple italic hover:underline">Undo</button>
-                    </div>
-                </div>
-            </div>
-
-            {/* FOURTH MESSAGE */}
-            <div className="flex flex-col items-end w-full text-white">
-                <div className="text-xs text-neutral-600 mb-2">3:24 PM</div>
-                <div className="flex flex-row items-center justify-end gap-3 w-full group">
-                    <Popover
-                        placement="bottom-end"
-                    >
-                        <PopoverTrigger>
-                            <button
-                                onClick={handlePopoverToggle}
-                                className='w-[48px] h-[26px] rounded-[54px] border border-solid border-[#6770A9]  hover:bg-[#D0D5DD] hidden items-center justify-center focus:outline-none bg-[#F2F4F7] ml-1 transition-all group-hover:flex'
-                            >
-                                <Image
-                                    src="/icons/arrow-down.svg"
-                                    width={12}
-                                    height={12}
-                                    alt="Arrow-down"
-                                    className="mr-1"
-                                />
-                                <Image
-                                    src="/icons/smile.svg"
-                                    width={16}
-                                    height={16}
-                                    alt="Smile"
-                                />
-                            </button>
-                        </PopoverTrigger>
-
-                        <PopoverContent>
-                            <div
-                                className='flex flex-col bg-[#FFFFFF] w-auto h-auto border border-[#EAECF0] rounded-md'
-                                style={{
-                                    boxShadow: '0px 4px 6px -2px rgba(16, 24, 40, 0.08), 0px 12px 16px -4px rgba(16, 24, 40, 0.14)',
-                                }}>
-                                {/* Emoji list */}
-                                <div className="flex flex-row border-b border-solid border-[#EAECF0] gap-3 items-center w-30 px-4 py-[10px] transition-colors hover:bg-neutral-100 rounded-tr-md rounded-tl-md">
-                                    <button>
-                                        <Image
-                                            src="/icons/emoji-1.png"
-                                            width={20}
-                                            height={20}
-                                            alt="thumbs-emoji"
-                                        />
-                                    </button>
-                                    <button>
-                                        <Image
-                                            src="/icons/emoji-2.png"
-                                            width={20}
-                                            height={20}
-                                            alt="Heart-emoji"
-                                        />
-                                    </button>
-                                    <button>
-                                        <Image
-                                            src="/icons/emoji-3.png"
-                                            width={20}
-                                            height={20}
-                                            alt="laugh-emoji"
-                                        />
-                                    </button>
-                                    <button>
-                                        <Image
-                                            src="/icons/emoji-4.png"
-                                            width={20}
-                                            height={20}
-                                            alt="smile-face with heart-emoji"
-                                        />
-                                    </button>
-                                    <button>
-                                        <Image
-                                            src="/icons/emoji-5.png"
-                                            width={20}
-                                            height={20}
-                                            alt="ohh-reaction-emoji"
-                                        />
-                                    </button>
-                                    <button>
-                                        <Image
-                                            src="/icons/plus-icon.svg"
-                                            width={20}
-                                            height={20}
-                                            alt="thumbs-emoji"
-                                        />
-                                    </button>
-                                </div>
-
-                                {/* Other options */}
-                                <button className='flex flex-row items-center gap-2 w-30 px-4 py-[10px] transition-colors hover:bg-neutral-100'>
-                                    <Image src='/icons/Reply.svg' alt='search icon' width={15} height={15} />
-                                    <span className='font-normal text-[#0C111D] text-sm'>Reply</span>
-                                </button>
-                                <button className='flex flex-row items-center gap-2 w-30 px-4 py-[10px] transition-colors hover:bg-neutral-100'>
-                                    <Image src='/icons/copy.svg' alt='search icon' width={20} height={20} />
-                                    <span className='font-normal text-[#0C111D] text-sm'>Copy</span>
-                                </button>
-                                <button className='flex flex-row items-center gap-2 w-30 px-4 py-[10px] transition-colors hover:bg-neutral-100'>
-                                    <Image src='/icons/Bookmark.svg' alt='search icon' width={20} height={20} />
-                                    <span className='font-normal text-[#0C111D] text-sm'>Bookmark</span>
-                                </button>
-                                <button className='flex flex-row items-center gap-2 w-30 px-4 py-[10px] transition-colors hover:bg-neutral-100 rounded-br-md rounded-bl-md'>
-                                    <Image src='/icons/Report.svg' alt='search icon' width={20} height={20} />
-                                    <span className='font-normal text-[#0C111D] text-sm'>Report Message</span>
-                                </button>
-                            </div>
-                        </PopoverContent>
-                    </Popover>
-                    <div className="flex flex-col px-4 py-3 text-sm bg-purple rounded-xl max-w-xs gap-[10px]">
-                        <Image src='/images/impNotes.png' alt="image" width={359} height={293} />
-                        <p className="text-sm break-words">Hello Guys, Looking forward to learning with all of you</p>
-                    </div>
-                </div>
-                <div className="flex flex-row justify-end mt-1 gap-2 h-auto w-full ml-11">
-                    {Array.from({ length: 10 }).map((_, index) => ( // Create 10 buttons
-                        <button
-                            key={index}
-                            onClick={() => handleClick(index)}
-                            className={`rounded-[54px] border border-solid border-[#D0D5DD] h-[26px] w-[48px] p-1 flex flex-row justify-center gap-1 transition-colors duration-200 ${activeButtonIndex === index // Check if this button is active
-                                ? 'bg-[#F8F0FF] border-[#7400E0] text-[#7400E0]' // Active styles
-                                : 'bg-[#F2F4F7] text-[#475467] hover:bg-[#F8F0FF] hover:border-[#7400E0]' // Default and hover styles
-                                }`}
-                        >
-                            <Image
-                                src="/icons/emoji-5.png"
-                                width={15}
-                                height={15}
-                                alt="ohh-reaction-emoji"
-                            />
-                            <span className="font-medium text-xs">12</span>
-                        </button>
-                    ))}
-                </div>
-            </div>
-
-            {/* FIFTH MESSAGE */}
-            <div className="flex flex-col items-end w-full text-white">
-                <div className="text-xs text-neutral-600 mb-2">3:24 PM</div>
-                <div className="flex flex-row items-center justify-end gap-3 w-full group">
-
-                    <Popover
-                        placement="bottom-end"
-                    >
-                        <PopoverTrigger>
-                            <button
-                                onClick={handlePopoverToggle}
-                                className='w-[48px] h-[26px] rounded-[54px] border border-solid border-[#6770A9]  hover:bg-[#D0D5DD] hidden items-center justify-center focus:outline-none bg-[#F2F4F7] ml-1 transition-all group-hover:flex'
-                            >
-                                <Image
-                                    src="/icons/arrow-down.svg"
-                                    width={12}
-                                    height={12}
-                                    alt="Arrow-down"
-                                    className="mr-1"
-                                />
-                                <Image
-                                    src="/icons/smile.svg"
-                                    width={16}
-                                    height={16}
-                                    alt="Smile"
-                                />
-                            </button>
-                        </PopoverTrigger>
-
-                        <PopoverContent>
-                            <div
-                                className='flex flex-col bg-[#FFFFFF] w-auto h-auto border border-[#EAECF0] rounded-md'
-                                style={{
-                                    boxShadow: '0px 4px 6px -2px rgba(16, 24, 40, 0.08), 0px 12px 16px -4px rgba(16, 24, 40, 0.14)',
-                                }}>
-                                {/* Emoji list */}
-                                <div className="flex flex-row border-b border-solid border-[#EAECF0] gap-3 items-center w-30 px-4 py-[10px] transition-colors hover:bg-neutral-100 rounded-tr-md rounded-tl-md">
-                                    <button>
-                                        <Image
-                                            src="/icons/emoji-1.png"
-                                            width={20}
-                                            height={20}
-                                            alt="thumbs-emoji"
-                                        />
-                                    </button>
-                                    <button>
-                                        <Image
-                                            src="/icons/emoji-2.png"
-                                            width={20}
-                                            height={20}
-                                            alt="Heart-emoji"
-                                        />
-                                    </button>
-                                    <button>
-                                        <Image
-                                            src="/icons/emoji-3.png"
-                                            width={20}
-                                            height={20}
-                                            alt="laugh-emoji"
-                                        />
-                                    </button>
-                                    <button>
-                                        <Image
-                                            src="/icons/emoji-4.png"
-                                            width={20}
-                                            height={20}
-                                            alt="smile-face with heart-emoji"
-                                        />
-                                    </button>
-                                    <button>
-                                        <Image
-                                            src="/icons/emoji-5.png"
-                                            width={20}
-                                            height={20}
-                                            alt="ohh-reaction-emoji"
-                                        />
-                                    </button>
-                                    <button>
-                                        <Image
-                                            src="/icons/plus-icon.svg"
-                                            width={20}
-                                            height={20}
-                                            alt="thumbs-emoji"
-                                        />
-                                    </button>
-                                </div>
-
-                                {/* Other options */}
-                                <button className='flex flex-row items-center gap-2 w-30 px-4 py-[10px] transition-colors hover:bg-neutral-100'>
-                                    <Image src='/icons/Reply.svg' alt='search icon' width={15} height={15} />
-                                    <span className='font-normal text-[#0C111D] text-sm'>Reply</span>
-                                </button>
-                                <button className='flex flex-row items-center gap-2 w-30 px-4 py-[10px] transition-colors hover:bg-neutral-100'>
-                                    <Image src='/icons/copy.svg' alt='search icon' width={20} height={20} />
-                                    <span className='font-normal text-[#0C111D] text-sm'>Copy</span>
-                                </button>
-                                <button className='flex flex-row items-center gap-2 w-30 px-4 py-[10px] transition-colors hover:bg-neutral-100'>
-                                    <Image src='/icons/Bookmark.svg' alt='search icon' width={20} height={20} />
-                                    <span className='font-normal text-[#0C111D] text-sm'>Bookmark</span>
-                                </button>
-                                <button className='flex flex-row items-center gap-2 w-30 px-4 py-[10px] transition-colors hover:bg-neutral-100 rounded-br-md rounded-bl-md'>
-                                    <Image src='/icons/Report.svg' alt='search icon' width={20} height={20} />
-                                    <span className='font-normal text-[#0C111D] text-sm'>Report Message</span>
-                                </button>
-                            </div>
-                        </PopoverContent>
-                    </Popover>
-
-                    <div className="flex flex-col px-4 py-3 bg-purple rounded-xl gap-[10px]">
-                        <div className="flex flex-col p-4 bg-[#973AFF] border border-[#AD72FF] rounded-md text-xs gap-1">
-                            <div className="flex flex-row gap-2">
-                                <h4 className="font-semibold">Marvin McKinney</h4>
-                                <div>3:24 PM</div>
-                            </div>
-                            <div className="flex flex-row gap-2">
-                                <Image src='/icons/image-01-2.svg' alt="img" width={18} height={18} />
-                                <p className="text-sm">History of Skate.jpeg</p>
-                            </div>
-                        </div>
-                        <div className="text-sm">Loerum ipsum content</div>
-                    </div>
-                </div>
-                <div className="flex flex-row justify-end mt-1 gap-2 h-auto w-full ml-11">
-                    {Array.from({ length: 10 }).map((_, index) => ( // Create 10 buttons
-                        <button
-                            key={index}
-                            onClick={() => handleClick(index)}
-                            className={`rounded-[54px] border border-solid border-[#D0D5DD] h-[26px] w-[48px] p-1 flex flex-row justify-center gap-1 transition-colors duration-200 ${activeButtonIndex === index // Check if this button is active
-                                ? 'bg-[#F8F0FF] border-[#7400E0] text-[#7400E0]' // Active styles
-                                : 'bg-[#F2F4F7] text-[#475467] hover:bg-[#F8F0FF] hover:border-[#7400E0]' // Default and hover styles
-                                }`}
-                        >
-                            <Image
-                                src="/icons/emoji-5.png"
-                                width={15}
-                                height={15}
-                                alt="ohh-reaction-emoji"
-                            />
-                            <span className="font-medium text-xs">12</span>
-                        </button>
-                    ))}
-                </div>
-            </div>
-        </div >
+        </>
     );
 }
 
-export default OwnChat;
+export default OtherChat;

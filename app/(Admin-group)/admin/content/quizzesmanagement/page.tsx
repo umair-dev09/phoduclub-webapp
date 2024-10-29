@@ -20,6 +20,7 @@ import EndQuiz from "@/components/AdminComponents/QuizInfoDailogs/EndQuiz";
 import PausedQuiz from "@/components/AdminComponents/QuizInfoDailogs/PausedQuiz";
 import MakeLiveNow from "@/components/AdminComponents/QuizInfoDailogs/MakeLiveNow";
 import ResumeQuiz from "@/components/AdminComponents/QuizInfoDailogs/ResumeQuiz";
+import ViewAnalytics from "@/components/AdminComponents/QuizInfoDailogs/ViewAnalytics";
 
 // Define types for quiz data
 interface Quiz {
@@ -120,7 +121,7 @@ function Quizz() {
     const [isPausedDialogOpen, setIsPausedDialogOpen] = useState(false);
     const [isMakeLiveNowDialogOpen, setIsMakeLiveNowDialogOpen] = useState(false);
     const [isResumeQuizOpen, setIsResumeQuizOpen] = useState(false);
-
+    const [isViewAnalyticsOpen, setIsViewAnalyticsOpen] = useState(false);
 
     // Handlers for ScheduledDialog
     const openScheduledDialog = () => setIsScheduledDialogOpen(true);
@@ -145,6 +146,10 @@ function Quizz() {
     // Handlers for ResumeQuiz dialog
     const openResumeQuiz = () => setIsResumeQuizOpen(true);
     const closeResumeQuiz = () => setIsResumeQuizOpen(false);
+
+    // Handlers for ViewAnalytics dialog
+    const openViewAnalytics = () => setIsViewAnalyticsOpen(true);
+    const closeViewAnalytics = () => setIsViewAnalyticsOpen(false);
 
     return (
         <div className="flex flex-col px-[32px] w-full gap-4 overflow-y-auto h-auto my-5">
@@ -236,7 +241,6 @@ function Quizz() {
                                                         width={74}
                                                         height={24}
                                                         alt={quiz.status}
-                                                        className="text-xs font-medium"
                                                     />
                                                 </span>
                                             </td>
@@ -284,7 +288,8 @@ function Quizz() {
                                                                 </div>
                                                             )}
                                                             {quiz.status === 'Finished' && (
-                                                                <div className="flex flex-row w-[10.438rem] px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors">
+                                                                <div className="flex flex-row w-[10.438rem] px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors"
+                                                                    onClick={openViewAnalytics}>
                                                                     <Image src='/icons/analytics-01.svg' alt="view analytics" width={18} height={18} />
                                                                     <p>View Analytics</p>
                                                                 </div>
@@ -387,6 +392,7 @@ function Quizz() {
             {isPausedDialogOpen && <PausedQuiz onClose={closePausedQuiz} />}
             {isMakeLiveNowDialogOpen && < MakeLiveNow onClose={closeMakeLiveNowQuiz} open={true} />}
             {isResumeQuizOpen && < ResumeQuiz onClose={closeResumeQuiz} open={true} />}
+            {isViewAnalyticsOpen && < ViewAnalytics onClose={closeViewAnalytics} open={true} />}
         </div>
     );
 }
