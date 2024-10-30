@@ -21,6 +21,7 @@ import PausedQuiz from "@/components/AdminComponents/QuizInfoDailogs/PausedQuiz"
 import MakeLiveNow from "@/components/AdminComponents/QuizInfoDailogs/MakeLiveNow";
 import ResumeQuiz from "@/components/AdminComponents/QuizInfoDailogs/ResumeQuiz";
 import ViewAnalytics from "@/components/AdminComponents/QuizInfoDailogs/ViewAnalytics";
+import QuizStatus from '@/components/AdminComponents/QuizzesManagement/quizStatus';
 
 // Define types for quiz data
 interface Quiz {
@@ -28,7 +29,7 @@ interface Quiz {
     questions: number;
     date: string; // Can be Date type if desired
     students: number;
-    status: 'Live' | 'Paused' | 'Finished' | 'Scheduled' | 'Cancelled' | 'Saved';
+    status: 'Live' | 'Paused' | 'Finished' | 'Scheduled' | 'Ended' | 'Saved';
 }
 
 // Mock fetchQuizzes function with types
@@ -39,14 +40,14 @@ const fetchQuizzes = async (): Promise<Quiz[]> => {
         { title: 'Science', questions: 8, date: 'Jan 8, 2024', students: 1875, status: 'Paused' },
         { title: 'Astronomy', questions: 7, date: 'Mar 17, 2024', students: 1250, status: 'Saved' },
         { title: 'History', questions: 12, date: 'Jan 10, 2024', students: 1290, status: 'Finished' },
-        { title: 'Geography', questions: 6, date: 'Jan 12, 2024', students: 950, status: 'Cancelled' },
+        { title: 'Geography', questions: 6, date: 'Jan 12, 2024', students: 950, status: 'Ended' },
         { title: 'Physics', questions: 15, date: 'Feb 1, 2024', students: 1800, status: 'Scheduled' },
         { title: 'Chemistry', questions: 9, date: 'Feb 3, 2024', students: 1600, status: 'Live' },
         { title: 'Creative Writing', questions: 12, date: 'Mar 22, 2024', students: 1400, status: 'Saved' },
         { title: 'English Literature', questions: 12, date: 'Feb 5, 2024', students: 1950, status: 'Paused' },
         { title: 'Marine Biology', questions: 9, date: 'Mar 20, 2024', students: 1150, status: 'Saved' },
         { title: 'Biology', questions: 10, date: 'Feb 8, 2024', students: 2100, status: 'Finished' },
-        { title: 'Computer Science', questions: 8, date: 'Feb 10, 2024', students: 2200, status: 'Cancelled' },
+        { title: 'Computer Science', questions: 8, date: 'Feb 10, 2024', students: 2200, status: 'Ended' },
         { title: 'Anthropology', questions: 6, date: 'Mar 28, 2024', students: 1100, status: 'Saved' },
         { title: 'Art History', questions: 7, date: 'Feb 12, 2024', students: 1700, status: 'Live' },
         { title: 'Philosophy', questions: 10, date: 'Feb 15, 2024', students: 1300, status: 'Scheduled' },
@@ -55,14 +56,14 @@ const fetchQuizzes = async (): Promise<Quiz[]> => {
         { title: 'Political Science', questions: 9, date: 'Feb 20, 2024', students: 1900, status: 'Paused' },
         { title: 'Neuroscience', questions: 10, date: 'Apr 6, 2024', students: 1250, status: 'Saved' },
         { title: 'Sociology', questions: 12, date: 'Feb 25, 2024', students: 1750, status: 'Live' },
-        { title: 'Psychology', questions: 8, date: 'Mar 1, 2024', students: 2000, status: 'Cancelled' },
+        { title: 'Psychology', questions: 8, date: 'Mar 1, 2024', students: 2000, status: 'Ended' },
         { title: 'Environmental Science', questions: 7, date: 'Mar 3, 2024', students: 1500, status: 'Scheduled' },
         { title: 'World History', questions: 10, date: 'Mar 5, 2024', students: 1850, status: 'Finished' },
         { title: 'Ethics', questions: 11, date: 'Mar 30, 2024', students: 1000, status: 'Saved' },
         { title: 'Statistics', questions: 9, date: 'Mar 8, 2024', students: 1700, status: 'Live' },
         { title: 'Robotics', questions: 8, date: 'Apr 4, 2024', students: 1350, status: 'Saved' },
         { title: 'Business Studies', questions: 8, date: 'Mar 10, 2024', students: 1400, status: 'Paused' },
-        { title: 'Music Theory', questions: 6, date: 'Mar 12, 2024', students: 1200, status: 'Cancelled' },
+        { title: 'Music Theory', questions: 6, date: 'Mar 12, 2024', students: 1200, status: 'Ended' },
         { title: 'Genetics', questions: 8, date: 'Mar 25, 2024', students: 1300, status: 'Saved' },
         { title: 'Linguistics', questions: 7, date: 'Apr 10, 2024', students: 1050, status: 'Saved' }
     ];
@@ -236,12 +237,13 @@ function Quizz() {
                                             <td className="px-8 py-4 text-center text-[#101828] text-sm">{quiz.students}</td>
                                             <td className="px-8 py-4 text-center text-[#101828] text-sm">
                                                 <span className='flex items-center justify-center rounded-full'>
-                                                    <Image
+                                                    {/* <Image
                                                         src={`/icons/${quiz.status}.svg`}
                                                         width={74}
                                                         height={24}
                                                         alt={quiz.status}
-                                                    />
+                                                    /> */}
+                                                    <QuizStatus status={quiz.status} />
                                                 </span>
                                             </td>
                                             <td className="flex items-center justify-center px-8 py-4 text-[#101828] text-sm">
