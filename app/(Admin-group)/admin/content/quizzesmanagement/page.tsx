@@ -236,13 +236,7 @@ function Quizz() {
                                             <td className="px-8 py-4 text-center text-[#101828] text-sm">{quiz.date}</td>
                                             <td className="px-8 py-4 text-center text-[#101828] text-sm">{quiz.students}</td>
                                             <td className="px-8 py-4 text-center text-[#101828] text-sm">
-                                                <span className='flex items-center justify-center rounded-full'>
-                                                    {/* <Image
-                                                        src={`/icons/${quiz.status}.svg`}
-                                                        width={74}
-                                                        height={24}
-                                                        alt={quiz.status}
-                                                    /> */}
+                                                <span className='flex items-center justify-start ml-[33%] rounded-full'>
                                                     <QuizStatus status={quiz.status} />
                                                 </span>
                                             </td>

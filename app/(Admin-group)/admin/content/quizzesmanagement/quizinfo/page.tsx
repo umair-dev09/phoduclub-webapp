@@ -122,7 +122,7 @@ function Quizinfo() {
                             <PopoverTrigger>
                                 <button
                                     className="w-10 p-[10px] h-[40px] gap-1 flex-row flex  bg-[#FFFFFF] rounded-md 
-                                         border border-solid border-[#EAECF0] shadow-none"
+                                        border border-solid border-[#EAECF0] shadow-none"
                                     style={{ outline: "none" }}
                                 >
                                     <Image src="/icons/three-dots.svg" width={18} height={18} alt="three-dots" />

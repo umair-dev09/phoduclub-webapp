@@ -21,50 +21,50 @@ import PausedQuiz from "@/components/AdminComponents/QuizInfoDailogs/PausedQuiz"
 import MakeLiveNow from "@/components/AdminComponents/QuizInfoDailogs/MakeLiveNow";
 import ResumeQuiz from "@/components/AdminComponents/QuizInfoDailogs/ResumeQuiz";
 import ViewAnalytics from "@/components/AdminComponents/QuizInfoDailogs/ViewAnalytics";
+import QuizStatus from '@/components/AdminComponents/QuizzesManagement/quizStatus';
 
 // Define types for quiz data
 interface Quiz {
-    title: string;
     questions: number;
     date: string; // Can be Date type if desired
     students: number;
-    status: 'Live' | 'Paused' | 'Finished' | 'Scheduled' | 'Cancelled' | 'Saved';
+    status: 'Live' | 'Paused' | 'Finished' | 'Scheduled' | 'Ended' | 'Saved';
 }
 
 // Mock fetchQuizzes function with types
 const fetchQuizzes = async (): Promise<Quiz[]> => {
     const allQuizzes: Quiz[] = [
-        { title: 'Maths', questions: 10, date: 'Jan 6, 2024', students: 2147, status: 'Live' },
-        { title: 'Ancient Civilizations', questions: 10, date: 'Mar 15, 2024', students: 900, status: 'Saved' },
-        { title: 'Science', questions: 8, date: 'Jan 8, 2024', students: 1875, status: 'Paused' },
-        { title: 'Astronomy', questions: 7, date: 'Mar 17, 2024', students: 1250, status: 'Saved' },
-        { title: 'History', questions: 12, date: 'Jan 10, 2024', students: 1290, status: 'Finished' },
-        { title: 'Geography', questions: 6, date: 'Jan 12, 2024', students: 950, status: 'Cancelled' },
-        { title: 'Physics', questions: 15, date: 'Feb 1, 2024', students: 1800, status: 'Scheduled' },
-        { title: 'Chemistry', questions: 9, date: 'Feb 3, 2024', students: 1600, status: 'Live' },
-        { title: 'Creative Writing', questions: 12, date: 'Mar 22, 2024', students: 1400, status: 'Saved' },
-        { title: 'English Literature', questions: 12, date: 'Feb 5, 2024', students: 1950, status: 'Paused' },
-        { title: 'Marine Biology', questions: 9, date: 'Mar 20, 2024', students: 1150, status: 'Saved' },
-        { title: 'Biology', questions: 10, date: 'Feb 8, 2024', students: 2100, status: 'Finished' },
-        { title: 'Computer Science', questions: 8, date: 'Feb 10, 2024', students: 2200, status: 'Cancelled' },
-        { title: 'Anthropology', questions: 6, date: 'Mar 28, 2024', students: 1100, status: 'Saved' },
-        { title: 'Art History', questions: 7, date: 'Feb 12, 2024', students: 1700, status: 'Live' },
-        { title: 'Philosophy', questions: 10, date: 'Feb 15, 2024', students: 1300, status: 'Scheduled' },
-        { title: 'Economics', questions: 11, date: 'Feb 18, 2024', students: 1450, status: 'Finished' },
-        { title: 'Public Health', questions: 10, date: 'Apr 2, 2024', students: 1450, status: 'Saved' },
-        { title: 'Political Science', questions: 9, date: 'Feb 20, 2024', students: 1900, status: 'Paused' },
-        { title: 'Neuroscience', questions: 10, date: 'Apr 6, 2024', students: 1250, status: 'Saved' },
-        { title: 'Sociology', questions: 12, date: 'Feb 25, 2024', students: 1750, status: 'Live' },
-        { title: 'Psychology', questions: 8, date: 'Mar 1, 2024', students: 2000, status: 'Cancelled' },
-        { title: 'Environmental Science', questions: 7, date: 'Mar 3, 2024', students: 1500, status: 'Scheduled' },
-        { title: 'World History', questions: 10, date: 'Mar 5, 2024', students: 1850, status: 'Finished' },
-        { title: 'Ethics', questions: 11, date: 'Mar 30, 2024', students: 1000, status: 'Saved' },
-        { title: 'Statistics', questions: 9, date: 'Mar 8, 2024', students: 1700, status: 'Live' },
-        { title: 'Robotics', questions: 8, date: 'Apr 4, 2024', students: 1350, status: 'Saved' },
-        { title: 'Business Studies', questions: 8, date: 'Mar 10, 2024', students: 1400, status: 'Paused' },
-        { title: 'Music Theory', questions: 6, date: 'Mar 12, 2024', students: 1200, status: 'Cancelled' },
-        { title: 'Genetics', questions: 8, date: 'Mar 25, 2024', students: 1300, status: 'Saved' },
-        { title: 'Linguistics', questions: 7, date: 'Apr 10, 2024', students: 1050, status: 'Saved' }
+        { questions: 10, date: 'Jan 6, 2024', students: 2147, status: 'Live' },
+        { questions: 10, date: 'Mar 15, 2024', students: 900, status: 'Saved' },
+        { questions: 8, date: 'Jan 8, 2024', students: 1875, status: 'Paused' },
+        { questions: 7, date: 'Mar 17, 2024', students: 1250, status: 'Saved' },
+        { questions: 12, date: 'Jan 10, 2024', students: 1290, status: 'Finished' },
+        { questions: 6, date: 'Jan 12, 2024', students: 950, status: 'Ended' },
+        { questions: 15, date: 'Feb 1, 2024', students: 1800, status: 'Scheduled' },
+        { questions: 9, date: 'Feb 3, 2024', students: 1600, status: 'Live' },
+        { questions: 12, date: 'Mar 22, 2024', students: 1400, status: 'Saved' },
+        { questions: 12, date: 'Feb 5, 2024', students: 1950, status: 'Paused' },
+        { questions: 9, date: 'Mar 20, 2024', students: 1150, status: 'Saved' },
+        { questions: 10, date: 'Feb 8, 2024', students: 2100, status: 'Finished' },
+        { questions: 8, date: 'Feb 10, 2024', students: 2200, status: 'Ended' },
+        { questions: 6, date: 'Mar 28, 2024', students: 1100, status: 'Saved' },
+        { questions: 7, date: 'Feb 12, 2024', students: 1700, status: 'Live' },
+        { questions: 10, date: 'Feb 15, 2024', students: 1300, status: 'Scheduled' },
+        { questions: 11, date: 'Feb 18, 2024', students: 1450, status: 'Finished' },
+        { questions: 10, date: 'Apr 2, 2024', students: 1450, status: 'Saved' },
+        { questions: 9, date: 'Feb 20, 2024', students: 1900, status: 'Paused' },
+        { questions: 10, date: 'Apr 6, 2024', students: 1250, status: 'Saved' },
+        { questions: 12, date: 'Feb 25, 2024', students: 1750, status: 'Live' },
+        { questions: 8, date: 'Mar 1, 2024', students: 2000, status: 'Ended' },
+        { questions: 7, date: 'Mar 3, 2024', students: 1500, status: 'Scheduled' },
+        { questions: 10, date: 'Mar 5, 2024', students: 1850, status: 'Finished' },
+        { questions: 11, date: 'Mar 30, 2024', students: 1000, status: 'Saved' },
+        { questions: 9, date: 'Mar 8, 2024', students: 1700, status: 'Live' },
+        { questions: 8, date: 'Apr 4, 2024', students: 1350, status: 'Saved' },
+        { questions: 8, date: 'Mar 10, 2024', students: 1400, status: 'Paused' },
+        { questions: 6, date: 'Mar 12, 2024', students: 1200, status: 'Ended' },
+        { questions: 8, date: 'Mar 25, 2024', students: 1300, status: 'Saved' },
+        { questions: 7, date: 'Apr 10, 2024', students: 1050, status: 'Saved' }
     ];
     return allQuizzes;
 };
@@ -89,15 +89,6 @@ function Quizz() {
         };
         loadQuizzes();
     }, []);
-
-    // Filter quizzes based on search term
-    useEffect(() => {
-        const filteredQuizzes = quizzes.filter(quiz =>
-            quiz.title.toLowerCase().includes(searchTerm.toLowerCase())
-        );
-        setData(filteredQuizzes);
-        setCurrentPage(1); // Reset to first page on new search
-    }, [searchTerm, quizzes]);
 
     const lastItemIndex = currentPage * itemsPerPage;
     const firstItemIndex = lastItemIndex - itemsPerPage;
@@ -219,35 +210,32 @@ function Quizz() {
                             <table className="w-full bg-white rounded-xl">
                                 <thead>
                                     <tr>
-                                        <th className="w-1/4 text-left px-8 py-4 pl-8 rounded-tl-xl text-[#667085] font-medium text-sm">Quizzes</th>
-                                        <th className="w-[17%] text-center px-8 py-4 text-[#667085] font-medium text-sm">Questions</th>
-                                        <th className="w-[17%] text-center px-8 py-4 text-[#667085] font-medium text-sm">Published on</th>
-                                        <th className="w-[17%] text-center px-8 py-4 text-[#667085] font-medium text-sm">Students Attempted</th>
-                                        <th className="w-[17%] text-center px-8 py-4 rounded-tr-xl text-[#667085] font-medium text-sm">Status</th>
-                                        <th className="w-[12%] text-center px-8 py-4 rounded-tr-xl text-[#667085] font-medium text-sm">Actions</th>
+                                        <th className="w-[30%] text-left px-8 py-4 pl-8 rounded-tl-xl text-[#667085] font-medium text-sm">Test Series</th>
+                                        <th className="w-[20%] text-center px-8 py-4 text-[#667085] font-medium text-sm">Price</th>
+                                        <th className="w-[20%] text-center px-8 py-4 text-[#667085] font-medium text-sm">Published on</th>
+                                        <th className="w-[20%] text-center px-8 py-4 rounded-tr-xl text-[#667085] font-medium text-sm">Status</th>
+                                        <th className="w-[10%] text-center px-8 py-4 rounded-tr-xl text-[#667085] font-medium text-sm">Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     {currentItems.map((quiz, index) => (
                                         <tr key={index} className="border-t border-solid border-[#EAECF0]">
-                                            <td onClick={() => handleTabClick('/admin/content/quizzesmanagement/quizinfo')}><button className="px-8 py-4 text-[#9012FF] underline text-sm font-medium">{quiz.title}</button></td>
-                                            <td className="px-8 py-4 text-center text-[#101828] text-sm">{quiz.questions}</td>
+                                            <td onClick={() => handleTabClick('/admin/content/quizzesmanagement/quizinfo')}>
+                                                <button className="flex flex-row items-center px-8 py-3 gap-2 text-[#9012FF] underline text-sm font-medium">
+                                                    <Image src='/images/TSM-DP.png' alt="DP" width={40} height={40} />
+                                                    <p className="text-start">Phodu JEE Mains Test Series 2025</p>
+                                                </button>
+                                            </td>
+                                            <td className="px-8 py-4 text-center text-[#101828] text-sm">&#8377;{quiz.students}</td>
                                             <td className="px-8 py-4 text-center text-[#101828] text-sm">{quiz.date}</td>
-                                            <td className="px-8 py-4 text-center text-[#101828] text-sm">{quiz.students}</td>
                                             <td className="px-8 py-4 text-center text-[#101828] text-sm">
-                                                <span className='flex items-center justify-center rounded-full'>
-                                                    <Image
-                                                        src={`/icons/${quiz.status}.svg`}
-                                                        width={74}
-                                                        height={24}
-                                                        alt={quiz.status}
-                                                    />
+                                                <span className='flex items-center justify-start ml-[39%] rounded-full'>                                                    <QuizStatus status={quiz.status} />
                                                 </span>
                                             </td>
-                                            <td className="flex items-center justify-center px-8 py-4 text-[#101828] text-sm">
+                                            <td className="text-center px-8 py-4 text-[#101828] text-sm">
                                                 <Popover placement="bottom-end">
                                                     <PopoverTrigger className="outline-none">
-                                                        <button>
+                                                        <button className="ml-[60%]">
                                                             <Image
                                                                 src="/icons/three-dots.svg"
                                                                 width={20}

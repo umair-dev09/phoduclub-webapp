@@ -59,7 +59,7 @@ function CreateQuiz() {
 
     return (
         <>
-            <div className="ml-[32px] w-[274px] my-[32px] bg-[#FFFFFF] border border-solid border-[#EAECF0] rounded-md">
+            <div className="ml-8 w-[17.125rem] my-8 bg-[#FFFFFF] border border-solid border-[#EAECF0] rounded-md">
                 <div className="flex flex-row items-center justify-between m-4">
                     <span className="text-[#1D2939] text-base font-semibold">Create Test Series</span>
                     <div className="flex items-center justify-center w-10 h-8 text-sm text-[#475467] font-medium bg-[#F9FAFB] border border-lightGrey rounded-[6px]">
@@ -69,7 +69,7 @@ function CreateQuiz() {
                 <div className="flex flex-col mx-4">
                     {["Test Series Info", "Sections", "Review", "Perference"].map((label, index) => (
                         <div key={index}>
-                            <div className="flex flex-row items-center gap-2">
+                            <div className="flex flex-row items-center mr-2 gap-2">
                                 <div className={`flex items-center justify-center w-8 h-8 transition-all ${getStepStyles(index as Step)} rounded-full`}>
                                     {currentStep > index ? (
                                         <Image src='/icons/Tick.svg' alt="done" width={16} height={14.01} />
@@ -77,7 +77,7 @@ function CreateQuiz() {
                                         <div className={`${currentStep === index ? "bg-white" : "bg-[#D0D5DE]"} w-[0.625rem] h-[0.625rem] rounded-full`}></div>
                                     )}
                                 </div>
-                                <p className={`text-base font-semibold transition-all ${currentStep === index ? "text-[#9012FF]" : "text-[#344054]"}`}>{label}</p>
+                                <p className={`text-sm font-semibold transition-all ${currentStep === index ? "text-[#9012FF]" : "text-[#344054]"}`}>{label}</p>
                             </div>
                             {index < Step.Perference && (
                                 <div className={`w-0 h-5 my-1 ml-[15px] transition-all ${currentStep > index ? "border-[#9012FF]" : "border-lightGrey"} border rounded-full`}></div>
