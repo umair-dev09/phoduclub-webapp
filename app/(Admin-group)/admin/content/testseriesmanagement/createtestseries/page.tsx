@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import { useRouter } from 'next/navigation';
 import Image from "next/image";
 import TestSeriesInfo from "@/components/AdminComponents/TestSeriesComponents/TestSeriesInfo";
 import Sections from "@/components/AdminComponents/TestSeriesComponents/Sections";
@@ -17,6 +18,7 @@ enum Step {
 function CreateQuiz() {
     const [isPublished, setIsPublished] = useState(false);
     const [currentStep, setCurrentStep] = useState<Step>(Step.TestSeriesInfo);
+    const router = useRouter();
 
     const handleNextClick = () => {
         if (currentStep === Step.Perference) {
@@ -30,6 +32,10 @@ function CreateQuiz() {
         if (currentStep > Step.TestSeriesInfo) {
             setCurrentStep(currentStep - 1);
         }
+    };
+
+    const handleBackClick = () => {
+        router.back(); // Navigate to the previous page in the browser history
     };
 
     const renderStepContent = () => {
@@ -102,8 +108,8 @@ function CreateQuiz() {
                                 </button>
                             )}
                             <button
-                                className="h-[44px] w-[135px] rounded-md shadow-inner-button border border-solid text-white bg-[#8501FF] border-[#800EE2] hover:bg-[#7001D1]"
-                                onClick={handleNextClick}
+                                className={`h-[44px] w-[135px] rounded-md shadow-inner-button border border-solid text-white bg-[#8501FF] border-[#800EE2] hover:bg-[#7001D1]`}
+                                onClick={currentStep === Step.Perference ? handleBackClick : handleNextClick}
                             >
                                 <span className="font-semibold text-sm text-[#FFFFFF]">
                                     {currentStep === Step.Perference ? "Publish" : "Next"}
