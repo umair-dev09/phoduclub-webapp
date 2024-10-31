@@ -201,7 +201,7 @@ function Quizz() {
 
             {loading ? (
                 <div className="flex justify-center items-center h-48">
-                    <span className="text-lg">Loading quizzes...</span>
+                    <span className="text-lg">Loading test series...</span>
                 </div>
             ) : (
                 <div className="flex flex-1 flex-col">
