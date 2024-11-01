@@ -165,7 +165,7 @@ import Image from "next/image";
 import { useState, useEffect } from 'react';
 import { Popover, PopoverContent, PopoverTrigger } from "@nextui-org/popover";
 
-interface SectionProps {
+type SectionProps = {
     sectionsCount: number;
 }
 

@@ -234,8 +234,8 @@ function Quizz() {
                                             </td>
                                             <td className="text-center px-8 py-4 text-[#101828] text-sm">
                                                 <Popover placement="bottom-end">
-                                                    <PopoverTrigger className="outline-none">
-                                                        <button className="ml-[60%]">
+                                                    <PopoverTrigger>
+                                                        <button type='button' className="ml-[60%] outline-none cursor-pointer">
                                                             <Image
                                                                 src="/icons/three-dots.svg"
                                                                 width={20}
@@ -244,111 +244,112 @@ function Quizz() {
                                                             />
                                                         </button>
                                                     </PopoverTrigger>
-                                                    <PopoverContent className={`flex flex-col items-start text-sm font-normal py-1 px-0 bg-white border border-lightGrey rounded-md ${quiz.status === 'Paused' ? 'w-[11.563rem]' : 'w-[10.438rem]'}`}>
-                                                        {/* Option 1: Edit Quiz */}
-                                                        <div>
-                                                            {quiz.status === 'Paused' && (
-                                                                <div className="flex flex-row w-[11.563rem] px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors"
-                                                                    onClick={() => handleTabClick('/admin/content/quizzesmanagement/createquiz')}>
-                                                                    <Image src='/icons/edit-icon.svg' alt="edit" width={18} height={18} />
-                                                                    <p>Edit Quiz</p>
-                                                                </div>
-                                                            )}
-                                                            {quiz.status === 'Scheduled' && (
-                                                                <div className="flex flex-row w-[10.438rem] px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors"
-                                                                    onClick={() => handleTabClick('/admin/content/quizzesmanagement/createquiz')}>
-                                                                    <Image src='/icons/edit-icon.svg' alt="edit" width={18} height={18} />
-                                                                    <p>Edit Quiz</p>
-                                                                </div>
-                                                            )}
-                                                            {quiz.status === 'Saved' && (
-                                                                <div className="flex flex-row w-[10.438rem] px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors"
-                                                                    onClick={() => handleTabClick('/admin/content/quizzesmanagement/createquiz')}>
-                                                                    <Image src='/icons/edit-icon.svg' alt="edit" width={18} height={18} />
-                                                                    <p>Edit Quiz</p>
-                                                                </div>
-                                                            )}
-                                                            {quiz.status === 'Live' && (
-                                                                <div className="flex flex-row w-[10.438rem] px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors"
-                                                                    onClick={openPausedQuiz}>
-                                                                    <Image src='/icons/pause-dark.svg' alt="pause quiz" width={18} height={18} />
-                                                                    <p>Paused Quiz</p>
-                                                                </div>
-                                                            )}
-                                                            {quiz.status === 'Finished' && (
-                                                                <div className="flex flex-row w-[10.438rem] px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors"
-                                                                    onClick={openViewAnalytics}>
-                                                                    <Image src='/icons/analytics-01.svg' alt="view analytics" width={18} height={18} />
-                                                                    <p>View Analytics</p>
-                                                                </div>
-                                                            )}
-                                                        </div>
-
-                                                        {/* Option 3: Resume Quiz (only if status is Paused) */}
-                                                        {quiz.status === 'Paused' && (
-                                                            <div className="flex flex-row w-full px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors"
-                                                                onClick={openResumeQuiz}>
-                                                                <Image src='/icons/play-dark.svg' alt="resume quiz" width={20} height={20} />
-                                                                <p>Resume Quiz</p>
+                                                    <PopoverContent>
+                                                        <div className={`flex flex-col items-start text-sm font-normal py-1 px-0 bg-white border border-lightGrey rounded-md ${quiz.status === 'Paused' ? 'w-[11.563rem]' : 'w-[10.438rem]'}`}>
+                                                            {/* Option 1: Edit Quiz */}
+                                                            <div>
+                                                                {quiz.status === 'Paused' && (
+                                                                    <button className="flex flex-row w-[11.563rem] px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors"
+                                                                        onClick={() => handleTabClick('/admin/content/quizzesmanagement/createquiz')}>
+                                                                        <Image src='/icons/edit-icon.svg' alt="edit" width={18} height={18} />
+                                                                        <p>Edit Quiz</p>
+                                                                    </button>
+                                                                )}
+                                                                {quiz.status === 'Scheduled' && (
+                                                                    <button className="flex flex-row w-[10.438rem] px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors"
+                                                                        onClick={() => handleTabClick('/admin/content/quizzesmanagement/createquiz')}>
+                                                                        <Image src='/icons/edit-icon.svg' alt="edit" width={18} height={18} />
+                                                                        <p>Edit Quiz</p>
+                                                                    </button>
+                                                                )}
+                                                                {quiz.status === 'Saved' && (
+                                                                    <button className="flex flex-row w-[10.438rem] px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors"
+                                                                        onClick={() => handleTabClick('/admin/content/quizzesmanagement/createquiz')}>
+                                                                        <Image src='/icons/edit-icon.svg' alt="edit" width={18} height={18} />
+                                                                        <p>Edit Quiz</p>
+                                                                    </button>
+                                                                )}
+                                                                {quiz.status === 'Live' && (
+                                                                    <button className="flex flex-row w-[10.438rem] px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors"
+                                                                        onClick={openPausedQuiz}>
+                                                                        <Image src='/icons/pause-dark.svg' alt="pause quiz" width={18} height={18} />
+                                                                        <p>Paused Quiz</p>
+                                                                    </button>
+                                                                )}
+                                                                {quiz.status === 'Finished' && (
+                                                                    <button className="flex flex-row w-[10.438rem] px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors"
+                                                                        onClick={openViewAnalytics}>
+                                                                        <Image src='/icons/analytics-01.svg' alt="view analytics" width={18} height={18} />
+                                                                        <p>View Analytics</p>
+                                                                    </button>
+                                                                )}
                                                             </div>
-                                                        )}
-
-                                                        {/* Option 3: Schedule Quiz (only if status is Paused) */}
-                                                        {quiz.status === 'Paused' && (
-                                                            <Popover placement="left-start">
-                                                                <PopoverTrigger>
-                                                                    <div className="flex flex-row justify-between w-[11.563rem] px-4 py-[0.625rem] hover:bg-[#F2F4F7] transition-colors">
-                                                                        <div className="flex flex-row gap-2">
-                                                                            <Image src='/icons/calendar-03.svg' alt="schedule" width={18} height={18} />
-                                                                            <p>Schedule quiz</p>
-                                                                        </div>
-                                                                        <Image src='/icons/collapse-right-02.svg' alt="schedule popup" width={18} height={18} />
-                                                                    </div>
-                                                                </PopoverTrigger>
-                                                                <PopoverContent className="flex flex-col items-start text-sm font-normal py-1 px-0 bg-white border border-lightGrey rounded-md w-[11.25rem]">
-                                                                    <div className="w-full px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors" onClick={openScheduledDialog}>Schedule Quiz</div>
-                                                                    <div className="w-full px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors">Make Live Now</div>
-                                                                </PopoverContent>
-                                                            </Popover>
-                                                        )}
-
-                                                        {/* Option 4: Delete Quiz */}
-                                                        <div>
+                                                            {/* Option 3: Resume Quiz (only if status is Paused) */}
                                                             {quiz.status === 'Paused' && (
-                                                                <div className="flex flex-row w-[11.563rem] px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors"
-                                                                    onClick={openDeleteDialog}>
-                                                                    <Image src='/icons/delete.svg' alt="delete" width={18} height={18} />
-                                                                    <p className="text-[#DE3024]">Delete Quiz</p>
+                                                                <div className="flex flex-row w-full px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors"
+                                                                    onClick={openResumeQuiz}>
+                                                                    <Image src='/icons/play-dark.svg' alt="resume quiz" width={20} height={20} />
+                                                                    <p>Resume Quiz</p>
                                                                 </div>
                                                             )}
-                                                            {quiz.status === 'Scheduled' && (
-                                                                <div className="flex flex-row w-[10.438rem] px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors"
-                                                                    onClick={openDeleteDialog}>
-                                                                    <Image src='/icons/delete.svg' alt="delete" width={18} height={18} />
-                                                                    <p className="text-[#DE3024]">Delete Quiz</p>
-                                                                </div>
+                                                            {/* Option 3: Schedule Quiz (only if status is Paused) */}
+                                                            {quiz.status === 'Paused' && (
+                                                                <Popover placement="left-start">
+                                                                    <PopoverTrigger>
+                                                                        <div className="flex flex-row justify-between w-[11.563rem] px-4 py-[0.625rem] hover:bg-[#F2F4F7] transition-colors">
+                                                                            <div className="flex flex-row gap-2">
+                                                                                <Image src='/icons/calendar-03.svg' alt="schedule" width={18} height={18} />
+                                                                                <p>Schedule quiz</p>
+                                                                            </div>
+                                                                            <Image src='/icons/collapse-right-02.svg' alt="schedule popup" width={18} height={18} />
+                                                                        </div>
+                                                                    </PopoverTrigger>
+                                                                    <PopoverContent>
+                                                                        <div className="flex flex-col items-start text-sm font-normal py-1 px-0 bg-white border border-lightGrey rounded-md w-[11.25rem]">
+                                                                            <div className="w-full px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors" onClick={openScheduledDialog}>Schedule Quiz</div>
+                                                                            <div className="w-full px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors">Make Live Now</div>
+                                                                        </div>
+                                                                    </PopoverContent>
+                                                                </Popover>
                                                             )}
-                                                            {quiz.status === 'Finished' && (
-                                                                <div className="flex flex-row w-[10.438rem] px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors"
-                                                                    onClick={openDeleteDialog}>
-                                                                    <Image src='/icons/delete.svg' alt="delete" width={18} height={18} />
-                                                                    <p className="text-[#DE3024]">Delete Quiz</p>
-                                                                </div>
-                                                            )}
-                                                            {quiz.status === 'Saved' && (
-                                                                <div className="flex flex-row w-[10.438rem] px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors"
-                                                                    onClick={openDeleteDialog}>
-                                                                    <Image src='/icons/delete.svg' alt="delete" width={18} height={18} />
-                                                                    <p className="text-[#DE3024]">Delete Quiz</p>
-                                                                </div>
-                                                            )}
-                                                            {quiz.status === 'Live' && (
-                                                                <div className="flex flex-row w-[10.438rem] px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors"
-                                                                    onClick={openEndQuiz}>
-                                                                    <Image src='/icons/license-no.svg' alt="end quiz" width={18} height={18} />
-                                                                    <p className="text-[#DE3024]">End Quiz</p>
-                                                                </div>
-                                                            )}
+                                                            {/* Option 4: Delete Quiz */}
+                                                            <div>
+                                                                {quiz.status === 'Paused' && (
+                                                                    <div className="flex flex-row w-[11.563rem] px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors"
+                                                                        onClick={openDeleteDialog}>
+                                                                        <Image src='/icons/delete.svg' alt="delete" width={18} height={18} />
+                                                                        <p className="text-[#DE3024]">Delete Quiz</p>
+                                                                    </div>
+                                                                )}
+                                                                {quiz.status === 'Scheduled' && (
+                                                                    <div className="flex flex-row w-[10.438rem] px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors"
+                                                                        onClick={openDeleteDialog}>
+                                                                        <Image src='/icons/delete.svg' alt="delete" width={18} height={18} />
+                                                                        <p className="text-[#DE3024]">Delete Quiz</p>
+                                                                    </div>
+                                                                )}
+                                                                {quiz.status === 'Finished' && (
+                                                                    <div className="flex flex-row w-[10.438rem] px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors"
+                                                                        onClick={openDeleteDialog}>
+                                                                        <Image src='/icons/delete.svg' alt="delete" width={18} height={18} />
+                                                                        <p className="text-[#DE3024]">Delete Quiz</p>
+                                                                    </div>
+                                                                )}
+                                                                {quiz.status === 'Saved' && (
+                                                                    <div className="flex flex-row w-[10.438rem] px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors"
+                                                                        onClick={openDeleteDialog}>
+                                                                        <Image src='/icons/delete.svg' alt="delete" width={18} height={18} />
+                                                                        <p className="text-[#DE3024]">Delete Quiz</p>
+                                                                    </div>
+                                                                )}
+                                                                {quiz.status === 'Live' && (
+                                                                    <div className="flex flex-row w-[10.438rem] px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors"
+                                                                        onClick={openEndQuiz}>
+                                                                        <Image src='/icons/license-no.svg' alt="end quiz" width={18} height={18} />
+                                                                        <p className="text-[#DE3024]">End Quiz</p>
+                                                                    </div>
+                                                                )}
+                                                            </div>
                                                         </div>
                                                     </PopoverContent>
                                                 </Popover>
