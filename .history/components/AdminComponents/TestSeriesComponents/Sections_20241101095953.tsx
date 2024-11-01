@@ -243,6 +243,7 @@ function Sections({ sectionsCount }: SectionProps) {
                                         </div>
                                     </div>
                                     <div className="flex flex-row  items-center justify-center">
+
                                         {showContent && (
                                             <button
                                                 className="flex flex-row gap-1 items-center h-[44px] w-[152px] justify-center">

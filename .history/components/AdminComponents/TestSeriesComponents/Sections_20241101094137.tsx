@@ -211,11 +211,11 @@ function Sections({ sectionsCount }: SectionProps) {
             setIsCreateSection(false);
         }
     };
-    // State to control the visibility of content div
-    const [showContent, setShowContent] = useState(false);
+    // State to control the visibility of "umair" and "jabir" divs
+    const [showJabir, setShowJabir] = useState(false);
 
     const handleAddManually = () => {
-        setShowContent(true); // Show the "Content" div
+        setShowJabir(true); // Show the "jabir" div
     };
 
     return (
@@ -242,28 +242,19 @@ function Sections({ sectionsCount }: SectionProps) {
                                             </span>
                                         </div>
                                     </div>
-                                    <div className="flex flex-row  items-center justify-center">
-                                        {showContent && (
-                                            <button
-                                                className="flex flex-row gap-1 items-center h-[44px] w-[152px] justify-center">
-                                                <Image src="/icons/plus-sign.svg" height={18} width={18} alt="Plus Sign" />
-                                                <span className="text-[#9012FF] font-semibold text-sm">Add Questions</span>
-                                            </button>
-                                        )}
-                                        <button>
-                                            <Image
-                                                src="/icons/three-dots.svg"
-                                                width={20}
-                                                height={20}
-                                                alt="Three Dots Icon"
-                                            />
-                                        </button>
-
-                                    </div>
+                                    <button>
+                                        <Image
+                                            src="/icons/three-dots.svg"
+                                            width={20}
+                                            height={20}
+                                            alt="Three Dots Icon"
+                                        />
+                                    </button>
                                 </div>
                             </div>
-                            {/* when  Content div is hidden show this div*/}
-                            {!showContent && (
+
+                            {/* umair div - shown only when "jabir" div is hidden */}
+                            {!showJabir && (
                                 <div className="bg-[#FFFFFF] h-[184px] p-6 items-center flex flex-col gap-2 rounded-[16px]">
                                     <span className="text-[#1D2939] font-semibold text-lg">Create section/questions</span>
                                     <span className="font-normal text-xs text-[#667085]">
@@ -288,7 +279,7 @@ function Sections({ sectionsCount }: SectionProps) {
                                             <PopoverContent className="flex flex-col px-0 text-sm font-normal bg-white border border-lightGrey rounded-md w-[167px] shadow-md">
                                                 <button
                                                     className="p-3 gap-2 flex-row flex h-[40px] hover:bg-[#F2F4F7] w-full"
-                                                    onClick={handleAddManually}
+                                                    onClick={handleAddManually} // Hide "umair" and show "jabir"
                                                 >
                                                     <span className="text-sm text-[#0C111D] font-normal">Add manually</span>
                                                 </button>
@@ -301,8 +292,8 @@ function Sections({ sectionsCount }: SectionProps) {
                                 </div>
                             )}
 
-                            {/* Content Div */}
-                            {showContent && (
+                            {/* jabir div - shown only when "showJabir" is true */}
+                            {showJabir && (
                                 <div>
                                     jabir
                                 </div>

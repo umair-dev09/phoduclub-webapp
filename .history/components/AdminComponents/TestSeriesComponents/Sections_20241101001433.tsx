@@ -3,9 +3,11 @@
 // import Image from "next/image";
 // import { useState } from 'react';
 
+// interface SectionProps {
+//     toggleAddSection: () => void;
+// }
 
-
-// function Section() {
+// function Section({ toggleAddSection }: SectionProps) {
 //     // State to manage the dialog for Create Section
 //     const [isCreateSection, setIsCreateSection] = useState(false);
 //     // State to manage visibility of content div and form data
@@ -23,7 +25,7 @@
 //         if (sectionName && sectionDate && sectionTime) {
 //             setShowContent(true); // Show content div only if all fields have values
 //             setIsCreateSection(false); // Close the dialog
-
+//             toggleAddSection();
 //         }
 //     };
 
@@ -156,183 +158,101 @@
 
 // export default Section;
 
-
-
-// section.tsx
 "use client";
 import { Dialog, DialogBackdrop, DialogPanel } from "@headlessui/react";
 import Image from "next/image";
-import { useState, useEffect } from 'react';
-import { Popover, PopoverContent, PopoverTrigger } from "@nextui-org/popover";
+import { useState } from 'react';
 
 interface SectionProps {
-    sectionsCount: number;
+    toggleAddSection: () => void;
 }
 
-function Sections({ sectionsCount }: SectionProps) {
-    const [sections, setSections] = useState<Array<{
-        name: string;
-        date: string;
-        time: string;
-        showContent: boolean;
-    }>>([{ name: "", date: "", time: "", showContent: false }]);
+interface SectionData {
+    name: string;
+    date: string;
+    time: string;
+}
 
+function Section({ toggleAddSection }: SectionProps) {
     const [isCreateSection, setIsCreateSection] = useState(false);
-    const [currentSectionIndex, setCurrentSectionIndex] = useState(0);
-    const [tempSection, setTempSection] = useState({
-        name: "",
-        date: "",
-        time: ""
-    });
+    const [sectionName, setSectionName] = useState("");
+    const [sectionDate, setSectionDate] = useState("");
+    const [sectionTime, setSectionTime] = useState("");
+    const [sections, setSections] = useState<SectionData[]>([]);
 
-    // Using useEffect instead of useState for tracking sectionsCount changes
-    useEffect(() => {
-        if (sectionsCount > sections.length) {
-            setSections(prev => [...prev, { name: "", date: "", time: "", showContent: false }]);
-        }
-    }, [sectionsCount, sections.length]);
-
-    const openCreateSection = (index: number) => {
-        setCurrentSectionIndex(index);
-        setTempSection({ name: "", date: "", time: "" });
-        setIsCreateSection(true);
-    };
-
+    const openCreateSection = () => setIsCreateSection(true);
     const closeCreateSection = () => setIsCreateSection(false);
 
     const handleCreateSection = () => {
-        if (tempSection.name && tempSection.date && tempSection.time) {
-            const newSections = [...sections];
-            newSections[currentSectionIndex] = {
-                ...tempSection,
-                showContent: true
-            };
-            setSections(newSections);
+        if (sectionName && sectionDate && sectionTime) {
+            const newSection: SectionData = { name: sectionName, date: sectionDate, time: sectionTime };
+            setSections([...sections, newSection]); // Add new section to sections array
+            setSectionName("");
+            setSectionDate("");
+            setSectionTime("");
             setIsCreateSection(false);
+            toggleAddSection();
         }
-    };
-    // State to control the visibility of content div
-    const [showContent, setShowContent] = useState(false);
-
-    const handleAddManually = () => {
-        setShowContent(true); // Show the "Content" div
     };
 
     return (
         <>
             {sections.map((section, index) => (
-                <div key={index} className={`h-auto rounded-[16px] ${index > 0 ? 'mt-4' : ''} flex flex-col border border-solid border-[#EAECF0] bg-[#FFFFFF] mt-4`}>
-                    {section.showContent ? (
-                        <>
-                            {/* x div */}
-                            <div className="h-[76px] bg-[#FFFFFF] rounded-t-[16px] border-b border-solid border-[#EAECF0]">
-                                <div className="flex flex-row justify-between p-4">
-                                    <div className="flex flex-col">
-                                        <span className="font-semibold text-base text-[#1D2939]">{section.name}</span>
-                                        <div className="flex flex-row mt-2 items-center">
-                                            <Image
-                                                src="/icons/select-date.svg"
-                                                width={16}
-                                                height={16}
-                                                alt="Calendar Icon"
-                                            />
-                                            <span className="font-normal text-[#475467] text-xs ml-1">Schedule :</span>
-                                            <span className="ml-2 text-[#101828] text-xs font-medium">
-                                                {section.date} {section.time}
-                                            </span>
-                                        </div>
-                                    </div>
-                                    <div className="flex flex-row  items-center justify-center">
-                                        {showContent && (
-                                            <button
-                                                className="flex flex-row gap-1 items-center h-[44px] w-[152px] justify-center">
-                                                <Image src="/icons/plus-sign.svg" height={18} width={18} alt="Plus Sign" />
-                                                <span className="text-[#9012FF] font-semibold text-sm">Add Questions</span>
-                                            </button>
-                                        )}
-                                        <button>
-                                            <Image
-                                                src="/icons/three-dots.svg"
-                                                width={20}
-                                                height={20}
-                                                alt="Three Dots Icon"
-                                            />
-                                        </button>
-
-                                    </div>
-                                </div>
-                            </div>
-                            {/* when  Content div is hidden show this div*/}
-                            {!showContent && (
-                                <div className="bg-[#FFFFFF] h-[184px] p-6 items-center flex flex-col gap-2 rounded-[16px]">
-                                    <span className="text-[#1D2939] font-semibold text-lg">Create section/questions</span>
-                                    <span className="font-normal text-xs text-[#667085]">
-                                        Test Lorem ipsum is placeholder text commonly used in the graphic, print, and publishing industries for previewing layouts and visual mockups.
+                <div
+                    key={index}
+                    className="h-auto rounded-[16px] mt-4 flex flex-col border border-solid border-[#EAECF0] bg-[#FFFFFF]"
+                >
+                    <div className="h-[76px] bg-[#FFFFFF] rounded-t-[16px] border-b border-solid border-[#EAECF0]">
+                        <div className="flex flex-row justify-between p-4">
+                            <div className="flex flex-col">
+                                <span className="font-semibold text-base text-[#1D2939]">{section.name}</span>
+                                <div className="flex flex-row mt-2 items-center">
+                                    <Image
+                                        src="/icons/select-date.svg"
+                                        width={16}
+                                        height={16}
+                                        alt="Calendar Icon"
+                                    />
+                                    <span className="font-normal text-[#475467] text-xs ml-1">Schedule :</span>
+                                    <span className="ml-2 text-[#101828] text-xs font-medium">
+                                        {section.date} {section.time}
                                     </span>
-                                    <div className="flex flex-row gap-4 mt-2">
-                                        <button
-                                            className="flex flex-row gap-1 items-center rounded-md border-[2px] border-solid border-[#9012FF] h-[44px] w-[162px] justify-center"
-                                            onClick={() => openCreateSection(index)}
-                                        >
-                                            <Image src="/icons/plus-sign.svg" height={18} width={18} alt="Plus Sign" />
-                                            <span className="text-[#9012FF] font-semibold text-sm">Add Section</span>
-                                        </button>
-
-                                        <Popover placement="bottom-end">
-                                            <PopoverTrigger>
-                                                <button className="flex flex-row gap-1 items-center rounded-md border-[2px] border-solid border-[#9012FF] h-[44px] w-[162px] justify-center">
-                                                    <Image src="/icons/plus-sign.svg" height={18} width={18} alt="Plus Sign" />
-                                                    <span className="text-[#9012FF] font-semibold text-sm">Add Question</span>
-                                                </button>
-                                            </PopoverTrigger>
-                                            <PopoverContent className="flex flex-col px-0 text-sm font-normal bg-white border border-lightGrey rounded-md w-[167px] shadow-md">
-                                                <button
-                                                    className="p-3 gap-2 flex-row flex h-[40px] hover:bg-[#F2F4F7] w-full"
-                                                    onClick={handleAddManually}
-                                                >
-                                                    <span className="text-sm text-[#0C111D] font-normal">Add manually</span>
-                                                </button>
-                                                <button className="p-3 flex-row flex h-[40px] hover:bg-[#F2F4F7] w-full">
-                                                    <span className="text-sm text-[#0C111D] font-normal">Upload CSV File</span>
-                                                </button>
-                                            </PopoverContent>
-                                        </Popover>
-                                    </div>
                                 </div>
-                            )}
-
-                            {/* Content Div */}
-                            {showContent && (
-                                <div>
-                                    jabir
-                                </div>
-                            )}
-                        </>
-                    ) : (
-                        // y div
-                        <div className="bg-[#FFFFFF] h-[184px] p-6 items-center flex flex-col gap-2 rounded-[16px]">
-                            <span className="text-[#1D2939] font-semibold text-lg">Create section/questions</span>
-                            <span className="font-normal text-xs text-[#667085]">
-                                Test Lorem ipsum is placeholder text commonly used in the graphic, print, and publishing industries for previewing layouts and visual mockups.
-                            </span>
-                            <div className="flex flex-row gap-4 mt-2">
-                                <button
-                                    className="flex flex-row gap-1 items-center rounded-md border-[2px] border-solid border-[#9012FF] h-[44px] w-[162px] justify-center"
-                                    onClick={() => openCreateSection(index)}
-                                >
-                                    <Image src="/icons/plus-sign.svg" height={18} width={18} alt="Plus Sign" />
-                                    <span className="text-[#9012FF] font-semibold text-sm">Add Section</span>
-                                </button>
-                                <button className="flex flex-row gap-1 items-center rounded-md border-[2px] border-solid border-[#9012FF] h-[44px] w-[162px] justify-center">
-                                    <Image src="/icons/plus-sign.svg" height={18} width={18} alt="Plus Sign" />
-                                    <span className="text-[#9012FF] font-semibold text-sm">Add Question</span>
-                                </button>
                             </div>
+                            <button>
+                                <Image
+                                    src="/icons/three-dots.svg"
+                                    width={20}
+                                    height={20}
+                                    alt="Three Dots Icon"
+                                />
+                            </button>
                         </div>
-                    )}
+                    </div>
+
+                    <div className="bg-[#FFFFFF] h-[184px] p-6 items-center flex flex-col gap-2 rounded-[16px]">
+                        <span className="text-[#1D2939] font-semibold text-lg">Create section/questions</span>
+                        <span className="font-normal text-xs text-[#667085]">
+                            Test Lorem ipsum is placeholder text commonly used in the graphic, print, and publishing industries for previewing layouts and visual mockups.
+                        </span>
+                        <div className="flex flex-row gap-4 mt-2">
+                            <button
+                                className="flex flex-row gap-1 items-center rounded-md border-[2px] border-solid border-[#9012FF] h-[44px] w-[162px] justify-center"
+                                onClick={openCreateSection}
+                            >
+                                <Image src="/icons/plus-sign.svg" height={18} width={18} alt="Plus Sign" />
+                                <span className="text-[#9012FF] font-semibold text-sm">Add Section</span>
+                            </button>
+                            <button className="flex flex-row gap-1 items-center rounded-md border-[2px] border-solid border-[#9012FF] h-[44px] w-[162px] justify-center">
+                                <Image src="/icons/plus-sign.svg" height={18} width={18} alt="Plus Sign" />
+                                <span className="text-[#9012FF] font-semibold text-sm">Add Question</span>
+                            </button>
+                        </div>
+                    </div>
                 </div>
             ))}
 
+            {/* Dialog for creating section */}
             <Dialog open={isCreateSection} onClose={closeCreateSection} className="relative z-50">
                 <DialogBackdrop className="fixed inset-0 bg-black/30" />
                 <div className="fixed inset-0 flex items-center justify-center">
@@ -349,8 +269,8 @@ function Sections({ sectionsCount }: SectionProps) {
                                         type="text"
                                         className="w-full px-2 text-sm text-[#182230] font-normal outline-none rounded-md"
                                         placeholder="Enter Name"
-                                        value={tempSection.name}
-                                        onChange={(e) => setTempSection({ ...tempSection, name: e.target.value })}
+                                        value={sectionName}
+                                        onChange={(e) => setSectionName(e.target.value)}
                                     />
                                 </div>
                             </div>
@@ -363,8 +283,8 @@ function Sections({ sectionsCount }: SectionProps) {
                                             type="text"
                                             className="w-full px-2 text-sm text-[#182230] font-normal outline-none rounded-md"
                                             placeholder="Select Date"
-                                            value={tempSection.date}
-                                            onChange={(e) => setTempSection({ ...tempSection, date: e.target.value })}
+                                            value={sectionDate}
+                                            onChange={(e) => setSectionDate(e.target.value)}
                                         />
                                     </div>
                                 </div>
@@ -376,8 +296,8 @@ function Sections({ sectionsCount }: SectionProps) {
                                             type="text"
                                             className="w-full px-2 text-sm text-[#182230] font-normal outline-none rounded-md"
                                             placeholder="Select Time"
-                                            value={tempSection.time}
-                                            onChange={(e) => setTempSection({ ...tempSection, time: e.target.value })}
+                                            value={sectionTime}
+                                            onChange={(e) => setSectionTime(e.target.value)}
                                         />
                                     </div>
                                 </div>
@@ -400,4 +320,7 @@ function Sections({ sectionsCount }: SectionProps) {
     );
 }
 
-export default Sections;
+export default Section;
+
+
+

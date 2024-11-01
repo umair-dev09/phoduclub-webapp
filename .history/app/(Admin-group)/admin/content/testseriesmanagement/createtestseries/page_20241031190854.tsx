@@ -15,15 +15,11 @@ enum Step {
     Perference = 3,
 }
 
-
 function CreateQuiz() {
-
-
 
 
     const [isPublished, setIsPublished] = useState(false);
     const [currentStep, setCurrentStep] = useState<Step>(Step.TestSeriesInfo);
-    const [sectionsCount, setSectionsCount] = useState(1);
     const router = useRouter();
 
     const handleNextClick = () => {
@@ -43,15 +39,21 @@ function CreateQuiz() {
     const handleBackClick = () => {
         router.back(); // Navigate to the previous page in the browser history
     };
+    // State to manage "Add Section" visibility
+    const [isAddSectionVisible, setIsAddSectionVisible] = useState(false);
 
-
+    // Function to toggle "Add Section" visibility
+    const toggleAddSection = () => setIsAddSectionVisible(isAddSectionVisible);
 
     const renderStepContent = () => {
         switch (currentStep) {
             case Step.TestSeriesInfo:
                 return <TestSeriesInfo />;
             case Step.Sections:
-                return <Sections sectionsCount={sectionsCount} />;
+                return (
+                    <Sections toggleAddSection={toggleAddSection} />
+                );
+
             case Step.Review:
                 return <Review />;
             case Step.Perference:
@@ -70,14 +72,10 @@ function CreateQuiz() {
             return "border-2 border-[#D0D5DE]";
         }
     };
-    const handleAddSection = () => {
-        setSectionsCount(prev => prev + 1);
-    };
-
 
     return (
         <>
-            <div className="ml-8 w-[17.125rem] my-8 bg-[#FFFFFF] border border-solid border-[#EAECF0] rounded-md overflow-y-auto">
+            <div className="ml-8 w-[17.125rem] my-8 bg-[#FFFFFF] border border-solid border-[#EAECF0] rounded-md">
                 <div className="flex flex-row items-center justify-between m-4">
                     <span className="text-[#1D2939] text-base font-semibold">Create Test Series</span>
                     <div className="flex items-center justify-center w-10 h-8 text-sm text-[#475467] font-medium bg-[#F9FAFB] border border-lightGrey rounded-[6px]">
@@ -104,7 +102,7 @@ function CreateQuiz() {
                     ))}
                 </div>
             </div>
-            <div className="flex flex-col w-full ml-[20px] mr-8 mt-8 ">
+            <div className="flex flex-col w-full ml-[20px] mr-8 mt-8">
                 <div className="h-15 ml-1 w-full border-b border-solid border-[#D0D5DD]">
                     <div className="flex flex-row justify-between ">
                         <span className="text-lg font-semibold text-[#1D2939] flex items-center">
@@ -113,16 +111,14 @@ function CreateQuiz() {
                         <div className="flex flex-row gap-3 mb-3">
                             {currentStep === Step.Sections && (
                                 <button
-                                    onClick={handleAddSection}
-
-                                    className="flex flex-row gap-1 items-center h-[44px] w-[162px] justify-center"
-
+                                    className="flex flex-row gap-1 items-center  h-[44px] w-[162px] justify-center"
+                                    onClick={toggleAddSection} // This will hide the button again when clicked
                                 >
                                     <Image src="/icons/plus-sign.svg" height={18} width={18} alt="Plus Sign" />
                                     <span className="text-[#9012FF] font-semibold text-sm">Add Section</span>
                                 </button>
-                            )}
 
+                            )}
                             {currentStep > Step.TestSeriesInfo && (
                                 <button
                                     className="h-[44px] w-[135px] bg-[#FFFFFF] rounded-md shadow-inner-button border border-solid border-[#EAECF0] flex items-center justify-center"
@@ -143,7 +139,7 @@ function CreateQuiz() {
                         </div>
                     </div>
                 </div>
-                <div className="overflow-y-auto ">
+                <div className="overflow-y-auto">
                     {renderStepContent()}
                 </div>
             </div>
