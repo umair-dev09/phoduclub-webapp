@@ -243,12 +243,17 @@ function Sections({ sectionsCount }: SectionProps) {
                                         </div>
                                     </div>
                                     <div className="flex flex-row  items-center justify-center">
+
+
+
                                         {showContent && (
                                             <button
+
                                                 className="flex flex-row gap-1 items-center h-[44px] w-[152px] justify-center">
                                                 <Image src="/icons/plus-sign.svg" height={18} width={18} alt="Plus Sign" />
                                                 <span className="text-[#9012FF] font-semibold text-sm">Add Questions</span>
                                             </button>
+
                                         )}
                                         <button>
                                             <Image

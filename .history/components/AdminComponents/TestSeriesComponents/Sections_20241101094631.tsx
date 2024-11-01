@@ -242,24 +242,14 @@ function Sections({ sectionsCount }: SectionProps) {
                                             </span>
                                         </div>
                                     </div>
-                                    <div className="flex flex-row  items-center justify-center">
-                                        {showContent && (
-                                            <button
-                                                className="flex flex-row gap-1 items-center h-[44px] w-[152px] justify-center">
-                                                <Image src="/icons/plus-sign.svg" height={18} width={18} alt="Plus Sign" />
-                                                <span className="text-[#9012FF] font-semibold text-sm">Add Questions</span>
-                                            </button>
-                                        )}
-                                        <button>
-                                            <Image
-                                                src="/icons/three-dots.svg"
-                                                width={20}
-                                                height={20}
-                                                alt="Three Dots Icon"
-                                            />
-                                        </button>
-
-                                    </div>
+                                    <button>
+                                        <Image
+                                            src="/icons/three-dots.svg"
+                                            width={20}
+                                            height={20}
+                                            alt="Three Dots Icon"
+                                        />
+                                    </button>
                                 </div>
                             </div>
                             {/* when  Content div is hidden show this div*/}
@@ -288,7 +278,7 @@ function Sections({ sectionsCount }: SectionProps) {
                                             <PopoverContent className="flex flex-col px-0 text-sm font-normal bg-white border border-lightGrey rounded-md w-[167px] shadow-md">
                                                 <button
                                                     className="p-3 gap-2 flex-row flex h-[40px] hover:bg-[#F2F4F7] w-full"
-                                                    onClick={handleAddManually}
+                                                    onClick={handleAddManually} // Hide "umair" and show "jabir"
                                                 >
                                                     <span className="text-sm text-[#0C111D] font-normal">Add manually</span>
                                                 </button>

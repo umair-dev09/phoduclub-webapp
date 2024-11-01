@@ -23,7 +23,6 @@ function CreateQuiz() {
 
     const [isPublished, setIsPublished] = useState(false);
     const [currentStep, setCurrentStep] = useState<Step>(Step.TestSeriesInfo);
-    const [sectionsCount, setSectionsCount] = useState(1);
     const router = useRouter();
 
     const handleNextClick = () => {
@@ -51,7 +50,14 @@ function CreateQuiz() {
             case Step.TestSeriesInfo:
                 return <TestSeriesInfo />;
             case Step.Sections:
-                return <Sections sectionsCount={sectionsCount} />;
+                return (
+                    <Sections
+
+
+
+                    />
+                );
+
             case Step.Review:
                 return <Review />;
             case Step.Perference:
@@ -70,10 +76,6 @@ function CreateQuiz() {
             return "border-2 border-[#D0D5DE]";
         }
     };
-    const handleAddSection = () => {
-        setSectionsCount(prev => prev + 1);
-    };
-
 
     return (
         <>
@@ -104,7 +106,7 @@ function CreateQuiz() {
                     ))}
                 </div>
             </div>
-            <div className="flex flex-col w-full ml-[20px] mr-8 mt-8 ">
+            <div className="flex flex-col w-full ml-[20px] mr-8 mt-8">
                 <div className="h-15 ml-1 w-full border-b border-solid border-[#D0D5DD]">
                     <div className="flex flex-row justify-between ">
                         <span className="text-lg font-semibold text-[#1D2939] flex items-center">
@@ -113,7 +115,7 @@ function CreateQuiz() {
                         <div className="flex flex-row gap-3 mb-3">
                             {currentStep === Step.Sections && (
                                 <button
-                                    onClick={handleAddSection}
+
 
                                     className="flex flex-row gap-1 items-center h-[44px] w-[162px] justify-center"
 
@@ -143,7 +145,7 @@ function CreateQuiz() {
                         </div>
                     </div>
                 </div>
-                <div className="overflow-y-auto ">
+                <div className="overflow-y-auto">
                     {renderStepContent()}
                 </div>
             </div>

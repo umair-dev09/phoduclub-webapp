@@ -211,12 +211,7 @@ function Sections({ sectionsCount }: SectionProps) {
             setIsCreateSection(false);
         }
     };
-    // State to control the visibility of content div
-    const [showContent, setShowContent] = useState(false);
 
-    const handleAddManually = () => {
-        setShowContent(true); // Show the "Content" div
-    };
 
     return (
         <>
@@ -242,71 +237,61 @@ function Sections({ sectionsCount }: SectionProps) {
                                             </span>
                                         </div>
                                     </div>
-                                    <div className="flex flex-row  items-center justify-center">
-                                        {showContent && (
-                                            <button
-                                                className="flex flex-row gap-1 items-center h-[44px] w-[152px] justify-center">
-                                                <Image src="/icons/plus-sign.svg" height={18} width={18} alt="Plus Sign" />
-                                                <span className="text-[#9012FF] font-semibold text-sm">Add Questions</span>
-                                            </button>
-                                        )}
-                                        <button>
-                                            <Image
-                                                src="/icons/three-dots.svg"
-                                                width={20}
-                                                height={20}
-                                                alt="Three Dots Icon"
-                                            />
-                                        </button>
-
-                                    </div>
+                                    <button>
+                                        <Image
+                                            src="/icons/three-dots.svg"
+                                            width={20}
+                                            height={20}
+                                            alt="Three Dots Icon"
+                                        />
+                                    </button>
                                 </div>
                             </div>
-                            {/* when  Content div is hidden show this div*/}
-                            {!showContent && (
-                                <div className="bg-[#FFFFFF] h-[184px] p-6 items-center flex flex-col gap-2 rounded-[16px]">
-                                    <span className="text-[#1D2939] font-semibold text-lg">Create section/questions</span>
-                                    <span className="font-normal text-xs text-[#667085]">
-                                        Test Lorem ipsum is placeholder text commonly used in the graphic, print, and publishing industries for previewing layouts and visual mockups.
-                                    </span>
-                                    <div className="flex flex-row gap-4 mt-2">
-                                        <button
-                                            className="flex flex-row gap-1 items-center rounded-md border-[2px] border-solid border-[#9012FF] h-[44px] w-[162px] justify-center"
-                                            onClick={() => openCreateSection(index)}
+
+                            {/* Content below x div without spacing */}
+                            {/* <div className="bg-[#FFFFFF] h-[184px] p-6 items-center flex flex-col gap-2 rounded-[16px]">
+                                <span className="text-[#1D2939] font-semibold text-lg">Create section/questions</span>
+                                <span className="font-normal text-xs text-[#667085]">
+                                    Test Lorem ipsum is placeholder text commonly used in the graphic, print, and publishing industries for previewing layouts and visual mockups.
+                                </span>
+                                <div className="flex flex-row gap-4 mt-2">
+                                    <button
+                                        className="flex flex-row gap-1 items-center rounded-md border-[2px] border-solid border-[#9012FF] h-[44px] w-[162px] justify-center"
+                                        onClick={() => openCreateSection(index)}
+                                    >
+                                        <Image src="/icons/plus-sign.svg" height={18} width={18} alt="Plus Sign" />
+                                        <span className="text-[#9012FF] font-semibold text-sm">Add Section</span>
+                                    </button>
+
+                                    <Popover
+                                        placement="bottom-end"
+                                    >
+                                        <PopoverTrigger>
+                                            <button className="flex flex-row gap-1 items-center rounded-md border-[2px] border-solid border-[#9012FF] h-[44px] w-[162px] justify-center">
+                                                <Image src="/icons/plus-sign.svg" height={18} width={18} alt="Plus Sign" />
+                                                <span className="text-[#9012FF] font-semibold text-sm">Add Question</span>
+                                            </button>
+                                        </PopoverTrigger>
+                                        <PopoverContent className="flex flex-col px-0 text-sm font-normal bg-white border border-lightGrey rounded-md w-[167px] shadow-md"
                                         >
-                                            <Image src="/icons/plus-sign.svg" height={18} width={18} alt="Plus Sign" />
-                                            <span className="text-[#9012FF] font-semibold text-sm">Add Section</span>
-                                        </button>
+                                            <button className=" p-3 gap-2 flex-row flex h-[40px] hover:bg-[#F2F4F7] w-full">
 
-                                        <Popover placement="bottom-end">
-                                            <PopoverTrigger>
-                                                <button className="flex flex-row gap-1 items-center rounded-md border-[2px] border-solid border-[#9012FF] h-[44px] w-[162px] justify-center">
-                                                    <Image src="/icons/plus-sign.svg" height={18} width={18} alt="Plus Sign" />
-                                                    <span className="text-[#9012FF] font-semibold text-sm">Add Question</span>
-                                                </button>
-                                            </PopoverTrigger>
-                                            <PopoverContent className="flex flex-col px-0 text-sm font-normal bg-white border border-lightGrey rounded-md w-[167px] shadow-md">
-                                                <button
-                                                    className="p-3 gap-2 flex-row flex h-[40px] hover:bg-[#F2F4F7] w-full"
-                                                    onClick={handleAddManually}
-                                                >
-                                                    <span className="text-sm text-[#0C111D] font-normal">Add manually</span>
-                                                </button>
-                                                <button className="p-3 flex-row flex h-[40px] hover:bg-[#F2F4F7] w-full">
-                                                    <span className="text-sm text-[#0C111D] font-normal">Upload CSV File</span>
-                                                </button>
-                                            </PopoverContent>
-                                        </Popover>
-                                    </div>
-                                </div>
-                            )}
+                                                <span className="text-sm text-[#0C111D] font-normal">Add manually</span>
+                                            </button>
+                                            <button className=" p-3  flex-row flex h-[40px] hover:bg-[#F2F4F7] w-full">
 
-                            {/* Content Div */}
-                            {showContent && (
-                                <div>
-                                    jabir
+                                                <span className="text-sm text-[#0C111D] font-normal">Upload CSV File</span>
+                                            </button>
+
+                                        </PopoverContent>
+                                    </Popover>
+
                                 </div>
-                            )}
+                            </div> */}
+                            {/* jabir div */}
+                            <div>
+                                jabir
+                            </div>
                         </>
                     ) : (
                         // y div
