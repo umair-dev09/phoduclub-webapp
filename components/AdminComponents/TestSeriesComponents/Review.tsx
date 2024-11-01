@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import Image from "next/image";
 
-const TestSeriesInfo = () => {
+function TestSeriesInfo() {
 
     return (
         <div className='flex flex-1 flex-col ml-2 overflow-y-auto'>
@@ -99,4 +99,4 @@ const TestSeriesInfo = () => {
     )
 }
 
-export default TestSeriesInfo
+export default TestSeriesInfo;
