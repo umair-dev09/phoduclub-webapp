@@ -18,9 +18,6 @@ enum Step {
 
 function CreateQuiz() {
 
-
-
-
     const [isPublished, setIsPublished] = useState(false);
     const [currentStep, setCurrentStep] = useState<Step>(Step.TestSeriesInfo);
     const [sectionsCount, setSectionsCount] = useState(1);
@@ -76,7 +73,7 @@ function CreateQuiz() {
 
 
     return (
-        <>
+        <div className="flex flex-row flex-1">
             <div className="ml-8 w-[17.125rem] my-8 bg-[#FFFFFF] border border-solid border-[#EAECF0] rounded-md overflow-y-auto">
                 <div className="flex flex-row items-center justify-between m-4">
                     <span className="text-[#1D2939] text-base font-semibold">Create Test Series</span>
@@ -147,7 +144,7 @@ function CreateQuiz() {
                     {renderStepContent()}
                 </div>
             </div>
-        </>
+        </div>
     );
 }
 
