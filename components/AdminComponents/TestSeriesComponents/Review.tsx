@@ -1,8 +1,13 @@
-import React, { useState } from 'react'
+import React, { useState } from 'react';
 import Image from "next/image";
+import TestSeriesStartQuiz from '../TestseriesDialogs/TestSeriesStartQuiz';
 
 function Review() {
     const [showDetails, setShowDetails] = useState(false);
+    const [isResumeQuizOpen, setIsResumeQuizOpen] = useState(false);
+
+    const openResumeQuiz = () => setIsResumeQuizOpen(true);
+    const closeResumeQuiz = () => setIsResumeQuizOpen(false);
 
     return (
         <div>
@@ -21,7 +26,7 @@ function Review() {
                             <p className='text-sm text-[#667085] mt-2 font-normal'>
                                 The BITSET Full Course is designed to provide students with an in-depth understanding of bit manipulation techniques and the use of bitsets in data structures.
                             </p>
-                            <p className='flex felx-row text-sm my-4 gap-2'><span className='font-semibold'>4.7</span> (500+Ratings)</p>
+                            <p className='flex flex-row text-sm my-4 gap-2'><span className='font-semibold'>4.7</span> (500+ Ratings)</p>
                             <div className='flex flex-row items-center justify-between'>
                                 <div className='flex flex-row items-center gap-2'>
                                     <p className='text-xl text-[#1D2939] font-semibold'>&#8377;3,990</p>
@@ -68,38 +73,22 @@ function Review() {
                                 <p className='text-left text-sm text-[#667085] font-normal'>5 Tests</p>
                             </div>
                             <div>
-                                <Image src='/icons/collapse-right-02.svg' alt='open thhis testseries' width={24} height={24} />
+                                <Image src='/icons/collapse-right-02.svg' alt='open this test series' width={24} height={24} />
                             </div>
                         </button>
-                        <button className='flex flex-row items-center justify-between px-6 py-4 bg-white border border-lightGrey rounded-xl'>
+                        <button className='flex flex-row items-center justify-between px-6 py-4 bg-white border border-lightGrey rounded-xl'
+                            onClick={openResumeQuiz}>
                             <div className='flex flex-col gap-1'>
                                 <p className='text-left text-base text-[#1D2939] font-semibold'>Physics</p>
                                 <p className='text-left text-sm text-[#667085] font-normal'>15 Questions</p>
                             </div>
-                            <button>
-                                <Image src='/icons/collapse-right-02.svg' alt='open thhis testseries' width={24} height={24} />
-                            </button>
-                        </button>
-                        <button className='flex flex-row items-center justify-between px-6 py-4 bg-white border border-lightGrey rounded-xl'>
-                            <div className='flex flex-col gap-1'>
-                                <p className='text-left text-base text-[#1D2939] font-semibold'>Physics</p>
-                                <p className='text-left text-sm text-[#667085] font-normal'>5 Tests</p>
-                            </div>
                             <div>
-                                <Image src='/icons/collapse-right-02.svg' alt='open thhis testseries' width={24} height={24} />
-                            </div>
-                        </button>
-                        <button className='flex flex-row items-center justify-between px-6 py-4 bg-white border border-lightGrey rounded-xl'>
-                            <div className='flex flex-col gap-1'>
-                                <p className='text-left text-base text-[#1D2939] font-semibold'>Physics</p>
-                                <p className='text-left text-sm text-[#667085] font-normal'>10 Questions</p>
-                            </div>
-                            <div>
-                                <Image src='/icons/collapse-right-02.svg' alt='open thhis testseries' width={24} height={24} />
+                                <Image src='/icons/collapse-right-02.svg' alt='open this test series' width={24} height={24} />
                             </div>
                         </button>
                     </div>
-                </div>) : (
+                </div>
+            ) : (
                 <div className='w-full'>
                     <div className='flex flex-row mt-4 gap-2'>
                         <button onClick={() => setShowDetails(false)}>
@@ -127,54 +116,22 @@ function Review() {
                             <p className='text-sm text-[#667085] font-normal'>Accuracy</p>
                             <h4 className='text-[0.938rem] text-[#1D2939] font-semibold'>-</h4>
                         </div>
-                        <div className='flex flex-col justify-between w-[18%] pl-2 border-l border-lightGrey'>
-                            <p className='text-sm text-[#667085] font-normal'>Answered Correct</p>
-                            <h4 className='text-[0.938rem] text-[#1D2939] font-semibold'>-</h4>
-                        </div>
-                        <div className='flex flex-col justify-between w-[18%] pl-2 border-l border-lightGrey'>
-                            <p className='text-sm text-[#667085] font-normal'>Answered Incorrected</p>
-                            <h4 className='text-[0.938rem] text-[#1D2939] font-semibold'>-</h4>
-                        </div>
-                        <div className='flex flex-col justify-between w-[10%] pl-2 border-l border-lightGrey'>
-                            <p className='text-sm text-[#667085] font-normal'>Time Taken</p>
-                            <h4 className='text-[0.938rem] text-[#1D2939] font-semibold'>-</h4>
-                        </div>
                     </div>
                     <h2 className='mt-4 text-lg text-[#1D2939] font-bold'>Tests</h2>
                     <div className='flex flex-col mt-4 mb-8 gap-2'>
                         <div className='flex flex-row items-center justify-between px-6 py-4 bg-white border border-lightGrey rounded-xl'>
                             <div className='flex flex-col gap-1'>
                                 <p className='text-left text-base text-[#1D2939] font-semibold'>Test 01</p>
-                                <p className='text-left text-sm text-[#667085] font-normal'>40 Qusetions</p>
-                            </div>
-                            <button className='w-[7.25rem] h-9 px-[0.875rem] py-[0.625rem] text-white text-xs font-semibold bg-[#9012FF] border border-[#800EE2] rounded-[6px] shadow-inner-button'>Start Test</button>
-                        </div>
-                        <div className='flex flex-row items-center justify-between px-6 py-4 bg-white border border-lightGrey rounded-xl'>
-                            <div className='flex flex-col gap-1'>
-                                <p className='text-left text-base text-[#1D2939] font-semibold'>Test 01</p>
-                                <p className='text-left text-sm text-[#667085] font-normal'>40 Qusetions</p>
-                            </div>
-                            <button className='w-[7.25rem] h-9 px-[0.875rem] py-[0.625rem] text-white text-xs font-semibold bg-[#9012FF] border border-[#800EE2] rounded-[6px] shadow-inner-button'>Start Test</button>
-                        </div>
-                        <div className='flex flex-row items-center justify-between px-6 py-4 bg-white border border-lightGrey rounded-xl'>
-                            <div className='flex flex-col gap-1'>
-                                <p className='text-left text-base text-[#1D2939] font-semibold'>Test 01</p>
-                                <p className='text-left text-sm text-[#667085] font-normal'>40 Qusetions</p>
-                            </div>
-                            <button className='w-[7.25rem] h-9 px-[0.875rem] py-[0.625rem] text-white text-xs font-semibold bg-[#9012FF] border border-[#800EE2] rounded-[6px] shadow-inner-button'>Start Test</button>
-                        </div>
-                        <div className='flex flex-row items-center justify-between px-6 py-4 bg-white border border-lightGrey rounded-xl'>
-                            <div className='flex flex-col gap-1'>
-                                <p className='text-left text-base text-[#1D2939] font-semibold'>Test 01</p>
-                                <p className='text-left text-sm text-[#667085] font-normal'>40 Qusetions</p>
+                                <p className='text-left text-sm text-[#667085] font-normal'>40 Questions</p>
                             </div>
                             <button className='w-[7.25rem] h-9 px-[0.875rem] py-[0.625rem] text-white text-xs font-semibold bg-[#9012FF] border border-[#800EE2] rounded-[6px] shadow-inner-button'>Start Test</button>
                         </div>
                     </div>
                 </div>
             )}
+            {isResumeQuizOpen && < TestSeriesStartQuiz onClose={closeResumeQuiz} open={true} />}
         </div>
-    )
+    );
 }
 
 export default Review;
