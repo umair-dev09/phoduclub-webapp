@@ -51,7 +51,7 @@ function CreateQuiz() {
             case Step.TestSeriesInfo:
                 return <TestSeriesInfo />;
             case Step.Sections:
-                return <Sections sectionsCount={sectionsCount} />;
+                return <Sections sectionsCount={sectionsCount} value={undefined} />;
             case Step.Review:
                 return <Review />;
             case Step.Perference:

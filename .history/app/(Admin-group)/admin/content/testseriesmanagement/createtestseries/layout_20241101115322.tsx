@@ -1,3 +1,4 @@
+// components/QuizLayout.tsx
 "use client";
 import { useState } from "react";
 import { useRouter } from 'next/navigation';
@@ -7,7 +8,6 @@ import Sections from "@/components/AdminComponents/TestSeriesComponents/Sections
 import Review from "@/components/AdminComponents/TestSeriesComponents/Review";
 import Perference from "@/components/AdminComponents/TestSeriesComponents/Perference";
 
-// Define an enum for the steps with updated names
 enum Step {
     TestSeriesInfo = 0,
     Sections = 1,
@@ -15,12 +15,11 @@ enum Step {
     Perference = 3,
 }
 
+interface QuizLayoutProps {
+    children: React.ReactNode;
+}
 
-function CreateQuiz() {
-
-
-
-
+const QuizLayout: React.FC<QuizLayoutProps> = ({ children }) => {
     const [isPublished, setIsPublished] = useState(false);
     const [currentStep, setCurrentStep] = useState<Step>(Step.TestSeriesInfo);
     const [sectionsCount, setSectionsCount] = useState(1);
@@ -43,8 +42,6 @@ function CreateQuiz() {
     const handleBackClick = () => {
         router.back(); // Navigate to the previous page in the browser history
     };
-
-
 
     const renderStepContent = () => {
         switch (currentStep) {
@@ -70,14 +67,15 @@ function CreateQuiz() {
             return "border-2 border-[#D0D5DE]";
         }
     };
+
     const handleAddSection = () => {
         setSectionsCount(prev => prev + 1);
     };
 
-
     return (
         <>
             <div className="ml-8 w-[17.125rem] my-8 bg-[#FFFFFF] border border-solid border-[#EAECF0] rounded-md overflow-y-auto">
+                {/* Sidebar content */}
                 <div className="flex flex-row items-center justify-between m-4">
                     <span className="text-[#1D2939] text-base font-semibold">Create Test Series</span>
                     <div className="flex items-center justify-center w-10 h-8 text-sm text-[#475467] font-medium bg-[#F9FAFB] border border-lightGrey rounded-[6px]">
@@ -114,15 +112,12 @@ function CreateQuiz() {
                             {currentStep === Step.Sections && (
                                 <button
                                     onClick={handleAddSection}
-
                                     className="flex flex-row gap-1 items-center h-[44px] w-[162px] justify-center"
-
                                 >
                                     <Image src="/icons/plus-sign.svg" height={18} width={18} alt="Plus Sign" />
                                     <span className="text-[#9012FF] font-semibold text-sm">Add Section</span>
                                 </button>
                             )}
-
                             {currentStep > Step.TestSeriesInfo && (
                                 <button
                                     className="h-[44px] w-[135px] bg-[#FFFFFF] rounded-md shadow-inner-button border border-solid border-[#EAECF0] flex items-center justify-center"
@@ -139,19 +134,15 @@ function CreateQuiz() {
                                     {currentStep === Step.Perference ? "Publish" : "Next"}
                                 </span>
                             </button>
-
                         </div>
                     </div>
                 </div>
                 <div className="overflow-y-auto ">
-                    {renderStepContent()}
+                    {children}
                 </div>
             </div>
         </>
     );
-}
+};
 
-export default CreateQuiz;
-
-
-
+export default QuizLayout;

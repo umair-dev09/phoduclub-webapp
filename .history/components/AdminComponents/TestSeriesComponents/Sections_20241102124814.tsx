@@ -11,8 +11,8 @@ interface SectionProps {
 
 }
 function Sections({ sectionsCount }: SectionProps) {
-    // ----------------------------------------------------------------------------------------------------------------------------------------
 
+    // ----------------------------------------------------------------------------------------------------------------------------------------
     // THIS IS USED FOR THE ADD THE SECTION WHEN WE PRESS THE "ADD SECTION FROM HEADER AND IT ASLO INCLUDE THE DAILOG FUNCTION"
     const [sections, setSections] = useState<Array<{
         name: string;
@@ -58,7 +58,6 @@ function Sections({ sectionsCount }: SectionProps) {
         }
     };
     // ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
     // THIS WHOLE STATE VARIABLES IS DECLRALED  FOR HIDE CONTENT AND FOR SAVE  DAILOG(INSIDE QUESTIONS WHEN FINALLY PRESS SAVE THE DAILOG IS OPENEND) 
     const [showContent2, setShowContent2] = useState(false);
     const handleAddManually = () => {
@@ -84,7 +83,6 @@ function Sections({ sectionsCount }: SectionProps) {
         setShowContent2(true);
     }
     // ----------------------------------------------------------------------------------------------------------------------------------------
-
     // THIS STATE IS USED FOR REACT QUILL TO CALL 
     const [editorContent, setEditorContent] = useState('');
     // Function to strip HTML tags
@@ -94,7 +92,6 @@ function Sections({ sectionsCount }: SectionProps) {
         return div.innerText || div.textContent || "";
     };
     // ----------------------------------------------------------------------------------------------------------------------------------------
-
     // THIS STATE IS USED FOR SELECTING THE OPTION 
     const [options, setOptions] = useState([
         { id: 'A', label: 'Option 1', text: '' },
@@ -120,7 +117,6 @@ function Sections({ sectionsCount }: SectionProps) {
         setSelectedOption(option.text || option.label);
     };
     // ----------------------------------------------------------------------------------------------------------------------------------------
-
     // THIS STATE IS USED FOR THE TRACK THE DIFFICULTY LEVEL
     const [selectedDifficulty, setSelectedDifficulty] = useState("Easy");
 
@@ -142,7 +138,6 @@ function Sections({ sectionsCount }: SectionProps) {
         }
     };
     // ----------------------------------------------------------------------------------------------------------------------------------------
-
     // THIS STATE IS USED FOR THE "ADDING QUESTIONS" INSIDE CHEMISTRY,MATHS,.... 
     // Step 1: Define the type for your questions
     type Question = { id: number; value: string };
@@ -155,7 +150,6 @@ function Sections({ sectionsCount }: SectionProps) {
         setQuestions([...questions, { id: questions.length + 1, value: '' }]);
     };
     // ----------------------------------------------------------------------------------------------------------------------------------------
-
     // THIS IS STATE WHICH IS USED IN POPOVER OF "EDIT","DUPLICATE","DELETE" 
     const handleDelete = (id: number) => {
         // Filter out the deleted question
@@ -192,18 +186,18 @@ function Sections({ sectionsCount }: SectionProps) {
                                             </span>
                                         </div>
                                         <div>
+
                                         </div>
                                     </div>
                                     <div className="flex flex-row  items-center justify-center">
-                                        {/* HERE WE HAVE MADE TWO CONTENT SAME OF BUT IT HAS DIFFERENT FUCTION "SHOW CONTENT "AND "SHOW CONTENT1" */}
                                         {showContent && (
                                             <Popover placement="bottom-end">
                                                 <PopoverTrigger>
                                                     <button
+
                                                         className="flex flex-row gap-1 items-center h-[44px] w-[152px] justify-center">
                                                         <Image src="/icons/plus-sign.svg" height={18} width={18} alt="Plus Sign" />
                                                         <span className="text-[#9012FF] font-semibold text-sm">Add Questions</span>
-                                                        {/* FROM HERE WE HAVE WRITE CODE WHERE TO GO FOR "TEST01" */}
                                                     </button>
                                                 </PopoverTrigger>
                                                 <PopoverContent className="flex flex-col px-0 text-sm font-normal bg-white border border-lightGrey rounded-md w-[167px] shadow-md">
@@ -227,6 +221,7 @@ function Sections({ sectionsCount }: SectionProps) {
                                                 alt="Three Dots Icon"
                                             />
                                         </button>
+
                                     </div>
                                 </div>
 
@@ -311,10 +306,10 @@ function Sections({ sectionsCount }: SectionProps) {
                                             <span className="text-[#667085] font-medium text-base">Action</span>
                                         </div>
                                     </div>
-                                    {/* ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- */}
                                     {questions.map((question, _index) => (
                                         <Collapsible
                                             key={question.id}
+
                                             trigger={
                                                 <div className="h-[48px] bg-[#FFFFFF]  flex flex-row justify-between px-4  items-center ">
 
@@ -351,7 +346,9 @@ function Sections({ sectionsCount }: SectionProps) {
                                                                         onClick={(e) => {
                                                                             e.stopPropagation();
                                                                             handleDifficultySelect(level);
-                                                                        }}
+                                                                        }
+
+                                                                        }
                                                                         className="p-3 gap-2 flex-row flex h-[40px] hover:bg-[#F2F4F7] w-full justify-between items-center"
                                                                     >
                                                                         <div
@@ -410,12 +407,14 @@ function Sections({ sectionsCount }: SectionProps) {
                                                 </div>
                                             }>
                                             <div className="flex flex-col gap-2">
+
                                                 <span className="text-[#1D2939] text-base font-semibold pt-1 px-4 ">Questions</span>
                                                 <QuillEditor
                                                     showContent={true} // Change as needed
                                                     value={editorContent}
                                                     setValue={setEditorContent} // Pass the setter function
                                                 />
+
                                                 <span className="font-semibold text-base text-[#1D2939] px-4">Options</span>
                                                 <div className="flex flex-col gap-3 mx-4">
                                                     {options.map((option) => (
@@ -474,8 +473,14 @@ function Sections({ sectionsCount }: SectionProps) {
                                                 <QuillEditor
                                                     showContent={true} // Change as needed
                                                     value={editorContent}
-                                                    setValue={setEditorContent} />
+                                                    setValue={setEditorContent}
+
+
+                                                />
+
+
                                             </div>
+
                                         </Collapsible>
                                     ))}
                                     <div className="flex flex-row justify-end px-6 items-center gap-4 h-[76px] border-t border-solid border-lightGrey">
@@ -487,7 +492,21 @@ function Sections({ sectionsCount }: SectionProps) {
                                             Save
                                         </button>
                                     </div>
+
+
+
+
+
+
+
+
+
+
                                 </div>
+
+
+
+
                                 // ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
                             )}
                         </>
@@ -512,11 +531,14 @@ function Sections({ sectionsCount }: SectionProps) {
                                     <span className="text-[#9012FF] font-semibold text-sm">Add Question</span>
                                 </button>
                             </div>
+
                         </div>
-                    )}
+
+                    )
+                    }
                 </div >
             ))}
-            {/* THIS IS DAILOG INVOKED WHEN WE PRESS "ADD SECTION FROM "Create section/questions" */}
+
             <Dialog open={isCreateSection} onClose={closeCreateSection} className="relative z-50">
                 <DialogBackdrop className="fixed inset-0 bg-black/30" />
                 <div className="fixed inset-0 flex items-center justify-center">
@@ -581,7 +603,10 @@ function Sections({ sectionsCount }: SectionProps) {
                 </div>
             </Dialog>
 
-            {/* THIS IS DAILOG IS INVOKED WHEN WE PRESS THE SAVE BUTTON FROM "QUESTIONS" OF PHYSICS,CHEMISTRY.... */}
+
+
+
+
             <Dialog open={isSaveDialog} onClose={closeDialog} className="relative z-50">
                 <DialogBackdrop className="fixed inset-0 bg-black/30" />
                 <div className="fixed inset-0 flex items-center justify-center">
@@ -603,6 +628,7 @@ function Sections({ sectionsCount }: SectionProps) {
                                     />
                                 </div>
                             </div>
+
                             <div className="flex flex-col px-6">
                                 <p className="text-start text-sm text-[#1D2939] font-medium">Time Duration</p>
                                 <div className="flex flex-row gap-4">
@@ -626,11 +652,15 @@ function Sections({ sectionsCount }: SectionProps) {
                                     </div>
                                 </div>
                                 <span className="text-sm text-[#475467] font-normal">Students must finish the quiz in time.</span>
+
                             </div>
+
+
                             <div className="flex flex-row justify-between w-full px-6 gap-4">
                                 <div className="flex flex-col w-full gap-2">
                                     <p className="text-start text-sm text-[#1D2939] font-medium">Marks per question</p>
                                     <div className="flex flex-row w-full h-10 px-3 outline-none border border-[#D0D5DD] rounded-md">
+
                                         <input
                                             type="text"
                                             value={marksPerQuestion}
@@ -644,6 +674,7 @@ function Sections({ sectionsCount }: SectionProps) {
                                 <div className="flex flex-col w-full gap-2">
                                     <p className="text-start text-sm text-[#1D2939] font-medium">Negative marks per question</p>
                                     <div className="flex flex-row w-full h-10 px-3 outline-none border border-[#D0D5DD] rounded-md">
+
                                         <input
                                             type="text"
                                             value={negativeMarks}
@@ -678,9 +709,35 @@ function Sections({ sectionsCount }: SectionProps) {
                     </DialogPanel>
                 </div>
             </Dialog>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         </div >
     );
 }
+
 export default Sections;
 
 

@@ -1,19 +1,17 @@
 "use client";
 import { Dialog, DialogBackdrop, DialogPanel } from "@headlessui/react";
 import Image from "next/image";
-import React, { useState, useEffect, useRef, } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import { Popover, PopoverContent, PopoverTrigger } from "@nextui-org/popover";
+import 'react-quill/dist/quill.snow.css';
+import ReactQuill from 'react-quill';
+import Quill from 'quill';
 import Collapsible from 'react-collapsible';
-import QuillEditor from './ReactQuill';
-
 interface SectionProps {
     sectionsCount: number;
-
 }
-function Sections({ sectionsCount }: SectionProps) {
-    // ----------------------------------------------------------------------------------------------------------------------------------------
 
-    // THIS IS USED FOR THE ADD THE SECTION WHEN WE PRESS THE "ADD SECTION FROM HEADER AND IT ASLO INCLUDE THE DAILOG FUNCTION"
+function Sections({ sectionsCount }: SectionProps) {
     const [sections, setSections] = useState<Array<{
         name: string;
         date: string;
@@ -36,9 +34,6 @@ function Sections({ sectionsCount }: SectionProps) {
         }
     }, [sectionsCount, sections.length]);
 
-
-    // State to control the visibility of content div
-    const [showContent, setShowContent] = useState(false);
     const openCreateSection = (index: number) => {
         setCurrentSectionIndex(index);
         setTempSection({ name: "", date: "", time: "" });
@@ -46,6 +41,7 @@ function Sections({ sectionsCount }: SectionProps) {
     };
 
     const closeCreateSection = () => setIsCreateSection(false);
+
     const handleCreateSection = () => {
         if (tempSection.name && tempSection.date && tempSection.time) {
             const newSections = [...sections];
@@ -57,13 +53,15 @@ function Sections({ sectionsCount }: SectionProps) {
             setIsCreateSection(false);
         }
     };
-    // ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
-    // THIS WHOLE STATE VARIABLES IS DECLRALED  FOR HIDE CONTENT AND FOR SAVE  DAILOG(INSIDE QUESTIONS WHEN FINALLY PRESS SAVE THE DAILOG IS OPENEND) 
+    // State to control the visibility of content div
+    const [showContent, setShowContent] = useState(false);
     const [showContent2, setShowContent2] = useState(false);
+
     const handleAddManually = () => {
         setShowContent(true); // Show the "Content" div
     };
+
+
     // State variables for dialog inputs
     const [description, setDescription] = useState("");
     const [timeDuration, setTimeDuration] = useState("");
@@ -72,30 +70,102 @@ function Sections({ sectionsCount }: SectionProps) {
     const [minutes, setMinutes] = useState("");
 
 
+
+
     const [isSaveDialog, setIsSaveDialog] = useState(false);
     const handleSave = () => {
         setIsSaveDialog(true); // Opens the dialog
     };
     const closeDialog = () => {
         setIsSaveDialog(false); // Closes the dialog
-
-    };
-    const saveDailig = () => {
         setShowContent2(true);
-    }
-    // ----------------------------------------------------------------------------------------------------------------------------------------
-
-    // THIS STATE IS USED FOR REACT QUILL TO CALL 
-    const [editorContent, setEditorContent] = useState('');
-    // Function to strip HTML tags
-    const stripHtmlTags = (html: string) => {
-        const div = document.createElement('div');
-        div.innerHTML = html;
-        return div.innerText || div.textContent || "";
     };
+
+
+
+
     // ----------------------------------------------------------------------------------------------------------------------------------------
 
-    // THIS STATE IS USED FOR SELECTING THE OPTION 
+
+    const [value, setValue] = useState('');
+    const quillRef = useRef<ReactQuill | null>(null); // Ref to hold ReactQuill instance
+    const [quill, setQuill] = useState<Quill | null>(null);
+    const [alignment, setAlignment] = useState<string | null>(null); // State to hold alignment
+    const [isWriting, setIsWriting] = useState(false); // Track if text is being written
+
+    const handleChange = (content: string) => {
+        setValue(content);
+        checkTextContent(content);
+
+    };
+
+    const checkTextContent = (content: string) => {
+        // Trim the content and check if there's actual text (excluding HTML tags like <p></p>)
+        const plainText = content.replace(/<[^>]+>/g, '').trim();
+        setIsWriting(plainText.length > 0);
+    };
+    const handleBlur = () => {
+        setIsWriting(false); // Reset isWriting when user clicks outside
+    };
+
+
+    const handleIconClick = (format: string) => {
+        if (quill) {
+            const range = quill.getSelection();
+            if (range) {
+                const currentFormats = quill.getFormat(range);
+                if (format === 'ordered') {
+                    // Toggle ordered list
+                    quill.format('list', currentFormats.list === 'ordered' ? false : 'ordered');
+                } else if (format === 'bullet') {
+                    // Toggle bullet list
+                    quill.format('list', currentFormats.list === 'bullet' ? false : 'bullet');
+                } else if (format.startsWith('align')) {
+                    if (format === 'align-left') {
+                        quill.format('align', false); // Remove alignment for 'left'
+                        setAlignment('left'); // Update alignment state to 'left'
+                    } else {
+                        quill.format('align', format.split('-')[1]);
+                        setAlignment(format.split('-')[1]);
+                    }
+                } else {
+                    const isActive = currentFormats[format];
+                    quill.format(format, !isActive); // Toggle other formatting options
+                }
+            }
+        }
+    };
+
+    useEffect(() => {
+        if (quillRef.current) {
+            setQuill(quillRef.current.getEditor());
+        }
+    }, []);
+
+    const handleKeyDown = () => {
+        if (quill) {
+            const range = quill.getSelection();
+            if (range) {
+                const currentFormats = quill.getFormat(range);
+                if (currentFormats.bold) {
+                    quill.format('bold', false); // Clear bold formatting when typing starts
+                }
+                if (currentFormats.italic) {
+                    quill.format('italic', false); // Clear italic formatting when typing starts
+                }
+                if (currentFormats.underline) {
+                    quill.format('underline', false);
+                }
+            }
+        }
+    };
+
+
+
+
+
+
+    // -------------------------------------------------------------------------------------------------------
     const [options, setOptions] = useState([
         { id: 'A', label: 'Option 1', text: '' },
         { id: 'B', label: 'Option 2', text: '' },
@@ -119,9 +189,8 @@ function Sections({ sectionsCount }: SectionProps) {
     const handleOptionClick = (option: { id?: string; label: any; text: any; }) => {
         setSelectedOption(option.text || option.label);
     };
-    // ----------------------------------------------------------------------------------------------------------------------------------------
 
-    // THIS STATE IS USED FOR THE TRACK THE DIFFICULTY LEVEL
+    // State to track the selected difficulty level
     const [selectedDifficulty, setSelectedDifficulty] = useState("Easy");
 
     // Function to handle difficulty selection
@@ -141,22 +210,19 @@ function Sections({ sectionsCount }: SectionProps) {
                 return '#D3F8E0';
         }
     };
-    // ----------------------------------------------------------------------------------------------------------------------------------------
 
-    // THIS STATE IS USED FOR THE "ADDING QUESTIONS" INSIDE CHEMISTRY,MATHS,.... 
     // Step 1: Define the type for your questions
     type Question = { id: number; value: string };
 
+
     // Step 2: Use the defined type in useState
-    const [questions, setQuestions] = useState([{ id: 1, value: '' }]);
+    const [questions, setQuestions] = useState<Question[]>([]);
 
     const handleAddQuestion = () => {
         // Add a new question with an incrementing id and an empty value
         setQuestions([...questions, { id: questions.length + 1, value: '' }]);
     };
-    // ----------------------------------------------------------------------------------------------------------------------------------------
 
-    // THIS IS STATE WHICH IS USED IN POPOVER OF "EDIT","DUPLICATE","DELETE" 
     const handleDelete = (id: number) => {
         // Filter out the deleted question
         setQuestions(prevQuestions => prevQuestions.filter(question => question.id !== id));
@@ -167,7 +233,7 @@ function Sections({ sectionsCount }: SectionProps) {
         const duplicateQuestion = { ...question, id: Date.now() }; // Using timestamp as a new ID
         setQuestions(prevQuestions => [...prevQuestions, duplicateQuestion]);
     };
-    // ----------------------------------------------------------------------------------------------------------------------------------------
+
     return (
         <div className=" mb-4">
             {sections.map((section, index) => (
@@ -192,18 +258,18 @@ function Sections({ sectionsCount }: SectionProps) {
                                             </span>
                                         </div>
                                         <div>
+
                                         </div>
                                     </div>
                                     <div className="flex flex-row  items-center justify-center">
-                                        {/* HERE WE HAVE MADE TWO CONTENT SAME OF BUT IT HAS DIFFERENT FUCTION "SHOW CONTENT "AND "SHOW CONTENT1" */}
                                         {showContent && (
                                             <Popover placement="bottom-end">
                                                 <PopoverTrigger>
                                                     <button
+
                                                         className="flex flex-row gap-1 items-center h-[44px] w-[152px] justify-center">
                                                         <Image src="/icons/plus-sign.svg" height={18} width={18} alt="Plus Sign" />
                                                         <span className="text-[#9012FF] font-semibold text-sm">Add Questions</span>
-                                                        {/* FROM HERE WE HAVE WRITE CODE WHERE TO GO FOR "TEST01" */}
                                                     </button>
                                                 </PopoverTrigger>
                                                 <PopoverContent className="flex flex-col px-0 text-sm font-normal bg-white border border-lightGrey rounded-md w-[167px] shadow-md">
@@ -227,6 +293,7 @@ function Sections({ sectionsCount }: SectionProps) {
                                                 alt="Three Dots Icon"
                                             />
                                         </button>
+
                                     </div>
                                 </div>
 
@@ -311,10 +378,10 @@ function Sections({ sectionsCount }: SectionProps) {
                                             <span className="text-[#667085] font-medium text-base">Action</span>
                                         </div>
                                     </div>
-                                    {/* ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- */}
                                     {questions.map((question, _index) => (
                                         <Collapsible
                                             key={question.id}
+
                                             trigger={
                                                 <div className="h-[48px] bg-[#FFFFFF]  flex flex-row justify-between px-4  items-center ">
 
@@ -322,10 +389,10 @@ function Sections({ sectionsCount }: SectionProps) {
                                                         <input
                                                             type="checkbox" />
                                                         <div className="h-6 w-5 rounded-[4px] bg-[#EAECF0] flex justify-center items-center ml-5 mr-2 ">
-                                                            <span className="text-[#1D2939] font-semibold text-sm">{question.id}</span>
+                                                            <span className="text-[#1D2939] font-semibold text-sm">1</span>
                                                         </div>
                                                         <span className="text-[#667085] font-medium text-base">
-                                                            {stripHtmlTags(editorContent) || "Question"}
+                                                            Question
                                                         </span>
                                                     </div>
                                                     <div className=" flex flex-row gap-14 items-center justify-center">
@@ -351,7 +418,9 @@ function Sections({ sectionsCount }: SectionProps) {
                                                                         onClick={(e) => {
                                                                             e.stopPropagation();
                                                                             handleDifficultySelect(level);
-                                                                        }}
+                                                                        }
+
+                                                                        }
                                                                         className="p-3 gap-2 flex-row flex h-[40px] hover:bg-[#F2F4F7] w-full justify-between items-center"
                                                                     >
                                                                         <div
@@ -410,13 +479,82 @@ function Sections({ sectionsCount }: SectionProps) {
                                                 </div>
                                             }>
                                             <div className="flex flex-col gap-2">
-                                                <span className="text-[#1D2939] text-base font-semibold pt-1 px-4 ">Questions</span>
-                                                <QuillEditor
-                                                    showContent={true} // Change as needed
-                                                    value={editorContent}
-                                                    setValue={setEditorContent} // Pass the setter function
-                                                />
-                                                <span className="font-semibold text-base text-[#1D2939] px-4">Options</span>
+
+                                                <span className='text-[#1D2939] text-base font-semibold pt-1 px-4'>Questions</span>
+                                                <div
+                                                    className={`pt-2 bg-[#FFFFFF] border ${isWriting ? 'border-[#D6BBFB]  shadow-[0px_0px_0px_4px_rgba(158,119,237,0.25),0px_1px_2px_0px_rgba(16,24,40,0.05)]' : 'border-[#EAECF0]'
+                                                        } rounded-[12px] h-auto`}>
+                                                    {/* Textarea for writing the description */}
+                                                    <div className="bg-[#FFFFFF] ">
+                                                        <ReactQuill
+                                                            ref={quillRef}
+                                                            onBlur={handleBlur} // Add onBlur handler
+                                                            value={value}
+                                                            onChange={handleChange}
+                                                            onKeyDown={handleKeyDown}
+                                                            modules={{ toolbar: false }}
+                                                            placeholder="Description"
+                                                            className="text-[#1D2939] focus:outline-none rounded-b-[12px] custom-quill placeholder:not-italic min-h-[10px] max-h-[150px] overflow-y-auto border-none font-normal"
+                                                        />
+                                                    </div>
+
+                                                    <div className="h-[66px] bg-[#FFFFFF] rounded-bl-[12px] rounded-br-[12px] flex justify-center items-center">
+                                                        <div className="flex flex-row w-full justify-between items-center mx-5">
+                                                            {/* Formatting options */}
+                                                            <div className="h-[24px] w-[288px] gap-[24px] flex flex-row">
+                                                                {/* Icons for formatting */}
+                                                                <button onClick={() => handleIconClick('bold')}>
+                                                                    <Image src="/icons/Bold.svg" width={24} height={24} alt="bold" />
+                                                                </button>
+                                                                <button onClick={() => handleIconClick('italic')}>
+                                                                    <Image src="/icons/italic-icon.svg" width={24} height={24} alt="italic-icon" />
+                                                                </button>
+                                                                <button onClick={() => handleIconClick('underline')}>
+                                                                    <Image src="/icons/underline-icon.svg" width={24} height={24} alt="underline-icon" />
+                                                                </button>
+
+                                                                {/* Alignment options in a popover */}
+                                                                <Popover backdrop="blur" placement="bottom-start" className="flex flex-row justify-end">
+                                                                    <PopoverTrigger className="">
+                                                                        <button className="flex items-center justify-center p-1">
+                                                                            {alignment === 'center' ? (
+                                                                                <Image src="/icons/align-middle.svg" width={24} height={26} alt="align-center" />
+                                                                            ) : alignment === 'right' ? (
+                                                                                <Image src="/icons/align-right.svg" width={24} height={26} alt="align-right" />
+                                                                            ) : (
+                                                                                <Image src="/icons/dropdown-icon-1.svg" width={32} height={32} alt="align-left" />
+                                                                            )}
+                                                                        </button>
+                                                                    </PopoverTrigger>
+                                                                    <PopoverContent className="ml-1 gap-4">
+                                                                        {/* Alignment options inside the popover */}
+                                                                        <div className="flex flex-row bg-white rounded-[8px] border-[1px] border-solid border-[#EAECF0] p-2 w-[120px] shadow-[0_2px_4px_#EAECF0] gap-2 ">
+                                                                            <button onClick={() => handleIconClick("align-left")} className="flex items-center justify-center">
+                                                                                <Image src="/icons/align-left.svg" width={30} height={30} alt="align-left" />
+                                                                            </button>
+                                                                            <button onClick={() => handleIconClick("align-center")} className="flex items-center justify-center">
+                                                                                <Image src="/icons/align-middle.svg" width={30} height={30} alt="align-center" />
+                                                                            </button>
+                                                                            <button onClick={() => handleIconClick("align-right")} className="flex items-center justify-center">
+                                                                                <Image src="/icons/align-right.svg" width={30} height={30} alt="align-right" />
+                                                                            </button>
+                                                                        </div>
+                                                                    </PopoverContent>
+                                                                </Popover>
+
+                                                                {/* List options */}
+                                                                <button onClick={() => handleIconClick('ordered')}>
+                                                                    <Image src="/icons/dropdown-icon-2.svg" width={27} height={27} alt="ordered-list" />
+                                                                </button>
+                                                                <button onClick={() => handleIconClick('bullet')}>
+                                                                    <Image src="/icons/dropdown-icon-3.svg" width={27} height={27} alt="bullet-list" />
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                {/* <span className="font-semibold text-base text-[#1D2939] px-4">Options</span>
                                                 <div className="flex flex-col gap-3 mx-4">
                                                     {options.map((option) => (
                                                         <div key={option.id} className="flex flex-row items-center gap-2">
@@ -438,7 +576,7 @@ function Sections({ sectionsCount }: SectionProps) {
                                                 </div>
 
                                                 {/* Correct Answer Popover */}
-                                                <span className="font-semibold text-base text-[#1D2939] mx-4">Correct answer</span>
+                                                {/* <span className="font-semibold text-base text-[#1D2939] mx-4">Correct answer</span>
                                                 <Popover placement="bottom">
                                                     <PopoverTrigger>
                                                         <button className="h-[40px] mx-4 mb-3 items-center justify-between flex flex-row rounded-md border border-solid">
@@ -470,12 +608,10 @@ function Sections({ sectionsCount }: SectionProps) {
                                                             ))}
                                                         </div>
                                                     </PopoverContent>
-                                                </Popover>
-                                                <QuillEditor
-                                                    showContent={true} // Change as needed
-                                                    value={editorContent}
-                                                    setValue={setEditorContent} />
+                                                </Popover>  */}
+
                                             </div>
+
                                         </Collapsible>
                                     ))}
                                     <div className="flex flex-row justify-end px-6 items-center gap-4 h-[76px] border-t border-solid border-lightGrey">
@@ -487,7 +623,20 @@ function Sections({ sectionsCount }: SectionProps) {
                                             Save
                                         </button>
                                     </div>
+
+
+
+
+
+
+
+
+
                                 </div>
+
+
+
+
                                 // ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
                             )}
                         </>
@@ -513,10 +662,11 @@ function Sections({ sectionsCount }: SectionProps) {
                                 </button>
                             </div>
                         </div>
-                    )}
+                    )
+                    }
                 </div >
             ))}
-            {/* THIS IS DAILOG INVOKED WHEN WE PRESS "ADD SECTION FROM "Create section/questions" */}
+
             <Dialog open={isCreateSection} onClose={closeCreateSection} className="relative z-50">
                 <DialogBackdrop className="fixed inset-0 bg-black/30" />
                 <div className="fixed inset-0 flex items-center justify-center">
@@ -581,7 +731,10 @@ function Sections({ sectionsCount }: SectionProps) {
                 </div>
             </Dialog>
 
-            {/* THIS IS DAILOG IS INVOKED WHEN WE PRESS THE SAVE BUTTON FROM "QUESTIONS" OF PHYSICS,CHEMISTRY.... */}
+
+
+
+
             <Dialog open={isSaveDialog} onClose={closeDialog} className="relative z-50">
                 <DialogBackdrop className="fixed inset-0 bg-black/30" />
                 <div className="fixed inset-0 flex items-center justify-center">
@@ -603,6 +756,7 @@ function Sections({ sectionsCount }: SectionProps) {
                                     />
                                 </div>
                             </div>
+
                             <div className="flex flex-col px-6">
                                 <p className="text-start text-sm text-[#1D2939] font-medium">Time Duration</p>
                                 <div className="flex flex-row gap-4">
@@ -626,11 +780,15 @@ function Sections({ sectionsCount }: SectionProps) {
                                     </div>
                                 </div>
                                 <span className="text-sm text-[#475467] font-normal">Students must finish the quiz in time.</span>
+
                             </div>
+
+
                             <div className="flex flex-row justify-between w-full px-6 gap-4">
                                 <div className="flex flex-col w-full gap-2">
                                     <p className="text-start text-sm text-[#1D2939] font-medium">Marks per question</p>
                                     <div className="flex flex-row w-full h-10 px-3 outline-none border border-[#D0D5DD] rounded-md">
+
                                         <input
                                             type="text"
                                             value={marksPerQuestion}
@@ -644,6 +802,7 @@ function Sections({ sectionsCount }: SectionProps) {
                                 <div className="flex flex-col w-full gap-2">
                                     <p className="text-start text-sm text-[#1D2939] font-medium">Negative marks per question</p>
                                     <div className="flex flex-row w-full h-10 px-3 outline-none border border-[#D0D5DD] rounded-md">
+
                                         <input
                                             type="text"
                                             value={negativeMarks}
@@ -667,8 +826,7 @@ function Sections({ sectionsCount }: SectionProps) {
                                     className="py-[0.625rem] px-6 text-white shadow-inner-button bg-[#9012FF] border border-[#8501FF] rounded-md font-semibold text-sm"
                                     onClick={() => {
                                         // Add logic for creating the section here
-                                        saveDailig();
-                                        closeDialog();// Optionally close the dialog after creating the section
+                                        closeDialog(); // Optionally close the dialog after creating the section
                                     }}
                                 >
                                     Done
@@ -678,9 +836,35 @@ function Sections({ sectionsCount }: SectionProps) {
                     </DialogPanel>
                 </div>
             </Dialog>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         </div >
     );
 }
+
 export default Sections;
 
 

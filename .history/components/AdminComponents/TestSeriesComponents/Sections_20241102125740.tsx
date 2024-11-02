@@ -311,7 +311,6 @@ function Sections({ sectionsCount }: SectionProps) {
                                             <span className="text-[#667085] font-medium text-base">Action</span>
                                         </div>
                                     </div>
-                                    {/* ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- */}
                                     {questions.map((question, _index) => (
                                         <Collapsible
                                             key={question.id}
@@ -581,7 +580,7 @@ function Sections({ sectionsCount }: SectionProps) {
                 </div>
             </Dialog>
 
-            {/* THIS IS DAILOG IS INVOKED WHEN WE PRESS THE SAVE BUTTON FROM "QUESTIONS" OF PHYSICS,CHEMISTRY.... */}
+
             <Dialog open={isSaveDialog} onClose={closeDialog} className="relative z-50">
                 <DialogBackdrop className="fixed inset-0 bg-black/30" />
                 <div className="fixed inset-0 flex items-center justify-center">
@@ -603,6 +602,7 @@ function Sections({ sectionsCount }: SectionProps) {
                                     />
                                 </div>
                             </div>
+
                             <div className="flex flex-col px-6">
                                 <p className="text-start text-sm text-[#1D2939] font-medium">Time Duration</p>
                                 <div className="flex flex-row gap-4">
@@ -626,11 +626,15 @@ function Sections({ sectionsCount }: SectionProps) {
                                     </div>
                                 </div>
                                 <span className="text-sm text-[#475467] font-normal">Students must finish the quiz in time.</span>
+
                             </div>
+
+
                             <div className="flex flex-row justify-between w-full px-6 gap-4">
                                 <div className="flex flex-col w-full gap-2">
                                     <p className="text-start text-sm text-[#1D2939] font-medium">Marks per question</p>
                                     <div className="flex flex-row w-full h-10 px-3 outline-none border border-[#D0D5DD] rounded-md">
+
                                         <input
                                             type="text"
                                             value={marksPerQuestion}
@@ -644,6 +648,7 @@ function Sections({ sectionsCount }: SectionProps) {
                                 <div className="flex flex-col w-full gap-2">
                                     <p className="text-start text-sm text-[#1D2939] font-medium">Negative marks per question</p>
                                     <div className="flex flex-row w-full h-10 px-3 outline-none border border-[#D0D5DD] rounded-md">
+
                                         <input
                                             type="text"
                                             value={negativeMarks}
@@ -678,9 +683,35 @@ function Sections({ sectionsCount }: SectionProps) {
                     </DialogPanel>
                 </div>
             </Dialog>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         </div >
     );
 }
+
 export default Sections;
 
 

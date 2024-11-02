@@ -311,7 +311,6 @@ function Sections({ sectionsCount }: SectionProps) {
                                             <span className="text-[#667085] font-medium text-base">Action</span>
                                         </div>
                                     </div>
-                                    {/* ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- */}
                                     {questions.map((question, _index) => (
                                         <Collapsible
                                             key={question.id}
