@@ -8,93 +8,93 @@ import { Dialog, DialogBackdrop, DialogPanel } from "@headlessui/react";
 
 
 
-function Quizinfo() {
+function TestSeriesInfo() {
 
-    // State to manage each dialog's for Upload Image
+    // // State to manage each dialog's for Upload Image
 
-    const [isUploadImage, setIsUploadImage] = useState(false);
+    // const [isUploadImage, setIsUploadImage] = useState(false);
 
-    // Handlers for Upload Image dialog
-    const openUploadImageDialog = () => setIsUploadImage(true);
-    const closeUploadImageDialog = () => setIsUploadImage(false);
-
-
-    const [value, setValue] = useState('');
-    const quillRef = useRef<ReactQuill | null>(null); // Ref to hold ReactQuill instance
-    const [quill, setQuill] = useState<Quill | null>(null);
-    const [alignment, setAlignment] = useState<string | null>(null); // State to hold alignment
-    const [isWriting, setIsWriting] = useState(false); // Track if text is being written
-
-    const handleChange = (content: string) => {
-        setValue(content);
-        checkTextContent(content);
-
-    };
-
-    const checkTextContent = (content: string) => {
-        // Trim the content and check if there's actual text (excluding HTML tags like <p></p>)
-        const plainText = content.replace(/<[^>]+>/g, '').trim();
-        setIsWriting(plainText.length > 0);
-    };
-    const handleBlur = () => {
-        setIsWriting(false); // Reset isWriting when user clicks outside
-    };
+    // // Handlers for Upload Image dialog
+    // const openUploadImageDialog = () => setIsUploadImage(true);
+    // const closeUploadImageDialog = () => setIsUploadImage(false);
 
 
-    const handleIconClick = (format: string) => {
-        if (quill) {
-            const range = quill.getSelection();
-            if (range) {
-                const currentFormats = quill.getFormat(range);
-                if (format === 'ordered') {
-                    // Toggle ordered list
-                    quill.format('list', currentFormats.list === 'ordered' ? false : 'ordered');
-                } else if (format === 'bullet') {
-                    // Toggle bullet list
-                    quill.format('list', currentFormats.list === 'bullet' ? false : 'bullet');
-                } else if (format.startsWith('align')) {
-                    if (format === 'align-left') {
-                        quill.format('align', false); // Remove alignment for 'left'
-                        setAlignment('left'); // Update alignment state to 'left'
-                    } else {
-                        quill.format('align', format.split('-')[1]);
-                        setAlignment(format.split('-')[1]);
-                    }
-                } else {
-                    const isActive = currentFormats[format];
-                    quill.format(format, !isActive); // Toggle other formatting options
-                }
-            }
-        }
-    };
+    // const [value, setValue] = useState('');
+    // const quillRef = useRef<ReactQuill | null>(null); // Ref to hold ReactQuill instance
+    // const [quill, setQuill] = useState<Quill | null>(null);
+    // const [alignment, setAlignment] = useState<string | null>(null); // State to hold alignment
+    // const [isWriting, setIsWriting] = useState(false); // Track if text is being written
 
-    useEffect(() => {
-        if (quillRef.current) {
-            setQuill(quillRef.current.getEditor());
-        }
-    }, []);
+    // const handleChange = (content: string) => {
+    //     setValue(content);
+    //     checkTextContent(content);
 
-    const handleKeyDown = () => {
-        if (quill) {
-            const range = quill.getSelection();
-            if (range) {
-                const currentFormats = quill.getFormat(range);
-                if (currentFormats.bold) {
-                    quill.format('bold', false); // Clear bold formatting when typing starts
-                }
-                if (currentFormats.italic) {
-                    quill.format('italic', false); // Clear italic formatting when typing starts
-                }
-                if (currentFormats.underline) {
-                    quill.format('underline', false);
-                }
-            }
-        }
-    };
+    // };
+
+    // const checkTextContent = (content: string) => {
+    //     // Trim the content and check if there's actual text (excluding HTML tags like <p></p>)
+    //     const plainText = content.replace(/<[^>]+>/g, '').trim();
+    //     setIsWriting(plainText.length > 0);
+    // };
+    // const handleBlur = () => {
+    //     setIsWriting(false); // Reset isWriting when user clicks outside
+    // };
+
+
+    // const handleIconClick = (format: string) => {
+    //     if (quill) {
+    //         const range = quill.getSelection();
+    //         if (range) {
+    //             const currentFormats = quill.getFormat(range);
+    //             if (format === 'ordered') {
+    //                 // Toggle ordered list
+    //                 quill.format('list', currentFormats.list === 'ordered' ? false : 'ordered');
+    //             } else if (format === 'bullet') {
+    //                 // Toggle bullet list
+    //                 quill.format('list', currentFormats.list === 'bullet' ? false : 'bullet');
+    //             } else if (format.startsWith('align')) {
+    //                 if (format === 'align-left') {
+    //                     quill.format('align', false); // Remove alignment for 'left'
+    //                     setAlignment('left'); // Update alignment state to 'left'
+    //                 } else {
+    //                     quill.format('align', format.split('-')[1]);
+    //                     setAlignment(format.split('-')[1]);
+    //                 }
+    //             } else {
+    //                 const isActive = currentFormats[format];
+    //                 quill.format(format, !isActive); // Toggle other formatting options
+    //             }
+    //         }
+    //     }
+    // };
+
+    // useEffect(() => {
+    //     if (quillRef.current) {
+    //         setQuill(quillRef.current.getEditor());
+    //     }
+    // }, []);
+
+    // const handleKeyDown = () => {
+    //     if (quill) {
+    //         const range = quill.getSelection();
+    //         if (range) {
+    //             const currentFormats = quill.getFormat(range);
+    //             if (currentFormats.bold) {
+    //                 quill.format('bold', false); // Clear bold formatting when typing starts
+    //             }
+    //             if (currentFormats.italic) {
+    //                 quill.format('italic', false); // Clear italic formatting when typing starts
+    //             }
+    //             if (currentFormats.underline) {
+    //                 quill.format('underline', false);
+    //             }
+    //         }
+    //     }
+    // };
 
     return (
         <>
-            <div className='mt-4 h-auto rounded-xl border border-solid border-[#EAECF0] bg-[#FFFFFF] flex flex-col p-5 gap-2'>
+            {/* <div className='mt-4 h-auto rounded-xl border border-solid border-[#EAECF0] bg-[#FFFFFF] flex flex-col p-5 gap-2'>
                 <div className='flex flex-col gap-2'>
                     <span className='text-[#1D2939] text-sm font-semibold'>Test Series Name</span>
                     <input
@@ -118,11 +118,11 @@ function Quizinfo() {
                     <div
                         className={`pt-2 bg-[#FFFFFF] border ${isWriting ? 'border-[#D6BBFB]  shadow-[0px_0px_0px_4px_rgba(158,119,237,0.25),0px_1px_2px_0px_rgba(16,24,40,0.05)]' : 'border-[#EAECF0]'
                             } rounded-[12px] h-auto`}>
-                        {/* Textarea for writing the description */}
+
                         <div className="bg-[#FFFFFF] ">
                             <ReactQuill
                                 ref={quillRef}
-                                onBlur={handleBlur} // Add onBlur handler
+                                onBlur={handleBlur} 
                                 value={value}
                                 onChange={handleChange}
                                 onKeyDown={handleKeyDown}
@@ -134,9 +134,9 @@ function Quizinfo() {
 
                         <div className="h-[66px] bg-[#FFFFFF] rounded-bl-[12px] rounded-br-[12px] flex justify-center items-center">
                             <div className="flex flex-row w-full justify-between items-center mx-5">
-                                {/* Formatting options */}
+
                                 <div className="h-[24px] w-[288px] gap-[24px] flex flex-row">
-                                    {/* Icons for formatting */}
+
                                     <button onClick={() => handleIconClick('bold')}>
                                         <Image src="/icons/Bold.svg" width={24} height={24} alt="bold" />
                                     </button>
@@ -147,7 +147,7 @@ function Quizinfo() {
                                         <Image src="/icons/underline-icon.svg" width={24} height={24} alt="underline-icon" />
                                     </button>
 
-                                    {/* Alignment options in a popover */}
+
                                     <Popover backdrop="blur" placement="bottom-start" className="flex flex-row justify-end">
                                         <PopoverTrigger className="">
                                             <button className="flex items-center justify-center p-1">
@@ -161,7 +161,7 @@ function Quizinfo() {
                                             </button>
                                         </PopoverTrigger>
                                         <PopoverContent className="ml-1 gap-4">
-                                            {/* Alignment options inside the popover */}
+
                                             <div className="flex flex-row bg-white rounded-[8px] border-[1px] border-solid border-[#EAECF0] p-2 w-[120px] shadow-[0_2px_4px_#EAECF0] gap-2 ">
                                                 <button onClick={() => handleIconClick("align-left")} className="flex items-center justify-center">
                                                     <Image src="/icons/align-left.svg" width={30} height={30} alt="align-left" />
@@ -176,7 +176,6 @@ function Quizinfo() {
                                         </PopoverContent>
                                     </Popover>
 
-                                    {/* List options */}
                                     <button onClick={() => handleIconClick('ordered')}>
                                         <Image src="/icons/dropdown-icon-2.svg" width={27} height={27} alt="ordered-list" />
                                     </button>
@@ -261,11 +260,7 @@ function Quizinfo() {
                             </button>
                             <h3 className="mx-6 mt-6 text-2xl font-semibold task-[#1D2939]">Test Series Image</h3>
                             <div className="h-[224px] bg-[#F9FAFB] border border-solid border-[#EAECF0] rounded-sm m-6">
-                                {/* ADD IMAGE INSIDE  */}
-
                             </div>
-
-
                             <hr />
                             <div className="flex flex-row justify-end mx-6 my-4 gap-4">
                                 <button
@@ -278,13 +273,9 @@ function Quizinfo() {
                         </div>
                     </DialogPanel>
                 </div>
-            </Dialog>
-
-
-
-
+            </Dialog> */}
         </>
     );
 }
 
-export default Quizinfo;
+export default TestSeriesInfo;

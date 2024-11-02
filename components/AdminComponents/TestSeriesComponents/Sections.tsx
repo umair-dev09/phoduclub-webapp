@@ -6,7 +6,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@nextui-org/popover";
 import Collapsible from 'react-collapsible';
 import QuillEditor from './ReactQuill';
 
-interface SectionProps {
+type SectionProps = {
     sectionsCount: number;
 
 }

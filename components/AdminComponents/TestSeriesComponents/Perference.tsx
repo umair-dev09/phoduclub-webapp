@@ -2,7 +2,7 @@ import React from 'react'
 import Image from "next/image";
 
 
-const TestSeriesInfo = () => {
+function Preference() {
     return (
         <div className='flex flex-col ml-1 pt-4 gap-4'>
             <div className='flex flex-col w-full p-6 bg-white border border-lightGrey rounded-xl'>
@@ -66,4 +66,4 @@ const TestSeriesInfo = () => {
     )
 }
 
-export default TestSeriesInfo
+export default Preference
