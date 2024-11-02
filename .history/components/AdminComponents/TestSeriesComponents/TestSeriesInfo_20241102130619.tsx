@@ -215,29 +215,38 @@ function TestSeriesInfo() {
 
                 <div className="flex flex-row pt-4 w-full gap-4">
                     <div className="flex flex-col gap-1 w-1/2 flex-grow">
-                        <label htmlFor="discount-price" className="text-[#1D2939] text-sm font-medium">Price</label>
-                        <div className="flex flex-row py-2 px-4 w-full gap-2 border border-solid border-[#D0D5DD] rounded-md transition duration-200 ease-in-out focus:border-red-300
-                                        focus-within:border-purple focus-within:outline-[#D6BBFB] focus-within:shadow-[0px_0px_0px_4px_rgba(158,119,237,0.25),0px_1px_2px_0px_rgba(16,24,40,0.05)]">
-                            <div>&#8377;</div>
-                            <input
-                                id="discount-price"
-                                className="w-full text-sm font-medium text-[#1D2939] placeholder:font-normal placeholder:text-[#A1A1A1] rounded-md outline-none"
-                                type="text"
-                            />
-                        </div>
+                        <span className="text-[#1D2939] text-sm font-medium">Price</span>
+
+                        <input
+                            className="font-medium pl-7 text-[#1D2939] text-sm placeholder:text-[#A1A1A1] rounded-md placeholder:font-normal
+                    focus:outline-none focus:ring-0 
+                    border border-solid border-[#D0D5DD] h-[40px] 
+                    shadow-[0px_1px_2px_0px_rgba(16,24,40,0.05)] 
+                    transition duration-200 ease-in-out 
+                    focus:border-[#D6BBFB] 
+                    focus:shadow-[0px_0px_0px_4px_rgba(158,119,237,0.25),0px_1px_2px_0px_rgba(16,24,40,0.05)]
+                    focus:text-[#1D2939]
+                    focus:font-medium"
+                            type="text"
+                        />
                     </div>
 
+
                     <div className="flex flex-col gap-1 w-1/2 flex-grow">
-                        <label htmlFor="discount-price" className="text-[#1D2939] text-sm font-medium">Discount Price</label>
-                        <div className="flex flex-row py-2 px-4 w-full gap-2 border border-solid border-[#D0D5DD] rounded-md transition duration-200 ease-in-out focus:border-red-300
-                                        focus-within:border-purple focus-within:outline-[#D6BBFB] focus-within:shadow-[0px_0px_0px_4px_rgba(158,119,237,0.25),0px_1px_2px_0px_rgba(16,24,40,0.05)]">
-                            <div>&#8377;</div>
-                            <input
-                                id="discount-price"
-                                className="w-full text-sm font-medium text-[#1D2939] placeholder:font-normal placeholder:text-[#A1A1A1] rounded-md outline-none"
-                                type="text"
-                            />
-                        </div>
+                        <span className="text-[#1D2939] text-sm font-medium">Discount Price</span>
+
+                        <input
+                            className="font-medium pl-7 text-[#1D2939] text-sm placeholder:text-[#A1A1A1] rounded-md placeholder:font-normal
+                    focus:outline-none focus:ring-0 
+                    border border-solid border-[#D0D5DD] h-[40px] 
+                    shadow-[0px_1px_2px_0px_rgba(16,24,40,0.05)] 
+                    transition duration-200 ease-in-out 
+                    focus:border-[#D6BBFB] 
+                    focus:shadow-[0px_0px_0px_4px_rgba(158,119,237,0.25),0px_1px_2px_0px_rgba(16,24,40,0.05)]
+                    focus:text-[#1D2939]
+                    focus:font-medium"
+                            type="text"
+                        />
                     </div>
                 </div>
             </div>
