@@ -50,20 +50,18 @@ function Quizinfo() {
     const closeResumeQuiz = () => setIsResumeQuizOpen(false);
 
     return (
-        <div className="flex w-full h-auto overflow-y-auto flex-col p-8">
-            <div className="w-full h-auto flex flex-col  pb-2">
+        <div className="flex w-full h-auto overflow-y-auto flex-col mx-8 my-8">
+            <div className="w-full h-auto flex flex-col pb-2">
                 <div className="flex flex-row justify-between">
                     <div className="flex flex-row gap-3 py-1 items-center">
                         <span className="text-[#1D2939] text-2xl font-semibold">Maths</span>
                         <div className="bg-[#F2F4F7] py-2 px-3 gap-1 flex flex-row rounded-[6px] items-center h-6">
                             <span className="w-[6px] h-[6px] bg-[#182230] rounded-full "></span>
                             <span className="font-medium text-[#182230] text-xs">Saved</span>
-
                         </div>
                         {/* <div className="bg-[#D3F8E0] py-2 px-3 gap-1 flex flex-row rounded-[6px] items-center h-6">
                             <span className="w-[6px] h-[6px] bg-[#0A5B39] rounded-full "></span>
                             <span className="font-medium text-[#0A5B39] text-xs">Finished</span>
-
                         </div> */}
                     </div>
                     <div className="flex flex-row gap-1">
@@ -165,47 +163,43 @@ function Quizinfo() {
                 </div>
                 <div className="p-1 flex flex-col">
                     <div className="flex items-center">
-                        <span className="w-1 h-1 bg-[#1D2939] rounded-full mr-2"></span>
-                        <span className="text-[#1D2939] text-sm font-normal">This quiz contains - 10 Questions</span>
+                        <div className="w-1 h-1 bg-[#1D2939] rounded-full mr-2"></div>
+                        <div className="text-[#1D2939] text-sm font-normal">This quiz contains - 10 Questions</div>
                     </div>
                     <div className="flex items-center">
-                        <span className="w-1 h-1 bg-[#1D2939] rounded-full mr-2"></span>
-                        <span className="text-[#1D2939] text-sm font-normal">Each question will be of 3 Marks</span>
+                        <div className="w-1 h-1 bg-[#1D2939] rounded-full mr-2"></div>
+                        <div className="text-[#1D2939] text-sm font-normal">Each question will be of 3 Marks</div>
                     </div>
                     <div className="flex items-center">
-                        <span className="w-1 h-1 bg-[#1D2939] rounded-full mr-2"></span>
-                        <span className="text-[#1D2939] text-sm font-normal">There’s negative marking (-1) for each wrong</span>
+                        <div className="w-1 h-1 bg-[#1D2939] rounded-full mr-2"></div>
+                        <div className="text-[#1D2939] text-sm font-normal">There’s negative marking (-1) for each wrong</div>
                     </div>
                 </div>
             </div>
             <div className="flex flex-row gap-1">
-                <span className="text-[#667085] font-normal text-sm">Created by</span>
+                <p className="text-[#667085] font-normal text-sm">Created by</p>
                 <Image
                     src="/icons/profile-pic2.svg"
                     width={24}
                     height={24}
                     alt="profile-icons"
                 />
-                <span className="text-[#1D2939] font-medium text-sm">Jenny Wilson</span>
+                <p className="text-[#1D2939] font-medium text-sm">Jenny Wilson</p>
             </div>
             <div className="w-full h-auto mt-4 flex flex-row gap-4 ">
                 <div className="w-full flex flex-col p-4 border border-solid border-[#EAECF0] bg-[#FFFFFF] rounded-xl">
                     <span className="text-[#667085] font-normal text-sm">Quiz starts</span>
                     <span className="font-medium text-[#1D2939] text-base">06 Jan, 2024  05:30 PM</span>
-
                 </div>
                 <div className="w-full flex flex-col p-4 border border-solid border-[#EAECF0] bg-[#FFFFFF] rounded-xl">
-
                     <span className="text-[#667085] font-normal text-sm">Quiz ends</span>
                     <span className="font-medium text-[#1D2939] text-base">06 Jan, 2024  07:30 PM</span>
                 </div>
                 <div className="w-full flex flex-col p-4 border border-solid border-[#EAECF0] bg-[#FFFFFF] rounded-xl">
-
                     <span className="text-[#667085] font-normal text-sm">Marks per questions</span>
                     <span className="font-medium text-[#1D2939] text-base">3</span>
                 </div>
                 <div className="w-full flex flex-col p-4 border border-solid border-[#EAECF0] bg-[#FFFFFF] rounded-xl">
-
                     <span className="text-[#667085] font-normal text-sm">Overall quiz time</span>
                     <span className="font-medium text-[#1D2939] text-base">10 min</span>
                 </div>
@@ -260,7 +254,6 @@ function Quizinfo() {
                     <StudentsAttempts />
                 </div>
             )}
-
 
             {/* Dialog components with conditional rendering */}
             {isScheduledDialogOpen && <ScheduledDialog onClose={closeScheduledDialog} />}

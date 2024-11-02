@@ -11,49 +11,50 @@ import {
     PaginationNext,
     PaginationPrevious,
 } from "@/components/ui/pagination";
+
 // Define types for quiz data
 interface Quiz {
-    title: string;
     questions: number;
     date: string; // Can be Date type if desired
     students: number;
+    ranking: number;
     status: 'Live' | 'Paused' | 'Finished' | 'Scheduled' | 'Cancelled' | 'Saved';
 }
 
 // Mock fetchQuizzes function with types
 const fetchQuizzes = async (): Promise<Quiz[]> => {
     const allQuizzes: Quiz[] = [
-        { title: 'Maths', questions: 10, date: 'Jan 6, 2024', students: 2147, status: 'Live' },
-        { title: 'Ancient Civilizations', questions: 10, date: 'Mar 15, 2024', students: 900, status: 'Saved' },
-        { title: 'Science', questions: 8, date: 'Jan 8, 2024', students: 1875, status: 'Paused' },
-        { title: 'Astronomy', questions: 7, date: 'Mar 17, 2024', students: 1250, status: 'Saved' },
-        { title: 'History', questions: 12, date: 'Jan 10, 2024', students: 1290, status: 'Finished' },
-        { title: 'Geography', questions: 6, date: 'Jan 12, 2024', students: 950, status: 'Cancelled' },
-        { title: 'Physics', questions: 15, date: 'Feb 1, 2024', students: 1800, status: 'Scheduled' },
-        { title: 'Chemistry', questions: 9, date: 'Feb 3, 2024', students: 1600, status: 'Live' },
-        { title: 'Creative Writing', questions: 12, date: 'Mar 22, 2024', students: 1400, status: 'Saved' },
-        { title: 'English Literature', questions: 12, date: 'Feb 5, 2024', students: 1950, status: 'Paused' },
-        { title: 'Marine Biology', questions: 9, date: 'Mar 20, 2024', students: 1150, status: 'Saved' },
-        { title: 'Biology', questions: 10, date: 'Feb 8, 2024', students: 2100, status: 'Finished' },
-        { title: 'Computer Science', questions: 8, date: 'Feb 10, 2024', students: 2200, status: 'Cancelled' },
-        { title: 'Anthropology', questions: 6, date: 'Mar 28, 2024', students: 1100, status: 'Saved' },
-        { title: 'Art History', questions: 7, date: 'Feb 12, 2024', students: 1700, status: 'Live' },
-        { title: 'Philosophy', questions: 10, date: 'Feb 15, 2024', students: 1300, status: 'Scheduled' },
-        { title: 'Economics', questions: 11, date: 'Feb 18, 2024', students: 1450, status: 'Finished' },
-        { title: 'Public Health', questions: 10, date: 'Apr 2, 2024', students: 1450, status: 'Saved' },
-        { title: 'Political Science', questions: 9, date: 'Feb 20, 2024', students: 1900, status: 'Paused' },
-        { title: 'Neuroscience', questions: 10, date: 'Apr 6, 2024', students: 1250, status: 'Saved' },
-        { title: 'Sociology', questions: 12, date: 'Feb 25, 2024', students: 1750, status: 'Live' },
-        { title: 'Psychology', questions: 8, date: 'Mar 1, 2024', students: 2000, status: 'Cancelled' },
-        { title: 'Environmental Science', questions: 7, date: 'Mar 3, 2024', students: 1500, status: 'Scheduled' },
-        { title: 'World History', questions: 10, date: 'Mar 5, 2024', students: 1850, status: 'Finished' },
-        { title: 'Ethics', questions: 11, date: 'Mar 30, 2024', students: 1000, status: 'Saved' },
-        { title: 'Statistics', questions: 9, date: 'Mar 8, 2024', students: 1700, status: 'Live' },
-        { title: 'Robotics', questions: 8, date: 'Apr 4, 2024', students: 1350, status: 'Saved' },
-        { title: 'Business Studies', questions: 8, date: 'Mar 10, 2024', students: 1400, status: 'Paused' },
-        { title: 'Music Theory', questions: 6, date: 'Mar 12, 2024', students: 1200, status: 'Cancelled' },
-        { title: 'Genetics', questions: 8, date: 'Mar 25, 2024', students: 1300, status: 'Saved' },
-        { title: 'Linguistics', questions: 7, date: 'Apr 10, 2024', students: 1050, status: 'Saved' }
+        { questions: 10, date: 'Jan 6, 2024', students: 2147, status: 'Live', ranking: 1 },
+        { questions: 10, date: 'Mar 15, 2024', students: 900, status: 'Saved', ranking: 2 },
+        { questions: 8, date: 'Jan 8, 2024', students: 1875, status: 'Paused', ranking: 3 },
+        { questions: 7, date: 'Mar 17, 2024', students: 1250, status: 'Saved', ranking: 4 },
+        { questions: 12, date: 'Jan 10, 2024', students: 1290, status: 'Finished', ranking: 5 },
+        { questions: 6, date: 'Jan 12, 2024', students: 950, status: 'Cancelled', ranking: 6 },
+        { questions: 15, date: 'Feb 1, 2024', students: 1800, status: 'Scheduled', ranking: 7 },
+        { questions: 9, date: 'Feb 3, 2024', students: 1600, status: 'Live', ranking: 8 },
+        { questions: 12, date: 'Mar 22, 2024', students: 1400, status: 'Saved', ranking: 9 },
+        { questions: 12, date: 'Feb 5, 2024', students: 1950, status: 'Paused', ranking: 10 },
+        { questions: 9, date: 'Mar 20, 2024', students: 1150, status: 'Saved', ranking: 11 },
+        { questions: 10, date: 'Feb 8, 2024', students: 2100, status: 'Finished', ranking: 12 },
+        { questions: 8, date: 'Feb 10, 2024', students: 2200, status: 'Cancelled', ranking: 13 },
+        { questions: 6, date: 'Mar 28, 2024', students: 1100, status: 'Saved', ranking: 14 },
+        { questions: 7, date: 'Feb 12, 2024', students: 1700, status: 'Live', ranking: 15 },
+        { questions: 10, date: 'Feb 15, 2024', students: 1300, status: 'Scheduled', ranking: 16 },
+        { questions: 11, date: 'Feb 18, 2024', students: 1450, status: 'Finished', ranking: 17 },
+        { questions: 10, date: 'Apr 2, 2024', students: 1450, status: 'Saved', ranking: 18 },
+        { questions: 9, date: 'Feb 20, 2024', students: 1900, status: 'Paused', ranking: 19 },
+        { questions: 10, date: 'Apr 6, 2024', students: 1250, status: 'Saved', ranking: 20 },
+        { questions: 12, date: 'Feb 25, 2024', students: 1750, status: 'Live', ranking: 21 },
+        { questions: 8, date: 'Mar 1, 2024', students: 2000, status: 'Cancelled', ranking: 22 },
+        { questions: 7, date: 'Mar 3, 2024', students: 1500, status: 'Scheduled', ranking: 23 },
+        { questions: 10, date: 'Mar 5, 2024', students: 1850, status: 'Finished', ranking: 24 },
+        { questions: 11, date: 'Mar 30, 2024', students: 1000, status: 'Saved', ranking: 25 },
+        { questions: 9, date: 'Mar 8, 2024', students: 1700, status: 'Live', ranking: 26 },
+        { questions: 8, date: 'Apr 4, 2024', students: 1350, status: 'Saved', ranking: 27 },
+        { questions: 8, date: 'Mar 10, 2024', students: 1400, status: 'Paused', ranking: 28 },
+        { questions: 6, date: 'Mar 12, 2024', students: 1200, status: 'Cancelled', ranking: 29 },
+        { questions: 8, date: 'Mar 25, 2024', students: 1300, status: 'Saved', ranking: 30 },
+        { questions: 7, date: 'Apr 10, 2024', students: 1050, status: 'Saved', ranking: 31 },
     ];
     return allQuizzes;
 };
@@ -80,13 +81,13 @@ function Quizz() {
     }, []);
 
     // Filter quizzes based on search term
-    useEffect(() => {
-        const filteredQuizzes = quizzes.filter(quiz =>
-            quiz.title.toLowerCase().includes(searchTerm.toLowerCase())
-        );
-        setData(filteredQuizzes);
-        setCurrentPage(1); // Reset to first page on new search
-    }, [searchTerm, quizzes]);
+    // useEffect(() => {
+    //     const filteredQuizzes = quizzes.filter(quiz =>
+    //         quiz.title.toLowerCase().includes(searchTerm.toLowerCase())
+    //     );
+    //     setData(filteredQuizzes);
+    //     setCurrentPage(1); // Reset to first page on new search
+    // }, [searchTerm, quizzes]);
 
     const lastItemIndex = currentPage * itemsPerPage;
     const firstItemIndex = lastItemIndex - itemsPerPage;
@@ -100,7 +101,7 @@ function Quizz() {
 
 
     return (
-        <div className="flex flex-col  w-full gap-4   my-5">
+        <div className="flex flex-col w-full mt-4 gap-4">
             <div className="flex flex-row justify-between items-center">
                 <span className="text-lg font-semibold text-[#1D2939]">Students attempted (2547)</span>
                 <div className="flex flex-row gap-3">
@@ -136,79 +137,94 @@ function Quizz() {
                 </div>
             </div>
 
-            {loading ? (
-                <div className="flex justify-center items-center h-48">
-                    <span className="text-lg">Loading quizzes...</span>
+            <div className="flex flex-col">
+                <div className="border border-[#EAECF0] rounded-xl">
+                    <table className="w-full bg-white rounded-xl">
+                        <thead>
+                            <tr>
+                                <th className="w-1/4 text-left px-8 py-4 pl-8 rounded-tl-xl flex flex-row ">
+                                    <span className="text-[#667085] font-medium text-sm">Name</span>
+                                    <Image src="/icons/expandall.svg" width={28} height={18} alt="Expand all icon" />
+                                </th>
+                                <th className=" w-[17%] text-center px-8 py-4 text-[#667085] font-medium text-sm">
+                                    <div className="flex flex-row justify-center gap-1">
+                                        <p>Date & Time</p>
+                                        <Image src='/icons/unfold-more-round.svg' alt="" width={16} height={16} />
+                                    </div>
+                                </th>
+                                <th className=" w-[17%] text-center px-8 py-4 text-[#667085] font-medium text-sm">
+                                    <div className="flex flex-row justify-center gap-1">
+                                        <p>Score</p>
+                                        <Image src='/icons/unfold-more-round.svg' alt="" width={16} height={16} />
+                                    </div>
+                                </th>
+                                <th className=" w-[17%] text-center px-8 py-4 text-[#667085] font-medium text-sm">
+                                    <div className="flex flex-row justify-center gap-1">
+                                        <p>Time Taken</p>
+                                        <Image src='/icons/unfold-more-round.svg' alt="" width={16} height={16} />
+                                    </div>
+                                </th>
+                                <th className=" w-[17%] text-center px-8 py-4 rounded-tr-xl text-[#667085] font-medium text-sm">
+                                    <div className="flex flex-row justify-center gap-1">
+                                        <p>Ranking</p>
+                                        <Image src='/icons/unfold-more-round.svg' alt="" width={16} height={16} />
+                                    </div>
+                                </th>
+                                <th className="w-[12%] text-center px-8 py-4 rounded-tr-xl text-[#667085] font-medium text-sm">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {currentItems.map((quiz, index) => (
+                                <tr key={index} className="border-t border-solid border-[#EAECF0]">
+                                    <td className="py-4">
+                                        <div className="flex flex-row ml-8 gap-2">
+                                            <div className="flex items-center">
+                                                <div className="relative">
+                                                    <Image src='/images/DP_Lion.svg' alt="DP" width={40} height={40} />
+                                                    <Image className="absolute right-0 bottom-0" src='/icons/winnerBatch.svg' alt="Batch" width={18} height={18} />
+                                                </div>
+                                            </div>
+                                            <div className="flex items-start justify-start flex-col">
+                                                <div className="font-semibold">Jenny Wilson</div>
+                                                <div className="flex justify-start items-start text-[13px] text-[#667085]">jenny#8547</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td className="px-8 py-4 text-center text-[#101828] text-sm">{quiz.date}</td>
+                                    <td className="px-8 py-4 text-center text-[#101828] text-sm">{quiz.students}</td>
+                                    <td className="px-8 py-4 text-center text-[#101828] text-sm">{quiz.questions}</td>
+                                    <td className="px-8 py-4 text-center text-[#101828] text-sm">{quiz.ranking}</td>
+                                    <td className="flex items-center justify-center px-8 py-4 text-[#101828] text-sm">
+
+
+                                        <button>
+                                            <Image
+                                                src="/icons/three-dots.svg"
+                                                width={20}
+                                                height={20}
+                                                alt="More Actions"
+                                            />
+                                        </button>
+
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
                 </div>
-            ) : (
-                <div className="flex flex-1 flex-col">
-                    <div className="h-full">
-                        <div className="border border-[#EAECF0] rounded-xl">
-                            <table className="w-full bg-white rounded-xl">
-                                <thead>
-                                    <tr>
-                                        <th className="w-1/4 text-left px-8 py-4 pl-8 rounded-tl-xl flex flex-row ">
-                                            <span className="text-[#667085] font-medium text-sm">Name</span>
-                                            <Image src="/icons/expandall.svg" width={28} height={18} alt="Expand all icon" />
-                                        </th>
-                                        <th className="w-[17%] text-center px-8 py-4 text-[#667085] font-medium text-sm">Date & Time</th>
-                                        <th className="w-[17%] text-center px-8 py-4 text-[#667085] font-medium text-sm">Score</th>
-                                        <th className="w-[17%] text-center px-8 py-4 text-[#667085] font-medium text-sm">Time Taken</th>
-                                        <th className="w-[17%] text-center px-8 py-4 rounded-tr-xl text-[#667085] font-medium text-sm">Ranking</th>
-                                        <th className="w-[12%] text-center px-8 py-4 rounded-tr-xl text-[#667085] font-medium text-sm">Action</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {currentItems.map((quiz, index) => (
-                                        <tr key={index} className="border-t border-solid border-[#EAECF0]">
-                                            <td onClick={() => handleTabClick('/admin/content/quizzesmanagement/quizinfo')}><button className="px-8 py-4 text-[#9012FF] underline text-sm font-medium">{quiz.title}</button></td>
-                                            <td className="px-8 py-4 text-center text-[#101828] text-sm">{quiz.questions}</td>
-                                            <td className="px-8 py-4 text-center text-[#101828] text-sm">{quiz.date}</td>
-                                            <td className="px-8 py-4 text-center text-[#101828] text-sm">{quiz.students}</td>
-                                            <td className="px-8 py-4 text-center text-[#101828] text-sm">
-                                                <span className='flex items-center justify-center rounded-full'>
-                                                    <Image
-                                                        src={`/icons/${quiz.status}.svg`}
-                                                        width={74}
-                                                        height={24}
-                                                        alt={quiz.status}
-                                                        className="text-xs font-medium"
-                                                    />
-                                                </span>
-                                            </td>
-                                            <td className="flex items-center justify-center px-8 py-4 text-[#101828] text-sm">
 
-
-                                                <button>
-                                                    <Image
-                                                        src="/icons/three-dots.svg"
-                                                        width={20}
-                                                        height={20}
-                                                        alt="More Actions"
-                                                    />
-                                                </button>
-
-                                            </td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-
-                    {/* Pagination Section */}
-                    <div>
-                        <div className="flex justify-right">
-                            <PaginationSection
-                                totalItems={data.length}
-                                itemsPerPage={itemsPerPage}
-                                currentPage={currentPage}
-                                setCurrentPage={setCurrentPage}
-                            />
-                        </div>
+                {/* Pagination Section */}
+                <div>
+                    <div className="flex justify-right">
+                        <PaginationSection
+                            totalItems={data.length}
+                            itemsPerPage={itemsPerPage}
+                            currentPage={currentPage}
+                            setCurrentPage={setCurrentPage}
+                        />
                     </div>
                 </div>
-            )}
+            </div>
 
         </div>
     );
