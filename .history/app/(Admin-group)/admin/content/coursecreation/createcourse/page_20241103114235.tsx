@@ -5,7 +5,7 @@ import 'react-quill/dist/quill.snow.css';
 import ReactQuill from 'react-quill'; // Ensure correct import
 import Quill from 'quill'; // Import Quill to use it for types
 import { Popover, PopoverTrigger, PopoverContent } from '@nextui-org/popover';
-import { useRouter } from "next/navigation";
+import { Dialog, DialogBackdrop, DialogPanel } from "@headlessui/react";
 function createcourse() {
     // state for ReactQuill
     const [value, setValue] = useState('');
@@ -81,50 +81,9 @@ function createcourse() {
         }
     };
     // -----------------------------------------------------------------------------------------------------------------------------------------------------
-    // this logic is for Price and Discount
-    const [price, setPrice] = useState('');
-    const [discountPrice, setDiscountPrice] = useState('');
 
-    const handlePriceChange = (e: { target: { value: any; }; }, setter: (arg0: any) => void) => {
-        const value = e.target.value;
-        // Allow only numbers and decimals
-        if (value === '' || /^\d*\.?\d*$/.test(value)) {
-            setter(value);
-        }
-    };
-    // -----------------------------------------------------------------------------------------------------------------------------------------------------
-    // this logic is for rating 
-
-    interface StarIconProps {
-        filled: boolean;
-        isHalf: boolean;
-    }
-    const StarIcon: React.FC<StarIconProps> = ({ filled, isHalf }) => (
-        <Image
-            src={filled ? (isHalf ? "/icons/half-star.svg" : "/icons/full-star.svg") : "/icons/empty-star.svg"}
-            width={20}
-            height={20}
-            alt={isHalf ? "half star" : filled ? "full star" : "empty star"}
-        />
-    );
-
-    const [rating, setRating] = useState<string>('');
-    const [numRatings, setNumRatings] = useState<string>('');
-    const totalStars = 5;
-
-    // Convert rating string to number for calculations
-    const ratingValue = parseFloat(rating) || 0;
-
-    // Determine if we should show the colorless star
-    const showColorlessStar = !rating || ratingValue === 0;
-    // -------------------------------------------------------------------------------------
-    // Function to handle tab click and navigate to a new route
-    const router = useRouter();
-    const handleTabClick = (path: string) => {
-        router.push(path);
-    };
     return (
-        <div className="px-[32px] pt-[20px] w-full h-auto overflow-y-auto pb-24">
+        <div className="p-[20px] w-full h-auto overflow-y-auto">
             {/* Header part*/}
             <div className="flex flex-row justify-between h-[60px] border-b border-solid border-[#D0D5DD]">
                 <div className="flex flex-row items-center">
@@ -134,8 +93,7 @@ function createcourse() {
                     <button className="h-[44px] w-[120px] rounded-md items-center flex border border-solid border-[#EAECF0] bg-[#FFFFFF] justify-center">
                         <span className="text-[#1D2939] font-semibold text-sm">Cancel</span>
                     </button>
-                    <button className="h-[44px] w-[120px] ml-4 rounded-md items-center flex border border-solid border-[#800EE2] bg-[#9012FF] justify-center shadow-inner-button"
-                        onClick={() => handleTabClick('/admin/content/coursecreation/createcourse/courses')}>
+                    <button className="h-[44px] w-[120px] ml-4 rounded-md items-center flex border border-solid border-[#800EE2] bg-[#9012FF] justify-center shadow-inner-button">
                         <span className="text-[#FFFFFF] font-semibold text-sm">Create</span>
                     </button>
                 </div>
@@ -244,122 +202,65 @@ function createcourse() {
                         </div>
                     </div>
                     {/* Pricing of the Courses */}
-                    <div className="flex flex-row w-full gap-4">
-                        <div className="flex flex-col gap-1 w-1/2 flex-grow">
-                            <label htmlFor="discount-price" className="text-[#1D2939] text-sm font-medium">Price</label>
-                            <div className="flex flex-row py-2 px-4 w-full gap-2 border border-solid border-[#D0D5DD] rounded-md transition duration-200 ease-in-out focus:border-red-300">
-                                {price && <div className="text-[#1D2939]">₹</div>}
-                                <input
-                                    id="discount-price"
-                                    className="w-full text-sm font-medium text-[#1D2939] placeholder:font-normal placeholder:text-[#A1A1A1] rounded-md outline-none"
-                                    type="text"
-                                    placeholder="Price"
-                                    value={price}
-                                    onChange={(e) => handlePriceChange(e, setPrice)}
-                                />
+                    <div className="bg-[#FFFFFF] border border-solid border-[#EAECF0] rounded-xl h-[154px] my-4 p-4 ">
+                        <span className="text-lg font-semibold text-[#1D2939] ">Price</span>
+                        <div className="flex flex-row pt-4 w-full gap-4">
+                            <div className="flex flex-col gap-1 w-1/2 flex-grow">
+                                <label htmlFor="discount-price" className="text-[#1D2939] text-sm font-medium">Price</label>
+                                <div className="flex flex-row py-2 px-4 w-full gap-2 border border-solid border-[#D0D5DD] rounded-md transition duration-200 ease-in-out focus:border-red-300
+                                             focus-within:border-purple focus-within:outline-[#D6BBFB] focus-within:shadow-[0px_0px_0px_4px_rgba(158,119,237,0.25),0px_1px_2px_0px_rgba(16,24,40,0.05)]">
+                                    <div>&#8377;</div>
+                                    <input
+                                        id="discount-price"
+                                        className="w-full text-sm font-medium text-[#1D2939] placeholder:font-normal placeholder:text-[#A1A1A1] rounded-md outline-none"
+                                        type="text"
+                                    />
+                                </div>
                             </div>
-                        </div>
-                        <div className="flex flex-col gap-1 w-1/2 flex-grow">
-                            <label htmlFor="discount-price" className="text-[#1D2939] text-sm font-medium">Discount Price</label>
-                            <div className="flex flex-row py-2 px-4 w-full gap-2 border border-solid border-[#D0D5DD] rounded-md transition duration-200 ease-in-out focus:border-red-300">
-                                {discountPrice && <div className="text-[#1D2939]">₹</div>}
-                                <input
-                                    id="discount-price"
-                                    className="w-full text-sm font-medium text-[#1D2939] placeholder:font-normal placeholder:text-[#A1A1A1] rounded-md outline-none"
-                                    type="text"
-                                    placeholder=" Discount Price"
-                                    value={discountPrice}
-                                    onChange={(e) => handlePriceChange(e, setDiscountPrice)}
-                                />
+                            <div className="flex flex-col gap-1 w-1/2 flex-grow">
+                                <label htmlFor="discount-price" className="text-[#1D2939] text-sm font-medium">Discount Price</label>
+                                <div className="flex flex-row py-2 px-4 w-full gap-2 border border-solid border-[#D0D5DD] rounded-md transition duration-200 ease-in-out focus:border-red-300
+                                       focus-within:border-purple focus-within:outline-[#D6BBFB] focus-within:shadow-[0px_0px_0px_4px_rgba(158,119,237,0.25),0px_1px_2px_0px_rgba(16,24,40,0.05)]">
+                                    <div>&#8377;</div>
+                                    <input
+                                        id="discount-price"
+                                        className="w-full text-sm font-medium text-[#1D2939] placeholder:font-normal placeholder:text-[#A1A1A1] rounded-md outline-none"
+                                        type="text"
+                                    />
+                                </div>
                             </div>
                         </div>
                     </div>
                     {/* Ratings of Courses */}
-                    <div className="flex flex-row w-full gap-4">
-                        <div className="flex flex-col gap-1 w-1/2 flex-grow">
-                            <label htmlFor="rating" className="text-[#1D2939] text-sm font-medium">
-                                Ratings
-                            </label>
-                            <div className="flex flex-row py-2 px-4 w-full gap-2 border border-solid border-[#D0D5DD] rounded-md transition duration-200 ease-in-out ">
-                                <input
-                                    id="rating"
-                                    value={rating}
-                                    onChange={(e) => {
-                                        const value = e.target.value;
-                                        // Only allow numbers and one decimal point
-                                        if (value === '' || (/^\d*\.?\d*$/.test(value) && parseFloat(value) <= 5)) {
-                                            setRating(value);
-                                        }
-                                    }}
-                                    className="w-full text-sm font-medium text-[#1D2939] placeholder:font-normal placeholder:text-[#A1A1A1] rounded-md outline-none"
-                                    type="text"
-                                    placeholder="Ratings"
-                                />
+                    <div className="bg-[#FFFFFF] border border-solid border-[#EAECF0] rounded-xl h-[154px] my-4 p-4 ">
+                        <span className="text-lg font-semibold text-[#1D2939] ">Price</span>
+                        <div className="flex flex-row pt-4 w-full gap-4">
+                            <div className="flex flex-col gap-1 w-1/2 flex-grow">
+                                <label htmlFor="discount-price" className="text-[#1D2939] text-sm font-medium">Price</label>
+                                <div className="flex flex-row py-2 px-4 w-full gap-2 border border-solid border-[#D0D5DD] rounded-md transition duration-200 ease-in-out focus:border-red-300
+                                              focus-within:border-purple focus-within:outline-[#D6BBFB] focus-within:shadow-[0px_0px_0px_4px_rgba(158,119,237,0.25),0px_1px_2px_0px_rgba(16,24,40,0.05)]">
+                                    <div>&#8377;</div>
+                                    <input
+                                        id="discount-price"
+                                        className="w-full text-sm font-medium text-[#1D2939] placeholder:font-normal placeholder:text-[#A1A1A1] rounded-md outline-none"
+                                        type="text"
+                                    />
+                                </div>
                             </div>
-                        </div>
-                        <div className="flex flex-col gap-1 w-1/2 flex-grow">
-                            <label htmlFor="num-ratings" className="text-[#1D2939] text-sm font-medium">
-                                No. of Ratings
-                            </label>
-                            <div className="flex flex-row py-2 px-4 w-full gap-2 border border-solid border-[#D0D5DD] rounded-md transition duration-200 ease-in-out ">
-                                <input
-                                    id="num-ratings"
-                                    value={numRatings}
-                                    onChange={(e) => {
-                                        const value = e.target.value;
-                                        // Only allow numbers
-                                        if (value === '' || /^\d*$/.test(value)) {
-                                            setNumRatings(value);
-                                        }
-                                    }}
-                                    className="w-full text-sm font-medium text-[#1D2939] placeholder:font-normal placeholder:text-[#A1A1A1] rounded-md outline-none"
-                                    type="text"
-                                    placeholder="No. of Ratings"
-                                />
+                            <div className="flex flex-col gap-1 w-1/2 flex-grow">
+                                <label htmlFor="discount-price" className="text-[#1D2939] text-sm font-medium">Discount Price</label>
+                                <div className="flex flex-row py-2 px-4 w-full gap-2 border border-solid border-[#D0D5DD] rounded-md transition duration-200 ease-in-out focus:border-red-300
+                                       focus-within:border-purple focus-within:outline-[#D6BBFB] focus-within:shadow-[0px_0px_0px_4px_rgba(158,119,237,0.25),0px_1px_2px_0px_rgba(16,24,40,0.05)]">
+                                    <div>&#8377;</div>
+                                    <input
+                                        id="discount-price"
+                                        className="w-full text-sm font-medium text-[#1D2939] placeholder:font-normal placeholder:text-[#A1A1A1] rounded-md outline-none"
+                                        type="text"
+                                    />
+                                </div>
                             </div>
                         </div>
                     </div>
-
-                    {/* Star Rating Display */}
-                    {!showColorlessStar && ratingValue > 0 && (
-                        <div className="flex items-center gap-2 h-[24px]">
-                            <div className="flex items-center">
-                                {[...Array(Math.floor(ratingValue))].map((_, index) => (
-                                    <StarIcon key={`filled-${index}`} filled={true} isHalf={false} />
-                                ))}
-
-                                {(ratingValue % 1) >= 0.5 && (
-                                    <StarIcon filled={true} isHalf={true} />
-                                )}
-
-                                {[...Array(totalStars - Math.ceil(ratingValue))].map((_, index) => (
-                                    <StarIcon key={`empty-${index}`} filled={false} isHalf={false} />
-                                ))}
-                            </div>
-
-                            <div className="text-[#1D2939] text-sm font-bold flex items-center mt-1">
-                                {ratingValue.toFixed(1)}
-                                <span className="text-[#1D2939] font-normal text-sm ml-1">
-                                    <span className="flex items-center">
-                                        <span className="inline-block">({numRatings}</span>
-                                        <span className="inline-block"> +Ratings)</span>
-                                    </span>
-                                </span>
-                            </div>
-                        </div>
-                    )}
-                    {/* Colorless Star Display */}
-                    {showColorlessStar && (
-                        <div className="flex flex-row gap-1 items-center">
-                            <Image
-                                src="/icons/colorless-star.svg"
-                                width={116}
-                                height={20}
-                                alt="colorless-star"
-                            />
-                            <span className="text-[#1D2939] font-medium text-sm">0</span>
-                        </div>
-                    )}
                 </div>
             </div>
         </div>

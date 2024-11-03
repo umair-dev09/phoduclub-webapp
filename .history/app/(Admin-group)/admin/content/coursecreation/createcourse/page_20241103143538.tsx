@@ -124,7 +124,7 @@ function createcourse() {
         router.push(path);
     };
     return (
-        <div className="px-[32px] pt-[20px] w-full h-auto overflow-y-auto pb-24">
+        <div className="px-[20px] pt-[20px] w-full h-auto overflow-y-auto pb-24">
             {/* Header part*/}
             <div className="flex flex-row justify-between h-[60px] border-b border-solid border-[#D0D5DD]">
                 <div className="flex flex-row items-center">

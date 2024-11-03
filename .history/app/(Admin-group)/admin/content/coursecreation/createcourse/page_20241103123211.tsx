@@ -5,7 +5,7 @@ import 'react-quill/dist/quill.snow.css';
 import ReactQuill from 'react-quill'; // Ensure correct import
 import Quill from 'quill'; // Import Quill to use it for types
 import { Popover, PopoverTrigger, PopoverContent } from '@nextui-org/popover';
-import { useRouter } from "next/navigation";
+import { Dialog, DialogBackdrop, DialogPanel } from "@headlessui/react";
 function createcourse() {
     // state for ReactQuill
     const [value, setValue] = useState('');
@@ -118,13 +118,8 @@ function createcourse() {
     // Determine if we should show the colorless star
     const showColorlessStar = !rating || ratingValue === 0;
     // -------------------------------------------------------------------------------------
-    // Function to handle tab click and navigate to a new route
-    const router = useRouter();
-    const handleTabClick = (path: string) => {
-        router.push(path);
-    };
     return (
-        <div className="px-[32px] pt-[20px] w-full h-auto overflow-y-auto pb-24">
+        <div className="px-[20px] pt-[20px] w-full h-auto overflow-y-auto pb-24">
             {/* Header part*/}
             <div className="flex flex-row justify-between h-[60px] border-b border-solid border-[#D0D5DD]">
                 <div className="flex flex-row items-center">
@@ -134,8 +129,7 @@ function createcourse() {
                     <button className="h-[44px] w-[120px] rounded-md items-center flex border border-solid border-[#EAECF0] bg-[#FFFFFF] justify-center">
                         <span className="text-[#1D2939] font-semibold text-sm">Cancel</span>
                     </button>
-                    <button className="h-[44px] w-[120px] ml-4 rounded-md items-center flex border border-solid border-[#800EE2] bg-[#9012FF] justify-center shadow-inner-button"
-                        onClick={() => handleTabClick('/admin/content/coursecreation/createcourse/courses')}>
+                    <button className="h-[44px] w-[120px] ml-4 rounded-md items-center flex border border-solid border-[#800EE2] bg-[#9012FF] justify-center shadow-inner-button">
                         <span className="text-[#FFFFFF] font-semibold text-sm">Create</span>
                     </button>
                 </div>
@@ -342,7 +336,7 @@ function createcourse() {
                                 <span className="text-[#1D2939] font-normal text-sm ml-1">
                                     <span className="flex items-center">
                                         <span className="inline-block">({numRatings}</span>
-                                        <span className="inline-block"> +Ratings)</span>
+                                        <span className="inline-block"> Ratings)</span>
                                     </span>
                                 </span>
                             </div>

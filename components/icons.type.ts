@@ -121,7 +121,8 @@ export type IconsType =
   | "resume"
   | "collaspe-all"
   | "plus-sign"
-  | "clock-01";
+  | "clock-01"
+  | "colorless-star";
 
 
 
