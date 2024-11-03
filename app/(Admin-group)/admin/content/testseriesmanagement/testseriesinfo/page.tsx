@@ -1,6 +1,7 @@
 "use client";
 import Image from "next/image";
 import React, { useState } from "react";
+import { useRouter } from "next/navigation";
 import ScheduledDialog from "@/components/AdminComponents/QuizInfoDailogs/scheduledDailog";
 import DeleteQuiz from "@/components/AdminComponents/QuizInfoDailogs/DeleteQuiz";
 import EndQuiz from "@/components/AdminComponents/QuizInfoDailogs/EndQuiz";
@@ -49,6 +50,23 @@ function TestSeriesMangInfo() {
     // Handlers for ResumeQuiz dialog
     const openResumeQuiz = () => setIsResumeQuizOpen(true);
     const closeResumeQuiz = () => setIsResumeQuizOpen(false);
+
+    const router = useRouter();
+    // this logic is for rating 
+    interface StarIconProps {
+        filled: boolean;
+        isHalf: boolean;
+    }
+    const StarIcon: React.FC<StarIconProps> = ({ filled, isHalf }) => (
+        <Image
+            src={filled ? (isHalf ? "/icons/half-star.svg" : "/icons/full-star.svg") : "/icons/empty-star.svg"}
+            width={20}
+            height={20}
+            alt={isHalf ? "half star" : filled ? "full star" : "empty star"}
+        />
+    );
+    const rating = 1.5; // The rating value
+    const totalStars = 5;
 
     return (
         <div className="flex w-full h-auto overflow-y-auto flex-col mx-8 py-8">
@@ -133,10 +151,6 @@ function TestSeriesMangInfo() {
                                     <Image src="/icons/edit-icon.svg" width={18} height={18} alt="Edit-quiz" />
                                     <span className="text-sm text-[#0C111D] font-normal">Edit Quiz</span>
                                 </button>
-                                <button className=" p-3 gap-2 flex-row flex h-[40px] hover:bg-[#F2F4F7] w-full">
-                                    <Image src="/icons/duplicate.svg" width={18} height={18} alt="Edit-quiz" />
-                                    <span className="text-sm text-[#0C111D] font-normal">Duplicate</span>
-                                </button>
                                 <button className=" p-3 gap-2 flex-row flex h-[40px] hover:bg-[#F2F4F7] w-full"
                                     onClick={openDeleteDialog}
                                 >
@@ -148,7 +162,22 @@ function TestSeriesMangInfo() {
                     </div>
                 </div>
             </div>
-            <div className="flex flex-row gap-4">
+            <div className="flex flex-row gap-2">
+                <div className="bg-[#EAECF0] rounded-[8px] p-2 flex flex-row gap-1">
+                    <Image
+                        src="/icons/information-circle.svg"
+                        width={20}
+                        height={20}
+                        alt="information-icon"
+                    />
+                    <span className="text-[#475467] font-normal text-[13px]">Quiz will be live on 12 Jan, 2024  05:30 PM</span>
+                </div>
+                <button
+                    onClick={openScheduledDialog}               >
+                    <Image src="/icons/edit-icon.svg" width={18} height={18} alt="Edit-quiz" />
+                </button>
+            </div>
+            <div className="flex flex-row mt-4 gap-4">
                 <Image className='w-[19.375rem] h-[12.25rem]' src='/images/Frame.png' alt='course img' width={310} height={196} />
                 <div className="flex-col">
                     <div className="flex flex-row items-center mt-1 gap-1">
@@ -164,7 +193,26 @@ function TestSeriesMangInfo() {
                     <h4 className="mt-4 text-sm text-[#344054] leading-[22px] font-normal">
                         The Phodu JEE Mains Test Series 2025 is designed to provide students with an in-depth understanding of bit manipulation techniques and the use of bitsets in data structures.The BITSET Full Course is designed to provide students with an in-depth understanding of bit manipulation techniques and the use of bitsets in data structures.
                     </h4>
-                    <p className='flex flex-row text-sm mt-6 mb-4 gap-2'><span className='font-semibold'>4.7</span> (500+ Ratings)</p>
+                    <div className="flex flex-row items-center h-[24px] my-4 gap-2">
+                        <div className="flex items-center">
+                            {[...Array(Math.floor(rating))].map((_, index) => (
+                                <StarIcon key={`filled-${index}`} filled={true} isHalf={false} />
+                            ))}
+                            {rating % 1 >= 0.5 && <StarIcon filled={true} isHalf={true} />}
+                            {[...Array(totalStars - Math.ceil(rating))].map((_, index) => (
+                                <StarIcon key={`empty-${index}`} filled={false} isHalf={false} />
+                            ))}
+                        </div>
+                        <div className="text-[#1D2939] text-sm font-bold flex items-center flex-row">
+                            {rating.toFixed(1)}
+                            <span className="text-[#1D2939] font-normal text-sm ml-1">
+                                <span className="flex items-center">
+                                    <span className="inline-block">({`500+`}</span>
+                                    <span className="inline-block">Ratings)</span>
+                                </span>
+                            </span>
+                        </div>
+                    </div>
                     <div className='flex flex-row items-center gap-2'>
                         <p className='text-xl text-[#1D2939] font-semibold'>&#8377;3,990</p>
                         <p className='text-base text-[#667085] font-normal'><s>&#8377;7,499</s></p>
@@ -190,8 +238,8 @@ function TestSeriesMangInfo() {
                 <div className="relative flex">
                     <div className="pt-[10px]">
                         <button
-                            onClick={() => handleTabClick('Questions')}
-                            className={`relative py-2 pr-4 text-base transition duration-200 ${activeTab === 'Questions' ? 'text-[#7400E0]' : 'text-[#667085] hover:text-[#7400E0]'
+                            onClick={() => handleTabClick('Content')}
+                            className={`relative py-2 pr-4 text-base transition duration-200 ${activeTab === 'Content' ? 'text-[#7400E0]' : 'text-[#667085] hover:text-[#7400E0]'
                                 } focus:outline-none`}
                             style={{ fontSize: '16px', fontWeight: '500' }}
                         >
@@ -205,7 +253,7 @@ function TestSeriesMangInfo() {
                                 } focus:outline-none`}
                             style={{ fontSize: '16px', fontWeight: '500' }}
                         >
-                            StudentsAttempts
+                            Students attempted
                             <span
                                 className="ml-2 px-2 py-[0px] text-[#9012FF] bg-[#EDE4FF] rounded-full relative"
                                 style={{ fontSize: '14px', fontWeight: '500', minWidth: '24px', textAlign: 'center', top: '-1px' }}
@@ -218,15 +266,15 @@ function TestSeriesMangInfo() {
                         className="absolute bg-[#7400E0] transition-all duration-300"
                         style={{
                             height: '1.8px',
-                            width: activeTab === 'Questions' ? '80px' : '180px', // Adjusted width to match the text
-                            left: activeTab === 'Questions' ? '0px' : '113px', // Adjust left position to match each button
+                            width: activeTab === 'Content' ? '68px' : '200px', // Adjusted width to match the text
+                            left: activeTab === 'Content' ? '0px' : '95px', // Adjust left position to match each button
                             bottom: '-8px',
                         }}
                     />
                 </div>
                 <hr className="h-px bg-[#EAECF0] mt-2" />
             </div>
-            {activeTab === 'Questions' && (
+            {activeTab === 'Content' && (
                 <div>
                     <Content />
                 </div>
@@ -244,7 +292,6 @@ function TestSeriesMangInfo() {
             {isPausedDialogOpen && <PausedQuiz onClose={closePausedQuiz} />}
             {isMakeLiveNowDialogOpen && < MakeLiveNow onClose={closeMakeLiveNowQuiz} open={true} />}
             {isResumeQuizOpen && < ResumeQuiz onClose={closeResumeQuiz} open={true} />}
-
         </div>
     );
 }
