@@ -71,7 +71,7 @@ const fetchQuizzes = async (): Promise<Quiz[]> => {
 
 type Option = 'Saved' | 'Live' | 'Scheduled' | 'Pause' | 'Finished' | 'Canceled';
 
-function Quizz() {
+function TesstseriesInfo() {
     const [data, setData] = useState<Quiz[]>([]);
     const [quizzes, setQuizzes] = useState<Quiz[]>([]);
     const [currentPage, setCurrentPage] = useState(1);
@@ -604,4 +604,4 @@ function PaginationSection({
     );
 }
 
-export default Quizz;
+export default TesstseriesInfo;
