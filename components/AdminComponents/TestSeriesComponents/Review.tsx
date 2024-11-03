@@ -12,7 +12,7 @@ function Review() {
     return (
         <div>
             {!showDetails ? (
-                <div className='flex flex-1 flex-col ml-2 overflow-y-auto'>
+                <div className='flex flex-1 flex-col ml-1 overflow-y-auto'>
                     <div className='flex flex-row gap-3 mt-6 mb-4'>
                         <h2 className='text-base font-bold text-[#1D2939]'>About Test Series</h2>
                         <button>
@@ -89,7 +89,7 @@ function Review() {
                     </div>
                 </div>
             ) : (
-                <div className='w-full'>
+                <div className='w-full ml-1'>
                     <div className='flex flex-row mt-4 gap-2'>
                         <button onClick={() => setShowDetails(false)}>
                             <p className='text-base text-[#667085] font-medium'>Phodu JEE Mains Test Series 2025</p>
@@ -116,9 +116,49 @@ function Review() {
                             <p className='text-sm text-[#667085] font-normal'>Accuracy</p>
                             <h4 className='text-[0.938rem] text-[#1D2939] font-semibold'>-</h4>
                         </div>
+                        <div className='flex flex-col justify-between w-[18%] pl-2 border-l border-lightGrey'>
+                            <p className='text-sm text-[#667085] font-normal'>Answered Correct</p>
+                            <h4 className='text-[0.938rem] text-[#1D2939] font-semibold'>-</h4>
+                        </div>
+                        <div className='flex flex-col justify-between w-[18%] pl-2 border-l border-lightGrey'>
+                            <p className='text-sm text-[#667085] font-normal'>Answered Incorrect</p>
+                            <h4 className='text-[0.938rem] text-[#1D2939] font-semibold'>-</h4>
+                        </div>
+                        <div className='flex flex-col justify-between w-[10%] pl-2 border-l border-lightGrey'>
+                            <p className='text-sm text-[#667085] font-normal'>Time taken</p>
+                            <h4 className='text-[0.938rem] text-[#1D2939] font-semibold'>-</h4>
+                        </div>
                     </div>
                     <h2 className='mt-4 text-lg text-[#1D2939] font-bold'>Tests</h2>
                     <div className='flex flex-col mt-4 mb-8 gap-2'>
+                        <div className='flex flex-row items-center justify-between px-6 py-4 bg-white border border-lightGrey rounded-xl'>
+                            <div className='flex flex-col gap-1'>
+                                <p className='text-left text-base text-[#1D2939] font-semibold'>Test 01</p>
+                                <p className='text-left text-sm text-[#667085] font-normal'>40 Questions</p>
+                            </div>
+                            <button className='w-[7.25rem] h-9 px-[0.875rem] py-[0.625rem] text-white text-xs font-semibold bg-[#9012FF] border border-[#800EE2] rounded-[6px] shadow-inner-button'>Start Test</button>
+                        </div>
+                        <div className='flex flex-row items-center justify-between px-6 py-4 bg-white border border-lightGrey rounded-xl'>
+                            <div className='flex flex-col gap-1'>
+                                <p className='text-left text-base text-[#1D2939] font-semibold'>Test 01</p>
+                                <p className='text-left text-sm text-[#667085] font-normal'>40 Questions</p>
+                            </div>
+                            <button className='w-[7.25rem] h-9 px-[0.875rem] py-[0.625rem] text-white text-xs font-semibold bg-[#9012FF] border border-[#800EE2] rounded-[6px] shadow-inner-button'>Start Test</button>
+                        </div>
+                        <div className='flex flex-row items-center justify-between px-6 py-4 bg-white border border-lightGrey rounded-xl'>
+                            <div className='flex flex-col gap-1'>
+                                <p className='text-left text-base text-[#1D2939] font-semibold'>Test 01</p>
+                                <p className='text-left text-sm text-[#667085] font-normal'>40 Questions</p>
+                            </div>
+                            <button className='w-[7.25rem] h-9 px-[0.875rem] py-[0.625rem] text-white text-xs font-semibold bg-[#9012FF] border border-[#800EE2] rounded-[6px] shadow-inner-button'>Start Test</button>
+                        </div>
+                        <div className='flex flex-row items-center justify-between px-6 py-4 bg-white border border-lightGrey rounded-xl'>
+                            <div className='flex flex-col gap-1'>
+                                <p className='text-left text-base text-[#1D2939] font-semibold'>Test 01</p>
+                                <p className='text-left text-sm text-[#667085] font-normal'>40 Questions</p>
+                            </div>
+                            <button className='w-[7.25rem] h-9 px-[0.875rem] py-[0.625rem] text-white text-xs font-semibold bg-[#9012FF] border border-[#800EE2] rounded-[6px] shadow-inner-button'>Start Test</button>
+                        </div>
                         <div className='flex flex-row items-center justify-between px-6 py-4 bg-white border border-lightGrey rounded-xl'>
                             <div className='flex flex-col gap-1'>
                                 <p className='text-left text-base text-[#1D2939] font-semibold'>Test 01</p>

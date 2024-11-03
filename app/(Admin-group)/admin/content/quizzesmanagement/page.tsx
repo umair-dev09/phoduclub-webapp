@@ -189,7 +189,7 @@ function Quizz() {
 
                     {/* By Status Button */}
                     <button className="h-[44px] w-[122px] rounded-md bg-[#FFFFFF] border border-solid border-[#D0D5DD] flex items-center p-3">
-                        <span className="font-medium text-sm text-[#667085]">By status</span>
+                        <p className="font-medium text-sm text-[#667085]">By status</p>
                         <Image
                             src="/icons/selectdate-Arrowdown.svg"
                             width={20}
@@ -231,7 +231,7 @@ function Quizz() {
                                 <tbody>
                                     {currentItems.map((quiz, index) => (
                                         <tr key={index} className="border-t border-solid border-[#EAECF0]">
-                                            <td onClick={() => handleTabClick('/admin/content/quizzesmanagement/quizinfo')}><button className="px-8 py-4 text-[#9012FF] underline text-sm font-medium">{quiz.title}</button></td>
+                                            <td onClick={() => handleTabClick('/admin/content/quizzesmanagement/quizinfo')}><button className="px-8 py-4 text-[#9012FF] text-left underline text-sm font-medium">{quiz.title}</button></td>
                                             <td className="px-8 py-4 text-center text-[#101828] text-sm">{quiz.questions}</td>
                                             <td className="px-8 py-4 text-center text-[#101828] text-sm">{quiz.date}</td>
                                             <td className="px-8 py-4 text-center text-[#101828] text-sm">{quiz.students}</td>
