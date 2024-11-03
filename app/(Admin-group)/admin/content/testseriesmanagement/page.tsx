@@ -204,7 +204,7 @@ function Quizz() {
     }, [searchTerm, checkedState, quizzes]);
 
     return (
-        <div className="flex flex-col px-[32px] w-full gap-4 overflow-y-auto h-auto my-5">
+        <div className="flex flex-col px-[32px] w-full gap-4 overflow-y-auto h-auto py-5">
             <div className="flex flex-row justify-between items-center">
                 <span className="text-lg font-semibold text-[#1D2939]">Test series</span>
                 <div className="flex flex-row gap-3">
@@ -333,7 +333,47 @@ function Quizz() {
                                                     </PopoverTrigger>
                                                     <PopoverContent>
                                                         <div className={`flex flex-col items-start text-sm font-normal py-1 px-0 bg-white border border-lightGrey rounded-md ${quiz.status === 'Paused' ? 'w-[11.563rem]' : 'w-[10.438rem]'}`}>
-                                                            {/* Option 1: Edit Quiz */}
+                                                            {(quiz.status === 'Saved' || quiz.status === 'Scheduled') && (
+                                                                <Popover placement="left-start">
+                                                                    <PopoverTrigger>
+                                                                        <div className="flex flex-row justify-between w-full px-4 py-[0.625rem] hover:bg-[#F2F4F7] transition-colors">
+                                                                            <div className="flex flex-row gap-2">
+                                                                                <Image src='/icons/megaphone-02.svg' alt="publish" width={18} height={18} />
+                                                                                <p>Publish</p>
+                                                                            </div>
+                                                                            <Image src='/icons/collapse-right-02.svg' alt="schedule popup" width={18} height={18} />
+                                                                        </div>
+                                                                    </PopoverTrigger>
+                                                                    <PopoverContent>
+                                                                        <div className="flex flex-col items-start text-sm font-normal py-1 px-0 bg-white border border-lightGrey rounded-md w-[11.25rem]">
+                                                                            <button className="w-full px-4 py-[0.625rem] gap-2 text-left hover:bg-[#F2F4F7] transition-colors">Publish Now</button>
+                                                                            <button className="w-full px-4 py-[0.625rem] gap-2 text-left hover:bg-[#F2F4F7] transition-colors">Schedule</button>
+                                                                        </div>
+                                                                    </PopoverContent>
+                                                                </Popover>
+                                                            )}
+
+                                                            {quiz.status === 'Paused' && (
+                                                                <Popover placement="left-start">
+                                                                    <PopoverTrigger>
+                                                                        <div className="flex flex-row justify-between w-[11.563rem] px-4 py-[0.625rem] hover:bg-[#F2F4F7] transition-colors">
+                                                                            <div className="flex flex-row gap-2">
+                                                                                <Image src='/icons/play-dark.svg' alt="resume quiz" width={20} height={20} />
+                                                                                <p>Resume</p>
+                                                                            </div>
+                                                                            <Image src='/icons/collapse-right-02.svg' alt="schedule popup" width={18} height={18} />
+                                                                        </div>
+                                                                    </PopoverTrigger>
+                                                                    <PopoverContent>
+                                                                        <div className="flex flex-col items-start text-sm font-normal py-1 px-0 bg-white border border-lightGrey rounded-md w-[11.25rem]">
+                                                                            <button className="w-full px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors" onClick={openScheduledDialog}>Schedule Quiz</button>
+                                                                            <button className="w-full px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors">Make Live Now</button>
+                                                                        </div>
+                                                                    </PopoverContent>
+                                                                </Popover>
+                                                            )}
+
+                                                            {/* Option 1 */}
                                                             <div>
                                                                 {quiz.status === 'Paused' && (
                                                                     <button className="flex flex-row w-[11.563rem] px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors"
@@ -363,42 +403,15 @@ function Quizz() {
                                                                         <p>Paused Quiz</p>
                                                                     </button>
                                                                 )}
-                                                                {quiz.status === 'Finished' && (
-                                                                    <button className="flex flex-row w-[10.438rem] px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors"
-                                                                        onClick={openViewAnalytics}>
-                                                                        <Image src='/icons/analytics-01.svg' alt="view analytics" width={18} height={18} />
-                                                                        <p>View Analytics</p>
-                                                                    </button>
-                                                                )}
                                                             </div>
                                                             {/* Option 3: Resume Quiz (only if status is Paused) */}
-                                                            {quiz.status === 'Paused' && (
+                                                            {/* {quiz.status === 'Paused' && (
                                                                 <div className="flex flex-row w-full px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors"
                                                                     onClick={openResumeQuiz}>
                                                                     <Image src='/icons/play-dark.svg' alt="resume quiz" width={20} height={20} />
                                                                     <p>Resume Quiz</p>
                                                                 </div>
-                                                            )}
-                                                            {/* Option 3: Schedule Quiz (only if status is Paused) */}
-                                                            {quiz.status === 'Paused' && (
-                                                                <Popover placement="left-start">
-                                                                    <PopoverTrigger>
-                                                                        <div className="flex flex-row justify-between w-[11.563rem] px-4 py-[0.625rem] hover:bg-[#F2F4F7] transition-colors">
-                                                                            <div className="flex flex-row gap-2">
-                                                                                <Image src='/icons/calendar-03.svg' alt="schedule" width={18} height={18} />
-                                                                                <p>Schedule quiz</p>
-                                                                            </div>
-                                                                            <Image src='/icons/collapse-right-02.svg' alt="schedule popup" width={18} height={18} />
-                                                                        </div>
-                                                                    </PopoverTrigger>
-                                                                    <PopoverContent>
-                                                                        <div className="flex flex-col items-start text-sm font-normal py-1 px-0 bg-white border border-lightGrey rounded-md w-[11.25rem]">
-                                                                            <div className="w-full px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors" onClick={openScheduledDialog}>Schedule Quiz</div>
-                                                                            <div className="w-full px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors">Make Live Now</div>
-                                                                        </div>
-                                                                    </PopoverContent>
-                                                                </Popover>
-                                                            )}
+                                                            )} */}
                                                             {/* Option 4: Delete Quiz */}
                                                             <div>
                                                                 {quiz.status === 'Paused' && (
