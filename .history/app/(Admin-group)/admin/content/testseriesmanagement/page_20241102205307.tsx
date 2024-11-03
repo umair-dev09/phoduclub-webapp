@@ -220,7 +220,7 @@ function Quizz() {
                                 <tbody>
                                     {currentItems.map((quiz, index) => (
                                         <tr key={index} className="border-t border-solid border-[#EAECF0]">
-                                            <td onClick={() => handleTabClick('/admin/content/testseriesmanagement/testseriesinfo')}>
+                                            <td onClick={() => handleTabClick('/admin/content/quizzesmanagement/testseriesinfo')}>
                                                 <button className="flex flex-row items-center px-8 py-3 gap-2 text-[#9012FF] underline text-sm font-medium">
                                                     <Image src='/images/TSM-DP.png' alt="DP" width={40} height={40} />
                                                     <p className="text-start">Phodu JEE Mains Test Series 2025</p>

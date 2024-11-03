@@ -9,9 +9,9 @@ import MakeLiveNow from "@/components/AdminComponents/QuizInfoDailogs/MakeLiveNo
 import ResumeQuiz from "@/components/AdminComponents/QuizInfoDailogs/ResumeQuiz";
 import Questions from "@/components/AdminComponents/QuizInfo/Questions";
 import StudentsAttempts from "@/components/AdminComponents/QuizInfo/StudentsAttempts";
+import Publish from "@/components/AdminComponents/createQuiz/Publish";
 import { Popover, PopoverContent, PopoverTrigger } from "@nextui-org/popover";
 function Quizinfo() {
-
 
     const [activeTab, setActiveTab] = useState('Questions');
 
@@ -94,7 +94,7 @@ function Quizinfo() {
                         </button>
                         {/* Button for Publish Quiz */}
                         <button className="w-auto p-3 gap-2 flex-row flex bg-[#FFFFFF] border border-solid border-[#EAECF0] rounded-[8px] h-[40px] items-center"
-                        >
+                            onClick={() => Publish()}>
                             <Image src="/icons/publish-quiz.svg" width={18} height={18} alt="publish-quiz" />
                             <span className="text-sm text-[#0C111D] font-normal">Publish Quiz</span>
                         </button>
