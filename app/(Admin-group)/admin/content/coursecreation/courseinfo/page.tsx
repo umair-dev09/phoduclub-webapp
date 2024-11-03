@@ -170,7 +170,7 @@ function CourseInfo() {
                                 } focus:outline-none`}
                             style={{ fontSize: '16px', fontWeight: '500' }}
                         >
-                            Content
+                            Course Content
                         </button>
                     </div>
                     <div className="pt-[10px]">
