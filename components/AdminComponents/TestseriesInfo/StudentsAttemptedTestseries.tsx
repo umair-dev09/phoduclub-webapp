@@ -12,6 +12,7 @@ import {
     PaginationPrevious,
 } from "@/components/ui/pagination";
 import { Popover, PopoverContent, PopoverTrigger } from "@nextui-org/popover";
+import Remove from "@/components/AdminComponents/QuizInfoDailogs/Remove";
 
 // Define types for quiz data
 interface Quiz {
@@ -138,7 +139,17 @@ function StudentsAttemptedTestseries() {
         router.push(path);
     };
 
+    const [isRemoveOpen, setIsRemoveOpen] = useState(false);
 
+    const openRemove = () => setIsRemoveOpen(true);
+    const closeRemove = () => setIsRemoveOpen(false);
+
+    const [uniqueId, setUniqueId] = useState('');
+    const [startDate, setStartDate] = useState('');
+    const [endDate, setEndDate] = useState('');
+
+    // Check if all fields are filled
+    const isAddButtonDisabled = !uniqueId || !startDate || !endDate;
 
     return (
         <div className="flex flex-col w-full mt-4 gap-4">
@@ -175,10 +186,67 @@ function StudentsAttemptedTestseries() {
                         <span className="font-medium text-sm text-[#667085] ml-2">Select dates</span>
                     </button>
 
-                    <button className="flex flex-row items-center py-[0.625rem] px-6 gap-1 bg-purple border border-[#800EE2] rounded-md shadow-inner-button">
-                        <Image src='/icons/plus-sign-white.svg' alt="add" width={18} height={18} />
-                        <p className="text-sm text-white font-semibold">Add User</p>
-                    </button>
+                    <Popover placement="bottom-end">
+                        <PopoverTrigger>
+                            <button className="flex flex-row items-center py-[0.625rem] px-6 gap-1 bg-purple border border-[#800EE2] rounded-md shadow-inner-button">
+                                <Image src='/icons/plus-sign-white.svg' alt="add" width={18} height={18} />
+                                <p className="text-sm text-white font-semibold">Add User</p>
+                            </button>
+                        </PopoverTrigger>
+                        <PopoverContent>
+                            <div className="flex flex-col w-[19rem] h-auto p-6 gap-4 bg-white border border-lightGrey rounded-xl">
+                                <div className="flex flex-col items-start gap-2">
+                                    <p>Unique ID</p>
+                                    <input
+                                        type="text"
+                                        placeholder="Enter Unique ID"
+                                        className="w-full px-4 py-2 border border-[#D0D5DD] rounded-md outline-none placeholder:text-sm placeholder:text-[#667085]"
+                                        value={uniqueId}
+                                        onChange={(e) => setUniqueId(e.target.value)}
+                                    />
+                                </div>
+                                <div className="flex flex-col items-start gap-2">
+                                    <p>Start Date</p>
+                                    <div className="flex flex-row w-full px-3 py-2 gap-2 border border-[#D0D5DD] rounded-md">
+                                        <Image src='/icons/calendar-03.svg' alt="date" width={24} height={24} />
+                                        <input
+                                            type="text"
+                                            placeholder="Enter Start Date"
+                                            className="w-full outline-none placeholder:text-sm placeholder:text-[#667085]"
+                                            value={startDate}
+                                            onChange={(e) => setStartDate(e.target.value)}
+                                        />
+                                    </div>
+                                </div>
+                                <div className="flex flex-col items-start gap-2">
+                                    <p>End Date</p>
+                                    <div className="flex flex-row w-full px-3 py-2 gap-2 border border-[#D0D5DD] rounded-md">
+                                        <Image src='/icons/calendar-03.svg' alt="date" width={24} height={24} />
+                                        <input
+                                            type="text"
+                                            placeholder="Enter End Date"
+                                            className="w-full outline-none placeholder:text-sm placeholder:text-[#667085]"
+                                            value={endDate}
+                                            onChange={(e) => setEndDate(e.target.value)}
+                                        />
+                                    </div>
+                                </div>
+                                <div className="flex flex-row justify-between">
+                                    <button className="w-[7.5rem] px-6 py-[0.625rem] text-sm text-[#1D2939] font-semibold border border-lightGrey rounded-md">
+                                        Cancel
+                                    </button>
+                                    <button
+                                        className={`w-[7.5rem] px-6 py-[0.625rem] text-sm font-semibold border shadow-inner-button rounded-md transition-opacity ease-in-out duration-150 
+                                                    bg-[#9012FF] border-[#800EE2] text-white 
+                                                    ${isAddButtonDisabled ? 'opacity-35 cursor-not-allowed' : 'opacity-100'}`}
+                                        disabled={isAddButtonDisabled}
+                                    >
+                                        Add
+                                    </button>
+                                </div>
+                            </div>
+                        </PopoverContent>
+                    </Popover>
                 </div>
             </div>
 
@@ -257,7 +325,8 @@ function StudentsAttemptedTestseries() {
                                                         <Image src='/icons/user-account.svg' alt="user profile" width={18} height={18} />
                                                         <p className="text-sm text-[#0C111D] font-normal">Go to Profile</p>
                                                     </button>
-                                                    <button className=" flex flex-row items-center justify-start w-full py-[0.625rem] px-4 gap-2 hover:bg-[#F2F4F7]">
+                                                    <button className=" flex flex-row items-center justify-start w-full py-[0.625rem] px-4 gap-2 hover:bg-[#F2F4F7]"
+                                                        onClick={openRemove}>
                                                         <Image src='/icons/delete.svg' alt="user profile" width={18} height={18} />
                                                         <p className="text-sm text-[#DE3024] font-normal">Remove</p>
                                                     </button>
@@ -283,7 +352,7 @@ function StudentsAttemptedTestseries() {
                     </div>
                 </div>
             </div>
-
+            {isRemoveOpen && < Remove onClose={closeRemove} open={true} />}
         </div>
     );
 }
