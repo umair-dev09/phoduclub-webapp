@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import LoadingData from '@/components/Loading';
 import { useState, useEffect } from "react";
 import {
     Pagination,
@@ -209,9 +210,9 @@ function Quizz() {
             </div>
 
             {loading ? (
-                <div className="flex justify-center items-center h-48">
-                    <span className="text-lg">Loading quizzes...</span>
-                </div>
+                <div>
+                    <LoadingData/>
+                    </div>
             ) : (
                 <div className="flex flex-1 flex-col">
                     <div className="h-full">
