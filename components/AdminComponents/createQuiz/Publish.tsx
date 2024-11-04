@@ -32,6 +32,38 @@ const Publish = () => {
             <div className='flex flex-col w-full h-auto p-5 bg-white border border-lightGrey rounded-xl gap-3'>
                 <span className='font-semibold text-lg text-[#1D2939]'>About quiz</span>
                 <div className='flex flex-row w-full gap-4'>
+                    <div className='flex flex-col w-full gap-1'>
+                        <p className='text-sm font-medium text-[#1D2939]'>Time Duration</p>
+                        <div className='flex flex-row items-center w-full py-2 px-3 border border-lightGrey rounded-md gap-1 focus-within:border-[#D7BBFC] focus-within:ring-4 focus-within:ring-[#E8DEFB] focus-within:outline-none transition-colors'>
+                            <input type="text" placeholder="0" className="w-full text-sm text-[#1D2939] font-normal placeholder:text-[#667085] outline-none" />
+                            <p className="text-sm text-[#1D2939] font-medium">Min</p>
+                        </div>
+                        <p className="mt-1 text-[0.813rem] text-[#475467] font-normal">
+                            Students must finish the quiz in time.
+                        </p>
+                    </div>
+                    {/* EXAM */}
+                    <div className='flex flex-col w-full gap-1'>
+                        <p className='text-sm font-medium text-[#1D2939]'>Marks per question</p>
+                        <input type="text" placeholder="0" className="w-full py-2 px-3 text-sm text-[#1D2939] font-normal placeholder:text-[#667085] border border-lightGrey rounded-md focus:border-[#D7BBFC] focus:ring-4 focus:ring-[#E8DEFB] outline-none transition-colors" />
+                        <p className="mt-1 text-[0.813rem] text-[#475467] font-normal">
+                            Applies only to the correct answers.
+                        </p>
+                    </div>
+                    {/* PRODUCT */}
+                    <div className='flex flex-col w-full gap-1'>
+                        <p className='text-sm font-medium text-[#1D2939]'>Negative marks per question</p>
+                        <input type="text" placeholder="0" className="w-full py-2 px-3 text-sm text-[#1D2939] font-normal placeholder:text-[#667085] border border-lightGrey rounded-md focus:border-[#D7BBFC] focus:ring-4 focus:ring-[#E8DEFB] outline-none transition-colors" />
+                        <p className="mt-1 text-[0.813rem] text-[#475467] font-normal">
+                            Applies only to the incorrect answers.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div className='flex flex-col w-full h-auto p-5 bg-white border border-lightGrey rounded-xl gap-3'>
+                <span className='font-semibold text-lg text-[#1D2939]'>Quiz available for</span>
+                <div className='flex flex-row w-full gap-4'>
                     {/* YEAR */}
                     <div className='flex flex-col w-full gap-1'>
                         <p className='text-sm font-medium text-[#1D2939]'>Year</p>
