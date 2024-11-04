@@ -122,7 +122,8 @@ export type IconsType =
   | "collaspe-all"
   | "plus-sign"
   | "clock-01"
-  | "colorless-star";
+  | "colorless-star"
+  | "pdf-icon";
 
 
 

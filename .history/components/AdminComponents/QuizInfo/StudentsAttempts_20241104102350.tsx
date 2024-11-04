@@ -1,0 +1,443 @@
+// "use client";
+// import Image from "next/image";
+// import { useRouter } from "next/navigation";
+// import { useState, useEffect } from "react";
+// import {
+//     Pagination,
+//     PaginationContent,
+//     PaginationEllipsis,
+//     PaginationItem,
+//     PaginationLink,
+//     PaginationNext,
+//     PaginationPrevious,
+// } from "@/components/ui/pagination";
+
+// // Define types for quiz data
+// interface Quiz {
+//     questions: number;
+//     date: string; // Can be Date type if desired
+//     students: number;
+//     ranking: number;
+//     status: 'Live' | 'Paused' | 'Finished' | 'Scheduled' | 'Cancelled' | 'Saved';
+// }
+
+// // Mock fetchQuizzes function with types
+// const fetchQuizzes = async (): Promise<Quiz[]> => {
+//     const allQuizzes: Quiz[] = [
+//         { questions: 10, date: 'Jan 6, 2024', students: 2147, status: 'Live', ranking: 1 },
+//         { questions: 10, date: 'Mar 15, 2024', students: 900, status: 'Saved', ranking: 2 },
+//         { questions: 8, date: 'Jan 8, 2024', students: 1875, status: 'Paused', ranking: 3 },
+//         { questions: 7, date: 'Mar 17, 2024', students: 1250, status: 'Saved', ranking: 4 },
+//         { questions: 12, date: 'Jan 10, 2024', students: 1290, status: 'Finished', ranking: 5 },
+//         { questions: 6, date: 'Jan 12, 2024', students: 950, status: 'Cancelled', ranking: 6 },
+//         { questions: 15, date: 'Feb 1, 2024', students: 1800, status: 'Scheduled', ranking: 7 },
+//         { questions: 9, date: 'Feb 3, 2024', students: 1600, status: 'Live', ranking: 8 },
+//         { questions: 12, date: 'Mar 22, 2024', students: 1400, status: 'Saved', ranking: 9 },
+//         { questions: 12, date: 'Feb 5, 2024', students: 1950, status: 'Paused', ranking: 10 },
+//         { questions: 9, date: 'Mar 20, 2024', students: 1150, status: 'Saved', ranking: 11 },
+//         { questions: 10, date: 'Feb 8, 2024', students: 2100, status: 'Finished', ranking: 12 },
+//         { questions: 8, date: 'Feb 10, 2024', students: 2200, status: 'Cancelled', ranking: 13 },
+//         { questions: 6, date: 'Mar 28, 2024', students: 1100, status: 'Saved', ranking: 14 },
+//         { questions: 7, date: 'Feb 12, 2024', students: 1700, status: 'Live', ranking: 15 },
+//         { questions: 10, date: 'Feb 15, 2024', students: 1300, status: 'Scheduled', ranking: 16 },
+//         { questions: 11, date: 'Feb 18, 2024', students: 1450, status: 'Finished', ranking: 17 },
+//         { questions: 10, date: 'Apr 2, 2024', students: 1450, status: 'Saved', ranking: 18 },
+//         { questions: 9, date: 'Feb 20, 2024', students: 1900, status: 'Paused', ranking: 19 },
+//         { questions: 10, date: 'Apr 6, 2024', students: 1250, status: 'Saved', ranking: 20 },
+//         { questions: 12, date: 'Feb 25, 2024', students: 1750, status: 'Live', ranking: 21 },
+//         { questions: 8, date: 'Mar 1, 2024', students: 2000, status: 'Cancelled', ranking: 22 },
+//         { questions: 7, date: 'Mar 3, 2024', students: 1500, status: 'Scheduled', ranking: 23 },
+//         { questions: 10, date: 'Mar 5, 2024', students: 1850, status: 'Finished', ranking: 24 },
+//         { questions: 11, date: 'Mar 30, 2024', students: 1000, status: 'Saved', ranking: 25 },
+//         { questions: 9, date: 'Mar 8, 2024', students: 1700, status: 'Live', ranking: 26 },
+//         { questions: 8, date: 'Apr 4, 2024', students: 1350, status: 'Saved', ranking: 27 },
+//         { questions: 8, date: 'Mar 10, 2024', students: 1400, status: 'Paused', ranking: 28 },
+//         { questions: 6, date: 'Mar 12, 2024', students: 1200, status: 'Cancelled', ranking: 29 },
+//         { questions: 8, date: 'Mar 25, 2024', students: 1300, status: 'Saved', ranking: 30 },
+//         { questions: 7, date: 'Apr 10, 2024', students: 1050, status: 'Saved', ranking: 31 },
+//     ];
+//     return allQuizzes;
+// };
+
+// function Quizz() {
+//     const [data, setData] = useState<Quiz[]>([]);
+//     const [quizzes, setQuizzes] = useState<Quiz[]>([]);
+//     const [currentPage, setCurrentPage] = useState(1);
+//     const [itemsPerPage] = useState(5);
+//     const [loading, setLoading] = useState(true);
+//     const [searchTerm, setSearchTerm] = useState('');
+//     const router = useRouter();
+
+//     // Fetch quizzes when component mounts
+//     useEffect(() => {
+//         const loadQuizzes = async () => {
+//             setLoading(true);
+//             const quizzes = await fetchQuizzes();
+//             setQuizzes(quizzes);
+//             setData(quizzes);
+//             setLoading(false);
+//         };
+//         loadQuizzes();
+//     }, []);
+
+//     // Filter quizzes based on search term
+//     // useEffect(() => {
+//     //     const filteredQuizzes = quizzes.filter(quiz =>
+//     //         quiz.title.toLowerCase().includes(searchTerm.toLowerCase())
+//     //     );
+//     //     setData(filteredQuizzes);
+//     //     setCurrentPage(1); // Reset to first page on new search
+//     // }, [searchTerm, quizzes]);
+
+//     const lastItemIndex = currentPage * itemsPerPage;
+//     const firstItemIndex = lastItemIndex - itemsPerPage;
+//     const currentItems = data.slice(firstItemIndex, lastItemIndex);
+
+//     // Function to handle tab click and navigate to a new route
+//     const handleTabClick = (path: string) => {
+//         router.push(path);
+//     };
+
+
+
+//     return (
+//         <div className="flex flex-col w-full mt-4 gap-4">
+//             <div className="flex flex-row justify-between items-center">
+//                 <span className="text-lg font-semibold text-[#1D2939]">Students attempted (2547)</span>
+//                 <div className="flex flex-row gap-3">
+//                     {/* Search Button */}
+//                     <button className="h-[44px] w-[250px] rounded-md bg-[#FFFFFF] border border-solid border-[#D0D5DD] flex items-center">
+//                         <div className="flex flex-row items-center gap-2 pl-2">
+//                             <Image
+//                                 src="/icons/search-button.svg"
+//                                 width={20}
+//                                 height={20}
+//                                 alt="Search Button"
+//                             />
+//                             <input
+//                                 className="font-normal text-[#667085] text-sm placeholder:text-[#A1A1A1] rounded-md px-1 py-1 focus:outline-none focus:ring-0 border-none"
+//                                 placeholder="Search"
+//                                 type="text"
+//                                 value={searchTerm}
+//                                 onChange={(e) => setSearchTerm(e.target.value)}
+//                             />
+//                         </div>
+//                     </button>
+
+//                     {/* Select Date Button */}
+//                     <button className="h-[44px] w-[143px] rounded-md bg-[#FFFFFF] border border-solid border-[#D0D5DD] flex items-center p-3">
+//                         <Image
+//                             src="/icons/select-date.svg"
+//                             width={20}
+//                             height={20}
+//                             alt="Select-date Button"
+//                         />
+//                         <span className="font-medium text-sm text-[#667085] ml-2">Select dates</span>
+//                     </button>
+//                 </div>
+//             </div>
+
+//             <div className="flex flex-col">
+//                 <div className="border border-[#EAECF0] rounded-xl">
+//                     <table className="w-full bg-white rounded-xl">
+//                         <thead>
+//                             <tr>
+//                                 <th className="w-1/4 text-left px-8 py-4 pl-8 rounded-tl-xl flex flex-row ">
+//                                     <span className="text-[#667085] font-medium text-sm">Name</span>
+//                                     <Image src="/icons/expandall.svg" width={28} height={18} alt="Expand all icon" />
+//                                 </th>
+//                                 <th className=" w-[17%] text-center px-8 py-4 text-[#667085] font-medium text-sm">
+//                                     <div className="flex flex-row justify-center gap-1">
+//                                         <p>Date & Time</p>
+//                                         <Image src='/icons/unfold-more-round.svg' alt="" width={16} height={16} />
+//                                     </div>
+//                                 </th>
+//                                 <th className=" w-[17%] text-center px-8 py-4 text-[#667085] font-medium text-sm">
+//                                     <div className="flex flex-row justify-center gap-1">
+//                                         <p>Score</p>
+//                                         <Image src='/icons/unfold-more-round.svg' alt="" width={16} height={16} />
+//                                     </div>
+//                                 </th>
+//                                 <th className=" w-[17%] text-center px-8 py-4 text-[#667085] font-medium text-sm">
+//                                     <div className="flex flex-row justify-center gap-1">
+//                                         <p>Time Taken</p>
+//                                         <Image src='/icons/unfold-more-round.svg' alt="" width={16} height={16} />
+//                                     </div>
+//                                 </th>
+//                                 <th className=" w-[17%] text-center px-8 py-4 rounded-tr-xl text-[#667085] font-medium text-sm">
+//                                     <div className="flex flex-row justify-center gap-1">
+//                                         <p>Ranking</p>
+//                                         <Image src='/icons/unfold-more-round.svg' alt="" width={16} height={16} />
+//                                     </div>
+//                                 </th>
+//                                 <th className="w-[12%] text-center px-8 py-4 rounded-tr-xl text-[#667085] font-medium text-sm">Action</th>
+//                             </tr>
+//                         </thead>
+//                         <tbody>
+//                             {currentItems.map((quiz, index) => (
+//                                 <tr key={index} className="border-t border-solid border-[#EAECF0]">
+//                                     <td className="py-4">
+//                                         <div className="flex flex-row ml-8 gap-2">
+//                                             <div className="flex items-center">
+//                                                 <div className="relative">
+//                                                     <Image src='/images/DP_Lion.svg' alt="DP" width={40} height={40} />
+//                                                     <Image className="absolute right-0 bottom-0" src='/icons/winnerBatch.svg' alt="Batch" width={18} height={18} />
+//                                                 </div>
+//                                             </div>
+//                                             <div className="flex items-start justify-start flex-col">
+//                                                 <div className="font-semibold">Jenny Wilson</div>
+//                                                 <div className="flex justify-start items-start text-[13px] text-[#667085]">jenny#8547</div>
+//                                             </div>
+//                                         </div>
+//                                     </td>
+//                                     <td className="px-8 py-4 text-center text-[#101828] text-sm">{quiz.date}</td>
+//                                     <td className="px-8 py-4 text-center text-[#101828] text-sm">{quiz.students}</td>
+//                                     <td className="px-8 py-4 text-center text-[#101828] text-sm">{quiz.questions}</td>
+//                                     <td className="px-8 py-4 text-center text-[#101828] text-sm">{quiz.ranking}</td>
+//                                     <td className="flex items-center justify-center px-8 py-4 text-[#101828] text-sm">
+
+
+//                                         <button>
+//                                             <Image
+//                                                 src="/icons/three-dots.svg"
+//                                                 width={20}
+//                                                 height={20}
+//                                                 alt="More Actions"
+//                                             />
+//                                         </button>
+
+//                                     </td>
+//                                 </tr>
+//                             ))}
+//                         </tbody>
+//                     </table>
+//                 </div>
+
+//                 {/* Pagination Section */}
+//                 <div>
+//                     <div className="flex justify-right">
+//                         <PaginationSection
+//                             totalItems={data.length}
+//                             itemsPerPage={itemsPerPage}
+//                             currentPage={currentPage}
+//                             setCurrentPage={setCurrentPage}
+//                         />
+//                     </div>
+//                 </div>
+//             </div>
+
+//         </div>
+//     );
+// }
+
+// // Pagination Component
+// function PaginationSection({
+//     totalItems,
+//     itemsPerPage,
+//     currentPage,
+//     setCurrentPage,
+// }: {
+//     totalItems: number;
+//     itemsPerPage: number;
+//     currentPage: number;
+//     setCurrentPage: (page: number) => void;
+// }) {
+//     const totalPages = Math.ceil(totalItems / itemsPerPage);
+
+//     const handleNextPage = () => {
+//         if (currentPage < totalPages) {
+//             setCurrentPage(currentPage + 1);
+//         }
+//     };
+
+//     const handlePrevPage = () => {
+//         if (currentPage > 1) {
+//             setCurrentPage(currentPage - 1);
+//         }
+//     };
+
+//     const renderPageNumbers = () => {
+//         const pages = [];
+//         const maxVisiblePages = 4; // Maximum visible pages in pagination
+//         const visiblePagesAroundCurrent = Math.floor(maxVisiblePages / 2);
+
+//         let startPage = Math.max(1, currentPage - visiblePagesAroundCurrent);
+//         let endPage = Math.min(totalPages, currentPage + visiblePagesAroundCurrent);
+
+//         if (currentPage <= visiblePagesAroundCurrent) {
+//             endPage = Math.min(totalPages, maxVisiblePages);
+//         } else if (currentPage + visiblePagesAroundCurrent >= totalPages) {
+//             startPage = Math.max(1, totalPages - maxVisiblePages + 1);
+//         }
+
+//         // First page with ellipsis if needed
+//         if (startPage > 1) {
+//             pages.push(
+//                 <PaginationItem key={1}>
+//                     <PaginationLink onClick={() => setCurrentPage(1)}>1</PaginationLink>
+//                 </PaginationItem>
+//             );
+//             if (startPage > 2) {
+//                 pages.push(
+//                     <PaginationItem key="start-ellipsis">
+//                         <PaginationEllipsis />
+//                     </PaginationItem>
+//                 );
+//             }
+//         }
+
+//         // Visible pages
+//         for (let page = startPage; page <= endPage; page++) {
+//             pages.push(
+//                 <PaginationItem key={page}>
+//                     <PaginationLink
+//                         onClick={() => setCurrentPage(page)}
+//                         className={`${currentPage === page ? "bg-purple text-white hover:bg-purple hover:text-white" : "hover:bg-neutral-200"}`}
+//                     >
+//                         {page}
+//                     </PaginationLink>
+//                 </PaginationItem>
+//             );
+//         }
+
+//         // Last page with ellipsis if needed
+//         if (endPage < totalPages) {
+//             if (endPage < totalPages - 1) {
+//                 pages.push(
+//                     <PaginationItem key="end-ellipsis">
+//                         <PaginationEllipsis />
+//                     </PaginationItem>
+//                 );
+//             }
+//             pages.push(
+//                 <PaginationItem key={totalPages}>
+//                     <PaginationLink onClick={() => setCurrentPage(totalPages)}>{totalPages}</PaginationLink>
+//                 </PaginationItem>
+//             );
+//         }
+
+//         return pages;
+//     };
+
+//     return (
+//         <Pagination className="mt-4 justify-end">
+//             <PaginationContent className="bg-white border border-lightGrey rounded-md flex flex-row items-center">
+//                 <PaginationItem>
+//                     <button
+//                         onClick={handlePrevPage}
+//                         disabled={currentPage === 1}
+//                         className="disabled:opacity-50"
+//                     >
+//                         <PaginationPrevious />
+//                     </button>
+//                 </PaginationItem>
+//                 <div className="flex flex-row items-center gap-1">
+//                     {renderPageNumbers()}
+//                 </div>
+//                 <PaginationItem>
+//                     <button
+//                         onClick={handleNextPage}
+//                         disabled={currentPage === totalPages}
+//                         className="disabled:opacity-50"
+//                     >
+//                         <PaginationNext />
+//                     </button>
+//                 </PaginationItem>
+//             </PaginationContent>
+//         </Pagination>
+//     );
+// }
+
+// export default Quizz;
+import Collapsible from "react-collapsible";
+import React, { useState } from "react";
+import Radio from "@mui/material/Radio";
+import RadioGroup from "@mui/material/RadioGroup";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import Image from "next/image";
+function Question() {
+    const questionCount = 3; // Adjust this if you have more questions
+    const [expandedStates, setExpandedStates] = useState(
+        Array(questionCount).fill(false)
+    );
+
+    // Toggle expand/collapse for all accordions
+    const toggleExpandAll = () => {
+        const areAllExpanded = expandedStates.every((state) => state);
+        const newStates = expandedStates.map(() => !areAllExpanded);
+        setExpandedStates(newStates);
+    };
+
+    // Toggle individual accordion
+    const toggleAccordion = (index: number) => {
+        const newStates = [...expandedStates];
+        newStates[index] = !newStates[index];
+        setExpandedStates(newStates);
+    };
+    // Check if all are expanded
+    const areAllExpanded = expandedStates.every((state) => state);
+    return (
+        <>
+            <div className="flex flex-row mt-3 w-full h-[40px] justify-between items-center">
+                <span className="font-semibold text-lg text-[#1D2939]">Questions({questionCount})</span>
+                <button className="flex flex-row gap-1 h-[40px] items-center px-3" onClick={toggleExpandAll}>
+                    {areAllExpanded ? (<Image src="/icons/collaspe-all.svg" width={18} height={18} alt="collaspe all icon" />) : (<Image src="/icons/expandall.svg" width={18} height={18} alt="Expand all icon" />)}
+                    <span className="font-normal text-[#475467] text-sm">
+                        {areAllExpanded ? "Collapse all" : "Expand all"}
+                    </span>
+                </button>
+            </div>
+            <div className="flex flex-col gap-2 mt-3">
+                {[...Array(questionCount)].map((_, index) => (
+                    <div
+                        key={index}
+                        className={`bg-[#FFFFFF] h-auto rounded-xl border border-solid ${expandedStates[index] ? "border-[#EAECF0] hover:border-[#9012FF]" : "border-[#EAECF0] hover:border-[#182230]"
+                            }`}>
+                        <Collapsible
+                            open={expandedStates[index]}
+                            trigger={
+                                <div
+                                    className="h-auto flex flex-row gap-3 p-6"
+                                    onClick={() => toggleAccordion(index)}>
+                                    <div className="h-6 w-6 rounded-[4px] bg-[#EAECF0] flex justify-center">
+                                        <span className="text-[#1D2939] font-semibold text-base">
+                                            {index + 1}
+                                        </span>
+                                    </div>
+                                    <span className="font-semibold text-base text-[#1D2939]">
+                                        Question {index + 1} content goes here.
+                                    </span>
+                                </div>
+                            }>
+                            <div className="h-auto gap-[15px] flex flex-col px-6 pb-[8px] hover:border-[#9012FF]">
+                                <RadioGroup>
+                                    <FormControlLabel
+                                        value="option1"
+                                        control={<Radio sx={{ color: '#D0D5DD', '&.Mui-checked': { color: '#9012FF' } }} />}
+                                        label="Option 1"
+                                    />
+                                    <FormControlLabel
+                                        value="option2"
+                                        control={<Radio sx={{ color: '#D0D5DD', '&.Mui-checked': { color: '#9012FF' } }} />}
+                                        label="Option 2"
+                                    />
+                                    <FormControlLabel
+                                        value="option4"
+                                        control={<Radio sx={{ color: '#D0D5DD', '&.Mui-checked': { color: '#9012FF' } }} />}
+                                        label="Option 4"
+                                    />
+                                    <FormControlLabel
+                                        value="option3"
+                                        control={<Radio sx={{ color: '#D0D5DD', '&.Mui-checked': { color: '#9012FF' } }} />}
+                                        label="Option 3"
+                                    />
+                                </RadioGroup>
+                            </div>
+                        </Collapsible>
+                    </div>
+                ))}
+            </div>
+        </>
+    )
+}
+export default Question;
