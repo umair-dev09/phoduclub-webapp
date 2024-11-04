@@ -186,7 +186,67 @@ function StudentsAttemptedTestseries() {
                         <span className="font-medium text-sm text-[#667085] ml-2">Select dates</span>
                     </button>
 
-
+                    <Popover placement="bottom-end">
+                        <PopoverTrigger>
+                            <button className="flex flex-row items-center py-[0.625rem] px-6 gap-1 bg-purple border border-[#800EE2] rounded-md shadow-inner-button">
+                                <Image src='/icons/plus-sign-white.svg' alt="add" width={18} height={18} />
+                                <p className="text-sm text-white font-semibold">Add User</p>
+                            </button>
+                        </PopoverTrigger>
+                        <PopoverContent>
+                            <div className="flex flex-col w-[19rem] h-auto p-6 gap-4 bg-white border border-lightGrey rounded-xl">
+                                <div className="flex flex-col items-start gap-2">
+                                    <p>Unique ID</p>
+                                    <input
+                                        type="text"
+                                        placeholder="Enter Unique ID"
+                                        className="w-full px-4 py-2 border border-[#D0D5DD] rounded-md outline-none placeholder:text-sm placeholder:text-[#667085]"
+                                        value={uniqueId}
+                                        onChange={(e) => setUniqueId(e.target.value)}
+                                    />
+                                </div>
+                                <div className="flex flex-col items-start gap-2">
+                                    <p>Start Date</p>
+                                    <div className="flex flex-row w-full px-3 py-2 gap-2 border border-[#D0D5DD] rounded-md">
+                                        <Image src='/icons/calendar-03.svg' alt="date" width={24} height={24} />
+                                        <input
+                                            type="text"
+                                            placeholder="Enter Start Date"
+                                            className="w-full outline-none placeholder:text-sm placeholder:text-[#667085]"
+                                            value={startDate}
+                                            onChange={(e) => setStartDate(e.target.value)}
+                                        />
+                                    </div>
+                                </div>
+                                <div className="flex flex-col items-start gap-2">
+                                    <p>End Date</p>
+                                    <div className="flex flex-row w-full px-3 py-2 gap-2 border border-[#D0D5DD] rounded-md">
+                                        <Image src='/icons/calendar-03.svg' alt="date" width={24} height={24} />
+                                        <input
+                                            type="text"
+                                            placeholder="Enter End Date"
+                                            className="w-full outline-none placeholder:text-sm placeholder:text-[#667085]"
+                                            value={endDate}
+                                            onChange={(e) => setEndDate(e.target.value)}
+                                        />
+                                    </div>
+                                </div>
+                                <div className="flex flex-row justify-between">
+                                    <button className="w-[7.5rem] px-6 py-[0.625rem] text-sm text-[#1D2939] font-semibold border border-lightGrey rounded-md">
+                                        Cancel
+                                    </button>
+                                    <button
+                                        className={`w-[7.5rem] px-6 py-[0.625rem] text-sm font-semibold border shadow-inner-button rounded-md transition-opacity ease-in-out duration-150 
+                                                    bg-[#9012FF] border-[#800EE2] text-white 
+                                                    ${isAddButtonDisabled ? 'opacity-35 cursor-not-allowed' : 'opacity-100'}`}
+                                        disabled={isAddButtonDisabled}
+                                    >
+                                        Add
+                                    </button>
+                                </div>
+                            </div>
+                        </PopoverContent>
+                    </Popover>
                 </div>
             </div>
 

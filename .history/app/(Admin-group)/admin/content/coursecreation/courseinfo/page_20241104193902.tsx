@@ -69,7 +69,7 @@ function CourseInfo() {
     const totalStars = 5;
 
     return (
-        <div className="flex w-full h-auto overflow-y-auto flex-col  p-8">
+        <div className="flex w-full h-auto overflow-y-auto flex-col mx-8 py-8">
             <div className="flex items-center">
                 <button className="flex items-center ml-1" onClick={() => router.back()}>
                     <div className="text-[#1D2939] h-[24px] w-auto text-[16px] font-semibold">
