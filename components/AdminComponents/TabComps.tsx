@@ -113,7 +113,7 @@ function TabComps() {
                         {/* Quizzes Management */}
                         <button
                             onClick={() => handleTabClick('quizzesmanagement', '/admin/content/quizzesmanagement')}
-                            className={`${styles.CommunitiesButton} ${activeTab === 'quizzesmanagement' ? styles.active : ''}`}
+                            className={`mt-2 ${styles.CommunitiesButton} ${activeTab === 'quizzesmanagement' ? styles.active : ''}`}
                         >
                             {!isCollapsed && <p className="w-full pl-9 text-[#AAAAAA] text-[13px] text-left py-2 px-3 hover:bg-[#444444]">Quizzes Management</p>}
                         </button>
