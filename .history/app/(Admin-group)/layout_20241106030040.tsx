@@ -23,13 +23,13 @@ export default function DashboardGroup({ children }: DashboardGroupProps) {
                 pageName = 'Dashboard';
                 break;
             case 'rolemanagement':
-                pageName = 'Role Management';
+                pageName = 'rolemanagement';
                 break;
             case 'customerdatamanagement':
-                pageName = 'Customer Data Management';
+                pageName = 'customerdatamanagement';
                 break;
             case 'marketingintegration':
-                pageName = 'Marketing Integration';
+                pageName = 'marketingintegration';
                 break;
             case 'quizzesmanagement':
                 pageName = 'Quizzes Management';

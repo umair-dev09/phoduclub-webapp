@@ -1,4 +1,6 @@
 "use client";
+
+import styles from '../../components/DashboardComponents/TabComps.module.css';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation'; // Import useRouter
 
@@ -36,13 +38,6 @@ function Header({ currentPage }: HeaderProps) {
                         </p>
                     )}
                 </div>
-                {currentPage === 'Role Management' && (
-                    <div className=''>
-                        jabir ali
-
-                    </div>
-                )}
-
             </div>
         </div>
     );

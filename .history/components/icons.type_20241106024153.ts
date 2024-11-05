@@ -126,8 +126,7 @@ export type IconsType =
   | "pdf-icon"
   | "Role Management"
   | "Role Management-2"
-  | "Marketing Integration"
-  | "Marketing Integration-2"
+  | "Marketing Integration";
 
 
 

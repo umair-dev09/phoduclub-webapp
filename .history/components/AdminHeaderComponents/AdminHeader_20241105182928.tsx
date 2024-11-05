@@ -36,13 +36,10 @@ function Header({ currentPage }: HeaderProps) {
                         </p>
                     )}
                 </div>
-                {currentPage === 'Role Management' && (
-                    <div className=''>
-                        jabir ali
+                <div className=''>
+                    jabir ali
 
-                    </div>
-                )}
-
+                </div>
             </div>
         </div>
     );

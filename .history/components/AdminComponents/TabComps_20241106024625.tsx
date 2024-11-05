@@ -146,7 +146,7 @@ function TabComps() {
                     {isCollapsed && <div className={styles.tooltipText}>Role Management</div>}
                 </div>
 
-                {/* Marketing Integration Button */}
+                {/* Learn CMS Button */}
                 <div className={styles.tooltip}>
                     <button
                         onClick={() => handleTabClick('marketingintegration', '/admin/marketingintegration')}
@@ -156,17 +156,6 @@ function TabComps() {
                         {!isCollapsed && <p className={`${activeTab === 'marketingintegration' ? 'text-white' : 'text-[#AAAAAA]'}`}>Marketing Integration</p>}
                     </button>
                     {isCollapsed && <div className={styles.tooltipText}>Marketing Integration</div>}
-                </div>
-                {/* Customer Data Management  */}
-                <div className={styles.tooltip}>
-                    <button
-                        onClick={() => handleTabClick('customerdatamanagement ', '/admin/customerdatamanagement')}
-                        className={`flex flex-row w-full rounded-md text-left py-2 px-3 ${activeTab === 'customerdatamanagement' ? 'bg-[#7400E0]' : 'hover:bg-[#e1ffe11a]'}`}
-                    >
-                        <Image className='mr-2' src={activeTab === '' ? "/icons/community.svg" : "/icons/community-2.svg"} width={22} height={22} alt="Customer Data Management  Icon" />
-                        {!isCollapsed && <p className={`${activeTab === 'customerdatamanagement' ? 'text-white' : 'text-[#AAAAAA]'}`}>Customer Data Management </p>}
-                    </button>
-                    {isCollapsed && <div className={styles.tooltipText}>Customer Data Management </div>}
                 </div>
             </div>
         </div>

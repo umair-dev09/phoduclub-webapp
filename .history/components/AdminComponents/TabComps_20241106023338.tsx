@@ -140,33 +140,22 @@ function TabComps() {
                         onClick={() => handleTabClick('rolemanagement', '/admin/rolemanagement')}
                         className={`flex flex-row w-full rounded-md mb-2 py-2 px-3 ${activeTab === 'rolemanagement' ? 'bg-[#7400E0]' : 'hover:bg-[#e1ffe11a]'}`}
                     >
-                        <Image className='mr-2' src={activeTab === 'rolemanagement' ? "/icons/Role Management.svg" : "/icons/Role Management-2.svg"} width={22} height={22} alt="rolemanagement Icon" />
+                        <Image className='mr-2' src={activeTab === 'rolemanagement' ? "/icons/community.svg" : "/icons/community-2.svg"} width={22} height={22} alt="rolemanagement Icon" />
                         {!isCollapsed && <p className={`${activeTab === 'rolemanagement' ? 'text-white' : 'text-[#AAAAAA]'}`}>Role Management</p>}
                     </button>
                     {isCollapsed && <div className={styles.tooltipText}>Role Management</div>}
                 </div>
 
-                {/* Marketing Integration Button */}
+                {/* Learn CMS Button */}
                 <div className={styles.tooltip}>
                     <button
-                        onClick={() => handleTabClick('marketingintegration', '/admin/marketingintegration')}
-                        className={`flex flex-row w-full rounded-md text-left py-2 px-3 ${activeTab === 'marketingintegration' ? 'bg-[#7400E0]' : 'hover:bg-[#e1ffe11a]'}`}
+                        onClick={() => handleTabClick('learncms', '/admin/learncms')}
+                        className={`flex flex-row w-full rounded-md py-2 px-3 ${activeTab === 'learncms' ? 'bg-[#7400E0]' : 'hover:bg-[#e1ffe11a]'}`}
                     >
-                        <Image className='mr-2' src={activeTab === '' ? "/icons/Marketing Integration.svg" : "/icons/Marketing Integration-2.svg"} width={22} height={22} alt="marketingintegration Icon" />
-                        {!isCollapsed && <p className={`${activeTab === 'marketingintegration' ? 'text-white' : 'text-[#AAAAAA]'}`}>Marketing Integration</p>}
+                        <Image className='mr-2' src={activeTab === 'learncms' ? "/icons/admin-learn.svg" : "/icons/admin-learn-2.svg"} width={22} height={22} alt="Learn CMS Icon" />
+                        {!isCollapsed && <p className={`${activeTab === 'learncms' ? 'text-white' : 'text-[#AAAAAA]'}`}>Learn CMS</p>}
                     </button>
-                    {isCollapsed && <div className={styles.tooltipText}>Marketing Integration</div>}
-                </div>
-                {/* Customer Data Management  */}
-                <div className={styles.tooltip}>
-                    <button
-                        onClick={() => handleTabClick('customerdatamanagement ', '/admin/customerdatamanagement')}
-                        className={`flex flex-row w-full rounded-md text-left py-2 px-3 ${activeTab === 'customerdatamanagement' ? 'bg-[#7400E0]' : 'hover:bg-[#e1ffe11a]'}`}
-                    >
-                        <Image className='mr-2' src={activeTab === '' ? "/icons/community.svg" : "/icons/community-2.svg"} width={22} height={22} alt="Customer Data Management  Icon" />
-                        {!isCollapsed && <p className={`${activeTab === 'customerdatamanagement' ? 'text-white' : 'text-[#AAAAAA]'}`}>Customer Data Management </p>}
-                    </button>
-                    {isCollapsed && <div className={styles.tooltipText}>Customer Data Management </div>}
+                    {isCollapsed && <div className={styles.tooltipText}>Learn CMS</div>}
                 </div>
             </div>
         </div>
