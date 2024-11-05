@@ -296,7 +296,7 @@ function TestSeriesInfo() {
                                         setRating(value);
                                     }
                                 }}
-                                className="w-full text-sm bg-white font-medium text-[#1D2939] placeholder:font-normal placeholder:text-[#A1A1A1] rounded-md outline-none"
+                                className="w-full text-sm font-medium text-[#1D2939] placeholder:font-normal placeholder:text-[#A1A1A1] rounded-md outline-none"
                                 type="text"
                                 placeholder="Ratings"
                             />

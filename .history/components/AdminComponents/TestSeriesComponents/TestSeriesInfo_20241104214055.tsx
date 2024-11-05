@@ -248,124 +248,123 @@ function TestSeriesInfo() {
                         </button>
                     </div>
                 </div>
-
-                <div className="flex flex-row w-full gap-4">
-                    <div className="flex flex-col gap-1 w-1/2 flex-grow">
-                        <label htmlFor="discount-price" className="text-[#1D2939] text-sm font-medium">Price</label>
-                        <div className="flex flex-row py-2 px-4 w-full gap-2 border border-solid border-[#D0D5DD] rounded-md transition duration-200 ease-in-out focus:border-red-300">
-                            {price && <div className="text-[#1D2939]">₹</div>}
-                            <input
-                                id="discount-price"
-                                className="w-full text-sm font-medium text-[#1D2939] placeholder:font-normal placeholder:text-[#A1A1A1] rounded-md outline-none"
-                                type="text"
-                                placeholder="Price"
-                                value={price}
-                                onChange={(e) => handlePriceChange(e, setPrice)}
-                            />
-                        </div>
-                    </div>
-                    <div className="flex flex-col gap-1 w-1/2 flex-grow">
-                        <label htmlFor="discount-price" className="text-[#1D2939] text-sm font-medium">Discount Price</label>
-                        <div className="flex flex-row py-2 px-4 w-full gap-2 border border-solid border-[#D0D5DD] rounded-md transition duration-200 ease-in-out focus:border-red-300">
-                            {discountPrice && <div className="text-[#1D2939]">₹</div>}
-                            <input
-                                id="discount-price"
-                                className="w-full text-sm font-medium text-[#1D2939] placeholder:font-normal placeholder:text-[#A1A1A1] rounded-md outline-none"
-                                type="text"
-                                placeholder=" Discount Price"
-                                value={discountPrice}
-                                onChange={(e) => handlePriceChange(e, setDiscountPrice)}
-                            />
-                        </div>
-                    </div>
-                </div>
-                {/* Ratings of Courses */}
-                <div className="flex flex-row w-full gap-4">
-                    <div className="flex flex-col gap-1 w-1/2 flex-grow">
-                        <label htmlFor="rating" className="text-[#1D2939] text-sm font-medium">
-                            Ratings
-                        </label>
-                        <div className="flex flex-row py-2 px-4 w-full gap-2 border border-solid border-[#D0D5DD] rounded-md transition duration-200 ease-in-out ">
-                            <input
-                                id="rating"
-                                value={rating}
-                                onChange={(e) => {
-                                    const value = e.target.value;
-                                    // Only allow numbers and one decimal point
-                                    if (value === '' || (/^\d*\.?\d*$/.test(value) && parseFloat(value) <= 5)) {
-                                        setRating(value);
-                                    }
-                                }}
-                                className="w-full text-sm bg-white font-medium text-[#1D2939] placeholder:font-normal placeholder:text-[#A1A1A1] rounded-md outline-none"
-                                type="text"
-                                placeholder="Ratings"
-                            />
-                        </div>
-                    </div>
-                    <div className="flex flex-col gap-1 w-1/2 flex-grow">
-                        <label htmlFor="num-ratings" className="text-[#1D2939] text-sm font-medium">
-                            No. of Ratings
-                        </label>
-                        <div className="flex flex-row py-2 px-4 w-full gap-2 border border-solid border-[#D0D5DD] rounded-md transition duration-200 ease-in-out ">
-                            <input
-                                id="num-ratings"
-                                value={numRatings}
-                                onChange={(e) => {
-                                    const value = e.target.value;
-                                    // Only allow numbers
-                                    if (value === '' || /^\d*$/.test(value)) {
-                                        setNumRatings(value);
-                                    }
-                                }}
-                                className="w-full text-sm font-medium text-[#1D2939] placeholder:font-normal placeholder:text-[#A1A1A1] rounded-md outline-none"
-                                type="text"
-                                placeholder="No. of Ratings"
-                            />
-                        </div>
-                    </div>
-                </div>
-
-                {/* Star Rating Display */}
-                {!showColorlessStar && ratingValue > 0 && (
-                    <div className="flex items-center gap-2 h-[24px]">
-                        <div className="flex items-center">
-                            {[...Array(Math.floor(ratingValue))].map((_, index) => (
-                                <StarIcon key={`filled-${index}`} filled={true} isHalf={false} />
-                            ))}
-
-                            {(ratingValue % 1) >= 0.5 && (
-                                <StarIcon filled={true} isHalf={true} />
-                            )}
-
-                            {[...Array(totalStars - Math.ceil(ratingValue))].map((_, index) => (
-                                <StarIcon key={`empty-${index}`} filled={false} isHalf={false} />
-                            ))}
-                        </div>
-
-                        <div className="text-[#1D2939] text-sm font-bold flex items-center mt-1">
-                            {ratingValue.toFixed(1)}
-                            <span className="text-[#1D2939] font-normal text-sm ml-1">
-                                <span className="flex items-center">
-                                    <span className="inline-block">({numRatings}</span>
-                                    <span className="inline-block"> +Ratings)</span>
-                                </span>
-                            </span>
-                        </div>
-                    </div>
-                )}
-                {/* Colorless Star Display */}
-                {showColorlessStar && (
-                    <div className="flex flex-row gap-1 items-center">
-                        <Image
-                            src="/icons/colorless-star.svg"
-                            width={116}
-                            height={20}
-                            alt="colorless-star"
-                        />
-                        <span className="text-[#1D2939] font-medium text-sm">0</span>
-                    </div>
-                )}
             </div>
+            <div className="flex flex-row w-full gap-4">
+                <div className="flex flex-col gap-1 w-1/2 flex-grow">
+                    <label htmlFor="discount-price" className="text-[#1D2939] text-sm font-medium">Price</label>
+                    <div className="flex flex-row py-2 px-4 w-full gap-2 border border-solid border-[#D0D5DD] rounded-md transition duration-200 ease-in-out focus:border-red-300">
+                        {price && <div className="text-[#1D2939]">₹</div>}
+                        <input
+                            id="discount-price"
+                            className="w-full text-sm font-medium text-[#1D2939] placeholder:font-normal placeholder:text-[#A1A1A1] rounded-md outline-none"
+                            type="text"
+                            placeholder="Price"
+                            value={price}
+                            onChange={(e) => handlePriceChange(e, setPrice)}
+                        />
+                    </div>
+                </div>
+                <div className="flex flex-col gap-1 w-1/2 flex-grow">
+                    <label htmlFor="discount-price" className="text-[#1D2939] text-sm font-medium">Discount Price</label>
+                    <div className="flex flex-row py-2 px-4 w-full gap-2 border border-solid border-[#D0D5DD] rounded-md transition duration-200 ease-in-out focus:border-red-300">
+                        {discountPrice && <div className="text-[#1D2939]">₹</div>}
+                        <input
+                            id="discount-price"
+                            className="w-full text-sm font-medium text-[#1D2939] placeholder:font-normal placeholder:text-[#A1A1A1] rounded-md outline-none"
+                            type="text"
+                            placeholder=" Discount Price"
+                            value={discountPrice}
+                            onChange={(e) => handlePriceChange(e, setDiscountPrice)}
+                        />
+                    </div>
+                </div>
+            </div>
+            {/* Ratings of Courses */}
+            <div className="flex flex-row w-full gap-4">
+                <div className="flex flex-col gap-1 w-1/2 flex-grow">
+                    <label htmlFor="rating" className="text-[#1D2939] text-sm font-medium">
+                        Ratings
+                    </label>
+                    <div className="flex flex-row py-2 px-4 w-full gap-2 border border-solid border-[#D0D5DD] rounded-md transition duration-200 ease-in-out ">
+                        <input
+                            id="rating"
+                            value={rating}
+                            onChange={(e) => {
+                                const value = e.target.value;
+                                // Only allow numbers and one decimal point
+                                if (value === '' || (/^\d*\.?\d*$/.test(value) && parseFloat(value) <= 5)) {
+                                    setRating(value);
+                                }
+                            }}
+                            className="w-full text-sm font-medium text-[#1D2939] placeholder:font-normal placeholder:text-[#A1A1A1] rounded-md outline-none"
+                            type="text"
+                            placeholder="Ratings"
+                        />
+                    </div>
+                </div>
+                <div className="flex flex-col gap-1 w-1/2 flex-grow">
+                    <label htmlFor="num-ratings" className="text-[#1D2939] text-sm font-medium">
+                        No. of Ratings
+                    </label>
+                    <div className="flex flex-row py-2 px-4 w-full gap-2 border border-solid border-[#D0D5DD] rounded-md transition duration-200 ease-in-out ">
+                        <input
+                            id="num-ratings"
+                            value={numRatings}
+                            onChange={(e) => {
+                                const value = e.target.value;
+                                // Only allow numbers
+                                if (value === '' || /^\d*$/.test(value)) {
+                                    setNumRatings(value);
+                                }
+                            }}
+                            className="w-full text-sm font-medium text-[#1D2939] placeholder:font-normal placeholder:text-[#A1A1A1] rounded-md outline-none"
+                            type="text"
+                            placeholder="No. of Ratings"
+                        />
+                    </div>
+                </div>
+            </div>
+
+            {/* Star Rating Display */}
+            {!showColorlessStar && ratingValue > 0 && (
+                <div className="flex items-center gap-2 h-[24px]">
+                    <div className="flex items-center">
+                        {[...Array(Math.floor(ratingValue))].map((_, index) => (
+                            <StarIcon key={`filled-${index}`} filled={true} isHalf={false} />
+                        ))}
+
+                        {(ratingValue % 1) >= 0.5 && (
+                            <StarIcon filled={true} isHalf={true} />
+                        )}
+
+                        {[...Array(totalStars - Math.ceil(ratingValue))].map((_, index) => (
+                            <StarIcon key={`empty-${index}`} filled={false} isHalf={false} />
+                        ))}
+                    </div>
+
+                    <div className="text-[#1D2939] text-sm font-bold flex items-center mt-1">
+                        {ratingValue.toFixed(1)}
+                        <span className="text-[#1D2939] font-normal text-sm ml-1">
+                            <span className="flex items-center">
+                                <span className="inline-block">({numRatings}</span>
+                                <span className="inline-block"> +Ratings)</span>
+                            </span>
+                        </span>
+                    </div>
+                </div>
+            )}
+            {/* Colorless Star Display */}
+            {showColorlessStar && (
+                <div className="flex flex-row gap-1 items-center">
+                    <Image
+                        src="/icons/colorless-star.svg"
+                        width={116}
+                        height={20}
+                        alt="colorless-star"
+                    />
+                    <span className="text-[#1D2939] font-medium text-sm">0</span>
+                </div>
+            )}
             <Dialog open={isUploadImage} onClose={closeUploadImageDialog} className="relative z-50">
                 <DialogBackdrop className="fixed inset-0 bg-black/30 " />
                 <div className="fixed inset-0 flex items-center justify-center ">
