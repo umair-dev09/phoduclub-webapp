@@ -33,6 +33,8 @@ interface Quiz {
     status: 'Live' | 'Paused' | 'Finished' | 'Scheduled' | 'Ended' | 'Saved';
 }
 
+type Option = 'Saved' | 'Live' | 'Scheduled' | 'Pause' | 'Finished' | 'Canceled';
+
 // Mock fetchQuizzes function with types
 const fetchQuizzes = async (): Promise<Quiz[]> => {
     const allQuizzes: Quiz[] = [
@@ -153,6 +155,65 @@ function Quizz() {
     const openViewAnalytics = () => setIsViewAnalyticsOpen(true);
     const closeViewAnalytics = () => setIsViewAnalyticsOpen(false);
 
+    const statusMapping: Record<Option, string[]> = {
+        'Saved': ['Saved'],
+        'Live': ['Live'],
+        'Scheduled': ['Scheduled'],
+        'Pause': ['Paused'],    // Notice how 'Pause' checkbox maps to 'Paused' status
+        'Finished': ['Finished'],
+        'Canceled': ['Ended']   // 'Canceled' checkbox maps to 'Ended' status
+    };
+
+    const [checkedState, setCheckedState] = useState<Record<Option, boolean>>({
+        Saved: false,
+        Live: false,
+        Scheduled: false,
+        Pause: false,
+        Finished: false,
+        Canceled: false,
+    });
+
+    const toggleCheckbox = (option: Option) => {
+        setCheckedState((prevState) => ({
+            ...prevState,
+            [option]: !prevState[option],
+        }));
+    };
+
+    const options: Option[] = ["Saved", "Live", "Scheduled", "Pause", "Finished", "Canceled"];
+
+    const selectedCount = Object.values(checkedState).filter(Boolean).length;
+
+    useEffect(() => {
+        // Start with all quizzes
+        let filteredQuizzes = quizzes;
+
+        // First, filter by search term if there is one
+        if (searchTerm) {
+            filteredQuizzes = filteredQuizzes.filter(quiz =>
+                "Phodu JEE Mains Test Series 2025".toLowerCase().includes(searchTerm.toLowerCase())
+            );
+        }
+
+        // Get list of selected statuses
+        const selectedStatuses = Object.entries(checkedState)
+            .filter(([_, isChecked]) => isChecked)  // Get only checked statuses
+            .map(([status]) => statusMapping[status as Option])  // Convert to actual status names
+            .flat();
+
+        // If any statuses are selected, filter by those statuses
+        if (selectedStatuses.length > 0) {
+            filteredQuizzes = filteredQuizzes.filter(quiz =>
+                selectedStatuses.includes(quiz.status)
+            );
+        }
+
+        // Update the displayed data
+        setData(filteredQuizzes);
+        // Go back to first page whenever filters change
+        setCurrentPage(1);
+    }, [searchTerm, checkedState, quizzes]);
+
     return (
         <div className="flex flex-col px-[32px] w-full gap-4 overflow-y-auto h-auto my-5">
             <div className="flex flex-row justify-between items-center">
@@ -189,16 +250,41 @@ function Quizz() {
                     </button>
 
                     {/* By Status Button */}
-                    <button className="h-[44px] w-[122px] rounded-md bg-[#FFFFFF] border border-solid border-[#D0D5DD] flex items-center p-3">
-                        <p className="font-medium text-sm text-[#667085]">By status</p>
-                        <Image
-                            src="/icons/selectdate-Arrowdown.svg"
-                            width={20}
-                            height={20}
-                            alt="Arrow-Down Button"
-                            className="ml-2"
-                        />
-                    </button>
+                    <Popover placement="bottom-start">
+                        <PopoverTrigger>
+                            <div className="h-[44px] w-[126px] rounded-md bg-[#FFFFFF] border border-solid border-[#D0D5DD] flex items-center justify-between p-3 cursor-pointer">
+                                <p className={`flex flex-row font-medium text-sm ${selectedCount > 0 ? 'text-[#182230]' : 'text-[#667085]'}`}>
+                                    {selectedCount > 0 ? `${selectedCount} selected` : 'By status'}
+                                </p>
+                                <Image
+                                    src="/icons/selectdate-Arrowdown.svg"
+                                    width={20}
+                                    height={20}
+                                    alt="Arrow-Down Button"
+                                />
+                            </div>
+                        </PopoverTrigger>
+                        <PopoverContent>
+                            <div className="flex flex-col w-[10.438rem] h-auto bg-white border border-lightGrey rounded-md">
+                                {options.map((option) => (
+                                    <div
+                                        key={option}
+                                        className="flex flex-row items-center w-full py-[0.625rem] px-4 gap-2 cursor-pointer transition-colors hover:bg-[#F2F4F7]"
+                                        onClick={() => toggleCheckbox(option)}
+                                    >
+                                        <div
+                                            className={`flex items-center justify-center w-4 h-4 border border-[#D0D5DE] rounded-sm ${checkedState[option] ? 'bg-purple border-purple' : 'bg-white'}`}
+                                        >
+                                            {checkedState[option] && (
+                                                <Image src="/icons/check.svg" alt="choose" width={12} height={12} />
+                                            )}
+                                        </div>
+                                        <p className="text-sm text-[#0C111D] font-normal">{option}</p>
+                                    </div>
+                                ))}
+                            </div>
+                        </PopoverContent>
+                    </Popover>
 
                     {/* Create Quiz Button */}
                     <button
@@ -212,8 +298,8 @@ function Quizz() {
 
             {loading ? (
                 <div>
-                    <LoadingData/>
-                    </div>
+                    <LoadingData />
+                </div>
             ) : (
                 <div className="flex flex-1 flex-col">
                     <div className="h-full">

@@ -9,7 +9,7 @@ import PausedQuiz from "@/components/AdminComponents/QuizInfoDailogs/PausedQuiz"
 import MakeLiveNow from "@/components/AdminComponents/QuizInfoDailogs/MakeLiveNow";
 import ResumeQuiz from "@/components/AdminComponents/QuizInfoDailogs/ResumeQuiz";
 import Questions from "@/components/AdminComponents/QuizInfo/Questions";
-import StudentsAttemptedTestseries from '@/components/AdminComponents/TestseriesInfo/StudentsAttemptedTestseries';
+import StudentsAttemptedCourseInfo from '@/components/AdminComponents/Courseinfo/StudentsAttemptedCourseInfo';
 import CourseContent from '@/components/AdminComponents/Courseinfo/CourseContent'
 import { Popover, PopoverContent, PopoverTrigger } from "@nextui-org/popover";
 
@@ -194,7 +194,7 @@ function CourseInfo() {
             )}
             {activeTab === 'StudentsPurchased' && (
                 <div>
-                    <StudentsAttemptedTestseries />
+                    <StudentsAttemptedCourseInfo />
                 </div>
             )}
 
