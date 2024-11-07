@@ -71,71 +71,72 @@ function Preference() {
                     <div className='flex flex-col w-full gap-1'>
                         <p className='text-sm text-[#1D2939] font-medium'>Year</p>
 
-                        <Popover placement='bottom-start'>
-                            <PopoverTrigger>
-                                <button className='flex flex-row items-center justify-between w-full px-2 py-2 mt-2 bg-white border border-lightGrey rounded-md'>
-                                    {selectedYears.length === 0 ? (
-                                        <div className='text-sm text-[#667085] font-normal'>Select Year</div>
-                                    ) : (
-                                        <div className='flex flex-wrap gap-2'>
-                                            {selectedYears.map((year) => (
-                                                <div key={year} className='px-3 py-2 bg-[#EDE4FF] text-xs font-medium rounded-full flex items-center gap-1'>
-                                                    {year}
-                                                    <button onClick={() => toggleYear(year)} className='text-[#6941C6]'>
-                                                        <Image src='/icons/cancel.svg' alt='close' width={12} height={12} />
-                                                    </button>
-                                                </div>
-                                            ))}
-                                        </div>
-                                    )}
-                                    <Image src='/icons/arrow-down-01-round.svg' alt='open' width={20} height={20} />
-                                </button>
-                            </PopoverTrigger>
-                            <PopoverContent>
-                                <div className='flex flex-col w-96 py-1 h-auto bg-white border border-lightGrey rounded-md'>
-                                    {years.map((year) => (
-                                        <button key={year} onClick={() => toggleYear(year)} className='px-4 py-3 text-sm text-left transition-colors hover:bg-[#F2F4F7]'>
+                        <div className='flex flex-row items-center justify-between w-full px-2 py-2 mt-2 bg-white border border-lightGrey rounded-md'>
+                            {selectedYears.length === 0 ? (
+                                <div className='text-sm text-[#667085] font-normal'>Select Year</div>
+                            ) : (
+                                <div className='flex flex-wrap gap-2'>
+                                    {selectedYears.map((year) => (
+                                        <div key={year} className='px-3 py-2 bg-[#EDE4FF] text-xs font-medium rounded-full flex items-center gap-1'>
                                             {year}
-                                        </button>
+                                            <button onClick={() => toggleYear(year)} className='text-[#6941C6] z-10'>
+                                                <Image src='/icons/cancel.svg' alt='close' width={12} height={12} />
+                                            </button>
+                                        </div>
                                     ))}
                                 </div>
-                            </PopoverContent>
-                        </Popover>
+                            )}
+                            <Popover placement='bottom-end'>
+                                <PopoverTrigger>
+                                    <Image src='/icons/arrow-down-01-round.svg' alt='open' width={20} height={20} />
+                                </PopoverTrigger>
+                                <PopoverContent>
+                                    <div className='flex flex-col w-96 py-1 h-auto bg-white border border-lightGrey rounded-md'>
+                                        {years.map((year) => (
+                                            <button key={year} onClick={() => toggleYear(year)} className='px-4 py-3 text-sm text-left transition-colors hover:bg-[#F2F4F7]'>
+                                                {year}
+                                            </button>
+                                        ))}
+                                    </div>
+                                </PopoverContent>
+                            </Popover>
+                        </div>
                     </div>
 
                     {/* Exam Selection */}
                     <div className='flex flex-col w-full gap-1'>
                         <p className='text-sm text-[#1D2939] font-medium'>Exam</p>
-                        <Popover placement='bottom-start'>
-                            <PopoverTrigger>
-                                <button className='flex flex-row items-center justify-between w-full px-2 py-2 mt-2 bg-white border border-lightGrey rounded-md'>
-                                    {selectedExams.length === 0 ? (
-                                        <div className='text-sm text-[#667085] font-normal'>Select Exam</div>
-                                    ) : (
-                                        <div className='flex flex-wrap gap-2'>
-                                            {selectedExams.map((exam) => (
-                                                <div key={exam} className='px-2 py-1 bg-[#E9D7FE] text-[#6941C6] rounded-full flex items-center gap-1'>
-                                                    {exam}
-                                                    <button onClick={() => toggleExam(exam)} className='text-[#6941C6]'>
-                                                        <Image src='/icons/cancel.svg' alt='close' width={12} height={12} />
-                                                    </button>
-                                                </div>
-                                            ))}
-                                        </div>
-                                    )}
-                                    <Image src='/icons/arrow-down-01-round.svg' alt='open' width={20} height={20} />
-                                </button>
-                            </PopoverTrigger>
-                            <PopoverContent>
-                                <div className='flex flex-col w-96 py-1 h-auto bg-white border border-lightGrey rounded-md'>
-                                    {exams.map((exam) => (
-                                        <button key={exam} onClick={() => toggleExam(exam)} className='px-4 py-3 text-sm text-left transition-colors hover:bg-[#F2F4F7]'>
+                        <button className='flex flex-row items-center justify-between w-full px-2 py-2 mt-2 bg-white border border-lightGrey rounded-md'>
+                            {selectedExams.length === 0 ? (
+                                <div className='text-sm text-[#667085] font-normal'>Select Exam</div>
+                            ) : (
+                                <div className='flex flex-wrap gap-2'>
+                                    {selectedExams.map((exam) => (
+                                        <div key={exam} className='px-3 py-2 bg-[#EDE4FF] text-xs font-medium rounded-full flex items-center gap-1'>
                                             {exam}
-                                        </button>
+                                            <button onClick={() => toggleExam(exam)} className='text-[#6941C6]'>
+                                                <Image src='/icons/cancel.svg' alt='close' width={12} height={12} />
+                                            </button>
+                                        </div>
                                     ))}
                                 </div>
-                            </PopoverContent>
-                        </Popover>
+                            )}
+                            <Popover placement='bottom-end'>
+                                <PopoverTrigger>
+                                    <Image src='/icons/arrow-down-01-round.svg' alt='open' width={20} height={20} />
+                                </PopoverTrigger>
+                                <PopoverContent>
+                                    <div className='flex flex-col w-96 py-1 h-auto bg-white border border-lightGrey rounded-md'>
+                                        {exams.map((exam) => (
+                                            <button key={exam} onClick={() => toggleExam(exam)} className='px-4 py-3 text-sm text-left transition-colors hover:bg-[#F2F4F7]'>
+                                                {exam}
+                                            </button>
+                                        ))}
+                                    </div>
+                                </PopoverContent>
+                            </Popover>
+                        </button>
+
                     </div>
                 </div>
             </div>
