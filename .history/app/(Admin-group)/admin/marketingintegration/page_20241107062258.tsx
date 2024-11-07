@@ -11,7 +11,7 @@ function MarketIntegration() {
     };
 
     return (
-        <div className="p-8 flex flex-col overflow-y-auto w-full h-auto">
+        <div className="p-8 flex flex-col overflow-y-auto">
             <div className="flex flex-col">
                 <div className="relative flex">
                     <div className="pt-[10px]">

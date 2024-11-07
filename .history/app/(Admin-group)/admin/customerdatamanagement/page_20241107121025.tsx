@@ -2,7 +2,6 @@
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
-import Addnewuser from "@/components/AdminComponents/RoleMangement/AddNewUser";
 import {
     Pagination,
     PaginationContent,
@@ -17,9 +16,10 @@ import Remove from "@/components/AdminComponents/QuizInfoDailogs/Remove";
 
 // Define types for quiz data
 interface Quiz {
-    userid: string;
-    moblieid: string;
-    role: string;
+    enrollmentType: string;
+    progress: string;
+    enrolledDate: string;
+    expiryDate: string;
     status: 'Live' | 'Paused' | 'Finished' | 'Scheduled' | 'Cancelled' | 'Saved';
 }
 
@@ -27,70 +27,80 @@ interface Quiz {
 const fetchQuizzes = async (): Promise<Quiz[]> => {
     const allQuizzes: Quiz[] = [
         {
-            userid: "jenny#8547",
-            moblieid: "+919164588441",
-            role: "Dec 1, 2023",
+            enrollmentType: "Free",
+            progress: "50%",
+            enrolledDate: "Dec 1, 2023",
+            expiryDate: "Jun 1, 2024",
             status: "Live"
         },
         {
-            userid: "jenny#8547",
-            moblieid: "+919164588441",
-            role: "Nov 15, 2023",
+            enrollmentType: "Paid",
+            progress: "30%",
+            enrolledDate: "Nov 15, 2023",
+            expiryDate: "May 15, 2024",
             status: "Saved"
         },
         {
-            userid: "jenny#8547",
-            moblieid: "+919164588441",
-            role: "Oct 1, 2023",
+            enrollmentType: "Free",
+            progress: "75%",
+            enrolledDate: "Oct 1, 2023",
+            expiryDate: "Apr 1, 2024",
             status: "Paused"
         },
         {
-            userid: "jenny#8547",
-            moblieid: "+919164588441",
-            role: "Sep 1, 2023",
+            enrollmentType: "Paid",
+            progress: "100%",
+            enrolledDate: "Sep 1, 2023",
+            expiryDate: "Mar 1, 2024",
             status: "Finished"
         },
         {
-            userid: "jenny#8547",
-            moblieid: "+919164588441",
-            role: "Jan 1, 2024",
+            enrollmentType: "Free",
+            progress: "10%",
+            enrolledDate: "Jan 1, 2024",
+            expiryDate: "Jul 1, 2024",
             status: "Scheduled"
         },
         {
-            userid: "jenny#8547",
-            moblieid: "+919164588441",
-            role: "Feb 1, 2024",
+            enrollmentType: "Paid",
+            progress: "0%",
+            enrolledDate: "Feb 1, 2024",
+            expiryDate: "Aug 1, 2024",
             status: "Cancelled"
         },
         {
-            userid: "jenny#8547",
-            moblieid: "85%",
-            role: "Jul 15, 2023",
+            enrollmentType: "Free",
+            progress: "85%",
+            enrolledDate: "Jul 15, 2023",
+            expiryDate: "Jan 15, 2024",
             status: "Live"
         },
         {
-            userid: "jenny#8547",
-            moblieid: "+919164588441",
-            role: "Dec 10, 2023",
+            enrollmentType: "Paid",
+            progress: "20%",
+            enrolledDate: "Dec 10, 2023",
+            expiryDate: "Jun 10, 2024",
             status: "Saved"
         },
         {
-            userid: "jenny#8547",
-            moblieid: "+919164588441",
-            role: "Nov 25, 2023",
+            enrollmentType: "Free",
+            progress: "45%",
+            enrolledDate: "Nov 25, 2023",
+            expiryDate: "May 25, 2024",
             status: "Paused"
         },
         {
-            userid: "jenny#8547",
-            moblieid: "+919164588441",
-            role: "Aug 20, 2023",
+            enrollmentType: "Paid",
+            progress: "100%",
+            enrolledDate: "Aug 20, 2023",
+            expiryDate: "Feb 20, 2024",
             status: "Finished"
         }
     ];
     return allQuizzes;
 };
 
-function rolemangement() {
+function customerData() {
     const [data, setData] = useState<Quiz[]>([]);
     const [quizzes, setQuizzes] = useState<Quiz[]>([]);
     const [currentPage, setCurrentPage] = useState(1);
@@ -98,18 +108,6 @@ function rolemangement() {
     const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState('');
     const router = useRouter();
-    // for Edit profile dailog
-    const [isAddUser, setisAddUser] = useState(false);
-    const [isEditing, setIsEditing] = useState(false); // New state to track if editing
-
-    const openAddUser = (editMode = false) => {
-        setisAddUser(true);
-        setIsEditing(editMode);
-    };
-    const closeAddUser = () => {
-        setisAddUser(false);
-        setIsEditing(false); // Reset editing mode when closing
-    };
 
     // Fetch quizzes when component mounts
     useEffect(() => {
@@ -154,7 +152,7 @@ function rolemangement() {
     const isAddButtonDisabled = !uniqueId || !startDate || !endDate;
 
     return (
-        <div className="flex flex-col w-full  gap-4 p-8">
+        <div className="flex flex-col w-full mt-4 gap-4 p-8">
             <div className="flex flex-row justify-between items-center">
                 <span className="text-lg font-semibold text-[#1D2939]">Users</span>
                 <div className="flex flex-row gap-3">
@@ -178,18 +176,17 @@ function rolemangement() {
                     </button>
 
                     {/* Select Date Button */}
-                    <button className="h-[44px] w-[143px] rounded-md bg-[#FFFFFF] border justify-between border-solid border-[#D0D5DD] flex items-center p-3">
-                        <span className="font-medium text-sm text-[#667085] ml-2">By Role</span>
+                    <button className="h-[44px] w-[143px] rounded-md bg-[#FFFFFF] border border-solid border-[#D0D5DD] flex items-center p-3">
                         <Image
-                            src="/icons/by-role-arrow-down.svg"
+                            src="/icons/select-date.svg"
                             width={20}
                             height={20}
                             alt="Select-date Button"
                         />
+                        <span className="font-medium text-sm text-[#667085] ml-2">Select dates</span>
                     </button>
                     <button
-                        className="h-[44px] w-auto px-6 py-2 bg-[#8501FF] rounded-md shadow-inner-button border border-solid border-[#800EE2] flex items-center justify-center"
-                        onClick={() => openAddUser()} >
+                        className="h-[44px] w-auto px-6 py-2 bg-[#8501FF] rounded-md shadow-inner-button border border-solid border-[#800EE2] flex items-center justify-center">
                         <span className="text-[#FFFFFF] font-semibold text-sm">Add New User</span>
                     </button>
 
@@ -208,19 +205,25 @@ function rolemangement() {
                                 </th>
                                 <th className=" w-[17%] text-center px-8 py-4 text-[#667085] font-medium text-sm">
                                     <div className="flex flex-row justify-center gap-1">
-                                        <p>User Id</p>
+                                        <p>Enrollment Type</p>
                                         <Image src='/icons/unfold-more-round.svg' alt="" width={16} height={16} />
                                     </div>
                                 </th>
                                 <th className=" w-[17%] text-center px-8 py-4 text-[#667085] font-medium text-sm">
                                     <div className="flex flex-row justify-center gap-1">
-                                        <p>Moblie No.</p>
+                                        <p>Progress</p>
                                         <Image src='/icons/unfold-more-round.svg' alt="" width={16} height={16} />
                                     </div>
                                 </th>
                                 <th className=" w-[17%] text-center px-8 py-4 text-[#667085] font-medium text-sm">
                                     <div className="flex flex-row justify-center gap-1">
-                                        <p>Role</p>
+                                        <p>Enrollment Date</p>
+                                        <Image src='/icons/unfold-more-round.svg' alt="" width={16} height={16} />
+                                    </div>
+                                </th>
+                                <th className=" w-[17%] text-center px-8 py-4 rounded-tr-xl text-[#667085] font-medium text-sm">
+                                    <div className="flex flex-row justify-center gap-1">
+                                        <p>Expiry Date</p>
                                         <Image src='/icons/unfold-more-round.svg' alt="" width={16} height={16} />
                                     </div>
                                 </th>
@@ -232,15 +235,22 @@ function rolemangement() {
                                 <tr key={index} className="border-t border-solid border-[#EAECF0]">
                                     <td className="py-2">
                                         <div className="flex flex-row ml-8 gap-2">
-                                            <Image src='/icons/Profile-pic.png' alt="DP" width={40} height={40} />
+                                            <div className="flex items-center">
+                                                <div className="relative">
+                                                    <Image src='/images/DP_Lion.svg' alt="DP" width={40} height={40} />
+                                                    <Image className="absolute right-0 bottom-0" src='/icons/winnerBatch.svg' alt="Batch" width={18} height={18} />
+                                                </div>
+                                            </div>
                                             <div className="flex items-start justify-start flex-col">
                                                 <div className="font-semibold">Jenny Wilson</div>
+                                                <div className="flex justify-start items-start text-[13px] text-[#667085]">jenny#8547</div>
                                             </div>
                                         </div>
                                     </td>
-                                    <td className="px-8 py-4 text-center text-[#101828] text-sm">{quiz.userid}</td>
-                                    <td className="px-8 py-4 text-center text-[#101828] text-sm">{quiz.moblieid}</td>
-                                    <td className="px-8 py-4 text-center text-[#101828] text-sm">{quiz.role}</td>
+                                    <td className="px-8 py-4 text-center text-[#101828] text-sm">{quiz.enrollmentType}</td>
+                                    <td className="px-8 py-4 text-center text-[#101828] text-sm">{quiz.progress}</td>
+                                    <td className="px-8 py-4 text-center text-[#101828] text-sm">{quiz.enrolledDate}</td>
+                                    <td className="px-8 py-4 text-center text-[#101828] text-sm">{quiz.expiryDate}</td>
                                     <td className="flex items-center justify-center px-8 py-4 text-[#101828] text-sm">
                                         <Popover placement="bottom-end">
                                             <PopoverTrigger>
@@ -255,13 +265,12 @@ function rolemangement() {
                                             </PopoverTrigger>
                                             <PopoverContent>
                                                 <div className="w-[10.438rem] py-1 bg-white border border-lightGrey rounded-md">
-                                                    <button className="flex flex-row items-center justify-start w-full py-[0.625rem] px-4 gap-2 hover:bg-[#F2F4F7]"
-                                                        onClick={() => openAddUser(true)} >
-                                                        <Image src="/icons/edit-02.svg" width={18} height={18} alt="edit" />
-                                                        <span className="text-sm text-[#0C111D] font-normal">Edit details</span>
+                                                    <button className="flex flex-row items-center justify-start w-full py-[0.625rem] px-4 gap-2 hover:bg-[#F2F4F7]">
+                                                        <Image src='/icons/user-account.svg' alt="user profile" width={18} height={18} />
+                                                        <p className="text-sm text-[#0C111D] font-normal">Go to Profile</p>
                                                     </button>
                                                     <button className=" flex flex-row items-center justify-start w-full py-[0.625rem] px-4 gap-2 hover:bg-[#F2F4F7]"
-                                                    >
+                                                        onClick={openRemove}>
                                                         <Image src='/icons/delete.svg' alt="user profile" width={18} height={18} />
                                                         <p className="text-sm text-[#DE3024] font-normal">Remove</p>
                                                     </button>
@@ -288,8 +297,6 @@ function rolemangement() {
                 </div>
             </div>
             {isRemoveOpen && < Remove onClose={closeRemove} open={true} />}
-            {/* Dialog Component  for AddNewUser*/}
-            {isAddUser && <Addnewuser close={closeAddUser} open={true} isEditing={isEditing} />}
         </div>
     );
 }
@@ -412,4 +419,4 @@ function PaginationSection({
     );
 }
 
-export default rolemangement;
+export default customerData;
