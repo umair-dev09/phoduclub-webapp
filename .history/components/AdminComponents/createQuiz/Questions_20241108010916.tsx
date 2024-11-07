@@ -227,11 +227,11 @@ function Questions({ questionsList, setQuestionsList }: QuestionsProps) {
                         trigger={
                             <div className='h-auto bg-[#FFFFFF] flex flex-col p-5 gap-2 rounded-md'>
                                 <div className="h-auto flex flex-row justify-between">
-                                    <div className="flex gap-2 ">
-                                        <div className="h-6 w-6 rounded-[4px] bg-[#EAECF0] flex justify-center ">
+                                    <div className="flex gap-2 break-all">
+                                        <div className="h-6 w-6 rounded-[4px] bg-[#EAECF0] flex justify-center break-all">
                                             <span className="text-[#1D2939] font-semibold text-base">{index + 1}</span>
                                         </div>
-                                        <span className="font-semibold  text-base text-[#1D2939] ">
+                                        <span className="font-semibold break-all text-base text-[#1D2939] ">
                                             {question.question || "Question"}
                                         </span>
                                     </div>
@@ -293,7 +293,6 @@ function Questions({ questionsList, setQuestionsList }: QuestionsProps) {
                                     value={question.question}
                                     onChange={(e) => handleInputChange(index, e)}
                                 /> */}
-                                {/* CODE FOR REACT QUILL */}
                                 <div
                                     className={`pt-2 bg-[#FFFFFF] border ${isWriting ? 'border-[#D6BBFB]  shadow-[0px_0px_0px_4px_rgba(158,119,237,0.25),0px_1px_2px_0px_rgba(16,24,40,0.05)]' : 'border-[#EAECF0]'
                                         } rounded-[12px] h-auto`}>

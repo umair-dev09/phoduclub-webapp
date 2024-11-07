@@ -44,13 +44,7 @@ function PersonalDetails() {
                 </div>
             </div>
 
-            <div className="flex flex-col w-full">
-                <span className="font-normal text-[#667085] text-[16px]">Joining Date</span>
-                <span className="font-semibold text-[#1D2939] text-[16px]">Jan 6, 2024</span>
-            </div>
         </div>
-
-
 
     )
 }

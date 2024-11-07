@@ -31,16 +31,9 @@ interface QuestionsProps {
 function Questions({ questionsList, setQuestionsList }: QuestionsProps) {
 
     // Handler for input change
-    const handleInputChange = (index: number, value: string | React.ChangeEvent<HTMLInputElement>) => {
+    const handleInputChange = (index: number, e: React.ChangeEvent<HTMLInputElement>) => {
         const newQuestionsList = [...questionsList];
-
-        // Check if value is a string (from ReactQuill) or a ChangeEvent (from input)
-        if (typeof value === 'string') {
-            newQuestionsList[index].question = value;
-        } else {
-            newQuestionsList[index].question = value.target.value;
-        }
-
+        newQuestionsList[index].question = e.target.value;
         setQuestionsList(newQuestionsList);
     };
     // -----------------------------------------------------------------------------------------------------------
@@ -218,7 +211,7 @@ function Questions({ questionsList, setQuestionsList }: QuestionsProps) {
             }
         }
     };
-    // ------------------------------------------------------------------------------------------------------------------------------------
+
     return (
         <div className="pb-4 h-auto">
             {questionsList.map((question, index) => (
@@ -227,11 +220,11 @@ function Questions({ questionsList, setQuestionsList }: QuestionsProps) {
                         trigger={
                             <div className='h-auto bg-[#FFFFFF] flex flex-col p-5 gap-2 rounded-md'>
                                 <div className="h-auto flex flex-row justify-between">
-                                    <div className="flex gap-2 ">
-                                        <div className="h-6 w-6 rounded-[4px] bg-[#EAECF0] flex justify-center ">
+                                    <div className="flex gap-2">
+                                        <div className="h-6 w-6 rounded-[4px] bg-[#EAECF0] flex justify-center">
                                             <span className="text-[#1D2939] font-semibold text-base">{index + 1}</span>
                                         </div>
-                                        <span className="font-semibold  text-base text-[#1D2939] ">
+                                        <span className="font-semibold text-base text-[#1D2939]">
                                             {question.question || "Question"}
                                         </span>
                                     </div>
@@ -293,7 +286,6 @@ function Questions({ questionsList, setQuestionsList }: QuestionsProps) {
                                     value={question.question}
                                     onChange={(e) => handleInputChange(index, e)}
                                 /> */}
-                                {/* CODE FOR REACT QUILL */}
                                 <div
                                     className={`pt-2 bg-[#FFFFFF] border ${isWriting ? 'border-[#D6BBFB]  shadow-[0px_0px_0px_4px_rgba(158,119,237,0.25),0px_1px_2px_0px_rgba(16,24,40,0.05)]' : 'border-[#EAECF0]'
                                         } rounded-[12px] h-auto`}>
@@ -301,8 +293,8 @@ function Questions({ questionsList, setQuestionsList }: QuestionsProps) {
                                         <ReactQuill
                                             ref={quillRef}
                                             onBlur={handleBlur}
-                                            value={question.question}
-                                            onChange={(value) => handleInputChange(index, value)}
+                                            value={value}
+                                            onChange={handleChange}
                                             onKeyDown={handleKeyDown}
                                             modules={{ toolbar: false }}
                                             placeholder="Description"

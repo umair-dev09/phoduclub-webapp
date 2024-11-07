@@ -23,34 +23,8 @@ function PersonalDetails() {
                 </button>
             </div>
             <hr />
-            <div className="flex flex-row w-full">
-                <div className="flex flex-col w-1/2">
-                    <span className="font-normal text-[#667085] text-[16px]">First Name</span>
-                    <span className="font-semibold text-[#1D2939] text-[16px]">Jenny</span>
-                </div>
-                <div className="flex flex-col w-1/2">
-                    <span className="font-normal text-[#667085] text-[16px]">Last Name</span>
-                    <span className="font-semibold text-[#1D2939] text-[16px]">Wilson</span>
-                </div>
-            </div>
-            <div className="flex flex-row w-full">
-                <div className="flex flex-col w-1/2">
-                    <span className="font-normal text-[#667085] text-[16px]">User ID</span>
-                    <span className="font-semibold text-[#1D2939] text-[16px]">jenny#8745</span>
-                </div>
-                <div className="flex flex-col w-1/2">
-                    <span className="font-normal text-[#667085] text-[16px]">Mobile No.</span>
-                    <span className="font-semibold text-[#1D2939] text-[16px]">+918431823329</span>
-                </div>
-            </div>
 
-            <div className="flex flex-col w-full">
-                <span className="font-normal text-[#667085] text-[16px]">Joining Date</span>
-                <span className="font-semibold text-[#1D2939] text-[16px]">Jan 6, 2024</span>
-            </div>
         </div>
-
-
 
     )
 }

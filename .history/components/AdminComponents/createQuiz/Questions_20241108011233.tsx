@@ -293,7 +293,6 @@ function Questions({ questionsList, setQuestionsList }: QuestionsProps) {
                                     value={question.question}
                                     onChange={(e) => handleInputChange(index, e)}
                                 /> */}
-                                {/* CODE FOR REACT QUILL */}
                                 <div
                                     className={`pt-2 bg-[#FFFFFF] border ${isWriting ? 'border-[#D6BBFB]  shadow-[0px_0px_0px_4px_rgba(158,119,237,0.25),0px_1px_2px_0px_rgba(16,24,40,0.05)]' : 'border-[#EAECF0]'
                                         } rounded-[12px] h-auto`}>
