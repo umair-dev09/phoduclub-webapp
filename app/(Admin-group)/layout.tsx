@@ -22,11 +22,14 @@ export default function DashboardGroup({ children }: DashboardGroupProps) {
             case 'dashboard':
                 pageName = 'Dashboard';
                 break;
-            case 'learncms':
-                pageName = 'Learn CMS';
+            case 'rolemanagement':
+                pageName = 'Role Management';
                 break;
-            case 'usermanagement':
-                pageName = 'User Management';
+            case 'customerdatamanagement':
+                pageName = 'Customer Data Management';
+                break;
+            case 'marketingintegration':
+                pageName = 'Marketing Integration';
                 break;
             case 'quizzesmanagement':
                 pageName = 'Quizzes Management';
@@ -53,6 +56,9 @@ export default function DashboardGroup({ children }: DashboardGroupProps) {
                 pageName = 'Back to Quizzes Management';
                 break;
             case 'courseinfo':
+                pageName = 'Back to Quizzes Management';
+                break;
+            case 'courses':
                 pageName = 'Back to Quizzes Management';
                 break;
             default:

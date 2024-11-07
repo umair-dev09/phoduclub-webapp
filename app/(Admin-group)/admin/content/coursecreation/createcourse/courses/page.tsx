@@ -4,7 +4,15 @@ import Image from "next/image";
 import { useState } from "react"
 import CourseContent from "@/components/AdminComponents/CourseMangement/CourseContent";
 import StudentsPurchased from "@/components/AdminComponents/CourseMangement/StudentsPurchased";
-function courses() {
+
+type priceprops ={
+    Price: number;
+    Discountprice: number;
+
+
+}
+
+function courses({Price, Discountprice}: priceprops) {
 
     const [isprice, setIsprice] = useState("");
 
