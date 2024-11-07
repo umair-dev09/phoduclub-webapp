@@ -9,9 +9,8 @@ import { useRouter } from "next/navigation";
 interface priceprops {
     Price: number;
     Discountprice: number;
-
-
 }
+
 function createcourse({ Price, Discountprice }: priceprops) {
     // state for ReactQuill
     const [value, setValue] = useState('');
