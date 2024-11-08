@@ -131,10 +131,7 @@ export type IconsType =
   | "by-role-arrow-down"
   | "logout-03"
   | "big-profile-pic"
-  | "chevron-down"
-  | "megaphone"
-  | "read-2"
-  | "idea-2";
+  | "chevron-down";
 
 
 

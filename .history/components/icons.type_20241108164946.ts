@@ -133,8 +133,7 @@ export type IconsType =
   | "big-profile-pic"
   | "chevron-down"
   | "megaphone"
-  | "read-2"
-  | "idea-2";
+  | "read-2";
 
 
 

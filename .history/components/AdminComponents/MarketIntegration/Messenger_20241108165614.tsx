@@ -6,52 +6,16 @@ import { Dialog, DialogBackdrop, DialogPanel } from "@headlessui/react";
 import { Popover, PopoverContent, PopoverTrigger } from "@nextui-org/popover";
 function Messenger() {
     const [isOpen, setIsOpen] = useState(false);
+
     // Handler to open the dialog
     const handleCreate = () => setIsOpen(true);
+    // State to keep track of the selected role
+    const [selectedRole, setSelectedRole] = useState('Admin');
 
-    // -------------------------------------------------------------------------------
-    // State to track the selected icon
-    const [selectedIcon, setSelectedIcon] = useState("/icons/idea-2.svg");
-
-    // Function to handle icon selection
-    const handleIconSelect = (iconPath: React.SetStateAction<string>) => {
-        setSelectedIcon(iconPath); // Update the selected icon state
-    };
-
-    // -------------------------------------------------------------------------------
-    const [selectedIconforimage, setSelectedIconforimage] = useState("/icons/annocement.png");
-
-    // Function to handle icon selection
-    const handleIconSelectforimage = (iconPath: React.SetStateAction<string>) => {
-        setSelectedIconforimage(iconPath); // Update the selected icon state
-    };
-    // -------------------------------------------------------------------------------
-    // State for Description words(0/100)
-    const [description, setDescription] = useState("");
-    const handleInputChange = (e: any) => {
-        const inputText = e.target.value;
-        if (inputText.length <= 100) {
-            setDescription(inputText);
-        }
-    };
-    // -------------------------------------------------------------------------------
-    // State for Name words(0/100)
-    const [name, setName] = useState("");
-    const handleInputChangeforName = (e: any) => {
-        const inputText = e.target.value;
-        if (inputText.length <= 50) {
-            setName(inputText);
-        }
-    };
-    // -------------------------------------------------------------------------------
-    // State for  words(0/100)
-    const [cta, setCta] = useState("");
-    const handleInputChangeforCta = (e: any) => {
-        const inputText = e.target.value;
-        if (inputText.length <= 30) {
-            setCta(inputText);
-        }
-    };
+    // Function to handle role selection
+    const handleRoleSelect = (role: React.SetStateAction<string>) => {
+        setSelectedRole(role);
+    }
     return (
         <div className="flex flex-col gap-3">
             <div className="flex flex-row justify-between h-[44px] items-center mt-4">
@@ -100,74 +64,52 @@ function Messenger() {
                                         <PopoverTrigger>
                                             <button className="flex flex-row w-[44px] items-center rounded-md transition duration-200 ease-in-out justify-between">
                                                 <Image
-                                                    src={selectedIcon}
+                                                    src="/icons/idea-2.svg"
                                                     width={24}
                                                     height={24}
-                                                    alt="Selected Icon"
-                                                />
+                                                    alt="Idea-Button" />
                                                 <Image
                                                     src="/icons/chevron-down.svg"
                                                     width={20}
                                                     height={20}
-                                                    alt="Dropdown Arrow"
-                                                />
+                                                    alt="down-arrow- Button" />
                                             </button>
-                                        </PopoverTrigger>
 
+                                        </PopoverTrigger>
                                         <PopoverContent>
-                                            <div className="py-1 w-[56px] border border-solid border-[#EAECF0] bg-[#FFFFFF] rounded-md flex flex-col shadow-lg">
-                                                {/* Idea Button */}
-                                                <button
-                                                    className="flex flex-row w-full p-1 hover:bg-[#F2F4F7] justify-center items-center"
-                                                    onClick={() => handleIconSelect("/icons/idea-2.svg")}
-                                                >
+                                            <div className="py-1 w-[56px] border border-solid border-[#EAECF0] bg-[#FFFFFF]  rounded-md flex flex-col  shadow-lg">
+                                                <button className="flex flex-row  w-full p-1  hover:bg-[#F2F4F7] justify-center items-center">
                                                     <Image
                                                         src="/icons/idea-2.svg"
                                                         width={24}
                                                         height={24}
-                                                        alt="Idea Button"
-                                                    />
+                                                        alt="Idea-Button" />
                                                 </button>
-
-                                                {/* Megaphone Button */}
-                                                <button
-                                                    className="flex flex-row w-full p-1 hover:bg-[#F2F4F7] justify-center items-center"
-                                                    onClick={() => handleIconSelect("/icons/megaphone.svg")}
-                                                >
+                                                <button className="flex flex-row h-[40px] w-full p-1 hover:bg-[#F2F4F7]  justify-center items-center">
                                                     <Image
                                                         src="/icons/megaphone.svg"
                                                         width={24}
                                                         height={24}
-                                                        alt="Megaphone Button"
-                                                    />
+                                                        alt="megaPhone-Button" />
                                                 </button>
-
-                                                {/* Read Button */}
-                                                <button
-                                                    className="flex flex-row w-full p-1 hover:bg-[#F2F4F7] justify-center items-center"
-                                                    onClick={() => handleIconSelect("/icons/read-2.svg")}
-                                                >
+                                                <button className="flex flex-row h-[40px] w-full p-1  hover:bg-[#F2F4F7]  justify-center items-center">
                                                     <Image
                                                         src="/icons/read-2.svg"
                                                         width={24}
                                                         height={24}
-                                                        alt="Read Button"
-                                                    />
+                                                        alt="Read- Button" />
                                                 </button>
                                             </div>
                                         </PopoverContent>
                                     </Popover>
 
-
                                     <input
                                         className="w-full text-sm font-medium text-[#1D2939] placeholder:font-normal placeholder:text-[#A1A1A1] rounded-md outline-none"
                                         type="text"
                                         placeholder="Notification Heading"
-                                        value={name}
-                                        onChange={handleInputChangeforName}
                                     />
                                 </div>
-                                <span className="text-[#475467] font-normal text-right text-sm">{name.length}/50</span>
+                                <span className="text-[#475467] font-normal text-right text-sm">0/50</span>
 
 
                             </div>
@@ -177,10 +119,8 @@ function Messenger() {
                                     className="w-full py-2 px-4 text-sm font-medium text-[#1D2939] border border-[#D0D5DD] rounded-md"
                                     type="text"
                                     placeholder="Button Name"
-                                    value={description}
-                                    onChange={handleInputChange}
                                 />
-                                <span className="text-[#475467] font-normal text-right text-sm">{description.length}/100</span>
+                                <span className="text-[#475467] font-normal text-right text-sm">0/100</span>
                             </div>
                             <div className="flex flex-col gap-1 w-full">
                                 <label className="text-[#1D2939] text-sm font-medium">CTA</label>
@@ -188,10 +128,8 @@ function Messenger() {
                                     className="w-full py-2 px-4 text-sm font-medium text-[#1D2939] border border-[#D0D5DD] rounded-md"
                                     type="text"
                                     placeholder="Notification Content"
-                                    value={cta}
-                                    onChange={handleInputChangeforCta}
                                 />
-                                <span className="text-[#475467] font-normal text-right text-sm">{cta.length}/30</span>
+                                <span className="text-[#475467] font-normal text-right text-sm">0/30</span>
                             </div>
                             <div className="flex flex-col gap-1 w-full ">
                                 <label className="text-[#1D2939] text-sm font-medium">Hyperlink</label>
@@ -219,67 +157,25 @@ function Messenger() {
                                     <div>
                                         <Popover placement="bottom">
                                             <PopoverTrigger>
-                                                <button className="flex flex-row w-[44px] items-center rounded-md transition duration-200 ease-in-out justify-between">
+                                                <button className="flex flex-row w-[60px] items-center rounded-md transition duration-200 ease-in-out justify-between">
                                                     <Image
-                                                        src={selectedIconforimage}
+                                                        src="/icons/idea-01.svg"
                                                         width={24}
                                                         height={24}
-                                                        alt="Selected Icon"
-                                                    />
+                                                        alt="calender" />
                                                     <Image
                                                         src="/icons/chevron-down.svg"
                                                         width={20}
                                                         height={20}
-                                                        alt="Dropdown Arrow"
-                                                    />
+                                                        alt="down-arrow- Button" />
                                                 </button>
+
                                             </PopoverTrigger>
 
                                             <PopoverContent>
-                                                <div className="py-1 w-[56px] border border-solid border-[#EAECF0] bg-[#FFFFFF] rounded-md flex flex-col shadow-lg">
-                                                    {/* Idea Button */}
-                                                    <button
-                                                        className="flex flex-row w-full p-1 hover:bg-[#F2F4F7] justify-center items-center"
-                                                        onClick={() => handleIconSelectforimage("/icons/annocement.png")}
-                                                    >
-                                                        <Image
-                                                            src="/icons/annocement.png"
-                                                            width={24}
-                                                            height={24}
-                                                            alt="Idea Button"
-                                                        />
-                                                    </button>
-
-                                                    {/* Megaphone Button */}
-                                                    <button
-                                                        className="flex flex-row w-full p-1 hover:bg-[#F2F4F7] justify-center items-center"
-                                                        onClick={() => handleIconSelectforimage("/icons/megaphone.svg")}
-                                                    >
-                                                        <Image
-                                                            src="/icons/megaphone.svg"
-                                                            width={24}
-                                                            height={24}
-                                                            alt="Megaphone Button"
-                                                        />
-                                                    </button>
-
-                                                    {/* Read Button */}
-                                                    <button
-                                                        className="flex flex-row w-full p-1 hover:bg-[#F2F4F7] justify-center items-center"
-                                                        onClick={() => handleIconSelectforimage("/icons/read-2.svg")}
-                                                    >
-                                                        <Image
-                                                            src="/icons/read-2.svg"
-                                                            width={24}
-                                                            height={24}
-                                                            alt="Read Button"
-                                                        />
-                                                    </button>
-                                                </div>
+                                                <div>jabir</div>
                                             </PopoverContent>
                                         </Popover>
-
-
                                     </div>
                                 </div>
 

@@ -191,7 +191,7 @@ function Messenger() {
                                     value={cta}
                                     onChange={handleInputChangeforCta}
                                 />
-                                <span className="text-[#475467] font-normal text-right text-sm">{cta.length}/30</span>
+                                <span className="text-[#475467] font-normal text-right text-sm">{handleInputChangeforCta.length}/30</span>
                             </div>
                             <div className="flex flex-col gap-1 w-full ">
                                 <label className="text-[#1D2939] text-sm font-medium">Hyperlink</label>

@@ -25,31 +25,12 @@ function Messenger() {
     const handleIconSelectforimage = (iconPath: React.SetStateAction<string>) => {
         setSelectedIconforimage(iconPath); // Update the selected icon state
     };
-    // -------------------------------------------------------------------------------
-    // State for Description words(0/100)
+
     const [description, setDescription] = useState("");
     const handleInputChange = (e: any) => {
         const inputText = e.target.value;
         if (inputText.length <= 100) {
             setDescription(inputText);
-        }
-    };
-    // -------------------------------------------------------------------------------
-    // State for Name words(0/100)
-    const [name, setName] = useState("");
-    const handleInputChangeforName = (e: any) => {
-        const inputText = e.target.value;
-        if (inputText.length <= 50) {
-            setName(inputText);
-        }
-    };
-    // -------------------------------------------------------------------------------
-    // State for  words(0/100)
-    const [cta, setCta] = useState("");
-    const handleInputChangeforCta = (e: any) => {
-        const inputText = e.target.value;
-        if (inputText.length <= 30) {
-            setCta(inputText);
         }
     };
     return (
@@ -163,11 +144,9 @@ function Messenger() {
                                         className="w-full text-sm font-medium text-[#1D2939] placeholder:font-normal placeholder:text-[#A1A1A1] rounded-md outline-none"
                                         type="text"
                                         placeholder="Notification Heading"
-                                        value={name}
-                                        onChange={handleInputChangeforName}
                                     />
                                 </div>
-                                <span className="text-[#475467] font-normal text-right text-sm">{name.length}/50</span>
+                                <span className="text-[#475467] font-normal text-right text-sm">0/50</span>
 
 
                             </div>
@@ -188,10 +167,8 @@ function Messenger() {
                                     className="w-full py-2 px-4 text-sm font-medium text-[#1D2939] border border-[#D0D5DD] rounded-md"
                                     type="text"
                                     placeholder="Notification Content"
-                                    value={cta}
-                                    onChange={handleInputChangeforCta}
                                 />
-                                <span className="text-[#475467] font-normal text-right text-sm">{cta.length}/30</span>
+                                <span className="text-[#475467] font-normal text-right text-sm">0/30</span>
                             </div>
                             <div className="flex flex-col gap-1 w-full ">
                                 <label className="text-[#1D2939] text-sm font-medium">Hyperlink</label>

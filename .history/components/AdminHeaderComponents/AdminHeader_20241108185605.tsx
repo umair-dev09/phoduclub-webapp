@@ -42,7 +42,7 @@ function Header({ currentPage }: HeaderProps) {
                     </Button>
                 )}
 
-                {(currentPage === 'Role Management' || currentPage === 'Customer Data Management' || currentPage === 'Marketing Integration') && (
+                {(currentPage === 'Role Management' && "customerdatamanagement" && "marketingintegration") && (
                     <Popover placement="bottom-end">
                         <PopoverTrigger>
                             <button className='flex flex-row gap-2 items-center'>
@@ -55,10 +55,7 @@ function Header({ currentPage }: HeaderProps) {
                             </button>
                         </PopoverTrigger>
                         <PopoverContent className="flex flex-col bg-white border border-lightGrey rounded-md w-[167px] shadow-md">
-                            <button
-                                className="flex items-center p-3 hover:bg-[#F2F4F7] w-full"
-                                onClick={() => handleTabClick('/admin/myprofile')}
-                            >
+                            <button className="flex items-center p-3 hover:bg-[#F2F4F7] w-full" onClick={() => handleTabClick('/admin/myprofile')}>
                                 <Image src="/icons/profile.svg" width={18} height={18} alt="Edit-profile" />
                                 <span className="text-sm text-[#0C111D] ml-2">My profile</span>
                             </button>
@@ -69,8 +66,6 @@ function Header({ currentPage }: HeaderProps) {
                         </PopoverContent>
                     </Popover>
                 )}
-
-
             </div>
         </div>
     );
