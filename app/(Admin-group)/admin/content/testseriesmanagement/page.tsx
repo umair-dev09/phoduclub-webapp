@@ -24,7 +24,7 @@ import ViewAnalytics from "@/components/AdminComponents/QuizInfoDailogs/ViewAnal
 import QuizStatus from '@/components/AdminComponents/QuizzesManagement/quizStatus';
 
 // Define types for quiz data
-interface Quiz {
+type Quiz = {
     questions: number;
     date: string; // Can be Date type if desired
     students: number;
@@ -203,6 +203,18 @@ function TesstseriesInfo() {
         setCurrentPage(1);
     }, [searchTerm, checkedState, quizzes]);
 
+    const statusColors: Record<Option, string> = {
+        Saved: '#7400E0',
+        Live: '#7400E0',
+        Scheduled: '#7400E0',
+        Pause: '#7400E0',
+        Finished: '#7400E0',
+        Canceled: '#7400E0',
+    };
+
+    // Get selected statuses to render as indicators.
+    const selectedStatuses = options.filter((option) => checkedState[option]);
+
     return (
         <div className="flex flex-col px-[32px] w-full gap-4 overflow-y-auto h-auto py-5">
             <div className="flex flex-row justify-between items-center">
@@ -291,7 +303,24 @@ function TesstseriesInfo() {
                 </div>
             ) : (
                 <div className="flex flex-1 flex-col">
-                    <div className="h-full">
+                    <div className="flex flex-row items-center justify-between w-full mt-4">
+                        <div className="flex flex-row gap-2">
+                            {selectedStatuses.map((status) => (
+                                <div key={status} className="flex flex-row items-center w-fit px-3 py-2 gap-1 text-xs font-medium bg-[#EDE4FF] rounded-[0.375rem]" style={{ color: statusColors[status] }}>
+                                    {status}
+                                    <button onClick={() => toggleCheckbox(status)}>
+                                        <Image src='/icons/multiplication-sign.svg' alt="close" width={16} height={16} />
+                                    </button>
+                                </div>
+                            ))}
+                        </div>
+                        {selectedStatuses.length > 0 && (
+                            <button className="text-sm text-[#9012FF] font-semibold" onClick={() => setCheckedState({ Saved: false, Live: false, Scheduled: false, Pause: false, Finished: false, Canceled: false })}>
+                                clear all
+                            </button>
+                        )}
+                    </div>
+                    <div className="h-full mt-4">
                         <div className="border border-[#EAECF0] rounded-xl">
                             <table className="w-full bg-white rounded-xl">
                                 <thead>

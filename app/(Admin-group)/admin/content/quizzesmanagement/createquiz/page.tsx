@@ -1,18 +1,16 @@
 "use client";
-
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import Image from "next/image";
 import Quizinfo from "@/components/AdminComponents/createQuiz/QuizInfo";
 import Questions from "@/components/AdminComponents/createQuiz/Questions";
 import Review from "@/components/AdminComponents/createQuiz/Review";
 import Publish from "@/components/AdminComponents/createQuiz/Publish";
-import QuizCreated from "@/components/AdminComponents/createQuiz/QuizCreated";
 import { toast, ToastContainer } from 'react-toastify';
 import {now, today, CalendarDate, getLocalTimeZone,parseDateTime} from "@internationalized/date";
 import { auth, db, storage } from "@/firebase";
 import { addDoc, collection, doc, getDoc, serverTimestamp, setDoc } from "firebase/firestore";
 import 'react-toastify/dist/ReactToastify.css';
-import { useRouter } from 'next/navigation';
 // Define interfaces for question options and structure
 interface Options {
     A: string;
@@ -322,8 +320,7 @@ function CreateQuiz() {
                 return <Review questionsList={questionsList} />;
             case Step.Publish:
                 return <Publish forYear={forYear} setForYear={setForYear} forExam={forExam} setForExam={setForExam} forProduct={forProduct} setForProduct={setForProduct} marksPerQ={marksPerQ} setMarksPerQ={setMarksPerQ} nMarksPerQ={nMarksPerQ} setnMarksPerQ={setnMarksPerQ} timeNumber={timeNumber} setTimeNumber={setTimeNumber} timeText={timeText} setTimeText={setTimeText} startDate={startDate} setStartDate={setStartDate} endDate={endDate} setEndDate={setEndDate} liveQuizNow={liveQuizNow} setLiveQuizNow={setLiveQuizNow}/>;
-            case Step.QuizCreated:
-                return <QuizCreated />;
+            
             default:
                 return <Quizinfo
                     quizName={quizName}
@@ -343,10 +340,7 @@ function CreateQuiz() {
         }
     };
 
-    // If the quiz is published, render the QuizCreated component and hide everything else
-    if (isPublished) {
-        return <QuizCreated />;
-    }
+
     return (
         <> 
             <div className="ml-[32px] w-[250px] my-[32px] bg-[#FFFFFF] border border-solid border-[#EAECF0] rounded-md">

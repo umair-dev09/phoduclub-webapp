@@ -6,8 +6,12 @@ import ReactQuill from 'react-quill'; // Ensure correct import
 import Quill from 'quill'; // Import Quill to use it for types
 import { Popover, PopoverTrigger, PopoverContent } from '@nextui-org/popover';
 import { useRouter } from "next/navigation";
+interface priceprops {
+    Price: number;
+    Discountprice: number;
+}
 
-function createcourse() {
+function createcourse({ Price, Discountprice }: priceprops) {
     // state for ReactQuill
     const [value, setValue] = useState('');
     const quillRef = useRef<ReactQuill | null>(null); // Ref to hold ReactQuill instance
@@ -137,7 +141,6 @@ function createcourse() {
                     </button>
                     <button className="h-[44px] w-[120px] ml-4 rounded-md items-center flex border border-solid border-[#800EE2] bg-[#9012FF] justify-center shadow-inner-button"
                         onClick={() => handleTabClick('/admin/content/coursecreation/createcourse/courses')}>
-                            
                         <span className="text-[#FFFFFF] font-semibold text-sm">Create</span>
                     </button>
                 </div>
