@@ -3,13 +3,13 @@ import React from 'react';
 import Image from 'next/image';
 import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
-import FormControlLabel from '@mui/material/FormControlLabel';
+import FormControlLabel from '@mui/material/FormControlLabel'; 
 // Receving the data from CreateQuiz
 interface Options {
     A: string;
     B: string;
     C: string;
-    D: string;
+    D: string; 
 }
 
 interface Question {
