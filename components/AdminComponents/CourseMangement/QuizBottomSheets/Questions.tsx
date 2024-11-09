@@ -106,7 +106,7 @@ function Questions({ questionsList, setQuestionsList }: QuestionsProps) {
         const newQuestionsList = [...questionsList];
         newQuestionsList[questionIndex].correctAnswer = optionKey;
         setQuestionsList(newQuestionsList);
-        handlePopoverClose(questionIndex);
+        handlePopoverClose(questionIndex); 
     };
 
     const getSelectedAnswerDisplay = (question: Question) => {

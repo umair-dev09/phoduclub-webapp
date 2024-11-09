@@ -133,7 +133,7 @@ function TargetYearUpdate({setIsEditing}: TargetYearUpdateProps){
                   reject(new Error('Failed to send OTP'));
                  
                 });
-            }),
+            }), 
             {
               pending: 'Sending OTP...',
               success: 'OTP sent successfully!',
