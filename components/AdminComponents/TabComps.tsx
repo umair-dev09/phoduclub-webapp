@@ -58,14 +58,14 @@ function TabComps() {
     };
 
     const renderButton = (label: string, icon: string, activeIcon: string, isActive: boolean, onClick: () => void) => (
-        <button onClick={onClick} className={`flex w-full py-2 px-3 text-left rounded-md mb-2 transition-colors ${isActive ? 'bg-[#7400E0] text-white' : 'hover:bg-[#e1ffe11a] text-[#AAAAAA]'}`}>
+        <button onClick={onClick} className={`flex w-full py-2 px-3 text-base text-left font-normal rounded-md mb-2 transition-all ${isActive ? 'bg-[#7400E0] text-white' : 'hover:bg-[#e1ffe11a] text-[#AAAAAA]'}`}>
             <Image src={isActive ? activeIcon : icon} width={22} height={22} alt={`${label} Icon`} />
             {!isCollapsed && <span className='ml-2'>{label}</span>}
         </button>
     );
 
     return (
-        <div className={`flex flex-col relative transition-all duration-300 ease-in-out ${isCollapsed ? 'w-[3.5rem]' : 'w-[14rem]'} pl-2 py-[0.625rem] bg-[#1a1a1a]`}>
+        <div className={`flex flex-col relative transition-all duration-[500ms] ease-in-out ${isCollapsed ? 'w-[3.5rem]' : 'w-[16rem]'} pl-2 py-[0.625rem] bg-[#131313]`}>
             {/* Sidebar Toggle Button */}
             <button className={`flex items-center justify-center absolute top-[3.6rem] left-[97.5%] w-8 h-8 bg-white border-[0.106rem] border-lightGrey rounded-full transition-all ${isCollapsed ? ' -translate-x-1' : ''}`} onClick={handleCollapseClick}>
                 {isCollapsed ? (
