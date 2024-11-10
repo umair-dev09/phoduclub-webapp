@@ -197,8 +197,8 @@ function rolemangement() {
                 </div>
             </div>
 
-            <div className="flex flex-col">
-                <div className="border border-[#EAECF0] rounded-xl">
+            <div className="flex flex-col justify-between h-full">
+                <div className="flex border border-[#EAECF0] rounded-xl">
                     <table className="w-full bg-white rounded-xl">
                         <thead>
                             <tr>
@@ -276,7 +276,7 @@ function rolemangement() {
                 </div>
 
                 {/* Pagination Section */}
-                <div>
+                <div className="flex justify-end">
                     <div className="flex justify-right">
                         <PaginationSection
                             totalItems={data.length}
