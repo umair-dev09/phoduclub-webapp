@@ -187,6 +187,7 @@ div {
 .tooltip {
   position: relative;
   display: inline-block;
+  width: 100%;
 
 }
 
@@ -198,6 +199,7 @@ div {
   z-index: 3;
   background-color: #131313;
   box-shadow: 0 5px 10px rgba(0, 0, 0, 0.3);
+  padding: 6px 14px;
   font-size: 15px;
   font-weight: 400;
   border-radius: 5px;
@@ -205,6 +207,7 @@ div {
   opacity: 0;
   pointer-events: none;
   transition: all 0.4s ease;
+  margin-top: -5px;
   height: 60px;
   /* Fixed height */
   line-height: 60px;

@@ -187,17 +187,21 @@ div {
 .tooltip {
   position: relative;
   display: inline-block;
-
+  width: 100%;
+  height: "100px";
 }
 
 .tooltipText {
   position: absolute;
   color: white;
   top: -20px;
+
   left: calc(100% + 15px);
+
   z-index: 3;
   background-color: #131313;
   box-shadow: 0 5px 10px rgba(0, 0, 0, 0.3);
+  padding: 6px 14px;
   font-size: 15px;
   font-weight: 400;
   border-radius: 5px;
@@ -205,12 +209,8 @@ div {
   opacity: 0;
   pointer-events: none;
   transition: all 0.4s ease;
-  height: 60px;
-  /* Fixed height */
-  line-height: 60px;
-  /* Centers the text vertically */
-  width: auto;
-  /* Allows width to adjust according to text */
+  margin-top: -5px;
+
 }
 
 .tooltip:hover .tooltipText {
@@ -218,5 +218,4 @@ div {
   pointer-events: auto;
   top: 50%;
   transform: translateY(-50%);
-  /* Keeps it centered on hover */
 }

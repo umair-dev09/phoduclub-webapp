@@ -54,25 +54,29 @@ function Products() {
                                 <td className="px-6 py-4 text-gray-700">{course.price}</td>
                                 <td className="px-6 py-4 text-gray-700">{course.date}</td>
                                 <td className="px-6 py-4 text-gray-500">
-                                    <Popover placement="bottom">
-                                        <PopoverTrigger className="outline-none">
-
-                                            <button className="text-xl font-bold">⋮</button>
+                                    <Popover placement="bottom-end">
+                                        <PopoverTrigger>
+                                            <button className='flex flex-row gap-2 items-center'>
+                                                <Image src='/icons/Profile-pic.png' alt="DP" width={40} height={40} />
+                                                <div className='flex flex-col'>
+                                                    <span className='text-[#1D2939] font-semibold text-sm'>Jenny Wilson</span>
+                                                    <span className='text-[#667085] text-sm'>Admin</span>
+                                                </div>
+                                                <Image src="/icons/by-role-arrow-down.svg" width={20} height={20} alt="Select-date Button" />
+                                            </button>
                                         </PopoverTrigger>
-                                        <PopoverContent>
-                                            <div className=" w-[167px] px-0 border border-solid border-[#EAECF0] bg-[#FFFFFF] rounded-md  shadow-lg">
+                                        <PopoverContent className="flex flex-col bg-white border border-lightGrey rounded-md w-[167px] px-0 shadow-md">
+                                            <button
+                                                className="flex items-center p-3 hover:bg-[#F2F4F7] w-full"
 
-                                                <button
-                                                    className="flex flex-row h-[40px] w-full p-3  gap-2 hover:bg-[#F2F4F7] items-center">
-                                                    <Image
-                                                        src="/icons/delete.svg"
-                                                        width={18}
-                                                        height={18}
-                                                        alt="Delete"
-                                                    />
-                                                    <span className="text-[#DE3024] text-sm font-medium">Delete</span>
-                                                </button>
-                                            </div>
+                                            >
+                                                <Image src="/icons/profile.svg" width={18} height={18} alt="Edit-profile" />
+                                                <p className="text-sm text-[#0C111D] ml-2">My profile</p>
+                                            </button>
+                                            <button className="flex items-center p-3 hover:bg-[#F2F4F7] w-full">
+                                                <Image src="/icons/logout-03.svg" width={18} height={18} alt="Log out" />
+                                                <p className="text-sm text-[#DE3024] ml-2">Log out</p>
+                                            </button>
                                         </PopoverContent>
                                     </Popover>
                                 </td>

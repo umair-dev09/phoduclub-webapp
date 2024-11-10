@@ -193,7 +193,7 @@ function customerData() {
 
                     {/* Select Date Button */}
                     <button className="h-[44px] w-[143px] rounded-md bg-[#FFFFFF] border border-solid border-[#D0D5DD] justify-between flex items-center p-3">
-                        <span className="font-medium text-sm text-[#182230] ml-2">All Students</span>
+                        <span className="font-medium text-sm text-[#667085] ml-2">All Students</span>
                         <Image
                             src="/icons/by-role-arrow-down.svg"
                             width={20}

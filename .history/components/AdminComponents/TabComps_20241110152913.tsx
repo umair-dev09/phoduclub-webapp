@@ -144,13 +144,11 @@ function TabComps() {
 
                 <button
                     onClick={() => handleTabClick('quizzesmanagement', '/admin/content/quizzesmanagement')}
-                    className={`tooltip flex items-center w-full h-10 py-2 px-3 text-left rounded-md mb-2 transition-colors ${activeTab === 'quizzesmanagement' ? 'bg-[#444444] text-white' : 'hover:bg-[#e1ffe11a] text-[#AAAAAA]'}`}
+                    className={`flex items-center w-full h-10 py-2 px-3 text-left rounded-md mb-2 transition-colors ${activeTab === 'quizzesmanagement' ? 'bg-[#444444] text-white' : 'hover:bg-[#e1ffe11a] text-[#AAAAAA]'}`}
                 >
-                    <span className="ml-7 text-[0.813rem]">
-                        {!isCollapsed ? 'Quizzes Management' : <span className="tooltipText">Quizzes Management</span>}
-                    </span>
-                </button>
+                    {!isCollapsed && <span className="ml-7 text-[0.813rem]">Quizzes Management</span>}
 
+                </button>
 
 
 
