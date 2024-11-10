@@ -76,8 +76,8 @@ function PersonalDetails() {
                 <DialogBackdrop className="fixed inset-0 bg-black/30" />
                 <div className="fixed inset-0 flex items-center justify-center">
                     <DialogPanel className="bg-white rounded-2xl w-[500px] h-auto ">
-                        <div className="flex flex-col relative gap-6">
-                            <div className="flex flex-col px-6 gap-6">
+                        <div className="flex flex-col px-6">
+                            <div className="flex flex-col relative gap-6">
                                 <div className="flex flex-row justify-between mt-6">
                                     <h3 className="text-lg font-bold text-[#1D2939]">Edit Info</h3>
                                     <button onClick={closeDialog}>
@@ -132,7 +132,7 @@ function PersonalDetails() {
                                     />
                                 </div>
                             </div>
-                            <div className="flex justify-end gap-4 border-t p-4">
+                            <div className="flex justify-end gap-4 border-t pt-4">
                                 <button onClick={closeDialog} className="px-6 py-2 border rounded-md text-sm font-semibold">
                                     Discard
                                 </button>

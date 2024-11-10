@@ -63,7 +63,7 @@ function Products() {
                                             <div className=" w-[167px] border border-solid border-[#EAECF0] bg-[#FFFFFF] rounded-md  shadow-lg">
 
                                                 <button
-                                                    className="flex flex-row h-[40px] w-full  gap-2 hover:bg-[#F2F4F7] items-center">
+                                                    className="flex flex-row h-[40px] w-full px-3 gap-2 hover:bg-[#F2F4F7] items-center">
                                                     <Image
                                                         src="/icons/delete.svg"
                                                         width={18}

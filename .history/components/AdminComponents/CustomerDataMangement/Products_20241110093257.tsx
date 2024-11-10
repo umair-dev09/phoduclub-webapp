@@ -1,5 +1,4 @@
 import Image from "next/image";
-import { PopoverContent, PopoverTrigger, Popover } from '@nextui-org/popover';
 function Products() {
     const courses = [
         { id: 1, name: "BITSET Full Course", price: "₹ 2499", date: "Jan 6, 2024" },
@@ -54,27 +53,7 @@ function Products() {
                                 <td className="px-6 py-4 text-gray-700">{course.price}</td>
                                 <td className="px-6 py-4 text-gray-700">{course.date}</td>
                                 <td className="px-6 py-4 text-gray-500">
-                                    <Popover placement="bottom">
-                                        <PopoverTrigger className="outline-none">
-
-                                            <button className="text-xl font-bold">⋮</button>
-                                        </PopoverTrigger>
-                                        <PopoverContent>
-                                            <div className=" w-[167px] border border-solid border-[#EAECF0] bg-[#FFFFFF] rounded-md  shadow-lg">
-
-                                                <button
-                                                    className="flex flex-row h-[40px] w-full  gap-2 hover:bg-[#F2F4F7] items-center">
-                                                    <Image
-                                                        src="/icons/delete.svg"
-                                                        width={18}
-                                                        height={18}
-                                                        alt="Delete"
-                                                    />
-                                                    <span className="text-[#DE3024] text-sm font-medium">Delete</span>
-                                                </button>
-                                            </div>
-                                        </PopoverContent>
-                                    </Popover>
+                                    <button className="text-xl font-bold">⋮</button>
                                 </td>
                             </tr>
                         ))}
@@ -87,13 +66,3 @@ function Products() {
     )
 }
 export default Products;
-
-
-
-
-
-
-
-
-
-

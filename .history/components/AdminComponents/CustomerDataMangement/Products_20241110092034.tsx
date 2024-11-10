@@ -1,5 +1,5 @@
 import Image from "next/image";
-function Community() {
+function Products() {
     return (
         <div className="flex flex-col gap-6">
             <div className="flex flex-row gap-3 border-b border-solid border-[#EAECF0] p-8">
@@ -18,9 +18,11 @@ function Community() {
                     <div className="flex justify-start items-start text-[16px] font-medium text-[#667085]">jenny#8547</div>
                 </div>
             </div>
-            <p className="font-semibold text-[#1D2939] text-lg px-8">Community</p>
+            <p className="font-semibold text-[#1D2939] text-lg px-8">Products</p>
+
+
         </div>
 
     )
 }
-export default Community;
+export default Products;

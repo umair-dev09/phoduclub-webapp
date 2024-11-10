@@ -1,5 +1,4 @@
 import Image from "next/image";
-import { PopoverContent, PopoverTrigger, Popover } from '@nextui-org/popover';
 function Products() {
     const courses = [
         { id: 1, name: "BITSET Full Course", price: "₹ 2499", date: "Jan 6, 2024" },
@@ -26,8 +25,8 @@ function Products() {
                 </div>
             </div>
             <p className="font-semibold text-[#1D2939] text-lg px-8">Products</p>
-            <div className="overflow-x-auto px-6 rounded-lg">
-                <table className="min-w-full bg-white border border-gray-200 rounded-xl shadow-sm">
+            <div className="overflow-x-auto px-6">
+                <table className="min-w-full bg-white border border-gray-200 rounded-lg shadow-sm">
                     <thead>
                         <tr className="border-b">
                             <th className="px-6 py-3 text-left text-sm font-medium text-gray-600">Courses</th>
@@ -39,11 +38,9 @@ function Products() {
                     <tbody>
                         {courses.map((course) => (
                             <tr key={course.id} className="border-b hover:bg-gray-50">
-                                <td className="px-6 py-4 flex items-center gap-3  text-[#9012FF] text-left underline text-sm font-medium">
-                                    <Image
-                                        src="/icons/course.png"
-                                        width={42}
-                                        height={42}
+                                <td className="px-6 py-4 flex items-center gap-3">
+                                    <img
+                                        src="https://via.placeholder.com/40"
                                         alt="Course Icon"
                                         className="w-10 h-10 rounded-full"
                                     />
@@ -54,27 +51,7 @@ function Products() {
                                 <td className="px-6 py-4 text-gray-700">{course.price}</td>
                                 <td className="px-6 py-4 text-gray-700">{course.date}</td>
                                 <td className="px-6 py-4 text-gray-500">
-                                    <Popover placement="bottom">
-                                        <PopoverTrigger className="outline-none">
-
-                                            <button className="text-xl font-bold">⋮</button>
-                                        </PopoverTrigger>
-                                        <PopoverContent>
-                                            <div className=" w-[167px] border border-solid border-[#EAECF0] bg-[#FFFFFF] rounded-md  shadow-lg">
-
-                                                <button
-                                                    className="flex flex-row h-[40px] w-full  gap-2 hover:bg-[#F2F4F7] items-center">
-                                                    <Image
-                                                        src="/icons/delete.svg"
-                                                        width={18}
-                                                        height={18}
-                                                        alt="Delete"
-                                                    />
-                                                    <span className="text-[#DE3024] text-sm font-medium">Delete</span>
-                                                </button>
-                                            </div>
-                                        </PopoverContent>
-                                    </Popover>
+                                    <button className="text-xl font-bold">⋮</button>
                                 </td>
                             </tr>
                         ))}
@@ -87,13 +64,3 @@ function Products() {
     )
 }
 export default Products;
-
-
-
-
-
-
-
-
-
-

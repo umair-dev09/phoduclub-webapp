@@ -347,19 +347,6 @@ function customerData() {
                                         />
                                     </div>
                                 </div>
-                                <div className="flex flex-col gap-1 w-full ">
-                                    <label htmlFor="num-ratings" className="text-[#1D2939] text-sm font-medium">
-                                        User Id
-                                    </label>
-                                    <div className="flex flex-row py-2 px-4 w-full gap-2 border border-solid border-[#D0D5DD] rounded-md transition duration-200 ease-in-out ">
-                                        <input
-
-                                            className="w-full text-sm font-medium text-[#1D2939] placeholder:font-normal placeholder:text-[#A1A1A1] rounded-md outline-none"
-                                            type="text"
-                                            placeholder="User Id"
-                                        />
-                                    </div>
-                                </div>
                                 <div className="flex flex-col gap-1">
                                     <label className="text-[#344054] text-sm font-medium">Mobile No.</label>
                                     <PhoneInput

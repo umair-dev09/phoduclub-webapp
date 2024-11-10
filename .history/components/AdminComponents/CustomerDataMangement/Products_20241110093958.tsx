@@ -55,15 +55,13 @@ function Products() {
                                 <td className="px-6 py-4 text-gray-700">{course.date}</td>
                                 <td className="px-6 py-4 text-gray-500">
                                     <Popover placement="bottom">
-                                        <PopoverTrigger className="outline-none">
-
-                                            <button className="text-xl font-bold">⋮</button>
+                                        <PopoverTrigger asChild>
+                                            <button className="text-xl font-bold outline-none">⋮</button>
                                         </PopoverTrigger>
-                                        <PopoverContent>
-                                            <div className=" w-[167px] border border-solid border-[#EAECF0] bg-[#FFFFFF] rounded-md  shadow-lg">
-
+                                        <PopoverContent align="start" sideOffset={4} className="p-0 border-none outline-none">
+                                            <div className="h-[88px] w-[167px] border border-solid border-[#EAECF0] bg-[#FFFFFF] rounded-md flex flex-col py-[4px] shadow-lg">
                                                 <button
-                                                    className="flex flex-row h-[40px] w-full  gap-2 hover:bg-[#F2F4F7] items-center">
+                                                    className="flex flex-row h-[40px] w-full px-3 gap-2 hover:bg-[#F2F4F7] items-center">
                                                     <Image
                                                         src="/icons/delete.svg"
                                                         width={18}
@@ -75,6 +73,7 @@ function Products() {
                                             </div>
                                         </PopoverContent>
                                     </Popover>
+
                                 </td>
                             </tr>
                         ))}

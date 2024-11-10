@@ -22,25 +22,25 @@ function ExamDetails() {
             <div className="flex flex-col gap-2 px-8">
                 <span className="text-[#667085] font-normal text-base">Preparing Exams</span>
                 <div className="flex flex-wrap gap-2">
-                    <div className="flex items-center gap-1.5 px-3 py-1.5 text-sm text-gray-700 font-medium border border-solid border-[#D0D5DD] rounded-full cursor-pointer hover:bg-gray-100">
+                    <div className="flex items-center gap-1.5 px-3 py-1.5 text-sm text-gray-700 font-semibold  border border-solid border-[#D0D5DD] rounded-full cursor-pointer hover:bg-gray-100">
                         <span className="w-2 h-2 rounded-full bg-red-500"></span> JEE
                     </div>
-                    <div className="flex items-center gap-1.5 px-3 py-1.5 text-sm text-[#344054] font-medium border border-solid border-[#D0D5DD] rounded-full cursor-pointer hover:bg-gray-100">
+                    <div className="flex items-center gap-1.5 px-3 py-1.5 text-sm text-[#344054] font-semibold  border border-solid border-[#D0D5DD] rounded-full cursor-pointer hover:bg-gray-100">
                         <span className="w-2 h-2 rounded-full bg-orange-500"></span> BITSAT
                     </div>
                     <div className="flex items-center gap-1.5 px-3 py-1.5 text-sm text-gray-700 font-medium border border-solid border-[#D0D5DD] rounded-full cursor-pointer hover:bg-gray-100">
                         <span className="w-2 h-2 rounded-full bg-green-500"></span> VITEEE
                     </div>
-                    <div className="flex items-center gap-1.5 px-3 py-1.5 text-sm text-gray-700 font-medium border border-solid border-[#D0D5DD] rounded-full cursor-pointer hover:bg-gray-100">
+                    <div className="flex items-center gap-1.5 px-3 py-1.5 text-sm text-gray-700 font-semibold border border-solid border-[#D0D5DD] rounded-full cursor-pointer hover:bg-gray-100">
                         <span className="w-2 h-2 rounded-full bg-blue-500"></span> SRMJEEE
                     </div>
-                    <div className="flex items-center gap-1.5 px-3 py-1.5 text-sm text-gray-700 font-medium border border-solid border-[#D0D5DD] rounded-full cursor-pointer hover:bg-gray-100">
+                    <div className="flex items-center gap-1.5 px-3 py-1.5 text-sm text-gray-700 font-semibold border border-solid border-[#D0D5DD]rounded-full cursor-pointer hover:bg-gray-100">
                         <span className="w-2 h-2 rounded-full bg-blue-500"></span> KCET
                     </div>
-                    <div className="flex items-center gap-1.5 px-3 py-1.5 text-sm text-gray-700 font-medium border border-solid border-[#D0D5DD] rounded-full cursor-pointer hover:bg-gray-100">
+                    <div className="flex items-center gap-1.5 px-3 py-1.5 text-sm text-gray-700 font-semibold border border-solid border-[#D0D5DD] rounded-full cursor-pointer hover:bg-gray-100">
                         <span className="w-2 h-2 rounded-full bg-red-500"></span> COMEDK
                     </div>
-                    <div className="flex items-center gap-1.5 px-3 py-1.5 text-sm text-gray-700 font-medium border border-solid border-[#D0D5DD] rounded-full cursor-pointer hover:bg-gray-100">
+                    <div className="flex items-center gap-1.5 px-3 py-1.5 text-sm text-gray-700 font-semibold border border-solid border-[#D0D5DD] rounded-full cursor-pointer hover:bg-gray-100">
                         <span className="w-2 h-2 rounded-full bg-orange-500"></span> MET
                     </div>
                 </div>
@@ -48,13 +48,13 @@ function ExamDetails() {
             <div className="flex flex-col gap-2 px-8">
                 <span className="text-[#667085] font-normal text-base">Target Year</span>
                 <div className="flex flex-wrap gap-2">
-                    <div className="flex items-center gap-1.5 px-3 py-1.5 text-sm text-gray-700 font-medium border border-solid border-[#D0D5DD] rounded-full cursor-pointer hover:bg-gray-100">
+                    <div className="flex items-center gap-1.5 px-3 py-1.5 text-sm text-gray-700 font-semibold  border border-solid border-[#D0D5DD] rounded-full cursor-pointer hover:bg-gray-100">
                         <span className="w-2 h-2 rounded-full bg-red-500"></span> 2024
                     </div>
-                    <div className="flex items-center gap-1.5 px-3 py-1.5 text-sm text-[#344054] font-medium  border border-solid border-[#D0D5DD] rounded-full cursor-pointer hover:bg-gray-100">
+                    <div className="flex items-center gap-1.5 px-3 py-1.5 text-sm text-[#344054] font-semibold  border border-solid border-[#D0D5DD] rounded-full cursor-pointer hover:bg-gray-100">
                         <span className="w-2 h-2 rounded-full bg-orange-500"></span> 2025
                     </div>
-                    <div className="flex items-center gap-1.5 px-3 py-1.5 text-sm text-gray-700 font-medium border border-solid border-[#D0D5DD] rounded-full cursor-pointer hover:bg-gray-100">
+                    <div className="flex items-center gap-1.5 px-3 py-1.5 text-sm text-gray-700 font-semibold border border-solid border-[#D0D5DD] rounded-full cursor-pointer hover:bg-gray-100">
                         <span className="w-2 h-2 rounded-full bg-blue-500"></span> 2026
                     </div>
 

@@ -29,7 +29,7 @@ function Support() {
             </div>
             <div className="flex flex-col px-8">
                 <div className="relative flex">
-                    <div className="pt-2">
+                    <div className="pt-1">
                         <button
                             onClick={() => handleTabClick('Queries')}
                             className={`relative py-1 pr-4 text-base transition duration-200 ${activeTab === 'Queries' ? 'text-[#7400E0]' : 'text-[#667085] hover:text-[#7400E0]'} focus:outline-none`}
@@ -38,7 +38,7 @@ function Support() {
                             Queries
                         </button>
                     </div>
-                    <div className="pt-2">
+                    <div className="pt-1">
                         <button
                             onClick={() => handleTabClick('Reporting')}
                             className={`relative py-1 px-4 text-base transition duration-200 ${activeTab === 'Reporting' ? 'text-[#7400E0]' : 'text-[#667085] hover:text-[#7400E0]'} focus:outline-none`}

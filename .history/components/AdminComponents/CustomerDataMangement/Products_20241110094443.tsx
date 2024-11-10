@@ -62,7 +62,7 @@ function Products() {
                                         <PopoverContent>
                                             <div className=" w-[167px] border border-solid border-[#EAECF0] bg-[#FFFFFF] rounded-md  shadow-lg">
 
-                                                <button
+                                                {/* <button
                                                     className="flex flex-row h-[40px] w-full  gap-2 hover:bg-[#F2F4F7] items-center">
                                                     <Image
                                                         src="/icons/delete.svg"
@@ -71,7 +71,7 @@ function Products() {
                                                         alt="Delete"
                                                     />
                                                     <span className="text-[#DE3024] text-sm font-medium">Delete</span>
-                                                </button>
+                                                </button> */}
                                             </div>
                                         </PopoverContent>
                                     </Popover>

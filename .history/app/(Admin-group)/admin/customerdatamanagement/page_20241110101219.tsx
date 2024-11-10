@@ -310,7 +310,7 @@ function customerData() {
                         <div className="flex flex-col relative gap-6">
                             <div className="flex flex-col px-6 gap-6">
                                 <div className="flex flex-row justify-between mt-6">
-                                    <h3 className="text-lg font-bold text-[#1D2939]">Add New User</h3>
+                                    <h3 className="text-lg font-bold text-[#1D2939]">Edit Info</h3>
                                     <button onClick={closeDialog}>
                                         <Image src="/icons/cancel.svg" alt="Cancel" width={20} height={20} />
                                     </button>
@@ -347,19 +347,6 @@ function customerData() {
                                         />
                                     </div>
                                 </div>
-                                <div className="flex flex-col gap-1 w-full ">
-                                    <label htmlFor="num-ratings" className="text-[#1D2939] text-sm font-medium">
-                                        User Id
-                                    </label>
-                                    <div className="flex flex-row py-2 px-4 w-full gap-2 border border-solid border-[#D0D5DD] rounded-md transition duration-200 ease-in-out ">
-                                        <input
-
-                                            className="w-full text-sm font-medium text-[#1D2939] placeholder:font-normal placeholder:text-[#A1A1A1] rounded-md outline-none"
-                                            type="text"
-                                            placeholder="User Id"
-                                        />
-                                    </div>
-                                </div>
                                 <div className="flex flex-col gap-1">
                                     <label className="text-[#344054] text-sm font-medium">Mobile No.</label>
                                     <PhoneInput
@@ -381,7 +368,7 @@ function customerData() {
                                     Discard
                                 </button>
                                 <button onClick={closeDialog} className="px-6 py-2 bg-[#9012FF] text-white rounded-md text-sm">
-                                    Add New User
+                                    Save Changes
                                 </button>
                             </div>
                         </div>

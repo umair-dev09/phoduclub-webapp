@@ -34,7 +34,7 @@ function ExamDetails() {
                     <div className="flex items-center gap-1.5 px-3 py-1.5 text-sm text-gray-700 font-medium border border-solid border-[#D0D5DD] rounded-full cursor-pointer hover:bg-gray-100">
                         <span className="w-2 h-2 rounded-full bg-blue-500"></span> SRMJEEE
                     </div>
-                    <div className="flex items-center gap-1.5 px-3 py-1.5 text-sm text-gray-700 font-medium border border-solid border-[#D0D5DD] rounded-full cursor-pointer hover:bg-gray-100">
+                    <div className="flex items-center gap-1.5 px-3 py-1.5 text-sm text-gray-700 font-medium border border-solid border-[#D0D5DD]rounded-full cursor-pointer hover:bg-gray-100">
                         <span className="w-2 h-2 rounded-full bg-blue-500"></span> KCET
                     </div>
                     <div className="flex items-center gap-1.5 px-3 py-1.5 text-sm text-gray-700 font-medium border border-solid border-[#D0D5DD] rounded-full cursor-pointer hover:bg-gray-100">
