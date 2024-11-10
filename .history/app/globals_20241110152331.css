@@ -183,40 +183,46 @@ div {
   }
 }
 
-/* tooltip for the side-button  */
+/* Tooltip container for the side button */
 .tooltip {
   position: relative;
   display: inline-block;
-
+  /* Removed width: 100% to allow dynamic sizing based on text */
 }
 
+/* Tooltip text styling */
 .tooltipText {
   position: absolute;
   color: white;
   top: -20px;
   left: calc(100% + 15px);
+  /* Offset to the right of the icon/text */
+
   z-index: 3;
   background-color: #131313;
   box-shadow: 0 5px 10px rgba(0, 0, 0, 0.3);
+  padding: 6px 14px;
+  /* Padding can be adjusted based on your design */
   font-size: 15px;
   font-weight: 400;
   border-radius: 5px;
   white-space: nowrap;
+  /* Prevents text from wrapping */
   opacity: 0;
   pointer-events: none;
   transition: all 0.4s ease;
-  height: 60px;
-  /* Fixed height */
-  line-height: 60px;
-  /* Centers the text vertically */
-  width: auto;
-  /* Allows width to adjust according to text */
+  margin-top: -5px;
+
+  /* Ensure the width and height adapt to the text content */
+  min-width: auto;
+  max-width: auto;
 }
 
+/* Show tooltip on hover */
 .tooltip:hover .tooltipText {
   opacity: 1;
   pointer-events: auto;
   top: 50%;
   transform: translateY(-50%);
-  /* Keeps it centered on hover */
+  /* Centers vertically relative to the text */
 }

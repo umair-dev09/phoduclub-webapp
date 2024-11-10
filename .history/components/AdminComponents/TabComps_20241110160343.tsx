@@ -110,7 +110,7 @@ function TabComps() {
             <Collapsible
                 trigger={
                     <div
-                        className={` tooltip flex flex-row items-center mb-2 py-2 px-3 rounded-md ${isContentSection() ? 'bg-[#7400E0] text-white' : 'hover:bg-[#e1ffe11a] text-[#AAAAAA]'}`}
+                        className={` tooltip flex flex-row items-center mb-2 py-2  rounded-md ${isContentSection() ? 'bg-[#7400E0] text-white' : 'hover:bg-[#e1ffe11a] text-[#AAAAAA]'}`}
                         onClick={() => toggleCollapsible(0)}
                     >
                         <div className="flex items-center">

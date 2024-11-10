@@ -110,7 +110,7 @@ function TabComps() {
             <Collapsible
                 trigger={
                     <div
-                        className={` tooltip flex flex-row items-center mb-2 py-2 px-3 rounded-md ${isContentSection() ? 'bg-[#7400E0] text-white' : 'hover:bg-[#e1ffe11a] text-[#AAAAAA]'}`}
+                        className={`flex items-center justify-between mb-2 py-2 px-3 rounded-md ${isContentSection() ? 'bg-[#7400E0] text-white' : 'hover:bg-[#e1ffe11a] text-[#AAAAAA]'}`}
                         onClick={() => toggleCollapsible(0)}
                     >
                         <div className="flex items-center">
@@ -120,12 +120,9 @@ function TabComps() {
                                 height={22}
                                 alt="Content"
                             />
-                            <span className="ml-2">
-                                {!isCollapsed ? 'Content' : <span className="tooltipText">Content</span>}
-                            </span>
+                            {!isCollapsed && <span className="ml-2">Content</span>}
+                            {isCollapsed && <span className="tooltipText">Content</span>}
                         </div>
-
-                        {/* Arrow icon */}
                         {!isCollapsed && (
                             <Image
                                 src={isOpenArray[0] ? '/icons/arrow-up-01-round.svg' : '/icons/arrow-down-02-round.svg'}
@@ -135,8 +132,6 @@ function TabComps() {
                             />
                         )}
                     </div>
-
-
                 }
                 open={isOpenArray[0]}
                 transitionTime={300}
@@ -144,13 +139,10 @@ function TabComps() {
 
                 <button
                     onClick={() => handleTabClick('quizzesmanagement', '/admin/content/quizzesmanagement')}
-                    className={`tooltip flex items-center w-full h-10 py-2 px-3 text-left rounded-md mb-2 transition-colors ${activeTab === 'quizzesmanagement' ? 'bg-[#444444] text-white' : 'hover:bg-[#e1ffe11a] text-[#AAAAAA]'}`}
+                    className={`flex items-center w-full h-10 py-2 px-3 text-left rounded-md mb-2 transition-colors ${activeTab === 'quizzesmanagement' ? 'bg-[#444444] text-white' : 'hover:bg-[#e1ffe11a] text-[#AAAAAA]'}`}
                 >
-                    <span className="ml-7 text-[0.813rem]">
-                        {!isCollapsed ? 'Quizzes Management' : <span className="tooltipText">Quizzes Management</span>}
-                    </span>
+                    {!isCollapsed && <span className="ml-7 text-[0.813rem]">Quizzes Management</span>}
                 </button>
-
 
 
 
