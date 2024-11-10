@@ -168,7 +168,9 @@ function customerData() {
     return (
         <div className="flex flex-col w-full  gap-4 p-6">
             <div className="flex flex-row justify-between items-center">
-                <span className="text-lg font-semibold text-[#1D2939]">Users</span>
+                <h2 className="text-lg font-semibold text-[#1D2939]">
+                    Users
+                </h2>
                 <div className="flex flex-row gap-3">
                     {/* Search Button */}
                     <button className="h-[44px] w-[250px] rounded-md bg-[#FFFFFF] border border-solid border-[#D0D5DD] flex items-center">
@@ -204,19 +206,16 @@ function customerData() {
                         className="h-[44px] w-auto px-6 py-2 bg-[#8501FF] rounded-md shadow-inner-button border border-solid border-[#800EE2] flex items-center justify-center">
                         <span className="text-[#FFFFFF] font-semibold text-sm">Add New User</span>
                     </button>
-
-
                 </div>
             </div>
 
-            <div className="flex flex-col">
-                <div className="border border-[#EAECF0] rounded-xl">
-                    <table className="w-full bg-white rounded-xl">
+            <div className="flex flex-col justify-between h-full">
+                <div className="flex border border-[#EAECF0] rounded-xl">
+                    <table className="w-full h-auto bg-white rounded-xl">
                         <thead>
                             <tr>
-                                <th className="w-1/4 text-left px-8 py-4 pl-8 rounded-tl-xl flex flex-row ">
+                                <th className="w-1/4 text-left px-8 py-4 pl-8 rounded-tl-xl flex flex-row">
                                     <span className="text-[#667085] font-medium text-sm">Name</span>
-
                                 </th>
                                 <th className=" w-[17%] text-center px-8 py-4 text-[#667085] font-medium text-sm">
                                     <div className="flex flex-row justify-center gap-1">
@@ -238,7 +237,7 @@ function customerData() {
                         </thead>
                         <tbody>
                             {currentItems.map((quiz, index) => (
-                                <tr key={index} className="border-t border-solid border-[#EAECF0]">
+                                <tr key={index} className="h-auto border-t border-solid border-[#EAECF0]">
                                     <td className="py-2">
                                         <div className="flex flex-row ml-8 gap-2">
                                             <div className="flex items-center">
@@ -248,7 +247,12 @@ function customerData() {
                                                 </div>
                                             </div>
                                             <div className="flex items-start justify-start flex-col">
-                                                <div className="font-semibold">Jenny Wilson</div>
+                                                <div
+                                                    className="font-semibold cursor-pointer"
+                                                    onClick={() => handleTabClick('/admin/customerdatamanagement/customerinfo')}
+                                                >
+                                                    Jenny Wilson
+                                                </div>
                                                 <div className="flex justify-start items-start text-[13px] text-[#667085]">jenny#8547</div>
                                             </div>
                                         </div>
@@ -290,8 +294,8 @@ function customerData() {
                 </div>
 
                 {/* Pagination Section */}
-                <div>
-                    <div className="flex justify-right">
+                <div className="flex items-end justify-end h-auto">
+                    <div className="flex justify-right h-auto">
                         <PaginationSection
                             totalItems={data.length}
                             itemsPerPage={itemsPerPage}

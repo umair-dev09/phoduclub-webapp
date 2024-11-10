@@ -144,6 +144,7 @@ function TabComps() {
             {/* Additional Tabs */}
             {renderButton('Role Management', '/icons/Role Management-2.svg', '/icons/Role Management.svg', activeTab === 'rolemanagement', () => handleTabClick('rolemanagement', '/admin/rolemanagement'))}
             {renderButton('Marketing Integration', '/icons/Marketing Integration-2.svg', '/icons/Marketing Integration.svg', activeTab === 'marketingintegration', () => handleTabClick('marketingintegration', '/admin/marketingintegration'))}
+            {renderButton('Customer Data Management', '/icons/community-2.svg', '/icons/community.svg', activeTab === 'customerdatamanagement', () => handleTabClick('customerdatamanagement', '/admin/customerdatamanagement'))}
         </div>
     );
 }

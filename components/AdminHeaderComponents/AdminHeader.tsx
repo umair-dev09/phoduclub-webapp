@@ -15,7 +15,7 @@ function Header({ currentPage }: HeaderProps) {
         router.back();
     };
 
-    const isBackPage = currentPage === 'Back to Quizzes Management' || currentPage === 'Back to Test Series Management';
+    const isBackPage = currentPage === 'Back to Quizzes Management' || currentPage === 'Back to Test Series Management' || currentPage === 'Back to Customer Data Management';
 
     // Function to handle tab click and navigate to a new route
     const handleTabClick = (path: string) => {
@@ -41,7 +41,7 @@ function Header({ currentPage }: HeaderProps) {
             </div>
 
             <div className="flex flex-row items-center gap-4">
-                {isBackPage && (
+                {isBackPage && currentPage !== 'Back to Customer Data Management' && (
                     <Button className='w-[7.5rem] px-6 py-[0.625rem] text-sm text-[#1D2939] font-semibold border border-lightGrey rounded-md'>
                         Save
                     </Button>
