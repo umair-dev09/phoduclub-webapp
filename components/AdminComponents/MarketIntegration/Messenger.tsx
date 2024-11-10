@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import React from 'react';
 import Image from "next/image";
 import { Dialog, DialogBackdrop, DialogPanel } from "@headlessui/react";
@@ -14,78 +14,49 @@ import {
     PaginationNext,
     PaginationPrevious,
 } from "@/components/ui/pagination";
+import QuizStatus from '@/components/AdminComponents/QuizzesManagement/quizStatus';
 
 // Define types for quiz data
 interface Quiz {
     userid: string;
     moblieid: string;
     role: string;
-    status: 'Live' | 'Paused' | 'Finished' | 'Scheduled' | 'Cancelled' | 'Saved';
+    status: 'Live' | 'Paused' | 'Finished' | 'Scheduled' | 'Cancelled' | 'Saved' | 'Ended';
 }
 
 // Mock fetchQuizzes function with types
 const fetchQuizzes = async (): Promise<Quiz[]> => {
     const allQuizzes: Quiz[] = [
-        {
-            userid: "jenny#8547",
-            moblieid: "+919164588441",
-            role: "Dec 1, 2023",
-            status: "Live"
-        },
-        {
-            userid: "jenny#8547",
-            moblieid: "+919164588441",
-            role: "Nov 15, 2023",
-            status: "Saved"
-        },
-        {
-            userid: "jenny#8547",
-            moblieid: "+919164588441",
-            role: "Oct 1, 2023",
-            status: "Paused"
-        },
-        {
-            userid: "jenny#8547",
-            moblieid: "+919164588441",
-            role: "Sep 1, 2023",
-            status: "Finished"
-        },
-        {
-            userid: "jenny#8547",
-            moblieid: "+919164588441",
-            role: "Jan 1, 2024",
-            status: "Scheduled"
-        },
-        {
-            userid: "jenny#8547",
-            moblieid: "+919164588441",
-            role: "Feb 1, 2024",
-            status: "Cancelled"
-        },
-        {
-            userid: "jenny#8547",
-            moblieid: "85%",
-            role: "Jul 15, 2023",
-            status: "Live"
-        },
-        {
-            userid: "jenny#8547",
-            moblieid: "+919164588441",
-            role: "Dec 10, 2023",
-            status: "Saved"
-        },
-        {
-            userid: "jenny#8547",
-            moblieid: "+919164588441",
-            role: "Nov 25, 2023",
-            status: "Paused"
-        },
-        {
-            userid: "jenny#8547",
-            moblieid: "+919164588441",
-            role: "Aug 20, 2023",
-            status: "Finished"
-        }
+        { userid: "jenny#001", moblieid: "+919876543210", role: "Admin", status: "Live" },
+        { userid: "jenny#002", moblieid: "+918765432109", role: "Customer Care", status: "Saved" },
+        { userid: "jenny#003", moblieid: "+917654321098", role: "Teacher", status: "Paused" },
+        { userid: "jenny#004", moblieid: "+916543210987", role: "Chief Moderator", status: "Saved" },
+        { userid: "jenny#005", moblieid: "+915432109876", role: "Guide", status: "Finished" },
+        { userid: "jenny#006", moblieid: "+914321098765", role: "Editor", status: "Ended" },
+        { userid: "jenny#007", moblieid: "+913210987654", role: "Admin", status: "Scheduled" },
+        { userid: "jenny#008", moblieid: "+912109876543", role: "Customer Care", status: "Live" },
+        { userid: "jenny#009", moblieid: "+911098765432", role: "Teacher", status: "Saved" },
+        { userid: "jenny#010", moblieid: "+910987654321", role: "Chief Moderator", status: "Paused" },
+        { userid: "jenny#011", moblieid: "+919876543219", role: "Guide", status: "Saved" },
+        { userid: "jenny#012", moblieid: "+918765432198", role: "Editor", status: "Finished" },
+        { userid: "jenny#013", moblieid: "+917654321987", role: "Admin", status: "Ended" },
+        { userid: "jenny#014", moblieid: "+916543219876", role: "Customer Care", status: "Live" },
+        { userid: "jenny#015", moblieid: "+915432198765", role: "Teacher", status: "Scheduled" },
+        { userid: "jenny#016", moblieid: "+914321987654", role: "Chief Moderator", status: "Finished" },
+        { userid: "jenny#017", moblieid: "+913219876543", role: "Guide", status: "Saved" },
+        { userid: "jenny#018", moblieid: "+912198765432", role: "Editor", status: "Paused" },
+        { userid: "jenny#019", moblieid: "+911987654321", role: "Admin", status: "Saved" },
+        { userid: "jenny#020", moblieid: "+910876543219", role: "Customer Care", status: "Live" },
+        { userid: "jenny#021", moblieid: "+919765432109", role: "Teacher", status: "Ended" },
+        { userid: "jenny#022", moblieid: "+918654321098", role: "Chief Moderator", status: "Scheduled" },
+        { userid: "jenny#023", moblieid: "+917543210987", role: "Guide", status: "Finished" },
+        { userid: "jenny#024", moblieid: "+916432109876", role: "Editor", status: "Saved" },
+        { userid: "jenny#025", moblieid: "+915321098765", role: "Admin", status: "Live" },
+        { userid: "jenny#026", moblieid: "+914210987654", role: "Customer Care", status: "Saved" },
+        { userid: "jenny#027", moblieid: "+913109876543", role: "Teacher", status: "Paused" },
+        { userid: "jenny#028", moblieid: "+912098765432", role: "Chief Moderator", status: "Ended" },
+        { userid: "jenny#029", moblieid: "+911987654320", role: "Guide", status: "Saved" },
+        { userid: "jenny#030", moblieid: "+910876543218", role: "Editor", status: "Saved" }
     ];
     return allQuizzes;
 };
@@ -155,13 +126,24 @@ function Messenger() {
     const firstItemIndex = lastItemIndex - itemsPerPage;
     const currentItems = data.slice(firstItemIndex, lastItemIndex);
 
+    // Fetch quizzes when component mounts
+    useEffect(() => {
+        const loadQuizzes = async () => {
+            setLoading(true);
+            const quizzes = await fetchQuizzes();
+            setQuizzes(quizzes);
+            setData(quizzes);
+            setLoading(false);
+        };
+        loadQuizzes();
+    }, []);
+
     return (
-        <div className="flex flex-col gap-3">
+        <div className="flex flex-col h-full gap-3">
             <div className="flex flex-row justify-between h-[44px] items-center mt-4">
                 <h1 className="font-semibold text-lg text-[#1D2939]">Messenger</h1>
                 <button
-                    // onClick={handleCreate}
-                    onClick={() => handleButtonClick('/admin/marketingintegration/marketinfo')}
+                    onClick={handleCreate}
                     className="h-[44px] w-auto px-6 py-2 bg-[#8501FF] rounded-md shadow-inner-button border border-solid border-[#800EE2] flex items-center justify-center"
                 >
                     <span className="text-[#FFFFFF] font-semibold text-sm">Create Push Notification</span>
@@ -188,45 +170,52 @@ function Messenger() {
                     <table className="w-full bg-white rounded-xl">
                         <thead>
                             <tr>
-                                <th className="w-1/4 text-left px-8 py-4 pl-8 rounded-tl-xl flex flex-row ">
-                                    <span className="text-[#667085] font-medium text-sm">Name</span>
-                                    <Image src="/icons/expandall.svg" width={28} height={18} alt="Expand all icon" />
+                                <th className="text-center px-8 py-4 pl-8 rounded-tl-xl text-[#667085] font-medium text-sm">
+                                    Sr.No.
                                 </th>
-                                <th className=" w-[17%] text-center px-8 py-4 text-[#667085] font-medium text-sm">
-                                    <div className="flex flex-row justify-center gap-1">
-                                        <p>User Id</p>
-                                        <Image src='/icons/unfold-more-round.svg' alt="" width={16} height={16} />
-                                    </div>
+                                <th className="text-left px-8 py-4 pl-8 text-[#667085] font-medium text-sm">
+                                    Notification
                                 </th>
-                                <th className=" w-[17%] text-center px-8 py-4 text-[#667085] font-medium text-sm">
-                                    <div className="flex flex-row justify-center gap-1">
-                                        <p>Moblie No.</p>
-                                        <Image src='/icons/unfold-more-round.svg' alt="" width={16} height={16} />
-                                    </div>
+                                <th className="text-center px-8 py-4 text-[#667085] font-medium text-sm">
+                                    Created On
                                 </th>
-                                <th className=" w-[17%] text-center px-8 py-4 text-[#667085] font-medium text-sm">
-                                    <div className="flex flex-row justify-center gap-1">
-                                        <p>Role</p>
-                                        <Image src='/icons/unfold-more-round.svg' alt="" width={16} height={16} />
-                                    </div>
+                                <th className="text-center px-8 py-4 text-[#667085] font-medium text-sm">
+                                    Clicked
                                 </th>
-                                <th className="w-[12%] text-center px-8 py-4 rounded-tr-xl text-[#667085] font-medium text-sm">Action</th>
+                                <th className="text-center px-8 py-4 text-[#667085] font-medium text-sm">
+                                    Status
+                                </th>
+                                <th className="text-center px-8 py-4 rounded-tr-xl text-[#667085] font-medium text-sm">
+                                    Action
+                                </th>
                             </tr>
                         </thead>
                         <tbody>
                             {currentItems.map((quiz, index) => (
                                 <tr key={index} className="border-t border-solid border-[#EAECF0]">
+                                    <td className="text-[#667085] text-center font-medium text-sm">
+                                        1
+                                    </td>
                                     <td className="py-2">
                                         <div className="flex flex-row ml-8 gap-2">
                                             <Image src='/icons/Profile-pic.png' alt="DP" width={40} height={40} />
                                             <div className="flex items-start justify-start flex-col">
-                                                <div className="font-semibold">Jenny Wilson</div>
+                                                <button
+                                                    className="font-semibold"
+                                                    onClick={() => handleButtonClick('/admin/marketingintegration/marketinfo')}
+                                                >
+                                                    Jenny Wilson
+                                                </button>
                                             </div>
                                         </div>
                                     </td>
                                     <td className="px-8 py-4 text-center text-[#101828] text-sm">{quiz.userid}</td>
                                     <td className="px-8 py-4 text-center text-[#101828] text-sm">{quiz.moblieid}</td>
-                                    <td className="px-8 py-4 text-center text-[#101828] text-sm">{quiz.role}</td>
+                                    <td className="px-8 py-4 text-center text-[#101828] text-sm">
+                                        <span className='flex items-center justify-start ml-[33%] rounded-full'>
+                                            <QuizStatus status={quiz.status} />
+                                        </span>
+                                    </td>
                                     <td className="flex items-center justify-center px-8 py-4 text-[#101828] text-sm">
                                         <Popover placement="bottom-end">
                                             <PopoverTrigger>

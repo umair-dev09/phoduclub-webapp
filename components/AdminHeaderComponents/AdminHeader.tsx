@@ -15,7 +15,7 @@ function Header({ currentPage }: HeaderProps) {
         router.back();
     };
 
-    const isBackPage = currentPage === 'Back to Quizzes Management' || currentPage === 'Back to Test Series Management' || currentPage === 'Back to Customer Data Management' || currentPage === 'Back to Messenger';
+    const isBackPage = currentPage === 'Back to Quizzes Management' || currentPage === 'Back to Test Series Management' || currentPage === 'Back to Customer Data Management' || currentPage === 'Back to Messenger' || currentPage === 'Back to Course Management';
 
     // Function to handle tab click and navigate to a new route
     const handleTabClick = (path: string) => {

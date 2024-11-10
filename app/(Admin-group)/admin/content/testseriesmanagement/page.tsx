@@ -253,7 +253,7 @@ function TesstseriesInfo() {
                     {/* By Status Button */}
                     <Popover placement="bottom-start">
                         <PopoverTrigger>
-                            <div className="h-[44px] w-[126px] rounded-md bg-[#FFFFFF] border border-solid border-[#D0D5DD] flex items-center justify-between p-3 cursor-pointer">
+                            <button className="h-[44px] w-[126px] rounded-md bg-[#FFFFFF] border border-solid border-[#D0D5DD] flex items-center justify-between p-3 cursor-pointer">
                                 <p className={`flex flex-row font-medium text-sm ${selectedCount > 0 ? 'text-[#182230]' : 'text-[#667085]'}`}>
                                     {selectedCount > 0 ? `${selectedCount} selected` : 'By status'}
                                 </p>
@@ -263,10 +263,10 @@ function TesstseriesInfo() {
                                     height={20}
                                     alt="Arrow-Down Button"
                                 />
-                            </div>
+                            </button>
                         </PopoverTrigger>
-                        <PopoverContent>
-                            <div className="flex flex-col w-[10.438rem] h-auto bg-white border border-lightGrey rounded-md">
+                        <PopoverContent className="flex flex-col w-full h-auto px-0 bg-white border border-lightGrey rounded-md">
+                            <div>
                                 {options.map((option) => (
                                     <div
                                         key={option}
@@ -303,10 +303,10 @@ function TesstseriesInfo() {
                 </div>
             ) : (
                 <div className="flex flex-1 flex-col">
-                    <div className="flex flex-row items-center justify-between w-full mt-4">
+                    <div className="flex flex-row items-center justify-between w-full">
                         <div className="flex flex-row gap-2">
                             {selectedStatuses.map((status) => (
-                                <div key={status} className="flex flex-row items-center w-fit px-3 py-2 gap-1 text-xs font-medium bg-[#EDE4FF] rounded-[0.375rem]" style={{ color: statusColors[status] }}>
+                                <div key={status} className="flex flex-row items-center w-fit mb-4 px-3 py-2 gap-1 text-xs font-medium bg-[#EDE4FF] rounded-[0.375rem]" style={{ color: statusColors[status] }}>
                                     {status}
                                     <button onClick={() => toggleCheckbox(status)}>
                                         <Image src='/icons/multiplication-sign.svg' alt="close" width={16} height={16} />
@@ -320,7 +320,7 @@ function TesstseriesInfo() {
                             </button>
                         )}
                     </div>
-                    <div className="h-full mt-4">
+                    <div className="h-full">
                         <div className="border border-[#EAECF0] rounded-xl">
                             <table className="w-full bg-white rounded-xl">
                                 <thead>

@@ -50,13 +50,13 @@ export default function DashboardGroup({ children }: DashboardGroupProps) {
                 pageName = 'Back to Test Series Management';
                 break;
             case 'testseriesinfo':
-                pageName = 'Back to Quizzes Management';
+                pageName = 'Back to Test Series Management';
                 break;
             case 'createcourse':
-                pageName = 'Back to Quizzes Management';
+                pageName = 'Back to Course Management';
                 break;
             case 'courseinfo':
-                pageName = 'Back to Quizzes Management';
+                pageName = 'Back to Course Management';
                 break;
             case 'courses':
                 pageName = 'Back to Quizzes Management';
