@@ -57,26 +57,26 @@ function TabComps() {
     };
 
     const renderButtonWithTooltip = (label: string, icon: string, activeIcon: string, isActive: boolean, onClick: () => void) => (
-        // <button onClick={onClick} className={`flex w-full py-2 px-3 text-base text-left font-normal rounded-md mb-2 transition-all ${isActive ? 'bg-[#7400E0] text-white' : 'hover:bg-[#e1ffe11a] text-[#AAAAAA]'}`}>
-        //     <Image src={isActive ? activeIcon : icon} width={22} height={22} alt={`${label} Icon`} />
-        //     {!isCollapsed && <span className='ml-2'>{label}</span>}
-        // </button>
-        <div className="tooltip">
-            <button
-                onClick={onClick}
-                className={`flex w-full py-2 px-3 text-base text-left font-normal rounded-md mb-2 transition-all 
-                ${isActive ? 'bg-[#7400E0] text-white' : 'hover:bg-[#e1ffe11a] text-[#AAAAAA]'}`}
-            >
-                <Image
-                    src={isActive ? activeIcon : icon}
-                    width={22}
-                    height={22}
-                    alt={`${label} Icon`}
-                />
-                {!isCollapsed && <span className="ml-2">{label}</span>}
-            </button>
-            {isCollapsed && <span className="tooltipText">{label}</span>}
-        </div>
+        <button onClick={onClick} className={`flex flex-row w-full py-2 px-3 text-base text-left font-normal rounded-md mb-2 transition-all ${isActive ? 'bg-[#7400E0] text-white' : 'hover:bg-[#e1ffe11a] text-[#AAAAAA]'}`}>
+            <Image src={isActive ? activeIcon : icon} width={22} height={22} alt={`${label} Icon`} />
+            {!isCollapsed && <span className='ml-2'>{label}</span>}
+        </button>
+        // <div className="tooltip">
+        //     <button
+        //         onClick={onClick}
+        //         className={`flex w-full py-2 px-3 text-base text-left font-normal rounded-md mb-2 transition-all 
+        //         ${isActive ? 'bg-[#7400E0] text-white' : 'hover:bg-[#e1ffe11a] text-[#AAAAAA]'}`}
+        //     >
+        //         <Image
+        //             src={isActive ? activeIcon : icon}
+        //             width={22}
+        //             height={22}
+        //             alt={`${label} Icon`}
+        //         />
+        //         {!isCollapsed && <span className="ml-2">{label}</span>}
+        //     </button>
+        //     {isCollapsed && <span className="tooltipText">{label}</span>}
+        // </div>
     );
 
     return (
@@ -103,17 +103,17 @@ function TabComps() {
             <hr className="border-t border-gray-700 mb-4" />
 
             {/* Dashboard Tab */}
-            {/* Dashboard Tab */}
             {renderButtonWithTooltip('Dashboard', '/icons/admin-dashboard-2.svg', '/icons/admin-dashboard.svg', activeTab === 'dashboard', () => handleTabClick('dashboard', '/admin/dashboard'))}
 
             {/* Content Section with Collapsible Menu */}
             <Collapsible
                 trigger={
                     <div
-                        className={` tooltip flex flex-row items-center mb-2 py-2 px-3 rounded-md ${isContentSection() ? 'bg-[#7400E0] text-white' : 'hover:bg-[#e1ffe11a] text-[#AAAAAA]'}`}
+                        className={`flex items-center justify-between w-full tooltip mb-2 py-2 px-3 rounded-md ${isContentSection() ? 'bg-[#7400E0] text-white' : 'hover:bg-[#e1ffe11a] text-[#AAAAAA]'}`}
                         onClick={() => toggleCollapsible(0)}
                     >
-                        <div className="flex items-center">
+                        {/* Left section: Icon and label */}
+                        <div className="flex items-center w-fit">
                             <Image
                                 src={isContentSection() ? '/icons/admin-content.svg' : '/icons/admin-content-2.svg'}
                                 width={22}
@@ -125,18 +125,18 @@ function TabComps() {
                             </span>
                         </div>
 
-                        {/* Arrow icon */}
-                        {!isCollapsed && (
-                            <Image
-                                src={isOpenArray[0] ? '/icons/arrow-up-01-round.svg' : '/icons/arrow-down-02-round.svg'}
-                                width={20}
-                                height={20}
-                                alt="Toggle"
-                            />
-                        )}
+                        {/* Right section: Arrow icon */}
+                        <div className="flex items-center w-fit">
+                            {!isCollapsed && (
+                                <Image
+                                    src={isOpenArray[0] ? '/icons/arrow-up-01-round.svg' : '/icons/arrow-down-02-round.svg'}
+                                    width={20}
+                                    height={20}
+                                    alt="Toggle"
+                                />
+                            )}
+                        </div>
                     </div>
-
-
                 }
                 open={isOpenArray[0]}
                 transitionTime={300}
@@ -150,11 +150,6 @@ function TabComps() {
                         {!isCollapsed ? 'Quizzes Management' : <span className="tooltipText">Quizzes Management</span>}
                     </span>
                 </button>
-
-
-
-
-
 
                 <button
                     onClick={() => handleTabClick('testseriesmanagement', '/admin/content/testseriesmanagement')}
