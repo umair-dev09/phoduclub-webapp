@@ -4,7 +4,27 @@ import Radio from "@mui/material/Radio";
 import RadioGroup from "@mui/material/RadioGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Image from "next/image";
-function Question() {
+
+type Options = {
+    option1: string;
+    option2: string;
+    option3: string;
+    option4: string;
+}
+
+type Question = {
+    question: string;
+    correctAnswer: string;
+    answerExplanation: string;
+    options: Options;
+    questionId: string;
+}
+
+type QuestionProps = {
+    questionsList: Question[];
+}
+
+function Question({ questionsList }: QuestionProps) { 
     const questionCount = 3; // Adjust this if you have more questions
     const [expandedStates, setExpandedStates] = useState(
         Array(questionCount).fill(false)
@@ -37,10 +57,10 @@ function Question() {
                 </button>
             </div>
             <div className="flex flex-col gap-2 mt-3">
-                {[...Array(questionCount)].map((_, index) => (
+            {questionsList.map((question, index) => (
                     <div
                         key={index}
-                        className={`bg-[#FFFFFF] h-auto rounded-xl border border-solid ${expandedStates[index] ? "border-[#EAECF0] hover:border-[#9012FF]" : "border-[#EAECF0] hover:border-[#182230]"
+                        className={`bg-[#FFFFFF] h-auto rounded-xl border border-solid ${expandedStates[index] ? "border-[#EAECF0] hover:border-[#9012FF]" : "border-[#EAECF0] hover:border-[#bbbbbb]"
                             }`}>
                         <Collapsible
                             open={expandedStates[index]}
@@ -54,11 +74,32 @@ function Question() {
                                         </span>
                                     </div>
                                     <span className="font-semibold text-base text-[#1D2939]">
-                                        Question {index + 1} content goes here.
+                                        {question.question}
                                     </span>
                                 </div>
                             }>
-                            <div className="h-auto gap-[15px] flex flex-col px-6 pb-[8px] hover:border-[#9012FF]">
+
+                            <RadioGroup className='ml-6 mb-2' value={question.correctAnswer}>
+                                {Object.entries(question.options).map(([key, value]) => (
+                                    <FormControlLabel
+                                        key={key}
+                                        value={key}
+                                        control={
+                                            <Radio
+                                                checked={question.correctAnswer === key}
+                                                sx={{
+                                                    color: '#D0D5DD',
+                                                    '&.Mui-checked': {
+                                                        color: '#0B9055',
+                                                    },
+                                                }}
+                                            />
+                                        }
+                                        label={<h3 className='text-base font-normal'>{value}</h3>}
+                                    />
+                                ))}
+                            </RadioGroup>
+                            {/* <div className="h-auto gap-[15px] flex flex-col px-6 pb-[8px] hover:border-[#9012FF]">
                                 <RadioGroup>
                                     <FormControlLabel
                                         value="option1"
@@ -81,7 +122,7 @@ function Question() {
                                         label="Option 3"
                                     />
                                 </RadioGroup>
-                            </div>
+                            </div> */}
                         </Collapsible>
                     </div>
                 ))}

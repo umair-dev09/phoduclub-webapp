@@ -42,7 +42,7 @@ function Header({ currentPage }: HeaderProps) {
                     </Button>
                 )}
 
-                {(currentPage === 'Role Management' || currentPage === 'Customer Data Management' || currentPage === 'Marketing Integration' || currentPage === 'Quizzes Management' || currentPage === 'Test Series Management' || currentPage === 'Course Creation' || currentPage === "Dashboard") && (
+                {(currentPage === 'Role Management' || currentPage === 'Customer Data Management' || currentPage === 'Marketing Integration' || currentPage === 'Quizzes Management' || currentPage === 'Test Series Management' || currentPage === 'Course Creation') && (
                     <Popover placement="bottom-end">
                         <PopoverTrigger>
                             <button className='flex flex-row gap-2 items-center'>
