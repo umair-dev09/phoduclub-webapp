@@ -1,6 +1,5 @@
-"use client"; // This marks the component as a Client Component
+"use client";
 
-import styles from '../../components/DashboardComponents/TabComps.module.css';
 import Image from 'next/image';
 import { useRouter, usePathname } from 'next/navigation';
 import { useState, useEffect } from 'react';
@@ -9,166 +8,142 @@ import Collapsible from 'react-collapsible';
 function TabComps() {
     const router = useRouter();
     const pathname = usePathname();
-    const [isCollapsed, setIsCollapsed] = useState<boolean>(false);
-    const [isOpenArray, setIsOpenArray] = useState([false, false, false]); // Initialize collapsible states
+    const [isCollapsed, setIsCollapsed] = useState(false);
+    const [isOpenArray, setIsOpenArray] = useState([false, false, false]);
 
     useEffect(() => {
-        if (typeof window !== 'undefined') {
-            const savedState = localStorage.getItem('isSidebarCollapsed');
-            setIsCollapsed(savedState === 'true');
-        }
+        const savedState = localStorage.getItem('isSidebarCollapsed');
+        setIsCollapsed(savedState === 'true');
     }, []);
 
-    const [activeTab, setActiveTab] = useState<string>('');
-
     useEffect(() => {
-        if (pathname) {
-            const currentPath = pathname.split('/')[1];
-            setActiveTab(currentPath || 'dashboard');
-        }
-    }, [pathname]);
-
-    useEffect(() => {
-        if (typeof window !== 'undefined') {
-            localStorage.setItem('isSidebarCollapsed', isCollapsed.toString());
-        }
+        localStorage.setItem('isSidebarCollapsed', isCollapsed.toString());
     }, [isCollapsed]);
 
-    const handleCollapseClick = () => {
-        setIsCollapsed(!isCollapsed);
-    };
+    const [activeTab, setActiveTab] = useState('');
 
     const handleTabClick = (tabName: string, path: string) => {
         setActiveTab(tabName);
         router.push(path);
     };
 
-    const toggleCollapsible = (index: number) => {
-        const newIsOpenArray = [...isOpenArray];
-        newIsOpenArray[index] = !newIsOpenArray[index];
-        setIsOpenArray(newIsOpenArray);
+    useEffect(() => {
+        if (pathname) {
+            const pathParts = pathname.split('/');
+            const currentPath = pathParts[2];
+            const subPath = pathParts[3];
+
+            // Set active tab for both main sections and subsections
+            if (subPath && currentPath === 'content') {
+                setActiveTab(subPath);
+            } else {
+                setActiveTab(currentPath || 'dashboard');
+            }
+        }
+    }, [pathname]);
+
+    const handleCollapseClick = () => {
+        setIsCollapsed(!isCollapsed);
     };
 
-    return (
-        <div className={`${styles.tabComps} ${isCollapsed ? styles.collapsed : ''}`}>
-            {/* Header Section */}
-            <div>
-                <button className={styles.collapseButton} onClick={handleCollapseClick}>
-                    {isCollapsed ? (
-                        <Image className={styles.collapseIconRight} alt='Collapse Icon Right' src="/icons/collapse-right.svg" width={8} height={8} />
-                    ) : (
-                        <Image className={styles.collapseIconLeft} alt="Collapse Icon Left" src="/icons/collapse-left.svg" width={8} height={8} />
-                    )}
-                </button>
-            </div>
+    const toggleCollapsible = (index: number) => {
+        setIsOpenArray(prev => prev.map((open, i) => (i === index ? !open : open)));
+    };
 
-            <div className={styles.logo}>
-                <div className={styles.phoduClubSymbol}>
-                    <p className={styles.theSymbol}>P</p>
-                </div>
-                <div className={styles.phoduLogo}>
-                    <p className={styles.phodu}>phodu<span className={styles.club}>.club</span></p>
+    // Helper function to check if current path is within content section
+    const isContentSection = () => {
+        return activeTab === 'quizzesmanagement' ||
+            activeTab === 'testseriesmanagement' ||
+            activeTab === 'coursecreation';
+    };
+
+    const renderButton = (label: string, icon: string, activeIcon: string, isActive: boolean, onClick: () => void) => (
+        <button onClick={onClick} className={`flex w-full py-2 px-3 text-left rounded-md mb-2 transition-colors ${isActive ? 'bg-[#7400E0] text-white' : 'hover:bg-[#e1ffe11a] text-[#AAAAAA]'}`}>
+            <Image src={isActive ? activeIcon : icon} width={22} height={22} alt={`${label} Icon`} />
+            {!isCollapsed && <span className='ml-2'>{label}</span>}
+        </button>
+    );
+
+    return (
+        <div className={`flex flex-col relative transition-all duration-300 ease-in-out ${isCollapsed ? 'w-[3.5rem]' : 'w-[14rem]'} pl-2 py-[0.625rem] bg-[#1a1a1a]`}>
+            {/* Sidebar Toggle Button */}
+            <button className={`flex items-center justify-center absolute top-[3.6rem] left-[97.5%] w-8 h-8 bg-white border-[0.106rem] border-lightGrey rounded-full transition-all ${isCollapsed ? ' -translate-x-1' : ''}`} onClick={handleCollapseClick}>
+                {isCollapsed ? (
+                    <Image className='flex flex-row items-center justify-center mr-[2px]' alt='Collapse Icon Right' src="/icons/collapse-right.svg" width={8} height={8} />
+                ) : (
+                    <Image className='flex flex-row items-center justify-center mr-[2px]' alt="Collapse Icon Left" src="/icons/collapse-left.svg" width={8} height={8} />
+                )}
+            </button>
+
+            {/* Logo Section */}
+            <div>
+                <p className={`items-center justify-center w-10 h-10 mt-3 mb-[0.73rem] ml-[0.2rem] text-white font-bold bg-[#3c2f40] rounded-[0.375rem] transition-all ${isCollapsed ? 'flex' : 'hidden'}`}>P</p>
+                <div className={`flex-col mt-2 mb-[0.475rem] transition-all ${!isCollapsed ? 'flex' : 'hidden'}`}>
+                    <p className='text-white text-lg font-bold'>phodu<span className='text-[#e29ff5] text-lg font-bold'>.club</span></p>
                     <p className='text-sm text-[#98A2B3] font-normal'>Admin</p>
                 </div>
             </div>
 
-            <div className={styles.divider}>
-                <hr className={styles.actualDivider} />
-            </div>
+            {/* Divider */}
+            <hr className="border-t border-gray-700 mb-4" />
 
-            {/* Tabs Section */}
-            <div className={styles.tabs}>
-                {/* Dashboard Button */}
-                <div className={styles.tooltip}>
-                    <button
-                        onClick={() => handleTabClick('dashboard', '/admin/dashboard')}
-                        className={`flex flex-row w-full rounded-md mb-2 py-2 px-3 ${activeTab === 'dashboard' ? 'bg-[#7400E0]' : 'hover:bg-[#e1ffe11a]'}`}
-                    >
-                        <Image className='mr-2' src={activeTab === 'dashboard' ? "/icons/admin-dashboard.svg" : "/icons/admin-dashboard-2.svg"}
-                            width={22} height={22} alt="Dashboard Icon"
-                        />
-                        {!isCollapsed && <p className={`${activeTab === 'dashboard' ? 'text-white' : 'text-[#AAAAAA]'}`}>Dashboard</p>}
-                        {isCollapsed && <div className={styles.tooltipText}>Dashboard</div>}
-                    </button>
-                </div>
+            {/* Dashboard Tab */}
+            {renderButton('Dashboard', '/icons/admin-dashboard-2.svg', '/icons/admin-dashboard.svg', activeTab === 'dashboard', () => handleTabClick('dashboard', '/admin/dashboard'))}
 
-                {/* Content Collapsible */}
-                <div className={styles.tooltip}>
-                    <Collapsible
-                        trigger={
-                            <div className="flex items-center justify-between py-2 px-3 rounded-md hover:bg-[#e1ffe11a]" onClick={() => toggleCollapsible(0)}>
-                                <div className='flex flex-row'>
-                                    <Image className='mr-2' src={activeTab === 'content' ? "/icons/admin-content.svg" : "/icons/admin-content-2.svg"}
-                                        width={22} height={22} alt="Content Icon"
-                                    />
-                                    {!isCollapsed && <span className={`${activeTab === 'content' ? 'text-white' : 'text-[#AAAAAA]'}`}>Content</span>}
-                                </div>
-                                {isCollapsed && <div className={styles.tooltipText}>Content</div>}
-                                {!isCollapsed && <Image src={isOpenArray[0] ? "/icons/arrowdown.svg" : "/icons/arrowup.svg"} width={24} height={24} alt="arrow" />}
-                            </div>
-                        }
-                        open={isOpenArray[0]}
-                        transitionTime={350}
+            {/* Content Section with Collapsible Menu */}
+            <Collapsible
+                trigger={
+                    <div
+                        className={`flex items-center justify-between mb-2 py-2 px-3 rounded-md ${isContentSection() ? 'bg-[#7400E0] text-white' : 'hover:bg-[#e1ffe11a] text-[#AAAAAA]'}`}
+                        onClick={() => toggleCollapsible(0)}
                     >
-                        {/* Quizzes Management */}
-                        <button
-                            onClick={() => handleTabClick('quizzesmanagement', '/admin/content/quizzesmanagement')}
-                            className={`mt-2 ${styles.CommunitiesButton} ${activeTab === 'quizzesmanagement' ? styles.active : ''}`}
-                        >
-                            {!isCollapsed && <p className="w-full pl-9 text-[#AAAAAA] text-[13px] text-left py-2 px-3 hover:bg-[#444444]">Quizzes Management</p>}
-                        </button>
-                        {/* Test Series Management */}
-                        <button
-                            onClick={() => handleTabClick('testseriesmanagement', '/admin/content/testseriesmanagement')}
-                            className={`${styles.CommunitiesButton} ${activeTab === 'testseriesmanagement' ? styles.active : ''}`}
-                        >
-                            {!isCollapsed && <p className="w-full pl-9 text-[#AAAAAA] text-[13px] text-left py-2 px-3 hover:bg-[#444444]">Test Series Management</p>}
-                        </button>
-                        {/* Course Creation */}
-                        <button
-                            onClick={() => handleTabClick('coursecreation', '/admin/content/coursecreation')}
-                            className={`${styles.CommunitiesButton} ${activeTab === 'coursecreation' ? styles.active : ''}`}
-                        >
-                            {!isCollapsed && <p className="w-full pl-9 text-[#AAAAAA] text-[13px] text-left py-2 px-3 hover:bg-[#444444]">Course Creation</p>}
-                        </button>
-                    </Collapsible>
-                </div>
+                        <div className="flex items-center">
+                            <Image
+                                src={isContentSection() ? '/icons/admin-content.svg' : '/icons/admin-content-2.svg'}
+                                width={22}
+                                height={22}
+                                alt="Content"
+                            />
+                            {!isCollapsed && <span className="ml-2">Content</span>}
+                        </div>
+                        {!isCollapsed && (
+                            <Image
+                                src={isOpenArray[0] ? '/icons/arrow-up-01-round.svg' : '/icons/arrow-down-02-round.svg'}
+                                width={20}
+                                height={20}
+                                alt="Toggle"
+                            />
+                        )}
+                    </div>
+                }
+                open={isOpenArray[0]}
+                transitionTime={300}
+            >
+                <button
+                    onClick={() => handleTabClick('quizzesmanagement', '/admin/content/quizzesmanagement')}
+                    className={`flex items-center w-full h-10 py-2 px-3 text-left rounded-md mb-2 transition-colors ${activeTab === 'quizzesmanagement' ? 'bg-[#444444] text-white' : 'hover:bg-[#e1ffe11a] text-[#AAAAAA]'}`}
+                >
+                    {!isCollapsed && <span className="ml-7 text-[0.813rem]">Quizzes Management</span>}
+                </button>
 
-                {/* Role Management Button */}
-                <div className={styles.tooltip}>
-                    <button
-                        onClick={() => handleTabClick('rolemanagement', '/admin/rolemanagement')}
-                        className={`flex flex-row w-full rounded-md mb-2 py-2 px-3 ${activeTab === 'rolemanagement' ? 'bg-[#7400E0]' : 'hover:bg-[#e1ffe11a]'}`}
-                    >
-                        <Image className='mr-2' src={activeTab === 'rolemanagement' ? "/icons/Role Management.svg" : "/icons/Role Management-2.svg"} width={22} height={22} alt="rolemanagement Icon" />
-                        {!isCollapsed && <p className={`${activeTab === 'rolemanagement' ? 'text-white' : 'text-[#AAAAAA]'}`}>Role Management</p>}
-                    </button>
-                    {isCollapsed && <div className={styles.tooltipText}>Role Management</div>}
-                </div>
+                <button
+                    onClick={() => handleTabClick('testseriesmanagement', '/admin/content/testseriesmanagement')}
+                    className={`flex items-center w-full h-10 py-2 px-3 text-left rounded-md mb-2 transition-colors ${activeTab === 'testseriesmanagement' ? 'bg-[#444444] text-white' : 'hover:bg-[#e1ffe11a] text-[#AAAAAA]'}`}
+                >
+                    {!isCollapsed && <span className="ml-7 text-[0.813rem]">Test Series Management</span>}
+                </button>
 
-                {/* Marketing Integration Button */}
-                <div className={styles.tooltip}>
-                    <button
-                        onClick={() => handleTabClick('marketingintegration', '/admin/marketingintegration')}
-                        className={`flex flex-row w-full rounded-md text-left py-2 px-3 ${activeTab === 'marketingintegration' ? 'bg-[#7400E0]' : 'hover:bg-[#e1ffe11a]'}`}
-                    >
-                        <Image className='mr-2' src={activeTab === '' ? "/icons/Marketing Integration.svg" : "/icons/Marketing Integration-2.svg"} width={22} height={22} alt="marketingintegration Icon" />
-                        {!isCollapsed && <p className={`${activeTab === 'marketingintegration' ? 'text-white' : 'text-[#AAAAAA]'}`}>Marketing Integration</p>}
-                    </button>
-                    {isCollapsed && <div className={styles.tooltipText}>Marketing Integration</div>}
-                </div>
-                {/* Customer Data Management  */}
-                <div className={styles.tooltip}>
-                    <button
-                        onClick={() => handleTabClick('customerdatamanagement ', '/admin/customerdatamanagement')}
-                        className={`flex flex-row w-full rounded-md text-left py-2 px-3 ${activeTab === 'customerdatamanagement' ? 'bg-[#7400E0]' : 'hover:bg-[#e1ffe11a]'}`}
-                    >
-                        <Image className='mr-2' src={activeTab === '' ? "/icons/community.svg" : "/icons/community-2.svg"} width={22} height={22} alt="Customer Data Management  Icon" />
-                        {!isCollapsed && <p className={`${activeTab === 'customerdatamanagement' ? 'text-white' : 'text-[#AAAAAA]'}`}>Customer Data Management </p>}
-                    </button>
-                    {isCollapsed && <div className={styles.tooltipText}>Customer Data Management </div>}
-                </div>
-            </div>
+                <button
+                    onClick={() => handleTabClick('coursecreation', '/admin/content/coursecreation')}
+                    className={`flex items-center w-full h-10 py-2 px-3 text-left rounded-md mb-2 transition-colors ${activeTab === 'coursecreation' ? 'bg-[#444444] text-white' : 'hover:bg-[#e1ffe11a] text-[#AAAAAA]'}`}
+                >
+                    {!isCollapsed && <span className="ml-7 text-[0.813rem]">Course Creation</span>}
+                </button>
+            </Collapsible>
+
+            {/* Additional Tabs */}
+            {renderButton('Role Management', '/icons/Role Management-2.svg', '/icons/Role Management.svg', activeTab === 'rolemanagement', () => handleTabClick('rolemanagement', '/admin/rolemanagement'))}
+            {renderButton('Marketing Integration', '/icons/Marketing Integration-2.svg', '/icons/Marketing Integration.svg', activeTab === 'marketingintegration', () => handleTabClick('marketingintegration', '/admin/marketingintegration'))}
         </div>
     );
 }
