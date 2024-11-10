@@ -1,5 +1,8 @@
 import Image from "next/image";
 import { useState } from "react";
+import Queries from '@/components/AdminComponents/CustomerDataMangement/Queries';
+import Reporting from '@/components/AdminComponents/CustomerDataMangement/Reporting';
+
 function Support() {
     const [activeTab, setActiveTab] = useState('Queries');
 
@@ -62,12 +65,12 @@ function Support() {
             </div>
             {activeTab === 'Queries' && (
                 <div>
-                    ali
+                    <Queries />
                 </div>
             )}
             {activeTab === 'Reporting' && (
                 <div>
-                    jabir
+                    <Reporting />
                 </div>
             )}
         </div>

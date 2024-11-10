@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/pagination";
 import { Popover, PopoverContent, PopoverTrigger } from "@nextui-org/popover";
 import Remove from "@/components/AdminComponents/QuizInfoDailogs/Remove";
+import Roles from '@/components/AdminComponents/RoleMangement/Roles';
 
 // Define types for quiz data
 interface Quiz {
@@ -29,61 +30,61 @@ const fetchQuizzes = async (): Promise<Quiz[]> => {
         {
             userid: "jenny#8547",
             moblieid: "+919164588441",
-            role: "Dec 1, 2023",
+            role: "Admin",
             status: "Live"
         },
         {
             userid: "jenny#8547",
             moblieid: "+919164588441",
-            role: "Nov 15, 2023",
+            role: "Customer Care",
             status: "Saved"
         },
         {
             userid: "jenny#8547",
             moblieid: "+919164588441",
-            role: "Oct 1, 2023",
+            role: "Teacher",
             status: "Paused"
         },
         {
             userid: "jenny#8547",
             moblieid: "+919164588441",
-            role: "Sep 1, 2023",
+            role: "Chief Moderator",
             status: "Finished"
         },
         {
             userid: "jenny#8547",
             moblieid: "+919164588441",
-            role: "Jan 1, 2024",
+            role: "Guide",
             status: "Scheduled"
         },
         {
             userid: "jenny#8547",
             moblieid: "+919164588441",
-            role: "Feb 1, 2024",
+            role: "Editor",
             status: "Cancelled"
         },
         {
             userid: "jenny#8547",
             moblieid: "85%",
-            role: "Jul 15, 2023",
+            role: "Admin",
             status: "Live"
         },
         {
             userid: "jenny#8547",
             moblieid: "+919164588441",
-            role: "Dec 10, 2023",
+            role: "Customer Care",
             status: "Saved"
         },
         {
             userid: "jenny#8547",
             moblieid: "+919164588441",
-            role: "Nov 25, 2023",
+            role: "Teacher",
             status: "Paused"
         },
         {
             userid: "jenny#8547",
             moblieid: "+919164588441",
-            role: "Aug 20, 2023",
+            role: "Chief Moderator",
             status: "Finished"
         }
     ];
@@ -192,8 +193,6 @@ function rolemangement() {
                         onClick={() => openAddUser()} >
                         <span className="text-[#FFFFFF] font-semibold text-sm">Add New User</span>
                     </button>
-
-
                 </div>
             </div>
 
@@ -202,29 +201,25 @@ function rolemangement() {
                     <table className="w-full bg-white rounded-xl">
                         <thead>
                             <tr>
-                                <th className="w-1/4 text-left px-8 py-4 pl-8 rounded-tl-xl flex flex-row ">
+                                <th className="w-[25%] text-left px-8 py-4 pl-8 rounded-tl-xl flex flex-row ">
                                     <span className="text-[#667085] font-medium text-sm">Name</span>
-                                    <Image src="/icons/expandall.svg" width={28} height={18} alt="Expand all icon" />
                                 </th>
-                                <th className=" w-[17%] text-center px-8 py-4 text-[#667085] font-medium text-sm">
+                                <th className=" w-[22%] text-center px-8 py-4 text-[#667085] font-medium text-sm">
                                     <div className="flex flex-row justify-center gap-1">
                                         <p>User Id</p>
-                                        <Image src='/icons/unfold-more-round.svg' alt="" width={16} height={16} />
                                     </div>
                                 </th>
-                                <th className=" w-[17%] text-center px-8 py-4 text-[#667085] font-medium text-sm">
+                                <th className=" w-[22%] text-center px-8 py-4 text-[#667085] font-medium text-sm">
                                     <div className="flex flex-row justify-center gap-1">
                                         <p>Moblie No.</p>
-                                        <Image src='/icons/unfold-more-round.svg' alt="" width={16} height={16} />
                                     </div>
                                 </th>
-                                <th className=" w-[17%] text-center px-8 py-4 text-[#667085] font-medium text-sm">
-                                    <div className="flex flex-row justify-center gap-1">
+                                <th className=" w-[22%] px-8 py-4 text-[#667085] font-medium text-sm">
+                                    <div className="flex flex-row ml-3 gap-1">
                                         <p>Role</p>
-                                        <Image src='/icons/unfold-more-round.svg' alt="" width={16} height={16} />
                                     </div>
                                 </th>
-                                <th className="w-[12%] text-center px-8 py-4 rounded-tr-xl text-[#667085] font-medium text-sm">Action</th>
+                                <th className="w-[9%] text-center px-8 py-4 rounded-tr-xl text-[#667085] font-medium text-sm">Action</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -240,8 +235,12 @@ function rolemangement() {
                                     </td>
                                     <td className="px-8 py-4 text-center text-[#101828] text-sm">{quiz.userid}</td>
                                     <td className="px-8 py-4 text-center text-[#101828] text-sm">{quiz.moblieid}</td>
-                                    <td className="px-8 py-4 text-center text-[#101828] text-sm">{quiz.role}</td>
-                                    <td className="flex items-center justify-center px-8 py-4 text-[#101828] text-sm">
+                                    <td className="py-4 text-center text-[#101828] text-sm">
+                                        <span className='flex items-center justify-start ml-[17%] rounded-full'>
+                                            <Roles roles={quiz.role} />
+                                        </span>
+                                    </td>
+                                    <td className="flex items-center justify-center ml-[20%] px-8 py-4 text-[#101828] text-sm">
                                         <Popover placement="bottom-end">
                                             <PopoverTrigger>
                                                 <button>

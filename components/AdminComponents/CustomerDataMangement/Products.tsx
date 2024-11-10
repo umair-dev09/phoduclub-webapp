@@ -26,20 +26,20 @@ function Products() {
                 </div>
             </div>
             <p className="font-semibold text-[#1D2939] text-lg px-8">Products</p>
-            <div className="overflow-x-auto px-6 rounded-lg">
-                <table className="min-w-full bg-white border border-gray-200 rounded-xl shadow-sm">
+            <div className="overflow-x-auto mx-6 border border-gray-200 rounded-lg">
+                <table className="min-w-full border-none bg-white border">
                     <thead>
-                        <tr className="border-b">
-                            <th className="px-6 py-3 text-left text-sm font-medium text-gray-600">Courses</th>
-                            <th className="px-6 py-3 text-left text-sm font-medium text-gray-600">Price</th>
-                            <th className="px-6 py-3 text-left text-sm font-medium text-gray-600">Purchased On</th>
-                            <th className="px-6 py-3 text-left text-sm font-medium text-gray-600">Action</th>
+                        <tr>
+                            <th className="w-1/2 px-6 py-3 text-left text-sm font-medium text-gray-600">Courses</th>
+                            <th className="w-[20%] px-6 py-3 text-center text-sm font-medium text-gray-600">Price</th>
+                            <th className="w-[20%] px-6 py-3 text-center text-sm font-medium text-gray-600">Purchased On</th>
+                            <th className="w-[10%] px-6 py-3 text-center text-sm font-medium text-gray-600">Action</th>
                         </tr>
                     </thead>
                     <tbody>
                         {courses.map((course) => (
-                            <tr key={course.id} className="border-b hover:bg-gray-50">
-                                <td className="px-6 py-4 flex items-center gap-3  text-[#9012FF] text-left underline text-sm font-medium">
+                            <tr key={course.id} className="border-t hover:bg-gray-50">
+                                <td className="w-1/2 px-6 py-4 flex items-left gap-3  text-[#9012FF] text-left underline text-sm font-medium">
                                     <Image
                                         src="/icons/course.png"
                                         width={42}
@@ -51,28 +51,24 @@ function Products() {
                                         {course.name}
                                     </a>
                                 </td>
-                                <td className="px-6 py-4 text-gray-700">{course.price}</td>
-                                <td className="px-6 py-4 text-gray-700">{course.date}</td>
-                                <td className="px-6 py-4 text-gray-500">
-                                    <Popover placement="bottom">
+                                <td className="w-[20%] px-6 py-4 text-center text-gray-700">{course.price}</td>
+                                <td className="w-[20%] px-6 py-4 text-center text-gray-700">{course.date}</td>
+                                <td className="w-[10%] px-6 py-4 text-right text-gray-500">
+                                    <Popover placement="bottom-end">
                                         <PopoverTrigger className="outline-none">
-
-                                            <button className="text-xl font-bold">⋮</button>
+                                            <button className="mr-[25%] text-xl font-bold">⋮</button>
                                         </PopoverTrigger>
-                                        <PopoverContent>
-                                            <div className=" w-[167px] px-0 border border-solid border-[#EAECF0] bg-[#FFFFFF] rounded-md  shadow-lg">
-
-                                                <button
-                                                    className="flex flex-row h-[40px] w-full p-3  gap-2 hover:bg-[#F2F4F7] items-center">
-                                                    <Image
-                                                        src="/icons/delete.svg"
-                                                        width={18}
-                                                        height={18}
-                                                        alt="Delete"
-                                                    />
-                                                    <span className="text-[#DE3024] text-sm font-medium">Delete</span>
-                                                </button>
-                                            </div>
+                                        <PopoverContent className=" w-[167px] px-0 border border-solid border-[#EAECF0] bg-[#FFFFFF] rounded-md  shadow-lg">
+                                            <button
+                                                className="flex flex-row h-[40px] w-full p-3  gap-2 hover:bg-[#F2F4F7] items-center">
+                                                <Image
+                                                    src="/icons/delete.svg"
+                                                    width={18}
+                                                    height={18}
+                                                    alt="Delete"
+                                                />
+                                                <span className="text-[#DE3024] text-sm font-medium">Remove Access</span>
+                                            </button>
                                         </PopoverContent>
                                     </Popover>
                                 </td>

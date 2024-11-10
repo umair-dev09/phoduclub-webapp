@@ -56,12 +56,37 @@ function TabComps() {
             activeTab === 'coursecreation';
     };
 
-    const renderButtonWithTooltip = (label: string, icon: string, activeIcon: string, isActive: boolean, onClick: () => void) => (
-        // <button onClick={onClick} className={`flex w-full py-2 px-3 text-base text-left font-normal rounded-md mb-2 transition-all ${isActive ? 'bg-[#7400E0] text-white' : 'hover:bg-[#e1ffe11a] text-[#AAAAAA]'}`}>
-        //     <Image src={isActive ? activeIcon : icon} width={22} height={22} alt={`${label} Icon`} />
-        //     {!isCollapsed && <span className='ml-2'>{label}</span>}
-        // </button>
-        <div className="tooltip">
+    // const renderButtonWithTooltip = (label: string, icon: string, activeIcon: string, isActive: boolean, onClick: () => void) => (
+    //     // <button onClick={onClick} className={`flex flex-row w-full py-2 px-3 text-base text-left font-normal rounded-md mb-2 transition-all ${isActive ? 'bg-[#7400E0] text-white' : 'hover:bg-[#e1ffe11a] text-[#AAAAAA]'}`}>
+    //     //     <Image src={isActive ? activeIcon : icon} width={22} height={22} alt={`${label} Icon`} />
+    //     //     {!isCollapsed && <span className='ml-2'>{label}</span>}
+    //     // </button>
+    //     <div className="tooltip h-10">
+    //         <button
+    //             onClick={onClick}
+    //             className={`flex w-full py-2 px-3 text-base text-left font-normal rounded-md mb-2 transition-all 
+    //             ${isActive ? 'bg-[#7400E0] text-white' : 'hover:bg-[#e1ffe11a] text-[#AAAAAA]'}`}
+    //         >
+    //             <Image
+    //                 src={isActive ? activeIcon : icon}
+    //                 width={22}
+    //                 height={22}
+    //                 alt={`${label} Icon`}
+    //             />
+    //             {!isCollapsed && <span className="ml-2">{label}</span>}
+    //         </button>
+    //         {isCollapsed && <span className="tooltipText">{label}</span>}
+    //     </div>
+    // );
+
+    const renderButtonWithTooltip = (
+        label: string,
+        icon: string,
+        activeIcon: string,
+        isActive: boolean,
+        onClick: () => void
+    ) => (
+        <div className="relative group">
             <button
                 onClick={onClick}
                 className={`flex w-full py-2 px-3 text-base text-left font-normal rounded-md mb-2 transition-all 
@@ -75,7 +100,12 @@ function TabComps() {
                 />
                 {!isCollapsed && <span className="ml-2">{label}</span>}
             </button>
-            {isCollapsed && <span className="tooltipText">{label}</span>}
+            {/* Tooltip */}
+            {isCollapsed && (
+                <span className="absolute left-16 top-1/2 -translate-y-1/2 bg-[#222222] text-white text-sm py-2 px-4 rounded-md opacity-0 group-hover:opacity-100 transition-opacity z-10 whitespace-nowrap">
+                    {label}
+                </span>
+            )}
         </div>
     );
 
@@ -103,71 +133,119 @@ function TabComps() {
             <hr className="border-t border-gray-700 mb-4" />
 
             {/* Dashboard Tab */}
-            {/* Dashboard Tab */}
             {renderButtonWithTooltip('Dashboard', '/icons/admin-dashboard-2.svg', '/icons/admin-dashboard.svg', activeTab === 'dashboard', () => handleTabClick('dashboard', '/admin/dashboard'))}
 
             {/* Content Section with Collapsible Menu */}
             <Collapsible
                 trigger={
                     <div
-                        className={` tooltip flex flex-row items-center mb-2 py-2 px-3 w-full justify-between rounded-md ${isContentSection() ? 'bg-[#7400E0] text-white' : 'hover:bg-[#e1ffe11a] text-[#AAAAAA]'}`}
+                        className={`flex items-center justify-between w-full relative group mb-2 py-2 px-3 rounded-md ${isContentSection()
+                            ? 'bg-[#7400E0] text-white'
+                            : 'hover:bg-[#e1ffe11a] text-[#AAAAAA]'
+                            }`}
                         onClick={() => toggleCollapsible(0)}
                     >
+                        {/* Left section: Icon and label */}
                         <div className="flex items-center">
                             <Image
-                                src={isContentSection() ? '/icons/admin-content.svg' : '/icons/admin-content-2.svg'}
+                                src={
+                                    isContentSection()
+                                        ? '/icons/admin-content.svg'
+                                        : '/icons/admin-content-2.svg'
+                                }
                                 width={22}
                                 height={22}
                                 alt="Content"
                             />
-                            <span className="ml-2">
-                                {!isCollapsed ? 'Content' : <span className="tooltipText">Content</span>}
-                            </span>
+                            {!isCollapsed && <span className="ml-2">Content</span>}
                         </div>
 
-                        {/* Arrow icon */}
+                        {/* Right section: Arrow icon */}
                         {!isCollapsed && (
                             <Image
-                                src={isOpenArray[0] ? '/icons/arrow-up-01-round.svg' : '/icons/arrow-down-02-round.svg'}
+                                src={
+                                    isOpenArray[0]
+                                        ? '/icons/arrow-up-01-round.svg'
+                                        : '/icons/arrow-down-02-round.svg'
+                                }
                                 width={20}
                                 height={20}
                                 alt="Toggle"
                             />
                         )}
+
+                        {/* Tooltip */}
+                        {isCollapsed && (
+                            <span className="absolute left-16 top-1/2 -translate-y-1/2 bg-[#222222] text-white text-sm py-2 px-4 rounded-md opacity-0 group-hover:opacity-100 transition-opacity z-10 whitespace-nowrap">
+                                Content
+                            </span>
+                        )}
                     </div>
-
-
                 }
                 open={isOpenArray[0]}
                 transitionTime={300}
             >
-
+                {/* Quizzes Management Button */}
                 <button
-                    onClick={() => handleTabClick('quizzesmanagement', '/admin/content/quizzesmanagement')}
-                    className={`tooltip flex items-center w-full h-10 py-2 px-3 text-left rounded-md mb-2 transition-colors ${activeTab === 'quizzesmanagement' ? 'bg-[#444444] text-white' : 'hover:bg-[#e1ffe11a] text-[#AAAAAA]'}`}
+                    onClick={() =>
+                        handleTabClick('quizzesmanagement', '/admin/content/quizzesmanagement')
+                    }
+                    className={`relative group flex items-center w-full h-10 py-2 px-3 text-left rounded-md mb-2 transition-colors ${activeTab === 'quizzesmanagement'
+                        ? 'bg-[#444444] text-white'
+                        : 'hover:bg-[#e1ffe11a] text-[#AAAAAA]'
+                        }`}
                 >
                     <span className="ml-7 text-[0.813rem]">
-                        {!isCollapsed ? 'Quizzes Management' : <span className="tooltipText">Quizzes Management</span>}
+                        {!isCollapsed ? 'Quizzes Management' : ''}
                     </span>
+                    {isCollapsed && (
+                        <span className="absolute left-[3.5rem] top-1/2 -translate-y-1/2 bg-[#222222] text-white text-sm py-1 px-2 rounded-md opacity-0 group-hover:opacity-100 transition-opacity z-10 whitespace-nowrap">
+                            Quizzes Management
+                        </span>
+                    )}
                 </button>
 
-
-
-
-
-
+                {/* Test Series Management Button */}
                 <button
-                    onClick={() => handleTabClick('testseriesmanagement', '/admin/content/testseriesmanagement')}
-                    className={`flex items-center w-full h-10 py-2 px-3 text-left rounded-md mb-2 transition-colors ${activeTab === 'testseriesmanagement' ? 'bg-[#444444] text-white' : 'hover:bg-[#e1ffe11a] text-[#AAAAAA]'}`}
+                    onClick={() =>
+                        handleTabClick(
+                            'testseriesmanagement',
+                            '/admin/content/testseriesmanagement'
+                        )
+                    }
+                    className={`relative group flex items-center w-full h-10 py-2 px-3 text-left rounded-md mb-2 transition-colors ${activeTab === 'testseriesmanagement'
+                        ? 'bg-[#444444] text-white'
+                        : 'hover:bg-[#e1ffe11a] text-[#AAAAAA]'
+                        }`}
                 >
-                    {!isCollapsed && <span className="ml-7 text-[0.813rem]">Test Series Management</span>}
+                    <span className="ml-7 text-[0.813rem]">
+                        {!isCollapsed ? 'Test Series Management' : ''}
+                    </span>
+                    {isCollapsed && (
+                        <span className="absolute left-[3.5rem] top-1/2 -translate-y-1/2 bg-[#222222] text-white text-sm py-1 px-2 rounded-md opacity-0 group-hover:opacity-100 transition-opacity z-10 whitespace-nowrap">
+                            Test Series Management
+                        </span>
+                    )}
                 </button>
 
+                {/* Course Creation Button */}
                 <button
-                    onClick={() => handleTabClick('coursecreation', '/admin/content/coursecreation')}
-                    className={`flex items-center w-full h-10 py-2 px-3 text-left rounded-md mb-2 transition-colors ${activeTab === 'coursecreation' ? 'bg-[#444444] text-white' : 'hover:bg-[#e1ffe11a] text-[#AAAAAA]'}`}
+                    onClick={() =>
+                        handleTabClick('coursecreation', '/admin/content/coursecreation')
+                    }
+                    className={`relative group flex items-center w-full h-10 py-2 px-3 text-left rounded-md mb-2 transition-colors ${activeTab === 'coursecreation'
+                        ? 'bg-[#444444] text-white'
+                        : 'hover:bg-[#e1ffe11a] text-[#AAAAAA]'
+                        }`}
                 >
-                    {!isCollapsed && <span className="ml-7 text-[0.813rem]">Course Creation</span>}
+                    <span className="ml-7 text-[0.813rem]">
+                        {!isCollapsed ? 'Course Creation' : ''}
+                    </span>
+                    {isCollapsed && (
+                        <span className="absolute left-[3.5rem] top-1/2 -translate-y-1/2 bg-[#222222] text-white text-sm py-1 px-2 rounded-md opacity-0 group-hover:opacity-100 transition-opacity z-10 whitespace-nowrap">
+                            Course Creation
+                        </span>
+                    )}
                 </button>
             </Collapsible>
 
