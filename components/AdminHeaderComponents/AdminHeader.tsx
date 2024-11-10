@@ -42,7 +42,7 @@ function Header({ currentPage }: HeaderProps) {
 
             <div className="flex flex-row items-center gap-4">
                 {isBackPage && currentPage !== 'Back to Customer Data Management' && currentPage !== 'Back to Messenger' && (
-                    <Button className='w-[7.5rem] px-6 py-[0.625rem] text-sm text-[#1D2939] font-semibold border border-lightGrey rounded-md'>
+                    <Button variant='solid' className='w-[7.5rem] px-6 py-[0.625rem] text-sm text-[#1D2939] font-semibold bg-white border border-lightGrey rounded-md'>
                         Save
                     </Button>
                 )}
