@@ -15,7 +15,7 @@ function Header({ currentPage }: HeaderProps) {
         router.back();
     };
 
-    const isBackPage = currentPage === 'Back to Quizzes Management' || currentPage === 'Back to Test Series Management';
+    const isBackPage = currentPage === 'Back to Quizzes Management' || currentPage === 'Back to Test Series Management' || currentPage === 'Back to Customer Data Management' || currentPage === 'Back to Messenger' || currentPage === 'Back to Course Management';
 
     // Function to handle tab click and navigate to a new route
     const handleTabClick = (path: string) => {
@@ -30,19 +30,24 @@ function Header({ currentPage }: HeaderProps) {
                         <Image src='/icons/arrow-left-02-round.svg' alt='back' width={24} height={24} />
                     </button>
                 )}
-                <h2 className={!isBackPage ? "" : "text-[#667085] text-base font-medium"}>
-                    {currentPage}
-                </h2>
+                {currentPage !== 'My Profile' && (
+                    <h2 className={!isBackPage ? "" : "text-[#667085] text-base font-medium"}>
+                        {currentPage}
+                    </h2>
+                )}
+                {currentPage === 'My Profile' && (
+                    <h2 className='text-lg text-[#1D2939] font-bold'>My Profile</h2>
+                )}
             </div>
 
             <div className="flex flex-row items-center gap-4">
-                {isBackPage && (
-                    <Button className='w-[7.5rem] px-6 py-[0.625rem] text-sm text-[#1D2939] font-semibold border border-lightGrey rounded-md'>
+                {isBackPage && currentPage !== 'Back to Customer Data Management' && currentPage !== 'Back to Messenger' && (
+                    <Button variant='solid' className='w-[7.5rem] px-6 py-[0.625rem] text-sm text-[#1D2939] font-semibold bg-white border border-lightGrey rounded-md'>
                         Save
                     </Button>
                 )}
 
-                {(currentPage === 'Role Management' || currentPage === 'Customer Data Management' || currentPage === 'Marketing Integration') && (
+                {(currentPage === 'Role Management' || currentPage === 'Customer Data Management' || currentPage === 'Marketing Integration' || currentPage === 'Quizzes Management' || currentPage === 'Test Series Management' || currentPage === 'Course Creation' || currentPage === "Dashboard") && (
                     <Popover placement="bottom-end">
                         <PopoverTrigger>
                             <button className='flex flex-row gap-2 items-center'>
@@ -54,23 +59,21 @@ function Header({ currentPage }: HeaderProps) {
                                 <Image src="/icons/by-role-arrow-down.svg" width={20} height={20} alt="Select-date Button" />
                             </button>
                         </PopoverTrigger>
-                        <PopoverContent className="flex flex-col bg-white border border-lightGrey rounded-md w-[167px] shadow-md">
+                        <PopoverContent className="flex flex-col bg-white border border-lightGrey rounded-md w-[167px] px-0 shadow-md">
                             <button
                                 className="flex items-center p-3 hover:bg-[#F2F4F7] w-full"
                                 onClick={() => handleTabClick('/admin/myprofile')}
                             >
                                 <Image src="/icons/profile.svg" width={18} height={18} alt="Edit-profile" />
-                                <span className="text-sm text-[#0C111D] ml-2">My profile</span>
+                                <p className="text-sm text-[#0C111D] ml-2">My profile</p>
                             </button>
                             <button className="flex items-center p-3 hover:bg-[#F2F4F7] w-full">
                                 <Image src="/icons/logout-03.svg" width={18} height={18} alt="Log out" />
-                                <span className="text-sm text-[#DE3024] ml-2">Log out</span>
+                                <p className="text-sm text-[#DE3024] ml-2">Log out</p>
                             </button>
                         </PopoverContent>
                     </Popover>
                 )}
-
-
             </div>
         </div>
     );

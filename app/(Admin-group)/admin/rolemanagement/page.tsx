@@ -208,8 +208,6 @@ function rolemangement() {
                         onClick={() => handleAddNewUser()} >
                         <span className="text-[#FFFFFF] font-semibold text-sm">Add New User</span>
                     </button>
-
-
                 </div>
             </div>
 
@@ -223,29 +221,25 @@ function rolemangement() {
                     <table className="w-full bg-white rounded-xl ">
                         <thead>
                             <tr>
-                                <th className="w-1/4 text-left px-8 py-4 pl-8 rounded-tl-xl flex flex-row ">
+                                <th className="w-[25%] text-left px-8 py-4 pl-8 rounded-tl-xl flex flex-row ">
                                     <span className="text-[#667085] font-medium text-sm">Name</span>
-                                    <Image src="/icons/expandall.svg" width={28} height={18} alt="Expand all icon" />
                                 </th>
-                                <th className=" w-[17%] text-center px-8 py-4 text-[#667085] font-medium text-sm">
+                                <th className=" w-[22%] text-center px-8 py-4 text-[#667085] font-medium text-sm">
                                     <div className="flex flex-row justify-center gap-1">
                                         <p>User Id</p>
-                                        <Image src='/icons/unfold-more-round.svg' alt="" width={16} height={16} />
                                     </div>
                                 </th>
-                                <th className=" w-[17%] text-center px-8 py-4 text-[#667085] font-medium text-sm">
+                                <th className=" w-[22%] text-center px-8 py-4 text-[#667085] font-medium text-sm">
                                     <div className="flex flex-row justify-center gap-1">
                                         <p>Moblie No.</p>
-                                        <Image src='/icons/unfold-more-round.svg' alt="" width={16} height={16} />
                                     </div>
                                 </th>
-                                <th className=" w-[17%] text-center px-8 py-4 text-[#667085] font-medium text-sm">
-                                    <div className="flex flex-row justify-center gap-1">
+                                <th className=" w-[22%] px-8 py-4 text-[#667085] font-medium text-sm">
+                                    <div className="flex flex-row ml-3 gap-1">
                                         <p>Role</p>
-                                        <Image src='/icons/unfold-more-round.svg' alt="" width={16} height={16} />
                                     </div>
                                 </th>
-                                <th className="w-[12%] text-center px-8 py-4 rounded-tr-xl text-[#667085] font-medium text-sm">Action</th>
+                                <th className="w-[9%] text-center px-8 py-4 rounded-tr-xl text-[#667085] font-medium text-sm">Action</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -297,7 +291,7 @@ function rolemangement() {
                 </div>
 
                 {/* Pagination Section */}
-                <div>
+                <div className="flex justify-end">
                     <div className="flex justify-right">
                         <PaginationSection
                             totalItems={data.length}

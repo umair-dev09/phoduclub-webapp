@@ -11,7 +11,7 @@ function MarketIntegration() {
     };
 
     return (
-        <div className="p-8 flex flex-col overflow-y-auto w-full h-auto">
+        <div className="p-8 flex flex-col overflow-y-auto w-full h-full">
             <div className="flex flex-col">
                 <div className="relative flex">
                     <div className="pt-[10px]">
@@ -51,14 +51,10 @@ function MarketIntegration() {
                 <hr className="h-px bg-[#EAECF0] mt-2" />
             </div>
             {activeTab === 'Messenger' && (
-                <div>
-                    <Messenger />
-                </div>
+                <Messenger />
             )}
             {activeTab === 'Coupons' && (
-                <div>
-                    <Coupons />
-                </div>
+                <Coupons />
             )}
         </div>
     );
