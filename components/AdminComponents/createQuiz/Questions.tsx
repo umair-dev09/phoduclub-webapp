@@ -4,7 +4,7 @@ import { PopoverContent, PopoverTrigger, Popover } from '@nextui-org/popover';
 import Collapsible from 'react-collapsible';
 import React, { useState, useEffect, useRef, SetStateAction, Dispatch } from "react";
 import 'react-quill/dist/quill.snow.css';
-import ReactQuill from 'react-quill'; // Ensure correct import
+import ReactQuill from 'react-quill-new'; // Ensure correct import
 import Quill from 'quill'; // Import Quill to use it for types
 // Define interfaces outside the component
 interface Question {
@@ -14,6 +14,7 @@ interface Question {
     options: Options;
     correctAnswer: string | null;
     explanation: string;
+    questionId: string;
 }
 
 interface Options {
@@ -61,7 +62,8 @@ function Questions({ questionsList, setQuestionsList }: QuestionsProps) {
                 isActive: false,
                 options: { A: '', B: '', C: '', D: '' },
                 correctAnswer: null,
-                explanation: ''
+                explanation: '',
+                questionId: '',
             }
         ]);
     };
@@ -76,7 +78,8 @@ function Questions({ questionsList, setQuestionsList }: QuestionsProps) {
                 isActive: false,
                 options: { A: '', B: '', C: '', D: '' },
                 correctAnswer: null,
-                explanation: ''
+                explanation: '',
+                questionId: '',
             };
 
         setQuestionsList([...questionsList, newQuestion]);
@@ -226,19 +229,17 @@ function Questions({ questionsList, setQuestionsList }: QuestionsProps) {
                     <Collapsible
                         trigger={
                             <div className='h-auto bg-[#FFFFFF] flex flex-col p-5 gap-2 rounded-md'>
-                                <div className="h-auto flex flex-row justify-between">
+                                <div className="h-auto flex flex-row justify-between gap-4 items-start">
                                     <div className="flex gap-2 ">
-                                        <div className="h-6 w-6 rounded-[4px] bg-[#EAECF0] flex justify-center ">
+                                        <div className="h-6 min-w-[24px] rounded-[4px] mt-[2px] bg-[#EAECF0] flex justify-center ">
                                             <span className="text-[#1D2939] font-semibold text-base">{index + 1}</span>
                                         </div>
-                                        <span className="font-semibold  text-base text-[#1D2939] ">
-                                            {question.question || "Question"}
-                                        </span>
+                                        <div className="font-semibold text-base break-all text-[#1D2939] ml-1" dangerouslySetInnerHTML={{__html: question.question || "Question"}}></div>
                                     </div>
                                     <Popover placement="bottom-end">
                                         <PopoverTrigger>
-                                            <button>
-                                                <Image
+                                            <button className="min-w-[20px] min-h-[20px] mt-[2px]">
+                                                <Image 
                                                     src="/icons/three-dots.svg"
                                                     width={20}
                                                     height={20}
@@ -306,7 +307,7 @@ function Questions({ questionsList, setQuestionsList }: QuestionsProps) {
                                             onKeyDown={handleKeyDown}
                                             modules={{ toolbar: false }}
                                             placeholder="Description"
-                                            className="text-[#1D2939] focus:outline-none rounded-b-[12px] custom-quill placeholder:not-italic min-h-[10px] max-h-[150px] overflow-y-auto border-none font-normal"
+                                            className="text-[#1D2939] focus:outline-none rounded-b-[12px] custom-quill placeholder:not-italic min-h-[10px] max-h-[150px] overflow-y-auto border-none font-normal break-all"
                                         />
                                     </div>
                                     <div className="h-[66px] bg-[#FFFFFF] rounded-bl-[12px] rounded-br-[12px] flex justify-center items-center">

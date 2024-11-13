@@ -26,14 +26,15 @@ type QuizData = {
     marksPerQuestion: string;
     nMarksPerQuestion: string;
     quizTime: string;
+    quizId: string;
 };
   
   // Define the type for individual questions within the quiz
   type Options = {
-    option1: string;
-    option2: string;
-    option3: string;
-    option4: string;
+    A: string;
+    B: string;
+    C: string;
+    D: string;
 }
   type QuestionData = {
     question: string;
@@ -184,7 +185,9 @@ function Quizinfo({ params }: { params: { quizName: string } }) {
         return <LoadingData/>;
       }
 
-
+      const handlePublishQuiz = (path: string) => {
+        router.push(path);
+    };
 
     return (
         <div className="flex w-full h-auto overflow-y-auto flex-col p-8">
@@ -212,7 +215,7 @@ function Quizinfo({ params }: { params: { quizName: string } }) {
                         {/* Button for Resume Quiz */}
                         {quizData?.quizStatus === 'saved' &&(        
                         <button className="w-auto p-3 gap-2 flex-row flex bg-[#FFFFFF] border border-solid border-[#EAECF0] rounded-[8px] h-[40px] items-center"
-                        >
+                        onClick={() => handlePublishQuiz(`/admin/content/quizzesmanagement/createquiz/?s=${quizData?.quizStatus}&qId=${quizData?.quizId}`)}>
                             <Image src="/icons/publish-quiz.svg" width={18} height={18} alt="publish-quiz" />
                             <span className="text-sm text-[#0C111D] font-normal">Publish Quiz</span>
                         </button>

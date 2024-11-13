@@ -3,6 +3,8 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import Addnewuser from "@/components/AdminComponents/RoleMangement/AddNewUser";
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import {
     Pagination,
     PaginationContent,
@@ -14,145 +16,158 @@ import {
 } from "@/components/ui/pagination";
 import { Popover, PopoverContent, PopoverTrigger } from "@nextui-org/popover";
 import Remove from "@/components/AdminComponents/QuizInfoDailogs/Remove";
-import Roles from '@/components/AdminComponents/RoleMangement/Roles';
-
+import { collection, getDocs, query, where, doc, getDoc, onSnapshot, deleteDoc } from 'firebase/firestore';
+import { db } from '@/firebase';
+import LoadingData from "@/components/Loading";
 // Define types for quiz data
-interface Quiz {
-    userid: string;
-    moblieid: string;
+interface UserData {
+    adminId: string;
+    name: string;
+    userId: string;
+    phone: string;
     role: string;
-    status: 'Live' | 'Paused' | 'Finished' | 'Scheduled' | 'Cancelled' | 'Saved';
+    profilePic: string;
 }
 
-// Mock fetchQuizzes function with types
-const fetchQuizzes = async (): Promise<Quiz[]> => {
-    const allQuizzes: Quiz[] = [
-        {
-            userid: "jenny#8547",
-            moblieid: "+919164588441",
-            role: "Admin",
-            status: "Live"
-        },
-        {
-            userid: "jenny#8547",
-            moblieid: "+919164588441",
-            role: "Customer Care",
-            status: "Saved"
-        },
-        {
-            userid: "jenny#8547",
-            moblieid: "+919164588441",
-            role: "Teacher",
-            status: "Paused"
-        },
-        {
-            userid: "jenny#8547",
-            moblieid: "+919164588441",
-            role: "Chief Moderator",
-            status: "Finished"
-        },
-        {
-            userid: "jenny#8547",
-            moblieid: "+919164588441",
-            role: "Guide",
-            status: "Scheduled"
-        },
-        {
-            userid: "jenny#8547",
-            moblieid: "+919164588441",
-            role: "Editor",
-            status: "Cancelled"
-        },
-        {
-            userid: "jenny#8547",
-            moblieid: "85%",
-            role: "Admin",
-            status: "Live"
-        },
-        {
-            userid: "jenny#8547",
-            moblieid: "+919164588441",
-            role: "Customer Care",
-            status: "Saved"
-        },
-        {
-            userid: "jenny#8547",
-            moblieid: "+919164588441",
-            role: "Teacher",
-            status: "Paused"
-        },
-        {
-            userid: "jenny#8547",
-            moblieid: "+919164588441",
-            role: "Chief Moderator",
-            status: "Finished"
-        }
-    ];
-    return allQuizzes;
+const fetchUsers = async (): Promise<UserData[]> => {
+    const usersCollection = collection(db, 'admin');
+    const usersSnapshot = await getDocs(usersCollection);
+
+    const usersData = await Promise.all(
+        usersSnapshot.docs.map(async (userDoc) => {
+            const userData = userDoc.data();
+
+            return {
+                adminId: userData.adminId,
+                name: userData.name,
+                userId: userData.userId,
+                phone: userData.phone,
+                role: userData.role,
+                profilePic: userData.profilePic,
+            } as UserData;
+        })
+    );
+
+    return usersData;
 };
 
+
+
 function rolemangement() {
-    const [data, setData] = useState<Quiz[]>([]);
-    const [quizzes, setQuizzes] = useState<Quiz[]>([]);
+    const [firstName, setFirstName] = useState('');
+    const [lastName, setLastName] = useState('');
+    const [userId, setUserId] = useState('');
+    const [phone, setPhone] = useState('');
+    const [selectedRole, setSelectedRole] = useState('');
+    const [adminIdd, setAdminIdd] = useState('');
+    const [actionDialog, setActionDialog] = useState<string | null>(null);
+    const [data, setData] = useState<UserData[]>([]);
+    const [users, setUsers] = useState<UserData[]>([]);
     const [currentPage, setCurrentPage] = useState(1);
-    const [itemsPerPage] = useState(5);
+    const [itemsPerPage] = useState(6);
     const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState('');
     const router = useRouter();
-    // for Edit profile dailog
     const [isAddUser, setisAddUser] = useState(false);
-    const [isEditing, setIsEditing] = useState(false); // New state to track if editing
+    const [isEditing, setIsEditing] = useState(false);
 
-    const openAddUser = (editMode = false) => {
+    // For removing user dialog
+    const [isRemoveOpen, setIsRemoveOpen] = useState(false);
+    const openRemove = () => setIsRemoveOpen(true);
+    const closeRemove = () => setIsRemoveOpen(false);
+
+    const handleAddNewUser = (editMode = false) => {
         setisAddUser(true);
         setIsEditing(editMode);
+        setFirstName('');
+        setLastName('');
+        setUserId('');
+        setPhone('');
+        setSelectedRole('');
     };
+
     const closeAddUser = () => {
         setisAddUser(false);
-        setIsEditing(false); // Reset editing mode when closing
+        setIsEditing(false);
     };
 
-    // Fetch quizzes when component mounts
+    // Real-time listener to fetch users and update state when data changes
     useEffect(() => {
-        const loadQuizzes = async () => {
-            setLoading(true);
-            const quizzes = await fetchQuizzes();
-            setQuizzes(quizzes);
-            setData(quizzes);
-            setLoading(false);
-        };
-        loadQuizzes();
-    }, []);
+        const usersCollection = collection(db, 'admin');
+        const unsubscribe = onSnapshot(usersCollection, (snapshot) => {
+            const updatedUsers: UserData[] = snapshot.docs.map((doc) => {
+                const userData = doc.data();
+                return {
+                    adminId: userData.adminId,
+                    name: userData.name,
+                    userId: userData.userId,
+                    phone: userData.phone,
+                    role: userData.role,
+                    profilePic: userData.profilePic,
+                } as UserData;
+            });
 
-    // Filter quizzes based on search term
-    // useEffect(() => {
-    //     const filteredQuizzes = quizzes.filter(quiz =>
-    //         quiz.title.toLowerCase().includes(searchTerm.toLowerCase())
-    //     );
-    //     setData(filteredQuizzes);
-    //     setCurrentPage(1); // Reset to first page on new search
-    // }, [searchTerm, quizzes]);
+            setUsers(updatedUsers);
+            setData(updatedUsers); // Update data for pagination and search
+            setLoading(false);
+        });
+
+        // Cleanup listener on component unmount
+        return () => unsubscribe();
+    }, []);
 
     const lastItemIndex = currentPage * itemsPerPage;
     const firstItemIndex = lastItemIndex - itemsPerPage;
     const currentItems = data.slice(firstItemIndex, lastItemIndex);
 
-    // Function to handle tab click and navigate to a new route
     const handleTabClick = (path: string) => {
         router.push(path);
     };
 
-    const [isRemoveOpen, setIsRemoveOpen] = useState(false);
-
-    const openRemove = () => setIsRemoveOpen(true);
-    const closeRemove = () => setIsRemoveOpen(false);
-
-    const [uniqueId, setUniqueId] = useState('');
-    const [startDate, setStartDate] = useState('');
-    const [endDate, setEndDate] = useState('');
-
+    const handleEditDetails = (editMode = false, user?: UserData) => {
+        setisAddUser(true);
+        setIsEditing(editMode);
+        if (user) {
+            const nameParts = user.name.split(' ');
+            setFirstName(nameParts[0] || '');
+            setLastName(nameParts[1] || '');
+            setUserId(user.userId);
+            setPhone(user.phone);
+            setSelectedRole(user.role);
+            setAdminIdd(user.adminId);
+            setActionDialog(null);
+        }
+    };
     // Check if all fields are filled
-    const isAddButtonDisabled = !uniqueId || !startDate || !endDate;
+    // const isAddButtonDisabled = !uniqueId || !startDate || !endDate;
+    const handleRemoveUser = async (adminId: string) => {
+        try {
+            await deleteDoc(doc(db, 'admin', adminId));
+            toast.success('User Removed Successfully!');
+            setActionDialog(null);
+            close();
+        } catch (error) {
+            console.error('Error removing user from Firestore:', error);
+            toast.error('Failed to remove user. Please try again.');
+        }
+    };
+
+    useEffect(() => {
+        let filteredUsers = users;
+
+        // Filter by search term
+        if (searchTerm) {
+            filteredUsers = filteredUsers.filter(user =>
+                user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                user.phone.toLowerCase().includes(searchTerm.toLowerCase())
+            );
+        }
+
+        // Update state with filtered and sorted quizzes
+        setData(filteredUsers);
+        setCurrentPage(1); // Reset to first page when filters change
+    }, [searchTerm, users]);
+
 
     return (
         <div className="flex flex-col w-full  gap-4 p-8">
@@ -190,105 +205,108 @@ function rolemangement() {
                     </button>
                     <button
                         className="h-[44px] w-auto px-6 py-2 bg-[#8501FF] rounded-md shadow-inner-button border border-solid border-[#800EE2] flex items-center justify-center"
-                        onClick={() => openAddUser()} >
+                        onClick={() => handleAddNewUser()} >
                         <span className="text-[#FFFFFF] font-semibold text-sm">Add New User</span>
                     </button>
                 </div>
             </div>
 
-            <div className="flex flex-col justify-between h-full">
-                <div className="flex border border-[#EAECF0] rounded-xl">
-                    <table className="w-full bg-white rounded-xl">
-                        <thead>
-                            <tr>
-                                <th className="w-[25%] text-left px-8 py-4 pl-8 rounded-tl-xl flex flex-row ">
-                                    <span className="text-[#667085] font-medium text-sm">Name</span>
-                                </th>
-                                <th className=" w-[22%] text-center px-8 py-4 text-[#667085] font-medium text-sm">
-                                    <div className="flex flex-row justify-center gap-1">
-                                        <p>User Id</p>
-                                    </div>
-                                </th>
-                                <th className=" w-[22%] text-center px-8 py-4 text-[#667085] font-medium text-sm">
-                                    <div className="flex flex-row justify-center gap-1">
-                                        <p>Moblie No.</p>
-                                    </div>
-                                </th>
-                                <th className=" w-[22%] px-8 py-4 text-[#667085] font-medium text-sm">
-                                    <div className="flex flex-row ml-3 gap-1">
-                                        <p>Role</p>
-                                    </div>
-                                </th>
-                                <th className="w-[9%] text-center px-8 py-4 rounded-tr-xl text-[#667085] font-medium text-sm">Action</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {currentItems.map((quiz, index) => (
-                                <tr key={index} className="border-t border-solid border-[#EAECF0]">
-                                    <td className="py-2">
-                                        <div className="flex flex-row ml-8 gap-2">
-                                            <Image src='/icons/Profile-pic.png' alt="DP" width={40} height={40} />
-                                            <div className="flex items-start justify-start flex-col">
-                                                <div className="font-semibold">Jenny Wilson</div>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td className="px-8 py-4 text-center text-[#101828] text-sm">{quiz.userid}</td>
-                                    <td className="px-8 py-4 text-center text-[#101828] text-sm">{quiz.moblieid}</td>
-                                    <td className="py-4 text-center text-[#101828] text-sm">
-                                        <span className='flex items-center justify-start ml-[17%] rounded-full'>
-                                            <Roles roles={quiz.role} />
-                                        </span>
-                                    </td>
-                                    <td className="flex items-center justify-center ml-[20%] px-8 py-4 text-[#101828] text-sm">
-                                        <Popover placement="bottom-end">
-                                            <PopoverTrigger>
-                                                <button>
-                                                    <Image
-                                                        src="/icons/three-dots.svg"
-                                                        width={20}
-                                                        height={20}
-                                                        alt="More Actions"
-                                                    />
-                                                </button>
-                                            </PopoverTrigger>
-                                            <PopoverContent className="flex flex-col bg-white border border-lightGrey rounded-md w-[167px] px-0 shadow-md">
-
-                                                <button className="flex flex-row items-center justify-start w-full py-[0.625rem] px-4 gap-2 hover:bg-[#F2F4F7]"
-                                                    onClick={() => openAddUser(true)} >
-                                                    <Image src="/icons/edit-02.svg" width={18} height={18} alt="edit" />
-                                                    <span className="text-sm text-[#0C111D] font-normal">Edit details</span>
-                                                </button>
-                                                <button className=" flex flex-row items-center justify-start w-full py-[0.625rem] px-4 gap-2 hover:bg-[#F2F4F7]"
-                                                >
-                                                    <Image src='/icons/delete.svg' alt="user profile" width={18} height={18} />
-                                                    <p className="text-sm text-[#DE3024] font-normal">Remove</p>
-                                                </button>
-
-                                            </PopoverContent>
-                                        </Popover>
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
+            {loading ? (
+                <div>
+                    <LoadingData />
                 </div>
+            ) : (
+                <div className="flex flex-col overflow-y-auto">
+                    <div className="border border-[#EAECF0] rounded-xl ">
+                        <table className="w-full bg-white rounded-xl ">
+                            <thead>
+                                <tr>
+                                    <th className="w-[25%] text-left px-8 py-4 pl-8 rounded-tl-xl flex flex-row ">
+                                        <span className="text-[#667085] font-medium text-sm">Name</span>
+                                    </th>
+                                    <th className=" w-[22%] text-center px-8 py-4 text-[#667085] font-medium text-sm">
+                                        <div className="flex flex-row justify-center gap-1">
+                                            <p>User Id</p>
+                                        </div>
+                                    </th>
+                                    <th className=" w-[22%] text-center px-8 py-4 text-[#667085] font-medium text-sm">
+                                        <div className="flex flex-row justify-center gap-1">
+                                            <p>Moblie No.</p>
+                                        </div>
+                                    </th>
+                                    <th className=" w-[22%] px-8 py-4 text-[#667085] font-medium text-sm">
+                                        <div className="flex flex-row ml-3 gap-1">
+                                            <p>Role</p>
+                                        </div>
+                                    </th>
+                                    <th className="w-[9%] text-center px-8 py-4 rounded-tr-xl text-[#667085] font-medium text-sm">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {currentItems.map((users, index) => (
+                                    <tr key={index} className="border-t border-solid border-[#EAECF0]">
+                                        <td className="py-[12px]">
+                                            <div className="flex flex-row ml-8 gap-[10px]">
+                                                <Image className='rounded-full object-cover' src={users.profilePic} alt="DP" width={38} height={38} />
+                                                <div className="flex items-start justify-center flex-col mb-[2px]">
+                                                    <div className="font-semibold text-sm">{users.name}</div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td className="px-8 py-4 text-center text-[#101828] text-sm">{users.userId}</td>
+                                        <td className="px-8 py-4 text-center text-[#101828] text-sm">{'+' + users.phone}</td>
+                                        <td className="px-8 py-4 text-center text-[#101828] text-sm">{users.role}</td>
+                                        <td className="flex items-center justify-center px-8 py-4 text-[#101828] text-sm">
+                                            <Popover placement="bottom-end" isOpen={actionDialog === users.adminId}>
+                                                <PopoverTrigger>
+                                                    <button onClick={() => setActionDialog(actionDialog === users.adminId ? null : users.adminId)}                                                >
+                                                        <Image
+                                                            src="/icons/three-dots.svg"
+                                                            width={20}
+                                                            height={20}
+                                                            alt="More Actions"
+                                                        />
+                                                    </button>
+                                                </PopoverTrigger>
+                                                <PopoverContent className="flex px-0 rounded-md w-auto py-2">
+                                                    <div >
+                                                        <button className="flex flex-row items-center justify-start w-full py-2 gap-2 hover:bg-[#F2F4F7] pl-4 pr-9"
+                                                            onClick={() => handleEditDetails(true, users)} >
+                                                            <Image src="/icons/edit-02.svg" width={18} height={18} alt="edit" />
+                                                            <span className="text-sm text-[#0C111D] font-normal">Edit details</span>
+                                                        </button>
+                                                        <button className=" flex flex-row items-center justify-start w-full py-2 gap-2 hover:bg-[#F2F4F7] pl-4 pr-9"
+                                                            onClick={() => handleRemoveUser(users.adminId)}>
+                                                            <Image src='/icons/delete.svg' alt="user profile" width={18} height={18} />
+                                                            <p className="text-sm text-[#DE3024] font-normal">Remove</p>
+                                                        </button>
+                                                    </div>
+                                                </PopoverContent>
+                                            </Popover>
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
 
-                {/* Pagination Section */}
-                <div className="flex justify-end">
-                    <div className="flex justify-right">
-                        <PaginationSection
-                            totalItems={data.length}
-                            itemsPerPage={itemsPerPage}
-                            currentPage={currentPage}
-                            setCurrentPage={setCurrentPage}
-                        />
+                    {/* Pagination Section */}
+                    <div className="flex justify-end">
+                        <div className="flex justify-right">
+                            <PaginationSection
+                                totalItems={data.length}
+                                itemsPerPage={itemsPerPage}
+                                currentPage={currentPage}
+                                setCurrentPage={setCurrentPage}
+                            />
+                        </div>
                     </div>
                 </div>
-            </div>
+            )}
             {isRemoveOpen && < Remove onClose={closeRemove} open={true} />}
             {/* Dialog Component  for AddNewUser*/}
-            {isAddUser && <Addnewuser close={closeAddUser} open={true} isEditing={isEditing} />}
+            {isAddUser && <Addnewuser close={closeAddUser} open={true} isEditing={isEditing} firstName={firstName} setFirstName={setFirstName} lastName={lastName} setLastName={setLastName} userId={userId} setUserId={setUserId} phone={phone} setPhone={setPhone} selectedRole={selectedRole} setSelectedRole={setSelectedRole} adminIdd={adminIdd} setAdminId={setAdminIdd} />}
+            <ToastContainer />
         </div>
     );
 }

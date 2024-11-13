@@ -14,7 +14,7 @@ interface QuizInfoProps {
 }
 
 function Quizinfo({ quizName, setQuizName, quizDescription, setQuizDescription }: QuizInfoProps) {
-    const [value, setValue] = useState('');
+    const [value, setValue] = useState(quizDescription); // Initialize with quizDescription
     const quillRef = useRef<ReactQuill | null>(null); // Ref to hold ReactQuill instance
     const [quill, setQuill] = useState<Quill | null>(null);
     const [alignment, setAlignment] = useState<string | null>(null); // State to hold alignment
@@ -64,6 +64,11 @@ function Quizinfo({ quizName, setQuizName, quizDescription, setQuizDescription }
             setQuill(quillRef.current.getEditor());
         }
     }, []);
+
+    useEffect(() => {
+        // Whenever quizDescription changes, update the value of the Quill editor
+        setValue(quizDescription);
+    }, [quizDescription]);
 
     const handleKeyDown = () => {
         if (quill) {
@@ -165,14 +170,6 @@ function Quizinfo({ quizName, setQuizName, quizDescription, setQuizDescription }
                                         </div>
                                     </PopoverContent>
                                 </Popover>
-
-                                {/* List options */}
-                                <button onClick={() => handleIconClick('ordered')}>
-                                    <Image src="/icons/dropdown-icon-2.svg" width={27} height={27} alt="ordered-list" />
-                                </button>
-                                <button onClick={() => handleIconClick('bullet')}>
-                                    <Image src="/icons/dropdown-icon-3.svg" width={27} height={27} alt="bullet-list" />
-                                </button>
                             </div>
                         </div>
                     </div>
