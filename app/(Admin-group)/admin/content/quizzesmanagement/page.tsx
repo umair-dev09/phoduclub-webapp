@@ -14,7 +14,9 @@ import {
     PaginationPrevious,
 } from "@/components/ui/pagination";
 import { Popover, PopoverContent, PopoverTrigger } from "@nextui-org/popover";
+import {Calendar} from "@nextui-org/calendar";
 import { Pause } from "lucide-react";
+import {today, getLocalTimeZone} from "@internationalized/date";
 import ScheduledDialog from "@/components/AdminComponents/QuizInfoDailogs/scheduledDailog";
 import DeleteQuiz from "@/components/AdminComponents/QuizInfoDailogs/DeleteQuiz";
 import EndQuiz from "@/components/AdminComponents/QuizInfoDailogs/EndQuiz";
@@ -25,6 +27,7 @@ import ViewAnalytics from "@/components/AdminComponents/QuizInfoDailogs/ViewAnal
 import QuizStatus from '@/components/AdminComponents/QuizzesManagement/quizStatus';
 import { collection, getDocs, query, where, doc, getDoc } from 'firebase/firestore';
 import { db } from "@/firebase";
+import type { DateValue } from "@react-types/calendar"; // Correct import for DateValue from React Spectrum
 
 // Define types for quiz data
 interface Quiz {
@@ -34,6 +37,7 @@ interface Quiz {
     date: string; // Can be Date type if desired
     students: number;
     status: string;
+    quizPublishedDate: string;
 }
 function formatDate(dateString: string): string {
     const date = new Date(dateString);
@@ -101,14 +105,6 @@ function Quizz() {
         loadQuizzes();
     }, []);
 
-    // Filter quizzes based on search term
-    useEffect(() => {
-        const filteredQuizzes = quizzes.filter(quiz =>
-            quiz.title.toLowerCase().includes(searchTerm.toLowerCase())
-        );
-        setData(filteredQuizzes);
-        setCurrentPage(1); // Reset to first page on new search
-    }, [searchTerm, quizzes]);
 
     const lastItemIndex = currentPage * itemsPerPage;
     const firstItemIndex = lastItemIndex - itemsPerPage;
@@ -133,6 +129,7 @@ function Quizz() {
     const [isMakeLiveNowDialogOpen, setIsMakeLiveNowDialogOpen] = useState(false);
     const [isResumeQuizOpen, setIsResumeQuizOpen] = useState(false);
     const [isViewAnalyticsOpen, setIsViewAnalyticsOpen] = useState(false);
+    const [isSelcetDateOpen, setIsSelectDateOpen] = useState(false);
 
     // Handlers for ScheduledDialog
     const openScheduledDialog = () => setIsScheduledDialogOpen(true);
@@ -163,12 +160,12 @@ function Quizz() {
     const closeViewAnalytics = () => setIsViewAnalyticsOpen(false);
 
     const statusMapping: Record<Option, string[]> = {
-        'Saved': ['Saved'],
-        'Live': ['Live'],
-        'Scheduled': ['Scheduled'],
-        'Pause': ['Paused'],    // Notice how 'Pause' checkbox maps to 'Paused' status
-        'Finished': ['Finished'],
-        'Canceled': ['Ended']   // 'Canceled' checkbox maps to 'Ended' status
+        Saved: ['saved'],
+        Live: ['live'],
+        Scheduled: ['scheduled'],
+        Pause: ['paused'],    // Maps to 'paused' status in lowercase
+        Finished: ['finished'],
+        Canceled: ['ended']   // Maps to 'ended' status in lowercase
     };
 
     const [checkedState, setCheckedState] = useState<Record<Option, boolean>>({
@@ -190,36 +187,76 @@ function Quizz() {
     const options: Option[] = ["Saved", "Live", "Scheduled", "Pause", "Finished", "Canceled"];
 
     const selectedCount = Object.values(checkedState).filter(Boolean).length;
-
+    const [selectedDate, setSelectedDate] = useState<Date | null>(null); // Store selected date as Date object
+    
     useEffect(() => {
-        // Start with all quizzes
         let filteredQuizzes = quizzes;
-
-        // First, filter by search term if there is one
+    
+        // Filter by search term
         if (searchTerm) {
             filteredQuizzes = filteredQuizzes.filter(quiz =>
-                "Phodu JEE Mains Test Series 2025".toLowerCase().includes(searchTerm.toLowerCase())
+                quiz.title.toLowerCase().includes(searchTerm.toLowerCase())
             );
         }
-
-        // Get list of selected statuses
+    
+        // Filter by selected statuses
         const selectedStatuses = Object.entries(checkedState)
-            .filter(([_, isChecked]) => isChecked)  // Get only checked statuses
-            .map(([status]) => statusMapping[status as Option])  // Convert to actual status names
+            .filter(([_, isChecked]) => isChecked)
+            .map(([status]) => statusMapping[status as Option])
             .flat();
-
-        // If any statuses are selected, filter by those statuses
+    
         if (selectedStatuses.length > 0) {
             filteredQuizzes = filteredQuizzes.filter(quiz =>
                 selectedStatuses.includes(quiz.status)
             );
         }
-
-        // Update the displayed data
+    
+        // Filter by selected date
+        if (selectedDate) {
+            const selectedDateString = selectedDate instanceof Date && !isNaN(selectedDate.getTime())
+                ? selectedDate.toISOString().split('T')[0] // Convert to YYYY-MM-DD
+                : null;
+    
+            if (selectedDateString) {
+                filteredQuizzes = filteredQuizzes.filter(quiz => {
+                    const quizDate = new Date(quiz.date); // Convert quiz.date string to Date object
+                    const quizDateString = quizDate instanceof Date && !isNaN(quizDate.getTime())
+                        ? quizDate.toISOString().split('T')[0]
+                        : null;
+    
+                    return quizDateString === selectedDateString; // Compare only the date part (not time)
+                });
+            }
+        }
+    
+        // Sort by quizPublishedDate in ascending order (earliest date first)
+        filteredQuizzes = filteredQuizzes.sort((a, b) => {
+            const dateA = new Date(a.date).getTime();
+            const dateB = new Date(b.date).getTime();
+    
+            // Handle invalid date values (e.g., when date cannot be parsed)
+            if (isNaN(dateA) || isNaN(dateB)) {
+                console.error("Invalid date value", a.date, b.date);
+                return 0; // If dates are invalid, no sorting will occur
+            }
+    
+            return dateA - dateB; // Sort by time in ascending order (earliest first)
+        });
+    
+        // Update state with filtered and sorted quizzes
         setData(filteredQuizzes);
-        // Go back to first page whenever filters change
-        setCurrentPage(1);
-    }, [searchTerm, checkedState, quizzes]);
+        setCurrentPage(1); // Reset to first page when filters change
+    }, [searchTerm, checkedState, quizzes, selectedDate]);
+    
+    
+    
+    
+    
+
+    // Format selected date as 'Nov 9, 2024'
+    const formattedDate = selectedDate
+        ? selectedDate.toLocaleDateString("en-US", { year: 'numeric', month: 'short', day: 'numeric' })
+        : "Select dates";
 
     return (
         <div className="flex flex-col px-[32px] w-full gap-4 overflow-y-auto h-auto my-5">
@@ -246,15 +283,45 @@ function Quizz() {
                     </button>
 
                     {/* Select Date Button */}
-                    <button className="h-[44px] w-[143px] rounded-md bg-[#FFFFFF] border border-solid border-[#D0D5DD] flex items-center p-3">
+                    <Popover placement="bottom" isOpen={isSelcetDateOpen}>
+                    <PopoverTrigger>
+                    <button className="h-[44px] w-[143px] rounded-md bg-[#FFFFFF] border border-solid border-[#D0D5DD] flex items-center p-3" onClick={() => setIsSelectDateOpen(true)}>
                         <Image
                             src="/icons/select-date.svg"
                             width={20}
                             height={20}
                             alt="Select-date Button"
                         />
-                        <span className="font-medium text-sm text-[#667085] ml-2">Select dates</span>
+                        <span className="font-medium text-sm text-[#667085] ml-2">{formattedDate}</span>
                     </button>
+                    </PopoverTrigger>
+                    <PopoverContent className="flex flex-col gap-2 p-0 h-auto">
+                    <Calendar
+                        defaultValue={today(getLocalTimeZone())}
+                        showMonthAndYearPickers
+                        color="secondary"
+                        onChange={(value) => {
+                            const date = new Date(value.year, value.month - 1, value.day); // Adjust for zero-based month index
+                            setSelectedDate(date); // Update state with the new Date object
+                            setIsSelectDateOpen(false);
+                        }}
+                    />
+
+                    {/* Conditionally render the "Clear" button */}
+                    {selectedDate && (
+                        <button
+                            className="min-w-[84px] min-h-[30px] rounded-md bg-[#9012FF] text-[14px] font-medium text-white mb-2"
+                            onClick={() => {
+                                setSelectedDate(null); // Clear the selected date
+                                setIsSelectDateOpen(false);
+                            }}
+                        >
+                            Clear
+                        </button>
+                    )}
+                </PopoverContent>
+                    </Popover>
+                   
 
                     {/* By Status Button */}
                     <Popover placement="bottom-start">

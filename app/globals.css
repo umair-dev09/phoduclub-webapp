@@ -12,7 +12,7 @@ body {
   font-family: 'Poppins', sans-serif;
   justify-content: center;
   align-items: center;
-  height: 100vh;
+  height: 100vh;  
 }
 
 .heading .head {
@@ -183,17 +183,16 @@ div {
   }
 }
 
-/* tooltip for the side-button  */
+/* Tooltip for the side-button */
 .tooltip {
   position: relative;
   display: inline-block;
-
 }
 
 .tooltipText {
   position: absolute;
   color: white;
-  top: -20px;
+  top: 50%;
   left: calc(100% + 15px);
   z-index: 3;
   background-color: #131313;
@@ -205,12 +204,10 @@ div {
   opacity: 0;
   pointer-events: none;
   transition: all 0.4s ease;
-  height: 60px;
-  /* Fixed height */
+
+  height: 80px;
   line-height: 60px;
-  /* Centers the text vertically */
   width: auto;
-  /* Allows width to adjust according to text */
 }
 
 .tooltip:hover .tooltipText {
@@ -218,5 +215,4 @@ div {
   pointer-events: auto;
   top: 50%;
   transform: translateY(-50%);
-  /* Keeps it centered on hover */
 }
