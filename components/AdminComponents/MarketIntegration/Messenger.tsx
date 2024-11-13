@@ -27,36 +27,36 @@ interface Quiz {
 // Mock fetchQuizzes function with types
 const fetchQuizzes = async (): Promise<Quiz[]> => {
     const allQuizzes: Quiz[] = [
-        { userid: "jenny#001", moblieid: "+919876543210", role: "Admin", status: "live" },
-        { userid: "jenny#002", moblieid: "+918765432109", role: "Customer Care", status: "saved" },
-        { userid: "jenny#003", moblieid: "+917654321098", role: "Teacher", status: "paused" },
-        { userid: "jenny#004", moblieid: "+916543210987", role: "Chief Moderator", status: "saved" },
-        { userid: "jenny#005", moblieid: "+915432109876", role: "Guide", status: "finished" },
-        { userid: "jenny#006", moblieid: "+914321098765", role: "Editor", status: "ended" },
-        { userid: "jenny#007", moblieid: "+913210987654", role: "Admin", status: "scheduled" },
-        { userid: "jenny#008", moblieid: "+912109876543", role: "Customer Care", status: "live" },
-        { userid: "jenny#009", moblieid: "+911098765432", role: "Teacher", status: "saved" },
-        { userid: "jenny#010", moblieid: "+910987654321", role: "Chief Moderator", status: "paused" },
-        { userid: "jenny#011", moblieid: "+919876543219", role: "Guide", status: "saved" },
-        { userid: "jenny#012", moblieid: "+918765432198", role: "Editor", status: "finished" },
-        { userid: "jenny#013", moblieid: "+917654321987", role: "Admin", status: "ended" },
-        { userid: "jenny#014", moblieid: "+916543219876", role: "Customer Care", status: "live" },
-        { userid: "jenny#015", moblieid: "+915432198765", role: "Teacher", status: "scheduled" },
-        { userid: "jenny#016", moblieid: "+914321987654", role: "Chief Moderator", status: "finished" },
-        { userid: "jenny#017", moblieid: "+913219876543", role: "Guide", status: "saved" },
-        { userid: "jenny#018", moblieid: "+912198765432", role: "Editor", status: "paused" },
-        { userid: "jenny#019", moblieid: "+911987654321", role: "Admin", status: "saved" },
-        { userid: "jenny#020", moblieid: "+910876543219", role: "Customer Care", status: "live" },
-        { userid: "jenny#021", moblieid: "+919765432109", role: "Teacher", status: "ended" },
-        { userid: "jenny#022", moblieid: "+918654321098", role: "Chief Moderator", status: "scheduled" },
-        { userid: "jenny#023", moblieid: "+917543210987", role: "Guide", status: "finished" },
-        { userid: "jenny#024", moblieid: "+916432109876", role: "Editor", status: "saved" },
-        { userid: "jenny#025", moblieid: "+915321098765", role: "Admin", status: "live" },
-        { userid: "jenny#026", moblieid: "+914210987654", role: "Customer Care", status: "saved" },
-        { userid: "jenny#027", moblieid: "+913109876543", role: "Teacher", status: "paused" },
-        { userid: "jenny#028", moblieid: "+912098765432", role: "Chief Moderator", status: "ended" },
-        { userid: "jenny#029", moblieid: "+911987654320", role: "Guide", status: "saved" },
-        { userid: "jenny#030", moblieid: "+910876543218", role: "Editor", status: "saved" }
+        { userid: "jenny#001", moblieid: "Jan 6, 2024", role: "Admin", status: "live" },
+        { userid: "jenny#002", moblieid: "Jan 6, 2024", role: "Customer Care", status: "saved" },
+        { userid: "jenny#003", moblieid: "Jan 6, 2024", role: "Teacher", status: "paused" },
+        { userid: "jenny#004", moblieid: "Jan 6, 2024", role: "Chief Moderator", status: "saved" },
+        { userid: "jenny#005", moblieid: "Jan 6, 2024", role: "Guide", status: "finished" },
+        { userid: "jenny#006", moblieid: "Jan 6, 2024", role: "Editor", status: "ended" },
+        { userid: "jenny#007", moblieid: "Jan 6, 2024", role: "Admin", status: "scheduled" },
+        { userid: "jenny#008", moblieid: "Jan 6, 2024", role: "Customer Care", status: "live" },
+        { userid: "jenny#009", moblieid: "Jan 6, 2024", role: "Teacher", status: "saved" },
+        { userid: "jenny#010", moblieid: "Jan 6, 2024", role: "Chief Moderator", status: "paused" },
+        { userid: "jenny#011", moblieid: "Jan 6, 2024", role: "Guide", status: "saved" },
+        { userid: "jenny#012", moblieid: "Jan 6, 2024", role: "Editor", status: "finished" },
+        { userid: "jenny#013", moblieid: "Jan 6, 2024", role: "Admin", status: "ended" },
+        { userid: "jenny#014", moblieid: "Jan 6, 2024", role: "Customer Care", status: "live" },
+        { userid: "jenny#015", moblieid: "Jan 6, 2024", role: "Teacher", status: "scheduled" },
+        { userid: "jenny#016", moblieid: "Jan 6, 2024", role: "Chief Moderator", status: "finished" },
+        { userid: "jenny#017", moblieid: "Jan 6, 2024", role: "Guide", status: "saved" },
+        { userid: "jenny#018", moblieid: "Jan 6, 2024", role: "Editor", status: "paused" },
+        { userid: "jenny#019", moblieid: "Jan 6, 2024", role: "Admin", status: "saved" },
+        { userid: "jenny#020", moblieid: "Jan 6, 2024", role: "Customer Care", status: "live" },
+        { userid: "jenny#021", moblieid: "Jan 6, 2024", role: "Teacher", status: "ended" },
+        { userid: "jenny#022", moblieid: "Jan 6, 2024", role: "Chief Moderator", status: "scheduled" },
+        { userid: "jenny#023", moblieid: "Jan 6, 2024", role: "Guide", status: "finished" },
+        { userid: "jenny#024", moblieid: "Jan 6, 2024", role: "Editor", status: "saved" },
+        { userid: "jenny#025", moblieid: "Jan 6, 2024", role: "Admin", status: "live" },
+        { userid: "jenny#026", moblieid: "Jan 6, 2024", role: "Customer Care", status: "saved" },
+        { userid: "jenny#027", moblieid: "Jan 6, 2024", role: "Teacher", status: "paused" },
+        { userid: "jenny#028", moblieid: "Jan 6, 2024", role: "Chief Moderator", status: "ended" },
+        { userid: "jenny#029", moblieid: "Jan 6, 2024", role: "Guide", status: "saved" },
+        { userid: "jenny#030", moblieid: "Jan 6, 2024", role: "Editor", status: "saved" }
     ];
     return allQuizzes;
 };
@@ -197,15 +197,19 @@ function Messenger() {
                                         1
                                     </td>
                                     <td className="py-2">
-                                        <div className="flex flex-row ml-8 gap-2">
-                                            <Image src='/icons/Profile-pic.png' alt="DP" width={40} height={40} />
+                                        <div className="flex flex-row items-start ml-8 gap-2">
+                                            <Image src='/icons/idea-01 (1).svg' alt="idea" width={24} height={24} />
                                             <div className="flex items-start justify-start flex-col">
-                                                <button
+                                                {/* <button
                                                     className="font-semibold"
                                                     onClick={() => handleButtonClick('/admin/marketingintegration/marketinfo')}
                                                 >
                                                     Jenny Wilson
-                                                </button>
+                                                </button> */}
+                                                <p className="text-sm text-[#9012FF] font-semibold underline">Quiz Competition</p>
+                                                <p className="text-[0.813rem] text-[#667085] font-medium">
+                                                    Ready to test your knowledge? Join our quiz competition and compete for exciting prizes!
+                                                </p>
                                             </div>
                                         </div>
                                     </td>
