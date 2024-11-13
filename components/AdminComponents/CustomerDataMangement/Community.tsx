@@ -47,7 +47,7 @@ function Community() {
                                         <PopoverContent className="w-[12.375rem] px-0 py-1 rounded-md">
                                             <button className="flex flex-row items-center w-full px-4 py-[0.625rem] gap-2 transition-colors hover:bg-[#F2F4F7]">
                                                 <Image src='/icons/delete.svg' alt="delete" width={18} height={18} />
-                                                <p className="text-sm text-[#DE3024] font-normal">Remove from group</p>
+                                                <p className="text-sm text-[#DE3024] font-normal">Remove from channel</p>
                                             </button>
                                         </PopoverContent>
                                     </Popover>
