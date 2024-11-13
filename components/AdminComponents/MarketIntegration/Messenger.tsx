@@ -21,42 +21,42 @@ interface Quiz {
     userid: string;
     moblieid: string;
     role: string;
-    status: 'Live' | 'Paused' | 'Finished' | 'Scheduled' | 'Cancelled' | 'Saved' | 'Ended';
+    status: 'live' | 'paused' | 'finished' | 'scheduled' | 'saved' | 'ended';
 }
 
 // Mock fetchQuizzes function with types
 const fetchQuizzes = async (): Promise<Quiz[]> => {
     const allQuizzes: Quiz[] = [
-        { userid: "jenny#001", moblieid: "+919876543210", role: "Admin", status: "Live" },
-        { userid: "jenny#002", moblieid: "+918765432109", role: "Customer Care", status: "Saved" },
-        { userid: "jenny#003", moblieid: "+917654321098", role: "Teacher", status: "Paused" },
-        { userid: "jenny#004", moblieid: "+916543210987", role: "Chief Moderator", status: "Saved" },
-        { userid: "jenny#005", moblieid: "+915432109876", role: "Guide", status: "Finished" },
-        { userid: "jenny#006", moblieid: "+914321098765", role: "Editor", status: "Ended" },
-        { userid: "jenny#007", moblieid: "+913210987654", role: "Admin", status: "Scheduled" },
-        { userid: "jenny#008", moblieid: "+912109876543", role: "Customer Care", status: "Live" },
-        { userid: "jenny#009", moblieid: "+911098765432", role: "Teacher", status: "Saved" },
-        { userid: "jenny#010", moblieid: "+910987654321", role: "Chief Moderator", status: "Paused" },
-        { userid: "jenny#011", moblieid: "+919876543219", role: "Guide", status: "Saved" },
-        { userid: "jenny#012", moblieid: "+918765432198", role: "Editor", status: "Finished" },
-        { userid: "jenny#013", moblieid: "+917654321987", role: "Admin", status: "Ended" },
-        { userid: "jenny#014", moblieid: "+916543219876", role: "Customer Care", status: "Live" },
-        { userid: "jenny#015", moblieid: "+915432198765", role: "Teacher", status: "Scheduled" },
-        { userid: "jenny#016", moblieid: "+914321987654", role: "Chief Moderator", status: "Finished" },
-        { userid: "jenny#017", moblieid: "+913219876543", role: "Guide", status: "Saved" },
-        { userid: "jenny#018", moblieid: "+912198765432", role: "Editor", status: "Paused" },
-        { userid: "jenny#019", moblieid: "+911987654321", role: "Admin", status: "Saved" },
-        { userid: "jenny#020", moblieid: "+910876543219", role: "Customer Care", status: "Live" },
-        { userid: "jenny#021", moblieid: "+919765432109", role: "Teacher", status: "Ended" },
-        { userid: "jenny#022", moblieid: "+918654321098", role: "Chief Moderator", status: "Scheduled" },
-        { userid: "jenny#023", moblieid: "+917543210987", role: "Guide", status: "Finished" },
-        { userid: "jenny#024", moblieid: "+916432109876", role: "Editor", status: "Saved" },
-        { userid: "jenny#025", moblieid: "+915321098765", role: "Admin", status: "Live" },
-        { userid: "jenny#026", moblieid: "+914210987654", role: "Customer Care", status: "Saved" },
-        { userid: "jenny#027", moblieid: "+913109876543", role: "Teacher", status: "Paused" },
-        { userid: "jenny#028", moblieid: "+912098765432", role: "Chief Moderator", status: "Ended" },
-        { userid: "jenny#029", moblieid: "+911987654320", role: "Guide", status: "Saved" },
-        { userid: "jenny#030", moblieid: "+910876543218", role: "Editor", status: "Saved" }
+        { userid: "jenny#001", moblieid: "+919876543210", role: "Admin", status: "live" },
+        { userid: "jenny#002", moblieid: "+918765432109", role: "Customer Care", status: "saved" },
+        { userid: "jenny#003", moblieid: "+917654321098", role: "Teacher", status: "paused" },
+        { userid: "jenny#004", moblieid: "+916543210987", role: "Chief Moderator", status: "saved" },
+        { userid: "jenny#005", moblieid: "+915432109876", role: "Guide", status: "finished" },
+        { userid: "jenny#006", moblieid: "+914321098765", role: "Editor", status: "ended" },
+        { userid: "jenny#007", moblieid: "+913210987654", role: "Admin", status: "scheduled" },
+        { userid: "jenny#008", moblieid: "+912109876543", role: "Customer Care", status: "live" },
+        { userid: "jenny#009", moblieid: "+911098765432", role: "Teacher", status: "saved" },
+        { userid: "jenny#010", moblieid: "+910987654321", role: "Chief Moderator", status: "paused" },
+        { userid: "jenny#011", moblieid: "+919876543219", role: "Guide", status: "saved" },
+        { userid: "jenny#012", moblieid: "+918765432198", role: "Editor", status: "finished" },
+        { userid: "jenny#013", moblieid: "+917654321987", role: "Admin", status: "ended" },
+        { userid: "jenny#014", moblieid: "+916543219876", role: "Customer Care", status: "live" },
+        { userid: "jenny#015", moblieid: "+915432198765", role: "Teacher", status: "scheduled" },
+        { userid: "jenny#016", moblieid: "+914321987654", role: "Chief Moderator", status: "finished" },
+        { userid: "jenny#017", moblieid: "+913219876543", role: "Guide", status: "saved" },
+        { userid: "jenny#018", moblieid: "+912198765432", role: "Editor", status: "paused" },
+        { userid: "jenny#019", moblieid: "+911987654321", role: "Admin", status: "saved" },
+        { userid: "jenny#020", moblieid: "+910876543219", role: "Customer Care", status: "live" },
+        { userid: "jenny#021", moblieid: "+919765432109", role: "Teacher", status: "ended" },
+        { userid: "jenny#022", moblieid: "+918654321098", role: "Chief Moderator", status: "scheduled" },
+        { userid: "jenny#023", moblieid: "+917543210987", role: "Guide", status: "finished" },
+        { userid: "jenny#024", moblieid: "+916432109876", role: "Editor", status: "saved" },
+        { userid: "jenny#025", moblieid: "+915321098765", role: "Admin", status: "live" },
+        { userid: "jenny#026", moblieid: "+914210987654", role: "Customer Care", status: "saved" },
+        { userid: "jenny#027", moblieid: "+913109876543", role: "Teacher", status: "paused" },
+        { userid: "jenny#028", moblieid: "+912098765432", role: "Chief Moderator", status: "ended" },
+        { userid: "jenny#029", moblieid: "+911987654320", role: "Guide", status: "saved" },
+        { userid: "jenny#030", moblieid: "+910876543218", role: "Editor", status: "saved" }
     ];
     return allQuizzes;
 };
@@ -170,10 +170,10 @@ function Messenger() {
                     <table className="w-full bg-white rounded-xl">
                         <thead>
                             <tr>
-                                <th className="text-center px-8 py-4 pl-8 rounded-tl-xl text-[#667085] font-medium text-sm">
+                                <th className="text-center w-14 px-8 py-4 pl-8 rounded-tl-xl text-[#667085] font-medium text-sm">
                                     Sr.No.
                                 </th>
-                                <th className="text-left px-8 py-4 pl-8 text-[#667085] font-medium text-sm">
+                                <th className="text-left w-1/3 px-8 py-4 pl-8 text-[#667085] font-medium text-sm">
                                     Notification
                                 </th>
                                 <th className="text-center px-8 py-4 text-[#667085] font-medium text-sm">
@@ -182,10 +182,10 @@ function Messenger() {
                                 <th className="text-center px-8 py-4 text-[#667085] font-medium text-sm">
                                     Clicked
                                 </th>
-                                <th className="text-center px-8 py-4 text-[#667085] font-medium text-sm">
+                                <th className="text-left px-8 py-4 text-[#667085] font-medium text-sm">
                                     Status
                                 </th>
-                                <th className="text-center px-8 py-4 rounded-tr-xl text-[#667085] font-medium text-sm">
+                                <th className="text-center w-14 px-8 py-4 rounded-tr-xl text-[#667085] font-medium text-sm">
                                     Action
                                 </th>
                             </tr>
@@ -211,15 +211,15 @@ function Messenger() {
                                     </td>
                                     <td className="px-8 py-4 text-center text-[#101828] text-sm">{quiz.userid}</td>
                                     <td className="px-8 py-4 text-center text-[#101828] text-sm">{quiz.moblieid}</td>
-                                    <td className="px-8 py-4 text-center text-[#101828] text-sm">
-                                        <span className='flex items-center justify-start ml-[33%] rounded-full'>
+                                    <td className="px-8 py-4 text-[#101828] text-sm">
+                                        <span className='flex items-start justify-start rounded-full'>
                                             <QuizStatus status={quiz.status} />
                                         </span>
                                     </td>
                                     <td className="flex items-center justify-center px-8 py-4 text-[#101828] text-sm">
                                         <Popover placement="bottom-end">
                                             <PopoverTrigger>
-                                                <button>
+                                                <button className="ml-[50%] outline-none">
                                                     <Image
                                                         src="/icons/three-dots.svg"
                                                         width={20}
@@ -228,18 +228,18 @@ function Messenger() {
                                                     />
                                                 </button>
                                             </PopoverTrigger>
-                                            <PopoverContent className="flex flex=col w-[10.438rem] px-0 py-1 bg-white border border-lightGrey rounded-md">
-
-                                                <button className="flex flex-row items-center justify-start w-full py-[0.625rem] px-4 gap-2 hover:bg-[#F2F4F7]">
-                                                    <Image src="/icons/edit-02.svg" width={18} height={18} alt="edit" />
-                                                    <span className="text-sm text-[#0C111D] font-normal">Edit details</span>
-                                                </button>
-                                                <button className=" flex flex-row items-center justify-start w-full py-[0.625rem] px-4 gap-2 hover:bg-[#F2F4F7]"
-                                                >
-                                                    <Image src='/icons/delete.svg' alt="user profile" width={18} height={18} />
-                                                    <p className="text-sm text-[#DE3024] font-normal">Remove</p>
-                                                </button>
-
+                                            <PopoverContent className="w-[10.438rem] py-1 px-0 bg-white border border-lightGrey rounded-md">
+                                                <div className="w-full">
+                                                    <button className="flex flex-row items-center justify-start w-full px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7]">
+                                                        <Image src="/icons/edit-02.svg" width={18} height={18} alt="edit" />
+                                                        <span className="text-sm text-[#0C111D] font-normal">Edit details</span>
+                                                    </button>
+                                                    <button className=" flex flex-row items-center justify-start w-full px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7]"
+                                                    >
+                                                        <Image src='/icons/delete.svg' alt="user profile" width={18} height={18} />
+                                                        <p className="text-sm text-[#DE3024] font-normal">Remove</p>
+                                                    </button>
+                                                </div>
                                             </PopoverContent>
                                         </Popover>
                                     </td>
@@ -274,9 +274,7 @@ function Messenger() {
                                     <Image src="/icons/cancel.svg" alt="Cancel" width={20} height={20} />
                                 </button>
                             </div>
-
                             <div className="flex flex-col w-full gap-1 ">
-
                                 <label className="text-[#1D2939] text-sm font-medium">Name</label>
                                 <div className="flex flex-row p-2 w-full gap-2 border border-solid border-[#D0D5DD] rounded-md ">
                                     <Popover placement="bottom">
@@ -296,52 +294,47 @@ function Messenger() {
                                                 />
                                             </button>
                                         </PopoverTrigger>
-
-                                        <PopoverContent className="py-1 w-[56px] border border-solid border-[#EAECF0] bg-[#FFFFFF] rounded-md flex flex-col shadow-lg px-0">
-
-                                            {/* Idea Button */}
-                                            <button
-                                                className="flex flex-row w-full p-1 hover:bg-[#F2F4F7] justify-center items-center"
-                                                onClick={() => handleIconSelect("/icons/idea-2.svg")}
-                                            >
-                                                <Image
-                                                    src="/icons/idea-2.svg"
-                                                    width={24}
-                                                    height={24}
-                                                    alt="Idea Button"
-                                                />
-                                            </button>
-
-                                            {/* Megaphone Button */}
-                                            <button
-                                                className="flex flex-row w-full p-1 hover:bg-[#F2F4F7] justify-center items-center"
-                                                onClick={() => handleIconSelect("/icons/megaphone.svg")}
-                                            >
-                                                <Image
-                                                    src="/icons/megaphone.svg"
-                                                    width={24}
-                                                    height={24}
-                                                    alt="Megaphone Button"
-                                                />
-                                            </button>
-
-                                            {/* Read Button */}
-                                            <button
-                                                className="flex flex-row w-full p-1 hover:bg-[#F2F4F7] justify-center items-center"
-                                                onClick={() => handleIconSelect("/icons/read-2.svg")}
-                                            >
-                                                <Image
-                                                    src="/icons/read-2.svg"
-                                                    width={24}
-                                                    height={24}
-                                                    alt="Read Button"
-                                                />
-                                            </button>
-
+                                        <PopoverContent>
+                                            <div className="py-1 w-[56px] border border-solid border-[#EAECF0] bg-[#FFFFFF] rounded-md flex flex-col shadow-lg">
+                                                {/* Idea Button */}
+                                                <button
+                                                    className="flex flex-row w-full p-1 hover:bg-[#F2F4F7] justify-center items-center"
+                                                    onClick={() => handleIconSelect("/icons/idea-2.svg")}
+                                                >
+                                                    <Image
+                                                        src="/icons/idea-2.svg"
+                                                        width={24}
+                                                        height={24}
+                                                        alt="Idea Button"
+                                                    />
+                                                </button>
+                                                {/* Megaphone Button */}
+                                                <button
+                                                    className="flex flex-row w-full p-1 hover:bg-[#F2F4F7] justify-center items-center"
+                                                    onClick={() => handleIconSelect("/icons/megaphone.svg")}
+                                                >
+                                                    <Image
+                                                        src="/icons/megaphone.svg"
+                                                        width={24}
+                                                        height={24}
+                                                        alt="Megaphone Button"
+                                                    />
+                                                </button>
+                                                {/* Read Button */}
+                                                <button
+                                                    className="flex flex-row w-full p-1 hover:bg-[#F2F4F7] justify-center items-center"
+                                                    onClick={() => handleIconSelect("/icons/read-2.svg")}
+                                                >
+                                                    <Image
+                                                        src="/icons/read-2.svg"
+                                                        width={24}
+                                                        height={24}
+                                                        alt="Read Button"
+                                                    />
+                                                </button>
+                                            </div>
                                         </PopoverContent>
                                     </Popover>
-
-
                                     <input
                                         className="w-full text-sm font-medium text-[#1D2939] placeholder:font-normal placeholder:text-[#A1A1A1] rounded-md outline-none"
                                         type="text"
@@ -351,8 +344,6 @@ function Messenger() {
                                     />
                                 </div>
                                 <span className="text-[#475467] font-normal text-right text-sm">{name.length}/50</span>
-
-
                             </div>
                             <div className="flex flex-col gap-1 w-full">
                                 <label className="text-[#1D2939] text-sm font-medium">Description</label>
@@ -417,55 +408,49 @@ function Messenger() {
                                                     />
                                                 </button>
                                             </PopoverTrigger>
-
-                                            <PopoverContent className="px-0 py-1 w-[56px] border border-solid border-[#EAECF0] bg-[#FFFFFF] rounded-md flex flex-col shadow-lg">
-
-                                                {/* Idea Button */}
-                                                <button
-                                                    className="flex flex-row w-full p-1 hover:bg-[#F2F4F7] justify-center items-center"
-                                                    onClick={() => handleIconSelectforimage("/icons/annocement.png")}
-                                                >
-                                                    <Image
-                                                        src="/icons/annocement.png"
-                                                        width={24}
-                                                        height={24}
-                                                        alt="Idea Button"
-                                                    />
-                                                </button>
-
-                                                {/* Megaphone Button */}
-                                                <button
-                                                    className="flex flex-row w-full p-1 hover:bg-[#F2F4F7] justify-center items-center"
-                                                    onClick={() => handleIconSelectforimage("/icons/megaphone.svg")}
-                                                >
-                                                    <Image
-                                                        src="/icons/megaphone.svg"
-                                                        width={24}
-                                                        height={24}
-                                                        alt="Megaphone Button"
-                                                    />
-                                                </button>
-
-                                                {/* Read Button */}
-                                                <button
-                                                    className="flex flex-row w-full p-1 hover:bg-[#F2F4F7] justify-center items-center"
-                                                    onClick={() => handleIconSelectforimage("/icons/read-2.svg")}
-                                                >
-                                                    <Image
-                                                        src="/icons/read-2.svg"
-                                                        width={24}
-                                                        height={24}
-                                                        alt="Read Button"
-                                                    />
-                                                </button>
-
+                                            <PopoverContent>
+                                                <div className="py-1 w-[56px] border border-solid border-[#EAECF0] bg-[#FFFFFF] rounded-md flex flex-col shadow-lg">
+                                                    {/* Idea Button */}
+                                                    <button
+                                                        className="flex flex-row w-full p-1 hover:bg-[#F2F4F7] justify-center items-center"
+                                                        onClick={() => handleIconSelectforimage("/icons/annocement.png")}
+                                                    >
+                                                        <Image
+                                                            src="/icons/annocement.png"
+                                                            width={24}
+                                                            height={24}
+                                                            alt="Idea Button"
+                                                        />
+                                                    </button>
+                                                    {/* Megaphone Button */}
+                                                    <button
+                                                        className="flex flex-row w-full p-1 hover:bg-[#F2F4F7] justify-center items-center"
+                                                        onClick={() => handleIconSelectforimage("/icons/megaphone.svg")}
+                                                    >
+                                                        <Image
+                                                            src="/icons/megaphone.svg"
+                                                            width={24}
+                                                            height={24}
+                                                            alt="Megaphone Button"
+                                                        />
+                                                    </button>
+                                                    {/* Read Button */}
+                                                    <button
+                                                        className="flex flex-row w-full p-1 hover:bg-[#F2F4F7] justify-center items-center"
+                                                        onClick={() => handleIconSelectforimage("/icons/read-2.svg")}
+                                                    >
+                                                        <Image
+                                                            src="/icons/read-2.svg"
+                                                            width={24}
+                                                            height={24}
+                                                            alt="Read Button"
+                                                        />
+                                                    </button>
+                                                </div>
                                             </PopoverContent>
                                         </Popover>
-
-
                                     </div>
                                 </div>
-
                             </div>
                             <hr className="my-5" />
                             <h1 className="text-[#1D2939] font-semibold text-lg ">Schedule notification</h1>
@@ -481,12 +466,10 @@ function Messenger() {
                                             height={24}
                                             alt="calender" />
                                         <input
-
                                             className="w-full text-sm font-medium text-[#1D2939] placeholder:font-normal placeholder:text-[#A1A1A1] rounded-md outline-none"
                                             type="text"
                                             placeholder="Select Date"
                                         />
-
                                     </div>
                                 </div>
                                 <div className="flex flex-col gap-1 w-1/2 flex-grow">
@@ -507,7 +490,6 @@ function Messenger() {
                                     </div>
                                 </div>
                             </div>
-
                         </div>
                         <div className="flex flex-row justify-end mt-6 gap-4 border-t border-[#EAECF0] pt-4 p-4 rounded-md">
                             <button
