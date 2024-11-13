@@ -62,22 +62,12 @@ function Products() {
                                             <button
                                                 className="flex flex-row h-[40px] w-full p-3  gap-2 hover:bg-[#F2F4F7] items-center">
                                                 <Image
-                                                    src="/icons/pausequiz.svg"
+                                                    src="/icons/resume.svg"
                                                     width={18}
                                                     height={18}
                                                     alt="Delete"
                                                 />
                                                 <span className="text-[#0C111D] text-sm font-medium">Pause Quiz</span>
-                                            </button>
-                                            <button
-                                                className="flex flex-row h-[40px] w-full p-3  gap-2 hover:bg-[#F2F4F7] items-center">
-                                                <Image
-                                                    src="/icons/resume-2.svg"
-                                                    width={18}
-                                                    height={18}
-                                                    alt="Delete"
-                                                />
-                                                <span className="text-[#0C111D] text-sm font-medium">Resume Quiz</span>
                                             </button>
                                             <button
                                                 className="flex flex-row h-[40px] w-full p-3  gap-2 hover:bg-[#F2F4F7] items-center">

@@ -59,16 +59,16 @@ function Products() {
                                             <button className="mr-[25%] text-xl font-bold">⋮</button>
                                         </PopoverTrigger>
                                         <PopoverContent className=" w-[167px] px-0 border border-solid border-[#EAECF0] bg-[#FFFFFF] rounded-md  shadow-lg">
-                                            <button
+                                            {/* <button
                                                 className="flex flex-row h-[40px] w-full p-3  gap-2 hover:bg-[#F2F4F7] items-center">
                                                 <Image
-                                                    src="/icons/pausequiz.svg"
+                                                    src="/icons/resume-2.svg"
                                                     width={18}
                                                     height={18}
                                                     alt="Delete"
                                                 />
                                                 <span className="text-[#0C111D] text-sm font-medium">Pause Quiz</span>
-                                            </button>
+                                            </button> */}
                                             <button
                                                 className="flex flex-row h-[40px] w-full p-3  gap-2 hover:bg-[#F2F4F7] items-center">
                                                 <Image

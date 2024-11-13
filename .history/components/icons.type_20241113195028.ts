@@ -138,7 +138,7 @@ export type IconsType =
   | "elements (3)"
   | "Arrow-up"
   | "Arrow-down-1"
-  | "resume-2";
+
 
 
 
