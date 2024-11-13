@@ -27,36 +27,36 @@ interface Quiz {
 // Mock fetchQuizzes function with types
 const fetchQuizzes = async (): Promise<Quiz[]> => {
     const allQuizzes: Quiz[] = [
-        { userid: "jenny#001", moblieid: "Jan 6, 2024", role: "Admin", status: "live" },
-        { userid: "jenny#002", moblieid: "Jan 6, 2024", role: "Customer Care", status: "saved" },
-        { userid: "jenny#003", moblieid: "Jan 6, 2024", role: "Teacher", status: "paused" },
-        { userid: "jenny#004", moblieid: "Jan 6, 2024", role: "Chief Moderator", status: "saved" },
-        { userid: "jenny#005", moblieid: "Jan 6, 2024", role: "Guide", status: "finished" },
-        { userid: "jenny#006", moblieid: "Jan 6, 2024", role: "Editor", status: "ended" },
-        { userid: "jenny#007", moblieid: "Jan 6, 2024", role: "Admin", status: "scheduled" },
-        { userid: "jenny#008", moblieid: "Jan 6, 2024", role: "Customer Care", status: "live" },
-        { userid: "jenny#009", moblieid: "Jan 6, 2024", role: "Teacher", status: "saved" },
-        { userid: "jenny#010", moblieid: "Jan 6, 2024", role: "Chief Moderator", status: "paused" },
-        { userid: "jenny#011", moblieid: "Jan 6, 2024", role: "Guide", status: "saved" },
-        { userid: "jenny#012", moblieid: "Jan 6, 2024", role: "Editor", status: "finished" },
-        { userid: "jenny#013", moblieid: "Jan 6, 2024", role: "Admin", status: "ended" },
-        { userid: "jenny#014", moblieid: "Jan 6, 2024", role: "Customer Care", status: "live" },
-        { userid: "jenny#015", moblieid: "Jan 6, 2024", role: "Teacher", status: "scheduled" },
-        { userid: "jenny#016", moblieid: "Jan 6, 2024", role: "Chief Moderator", status: "finished" },
-        { userid: "jenny#017", moblieid: "Jan 6, 2024", role: "Guide", status: "saved" },
-        { userid: "jenny#018", moblieid: "Jan 6, 2024", role: "Editor", status: "paused" },
-        { userid: "jenny#019", moblieid: "Jan 6, 2024", role: "Admin", status: "saved" },
-        { userid: "jenny#020", moblieid: "Jan 6, 2024", role: "Customer Care", status: "live" },
-        { userid: "jenny#021", moblieid: "Jan 6, 2024", role: "Teacher", status: "ended" },
-        { userid: "jenny#022", moblieid: "Jan 6, 2024", role: "Chief Moderator", status: "scheduled" },
-        { userid: "jenny#023", moblieid: "Jan 6, 2024", role: "Guide", status: "finished" },
-        { userid: "jenny#024", moblieid: "Jan 6, 2024", role: "Editor", status: "saved" },
-        { userid: "jenny#025", moblieid: "Jan 6, 2024", role: "Admin", status: "live" },
-        { userid: "jenny#026", moblieid: "Jan 6, 2024", role: "Customer Care", status: "saved" },
-        { userid: "jenny#027", moblieid: "Jan 6, 2024", role: "Teacher", status: "paused" },
-        { userid: "jenny#028", moblieid: "Jan 6, 2024", role: "Chief Moderator", status: "ended" },
-        { userid: "jenny#029", moblieid: "Jan 6, 2024", role: "Guide", status: "saved" },
-        { userid: "jenny#030", moblieid: "Jan 6, 2024", role: "Editor", status: "saved" }
+        { userid: "1,324", moblieid: "Jan 6, 2024", role: "Admin", status: "live" },
+        { userid: "1,324", moblieid: "Jan 6, 2024", role: "Customer Care", status: "saved" },
+        { userid: "1,324", moblieid: "Jan 6, 2024", role: "Teacher", status: "paused" },
+        { userid: "1,324", moblieid: "Jan 6, 2024", role: "Chief Moderator", status: "saved" },
+        { userid: "1,324", moblieid: "Jan 6, 2024", role: "Guide", status: "finished" },
+        { userid: "1,324", moblieid: "Jan 6, 2024", role: "Editor", status: "ended" },
+        { userid: "1,324", moblieid: "Jan 6, 2024", role: "Admin", status: "scheduled" },
+        { userid: "1,324", moblieid: "Jan 6, 2024", role: "Customer Care", status: "live" },
+        { userid: "1,324", moblieid: "Jan 6, 2024", role: "Teacher", status: "saved" },
+        { userid: "1,324", moblieid: "Jan 6, 2024", role: "Chief Moderator", status: "paused" },
+        { userid: "1,324", moblieid: "Jan 6, 2024", role: "Guide", status: "saved" },
+        { userid: "1,324", moblieid: "Jan 6, 2024", role: "Editor", status: "finished" },
+        { userid: "1,324", moblieid: "Jan 6, 2024", role: "Admin", status: "ended" },
+        { userid: "1,324", moblieid: "Jan 6, 2024", role: "Customer Care", status: "live" },
+        { userid: "1,324", moblieid: "Jan 6, 2024", role: "Teacher", status: "scheduled" },
+        { userid: "1,324", moblieid: "Jan 6, 2024", role: "Chief Moderator", status: "finished" },
+        { userid: "1,324", moblieid: "Jan 6, 2024", role: "Guide", status: "saved" },
+        { userid: "1,324", moblieid: "Jan 6, 2024", role: "Editor", status: "paused" },
+        { userid: "1,324", moblieid: "Jan 6, 2024", role: "Admin", status: "saved" },
+        { userid: "1,324", moblieid: "Jan 6, 2024", role: "Customer Care", status: "live" },
+        { userid: "1,324", moblieid: "Jan 6, 2024", role: "Teacher", status: "ended" },
+        { userid: "1,324", moblieid: "Jan 6, 2024", role: "Chief Moderator", status: "scheduled" },
+        { userid: "1,324", moblieid: "Jan 6, 2024", role: "Guide", status: "finished" },
+        { userid: "1,324", moblieid: "Jan 6, 2024", role: "Editor", status: "saved" },
+        { userid: "1,324", moblieid: "Jan 6, 2024", role: "Admin", status: "live" },
+        { userid: "1,324", moblieid: "Jan 6, 2024", role: "Customer Care", status: "saved" },
+        { userid: "1,324", moblieid: "Jan 6, 2024", role: "Teacher", status: "paused" },
+        { userid: "1,324", moblieid: "Jan 6, 2024", role: "Chief Moderator", status: "ended" },
+        { userid: "1,324", moblieid: "Jan 6, 2024", role: "Guide", status: "saved" },
+        { userid: "1,324", moblieid: "Jan 6, 2024", role: "Editor", status: "saved" }
     ];
     return allQuizzes;
 };
@@ -170,7 +170,7 @@ function Messenger() {
                     <table className="w-full bg-white rounded-xl">
                         <thead>
                             <tr>
-                                <th className="text-center w-14 px-8 py-4 pl-8 rounded-tl-xl text-[#667085] font-medium text-sm">
+                                <th className="text-center w-14 px-2 pl-5 py-4 rounded-tl-xl text-[#667085] font-medium text-sm">
                                     Sr.No.
                                 </th>
                                 <th className="text-left w-1/3 px-8 py-4 pl-8 text-[#667085] font-medium text-sm">
@@ -182,7 +182,7 @@ function Messenger() {
                                 <th className="text-center px-8 py-4 text-[#667085] font-medium text-sm">
                                     Clicked
                                 </th>
-                                <th className="text-left px-8 py-4 text-[#667085] font-medium text-sm">
+                                <th className="text-left px-8 pl-[6%] pr-4 text-[#667085] font-medium text-sm">
                                     Status
                                 </th>
                                 <th className="text-center w-14 px-8 py-4 rounded-tr-xl text-[#667085] font-medium text-sm">
@@ -200,23 +200,22 @@ function Messenger() {
                                         <div className="flex flex-row items-start ml-8 gap-2">
                                             <Image src='/icons/idea-01 (1).svg' alt="idea" width={24} height={24} />
                                             <div className="flex items-start justify-start flex-col">
-                                                {/* <button
-                                                    className="font-semibold"
+                                                <button
+                                                    className="text-sm text-[#9012FF] font-semibold underline"
                                                     onClick={() => handleButtonClick('/admin/marketingintegration/marketinfo')}
                                                 >
-                                                    Jenny Wilson
-                                                </button> */}
-                                                <p className="text-sm text-[#9012FF] font-semibold underline">Quiz Competition</p>
+                                                    Quiz Competition
+                                                </button>
                                                 <p className="text-[0.813rem] text-[#667085] font-medium">
                                                     Ready to test your knowledge? Join our quiz competition and compete for exciting prizes!
                                                 </p>
                                             </div>
                                         </div>
                                     </td>
-                                    <td className="px-8 py-4 text-center text-[#101828] text-sm">{quiz.userid}</td>
                                     <td className="px-8 py-4 text-center text-[#101828] text-sm">{quiz.moblieid}</td>
+                                    <td className="px-8 py-4 text-center text-[#101828] text-sm">{quiz.userid}</td>
                                     <td className="px-8 py-4 text-[#101828] text-sm">
-                                        <span className='flex items-start justify-start rounded-full'>
+                                        <span className='flex items-start justify-start ml-[25%] rounded-full'>
                                             <QuizStatus status={quiz.status} />
                                         </span>
                                     </td>
