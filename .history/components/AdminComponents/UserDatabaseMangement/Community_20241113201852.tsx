@@ -43,7 +43,7 @@ function Community() {
                         <div className="h-[76px] w-full px-6 flex flex-row justify-between  items-center hover:bg-[#F9FAFB]">
                             <div className="flex flex-row gap-2">
                                 <Image
-                                    src={isOpen ? '/icons/Arrow-up.svg' : '/icons/Arrow-down-1.svg'}
+                                    src={isOpen ? '/icons/Arrow-up-1.svg' : '/icons/Arrow-down-1.svg'}
                                     width={20}
                                     height={20}
                                     alt="Arrow-toggle"
@@ -63,8 +63,7 @@ function Community() {
                                     <Image src='/icons/more-vertical.svg' alt="more" width={24} height={24} />
                                 </PopoverTrigger>
                                 <PopoverContent className="w-auto px-0 py-1 rounded-md">
-                                    <button className="flex flex-row items-center w-full px-4 py-[0.625rem] gap-2 transition-colors hover:bg-[#F2F4F7]"
-                                        onClick={(e) => e.stopPropagation()}>
+                                    <button className="flex flex-row items-center w-full px-4 py-[0.625rem] gap-2 transition-colors hover:bg-[#F2F4F7]">
                                         <Image src='/icons/delete.svg' alt="delete" width={18} height={18} />
                                         <p className="text-sm text-[#DE3024] font-normal">Remove from group</p>
                                     </button>
@@ -89,7 +88,7 @@ function Community() {
                                 </PopoverTrigger>
                                 <PopoverContent className="w-auto px-0 py-1 rounded-md">
                                     <button className="flex flex-row items-center w-full px-4 py-[0.625rem] gap-2 transition-colors hover:bg-[#F2F4F7]"
-                                    >
+                                        onClick={(e) => e.stopPropagation()}>
                                         <Image src='/icons/delete.svg' alt="delete" width={18} height={18} />
                                         <p className="text-sm text-[#DE3024] font-normal">Remove from channel</p>
                                     </button>
