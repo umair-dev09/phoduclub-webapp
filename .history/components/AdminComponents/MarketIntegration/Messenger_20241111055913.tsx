@@ -297,47 +297,47 @@ function Messenger() {
                                             </button>
                                         </PopoverTrigger>
 
-                                        <PopoverContent className="py-1 w-[56px] border border-solid border-[#EAECF0] bg-[#FFFFFF] rounded-md flex flex-col shadow-lg px-0">
+                                        <PopoverContent>
+                                            <div className="py-1 w-[56px] border border-solid border-[#EAECF0] bg-[#FFFFFF] rounded-md flex flex-col shadow-lg">
+                                                {/* Idea Button */}
+                                                <button
+                                                    className="flex flex-row w-full p-1 hover:bg-[#F2F4F7] justify-center items-center"
+                                                    onClick={() => handleIconSelect("/icons/idea-2.svg")}
+                                                >
+                                                    <Image
+                                                        src="/icons/idea-2.svg"
+                                                        width={24}
+                                                        height={24}
+                                                        alt="Idea Button"
+                                                    />
+                                                </button>
 
-                                            {/* Idea Button */}
-                                            <button
-                                                className="flex flex-row w-full p-1 hover:bg-[#F2F4F7] justify-center items-center"
-                                                onClick={() => handleIconSelect("/icons/idea-2.svg")}
-                                            >
-                                                <Image
-                                                    src="/icons/idea-2.svg"
-                                                    width={24}
-                                                    height={24}
-                                                    alt="Idea Button"
-                                                />
-                                            </button>
+                                                {/* Megaphone Button */}
+                                                <button
+                                                    className="flex flex-row w-full p-1 hover:bg-[#F2F4F7] justify-center items-center"
+                                                    onClick={() => handleIconSelect("/icons/megaphone.svg")}
+                                                >
+                                                    <Image
+                                                        src="/icons/megaphone.svg"
+                                                        width={24}
+                                                        height={24}
+                                                        alt="Megaphone Button"
+                                                    />
+                                                </button>
 
-                                            {/* Megaphone Button */}
-                                            <button
-                                                className="flex flex-row w-full p-1 hover:bg-[#F2F4F7] justify-center items-center"
-                                                onClick={() => handleIconSelect("/icons/megaphone.svg")}
-                                            >
-                                                <Image
-                                                    src="/icons/megaphone.svg"
-                                                    width={24}
-                                                    height={24}
-                                                    alt="Megaphone Button"
-                                                />
-                                            </button>
-
-                                            {/* Read Button */}
-                                            <button
-                                                className="flex flex-row w-full p-1 hover:bg-[#F2F4F7] justify-center items-center"
-                                                onClick={() => handleIconSelect("/icons/read-2.svg")}
-                                            >
-                                                <Image
-                                                    src="/icons/read-2.svg"
-                                                    width={24}
-                                                    height={24}
-                                                    alt="Read Button"
-                                                />
-                                            </button>
-
+                                                {/* Read Button */}
+                                                <button
+                                                    className="flex flex-row w-full p-1 hover:bg-[#F2F4F7] justify-center items-center"
+                                                    onClick={() => handleIconSelect("/icons/read-2.svg")}
+                                                >
+                                                    <Image
+                                                        src="/icons/read-2.svg"
+                                                        width={24}
+                                                        height={24}
+                                                        alt="Read Button"
+                                                    />
+                                                </button>
+                                            </div>
                                         </PopoverContent>
                                     </Popover>
 
@@ -418,47 +418,47 @@ function Messenger() {
                                                 </button>
                                             </PopoverTrigger>
 
-                                            <PopoverContent className="px-0 py-1 w-[56px] border border-solid border-[#EAECF0] bg-[#FFFFFF] rounded-md flex flex-col shadow-lg">
+                                            <PopoverContent>
+                                                <div className="py-1 w-[56px] border border-solid border-[#EAECF0] bg-[#FFFFFF] rounded-md flex flex-col shadow-lg">
+                                                    {/* Idea Button */}
+                                                    <button
+                                                        className="flex flex-row w-full p-1 hover:bg-[#F2F4F7] justify-center items-center"
+                                                        onClick={() => handleIconSelectforimage("/icons/annocement.png")}
+                                                    >
+                                                        <Image
+                                                            src="/icons/annocement.png"
+                                                            width={24}
+                                                            height={24}
+                                                            alt="Idea Button"
+                                                        />
+                                                    </button>
 
-                                                {/* Idea Button */}
-                                                <button
-                                                    className="flex flex-row w-full p-1 hover:bg-[#F2F4F7] justify-center items-center"
-                                                    onClick={() => handleIconSelectforimage("/icons/annocement.png")}
-                                                >
-                                                    <Image
-                                                        src="/icons/annocement.png"
-                                                        width={24}
-                                                        height={24}
-                                                        alt="Idea Button"
-                                                    />
-                                                </button>
+                                                    {/* Megaphone Button */}
+                                                    <button
+                                                        className="flex flex-row w-full p-1 hover:bg-[#F2F4F7] justify-center items-center"
+                                                        onClick={() => handleIconSelectforimage("/icons/megaphone.svg")}
+                                                    >
+                                                        <Image
+                                                            src="/icons/megaphone.svg"
+                                                            width={24}
+                                                            height={24}
+                                                            alt="Megaphone Button"
+                                                        />
+                                                    </button>
 
-                                                {/* Megaphone Button */}
-                                                <button
-                                                    className="flex flex-row w-full p-1 hover:bg-[#F2F4F7] justify-center items-center"
-                                                    onClick={() => handleIconSelectforimage("/icons/megaphone.svg")}
-                                                >
-                                                    <Image
-                                                        src="/icons/megaphone.svg"
-                                                        width={24}
-                                                        height={24}
-                                                        alt="Megaphone Button"
-                                                    />
-                                                </button>
-
-                                                {/* Read Button */}
-                                                <button
-                                                    className="flex flex-row w-full p-1 hover:bg-[#F2F4F7] justify-center items-center"
-                                                    onClick={() => handleIconSelectforimage("/icons/read-2.svg")}
-                                                >
-                                                    <Image
-                                                        src="/icons/read-2.svg"
-                                                        width={24}
-                                                        height={24}
-                                                        alt="Read Button"
-                                                    />
-                                                </button>
-
+                                                    {/* Read Button */}
+                                                    <button
+                                                        className="flex flex-row w-full p-1 hover:bg-[#F2F4F7] justify-center items-center"
+                                                        onClick={() => handleIconSelectforimage("/icons/read-2.svg")}
+                                                    >
+                                                        <Image
+                                                            src="/icons/read-2.svg"
+                                                            width={24}
+                                                            height={24}
+                                                            alt="Read Button"
+                                                        />
+                                                    </button>
+                                                </div>
                                             </PopoverContent>
                                         </Popover>
 

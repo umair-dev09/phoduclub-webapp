@@ -183,16 +183,17 @@ div {
   }
 }
 
-/* Tooltip for the side-button */
+/* tooltip for the side-button  */
 .tooltip {
   position: relative;
   display: inline-block;
+
 }
 
 .tooltipText {
   position: absolute;
   color: white;
-  top: 50%;
+  top: -20px;
   left: calc(100% + 15px);
   z-index: 3;
   background-color: #131313;
@@ -204,10 +205,12 @@ div {
   opacity: 0;
   pointer-events: none;
   transition: all 0.4s ease;
-
   height: 80px;
+  /* Fixed height */
   line-height: 60px;
+  /* Centers the text vertically */
   width: auto;
+  /* Allows width to adjust according to text */
 }
 
 .tooltip:hover .tooltipText {
@@ -215,4 +218,5 @@ div {
   pointer-events: auto;
   top: 50%;
   transform: translateY(-50%);
+  /* Keeps it centered on hover */
 }

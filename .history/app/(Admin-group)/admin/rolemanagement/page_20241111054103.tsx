@@ -252,19 +252,19 @@ function rolemangement() {
                                                     />
                                                 </button>
                                             </PopoverTrigger>
-                                            <PopoverContent className="flex flex-col bg-white border border-lightGrey rounded-md w-[167px] px-0 shadow-md">
-
-                                                <button className="flex flex-row items-center justify-start w-full py-[0.625rem] px-4 gap-2 hover:bg-[#F2F4F7]"
-                                                    onClick={() => openAddUser(true)} >
-                                                    <Image src="/icons/edit-02.svg" width={18} height={18} alt="edit" />
-                                                    <span className="text-sm text-[#0C111D] font-normal">Edit details</span>
-                                                </button>
-                                                <button className=" flex flex-row items-center justify-start w-full py-[0.625rem] px-4 gap-2 hover:bg-[#F2F4F7]"
-                                                >
-                                                    <Image src='/icons/delete.svg' alt="user profile" width={18} height={18} />
-                                                    <p className="text-sm text-[#DE3024] font-normal">Remove</p>
-                                                </button>
-
+                                            <PopoverContent className="w-[10.438rem]  bg-white border border-lightGrey rounded-md ">
+                                                <div className="w-[10.438rem]  bg-white border border-lightGrey rounded-md px-0">
+                                                    <button className="flex flex-row items-center justify-start w-full py-[0.625rem] px-4 gap-2 hover:bg-[#F2F4F7]"
+                                                        onClick={() => openAddUser(true)} >
+                                                        <Image src="/icons/edit-02.svg" width={18} height={18} alt="edit" />
+                                                        <span className="text-sm text-[#0C111D] font-normal">Edit details</span>
+                                                    </button>
+                                                    <button className=" flex flex-row items-center justify-start w-full py-[0.625rem] px-4 gap-2 hover:bg-[#F2F4F7]"
+                                                    >
+                                                        <Image src='/icons/delete.svg' alt="user profile" width={18} height={18} />
+                                                        <p className="text-sm text-[#DE3024] font-normal">Remove</p>
+                                                    </button>
+                                                </div>
                                             </PopoverContent>
                                         </Popover>
                                     </td>

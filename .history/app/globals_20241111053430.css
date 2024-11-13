@@ -203,7 +203,7 @@ div {
   white-space: nowrap;
   opacity: 0;
   pointer-events: none;
-  transition: all 0.4s ease;
+  transition: opacity 0.4s ease;
 
   height: 80px;
   line-height: 60px;

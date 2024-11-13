@@ -185,74 +185,73 @@ function TabComps() {
                 open={isOpenArray[0]}
                 transitionTime={300}
             >
+
+
                 {/* Quizzes Management Button */}
-                <button
-                    onClick={() =>
-                        handleTabClick('quizzesmanagement', '/admin/content/quizzesmanagement')
-                    }
-                    className={` tooltip relative group flex items-center w-full h-10 py-2 px-3 text-left rounded-md mb-2 transition-colors ${activeTab === 'quizzesmanagement'
-                        ? 'bg-[#444444] text-white'
-                        : 'hover:bg-[#e1ffe11a] text-[#AAAAAA]'
-                        }`}
-                >
-                    <span className="ml-7 text-[0.813rem]">
-                        {!isCollapsed ? 'Quizzes Management' : ''}
-                    </span>
+                <div className="relative group">
+                    <button
+                        onClick={() => handleTabClick('quizzesmanagement', '/admin/content/quizzesmanagement')}
+                        className={`flex items-center w-full h-10 py-2 px-3 text-left rounded-md mb-2 transition-colors ${activeTab === 'quizzesmanagement'
+                                ? 'bg-[#444444] text-white'
+                                : 'hover:bg-[#e1ffe11a] text-[#AAAAAA]'
+                            }`}
+                    >
+                        <span className="ml-7 text-[0.813rem]">
+                            {!isCollapsed ? 'Quizzes Management' : ''}
+                        </span>
+                    </button>
                     {isCollapsed && (
-                        <span className="absolute left-[3.5rem] top-1/2 -translate-y-1/2 bg-[#222222] text-white text-sm py-1 px-2 rounded-md opacity-0 group-hover:opacity-100 transition-opacity z-10 whitespace-nowrap">
+                        <span className="absolute left-16 top-1/2 -translate-y-1/2 bg-[#222222] text-white text-sm py-2 px-4 rounded-md opacity-0 group-hover:opacity-100 transition-opacity z-10 whitespace-nowrap">
                             Quizzes Management
                         </span>
                     )}
-                </button>
+                </div>
 
                 {/* Test Series Management Button */}
-                <button
-                    onClick={() =>
-                        handleTabClick(
-                            'testseriesmanagement',
-                            '/admin/content/testseriesmanagement'
-                        )
-                    }
-                    className={`relative group flex items-center w-full h-10 py-2 px-3 text-left rounded-md mb-2 transition-colors ${activeTab === 'testseriesmanagement'
-                        ? 'bg-[#444444] text-white'
-                        : 'hover:bg-[#e1ffe11a] text-[#AAAAAA]'
-                        }`}
-                >
-                    <span className="ml-7 text-[0.813rem]">
-                        {!isCollapsed ? 'Test Series Management' : ''}
-                    </span>
+                <div className="relative group">
+                    <button
+                        onClick={() => handleTabClick('testseriesmanagement', '/admin/content/testseriesmanagement')}
+                        className={`flex items-center w-full h-10 py-2 px-3 text-left rounded-md mb-2 transition-colors ${activeTab === 'testseriesmanagement'
+                                ? 'bg-[#444444] text-white'
+                                : 'hover:bg-[#e1ffe11a] text-[#AAAAAA]'
+                            }`}
+                    >
+                        <span className="ml-7 text-[0.813rem]">
+                            {!isCollapsed ? 'Test Series Management' : ''}
+                        </span>
+                    </button>
                     {isCollapsed && (
-                        <span className="absolute left-[3.5rem] top-1/2 -translate-y-1/2 bg-[#222222] text-white text-sm py-1 px-2 rounded-md opacity-0 group-hover:opacity-100 transition-opacity z-10 whitespace-nowrap">
+                        <span className="absolute left-16 top-1/2 -translate-y-1/2 bg-[#222222] text-white text-sm py-2 px-4 rounded-md opacity-0 group-hover:opacity-100 transition-opacity z-10 whitespace-nowrap">
                             Test Series Management
                         </span>
                     )}
-                </button>
+                </div>
 
                 {/* Course Creation Button */}
-                <button
-                    onClick={() =>
-                        handleTabClick('coursecreation', '/admin/content/coursecreation')
-                    }
-                    className={`relative group flex items-center w-full h-10 py-2 px-3 text-left rounded-md mb-2 transition-colors ${activeTab === 'coursecreation'
-                        ? 'bg-[#444444] text-white'
-                        : 'hover:bg-[#e1ffe11a] text-[#AAAAAA]'
-                        }`}
-                >
-                    <span className="ml-7 text-[0.813rem]">
-                        {!isCollapsed ? 'Course Creation' : ''}
-                    </span>
+                <div className="relative group">
+                    <button
+                        onClick={() => handleTabClick('coursecreation', '/admin/content/coursecreation')}
+                        className={`flex items-center w-full h-10 py-2 px-3 text-left rounded-md mb-2 transition-colors ${activeTab === 'coursecreation'
+                                ? 'bg-[#444444] text-white'
+                                : 'hover:bg-[#e1ffe11a] text-[#AAAAAA]'
+                            }`}
+                    >
+                        <span className="ml-7 text-[0.813rem]">
+                            {!isCollapsed ? 'Course Creation' : ''}
+                        </span>
+                    </button>
                     {isCollapsed && (
-                        <span className="absolute left-[3.5rem] top-1/2 -translate-y-1/2 bg-[#222222] text-white text-sm py-1 px-2 rounded-md opacity-0 group-hover:opacity-100 transition-opacity z-10 whitespace-nowrap">
+                        <span className="absolute left-16 top-1/2 -translate-y-1/2 bg-[#222222] text-white text-sm py-2 px-4 rounded-md opacity-0 group-hover:opacity-100 transition-opacity z-10 whitespace-nowrap">
                             Course Creation
                         </span>
                     )}
-                </button>
+                </div>
             </Collapsible>
 
             {/* Additional Tabs */}
             {renderButtonWithTooltip('Role Management', '/icons/Role Management-2.svg', '/icons/Role Management.svg', activeTab === 'rolemanagement', () => handleTabClick('rolemanagement', '/admin/rolemanagement'))}
             {renderButtonWithTooltip('Marketing Integration', '/icons/Marketing Integration-2.svg', '/icons/Marketing Integration.svg', activeTab === 'marketingintegration', () => handleTabClick('marketingintegration', '/admin/marketingintegration'))}
-            {renderButtonWithTooltip('User Database', '/icons/community-2.svg', '/icons/community.svg', activeTab === 'userdatabase', () => handleTabClick('userdatabase', '/admin/userdatabase'))}
+            {renderButtonWithTooltip('Customer Data Management', '/icons/community-2.svg', '/icons/community.svg', activeTab === 'customerdatamanagement', () => handleTabClick('customerdatamanagement', '/admin/customerdatamanagement'))}
         </div>
     );
 }
