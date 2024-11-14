@@ -199,7 +199,7 @@ function TabComps() {
                     onClick={() =>
                         handleTabClick('quizzesmanagement', '/admin/content/quizzesmanagement')
                     }
-                    className={`relative group flex items-center w-full h-10 py-2 px-3 text-left rounded-md mb-2 transition-colors ${activeTab === 'quizzesmanagement'
+                    className={` tooltip relative group flex items-center w-full h-10 py-2 px-3 text-left rounded-md mb-2 transition-colors ${activeTab === 'quizzesmanagement'
                         ? 'bg-[#444444] text-white'
                         : 'hover:bg-[#e1ffe11a] text-[#AAAAAA]'
                         }`}
@@ -322,7 +322,8 @@ function TabComps() {
             {/* Additional Tabs */}
             {renderButtonWithTooltip('Role Management', '/icons/Role Management-2.svg', '/icons/Role Management.svg', activeTab === 'rolemanagement', () => handleTabClick('rolemanagement', '/admin/rolemanagement'))}
             {renderButtonWithTooltip('Marketing Integration', '/icons/Marketing Integration-2.svg', '/icons/Marketing Integration.svg', activeTab === 'marketingintegration', () => handleTabClick('marketingintegration', '/admin/marketingintegration'))}
-            {renderButtonWithTooltip('Customer Data Management', '/icons/community-2.svg', '/icons/community.svg', activeTab === 'customerdatamanagement', () => handleTabClick('customerdatamanagement', '/admin/customerdatamanagement'))}
+            {renderButtonWithTooltip('User Database', '/icons/community-2.svg', '/icons/community.svg', activeTab === 'userdatabase', () => handleTabClick('userdatabase', '/admin/userdatabase'))}
+            {renderButtonWithTooltip('Customer Care', '/icons/community-2.svg', '/icons/community.svg', activeTab === 'customercare', () => handleTabClick('customercare', '/admin/customercare'))}
         </div>
     );
 }

@@ -115,7 +115,7 @@ function Header({ currentPage }: HeaderProps) {
         return <AdminHeaderLoading />;
     }
 
-    const isBackPage = currentPage === 'Back to Quizzes Management' || currentPage === 'Back to Test Series Management' || currentPage === 'Back to Customer Data Management' || currentPage === 'Back to Messenger' || currentPage === 'Back to Course Management';
+    const isBackPage = currentPage === 'Back to Quizzes Management' || currentPage === 'Back to Test Series Management' || currentPage === 'Back to Customer Care' || currentPage === 'Back to Messenger' || currentPage === 'Back to Course Management' || currentPage === 'Back to User Database';
 
     // Function to handle tab click and navigate to a new route
     const handleTabClick = (path: string) => {
@@ -142,7 +142,7 @@ function Header({ currentPage }: HeaderProps) {
 
             <div className="flex flex-row items-center gap-4">
 
-                {(currentPage === 'Role Management' || currentPage === 'Customer Data Management' || currentPage === 'Marketing Integration' || currentPage === 'Quizzes Management' || currentPage === 'Test Series Management' || currentPage === 'Course Creation' || currentPage === "Dashboard") && (
+                {(currentPage === 'Role Management' || currentPage === 'User Database' || currentPage === 'Marketing Integration' || currentPage === 'Quizzes Management' || currentPage === 'Test Series Management' || currentPage === 'Course Creation' || currentPage === "Dashboard") && (
                     <Popover placement="bottom-end">
                         <PopoverTrigger>
                             <button className='flex flex-row gap-3 items-center justify-center'>

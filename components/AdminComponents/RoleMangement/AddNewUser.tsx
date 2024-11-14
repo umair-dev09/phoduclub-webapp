@@ -7,7 +7,7 @@ import PhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/style.css';
 import { Popover, PopoverContent, PopoverTrigger } from "@nextui-org/popover";
 import { db } from '@/firebase';
-import { collection, addDoc, setDoc, doc, deleteDoc} from "firebase/firestore";
+import { collection, addDoc, setDoc, doc, deleteDoc } from "firebase/firestore";
 import { toast } from "react-toastify";
 
 type AddNewUserProps = {
@@ -28,8 +28,8 @@ type AddNewUserProps = {
     setAdminId: (adminIdd: string) => void;
 }
 
-function AddNewUser ({ open, close, isEditing = false, firstName, setFirstName, lastName, setLastName, adminIdd, setAdminId, userId, setUserId, phone, setPhone, selectedRole, setSelectedRole}:AddNewUserProps)  {
-    
+function AddNewUser({ open, close, isEditing = false, firstName, setFirstName, lastName, setLastName, adminIdd, setAdminId, userId, setUserId, phone, setPhone, selectedRole, setSelectedRole }: AddNewUserProps) {
+
     const [loading, setLoading] = useState(false); // Loading state
     const [roleDialogOpen, setRoleDialogOpen] = useState(false); // Loading state
 
@@ -42,10 +42,10 @@ function AddNewUser ({ open, close, isEditing = false, firstName, setFirstName, 
 
     const handleAddUser = async () => {
         if (!isFormValid || loading) return; // Prevent submission if fields are empty or loading
-    
+
         setLoading(true); // Start loading
         const fullName = `${firstName} ${lastName}`;
-    
+
         try {
             if (adminIdd) {
                 // Update existing user data in Firestore using adminId
@@ -65,12 +65,12 @@ function AddNewUser ({ open, close, isEditing = false, firstName, setFirstName, 
                     role: selectedRole,
                     profilePic: 'https://firebasestorage.googleapis.com/v0/b/phodu-club.appspot.com/o/Default%20Avatar%2Fdefault-avatar-icon-of-social-media-user-vector%20(1).jpg?alt=media&token=211d97f7-c1f5-45a7-bce2-911e9bc195f8',
                 });
-    
+
                 // Update the document with the generated adminId
                 await setDoc(docRef, { adminId: docRef.id }, { merge: true });
                 toast.success("User Added Successfully!");
             }
-            
+
             close(); // Close dialog after successful submission
         } catch (error) {
             console.error("Error updating or adding user in Firestore:", error);
@@ -165,7 +165,7 @@ function AddNewUser ({ open, close, isEditing = false, firstName, setFirstName, 
                                         {["Admin", "Teacher", "Customer Care", "Guide", "Editor", "Chief Moderator"].map((role) => (
                                             <button
                                                 key={role}
-                                                onClick={() => {handleRoleSelect(role); setRoleDialogOpen(false); }}
+                                                onClick={() => { handleRoleSelect(role); setRoleDialogOpen(false); }}
                                                 className="flex flex-row items-center justify-start w-full py-[0.625rem] px-4 gap-2 hover:bg-[#F2F4F7]"
                                             >
                                                 <span className="text-sm text-[#0C111D] font-normal">{role}</span>
@@ -179,12 +179,11 @@ function AddNewUser ({ open, close, isEditing = false, firstName, setFirstName, 
                         <div className="flex flex-row justify-end my-2 items-center gap-4 border-t border-solid border-[#EAECF0] pt-4">
                             <button onClick={close} className="py-[0.625rem] px-6 border-[1.5px] border-lightGrey rounded-md text-[#1D2939] font-semibold text-sm">Cancel</button>
                             <button
-                    onClick={handleAddUser}
-                    disabled={!isFormValid || loading} // Disable if form is invalid or loading
-                    className={`py-[0.625rem] px-6 text-white shadow-inner-button  border border-white rounded-md font-semibold text-sm ${
-                        !isFormValid || loading? 'bg-[#CDA0FC]' : 'bg-[#9012FF]' }`}>
-                    {isEditing ? "Save Changes" : "Add New User"}
-                </button>
+                                onClick={handleAddUser}
+                                disabled={!isFormValid || loading} // Disable if form is invalid or loading
+                                className={`py-[0.625rem] px-6 text-white shadow-inner-button  border border-white rounded-md font-semibold text-sm ${!isFormValid || loading ? 'bg-[#CDA0FC]' : 'bg-[#9012FF]'}`}>
+                                {isEditing ? "Save Changes" : "Add New User"}
+                            </button>
                         </div>
                     </div>
                 </DialogPanel>

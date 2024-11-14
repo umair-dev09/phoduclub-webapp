@@ -17,7 +17,7 @@ import {
 import { Popover, PopoverContent, PopoverTrigger } from "@nextui-org/popover";
 import Remove from "@/components/AdminComponents/QuizInfoDailogs/Remove";
 import { collection, getDocs, query, where, doc, getDoc, onSnapshot, deleteDoc } from 'firebase/firestore';
-import {db} from '@/firebase';
+import { db } from '@/firebase';
 import LoadingData from "@/components/Loading";
 import UserRolesView from "@/components/AdminComponents/RoleMangement/UserRolesView";
 // Define types for quiz data
@@ -33,7 +33,7 @@ interface UserData {
 const fetchUsers = async (): Promise<UserData[]> => {
     const usersCollection = collection(db, 'admin');
     const usersSnapshot = await getDocs(usersCollection);
-    
+
     const usersData = await Promise.all(
         usersSnapshot.docs.map(async (userDoc) => {
             const userData = userDoc.data();
@@ -61,7 +61,7 @@ function rolemangement() {
     const [phone, setPhone] = useState('');
     const [selectedRole, setSelectedRole] = useState('');
     const [adminIdd, setAdminIdd] = useState('');
-    const [actionDialog, setActionDialog] = useState<string | null>(null); 
+    const [actionDialog, setActionDialog] = useState<string | null>(null);
     const [data, setData] = useState<UserData[]>([]);
     const [users, setUsers] = useState<UserData[]>([]);
     const [currentPage, setCurrentPage] = useState(1);
@@ -152,10 +152,10 @@ function rolemangement() {
             toast.error('Failed to remove user. Please try again.');
         }
     };
-    
+
     useEffect(() => {
         let filteredUsers = users;
-    
+
         // Filter by search term
         if (searchTerm) {
             filteredUsers = filteredUsers.filter(user =>
@@ -163,7 +163,7 @@ function rolemangement() {
                 user.phone.toLowerCase().includes(searchTerm.toLowerCase())
             );
         }
-        
+
         // Update state with filtered and sorted quizzes
         setData(filteredUsers);
         setCurrentPage(1); // Reset to first page when filters change
@@ -290,28 +290,28 @@ function rolemangement() {
                                         </Popover>
                                     </td>
                                 </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                </div>
+                            ))}                            
+                            </tbody>
+                        </table>
+                    </div>
 
-                {/* Pagination Section */}
-                <div className="flex justify-end">
-                    <div className="flex justify-right">
-                        <PaginationSection
-                            totalItems={data.length}
-                            itemsPerPage={itemsPerPage}
-                            currentPage={currentPage}
-                            setCurrentPage={setCurrentPage}
-                        />
+                    {/* Pagination Section */}
+                    <div className="flex justify-end">
+                        <div className="flex justify-right">
+                            <PaginationSection
+                                totalItems={data.length}
+                                itemsPerPage={itemsPerPage}
+                                currentPage={currentPage}
+                                setCurrentPage={setCurrentPage}
+                            />
+                        </div>
                     </div>
                 </div>
-            </div>
             )}
             {isRemoveOpen && < Remove onClose={closeRemove} open={true} />}
             {/* Dialog Component  for AddNewUser*/}
-            {isAddUser && <Addnewuser close={closeAddUser} open={true} isEditing={isEditing} firstName={firstName} setFirstName={setFirstName} lastName={lastName} setLastName={setLastName} userId={userId} setUserId={setUserId} phone={phone} setPhone={setPhone} selectedRole={selectedRole} setSelectedRole={setSelectedRole} adminIdd={adminIdd} setAdminId={setAdminIdd}/>}
-            <ToastContainer/>
+            {isAddUser && <Addnewuser close={closeAddUser} open={true} isEditing={isEditing} firstName={firstName} setFirstName={setFirstName} lastName={lastName} setLastName={setLastName} userId={userId} setUserId={setUserId} phone={phone} setPhone={setPhone} selectedRole={selectedRole} setSelectedRole={setSelectedRole} adminIdd={adminIdd} setAdminId={setAdminIdd} />}
+            <ToastContainer />
         </div>
     );
 }
