@@ -39,7 +39,7 @@ function customerinfo() {
     };
     return (
         <div className="h-full w-full flex flex-row">
-            <div className="grid grid-rows-[72px_1fr_70px] w-[68%] pb-6">
+            <div className="grid grid-rows-[72px_1fr_70px] w-[68%]">
                 <div className="h-[72px] border-b border-solid border-[#EAECF0] flex flex-row items-center px-6 bg-[#FFFFFF] justify-between w-full">
                     <div className="flex flex-row gap-2 items-center">
                         <div className="relative">
@@ -68,7 +68,7 @@ function customerinfo() {
                         <span className="text-sm text-[#0C111D] font-normal">Mark as Resolved</span>
                     </div>
                 </div>
-                <div className=" p-6 flex flex-col gap-3 h-auto w-full overflow-y-auto">
+                <div className=" p-6 flex flex-col gap-3">
                     {/* other chat */}
                     <div className="h-[67px] w-full flex flex-col gap-1">
                         <div className="border border-solid border-[#EAECF0] bg-[#FFFFFF] rounded-[16px] flex items-center p-3 w-[226px]">
@@ -77,89 +77,16 @@ function customerinfo() {
                         <span className="text-[#475467] font-normal text-xs">3:24 PM</span>
                     </div>
                     {/* own chat */}
-                    <div className="h-[67px] w-full flex flex-col gap-1 items-end">
-                        <div className=" bg-[#9012FF] rounded-[16px] flex items-center p-3 w-max-[226px]">
+                    <div className="h-[67px] w-full flex flex-col gap-1 ">
+                        <div className=" bg-[#9012FF] rounded-[16px] flex items-center p-3 w-[226px]">
                             <span className="text-[#FFFFFF] font-normal text-sm">I am scammed in the group.</span>
                         </div>
                         <span className="text-[#475467] font-normal text-xs">3:24 PM</span>
                     </div>
-
                 </div>
-                {/* Type Area */}
-                <div className=" bg-[#FFFFFF] w-full">
-
-
-                    <div className='flex flex-row m-6'>
-                        <div className="flex flex-row rounded-md w-full h-auto bg-[#FCFCFD] py-[6px] border border-[#D0D5DD]">
-                            <textarea
-                                className="w-full max-h-[120px] bg-[#FCFCFD] overflow-y-auto resize-none px-3 rounded-md outline-none font-normal text-sm leading-tight pt-[5px]"
-                                placeholder="Type your message here..."
-                            />
-
-                            <div className='flex flex-row gap-[12px] mr-4 ml-1 items-end mb-2'>
-                                {/* Emoji Picker Button */}
-                                <Popover className='mb-2' placement="bottom-end">
-                                    <PopoverTrigger>
-                                        <button className='transition-colors hover:bg-neutral-100 hover:rounded-[100px] focus:outline-none'>
-                                            <Image src='/icons/emojies.svg' alt='emojis icon' width={21} height={21} />
-                                        </button>
-                                    </PopoverTrigger>
-                                    <PopoverContent>
-                                        <div className="p-4">
-                                            <span className="text-sm">Emoji Picker</span>
-                                            {/* Placeholder for Emoji Picker UI */}
-                                        </div>
-                                    </PopoverContent>
-                                </Popover>
-
-                                {/* File Attachment Button */}
-                                <Popover className='mb-2' placement="bottom-end">
-                                    <PopoverTrigger>
-                                        <button className='transition-colors hover:bg-neutral-100 hover:rounded-[100px] focus:outline-none'>
-                                            <Image src='/icons/files.svg' alt='attachment icon' width={21} height={21} />
-                                        </button>
-                                    </PopoverTrigger>
-
-                                    <PopoverContent className="w-auto py-1 px-0 bg-white border border-lightGrey rounded-md">
-
-                                        <button className="flex flex-row items-center justify-start w-full px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7]">
-                                            <Image src='/icons/image.svg' alt='image icon' width={20} height={20} />
-                                            <span className='font-normal text-[#0C111D] text-sm'>Image</span>
-                                        </button>
-                                        <button className=" flex flex-row items-center justify-start w-full px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7]"
-                                        >
-                                            <Image src='/icons/video-icon.svg' alt='video icon' width={20} height={20} />
-                                            <span className='font-normal text-[#0C111D] text-sm'>Video</span>
-                                        </button>
-                                        <button className=" flex flex-row items-center justify-start w-full px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7]"
-                                        >
-                                            <Image src='/icons/documents.svg' alt='document icon' width={20} height={20} />
-                                            <span className='font-normal text-[#0C111D] text-sm'>Documents</span>
-                                        </button>
-                                    </PopoverContent>
-                                </Popover>
-                            </div>
-                        </div>
-
-                        {/* Send Button */}
-                        <button className="ml-3  mb-1">
-                            <Image
-                                src='/icons/send.svg'
-                                alt='send icon'
-                                width={24}
-                                height={24}
-                            />
-                        </button>
-                    </div>
+                <div className="bg-blue-900">
+                    jabir
                 </div>
-
-
-
-
-
-
-
-
             </div>
             <div className="w-[32%] h-full flex flex-col bg-[#FFFFFF] overflow-y-auto border-l border-solid border-[#EAECF0]">
                 <div className="h-[72px] border-b border-solid border-[#EAECF0] flex flex-row items-center px-6">
@@ -299,7 +226,7 @@ function customerinfo() {
                                             <span className="w-[6px] h-[6px] rounded-full "
                                                 style={{ backgroundColor: selectedforpriority.dotColor }}></span>
                                             <span className="font-medium  text-xs"
-                                                style={{ color: selectedforpriority.textColor }}>{selectedforpriority.text}</span>
+                                                style={{ color: selectedforpriority.textColor }}>High</span>
                                         </div>
                                         <Image
                                             src="/icons/Arrow-down-1.svg"
@@ -340,16 +267,7 @@ function customerinfo() {
                                             <span className="font-medium text-[#93360D] text-xs">Medium</span>
                                         </div>
                                     </button>
-                                    <button className="flex flex-row items-center justify-start w-full px-4 py-[0.625rem]  gap-2 hover:bg-[#F2F4F7]"
-                                        onClick={() =>
-                                            handleIconSelectforpriority({
-                                                text: "High",
-                                                bgColor: "#FEE4E2",
-                                                dotColor: "#9A221A]",
-                                                textColor: "#9A221A]",
-                                            })
-                                        }
-                                    >
+                                    <button className="flex flex-row items-center justify-start w-full px-4 py-[0.625rem]  gap-2 hover:bg-[#F2F4F7]">
                                         <div className="bg-[#FEE4E2] py-2 px-3 gap-1 flex flex-row rounded-[6px] items-center h-6 w-auto">
                                             <span className="w-[6px] h-[6px] bg-[#9A221A] rounded-full "></span>
                                             <span className="font-medium text-[#9A221A] text-xs">High</span>
