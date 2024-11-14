@@ -39,7 +39,7 @@ function customerinfo() {
     };
     return (
         <div className="h-full w-full flex flex-row">
-            <div className="grid grid-rows-[72px_1fr_70px] w-[68%] pb-6">
+            <div className="grid grid-rows-[72px_1fr_70px] w-[68%]">
                 <div className="h-[72px] border-b border-solid border-[#EAECF0] flex flex-row items-center px-6 bg-[#FFFFFF] justify-between w-full">
                     <div className="flex flex-row gap-2 items-center">
                         <div className="relative">
@@ -68,7 +68,7 @@ function customerinfo() {
                         <span className="text-sm text-[#0C111D] font-normal">Mark as Resolved</span>
                     </div>
                 </div>
-                <div className=" p-6 flex flex-col gap-3 h-auto w-full overflow-y-auto">
+                <div className=" p-6 flex flex-col gap-3">
                     {/* other chat */}
                     <div className="h-[67px] w-full flex flex-col gap-1">
                         <div className="border border-solid border-[#EAECF0] bg-[#FFFFFF] rounded-[16px] flex items-center p-3 w-[226px]">
@@ -77,19 +77,18 @@ function customerinfo() {
                         <span className="text-[#475467] font-normal text-xs">3:24 PM</span>
                     </div>
                     {/* own chat */}
-                    <div className="h-[67px] w-full flex flex-col gap-1 items-end">
-                        <div className=" bg-[#9012FF] rounded-[16px] flex items-center p-3 w-max-[226px]">
+                    <div className="h-[67px] w-full flex flex-col gap-1 ">
+                        <div className=" bg-[#9012FF] rounded-[16px] flex items-center p-3 w-[226px]">
                             <span className="text-[#FFFFFF] font-normal text-sm">I am scammed in the group.</span>
                         </div>
                         <span className="text-[#475467] font-normal text-xs">3:24 PM</span>
                     </div>
-
                 </div>
                 {/* Type Area */}
-                <div className=" bg-[#FFFFFF] w-full">
+                <div className="p-6 bg-[#FFFFFF] w-full">
 
 
-                    <div className='flex flex-row m-6'>
+                    <div className='flex flex-row'>
                         <div className="flex flex-row rounded-md w-full h-auto bg-[#FCFCFD] py-[6px] border border-[#D0D5DD]">
                             <textarea
                                 className="w-full max-h-[120px] bg-[#FCFCFD] overflow-y-auto resize-none px-3 rounded-md outline-none font-normal text-sm leading-tight pt-[5px]"
@@ -119,30 +118,28 @@ function customerinfo() {
                                             <Image src='/icons/files.svg' alt='attachment icon' width={21} height={21} />
                                         </button>
                                     </PopoverTrigger>
+                                    <PopoverContent className='flex flex-col bg-[#FFFFFF] w-auto h-auto border border-[#EAECF0] rounded-md shadow-md'>
 
-                                    <PopoverContent className="w-auto py-1 px-0 bg-white border border-lightGrey rounded-md">
-
-                                        <button className="flex flex-row items-center justify-start w-full px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7]">
+                                        <button className='flex flex-row items-center gap-2 w-30 px-4 py-[10px] transition-colors hover:bg-neutral-100 rounded-tr-md rounded-tl-md'>
                                             <Image src='/icons/image.svg' alt='image icon' width={20} height={20} />
                                             <span className='font-normal text-[#0C111D] text-sm'>Image</span>
                                         </button>
-                                        <button className=" flex flex-row items-center justify-start w-full px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7]"
-                                        >
+                                        <button className='flex flex-row items-center gap-2 w-30 px-4 py-[10px] transition-colors hover:bg-neutral-100'>
                                             <Image src='/icons/video-icon.svg' alt='video icon' width={20} height={20} />
                                             <span className='font-normal text-[#0C111D] text-sm'>Video</span>
                                         </button>
-                                        <button className=" flex flex-row items-center justify-start w-full px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7]"
-                                        >
+                                        <button className='flex flex-row items-center gap-2 w-30 px-4 py-[10px] transition-colors hover:bg-neutral-100 rounded-br-md rounded-bl-md'>
                                             <Image src='/icons/documents.svg' alt='document icon' width={20} height={20} />
                                             <span className='font-normal text-[#0C111D] text-sm'>Documents</span>
                                         </button>
+
                                     </PopoverContent>
                                 </Popover>
                             </div>
                         </div>
 
                         {/* Send Button */}
-                        <button className="ml-3  mb-1">
+                        <button className="ml-3 mr-3 mb-1">
                             <Image
                                 src='/icons/send.svg'
                                 alt='send icon'

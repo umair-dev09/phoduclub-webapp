@@ -78,8 +78,8 @@ function customerinfo() {
                     </div>
                     {/* own chat */}
                     <div className="h-[67px] w-full flex flex-col gap-1 items-end">
-                        <div className=" bg-[#9012FF] rounded-[16px] flex items-center p-3 w-max-[226px]">
-                            <span className="text-[#FFFFFF] font-normal text-sm">I am scammed in the group.</span>
+                        <div className=" bg-[#9012FF] rounded-[16px] flex items-center p-3 w-max-[226px] h-auto">
+                            <span className="text-[#FFFFFF] font-normal text-sm">I am scammed in the group. eewewe we we we w </span>
                         </div>
                         <span className="text-[#475467] font-normal text-xs">3:24 PM</span>
                     </div>
