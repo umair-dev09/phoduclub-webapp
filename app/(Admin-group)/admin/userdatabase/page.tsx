@@ -284,7 +284,7 @@ function Userdatabase() {
                                     <td className="flex items-center justify-center px-8 py-4 text-[#101828] text-sm">
                                         <Popover placement="bottom-end">
                                             <PopoverTrigger>
-                                                <button>
+                                                <button className="ml-[25%] outline-none">
                                                     <Image
                                                         src="/icons/three-dots.svg"
                                                         width={20}
@@ -294,17 +294,20 @@ function Userdatabase() {
                                                 </button>
                                             </PopoverTrigger>
                                             <PopoverContent className=" w-[167px] px-0 border border-solid border-[#EAECF0] bg-[#FFFFFF] rounded-md  shadow-lg">
-
                                                 <button className="flex flex-row items-center justify-start w-full py-[0.625rem] px-4 gap-2 hover:bg-[#F2F4F7]">
-                                                    <Image src='/icons/user-account.svg' alt="user profile" width={18} height={18} />
-                                                    <p className="text-sm text-[#0C111D] font-normal">Go to Profile</p>
+                                                    <Image src='/icons/edit-icon.svg' alt="user profile" width={18} height={18} />
+                                                    <p className="text-sm text-[#0C111D] font-normal">Edit details</p>
+                                                </button>
+                                                <button className=" flex flex-row items-center justify-start w-full py-[0.625rem] px-4 gap-2 hover:bg-[#F2F4F7]"
+                                                    onClick={openRemove}>
+                                                    <Image src='/icons/user-block-red-01.svg' alt="user profile" width={18} height={18} />
+                                                    <p className="text-sm text-[#DE3024] font-normal">Ban</p>
                                                 </button>
                                                 <button className=" flex flex-row items-center justify-start w-full py-[0.625rem] px-4 gap-2 hover:bg-[#F2F4F7]"
                                                     onClick={openRemove}>
                                                     <Image src='/icons/delete.svg' alt="user profile" width={18} height={18} />
                                                     <p className="text-sm text-[#DE3024] font-normal">Remove</p>
                                                 </button>
-
                                             </PopoverContent>
                                         </Popover>
                                     </td>
