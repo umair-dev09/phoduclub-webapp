@@ -2,7 +2,7 @@
 import Image from "next/image";
 import React, { useState, useEffect, useRef, SetStateAction, Dispatch } from "react";
 import 'react-quill/dist/quill.snow.css';
-import ReactQuill from 'react-quill'; // Ensure correct import
+import ReactQuill from 'react-quill-new'; // Ensure correct import
 import Quill from 'quill'; // Import Quill to use it for types
 import { Popover, PopoverTrigger, PopoverContent } from '@nextui-org/popover';
 import { useRouter } from "next/navigation";
@@ -11,19 +11,28 @@ interface priceprops {
     Discountprice: number;
 }
 
-function createcourse({ Price, Discountprice }: priceprops) {
+function createcourse() {
     // state for ReactQuill
-    const [value, setValue] = useState('');
     const quillRef = useRef<ReactQuill | null>(null); // Ref to hold ReactQuill instance
     const [quill, setQuill] = useState<Quill | null>(null);
     const [alignment, setAlignment] = useState<string | null>(null); // State to hold alignment
     const [isWriting, setIsWriting] = useState(false); // Track if text is being written
+    const [courseName, setCourseName] = useState('');
+    const [courseDescription, setCourseDescription] = useState('');
+    const [courseImage, setCourseImage] = useState('');
+    const [price, setPrice] = useState('');
+    const [discountPrice, setDiscountPrice] = useState('');
+    const [rating, setRating] = useState<string>('');
+    const [numRatings, setNumRatings] = useState<string>('');
+    const [value, setValue] = useState(courseDescription);
 
     const handleChange = (content: string) => {
         setValue(content);
         checkTextContent(content);
+        setCourseDescription(content);
 
     };
+    const isFormValid = courseName && courseDescription && price && discountPrice && rating && numRatings;
 
     const checkTextContent = (content: string) => {
         // Trim the content and check if there's actual text (excluding HTML tags like <p></p>)
@@ -87,8 +96,7 @@ function createcourse({ Price, Discountprice }: priceprops) {
     };
     // -----------------------------------------------------------------------------------------------------------------------------------------------------
     // this logic is for Price and Discount
-    const [price, setPrice] = useState('');
-    const [discountPrice, setDiscountPrice] = useState('');
+    
 
     const handlePriceChange = (e: { target: { value: any; }; }, setter: (arg0: any) => void) => {
         const value = e.target.value;
@@ -113,8 +121,7 @@ function createcourse({ Price, Discountprice }: priceprops) {
         />
     );
 
-    const [rating, setRating] = useState<string>('');
-    const [numRatings, setNumRatings] = useState<string>('');
+    
     const totalStars = 5;
 
     // Convert rating string to number for calculations
@@ -136,11 +143,12 @@ function createcourse({ Price, Discountprice }: priceprops) {
                     <span className="text-[#1D2939] text-lg font-semibold ">Create course</span>
                 </div>
                 <div className="flex flex-row ">
-                    <button className="h-[44px] w-[120px] rounded-md items-center flex border border-solid border-[#EAECF0] bg-[#FFFFFF] justify-center">
+                    <button className="h-[44px] w-[120px] rounded-md items-center flex border border-solid border-[#EAECF0] bg-[#FFFFFF] justify-center" onClick={() => router.back() }>
                         <span className="text-[#1D2939] font-semibold text-sm">Cancel</span>
                     </button>
-                    <button className="h-[44px] w-[120px] ml-4 rounded-md items-center flex border border-solid border-[#800EE2] bg-[#9012FF] justify-center shadow-inner-button"
-                        onClick={() => handleTabClick('/admin/content/coursecreation/createcourse/courses')}>
+                    <button className={`h-[44px] w-[120px] ml-4 rounded-md items-center flex border border-solid border-white  ${!isFormValid? 'bg-[#CDA0FC]' : 'bg-[#9012FF]'} justify-center shadow-inner-button`}
+                        onClick={() => handleTabClick('/admin/content/coursecreation/createcourse/courses')}
+                        disabled={!isFormValid}>
                         <span className="text-[#FFFFFF] font-semibold text-sm">Create</span>
                     </button>
                 </div>
@@ -158,6 +166,8 @@ function createcourse({ Price, Discountprice }: priceprops) {
                         transition duration-200 ease-in-out "
                             placeholder="Name"
                             type="text"
+                            value={courseName}
+                            onChange={(e) => setCourseName(e.target.value)} // Controlled input for quiz name
                         />
                     </div>
                     {/* Description of Courses */}
@@ -251,11 +261,12 @@ function createcourse({ Price, Discountprice }: priceprops) {
                     {/* Pricing of the Courses */}
                     <div className="flex flex-row w-full gap-4">
                         <div className="flex flex-col gap-1 w-1/2 flex-grow">
-                            <label htmlFor="discount-price" className="text-[#1D2939] text-sm font-medium"></label>
+                            <label htmlFor="discount-price" className="text-[#1D2939] text-sm font-medium">Price</label>
                             <div className="flex flex-row py-2 px-4 w-full gap-2 border border-solid border-[#D0D5DD] rounded-md transition duration-200 ease-in-out focus:border-red-300">
                                 {price && <div className="text-[#1D2939]">₹</div>}
                                 <input
                                     id="discount-price"
+                                    maxLength={6}
                                     className="w-full text-sm font-medium text-[#1D2939] placeholder:font-normal placeholder:text-[#A1A1A1] rounded-md outline-none"
                                     type="text"
                                     placeholder="Price"
@@ -265,11 +276,12 @@ function createcourse({ Price, Discountprice }: priceprops) {
                             </div>
                         </div>
                         <div className="flex flex-col gap-1 w-1/2 flex-grow">
-                            <label htmlFor="discount-price" className="text-[#1D2939] text-sm font-medium"></label>
+                            <label htmlFor="discount-price" className="text-[#1D2939] text-sm font-medium">Discount Price</label>
                             <div className="flex flex-row py-2 px-4 w-full gap-2 border border-solid border-[#D0D5DD] rounded-md transition duration-200 ease-in-out focus:border-red-300">
                                 {discountPrice && <div className="text-[#1D2939]">₹</div>}
                                 <input
                                     id="discount-price"
+                                    maxLength={6}
                                     className="w-full text-sm font-medium text-[#1D2939] placeholder:font-normal placeholder:text-[#A1A1A1] rounded-md outline-none"
                                     type="text"
                                     placeholder=" Discount Price"
@@ -289,6 +301,7 @@ function createcourse({ Price, Discountprice }: priceprops) {
                                 <input
                                     id="rating"
                                     value={rating}
+                                    maxLength={3}
                                     onChange={(e) => {
                                         const value = e.target.value;
                                         // Only allow numbers and one decimal point
@@ -333,7 +346,7 @@ function createcourse({ Price, Discountprice }: priceprops) {
                                     <StarIcon key={`filled-${index}`} filled={true} isHalf={false} />
                                 ))}
 
-                                {(ratingValue % 1) >= 0.5 && (
+                                {(ratingValue % 1) >= 0.0 && (
                                     <StarIcon filled={true} isHalf={true} />
                                 )}
 

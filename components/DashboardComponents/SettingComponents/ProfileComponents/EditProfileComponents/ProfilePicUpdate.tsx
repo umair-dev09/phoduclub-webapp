@@ -76,7 +76,7 @@ function ProfilePicUpdate({ setIsEditing }: ProfilePicProps) {
                 <Image src="/images/chooseAvatar.svg" alt="choose avatar" width={110} height={110} />
                 <p className="text-sm font-medium">Choose Avatar</p>
               </button>
-            </div>
+            </div> 
           </DialogPanel>
         </div>
       </Dialog>

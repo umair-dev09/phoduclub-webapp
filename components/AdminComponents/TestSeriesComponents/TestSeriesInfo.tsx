@@ -1,7 +1,7 @@
 import Image from "next/image";
 import React, { useState, useEffect, useRef, SetStateAction, Dispatch } from "react";
 import 'react-quill/dist/quill.snow.css';
-import ReactQuill from 'react-quill'; // Ensure correct import
+import ReactQuill from 'react-quill-new'; // Ensure correct import
 import Quill from 'quill'; // Import Quill to use it for types
 import { Popover, PopoverTrigger, PopoverContent } from '@nextui-org/popover';
 import { Dialog, DialogBackdrop, DialogPanel } from "@headlessui/react";
@@ -255,7 +255,8 @@ function TestSeriesInfo() {
                         <div className="flex flex-row py-2 px-4 w-full gap-2 border border-solid border-[#D0D5DD] rounded-md transition duration-200 ease-in-out focus:border-red-300">
                             {price && <div className="text-[#1D2939]">₹</div>}
                             <input
-                                id="discount-price"
+                                id="normal-price"
+                                maxLength={6}
                                 className="w-full text-sm font-medium text-[#1D2939] placeholder:font-normal placeholder:text-[#A1A1A1] rounded-md outline-none"
                                 type="text"
                                 placeholder="Price"
@@ -270,6 +271,7 @@ function TestSeriesInfo() {
                             {discountPrice && <div className="text-[#1D2939]">₹</div>}
                             <input
                                 id="discount-price"
+                                maxLength={6}
                                 className="w-full text-sm font-medium text-[#1D2939] placeholder:font-normal placeholder:text-[#A1A1A1] rounded-md outline-none"
                                 type="text"
                                 placeholder=" Discount Price"
@@ -288,7 +290,7 @@ function TestSeriesInfo() {
                         <div className="flex flex-row py-2 px-4 w-full gap-2 border border-solid border-[#D0D5DD] rounded-md transition duration-200 ease-in-out ">
                             <input
                                 id="rating"
-                                value={rating}
+                                value={rating} maxLength={3}
                                 onChange={(e) => {
                                     const value = e.target.value;
                                     // Only allow numbers and one decimal point
@@ -332,8 +334,7 @@ function TestSeriesInfo() {
                             {[...Array(Math.floor(ratingValue))].map((_, index) => (
                                 <StarIcon key={`filled-${index}`} filled={true} isHalf={false} />
                             ))}
-
-                            {(ratingValue % 1) >= 0.5 && (
+                            {(ratingValue % 1) >= 0.1 && (
                                 <StarIcon filled={true} isHalf={true} />
                             )}
 

@@ -2,13 +2,27 @@
 import React from 'react';
 import Image from "next/image";
 import { Dialog, DialogBackdrop, DialogPanel } from "@headlessui/react";
+import { auth } from '@/firebase';
+import { signOut} from 'firebase/auth'; // Import the User type from Firebase
+import { useRouter } from 'next/navigation';
 
 
-interface Logout {
+type LogoutProps = {
     open: boolean; // Prop to control dialog visibility
     onclose: () => void; // Define onClose as a function
 }
-const Logout: React.FC<Logout> = ({ open, onclose }) => {
+function Logout ({ open, onclose }:LogoutProps) {
+    const router = useRouter();
+
+    const handleLogout = async () => {
+        try {
+            await signOut(auth);
+            onclose();
+            router.push("/admin-login");
+        } catch (error) {
+            console.error("Error logging out:", error);
+        }
+    };
 
     return (
 
@@ -27,7 +41,7 @@ const Logout: React.FC<Logout> = ({ open, onclose }) => {
                         <hr />
                         <div className="flex flex-row justify-end mx-6 my-4 gap-4">
                             <button className="py-[0.625rem] px-6 border-[1.5px] border-lightGrey rounded-md" onClick={onclose}>Cancel</button>
-                            <button className="py-[0.625rem] px-6 text-white shadow-inner-button bg-[#BB241A] border border-[#DE3024] rounded-md">Log out</button>
+                            <button className="py-[0.625rem] px-6 text-white shadow-inner-button bg-[#BB241A] border border-[#DE3024] rounded-md" onClick={handleLogout}>Log out</button>
                         </div>
                     </div>
                 </DialogPanel>

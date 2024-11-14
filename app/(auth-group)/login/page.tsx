@@ -8,6 +8,7 @@ import Image from 'next/image';
 import { auth } from '../../../firebase'; // Adjust path as needed
 import { getAuth, onAuthStateChanged, RecaptchaVerifier, signInWithPhoneNumber } from "firebase/auth";
 import LoadingData from "@/components/Loading";
+import { getFirestore, doc, getDoc, onSnapshot } from 'firebase/firestore';
 
 export default function Login_Page() {
     const router = useRouter();
@@ -16,18 +17,28 @@ export default function Login_Page() {
     const [isPhoneValid, setIsPhoneValid] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
     const [buttonColor, setButtonColor] = useState('#E39FF6'); // Default color
+    const db = getFirestore();
 
-onAuthStateChanged(auth, (user) => {
-  if (user) {
-    // User is signed in, see docs for a list of available properties
-    // https://firebase.google.com/docs/reference/js/auth.user
-                    router.push("/dashboard");
-    // ...
-  } else {
-    // User is signed out
-    // ...
-  }
-});
+    useEffect(() => {
+        const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
+            if (currentUser) {
+                const userDocRef = doc(db, `users/${currentUser.uid}`);
+                
+                try {
+                    const docSnapshot = await getDoc(userDocRef);
+                    if (docSnapshot.exists()) {
+                        setLoading(false);
+                        router.push('/dashboard');
+                    }
+                } catch (err) {
+                    console.error("Error fetching user data:", err);
+                }
+            }
+            setLoading(false);
+        });
+    
+        return () => unsubscribe();
+    }, [db, router]);
     // useEffect(() => {
     //     const unsubscribe = onAuthStateChanged(auth, (user) => {
     //         if (user) {
@@ -140,7 +151,7 @@ onAuthStateChanged(auth, (user) => {
                     <p>Don't have an account? <a href="./signup">Sign Up</a></p>
                 </span>
             </div>
-            <div className="motivation">
+            <div className="motivation ">
                 <Image
                     src="/images/test1.png"
                     alt="Description of image"

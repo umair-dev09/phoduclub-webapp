@@ -4,7 +4,7 @@ import { useState } from "react";
 import Image from "next/image";
 import Drawer from "react-modern-drawer";
 import "react-modern-drawer/dist/index.css";
-import Quizinfo from "./Quizinfo";
+// import Quizinfo from "./Quizinfo";
 import Questions from "./Questions";
 import Review from "./Review";
 import Schedule from "./Schedule";
@@ -89,14 +89,14 @@ function Quiz({ isOpen, toggleDrawer }: QuizProps) {
     const renderStepContent = () => {
         switch (currentStep) {
             case Step.QuizInfo:
-                return (
-                    <Quizinfo
-                        quizName={quizName}
-                        setQuizName={setQuizName}
-                        quizDescription={quizDescription}
-                        setQuizDescription={setQuizDescription}
-                    />
-                );
+                // return (
+                //     <Quizinfo
+                //         quizName={quizName}
+                //         setQuizName={setQuizName}
+                //         quizDescription={quizDescription}
+                //         setQuizDescription={setQuizDescription}
+                //     />
+                // );
             case Step.Questions:
                 return (
                     <Questions
@@ -110,11 +110,11 @@ function Quiz({ isOpen, toggleDrawer }: QuizProps) {
                 return <Schedule />;
 
             default:
-                return <Quizinfo
-                    quizName={quizName}
-                    setQuizName={setQuizName}
-                    quizDescription={quizDescription}
-                    setQuizDescription={setQuizDescription} />;
+                // return <Quizinfo
+                //     quizName={quizName}
+                //     setQuizName={setQuizName}
+                //     quizDescription={quizDescription}
+                //     setQuizDescription={setQuizDescription} />;
         }
     };
 

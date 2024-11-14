@@ -5,9 +5,11 @@ import PhoneInput from 'react-phone-input-2';
 import { MoonLoader } from "react-spinners";
 import 'react-phone-input-2/lib/style.css';
 import Image from 'next/image';
-import { collection, query, where, getDocs, doc, updateDoc } from "firebase/firestore";
+import { collection, query, where, getDocs, updateDoc } from "firebase/firestore";
 import { db, auth } from '@/firebase'; // Ensure auth is imported from Firebase
-import { RecaptchaVerifier, signInWithPhoneNumber } from "firebase/auth";
+import { getAuth, onAuthStateChanged, RecaptchaVerifier, signInWithPhoneNumber } from "firebase/auth";
+import { getFirestore, doc, getDoc, onSnapshot } from 'firebase/firestore';
+
 function Login() {
     const router = useRouter();
     const [phone, setPhone] = useState('');
@@ -17,6 +19,28 @@ function Login() {
     const [usernameError, setUsernameError] = useState('');
     const [phoneError, setPhoneError] = useState('');
     const [adminId, setAdminId] = useState('');
+    const db = getFirestore();
+
+    useEffect(() => {
+        const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
+            if (currentUser) {
+                const userDocRef = doc(db, `admin/${currentUser.uid}`);
+                
+                try {
+                    const docSnapshot = await getDoc(userDocRef);
+                    if (docSnapshot.exists()) {
+                        // setLoading(false);
+                        router.push('/admin');
+                    }
+                } catch (err) {
+                    console.error("Error fetching user data:", err);
+                }
+            }
+            // setLoading(false);
+        });
+    
+        return () => unsubscribe();
+    }, [db, router]);
 
     useEffect(() => {
         setButtonDisabled(Name.trim() === '' || phone.trim() === '');
@@ -40,7 +64,7 @@ function Login() {
         setShowLoading(true);
 
         if (Name.trim() === '' || phone.trim() === '') {
-            if (Name.trim() === '') setUsernameError('Incorrect username');
+            if (Name.trim() === '') setUsernameError('Incorrect User ID');
             if (phone.trim() === '') setPhoneError('Please enter a correct mobile number');
             return;
         }
@@ -48,7 +72,7 @@ function Login() {
         try {
             const formattedPhone = `+${phone.replace(/[^0-9]/g, '')}`;
             const adminRef = collection(db, "admin");
-            const q = query(adminRef, where("username", "==", Name), where("phone", "==", formattedPhone));
+            const q = query(adminRef, where("userId", "==", Name), where("phone", "==", formattedPhone));
             const querySnapshot = await getDocs(q);
 
             if (!querySnapshot.empty) {
@@ -69,12 +93,12 @@ function Login() {
 
             } else {
                 // Username or phone number errors
-                const usernameExists = !(await getDocs(query(adminRef, where("username", "==", Name)))).empty;
+                const usernameExists = !(await getDocs(query(adminRef, where("userId", "==", Name)))).empty;
                 const phoneExists = !(await getDocs(query(adminRef, where("phone", "==", formattedPhone)))).empty;
                 if (usernameExists && phoneExists) {
-                    setUsernameError("Username and phone number are not linked or incorrect");
+                    setUsernameError("User ID and phone number are not linked or incorrect");
                 } else {
-                    if (!usernameExists) setUsernameError('Incorrect username');
+                    if (!usernameExists) setUsernameError('Incorrect User ID');
                     if (!phoneExists) setPhoneError('Phone number is incorrect');
                 }
                 setShowLoading(false);   
@@ -105,7 +129,7 @@ function Login() {
                 <div className="mt-2">
                     <form onSubmit={handleSubmit}>
                         <div className="mb-4">
-                            <label className='text-[14px] text-[#344054] font-medium'>Username</label>
+                            <label className='text-[14px] text-[#344054] font-medium'>User ID</label>
                             <div className={`flex flex-col mt-1 border border-solid ${usernameError ? 'border-red-500' : 'border-[#D0D5DD]'} rounded-md shadow-sm`}>
                                 <input
                                     type="text"

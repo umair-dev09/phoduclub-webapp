@@ -3,6 +3,8 @@ import Image from 'next/image';
 import { useRouter, usePathname } from 'next/navigation';
 import { useState, useEffect } from 'react';
 import Collapsible from 'react-collapsible';
+import {Tooltip} from "@nextui-org/react";
+
 function TabComps() {
 
     const router = useRouter();
@@ -89,7 +91,7 @@ function TabComps() {
         <div className="relative group">
             <button
                 onClick={onClick}
-                className={`flex w-full py-2 px-3 text-base text-left font-normal rounded-md mb-2 transition-all 
+                className={`flex w-full py-2 px-3 text-[14px] text-left font-normal rounded-md mb-2 transition-all 
                 ${isActive ? 'bg-[#7400E0] text-white' : 'hover:bg-[#e1ffe11a] text-[#AAAAAA]'}`}
             >
                 <Image
@@ -123,7 +125,7 @@ function TabComps() {
             {/* Logo Section */}
             <div>
                 <p className={`items-center justify-center w-10 h-10 mt-3 mb-[0.73rem] ml-[0.2rem] text-white font-bold bg-[#3c2f40] rounded-[0.375rem] transition-all ${isCollapsed ? 'flex' : 'hidden'}`}>P</p>
-                <div className={`flex-col mt-2 mb-[0.475rem] transition-all ${!isCollapsed ? 'flex' : 'hidden'}`}>
+                <div className={`flex-col mt-2 mb-[0.475rem] ml-2 transition-all ${!isCollapsed ? 'flex' : 'hidden'}`}>
                     <p className='text-white text-lg font-bold'>phodu<span className='text-[#e29ff5] text-lg font-bold'>.club</span></p>
                     <p className='text-sm text-[#98A2B3] font-normal'>Admin</p>
                 </div>
@@ -186,6 +188,13 @@ function TabComps() {
                 transitionTime={300}
             >
                 {/* Quizzes Management Button */}
+                 {isCollapsed &&(
+                    <Tooltip content="Quizzes Management" placement='right' offset={15} closeDelay={100}
+                classNames={{
+                    content: [
+                      "bg-[#222222] text-white text-sm py-2 px-4 rounded-md",
+                    ],
+                  }}>
                 <button
                     onClick={() =>
                         handleTabClick('quizzesmanagement', '/admin/content/quizzesmanagement')
@@ -195,17 +204,35 @@ function TabComps() {
                         : 'hover:bg-[#e1ffe11a] text-[#AAAAAA]'
                         }`}
                 >
-                    <span className="ml-7 text-[0.813rem]">
-                        {!isCollapsed ? 'Quizzes Management' : ''}
+                    <span className='ml-1 font-medium text-base'>
+                       Q
                     </span>
-                    {isCollapsed && (
-                        <span className="absolute left-[3.5rem] top-1/2 -translate-y-1/2 bg-[#222222] text-white text-sm py-1 px-2 rounded-md opacity-0 group-hover:opacity-100 transition-opacity z-10 whitespace-nowrap">
-                            Quizzes Management
-                        </span>
-                    )}
                 </button>
-
-                {/* Test Series Management Button */}
+                </Tooltip>
+                 )} 
+                  {!isCollapsed &&(
+                <button
+                    onClick={() =>
+                        handleTabClick('quizzesmanagement', '/admin/content/quizzesmanagement')
+                    }
+                    className={`relative group flex items-center w-full h-10 py-2 px-3 text-left rounded-md mb-2 transition-colors ${activeTab === 'quizzesmanagement'
+                        ? 'bg-[#444444] text-white'
+                        : 'hover:bg-[#e1ffe11a] text-[#AAAAAA]'
+                        }`}
+                >
+                    <span className='ml-7 text-[0.813rem]'>
+                        Quizzes Management
+                    </span>
+                </button>
+                 )} 
+                
+                {isCollapsed &&(
+                    <Tooltip content="Test Series Management" placement='right' offset={15} closeDelay={100}
+                classNames={{
+                    content: [
+                      "bg-[#222222] text-white text-sm py-2 px-4 rounded-md",
+                    ],
+                  }}>
                 <button
                     onClick={() =>
                         handleTabClick(
@@ -218,17 +245,46 @@ function TabComps() {
                         : 'hover:bg-[#e1ffe11a] text-[#AAAAAA]'
                         }`}
                 >
-                    <span className="ml-7 text-[0.813rem]">
-                        {!isCollapsed ? 'Test Series Management' : ''}
+                    <span className='ml-[6px] font-medium text-base'>
+                      T
                     </span>
-                    {isCollapsed && (
-                        <span className="absolute left-[3.5rem] top-1/2 -translate-y-1/2 bg-[#222222] text-white text-sm py-1 px-2 rounded-md opacity-0 group-hover:opacity-100 transition-opacity z-10 whitespace-nowrap">
-                            Test Series Management
-                        </span>
-                    )}
+                    
                 </button>
+                </Tooltip>
+                )}
 
+                {!isCollapsed &&(
+                <button
+                    onClick={() =>
+                        handleTabClick(
+                            'testseriesmanagement',
+                            '/admin/content/testseriesmanagement'
+                        )
+                    }
+                    className={`relative group flex items-center w-full h-10 py-2 px-3 text-left rounded-md mb-2 transition-colors ${activeTab === 'testseriesmanagement'
+                        ? 'bg-[#444444] text-white'
+                        : 'hover:bg-[#e1ffe11a] text-[#AAAAAA]'
+                        }`}
+                >
+                    <span className='ml-7 text-[0.813rem]'>
+                    Test Series Management
+                    </span>
+                    
+                </button>
+                )}
+
+
+                {/* Test Series Management Button */}
+                
                 {/* Course Creation Button */}
+
+                {isCollapsed &&(
+                <Tooltip content="Course Creation" placement='right' offset={15} closeDelay={100}
+                classNames={{
+                    content: [
+                        "bg-[#222222] text-white text-sm py-2 px-4 rounded-md",
+                    ],
+                    }}>
                 <button
                     onClick={() =>
                         handleTabClick('coursecreation', '/admin/content/coursecreation')
@@ -238,15 +294,29 @@ function TabComps() {
                         : 'hover:bg-[#e1ffe11a] text-[#AAAAAA]'
                         }`}
                 >
-                    <span className="ml-7 text-[0.813rem]">
-                        {!isCollapsed ? 'Course Creation' : ''}
+                    <span className='ml-1 font-medium text-base'>
+                        C
                     </span>
-                    {isCollapsed && (
-                        <span className="absolute left-[3.5rem] top-1/2 -translate-y-1/2 bg-[#222222] text-white text-sm py-1 px-2 rounded-md opacity-0 group-hover:opacity-100 transition-opacity z-10 whitespace-nowrap">
-                            Course Creation
-                        </span>
-                    )}
                 </button>
+                </Tooltip>
+                )}
+
+                {!isCollapsed &&(
+                <button
+                    onClick={() =>
+                        handleTabClick('coursecreation', '/admin/content/coursecreation')
+                    }
+                    className={`relative group flex items-center w-full h-10 py-2 px-3 text-left rounded-md mb-2 transition-colors ${activeTab === 'coursecreation'
+                        ? 'bg-[#444444] text-white'
+                        : 'hover:bg-[#e1ffe11a] text-[#AAAAAA]'
+                        }`}
+                >
+                    <span className='ml-7 text-[0.813rem]'>
+                    Course Creation
+                    </span>
+                </button>
+                )}
+             
             </Collapsible>
 
             {/* Additional Tabs */}

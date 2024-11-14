@@ -1,8 +1,8 @@
 "use client";
-import React, { useRef, useState, useEffect } from "react";
+import React, { useRef, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Image from 'next/image';
-import { doc, updateDoc } from "firebase/firestore";
+import { doc, getDoc, setDoc, deleteDoc } from "firebase/firestore";
 import { auth, db } from '@/firebase';
 
 const AdminVerify: React.FC = () => {
@@ -29,20 +29,44 @@ const AdminVerify: React.FC = () => {
     const verifyOTP = async () => {
         const otp = inputValues.join('');
         if (otp.length !== 6) return;
-
+    
         try {
             const result = await window.confirmationResult.confirm(otp);
-            const authId = result.user.uid;
-
-            if (adminId) {
-                await updateDoc(doc(db, "admin", adminId), { authId });
+            const currentUserId = result.user.uid;
+    
+            // Check if a document with the authId (currentUserId) already exists
+            const existingAdminDocRef = doc(db, "admin", currentUserId);
+            const existingAdminSnapshot = await getDoc(existingAdminDocRef);
+    
+            if (existingAdminSnapshot.exists()) {
+                // If a document with currentUserId exists, allow login without data migration
+                router.push('/admin');
+            } else if (adminId) {
+                // If no document with currentUserId exists, proceed with data migration
+                const adminDocRef = doc(db, "admin", adminId);
+                const adminSnapshot = await getDoc(adminDocRef);
+    
+                if (adminSnapshot.exists()) {
+                    const adminData = adminSnapshot.data();
+    
+                    // Create a new document with currentUserId and migrate data
+                    await setDoc(existingAdminDocRef, {
+                        ...adminData,
+                        adminId: currentUserId // Explicitly set authId as a field in the new document
+                    });
+    
+                    // Delete the old admin document
+                    await deleteDoc(adminDocRef);
+                }
+    
+                // Redirect to the admin page after OTP verification and data migration
+                router.push('/admin');
             }
-
-            router.push('/admin');  // Redirect to admin page after successful OTP verification
         } catch (error) {
-            console.error("OTP verification failed:", error);
+            console.error("OTP verification or data migration failed:", error);
         }
     };
+    
 
     return (
         <div className="flex flex-col items-center justify-center">

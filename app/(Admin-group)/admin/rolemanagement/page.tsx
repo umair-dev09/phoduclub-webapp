@@ -19,6 +19,7 @@ import Remove from "@/components/AdminComponents/QuizInfoDailogs/Remove";
 import { collection, getDocs, query, where, doc, getDoc, onSnapshot, deleteDoc } from 'firebase/firestore';
 import {db} from '@/firebase';
 import LoadingData from "@/components/Loading";
+import UserRolesView from "@/components/AdminComponents/RoleMangement/UserRolesView";
 // Define types for quiz data
 interface UserData {
     adminId: string;
@@ -220,22 +221,22 @@ function rolemangement() {
                 <div className="border border-[#EAECF0] rounded-xl ">
                     <table className="w-full bg-white rounded-xl ">
                         <thead>
-                            <tr>
+                            <tr className="gap-[200px]">
                                 <th className="w-[25%] text-left px-8 py-4 pl-8 rounded-tl-xl flex flex-row ">
                                     <span className="text-[#667085] font-medium text-sm">Name</span>
                                 </th>
-                                <th className=" w-[22%] text-center px-8 py-4 text-[#667085] font-medium text-sm">
-                                    <div className="flex flex-row justify-center gap-1">
+                                <th className=" w-[22%] text-start px-8 py-4 text-[#667085] font-medium text-sm">
+                                    <div className="flex flex-row justify-start gap-1">
                                         <p>User Id</p>
                                     </div>
                                 </th>
-                                <th className=" w-[22%] text-center px-8 py-4 text-[#667085] font-medium text-sm">
-                                    <div className="flex flex-row justify-center gap-1">
+                                <th className=" w-[22%] text-strart px-8 py-4 text-[#667085] font-medium text-sm">
+                                    <div className="flex flex-row justify-start gap-1">
                                         <p>Moblie No.</p>
                                     </div>
                                 </th>
                                 <th className=" w-[22%] px-8 py-4 text-[#667085] font-medium text-sm">
-                                    <div className="flex flex-row ml-3 gap-1">
+                                    <div className="flex flex-row justify-start gap-1">
                                         <p>Role</p>
                                     </div>
                                 </th>
@@ -246,16 +247,20 @@ function rolemangement() {
                             {currentItems.map((users, index) => (
                                 <tr key={index} className="border-t border-solid border-[#EAECF0]">
                                     <td className="py-[12px]">
-                                        <div className="flex flex-row ml-8 gap-[10px]">
-                                            <Image className='rounded-full object-cover' src={users.profilePic} alt="DP" width={38} height={38} />
+                                        <div className="flex flex-row ml-8 gap-[10px] min-w-[260px]">
+                                            <Image className='rounded-full object-cover' src={users.profilePic || '/defaultAdminDP.jpg'} alt="DP" width={38} height={38} />
                                             <div className="flex items-start justify-center flex-col mb-[2px]">
                                                 <div className="font-semibold text-sm">{users.name}</div>
                                             </div>
                                         </div>
                                     </td>
-                                    <td className="px-8 py-4 text-center text-[#101828] text-sm">{users.userId}</td>
-                                    <td className="px-8 py-4 text-center text-[#101828] text-sm">{'+' + users.phone}</td>
-                                    <td className="px-8 py-4 text-center text-[#101828] text-sm">{users.role}</td>
+                                    <td className="px-8 py-4 text-start text-[#101828] text-sm "><span className="flex min-w-fit">{users.userId}</span></td>
+                                    <td className="px-8 py-4 text-start text-[#101828] text-sm "><span className="flex min-w-fit">{users.phone}</span></td>
+                                    <td className="px-8 py-4 text-start text-[#101828] text-sm">
+                                    <span className="flex min-w-[200px]">
+                                        <UserRolesView role={users.role}/>
+                                     </span>   
+                                        </td>
                                     <td className="flex items-center justify-center px-8 py-4 text-[#101828] text-sm">
                                         <Popover placement="bottom-end"  isOpen={actionDialog === users.adminId}>
                                             <PopoverTrigger>

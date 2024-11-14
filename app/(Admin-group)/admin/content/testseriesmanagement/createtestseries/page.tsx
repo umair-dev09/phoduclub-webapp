@@ -46,7 +46,7 @@ function CreateQuiz() {
     const renderStepContent = () => {
         switch (currentStep) {
             case Step.TestSeriesInfo:
-            // return <TestSeriesInfo />;
+            return <TestSeriesInfo />;
             case Step.Sections:
                 return <Sections sectionsCount={sectionsCount} />;
             case Step.Review:

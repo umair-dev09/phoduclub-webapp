@@ -6,8 +6,8 @@ import { Popover, PopoverTrigger, PopoverContent } from '@nextui-org/popover';
 import { auth } from '@/firebase';
 import { getFirestore, doc, getDoc, onSnapshot } from 'firebase/firestore';
 import { useEffect, useState } from 'react';
-import { onAuthStateChanged, User, signOut} from 'firebase/auth'; // Import the User type from Firebase
-import {Skeleton} from "@nextui-org/skeleton";
+import { onAuthStateChanged, User, signOut } from 'firebase/auth';
+import { Skeleton } from "@nextui-org/skeleton";
 import LoadingData from '../Loading';
 import HeaderLoading from './HeaderLoading';
 import HelpDropDown from './HelpDropdown';
@@ -22,11 +22,42 @@ type UserData = {
 
 function Header() {
     const router = useRouter();
-    const [userData, setUserData] = useState<UserData | null>(null); 
-    const [loading, setLoading] = useState(true); // Track loading state
-    const [error, setError] = useState(false); // Track error state
-    const [user, setUser] = useState<User | null>(null); 
+    const [userData, setUserData] = useState<UserData | null>(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(false);
+    const [user, setUser] = useState<User | null>(null);
     const db = getFirestore();
+
+    useEffect(() => {
+        const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
+            if (currentUser) {
+                setUser(currentUser);
+                const userDocRef = doc(db, `users/${currentUser.uid}`);
+                
+                try {
+                    const docSnapshot = await getDoc(userDocRef);
+                    if (docSnapshot.exists()) {
+                        setUserData(docSnapshot.data() as UserData);
+                        setLoading(false);
+                    } else {
+                        // console.error("User ID not found in Firestore!");
+                        setError(true);
+                        router.push("/login");
+                    }
+                } catch (err) {
+                    console.error("Error fetching user data:", err);
+                    setError(true);
+                }
+            } else {
+                // console.error('No user is logged in');
+                setError(true);
+                router.push("/login");
+            }
+            setLoading(false);
+        });
+    
+        return () => unsubscribe();
+    }, [db, router]);
 
     const handleLogout = async () => {
         try {
@@ -39,52 +70,6 @@ function Header() {
         }
     };
 
-    useEffect(() => {
-        const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-            if (currentUser) {
-                setUser(currentUser);
-            } else {
-                console.error('No user is logged in');
-                setError(true); // Set error if no user is logged in
-                setLoading(false); // Ensure loading is set to false even when no user is found
-            }
-        });
-    
-        return () => unsubscribe();
-    }, []);
-  
-    useEffect(() => {
-        let unsubscribeFromSnapshot: () => void;
-        if (user) {
-            const uniqueId = user.uid;
-            const userDocRef = doc(db, `users/${uniqueId}`);
-
-            unsubscribeFromSnapshot = onSnapshot(userDocRef, (docSnapshot) => {
-                if (docSnapshot.exists()) {
-                    const data = docSnapshot.data() as UserData;
-                    setUserData(data);
-                    
-                    setLoading(false);
-                } else {
-                    console.error('No user data found!');
-                    setError(true);
-                    setLoading(false);
-                }
-            }, (error) => {
-                console.error('Error fetching real-time updates:', error);
-                setError(true);
-                setLoading(false);
-            });
-        }
-
-        return () => {
-            if (unsubscribeFromSnapshot) {
-                unsubscribeFromSnapshot();
-            }
-        };
-    }, [user, db]);
-  
-    // Display loading or error component while data is being fetched or if there's an error
     if (loading || error) {
         return <HeaderLoading />;
     }
@@ -107,7 +92,7 @@ function Header() {
                             <div className='flex flex-row items-center'>
                                 <Image className={styles.profilePic} src={userData?.profilePic || "/defaultDP.svg"} width={38} height={38} quality={100} alt="Profile Picture" />
                                 <div className='flex flex-col ml-1 mr-1'>
-                                    <p className='font-semibold	text-[14px] mb-[-2px]'>{userData?.name}</p>
+                                    <p className='font-semibold text-[14px] mb-[-2px]'>{userData?.name}</p>
                                     <p className='text-[13px] text-[#667085]'>{userData?.userId}</p>
                                 </div>
                                 <button className={styles.arrowButton}>
@@ -117,7 +102,6 @@ function Header() {
                         </PopoverTrigger>
                         <PopoverContent>
                             <div className={styles.profilePopup}>
-                                
                                 <button className={styles.myProfButton}>
                                     <Image className={styles.profPopupIcon} src="/icons/user-circle.svg" width={18} height={18} alt="Profile Icon" />
                                     <p className={styles.profPopupText1}>My profile</p>
@@ -128,7 +112,6 @@ function Header() {
                                     <p className={styles.profPopupText2}>Log out</p>
                                 </button>   
                                 </div>
-                             
                             </div>
                         </PopoverContent>
                     </Popover>

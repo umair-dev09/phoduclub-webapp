@@ -25,7 +25,7 @@ type AddNewUserProps = {
     selectedRole: string;
     setSelectedRole: (selectedRole: string) => void;
     adminIdd: string;
-    setAdminId: (adminId: string) => void;
+    setAdminId: (adminIdd: string) => void;
 }
 
 function AddNewUser ({ open, close, isEditing = false, firstName, setFirstName, lastName, setLastName, adminIdd, setAdminId, userId, setUserId, phone, setPhone, selectedRole, setSelectedRole}:AddNewUserProps)  {
@@ -135,7 +135,7 @@ function AddNewUser ({ open, close, isEditing = false, firstName, setFirstName, 
                             <PhoneInput
                                 country={'in'}
                                 value={phone}
-                                onChange={(phone) => setPhone(phone)}
+                                onChange={(phone) => setPhone("+" + phone)}
                                 inputProps={{
                                     required: true,
                                     autoFocus: true,

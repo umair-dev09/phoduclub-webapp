@@ -12,7 +12,7 @@ type priceprops ={
 
 }
 
-function courses({Price, Discountprice}: priceprops) {
+function courses() {
 
     const [isprice, setIsprice] = useState("");
 

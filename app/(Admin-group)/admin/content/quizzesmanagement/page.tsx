@@ -397,7 +397,7 @@ function Quizz() {
                                             <td className="px-8 py-4 text-center text-[#101828] text-sm">{quiz.date}</td>
                                             <td className="px-8 py-4 text-center text-[#101828] text-sm">{quiz.students}</td>
                                             <td className="px-8 py-4 text-center text-[#101828] text-sm">
-                                                <span className='flex items-center justify-start ml-[33%] rounded-full'>
+                                                <span className='flex items-center justify-start ml-[30%] rounded-full'>
                                                     <QuizStatus status={quiz.status} />
                                                 </span>
                                             </td>

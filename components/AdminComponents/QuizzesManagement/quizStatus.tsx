@@ -7,7 +7,7 @@ interface QuizStatusProps {
 const QuizStatus: React.FC<QuizStatusProps> = ({ status }) => {
     const renderStatus = () => {
         switch (status) {
-            case 'finished':
+            case 'finished': 
                 return (
                     <div className="bg-[#D3F8E0] py-2 px-3 gap-1 flex flex-row rounded-[6px] items-center h-6">
                         <span className="w-[6px] h-[6px] bg-[#0A5B39] rounded-full "></span>
