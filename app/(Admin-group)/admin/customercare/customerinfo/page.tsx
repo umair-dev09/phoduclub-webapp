@@ -26,8 +26,8 @@ function customerinfo() {
         setSelectedStatus(status);
     };
     return (
-        <div className="h-screen w-full flex flex-row">
-            <div className="h-full w-[68%] ">
+        <div className="h-full w-full flex flex-row">
+            <div className="grid grid-rows-[72px_1fr_70px] w-[68%]">
                 <div className="h-[72px] border-b border-solid border-[#EAECF0] flex flex-row items-center px-6 bg-[#FFFFFF] justify-between w-full">
                     <div className="flex flex-row gap-2 items-center">
                         <div className="relative">
@@ -46,24 +46,22 @@ function customerinfo() {
                         <div
                             onClick={handleCheckboxClick}
                             className={`flex items-center justify-center w-4 h-4 border 
-                             rounded-sm cursor-pointer 
-                                   ${isChecked ? 'bg-purple border-purple' : 'bg-white border-[#D0D5DE]'}`}
+                            rounded-sm cursor-pointer 
+                            ${isChecked ? 'bg-purple border-purple' : 'bg-white border-[#D0D5DE]'}`}
                         >
                             {isChecked && (
                                 <Image src="/icons/check.svg" alt="choose" width={12} height={12} />
                             )}
                         </div>
-
                         <span className="text-sm text-[#0C111D] font-normal">Mark as Resolved</span>
                     </div>
                 </div>
-                <div className="flex-1  w-full flex  bg-red-300">
+                <div className="bg-red-300">
                     jabir
                 </div>
-                <div className="h-[72px] w-full flex  bg-slate-900 ">
+                <div className="bg-blue-900">
                     jabir
                 </div>
-
             </div>
             <div className="w-[32%] h-full flex flex-col bg-[#FFFFFF] overflow-y-auto border-l border-solid border-[#EAECF0]">
                 <div className="h-[72px] border-b border-solid border-[#EAECF0] flex flex-row items-center px-6">
