@@ -65,7 +65,7 @@ export default function DashboardGroup({ children }: DashboardGroupProps) {
                 pageName = 'My Profile';
                 break;
             case 'customerinfo':
-                pageName = 'Back to Customer Care';
+                pageName = 'Back to Customer Data Management';
                 break;
             case 'marketinfo':
                 pageName = 'Back to Messenger';
