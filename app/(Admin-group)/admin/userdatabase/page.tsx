@@ -1,4 +1,5 @@
 "use client";
+
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
@@ -110,6 +111,7 @@ function Userdatabase() {
     const [itemsPerPage] = useState(5);
     const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState('');
+    const [isPopoverOpen, setIsPopoverOpen] = useState(false);
     const router = useRouter();
 
     // Fetch quizzes when component mounts
@@ -165,6 +167,7 @@ function Userdatabase() {
         setOpenDialog(false);
     };
     const [phone, setPhone] = useState("");
+
     return (
         <div className="flex flex-col w-full  gap-4 p-6">
             <div className="flex flex-row justify-between items-center">
@@ -192,15 +195,33 @@ function Userdatabase() {
                     </button>
 
                     {/* Select Date Button */}
-                    <button className="h-[44px] w-[143px] rounded-md bg-[#FFFFFF] border border-solid border-[#D0D5DD] justify-between flex items-center p-3">
-                        <span className="font-medium text-sm text-[#182230] ml-2">All Students</span>
-                        <Image
-                            src="/icons/by-role-arrow-down.svg"
-                            width={20}
-                            height={20}
-                            alt="down arrow"
-                        />
-                    </button>
+                    <Popover
+                        placement="bottom"
+                        isOpen={isPopoverOpen}
+                        onOpenChange={(open) => setIsPopoverOpen(open)}
+                    >
+                        <PopoverTrigger>
+                            <button className={`h-[44px] w-[143px] rounded-md bg-[#FFFFFF] border border-solid border-[#D0D5DD] outline-none justify-between flex items-center p-3 ${isPopoverOpen
+                                ? "border-[#C7A5FF] ring-4 ring-[#E2D9F8]"
+                                : "border-lightGrey"
+                                }`}>
+                                <span className="font-medium text-sm text-[#182230] ml-2">All</span>
+                                <Image
+                                    src="/icons/by-role-arrow-down.svg"
+                                    width={20}
+                                    height={20}
+                                    alt="down arrow"
+                                />
+                            </button>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-[8.875rem] px-0 py-1 border border-lightGrey rounded-md shadow-[0_12px_16px_-4px_rgba(16,24,40,0.08)]">
+                            <div className="w-full bg-white">
+                                <button className="w-full py-[0.625rem] px-4 text-base text-left text-primary-900 font-normal transition-colors hover:bg-[#F9FAFB]">All</button>
+                                <button className="w-full py-[0.625rem] px-4 text-base text-left text-primary-900 font-normal transition-colors hover:bg-[#F9FAFB]">Premium</button>
+                                <button className="w-full py-[0.625rem] px-4 text-base text-left text-primary-900 font-normal transition-colors hover:bg-[#F9FAFB]">Free</button>
+                            </div>
+                        </PopoverContent>
+                    </Popover>
                     <button
                         onClick={handleOpenDialog}
                         className="h-[44px] w-auto px-6 py-2 bg-[#8501FF] rounded-md shadow-inner-button border border-solid border-[#800EE2] flex items-center justify-center">
