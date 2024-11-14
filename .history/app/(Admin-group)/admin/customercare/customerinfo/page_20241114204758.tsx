@@ -40,7 +40,7 @@ function customerinfo() {
     return (
         <div className="h-full w-full flex flex-row">
             <div className="grid grid-rows-[72px_1fr_70px] w-[68%] pb-6">
-                <div className="h-[72px] border-b border-solid border-[#EAECF0] flex flex-row items-center px-6 bg-[#FFFFFF] justify-between w-full">
+                <div className="h-[72px] border-b border-solid border-[#EAECF0] flex flex-row items-center px-6 bg-[#FFFFFF] justify-between w-full overflow-y-auto">
                     <div className="flex flex-row gap-2 items-center">
                         <div className="relative">
                             <Image src="/images/DP_Lion.svg" alt="DP" width={32} height={32} />
@@ -68,7 +68,7 @@ function customerinfo() {
                         <span className="text-sm text-[#0C111D] font-normal">Mark as Resolved</span>
                     </div>
                 </div>
-                <div className=" p-6 flex flex-col gap-3 h-auto w-full overflow-y-auto">
+                <div className=" p-6 flex flex-col gap-3">
                     {/* other chat */}
                     <div className="h-[67px] w-full flex flex-col gap-1">
                         <div className="border border-solid border-[#EAECF0] bg-[#FFFFFF] rounded-[16px] flex items-center p-3 w-[226px]">
@@ -77,13 +77,12 @@ function customerinfo() {
                         <span className="text-[#475467] font-normal text-xs">3:24 PM</span>
                     </div>
                     {/* own chat */}
-                    <div className="h-[67px] w-full flex flex-col gap-1 items-end">
-                        <div className=" bg-[#9012FF] rounded-[16px] flex items-center p-3 w-max-[226px]">
+                    <div className="h-[67px] w-full flex flex-col gap-1 ">
+                        <div className=" bg-[#9012FF] rounded-[16px] flex items-center p-3 w-[226px]">
                             <span className="text-[#FFFFFF] font-normal text-sm">I am scammed in the group.</span>
                         </div>
                         <span className="text-[#475467] font-normal text-xs">3:24 PM</span>
                     </div>
-
                 </div>
                 {/* Type Area */}
                 <div className=" bg-[#FFFFFF] w-full">
