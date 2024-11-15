@@ -169,7 +169,7 @@ function Userdatabase() {
     const [phone, setPhone] = useState("");
 
     return (
-        <div className="flex flex-col w-full  gap-4 p-6">
+        <div className="flex flex-col w-full gap-4 p-6">
             <div className="flex flex-row justify-between items-center">
                 <h2 className="text-lg font-semibold text-[#1D2939]">
                     Users
@@ -194,16 +194,16 @@ function Userdatabase() {
                         </div>
                     </button>
 
-                    {/* Select Date Button */}
+                    {/* Select Students Button */}
                     <Popover
                         placement="bottom"
                         isOpen={isPopoverOpen}
                         onOpenChange={(open) => setIsPopoverOpen(open)}
                     >
                         <PopoverTrigger>
-                            <button className={`h-[44px] w-[143px] rounded-md bg-[#FFFFFF] border border-solid border-[#D0D5DD] outline-none justify-between flex items-center p-3 ${isPopoverOpen
+                            <button className={`h-[44px] w-[143px] rounded-md bg-[#FFFFFF] border border-solid border-[#D0D5DD] outline-none justify-between flex items-center p-3 transition-colors ${isPopoverOpen
                                 ? "border-[#C7A5FF] ring-4 ring-[#E2D9F8]"
-                                : "border-lightGrey"
+                                : "border-[#D0D5DD]"
                                 }`}>
                                 <span className="font-medium text-sm text-[#182230] ml-2">All</span>
                                 <Image

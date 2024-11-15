@@ -46,7 +46,7 @@ function CreateQuiz() {
     const renderStepContent = () => {
         switch (currentStep) {
             case Step.TestSeriesInfo:
-            return <TestSeriesInfo />;
+                return <TestSeriesInfo />;
             case Step.Sections:
                 return <Sections sectionsCount={sectionsCount} />;
             case Step.Review:
@@ -111,15 +111,12 @@ function CreateQuiz() {
                             {currentStep === Step.Sections && (
                                 <button
                                     onClick={handleAddSection}
-
                                     className="flex flex-row gap-1 items-center h-[44px] w-[162px] justify-center"
-
                                 >
                                     <Image src="/icons/plus-sign.svg" height={18} width={18} alt="Plus Sign" />
                                     <span className="text-[#9012FF] font-semibold text-sm">Add Section</span>
                                 </button>
                             )}
-
                             {currentStep > Step.TestSeriesInfo && (
                                 <button
                                     className="h-[44px] w-[135px] bg-[#FFFFFF] rounded-md shadow-inner-button border border-solid border-[#EAECF0] flex items-center justify-center"
@@ -136,7 +133,6 @@ function CreateQuiz() {
                                     {currentStep === Step.Perference ? "Publish" : "Next"}
                                 </span>
                             </button>
-
                         </div>
                     </div>
                 </div>
