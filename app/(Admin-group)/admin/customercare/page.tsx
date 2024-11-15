@@ -205,10 +205,10 @@ function CustomerCare() {
                                             <div className="flex flex-col justify-start gap-1">
                                                 <div className="flex flex-row gap-1">
                                                     <p className="w-fit px-3 py-1 text-xs text-white font-medium bg-[#344054] rounded-[0.375rem]">Scam</p>
-                                                    <p className="w-fit px-3 py-1 text-xs text-white font-medium bg-[#344054] rounded-[0.375rem]">General</p>
-                                                    <p className="w-fit px-3 py-1 text-xs text-white font-medium bg-[#344054] rounded-[0.375rem]">Product</p>
+                                                    {/* <p className="w-fit px-3 py-1 text-xs text-white font-medium bg-[#344054] rounded-[0.375rem]">General</p>
+                                                    <p className="w-fit px-3 py-1 text-xs text-white font-medium bg-[#344054] rounded-[0.375rem]">Product</p> */}
                                                 </div>
-                                                <p className="w-fit px-3 py-1 text-xs text-white font-medium bg-[#0A5B39] rounded-[0.375rem]">Transaction ID: 254784523698</p>
+                                                {/* <p className="w-fit px-3 py-1 text-xs text-white font-medium bg-[#0A5B39] rounded-[0.375rem]">Transaction ID: 254784523698</p> */}
                                             </div>
                                         </div>
                                     </td>
@@ -247,6 +247,18 @@ function CustomerCare() {
                         />
                     </div>
                 </div>
+            </div>
+            <div className="absolute bottom-8 left-[38%] flex flex-row items-center p-4 gap-4 bg-white border border-[#D0D5DD] rounded-xl shadow-[4px_8px_13px_0_rgba(0,0,0,0.05), 4px_4px_12px_0_rgba(0,0,0,0.05), 4px_8px_14px_0_rgba(0,0,0,0.04)]">
+                <p className="text-balance text-[#1D2939] font-semibold">1 Select</p>
+                <div className="flex flex-row gap-2">
+                    <button className="px-4 py-[0.625rem] text-sm text-[#1D2939] font-medium border border-lightGrey rounded-md">Select all</button>
+                    <button className="px-4 py-[0.625rem] text-sm text-[#1D2939] font-medium border border-lightGrey rounded-md">Unselect all</button>
+                </div>
+                <div className="w-0 h-9 border-[0.5px] border-lightGrey rounded-full"></div>
+                <button className="flex flex-row justify-between w-[6.438rem] px-4 py-[0.625rem] text-xs text-[#182230] font-medium bg-[#EDE4FF] rounded-[0.375rem]">
+                    New
+                    <Image src='/icons/arrow-down-01-round.svg' alt="open" width={18} height={18} />
+                </button>
             </div>
         </div>
     );
