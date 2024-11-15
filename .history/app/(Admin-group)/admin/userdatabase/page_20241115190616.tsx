@@ -148,7 +148,6 @@ function Userdatabase() {
     const [isBanOpen, setIsBanOpen] = useState(false);
     const openBan = () => setIsBanOpen(true);
     const closeBan = () => setIsBanOpen(false);
-
     // THIS STATE IS USED FOR THE DAILOG OF DELETE
     const [isDeleteOpen, setIsDeleteOpen] = useState(false);
     const openDelete = () => setIsDeleteOpen(true);
@@ -309,7 +308,7 @@ function Userdatabase() {
                                                     <p className="text-sm text-[#DE3024] font-normal">Ban</p>
                                                 </button>
                                                 <button className=" flex flex-row items-center justify-start w-full py-[0.625rem] px-4 gap-2 hover:bg-[#F2F4F7]"
-                                                    onClick={openDelete}>
+                                                >
                                                     <Image src='/icons/delete.svg' alt="user profile" width={18} height={18} />
                                                     <p className="text-sm text-[#DE3024] font-normal">Delete</p>
                                                 </button>
@@ -335,7 +334,6 @@ function Userdatabase() {
                 </div>
             </div>
             {isBanOpen && <Ban onClose={closeBan} open={true} />}
-            {isDeleteOpen && <Delete onClose={closeDelete} open={true} />}
             {/* Dialog Component */}
             <Dialog open={openDialog} onClose={closeDialog} className="relative z-50">
                 <DialogBackdrop className="fixed inset-0 bg-black/30" />
