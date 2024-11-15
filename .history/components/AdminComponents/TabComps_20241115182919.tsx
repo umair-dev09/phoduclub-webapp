@@ -116,7 +116,7 @@ function TabComps() {
             ) : (
                 <button
                     onClick={onClick}
-                    className={`flex w-full py-2 px-3 text-[14px] text-left font-normal rounded-md mb-2 transition-all h-11 overflow-hidden
+                    className={`flex w-full py-2 px-3 text-[14px] text-left font-normal rounded-md mb-2 transition-all 
                     ${isActive ? 'bg-[#7400E0] text-white' : 'hover:bg-[#e1ffe11a] text-[#AAAAAA]'}`}
                 >
                     <Image
@@ -168,7 +168,7 @@ function TabComps() {
                             ],
                         }}>
                         <div
-                            className={`flex items-center justify-between w-full relative group mb-2 py-2 px-3  h-11 overflow-hidden rounded-md ${isContentSection()
+                            className={`flex items-center justify-between w-full relative group mb-2 py-2 px-3 rounded-md ${isContentSection()
                                 ? 'bg-[#7400E0] text-white'
                                 : 'hover:bg-[#e1ffe11a] text-[#AAAAAA]'
                                 }`}
@@ -222,7 +222,7 @@ function TabComps() {
                             onClick={() =>
                                 handleTabClick('quizzesmanagement', '/admin/content/quizzesmanagement')
                             }
-                            className={` tooltip relative group flex items-center w-full h-11 overflow-hidden py-2 px-3 text-left rounded-md mb-2 transition-colors ${activeTab === 'quizzesmanagement'
+                            className={` tooltip relative group flex items-center w-full h-10 py-2 px-3 text-left rounded-md mb-2 transition-colors ${activeTab === 'quizzesmanagement'
                                 ? 'bg-[#444444] text-white'
                                 : 'hover:bg-[#e1ffe11a] text-[#AAAAAA]'
                                 }`}
@@ -238,7 +238,7 @@ function TabComps() {
                         onClick={() =>
                             handleTabClick('quizzesmanagement', '/admin/content/quizzesmanagement')
                         }
-                        className={`relative group flex items-center w-full h-11 overflow-hidden py-2 px-3 text-left rounded-md mb-2 transition-colors ${activeTab === 'quizzesmanagement'
+                        className={`relative group flex items-center w-full h-10 py-2 px-3 text-left rounded-md mb-2 transition-colors ${activeTab === 'quizzesmanagement'
                             ? 'bg-[#444444] text-white'
                             : 'hover:bg-[#e1ffe11a] text-[#AAAAAA]'
                             }`}
@@ -263,7 +263,7 @@ function TabComps() {
                                     '/admin/content/testseriesmanagement'
                                 )
                             }
-                            className={`relative group flex items-center w-full h-11 overflow-hidden py-2 px-3 text-left rounded-md mb-2 transition-colors ${activeTab === 'testseriesmanagement'
+                            className={`relative group flex items-center w-full h-10 py-2 px-3 text-left rounded-md mb-2 transition-colors ${activeTab === 'testseriesmanagement'
                                 ? 'bg-[#444444] text-white'
                                 : 'hover:bg-[#e1ffe11a] text-[#AAAAAA]'
                                 }`}

@@ -16,8 +16,7 @@ import {
     PaginationPrevious,
 } from "@/components/ui/pagination";
 import { Popover, PopoverContent, PopoverTrigger } from "@nextui-org/popover";
-import Ban from "@/components/AdminComponents/UserDatabaseMangement/Ban";
-import Delete from "@/components/AdminComponents/UserDatabaseMangement/Delete";
+import Remove from "@/components/AdminComponents/QuizInfoDailogs/Remove";
 
 // Define types for quiz data
 interface Quiz {
@@ -144,15 +143,11 @@ function Userdatabase() {
     const handleTabClick = (path: string) => {
         router.push(path);
     };
-    // THIS STATE IS USED FOR THE DAILOG OF BAN
-    const [isBanOpen, setIsBanOpen] = useState(false);
-    const openBan = () => setIsBanOpen(true);
-    const closeBan = () => setIsBanOpen(false);
 
-    // THIS STATE IS USED FOR THE DAILOG OF DELETE
-    const [isDeleteOpen, setIsDeleteOpen] = useState(false);
-    const openDelete = () => setIsDeleteOpen(true);
-    const closeDelete = () => setIsDeleteOpen(false);
+    const [isRemoveOpen, setIsRemoveOpen] = useState(false);
+
+    const openRemove = () => setIsRemoveOpen(true);
+    const closeRemove = () => setIsRemoveOpen(false);
 
     const [uniqueId, setUniqueId] = useState('');
     const [startDate, setStartDate] = useState('');
@@ -174,7 +169,7 @@ function Userdatabase() {
     const [phone, setPhone] = useState("");
 
     return (
-        <div className="flex flex-col w-full gap-4 p-6">
+        <div className="flex flex-col w-full  gap-4 p-6">
             <div className="flex flex-row justify-between items-center">
                 <h2 className="text-lg font-semibold text-[#1D2939]">
                     Users
@@ -199,16 +194,16 @@ function Userdatabase() {
                         </div>
                     </button>
 
-                    {/* Select Students Button */}
+                    {/* Select Date Button */}
                     <Popover
                         placement="bottom"
                         isOpen={isPopoverOpen}
                         onOpenChange={(open) => setIsPopoverOpen(open)}
                     >
                         <PopoverTrigger>
-                            <button className={`h-[44px] w-[143px] rounded-md bg-[#FFFFFF] border border-solid border-[#D0D5DD] outline-none justify-between flex items-center p-3 transition-colors ${isPopoverOpen
+                            <button className={`h-[44px] w-[143px] rounded-md bg-[#FFFFFF] border border-solid border-[#D0D5DD] outline-none justify-between flex items-center p-3 ${isPopoverOpen
                                 ? "border-[#C7A5FF] ring-4 ring-[#E2D9F8]"
-                                : "border-[#D0D5DD]"
+                                : "border-lightGrey"
                                 }`}>
                                 <span className="font-medium text-sm text-[#182230] ml-2">All</span>
                                 <Image
@@ -304,12 +299,12 @@ function Userdatabase() {
                                                     <p className="text-sm text-[#0C111D] font-normal">Edit details</p>
                                                 </button>
                                                 <button className=" flex flex-row items-center justify-start w-full py-[0.625rem] px-4 gap-2 hover:bg-[#F2F4F7]"
-                                                    onClick={openBan}>
+                                                    onClick={openRemove}>
                                                     <Image src='/icons/user-block-red-01.svg' alt="user profile" width={18} height={18} />
                                                     <p className="text-sm text-[#DE3024] font-normal">Ban</p>
                                                 </button>
                                                 <button className=" flex flex-row items-center justify-start w-full py-[0.625rem] px-4 gap-2 hover:bg-[#F2F4F7]"
-                                                    onClick={openDelete}>
+                                                    onClick={openRemove}>
                                                     <Image src='/icons/delete.svg' alt="user profile" width={18} height={18} />
                                                     <p className="text-sm text-[#DE3024] font-normal">Delete</p>
                                                 </button>
@@ -334,8 +329,7 @@ function Userdatabase() {
                     </div>
                 </div>
             </div>
-            {isBanOpen && <Ban onClose={closeBan} open={true} />}
-            {isDeleteOpen && <Delete onClose={closeDelete} open={true} />}
+            {isRemoveOpen && < Remove onClose={closeRemove} open={true} />}
             {/* Dialog Component */}
             <Dialog open={openDialog} onClose={closeDialog} className="relative z-50">
                 <DialogBackdrop className="fixed inset-0 bg-black/30" />
