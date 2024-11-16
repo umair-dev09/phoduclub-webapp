@@ -8,23 +8,45 @@ import { Popover, PopoverTrigger, PopoverContent } from '@nextui-org/popover';
 import Drawer from "react-modern-drawer";
 import "react-modern-drawer/dist/index.css";
 import { Switch } from "antd";
+import {DatePicker} from "@nextui-org/react";
+import { today, getLocalTimeZone} from "@internationalized/date";
+import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
+import { auth, db, storage } from "@/firebase";
+import { collection, doc, setDoc } from "firebase/firestore";
+import {toast} from 'react-toastify';
+
 // Define the props interface
 interface TestProps {
     isOpen: boolean;           // isOpen should be a boolean
     toggleDrawer: () => void;  // toggleDrawer is a function that returns void
+    courseId: string;
+    sectionId: string;
+
 }
-function Test({ isOpen, toggleDrawer }: TestProps) {
+function Text({ isOpen, toggleDrawer, sectionId, courseId }: TestProps) {
     // state for ReactQuill
-    const [value, setValue] = useState('');
     const quillRef = useRef<ReactQuill | null>(null); // Ref to hold ReactQuill instance
     const [quill, setQuill] = useState<Quill | null>(null);
     const [alignment, setAlignment] = useState<string | null>(null); // State to hold alignment
     const [isWriting, setIsWriting] = useState(false); // Track if text is being written
+    const [lessonHeading, setLessonHeading] = useState('');
+    const [lessonOverView, setLessonOverView] = useState('');
+    const [lessonContent, setLessonContent] = useState('');
+    const [pdfLink, setPdfLink] = useState<string | null>(null);
+    const [contentScheduleDate, setContentScheduleDate] = useState('');
+    const [disscusionOpen, setDisscusionOpen] = useState(false);
+    const [value, setValue] = useState(lessonContent);
+    const [fileName, setFileName] = useState<string | null>(null); // State to hold the file name
+    const [progress, setProgress] = useState<number | null>(null);
+    const [selectedFile, setSelectedFile] = useState<File | null>(null);
+    const [uploadTaskRef, setUploadTaskRef] = useState<any>(null); // State to hold the upload task reference
+
+    const isFormValid = lessonHeading && lessonOverView && lessonContent && contentScheduleDate;
 
     const handleChange = (content: string) => {
         setValue(content);
         checkTextContent(content);
-
+        setLessonContent(content);
     };
 
     const checkTextContent = (content: string) => {
@@ -88,10 +110,125 @@ function Test({ isOpen, toggleDrawer }: TestProps) {
         }
     };
     // -----------------------------------------------------------------------------------------------------------------------------------------------------
-    const [isChecked, setIsChecked] = useState(false);
 
     const togglebutton = (checked: boolean | ((prevState: boolean) => boolean)) => {
-        setIsChecked(checked);
+        setDisscusionOpen(checked);
+    };
+
+    const handleDragOver = (event: React.DragEvent<HTMLDivElement>) => {
+        event.preventDefault();
+        event.stopPropagation();
+    };
+
+    const handleDrop = (event: React.DragEvent<HTMLDivElement>) => {
+        event.preventDefault();
+        event.stopPropagation();
+      
+        const file = event.dataTransfer.files?.[0]; // Get the first dropped file
+        if (file) {
+          if (file.type === "application/pdf") { // Check if the file is a PDF
+            setFileName(file.name); // Set file name when a file is selected
+            setPdfLink(null); // Reset file URL until the upload is complete
+            try {
+              const storageRef = ref(storage, `CourseContentFiles/${courseId}/${sectionId}/${file.name}`);
+              const uploadTask = uploadBytesResumable(storageRef, file);
+              setUploadTaskRef(uploadTask); // Set the upload task reference
+      
+              setSelectedFile(file); // Store the selected file to access its size
+      
+              uploadTask.on(
+                "state_changed",
+                (snapshot) => {
+                  const progressPercentage = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                  setProgress(progressPercentage);
+                },
+                (error) => {
+                  console.error("Upload error:", error);
+                  setProgress(null);
+                },
+                async () => {
+                  const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
+                  setPdfLink(downloadURL);
+                  setProgress(null);
+                }
+              );
+            } catch (error) {
+              console.error("Error uploading file:", error);
+            }
+          } else {
+            console.error("Invalid file type. Only PDFs are allowed.");
+            alert("Please upload a valid PDF file.");
+          }
+        }
+      };
+      
+
+    const handlePdfUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+       
+        const file = event.target.files?.[0];
+        if(file){
+            setFileName(file.name); // Set file name when a file is selected
+            setPdfLink(null); // Reset file URL until the upload is complete
+            try {
+                const storageRef = ref(storage, `CourseContentFiles/${courseId}/${sectionId}/${file.name}`);
+                const uploadTask = uploadBytesResumable(storageRef, file);
+                setUploadTaskRef(uploadTask); // Set the upload task reference
+            
+                setSelectedFile(file); // Store the selected file to access its size
+            
+                uploadTask.on(
+                  "state_changed",
+                  (snapshot) => {
+                    const progressPercentage = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                    setProgress(progressPercentage);
+                  },
+                  (error) => {
+                    console.error("Upload error:", error);
+                    setProgress(null);
+                  },
+                  async () => {
+                    const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
+                    setPdfLink(downloadURL);
+                    // setFileType(type);
+                    setProgress(null);
+                  }
+                );
+              } catch (error) {
+                console.error("Error uploading file:", error);
+              }
+        }
+       
+    };
+
+    const handleSaveText = async () => {
+        try {
+            // Generate a unique section ID (Firestore will auto-generate if you use addDoc)
+            const newContentRef = doc(collection(db, 'course', courseId, 'sections', sectionId, 'content')); // No need for custom sectionId generation if using Firestore auto-ID
+            await setDoc(newContentRef, {
+              contentId: newContentRef.id,
+              type: 'Text',
+              lessonHeading: lessonHeading,
+              lessonOverView: lessonOverView,
+              lessonContent: lessonContent,
+              pdfLink: pdfLink ? pdfLink : null,
+              lessonScheduleDate: contentScheduleDate,
+              isDisscusionOpen: disscusionOpen,
+            });
+            toast.success('Test Content added!');
+            toggleDrawer();
+            setLessonHeading('');
+            setLessonOverView('');
+            setLessonContent('');
+            setPdfLink(null);
+            setProgress(null); // Reset progress
+            setFileName(null);
+            setContentScheduleDate('');
+            setDisscusionOpen(false);
+            setValue('');
+          } catch (error) {
+            console.error('Error adding content: ', error);
+          }
+        
     };
 
     return (
@@ -106,17 +243,18 @@ function Test({ isOpen, toggleDrawer }: TestProps) {
                 {/* Drawer content goes here */}
                 <div className="flex flex-col h-full pb-6"> {/* Change 1: Wrap everything in a flex column container */}
                     {/* Top Section - Fixed */}
-                    <div className="p-5 flex justify-between items-center h-[69px] w-full border-b-[1.5px] border-t-[1.5px] border-[#EAECF0] rounded-tl-[18px] rounded-tr-[16px]">
+                    <div className="p-5 flex justify-between items-center h-[69px] w-auto border-b-[1.5px] border-t-[1.5px] border-[#EAECF0] rounded-tl-[18px] rounded-tr-[16px]">
                         <span className="text-lg font-semibold text-[#1D2939]">Lesson</span>
-                        <div className={`w-[150px] h-[44px]  rounded-[8px] flex items-center justify-center flex-row gap-2  `}>
+                        <div className={`w-auto h-[44px]  rounded-[8px] flex items-center justify-center flex-row gap-4  `}>
                             <button
                                 onClick={toggleDrawer}
                                 className="w-[103px] h-[40px] flex items-center justify-center text-sm  border border-solid border-[#EAECF0] font-semibold text-[#1D2939] rounded-[8px] p-4 ">
                                 Cancel
                             </button>
                             <button
-                                onClick={toggleDrawer}
-                                className="w-[88px] h-[40px] flex items-center justify-center text-sm shadow-inner-button bg-[#8501FF] border border-solid border-[#9012FF] font-semibold text-[#FFFFFF] rounded-md p-4 ">
+                                onClick={handleSaveText}
+                                disabled={!isFormValid}
+                                className={`w-[90px] h-[40px] flex items-center justify-center text-sm shadow-inner-button ${!isFormValid ? 'bg-[#CDA0FC]' : 'bg-[#9012FF]'} border border-solid border-white font-semibold text-[#FFFFFF] rounded-md p-4 `}>
                                 Save
                             </button>
                         </div>
@@ -133,18 +271,17 @@ function Test({ isOpen, toggleDrawer }: TestProps) {
                                          transition duration-200 ease-in-out "
                                     placeholder="Lesson"
                                     type="text"
+                                    value={lessonHeading}
+                                    onChange={(e) => setLessonHeading(e.target.value)} 
                                 />
                             </div>
                             <div className="flex flex-col gap-2">
                                 <span className='text-[#1D2939] text-sm font-semibold '>Lesson Overview</span>
-                                <input
-                                    className="font-normal pl-3  text-[#1D2939] text-sm placeholder:text-[#A1A1A1] rounded-md placeholder:font-normal min-h-[80px] max-h-[150px] overflow-y-auto 
-                                           focus:outline-none focus:ring-0 
-                              border border-solid border-[#D0D5DD] h-[88px] 
-                               shadow-[0px_1px_2px_0px_rgba(16,24,40,0.05)] 
-                                 transition duration-200 ease-in-out "
-                                    placeholder="overview"
-                                    type="text"
+                                <textarea
+                                    className="w-full h-auto py-2 px-3 min-h-[100px] text-sm text-[#1D2939] placeholder:text-[#A1A1A1] border border-[#D0D5DD] rounded-md focus:outline-none focus:ring-0 resize-none break-all max-h-[120px] "
+                                    placeholder="Overview"
+                                    value={lessonOverView}
+                                    onChange={(e) => setLessonOverView(e.target.value)} 
                                 />
                             </div>
                             {/* Description of Courses */}
@@ -217,7 +354,10 @@ function Test({ isOpen, toggleDrawer }: TestProps) {
                             {/* Upload the Image */}
                             <div className=" flex flex-col gap-2">
                                 <span className="text-[#1D2939] font-semibold text-sm">Upload PDF</span>
-                                <div className="h-[148px] rounded-xl bg-[#F9FAFB] border-2 border-dashed border-[#D0D5DD]">
+                                {!fileName &&(
+                                <div className="h-[148px] rounded-xl bg-[#F9FAFB] border-2 border-dashed border-[#D0D5DD]"
+                                onDragOver={handleDragOver}
+                                onDrop={handleDrop}>
                                     <button className="flex flex-col items-center justify-center gap-4 h-full w-full">
                                         <div className="flex flex-col items-center">
                                             <div className="h-10 w-10 rounded-md border border-solid border-[#EAECF0] bg-[#FFFFFF] p-[10px]">
@@ -229,67 +369,99 @@ function Test({ isOpen, toggleDrawer }: TestProps) {
                                                 />
                                             </div>
                                         </div>
-                                        <span className="text-sm font-semibold text-[#9012FF]">
-                                            Click to upload <span className="text-[#182230] text-sm font-medium">or drag and drop</span>
-                                        </span>
+                                        <div className="flex gap-1">
+                                        <label className="font-semibold text-sm text-[#9012FF] hover:text-black cursor-pointer">
+                                            <input
+                                                type="file"
+                                                id="upload"
+                                                className="hidden"
+                                                accept=".pdf"
+                                                onChange={handlePdfUpload}
+                                            />
+                                            Click to upload
+                                        </label>
+                                        <span className="text-[#182230] text-sm font-medium">or drag and drop</span>
+                                    </div>
                                     </button>
                                 </div>
-                                <div className="border border-solid border-[#EAECF0] rounded-md h-[58px] flex flex-row justify-between items-center px-4">
-                                    <div className="flex flex-row gap-2 items-center">
-                                        <Image src='/icons/pdf-icon.svg' alt="PDF" width={42} height={30} />
-                                        <span className="text-[#1D2939] font-normal text-sm ">chapter 01.pdf</span>
+                                )}
+                               
+                                {fileName && (
+                                 <div className="border border-solid border-[#EAECF0] rounded-md h-[58px] flex flex-row justify-between items-center px-4">
+                                 <div className="flex flex-row  items-center">
+                                     <Image className="w-[40px] h-[32px]" src='/icons/pdf-icon.svg' alt="PDF" width={42} height={20} />
+                                     <span className="text-[#1D2939] font-normal text-sm ">{fileName}</span>
+                                 </div>
+                                 <div className="flex flex-row gap-3 items-center">
+                                    {progress === 100 && (
+                                    <div className="flex relative w-6 h-6 items-center justify-center">
+                                    <svg className="absolute top-0 left-0 w-full h-full transform -rotate-90" viewBox="0 0 36 36">
+                                        <path
+                                        className="text-gray-300"
+                                        strokeLinecap="round"
+                                        fill="none"
+                                        strokeWidth="3"
+                                        stroke="currentColor"
+                                        d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                                        />
+                                        <path
+                                        className="text-[#9012FF]" // Change color to purple
+                                        strokeLinecap="round"
+                                        fill="none"
+                                        strokeWidth="3"
+                                        strokeDasharray={`${progress}, 100`}
+                                        stroke="currentColor"
+                                        d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                                        />
+                                    </svg>
                                     </div>
-                                    <Image src='/icons/delete.svg' alt="delete" width={18} height={18} />
-                                </div>
+                                    )}   
+                                
+                                 <button onClick={() => {
+                                    if (uploadTaskRef) {
+                                    uploadTaskRef.cancel(); // Cancel the upload if it is ongoing
+                                    setProgress(null); // Reset progress
+                                    }
+                                    setPdfLink(null);
+                                    setFileName(null); // Reset file name on cancel
+                                }}> 
+                                <Image 
+                                src="/icons/delete.svg"
+                                alt="cancel icon"
+                                width={14}
+                                height={14}
+                                className="w-[16px] h-[16px]"/>
+                            </button>
+                                 </div>
+                             </div>
+                                )}
+                               
                             </div>
+                            <div className="flex flex-col gap-2 mb-3 mt-1">
                             <span className="text-[#1D2939] font-semibold text-sm">Schedule Lesson</span>
-                            <div className="flex flex-row w-full gap-4">
-                                <div className="flex flex-col gap-1 w-1/2 flex-grow">
-                                    <label htmlFor="discount-price" className="text-[#1D2939] text-sm font-medium">Date</label>
-                                    <div className="flex flex-row py-2 px-4 w-full gap-2 border border-solid border-[#D0D5DD] rounded-md transition duration-200 ease-in-out ">
-                                        <Image
-                                            src="/icons/select-date.svg"
-                                            width={24}
-                                            height={24}
-                                            alt="calender " />
-                                        <input
-
-                                            className="w-full text-sm font-medium text-[#1D2939] placeholder:font-normal placeholder:text-[#A1A1A1] rounded-md outline-none"
-                                            type="text"
-                                            placeholder="Date"
-
-                                        />
-                                    </div>
-                                </div>
-                                <div className="flex flex-col gap-1 w-1/2 flex-grow">
-                                    <label htmlFor="discount-price" className="text-[#1D2939] text-sm font-medium">Time</label>
-                                    <div className="flex flex-row py-2 px-4 w-full gap-2 border border-solid border-[#D0D5DD] rounded-md transition duration-200 ease-in-out ">
-                                        <Image
-                                            src="/icons/clock-01.svg"
-                                            width={24}
-                                            height={24}
-                                            alt="clock " />
-                                        <input
-
-                                            className="w-full text-sm font-medium text-[#1D2939] placeholder:font-normal placeholder:text-[#A1A1A1] rounded-md outline-none"
-                                            type="text"
-                                            placeholder="TIme"
-
-                                        />
-                                    </div>
-                                </div>
+                            <DatePicker 
+                                    granularity="minute" 
+                                    minValue={today(getLocalTimeZone())}
+                                    showMonthAndYearPickers
+                                    onChange={(date) => {
+                                        // Convert the date object to a string in your desired format
+                                        const dateString = date ? date.toString() : ""; // Customize format if needed
+                                        setContentScheduleDate(dateString);
+                                    }}
+                                /> 
                             </div>
+                            
                             <div className="flex flex-row justify-between border border-solid border-[#EAECF0] h-12 p-3 bg-[#F9FAFB] rounded-md">
                                 <span className="text-[#1D2939] font-semibold text-sm">Discussion forum</span>
                                 <div className="flex flex-row gap-3">
                                     <span className="text-sm font-medium text-[#344054]">Close</span>
                                     <Switch
-                                        checked={isChecked}
+                                        checked={disscusionOpen}
                                         onChange={togglebutton}
                                         checkedChildren=""  // You can leave it empty or add any icon/text
                                         unCheckedChildren=""
                                         style={{
-                                            backgroundColor: isChecked ? '#8501FF' : '#D0D5DD',
+                                            backgroundColor: disscusionOpen ? '#8501FF' : '#D0D5DD',
                                         }}
                                     />
                                     <span className="text-sm font-medium text-[#667085]">Open</span>
@@ -306,4 +478,4 @@ function Test({ isOpen, toggleDrawer }: TestProps) {
         </div>
     )
 }
-export default Test;
+export default Text;

@@ -4,10 +4,13 @@ import { useState } from "react";
 import Image from "next/image";
 import Drawer from "react-modern-drawer";
 import "react-modern-drawer/dist/index.css";
-// import Quizinfo from "./Quizinfo";
+import Quizinfo from "./Quizinfo";
 import Questions from "./Questions";
 import Review from "./Review";
 import Schedule from "./Schedule";
+import { auth, db, storage } from "@/firebase";
+import { collection, doc, setDoc } from "firebase/firestore";
+import {toast} from 'react-toastify';
 // Define interfaces for question options and structure
 interface Options {
     A: string;
@@ -22,6 +25,7 @@ interface Question {
     options: Options;
     correctAnswer: string | null;
     explanation: string;
+    questionId: string;
 }
 // Define an enum for the steps
 enum Step {
@@ -36,46 +40,54 @@ enum Step {
 interface QuizProps {
     isOpen: boolean;           // isOpen should be a boolean
     toggleDrawer: () => void;  // toggleDrawer is a function that returns void
+    courseId: string;
+    sectionId: string;
 }
-function Quiz({ isOpen, toggleDrawer }: QuizProps) {
-    const [isPublished, setIsPublished] = useState(false); // New state to track if the quiz is published
+function Quiz({ isOpen, toggleDrawer, courseId, sectionId }: QuizProps) {
+
+    const [marksPerQ, setMarksPerQ] = useState("");
+    const [nMarksPerQ, setnMarksPerQ] = useState("");
+    const [timeNumber, setTimeNumber] = useState("");
+    const [timeText, setTimeText] = useState("Minute(s)");
+    const [quizScheduleDate, setQuizScheduleDate] = useState("");
+    const [quizName, setQuizName] = useState<string>('');
+    const [quizDescription, setQuizDescription] = useState<string>('');
+    const [anyQuestionAdded, setAnyQuestionAdded] = useState<string>('');
 
     // Validation function to check if all fields are filled
     const [currentStep, setCurrentStep] = useState<Step>(Step.QuizInfo);
     // Add questionsList state here
-    const [questionsList, setQuestionsList] = useState<Question[]>([{
-        question: '',
-        isChecked: false,
-        isActive: false,
-        options: { A: '', B: '', C: '', D: '' },
-        correctAnswer: null,
-        explanation: ''
-    }]);
+    const [questionsList, setQuestionsList] = useState<Question[]>([]);
 
-    const [quizName, setQuizName] = useState<string>('');
-    const [quizDescription, setQuizDescription] = useState<string>('');
+   
     // Validation function to check if all fields are filled for the Questions step
     const isFormValid = () => {
         if (currentStep === Step.QuizInfo) {
             return quizName.trim() !== '' && quizDescription.trim() !== '';
         }
-        return questionsList.every(question =>
-            question.question.trim() !== '' &&
-            question.options.A.trim() !== '' &&
-            question.options.B.trim() !== '' &&
-            question.options.C.trim() !== '' &&
-            question.options.D.trim() !== '' &&
-            question.correctAnswer !== null &&
-            question.explanation.trim() !== ''
-        );
+        else if(currentStep === Step.Schedule){
+            return marksPerQ.trim() !== '' && quizScheduleDate.trim() !== '' && nMarksPerQ.trim() !== '' && timeNumber.trim() !== '' && timeText.trim() !== '' ;
+        }
+            
+         return anyQuestionAdded !== '' && questionsList.every(question =>
+                question.question.trim() !== '' &&
+                question.options.A.trim() !== '' &&
+                question.options.B.trim() !== '' &&
+                question.options.C.trim() !== '' &&
+                question.options.D.trim() !== '' &&
+                question.correctAnswer !== null &&
+                question.explanation.trim() !== ''
+            );  
+        
+        
     };
 
     const isNextButtonDisabled = !isFormValid();
 
+    const isSaveValid = marksPerQ && nMarksPerQ && timeNumber && timeText && quizScheduleDate && quizName && quizDescription;
+
     const handleNextClick = () => {
-        if (currentStep === Step.Schedule) {
-            setIsPublished(true); // Set quiz as published
-        } else if (currentStep < Step.Schedule) {
+        if (currentStep < Step.Schedule) {
             setCurrentStep(currentStep + 1);
         }
     };
@@ -89,32 +101,36 @@ function Quiz({ isOpen, toggleDrawer }: QuizProps) {
     const renderStepContent = () => {
         switch (currentStep) {
             case Step.QuizInfo:
-                // return (
-                //     <Quizinfo
-                //         quizName={quizName}
-                //         setQuizName={setQuizName}
-                //         quizDescription={quizDescription}
-                //         setQuizDescription={setQuizDescription}
-                //     />
-                // );
+                return (
+                    <Quizinfo
+                        quizName={quizName}
+                        setQuizName={setQuizName}
+                        quizDescription={quizDescription}
+                        setQuizDescription={setQuizDescription}
+                    />
+                );
             case Step.Questions:
                 return (
                     <Questions
                         questionsList={questionsList}
                         setQuestionsList={setQuestionsList}
+                        anyQuestionAdded={anyQuestionAdded}
+                        setAnyQuestionAdded={setAnyQuestionAdded}
                     />
                 );
+
             case Step.Review:
                 return <Review questionsList={questionsList} />;
+
             case Step.Schedule:
-                return <Schedule />;
+                return <Schedule marksPerQ={marksPerQ} setMarksPerQ={setMarksPerQ} nMarksPerQ={nMarksPerQ} setnMarksPerQ={setnMarksPerQ} timeNumber={timeNumber} setTimeNumber={setTimeNumber} timeText={timeText} setTimeText={setTimeText} quizScheduleDate={quizScheduleDate} setQuizScheduleDate={setQuizScheduleDate}/>;
 
             default:
-                // return <Quizinfo
-                //     quizName={quizName}
-                //     setQuizName={setQuizName}
-                //     quizDescription={quizDescription}
-                //     setQuizDescription={setQuizDescription} />;
+                return <Quizinfo
+                    quizName={quizName}
+                    setQuizName={setQuizName}
+                    quizDescription={quizDescription}
+                    setQuizDescription={setQuizDescription} />;
         }
     };
 
@@ -127,6 +143,86 @@ function Quiz({ isOpen, toggleDrawer }: QuizProps) {
             return "border-2 border-[#D0D5DE]";
         }
     };
+    
+    const handleSaveClick = async () => {
+        try {
+            // Generate a unique section ID (Firestore will auto-generate if you use addDoc)
+            // const newContentRef = doc(collection(db, 'course', courseId, 'sections', sectionId, 'content')); 
+            const newContentRef = doc(collection(db, 'course', courseId, 'sections', sectionId, 'content'));
+
+            const quizData = {
+                contentId: newContentRef.id,
+                type: 'Quiz',
+                lessonHeading: quizName,
+                lessonOverView: quizDescription, 
+                lessonScheduleDate: quizScheduleDate,
+                quizTime: timeNumber + " " + timeText,
+                marksPerQuestion: marksPerQ,
+                nMarksPerQuestion: nMarksPerQ,
+            };
+
+            await setDoc(newContentRef, quizData);
+
+            for (let question of questionsList) {
+                const questionRef = doc(collection(newContentRef, "Questions"));
+                const questionId = questionRef.id;
+
+                const options = {
+                    A: question.options.A,
+                    B: question.options.B,
+                    C: question.options.C,
+                    D: question.options.D,
+                };
+
+                let correctAnswer;
+                switch (question.correctAnswer) {
+                    case "A":
+                        correctAnswer = 'A';
+                        break;
+                    case "B":
+                        correctAnswer = 'B';
+                        break;
+                    case "C":
+                        correctAnswer = 'C';
+                        break;
+                    case "D":
+                        correctAnswer = 'D';
+                        break;
+                    default:
+                        correctAnswer = null;
+                }
+
+                const questionData = {
+                    questionId,
+                    question: question.question,
+                    options,
+                    correctAnswer,
+                    answerExplanation: question.explanation,
+                };
+
+                await setDoc(questionRef, questionData);
+            }
+
+
+            toast.success('Quiz added!');
+            toggleDrawer();
+            setCurrentStep(0);
+            setQuizName('');
+            setQuizDescription('');
+            setMarksPerQ('');
+            setnMarksPerQ('');
+            setQuizScheduleDate('');
+            setTimeNumber('');
+            setTimeText('Minute(s)');
+            setQuestionsList([]);
+            setAnyQuestionAdded('');
+          } catch (error) {
+            console.error('Error adding quiz: ', error);
+          }
+
+     
+    };
+
 
     return (
         <div>
@@ -142,15 +238,16 @@ function Quiz({ isOpen, toggleDrawer }: QuizProps) {
                     {/* Top Section - Fixed */}
                     <div className="p-5 flex justify-between items-center h-[69px] w-full border-b-[1.5px] border-t-[1.5px] border-[#EAECF0] rounded-tl-[18px] rounded-tr-[16px]">
                         <span className="text-lg font-semibold text-[#1D2939]">Lesson</span>
-                        <div className={`w-[150px] h-[44px]  rounded-[8px] flex items-center justify-center flex-row gap-2  `}>
+                        <div className={`w-auto h-[44px]  rounded-[8px] flex items-center justify-center flex-row gap-3  `}>
                             <button
                                 onClick={toggleDrawer}
                                 className="w-[103px] h-[40px] flex items-center justify-center text-sm  border border-solid border-[#EAECF0] font-semibold text-[#1D2939] rounded-[8px] p-4 ">
                                 Cancel
                             </button>
                             <button
-                                onClick={toggleDrawer}
-                                className="w-[88px] h-[40px] flex items-center justify-center text-sm shadow-inner-button bg-[#8501FF] border border-solid border-[#9012FF] font-semibold text-[#FFFFFF] rounded-md p-4 ">
+                                onClick={handleSaveClick}
+                                disabled={!isSaveValid}
+                                className={`w-[90px] h-[40px] flex items-center justify-center text-sm shadow-inner-button ${!isSaveValid ? 'bg-[#CDA0FC]' : 'bg-[#9012FF]'} border border-solid border-white font-semibold text-[#FFFFFF] rounded-md p-4 `}>
                                 Save
                             </button>
                         </div>
@@ -198,20 +295,25 @@ function Quiz({ isOpen, toggleDrawer }: QuizProps) {
                                                 <span className="text-[#1D2939] font-semibold text-sm">Previous</span>
                                             </button>
                                         )}
+
+                                        {currentStep < Step.Schedule && (
                                         <button
-                                            className={`h-[44px] w-[135px] rounded-md shadow-inner-button border border-solid 
-                                    ${isNextButtonDisabled
-                                                    ? 'text-white bg-[#8501FF] border-[#800EE2] opacity-35 cursor-not-allowed'
-                                                    : 'text-white bg-[#8501FF] border-[#800EE2] hover:bg-[#7001D1]'
-                                                }
-                                    flex items-center justify-center transition-colors`}
-                                            onClick={handleNextClick}
-                                            disabled={isNextButtonDisabled}
+                                        className={`h-[44px] w-[135px] rounded-md shadow-inner-button border border-solid 
+                                        ${isNextButtonDisabled
+                                                ? 'text-white bg-[#8501FF] border-[#800EE2] opacity-35 cursor-not-allowed'
+                                                : 'text-white bg-[#8501FF] border-[#800EE2] hover:bg-[#7001D1]'
+                                            }
+                                        flex items-center justify-center transition-colors`}
+                                        onClick={handleNextClick}
+                                        disabled={isNextButtonDisabled}
                                         >
-                                            <span className={`font-semibold text-sm ${isNextButtonDisabled ? 'text-[#9CA3AF]' : 'text-[#FFFFFF]'}`}>
-                                                {currentStep === Step.Schedule ? "" : "Next"}
-                                            </span>
+                                        <span className={`font-semibold text-sm ${isNextButtonDisabled ? 'text-[#9CA3AF]' : 'text-[#FFFFFF]'}`}>
+                                            {currentStep === Step.Schedule ? "" : "Next"}
+                                        </span>
                                         </button>
+                                        )}
+
+                                     
                                     </div>
                                 </div>
                             </div>

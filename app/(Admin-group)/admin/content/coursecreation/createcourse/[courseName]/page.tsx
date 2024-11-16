@@ -1,63 +1,117 @@
 "use client";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import Image from "next/image";
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import CourseContent from "@/components/AdminComponents/CourseMangement/CourseContent";
 import StudentsPurchased from "@/components/AdminComponents/CourseMangement/StudentsPurchased";
-
+import { getDoc, doc } from "firebase/firestore";
+import { db } from "@/firebase"; // Adjust the path based on your project setup
+import LoadingData from "@/components/Loading";
+import { toast, ToastContainer } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
 type priceprops ={
     Price: number;
     Discountprice: number;
-
-
 }
 
-function courses() {
+type CourseData = {
+    courseName: string | null;
+    courseDescription: string | null;
+    courseImage: string | null;
+    price: string | null;
+    discountPrice: string | null;
+    rating: string | null;
+    noOfRating: string | null;
+    status: string | null;
+}; 
 
-    const [isprice, setIsprice] = useState("");
+const StarIcon: React.FC<{ filled: boolean; isHalf: boolean }> = ({ filled, isHalf }) => (
+    <Image
+        src={filled ? (isHalf ? "/icons/half-star.svg" : "/icons/full-star.svg") : "/icons/empty-star.svg"}
+        width={20}
+        height={20}
+        alt={isHalf ? "half star" : filled ? "full star" : "empty star"}
+    />
+);
 
-    const router = useRouter();
-    // this logic is for rating 
-    interface StarIconProps {
-        filled: boolean;
-        isHalf: boolean;
-    }
-    const StarIcon: React.FC<StarIconProps> = ({ filled, isHalf }) => (
-        <Image
-            src={filled ? (isHalf ? "/icons/half-star.svg" : "/icons/full-star.svg") : "/icons/empty-star.svg"}
-            width={20}
-            height={20}
-            alt={isHalf ? "half star" : filled ? "full star" : "empty star"}
-        />
+const totalStars = 5;
+
+const RatingStars: React.FC<{ rating: string | null }> = ({ rating }) => {
+    // Parse rating and ensure it's a valid number
+    const parsedRating = parseFloat(rating || "0");
+    const wholeStars = Math.floor(parsedRating); // Count of full stars
+    const hasHalfStar = parsedRating % 1 >= 0.1 && parsedRating % 1 < 0.9; // Half star condition
+    const emptyStars = totalStars - wholeStars - (hasHalfStar ? 1 : 0); // Remaining empty stars
+
+    return (
+        <div className="flex items-center">
+            {/* Render full stars */}
+            {[...Array(wholeStars)].map((_, index) => (
+                <StarIcon key={`filled-${index}`} filled={true} isHalf={false} />
+            ))}
+
+            {/* Render half star if applicable */}
+            {hasHalfStar && <StarIcon filled={true} isHalf={true} />}
+
+            {/* Render empty stars */}
+            {[...Array(emptyStars)].map((_, index) => (
+                <StarIcon key={`empty-${index}`} filled={false} isHalf={false} />
+            ))}
+        </div>
     );
-    const rating = 1.5; // The rating value
-    const totalStars = 5;
+};
+
+
+function courses() {
+    const [isprice, setIsprice] = useState("");
+    const searchParams = useSearchParams();
+    const courseId = searchParams.get('cId');
+    const router = useRouter();
+    const [courseData, setCourseData] = useState<CourseData | null>(null); 
+    const [loading, setLoading] = useState(true); // Track loading state
+   
     // ----------------------------------------------------------------------------------------
     const [activeTab, setActiveTab] = useState('CourseContent');
 
     const handleTabClick = (tabName: React.SetStateAction<string>) => {
         setActiveTab(tabName);
     };
+
+ // Fetch course data from Firestore
+ useEffect(() => {
+    if (courseId) {
+        const fetchCourseData = async () => {
+            try {
+                const courseDocRef = doc(db, "course", courseId); // Replace "courses" with your Firestore collection name
+                const courseSnapshot = await getDoc(courseDocRef);
+                if (courseSnapshot.exists()) {
+                    setCourseData(courseSnapshot.data() as CourseData);
+                } else {
+                    console.error("No course found with the given ID.");
+                }
+            } catch (error) {
+                console.error("Error fetching course data:", error);
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchCourseData();
+    } else {
+        setLoading(false);
+    }
+}, [courseId]);
+
+if(loading){
+    return <LoadingData />
+} 
+
     return (
         <div className="px-[32px] pt-[25px] w-full h-auto overflow-y-auto pb-24 flex flex-col gap-5 ">
-            {/* BreadCrumbs */}
-            <div className="flex items-center">
-                <button className="flex items-center ml-1" onClick={() => router.back()}>
-                    <div className="text-[#1D2939] h-[24px] w-auto text-[16px] font-semibold">
-                        Courses
-                    </div>
-                    <div className="ml-3 w-[24px]">
-                        <Image src="/icons/course-left.svg" width={6} height={12} alt="left-arrow" />
-                    </div>
-                </button>
-                <div className="text-[#667085] h-full w-auto -ml-1 text-[16px] font-semibold">
-                    BITSET Full Course
-                </div>
-            </div>
             {/* Course content */}
             <div className="bg-[#FFFFFF] p-6 border border-solid border-[#EAECF0] rounded-[16px] flex flex-row  gap-6 h-auto">
                 <Image
-                    src="/icons/image.png"
+                  className="w-[440px] h-[280px] rounded-[16px]"
+                    src={courseData?.courseImage || "/icons/image.png"}
                     width={437}
                     height={271}
                     alt="left-arrow" />
@@ -65,7 +119,7 @@ function courses() {
                     <div className="flex flex-row justify-between items-center h-[40px]">
                         <div className="bg-[#F2F4F7] py-2 px-3 gap-1 flex flex-row rounded-[6px] items-center h-6">
                             <span className="w-[6px] h-[6px] bg-[#182230] rounded-full "></span>
-                            <span className="font-medium text-[#182230] text-xs">Saved</span>
+                            <span className="font-medium text-[#182230] text-xs">{courseData?.status}</span>
                         </div>
                         <div className="flex flex-row gap-2">
                             <button className="w-auto p-3 gap-2 flex-row flex bg-[#FFFFFF] border border-solid border-[#EAECF0] rounded-[8px] h-[40px] items-center"
@@ -82,26 +136,18 @@ function courses() {
                             </button>
                         </div>
                     </div>
-                    <span className="text-[#1D2939] font-bold text-lg">BITSET Full Course</span>
-                    <div className=' text-[#667085] text-sm font-normal '>
-                        <p>The BITSET Full Course is designed to provide students with an in-depth understanding of bit manipulation techniques and the use of bitsets in data structures.</p>
-                    </div>
+                    <span className="text-[#1D2939] font-bold text-lg">{courseData?.courseName}</span>
+                    <div className=' text-[#667085] text-sm font-normal ' dangerouslySetInnerHTML={{
+                    __html: courseData?.courseDescription || '',
+                }}/>
                     {/* this code below is for rating  */}
                     <div className="flex items-center gap-2 flex-row h-[24px] ">
-                        <div className="flex items-center">
-                            {[...Array(Math.floor(rating))].map((_, index) => (
-                                <StarIcon key={`filled-${index}`} filled={true} isHalf={false} />
-                            ))}
-                            {rating % 1 >= 0.5 && <StarIcon filled={true} isHalf={true} />}
-                            {[...Array(totalStars - Math.ceil(rating))].map((_, index) => (
-                                <StarIcon key={`empty-${index}`} filled={false} isHalf={false} />
-                            ))}
-                        </div>
+                      <RatingStars rating={courseData?.rating || ''} />
                         <div className="text-[#1D2939] text-sm font-bold flex items-center flex-row">
-                            {rating.toFixed(1)}
+                            {courseData?.rating || 0}
                             <span className="text-[#1D2939] font-normal text-sm ml-1">
                                 <span className="flex items-center">
-                                    <span className="inline-block">({`500+`}</span>
+                                    <span className="inline-block">({courseData?.noOfRating + '+'}</span>
                                     <span className="inline-block">Ratings)</span>
                                 </span>
                             </span>
@@ -109,14 +155,20 @@ function courses() {
                     </div>
                     <div className="flex flex-row gap-3 items-center">
                         <div className="text-[#1D2939] text-2xl font-bold">
-                            ₹ 3,499
+                        ₹{courseData?.discountPrice && new Intl.NumberFormat('en-IN').format(parseFloat(courseData.discountPrice))}
                         </div>
                         <div className="text-[#667085] text-base font-normal line-through">
-                            ₹ 7,499
+                        ₹{courseData?.price && new Intl.NumberFormat('en-IN').format(parseFloat(courseData.price))}
                         </div>
-                        <div className="bg-[#DB6704] w-[76px] h-[25px] flex items-center justify-center rounded-full text-white text-xs font-semibold">
-                            86% off
-                        </div>
+                        {courseData?.price && courseData?.discountPrice && (
+                            <div className="bg-[#DB6704] w-[76px] h-[25px] flex items-center justify-center rounded-full text-white text-xs font-semibold">
+                                {`${Math.round(
+                                    ((parseFloat(courseData.price) - parseFloat(courseData.discountPrice)) /
+                                        parseFloat(courseData.price)) *
+                                        100
+                                )}% off`}
+                            </div>
+                        )}
                     </div>
                 </div>
             </div>
@@ -127,7 +179,7 @@ function courses() {
                             onClick={() => handleTabClick('CourseContent')}
                             className={`relative py-2 pr-4 text-base transition  text-[16px] font-semibold duration-200 ${activeTab === 'CourseContent' ? 'text-[#7400E0]' : 'text-[#667085] hover:text-[#7400E0]'
                                 } focus:outline-none`}>
-                            CourseContent
+                            Course Content
                         </button>
                     </div>
                     <div className="pt-[10px]">
@@ -135,7 +187,7 @@ function courses() {
                             onClick={() => handleTabClick('StudentsPurchased ')}
                             className={`relative py-2 px-4 text-base transition text-[16px] font-semibold duration-200 ${activeTab === 'StudentsPurchased ' ? 'text-[#7400E0]' : 'text-[#667085] hover:text-[#7400E0]'
                                 } focus:outline-none`}>
-                            StudentsPurchased
+                            Students Purchased
                             <span
                                 className="ml-2 px-2 py-[0px] text-[#9012FF] bg-[#EDE4FF] rounded-full relative"
                                 style={{ fontSize: '14px', fontWeight: '500', minWidth: '24px', textAlign: 'center', top: '-1px' }}
@@ -156,7 +208,7 @@ function courses() {
             </div>
             {activeTab === 'CourseContent' && (
                 <div>
-                    <CourseContent />
+                    <CourseContent courseId={courseId || ''}/>
                 </div>
             )}
             {activeTab === 'StudentsPurchased ' && (
@@ -165,7 +217,7 @@ function courses() {
                 </div>
             )}
 
-
+        <ToastContainer/>
         </div>
     )
 }

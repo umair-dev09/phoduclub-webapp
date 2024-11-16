@@ -11,7 +11,7 @@ interface Question {
     question: string;
     isChecked: boolean;
     isActive: boolean;
-    options: Options;
+    options: Options; 
     correctAnswer: string | null;
     explanation: string;
     questionId: string;
