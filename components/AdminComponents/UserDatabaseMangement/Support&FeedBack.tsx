@@ -23,14 +23,10 @@ function SupportAndFeedBack() {
                 </div>
                 <p className="font-semibold text-[#1D2939] text-lg px-8">Support & Feedback</p>
             </div>
-
-
             <div>
                 <Queries />
             </div>
-
         </div>
-
     )
 }
 export default SupportAndFeedBack;

@@ -149,7 +149,6 @@ function TestSeriesInfo() {
                         focus:font-medium"
                         placeholder="Quiz Name"
                         type="text"
-
                     />
                 </div>
 

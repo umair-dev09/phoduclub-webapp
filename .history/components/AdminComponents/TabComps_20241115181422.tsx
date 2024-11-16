@@ -80,6 +80,7 @@ function TabComps() {
     //         {isCollapsed && <span className="tooltipText">{label}</span>}
     //     </div>
     // );
+
     const renderButtonWith = (
         label: string,
         icon: string,
@@ -88,49 +89,27 @@ function TabComps() {
         onClick: () => void
     ) => (
         <div className="relative group">
-            {isCollapsed ? (
-                <Tooltip
-                    content={label}
-                    placement="right"
-                    offset={15}
-                    closeDelay={100}
-                    classNames={{
-                        content: [
-                            "bg-[#222222] text-white text-sm py-2 px-4 rounded-md",
-                        ],
-                    }}
-                >
-                    <button
-                        onClick={onClick}
-                        className={`flex w-full py-2 px-3 text-[14px] text-left font-normal rounded-md mb-2 transition-all 
-                        ${isActive ? 'bg-[#7400E0] text-white' : 'hover:bg-[#e1ffe11a] text-[#AAAAAA]'}`}
-                    >
-                        <Image
-                            src={isActive ? activeIcon : icon}
-                            width={22}
-                            height={22}
-                            alt={`${label} Icon`}
-                        />
-                    </button>
-                </Tooltip>
-            ) : (
-                <button
-                    onClick={onClick}
-                    className={`flex w-full py-2 px-3 text-[14px] text-left font-normal rounded-md mb-2 transition-all h-11 overflow-hidden
-                    ${isActive ? 'bg-[#7400E0] text-white' : 'hover:bg-[#e1ffe11a] text-[#AAAAAA]'}`}
-                >
-                    <Image
-                        src={isActive ? activeIcon : icon}
-                        width={22}
-                        height={22}
-                        alt={`${label} Icon`}
-                    />
-                    {!isCollapsed && <span className="ml-2">{label}</span>}
-                </button>
+            <button
+                onClick={onClick}
+                className={`flex w-full py-2 px-3 text-[14px] text-left font-normal rounded-md mb-2 transition-all 
+                ${isActive ? 'bg-[#7400E0] text-white' : 'hover:bg-[#e1ffe11a] text-[#AAAAAA]'}`}
+            >
+                <Image
+                    src={isActive ? activeIcon : icon}
+                    width={22}
+                    height={22}
+                    alt={`${label} Icon`}
+                />
+                {!isCollapsed && <span className="ml-2">{label}</span>}
+            </button>
+            {/* Tooltip */}
+            {isCollapsed && (
+                <span className="absolute left-16 top-1/2 -translate-y-1/2 bg-[#222222] text-white text-sm py-2 px-4 rounded-md opacity-0 group-hover:opacity-100 transition-opacity z-10 whitespace-nowrap">
+                    {label}
+                </span>
             )}
         </div>
     );
-
 
     return (
         <div className={`flex flex-col relative transition-all duration-[500ms] ease-in-out ${isCollapsed ? 'w-[3.5rem]' : 'w-[16rem]'} pl-2 py-[0.625rem] bg-[#131313]`}>
@@ -161,51 +140,49 @@ function TabComps() {
             {/* Content Section with Collapsible Menu */}
             <Collapsible
                 trigger={
-                    <Tooltip content="Content" placement='right' offset={15} closeDelay={100}
-                        classNames={{
-                            content: [
-                                "bg-[#222222] text-white text-sm py-2 px-4 rounded-md",
-                            ],
-                        }}>
-                        <div
-                            className={`flex items-center justify-between w-full relative group mb-2 py-2 px-3  h-11 overflow-hidden rounded-md ${isContentSection()
-                                ? 'bg-[#7400E0] text-white'
-                                : 'hover:bg-[#e1ffe11a] text-[#AAAAAA]'
-                                }`}
-                            onClick={() => toggleCollapsible(0)}
-                        >
-                            {/* Left section: Icon and label */}
-                            <div className="flex items-center">
-                                <Image
-                                    src={
-                                        isContentSection()
-                                            ? '/icons/admin-content.svg'
-                                            : '/icons/admin-content-2.svg'
-                                    }
-                                    width={22}
-                                    height={22}
-                                    alt="Content"
-                                />
-                                {!isCollapsed && <span className="ml-2">Content</span>}
-                            </div>
-
-                            {/* Right section: Arrow icon */}
-                            {!isCollapsed && (
-                                <Image
-                                    src={
-                                        isOpenArray[0]
-                                            ? '/icons/arrow-up-01-round.svg'
-                                            : '/icons/arrow-down-02-round.svg'
-                                    }
-                                    width={20}
-                                    height={20}
-                                    alt="Toggle"
-                                />
-                            )}
-
-
+                    <div
+                        className={`flex items-center justify-between w-full relative group mb-2 py-2 px-3 rounded-md ${isContentSection()
+                            ? 'bg-[#7400E0] text-white'
+                            : 'hover:bg-[#e1ffe11a] text-[#AAAAAA]'
+                            }`}
+                        onClick={() => toggleCollapsible(0)}
+                    >
+                        {/* Left section: Icon and label */}
+                        <div className="flex items-center">
+                            <Image
+                                src={
+                                    isContentSection()
+                                        ? '/icons/admin-content.svg'
+                                        : '/icons/admin-content-2.svg'
+                                }
+                                width={22}
+                                height={22}
+                                alt="Content"
+                            />
+                            {!isCollapsed && <span className="ml-2">Content</span>}
                         </div>
-                    </Tooltip>
+
+                        {/* Right section: Arrow icon */}
+                        {!isCollapsed && (
+                            <Image
+                                src={
+                                    isOpenArray[0]
+                                        ? '/icons/arrow-up-01-round.svg'
+                                        : '/icons/arrow-down-02-round.svg'
+                                }
+                                width={20}
+                                height={20}
+                                alt="Toggle"
+                            />
+                        )}
+
+                        {/* Tooltip */}
+                        {isCollapsed && (
+                            <span className="absolute left-16 top-1/2 -translate-y-1/2 bg-[#222222] text-white text-sm py-2 px-4 rounded-md opacity-0 group-hover:opacity-100 transition-opacity z-10 whitespace-nowrap">
+                                Content
+                            </span>
+                        )}
+                    </div>
                 }
                 open={isOpenArray[0]}
                 transitionTime={300}
@@ -222,7 +199,7 @@ function TabComps() {
                             onClick={() =>
                                 handleTabClick('quizzesmanagement', '/admin/content/quizzesmanagement')
                             }
-                            className={` tooltip relative group flex items-center w-full h-11 overflow-hidden py-2 px-3 text-left rounded-md mb-2 transition-colors ${activeTab === 'quizzesmanagement'
+                            className={` tooltip relative group flex items-center w-full h-10 py-2 px-3 text-left rounded-md mb-2 transition-colors ${activeTab === 'quizzesmanagement'
                                 ? 'bg-[#444444] text-white'
                                 : 'hover:bg-[#e1ffe11a] text-[#AAAAAA]'
                                 }`}
@@ -238,7 +215,7 @@ function TabComps() {
                         onClick={() =>
                             handleTabClick('quizzesmanagement', '/admin/content/quizzesmanagement')
                         }
-                        className={`relative group flex items-center w-full h-11 overflow-hidden py-2 px-3 text-left rounded-md mb-2 transition-colors ${activeTab === 'quizzesmanagement'
+                        className={`relative group flex items-center w-full h-10 py-2 px-3 text-left rounded-md mb-2 transition-colors ${activeTab === 'quizzesmanagement'
                             ? 'bg-[#444444] text-white'
                             : 'hover:bg-[#e1ffe11a] text-[#AAAAAA]'
                             }`}
@@ -263,7 +240,7 @@ function TabComps() {
                                     '/admin/content/testseriesmanagement'
                                 )
                             }
-                            className={`relative group flex items-center w-full h-11 overflow-hidden py-2 px-3 text-left rounded-md mb-2 transition-colors ${activeTab === 'testseriesmanagement'
+                            className={`relative group flex items-center w-full h-10 py-2 px-3 text-left rounded-md mb-2 transition-colors ${activeTab === 'testseriesmanagement'
                                 ? 'bg-[#444444] text-white'
                                 : 'hover:bg-[#e1ffe11a] text-[#AAAAAA]'
                                 }`}
