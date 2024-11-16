@@ -18,7 +18,8 @@ import CustomerCareImportance from '@/components/AdminComponents/CustomerCare/Cu
 import { Calendar } from "@nextui-org/calendar";
 
 // Define types for quiz data
-interface Quiz {
+type Quiz = {
+    id: string;
     email: string;
     Importance: 'Low' | 'Medium' | 'Hard';
     joiningDate: string;
@@ -28,16 +29,16 @@ interface Quiz {
 // Mock fetchQuizzes function with types
 const fetchQuizzes = async (): Promise<Quiz[]> => {
     const allQuizzes: Quiz[] = [
-        { Importance: "Medium", joiningDate: "Dec 1, 2023", email: "Jun 1, 2024", status: "New" },
-        { Importance: "Low", joiningDate: "Nov 15, 2023", email: "May 15, 2024", status: "Open" },
-        { Importance: "Medium", joiningDate: "Oct 1, 2023", email: "Apr 1, 2024", status: "Answered" },
-        { Importance: "Hard", joiningDate: "Sep 1, 2023", email: "Mar 1, 2024", status: "Resolved" },
-        { Importance: "Low", joiningDate: "Jan 1, 2024", email: "Jul 1, 2024", status: "New" },
-        { Importance: "Low", joiningDate: "Feb 1, 2024", email: "Aug 1, 2024", status: "Open" },
-        { Importance: "Hard", joiningDate: "Jul 15, 2023", email: "Jan 15, 2024", status: "Answered" },
-        { Importance: "Low", joiningDate: "Dec 10, 2023", email: "Jun 10, 2024", status: "Resolved" },
-        { Importance: "Medium", joiningDate: "Nov 25, 2023", email: "May 25, 2024", status: "New" },
-        { Importance: "Hard", joiningDate: "Aug 20, 2023", email: "Feb 20, 2024", status: "Answered" }
+        { id: "1", Importance: "Medium", joiningDate: "Dec 1, 2023", email: "Jun 1, 2024", status: "New" },
+        { id: "2", Importance: "Low", joiningDate: "Nov 15, 2023", email: "May 15, 2024", status: "Open" },
+        { id: "3", Importance: "Medium", joiningDate: "Oct 1, 2023", email: "Apr 1, 2024", status: "Answered" },
+        { id: "4", Importance: "Hard", joiningDate: "Sep 1, 2023", email: "Mar 1, 2024", status: "Resolved" },
+        { id: "5", Importance: "Low", joiningDate: "Jan 1, 2024", email: "Jul 1, 2024", status: "New" },
+        { id: "6", Importance: "Low", joiningDate: "Feb 1, 2024", email: "Aug 1, 2024", status: "Open" },
+        { id: "7", Importance: "Hard", joiningDate: "Jul 15, 2023", email: "Jan 15, 2024", status: "Answered" },
+        { id: "8", Importance: "Low", joiningDate: "Dec 10, 2023", email: "Jun 10, 2024", status: "Resolved" },
+        { id: "9", Importance: "Medium", joiningDate: "Nov 25, 2023", email: "May 25, 2024", status: "New" },
+        { id: "10", Importance: "Hard", joiningDate: "Aug 20, 2023", email: "Feb 20, 2024", status: "Answered" }
     ];
     return allQuizzes;
 };
@@ -49,6 +50,7 @@ function CustomerCare() {
     const [itemsPerPage] = useState(5);
     const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState('');
+    const [selectedItems, setSelectedItems] = useState<Set<string>>(new Set());
     const router = useRouter();
 
     // Fetch quizzes when component mounts
@@ -87,6 +89,32 @@ function CustomerCare() {
 
     // Check if all fields are filled
     const isAddButtonDisabled = !uniqueId || !startDate || !endDate;
+
+    const handleCheckboxChange = (id: string) => {
+        const newSelected = new Set(selectedItems);
+        if (newSelected.has(id)) {
+            newSelected.delete(id);
+        } else {
+            newSelected.add(id);
+        }
+        setSelectedItems(newSelected);
+    };
+
+    // Handle "select all" checkbox
+    const handleSelectAll = (checked: boolean) => {
+        if (checked) {
+            // Select all items on the current page
+            const currentIds = currentItems.map(item => item.id);
+            setSelectedItems(new Set(currentIds));
+        } else {
+            // Deselect all items
+            setSelectedItems(new Set());
+        }
+    };
+
+    // Check if all items on current page are selected
+    const isAllSelected = currentItems.length > 0 &&
+        currentItems.every(item => selectedItems.has(item.id));
 
     return (
         <div className="flex flex-col w-full gap-4 p-6">
@@ -149,7 +177,11 @@ function CustomerCare() {
                         <thead>
                             <tr>
                                 <th className="w-10 pl-8">
-                                    <input type="checkbox" />
+                                    <input
+                                        type="checkbox"
+                                        checked={isAllSelected}
+                                        onChange={(e) => handleSelectAll(e.target.checked)}
+                                    />
                                 </th>
                                 <th className="w-10 pl-4 py-4 text-center text-[#667085] font-medium text-sm">
                                     <p>Sr.No.</p>
@@ -176,9 +208,13 @@ function CustomerCare() {
                         </thead>
                         <tbody>
                             {currentItems.map((quiz, index) => (
-                                <tr key={index} className="h-auto border-t border-solid border-[#EAECF0]">
+                                <tr key={quiz.id} className="h-auto border-t border-solid border-[#EAECF0]">
                                     <td className="pl-8 py-4 text-center text-[#101828] text-sm">
-                                        <input type="checkbox" />
+                                        <input
+                                            type="checkbox"
+                                            checked={selectedItems.has(quiz.id)}
+                                            onChange={() => handleCheckboxChange(quiz.id)}
+                                        />
                                     </td>
                                     <td className="py-4 text-center text-[#101828] text-sm">
                                         {index + 1}
@@ -248,11 +284,12 @@ function CustomerCare() {
                     </div>
                 </div>
             </div>
-            <div className="absolute bottom-8 left-[38%] flex flex-row items-center p-4 gap-4 bg-white border border-[#D0D5DD] rounded-xl shadow-[4px_8px_13px_0_rgba(0,0,0,0.05), 4px_4px_12px_0_rgba(0,0,0,0.05), 4px_8px_14px_0_rgba(0,0,0,0.04)]">
-                <p className="text-balance text-[#1D2939] font-semibold">1 Select</p>
+            <div className={`fixed left-[35%] flex flex-row items-center p-4 gap-4 bg-white border border-[#D0D5DD] rounded-xl shadow-[4px_8px_13px_0_rgba(0,0,0,0.05), 4px_4px_12px_0_rgba(0,0,0,0.05), 4px_8px_14px_0_rgba(0,0,0,0.04)] transition-all duration-500 transform ${selectedItems.size > 0 ? 'translate-y-0 opacity-100' : 'translate-y-full opacity-0'
+                } bottom-8`}>
+                <p className="text-balance text-[#1D2939] font-semibold">{selectedItems.size} Selected</p>
                 <div className="flex flex-row gap-2">
-                    <button className="px-4 py-[0.625rem] text-sm text-[#1D2939] font-medium border border-lightGrey rounded-md">Select all</button>
-                    <button className="px-4 py-[0.625rem] text-sm text-[#1D2939] font-medium border border-lightGrey rounded-md">Unselect all</button>
+                    <button onClick={() => handleSelectAll(true)} className="px-4 py-[0.625rem] text-sm text-[#1D2939] font-medium border border-lightGrey rounded-md">Select all</button>
+                    <button onClick={() => setSelectedItems(new Set())} className="px-4 py-[0.625rem] text-sm text-[#1D2939] font-medium border border-lightGrey rounded-md">Unselect all</button>
                 </div>
                 <div className="w-0 h-9 border-[0.5px] border-lightGrey rounded-full"></div>
                 <button className="flex flex-row justify-between w-[6.438rem] px-4 py-[0.625rem] text-xs text-[#182230] font-medium bg-[#EDE4FF] rounded-[0.375rem]">
