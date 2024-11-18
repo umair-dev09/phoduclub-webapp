@@ -16,6 +16,7 @@ import {
 import CustomerCareStatus from '@/components/AdminComponents/CustomerCare/CustomerCareStatus';
 import CustomerCareImportance from '@/components/AdminComponents/CustomerCare/CustomerCareImportance';
 import { Calendar } from "@nextui-org/calendar";
+import { Checkbox } from "@nextui-org/react";
 
 // Define types for quiz data
 type Quiz = {
@@ -90,31 +91,60 @@ function CustomerCare() {
     // Check if all fields are filled
     const isAddButtonDisabled = !uniqueId || !startDate || !endDate;
 
+    // const handleCheckboxChange = (id: string) => {
+    //     const newSelected = new Set(selectedItems);
+    //     if (newSelected.has(id)) {
+    //         newSelected.delete(id);
+    //     } else {
+    //         newSelected.add(id);
+    //     }
+    //     setSelectedItems(newSelected);
+    // };
+
+    // // Handle "select all" checkbox
+    // const handleSelectAll = (checked: boolean) => {
+    //     if (checked) {
+    //         // Select all items on the current page
+    //         const currentIds = currentItems.map(item => item.id);
+    //         setSelectedItems(new Set(currentIds));
+    //     } else {
+    //         // Deselect all items
+    //         setSelectedItems(new Set());
+    //     }
+    // };
+
+    // // Check if all items on current page are selected
+    // const isAllSelected = currentItems.length > 0 &&
+    //     currentItems.every(item => selectedItems.has(item.id));
+
+    const [globalSelectedItems, setGlobalSelectedItems] = useState<Set<string>>(new Set());
+
     const handleCheckboxChange = (id: string) => {
-        const newSelected = new Set(selectedItems);
-        if (newSelected.has(id)) {
-            newSelected.delete(id);
-        } else {
-            newSelected.add(id);
-        }
-        setSelectedItems(newSelected);
+        setGlobalSelectedItems(prev => {
+            const newSelected = new Set(prev);
+            if (newSelected.has(id)) {
+                newSelected.delete(id);
+            } else {
+                newSelected.add(id);
+            }
+            return newSelected;
+        });
     };
 
-    // Handle "select all" checkbox
     const handleSelectAll = (checked: boolean) => {
         if (checked) {
-            // Select all items on the current page
-            const currentIds = currentItems.map(item => item.id);
-            setSelectedItems(new Set(currentIds));
+            // Select ALL items across all pages
+            const allIds = quizzes.map(item => item.id);
+            setGlobalSelectedItems(new Set(allIds));
         } else {
             // Deselect all items
-            setSelectedItems(new Set());
+            setGlobalSelectedItems(new Set());
         }
     };
 
-    // Check if all items on current page are selected
-    const isAllSelected = currentItems.length > 0 &&
-        currentItems.every(item => selectedItems.has(item.id));
+    // Update the isAllSelected check
+    const isAllSelected = quizzes.length > 0 &&
+        quizzes.every(item => globalSelectedItems.has(item.id));
 
     return (
         <div className="flex flex-col w-full gap-4 p-6">
@@ -177,8 +207,14 @@ function CustomerCare() {
                         <thead>
                             <tr>
                                 <th className="w-10 pl-8">
-                                    <input
+                                    {/* <input
                                         type="checkbox"
+                                        checked={isAllSelected}
+                                        onChange={(e) => handleSelectAll(e.target.checked)}
+                                    /> */}
+                                    <Checkbox
+                                        size="md"
+                                        color="primary"
                                         checked={isAllSelected}
                                         onChange={(e) => handleSelectAll(e.target.checked)}
                                     />
@@ -210,10 +246,16 @@ function CustomerCare() {
                             {currentItems.map((quiz, index) => (
                                 <tr key={quiz.id} className="h-auto border-t border-solid border-[#EAECF0]">
                                     <td className="pl-8 py-4 text-center text-[#101828] text-sm">
-                                        <input
+                                        {/* <input
                                             type="checkbox"
-                                            checked={selectedItems.has(quiz.id)}
+                                            checked={globalSelectedItems.has(quiz.id)}
                                             onChange={() => handleCheckboxChange(quiz.id)}
+                                        /> */}
+                                        <Checkbox
+                                            size="md"
+                                            color="primary"
+                                            isSelected={globalSelectedItems.has(quiz.id)}
+                                            onValueChange={() => handleCheckboxChange(quiz.id)}
                                         />
                                     </td>
                                     <td className="py-4 text-center text-[#101828] text-sm">
@@ -236,7 +278,7 @@ function CustomerCare() {
                                         </div>
                                     </td>
                                     <td className="py-4">
-                                        <div className="flex flex-col gap-1">
+                                        <button onClick={() => handleTabClick('/admin/customercare/customerinfo')} className="flex flex-col gap-1">
                                             <p className="text-[#101828] text-left text-sm whitespace-nowrap overflow-hidden text-ellipsis">This message is not relevant to study.</p>
                                             <div className="flex flex-col justify-start gap-1">
                                                 <div className="flex flex-row gap-1">
@@ -246,7 +288,7 @@ function CustomerCare() {
                                                 </div>
                                                 {/* <p className="w-fit px-3 py-1 text-xs text-white font-medium bg-[#0A5B39] rounded-[0.375rem]">Transaction ID: 254784523698</p> */}
                                             </div>
-                                        </div>
+                                        </button>
                                     </td>
                                     <td className="flex items-centre justify-left h-full pl-10 py-4 text-[#101828] text-sm">
                                         <CustomerCareImportance importance={quiz.Importance} />
@@ -284,12 +326,29 @@ function CustomerCare() {
                     </div>
                 </div>
             </div>
-            <div className={`fixed left-[35%] flex flex-row items-center p-4 gap-4 bg-white border border-[#D0D5DD] rounded-xl shadow-[4px_8px_13px_0_rgba(0,0,0,0.05), 4px_4px_12px_0_rgba(0,0,0,0.05), 4px_8px_14px_0_rgba(0,0,0,0.04)] transition-all duration-500 transform ${selectedItems.size > 0 ? 'translate-y-0 opacity-100' : 'translate-y-full opacity-0'
+            <div className={`fixed right-[33%] flex flex-row items-center p-4 gap-4 bg-white border border-[#D0D5DD] rounded-xl shadow-[4px_8px_13px_0_rgba(0,0,0,0.05), 4px_4px_12px_0_rgba(0,0,0,0.05), 4px_8px_14px_0_rgba(0,0,0,0.04)] transition-all duration-500 transform ${globalSelectedItems.size > 0 ? 'translate-y-0 opacity-100' : 'translate-y-full opacity-0'
                 } bottom-8`}>
-                <p className="text-balance text-[#1D2939] font-semibold">{selectedItems.size} Selected</p>
+                <p className="text-balance text-[#1D2939] font-semibold">{globalSelectedItems.size} Selected</p>
                 <div className="flex flex-row gap-2">
-                    <button onClick={() => handleSelectAll(true)} className="px-4 py-[0.625rem] text-sm text-[#1D2939] font-medium border border-lightGrey rounded-md">Select all</button>
-                    <button onClick={() => setSelectedItems(new Set())} className="px-4 py-[0.625rem] text-sm text-[#1D2939] font-medium border border-lightGrey rounded-md">Unselect all</button>
+                    <button
+                        onClick={() => {
+                            const allIds = quizzes.map(item => item.id);
+                            setGlobalSelectedItems(new Set(allIds));
+                            handleSelectAll(true);
+                        }}
+                        className="px-4 py-[0.625rem] text-sm text-[#1D2939] font-medium border border-lightGrey rounded-md"
+                    >
+                        Select all
+                    </button>
+                    <button
+                        onClick={() => {
+                            setGlobalSelectedItems(new Set());
+                            handleSelectAll(false);
+                        }}
+                        className="px-4 py-[0.625rem] text-sm text-[#1D2939] font-medium border border-lightGrey rounded-md"
+                    >
+                        Unselect all
+                    </button>
                 </div>
                 <div className="w-0 h-9 border-[0.5px] border-lightGrey rounded-full"></div>
                 <button className="flex flex-row justify-between w-[6.438rem] px-4 py-[0.625rem] text-xs text-[#182230] font-medium bg-[#EDE4FF] rounded-[0.375rem]">

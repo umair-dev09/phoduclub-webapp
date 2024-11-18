@@ -74,9 +74,7 @@ function customerinfo() {
                         <span className="text-sm text-[#1D2939] font-semibold">Jenny Wilson</span>
                     </div>
                     <div className="flex flex-row gap-2 items-center">
-
-                        <Checkbox color="primary"></Checkbox>
-
+                        <Checkbox color="primary" />
                         <span className="text-sm text-[#0C111D] font-normal">Mark as Resolved</span>
                     </div>
                 </div>
