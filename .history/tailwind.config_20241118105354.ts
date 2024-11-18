@@ -44,7 +44,7 @@ const config: Config = {
 				lavend: "#6941C6",
 				progressPurple: "#7400E0",
 				phoduGrey: "#f7f8fb",
-				colors: "#9012FF",
+				color: "#9012FF",
 			},
 		},
 		keyframes: {
@@ -64,23 +64,6 @@ const config: Config = {
 	},
 	plugins: [
 		nextui({
-			themes: {
-				light: {
-					colors: {
-						primary: {
-							DEFAULT: '#9012FF',
-
-						},
-
-					}
-				},
-				dark: {
-					colors: {
-						primary: "#0072f5",
-					}
-				},
-
-			},
 
 		}),
 	],

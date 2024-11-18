@@ -67,10 +67,8 @@ const config: Config = {
 			themes: {
 				light: {
 					colors: {
-						primary: {
-							DEFAULT: '#9012FF',
-
-						},
+						primary: "#9012FF",
+						DEFAULT: "#FFFFFF",
 
 					}
 				},
@@ -79,9 +77,7 @@ const config: Config = {
 						primary: "#0072f5",
 					}
 				},
-
 			},
-
 		}),
 	],
 };

@@ -3,6 +3,19 @@ import Image from "next/image";
 import React, { useState } from 'react';
 import { Popover, PopoverContent, PopoverTrigger } from "@nextui-org/popover";
 import { Checkbox } from "@nextui-org/react";
+
+
+// const CustomCheckbox = styled(Checkbox)(({ theme }) => ({
+//     color: '#D0D5DD', // Default color
+//     '&.Mui-checked': {
+//         color: '#9012FF', // Color when checked
+//     },
+//     '& .MuiSvgIcon-root': {
+//         fontSize: '20px', // Adjust the size of the checkbox icon
+//     },
+//     borderRadius: '4px', // Set a positive border radius
+// }));
+
 function customerinfo() {
     const [isChecked, setIsChecked] = useState(false);
     const [height, setHeight] = useState("32px");
@@ -74,7 +87,19 @@ function customerinfo() {
                         <span className="text-sm text-[#1D2939] font-semibold">Jenny Wilson</span>
                     </div>
                     <div className="flex flex-row gap-2 items-center">
+                        {/* <div
+                            onClick={handleCheckboxClick}
+                            className={`flex items-center justify-center w-4 h-4 border 
+                            rounded-sm cursor-pointer 
+                            ${isChecked ? 'bg-purple border-purple' : 'bg-white border-[#D0D5DE]'}`}
+                        >
+                            {isChecked && (
+                                <Image src="/icons/check.svg" alt="choose" width={12} height={12} />
+                            )}
+                        </div> */}
 
+
+                        {/* <CustomCheckbox defaultChecked /> */}
                         <Checkbox color="primary"></Checkbox>
 
                         <span className="text-sm text-[#0C111D] font-normal">Mark as Resolved</span>

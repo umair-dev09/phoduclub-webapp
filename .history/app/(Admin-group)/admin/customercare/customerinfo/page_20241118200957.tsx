@@ -3,6 +3,19 @@ import Image from "next/image";
 import React, { useState } from 'react';
 import { Popover, PopoverContent, PopoverTrigger } from "@nextui-org/popover";
 import { Checkbox } from "@nextui-org/react";
+
+
+// const CustomCheckbox = styled(Checkbox)(({ theme }) => ({
+//     color: '#D0D5DD', // Default color
+//     '&.Mui-checked': {
+//         color: '#9012FF', // Color when checked
+//     },
+//     '& .MuiSvgIcon-root': {
+//         fontSize: '20px', // Adjust the size of the checkbox icon
+//     },
+//     borderRadius: '4px', // Set a positive border radius
+// }));
+
 function customerinfo() {
     const [isChecked, setIsChecked] = useState(false);
     const [height, setHeight] = useState("32px");

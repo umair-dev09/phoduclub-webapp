@@ -64,23 +64,6 @@ const config: Config = {
 	},
 	plugins: [
 		nextui({
-			themes: {
-				light: {
-					colors: {
-						primary: {
-							DEFAULT: '#9012FF',
-
-						},
-
-					}
-				},
-				dark: {
-					colors: {
-						primary: "#0072f5",
-					}
-				},
-
-			},
 
 		}),
 	],
