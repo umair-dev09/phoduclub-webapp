@@ -19,6 +19,7 @@ function createcourse() {
     const [isWriting, setIsWriting] = useState(false); // Track if text is being written
     const [courseName, setCourseName] = useState('');
     const [courseDescription, setCourseDescription] = useState('');
+    const [courseImage, setCourseImage] = useState('');
     const [price, setPrice] = useState('');
     const [discountPrice, setDiscountPrice] = useState('');
     const [rating, setRating] = useState<string>('');
@@ -58,57 +59,38 @@ function createcourse() {
     }, []);
 
 
-
     // Handle custom icon button clicks
     const handleIconClick = (format: string) => {
         if (quill) {
             const range = quill.getSelection();
             if (range) {
                 const currentFormats = quill.getFormat(range);
-                console.log('Current Formats:', currentFormats); // Debugging line
 
+                // List formatting
                 if (format === 'ordered') {
-                    // Toggle ordered list
                     quill.format('list', currentFormats.list === 'ordered' ? false : 'ordered');
                 } else if (format === 'bullet') {
-                    // Toggle bullet list
                     quill.format('list', currentFormats.list === 'bullet' ? false : 'bullet');
-                } else if (format.startsWith('align')) {
+                }
+                // Alignment formatting
+                else if (format.startsWith('align')) {
                     if (format === 'align-left') {
-                        quill.format('align', false); // Remove alignment for 'left'
-                        setAlignment('left'); // Update alignment state to 'left'
+                        quill.format('align', false);
+                        setAlignment('left');
                     } else {
                         quill.format('align', format.split('-')[1]);
                         setAlignment(format.split('-')[1]);
                     }
-                } else {
+                }
+                // Bold, Italic, Underline formatting
+                else {
                     const isActive = currentFormats[format];
-                    quill.format(format, !isActive); // Toggle other formatting options
+                    quill.format(format, !isActive);
                 }
             }
         }
     };
 
-    const handleKeyDown = () => {
-        if (quill) {
-            const range = quill.getSelection();
-            if (range) {
-                const currentFormats = quill.getFormat(range);
-                if (currentFormats.bold) {
-                    quill.format('bold', false); // Clear bold formatting when typing starts
-                }
-                if (currentFormats.italic) {
-                    quill.format('italic', false); // Clear italic formatting when typing starts
-                }
-                if (currentFormats.underline) {
-                    quill.format('underline', false);
-                }
-
-
-
-            }
-        }
-    };
     // -----------------------------------------------------------------------------------------------------------------------------------------------------
     // this logic is for Price and Discount
 
@@ -198,7 +180,7 @@ function createcourse() {
                                     value={value}
                                     onChange={handleChange}
                                     onKeyDown={handleKeyDown}
-                                    modules={modules}
+                                    modules={{ toolbar: false }}
                                     placeholder="Description"
                                     className="text-[#1D2939] focus:outline-none rounded-b-[12px] custom-quill placeholder:not-italic min-h-[10px] max-h-[150px] overflow-y-auto border-none font-normal"
                                 />

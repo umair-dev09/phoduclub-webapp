@@ -7,6 +7,8 @@ import { styled } from '@mui/material/styles';
 
 
 const CustomCheckbox = styled(Checkbox)(({ theme }) => ({
+
+
     color: '#D0D5DD', // Default color
     '&.Mui-checked': {
         color: '#9012FF', // Color when checked
@@ -14,7 +16,7 @@ const CustomCheckbox = styled(Checkbox)(({ theme }) => ({
     '& .MuiSvgIcon-root': {
         fontSize: '20px', // Adjust the size of the checkbox icon
     },
-    borderRadius: '4px', // Set a positive border radius
+
 }));
 
 function customerinfo() {
@@ -106,7 +108,7 @@ function customerinfo() {
 
                 </div>
                 {/* Type Area */}
-                <div className=" bg-[#FFFFFF] w-full h-auto flex flex-row ">
+                <div className=" bg-[#FFFFFF] w-full h-auto p-6 flex flex-row ">
 
 
 

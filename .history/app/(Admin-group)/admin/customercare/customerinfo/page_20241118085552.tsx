@@ -2,21 +2,7 @@
 import Image from "next/image";
 import React, { useState } from 'react';
 import { Popover, PopoverContent, PopoverTrigger } from "@nextui-org/popover";
-import Checkbox from '@mui/material/Checkbox';
-import { styled } from '@mui/material/styles';
-
-
-const CustomCheckbox = styled(Checkbox)(({ theme }) => ({
-    color: '#D0D5DD', // Default color
-    '&.Mui-checked': {
-        color: '#9012FF', // Color when checked
-    },
-    '& .MuiSvgIcon-root': {
-        fontSize: '20px', // Adjust the size of the checkbox icon
-    },
-    borderRadius: '4px', // Set a positive border radius
-}));
-
+import { Checkbox } from "@nextui-org/react";
 function customerinfo() {
     const [isChecked, setIsChecked] = useState(false);
     const handleCheckboxClick = () => {
@@ -81,8 +67,9 @@ function customerinfo() {
                             )}
                         </div> */}
 
+                        <Checkbox size="md" color="primary" style={{ color: "#FFFFFF" }}>
+                        </Checkbox>
 
-                        <CustomCheckbox defaultChecked />
 
 
                         <span className="text-sm text-[#0C111D] font-normal">Mark as Resolved</span>
@@ -106,7 +93,7 @@ function customerinfo() {
 
                 </div>
                 {/* Type Area */}
-                <div className=" bg-[#FFFFFF] w-full h-auto flex flex-row ">
+                <div className=" bg-[#FFFFFF] w-full h-auto p-6 flex flex-row ">
 
 
 

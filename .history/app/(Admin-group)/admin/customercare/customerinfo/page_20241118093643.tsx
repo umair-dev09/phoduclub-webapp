@@ -106,7 +106,7 @@ function customerinfo() {
 
                 </div>
                 {/* Type Area */}
-                <div className=" bg-[#FFFFFF] w-full h-auto flex flex-row ">
+                <div className=" bg-[#FFFFFF] w-full h-auto p-6 flex flex-row ">
 
 
 

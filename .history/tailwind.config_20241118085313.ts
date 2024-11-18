@@ -63,7 +63,15 @@ const config: Config = {
 	},
 	plugins: [
 		nextui({
-
+			themes: {
+				dark: {
+					colors: {
+						primary: "#9012FF", // Primary color
+						focus: "#9012FF",   // Focus color
+						background: "#121212", // Background color in dark mode
+					},
+				},
+			},
 		}),
 	],
 };

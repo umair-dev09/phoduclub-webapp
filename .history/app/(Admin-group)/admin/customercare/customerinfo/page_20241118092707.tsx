@@ -7,14 +7,18 @@ import { styled } from '@mui/material/styles';
 
 
 const CustomCheckbox = styled(Checkbox)(({ theme }) => ({
+    width: '32px', // Set width
+    height: '32px', // Set height
     color: '#D0D5DD', // Default color
+    borderRadius: '12px', // Set the border radius to 12px
+    border: '2px solid #D0D5DD', // Optional: Adding a border for clarity
     '&.Mui-checked': {
         color: '#9012FF', // Color when checked
     },
     '& .MuiSvgIcon-root': {
         fontSize: '20px', // Adjust the size of the checkbox icon
     },
-    borderRadius: '4px', // Set a positive border radius
+
 }));
 
 function customerinfo() {
@@ -106,7 +110,7 @@ function customerinfo() {
 
                 </div>
                 {/* Type Area */}
-                <div className=" bg-[#FFFFFF] w-full h-auto flex flex-row ">
+                <div className=" bg-[#FFFFFF] w-full h-auto p-6 flex flex-row ">
 
 
 

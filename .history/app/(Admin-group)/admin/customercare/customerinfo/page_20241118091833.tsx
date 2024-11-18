@@ -5,16 +5,11 @@ import { Popover, PopoverContent, PopoverTrigger } from "@nextui-org/popover";
 import Checkbox from '@mui/material/Checkbox';
 import { styled } from '@mui/material/styles';
 
-
 const CustomCheckbox = styled(Checkbox)(({ theme }) => ({
-    color: '#D0D5DD', // Default color
+    color: 'yourCustomColor', // Default color
     '&.Mui-checked': {
-        color: '#9012FF', // Color when checked
+        color: 'yourCheckedColor', // Color when checked
     },
-    '& .MuiSvgIcon-root': {
-        fontSize: '20px', // Adjust the size of the checkbox icon
-    },
-    borderRadius: '4px', // Set a positive border radius
 }));
 
 function customerinfo() {
@@ -106,7 +101,7 @@ function customerinfo() {
 
                 </div>
                 {/* Type Area */}
-                <div className=" bg-[#FFFFFF] w-full h-auto flex flex-row ">
+                <div className=" bg-[#FFFFFF] w-full h-auto p-6 flex flex-row ">
 
 
 

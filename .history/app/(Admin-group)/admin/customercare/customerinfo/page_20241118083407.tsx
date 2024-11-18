@@ -2,21 +2,7 @@
 import Image from "next/image";
 import React, { useState } from 'react';
 import { Popover, PopoverContent, PopoverTrigger } from "@nextui-org/popover";
-import Checkbox from '@mui/material/Checkbox';
-import { styled } from '@mui/material/styles';
-
-
-const CustomCheckbox = styled(Checkbox)(({ theme }) => ({
-    color: '#D0D5DD', // Default color
-    '&.Mui-checked': {
-        color: '#9012FF', // Color when checked
-    },
-    '& .MuiSvgIcon-root': {
-        fontSize: '20px', // Adjust the size of the checkbox icon
-    },
-    borderRadius: '4px', // Set a positive border radius
-}));
-
+import { Checkbox } from "@nextui-org/react";
 function customerinfo() {
     const [isChecked, setIsChecked] = useState(false);
     const handleCheckboxClick = () => {
@@ -70,7 +56,7 @@ function customerinfo() {
                         <span className="text-sm text-[#1D2939] font-semibold">Jenny Wilson</span>
                     </div>
                     <div className="flex flex-row gap-2 items-center">
-                        {/* <div
+                        <div
                             onClick={handleCheckboxClick}
                             className={`flex items-center justify-center w-4 h-4 border 
                             rounded-sm cursor-pointer 
@@ -79,12 +65,7 @@ function customerinfo() {
                             {isChecked && (
                                 <Image src="/icons/check.svg" alt="choose" width={12} height={12} />
                             )}
-                        </div> */}
-
-
-                        <CustomCheckbox defaultChecked />
-
-
+                        </div>
                         <span className="text-sm text-[#0C111D] font-normal">Mark as Resolved</span>
                     </div>
                 </div>
@@ -106,7 +87,7 @@ function customerinfo() {
 
                 </div>
                 {/* Type Area */}
-                <div className=" bg-[#FFFFFF] w-full h-auto flex flex-row ">
+                <div className=" bg-[#FFFFFF] w-full h-auto p-6 flex flex-row ">
 
 
 

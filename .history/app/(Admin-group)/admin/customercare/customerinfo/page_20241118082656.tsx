@@ -2,21 +2,6 @@
 import Image from "next/image";
 import React, { useState } from 'react';
 import { Popover, PopoverContent, PopoverTrigger } from "@nextui-org/popover";
-import Checkbox from '@mui/material/Checkbox';
-import { styled } from '@mui/material/styles';
-
-
-const CustomCheckbox = styled(Checkbox)(({ theme }) => ({
-    color: '#D0D5DD', // Default color
-    '&.Mui-checked': {
-        color: '#9012FF', // Color when checked
-    },
-    '& .MuiSvgIcon-root': {
-        fontSize: '20px', // Adjust the size of the checkbox icon
-    },
-    borderRadius: '4px', // Set a positive border radius
-}));
-
 function customerinfo() {
     const [isChecked, setIsChecked] = useState(false);
     const handleCheckboxClick = () => {
@@ -54,7 +39,7 @@ function customerinfo() {
     };
     return (
         <div className="h-auto w-full flex flex-row">
-            <div className="grid grid-rows-[72px_1fr_70px] w-[68%] h-auto ">
+            <div className="grid grid-rows-[72px_1fr_70px] w-[68%] ">
                 <div className="h-[72px] border-b border-solid border-[#EAECF0] flex flex-row items-center px-6 bg-[#FFFFFF] justify-between w-full">
                     <div className="flex flex-row gap-2 items-center">
                         <div className="relative">
@@ -70,7 +55,7 @@ function customerinfo() {
                         <span className="text-sm text-[#1D2939] font-semibold">Jenny Wilson</span>
                     </div>
                     <div className="flex flex-row gap-2 items-center">
-                        {/* <div
+                        <div
                             onClick={handleCheckboxClick}
                             className={`flex items-center justify-center w-4 h-4 border 
                             rounded-sm cursor-pointer 
@@ -79,12 +64,7 @@ function customerinfo() {
                             {isChecked && (
                                 <Image src="/icons/check.svg" alt="choose" width={12} height={12} />
                             )}
-                        </div> */}
-
-
-                        <CustomCheckbox defaultChecked />
-
-
+                        </div>
                         <span className="text-sm text-[#0C111D] font-normal">Mark as Resolved</span>
                     </div>
                 </div>
@@ -106,71 +86,71 @@ function customerinfo() {
 
                 </div>
                 {/* Type Area */}
-                <div className=" bg-[#FFFFFF] w-full h-auto flex flex-row ">
+                <div className=" bg-[#FFFFFF] w-full">
 
 
+                    <div className='flex flex-row m-6'>
+                        <div className="flex flex-row rounded-md w-full h-auto bg-[#FCFCFD] py-[6px] border border-[#D0D5DD]">
+                            <textarea
+                                className="w-full max-h-[120px] bg-[#FCFCFD] overflow-y-auto resize-none px-3 rounded-md outline-none font-normal text-sm leading-tight pt-[5px]"
+                                placeholder="Type your message here..."
+                            />
 
-                    <div className="flex flex-row rounded-md w-full h-auto bg-[#FCFCFD] py-[6px] border border-[#D0D5DD]">
-                        <textarea
-                            className="w-full max-h-[120px] bg-[#FCFCFD] overflow-y-auto resize-none px-3 rounded-md outline-none font-normal text-sm leading-tight pt-[5px]"
-                            placeholder="Type your message here..."
-                        />
+                            <div className='flex flex-row gap-[12px] mr-4 ml-1 items-end mb-2'>
+                                {/* Emoji Picker Button */}
+                                <Popover className='mb-2' placement="bottom-end">
+                                    <PopoverTrigger>
+                                        <button className='transition-colors hover:bg-neutral-100 hover:rounded-[100px] focus:outline-none'>
+                                            <Image src='/icons/emojies.svg' alt='emojis icon' width={21} height={21} />
+                                        </button>
+                                    </PopoverTrigger>
+                                    <PopoverContent>
+                                        <div className="p-4">
+                                            <span className="text-sm">Emoji Picker</span>
+                                            {/* Placeholder for Emoji Picker UI */}
+                                        </div>
+                                    </PopoverContent>
+                                </Popover>
 
-                        <div className='flex flex-row gap-[12px] mr-4 ml-1 items-end mb-2'>
-                            {/* Emoji Picker Button */}
-                            <Popover className='mb-2' placement="bottom-end">
-                                <PopoverTrigger>
-                                    <button className='transition-colors hover:bg-neutral-100 hover:rounded-[100px] focus:outline-none'>
-                                        <Image src='/icons/emojies.svg' alt='emojis icon' width={21} height={21} />
-                                    </button>
-                                </PopoverTrigger>
-                                <PopoverContent>
-                                    <div className="p-4">
-                                        <span className="text-sm">Emoji Picker</span>
-                                        {/* Placeholder for Emoji Picker UI */}
-                                    </div>
-                                </PopoverContent>
-                            </Popover>
+                                {/* File Attachment Button */}
+                                <Popover className='mb-2' placement="bottom-end">
+                                    <PopoverTrigger>
+                                        <button className='transition-colors hover:bg-neutral-100 hover:rounded-[100px] focus:outline-none'>
+                                            <Image src='/icons/files.svg' alt='attachment icon' width={21} height={21} />
+                                        </button>
+                                    </PopoverTrigger>
 
-                            {/* File Attachment Button */}
-                            <Popover className='mb-2' placement="bottom-end">
-                                <PopoverTrigger>
-                                    <button className='transition-colors hover:bg-neutral-100 hover:rounded-[100px] focus:outline-none'>
-                                        <Image src='/icons/files.svg' alt='attachment icon' width={21} height={21} />
-                                    </button>
-                                </PopoverTrigger>
+                                    <PopoverContent className="w-auto py-1 px-0 bg-white border border-lightGrey rounded-md">
 
-                                <PopoverContent className="w-auto py-1 px-0 bg-white border border-lightGrey rounded-md">
-
-                                    <button className="flex flex-row items-center justify-start w-full px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7]">
-                                        <Image src='/icons/image.svg' alt='image icon' width={20} height={20} />
-                                        <span className='font-normal text-[#0C111D] text-sm'>Image</span>
-                                    </button>
-                                    <button className=" flex flex-row items-center justify-start w-full px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7]"
-                                    >
-                                        <Image src='/icons/video-icon.svg' alt='video icon' width={20} height={20} />
-                                        <span className='font-normal text-[#0C111D] text-sm'>Video</span>
-                                    </button>
-                                    <button className=" flex flex-row items-center justify-start w-full px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7]"
-                                    >
-                                        <Image src='/icons/documents.svg' alt='document icon' width={20} height={20} />
-                                        <span className='font-normal text-[#0C111D] text-sm'>Documents</span>
-                                    </button>
-                                </PopoverContent>
-                            </Popover>
+                                        <button className="flex flex-row items-center justify-start w-full px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7]">
+                                            <Image src='/icons/image.svg' alt='image icon' width={20} height={20} />
+                                            <span className='font-normal text-[#0C111D] text-sm'>Image</span>
+                                        </button>
+                                        <button className=" flex flex-row items-center justify-start w-full px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7]"
+                                        >
+                                            <Image src='/icons/video-icon.svg' alt='video icon' width={20} height={20} />
+                                            <span className='font-normal text-[#0C111D] text-sm'>Video</span>
+                                        </button>
+                                        <button className=" flex flex-row items-center justify-start w-full px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7]"
+                                        >
+                                            <Image src='/icons/documents.svg' alt='document icon' width={20} height={20} />
+                                            <span className='font-normal text-[#0C111D] text-sm'>Documents</span>
+                                        </button>
+                                    </PopoverContent>
+                                </Popover>
+                            </div>
                         </div>
+
+                        {/* Send Button */}
+                        <button className="ml-3  mb-1">
+                            <Image
+                                src='/icons/send.svg'
+                                alt='send icon'
+                                width={24}
+                                height={24}
+                            />
+                        </button>
                     </div>
-
-                    {/* Send Button */}
-                    <button className="ml-3  mb-1">
-                        <Image
-                            src='/icons/send.svg'
-                            alt='send icon'
-                            width={24}
-                            height={24}
-                        />
-                    </button>
-
                 </div>
             </div>
 

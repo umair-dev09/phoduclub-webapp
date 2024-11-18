@@ -106,11 +106,11 @@ function customerinfo() {
 
                 </div>
                 {/* Type Area */}
-                <div className=" bg-[#FFFFFF] w-full h-auto flex flex-row ">
+                <div className=" bg-[#FFFFFF] w-full h-auto p-6 flex flex-row ">
 
 
 
-                    <div className="flex flex-row rounded-md w-full h-auto bg-[#FCFCFD] py-[6px] border border-[#D0D5DD]">
+                    <div className="flex flex-row rounded-md w-full  bg-[#FCFCFD] py-[6px] border border-[#D0D5DD]">
                         <textarea
                             className="w-full max-h-[120px] bg-[#FCFCFD] overflow-y-auto resize-none px-3 rounded-md outline-none font-normal text-sm leading-tight pt-[5px]"
                             placeholder="Type your message here..."

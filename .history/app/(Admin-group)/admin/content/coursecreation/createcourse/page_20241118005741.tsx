@@ -19,6 +19,7 @@ function createcourse() {
     const [isWriting, setIsWriting] = useState(false); // Track if text is being written
     const [courseName, setCourseName] = useState('');
     const [courseDescription, setCourseDescription] = useState('');
+    const [courseImage, setCourseImage] = useState('');
     const [price, setPrice] = useState('');
     const [discountPrice, setDiscountPrice] = useState('');
     const [rating, setRating] = useState<string>('');
@@ -45,27 +46,11 @@ function createcourse() {
 
 
 
-    // Modules for React Quill including toolbar options
-    const modules = {
-        toolbar: false, // Disable default toolbar; we will use custom buttons
-    };
-
-    // Set Quill editor instance
-    useEffect(() => {
-        if (quillRef.current) {
-            setQuill(quillRef.current.getEditor());
-        }
-    }, []);
-
-
-
-    // Handle custom icon button clicks
     const handleIconClick = (format: string) => {
         if (quill) {
             const range = quill.getSelection();
             if (range) {
                 const currentFormats = quill.getFormat(range);
-                console.log('Current Formats:', currentFormats); // Debugging line
 
                 if (format === 'ordered') {
                     // Toggle ordered list
@@ -73,7 +58,8 @@ function createcourse() {
                 } else if (format === 'bullet') {
                     // Toggle bullet list
                     quill.format('list', currentFormats.list === 'bullet' ? false : 'bullet');
-                } else if (format.startsWith('align')) {
+                }
+                else if (format.startsWith('align')) {
                     if (format === 'align-left') {
                         quill.format('align', false); // Remove alignment for 'left'
                         setAlignment('left'); // Update alignment state to 'left'
@@ -81,7 +67,8 @@ function createcourse() {
                         quill.format('align', format.split('-')[1]);
                         setAlignment(format.split('-')[1]);
                     }
-                } else {
+                }
+                else {
                     const isActive = currentFormats[format];
                     quill.format(format, !isActive); // Toggle other formatting options
                 }
@@ -89,6 +76,13 @@ function createcourse() {
         }
     };
 
+    useEffect(() => {
+        if (quillRef.current) {
+            setQuill(quillRef.current.getEditor());
+        }
+    }, []);
+
+    // This will clear formatting when the user types
     const handleKeyDown = () => {
         if (quill) {
             const range = quill.getSelection();
@@ -198,7 +192,7 @@ function createcourse() {
                                     value={value}
                                     onChange={handleChange}
                                     onKeyDown={handleKeyDown}
-                                    modules={modules}
+                                    modules={{ toolbar: false }}
                                     placeholder="Description"
                                     className="text-[#1D2939] focus:outline-none rounded-b-[12px] custom-quill placeholder:not-italic min-h-[10px] max-h-[150px] overflow-y-auto border-none font-normal"
                                 />

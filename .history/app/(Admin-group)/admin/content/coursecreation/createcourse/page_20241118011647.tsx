@@ -19,6 +19,7 @@ function createcourse() {
     const [isWriting, setIsWriting] = useState(false); // Track if text is being written
     const [courseName, setCourseName] = useState('');
     const [courseDescription, setCourseDescription] = useState('');
+    const [courseImage, setCourseImage] = useState('');
     const [price, setPrice] = useState('');
     const [discountPrice, setDiscountPrice] = useState('');
     const [rating, setRating] = useState<string>('');
@@ -45,10 +46,14 @@ function createcourse() {
 
 
 
-    // Modules for React Quill including toolbar options
     const modules = {
-        toolbar: false, // Disable default toolbar; we will use custom buttons
+        toolbar: [
+            ['bold', 'italic', 'underline'], // Formatting buttons
+            [{ list: 'ordered' }, { list: 'bullet' }], // List buttons
+            [{ align: '' }, { align: 'center' }, { align: 'right' }] // Alignment buttons
+        ],
     };
+
 
     // Set Quill editor instance
     useEffect(() => {
@@ -65,30 +70,42 @@ function createcourse() {
             const range = quill.getSelection();
             if (range) {
                 const currentFormats = quill.getFormat(range);
-                console.log('Current Formats:', currentFormats); // Debugging line
 
+                // List formatting with proper toggle behavior
                 if (format === 'ordered') {
-                    // Toggle ordered list
-                    quill.format('list', currentFormats.list === 'ordered' ? false : 'ordered');
+                    // Check if it's already an ordered list
+                    if (currentFormats.list === 'ordered') {
+                        quill.format('list', false); // Remove list formatting
+                    } else {
+                        quill.format('list', 'ordered'); // Set to ordered list
+                    }
                 } else if (format === 'bullet') {
-                    // Toggle bullet list
-                    quill.format('list', currentFormats.list === 'bullet' ? false : 'bullet');
-                } else if (format.startsWith('align')) {
+                    // Check if it's already a bullet list
+                    if (currentFormats.list === 'bullet') {
+                        quill.format('list', false); // Remove list formatting
+                    } else {
+                        quill.format('list', 'bullet'); // Set to bullet list
+                    }
+                }
+
+                // Alignment formatting
+                else if (format.startsWith('align')) {
                     if (format === 'align-left') {
-                        quill.format('align', false); // Remove alignment for 'left'
-                        setAlignment('left'); // Update alignment state to 'left'
+                        quill.format('align', false);
+                        setAlignment('left');
                     } else {
                         quill.format('align', format.split('-')[1]);
                         setAlignment(format.split('-')[1]);
                     }
-                } else {
+                }
+                // Bold, Italic, Underline formatting
+                else {
                     const isActive = currentFormats[format];
-                    quill.format(format, !isActive); // Toggle other formatting options
+                    quill.format(format, !isActive);
                 }
             }
         }
     };
-
     const handleKeyDown = () => {
         if (quill) {
             const range = quill.getSelection();

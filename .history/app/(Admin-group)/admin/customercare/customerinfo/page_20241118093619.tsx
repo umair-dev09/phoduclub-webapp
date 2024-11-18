@@ -12,7 +12,7 @@ const CustomCheckbox = styled(Checkbox)(({ theme }) => ({
         color: '#9012FF', // Color when checked
     },
     '& .MuiSvgIcon-root': {
-        fontSize: '20px', // Adjust the size of the checkbox icon
+        fontSize: '22px', // Adjust the size of the checkbox icon
     },
     borderRadius: '4px', // Set a positive border radius
 }));
@@ -106,7 +106,7 @@ function customerinfo() {
 
                 </div>
                 {/* Type Area */}
-                <div className=" bg-[#FFFFFF] w-full h-auto flex flex-row ">
+                <div className=" bg-[#FFFFFF] w-full h-auto p-6 flex flex-row ">
 
 
 
