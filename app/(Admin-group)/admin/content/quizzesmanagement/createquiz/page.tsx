@@ -264,7 +264,7 @@ function CreateQuiz() {
                             const quizData = {
                                 quizId: quizRef.id, // Use the generated ID as the quizId
                                 quizName,
-                                quizDescription,
+                                quizDescription, 
                                 startDate: liveQuizNow ? formattedDate : startDate,
                                 endDate,
                                 quizTime: timeNumber + " " + timeText,

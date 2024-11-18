@@ -9,9 +9,10 @@ interface Question {
     question: string;
     isChecked: boolean;
     isActive: boolean;
-    options: Options;
+    options: Options; 
     correctAnswer: string | null;
     explanation: string;
+    questionId: string;
 }
 
 interface Options {
@@ -24,9 +25,11 @@ interface Options {
 interface QuestionsProps {
     questionsList: Question[];
     setQuestionsList: React.Dispatch<React.SetStateAction<Question[]>>;
+    anyQuestionAdded: string;
+    setAnyQuestionAdded: (anyQuestionAdded: string) => void;
 }
 
-function Questions({ questionsList, setQuestionsList }: QuestionsProps) {
+function Questions({ questionsList, setQuestionsList, anyQuestionAdded, setAnyQuestionAdded }: QuestionsProps) {
 
     // Handler for input change
     const handleInputChange = (index: number, e: React.ChangeEvent<HTMLInputElement>) => {
@@ -44,6 +47,7 @@ function Questions({ questionsList, setQuestionsList }: QuestionsProps) {
     // -----------------------------------------------------------------------------------------------------------
     // Handler for adding new question
     const handleAddQuestion = () => {
+         setAnyQuestionAdded('Yes');
         setQuestionsList([
             ...questionsList,
             {
@@ -52,7 +56,8 @@ function Questions({ questionsList, setQuestionsList }: QuestionsProps) {
                 isActive: false,
                 options: { A: '', B: '', C: '', D: '' },
                 correctAnswer: null,
-                explanation: ''
+                explanation: '',
+                questionId: '',
             }
         ]);
     };
@@ -67,7 +72,8 @@ function Questions({ questionsList, setQuestionsList }: QuestionsProps) {
                 isActive: false,
                 options: { A: '', B: '', C: '', D: '' },
                 correctAnswer: null,
-                explanation: ''
+                explanation: '',
+                questionId: '',
             };
 
         setQuestionsList([...questionsList, newQuestion]);

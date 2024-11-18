@@ -47,12 +47,7 @@ const dateValue = startDate && /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}$/.test(star
 
 
     const selectedColor = "text-[#182230]";
-    const [checkedState, setCheckedState] = useState(false);
-    const [inputValue, setInputValue] = useState(0);
-
-    const toggleCheckBox = () => {
-        setCheckedState(!checkedState);
-    };
+    
 
     return (
         <div className='flex flex-col pt-4 pb-8 gap-4'>
@@ -81,7 +76,7 @@ const dateValue = startDate && /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}$/.test(star
                         granularity="minute" 
                         isDisabled={liveQuizNow}  // Disable the DatePicker if liveQuizNow is true
                         minValue={today(getLocalTimeZone())}
-                        // isDisabled
+                        showMonthAndYearPickers
                         onChange={(date) => {
                             // Convert the date object to a string in your desired format
                             const dateString = date ? date.toString() : ""; // Customize format if needed
@@ -89,16 +84,14 @@ const dateValue = startDate && /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}$/.test(star
 
                         }}
                        />
-               
-                        {/* <div className='w-full py-2 px-3 border border-lightGrey rounded-md'>
-                            <span className='font-normal text-[#667085] text-sm'>Select Date & Time</span>
-                        </div> */}
+            
                     </div>
                     <div className='flex flex-col w-1/2 gap-1'>
                         <span className='font-medium text-[#1D2939] text-sm'>End Date & Time</span>
                         <DatePicker 
                         granularity="minute" 
                         minValue={dateValue}
+                        showMonthAndYearPickers
                         onChange={(date) => {
                             // Convert the date object to a string in your desired format
                             const dateString = date ? date.toString() : ""; // Customize format if needed
@@ -107,33 +100,7 @@ const dateValue = startDate && /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}$/.test(star
                        />
                     </div>
                 </div>
-                {!checkedState && (
-                    <div className='flex flex-row w-full gap-4'>
-                        <div className='flex flex-col w-1/2 gap-1'>
-                            <span className='font-medium text-[#1D2939] text-sm'>Start Date</span>
-                            <div className='w-full py-2 px-3 border border-lightGrey rounded-md'>
-                                <span className='font-normal text-[#667085] text-sm'>Select Date & Time</span>
-                            </div>
-                        </div>
-                        <div className='flex flex-col w-1/2 gap-1'>
-                            <span className='font-medium text-[#1D2939] text-sm'>End Date</span>
-                            <div className='w-full py-2 px-3 border border-lightGrey rounded-md'>
-                                <span className='font-normal text-[#667085] text-sm'>Select Date & Time</span>
-                            </div>
-                        </div>
-                    </div>)}
-                {checkedState &&
-                    (
-                        <div className="flex flex-row items-center">
-                            <p className="flex flex-row items-center text-base text-[#1D2939] font-medium gap-2">
-                                The quiz will go live immediately and remain active for
-                                <span className="flex items-center justify-center w-10 h-10 py-2 text-center text-sm text-[#667085] font-normal border border-lightGrey rounded-md">
-                                    {inputValue}
-                                </span>
-                                minutes.
-                            </p>
-                        </div>
-                    )}
+            
             </div>
 
             <div className='flex flex-col w-full h-auto p-5 bg-white border border-lightGrey rounded-xl gap-3'>

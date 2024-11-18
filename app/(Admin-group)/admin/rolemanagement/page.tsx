@@ -262,7 +262,7 @@ function rolemangement() {
                                      </span>   
                                         </td>
                                     <td className="flex items-center justify-center px-8 py-4 text-[#101828] text-sm">
-                                        <Popover placement="bottom-end"  isOpen={actionDialog === users.adminId}>
+                                        <Popover placement="bottom-end"  >
                                             <PopoverTrigger>
                                                 <button     onClick={() => setActionDialog(actionDialog === users.adminId ? null : users.adminId)}                                                >
                                                     <Image

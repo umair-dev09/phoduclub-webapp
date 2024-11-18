@@ -75,6 +75,7 @@ function Editprofile({ open, close, adminId }: EditProfileProps) {
             return () => unsubscribe();
         }
     }, [adminId]);
+    
     const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0];
         

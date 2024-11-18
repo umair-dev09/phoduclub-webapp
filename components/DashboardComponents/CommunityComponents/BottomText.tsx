@@ -311,7 +311,7 @@ function BottomText({
                     className="hidden"
                     accept="image/*"
                     onChange={(e) => handleFileInputChange(e, "image")}
-                  />
+                  /> 
                   
                   <button
                     className='flex flex-row items-center gap-2 w-30 px-4 py-[10px] transition-colors hover:bg-neutral-100'

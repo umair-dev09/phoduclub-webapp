@@ -6,6 +6,12 @@ import ReactQuill from 'react-quill-new'; // Ensure correct import
 import Quill from 'quill'; // Import Quill to use it for types
 import { Popover, PopoverTrigger, PopoverContent } from '@nextui-org/popover';
 import { useRouter } from "next/navigation";
+import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
+import { storage, db } from '@/firebase'; // Adjust path if needed
+import { toast, ToastContainer } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
+import { collection, addDoc, updateDoc, doc } from 'firebase/firestore';
+
 interface priceprops {
     Price: number;
     Discountprice: number;
@@ -24,6 +30,8 @@ function createcourse() {
     const [rating, setRating] = useState<string>('');
     const [numRatings, setNumRatings] = useState<string>('');
     const [value, setValue] = useState(courseDescription);
+    const [image, setImage] = useState<File | null>(null);
+    const [imageUrl, setImageUrl] = useState<string | null>(null);
 
     const handleChange = (content: string) => {
         setValue(content);
@@ -31,7 +39,7 @@ function createcourse() {
         setCourseDescription(content);
 
     };
-    const isFormValid = courseName && courseDescription && price && discountPrice && rating && numRatings;
+    const isFormValid = courseName && courseDescription && price && discountPrice && rating && numRatings && imageUrl;
 
     const checkTextContent = (content: string) => {
         // Trim the content and check if there's actual text (excluding HTML tags like <p></p>)
@@ -150,6 +158,138 @@ function createcourse() {
     const handleTabClick = (path: string) => {
         router.push(path);
     };
+
+    const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const file = event.target.files?.[0];
+        if (file) {
+            setImage(file);
+            toast.promise(
+                new Promise(async (resolve, reject) => {
+                    try {
+                        const storageRef = ref(storage, `CourseImages/${file.name}`);
+                        const uploadTask = uploadBytesResumable(storageRef, file);
+
+                        // Monitor upload progress and completion
+                        uploadTask.on(
+                            'state_changed',
+                            (snapshot) => {
+                                const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                                console.log(`Upload is ${progress}% done`);
+                            },
+                            (error) => {
+                                console.error("Upload failed:", error);
+                            },
+                            async () => {
+                                const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
+                                setImageUrl(downloadURL);
+                                resolve("Image Updated!");
+                            }
+                        );
+                    } catch (error) {
+                        reject("Failed to Update Image!")
+                        // Handle errors in both image upload and Firestore update
+                        // toast.error("Failed to upload image or update profile.");
+                        console.error("Error:", error);
+                    }
+
+                }),
+                {
+                    pending: 'Uploading Course Image...',
+                    success: 'Image Uploaded.',
+                    error: 'Failed to Upload Image.',
+                }
+            );
+        }
+    };
+
+    const handleDragOver = (event: React.DragEvent<HTMLDivElement>) => {
+        event.preventDefault();
+        event.stopPropagation();
+    };
+
+    const handleDrop = (event: React.DragEvent<HTMLDivElement>) => {
+        event.preventDefault();
+        event.stopPropagation();
+        const file = event.dataTransfer.files?.[0];
+        if (file && file.type.startsWith('image/')) {
+            setImage(file);
+            toast.promise(
+                new Promise(async (resolve, reject) => {
+                    try {
+                        const storageRef = ref(storage, `CourseImages/${file.name}`);
+                        const uploadTask = uploadBytesResumable(storageRef, file);
+
+                        // Monitor upload progress and completion
+                        uploadTask.on(
+                            'state_changed',
+                            (snapshot) => {
+                                const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                                console.log(`Upload is ${progress}% done`);
+                            },
+                            (error) => {
+                                console.error("Upload failed:", error);
+                            },
+                            async () => {
+                                const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
+                                setImageUrl(downloadURL);
+                                resolve("Image Updated!");
+                            }
+                        );
+                    } catch (error) {
+                        reject("Failed to Update Image!")
+                        // Handle errors in both image upload and Firestore update
+                        // toast.error("Failed to upload image or update profile.");
+                        console.error("Error:", error);
+                    }
+
+                }),
+                {
+                    pending: 'Uploading Course Image...',
+                    success: 'Image Uploaded.',
+                    error: 'Failed to Upload Image.',
+                }
+            );
+        }
+    };
+
+    const handleCreateClick = async () => {
+
+        toast.promise(
+            new Promise(async (resolve, reject) => {
+                try {
+                    const docRef = await addDoc(collection(db, 'course'), {
+                        courseName: courseName,
+                        courseDescription: courseDescription,
+                        courseImage: imageUrl,
+                        price: price,
+                        discountPrice: discountPrice,
+                        rating: rating,
+                        noOfRating: numRatings,
+                        publishDate: new Date().toISOString(),
+                        status: 'saved',
+                    });
+
+                    await updateDoc(doc(db, 'course', docRef.id), {
+                        courseId: docRef.id,
+                    });
+                    resolve("Course Created!");
+                    router.replace(`/admin/content/coursecreation/createcourse/${courseName.toLowerCase().replace(/\s+/g, '-')}/?cId=${docRef.id}`)
+                } catch (error) {
+                    reject("Failed to Create Course!")
+                    // Handle errors in both image upload and Firestore update
+                    // toast.error("Failed to upload image or update profile.");
+                    console.error("Error:", error);
+                }
+
+            }),
+            {
+                pending: 'Creating Course...',
+                success: 'Course Created!',
+                error: 'Error Creating Course'
+            }
+        );
+    };
+
     return (
         <div className="px-[32px] pt-[20px] w-full h-auto overflow-y-auto pb-24">
             {/* Header part*/}
@@ -162,7 +302,7 @@ function createcourse() {
                         <span className="text-[#1D2939] font-semibold text-sm">Cancel</span>
                     </button>
                     <button className={`h-[44px] w-[120px] ml-4 rounded-md items-center flex border border-solid border-white  ${!isFormValid ? 'bg-[#CDA0FC]' : 'bg-[#9012FF]'} justify-center shadow-inner-button`}
-                        onClick={() => handleTabClick('/admin/content/coursecreation/createcourse/courses')}
+                        onClick={handleCreateClick}
                         disabled={!isFormValid}>
                         <span className="text-[#FFFFFF] font-semibold text-sm">Create</span>
                     </button>
@@ -253,26 +393,45 @@ function createcourse() {
                         </div>
                     </div>
                     {/* Upload the Image */}
-                    <div className=" flex flex-col gap-2">
-                        <span className="text-[#1D2939] font-semibold text-sm">Image</span>
-                        <div className="h-[148px] rounded-xl bg-[#F9FAFB] border-2 border-dashed border-[#D0D5DD]">
-                            <button className="flex flex-col items-center justify-center gap-4 h-full w-full">
-                                <div className="flex flex-col items-center">
-                                    <div className="h-10 w-10 rounded-md border border-solid border-[#EAECF0] bg-[#FFFFFF] p-[10px]">
-                                        <Image
-                                            src="/icons/upload-cloud.svg"
-                                            width={20}
-                                            height={20}
-                                            alt="upload icon"
-                                        />
-                                    </div>
-                                </div>
-                                <span className="text-sm font-semibold text-[#9012FF]">
-                                    Click to upload <span className="text-[#182230] text-sm font-medium">or drag and drop</span>
-                                </span>
+                    {image ? (
+                        <div className="flex flex-row items-center gap-3">
+                            <Image className="w-[280px] h-[190px] rounded-[4px] object-cover" src={URL.createObjectURL(image)} width={0} height={0} alt="course image" />
+                            <button className="flex flex-row gap-1 items-center" onClick={() => { setImageUrl(null); setImage(null); }}>
+                                <Image src="/icons/delete.svg" width={18} height={18} alt="Delete icon" />
+                                <span className="text-sm font-semibold text-[#DE3024] mt-[2px]">Delete</span>
                             </button>
                         </div>
-                    </div>
+                    ) : (
+                        <div className="flex flex-col gap-2">
+                            <span className="text-[#1D2939] font-semibold text-sm">Image</span>
+                            <div
+                                className="h-[148px] rounded-xl bg-[#F9FAFB] border-2 border-dashed border-[#D0D5DD] flex items-center justify-center"
+                                onDragOver={handleDragOver}
+                                onDrop={handleDrop}
+                            >
+                                <button className="flex flex-col items-center justify-center gap-4 h-full w-full">
+                                    <div className="flex flex-col items-center">
+                                        <div className="h-10 w-10 rounded-md border border-solid border-[#EAECF0] bg-[#FFFFFF] p-[10px]">
+                                            <Image src="/icons/upload-cloud.svg" width={20} height={20} alt="upload icon" />
+                                        </div>
+                                    </div>
+                                    <div className="flex gap-1">
+                                        <label className="font-semibold text-sm text-[#9012FF] hover:text-black cursor-pointer">
+                                            <input
+                                                type="file"
+                                                id="upload"
+                                                className="hidden"
+                                                accept="image/*"
+                                                onChange={handleImageUpload}
+                                            />
+                                            Click to upload
+                                        </label>
+                                        <span className="text-[#182230] text-sm font-medium">or drag and drop</span>
+                                    </div>
+                                </button>
+                            </div>
+                        </div>
+                    )}
                     {/* Pricing of the Courses */}
                     <div className="flex flex-row w-full gap-4">
                         <div className="flex flex-col gap-1 w-1/2 flex-grow">
@@ -361,7 +520,7 @@ function createcourse() {
                                     <StarIcon key={`filled-${index}`} filled={true} isHalf={false} />
                                 ))}
 
-                                {(ratingValue % 1) >= 0.0 && (
+                                {(ratingValue % 1) >= 0.1 && (
                                     <StarIcon filled={true} isHalf={true} />
                                 )}
 
@@ -395,6 +554,7 @@ function createcourse() {
                     )}
                 </div>
             </div>
+            <ToastContainer />
         </div>
     )
 
