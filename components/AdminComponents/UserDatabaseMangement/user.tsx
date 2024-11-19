@@ -20,94 +20,33 @@ import Ban from "@/components/AdminComponents/UserDatabaseMangement/Ban";
 import Delete from "@/components/AdminComponents/UserDatabaseMangement/Delete";
 
 // Define types for quiz data
-interface Quiz {
-    email: string;
+type User = {
+    name: string;
     MobileNo: string;
-    joiningDate: string;
-    status: 'Live' | 'Paused' | 'Finished' | 'Scheduled' | 'Cancelled' | 'Saved';
+    accountCreated: string;
+    email: string;
 }
 
 // Mock fetchQuizzes function with types
-const fetchQuizzes = async (): Promise<Quiz[]> => {
-    const allQuizzes: Quiz[] = [
-        {
-
-            MobileNo: "50%",
-            joiningDate: "Dec 1, 2023",
-            email: "Jun 1, 2024",
-            status: "Live"
-        },
-        {
-
-            MobileNo: "30%",
-            joiningDate: "Nov 15, 2023",
-            email: "May 15, 2024",
-            status: "Saved"
-        },
-        {
-
-            MobileNo: "75%",
-            joiningDate: "Oct 1, 2023",
-            email: "Apr 1, 2024",
-            status: "Paused"
-        },
-        {
-
-            MobileNo: "100%",
-            joiningDate: "Sep 1, 2023",
-            email: "Mar 1, 2024",
-            status: "Finished"
-        },
-        {
-
-            MobileNo: "10%",
-            joiningDate: "Jan 1, 2024",
-            email: "Jul 1, 2024",
-            status: "Scheduled"
-        },
-        {
-
-            MobileNo: "0%",
-            joiningDate: "Feb 1, 2024",
-            email: "Aug 1, 2024",
-            status: "Cancelled"
-        },
-        {
-
-            MobileNo: "85%",
-            joiningDate: "Jul 15, 2023",
-            email: "Jan 15, 2024",
-            status: "Live"
-        },
-        {
-
-            MobileNo: "20%",
-            joiningDate: "Dec 10, 2023",
-            email: "Jun 10, 2024",
-            status: "Saved"
-        },
-        {
-
-            MobileNo: "45%",
-            joiningDate: "Nov 25, 2023",
-            email: "May 25, 2024",
-            status: "Paused"
-        },
-        {
-
-            MobileNo: "100%",
-            joiningDate: "Aug 20, 2023",
-            email: "Feb 20, 2024",
-            status: "Finished"
-        }
+const fetchQuizzes = async (): Promise<User[]> => {
+    const allData = [
+        { name: "John Doe", MobileNo: "1234567890", accountCreated: "Dec 1, 2023", email: "user1@example.com" },
+        { name: "Jane Smith", MobileNo: "9876543210", accountCreated: "Nov 15, 2023", email: "user2@example.com" },
+        { name: "Alice Johnson", MobileNo: "5678901234", accountCreated: "Oct 1, 2023", email: "user3@example.com" },
+        { name: "Bob Brown", MobileNo: "4567890123", accountCreated: "Sep 1, 2023", email: "user4@example.com" },
+        { name: "Charlie Davis", MobileNo: "3456789012", accountCreated: "Jan 1, 2024", email: "user5@example.com" },
+        { name: "Dana Evans", MobileNo: "2345678901", accountCreated: "Feb 1, 2024", email: "user6@example.com" },
+        { name: "Eve Foster", MobileNo: "1230984567", accountCreated: "Jul 15, 2023", email: "user7@example.com" },
+        { name: "Frank Green", MobileNo: "7890123456", accountCreated: "Dec 10, 2023", email: "user8@example.com" },
+        { name: "Grace Hill", MobileNo: "8901234567", accountCreated: "Nov 25, 2023", email: "user9@example.com" },
+        { name: "Henry Adams", MobileNo: "9012345678", accountCreated: "Aug 20, 2023", email: "user10@example.com" },
     ];
-
-    return allQuizzes;
+    return allData;
 };
 
 function User() {
-    const [data, setData] = useState<Quiz[]>([]);
-    const [quizzes, setQuizzes] = useState<Quiz[]>([]);
+    const [data, setData] = useState<User[]>([]);
+    const [user, setUser] = useState<User[]>([]);
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage] = useState(5);
     const [loading, setLoading] = useState(true);
@@ -120,7 +59,7 @@ function User() {
         const loadQuizzes = async () => {
             setLoading(true);
             const quizzes = await fetchQuizzes();
-            setQuizzes(quizzes);
+            setUser(quizzes);
             setData(quizzes);
             setLoading(false);
         };
@@ -165,7 +104,7 @@ function User() {
     const [phone, setPhone] = useState("");
 
     return (
-        <div className="flex flex-col w-full gap-4 ">
+        <div className="flex flex-col w-full h-full gap-4 ">
             <div className="flex flex-row justify-between items-center">
                 <h2 className="text-lg font-semibold text-[#1D2939]">
                     Users
@@ -246,14 +185,14 @@ function User() {
                                 </th>
                                 <th className=" w-[17%] text-center px-8 py-4 text-[#667085] font-medium text-sm">
                                     <div className="flex flex-row justify-center gap-1">
-                                        <p>Joining Date</p>
+                                        <p>Account Created</p>
                                     </div>
                                 </th>
                                 <th className="w-[12%] text-center px-8 py-4 rounded-tr-xl text-[#667085] font-medium text-sm">Action</th>
                             </tr>
                         </thead>
                         <tbody>
-                            {currentItems.map((quiz, index) => (
+                            {currentItems.map((user, index) => (
                                 <tr key={index} className="h-auto border-t border-solid border-[#EAECF0]">
                                     <td className="py-2">
                                         <div className="flex flex-row ml-8 gap-2">
@@ -268,15 +207,15 @@ function User() {
                                                     className="font-semibold cursor-pointer"
                                                     onClick={() => handleTabClick('/admin/userdatabase/userdatabaseinfo')}
                                                 >
-                                                    Jenny Wilson
+                                                    {user.name}
                                                 </div>
                                                 <div className="flex justify-start items-start text-[13px] text-[#667085]">jenny#8547</div>
                                             </div>
                                         </div>
                                     </td>
-                                    <td className="px-8 py-4 text-center text-[#101828] text-sm">{quiz.email}</td>
-                                    <td className="px-8 py-4 text-center text-[#101828] text-sm">{quiz.MobileNo}</td>
-                                    <td className="px-8 py-4 text-center text-[#101828] text-sm">{quiz.joiningDate}</td>
+                                    <td className="px-8 py-4 text-center text-[#101828] text-sm">{user.email}</td>
+                                    <td className="px-8 py-4 text-center text-[#101828] text-sm">{user.MobileNo}</td>
+                                    <td className="px-8 py-4 text-center text-[#101828] text-sm">{user.accountCreated}</td>
                                     <td className="flex items-center justify-center px-8 py-4 text-[#101828] text-sm">
                                         <Popover placement="bottom-end">
                                             <PopoverTrigger>
