@@ -1,5 +1,5 @@
 "use client";
-
+import { Popover, PopoverContent, PopoverTrigger } from "@nextui-org/popover";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
@@ -17,7 +17,7 @@ import CustomerCareStatus from '@/components/AdminComponents/CustomerCare/Custom
 import CustomerCareImportance from '@/components/AdminComponents/CustomerCare/CustomerCareImportance';
 import { Calendar } from "@nextui-org/calendar";
 import { Checkbox } from "@nextui-org/react";
-import { Popover, PopoverContent, PopoverTrigger } from "@nextui-org/popover";
+
 // Define types for quiz data
 type Quiz = {
     id: string;
@@ -52,8 +52,9 @@ function CustomerCare() {
     const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState('');
     const [selectedItems, setSelectedItems] = useState<Set<string>>(new Set());
-    const router = useRouter();
     const [isPopoverOpen, setIsPopoverOpen] = useState(false);
+    const router = useRouter();
+
     // Fetch quizzes when component mounts
     useEffect(() => {
         const loadQuizzes = async () => {
@@ -197,84 +198,29 @@ function CustomerCare() {
                     </div>
 
 
-                    {/* <Popover
-                        placement="bottom-end">
-                        <PopoverTrigger>
-                            <button className=" px-[0.875rem] py-[0.625rem] bg-white border border-[#D0D5DD] rounded-md shadow-[0_1px_2px_0_rgba(16,24,40,0.05)]">
-                                <Image src='/icons/Frame.svg' alt="filter" width={20} height={20} />
-                            </button>
-                        </PopoverTrigger>
-                        <PopoverContent className=" w-[206px] rounded-2 border border-solid border-[#EAECF0] p-3 gap-2  hover:bg-[#F2F4F7]">
-
-                            <span className="text-xs font-normal text-[#475467]">Students</span>
-                            <div className="flex flex-row gap-2">
-                                <Checkbox color="primary" />
-                                <span className="text-[#0C111D] font-normal text-xs">Free</span>
-                            </div>
 
 
-                        </PopoverContent>
-                    </Popover> */}
                     <Popover
-                        placement="bottom-end"
+                        placement="bottom"
                         isOpen={isPopoverOpen}
                         onOpenChange={(open) => setIsPopoverOpen(open)}
                     >
                         <PopoverTrigger>
-                            <button className={`h-[44px] justify-center rounded-md bg-[#FFFFFF] border border-solid border-[#D0D5DD] outline-none  flex items-center  p-3 transition-colors ${isPopoverOpen
+                            <button className={`flex items-center justify-center px-[0.875rem] py-[0.625rem] bg-white rounded-md shadow-[0_1px_2px_0_rgba(16,24,40,0.05)] ${isPopoverOpen
                                 ? "border-[#C7A5FF] ring-4 ring-[#E2D9F8]"
-                                : "border-[#D0D5DD]"
+                                : " border border-solid border-[#D0D5DD]"
                                 }`}>
                                 <Image src='/icons/Frame.svg' alt="filter" width={20} height={20} />
+
+
                             </button>
                         </PopoverTrigger>
-                        <PopoverContent className="w-auto items-start p-2  h-auto gap-2 border border-lightGrey rounded-md shadow-[0_12px_16px_-4px_rgba(16,24,40,0.08)]">
-                            <div className="flex flex-col w-full  border-b border-solid border-lightGrey">
-                                <span className="text-xs font-normal text-[#475467] mb-3">Students</span>
-                                <div className="flex flex-row gap-2  mb-4 items-center hover:bg-[#F2F4F7]">
-                                    <Checkbox color="primary" />
-                                    <span className="text-[#1D2939] font-medium text-sm">Free</span>
-                                </div>
-                                <div className="flex flex-row gap-2  mb-2 items-center">
-                                    <Checkbox color="primary" />
-                                    <span className="text-[#1D2939] font-medium text-sm">Premium</span>
-                                </div>
+                        <PopoverContent className="w-[8.875rem] px-0 py-1 border border-lightGrey rounded-md shadow-[0_12px_16px_-4px_rgba(16,24,40,0.08)]">
+                            <div className="w-full bg-white">
+                                <button className="w-full py-[0.625rem] px-4 text-base text-left text-primary-900 font-normal transition-colors hover:bg-[#F9FAFB]">All</button>
+                                <button className="w-full py-[0.625rem] px-4 text-base text-left text-primary-900 font-normal transition-colors hover:bg-[#F9FAFB]">Premium</button>
+                                <button className="w-full py-[0.625rem] px-4 text-base text-left text-primary-900 font-normal transition-colors hover:bg-[#F9FAFB]">Free</button>
                             </div>
-
-                            <span className="text-xs font-normal text-[#475467] mb-3">Assignee</span>
-
-                            <div className="flex flex-col w-full gap-4">
-                                <div className="flex flex-row items-center">
-                                    <Checkbox color="primary" />
-                                    <Image
-                                        src="/icons/big-profile-pic.svg"
-                                        width={24}
-                                        height={24}
-                                        alt="profile" />
-                                    <span className="text-[#1D2939] font-medium text-sm ml-2">Assigned to me</span>
-                                </div>
-                                <div className="flex flex-row items-center">
-                                    <Checkbox color="primary" />
-                                    <Image
-                                        src="/icons/big-profile-pic.svg"
-                                        width={24}
-                                        height={24}
-                                        alt="profile" />
-                                    <span className="text-[#1D2939] font-medium text-sm ml-2">Theresa Webb</span>
-                                </div>
-                                <div className="flex flex-row items-center">
-                                    <Checkbox color="primary" />
-                                    <Image
-                                        src="/icons/big-profile-pic.svg"
-                                        width={24}
-                                        height={24}
-                                        alt="profile" />
-                                    <span className="text-[#1D2939] font-medium text-sm ml-2">Darrell Steward</span>
-                                </div>
-                            </div>
-
-
-
                         </PopoverContent>
                     </Popover>
 

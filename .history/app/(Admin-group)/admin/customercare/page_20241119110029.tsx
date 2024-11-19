@@ -228,10 +228,10 @@ function CustomerCare() {
                                 <Image src='/icons/Frame.svg' alt="filter" width={20} height={20} />
                             </button>
                         </PopoverTrigger>
-                        <PopoverContent className="w-auto items-start p-2  h-auto gap-2 border border-lightGrey rounded-md shadow-[0_12px_16px_-4px_rgba(16,24,40,0.08)]">
+                        <PopoverContent className="w-auto items-start  py-2  h-auto gap-2 border border-lightGrey rounded-md shadow-[0_12px_16px_-4px_rgba(16,24,40,0.08)]">
                             <div className="flex flex-col w-full  border-b border-solid border-lightGrey">
                                 <span className="text-xs font-normal text-[#475467] mb-3">Students</span>
-                                <div className="flex flex-row gap-2  mb-4 items-center hover:bg-[#F2F4F7]">
+                                <div className="flex flex-row gap-2  mb-4 items-center">
                                     <Checkbox color="primary" />
                                     <span className="text-[#1D2939] font-medium text-sm">Free</span>
                                 </div>

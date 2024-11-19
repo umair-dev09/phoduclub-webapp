@@ -221,60 +221,22 @@ function CustomerCare() {
                         onOpenChange={(open) => setIsPopoverOpen(open)}
                     >
                         <PopoverTrigger>
-                            <button className={`h-[44px] justify-center rounded-md bg-[#FFFFFF] border border-solid border-[#D0D5DD] outline-none  flex items-center  p-3 transition-colors ${isPopoverOpen
+                            <button className={`h-[44px] justify-center rounded-md bg-[#FFFFFF] border border-solid border-[#D0D5DD] outline-none  flex items-center p-3 transition-colors ${isPopoverOpen
                                 ? "border-[#C7A5FF] ring-4 ring-[#E2D9F8]"
                                 : "border-[#D0D5DD]"
                                 }`}>
                                 <Image src='/icons/Frame.svg' alt="filter" width={20} height={20} />
                             </button>
                         </PopoverTrigger>
-                        <PopoverContent className="w-auto items-start p-2  h-auto gap-2 border border-lightGrey rounded-md shadow-[0_12px_16px_-4px_rgba(16,24,40,0.08)]">
-                            <div className="flex flex-col w-full  border-b border-solid border-lightGrey">
-                                <span className="text-xs font-normal text-[#475467] mb-3">Students</span>
-                                <div className="flex flex-row gap-2  mb-4 items-center hover:bg-[#F2F4F7]">
+                        <PopoverContent className="w-[8.875rem] p-4 border border-lightGrey rounded-md shadow-[0_12px_16px_-4px_rgba(16,24,40,0.08)]">
+                            <div className="w-full bg-white  gap-2 hover:bg-[#F2F4F7] ">
+                                <span className="text-xs font-normal text-[#475467]">Students</span>
+                                <div className="flex flex-row gap-2">
                                     <Checkbox color="primary" />
-                                    <span className="text-[#1D2939] font-medium text-sm">Free</span>
+                                    <span className="text-[#0C111D] font-normal text-xs">Free</span>
                                 </div>
-                                <div className="flex flex-row gap-2  mb-2 items-center">
-                                    <Checkbox color="primary" />
-                                    <span className="text-[#1D2939] font-medium text-sm">Premium</span>
-                                </div>
+
                             </div>
-
-                            <span className="text-xs font-normal text-[#475467] mb-3">Assignee</span>
-
-                            <div className="flex flex-col w-full gap-4">
-                                <div className="flex flex-row items-center">
-                                    <Checkbox color="primary" />
-                                    <Image
-                                        src="/icons/big-profile-pic.svg"
-                                        width={24}
-                                        height={24}
-                                        alt="profile" />
-                                    <span className="text-[#1D2939] font-medium text-sm ml-2">Assigned to me</span>
-                                </div>
-                                <div className="flex flex-row items-center">
-                                    <Checkbox color="primary" />
-                                    <Image
-                                        src="/icons/big-profile-pic.svg"
-                                        width={24}
-                                        height={24}
-                                        alt="profile" />
-                                    <span className="text-[#1D2939] font-medium text-sm ml-2">Theresa Webb</span>
-                                </div>
-                                <div className="flex flex-row items-center">
-                                    <Checkbox color="primary" />
-                                    <Image
-                                        src="/icons/big-profile-pic.svg"
-                                        width={24}
-                                        height={24}
-                                        alt="profile" />
-                                    <span className="text-[#1D2939] font-medium text-sm ml-2">Darrell Steward</span>
-                                </div>
-                            </div>
-
-
-
                         </PopoverContent>
                     </Popover>
 

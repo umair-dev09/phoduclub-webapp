@@ -362,8 +362,8 @@ function customerinfo() {
                             </Popover>
 
                             <div className="flex flex-row gap-1">
-                                <div className="border border-solid border-[#EAECF0] py-2 px-3  flex flex-row rounded-[6px] items-center h-6 w-auto">
-                                    <span className="font-medium text-[#475467] text-xs">Scam</span>
+                                <div className=" py-2 px-3  flex flex-row rounded-[6px] items-center h-6 w-auto">
+                                    <span className="font-medium text-[#FFFFFF] text-xs">Scam</span>
                                 </div>
 
                             </div>

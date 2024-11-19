@@ -26,7 +26,7 @@ function customerinfo() {
 
     // State for "SELECTED POPUP";
     const [selectedStatus, setSelectedStatus] = useState({
-        text: "Repiled",
+        text: "Open",
         bgColor: "#FFEFC6",
         dotColor: "#93360D",
         textColor: "#93360D"
@@ -220,9 +220,9 @@ function customerinfo() {
                                         onClick={() =>
                                             handleIconSelect({
                                                 text: "Opened",
-                                                bgColor: "#C6F5FF",
-                                                dotColor: "#0D7A93",
-                                                textColor: "#0D7A93",
+                                                bgColor: "#F8E9FE",
+                                                dotColor: "#791F89",
+                                                textColor: "#791F89",
                                             })
                                         }
                                     >
@@ -249,51 +249,16 @@ function customerinfo() {
 
                                 </PopoverContent>
                             </Popover>
-                            <Popover placement="bottom">
-                                <PopoverTrigger>
-                                    <button className="flex flex-row gap-1 focus:outline-none">
-                                        <Image
-                                            src="/icons/big-profile-pic.svg"
-                                            width={20}
-                                            height={20}
-                                            alt="sdsds" />
-                                        <span className="text-sm font-medium text-[#1D2939]">Jenny Wilson</span>
-                                        <Image
-                                            src="/icons/Arrow-down-1.svg"
-                                            width={20}
-                                            height={20}
-                                            alt="sdsds" />
-                                    </button>
-                                </PopoverTrigger>
-                                <PopoverContent className="w-auto py-1 px-0 bg-white border border-lightGrey rounded-md ">
-                                    <button className="flex flex-row items-center justify-start w-full  px-2 gap-1 hover:bg-[#F2F4F7] h-11">
-                                        <Image
-                                            src="/icons/big-profile-pic.svg"
-                                            width={24}
-                                            height={24}
-                                            alt="profile" />
-                                        <span className="text-[#1D2939] font-medium text-sm">Assigned to me</span>
-                                    </button>
-                                    <button className="flex flex-row items-center justify-start w-full  px-2 gap-1 hover:bg-[#F2F4F7] h-11">
-                                        <Image
-                                            src="/icons/big-profile-pic.svg"
-                                            width={24}
-                                            height={24}
-                                            alt="profile" />
-                                        <span className="text-[#1D2939] font-medium text-sm">Jabir</span>
-                                    </button>
-                                    <button className="flex flex-row items-center justify-start w-full  px-2 gap-1 hover:bg-[#F2F4F7] h-11">
-                                        <Image
-                                            src="/icons/big-profile-pic.svg"
-                                            width={24}
-                                            height={24}
-                                            alt="profile" />
-                                        <span className="text-[#1D2939] font-medium text-sm">Jahtin</span>
-                                    </button>
-                                </PopoverContent>
-                            </Popover>
 
 
+                            <div className="flex flex-row gap-1">
+                                <Image
+                                    src="/icons/big-profile-pic.svg"
+                                    width={20}
+                                    height={20}
+                                    alt="sdsds" />
+                                <span className="text-sm font-medium text-[#1D2939]">Jenny Wilson</span>
+                            </div>
                             <Popover placement="bottom">
                                 <PopoverTrigger>
                                     <button className="flex flex-row gap-1  focus:outline-none">
@@ -362,8 +327,8 @@ function customerinfo() {
                             </Popover>
 
                             <div className="flex flex-row gap-1">
-                                <div className="border border-solid border-[#EAECF0] py-2 px-3  flex flex-row rounded-[6px] items-center h-6 w-auto">
-                                    <span className="font-medium text-[#475467] text-xs">Scam</span>
+                                <div className="bg-[#344054] py-2 px-3  flex flex-row rounded-[6px] items-center h-6 w-auto">
+                                    <span className="font-medium text-[#FFFFFF] text-xs">Scam</span>
                                 </div>
 
                             </div>
