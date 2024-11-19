@@ -5,7 +5,7 @@ import Banned from "@/components/AdminComponents/UserDatabaseMangement/Banned";
 
 function userdatabase() {
     // Example counts for users and banned users
-    const userCount = 78; // Replace with dynamic value if necessary
+    const userCount = 0; // Replace with dynamic value if necessary
     const bannedCount = 0; // Replace with dynamic value if necessary
 
     return (

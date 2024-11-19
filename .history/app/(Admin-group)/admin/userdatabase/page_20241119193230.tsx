@@ -5,7 +5,7 @@ import Banned from "@/components/AdminComponents/UserDatabaseMangement/Banned";
 
 function userdatabase() {
     // Example counts for users and banned users
-    const userCount = 78; // Replace with dynamic value if necessary
+    const userCount = 0; // Replace with dynamic value if necessary
     const bannedCount = 0; // Replace with dynamic value if necessary
 
     return (
@@ -25,7 +25,7 @@ function userdatabase() {
                     key="User"
                     title={
                         <div className="flex items-center space-x-2 hover:text-[#7400E0]">
-                            <span className="font-medium text-base text-[#7400E0]">Users</span>
+                            <span className="font-medium text-base text-[#7400E0]">User</span>
                             {userCount > 0 && (
                                 <div className="inline-flex items-center justify-center px-3 py-1 rounded-full text-sm bg-[#EDE4FF] border border-[#EDE4FF] font-medium text-[#7400E0]">
                                     {userCount}

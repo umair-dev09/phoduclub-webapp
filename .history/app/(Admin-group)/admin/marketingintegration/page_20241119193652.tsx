@@ -1,12 +1,12 @@
 "use client";
 import { Tabs, Tab } from "@nextui-org/react";
-import User from "@/components/AdminComponents/UserDatabaseMangement/user";
-import Banned from "@/components/AdminComponents/UserDatabaseMangement/Banned";
+import Coupons from "@/components/AdminComponents/MarketIntegration/Coupons";
+import Messenger from "@/components/AdminComponents/MarketIntegration/Messenger";
 
-function userdatabase() {
-    // Example counts for users and banned users
-    const userCount = 78; // Replace with dynamic value if necessary
-    const bannedCount = 0; // Replace with dynamic value if necessary
+function MarketIntegration() {
+    // Example counts for messenger and coupons
+    const messengerCount = 1800; // Replace with dynamic value if necessary
+    const couponCount = 0; // Replace with dynamic value if necessary
 
     return (
         <div className="p-8 flex flex-col overflow-y-auto w-full h-full">
@@ -21,39 +21,42 @@ function userdatabase() {
                     tabContent: "group-data-[selected=true]:text-[#7400E0]",
                 }}
             >
+                {/* Messenger Tab */}
                 <Tab
-                    key="User"
+                    key="Messenger"
                     title={
                         <div className="flex items-center space-x-2 hover:text-[#7400E0]">
-                            <span className="font-medium text-base text-[#7400E0]">Users</span>
-                            {userCount > 0 && (
+                            <span className="font-medium text-base text-[#7400E0]">Messenger</span>
+                            {messengerCount > 0 && (
                                 <div className="inline-flex items-center justify-center px-3 py-1 rounded-full text-sm bg-[#EDE4FF] border border-[#EDE4FF] font-medium text-[#7400E0]">
-                                    {userCount}
+                                    {messengerCount}
                                 </div>
                             )}
                         </div>
                     }
                 >
-                    <User />
+                    <Messenger />
                 </Tab>
+
+                {/* Coupons Tab */}
                 <Tab
-                    key="Banned"
+                    key="Coupons"
                     title={
                         <div className="flex items-center space-x-2 hover:text-[#7400E0]">
-                            <span className="font-medium text-base text-[#7400E0]">Banned</span>
-                            {bannedCount > 0 && (
+                            <span className="font-medium text-base text-[#7400E0]">Coupons</span>
+                            {couponCount > 0 && (
                                 <div className="inline-flex items-center justify-center px-3 py-1 rounded-full text-sm bg-[#EDE4FF] border border-[#EDE4FF] font-medium text-[#7400E0]">
-                                    {bannedCount}
+                                    {couponCount}
                                 </div>
                             )}
                         </div>
                     }
                 >
-                    <Banned />
+                    <Coupons />
                 </Tab>
             </Tabs>
         </div>
     );
 }
 
-export default userdatabase;
+export default MarketIntegration;
