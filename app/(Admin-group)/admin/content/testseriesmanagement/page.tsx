@@ -28,43 +28,43 @@ type Quiz = {
     questions: number;
     date: string; // Can be Date type if desired
     students: number;
-    status: 'Live' | 'Paused' | 'Finished' | 'Scheduled' | 'Ended' | 'Saved';
+    status: 'live' | 'paused' | 'finished' | 'scheduled' | 'ended' | 'saved';
 }
 
 // Mock fetchQuizzes function with types
 const fetchQuizzes = async (): Promise<Quiz[]> => {
     const allQuizzes: Quiz[] = [
-        { questions: 10, date: 'Jan 6, 2024', students: 2147, status: 'Live' },
-        { questions: 10, date: 'Mar 15, 2024', students: 900, status: 'Saved' },
-        { questions: 8, date: 'Jan 8, 2024', students: 1875, status: 'Paused' },
-        { questions: 7, date: 'Mar 17, 2024', students: 1250, status: 'Saved' },
-        { questions: 12, date: 'Jan 10, 2024', students: 1290, status: 'Finished' },
-        { questions: 6, date: 'Jan 12, 2024', students: 950, status: 'Ended' },
-        { questions: 15, date: 'Feb 1, 2024', students: 1800, status: 'Scheduled' },
-        { questions: 9, date: 'Feb 3, 2024', students: 1600, status: 'Live' },
-        { questions: 12, date: 'Mar 22, 2024', students: 1400, status: 'Saved' },
-        { questions: 12, date: 'Feb 5, 2024', students: 1950, status: 'Paused' },
-        { questions: 9, date: 'Mar 20, 2024', students: 1150, status: 'Saved' },
-        { questions: 10, date: 'Feb 8, 2024', students: 2100, status: 'Finished' },
-        { questions: 8, date: 'Feb 10, 2024', students: 2200, status: 'Ended' },
-        { questions: 6, date: 'Mar 28, 2024', students: 1100, status: 'Saved' },
-        { questions: 7, date: 'Feb 12, 2024', students: 1700, status: 'Live' },
-        { questions: 10, date: 'Feb 15, 2024', students: 1300, status: 'Scheduled' },
-        { questions: 11, date: 'Feb 18, 2024', students: 1450, status: 'Finished' },
-        { questions: 10, date: 'Apr 2, 2024', students: 1450, status: 'Saved' },
-        { questions: 9, date: 'Feb 20, 2024', students: 1900, status: 'Paused' },
-        { questions: 10, date: 'Apr 6, 2024', students: 1250, status: 'Saved' },
-        { questions: 12, date: 'Feb 25, 2024', students: 1750, status: 'Live' },
-        { questions: 8, date: 'Mar 1, 2024', students: 2000, status: 'Ended' },
-        { questions: 7, date: 'Mar 3, 2024', students: 1500, status: 'Scheduled' },
-        { questions: 10, date: 'Mar 5, 2024', students: 1850, status: 'Finished' },
-        { questions: 11, date: 'Mar 30, 2024', students: 1000, status: 'Saved' },
-        { questions: 9, date: 'Mar 8, 2024', students: 1700, status: 'Live' },
-        { questions: 8, date: 'Apr 4, 2024', students: 1350, status: 'Saved' },
-        { questions: 8, date: 'Mar 10, 2024', students: 1400, status: 'Paused' },
-        { questions: 6, date: 'Mar 12, 2024', students: 1200, status: 'Ended' },
-        { questions: 8, date: 'Mar 25, 2024', students: 1300, status: 'Saved' },
-        { questions: 7, date: 'Apr 10, 2024', students: 1050, status: 'Saved' }
+        { questions: 10, date: 'Jan 6, 2024', students: 2147, status: 'live' },
+        { questions: 10, date: 'Mar 15, 2024', students: 900, status: 'saved' },
+        { questions: 8, date: 'Jan 8, 2024', students: 1875, status: 'paused' },
+        { questions: 7, date: 'Mar 17, 2024', students: 1250, status: 'saved' },
+        { questions: 12, date: 'Jan 10, 2024', students: 1290, status: 'finished' },
+        { questions: 6, date: 'Jan 12, 2024', students: 950, status: 'ended' },
+        { questions: 15, date: 'Feb 1, 2024', students: 1800, status: 'scheduled' },
+        { questions: 9, date: 'Feb 3, 2024', students: 1600, status: 'live' },
+        { questions: 12, date: 'Mar 22, 2024', students: 1400, status: 'saved' },
+        { questions: 12, date: 'Feb 5, 2024', students: 1950, status: 'paused' },
+        { questions: 9, date: 'Mar 20, 2024', students: 1150, status: 'saved' },
+        { questions: 10, date: 'Feb 8, 2024', students: 2100, status: 'finished' },
+        { questions: 8, date: 'Feb 10, 2024', students: 2200, status: 'ended' },
+        { questions: 6, date: 'Mar 28, 2024', students: 1100, status: 'saved' },
+        { questions: 7, date: 'Feb 12, 2024', students: 1700, status: 'live' },
+        { questions: 10, date: 'Feb 15, 2024', students: 1300, status: 'scheduled' },
+        { questions: 11, date: 'Feb 18, 2024', students: 1450, status: 'finished' },
+        { questions: 10, date: 'Apr 2, 2024', students: 1450, status: 'saved' },
+        { questions: 9, date: 'Feb 20, 2024', students: 1900, status: 'paused' },
+        { questions: 10, date: 'Apr 6, 2024', students: 1250, status: 'saved' },
+        { questions: 12, date: 'Feb 25, 2024', students: 1750, status: 'live' },
+        { questions: 8, date: 'Mar 1, 2024', students: 2000, status: 'ended' },
+        { questions: 7, date: 'Mar 3, 2024', students: 1500, status: 'scheduled' },
+        { questions: 10, date: 'Mar 5, 2024', students: 1850, status: 'finished' },
+        { questions: 11, date: 'Mar 30, 2024', students: 1000, status: 'saved' },
+        { questions: 9, date: 'Mar 8, 2024', students: 1700, status: 'live' },
+        { questions: 8, date: 'Apr 4, 2024', students: 1350, status: 'saved' },
+        { questions: 8, date: 'Mar 10, 2024', students: 1400, status: 'paused' },
+        { questions: 6, date: 'Mar 12, 2024', students: 1200, status: 'ended' },
+        { questions: 8, date: 'Mar 25, 2024', students: 1300, status: 'saved' },
+        { questions: 7, date: 'Apr 10, 2024', students: 1050, status: 'saved' }
     ];
     return allQuizzes;
 };
@@ -145,12 +145,12 @@ function TesstseriesInfo() {
     const closeViewAnalytics = () => setIsViewAnalyticsOpen(false);
 
     const statusMapping: Record<Option, string[]> = {
-        'Saved': ['Saved'],
-        'Live': ['Live'],
-        'Scheduled': ['Scheduled'],
-        'Pause': ['Paused'],    // Notice how 'Pause' checkbox maps to 'Paused' status
-        'Finished': ['Finished'],
-        'Canceled': ['Ended']   // 'Canceled' checkbox maps to 'Ended' status
+        'Saved': ['saved'],
+        'Live': ['live'],
+        'Scheduled': ['scheduled'],
+        'Pause': ['paused'],
+        'Finished': ['finished'],
+        'Canceled': ['ended']  // Map 'Canceled' to 'ended' status
     };
 
     const [checkedState, setCheckedState] = useState<Record<Option, boolean>>({
@@ -253,7 +253,7 @@ function TesstseriesInfo() {
                     {/* By Status Button */}
                     <Popover placement="bottom-start">
                         <PopoverTrigger>
-                            <button className="h-[44px] w-[126px] rounded-md bg-[#FFFFFF] border border-solid border-[#D0D5DD] flex items-center justify-between p-3 cursor-pointer">
+                            <button className="h-[44px] w-[126px] rounded-md bg-[#FFFFFF] outline-none border border-solid border-[#D0D5DD] flex items-center justify-between p-3 cursor-pointer">
                                 <p className={`flex flex-row font-medium text-sm ${selectedCount > 0 ? 'text-[#182230]' : 'text-[#667085]'}`}>
                                     {selectedCount > 0 ? `${selectedCount} selected` : 'By status'}
                                 </p>
@@ -341,7 +341,7 @@ function TesstseriesInfo() {
                                                     <p className="text-start">Phodu JEE Mains Test Series 2025</p>
                                                 </button>
                                             </td>
-                                            <td className="px-8 py-4 text-center text-[#101828] text-sm">&#8377;{quiz.students}</td>
+                                            <td className="px-8 py-4 text-center text-[#101828] text-sm"><span className="mr-1">&#8377;</span>{quiz.students}</td>
                                             <td className="px-8 py-4 text-center text-[#101828] text-sm">{quiz.date}</td>
                                             <td className="px-8 py-4 text-center text-[#101828] text-sm">
                                                 <span className='flex items-center justify-start ml-[33%] rounded-full'>
@@ -361,8 +361,8 @@ function TesstseriesInfo() {
                                                         </button>
                                                     </PopoverTrigger>
                                                     <PopoverContent>
-                                                        <div className={`flex flex-col items-start text-sm font-normal py-1 px-0 bg-white border border-lightGrey rounded-md ${quiz.status === 'Paused' ? 'w-[11.563rem]' : 'w-[10.438rem]'}`}>
-                                                            {(quiz.status === 'Saved' || quiz.status === 'Scheduled') && (
+                                                        <div className={`flex flex-col items-start text-sm font-normal py-1 px-0 bg-white border border-lightGrey rounded-md ${quiz.status === 'paused' ? 'w-[11.563rem]' : 'w-[10.438rem]'}`}>
+                                                            {(quiz.status === 'saved' || quiz.status === 'scheduled') && (
                                                                 <Popover placement="left-start">
                                                                     <PopoverTrigger>
                                                                         <div className="flex flex-row justify-between w-full px-4 py-[0.625rem] hover:bg-[#F2F4F7] transition-colors">
@@ -382,7 +382,7 @@ function TesstseriesInfo() {
                                                                 </Popover>
                                                             )}
 
-                                                            {quiz.status === 'Paused' && (
+                                                            {quiz.status === 'paused' && (
                                                                 <Popover placement="left-start">
                                                                     <PopoverTrigger>
                                                                         <div className="flex flex-row justify-between w-[11.563rem] px-4 py-[0.625rem] hover:bg-[#F2F4F7] transition-colors">
@@ -404,28 +404,28 @@ function TesstseriesInfo() {
 
                                                             {/* Option 1 */}
                                                             <div>
-                                                                {quiz.status === 'Paused' && (
+                                                                {quiz.status === 'paused' && (
                                                                     <button className="flex flex-row w-[11.563rem] px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors"
                                                                         onClick={() => handleTabClick('/admin/content/quizzesmanagement/createquiz')}>
                                                                         <Image src='/icons/edit-icon.svg' alt="edit" width={18} height={18} />
                                                                         <p>Edit Quiz</p>
                                                                     </button>
                                                                 )}
-                                                                {quiz.status === 'Scheduled' && (
+                                                                {quiz.status === 'scheduled' && (
                                                                     <button className="flex flex-row w-[10.438rem] px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors"
                                                                         onClick={() => handleTabClick('/admin/content/quizzesmanagement/createquiz')}>
                                                                         <Image src='/icons/edit-icon.svg' alt="edit" width={18} height={18} />
                                                                         <p>Edit Quiz</p>
                                                                     </button>
                                                                 )}
-                                                                {quiz.status === 'Saved' && (
+                                                                {quiz.status === 'saved' && (
                                                                     <button className="flex flex-row w-[10.438rem] px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors"
                                                                         onClick={() => handleTabClick('/admin/content/quizzesmanagement/createquiz')}>
                                                                         <Image src='/icons/edit-icon.svg' alt="edit" width={18} height={18} />
                                                                         <p>Edit Quiz</p>
                                                                     </button>
                                                                 )}
-                                                                {quiz.status === 'Live' && (
+                                                                {quiz.status === 'live' && (
                                                                     <button className="flex flex-row w-[10.438rem] px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors"
                                                                         onClick={openPausedQuiz}>
                                                                         <Image src='/icons/pause-dark.svg' alt="pause quiz" width={18} height={18} />
@@ -443,35 +443,35 @@ function TesstseriesInfo() {
                                                             )} */}
                                                             {/* Option 4: Delete Quiz */}
                                                             <div>
-                                                                {quiz.status === 'Paused' && (
+                                                                {quiz.status === 'paused' && (
                                                                     <div className="flex flex-row w-[11.563rem] px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors"
                                                                         onClick={openDeleteDialog}>
                                                                         <Image src='/icons/delete.svg' alt="delete" width={18} height={18} />
                                                                         <p className="text-[#DE3024]">Delete Quiz</p>
                                                                     </div>
                                                                 )}
-                                                                {quiz.status === 'Scheduled' && (
+                                                                {quiz.status === 'scheduled' && (
                                                                     <div className="flex flex-row w-[10.438rem] px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors"
                                                                         onClick={openDeleteDialog}>
                                                                         <Image src='/icons/delete.svg' alt="delete" width={18} height={18} />
                                                                         <p className="text-[#DE3024]">Delete Quiz</p>
                                                                     </div>
                                                                 )}
-                                                                {quiz.status === 'Finished' && (
+                                                                {quiz.status === 'finished' && (
                                                                     <div className="flex flex-row w-[10.438rem] px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors"
                                                                         onClick={openDeleteDialog}>
                                                                         <Image src='/icons/delete.svg' alt="delete" width={18} height={18} />
                                                                         <p className="text-[#DE3024]">Delete Quiz</p>
                                                                     </div>
                                                                 )}
-                                                                {quiz.status === 'Saved' && (
+                                                                {quiz.status === 'saved' && (
                                                                     <div className="flex flex-row w-[10.438rem] px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors"
                                                                         onClick={openDeleteDialog}>
                                                                         <Image src='/icons/delete.svg' alt="delete" width={18} height={18} />
                                                                         <p className="text-[#DE3024]">Delete Quiz</p>
                                                                     </div>
                                                                 )}
-                                                                {quiz.status === 'Live' && (
+                                                                {quiz.status === 'live' && (
                                                                     <div className="flex flex-row w-[10.438rem] px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors"
                                                                         onClick={openEndQuiz}>
                                                                         <Image src='/icons/license-no.svg' alt="end quiz" width={18} height={18} />

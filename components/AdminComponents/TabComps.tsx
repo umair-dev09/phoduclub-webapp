@@ -116,7 +116,7 @@ function TabComps() {
             ) : (
                 <button
                     onClick={onClick}
-                    className={`flex w-full py-2 px-3 text-[14px] text-left font-normal rounded-md mb-2 transition-all h-11 overflow-hidden
+                    className={`flex w-full py-2 px-3 text-[14px] text-left font-normal rounded-md mb-2 transition-all h-auto overflow-hidden
                     ${isActive ? 'bg-[#7400E0] text-white' : 'hover:bg-[#e1ffe11a] text-[#AAAAAA]'}`}
                 >
                     <Image
@@ -125,7 +125,7 @@ function TabComps() {
                         height={22}
                         alt={`${label} Icon`}
                     />
-                    {!isCollapsed && <span className="ml-2">{label}</span>}
+                    {!isCollapsed && <span className="ml-2 whitespace-nowrap">{label}</span>}
                 </button>
             )}
         </div>
@@ -144,7 +144,7 @@ function TabComps() {
             </button>
 
             {/* Logo Section */}
-            <div>
+            <div className='overflow-hidden'>
                 <p className={`items-center justify-center w-10 h-10 mt-3 mb-[0.73rem] ml-[0.2rem] text-white font-bold bg-[#3c2f40] rounded-[0.375rem] transition-all ${isCollapsed ? 'flex' : 'hidden'}`}>P</p>
                 <div className={`flex-col mt-2 mb-[0.475rem] ml-2 transition-all ${!isCollapsed ? 'flex' : 'hidden'}`}>
                     <p className='text-white text-lg font-bold'>phodu<span className='text-[#e29ff5] text-lg font-bold'>.club</span></p>
@@ -168,9 +168,11 @@ function TabComps() {
                             ],
                         }}>
                         <div
-                            className={`flex items-center justify-between w-full relative group mb-2 py-2 px-3  h-11 overflow-hidden rounded-md ${isContentSection()
-                                ? 'bg-[#7400E0] text-white'
-                                : 'hover:bg-[#e1ffe11a] text-[#AAAAAA]'
+                            className={`flex items-center justify-between w-full relative group mb-2 py-2 px-3  h-11 overflow-hidden rounded-md 
+                                
+                                ${isContentSection()
+                                    ? 'bg-[#7400E0] text-white'
+                                    : 'hover:bg-[#e1ffe11a] text-[#AAAAAA]'
                                 }`}
                             onClick={() => toggleCollapsible(0)}
                         >
@@ -186,7 +188,7 @@ function TabComps() {
                                     height={22}
                                     alt="Content"
                                 />
-                                {!isCollapsed && <span className="ml-2">Content</span>}
+                                {!isCollapsed && <span className="ml-2 whitespace-nowrap">Content</span>}
                             </div>
 
                             {/* Right section: Arrow icon */}
@@ -202,8 +204,6 @@ function TabComps() {
                                     alt="Toggle"
                                 />
                             )}
-
-
                         </div>
                     </Tooltip>
                 }
@@ -243,7 +243,7 @@ function TabComps() {
                             : 'hover:bg-[#e1ffe11a] text-[#AAAAAA]'
                             }`}
                     >
-                        <span className='ml-7 text-[0.813rem]'>
+                        <span className='ml-7 text-[0.813rem] whitespace-nowrap'>
                             Quizzes Management
                         </span>
                     </button>
@@ -289,7 +289,7 @@ function TabComps() {
                             : 'hover:bg-[#e1ffe11a] text-[#AAAAAA]'
                             }`}
                     >
-                        <span className='ml-7 text-[0.813rem]'>
+                        <span className='ml-7 text-[0.813rem] whitespace-nowrap'>
                             Test Series Management
                         </span>
 
@@ -334,7 +334,7 @@ function TabComps() {
                             : 'hover:bg-[#e1ffe11a] text-[#AAAAAA]'
                             }`}
                     >
-                        <span className='ml-7 text-[0.813rem]'>
+                        <span className='ml-7 text-[0.813rem] whitespace-nowrap'>
                             Course Creation
                         </span>
                     </button>
