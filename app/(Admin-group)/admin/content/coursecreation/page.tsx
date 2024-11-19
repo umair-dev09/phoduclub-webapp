@@ -336,10 +336,25 @@ function Quizz() {
                             <table className="w-full bg-white rounded-xl">
                                 <thead>
                                     <tr>
-                                        <th className="w-1/4 text-left px-8 py-4 pl-8 rounded-tl-xl text-[#667085] font-medium text-sm">Quizzes</th>
-                                        <th className="w-[17%] text-center px-8 py-4 text-[#667085] font-medium text-sm">Price</th>
-                                        <th className="w-[17%] text-center px-8 py-4 text-[#667085] font-medium text-sm">Published on</th>
-                                        <th className="w-[17%] text-center px-8 py-4 text-[#667085] font-medium text-sm">Purchased</th>
+                                        <th className="w-1/4 text-left px-8 py-4 pl-8 rounded-tl-xl text-[#667085] font-medium text-sm">Courses</th>
+                                        <th className="w-[17%] text-center px-8 py-4 text-[#667085] font-medium text-sm">
+                                            <div className="flex flex-row justify-center gap-1">
+                                                <p>Price</p>
+                                                <Image src='/icons/unfold-more-round.svg' alt="more" width={16} height={16} />
+                                            </div>
+                                        </th>
+                                        <th className="w-[17%] text-center px-8 py-4 text-[#667085] font-medium text-sm">
+                                            <div className="flex flex-row justify-center gap-1">
+                                                <p>Published on</p>
+                                                <Image src='/icons/unfold-more-round.svg' alt="more" width={16} height={16} />
+                                            </div>
+                                        </th>
+                                        <th className="w-[17%] text-center px-8 py-4 text-[#667085] font-medium text-sm">
+                                            <div className="flex flex-row justify-center gap-1">
+                                                <p>Purchased</p>
+                                                <Image src='/icons/unfold-more-round.svg' alt="more" width={16} height={16} />
+                                            </div>
+                                        </th>
                                         <th className="flex w-[17%] px-8 py-4 rounded-tr-xl text-[#667085] font-medium text-sm">
                                             <span className="ml-[33%]">
                                                 Status
