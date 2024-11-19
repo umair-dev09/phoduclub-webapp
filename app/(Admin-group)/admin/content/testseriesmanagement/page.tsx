@@ -338,7 +338,7 @@ function TesstseriesInfo() {
                                                 <Image src='/icons/unfold-more-round.svg' alt="more" width={16} height={16} />
                                             </div>
                                         </th>
-                                        <th className="w-[20%] text-center px-8 py-4 rounded-tr-xl text-[#667085] font-medium text-sm">Status</th>
+                                        <th className="flex w-[20%] ml-[15%] px-8 py-4 rounded-tr-xl text-[#667085] font-medium text-sm">Status</th>
                                         <th className="w-[10%] text-center px-8 py-4 rounded-tr-xl text-[#667085] font-medium text-sm">Action</th>
                                     </tr>
                                 </thead>
@@ -354,7 +354,7 @@ function TesstseriesInfo() {
                                             <td className="px-8 py-4 text-center text-[#101828] text-sm"><span className="mr-1">&#8377;</span>{quiz.students}</td>
                                             <td className="px-8 py-4 text-center text-[#101828] text-sm">{quiz.date}</td>
                                             <td className="px-8 py-4 text-center text-[#101828] text-sm">
-                                                <span className='flex items-center justify-start ml-[33%] rounded-full'>
+                                                <span className='flex items-center justify-start ml-[20%] rounded-full'>
                                                     <QuizStatus status={quiz.status} />
                                                 </span>
                                             </td>
