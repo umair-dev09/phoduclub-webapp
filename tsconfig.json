@@ -36,7 +36,8 @@
     ".next/types/**/*.ts",
     "app/(Admin-group)/admin/content/testseriesmanagement",
     "app/(Admin-group)/admin/content/quizzesmanagement",
-    "app/(Admin-group)/admin/content/coursecreation"
+    "app/(Admin-group)/admin/content/coursecreation",
+    "app/(Admin-group)/admin/discussionform/course"
   ],
   "exclude": [
     "node_modules"
