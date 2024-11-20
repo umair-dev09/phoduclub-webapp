@@ -31,7 +31,7 @@ function InternalChat() {
                     <h4 className="text-sm text-[#182230] font-semibold leading-[1.103rem] cursor-pointer hover:underline">
                         Personal Messages
                     </h4>
-                    <p className="flex items-center justify-center w-6 h-6 opacity-0 text-xs text-white font-medium bg-[#DE3024] rounded-full transition-opacity duration-150 group-hover:opacity-100">
+                    <p className="flex items-center justify-center min-w-6 h-6 p-[0.375rem] opacity-0 text-xs text-white font-medium bg-[#DE3024] rounded-full transition-opacity duration-150 group-hover:opacity-100">
                         6
                     </p>
                 </div>
