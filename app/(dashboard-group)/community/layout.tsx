@@ -11,7 +11,6 @@ function CommunityLayout({ children }: CommunityLayoutProps) {
         <div className="flex flex-1 flex-row">
             {/* Left Sidebar */}
             <div className="flex flex-col w-[90px] bg-white  border-r border-b border-lightGrey">
-               
                 <div>
                     <GroupIcons />
                 </div>
