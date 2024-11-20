@@ -1,6 +1,6 @@
 function DiscussionForm() {
     return (
-        <div>
+        <div className=" bg-[#FFFFFF] w-9">
             jabir
         </div>
     );

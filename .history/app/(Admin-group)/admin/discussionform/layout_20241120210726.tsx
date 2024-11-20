@@ -21,7 +21,7 @@ function DiscussionForm({ children }: DiscussionFormProps) {
     };
 
     return (
-        <div className="flex flex-1 flex-row">
+        <div className="">
             <div className="w-[90px] h-full bg-slate-50 p-6 flex flex-col gap-2">
                 {/* Button 1 */}
                 <button
