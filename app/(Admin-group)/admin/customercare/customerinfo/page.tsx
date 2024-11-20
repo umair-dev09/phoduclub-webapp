@@ -246,7 +246,6 @@ function customerinfo() {
                                             <span className="font-medium text-[#0A5B39] text-xs">Resolved</span>
                                         </div>
                                     </button>
-
                                 </PopoverContent>
                             </Popover>
                             <Popover placement="bottom">
