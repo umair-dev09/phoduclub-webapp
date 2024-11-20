@@ -1,7 +1,9 @@
+import React from 'react';
+
 function internalchat() {
     return (
         <div>
-            jabir ali
+
         </div>
     )
 }
