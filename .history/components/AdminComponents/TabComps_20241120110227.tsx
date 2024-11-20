@@ -348,7 +348,7 @@ function TabComps() {
             {renderButtonWith('User Database', '/icons/community-2.svg', '/icons/community.svg', activeTab === 'userdatabase', () => handleTabClick('userdatabase', '/admin/userdatabase'))}
             {renderButtonWith('Customer Care', '/icons/community-2.svg', '/icons/community.svg', activeTab === 'customercare', () => handleTabClick('customercare', '/admin/customercare'))}
             {renderButtonWith('Internal Chat', '/icons/internal-chat-1.svg', '/icons/internal-chat-2.svg', activeTab === 'internalchat', () => handleTabClick('internalchat', '/admin/internalchat'))}
-            {renderButtonWith('Discussion Forum', '/icons/discussion-form.svg', '/icons/discussion-form-2.svg', activeTab === 'discussionform', () => handleTabClick('discussionform', '/admin/discussionform'))}
+            {renderButtonWith('Discussion Forum', '/icons/discussion-form.svg', '/icons/internal-chat-2.svg', activeTab === 'discussionform', () => handleTabClick('discussionform', '/admin/discussionform'))}
         </div>
     );
 }

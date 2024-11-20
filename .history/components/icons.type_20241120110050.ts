@@ -141,8 +141,7 @@ export type IconsType =
   | "resume-2"
   | "internal-chat-1"
   | "internal-chat-2"
-  | "discussion-form"
-  | "discussion-form-2";
+  | "discussion-form";
 
 
 
