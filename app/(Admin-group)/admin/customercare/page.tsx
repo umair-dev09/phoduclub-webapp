@@ -211,90 +211,69 @@ function CustomerCare() {
                                 <Checkbox color="primary" />
                                 <span className="text-[#0C111D] font-normal text-xs">Free</span>
                             </div>
-
-
                         </PopoverContent>
                     </Popover> */}
-                    <Popover
-                        placement="bottom-end"
-                        isOpen={isPopoverOpen}
-                        onOpenChange={(open) => setIsPopoverOpen(open)}
-                    >
-                        <PopoverTrigger>
-                            <button className={`h-[44px] justify-center rounded-md bg-[#FFFFFF] border border-solid border-[#D0D5DD] outline-none  flex items-center  p-3 transition-colors ${isPopoverOpen
-                                ? "border-[#C7A5FF] ring-4 ring-[#E2D9F8]"
-                                : "border-[#D0D5DD]"
-                                }`}>
-                                <Image src='/icons/Frame.svg' alt="filter" width={20} height={20} />
-                            </button>
-                        </PopoverTrigger>
-                        <PopoverContent className="w-auto items-start p-2  h-auto gap-2 border border-lightGrey rounded-md shadow-[0_12px_16px_-4px_rgba(16,24,40,0.08)]">
-                            <div className="flex flex-col w-full  border-b border-solid border-lightGrey">
-                                <span className="text-xs font-normal text-[#475467] mb-3">Students</span>
-                                <div className="flex flex-row gap-2  mb-4 items-center hover:bg-[#F2F4F7]">
-                                    <Checkbox color="primary" />
-                                    <span className="text-[#1D2939] font-medium text-sm">Free</span>
+                    <div className="relative">
+                        <Popover
+                            placement="bottom-end"
+                            isOpen={isPopoverOpen}
+                            onOpenChange={(open) => setIsPopoverOpen(open)}
+                        >
+                            <PopoverTrigger>
+                                <button className={`h-[44px] justify-center rounded-md bg-[#FFFFFF] border border-solid outline-none flex items-center p-3 transition-colors ${isPopoverOpen
+                                    ? "border-[#C7A5FF] ring-4 ring-[#E2D9F8]"
+                                    : "border-[#D0D5DD]"
+                                    }`}>
+                                    <Image src='/icons/Frame.svg' alt="filter" width={20} height={20} />
+                                </button>
+                            </PopoverTrigger>
+                            <PopoverContent className="w-[12.875rem] items-start py-2 px-0 h-auto gap-2 border border-lightGrey rounded-md shadow-[0_12px_16px_-4px_rgba(16,24,40,0.08)]">
+                                <div className="flex flex-col w-full px-2">
+                                    <span className="text-xs font-normal text-[#475467] mb-3">Students</span>
+                                    <div className="flex flex-row w-full gap-2 mb-4 items-center">
+                                        <Checkbox color="primary" />
+                                        <span className="text-[#1D2939] font-medium text-sm">Free</span>
+                                    </div>
+                                    <div className="flex flex-row w-full gap-2 mb-2 items-center">
+                                        <Checkbox color="primary" />
+                                        <span className="text-[#1D2939] font-medium text-sm">Premium</span>
+                                    </div>
                                 </div>
-                                <div className="flex flex-row gap-2  mb-2 items-center">
-                                    <Checkbox color="primary" />
-                                    <span className="text-[#1D2939] font-medium text-sm">Premium</span>
+                                <hr className="w-[12.875rem]" />
+                                <span className="text-xs font-normal text-[#475467] mb-2 px-2">Assignee</span>
+                                <div className="flex flex-col w-full mb-1 px-2 gap-4">
+                                    <div className="flex flex-row items-center">
+                                        <Checkbox color="primary" />
+                                        <Image
+                                            src="/icons/big-profile-pic.svg"
+                                            width={24}
+                                            height={24}
+                                            alt="profile" />
+                                        <span className="text-[#1D2939] font-medium text-sm ml-2">Assigned to me</span>
+                                    </div>
+                                    <div className="flex flex-row items-center">
+                                        <Checkbox color="primary" />
+                                        <Image
+                                            src="/icons/big-profile-pic.svg"
+                                            width={24}
+                                            height={24}
+                                            alt="profile" />
+                                        <span className="text-[#1D2939] font-medium text-sm ml-2">Theresa Webb</span>
+                                    </div>
+                                    <div className="flex flex-row items-center">
+                                        <Checkbox color="primary" />
+                                        <Image
+                                            src="/icons/big-profile-pic.svg"
+                                            width={24}
+                                            height={24}
+                                            alt="profile" />
+                                        <span className="text-[#1D2939] font-medium text-sm ml-2">Darrell Steward</span>
+                                    </div>
                                 </div>
-                            </div>
-
-                            <span className="text-xs font-normal text-[#475467] mb-3">Assignee</span>
-
-                            <div className="flex flex-col w-full gap-4">
-                                <div className="flex flex-row items-center">
-                                    <Checkbox color="primary" />
-                                    <Image
-                                        src="/icons/big-profile-pic.svg"
-                                        width={24}
-                                        height={24}
-                                        alt="profile" />
-                                    <span className="text-[#1D2939] font-medium text-sm ml-2">Assigned to me</span>
-                                </div>
-                                <div className="flex flex-row items-center">
-                                    <Checkbox color="primary" />
-                                    <Image
-                                        src="/icons/big-profile-pic.svg"
-                                        width={24}
-                                        height={24}
-                                        alt="profile" />
-                                    <span className="text-[#1D2939] font-medium text-sm ml-2">Theresa Webb</span>
-                                </div>
-                                <div className="flex flex-row items-center">
-                                    <Checkbox color="primary" />
-                                    <Image
-                                        src="/icons/big-profile-pic.svg"
-                                        width={24}
-                                        height={24}
-                                        alt="profile" />
-                                    <span className="text-[#1D2939] font-medium text-sm ml-2">Darrell Steward</span>
-                                </div>
-                            </div>
-
-
-
-                        </PopoverContent>
-                    </Popover>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+                            </PopoverContent>
+                        </Popover>
+                        <div className="absolute -top-1 -right-1 w-3 h-3 z-10 bg-[#F04438] rounded-full"></div>
+                    </div>
                 </div>
             </div>
 
@@ -341,7 +320,7 @@ function CustomerCare() {
                         </thead>
                         <tbody>
                             {currentItems.map((quiz, index) => (
-                                <tr key={quiz.id} className="h-auto border-t border-solid border-[#EAECF0]">
+                                <tr key={quiz.id} onClick={() => handleTabClick('/admin/customercare/customerinfo')} className="h-auto border-t border-solid border-[#EAECF0] cursor-pointer">
                                     <td className="pl-8 py-4 text-center text-[#101828] text-sm">
                                         {/* <input
                                             type="checkbox"
@@ -375,7 +354,7 @@ function CustomerCare() {
                                         </div>
                                     </td>
                                     <td className="py-4">
-                                        <button onClick={() => handleTabClick('/admin/customercare/customerinfo')} className="flex flex-col gap-1">
+                                        <div className="flex flex-col gap-1">
                                             <p className="text-[#101828] text-left text-sm whitespace-nowrap overflow-hidden text-ellipsis">This message is not relevant to study.</p>
                                             <div className="flex flex-col justify-start gap-1">
                                                 <div className="flex flex-row gap-1">
@@ -385,7 +364,7 @@ function CustomerCare() {
                                                 </div>
                                                 {/* <p className="w-fit px-3 py-1 text-xs text-white font-medium bg-[#0A5B39] rounded-[0.375rem]">Transaction ID: 254784523698</p> */}
                                             </div>
-                                        </button>
+                                        </div>
                                     </td>
                                     <td className="flex items-centre justify-left h-full pl-10 py-4 text-[#101828] text-sm">
                                         <CustomerCareImportance importance={quiz.Importance} />
