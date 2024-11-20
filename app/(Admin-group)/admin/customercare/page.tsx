@@ -427,10 +427,40 @@ function CustomerCare() {
                     </button>
                 </div>
                 <div className="w-0 h-9 border-[0.5px] border-lightGrey rounded-full"></div>
-                <button className="flex flex-row justify-between w-[6.438rem] px-4 py-[0.625rem] text-xs text-[#182230] font-medium bg-[#EDE4FF] rounded-[0.375rem]">
-                    New
-                    <Image src='/icons/arrow-down-01-round.svg' alt="open" width={18} height={18} />
-                </button>
+                <Popover placement="top-start">
+                    <PopoverTrigger>
+                        <button className="flex flex-row justify-between w-[6.438rem] px-4 py-[0.625rem] text-xs text-[#182230] font-medium bg-[#EDE4FF] rounded-[0.375rem]">
+                            New
+                            <Image src='/icons/arrow-down-01-round.svg' alt="open" width={18} height={18} />
+                        </button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto py-1 px-0 bg-white border border-lightGrey rounded-md">
+                        <button className="flex flex-row items-center justify-start w-full px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7]">
+                            <div className="bg-[#C6F5FF] py-2 px-3 gap-1 flex flex-row rounded-[6px] items-center h-6 w-auto">
+                                <span className="w-[6px] h-[6px] bg-[#0D7A93] rounded-full "></span>
+                                <span className="font-medium text-[#0D7A93] text-xs">Opened</span>
+                            </div>
+                        </button>
+                        <button className="flex flex-row items-center justify-start w-full px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7]">
+                            <div className="bg-[#FEE4E2] py-2 px-3 gap-1 flex flex-row rounded-[6px] items-center h-6 w-auto">
+                                <span className="w-[6px] h-[6px] bg-[#9A221A] rounded-full "></span>
+                                <span className="font-medium text-[#9A221A] text-xs">Blocker</span>
+                            </div>
+                        </button>
+                        <button className="flex flex-row items-center justify-start w-full px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7]">
+                            <div className="bg-[#FFEFC6] py-2 px-3 gap-1 flex flex-row rounded-[6px] items-center h-6 w-auto">
+                                <span className="w-[6px] h-[6px] bg-[#93360D] rounded-full "></span>
+                                <span className="font-medium text-[#93360D] text-xs">Repiled</span>
+                            </div>
+                        </button>
+                        <button className="flex flex-row items-center justify-start w-full px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7]">
+                            <div className="bg-[#D3F8E0] py-2 px-3 gap-1 flex flex-row rounded-[6px] items-center h-6 w-auto">
+                                <span className="w-[6px] h-[6px] bg-[#0A5B39] rounded-full "></span>
+                                <span className="font-medium text-[#0A5B39] text-xs">Resolved</span>
+                            </div>
+                        </button>
+                    </PopoverContent>
+                </Popover>
             </div>
         </div>
     );

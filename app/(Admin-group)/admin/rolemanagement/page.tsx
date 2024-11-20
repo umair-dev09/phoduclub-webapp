@@ -21,7 +21,7 @@ import { db } from '@/firebase';
 import LoadingData from "@/components/Loading";
 import UserRolesView from "@/components/AdminComponents/RoleMangement/UserRolesView";
 // Define types for quiz data
-interface UserData {
+interface RoleManagementInfo {
     adminId: string;
     name: string;
     userId: string;
@@ -30,7 +30,7 @@ interface UserData {
     profilePic: string;
 }
 
-const fetchUsers = async (): Promise<UserData[]> => {
+const fetchUsers = async (): Promise<RoleManagementInfo[]> => {
     const usersCollection = collection(db, 'admin');
     const usersSnapshot = await getDocs(usersCollection);
 
@@ -45,14 +45,14 @@ const fetchUsers = async (): Promise<UserData[]> => {
                 phone: userData.phone,
                 role: userData.role,
                 profilePic: userData.profilePic,
-            } as UserData;
+            } as RoleManagementInfo;
         })
     );
 
     return usersData;
 };
 
-
+type Option = "Admin" | "Customer Care" | "Teacher" | "Chief Modrator" | "Guide" | "Editor";
 
 function rolemangement() {
     const [firstName, setFirstName] = useState('');
@@ -62,8 +62,8 @@ function rolemangement() {
     const [selectedRole, setSelectedRole] = useState('');
     const [adminIdd, setAdminIdd] = useState('');
     const [actionDialog, setActionDialog] = useState<string | null>(null);
-    const [data, setData] = useState<UserData[]>([]);
-    const [users, setUsers] = useState<UserData[]>([]);
+    const [data, setData] = useState<RoleManagementInfo[]>([]);
+    const [users, setUsers] = useState<RoleManagementInfo[]>([]);
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage] = useState(6);
     const [loading, setLoading] = useState(true);
@@ -96,7 +96,7 @@ function rolemangement() {
     useEffect(() => {
         const usersCollection = collection(db, 'admin');
         const unsubscribe = onSnapshot(usersCollection, (snapshot) => {
-            const updatedUsers: UserData[] = snapshot.docs.map((doc) => {
+            const updatedUsers: RoleManagementInfo[] = snapshot.docs.map((doc) => {
                 const userData = doc.data();
                 return {
                     adminId: userData.adminId,
@@ -105,7 +105,7 @@ function rolemangement() {
                     phone: userData.phone,
                     role: userData.role,
                     profilePic: userData.profilePic,
-                } as UserData;
+                } as RoleManagementInfo;
             });
 
             setUsers(updatedUsers);
@@ -125,7 +125,7 @@ function rolemangement() {
         router.push(path);
     };
 
-    const handleEditDetails = (editMode = false, user?: UserData) => {
+    const handleEditDetails = (editMode = false, user?: RoleManagementInfo) => {
         setisAddUser(true);
         setIsEditing(editMode);
         if (user) {
@@ -169,6 +169,60 @@ function rolemangement() {
         setCurrentPage(1); // Reset to first page when filters change
     }, [searchTerm, users]);
 
+    const statusMapping: Record<Option, string[]> = {
+        'Admin': ['admin'],
+        'Customer Care': ['customercare'],
+        'Teacher': ['teacher'],
+        'Chief Modrator': ['chiefmodrator'],
+        'Guide': ['guide'],
+        'Editor': ['editor']  // Map 'Canceled' to 'ended' status
+    };
+
+    const options: Option[] = ["Admin", "Customer Care", "Teacher", "Chief Modrator", "Guide", "Editor"];
+
+    // Update the type to use a more specific index signature
+    const [checkedState, setCheckedState] = useState<Record<Option, boolean>>(
+        options.reduce((acc, option) => {
+            acc[option] = false;
+            return acc;
+        }, {} as Record<Option, boolean>)
+    );
+
+    const selectedCount = Object.values(checkedState).filter(Boolean).length;
+
+    // Inside the useEffect for filtering
+    useEffect(() => {
+        let filteredUsers = users;
+
+        // Filter by search term
+        if (searchTerm) {
+            filteredUsers = filteredUsers.filter(user =>
+                user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                user.phone.toLowerCase().includes(searchTerm.toLowerCase())
+            );
+        }
+
+        // Filter by selected roles
+        const selectedRoles = Object.keys(checkedState)
+            .filter(role => checkedState[role as Option]) as Option[]; // Cast keys to 'Option'
+        if (selectedRoles.length > 0) {
+            filteredUsers = filteredUsers.filter(user =>
+                selectedRoles.includes(user.role as Option) // Ensure user.role is cast to 'Option'
+            );
+        }
+
+        // Update state with filtered and sorted users
+        setData(filteredUsers);
+        setCurrentPage(1); // Reset to first page when filters change
+    }, [searchTerm, users, checkedState]);
+
+    // Modify the toggleCheckbox function to use a type assertion
+    const toggleCheckbox = (option: Option) => {
+        setCheckedState(prev => ({
+            ...prev,
+            [option]: !prev[option as Option]  // Add type assertion here
+        }));
+    };
 
     return (
         <div className="flex flex-col w-full  gap-4 p-8">
@@ -194,16 +248,43 @@ function rolemangement() {
                         </div>
                     </button>
 
-                    {/* Select Date Button */}
-                    <button className="h-[44px] w-[143px] rounded-md bg-[#FFFFFF] border justify-between border-solid border-[#D0D5DD] flex items-center p-3">
-                        <span className="font-medium text-sm text-[#667085] ml-2">By Role</span>
-                        <Image
-                            src="/icons/by-role-arrow-down.svg"
-                            width={20}
-                            height={20}
-                            alt="Select-date Button"
-                        />
-                    </button>
+                    {/* Select Role Button */}
+                    <Popover placement="bottom-start">
+                        <PopoverTrigger>
+                            <button className="h-[44px] w-[126px] rounded-md bg-[#FFFFFF] outline-none border border-solid border-[#D0D5DD] flex items-center justify-between p-3 cursor-pointer">
+                                <p className={`flex flex-row font-medium text-sm ${selectedCount > 0 ? 'text-[#182230]' : 'text-[#667085]'}`}>
+                                    {selectedCount > 0 ? `${selectedCount} selected` : 'By Role'}
+                                </p>
+                                <Image
+                                    src="/icons/selectdate-Arrowdown.svg"
+                                    width={20}
+                                    height={20}
+                                    alt="Arrow-Down Button"
+                                />
+                            </button>
+                        </PopoverTrigger>
+                        <PopoverContent className="flex flex-col w-full h-auto px-0 bg-white border border-lightGrey rounded-md">
+                            <div>
+                                {options.map((option) => (
+                                    <div
+                                        key={option}
+                                        className="flex flex-row items-center w-full py-[0.625rem] px-4 gap-2 cursor-pointer transition-colors hover:bg-[#F2F4F7]"
+                                        onClick={() => toggleCheckbox(option)}
+                                    >
+                                        <div
+                                            className={`flex items-center justify-center w-4 h-4 border border-[#D0D5DE] rounded-sm ${checkedState[option] ? 'bg-purple border-purple' : 'bg-white'}`}
+                                        >
+                                            {checkedState[option] && (
+                                                <Image src="/icons/check.svg" alt="choose" width={12} height={12} />
+                                            )}
+                                        </div>
+                                        <p className="text-sm text-[#0C111D] font-normal">{option}</p>
+                                    </div>
+                                ))}
+                            </div>
+                        </PopoverContent>
+                    </Popover>
+
                     <button
                         className="h-[44px] w-auto px-6 py-2 bg-[#8501FF] rounded-md shadow-inner-button border border-solid border-[#800EE2] flex items-center justify-center"
                         onClick={() => handleAddNewUser()} >
@@ -217,80 +298,111 @@ function rolemangement() {
                     <LoadingData />
                 </div>
             ) : (
-            <div className="flex flex-col overflow-y-auto">
-                <div className="border border-[#EAECF0] rounded-xl ">
-                    <table className="w-full bg-white rounded-xl ">
-                        <thead>
-                            <tr className="gap-[200px]">
-                                <th className="w-[25%] text-left px-8 py-4 pl-8 rounded-tl-xl flex flex-row ">
-                                    <span className="text-[#667085] font-medium text-sm">Name</span>
-                                </th>
-                                <th className=" w-[22%] text-start px-8 py-4 text-[#667085] font-medium text-sm">
-                                    <div className="flex flex-row justify-start gap-1">
-                                        <p>User Id</p>
+                <div className="flex flex-col overflow-y-auto">
+                    <div className="flex flex-row items-center justify-between w-full">
+                        <div className="flex flex-row gap-2">
+                            {Object.keys(checkedState)
+                                .filter(option => checkedState[option as Option])
+                                .map((option) => (
+                                    <div
+                                        key={option}
+                                        className="flex flex-row items-center w-fit mb-4 px-3 py-2 gap-1 text-xs font-medium bg-[#EDE4FF] rounded-[0.375rem]"
+                                    >
+                                        {option}
+                                        <button onClick={() => toggleCheckbox(option as Option)}>
+                                            <Image src='/icons/multiplication-sign.svg' alt="close" width={16} height={16} />
+                                        </button>
                                     </div>
-                                </th>
-                                <th className=" w-[22%] text-strart px-8 py-4 text-[#667085] font-medium text-sm">
-                                    <div className="flex flex-row justify-start gap-1">
-                                        <p>Moblie No.</p>
-                                    </div>
-                                </th>
-                                <th className=" w-[22%] px-8 py-4 text-[#667085] font-medium text-sm">
-                                    <div className="flex flex-row justify-start gap-1">
-                                        <p>Role</p>
-                                    </div>
-                                </th>
-                                <th className="w-[9%] text-center px-8 py-4 rounded-tr-xl text-[#667085] font-medium text-sm">Action</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {currentItems.map((users, index) => (
-                                <tr key={index} className="border-t border-solid border-[#EAECF0]">
-                                    <td className="py-[12px]">
-                                        <div className="flex flex-row ml-8 gap-[10px] min-w-[260px]">
-                                            <Image className='rounded-full object-cover' src={users.profilePic || '/defaultAdminDP.jpg'} alt="DP" width={38} height={38} />
-                                            <div className="flex items-start justify-center flex-col mb-[2px]">
-                                                <div className="font-semibold text-sm">{users.name}</div>
-                                            </div>
+                                ))
+                            }
+                        </div>
+                        {Object.values(checkedState).some(Boolean) && (
+                            <button
+                                className="text-sm text-[#9012FF] font-semibold"
+                                onClick={() => setCheckedState(
+                                    options.reduce((acc, option) => {
+                                        acc[option] = false;
+                                        return acc;
+                                    }, {} as Record<Option, boolean>)
+                                )}
+                            >
+                                clear all
+                            </button>
+                        )}
+                    </div>
+                    <div className="border border-[#EAECF0] rounded-xl ">
+                        <table className="w-full bg-white rounded-xl ">
+                            <thead>
+                                <tr className="gap-[200px]">
+                                    <th className="w-[25%] text-left px-8 py-4 pl-8 rounded-tl-xl flex flex-row ">
+                                        <span className="text-[#667085] font-medium text-sm">Name</span>
+                                    </th>
+                                    <th className=" w-[22%] text-start px-8 py-4 text-[#667085] font-medium text-sm">
+                                        <div className="flex flex-row justify-start gap-1">
+                                            <p>User Id</p>
                                         </div>
-                                    </td>
-                                    <td className="px-8 py-4 text-start text-[#101828] text-sm "><span className="flex min-w-fit">{users.userId}</span></td>
-                                    <td className="px-8 py-4 text-start text-[#101828] text-sm "><span className="flex min-w-fit">{users.phone}</span></td>
-                                    <td className="px-8 py-4 text-start text-[#101828] text-sm">
-                                    <span className="flex min-w-[200px]">
-                                        <UserRolesView role={users.role}/>
-                                     </span>   
-                                        </td>
-                                    <td className="flex items-center justify-center px-8 py-4 text-[#101828] text-sm">
-                                        <Popover placement="bottom-end"  >
-                                            <PopoverTrigger>
-                                                <button     onClick={() => setActionDialog(actionDialog === users.adminId ? null : users.adminId)}                                                >
-                                                    <Image
-                                                        src="/icons/three-dots.svg"
-                                                        width={20}
-                                                        height={20}
-                                                        alt="More Actions"
-                                                    />
-                                                </button>
-                                            </PopoverTrigger>
-                                            <PopoverContent className="flex px-0 rounded-md w-auto py-2">
-                                                <div >
-                                                    <button className="flex flex-row items-center justify-start w-full py-2 gap-2 hover:bg-[#F2F4F7] pl-4 pr-9"
-                                                        onClick={() => handleEditDetails(true, users)} >
-                                                        <Image src="/icons/edit-02.svg" width={18} height={18} alt="edit" />
-                                                        <span className="text-sm text-[#0C111D] font-normal">Edit details</span>
-                                                    </button>
-                                                    <button className=" flex flex-row items-center justify-start w-full py-2 gap-2 hover:bg-[#F2F4F7] pl-4 pr-9"
-                                                     onClick={() => handleRemoveUser(users.adminId)}>
-                                                        <Image src='/icons/delete.svg' alt="user profile" width={18} height={18} />
-                                                        <p className="text-sm text-[#DE3024] font-normal">Remove</p>
-                                                    </button>
-                                                </div>
-                                            </PopoverContent>
-                                        </Popover>
-                                    </td>
+                                    </th>
+                                    <th className=" w-[22%] text-strart px-8 py-4 text-[#667085] font-medium text-sm">
+                                        <div className="flex flex-row justify-start gap-1">
+                                            <p>Moblie No.</p>
+                                        </div>
+                                    </th>
+                                    <th className=" w-[22%] px-8 py-4 text-[#667085] font-medium text-sm">
+                                        <div className="flex flex-row justify-start gap-1">
+                                            <p>Role</p>
+                                        </div>
+                                    </th>
+                                    <th className="w-[9%] text-center px-8 py-4 rounded-tr-xl text-[#667085] font-medium text-sm">Action</th>
                                 </tr>
-                            ))}                            
+                            </thead>
+                            <tbody>
+                                {currentItems.map((users, index) => (
+                                    <tr key={index} className="border-t border-solid border-[#EAECF0]">
+                                        <td className="py-[12px]">
+                                            <div className="flex flex-row ml-8 gap-[10px] min-w-[260px]">
+                                                <Image className='rounded-full object-cover' src={users.profilePic || '/defaultAdminDP.jpg'} alt="DP" width={38} height={38} />
+                                                <div className="flex items-start justify-center flex-col mb-[2px]">
+                                                    <button onClick={() => handleTabClick('/admin/rolemanagement/rolemanagementinfo')} className="font-semibold text-sm text-[#9012FF] underline">{users.name}</button>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td className="px-8 py-4 text-start text-[#101828] text-sm "><span className="flex min-w-fit">{users.userId}</span></td>
+                                        <td className="px-8 py-4 text-start text-[#101828] text-sm "><span className="flex min-w-fit">{users.phone}</span></td>
+                                        <td className="px-8 py-4 text-start text-[#101828] text-sm">
+                                            <span className="flex min-w-[200px]">
+                                                <UserRolesView role={users.role} />
+                                            </span>
+                                        </td>
+                                        <td className="flex items-center justify-center px-8 py-4 text-[#101828] text-sm">
+                                            <Popover placement="bottom-end"  >
+                                                <PopoverTrigger>
+                                                    <button onClick={() => setActionDialog(actionDialog === users.adminId ? null : users.adminId)}                                                >
+                                                        <Image
+                                                            src="/icons/three-dots.svg"
+                                                            width={20}
+                                                            height={20}
+                                                            alt="More Actions"
+                                                        />
+                                                    </button>
+                                                </PopoverTrigger>
+                                                <PopoverContent className="flex px-0 rounded-md w-auto py-2">
+                                                    <div >
+                                                        <button className="flex flex-row items-center justify-start w-full py-2 gap-2 hover:bg-[#F2F4F7] pl-4 pr-9"
+                                                            onClick={() => handleEditDetails(true, users)} >
+                                                            <Image src="/icons/edit-02.svg" width={18} height={18} alt="edit" />
+                                                            <span className="text-sm text-[#0C111D] font-normal">Edit details</span>
+                                                        </button>
+                                                        <button className=" flex flex-row items-center justify-start w-full py-2 gap-2 hover:bg-[#F2F4F7] pl-4 pr-9"
+                                                            onClick={() => handleRemoveUser(users.adminId)}>
+                                                            <Image src='/icons/delete.svg' alt="user profile" width={18} height={18} />
+                                                            <p className="text-sm text-[#DE3024] font-normal">Remove</p>
+                                                        </button>
+                                                    </div>
+                                                </PopoverContent>
+                                            </Popover>
+                                        </td>
+                                    </tr>
+                                ))}
                             </tbody>
                         </table>
                     </div>
