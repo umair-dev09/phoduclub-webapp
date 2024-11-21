@@ -14,11 +14,7 @@ const CommunityPage = () => {
 
     return (
         <div className="flex h-full flex-row bg-white justify-center items-center">
-            
             <h3>Select a group to explore </h3>
-
-          
-
             {/* Right Sidebar with smoother collapse transition */}
             {/* <div
                 className={`flex flex-col bg-white border-t border-lightGrey overflow-hidden transition-all duration-500 ease-in-out transform ${isCollapsed ? 'max-w-0 opacity-0' : 'w-[270px] max-w-[270px] opacity-100'}`}

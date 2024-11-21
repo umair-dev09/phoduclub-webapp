@@ -98,7 +98,6 @@ function customerinfo() {
                 {/* Type Area */}
 
                 <div className="bg-[#FFFFFF] p-6 flex flex-row gap-4 ">
-
                     <div className="border border-solid border-[#D0D5DD] h-auto w-full rounded-md flex flex-row items-center p-2 justify-between">
                         <textarea
                             placeholder="Type your message here..."
@@ -106,7 +105,6 @@ function customerinfo() {
                             style={{ height: height }}
                             value={text}
                             onChange={handleInput}
-
                         />
                         <Popover placement="bottom">
                             <PopoverTrigger>
@@ -114,9 +112,7 @@ function customerinfo() {
                                     <Image src='/icons/files.svg' alt='attachment icon' width={21} height={21} />
                                 </button>
                             </PopoverTrigger>
-
                             <PopoverContent className="w-auto py-1 px-0 bg-white border border-lightGrey rounded-md">
-
                                 <button className="flex flex-row items-center justify-start w-full px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7]">
                                     <Image src='/icons/image.svg' alt='image icon' width={20} height={20} />
                                     <span className='font-normal text-[#0C111D] text-sm'>Image</span>
@@ -143,7 +139,6 @@ function customerinfo() {
                         />
                     </button>
                 </div>
-
             </div>
 
             <div className="w-[32%] h-full flex flex-col bg-[#FFFFFF] overflow-y-auto border-l border-solid border-[#EAECF0]">
@@ -183,7 +178,6 @@ function customerinfo() {
                                             height={20}
                                             alt="sdsds" />
                                     </button>
-
                                 </PopoverTrigger>
                                 <PopoverContent className="w-auto py-1 px-0 bg-white border border-lightGrey rounded-md">
                                     <button className="flex flex-row items-center justify-start w-full px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7]"
@@ -292,7 +286,6 @@ function customerinfo() {
                                 </PopoverContent>
                             </Popover>
 
-
                             <Popover placement="bottom">
                                 <PopoverTrigger>
                                     <button className="flex flex-row gap-1  focus:outline-none">
@@ -311,7 +304,6 @@ function customerinfo() {
                                     </button>
                                 </PopoverTrigger>
                                 <PopoverContent className="w-auto py-1 px-0 bg-white border border-lightGrey rounded-md">
-
                                     <button className="flex flex-row items-center justify-start w-full px-4 py-[0.625rem]  gap-2 hover:bg-[#F2F4F7]"
                                         onClick={() =>
                                             handleIconSelectforpriority({
@@ -359,17 +351,11 @@ function customerinfo() {
                                     </button>
                                 </PopoverContent>
                             </Popover>
-
                             <div className="flex flex-row gap-1">
                                 <div className="border border-solid border-[#EAECF0] py-2 px-3  flex flex-row rounded-[6px] items-center h-6 w-auto">
                                     <span className="font-medium text-[#475467] text-xs">Scam</span>
                                 </div>
-
                             </div>
-
-
-
-
                         </div>
                     </div>
                     <div className="h-auto border-b border-solid border-[#EAECF0] p-6">
