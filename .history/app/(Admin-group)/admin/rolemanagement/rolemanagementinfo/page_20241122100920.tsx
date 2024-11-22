@@ -85,7 +85,7 @@ function RoleManagementInfo() {
 
                 </div>
                 {/* not div */}
-                <div className='h-auto w-1/2 bg-[#FFFFFF] border border-solid overflow-y-auto border-[#EAECF0] shadow-md rounded-lg p-6 gap-6 flex flex-col'>
+                <div className='h-[700px] w-1/2 bg-[#FFFFFF] border border-solid overflow-y-auto border-[#EAECF0] shadow-md rounded-lg p-6 gap-6 flex flex-col'>
                     <div className='h-10 flex flex-row justify-between items-center focus:outline-none '>
                         <span className='text-lg font-semibold text-[#1D2939]'>Accessed Course</span>
                         <Popover placement="bottom">
@@ -135,7 +135,7 @@ function RoleManagementInfo() {
                             </thead>
                             <tbody>
                                 <tr className="border-t h-[64px] ">
-                                    <div className=' flex flex-row gap-2 py-3 px-8 text-left items-center '>
+                                    <div className=' flex flex-row gap-2 py-2 px-8 text-left items-center '>
                                         <Image
                                             src="/icons/profile-pic2.svg"
                                             width={40}
@@ -146,7 +146,34 @@ function RoleManagementInfo() {
 
                                     <td className="py-2 px-8 text-right text-[#DE3024] text-sm font-normal">Remove</td>
                                 </tr>
-
+                                <tr className="border-t h-[64px]">
+                                    <td className="py-2 px-8 text-left text-[#9012FF] font-semibold text-sm underline">BITSET Full Course</td>
+                                    <td className="py-2 px-8 text-right text-[#DE3024] text-sm font-normal">Remove</td>
+                                </tr>
+                                <tr className="border-t h-[64px]">
+                                    <td className="py-2 px-8 text-left text-[#9012FF] font-semibold text-sm underline">BITSET Full Course</td>
+                                    <td className="py-2 px-8 text-right text-[#DE3024] text-sm font-normal">Remove</td>
+                                </tr>
+                                <tr className="border-t h-[64px]">
+                                    <td className="py-2 px-8 text-left text-[#9012FF] font-semibold text-sm underline">BITSET Full Course</td>
+                                    <td className="py-2 px-8 text-right text-[#DE3024] text-sm font-normal">Remove</td>
+                                </tr>
+                                <tr className="border-t h-[64px]">
+                                    <td className="py-2 px-8 text-left text-[#9012FF] font-semibold text-sm underline">BITSET Full Course</td>
+                                    <td className="py-2 px-8 text-right text-[#DE3024] text-sm font-normal">Remove</td>
+                                </tr>
+                                <tr className="border-t h-[64px]">
+                                    <td className="py-2 px-8 text-left text-[#9012FF] font-semibold text-sm underline">BITSET Full Course</td>
+                                    <td className="py-2 px-8 text-right text-[#DE3024] text-sm font-normal">Remove</td>
+                                </tr>
+                                <tr className="border-t h-[64px]">
+                                    <td className="py-2 px-8 text-left text-[#9012FF] font-semibold text-sm underline">BITSET Full Course</td>
+                                    <td className="py-2 px-8 text-right text-[#DE3024] text-sm font-normal">Remove</td>
+                                </tr>
+                                <tr className="border-t h-[64px]">
+                                    <td className="py-2 px-8 text-left text-[#9012FF] font-semibold text-sm underline">BITSET Full Course</td>
+                                    <td className="py-2 px-8 text-right text-[#DE3024] text-sm font-normal">Remove</td>
+                                </tr>
                             </tbody>
                         </table>
                     </div>

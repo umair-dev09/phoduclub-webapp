@@ -7,7 +7,7 @@ import { Checkbox } from "@nextui-org/react";
 function RoleManagementInfo() {
     const router = useRouter(); // Initialize useRouter
     return (
-        <div className=' flex flex-col p-8 gap-6 w-full h-auto'>
+        <div className=' flex flex-col p-8 gap-6 w-full'>
             <button className='flex flex-row gap-1'>
                 <span className='text-base font-semibold text-[#1D2939]'
                     onClick={() => router.back()}>Role Management</span>
@@ -19,7 +19,7 @@ function RoleManagementInfo() {
                 <span className='text-base font-medium text-[#667085]'>Ralph Edwards</span>
             </button>
 
-            <div className='w-full gap-6 flex flex-row h-full'>
+            <div className='w-full gap-6 flex flex-row'>
                 <div className='h-[292px] w-1/2 bg-[#FFFFFF] border border-solid border-[#EAECF0] shadow-md rounded-lg p-6 gap-6 flex flex-col'>
                     <div className='h-[72px] flex flex-row justify-between'>
                         <div className='flex flex-row gap-2'>
@@ -84,8 +84,7 @@ function RoleManagementInfo() {
                     </div>
 
                 </div>
-                {/* not div */}
-                <div className='h-auto w-1/2 bg-[#FFFFFF] border border-solid overflow-y-auto border-[#EAECF0] shadow-md rounded-lg p-6 gap-6 flex flex-col'>
+                <div className='h-auto w-1/2 bg-[#FFFFFF] border border-solid border-[#EAECF0] shadow-md rounded-lg p-6 gap-6 flex flex-col'>
                     <div className='h-10 flex flex-row justify-between items-center focus:outline-none '>
                         <span className='text-lg font-semibold text-[#1D2939]'>Accessed Course</span>
                         <Popover placement="bottom">
@@ -125,33 +124,24 @@ function RoleManagementInfo() {
                         </Popover>
                     </div>
 
-                    <div className="border border-solid border-[#EAECF0]  rounded-lg h-auto">
-                        <table className="w-full">
-                            <thead>
-                                <tr className="h-[48px]">
-                                    <th className="py-3 px-8 text-left test-sm text-[#667085] font-medium">Courses</th>
-                                    <th className="py-3 px-8 text-right text-sm text-[#667085] font-medium">Action</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr className="border-t h-[64px] ">
-                                    <div className=' flex flex-row gap-2 py-3 px-8 text-left items-center '>
-                                        <Image
-                                            src="/icons/profile-pic2.svg"
-                                            width={40}
-                                            height={40}
-                                            alt="plus-icon" />
-                                        <td className="text-[#9012FF] font-semibold text-sm underline flex items-center">BITSET Full Course</td>
-                                    </div>
-
-                                    <td className="py-2 px-8 text-right text-[#DE3024] text-sm font-normal">Remove</td>
-                                </tr>
-
-                            </tbody>
-                        </table>
-                    </div>
-
-
+                    <table>
+                        <thead>
+                            <tr className='h-[48px] flex items-center'>
+                                <th className="py-3 pl-8 text-left text-gray-600 font-semibold">Courses</th>
+                                <th className="py-3 pr-8 text-right text-gray-600 font-semibold">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td className="text-left">jabir</td>
+                                <td className="text-right">jabir</td>  {/* Apply text-right here */}
+                            </tr>
+                            <tr>
+                                <td className="text-left">jabir</td>
+                                <td className="text-right">jabir</td>  {/* Apply text-right here */}
+                            </tr>
+                        </tbody>
+                    </table>
 
                 </div>
 

@@ -7,7 +7,7 @@ import { Checkbox } from "@nextui-org/react";
 function RoleManagementInfo() {
     const router = useRouter(); // Initialize useRouter
     return (
-        <div className=' flex flex-col p-8 gap-6 w-full h-auto'>
+        <div className=' flex flex-col p-8 gap-6 w-full'>
             <button className='flex flex-row gap-1'>
                 <span className='text-base font-semibold text-[#1D2939]'
                     onClick={() => router.back()}>Role Management</span>
@@ -19,7 +19,7 @@ function RoleManagementInfo() {
                 <span className='text-base font-medium text-[#667085]'>Ralph Edwards</span>
             </button>
 
-            <div className='w-full gap-6 flex flex-row h-full'>
+            <div className='w-full gap-6 flex flex-row'>
                 <div className='h-[292px] w-1/2 bg-[#FFFFFF] border border-solid border-[#EAECF0] shadow-md rounded-lg p-6 gap-6 flex flex-col'>
                     <div className='h-[72px] flex flex-row justify-between'>
                         <div className='flex flex-row gap-2'>
@@ -84,8 +84,7 @@ function RoleManagementInfo() {
                     </div>
 
                 </div>
-                {/* not div */}
-                <div className='h-auto w-1/2 bg-[#FFFFFF] border border-solid overflow-y-auto border-[#EAECF0] shadow-md rounded-lg p-6 gap-6 flex flex-col'>
+                <div className='h-auto w-1/2 bg-[#FFFFFF] border border-solid border-[#EAECF0] shadow-md rounded-lg p-6 gap-6 flex flex-col'>
                     <div className='h-10 flex flex-row justify-between items-center focus:outline-none '>
                         <span className='text-lg font-semibold text-[#1D2939]'>Accessed Course</span>
                         <Popover placement="bottom">
@@ -124,8 +123,7 @@ function RoleManagementInfo() {
                             </PopoverContent>
                         </Popover>
                     </div>
-
-                    <div className="border border-solid border-[#EAECF0]  rounded-lg h-auto">
+                    <div className="border border-solid border-[#EAECF0] rounded-lg overflow-hidden">
                         <table className="w-full">
                             <thead>
                                 <tr className="h-[48px]">
@@ -134,19 +132,14 @@ function RoleManagementInfo() {
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr className="border-t h-[64px] ">
-                                    <div className=' flex flex-row gap-2 py-3 px-8 text-left items-center '>
-                                        <Image
-                                            src="/icons/profile-pic2.svg"
-                                            width={40}
-                                            height={40}
-                                            alt="plus-icon" />
-                                        <td className="text-[#9012FF] font-semibold text-sm underline flex items-center">BITSET Full Course</td>
-                                    </div>
-
+                                <tr className="border-t h-[64px]">
+                                    <td className="py-2 px-8 text-left text-[#9012FF] font-semibold text-sm underline">BITSET Full Course</td>
                                     <td className="py-2 px-8 text-right text-[#DE3024] text-sm font-normal">Remove</td>
                                 </tr>
-
+                                <tr className="border-t h-[64px]">
+                                    <td className="py-2 px-8 text-left text-[#9012FF] font-semibold text-sm underline">BITSET Full Course</td>
+                                    <td className="py-2 px-8 text-right text-[#DE3024] text-sm font-normal">Remove</td>
+                                </tr>
                             </tbody>
                         </table>
                     </div>
