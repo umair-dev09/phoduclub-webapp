@@ -85,7 +85,7 @@ function RoleManagementInfo() {
 
                 </div>
                 {/* not div */}
-                <div className='h-100 w-1/2 bg-[#FFFFFF] border border-solid border-[#EAECF0] shadow-md rounded-lg p-6 gap-6 flex flex-col'>
+                <div className='h-auto w-1/2 bg-[#FFFFFF] border border-solid border-[#EAECF0] shadow-md rounded-lg p-6 gap-6 flex flex-col'>
                     <div className='h-10 flex flex-row justify-between items-center focus:outline-none'>
                         <span className='text-lg font-semibold text-[#1D2939]'>Accessed Course</span>
                         <Popover placement="bottom">

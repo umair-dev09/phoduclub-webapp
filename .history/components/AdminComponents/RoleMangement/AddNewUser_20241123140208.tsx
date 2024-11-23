@@ -97,106 +97,123 @@ function AddNewUser({
             setLoading(false); // End loading
         }
     };
+    type CheckedState = {
+        [key in 'physics101' | 'bitsetFullCourse' | 'jee2024' | 'physics201']: boolean;
+    };
+
+    const CourseList = () => {
+        const [checked, setChecked] = useState<CheckedState>({
+            physics101: false,
+            bitsetFullCourse: false,
+            jee2024: false,
+            physics201: false,
+        });
+
+        const handleClick = (course: keyof CheckedState) => {
+            setChecked((prevChecked) => ({
+                ...prevChecked,
+                [course]: !prevChecked[course], // Toggle the checkbox state
+            }));
+        };
 
 
-    return (
-        <Dialog open={open} onClose={close} className="relative z-50">
-            <DialogBackdrop className="fixed inset-0 bg-black/30" />
-            <div className="fixed inset-0 flex items-center justify-center">
-                <DialogPanel className="bg-white rounded-2xl w-[500px] h-auto px-6 pb-2">
-                    <div className="flex flex-col relative gap-6">
-                        <div className="flex flex-row justify-between mt-6">
-                            <h3 className="text-lg font-bold text-[#1D2939]">
-                                {isEditing ? "Edit Profile" : "Add New User"}
-                            </h3>
-                            <button onClick={close}>
-                                <Image src="/icons/cancel.svg" alt="Cancel" width={20} height={20} />
-                            </button>
-                        </div>
+        return (
+            <Dialog open={open} onClose={close} className="relative z-50">
+                <DialogBackdrop className="fixed inset-0 bg-black/30" />
+                <div className="fixed inset-0 flex items-center justify-center">
+                    <DialogPanel className="bg-white rounded-2xl w-[500px] h-auto px-6 pb-2">
+                        <div className="flex flex-col relative gap-6">
+                            <div className="flex flex-row justify-between mt-6">
+                                <h3 className="text-lg font-bold text-[#1D2939]">
+                                    {isEditing ? "Edit Profile" : "Add New User"}
+                                </h3>
+                                <button onClick={close}>
+                                    <Image src="/icons/cancel.svg" alt="Cancel" width={20} height={20} />
+                                </button>
+                            </div>
 
-                        <div className="flex flex-row w-full gap-4">
-                            <div className="flex flex-col gap-1 w-1/2 flex-grow">
-                                <label className="text-[#1D2939] text-sm font-medium">First Name</label>
+                            <div className="flex flex-row w-full gap-4">
+                                <div className="flex flex-col gap-1 w-1/2 flex-grow">
+                                    <label className="text-[#1D2939] text-sm font-medium">First Name</label>
+                                    <input
+                                        className="w-full text-sm font-medium text-[#1D2939] placeholder:font-normal placeholder:text-[#A1A1A1] rounded-md outline-none border border-solid border-[#D0D5DD] py-2 px-4"
+                                        type="text"
+                                        placeholder="First Name"
+                                        value={firstName}
+                                        onChange={(e) => setFirstName(e.target.value)}
+                                    />
+                                </div>
+                                <div className="flex flex-col gap-1 w-1/2 flex-grow">
+                                    <label className="text-[#1D2939] text-sm font-medium">Last Name</label>
+                                    <input
+                                        className="w-full text-sm font-medium text-[#1D2939] placeholder:font-normal placeholder:text-[#A1A1A1] rounded-md outline-none border border-solid border-[#D0D5DD] py-2 px-4"
+                                        type="text"
+                                        placeholder="Last Name"
+                                        value={lastName}
+                                        onChange={(e) => setLastName(e.target.value)}
+                                    />
+                                </div>
+                            </div>
+
+                            <div className="flex flex-col gap-1 w-full">
+                                <label className="text-[#1D2939] text-sm font-medium">{isEditing ? "User Id" : "Create User Id"}</label>
                                 <input
                                     className="w-full text-sm font-medium text-[#1D2939] placeholder:font-normal placeholder:text-[#A1A1A1] rounded-md outline-none border border-solid border-[#D0D5DD] py-2 px-4"
                                     type="text"
-                                    placeholder="First Name"
-                                    value={firstName}
-                                    onChange={(e) => setFirstName(e.target.value)}
+                                    placeholder="User Id"
+                                    value={userId}
+                                    disabled={isEditing}
+                                    onChange={(e) => setUserId(e.target.value)}
                                 />
                             </div>
-                            <div className="flex flex-col gap-1 w-1/2 flex-grow">
-                                <label className="text-[#1D2939] text-sm font-medium">Last Name</label>
-                                <input
-                                    className="w-full text-sm font-medium text-[#1D2939] placeholder:font-normal placeholder:text-[#A1A1A1] rounded-md outline-none border border-solid border-[#D0D5DD] py-2 px-4"
-                                    type="text"
-                                    placeholder="Last Name"
-                                    value={lastName}
-                                    onChange={(e) => setLastName(e.target.value)}
+
+                            <div className="flex flex-col gap-1">
+                                <label className='text-[14px] text-[#344054] font-medium'>Mobile No.</label>
+                                <PhoneInput
+                                    country={'in'}
+                                    value={phone}
+                                    onChange={(phone) => setPhone("+" + phone)}
+                                    inputProps={{
+                                        required: true,
+                                        autoFocus: true,
+                                        placeholder: "+91 00000-00000"
+                                    }}
+                                    inputStyle={{
+                                        width: '450px',
+                                        height: '42px',
+                                        borderRadius: "8px",
+                                        border: "1px solid #D0D5DD",
+                                        boxShadow: "0px 1px 2px 0px #1018280D",
+                                    }}
                                 />
                             </div>
-                        </div>
 
-                        <div className="flex flex-col gap-1 w-full">
-                            <label className="text-[#1D2939] text-sm font-medium">{isEditing ? "User Id" : "Create User Id"}</label>
-                            <input
-                                className="w-full text-sm font-medium text-[#1D2939] placeholder:font-normal placeholder:text-[#A1A1A1] rounded-md outline-none border border-solid border-[#D0D5DD] py-2 px-4"
-                                type="text"
-                                placeholder="User Id"
-                                value={userId}
-                                disabled={isEditing}
-                                onChange={(e) => setUserId(e.target.value)}
-                            />
-                        </div>
-
-                        <div className="flex flex-col gap-1">
-                            <label className='text-[14px] text-[#344054] font-medium'>Mobile No.</label>
-                            <PhoneInput
-                                country={'in'}
-                                value={phone}
-                                onChange={(phone) => setPhone("+" + phone)}
-                                inputProps={{
-                                    required: true,
-                                    autoFocus: true,
-                                    placeholder: "+91 00000-00000"
-                                }}
-                                inputStyle={{
-                                    width: '450px',
-                                    height: '42px',
-                                    borderRadius: "8px",
-                                    border: "1px solid #D0D5DD",
-                                    boxShadow: "0px 1px 2px 0px #1018280D",
-                                }}
-                            />
-                        </div>
-
-                        <div className="flex flex-col gap-1 w-full">
-                            <label className="text-[#1D2939] text-sm font-medium">Role</label>
-                            <div className="flex flex-row py-2 px-4 w-full gap-2 border border-solid border-[#D0D5DD] rounded-md transition duration-200 ease-in-out justify-between" onClick={() => setRoleDialogOpen(true)}>
-                                <span className="font-normal text-sm text-[#182230]">{selectedRole || "Select Role"}</span>
-                                <Popover placement="bottom-end" isOpen={roleDialogOpen} onOpenChange={(open) => setRoleDialogOpen(open)}>
-                                    <PopoverTrigger>
-                                        <button>
-                                            <Image src="/icons/by-role-arrow-down.svg" width={20} height={20} alt="Select-role Button" />
-                                        </button>
-                                    </PopoverTrigger>
-                                    <PopoverContent className="w-[450px] ml-5 px-0 py-1 bg-white border border-lightGrey rounded-md">
-                                        <div className="w-full">
-                                            {["Admin", "Teacher", "Customer Care", "Guide", "Editor", "Chief Moderator"].map((role) => (
-                                                <button
-                                                    key={role}
-                                                    onClick={() => { handleRoleSelect(role); setRoleDialogOpen(false); }}
-                                                    className="flex flex-row items-center justify-start w-full py-[0.625rem] px-4 gap-2 hover:bg-[#F2F4F7]"
-                                                >
-                                                    <span className="text-sm text-[#0C111D] font-normal">{role}</span>
-                                                </button>
-                                            ))}
-                                        </div>
-                                    </PopoverContent>
-                                </Popover>
+                            <div className="flex flex-col gap-1 w-full">
+                                <label className="text-[#1D2939] text-sm font-medium">Role</label>
+                                <div className="flex flex-row py-2 px-4 w-full gap-2 border border-solid border-[#D0D5DD] rounded-md transition duration-200 ease-in-out justify-between" onClick={() => setRoleDialogOpen(true)}>
+                                    <span className="font-normal text-sm text-[#182230]">{selectedRole || "Select Role"}</span>
+                                    <Popover placement="bottom-end" isOpen={roleDialogOpen} onOpenChange={(open) => setRoleDialogOpen(open)}>
+                                        <PopoverTrigger>
+                                            <button>
+                                                <Image src="/icons/by-role-arrow-down.svg" width={20} height={20} alt="Select-role Button" />
+                                            </button>
+                                        </PopoverTrigger>
+                                        <PopoverContent className="w-[450px] ml-5 px-0 py-1 bg-white border border-lightGrey rounded-md">
+                                            <div className="w-full">
+                                                {["Admin", "Teacher", "Customer Care", "Guide", "Editor", "Chief Moderator"].map((role) => (
+                                                    <button
+                                                        key={role}
+                                                        onClick={() => { handleRoleSelect(role); setRoleDialogOpen(false); }}
+                                                        className="flex flex-row items-center justify-start w-full py-[0.625rem] px-4 gap-2 hover:bg-[#F2F4F7]"
+                                                    >
+                                                        <span className="text-sm text-[#0C111D] font-normal">{role}</span>
+                                                    </button>
+                                                ))}
+                                            </div>
+                                        </PopoverContent>
+                                    </Popover>
+                                </div>
                             </div>
-                        </div>
-                        {selectedRole === "Teacher" && (
                             <div className="flex flex-col gap-1 w-full">
                                 <label className="text-[#1D2939] text-sm font-medium">Select Course</label>
                                 <Popover placement="bottom-end">
@@ -207,43 +224,75 @@ function AddNewUser({
                                         </button>
                                     </PopoverTrigger>
                                     <PopoverContent className="w-[450px] ml-5 px-0 py-1 bg-white border border-lightGrey rounded-md">
-                                        <div className="flex flex-row w-full h-10 justify-start items-center hover:bg-[#EAECF0] px-2">
-                                            <Checkbox color="primary" />
-                                            <span className="text-[#0C111D] font-normal text-sm">Physics - 101</span>
-                                        </div>
-                                        <div className="flex flex-row w-full h-10 justify-start items-center hover:bg-[#EAECF0] px-2">
-                                            <Checkbox color="primary" />
-                                            <span className="text-[#0C111D] font-normal text-sm">BITSET Full Course</span>
-                                        </div>
-                                        <div className="flex flex-row w-full h-10 justify-start items-center hover:bg-[#EAECF0] px-2">
-                                            <Checkbox color="primary" />
-                                            <span className="text-[#0C111D] font-normal text-sm">JEE - 2024</span>
-                                        </div>
-                                        <div className="flex flex-row w-full h-10 justify-start items-center hover:bg-[#EAECF0] px-2">
-                                            <Checkbox color="primary" />
-                                            <span className="text-[#0C111D] font-normal text-sm">Physics - 201</span>
-                                        </div>
+                                        <button
+                                            className='flex flex-row w-full h-10 justify-start items-center hover:bg-[#EAECF0] px-2'
+                                            onClick={() => handleClick('physics101')}
+                                        >
+                                            <Checkbox
+                                                color="primary"
+                                                checked={checked.physics101}
+                                                onChange={() => handleClick('physics101')}
+                                            />
+                                            <span className='text-[#0C111D] font-normal text-sm'>Physics - 101</span>
+                                        </button>
+
+                                        <button
+                                            className='flex flex-row w-full h-10 justify-start items-center hover:bg-[#EAECF0] px-2'
+                                            onClick={() => handleClick('bitsetFullCourse')}
+                                        >
+                                            <Checkbox
+                                                color="primary"
+                                                checked={checked.bitsetFullCourse}
+                                                onChange={() => handleClick('bitsetFullCourse')}
+                                            />
+                                            <span className='text-[#0C111D] font-normal text-sm'>BITSET Full Course</span>
+                                        </button>
+
+                                        <button
+                                            className='flex flex-row w-full h-10 justify-start items-center hover:bg-[#EAECF0] px-2'
+                                            onClick={() => handleClick('jee2024')}
+                                        >
+                                            <Checkbox
+                                                color="primary"
+                                                checked={checked.jee2024}
+                                                onChange={() => handleClick('jee2024')}
+                                            />
+                                            <span className='text-[#0C111D] font-normal text-sm'>JEE - 2024</span>
+                                        </button>
+
+                                        <button
+                                            className='flex flex-row w-full h-10 justify-start items-center hover:bg-[#EAECF0] px-2'
+                                            onClick={() => handleClick('physics201')}
+                                        >
+                                            <Checkbox
+                                                color="primary"
+                                                checked={checked.physics201}
+                                                onChange={() => handleClick('physics201')}
+                                            />
+                                            <span className='text-[#0C111D] font-normal text-sm'>Physics - 201</span>
+                                        </button>
                                     </PopoverContent>
                                 </Popover>
                             </div>
-                        )}
-                        <div className="flex flex-row justify-end my-2 items-center gap-4 border-t border-solid border-[#EAECF0] pt-4">
-                            <button onClick={close} className="py-[0.625rem] px-6 border-[1.5px] border-lightGrey rounded-md text-[#1D2939] font-semibold text-sm">Cancel</button>
-                            <button
-                                onClick={handleAddUser}
-                                disabled={!isFormValid || loading} // Disable if form is invalid or loading
-                                className={`py-[0.625rem] px-6 text-white shadow-inner-button  border border-white rounded-md font-semibold text-sm ${!isFormValid || loading ? 'bg-[#CDA0FC]' : 'bg-[#9012FF]'}`}>
-                                {isEditing ? "Save Changes" : "Add New User"}
-                            </button>
-                        </div>
-                    </div>
-                </DialogPanel>
-            </div >
-        </Dialog >
-    );
-};
 
-export default AddNewUser;
+
+                            <div className="flex flex-row justify-end my-2 items-center gap-4 border-t border-solid border-[#EAECF0] pt-4">
+                                <button onClick={close} className="py-[0.625rem] px-6 border-[1.5px] border-lightGrey rounded-md text-[#1D2939] font-semibold text-sm">Cancel</button>
+                                <button
+                                    onClick={handleAddUser}
+                                    disabled={!isFormValid || loading} // Disable if form is invalid or loading
+                                    className={`py-[0.625rem] px-6 text-white shadow-inner-button  border border-white rounded-md font-semibold text-sm ${!isFormValid || loading ? 'bg-[#CDA0FC]' : 'bg-[#9012FF]'}`}>
+                                    {isEditing ? "Save Changes" : "Add New User"}
+                                </button>
+                            </div>
+                        </div>
+                    </DialogPanel>
+                </div >
+            </Dialog >
+        );
+    };
+
+    export default AddNewUser;
 
 // -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
