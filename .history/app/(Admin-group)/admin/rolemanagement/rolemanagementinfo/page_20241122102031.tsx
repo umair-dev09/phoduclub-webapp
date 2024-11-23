@@ -85,12 +85,13 @@ function RoleManagementInfo() {
 
                 </div>
                 {/* not div */}
-                <div className='h-100 w-1/2 bg-[#FFFFFF] border border-solid border-[#EAECF0] shadow-md rounded-lg p-6 gap-6 flex flex-col'>
-                    <div className='h-10 flex flex-row justify-between items-center focus:outline-none'>
+                <div className='h-[540px] w-1/2 bg-[#FFFFFF] border border-solid overflow-y-auto border-[#EAECF0] shadow-md rounded-lg p-6 gap-6 flex flex-col'>
+                    <div className='h-10 flex flex-row justify-between items-center focus:outline-none '>
                         <span className='text-lg font-semibold text-[#1D2939]'>Accessed Course</span>
                         <Popover placement="bottom">
                             <PopoverTrigger>
-                                <button className='w-[200px] h-full rounded-md items-center flex flex-row justify-center focus:outline-none gap-2 border-2 border-solid border-[#EAECF0]'>
+
+                                <button className='w-[200px] h-full rounded-md items-center flex flex-row justify-center  focus:outline-none gap-2 border-2 border-solid border-[#EAECF0]'>
                                     <Image
                                         src="/icons/plus-dark.svg"
                                         width={16}
@@ -98,29 +99,33 @@ function RoleManagementInfo() {
                                         alt="plus-icon" />
                                     <span className='text-sm font-semibold text-[#1D2939]'>Assign New Course</span>
                                 </button>
+
                             </PopoverTrigger>
-                            <PopoverContent className="w-[200px] rounded-md shadow-md border border-solid border-[#EAECF0] px-0 flex flex-col h-auto">
-                                <div className='flex flex-row w-full h-10 justify-start items-center hover:bg-[#EAECF0] px-2'>
+                            <PopoverContent className="w-[200px] rounded-md shadow-md  border border-solid border-[#EAECF0] px-0 flex flex-col h-auto">
+
+                                <div className='flex flex-row  w-full h-10 justify-start items-center hover:bg-[#EAECF0] px-2'>
                                     <Checkbox color="primary" />
                                     <span className='text-[#0C111D] font-normal text-sm'>Physics - 101</span>
                                 </div>
-                                <div className='flex flex-row w-full h-10 justify-start items-center hover:bg-[#EAECF0] px-2'>
+                                <div className='flex flex-row  w-full h-10 justify-start items-center hover:bg-[#EAECF0] px-2'>
                                     <Checkbox color="primary" />
                                     <span className='text-[#0C111D] font-normal text-sm'>BITSET Full Course</span>
-                                </div>
-                                <div className='flex flex-row w-full h-10 justify-start items-center hover:bg-[#EAECF0] px-2'>
+                                </div >
+                                <div className='flex flex-row  w-full h-10 justify-start items-center hover:bg-[#EAECF0] px-2'>
                                     <Checkbox color="primary" />
                                     <span className='text-[#0C111D] font-normal text-sm'>JEE - 2024</span>
                                 </div>
-                                <div className='flex flex-row w-full h-10 justify-start items-center hover:bg-[#EAECF0] px-2'>
+                                <div className='flex flex-row  w-full h-10 justify-start items-center hover:bg-[#EAECF0] px-2'>
                                     <Checkbox color="primary" />
                                     <span className='text-[#0C111D] font-normal text-sm'>Physics - 201</span>
                                 </div>
+
+
                             </PopoverContent>
                         </Popover>
                     </div>
 
-                    <div className="border border-solid border-[#EAECF0] rounded-lg h-auto max-h-[300px] overflow-y-auto">
+                    <div className="border border-solid border-[#EAECF0]  rounded-lg h-auto">
                         <table className="w-full">
                             <thead>
                                 <tr className="h-[48px]">
@@ -129,8 +134,8 @@ function RoleManagementInfo() {
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr className="border-t h-[64px]">
-                                    <div className='flex flex-row gap-2 py-3 px-8 text-left items-center'>
+                                <tr className="border-t h-[64px] ">
+                                    <div className=' flex flex-row gap-2 py-3 px-8 text-left items-center '>
                                         <Image
                                             src="/icons/profile-pic2.svg"
                                             width={40}
@@ -138,14 +143,60 @@ function RoleManagementInfo() {
                                             alt="plus-icon" />
                                         <td className="text-[#9012FF] font-semibold text-sm underline flex items-center">BITSET Full Course</td>
                                     </div>
+
                                     <td className="py-2 px-8 text-right text-[#DE3024] text-sm font-normal">Remove</td>
                                 </tr>
-                                {/* You can add more rows here to see the scrolling effect */}
+                                <tr className="border-t h-[64px] ">
+                                    <div className=' flex flex-row gap-2 py-3 px-8 text-left items-center '>
+                                        <Image
+                                            src="/icons/profile-pic2.svg"
+                                            width={40}
+                                            height={40}
+                                            alt="plus-icon" />
+                                        <td className="text-[#9012FF] font-semibold text-sm underline flex items-center">BITSET Full Course</td>
+                                    </div>
+
+                                    <td className="py-2 px-8 text-right text-[#DE3024] text-sm font-normal">Remove</td>
+                                </tr>
+                                <tr className="border-t h-[64px] ">
+                                    <div className=' flex flex-row gap-2 py-3 px-8 text-left items-center '>
+                                        <Image
+                                            src="/icons/profile-pic2.svg"
+                                            width={40}
+                                            height={40}
+                                            alt="plus-icon" />
+                                        <td className="text-[#9012FF] font-semibold text-sm underline flex items-center">BITSET Full Course</td>
+                                    </div>
+
+                                    <td className="py-2 px-8 text-right text-[#DE3024] text-sm font-normal">Remove</td>
+                                </tr>
+                                <tr className="border-t h-[64px]">
+                                    <td className="py-2 px-8 text-left text-[#9012FF] font-semibold text-sm underline">BITSET Full Course</td>
+                                    <td className="py-2 px-8 text-right text-[#DE3024] text-sm font-normal">Remove</td>
+                                </tr>
+                                <tr className="border-t h-[64px]">
+                                    <td className="py-2 px-8 text-left text-[#9012FF] font-semibold text-sm underline">BITSET Full Course</td>
+                                    <td className="py-2 px-8 text-right text-[#DE3024] text-sm font-normal">Remove</td>
+                                </tr>
+                                <tr className="border-t h-[64px]">
+                                    <td className="py-2 px-8 text-left text-[#9012FF] font-semibold text-sm underline">BITSET Full Course</td>
+                                    <td className="py-2 px-8 text-right text-[#DE3024] text-sm font-normal">Remove</td>
+                                </tr>
+                                <tr className="border-t h-[64px]">
+                                    <td className="py-2 px-8 text-left text-[#9012FF] font-semibold text-sm underline">BITSET Full Course</td>
+                                    <td className="py-2 px-8 text-right text-[#DE3024] text-sm font-normal">Remove</td>
+                                </tr>
+                                <tr className="border-t h-[64px]">
+                                    <td className="py-2 px-8 text-left text-[#9012FF] font-semibold text-sm underline">BITSET Full Course</td>
+                                    <td className="py-2 px-8 text-right text-[#DE3024] text-sm font-normal">Remove</td>
+                                </tr>
                             </tbody>
                         </table>
                     </div>
-                </div>
 
+
+
+                </div>
 
             </div>
         </div>

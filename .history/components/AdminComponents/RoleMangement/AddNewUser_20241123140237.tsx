@@ -97,6 +97,24 @@ function AddNewUser({
             setLoading(false); // End loading
         }
     };
+    type CheckedState = {
+        [key in 'physics101' | 'bitsetFullCourse' | 'jee2024' | 'physics201']: boolean;
+    };
+
+
+    const [checked, setChecked] = useState<CheckedState>({
+        physics101: false,
+        bitsetFullCourse: false,
+        jee2024: false,
+        physics201: false,
+    });
+
+    const handleClick = (course: keyof CheckedState) => {
+        setChecked((prevChecked) => ({
+            ...prevChecked,
+            [course]: !prevChecked[course], // Toggle the checkbox state
+        }));
+    };
 
 
     return (
@@ -196,37 +214,68 @@ function AddNewUser({
                                 </Popover>
                             </div>
                         </div>
-                        {selectedRole === "Teacher" && (
-                            <div className="flex flex-col gap-1 w-full">
-                                <label className="text-[#1D2939] text-sm font-medium">Select Course</label>
-                                <Popover placement="bottom-end">
-                                    <PopoverTrigger>
-                                        <button className="flex flex-row py-2 px-4 w-full gap-2 border border-solid border-[#D0D5DD] rounded-md transition duration-200 ease-in-out justify-between">
-                                            <span className="font-normal text-sm text-[#182230]">Select Course</span>
-                                            <Image src="/icons/by-role-arrow-down.svg" width={20} height={20} alt="Select-role Button" />
-                                        </button>
-                                    </PopoverTrigger>
-                                    <PopoverContent className="w-[450px] ml-5 px-0 py-1 bg-white border border-lightGrey rounded-md">
-                                        <div className="flex flex-row w-full h-10 justify-start items-center hover:bg-[#EAECF0] px-2">
-                                            <Checkbox color="primary" />
-                                            <span className="text-[#0C111D] font-normal text-sm">Physics - 101</span>
-                                        </div>
-                                        <div className="flex flex-row w-full h-10 justify-start items-center hover:bg-[#EAECF0] px-2">
-                                            <Checkbox color="primary" />
-                                            <span className="text-[#0C111D] font-normal text-sm">BITSET Full Course</span>
-                                        </div>
-                                        <div className="flex flex-row w-full h-10 justify-start items-center hover:bg-[#EAECF0] px-2">
-                                            <Checkbox color="primary" />
-                                            <span className="text-[#0C111D] font-normal text-sm">JEE - 2024</span>
-                                        </div>
-                                        <div className="flex flex-row w-full h-10 justify-start items-center hover:bg-[#EAECF0] px-2">
-                                            <Checkbox color="primary" />
-                                            <span className="text-[#0C111D] font-normal text-sm">Physics - 201</span>
-                                        </div>
-                                    </PopoverContent>
-                                </Popover>
-                            </div>
-                        )}
+                        <div className="flex flex-col gap-1 w-full">
+                            <label className="text-[#1D2939] text-sm font-medium">Select Course</label>
+                            <Popover placement="bottom-end">
+                                <PopoverTrigger>
+                                    <button className="flex flex-row py-2 px-4 w-full gap-2 border border-solid border-[#D0D5DD] rounded-md transition duration-200 ease-in-out justify-between">
+                                        <span className="font-normal text-sm text-[#182230]">Select Course</span>
+                                        <Image src="/icons/by-role-arrow-down.svg" width={20} height={20} alt="Select-role Button" />
+                                    </button>
+                                </PopoverTrigger>
+                                <PopoverContent className="w-[450px] ml-5 px-0 py-1 bg-white border border-lightGrey rounded-md">
+                                    <button
+                                        className='flex flex-row w-full h-10 justify-start items-center hover:bg-[#EAECF0] px-2'
+                                        onClick={() => handleClick('physics101')}
+                                    >
+                                        <Checkbox
+                                            color="primary"
+                                            checked={checked.physics101}
+                                            onChange={() => handleClick('physics101')}
+                                        />
+                                        <span className='text-[#0C111D] font-normal text-sm'>Physics - 101</span>
+                                    </button>
+
+                                    <button
+                                        className='flex flex-row w-full h-10 justify-start items-center hover:bg-[#EAECF0] px-2'
+                                        onClick={() => handleClick('bitsetFullCourse')}
+                                    >
+                                        <Checkbox
+                                            color="primary"
+                                            checked={checked.bitsetFullCourse}
+                                            onChange={() => handleClick('bitsetFullCourse')}
+                                        />
+                                        <span className='text-[#0C111D] font-normal text-sm'>BITSET Full Course</span>
+                                    </button>
+
+                                    <button
+                                        className='flex flex-row w-full h-10 justify-start items-center hover:bg-[#EAECF0] px-2'
+                                        onClick={() => handleClick('jee2024')}
+                                    >
+                                        <Checkbox
+                                            color="primary"
+                                            checked={checked.jee2024}
+                                            onChange={() => handleClick('jee2024')}
+                                        />
+                                        <span className='text-[#0C111D] font-normal text-sm'>JEE - 2024</span>
+                                    </button>
+
+                                    <button
+                                        className='flex flex-row w-full h-10 justify-start items-center hover:bg-[#EAECF0] px-2'
+                                        onClick={() => handleClick('physics201')}
+                                    >
+                                        <Checkbox
+                                            color="primary"
+                                            checked={checked.physics201}
+                                            onChange={() => handleClick('physics201')}
+                                        />
+                                        <span className='text-[#0C111D] font-normal text-sm'>Physics - 201</span>
+                                    </button>
+                                </PopoverContent>
+                            </Popover>
+                        </div>
+
+
                         <div className="flex flex-row justify-end my-2 items-center gap-4 border-t border-solid border-[#EAECF0] pt-4">
                             <button onClick={close} className="py-[0.625rem] px-6 border-[1.5px] border-lightGrey rounded-md text-[#1D2939] font-semibold text-sm">Cancel</button>
                             <button
