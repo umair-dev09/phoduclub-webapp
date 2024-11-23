@@ -96,9 +96,8 @@ function customerinfo() {
 
                 </div>
                 {/* Type Area */}
-
                 <div className="bg-[#FFFFFF] p-6 flex flex-row gap-4 ">
-                    <div className="border border-solid border-[#D0D5DD] h-auto w-full rounded-md flex flex-row items-center p-2 justify-between">
+                    <div className="border border-solid bg-[#FCFCFD] border-[#D0D5DD] h-auto w-full rounded-md flex flex-row items-center p-2 justify-between">
                         <textarea
                             placeholder="Type your message here..."
                             className="w-full max-h-[120px] bg-[#FCFCFD] overflow-y-auto resize-none px-3 rounded-md outline-none font-normal text-sm leading-tight pt-[5px]"
@@ -405,12 +404,9 @@ function customerinfo() {
                                 <div className="flex items-center gap-1.5 px-3 py-1.5 text-sm text-gray-700 font-medium border border-solid border-[#D0D5DD] rounded-full cursor-pointer hover:bg-gray-100">
                                     <span className="w-2 h-2 rounded-full bg-blue-500"></span> 2026
                                 </div>
-
                             </div>
                         </div>
                     </div>
-
-
                     <div className="p-6 h-auto">
                         <h1 className="text-[#182230] text-lg font-semibold">Recent Conversation</h1>
                         <div className="flex flex-col gap-4 pt-6">
@@ -435,9 +431,7 @@ function customerinfo() {
                                     <span className="w-[6px] h-[6px] bg-[#93360D] rounded-full "></span>
                                     <span className="font-medium text-[#93360D] text-xs">Open</span>
                                 </div>
-
                             </div>
-
                             <div className="flex flex-row items-center gap-1 justify-between">
                                 <div className="flex flex-row gap-3">
                                     <div className="relative">
@@ -459,7 +453,6 @@ function customerinfo() {
                                     <span className="w-[6px] h-[6px] bg-[#0A5B39] rounded-full "></span>
                                     <span className="font-medium text-[#0A5B39] text-xs">Resolved</span>
                                 </div>
-
                             </div>
                             <div className="flex flex-row items-center gap-1 justify-between">
                                 <div className="flex flex-row gap-3">
@@ -482,20 +475,12 @@ function customerinfo() {
                                     <span className="w-[6px] h-[6px] bg-[#0A5B39] rounded-full "></span>
                                     <span className="font-medium text-[#0A5B39] text-xs">Resolved</span>
                                 </div>
-
                             </div>
-
-
-
                         </div>
                     </div>
-
                 </div>
-
             </div>
         </div>
-
-
     )
 }
 export default customerinfo;

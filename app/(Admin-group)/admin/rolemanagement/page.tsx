@@ -20,6 +20,7 @@ import { collection, getDocs, query, where, doc, getDoc, onSnapshot, deleteDoc }
 import { db } from '@/firebase';
 import LoadingData from "@/components/Loading";
 import UserRolesView from "@/components/AdminComponents/RoleMangement/UserRolesView";
+
 // Define types for quiz data
 interface RoleManagementInfo {
     adminId: string;
@@ -285,6 +286,7 @@ function rolemangement() {
                         </PopoverContent>
                     </Popover>
 
+                    {/* Add New User Button */}
                     <button
                         className="h-[44px] w-auto px-6 py-2 bg-[#8501FF] rounded-md shadow-inner-button border border-solid border-[#800EE2] flex items-center justify-center"
                         onClick={() => handleAddNewUser()} >

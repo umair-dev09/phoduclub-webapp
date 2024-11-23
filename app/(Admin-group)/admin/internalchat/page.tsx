@@ -3,6 +3,8 @@
 import React, { useState } from 'react';
 import Image from 'next/image';
 import { Popover, PopoverContent, PopoverTrigger } from "@nextui-org/popover";
+import CreateChannelDialogue from '@/components/AdminComponents/InternalChat/CreateChannelDialogue';
+import AddMembersDialogue from '@/components/AdminComponents/InternalChat/AddMembersDialogue';
 
 function InternalChat() {
     const [text, setText] = useState("");
@@ -20,6 +22,9 @@ function InternalChat() {
         setHeight(newHeight < 120 ? "32px" : "120px");
     };
 
+    const [openDialogue, setOpenDialogue] = useState(false);
+    const [addMemberDialogue, setAddMemberDialogue] = useState(false);
+
     return (
         <div className="grid grid-cols-[16.875rem_1fr_auto] w-full">
             {/* Sidebar */}
@@ -28,7 +33,9 @@ function InternalChat() {
                     <div className="flex items-center justify-center w-[2.75rem] h-[2.75rem] bg-[#C74FE6] rounded-full">
                         <Image src="/icons/messageIcon.svg" alt="messages" width={18} height={18} />
                     </div>
-                    <h4 className="text-sm text-[#182230] font-semibold leading-[1.103rem] cursor-pointer hover:underline">
+                    <h4 className="text-sm text-[#182230] font-semibold leading-[1.103rem] cursor-pointer hover:underline"
+                    // onClick={() => setAddMemberDialogue(true)}
+                    >
                         Personal Messages
                     </h4>
                     <p className="flex items-center justify-center min-w-6 h-6 p-[0.375rem] opacity-0 text-xs text-white font-medium bg-[#DE3024] rounded-full transition-opacity duration-150 group-hover:opacity-100">
@@ -45,11 +52,17 @@ function InternalChat() {
                             <p className="text-[0.813rem] text-[#4B5563] font-semibold leading-6">{item}</p>
                         </button>
                     ))}
+                    <button className='flex flex-row items-center justify-center w-full px-2 py-[0.375rem] gap-2 border border-lightGrey rounded-full'
+                        onClick={() => setOpenDialogue(true)}
+                    >
+                        <Image src='/icons/plus-dark.svg' alt='create channel' width={18} height={18} />
+                        <p className='text-[0.813rem] text-[#182230] font-semibold leading-6'>Create Channel</p>
+                    </button>
                 </div>
             </div>
 
             {/* Main Chat Area */}
-            <div className="grid grid-rows-[4.5rem_1fr_6.25rem] w-full">
+            <div className="grid grid-rows-[4.5rem_1fr_auto] w-full">
                 <div className="flex flex-row items-center justify-between px-6 bg-white border-b border-lightGrey">
                     <div className="flex flex-row gap-2">
                         <div>📢</div>
@@ -65,8 +78,8 @@ function InternalChat() {
                     </div>
                 </div>
                 <div className="shadow-[0_8px_32px_0_rgba(0,0,0,0.02)]"></div>
-                <div className="flex flex-row items-center px-6 gap-2 bg-white">
-                    <div className="border border-solid border-[#D0D5DD] h-auto w-full rounded-md flex flex-row items-center p-2 justify-between">
+                <div className="flex flex-row items-center min-h-[6.25rem] px-6 py-6 gap-2 bg-white">
+                    <div className="border border-solid bg-[#FCFCFD] border-[#D0D5DD] h-auto w-full rounded-md flex flex-row items-center p-2 justify-between">
                         <textarea
                             placeholder="Type your message here..."
                             className="w-full max-h-[120px] bg-[#FCFCFD] overflow-y-auto resize-none px-3 rounded-md outline-none font-normal text-sm leading-tight pt-[5px]"
@@ -126,7 +139,7 @@ function InternalChat() {
                         </div>
                     </div>
                     <div className="flex flex-col p-4 gap-4">
-                        <div className="flex flex-col px-2 gap-2">
+                        <div className="flex flex-col px-2 gap-2 overflow-auto">
                             <div className="flex flex-row justify-between whitespace-nowrap">
                                 <h4 className="text-base text-[#182230] font-semibold leading-6">Admin</h4>
                                 <p className="flex items-center justify-center w-6 h-6 text-xs text-[#4B5563] font-normal bg-[#F7F8FB] border border-lightGrey rounded-sm">
@@ -134,7 +147,67 @@ function InternalChat() {
                                 </p>
                             </div>
                             <div className="flex flex-col gap-4">
-                                {["Darlene Robertson", "John Doe"].map((name, idx) => (
+                                {["Darlene Robertson"].map((name, idx) => (
+                                    <div
+                                        key={idx}
+                                        className="flex flex-row items-center group py-1 gap-2 whitespace-nowrap"
+                                    >
+                                        {/* Profile Picture Container */}
+                                        <div className="relative flex-shrink-0 w-9 h-9">
+                                            <Image
+                                                className="rounded-full"
+                                                src="/images/DP.png"
+                                                alt="dp"
+                                                width={36}
+                                                height={36}
+                                            />
+                                            {/* Status Indicator */}
+                                            <div className="absolute right-0 bottom-0 w-3 h-3 bg-[#98A2B3] border-2 border-white rounded-full transition-colors duration-150 group-hover:bg-[#17B26A]"></div>
+                                        </div>
+                                        <p className="text-[0.813rem] text-[#4B5563] font-medium leading-6 whitespace-nowrap">{name}</p>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                        <div className="flex flex-col px-2 gap-2 overflow-auto">
+                            <div className="flex flex-row justify-between whitespace-nowrap">
+                                <h4 className="text-base text-[#182230] font-semibold leading-6">Chief Moderator</h4>
+                                <p className="flex items-center justify-center w-6 h-6 text-xs text-[#4B5563] font-normal bg-[#F7F8FB] border border-lightGrey rounded-sm">
+                                    1
+                                </p>
+                            </div>
+                            <div className="flex flex-col gap-4">
+                                {["Darlene Robertson"].map((name, idx) => (
+                                    <div
+                                        key={idx}
+                                        className="flex flex-row items-center group py-1 gap-2 whitespace-nowrap"
+                                    >
+                                        {/* Profile Picture Container */}
+                                        <div className="relative flex-shrink-0 w-9 h-9">
+                                            <Image
+                                                className="rounded-full"
+                                                src="/images/DP.png"
+                                                alt="dp"
+                                                width={36}
+                                                height={36}
+                                            />
+                                            {/* Status Indicator */}
+                                            <div className="absolute right-0 bottom-0 w-3 h-3 bg-[#98A2B3] border-2 border-white rounded-full transition-colors duration-150 group-hover:bg-[#17B26A]"></div>
+                                        </div>
+                                        <p className="text-[0.813rem] text-[#4B5563] font-medium leading-6 whitespace-nowrap">{name}</p>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                        <div className="flex flex-col px-2 gap-2 overflow-auto">
+                            <div className="flex flex-row justify-between whitespace-nowrap">
+                                <h4 className="text-base text-[#182230] font-semibold leading-6">Teachers</h4>
+                                <p className="flex items-center justify-center w-6 h-6 text-xs text-[#4B5563] font-normal bg-[#F7F8FB] border border-lightGrey rounded-sm">
+                                    4
+                                </p>
+                            </div>
+                            <div className="flex flex-col gap-4">
+                                {["Darlene Robertson", "John Doe", "Jane Cooper", "Devon Lane"].map((name, idx) => (
                                     <div
                                         key={idx}
                                         className="flex flex-row items-center group py-1 gap-2 whitespace-nowrap"
@@ -159,6 +232,8 @@ function InternalChat() {
                     </div>
                 </div>
             </div>
+            {openDialogue && <CreateChannelDialogue open={true} onClose={() => setOpenDialogue(false)} />}
+            {addMemberDialogue && <AddMembersDialogue open={true} onClose={() => setAddMemberDialogue(false)} />}
         </div>
     );
 }
