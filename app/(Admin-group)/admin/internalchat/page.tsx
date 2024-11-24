@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import Image from 'next/image';
+import { useRouter } from "next/navigation";
 import { Popover, PopoverContent, PopoverTrigger } from "@nextui-org/popover";
 import CreateChannelDialogue from '@/components/AdminComponents/InternalChat/CreateChannelDialogue';
 
@@ -9,6 +10,7 @@ function InternalChat() {
     const [text, setText] = useState("");
     const [height, setHeight] = useState("32px");
     const [isDetailsVisible, setIsDetailsVisible] = useState(true);
+    const router = useRouter();
 
     const handleInput = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
         const text = e.target.value;
@@ -33,7 +35,7 @@ function InternalChat() {
                         <Image src="/icons/messageIcon.svg" alt="messages" width={18} height={18} />
                     </div>
                     <h4 className="text-sm text-[#182230] font-semibold leading-[1.103rem] cursor-pointer hover:underline"
-                    // onClick={() => setAddMemberDialogue(true)}
+                        onClick={() => router.push('/admin/internalchat/personalmessages')}
                     >
                         Personal Messages
                     </h4>
@@ -139,7 +141,7 @@ function InternalChat() {
                     </div>
                     <div className="flex flex-col p-4 gap-4">
                         <div className="flex flex-col px-2 gap-2 overflow-auto">
-                            <div className="block">
+                            <div className="flex flex-row justify-between">
                                 <h4 className="text-base text-[#182230] font-semibold leading-6">Admin</h4>
                                 <p className="flex items-center justify-center w-6 h-6 text-xs text-[#4B5563] font-normal bg-[#F7F8FB] border border-lightGrey rounded-sm">
                                     1
