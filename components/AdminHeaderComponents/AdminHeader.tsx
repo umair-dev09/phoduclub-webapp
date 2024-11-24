@@ -34,6 +34,7 @@ function Header({ currentPage }: HeaderProps) {
     const handleBackClick = () => {
         router.back();
     };
+
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
             if (currentUser) {
