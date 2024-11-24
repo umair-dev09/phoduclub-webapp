@@ -151,8 +151,7 @@ export type IconsType =
   | "mark as read"
   | "mute"
   | "media"
-  | "channel-requests"
-  | "Create-category";
+  | "channel-requests";
 
 
 
