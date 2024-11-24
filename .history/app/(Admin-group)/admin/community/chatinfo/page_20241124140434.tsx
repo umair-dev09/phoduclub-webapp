@@ -10,23 +10,13 @@ import DeleteGroup from "@/components/AdminComponents/Community/AllDialogs/Delet
 import DeleteCategory from "@/components/AdminComponents/Community/AllDialogs/DeleteCategory"
 import EditDetails from "@/components/AdminComponents/Community/AllDialogs/EditDetails"
 import CreateCategory from "@/components/AdminComponents/Community/AllDialogs/CreateCategory"
-import CreateChannel from "@/components/AdminComponents/Community/AllDialogs/Createchannel";
+import CreateChannel from "@/components/AdminComponents/Community/AllDialogs/Createchannel"
 function Chatinfo() {
     const [text, setText] = useState("");
     const [height, setHeight] = useState("32px");
     const [isDetailsVisible, setIsDetailsVisible] = useState(true);
     // STATES FOR THE DIALOGS
-    const [createChannel, setCreateChannel] = useState(false);
-    const [deleteDialog, setDeleteDialog] = useState(false);
-    const [channelRequestsDialog, setChannelRequestsDialog] = useState(false);
-    const [channelInfoDialog, setChannelInfoDialog] = useState(false);
-    const [groupInfoDialog, setGroupInfoDialog] = useState(false);
-    const [deleteGroupDialog, setDeleteGroupDialog] = useState(false);
-    const [deleteCategoryDialog, setDeleteCategoryDialog] = useState(false);
-    const [editDetailsDialog, setEditDetailsDialog] = useState(false);
-    const [createCategoryDialog, setCreateCategoryDialog] = useState(false);
-
-
+    const [createchannel, setCreatechannel] = useState("");
     const handleInput = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
         const text = e.target.value;
         setText(e.target.value);
@@ -73,8 +63,7 @@ function Chatinfo() {
                             </button>
                         </PopoverTrigger>
                         <PopoverContent className="w-auto py-1 px-0 bg-white border border-lightGrey rounded-md flex flex-col">
-                            <button className='flex flex-row gap-2 items-center h-10 w-[206px] px-4 hover:bg-[#EAECF0]'
-                            >
+                            <button className='flex flex-row gap-2 items-center h-10 w-[206px] px-4 hover:bg-[#EAECF0]'>
                                 <Image
                                     src="/icons/mark as read.svg"
                                     width={18}
@@ -102,8 +91,7 @@ function Chatinfo() {
                                 />
                             </button>
 
-                            <button className='flex flex-row gap-2 items-center h-10 w-[206px] px-4 hover:bg-[#EAECF0]'
-                                onClick={() => setGroupInfoDialog(true)}>
+                            <button className='flex flex-row gap-2 items-center h-10 w-[206px] px-4 hover:bg-[#EAECF0]'>
                                 <Image
                                     src="/icons/information-circle.svg"
                                     width={18}
@@ -112,8 +100,7 @@ function Chatinfo() {
                                 />
                                 <span className='font-normal text-[#0C111D] text-sm'>Group info</span>
                             </button>
-                            <button className='flex flex-row gap-2 items-center h-10 w-[206px] px-4 hover:bg-[#EAECF0]'
-                                onClick={() => setDeleteGroupDialog(true)}>
+                            <button className='flex flex-row gap-2 items-center h-10 w-[206px] px-4 hover:bg-[#EAECF0]'>
                                 <Image
                                     src="/icons/delete.svg"
                                     width={18}
@@ -136,8 +123,7 @@ function Chatinfo() {
                                 </button>
                             </PopoverTrigger>
                             <PopoverContent className="w-auto py-1 px-0 bg-white border border-lightGrey rounded-md flex flex-col">
-                                <button className='flex flex-row gap-2 items-center h-10 w-[173px] px-4 hover:bg-[#EAECF0]'
-                                    onClick={() => setCreateCategoryDialog(true)}>
+                                <button className='flex flex-row gap-2 items-center h-10 w-[173px] px-4 hover:bg-[#EAECF0]'>
                                     <Image
                                         src="/icons/Create-category.svg"
                                         width={18}
@@ -146,8 +132,7 @@ function Chatinfo() {
                                     />
                                     <span className='font-normal text-[#0C111D] text-sm'>Create category</span>
                                 </button>
-                                <button className='flex flex-row gap-2 items-center h-10 w-[173px] px-4 hover:bg-[#EAECF0]'
-                                    onClick={() => setEditDetailsDialog(true)}>
+                                <button className='flex flex-row gap-2 items-center h-10 w-[173px] px-4 hover:bg-[#EAECF0]'>
                                     <Image
                                         src="/icons/edit-02.svg"
                                         width={18}
@@ -156,8 +141,7 @@ function Chatinfo() {
                                     />
                                     <span className='font-normal text-[#0C111D] text-sm'>Edit details</span>
                                 </button>
-                                <button className='flex flex-row gap-2 items-center h-10 w-[173px] px-4 hover:bg-[#EAECF0]'
-                                    onClick={() => setDeleteCategoryDialog(true)}>
+                                <button className='flex flex-row gap-2 items-center h-10 w-[173px] px-4 hover:bg-[#EAECF0]'>
                                     <Image
                                         src="/icons/delete.svg"
                                         width={18}
@@ -178,8 +162,7 @@ function Chatinfo() {
                             <p className="text-[0.813rem] text-[#4B5563] font-semibold leading-6">{item}</p>
                         </button>
                     ))}
-                    <button className='flex flex-row items-center justify-center w-full px-2 py-[0.375rem] gap-2 border border-lightGrey rounded-full'
-                        onClick={() => setCreateChannel(true)}>
+                    <button className='flex flex-row items-center justify-center w-full px-2 py-[0.375rem] gap-2 border border-lightGrey rounded-full'>
                         <Image src='/icons/plus-dark.svg' alt='create channel' width={18} height={18} />
                         <p className='text-[0.813rem] text-[#182230] font-semibold leading-6'>Create Channel</p>
                     </button>
@@ -244,8 +227,7 @@ function Chatinfo() {
                                 />
                                 <span className='font-normal text-[#0C111D] text-sm'>Media</span>
                             </button>
-                            <button className='flex flex-row gap-2 items-center h-10 w-[206px] px-4 hover:bg-[#EAECF0]'
-                                onClick={() => setChannelInfoDialog(true)}>
+                            <button className='flex flex-row gap-2 items-center h-10 w-[206px] px-4 hover:bg-[#EAECF0]'>
                                 <Image
                                     src="/icons/information-circle.svg"
                                     width={18}
@@ -254,8 +236,7 @@ function Chatinfo() {
                                 />
                                 <span className='font-normal text-[#0C111D] text-sm'>Channel info</span>
                             </button>
-                            <button className='flex flex-row gap-2 items-center h-10 w-[206px] px-4 hover:bg-[#EAECF0]'
-                                onClick={() => setChannelRequestsDialog(true)}>
+                            <button className='flex flex-row gap-2 items-center h-10 w-[206px] px-4 hover:bg-[#EAECF0]'>
                                 <Image
                                     src="/icons/channel-requests.svg"
                                     width={18}
@@ -264,8 +245,7 @@ function Chatinfo() {
                                 />
                                 <span className='font-normal text-[#0C111D] text-sm'>Channel Requests</span>
                             </button>
-                            <button className='flex flex-row gap-2 items-center h-10 w-[206px] px-4 hover:bg-[#EAECF0]'
-                                onClick={() => setDeleteDialog(true)}>
+                            <button className='flex flex-row gap-2 items-center h-10 w-[206px] px-4 hover:bg-[#EAECF0]'>
                                 <Image
                                     src="/icons/delete.svg"
                                     width={18}
@@ -330,8 +310,6 @@ function Chatinfo() {
                     </button>
                 </div>
             </div>
-
-
 
             {/* Collapsible Details Section */}
             <div
@@ -443,15 +421,7 @@ function Chatinfo() {
                     </div>
                 </div>
             </div>
-            {createChannel && <CreateChannel open={createChannel} onClose={() => setCreateChannel(false)} />}
-            {groupInfoDialog && <Groupinfo open={groupInfoDialog} onClose={() => setGroupInfoDialog(false)} />}
-            {deleteGroupDialog && <DeleteGroup open={deleteGroupDialog} onClose={() => setDeleteGroupDialog(false)} />}
-            {createCategoryDialog && <CreateCategory open={createCategoryDialog} onClose={() => setCreateCategoryDialog(false)} />}
-            {editDetailsDialog && <EditDetails open={editDetailsDialog} onClose={() => setEditDetailsDialog(false)} />}
-            {deleteCategoryDialog && <DeleteCategory open={deleteCategoryDialog} onClose={() => setDeleteCategoryDialog(false)} />}
-            {channelInfoDialog && <Channelinfo open={channelInfoDialog} onClose={() => setChannelInfoDialog(false)} />}
-            {channelRequestsDialog && <ChannelRequests open={channelRequestsDialog} onClose={() => setChannelRequestsDialog(false)} />}
-            {deleteDialog && <Delete open={deleteDialog} onClose={() => setDeleteDialog(false)} />}
+
         </div>
     );
 }

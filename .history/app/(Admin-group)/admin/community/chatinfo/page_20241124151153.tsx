@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import Image from 'next/image';
 import { Popover, PopoverContent, PopoverTrigger } from "@nextui-org/popover";
+// below are dailogs
 import Delete from "@/components/AdminComponents/Community/AllDialogs/Delete";
 import ChannelRequests from "@/components/AdminComponents/Community/AllDialogs/ChannelRequests"
 import Channelinfo from "@/components/AdminComponents/Community/AllDialogs/Channelinfo"
@@ -264,8 +265,7 @@ function Chatinfo() {
                                 />
                                 <span className='font-normal text-[#0C111D] text-sm'>Channel Requests</span>
                             </button>
-                            <button className='flex flex-row gap-2 items-center h-10 w-[206px] px-4 hover:bg-[#EAECF0]'
-                                onClick={() => setDeleteDialog(true)}>
+                            <button className='flex flex-row gap-2 items-center h-10 w-[206px] px-4 hover:bg-[#EAECF0]'>
                                 <Image
                                     src="/icons/delete.svg"
                                     width={18}
@@ -451,7 +451,7 @@ function Chatinfo() {
             {deleteCategoryDialog && <DeleteCategory open={deleteCategoryDialog} onClose={() => setDeleteCategoryDialog(false)} />}
             {channelInfoDialog && <Channelinfo open={channelInfoDialog} onClose={() => setChannelInfoDialog(false)} />}
             {channelRequestsDialog && <ChannelRequests open={channelRequestsDialog} onClose={() => setChannelRequestsDialog(false)} />}
-            {deleteDialog && <Delete open={deleteDialog} onClose={() => setDeleteDialog(false)} />}
+
         </div>
     );
 }

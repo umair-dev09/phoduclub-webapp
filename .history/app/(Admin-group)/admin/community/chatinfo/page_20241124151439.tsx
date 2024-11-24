@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import Image from 'next/image';
 import { Popover, PopoverContent, PopoverTrigger } from "@nextui-org/popover";
+// below are dailogs
 import Delete from "@/components/AdminComponents/Community/AllDialogs/Delete";
 import ChannelRequests from "@/components/AdminComponents/Community/AllDialogs/ChannelRequests"
 import Channelinfo from "@/components/AdminComponents/Community/AllDialogs/Channelinfo"

@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import Image from 'next/image';
 import { Popover, PopoverContent, PopoverTrigger } from "@nextui-org/popover";
+// below are dailogs
 import Delete from "@/components/AdminComponents/Community/AllDialogs/Delete";
 import ChannelRequests from "@/components/AdminComponents/Community/AllDialogs/ChannelRequests"
 import Channelinfo from "@/components/AdminComponents/Community/AllDialogs/Channelinfo"
@@ -156,8 +157,7 @@ function Chatinfo() {
                                     />
                                     <span className='font-normal text-[#0C111D] text-sm'>Edit details</span>
                                 </button>
-                                <button className='flex flex-row gap-2 items-center h-10 w-[173px] px-4 hover:bg-[#EAECF0]'
-                                    onClick={() => setDeleteCategoryDialog(true)}>
+                                <button className='flex flex-row gap-2 items-center h-10 w-[173px] px-4 hover:bg-[#EAECF0]'>
                                     <Image
                                         src="/icons/delete.svg"
                                         width={18}
@@ -244,8 +244,7 @@ function Chatinfo() {
                                 />
                                 <span className='font-normal text-[#0C111D] text-sm'>Media</span>
                             </button>
-                            <button className='flex flex-row gap-2 items-center h-10 w-[206px] px-4 hover:bg-[#EAECF0]'
-                                onClick={() => setChannelInfoDialog(true)}>
+                            <button className='flex flex-row gap-2 items-center h-10 w-[206px] px-4 hover:bg-[#EAECF0]'>
                                 <Image
                                     src="/icons/information-circle.svg"
                                     width={18}
@@ -254,8 +253,7 @@ function Chatinfo() {
                                 />
                                 <span className='font-normal text-[#0C111D] text-sm'>Channel info</span>
                             </button>
-                            <button className='flex flex-row gap-2 items-center h-10 w-[206px] px-4 hover:bg-[#EAECF0]'
-                                onClick={() => setChannelRequestsDialog(true)}>
+                            <button className='flex flex-row gap-2 items-center h-10 w-[206px] px-4 hover:bg-[#EAECF0]'>
                                 <Image
                                     src="/icons/channel-requests.svg"
                                     width={18}
@@ -264,8 +262,7 @@ function Chatinfo() {
                                 />
                                 <span className='font-normal text-[#0C111D] text-sm'>Channel Requests</span>
                             </button>
-                            <button className='flex flex-row gap-2 items-center h-10 w-[206px] px-4 hover:bg-[#EAECF0]'
-                                onClick={() => setDeleteDialog(true)}>
+                            <button className='flex flex-row gap-2 items-center h-10 w-[206px] px-4 hover:bg-[#EAECF0]'>
                                 <Image
                                     src="/icons/delete.svg"
                                     width={18}
@@ -448,10 +445,6 @@ function Chatinfo() {
             {deleteGroupDialog && <DeleteGroup open={deleteGroupDialog} onClose={() => setDeleteGroupDialog(false)} />}
             {createCategoryDialog && <CreateCategory open={createCategoryDialog} onClose={() => setCreateCategoryDialog(false)} />}
             {editDetailsDialog && <EditDetails open={editDetailsDialog} onClose={() => setEditDetailsDialog(false)} />}
-            {deleteCategoryDialog && <DeleteCategory open={deleteCategoryDialog} onClose={() => setDeleteCategoryDialog(false)} />}
-            {channelInfoDialog && <Channelinfo open={channelInfoDialog} onClose={() => setChannelInfoDialog(false)} />}
-            {channelRequestsDialog && <ChannelRequests open={channelRequestsDialog} onClose={() => setChannelRequestsDialog(false)} />}
-            {deleteDialog && <Delete open={deleteDialog} onClose={() => setDeleteDialog(false)} />}
         </div>
     );
 }

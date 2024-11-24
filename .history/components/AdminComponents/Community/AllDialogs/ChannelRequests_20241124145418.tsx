@@ -3,11 +3,11 @@ import Image from "next/image";
 import React from "react";
 
 // Define the props interface
-interface creategroupProps {
+interface DeleteQuizProps {
     open: boolean; // Prop to control dialog visibility
     onClose: () => void; // Define onClose as a function
 }
-function creategroup({ open, onClose }: creategroupProps) {
+function createchannel({ open, onClose }: DeleteQuizProps) {
     return (
         <Dialog open={open} onClose={onClose} className="relative z-50">
             <DialogBackdrop className="fixed inset-0 bg-black/30" />
@@ -29,5 +29,5 @@ function creategroup({ open, onClose }: creategroupProps) {
         </Dialog >
     )
 }
-export default creategroup;
+export default createchannel;
 
