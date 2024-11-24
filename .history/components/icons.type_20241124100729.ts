@@ -147,12 +147,7 @@ export type IconsType =
   | "arrow-down-dark"
   | "arrow-right-01-round"
   | "plus-dark"
-  | "communityicon"
-  | "mark as read"
-  | "mute"
-  | "media"
-  | "channel-requests"
-  | "Create-category";
+  | "communityicon";
 
 
 
