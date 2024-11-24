@@ -4,7 +4,6 @@ import React, { useState } from 'react';
 import Image from 'next/image';
 import { Popover, PopoverContent, PopoverTrigger } from "@nextui-org/popover";
 import CreateChannelDialogue from '@/components/AdminComponents/InternalChat/CreateChannelDialogue';
-import AddMembersDialogue from '@/components/AdminComponents/InternalChat/AddMembersDialogue';
 
 function InternalChat() {
     const [text, setText] = useState("");
@@ -140,7 +139,7 @@ function InternalChat() {
                     </div>
                     <div className="flex flex-col p-4 gap-4">
                         <div className="flex flex-col px-2 gap-2 overflow-auto">
-                            <div className="flex flex-row justify-between whitespace-nowrap">
+                            <div className="block">
                                 <h4 className="text-base text-[#182230] font-semibold leading-6">Admin</h4>
                                 <p className="flex items-center justify-center w-6 h-6 text-xs text-[#4B5563] font-normal bg-[#F7F8FB] border border-lightGrey rounded-sm">
                                     1
@@ -170,7 +169,7 @@ function InternalChat() {
                             </div>
                         </div>
                         <div className="flex flex-col px-2 gap-2 overflow-auto">
-                            <div className="flex flex-row justify-between whitespace-nowrap">
+                            <div className="flex flex-row justify-between">
                                 <h4 className="text-base text-[#182230] font-semibold leading-6">Chief Moderator</h4>
                                 <p className="flex items-center justify-center w-6 h-6 text-xs text-[#4B5563] font-normal bg-[#F7F8FB] border border-lightGrey rounded-sm">
                                     1
@@ -200,7 +199,7 @@ function InternalChat() {
                             </div>
                         </div>
                         <div className="flex flex-col px-2 gap-2 overflow-auto">
-                            <div className="flex flex-row justify-between whitespace-nowrap">
+                            <div className="flex flex-row justify-between">
                                 <h4 className="text-base text-[#182230] font-semibold leading-6">Teachers</h4>
                                 <p className="flex items-center justify-center w-6 h-6 text-xs text-[#4B5563] font-normal bg-[#F7F8FB] border border-lightGrey rounded-sm">
                                     4
@@ -232,8 +231,8 @@ function InternalChat() {
                     </div>
                 </div>
             </div>
+
             {openDialogue && <CreateChannelDialogue open={true} onClose={() => setOpenDialogue(false)} />}
-            {addMemberDialogue && <AddMembersDialogue open={true} onClose={() => setAddMemberDialogue(false)} />}
         </div>
     );
 }
