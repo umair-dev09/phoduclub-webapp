@@ -1,0 +1,384 @@
+"use client";
+import Image from "next/image";
+import React, { useState, useEffect, useRef, SetStateAction, Dispatch } from "react";
+import 'react-quill/dist/quill.snow.css';
+import ReactQuill from 'react-quill-new'; // Ensure correct import
+import Quill from 'quill'; // Import Quill to use it for types
+import { Popover, PopoverTrigger, PopoverContent } from '@nextui-org/popover';
+import { useRouter } from "next/navigation";
+interface priceprops {
+    Price: number;
+    Discountprice: number;
+}
+
+function createcourse() {
+    // state for ReactQuill
+    const quillRef = useRef<ReactQuill | null>(null); // Ref to hold ReactQuill instance
+    const [quill, setQuill] = useState<Quill | null>(null);
+    const [alignment, setAlignment] = useState<string | null>(null); // State to hold alignment
+    const [isWriting, setIsWriting] = useState(false); // Track if text is being written
+    const [courseName, setCourseName] = useState('');
+    const [courseDescription, setCourseDescription] = useState('');
+    const [courseImage, setCourseImage] = useState('');
+    const [price, setPrice] = useState('');
+    const [discountPrice, setDiscountPrice] = useState('');
+    const [rating, setRating] = useState<string>('');
+    const [numRatings, setNumRatings] = useState<string>('');
+    const [value, setValue] = useState(courseDescription);
+
+    const handleChange = (content: string) => {
+        setValue(content);
+        checkTextContent(content);
+        setCourseDescription(content);
+
+    };
+    const isFormValid = courseName && courseDescription && price && discountPrice && rating && numRatings;
+
+    const checkTextContent = (content: string) => {
+        // Trim the content and check if there's actual text (excluding HTML tags like <p></p>)
+        const plainText = content.replace(/<[^>]+>/g, '').trim();
+        setIsWriting(plainText.length > 0);
+    };
+    const handleBlur = () => {
+        setIsWriting(false); // Reset isWriting when user clicks outside
+    };
+
+
+
+
+    // Modules for React Quill including toolbar options
+    const modules = {
+        toolbar: false, // Disable default toolbar; we will use custom buttons
+    };
+
+    // Set Quill editor instance
+    useEffect(() => {
+        if (quillRef.current) {
+            setQuill(quillRef.current.getEditor());
+        }
+    }, []);
+
+
+    // Handle custom icon button clicks
+    const handleIconClick = (format: string) => {
+        if (quill) {
+            const range = quill.getSelection();
+            if (range) {
+                const currentFormats = quill.getFormat(range);
+
+                // List formatting
+                if (format === 'ordered') {
+                    quill.format('list', currentFormats.list === 'ordered' ? false : 'ordered');
+                } else if (format === 'bullet') {
+                    quill.format('list', currentFormats.list === 'bullet' ? false : 'bullet');
+                }
+                // Alignment formatting
+                else if (format.startsWith('align')) {
+                    if (format === 'align-left') {
+                        quill.format('align', false);
+                        setAlignment('left');
+                    } else {
+                        quill.format('align', format.split('-')[1]);
+                        setAlignment(format.split('-')[1]);
+                    }
+                }
+                // Bold, Italic, Underline formatting
+                else {
+                    const isActive = currentFormats[format];
+                    quill.format(format, !isActive);
+                }
+            }
+        }
+    };
+
+    // -----------------------------------------------------------------------------------------------------------------------------------------------------
+    // this logic is for Price and Discount
+
+
+    const handlePriceChange = (e: { target: { value: any; }; }, setter: (arg0: any) => void) => {
+        const value = e.target.value;
+        // Allow only numbers and decimals
+        if (value === '' || /^\d*\.?\d*$/.test(value)) {
+            setter(value);
+        }
+    };
+    // -----------------------------------------------------------------------------------------------------------------------------------------------------
+    // this logic is for rating 
+
+    interface StarIconProps {
+        filled: boolean;
+        isHalf: boolean;
+    }
+    const StarIcon: React.FC<StarIconProps> = ({ filled, isHalf }) => (
+        <Image
+            src={filled ? (isHalf ? "/icons/half-star.svg" : "/icons/full-star.svg") : "/icons/empty-star.svg"}
+            width={20}
+            height={20}
+            alt={isHalf ? "half star" : filled ? "full star" : "empty star"}
+        />
+    );
+
+
+    const totalStars = 5;
+
+    // Convert rating string to number for calculations
+    const ratingValue = parseFloat(rating) || 0;
+
+    // Determine if we should show the colorless star
+    const showColorlessStar = !rating || ratingValue === 0;
+    // -------------------------------------------------------------------------------------
+    // Function to handle tab click and navigate to a new route
+    const router = useRouter();
+    const handleTabClick = (path: string) => {
+        router.push(path);
+    };
+    return (
+        <div className="px-[32px] pt-[20px] w-full h-auto overflow-y-auto pb-24">
+            {/* Header part*/}
+            <div className="flex flex-row justify-between h-[60px] border-b border-solid border-[#D0D5DD]">
+                <div className="flex flex-row items-center">
+                    <span className="text-[#1D2939] text-lg font-semibold ">Create course</span>
+                </div>
+                <div className="flex flex-row ">
+                    <button className="h-[44px] w-[120px] rounded-md items-center flex border border-solid border-[#EAECF0] bg-[#FFFFFF] justify-center" onClick={() => router.back()}>
+                        <span className="text-[#1D2939] font-semibold text-sm">Cancel</span>
+                    </button>
+                    <button className={`h-[44px] w-[120px] ml-4 rounded-md items-center flex border border-solid border-white  ${!isFormValid ? 'bg-[#CDA0FC]' : 'bg-[#9012FF]'} justify-center shadow-inner-button`}
+                        onClick={() => handleTabClick('/admin/content/coursecreation/createcourse/courses')}
+                        disabled={!isFormValid}>
+                        <span className="text-[#FFFFFF] font-semibold text-sm">Create</span>
+                    </button>
+                </div>
+            </div>
+            <div className="flex justify-center">
+                {/* Name of Courses */}
+                <div className="mt-4 h-auto p-6 gap-4  rounded-md bg-[#FFFFFF] border border-solid border-[#EAECF0] w-[684px] flex flex-col">
+                    <div className='flex flex-col gap-2'>
+                        <span className='text-[#1D2939] text-sm font-semibold'>Name</span>
+                        <input
+                            className="font-normal pl-3 text-[#1D2939] text-sm placeholder:text-[#A1A1A1] rounded-md placeholder:font-normal
+                        focus:outline-none focus:ring-0 
+                        border border-solid border-[#D0D5DD] h-[40px] 
+                        shadow-[0px_1px_2px_0px_rgba(16,24,40,0.05)] 
+                        transition duration-200 ease-in-out "
+                            placeholder="Name"
+                            type="text"
+                            value={courseName}
+                            onChange={(e) => setCourseName(e.target.value)} // Controlled input for quiz name
+                        />
+                    </div>
+                    {/* Description of Courses */}
+                    <div className="flex flex-col gap-2">
+                        <span className='text-[#1D2939] text-sm font-semibold '>Description</span>
+                        <div
+                            className={`pt-2 bg-[#FFFFFF] border ${isWriting ? 'border-[#D6BBFB]  shadow-[0px_0px_0px_4px_rgba(158,119,237,0.25),0px_1px_2px_0px_rgba(16,24,40,0.05)]' : 'border-[#EAECF0]'
+                                } rounded-[12px] h-auto`}>
+                            <div className="bg-[#FFFFFF] ">
+                                <ReactQuill
+                                    ref={quillRef}
+                                    onBlur={handleBlur}
+                                    value={value}
+                                    onChange={handleChange}
+                                    onKeyDown={handleKeyDown}
+                                    modules={{ toolbar: false }}
+                                    placeholder="Description"
+                                    className="text-[#1D2939] focus:outline-none rounded-b-[12px] custom-quill placeholder:not-italic min-h-[10px] max-h-[150px] overflow-y-auto border-none font-normal"
+                                />
+                            </div>
+                            <div className="h-[66px] bg-[#FFFFFF] rounded-bl-[12px] rounded-br-[12px] flex justify-center items-center">
+                                <div className="flex flex-row w-full justify-between items-center mx-5">
+                                    <div className="h-[24px] w-[288px] gap-[24px] flex flex-row">
+                                        <button onClick={() => handleIconClick('bold')}>
+                                            <Image src="/icons/Bold.svg" width={24} height={24} alt="bold" />
+                                        </button>
+                                        <button onClick={() => handleIconClick('italic')}>
+                                            <Image src="/icons/italic-icon.svg" width={24} height={24} alt="italic-icon" />
+                                        </button>
+                                        <button onClick={() => handleIconClick('underline')}>
+                                            <Image src="/icons/underline-icon.svg" width={24} height={24} alt="underline-icon" />
+                                        </button>
+                                        <Popover placement="bottom-start" className="flex flex-row justify-end">
+                                            <PopoverTrigger className="">
+                                                <button className="flex items-center justify-center p-1">
+                                                    {alignment === 'center' ? (
+                                                        <Image src="/icons/align-middle.svg" width={24} height={26} alt="align-center" />
+                                                    ) : alignment === 'right' ? (
+                                                        <Image src="/icons/align-right.svg" width={24} height={26} alt="align-right" />
+                                                    ) : (
+                                                        <Image src="/icons/dropdown-icon-1.svg" width={32} height={32} alt="align-left" />
+                                                    )}
+                                                </button>
+                                            </PopoverTrigger>
+                                            <PopoverContent className="ml-1 gap-4 flex flex-row bg-white rounded-[8px] border-[1px] border-solid border-[#EAECF0] p-2 w-[120px] shadow-[0_2px_4px_#EAECF0] ">
+
+                                                <button onClick={() => handleIconClick("align-left")} className="flex items-center justify-center">
+                                                    <Image src="/icons/align-left.svg" width={30} height={30} alt="align-left" />
+                                                </button>
+                                                <button onClick={() => handleIconClick("align-center")} className="flex items-center justify-center">
+                                                    <Image src="/icons/align-middle.svg" width={30} height={30} alt="align-center" />
+                                                </button>
+                                                <button onClick={() => handleIconClick("align-right")} className="flex items-center justify-center">
+                                                    <Image src="/icons/align-right.svg" width={30} height={30} alt="align-right" />
+                                                </button>
+
+                                            </PopoverContent>
+                                        </Popover>
+                                        <button onClick={() => handleIconClick('ordered')}>
+                                            <Image src="/icons/dropdown-icon-2.svg" width={27} height={27} alt="ordered-list" />
+                                        </button>
+                                        <button onClick={() => handleIconClick('bullet')}>
+                                            <Image src="/icons/dropdown-icon-3.svg" width={27} height={27} alt="bullet-list" />
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {/* Upload the Image */}
+                    <div className=" flex flex-col gap-2">
+                        <span className="text-[#1D2939] font-semibold text-sm">Image</span>
+                        <div className="h-[148px] rounded-xl bg-[#F9FAFB] border-2 border-dashed border-[#D0D5DD]">
+                            <button className="flex flex-col items-center justify-center gap-4 h-full w-full">
+                                <div className="flex flex-col items-center">
+                                    <div className="h-10 w-10 rounded-md border border-solid border-[#EAECF0] bg-[#FFFFFF] p-[10px]">
+                                        <Image
+                                            src="/icons/upload-cloud.svg"
+                                            width={20}
+                                            height={20}
+                                            alt="upload icon"
+                                        />
+                                    </div>
+                                </div>
+                                <span className="text-sm font-semibold text-[#9012FF]">
+                                    Click to upload <span className="text-[#182230] text-sm font-medium">or drag and drop</span>
+                                </span>
+                            </button>
+                        </div>
+                    </div>
+                    {/* Pricing of the Courses */}
+                    <div className="flex flex-row w-full gap-4">
+                        <div className="flex flex-col gap-1 w-1/2 flex-grow">
+                            <label htmlFor="discount-price" className="text-[#1D2939] text-sm font-medium">Price</label>
+                            <div className="flex flex-row py-2 px-4 w-full gap-2 border border-solid border-[#D0D5DD] rounded-md transition duration-200 ease-in-out focus:border-red-300">
+                                {price && <div className="text-[#1D2939]">₹</div>}
+                                <input
+                                    id="discount-price"
+                                    maxLength={6}
+                                    className="w-full text-sm font-medium text-[#1D2939] placeholder:font-normal placeholder:text-[#A1A1A1] rounded-md outline-none"
+                                    type="text"
+                                    placeholder="Price"
+                                    value={price}
+                                    onChange={(e) => handlePriceChange(e, setPrice)}
+                                />
+                            </div>
+                        </div>
+                        <div className="flex flex-col gap-1 w-1/2 flex-grow">
+                            <label htmlFor="discount-price" className="text-[#1D2939] text-sm font-medium">Discount Price</label>
+                            <div className="flex flex-row py-2 px-4 w-full gap-2 border border-solid border-[#D0D5DD] rounded-md transition duration-200 ease-in-out focus:border-red-300">
+                                {discountPrice && <div className="text-[#1D2939]">₹</div>}
+                                <input
+                                    id="discount-price"
+                                    maxLength={6}
+                                    className="w-full text-sm font-medium text-[#1D2939] placeholder:font-normal placeholder:text-[#A1A1A1] rounded-md outline-none"
+                                    type="text"
+                                    placeholder=" Discount Price"
+                                    value={discountPrice}
+                                    onChange={(e) => handlePriceChange(e, setDiscountPrice)}
+                                />
+                            </div>
+                        </div>
+                    </div>
+                    {/* Ratings of Courses */}
+                    <div className="flex flex-row w-full gap-4">
+                        <div className="flex flex-col gap-1 w-1/2 flex-grow">
+                            <label htmlFor="rating" className="text-[#1D2939] text-sm font-medium">
+                                Ratings
+                            </label>
+                            <div className="flex flex-row py-2 px-4 w-full gap-2 border border-solid border-[#D0D5DD] rounded-md transition duration-200 ease-in-out ">
+                                <input
+                                    id="rating"
+                                    value={rating}
+                                    maxLength={3}
+                                    onChange={(e) => {
+                                        const value = e.target.value;
+                                        // Only allow numbers and one decimal point
+                                        if (value === '' || (/^\d*\.?\d*$/.test(value) && parseFloat(value) <= 5)) {
+                                            setRating(value);
+                                        }
+                                    }}
+                                    className="w-full text-sm font-medium text-[#1D2939] placeholder:font-normal placeholder:text-[#A1A1A1] rounded-md outline-none"
+                                    type="text"
+                                    placeholder="Ratings"
+                                />
+                            </div>
+                        </div>
+                        <div className="flex flex-col gap-1 w-1/2 flex-grow">
+                            <label htmlFor="num-ratings" className="text-[#1D2939] text-sm font-medium">
+                                No. of Ratings
+                            </label>
+                            <div className="flex flex-row py-2 px-4 w-full gap-2 border border-solid border-[#D0D5DD] rounded-md transition duration-200 ease-in-out ">
+                                <input
+                                    id="num-ratings"
+                                    value={numRatings}
+                                    onChange={(e) => {
+                                        const value = e.target.value;
+                                        // Only allow numbers
+                                        if (value === '' || /^\d*$/.test(value)) {
+                                            setNumRatings(value);
+                                        }
+                                    }}
+                                    className="w-full text-sm font-medium text-[#1D2939] placeholder:font-normal placeholder:text-[#A1A1A1] rounded-md outline-none"
+                                    type="text"
+                                    placeholder="No. of Ratings"
+                                />
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Star Rating Display */}
+                    {!showColorlessStar && ratingValue > 0 && (
+                        <div className="flex items-center gap-2 h-[24px]">
+                            <div className="flex items-center">
+                                {[...Array(Math.floor(ratingValue))].map((_, index) => (
+                                    <StarIcon key={`filled-${index}`} filled={true} isHalf={false} />
+                                ))}
+
+                                {(ratingValue % 1) >= 0.0 && (
+                                    <StarIcon filled={true} isHalf={true} />
+                                )}
+
+                                {[...Array(totalStars - Math.ceil(ratingValue))].map((_, index) => (
+                                    <StarIcon key={`empty-${index}`} filled={false} isHalf={false} />
+                                ))}
+                            </div>
+
+                            <div className="text-[#1D2939] text-sm font-bold flex items-center mt-1">
+                                {ratingValue.toFixed(1)}
+                                <span className="text-[#1D2939] font-normal text-sm ml-1">
+                                    <span className="flex items-center">
+                                        <span className="inline-block">({numRatings}</span>
+                                        <span className="inline-block"> +Ratings)</span>
+                                    </span>
+                                </span>
+                            </div>
+                        </div>
+                    )}
+                    {/* Colorless Star Display */}
+                    {showColorlessStar && (
+                        <div className="flex flex-row gap-1 items-center">
+                            <Image
+                                src="/icons/colorless-star.svg"
+                                width={116}
+                                height={20}
+                                alt="colorless-star"
+                            />
+                            <span className="text-[#1D2939] font-medium text-sm">0</span>
+                        </div>
+                    )}
+                </div>
+            </div>
+        </div>
+    )
+
+}
+export default createcourse;

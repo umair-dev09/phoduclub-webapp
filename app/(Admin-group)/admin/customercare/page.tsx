@@ -16,7 +16,8 @@ import {
 import CustomerCareStatus from '@/components/AdminComponents/CustomerCare/CustomerCareStatus';
 import CustomerCareImportance from '@/components/AdminComponents/CustomerCare/CustomerCareImportance';
 import { Calendar } from "@nextui-org/calendar";
-
+import { Checkbox } from "@nextui-org/react";
+import { Popover, PopoverContent, PopoverTrigger } from "@nextui-org/popover";
 // Define types for quiz data
 type Quiz = {
     id: string;
@@ -52,7 +53,7 @@ function CustomerCare() {
     const [searchTerm, setSearchTerm] = useState('');
     const [selectedItems, setSelectedItems] = useState<Set<string>>(new Set());
     const router = useRouter();
-
+    const [isPopoverOpen, setIsPopoverOpen] = useState(false);
     // Fetch quizzes when component mounts
     useEffect(() => {
         const loadQuizzes = async () => {
@@ -90,31 +91,60 @@ function CustomerCare() {
     // Check if all fields are filled
     const isAddButtonDisabled = !uniqueId || !startDate || !endDate;
 
+    // const handleCheckboxChange = (id: string) => {
+    //     const newSelected = new Set(selectedItems);
+    //     if (newSelected.has(id)) {
+    //         newSelected.delete(id);
+    //     } else {
+    //         newSelected.add(id);
+    //     }
+    //     setSelectedItems(newSelected);
+    // };
+
+    // // Handle "select all" checkbox
+    // const handleSelectAll = (checked: boolean) => {
+    //     if (checked) {
+    //         // Select all items on the current page
+    //         const currentIds = currentItems.map(item => item.id);
+    //         setSelectedItems(new Set(currentIds));
+    //     } else {
+    //         // Deselect all items
+    //         setSelectedItems(new Set());
+    //     }
+    // };
+
+    // // Check if all items on current page are selected
+    // const isAllSelected = currentItems.length > 0 &&
+    //     currentItems.every(item => selectedItems.has(item.id));
+
+    const [globalSelectedItems, setGlobalSelectedItems] = useState<Set<string>>(new Set());
+
     const handleCheckboxChange = (id: string) => {
-        const newSelected = new Set(selectedItems);
-        if (newSelected.has(id)) {
-            newSelected.delete(id);
-        } else {
-            newSelected.add(id);
-        }
-        setSelectedItems(newSelected);
+        setGlobalSelectedItems(prev => {
+            const newSelected = new Set(prev);
+            if (newSelected.has(id)) {
+                newSelected.delete(id);
+            } else {
+                newSelected.add(id);
+            }
+            return newSelected;
+        });
     };
 
-    // Handle "select all" checkbox
     const handleSelectAll = (checked: boolean) => {
         if (checked) {
-            // Select all items on the current page
-            const currentIds = currentItems.map(item => item.id);
-            setSelectedItems(new Set(currentIds));
+            // Select ALL items across all pages
+            const allIds = quizzes.map(item => item.id);
+            setGlobalSelectedItems(new Set(allIds));
         } else {
             // Deselect all items
-            setSelectedItems(new Set());
+            setGlobalSelectedItems(new Set());
         }
     };
 
-    // Check if all items on current page are selected
-    const isAllSelected = currentItems.length > 0 &&
-        currentItems.every(item => selectedItems.has(item.id));
+    // Update the isAllSelected check
+    const isAllSelected = quizzes.length > 0 &&
+        quizzes.every(item => globalSelectedItems.has(item.id));
 
     return (
         <div className="flex flex-col w-full gap-4 p-6">
@@ -165,9 +195,85 @@ function CustomerCare() {
                             alt="Arrow-Down Button"
                         />
                     </div>
-                    <button className="flex items-center justify-center px-[0.875rem] py-[0.625rem] bg-white border border-[#D0D5DD] rounded-md shadow-[0_1px_2px_0_rgba(16,24,40,0.05)]">
-                        <Image src='/icons/Frame.svg' alt="filter" width={20} height={20} />
-                    </button>
+
+
+                    {/* <Popover
+                        placement="bottom-end">
+                        <PopoverTrigger>
+                            <button className=" px-[0.875rem] py-[0.625rem] bg-white border border-[#D0D5DD] rounded-md shadow-[0_1px_2px_0_rgba(16,24,40,0.05)]">
+                                <Image src='/icons/Frame.svg' alt="filter" width={20} height={20} />
+                            </button>
+                        </PopoverTrigger>
+                        <PopoverContent className=" w-[206px] rounded-2 border border-solid border-[#EAECF0] p-3 gap-2  hover:bg-[#F2F4F7]">
+
+                            <span className="text-xs font-normal text-[#475467]">Students</span>
+                            <div className="flex flex-row gap-2">
+                                <Checkbox color="primary" />
+                                <span className="text-[#0C111D] font-normal text-xs">Free</span>
+                            </div>
+                        </PopoverContent>
+                    </Popover> */}
+                    <div className="relative">
+                        <Popover
+                            placement="bottom-end"
+                            isOpen={isPopoverOpen}
+                            onOpenChange={(open) => setIsPopoverOpen(open)}
+                        >
+                            <PopoverTrigger>
+                                <button className={`h-[44px] justify-center rounded-md bg-[#FFFFFF] border border-solid outline-none flex items-center p-3 transition-colors ${isPopoverOpen
+                                    ? "border-[#C7A5FF] ring-4 ring-[#E2D9F8]"
+                                    : "border-[#D0D5DD]"
+                                    }`}>
+                                    <Image src='/icons/Frame.svg' alt="filter" width={20} height={20} />
+                                </button>
+                            </PopoverTrigger>
+                            <PopoverContent className="w-[12.875rem] items-start py-2 px-0 h-auto gap-2 border border-lightGrey rounded-md shadow-[0_12px_16px_-4px_rgba(16,24,40,0.08)]">
+                                <div className="flex flex-col w-full px-2">
+                                    <span className="text-xs font-normal text-[#475467] mb-3">Students</span>
+                                    <div className="flex flex-row w-full gap-2 mb-4 items-center">
+                                        <Checkbox color="primary" />
+                                        <span className="text-[#1D2939] font-medium text-sm">Free</span>
+                                    </div>
+                                    <div className="flex flex-row w-full gap-2 mb-2 items-center">
+                                        <Checkbox color="primary" />
+                                        <span className="text-[#1D2939] font-medium text-sm">Premium</span>
+                                    </div>
+                                </div>
+                                <hr className="w-[12.875rem]" />
+                                <span className="text-xs font-normal text-[#475467] mb-2 px-2">Assignee</span>
+                                <div className="flex flex-col w-full mb-1 px-2 gap-4">
+                                    <div className="flex flex-row items-center">
+                                        <Checkbox color="primary" />
+                                        <Image
+                                            src="/icons/big-profile-pic.svg"
+                                            width={24}
+                                            height={24}
+                                            alt="profile" />
+                                        <span className="text-[#1D2939] font-medium text-sm ml-2">Assigned to me</span>
+                                    </div>
+                                    <div className="flex flex-row items-center">
+                                        <Checkbox color="primary" />
+                                        <Image
+                                            src="/icons/big-profile-pic.svg"
+                                            width={24}
+                                            height={24}
+                                            alt="profile" />
+                                        <span className="text-[#1D2939] font-medium text-sm ml-2">Theresa Webb</span>
+                                    </div>
+                                    <div className="flex flex-row items-center">
+                                        <Checkbox color="primary" />
+                                        <Image
+                                            src="/icons/big-profile-pic.svg"
+                                            width={24}
+                                            height={24}
+                                            alt="profile" />
+                                        <span className="text-[#1D2939] font-medium text-sm ml-2">Darrell Steward</span>
+                                    </div>
+                                </div>
+                            </PopoverContent>
+                        </Popover>
+                        <div className="absolute -top-1 -right-1 w-3 h-3 z-10 bg-[#F04438] rounded-full"></div>
+                    </div>
                 </div>
             </div>
 
@@ -177,8 +283,14 @@ function CustomerCare() {
                         <thead>
                             <tr>
                                 <th className="w-10 pl-8">
-                                    <input
+                                    {/* <input
                                         type="checkbox"
+                                        checked={isAllSelected}
+                                        onChange={(e) => handleSelectAll(e.target.checked)}
+                                    /> */}
+                                    <Checkbox
+                                        size="md"
+                                        color="primary"
                                         checked={isAllSelected}
                                         onChange={(e) => handleSelectAll(e.target.checked)}
                                     />
@@ -208,12 +320,18 @@ function CustomerCare() {
                         </thead>
                         <tbody>
                             {currentItems.map((quiz, index) => (
-                                <tr key={quiz.id} className="h-auto border-t border-solid border-[#EAECF0]">
+                                <tr key={quiz.id} onClick={() => handleTabClick('/admin/customercare/customerinfo')} className="h-auto border-t border-solid border-[#EAECF0] cursor-pointer">
                                     <td className="pl-8 py-4 text-center text-[#101828] text-sm">
-                                        <input
+                                        {/* <input
                                             type="checkbox"
-                                            checked={selectedItems.has(quiz.id)}
+                                            checked={globalSelectedItems.has(quiz.id)}
                                             onChange={() => handleCheckboxChange(quiz.id)}
+                                        /> */}
+                                        <Checkbox
+                                            size="md"
+                                            color="primary"
+                                            isSelected={globalSelectedItems.has(quiz.id)}
+                                            onValueChange={() => handleCheckboxChange(quiz.id)}
                                         />
                                     </td>
                                     <td className="py-4 text-center text-[#101828] text-sm">
@@ -284,18 +402,65 @@ function CustomerCare() {
                     </div>
                 </div>
             </div>
-            <div className={`fixed left-[35%] flex flex-row items-center p-4 gap-4 bg-white border border-[#D0D5DD] rounded-xl shadow-[4px_8px_13px_0_rgba(0,0,0,0.05), 4px_4px_12px_0_rgba(0,0,0,0.05), 4px_8px_14px_0_rgba(0,0,0,0.04)] transition-all duration-500 transform ${selectedItems.size > 0 ? 'translate-y-0 opacity-100' : 'translate-y-full opacity-0'
+            <div className={`fixed right-[33%] flex flex-row items-center p-4 gap-4 bg-white border border-[#D0D5DD] rounded-xl shadow-[4px_8px_13px_0_rgba(0,0,0,0.05), 4px_4px_12px_0_rgba(0,0,0,0.05), 4px_8px_14px_0_rgba(0,0,0,0.04)] transition-all duration-500 transform ${globalSelectedItems.size > 0 ? 'translate-y-0 opacity-100' : 'translate-y-full opacity-0'
                 } bottom-8`}>
-                <p className="text-balance text-[#1D2939] font-semibold">{selectedItems.size} Selected</p>
+                <p className="text-balance text-[#1D2939] font-semibold">{globalSelectedItems.size} Selected</p>
                 <div className="flex flex-row gap-2">
-                    <button onClick={() => handleSelectAll(true)} className="px-4 py-[0.625rem] text-sm text-[#1D2939] font-medium border border-lightGrey rounded-md">Select all</button>
-                    <button onClick={() => setSelectedItems(new Set())} className="px-4 py-[0.625rem] text-sm text-[#1D2939] font-medium border border-lightGrey rounded-md">Unselect all</button>
+                    <button
+                        onClick={() => {
+                            const allIds = quizzes.map(item => item.id);
+                            setGlobalSelectedItems(new Set(allIds));
+                            handleSelectAll(true);
+                        }}
+                        className="px-4 py-[0.625rem] text-sm text-[#1D2939] font-medium border border-lightGrey rounded-md"
+                    >
+                        Select all
+                    </button>
+                    <button
+                        onClick={() => {
+                            setGlobalSelectedItems(new Set());
+                            handleSelectAll(false);
+                        }}
+                        className="px-4 py-[0.625rem] text-sm text-[#1D2939] font-medium border border-lightGrey rounded-md"
+                    >
+                        Unselect all
+                    </button>
                 </div>
                 <div className="w-0 h-9 border-[0.5px] border-lightGrey rounded-full"></div>
-                <button className="flex flex-row justify-between w-[6.438rem] px-4 py-[0.625rem] text-xs text-[#182230] font-medium bg-[#EDE4FF] rounded-[0.375rem]">
-                    New
-                    <Image src='/icons/arrow-down-01-round.svg' alt="open" width={18} height={18} />
-                </button>
+                <Popover placement="top-start">
+                    <PopoverTrigger>
+                        <button className="flex flex-row justify-between w-[6.438rem] px-4 py-[0.625rem] text-xs text-[#182230] font-medium bg-[#EDE4FF] rounded-[0.375rem]">
+                            New
+                            <Image src='/icons/arrow-down-01-round.svg' alt="open" width={18} height={18} />
+                        </button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto py-1 px-0 bg-white border border-lightGrey rounded-md">
+                        <button className="flex flex-row items-center justify-start w-full px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7]">
+                            <div className="bg-[#C6F5FF] py-2 px-3 gap-1 flex flex-row rounded-[6px] items-center h-6 w-auto">
+                                <span className="w-[6px] h-[6px] bg-[#0D7A93] rounded-full "></span>
+                                <span className="font-medium text-[#0D7A93] text-xs">Opened</span>
+                            </div>
+                        </button>
+                        <button className="flex flex-row items-center justify-start w-full px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7]">
+                            <div className="bg-[#FEE4E2] py-2 px-3 gap-1 flex flex-row rounded-[6px] items-center h-6 w-auto">
+                                <span className="w-[6px] h-[6px] bg-[#9A221A] rounded-full "></span>
+                                <span className="font-medium text-[#9A221A] text-xs">Blocker</span>
+                            </div>
+                        </button>
+                        <button className="flex flex-row items-center justify-start w-full px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7]">
+                            <div className="bg-[#FFEFC6] py-2 px-3 gap-1 flex flex-row rounded-[6px] items-center h-6 w-auto">
+                                <span className="w-[6px] h-[6px] bg-[#93360D] rounded-full "></span>
+                                <span className="font-medium text-[#93360D] text-xs">Repiled</span>
+                            </div>
+                        </button>
+                        <button className="flex flex-row items-center justify-start w-full px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7]">
+                            <div className="bg-[#D3F8E0] py-2 px-3 gap-1 flex flex-row rounded-[6px] items-center h-6 w-auto">
+                                <span className="w-[6px] h-[6px] bg-[#0A5B39] rounded-full "></span>
+                                <span className="font-medium text-[#0A5B39] text-xs">Resolved</span>
+                            </div>
+                        </button>
+                    </PopoverContent>
+                </Popover>
             </div>
         </div>
     );

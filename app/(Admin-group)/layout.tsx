@@ -25,6 +25,9 @@ export default function DashboardGroup({ children }: DashboardGroupProps) {
             case 'rolemanagement':
                 pageName = 'Role Management';
                 break;
+            case 'rolemanagementinfo':
+                pageName = 'Back to Role Management';
+                break;
             case 'customerdatamanagement':
                 pageName = 'Customer Data Management';
                 break;

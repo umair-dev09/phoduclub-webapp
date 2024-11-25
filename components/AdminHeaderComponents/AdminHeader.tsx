@@ -5,7 +5,7 @@ import { Button } from "@nextui-org/react";
 import { Popover, PopoverContent, PopoverTrigger } from "@nextui-org/popover";
 import { useEffect, useState } from 'react';
 import { auth } from '@/firebase';
-import { onAuthStateChanged, User, signOut} from 'firebase/auth'; // Import the User type from Firebase
+import { onAuthStateChanged, User, signOut } from 'firebase/auth'; // Import the User type from Firebase
 import { getFirestore, doc, getDoc, onSnapshot } from 'firebase/firestore';
 import { toast } from 'react-toastify';
 import AdminHeaderLoading from './AdminHeaderLoading';
@@ -19,13 +19,13 @@ type UserData = {
     adminId: string | null;
     profilePic: string | null;
     role: string | null;
-}; 
+};
 function Header({ currentPage }: HeaderProps) {
     const router = useRouter();
-    const [userData, setUserData] = useState<UserData | null>(null); 
+    const [userData, setUserData] = useState<UserData | null>(null);
     const [loading, setLoading] = useState(true); // Track loading state
     const [error, setError] = useState(false); // Track error state
-    const [user, setUser] = useState<User | null>(null); 
+    const [user, setUser] = useState<User | null>(null);
     const [islogout, setIslogout] = useState(false);
     const openlogout = () => setIslogout(true);
     const closelogout = () => setIslogout(false);
@@ -34,12 +34,13 @@ function Header({ currentPage }: HeaderProps) {
     const handleBackClick = () => {
         router.back();
     };
+
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
             if (currentUser) {
                 setUser(currentUser);
                 const userDocRef = doc(db, `admin/${currentUser.uid}`);
-                
+
                 try {
                     const docSnapshot = await getDoc(userDocRef);
                     if (docSnapshot.exists()) {
@@ -61,7 +62,7 @@ function Header({ currentPage }: HeaderProps) {
             }
             setLoading(false);
         });
-    
+
         return () => unsubscribe();
     }, [db, router]);
 
@@ -75,10 +76,10 @@ function Header({ currentPage }: HeaderProps) {
                 setLoading(false); // Ensure loading is set to false even when no user is found
             }
         });
-    
+
         return () => unsubscribe();
     }, []);
-  
+
     useEffect(() => {
         let unsubscribeFromSnapshot: () => void;
         if (user) {
@@ -89,7 +90,7 @@ function Header({ currentPage }: HeaderProps) {
                 if (docSnapshot.exists()) {
                     const data = docSnapshot.data() as UserData;
                     setUserData(data);
-                    
+
                     setLoading(false);
                 } else {
                     console.error('No user data found!');
@@ -109,13 +110,13 @@ function Header({ currentPage }: HeaderProps) {
             }
         };
     }, [user, db]);
-  
+
     // Display loading or error component while data is being fetched or if there's an error
     if (loading || error) {
         return <AdminHeaderLoading />;
     }
 
-    const isBackPage = currentPage === 'Back to Quizzes Management' || currentPage === 'Back to Test Series Management' || currentPage === 'Back to Customer Care' || currentPage === 'Back to Messenger' || currentPage === 'Back to Course Management' || currentPage === 'Back to User Database';
+    const isBackPage = currentPage === 'Back to Quizzes Management' || currentPage === 'Back to Test Series Management' || currentPage === 'Back to Customer Care' || currentPage === 'Back to Messenger' || currentPage === 'Back to Course Management' || currentPage === 'Back to User Database' || currentPage === 'Back to Role Management';
 
     // Function to handle tab click and navigate to a new route
     const handleTabClick = (path: string) => {

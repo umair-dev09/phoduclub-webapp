@@ -2,14 +2,31 @@
 import Image from "next/image";
 import React, { useState } from 'react';
 import { Popover, PopoverContent, PopoverTrigger } from "@nextui-org/popover";
+import { Checkbox } from "@nextui-org/react";
 function customerinfo() {
     const [isChecked, setIsChecked] = useState(false);
+    const [height, setHeight] = useState("32px");
+    const [text, setText] = useState("");
+
     const handleCheckboxClick = () => {
         setIsChecked(!isChecked);
     };
+
+    const handleInput = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+        const text = e.target.value;
+        setText(e.target.value);
+
+        e.target.style.height = "32px";
+        const newHeight = e.target.scrollHeight <= 120 ? e.target.scrollHeight : 120;
+        e.target.style.height = `${newHeight}px`;
+
+        setHeight(newHeight < 120 ? "32px" : "120px");
+    };
+
+
     // State for "SELECTED POPUP";
     const [selectedStatus, setSelectedStatus] = useState({
-        text: "Open",
+        text: "Repiled",
         bgColor: "#FFEFC6",
         dotColor: "#93360D",
         textColor: "#93360D"
@@ -37,9 +54,11 @@ function customerinfo() {
     }) => {
         setSelectedforpriority(status);
     };
+    // state for Send Button
+
     return (
-        <div className="h-full w-full flex flex-row">
-            <div className="grid grid-rows-[72px_1fr_70px] w-[68%] pb-6">
+        <div className="h-auto w-full flex flex-row">
+            <div className="flex flex-col  w-[68%] h-auto ">
                 <div className="h-[72px] border-b border-solid border-[#EAECF0] flex flex-row items-center px-6 bg-[#FFFFFF] justify-between w-full">
                     <div className="flex flex-row gap-2 items-center">
                         <div className="relative">
@@ -55,20 +74,11 @@ function customerinfo() {
                         <span className="text-sm text-[#1D2939] font-semibold">Jenny Wilson</span>
                     </div>
                     <div className="flex flex-row gap-2 items-center">
-                        <div
-                            onClick={handleCheckboxClick}
-                            className={`flex items-center justify-center w-4 h-4 border 
-                            rounded-sm cursor-pointer 
-                            ${isChecked ? 'bg-purple border-purple' : 'bg-white border-[#D0D5DE]'}`}
-                        >
-                            {isChecked && (
-                                <Image src="/icons/check.svg" alt="choose" width={12} height={12} />
-                            )}
-                        </div>
+                        <Checkbox color="primary" />
                         <span className="text-sm text-[#0C111D] font-normal">Mark as Resolved</span>
                     </div>
                 </div>
-                <div className=" p-6 flex flex-col gap-3 h-auto w-full overflow-y-auto">
+                <div className=" p-6 flex flex-col  flex-1 gap-3 h-auto w-full overflow-y-auto">
                     {/* other chat */}
                     <div className="h-[67px] w-full flex flex-col gap-1">
                         <div className="border border-solid border-[#EAECF0] bg-[#FFFFFF] rounded-[16px] flex items-center p-3 w-[226px]">
@@ -86,81 +96,50 @@ function customerinfo() {
 
                 </div>
                 {/* Type Area */}
-                <div className=" bg-[#FFFFFF] w-full">
-
-
-                    <div className='flex flex-row m-6'>
-                        <div className="flex flex-row rounded-md w-full h-auto bg-[#FCFCFD] py-[6px] border border-[#D0D5DD]">
-                            <textarea
-                                className="w-full max-h-[120px] bg-[#FCFCFD] overflow-y-auto resize-none px-3 rounded-md outline-none font-normal text-sm leading-tight pt-[5px]"
-                                placeholder="Type your message here..."
-                            />
-
-                            <div className='flex flex-row gap-[12px] mr-4 ml-1 items-end mb-2'>
-                                {/* Emoji Picker Button */}
-                                <Popover className='mb-2' placement="bottom-end">
-                                    <PopoverTrigger>
-                                        <button className='transition-colors hover:bg-neutral-100 hover:rounded-[100px] focus:outline-none'>
-                                            <Image src='/icons/emojies.svg' alt='emojis icon' width={21} height={21} />
-                                        </button>
-                                    </PopoverTrigger>
-                                    <PopoverContent>
-                                        <div className="p-4">
-                                            <span className="text-sm">Emoji Picker</span>
-                                            {/* Placeholder for Emoji Picker UI */}
-                                        </div>
-                                    </PopoverContent>
-                                </Popover>
-
-                                {/* File Attachment Button */}
-                                <Popover className='mb-2' placement="bottom-end">
-                                    <PopoverTrigger>
-                                        <button className='transition-colors hover:bg-neutral-100 hover:rounded-[100px] focus:outline-none'>
-                                            <Image src='/icons/files.svg' alt='attachment icon' width={21} height={21} />
-                                        </button>
-                                    </PopoverTrigger>
-
-                                    <PopoverContent className="w-auto py-1 px-0 bg-white border border-lightGrey rounded-md">
-
-                                        <button className="flex flex-row items-center justify-start w-full px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7]">
-                                            <Image src='/icons/image.svg' alt='image icon' width={20} height={20} />
-                                            <span className='font-normal text-[#0C111D] text-sm'>Image</span>
-                                        </button>
-                                        <button className=" flex flex-row items-center justify-start w-full px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7]"
-                                        >
-                                            <Image src='/icons/video-icon.svg' alt='video icon' width={20} height={20} />
-                                            <span className='font-normal text-[#0C111D] text-sm'>Video</span>
-                                        </button>
-                                        <button className=" flex flex-row items-center justify-start w-full px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7]"
-                                        >
-                                            <Image src='/icons/documents.svg' alt='document icon' width={20} height={20} />
-                                            <span className='font-normal text-[#0C111D] text-sm'>Documents</span>
-                                        </button>
-                                    </PopoverContent>
-                                </Popover>
-                            </div>
-                        </div>
-
-                        {/* Send Button */}
-                        <button className="ml-3  mb-1">
-                            <Image
-                                src='/icons/send.svg'
-                                alt='send icon'
-                                width={24}
-                                height={24}
-                            />
-                        </button>
+                <div className="bg-[#FFFFFF] p-6 flex flex-row gap-4 ">
+                    <div className="border border-solid bg-[#FCFCFD] border-[#D0D5DD] h-auto w-full rounded-md flex flex-row items-center p-2 justify-between">
+                        <textarea
+                            placeholder="Type your message here..."
+                            className="w-full max-h-[120px] bg-[#FCFCFD] overflow-y-auto resize-none px-3 rounded-md outline-none font-normal text-sm leading-tight pt-[5px]"
+                            style={{ height: height }}
+                            value={text}
+                            onChange={handleInput}
+                        />
+                        <Popover placement="bottom">
+                            <PopoverTrigger>
+                                <button className='transition-colors hover:bg-neutral-100 hover:rounded-[100px] focus:outline-none'>
+                                    <Image src='/icons/files.svg' alt='attachment icon' width={21} height={21} />
+                                </button>
+                            </PopoverTrigger>
+                            <PopoverContent className="w-auto py-1 px-0 bg-white border border-lightGrey rounded-md">
+                                <button className="flex flex-row items-center justify-start w-full px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7]">
+                                    <Image src='/icons/image.svg' alt='image icon' width={20} height={20} />
+                                    <span className='font-normal text-[#0C111D] text-sm'>Image</span>
+                                </button>
+                                <button className=" flex flex-row items-center justify-start w-full px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7]"
+                                >
+                                    <Image src='/icons/video-icon.svg' alt='video icon' width={20} height={20} />
+                                    <span className='font-normal text-[#0C111D] text-sm'>Video</span>
+                                </button>
+                                <button className=" flex flex-row items-center justify-start w-full px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7]"
+                                >
+                                    <Image src='/icons/documents.svg' alt='document icon' width={20} height={20} />
+                                    <span className='font-normal text-[#0C111D] text-sm'>Documents</span>
+                                </button>
+                            </PopoverContent>
+                        </Popover>
                     </div>
+                    <button disabled={!text.trim()}>
+                        <Image
+                            src={text.trim() ? '/icons/sendCommunity.svg' : '/icons/send.svg'}
+                            alt="send icon"
+                            width={24}
+                            height={24}
+                        />
+                    </button>
                 </div>
-
-
-
-
-
-
-
-
             </div>
+
             <div className="w-[32%] h-full flex flex-col bg-[#FFFFFF] overflow-y-auto border-l border-solid border-[#EAECF0]">
                 <div className="h-[72px] border-b border-solid border-[#EAECF0] flex flex-row items-center px-6">
                     <p className="text-[#182230] text-base font-semibold">Details</p>
@@ -198,30 +177,12 @@ function customerinfo() {
                                             height={20}
                                             alt="sdsds" />
                                     </button>
-
                                 </PopoverTrigger>
                                 <PopoverContent className="w-auto py-1 px-0 bg-white border border-lightGrey rounded-md">
-
-
-                                    <button className="flex flex-row items-center justify-start w-full px-4 py-[0.625rem]  gap-2 hover:bg-[#F2F4F7]"
-                                        onClick={() =>
-                                            handleIconSelect({
-                                                text: "New",
-                                                bgColor: "#EDE4FF",
-                                                dotColor: "#7400E0",
-                                                textColor: "#7400E0",
-                                            })
-                                        }
-                                    >
-                                        <div className="bg-[#EDE4FF] py-2 px-3 gap-1 flex flex-row rounded-[6px] items-center h-6 w-auto">
-                                            <span className="w-[6px] h-[6px] bg-[#7400E0] rounded-full "></span>
-                                            <span className="font-medium text-[#7400E0] text-xs">New</span>
-                                        </div>
-                                    </button>
                                     <button className="flex flex-row items-center justify-start w-full px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7]"
                                         onClick={() =>
                                             handleIconSelect({
-                                                text: "Open",
+                                                text: "Repiled",
                                                 bgColor: "#FFEFC6",
                                                 dotColor: "#93360D",
                                                 textColor: "#93360D",
@@ -230,7 +191,7 @@ function customerinfo() {
                                     >
                                         <div className="bg-[#FFEFC6] py-2 px-3 gap-1 flex flex-row rounded-[6px] items-center h-6 w-auto">
                                             <span className="w-[6px] h-[6px] bg-[#93360D] rounded-full "></span>
-                                            <span className="font-medium text-[#93360D] text-xs">Open</span>
+                                            <span className="font-medium text-[#93360D] text-xs">Repiled</span>
                                         </div>
                                     </button>
                                     <button className="flex flex-row items-center justify-start w-full px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7]"
@@ -251,16 +212,16 @@ function customerinfo() {
                                     <button className="flex flex-row items-center justify-start w-full px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7]"
                                         onClick={() =>
                                             handleIconSelect({
-                                                text: "Answered",
-                                                bgColor: "#F8E9FE",
-                                                dotColor: "#791F89",
-                                                textColor: "#791F89",
+                                                text: "Opened",
+                                                bgColor: "#C6F5FF",
+                                                dotColor: "#0D7A93",
+                                                textColor: "#0D7A93",
                                             })
                                         }
                                     >
-                                        <div className="bg-[#F8E9FE] py-2 px-3 gap-1 flex flex-row rounded-[6px] items-center h-6 w-auto">
-                                            <span className="w-[6px] h-[6px] bg-[#791F89] rounded-full "></span>
-                                            <span className="font-medium text-[#791F89] text-xs">Answered</span>
+                                        <div className="bg-[#C6F5FF] py-2 px-3 gap-1 flex flex-row rounded-[6px] items-center h-6 w-auto">
+                                            <span className="w-[6px] h-[6px] bg-[#0D7A93] rounded-full "></span>
+                                            <span className="font-medium text-[#0D7A93] text-xs">Opened</span>
                                         </div>
                                     </button>
                                     <button className="flex flex-row items-center justify-start w-full px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7]"
@@ -278,19 +239,52 @@ function customerinfo() {
                                             <span className="font-medium text-[#0A5B39] text-xs">Resolved</span>
                                         </div>
                                     </button>
-
+                                </PopoverContent>
+                            </Popover>
+                            <Popover placement="bottom">
+                                <PopoverTrigger>
+                                    <button className="flex flex-row gap-1 focus:outline-none">
+                                        <Image
+                                            src="/icons/big-profile-pic.svg"
+                                            width={20}
+                                            height={20}
+                                            alt="sdsds" />
+                                        <span className="text-sm font-medium text-[#1D2939]">Jenny Wilson</span>
+                                        <Image
+                                            src="/icons/Arrow-down-1.svg"
+                                            width={20}
+                                            height={20}
+                                            alt="sdsds" />
+                                    </button>
+                                </PopoverTrigger>
+                                <PopoverContent className="w-auto py-1 px-0 bg-white border border-lightGrey rounded-md ">
+                                    <button className="flex flex-row items-center justify-start w-full  px-2 gap-1 hover:bg-[#F2F4F7] h-11">
+                                        <Image
+                                            src="/icons/big-profile-pic.svg"
+                                            width={24}
+                                            height={24}
+                                            alt="profile" />
+                                        <span className="text-[#1D2939] font-medium text-sm">Assigned to me</span>
+                                    </button>
+                                    <button className="flex flex-row items-center justify-start w-full  px-2 gap-1 hover:bg-[#F2F4F7] h-11">
+                                        <Image
+                                            src="/icons/big-profile-pic.svg"
+                                            width={24}
+                                            height={24}
+                                            alt="profile" />
+                                        <span className="text-[#1D2939] font-medium text-sm">Jabir</span>
+                                    </button>
+                                    <button className="flex flex-row items-center justify-start w-full  px-2 gap-1 hover:bg-[#F2F4F7] h-11">
+                                        <Image
+                                            src="/icons/big-profile-pic.svg"
+                                            width={24}
+                                            height={24}
+                                            alt="profile" />
+                                        <span className="text-[#1D2939] font-medium text-sm">Jahtin</span>
+                                    </button>
                                 </PopoverContent>
                             </Popover>
 
-
-                            <div className="flex flex-row gap-1">
-                                <Image
-                                    src="/icons/big-profile-pic.svg"
-                                    width={20}
-                                    height={20}
-                                    alt="sdsds" />
-                                <span className="text-sm font-medium text-[#1D2939]">Jenny Wilson</span>
-                            </div>
                             <Popover placement="bottom">
                                 <PopoverTrigger>
                                     <button className="flex flex-row gap-1  focus:outline-none">
@@ -309,7 +303,6 @@ function customerinfo() {
                                     </button>
                                 </PopoverTrigger>
                                 <PopoverContent className="w-auto py-1 px-0 bg-white border border-lightGrey rounded-md">
-
                                     <button className="flex flex-row items-center justify-start w-full px-4 py-[0.625rem]  gap-2 hover:bg-[#F2F4F7]"
                                         onClick={() =>
                                             handleIconSelectforpriority({
@@ -357,17 +350,11 @@ function customerinfo() {
                                     </button>
                                 </PopoverContent>
                             </Popover>
-
                             <div className="flex flex-row gap-1">
-                                <div className="bg-[#344054] py-2 px-3  flex flex-row rounded-[6px] items-center h-6 w-auto">
-                                    <span className="font-medium text-[#FFFFFF] text-xs">Scam</span>
+                                <div className="border border-solid border-[#EAECF0] py-2 px-3  flex flex-row rounded-[6px] items-center h-6 w-auto">
+                                    <span className="font-medium text-[#475467] text-xs">Scam</span>
                                 </div>
-
                             </div>
-
-
-
-
                         </div>
                     </div>
                     <div className="h-auto border-b border-solid border-[#EAECF0] p-6">
@@ -417,12 +404,9 @@ function customerinfo() {
                                 <div className="flex items-center gap-1.5 px-3 py-1.5 text-sm text-gray-700 font-medium border border-solid border-[#D0D5DD] rounded-full cursor-pointer hover:bg-gray-100">
                                     <span className="w-2 h-2 rounded-full bg-blue-500"></span> 2026
                                 </div>
-
                             </div>
                         </div>
                     </div>
-
-
                     <div className="p-6 h-auto">
                         <h1 className="text-[#182230] text-lg font-semibold">Recent Conversation</h1>
                         <div className="flex flex-col gap-4 pt-6">
@@ -447,9 +431,7 @@ function customerinfo() {
                                     <span className="w-[6px] h-[6px] bg-[#93360D] rounded-full "></span>
                                     <span className="font-medium text-[#93360D] text-xs">Open</span>
                                 </div>
-
                             </div>
-
                             <div className="flex flex-row items-center gap-1 justify-between">
                                 <div className="flex flex-row gap-3">
                                     <div className="relative">
@@ -471,7 +453,6 @@ function customerinfo() {
                                     <span className="w-[6px] h-[6px] bg-[#0A5B39] rounded-full "></span>
                                     <span className="font-medium text-[#0A5B39] text-xs">Resolved</span>
                                 </div>
-
                             </div>
                             <div className="flex flex-row items-center gap-1 justify-between">
                                 <div className="flex flex-row gap-3">
@@ -494,20 +475,12 @@ function customerinfo() {
                                     <span className="w-[6px] h-[6px] bg-[#0A5B39] rounded-full "></span>
                                     <span className="font-medium text-[#0A5B39] text-xs">Resolved</span>
                                 </div>
-
                             </div>
-
-
-
                         </div>
                     </div>
-
                 </div>
-
             </div>
         </div>
-
-
     )
 }
 export default customerinfo;
