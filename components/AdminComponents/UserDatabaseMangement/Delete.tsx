@@ -1,13 +1,34 @@
 import { Dialog, DialogBackdrop, DialogPanel } from "@headlessui/react";
 import Image from "next/image";
-import React from "react";
+import React, { useState } from "react";
+import { toast } from 'react-toastify';
+import { doc, deleteDoc } from 'firebase/firestore';
+import { db } from '@/firebase';
+
 // Define the props interface
 interface DeleteProps {
     open: boolean; // Prop to control dialog visibility
     onClose: () => void; // Define onClose as a function
+    name: string;
+    authId: string;
 }
 
-function Delete({ open, onClose }: DeleteProps) { // Use the interface
+function Delete({ open, onClose, name, authId }: DeleteProps) { 
+      
+    const[confirmedName, setConfirmedName] = useState('');
+    const isFormValid = name === confirmedName;
+
+    const handleDeleteUser = async () => {
+        try {
+            await deleteDoc(doc(db, 'users', authId));
+            toast.success('User Removed Successfully!');
+            onClose();
+        } catch (error) {
+            console.error('Error removing user from Firestore:', error);
+            toast.error('Failed to remove user. Please try again.');
+        }
+    };
+
     return (
         <Dialog open={true} onClose={onClose} className="relative z-50">
             <DialogBackdrop className="fixed inset-0 bg-black/30 " />
@@ -29,8 +50,9 @@ function Delete({ open, onClose }: DeleteProps) { // Use the interface
 
                                     className="w-full text-base font-normal text-[#1D2939]  rounded-md outline-none"
                                     type="text"
-
-
+                                    placeholder={name}
+                                    value={confirmedName}
+                                    onChange={(e) => setConfirmedName(e.target.value)}
                                 />
                             </div>
                         </div>
@@ -38,7 +60,7 @@ function Delete({ open, onClose }: DeleteProps) { // Use the interface
                         <hr />
                         <div className="flex flex-row justify-end mx-6 my-4 gap-4">
                             <button className="py-[0.625rem] px-6 border-[1.5px] border-lightGrey font-semibold text-sm text-[#1D2939] rounded-md" onClick={onClose}>Cancel</button>
-                            <button className="py-[0.625rem] px-6 text-white shadow-inner-button bg-[#BB241A] border border-[#DE3024] rounded-md">Delete User</button>
+                            <button className={`py-[0.625rem] px-6 text-white shadow-inner-button  ${!isFormValid ? 'bg-[#ec6d64f8]' : 'bg-[#BB241A]'} border border-white rounded-md`} onClick={handleDeleteUser} disabled={!isFormValid}>Delete User</button>
                         </div>
                     </div>
                 </DialogPanel>

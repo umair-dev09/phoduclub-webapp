@@ -6,21 +6,31 @@ import TestSeriesInfo from "@/components/AdminComponents/TestSeriesComponents/Te
 import Sections from "@/components/AdminComponents/TestSeriesComponents/Sections";
 import Review from "@/components/AdminComponents/TestSeriesComponents/Review";
 import Perference from "@/components/AdminComponents/TestSeriesComponents/Perference";
-
+import { toast, ToastContainer } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
 // Define an enum for the steps with updated names
 enum Step {
     TestSeriesInfo = 0,
-    Sections = 1,
+    Sections = 1, 
     Review = 2,
     Perference = 3,
 }
 
 
-function CreateQuiz() {
+function CreateTestSeries() {
 
     const [isPublished, setIsPublished] = useState(false);
     const [currentStep, setCurrentStep] = useState<Step>(Step.TestSeriesInfo);
     const [sectionsCount, setSectionsCount] = useState(1);
+    const [name, setName] = useState('');
+    const [description, setDescription] = useState('');
+    const [image, setImage] = useState('');
+    const [price, setPrice] = useState('');
+    const [discountPrice, setDiscountPrice] = useState('');
+    const [rating, setRating] = useState('');
+    const [noOfRating, setNoOfRating] = useState('');
+
+
     const router = useRouter();
 
     const handleNextClick = () => {
@@ -37,6 +47,14 @@ function CreateQuiz() {
         }
     };
 
+    const isFormValid = () => {
+        if (currentStep === Step.TestSeriesInfo) {
+            return name.trim() !== '' && description.trim() !== '' && image.trim() !== '' && price.trim() !== '' && discountPrice.trim() !== ''&& rating.trim() !== ''&& noOfRating.trim() !== ''  ;
+        }
+    };
+    
+    const isNextButtonDisabled = !isFormValid();
+
     const handleBackClick = () => {
         router.back(); // Navigate to the previous page in the browser history
     };
@@ -46,7 +64,7 @@ function CreateQuiz() {
     const renderStepContent = () => {
         switch (currentStep) {
             case Step.TestSeriesInfo:
-                return <TestSeriesInfo />;
+                return <TestSeriesInfo name={name} setName={setName} description={description} setDescription={setDescription} imageUrl={image} setImageUrl={setImage} price={price} setPrice={setPrice} discountPrice={discountPrice} setDiscountPrice={setDiscountPrice} rating={rating} setRating={setRating} noOfRating={noOfRating} setNoOfRating={setNoOfRating}/>;
             case Step.Sections:
                 return <Sections sectionsCount={sectionsCount} />;
             case Step.Review:
@@ -54,7 +72,7 @@ function CreateQuiz() {
             case Step.Perference:
                 return <Perference />;
             default:
-                return <TestSeriesInfo />;
+                return <TestSeriesInfo name={name} setName={setName} description={description} setDescription={setDescription} imageUrl={image} setImageUrl={setImage} price={price} setPrice={setPrice} discountPrice={discountPrice} setDiscountPrice={setDiscountPrice} rating={rating} setRating={setRating} noOfRating={noOfRating} setNoOfRating={setNoOfRating}/>;
         }
     };
 
@@ -126,8 +144,9 @@ function CreateQuiz() {
                                 </button>
                             )}
                             <button
-                                className={`h-[44px] w-[135px] rounded-md shadow-inner-button border border-solid text-white bg-[#8501FF] border-[#800EE2] hover:bg-[#7001D1]`}
+                                className={`h-[44px] w-[135px] rounded-md shadow-inner-button border text-white ${isNextButtonDisabled ? 'bg-[#CDA0FC]' : 'bg-[#8501FF]'}  border-white `}
                                 onClick={currentStep === Step.Perference ? handleBackClick : handleNextClick}
+                                disabled={isNextButtonDisabled}
                             >
                                 <span className="font-semibold text-sm text-[#FFFFFF]">
                                     {currentStep === Step.Perference ? "Publish" : "Next"}
@@ -140,11 +159,12 @@ function CreateQuiz() {
                     {renderStepContent()}
                 </div>
             </div>
+            <ToastContainer />
         </div>
     );
 }
 
-export default CreateQuiz;
+export default CreateTestSeries;
 
 
 

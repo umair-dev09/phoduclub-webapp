@@ -5,29 +5,38 @@ import ReactQuill from 'react-quill-new'; // Ensure correct import
 import Quill from 'quill'; // Import Quill to use it for types
 import { Popover, PopoverTrigger, PopoverContent } from '@nextui-org/popover';
 import { Dialog, DialogBackdrop, DialogPanel } from "@headlessui/react";
+import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
+import { storage,db } from '@/firebase'; // Adjust path if needed
+import { toast } from "react-toastify";
+type TestSeriesInfoProps = {
+    name: string;
+    setName: (name: string) => void;
+    description: string;
+    setDescription: (description: string) => void;
+    imageUrl: string;
+    setImageUrl: (imageUrl: string) => void;
+    price: string;
+    setPrice: (price: string) => void;
+    discountPrice: string;
+    setDiscountPrice: (discountPrice: string) => void;
+    rating: string;
+    setRating: (rating: string) => void;
+    noOfRating: string;
+    setNoOfRating: (noOfRating: string) => void;
+}
 
-
-
-function TestSeriesInfo() {
+function TestSeriesInfo({name,setName,description,setDescription,imageUrl,setImageUrl,price,setPrice,discountPrice,setDiscountPrice,rating,setRating,noOfRating,setNoOfRating}:TestSeriesInfoProps) { 
 
     // State to manage each dialog's for Upload Image
-
-    const [isUploadImage, setIsUploadImage] = useState(false);
-
-    // Handlers for Upload Image dialog
-    const openUploadImageDialog = () => setIsUploadImage(true);
-    const closeUploadImageDialog = () => setIsUploadImage(false);
-
     // -------------------------------------------------------------------------------------------------------------------------------
     // state for ReactQuill
-    const [value, setValue] = useState('');
     const quillRef = useRef<ReactQuill | null>(null); // Ref to hold ReactQuill instance
     const [quill, setQuill] = useState<Quill | null>(null);
     const [alignment, setAlignment] = useState<string | null>(null); // State to hold alignment
     const [isWriting, setIsWriting] = useState(false); // Track if text is being written
 
     const handleChange = (content: string) => {
-        setValue(content);
+        setDescription(content);
         checkTextContent(content);
 
     };
@@ -95,8 +104,6 @@ function TestSeriesInfo() {
     // -----------------------------------------------------------------------------------------------------------------------------------------------------
     // -----------------------------------------------------------------------------------------------------------------------------------------------------
     // this logic is for Price and Discount
-    const [price, setPrice] = useState('');
-    const [discountPrice, setDiscountPrice] = useState('');
 
     const handlePriceChange = (e: { target: { value: any; }; }, setter: (arg0: any) => void) => {
         const value = e.target.value;
@@ -121,8 +128,6 @@ function TestSeriesInfo() {
         />
     );
 
-    const [rating, setRating] = useState<string>('');
-    const [numRatings, setNumRatings] = useState<string>('');
     const totalStars = 5;
 
     // Convert rating string to number for calculations
@@ -132,9 +137,102 @@ function TestSeriesInfo() {
     const showColorlessStar = !rating || ratingValue === 0;
     // -------------------------------------------------------------------------------------
 
+    const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const file = event.target.files?.[0];
+        if (file) {
+            // setImage(file);
+            toast.promise(
+                new Promise(async (resolve, reject) => { 
+                  try {
+                    const storageRef = ref(storage, `TestSeriesImages/${file.name}`);
+                    const uploadTask = uploadBytesResumable(storageRef, file);
+        
+                    // Monitor upload progress and completion
+                    uploadTask.on(
+                        'state_changed',
+                        (snapshot) => {
+                            const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                            console.log(`Upload is ${progress}% done`);
+                        },
+                        (error) => {
+                            console.error("Upload failed:", error);
+                        },
+                        async () => {
+                            const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
+                            setImageUrl(downloadURL);
+                            resolve("Image Updated!");
+                        }
+                    );
+                  } catch (error) {
+                    reject("Failed to Update Image!")
+                    // Handle errors in both image upload and Firestore update
+                    // toast.error("Failed to upload image or update profile.");
+                    console.error("Error:", error);
+                  }
+      
+                }),
+                {
+                  pending: 'Uploading Course Image...',
+                  success: 'Image Uploaded.',
+                  error: 'Failed to Upload Image.',
+                }
+              );
+        }
+    };
+
+    const handleDragOver = (event: React.DragEvent<HTMLDivElement>) => {
+        event.preventDefault();
+        event.stopPropagation();
+    };
+
+    const handleDrop = (event: React.DragEvent<HTMLDivElement>) => {
+        event.preventDefault();
+        event.stopPropagation();
+        const file = event.dataTransfer.files?.[0];
+        if (file && file.type.startsWith('image/')) {
+            // setImage(file);
+            toast.promise(
+                new Promise(async (resolve, reject) => { 
+                  try {
+                    const storageRef = ref(storage, `TestSeriesImages/${file.name}`);
+                    const uploadTask = uploadBytesResumable(storageRef, file);
+        
+                    // Monitor upload progress and completion
+                    uploadTask.on(
+                        'state_changed',
+                        (snapshot) => {
+                            const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                            console.log(`Upload is ${progress}% done`);
+                        },
+                        (error) => {
+                            console.error("Upload failed:", error);
+                        },
+                        async () => {
+                            const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
+                            setImageUrl(downloadURL);
+                            resolve("Image Updated!");
+                        }
+                    );
+                  } catch (error) {
+                    reject("Failed to Update Image!")
+                    // Handle errors in both image upload and Firestore update
+                    // toast.error("Failed to upload image or update profile.");
+                    console.error("Error:", error);
+                  }
+      
+                }),
+                {
+                  pending: 'Uploading Image...',
+                  success: 'Image Uploaded.',
+                  error: 'Failed to Upload Image.',
+                }
+              );
+        }
+    };
+
     return (
         <>
-            <div className='mt-4 h-auto rounded-xl border border-solid border-[#EAECF0] bg-[#FFFFFF] flex flex-col p-5 gap-2'>
+            <div className='mt-4 h-auto rounded-xl border border-solid border-[#EAECF0] bg-[#FFFFFF] flex flex-col p-5 gap-3'>
                 <div className='flex flex-col gap-2'>
                     <span className='text-[#1D2939] text-sm font-semibold'>Test Series Name</span>
                     <input
@@ -147,8 +245,10 @@ function TestSeriesInfo() {
                         focus:shadow-[0px_0px_0px_4px_rgba(158,119,237,0.25),0px_1px_2px_0px_rgba(16,24,40,0.05)]
                         focus:text-[#1D2939]
                         focus:font-medium"
-                        placeholder="Quiz Name"
+                        placeholder="Name"
                         type="text"
+                        value={name}
+                        onChange={(e) => setName(e.target.value)}
                     />
                 </div>
 
@@ -162,7 +262,7 @@ function TestSeriesInfo() {
                             <ReactQuill
                                 ref={quillRef}
                                 onBlur={handleBlur}
-                                value={value}
+                                value={description}
                                 onChange={handleChange}
                                 onKeyDown={handleKeyDown}
                                 modules={{ toolbar: false }}
@@ -226,26 +326,46 @@ function TestSeriesInfo() {
                         </div>
                     </div>
                 </div>
-                <div className=" flex flex-col gap-2">
+                <div className=" flex flex-col gap-3">
                     <span className="text-[#1D2939] font-semibold text-sm">Test Series Image</span>
-                    <div className="h-[148px] rounded-xl bg-[#F9FAFB] border-2 border-dashed border-[#D0D5DD]">
-                        <button className="flex flex-col items-center justify-center gap-4 h-full w-full"
-                            onClick={openUploadImageDialog}  >
-                            <div className="flex flex-col items-center">
-                                <div className="h-10 w-10 rounded-md border border-solid border-[#EAECF0] bg-[#FFFFFF] p-[10px]">
-                                    <Image
-                                        src="/icons/upload-cloud.svg"
-                                        width={20}
-                                        height={20}
-                                        alt="upload icon"
-                                    />
-                                </div>
-                            </div>
-                            <span className="text-sm font-semibold text-[#9012FF]">
-                                Click to upload <span className="text-[#182230] text-sm font-medium">or drag and drop</span>
-                            </span>
-                        </button>
+                    {imageUrl ? (
+                    <div className="flex flex-row items-center gap-3">
+                    <Image className="w-[280px] h-[190px] rounded-[4px] object-cover" src={imageUrl} width={100} height={100} alt="course image" quality={100}/>  
+                    <button className="flex flex-row gap-1 items-center" onClick={() => {setImageUrl(''); }}>
+                    <Image src="/icons/delete.svg" width={18} height={18} alt="Delete icon" />  
+                     <span className="text-sm font-semibold text-[#DE3024] mt-[2px]">Delete</span>
+                    </button>   
                     </div>
+                     ) : (   
+                        <div className="flex flex-col gap-2">
+                        <div
+                            className="h-[180px] rounded-xl bg-[#F9FAFB] border-2 border-dashed border-[#D0D5DD] flex items-center justify-center"
+                            onDragOver={handleDragOver}
+                            onDrop={handleDrop}
+                        >
+                                <button className="flex flex-col items-center justify-center gap-4 h-full w-full">
+                                    <div className="flex flex-col items-center">
+                                        <div className="h-10 w-10 rounded-md border border-solid border-[#EAECF0] bg-[#FFFFFF] p-[10px]">
+                                            <Image src="/icons/upload-cloud.svg" width={20} height={20} alt="upload icon" />
+                                        </div>
+                                    </div>
+                                    <div className="flex gap-1">
+                                        <label className="font-semibold text-sm text-[#9012FF] hover:text-black cursor-pointer">
+                                            <input
+                                                type="file"
+                                                id="upload"
+                                                className="hidden"
+                                                accept="image/*"
+                                                onChange={handleImageUpload}
+                                            />
+                                            Click to upload
+                                        </label>
+                                        <span className="text-[#182230] text-sm font-medium">or drag and drop</span>
+                                    </div>
+                                </button>
+                        </div>
+                    </div>
+                     )}   
                 </div>
 
                 <div className="flex flex-row w-full gap-4">
@@ -310,12 +430,12 @@ function TestSeriesInfo() {
                         <div className="flex flex-row py-2 px-4 w-full gap-2 border border-solid border-[#D0D5DD] rounded-md transition duration-200 ease-in-out ">
                             <input
                                 id="num-ratings"
-                                value={numRatings}
+                                value={noOfRating}
                                 onChange={(e) => {
                                     const value = e.target.value;
                                     // Only allow numbers
                                     if (value === '' || /^\d*$/.test(value)) {
-                                        setNumRatings(value);
+                                        setNoOfRating(value);
                                     }
                                 }}
                                 className="w-full text-sm font-medium text-[#1D2939] placeholder:font-normal placeholder:text-[#A1A1A1] rounded-md outline-none"
@@ -328,7 +448,7 @@ function TestSeriesInfo() {
 
                 {/* Star Rating Display */}
                 {!showColorlessStar && ratingValue > 0 && (
-                    <div className="flex items-center gap-2 h-[24px]">
+                    <div className="flex items-center gap-2 h-[24px] pb-3 mt-1">
                         <div className="flex items-center">
                             {[...Array(Math.floor(ratingValue))].map((_, index) => (
                                 <StarIcon key={`filled-${index}`} filled={true} isHalf={false} />
@@ -346,7 +466,7 @@ function TestSeriesInfo() {
                             {ratingValue.toFixed(1)}
                             <span className="text-[#1D2939] font-normal text-sm ml-1">
                                 <span className="flex items-center">
-                                    <span className="inline-block">({numRatings}</span>
+                                    <span className="inline-block">({noOfRating}</span>
                                     <span className="inline-block"> +Ratings)</span>
                                 </span>
                             </span>
@@ -355,41 +475,18 @@ function TestSeriesInfo() {
                 )}
                 {/* Colorless Star Display */}
                 {showColorlessStar && (
-                    <div className="flex flex-row gap-1 items-center">
+                    <div className="flex flex-row gap-1 items-center ml-1 pb-3 mt-[2px]">
                         <Image
                             src="/icons/colorless-star.svg"
                             width={116}
                             height={20}
                             alt="colorless-star"
                         />
-                        <span className="text-[#1D2939] font-medium text-sm">0</span>
+                        <span className="text-[#1D2939] font-medium text-sm"></span>
                     </div>
                 )}
             </div>
-            <Dialog open={isUploadImage} onClose={closeUploadImageDialog} className="relative z-50">
-                <DialogBackdrop className="fixed inset-0 bg-black/30 " />
-                <div className="fixed inset-0 flex items-center justify-center ">
-                    <DialogPanel transition className="bg-white rounded-2xl w-[559px] h-auto">
-                        <div className="flex flex-col relative">
-                            <button className="absolute right-4 top-4" onClick={closeUploadImageDialog}  >
-                                <Image src="/icons/cancel.svg" alt="cancel" width={20} height={20} />
-                            </button>
-                            <h3 className="mx-6 mt-6 text-2xl font-semibold task-[#1D2939]">Test Series Image</h3>
-                            <div className="h-[224px] bg-[#F9FAFB] border border-solid border-[#EAECF0] rounded-sm m-6">
-                            </div>
-                            <hr />
-                            <div className="flex flex-row justify-end mx-6 my-4 gap-4">
-                                <button
-                                    className="py-[0.625rem] px-6 border-[1.5px] border-lightGrey rounded-md"
-                                    onClick={closeUploadImageDialog}
-                                >
-                                    Cancel</button>
-                                <button className="py-[0.625rem] px-6 text-white shadow-inner-button bg-[#9012FF] border border-[#8501FF] rounded-md">Upload Image</button>
-                            </div>
-                        </div>
-                    </DialogPanel>
-                </div>
-            </Dialog>
+
         </>
     );
 }

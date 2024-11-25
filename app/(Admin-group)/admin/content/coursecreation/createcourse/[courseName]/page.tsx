@@ -4,11 +4,15 @@ import Image from "next/image";
 import { useState, useEffect } from "react"
 import CourseContent from "@/components/AdminComponents/CourseMangement/CourseContent";
 import StudentsPurchased from "@/components/AdminComponents/CourseMangement/StudentsPurchased";
-import { getDoc, doc } from "firebase/firestore";
+import { getDoc, doc, updateDoc } from "firebase/firestore";
 import { db } from "@/firebase"; // Adjust the path based on your project setup
 import LoadingData from "@/components/Loading";
 import { toast, ToastContainer } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
+import { Dialog, DialogBackdrop, DialogPanel } from "@headlessui/react";
+import {DatePicker} from "@nextui-org/react";
+import {now, today, CalendarDate, getLocalTimeZone,parseDateTime} from "@internationalized/date";
+
 type priceprops ={
     Price: number;
     Discountprice: number;
@@ -63,14 +67,22 @@ const RatingStars: React.FC<{ rating: string | null }> = ({ rating }) => {
 
 
 function courses() {
-    const [isprice, setIsprice] = useState("");
+    const [publishDialogOpen, setPublishDialogOpen] = useState(false);
     const searchParams = useSearchParams();
     const courseId = searchParams.get('cId');
     const router = useRouter();
     const [courseData, setCourseData] = useState<CourseData | null>(null); 
     const [loading, setLoading] = useState(true); // Track loading state
-   
-    // ----------------------------------------------------------------------------------------
+    const [startDate, setStartDate] = useState(''); 
+    const [endDate, setEndDate] = useState(''); 
+    const [liveCourseNow, setLiveCourseNow] = useState(false);
+
+    const isFormValid =  endDate;
+// Check if dateString is not empty and in the correct format (YYYY-MM-DD)
+const dateValue = startDate && /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}$/.test(startDate)
+    ? parseDateTime(startDate) // Correct format with date and time, use parsed date
+    : today(getLocalTimeZone()); // Fallback to today's date if format is incorrect or empty
+
     const [activeTab, setActiveTab] = useState('CourseContent');
 
     const handleTabClick = (tabName: React.SetStateAction<string>) => {
@@ -101,9 +113,37 @@ function courses() {
     }
 }, [courseId]);
 
-if(loading){
-    return <LoadingData />
-} 
+
+
+const currentDate = new Date();
+    const formattedDate = currentDate.toISOString().slice(0, 19); // Converts to the format "YYYY-MM-DDTHH:MM:SS"
+
+      const handlePublishCourse = async () =>{
+       if(courseId){
+        try {
+            const courseRef = doc(db, 'course', courseId); // Reference to the course document
+        
+            // Directly update the course document with new data
+            await updateDoc(courseRef, {
+               status: liveCourseNow? 'live' : 'scheduled',
+               publishDate: new Date().toISOString(),
+               startDate: liveCourseNow ? formattedDate : startDate,
+               endDate: endDate,
+            });
+            toast.success('Course Published Successfully!');
+            setPublishDialogOpen(false);
+          } catch (error) {
+            console.error('Error updating course:', error);
+          }
+       }
+        
+
+      }
+
+      
+      if(loading){
+        return <LoadingData />
+    } 
 
     return (
         <div className="px-[32px] pt-[25px] w-full h-auto overflow-y-auto pb-24 flex flex-col gap-5 ">
@@ -123,7 +163,7 @@ if(loading){
                         </div>
                         <div className="flex flex-row gap-2">
                             <button className="w-auto p-3 gap-2 flex-row flex bg-[#FFFFFF] border border-solid border-[#EAECF0] rounded-[8px] h-[40px] items-center"
-                            >
+                             onClick={() => setPublishDialogOpen(true)}>
                                 <Image src="/icons/publish-quiz.svg" width={18} height={18} alt="publish-quiz" />
                                 <span className="text-sm text-[#0C111D] font-normal">Publish</span>
                             </button>
@@ -216,6 +256,78 @@ if(loading){
                     < StudentsPurchased />
                 </div>
             )}
+          
+          <Dialog open={publishDialogOpen} onClose={() => setPublishDialogOpen(false)} className="relative z-50">
+                <DialogBackdrop className="fixed inset-0 bg-black/30" />
+                <div className="fixed inset-0 flex items-center justify-center">
+                    <DialogPanel className="bg-white rounded-2xl w-auto h-auto">
+                        <div className="flex flex-col gap-5">
+                        <div className="flex flex-row items-center justify-between px-6 pb-4 pt-5">
+                            <h3 className="text-2xl font-semibold text-[#1D2939]">Publish Course</h3>
+                            <button onClick={() => setPublishDialogOpen(false)} className="">
+                                <Image src="/icons/cancel.svg" alt="Cancel" width={20} height={20} />
+                            </button>
+                            </div>
+                            <div className='flex flex-row w-[600px] gap-5 px-6'>
+                    <div className='flex flex-col w-1/2 gap-1'>
+                        <span className='font-medium text-[#1D2939] text-sm'>Start Date & Time</span>
+                        <DatePicker 
+                        granularity="minute" 
+                        isDisabled={liveCourseNow}  // Disable the DatePicker if liveQuizNow is true
+                        minValue={today(getLocalTimeZone())}
+                        showMonthAndYearPickers
+                        onChange={(date) => {
+                            // Convert the date object to a string in your desired format
+                            const dateString = date ? date.toString() : ""; // Customize format if needed
+                            setStartDate(dateString);
+
+                        }}
+                       />
+            
+                    </div>
+                    <div className='flex flex-col w-1/2 gap-1'>
+                        <span className='font-medium text-[#1D2939] text-sm'>End Date & Time</span>
+                        <DatePicker 
+                        granularity="minute" 
+                        minValue={dateValue}
+                        showMonthAndYearPickers
+                        onChange={(date) => {
+                            // Convert the date object to a string in your desired format
+                            const dateString = date ? date.toString() : ""; // Customize format if needed
+                            setEndDate(dateString);
+                        }}
+                       />
+                    </div>
+                </div>
+
+                          <div
+                                        className="flex flex-row items-center w-auto py-1 gap-2 cursor-pointer transition-colors px-[28px]"
+                                        onClick={() => setLiveCourseNow(liveCourseNow => !liveCourseNow)}
+                                    >
+                                        <div
+                                            className={`flex items-center justify-center w-4 h-4 border border-[#D0D5DE] rounded-sm ${liveCourseNow ? 'bg-purple border-purple' : 'bg-white'}`}
+                                        >
+                                            {liveCourseNow && (
+                                                <Image src="/icons/check.svg" alt="choose" width={12} height={12} />
+                                            )}
+                                        </div>
+                                        <p className="text-sm text-[#0C111D] font-medium">Make the Course live now</p>
+                                    </div>
+
+                            <hr />
+                            <div className="flex flex-row justify-end mx-6 my-2 items-center gap-4 pb-2">
+                                <button onClick={() => setPublishDialogOpen(false)} className="py-[0.625rem] px-6 border-[1.5px] border-lightGrey rounded-md text-[#1D2939] font-semibold text-sm">Cancel</button>
+                                <button
+                                    onClick={() => handlePublishCourse()}
+                                    disabled={!isFormValid}
+                                    className={`py-[0.625rem] px-6 text-white shadow-inner-button border border-white ${!isFormValid? 'bg-[#CDA0FC]' : 'bg-[#9012FF]'} rounded-md font-semibold text-sm`}>
+                                    Publish Course
+                                </button>
+                            </div>
+                        </div>
+                    </DialogPanel>
+                </div>
+            </Dialog>
 
         <ToastContainer/>
         </div>
