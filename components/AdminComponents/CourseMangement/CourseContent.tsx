@@ -6,13 +6,15 @@ import Collapsible from 'react-collapsible';
 import Text from "./Text";
 import Quiz from "./QuizBottomSheets/Quiz";
 import Video from "./Video";
-import {DatePicker} from "@nextui-org/react";
-import {now, today, CalendarDate, getLocalTimeZone,parseDateTime} from "@internationalized/date";
-import { addDoc, collection, doc, getDoc, getDocs, onSnapshot, setDoc, query } from "firebase/firestore";
+import {DatePicker, DateValue} from "@nextui-org/react";
+import {now, today, CalendarDate, getLocalTimeZone,parseAbsoluteToLocal, ZonedDateTime} from "@internationalized/date";
+import { addDoc, collection, doc, getDoc, getDocs, onSnapshot, setDoc, query,deleteDoc, updateDoc } from "firebase/firestore";
 import { auth, db, storage } from "@/firebase";
 import {toast} from 'react-toastify';
 import {useEffect} from 'react';
 import LoadingData from "@/components/Loading";
+import { DateTime } from 'luxon';  // Import luxon
+
 type Sections = {
   sectionName: string;
   sectionId: string;
@@ -84,7 +86,10 @@ function CourseContent({courseId}:CourseContentProps) {
     const [showDrawerforVideo, setShowDrawerforVideo] = useState(false);    
     const [sections, setSections] = useState<Sections[]>([]);
     const [loading, setLoading] = useState(true);
+    const [isSectionEditing, setIsSectionEditing] = useState(false);
     const [passedSectionId, setPassedSectionId] = useState('');
+
+    const [dateForPicker, setDateForPicker] = useState<DateValue | null>(null);
 
     useEffect(() => {
         const sectionsRef = collection(db, 'course', courseId, 'sections');
@@ -148,7 +153,15 @@ function CourseContent({courseId}:CourseContentProps) {
     const openCreateSection = () => {
         setIsCreateSection(true);
     };
-
+    const editCreateSection = async (secName: string, secDate: string, secId: string) => {
+        setIsCreateSection(true);
+        setName(secName);
+        setSectionScheduleDate(secDate);
+        const parsedDate = parseAbsoluteToLocal(secDate); // Converts string to DateValue
+       setDateForPicker(parsedDate);
+       setIsSectionEditing(true);
+       setPassedSectionId(secId);
+    };
     const closeCreateSection = () => {
         setIsCreateSection(false);
         setHasClickedCreate(true);
@@ -174,6 +187,27 @@ function CourseContent({courseId}:CourseContentProps) {
     const isCreateSectionFilled = name && sectionScheduleDate;
 
     const handleAddSection = async () => {
+       
+        if(isSectionEditing){
+            try {
+                // Generate a unique section ID (Firestore will auto-generate if you use addDoc)
+                const newSectionRef = doc(db, 'course', courseId, 'sections',passedSectionId); // No need for custom sectionId generation if using Firestore auto-ID
+                await updateDoc(newSectionRef, {
+                  sectionName: name,
+                  sectionScheduleDate: sectionScheduleDate,
+                });
+                toast.success('Section added successfully');
+                closeCreateSection();
+                setName('');
+                setSectionScheduleDate('');
+                setPassedSectionId('');
+                setIsSectionEditing(false);
+                setDateForPicker(null);
+              } catch (error) {
+                console.error('Error adding section: ', error);
+              }
+        }
+        else{
         try {
             // Generate a unique section ID (Firestore will auto-generate if you use addDoc)
             const newSectionRef = doc(collection(db, 'course', courseId, 'sections')); // No need for custom sectionId generation if using Firestore auto-ID
@@ -189,12 +223,29 @@ function CourseContent({courseId}:CourseContentProps) {
           } catch (error) {
             console.error('Error adding section: ', error);
           }
+        }
         
     };
+
+    const handleDeleteSection = async (sectionId: string) => {
+        try {
+          // Create a reference to the specific section document
+          const sectionRef = doc(db, 'course', courseId, 'sections', sectionId);
+      
+          // Delete the section document
+          await deleteDoc(sectionRef);
+      
+          toast.success('Section deleted successfully!');
+        } catch (error) {
+          console.error('Error deleting section:', error);
+        }
+      };
 
     if (loading) {
         return <LoadingData/>
       }
+      
+
 
     return (
         <div className="flex flex-col gap-4 ">
@@ -304,13 +355,14 @@ function CourseContent({courseId}:CourseContentProps) {
                                     <PopoverContent className="flex flex-col px-0 text-sm font-normal bg-white border border-lightGrey rounded-md w-[167px] shadow-md"
                                     >
                                         <button className=" p-3 gap-2 flex-row flex h-[40px] hover:bg-[#F2F4F7] w-full"
-                                            onClick={openCreateSection}>
+                                            onClick={() => editCreateSection(section.sectionName, section.sectionScheduleDate, section.sectionId) 
+                                            }>
                                             <Image src="/icons/edit-icon.svg" width={18} height={18} alt="Edit-quiz" />
-                                            <span className="text-sm text-[#0C111D] font-normal">Edit Quiz</span>
+                                            <span className="text-sm text-[#0C111D] font-normal">Edit Section</span>
                                         </button>
-                                        <button className=" p-3 gap-2 flex-row flex h-[40px] hover:bg-[#F2F4F7] w-full">
+                                        <button className=" p-3 gap-2 flex-row flex h-[40px] hover:bg-[#F2F4F7] w-full" onClick={() => handleDeleteSection(section.sectionId)}>
                                             <Image src="/icons/delete.svg" width={18} height={18} alt="delete-quiz" />
-                                            <span className="text-sm text-[#DE3024] font-normal">Delete Quiz</span>
+                                            <span className="text-sm text-[#DE3024] font-normal">Delete Section</span>
                                         </button>
                                     </PopoverContent>
                                 </Popover>
@@ -396,7 +448,7 @@ function CourseContent({courseId}:CourseContentProps) {
                                 </PopoverTrigger>
                                 <PopoverContent className="flex flex-col px-0 text-sm font-normal bg-white border border-lightGrey rounded-md w-[167px] shadow-md">
                                     <button className=" p-3 gap-2 flex-row flex h-[40px] hover:bg-[#F2F4F7] w-full"
-                                        onClick={() => {openDrawerfortest(); setPassedSectionId(section.sectionId)}}>
+                                        onClick={() => {setShowDrawerfortest(true); setPassedSectionId(section.sectionId)}}>
                                         <Image src="/icons/read.svg" alt="learn-icon" width={20} height={20} />
                                         <span className="text-sm text-[#0C111D] font-normal">Text</span>
                                     </button>
@@ -424,10 +476,12 @@ function CourseContent({courseId}:CourseContentProps) {
                 <div className="fixed inset-0 flex items-center justify-center">
                     <DialogPanel className="bg-white rounded-2xl w-[559px] h-auto">
                         <div className="flex flex-col relative gap-6">
-                            <button onClick={closeCreateSection} className="absolute right-4 top-4">
+                            <div className="flex flex-row items-center justify-between px-5 pt-4">
+                            <h3 className="text-2xl font-semibold text-[#1D2939]">Create Section</h3>
+                            <button onClick={closeCreateSection} className="">
                                 <Image src="/icons/cancel.svg" alt="Cancel" width={20} height={20} />
                             </button>
-                            <h3 className="mx-6 mt-6 text-2xl font-semibold text-[#1D2939]">Create Section</h3>
+                            </div>
                             <div className="flex flex-col w-full gap-1 px-6">
                                 <p className="text-start text-sm text-[#1D2939] font-medium">Name</p>
                                 <div className="flex flex-row w-full h-10 px-3 outline-none border border-[#D0D5DD] rounded-md">
@@ -446,12 +500,31 @@ function CourseContent({courseId}:CourseContentProps) {
                                 <DatePicker 
                                     granularity="minute" 
                                     minValue={today(getLocalTimeZone())}
-                                    // isDisabled
+                                    value={dateForPicker}
+                                    hideTimeZone
                                     onChange={(date) => {
-                                        // Convert the date object to a string in your desired format
-                                        const dateString = date ? date.toString() : ""; // Customize format if needed
-                                        setSectionScheduleDate(dateString);
-
+                                        if (date) {
+                                            // Get timezone offset in minutes
+                                            const timezoneOffset = new Date().getTimezoneOffset() * -1; // Offset in minutes
+                                            const offsetHours = Math.floor(Math.abs(timezoneOffset) / 60);
+                                            const offsetMinutes = Math.abs(timezoneOffset) % 60;
+                                            const sign = timezoneOffset >= 0 ? "+" : "-";
+                                    
+                                            // Format offset as +hh:mm or -hh:mm
+                                            const formattedOffset = `${sign}${String(offsetHours).padStart(2, "0")}:${String(offsetMinutes).padStart(2, "0")}`;
+                                    
+                                            // Combine ISO string with the offset
+                                            const isoString = date.toString().split(".")[0]; // Remove milliseconds
+                                            const dateString = `${isoString}${formattedOffset}`;
+                                    
+                                            // Set the formatted string
+                                            setSectionScheduleDate(dateString);
+                                            
+                                            const parsedDate = parseAbsoluteToLocal(sectionScheduleDate); // Converts string to DateValue
+                                            setDateForPicker(parsedDate);
+                                        } else {
+                                            setSectionScheduleDate("");
+                                        }
                                     }}
                                 />       
                             </div>

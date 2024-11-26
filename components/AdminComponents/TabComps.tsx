@@ -161,6 +161,7 @@ function TabComps() {
             {/* Content Section with Collapsible Menu */}
             <Collapsible
                 trigger={
+                    
                     <Tooltip content="Content" placement='right' offset={15} closeDelay={100}
                         classNames={{
                             content: [
