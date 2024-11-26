@@ -3,14 +3,17 @@ import React, { useState } from 'react';
 import Image from 'next/image';
 import { Popover, PopoverContent, PopoverTrigger } from "@nextui-org/popover";
 import Delete from "@/components/AdminComponents/Community/AllDialogs/Delete";
-import ChannelRequests from "@/components/AdminComponents/Community/AllDialogs/ChannelRequests"
-import Channelinfo from "@/components/AdminComponents/Community/AllDialogs/Channelinfo"
-import Groupinfo from "@/components/AdminComponents/Community/AllDialogs/Groupinfo"
-import DeleteGroup from "@/components/AdminComponents/Community/AllDialogs/DeleteGroup"
-import DeleteCategory from "@/components/AdminComponents/Community/AllDialogs/DeleteCategory"
-import EditDetails from "@/components/AdminComponents/Community/AllDialogs/EditDetails"
-import CreateCategory from "@/components/AdminComponents/Community/AllDialogs/CreateCategory"
+import ChannelRequests from "@/components/AdminComponents/Community/AllDialogs/ChannelRequests";
+import Channelinfo from "@/components/AdminComponents/Community/AllDialogs/Channelinfo";
+import Groupinfo from "@/components/AdminComponents/Community/AllDialogs/Groupinfo";
+import DeleteGroup from "@/components/AdminComponents/Community/AllDialogs/DeleteGroup";
+import DeleteCategory from "@/components/AdminComponents/Community/AllDialogs/DeleteCategory";
+import EditDetails from "@/components/AdminComponents/Community/AllDialogs/EditDetails";
+import CreateCategory from "@/components/AdminComponents/Community/AllDialogs/CreateCategory";
 import CreateChannel from "@/components/AdminComponents/Community/AllDialogs/Createchannel";
+import OwnChats from "@/components/AdminComponents/Community/Chats/OwnChats";
+import OtherChats from "@/components/AdminComponents/Community/Chats/OtherChats";
+
 function Chatinfo() {
     const [text, setText] = useState("");
     const [height, setHeight] = useState("32px");
@@ -189,7 +192,6 @@ function Chatinfo() {
             {/* Main Chat Area */}
             <div className="grid grid-rows-[4.5rem_1fr_auto] w-full">
                 <div className="flex flex-row items-center justify-between px-6 bg-white border-b border-lightGrey">
-
                     <Popover placement="bottom">
                         <PopoverTrigger>
                             <button className="flex flex-row gap-2 focus:outline-none">
@@ -286,7 +288,10 @@ function Chatinfo() {
                         </button>
                     </div>
                 </div>
-                <div className="shadow-[0_8px_32px_0_rgba(0,0,0,0.02)]"></div>
+                <div className="w-full pt-6 shadow-[0_8px_32px_0_rgba(0,0,0,0.02)]">
+                    {/* <OwnChats /> */}
+                    <OtherChats />
+                </div>
                 <div className="flex flex-row items-center min-h-[6.25rem] px-6 py-6 gap-2 bg-white">
                     <div className="border border-solid bg-[#FCFCFD] border-[#D0D5DD] h-auto w-full rounded-md flex flex-row items-center p-2 justify-between">
                         <textarea
@@ -330,8 +335,6 @@ function Chatinfo() {
                     </button>
                 </div>
             </div>
-
-
 
             {/* Collapsible Details Section */}
             <div
