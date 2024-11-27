@@ -21,6 +21,7 @@ function Courses() {
     const handleChange = (content: string) => {
         // Strip HTML tags and clean content
         const cleanedContent = DOMPurify.sanitize(content).replace(/<[^>]+>/g, '').trim();
+
         setUniqueID(cleanedContent); // Update with cleaned content
     };
 
@@ -76,6 +77,8 @@ function Courses() {
             }
         }
     };
+
+
     //-----------------------------------------------------------------------------------------------------------------------------------------
     const [activeTab, setActiveTab] = useState("Content");
     const [openSections, setOpenSections] = useState<{ [key: string]: boolean }>({

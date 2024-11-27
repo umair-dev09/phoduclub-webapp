@@ -157,8 +157,7 @@ export type IconsType =
   | "arrow-dark-down-1"
   | "green-color-umute"
   | "comment-icon"
-  | "unpin-icon"
-  | "pin-icon";
+  | "unpin-icon";
 
 
 

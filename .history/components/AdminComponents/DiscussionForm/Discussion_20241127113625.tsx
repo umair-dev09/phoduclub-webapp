@@ -1,4 +1,4 @@
-function contents() {
+function discussion() {
     return (
         <div className="h-full w-auto flex flex-col">
             <div className="flex flex-col overflow-y-hidden h-auto w-full items-end">
@@ -9,4 +9,4 @@ function contents() {
         </div>
     )
 }
-export default contents;
+export default discussion;

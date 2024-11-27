@@ -1,8 +1,8 @@
 import Image from "next/image";
 import React, { useState, useEffect, useRef, SetStateAction, Dispatch } from "react";
 import 'react-quill/dist/quill.snow.css';
-import ReactQuill from 'react-quill-new';
-import Quill from 'quill';
+import ReactQuill from 'react-quill-new'; // Ensure correct import
+import Quill from 'quill'; //
 import { Popover, PopoverTrigger, PopoverContent } from '@nextui-org/popover';
 import { Dialog, DialogBackdrop, DialogPanel } from "@headlessui/react";
 import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';

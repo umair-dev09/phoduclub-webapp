@@ -1,82 +1,12 @@
 "use client";
 import Collapsible from 'react-collapsible';
+import Image from 'next/image';
+import { useState } from 'react';
 import { Tabs, Tab } from "@nextui-org/react";
-import Image from "next/image";
-import React, { useState, useEffect, useRef } from "react";
-import 'react-quill/dist/quill.snow.css';
-import ReactQuill from 'react-quill-new';
-import Quill from 'quill';
-import { Popover, PopoverTrigger, PopoverContent } from '@nextui-org/popover';
 import Content from "@/components/AdminComponents/DiscussionForm/Contents";
 import Discussion from "@/components/AdminComponents/DiscussionForm/Discussion";
-import DOMPurify from 'dompurify';
 function Courses() {
-    //state for the Quill
-    const [uniqueID, setUniqueID] = useState('');
-    const quillRef = useRef<ReactQuill | null>(null);
-    const [quill, setQuill] = useState<Quill | null>(null);
-    const [alignment, setAlignment] = useState<string | null>(null);
 
-
-    const handleChange = (content: string) => {
-        // Strip HTML tags and clean content
-        const cleanedContent = DOMPurify.sanitize(content).replace(/<[^>]+>/g, '').trim();
-        setUniqueID(cleanedContent); // Update with cleaned content
-    };
-
-
-
-    const handleIconClick = (format: string) => {
-        if (quill) {
-            const range = quill.getSelection();
-            if (range) {
-                const currentFormats = quill.getFormat(range);
-                if (format === 'ordered') {
-                    // Toggle ordered list
-                    quill.format('list', currentFormats.list === 'ordered' ? false : 'ordered');
-                } else if (format === 'bullet') {
-                    // Toggle bullet list
-                    quill.format('list', currentFormats.list === 'bullet' ? false : 'bullet');
-                } else if (format.startsWith('align')) {
-                    if (format === 'align-left') {
-                        quill.format('align', false); // Remove alignment for 'left'
-                        setAlignment('left'); // Update alignment state to 'left'
-                    } else {
-                        quill.format('align', format.split('-')[1]);
-                        setAlignment(format.split('-')[1]);
-                    }
-                } else {
-                    const isActive = currentFormats[format];
-                    quill.format(format, !isActive); // Toggle other formatting options
-                }
-            }
-        }
-    };
-
-    useEffect(() => {
-        if (quillRef.current) {
-            setQuill(quillRef.current.getEditor());
-        }
-    }, []);
-
-    const handleKeyDown = () => {
-        if (quill) {
-            const range = quill.getSelection();
-            if (range) {
-                const currentFormats = quill.getFormat(range);
-                if (currentFormats.bold) {
-                    quill.format('bold', false); // Clear bold formatting when typing starts
-                }
-                if (currentFormats.italic) {
-                    quill.format('italic', false); // Clear italic formatting when typing starts
-                }
-                if (currentFormats.underline) {
-                    quill.format('underline', false);
-                }
-            }
-        }
-    };
-    //-----------------------------------------------------------------------------------------------------------------------------------------
     const [activeTab, setActiveTab] = useState("Content");
     const [openSections, setOpenSections] = useState<{ [key: string]: boolean }>({
         welcome: false,
@@ -274,7 +204,8 @@ function Courses() {
                 <div className="h-[72px] p-6 flex items-center border-b border-solid border-[#EAECF0] bg-[#FFFFFF]">
                     <span className="text-[#182230] font-semibold text-base">1. Welcome and Introduction</span>
                 </div>
-                <div className="p-6 flex flex-col flex-1  w-full overflow-y-auto">
+
+                <div className=" flex flex-col  flex-1 overflow-y-auto w-full h-full">
                     <Tabs
                         aria-label="Course Tabs"
                         color="primary"
@@ -288,125 +219,55 @@ function Courses() {
                     >
                         <Tab
                             key="Content"
+
                             title={
-                                <div className="flex items-center space-x-2" onClick={() => setActiveTab("Content")}>
-                                    <span className={`font-medium text-base ${activeTab === "Content" ? 'text-[#7400E0]' : 'text-[#667085]'} hover:text-[#7400E0]`}>
+                                <div
+                                    className="flex items-center space-x-2"
+                                    onClick={() => setActiveTab("Content")}
+                                >
+                                    <span
+                                        className={`font-medium text-base ${activeTab === "Content" ? 'text-[#7400E0]' : 'text-[#667085]'} hover:text-[#7400E0]`}
+                                    >
                                         Content
                                     </span>
                                 </div>
                             }
                         >
-
                             <Content />
-
                         </Tab>
                         <Tab
                             key="Discussion"
                             title={
-                                <div className="flex items-center space-x-2" onClick={() => setActiveTab("Discussion")}>
-                                    <span className={`font-medium text-base ${activeTab === "Discussion" ? 'text-[#7400E0]' : 'text-[#667085]'} hover:text-[#7400E0]`}>
+                                <div
+                                    className="flex items-center space-x-2"
+                                    onClick={() => setActiveTab("Discussion")}
+                                >
+                                    <span
+                                        className={`font-medium text-base ${activeTab === "Discussion" ? 'text-[#7400E0]' : 'text-[#667085]'} hover:text-[#7400E0]`}
+                                    >
                                         Discussion
                                     </span>
                                 </div>
                             }
                         >
-
-                            <Discussion />
-
-
+                            <div className="p-6 flex flex-col flex-1">
+                                <Discussion />
+                            </div>
+                            <div className='flex-1 justify-end bg-gray-500 h-auto w-full'>
+                                jabir
+                            </div>
                         </Tab>
                     </Tabs>
+
                 </div>
-                {activeTab !== "Content" && (
-                    <div className=' justify-end bg-[#FFFFFF] h-auto w-full p-6 flex-col flex'>
-
-                        <div className="bg-[#F7F8FB] border border-solid border-[#EAECF0] rounded-tl-[12px] rounded-tr-[12px]">
-                            <ReactQuill
-                                ref={quillRef}
-                                value={uniqueID}
-                                onChange={handleChange}
-                                onKeyDown={handleKeyDown}
-                                modules={{ toolbar: false }}
-                                placeholder="Type your response here..."
-                                className=" text-[#1D2939] focus:outline-none rounded-b-[12px] custom-quill placeholder:not-italic"
-                                style={{
-                                    minHeight: "10px", // Initial height
-                                    maxHeight: "150px", // Maximum height before scrolling
-                                    overflowY: "auto",  // Enable scrolling if content exceeds max height
-                                    padding: "1rem",   // Padding to create space inside the editor
-                                    border: 'none',
-                                    fontStyle: 'normal',
-                                }}
-                            />
-                        </div>
-                        <div className="h-auto bg-[#F7F8FB] rounded-bl-[12px] rounded-br-[12px] flex justify-center items-center py-4 border border-solid border-[#EAECF0] ">
-                            <div className="flex flex-row w-full justify-between items-center mx-5">
-
-                                <div className="h-[24px] w-[288px] gap-[24px] flex flex-row">
-
-                                    <button onClick={() => handleIconClick('bold')}>
-                                        <Image src="/icons/Bold.svg" width={24} height={24} alt="bold" />
-                                    </button>
-                                    <button onClick={() => handleIconClick('italic')}>
-                                        <Image src="/icons/italic-icon.svg" width={24} height={24} alt="italic-icon" />
-                                    </button>
-                                    <button onClick={() => handleIconClick('underline')}>
-                                        <Image src="/icons/underline-icon.svg" width={24} height={24} alt="underline-icon" />
-                                    </button>
+                {/* dis div */}
 
 
-                                    <Popover backdrop="blur" placement="bottom-start" className="flex flex-row justify-end">
-                                        <PopoverTrigger className="">
-                                            <button className="flex items-center justify-center p-1">
-                                                {alignment === 'center' ? (
-                                                    <Image src="/icons/align-middle.svg" width={24} height={26} alt="align-center" />
-                                                ) : alignment === 'right' ? (
-                                                    <Image src="/icons/align-right.svg" width={24} height={26} alt="align-right" />
-                                                ) : (
-                                                    <Image src="/icons/dropdown-icon-1.svg" width={32} height={32} alt="align-left" />
-                                                )}
-                                            </button>
-                                        </PopoverTrigger>
-                                        <PopoverContent className="ml-1 gap-4">
-
-                                            <div className="flex flex-row bg-white rounded-[8px] border-[1px] border-solid border-[#EAECF0] p-2 w-[120px] shadow-[0_2px_4px_#EAECF0] gap-2 ">
-                                                <button onClick={() => handleIconClick("align-left")} className="flex items-center justify-center">
-                                                    <Image src="/icons/align-left.svg" width={30} height={30} alt="align-left" />
-                                                </button>
-                                                <button onClick={() => handleIconClick("align-center")} className="flex items-center justify-center">
-                                                    <Image src="/icons/align-middle.svg" width={30} height={30} alt="align-center" />
-                                                </button>
-                                                <button onClick={() => handleIconClick("align-right")} className="flex items-center justify-center">
-                                                    <Image src="/icons/align-right.svg" width={30} height={30} alt="align-right" />
-                                                </button>
-                                            </div>
-                                        </PopoverContent>
-                                    </Popover>
-
-                                    <button onClick={() => handleIconClick('ordered')}>
-                                        <Image src="/icons/dropdown-icon-2.svg" width={27} height={27} alt="ordered-list" />
-                                    </button>
-                                    <button onClick={() => handleIconClick('bullet')}>
-                                        <Image src="/icons/dropdown-icon-3.svg" width={27} height={27} alt="bullet-list" />
-                                    </button>
-                                </div>
-
-                                {/* --------------------------------------------------------------------------------------------------------------------------------- */}
-                                <button
-                                    className={` w-[88px] h-[36px] flex justify-center items-center rounded-md shadow-inner-button 
-                               ${uniqueID ? "bg-[#8501FF]  border border-solid  border-[#800EE2]" : "bg-[#d8acff] cursor-not-allowed"}`}
-                                    disabled={uniqueID === ''}
-                                >
-                                    <span className="font-semibold text-[#FFFFFF] text-sm">Send</span>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                )}
             </div>
 
 
-        </div >
+
+        </div>
     );
 }
 

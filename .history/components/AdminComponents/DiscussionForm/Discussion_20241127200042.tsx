@@ -20,7 +20,7 @@ function discussion() {
                     <div className="flex flex-row gap-2">
                         <span className="text-xs font-normal text-[#475467]">3:24 PM</span>
 
-                        <Popover placement="bottom-end">
+                        <Popover placement="bottom-start">
                             <PopoverTrigger>
                                 <button className='focus:outline-none'>
                                     <Image src="/icons/three-dots.svg" width={24} height={24} alt="three-icon" />
@@ -29,21 +29,21 @@ function discussion() {
                             <PopoverContent className="w-auto py-1 px-0 bg-white border border-lightGrey rounded-md flex flex-col">
                                 <button className='flex flex-row gap-2 items-center h-10 w-[173px] px-4 hover:bg-[#EAECF0]'>
                                     <Image
-                                        src="/icons/pin-icon.svg"
+                                        src="/icons/Create-category.svg"
                                         width={18}
                                         height={18}
-                                        alt="pin-icon"
+                                        alt="Create-category"
                                     />
-                                    <span className='font-normal text-[#0C111D] text-sm'>Pin</span>
+                                    <span className='font-normal text-[#0C111D] text-sm'>Create category</span>
                                 </button>
                                 <button className='flex flex-row gap-2 items-center h-10 w-[173px] px-4 hover:bg-[#EAECF0]'>
                                     <Image
-                                        src="/icons/delete.svg"
+                                        src="/icons/edit-02.svg"
                                         width={18}
                                         height={18}
-                                        alt="delete-icon"
+                                        alt="pencil-edit"
                                     />
-                                    <span className='font-normal text-[#DE3024] text-sm'>Delete message</span>
+                                    <span className='font-normal text-[#0C111D] text-sm'>Edit details</span>
                                 </button>
                             </PopoverContent>
                         </Popover>

@@ -1,5 +1,4 @@
 import Image from "next/image";
-import { Popover, PopoverContent, PopoverTrigger } from "@nextui-org/popover";
 function discussion() {
     return (
         <div className="flex-1 w-full h-auto flex flex-col gap-4 pt-2">
@@ -19,34 +18,11 @@ function discussion() {
                     </div>
                     <div className="flex flex-row gap-2">
                         <span className="text-xs font-normal text-[#475467]">3:24 PM</span>
-
-                        <Popover placement="bottom-end">
-                            <PopoverTrigger>
-                                <button className='focus:outline-none'>
-                                    <Image src="/icons/three-dots.svg" width={24} height={24} alt="three-icon" />
-                                </button>
-                            </PopoverTrigger>
-                            <PopoverContent className="w-auto py-1 px-0 bg-white border border-lightGrey rounded-md flex flex-col">
-                                <button className='flex flex-row gap-2 items-center h-10 w-[173px] px-4 hover:bg-[#EAECF0]'>
-                                    <Image
-                                        src="/icons/pin-icon.svg"
-                                        width={18}
-                                        height={18}
-                                        alt="pin-icon"
-                                    />
-                                    <span className='font-normal text-[#0C111D] text-sm'>Pin</span>
-                                </button>
-                                <button className='flex flex-row gap-2 items-center h-10 w-[173px] px-4 hover:bg-[#EAECF0]'>
-                                    <Image
-                                        src="/icons/delete.svg"
-                                        width={18}
-                                        height={18}
-                                        alt="delete-icon"
-                                    />
-                                    <span className='font-normal text-[#DE3024] text-sm'>Delete message</span>
-                                </button>
-                            </PopoverContent>
-                        </Popover>
+                        <Image
+                            src="/icons/three-dots.svg"
+                            width={24}
+                            height={24}
+                            alt="three-icon" />
                     </div>
                 </div>
                 <div className="border border-solid border-[#EAECF0] rounded-[16px] bg-[#FFFFFF] px-4 py-3 h-auto ml-10">

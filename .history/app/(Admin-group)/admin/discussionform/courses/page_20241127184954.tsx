@@ -76,6 +76,8 @@ function Courses() {
             }
         }
     };
+
+
     //-----------------------------------------------------------------------------------------------------------------------------------------
     const [activeTab, setActiveTab] = useState("Content");
     const [openSections, setOpenSections] = useState<{ [key: string]: boolean }>({

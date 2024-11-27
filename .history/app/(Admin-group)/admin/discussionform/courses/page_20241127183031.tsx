@@ -9,21 +9,18 @@ import Quill from 'quill';
 import { Popover, PopoverTrigger, PopoverContent } from '@nextui-org/popover';
 import Content from "@/components/AdminComponents/DiscussionForm/Contents";
 import Discussion from "@/components/AdminComponents/DiscussionForm/Discussion";
-import DOMPurify from 'dompurify';
 function Courses() {
-    //state for the Quill
-    const [uniqueID, setUniqueID] = useState('');
+
+    const [value, setValue] = useState('');
     const quillRef = useRef<ReactQuill | null>(null);
     const [quill, setQuill] = useState<Quill | null>(null);
     const [alignment, setAlignment] = useState<string | null>(null);
-
+    const [isButtonDisabled, setIsButtonDisabled] = useState(true);
 
     const handleChange = (content: string) => {
-        // Strip HTML tags and clean content
-        const cleanedContent = DOMPurify.sanitize(content).replace(/<[^>]+>/g, '').trim();
-        setUniqueID(cleanedContent); // Update with cleaned content
+        setValue(content);
+        setUniqueID(e.target.value);
     };
-
 
 
     const handleIconClick = (format: string) => {
@@ -76,6 +73,8 @@ function Courses() {
             }
         }
     };
+    const [uniqueID, setUniqueID] = useState('');
+
     //-----------------------------------------------------------------------------------------------------------------------------------------
     const [activeTab, setActiveTab] = useState("Content");
     const [openSections, setOpenSections] = useState<{ [key: string]: boolean }>({
@@ -394,8 +393,10 @@ function Courses() {
                                 {/* --------------------------------------------------------------------------------------------------------------------------------- */}
                                 <button
                                     className={` w-[88px] h-[36px] flex justify-center items-center rounded-md shadow-inner-button 
-                               ${uniqueID ? "bg-[#8501FF]  border border-solid  border-[#800EE2]" : "bg-[#d8acff] cursor-not-allowed"}`}
-                                    disabled={uniqueID === ''}
+                               
+
+                    
+                                    ${uniqueID ? "bg-[#8501FF]  border border-solid  border-[#800EE2]" : "bg-[#d8acff] cursor-not-allowed"}`}
                                 >
                                     <span className="font-semibold text-[#FFFFFF] text-sm">Send</span>
                                 </button>

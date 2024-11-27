@@ -4,40 +4,37 @@ import { Tabs, Tab } from "@nextui-org/react";
 import Image from "next/image";
 import React, { useState, useEffect, useRef } from "react";
 import 'react-quill/dist/quill.snow.css';
-import ReactQuill from 'react-quill-new';
+import ReactQuill from 'react-quill';
 import Quill from 'quill';
 import { Popover, PopoverTrigger, PopoverContent } from '@nextui-org/popover';
 import Content from "@/components/AdminComponents/DiscussionForm/Contents";
 import Discussion from "@/components/AdminComponents/DiscussionForm/Discussion";
-import DOMPurify from 'dompurify';
 function Courses() {
-    //state for the Quill
-    const [uniqueID, setUniqueID] = useState('');
-    const quillRef = useRef<ReactQuill | null>(null);
-    const [quill, setQuill] = useState<Quill | null>(null);
-    const [alignment, setAlignment] = useState<string | null>(null);
 
+    const [value, setValue] = useState('');
+    const quillRef = useRef<ReactQuill | null>(null); // Ref to hold ReactQuill instance
+    const [quill, setQuill] = useState<Quill | null>(null);
+    const [alignment, setAlignment] = useState<string | null>(null); // State to hold Quill instance
+    const [isButtonDisabled, setIsButtonDisabled] = useState(true);
 
     const handleChange = (content: string) => {
-        // Strip HTML tags and clean content
-        const cleanedContent = DOMPurify.sanitize(content).replace(/<[^>]+>/g, '').trim();
-        setUniqueID(cleanedContent); // Update with cleaned content
+        setValue(content);
     };
-
-
 
     const handleIconClick = (format: string) => {
         if (quill) {
             const range = quill.getSelection();
             if (range) {
                 const currentFormats = quill.getFormat(range);
+
                 if (format === 'ordered') {
                     // Toggle ordered list
                     quill.format('list', currentFormats.list === 'ordered' ? false : 'ordered');
                 } else if (format === 'bullet') {
                     // Toggle bullet list
                     quill.format('list', currentFormats.list === 'bullet' ? false : 'bullet');
-                } else if (format.startsWith('align')) {
+                }
+                else if (format.startsWith('align')) {
                     if (format === 'align-left') {
                         quill.format('align', false); // Remove alignment for 'left'
                         setAlignment('left'); // Update alignment state to 'left'
@@ -45,7 +42,8 @@ function Courses() {
                         quill.format('align', format.split('-')[1]);
                         setAlignment(format.split('-')[1]);
                     }
-                } else {
+                }
+                else {
                     const isActive = currentFormats[format];
                     quill.format(format, !isActive); // Toggle other formatting options
                 }
@@ -59,6 +57,7 @@ function Courses() {
         }
     }, []);
 
+    // This will clear formatting when the user types
     const handleKeyDown = () => {
         if (quill) {
             const range = quill.getSelection();
@@ -73,10 +72,23 @@ function Courses() {
                 if (currentFormats.underline) {
                     quill.format('underline', false);
                 }
+
+
+
             }
         }
     };
-    //-----------------------------------------------------------------------------------------------------------------------------------------
+    useEffect(() => {
+        if (value.trim() === '') {
+            setIsButtonDisabled(true); // Disable the button if the input is empty
+        } else {
+            setIsButtonDisabled(false); // Enable the button if there is content
+        }
+    }, [value]);
+
+
+
+
     const [activeTab, setActiveTab] = useState("Content");
     const [openSections, setOpenSections] = useState<{ [key: string]: boolean }>({
         welcome: false,
@@ -318,12 +330,12 @@ function Courses() {
                     </Tabs>
                 </div>
                 {activeTab !== "Content" && (
-                    <div className=' justify-end bg-[#FFFFFF] h-auto w-full p-6 flex-col flex'>
-
-                        <div className="bg-[#F7F8FB] border border-solid border-[#EAECF0] rounded-tl-[12px] rounded-tr-[12px]">
+                    <div className=' justify-end bg-[#FFFFFF] h-[150px] w-full p-6 flex-col flex'>
+                        {/* Textarea for writing the comment */}
+                        <div className="bg-[#F7F8FB] border-b border-solid border-b-[#EAECF0] rounded-tl-[12px] rounded-tr-[12px]">
                             <ReactQuill
                                 ref={quillRef}
-                                value={uniqueID}
+                                value={value}
                                 onChange={handleChange}
                                 onKeyDown={handleKeyDown}
                                 modules={{ toolbar: false }}
@@ -338,25 +350,37 @@ function Courses() {
                                     fontStyle: 'normal',
                                 }}
                             />
+
+
+
                         </div>
-                        <div className="h-auto bg-[#F7F8FB] rounded-bl-[12px] rounded-br-[12px] flex justify-center items-center py-4 border border-solid border-[#EAECF0] ">
+                        <div className="h-[66px] bg-[#F7F8FB] rounded-bl-[12px] rounded-br-[12px] flex justify-center items-center">
                             <div className="flex flex-row w-full justify-between items-center mx-5">
-
+                                {/* First div with text */}
                                 <div className="h-[24px] w-[288px] gap-[24px] flex flex-row">
-
-                                    <button onClick={() => handleIconClick('bold')}>
+                                    {/* Icons */}
+                                    <button
+                                        onClick={() => handleIconClick('bold')}
+                                    >
                                         <Image src="/icons/Bold.svg" width={24} height={24} alt="bold" />
+
+
+
                                     </button>
-                                    <button onClick={() => handleIconClick('italic')}>
+                                    <button
+                                        onClick={() => handleIconClick('italic')}>
+
                                         <Image src="/icons/italic-icon.svg" width={24} height={24} alt="italic-icon" />
                                     </button>
-                                    <button onClick={() => handleIconClick('underline')}>
+
+                                    <button
+                                        onClick={() => handleIconClick('underline')}>
                                         <Image src="/icons/underline-icon.svg" width={24} height={24} alt="underline-icon" />
                                     </button>
-
-
+                                    {/* -------------------------------------------------------------------------------------------------------------------------------- */}
                                     <Popover backdrop="blur" placement="bottom-start" className="flex flex-row justify-end">
                                         <PopoverTrigger className="">
+                                            {/* Display the current alignment icon in the trigger */}
                                             <button className="flex items-center justify-center p-1">
                                                 {alignment === 'center' ? (
                                                     <Image src="/icons/align-middle.svg" width={24} height={26} alt="align-center" />
@@ -367,8 +391,9 @@ function Courses() {
                                                 )}
                                             </button>
                                         </PopoverTrigger>
-                                        <PopoverContent className="ml-1 gap-4">
 
+                                        <PopoverContent className="ml-1 gap-4">
+                                            {/* These buttons will be inside the popover */}
                                             <div className="flex flex-row bg-white rounded-[8px] border-[1px] border-solid border-[#EAECF0] p-2 w-[120px] shadow-[0_2px_4px_#EAECF0] gap-2 ">
                                                 <button onClick={() => handleIconClick("align-left")} className="flex items-center justify-center">
                                                     <Image src="/icons/align-left.svg" width={30} height={30} alt="align-left" />
@@ -383,19 +408,30 @@ function Courses() {
                                         </PopoverContent>
                                     </Popover>
 
-                                    <button onClick={() => handleIconClick('ordered')}>
-                                        <Image src="/icons/dropdown-icon-2.svg" width={27} height={27} alt="ordered-list" />
-                                    </button>
-                                    <button onClick={() => handleIconClick('bullet')}>
-                                        <Image src="/icons/dropdown-icon-3.svg" width={27} height={27} alt="bullet-list" />
-                                    </button>
-                                </div>
 
-                                {/* --------------------------------------------------------------------------------------------------------------------------------- */}
+
+
+                                    {/* --------------------------------------------------------------------------------------------------------------------------------- */}
+
+                                    <button
+                                        onClick={() => handleIconClick('ordered')}>
+                                        <Image src="/icons/dropdown-icon-2.svg" width={27} height={27} alt="dropdown-icon" />
+                                    </button>
+                                    <button
+                                        onClick={() => handleIconClick('bullet')}>
+                                        <Image src="/icons/dropdown-icon-3.svg" width={27} height={27} alt="dropdown-icon" />
+
+                                    </button>
+
+
+                                </div>
+                                {/* Button */}
                                 <button
                                     className={` w-[88px] h-[36px] flex justify-center items-center rounded-md shadow-inner-button 
-                               ${uniqueID ? "bg-[#8501FF]  border border-solid  border-[#800EE2]" : "bg-[#d8acff] cursor-not-allowed"}`}
-                                    disabled={uniqueID === ''}
+                                  ${isButtonDisabled ? 'bg-[#d8acff]' : 'bg-[#8501FF]'} 
+                                     ${isButtonDisabled ? '' : 'border border-solid border-[#800EE2]'}`}
+
+                                    disabled={isButtonDisabled} // Disable button if needed
                                 >
                                     <span className="font-semibold text-[#FFFFFF] text-sm">Send</span>
                                 </button>
@@ -406,7 +442,7 @@ function Courses() {
             </div>
 
 
-        </div >
+        </div>
     );
 }
 

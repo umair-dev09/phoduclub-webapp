@@ -9,21 +9,17 @@ import Quill from 'quill';
 import { Popover, PopoverTrigger, PopoverContent } from '@nextui-org/popover';
 import Content from "@/components/AdminComponents/DiscussionForm/Contents";
 import Discussion from "@/components/AdminComponents/DiscussionForm/Discussion";
-import DOMPurify from 'dompurify';
 function Courses() {
-    //state for the Quill
-    const [uniqueID, setUniqueID] = useState('');
+
+    const [value, setValue] = useState('');
     const quillRef = useRef<ReactQuill | null>(null);
     const [quill, setQuill] = useState<Quill | null>(null);
     const [alignment, setAlignment] = useState<string | null>(null);
-
+    const [isButtonDisabled, setIsButtonDisabled] = useState(true);
 
     const handleChange = (content: string) => {
-        // Strip HTML tags and clean content
-        const cleanedContent = DOMPurify.sanitize(content).replace(/<[^>]+>/g, '').trim();
-        setUniqueID(cleanedContent); // Update with cleaned content
+        setValue(content);
     };
-
 
 
     const handleIconClick = (format: string) => {
@@ -76,6 +72,16 @@ function Courses() {
             }
         }
     };
+    useEffect(() => {
+        if (value.trim() === '') {
+            setIsButtonDisabled(true); // Disable the button if the input is empty
+        } else {
+            setIsButtonDisabled(false); // Enable the button if there is content
+        }
+    }, [value]);
+
+
+
     //-----------------------------------------------------------------------------------------------------------------------------------------
     const [activeTab, setActiveTab] = useState("Content");
     const [openSections, setOpenSections] = useState<{ [key: string]: boolean }>({
@@ -323,20 +329,13 @@ function Courses() {
                         <div className="bg-[#F7F8FB] border border-solid border-[#EAECF0] rounded-tl-[12px] rounded-tr-[12px]">
                             <ReactQuill
                                 ref={quillRef}
-                                value={uniqueID}
+                                onBlur={handleBlur}
+                                value={description}
                                 onChange={handleChange}
                                 onKeyDown={handleKeyDown}
                                 modules={{ toolbar: false }}
-                                placeholder="Type your response here..."
-                                className=" text-[#1D2939] focus:outline-none rounded-b-[12px] custom-quill placeholder:not-italic"
-                                style={{
-                                    minHeight: "10px", // Initial height
-                                    maxHeight: "150px", // Maximum height before scrolling
-                                    overflowY: "auto",  // Enable scrolling if content exceeds max height
-                                    padding: "1rem",   // Padding to create space inside the editor
-                                    border: 'none',
-                                    fontStyle: 'normal',
-                                }}
+                                placeholder="Description"
+                                className="text-[#1D2939] focus:outline-none rounded-b-[12px] custom-quill placeholder:not-italic min-h-[10px] max-h-[150px] overflow-y-auto border-none font-normal"
                             />
                         </div>
                         <div className="h-auto bg-[#F7F8FB] rounded-bl-[12px] rounded-br-[12px] flex justify-center items-center py-4 border border-solid border-[#EAECF0] ">
@@ -394,8 +393,10 @@ function Courses() {
                                 {/* --------------------------------------------------------------------------------------------------------------------------------- */}
                                 <button
                                     className={` w-[88px] h-[36px] flex justify-center items-center rounded-md shadow-inner-button 
-                               ${uniqueID ? "bg-[#8501FF]  border border-solid  border-[#800EE2]" : "bg-[#d8acff] cursor-not-allowed"}`}
-                                    disabled={uniqueID === ''}
+                                  ${isButtonDisabled ? 'bg-[#d8acff]' : 'bg-[#8501FF]'} 
+                                     ${isButtonDisabled ? '' : 'border border-solid border-[#800EE2]'}`}
+
+                                    disabled={isButtonDisabled} // Disable button if needed
                                 >
                                     <span className="font-semibold text-[#FFFFFF] text-sm">Send</span>
                                 </button>

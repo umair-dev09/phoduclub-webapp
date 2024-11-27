@@ -11,8 +11,8 @@ import Content from "@/components/AdminComponents/DiscussionForm/Contents";
 import Discussion from "@/components/AdminComponents/DiscussionForm/Discussion";
 import DOMPurify from 'dompurify';
 function Courses() {
-    //state for the Quill
-    const [uniqueID, setUniqueID] = useState('');
+
+    const [value, setValue] = useState('');
     const quillRef = useRef<ReactQuill | null>(null);
     const [quill, setQuill] = useState<Quill | null>(null);
     const [alignment, setAlignment] = useState<string | null>(null);
@@ -21,6 +21,7 @@ function Courses() {
     const handleChange = (content: string) => {
         // Strip HTML tags and clean content
         const cleanedContent = DOMPurify.sanitize(content).replace(/<[^>]+>/g, '').trim();
+
         setUniqueID(cleanedContent); // Update with cleaned content
     };
 
@@ -76,6 +77,8 @@ function Courses() {
             }
         }
     };
+    const [uniqueID, setUniqueID] = useState('');
+
     //-----------------------------------------------------------------------------------------------------------------------------------------
     const [activeTab, setActiveTab] = useState("Content");
     const [openSections, setOpenSections] = useState<{ [key: string]: boolean }>({
