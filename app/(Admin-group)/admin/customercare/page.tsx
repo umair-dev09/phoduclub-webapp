@@ -18,6 +18,7 @@ import CustomerCareImportance from '@/components/AdminComponents/CustomerCare/Cu
 import { Calendar } from "@nextui-org/calendar";
 import { Checkbox } from "@nextui-org/react";
 import { Popover, PopoverContent, PopoverTrigger } from "@nextui-org/popover";
+
 // Define types for quiz data
 type Quiz = {
     id: string;
@@ -54,6 +55,8 @@ function CustomerCare() {
     const [selectedItems, setSelectedItems] = useState<Set<string>>(new Set());
     const router = useRouter();
     const [isPopoverOpen, setIsPopoverOpen] = useState(false);
+    const [selectedRows, setSelectedRows] = useState<Set<string>>(new Set());
+
     // Fetch quizzes when component mounts
     useEffect(() => {
         const loadQuizzes = async () => {
@@ -79,6 +82,29 @@ function CustomerCare() {
     const firstItemIndex = lastItemIndex - itemsPerPage;
     const currentItems = data.slice(firstItemIndex, lastItemIndex);
 
+    // Function to handle row selection
+    const handleRowSelect = (quizId: string) => {
+        const newSelectedRows = new Set(selectedRows);
+        if (newSelectedRows.has(quizId)) {
+            newSelectedRows.delete(quizId);
+        } else {
+            newSelectedRows.add(quizId);
+        }
+        setSelectedRows(newSelectedRows);
+    };
+
+    // Function to handle header checkbox selection
+    const handleHeaderCheckboxSelect = () => {
+        if (selectedRows.size === currentItems.length) {
+            // If all rows are already selected, unselect all
+            setSelectedRows(new Set());
+        } else {
+            // Select all current page rows
+            const allCurrentPageIds = currentItems.map(item => item.id);
+            setSelectedRows(new Set(allCurrentPageIds));
+        }
+    };
+
     // Function to handle tab click and navigate to a new route
     const handleTabClick = (path: string) => {
         router.push(path);
@@ -91,60 +117,36 @@ function CustomerCare() {
     // Check if all fields are filled
     const isAddButtonDisabled = !uniqueId || !startDate || !endDate;
 
-    // const handleCheckboxChange = (id: string) => {
-    //     const newSelected = new Set(selectedItems);
-    //     if (newSelected.has(id)) {
-    //         newSelected.delete(id);
-    //     } else {
-    //         newSelected.add(id);
-    //     }
-    //     setSelectedItems(newSelected);
-    // };
+    const [selectedStatus, setSelectedStatus] = useState({
+        text: "Repiled",
+        bgColor: "#FFEFC6",
+        dotColor: "#93360D",
+        textColor: "#93360D"
+    });
 
-    // // Handle "select all" checkbox
-    // const handleSelectAll = (checked: boolean) => {
-    //     if (checked) {
-    //         // Select all items on the current page
-    //         const currentIds = currentItems.map(item => item.id);
-    //         setSelectedItems(new Set(currentIds));
-    //     } else {
-    //         // Deselect all items
-    //         setSelectedItems(new Set());
-    //     }
-    // };
-
-    // // Check if all items on current page are selected
-    // const isAllSelected = currentItems.length > 0 &&
-    //     currentItems.every(item => selectedItems.has(item.id));
-
-    const [globalSelectedItems, setGlobalSelectedItems] = useState<Set<string>>(new Set());
-
-    const handleCheckboxChange = (id: string) => {
-        setGlobalSelectedItems(prev => {
-            const newSelected = new Set(prev);
-            if (newSelected.has(id)) {
-                newSelected.delete(id);
-            } else {
-                newSelected.add(id);
-            }
-            return newSelected;
-        });
+    const handleIconSelect = (status: {
+        text: string;
+        bgColor: string;
+        dotColor: string;
+        textColor: string;
+    }) => {
+        setSelectedStatus(status);
     };
 
-    const handleSelectAll = (checked: boolean) => {
-        if (checked) {
-            // Select ALL items across all pages
-            const allIds = quizzes.map(item => item.id);
-            setGlobalSelectedItems(new Set(allIds));
-        } else {
-            // Deselect all items
-            setGlobalSelectedItems(new Set());
-        }
+    const [selectedforpriority, setSelectedforpriority] = useState({
+        text: "High",
+        bgColor: "#FEE4E2",
+        dotColor: "#9A221A]",
+        textColor: "#9A221A]"
+    });
+    const handleIconSelectforpriority = (status: {
+        text: string;
+        bgColor: string;
+        dotColor: string;
+        textColor: string;
+    }) => {
+        setSelectedforpriority(status);
     };
-
-    // Update the isAllSelected check
-    const isAllSelected = quizzes.length > 0 &&
-        quizzes.every(item => globalSelectedItems.has(item.id));
 
     return (
         <div className="flex flex-col w-full gap-4 p-6">
@@ -195,7 +197,6 @@ function CustomerCare() {
                             alt="Arrow-Down Button"
                         />
                     </div>
-
 
                     {/* <Popover
                         placement="bottom-end">
@@ -277,22 +278,175 @@ function CustomerCare() {
                 </div>
             </div>
 
+            {selectedRows.size > 0 && (
+                <div
+                    className="flex flex-row items-center justify-between 
+                                transition-all duration-300 ease-in-out 
+                                transform opacity-100 translate-y-0 
+                                overflow-hidden"
+                >
+                    <div className="flex flex-row gap-3 text-sm font-semibold leading-5">
+                        <p className="text-[#1D2939]">({selectedRows.size}) Selected</p>
+                        {selectedRows.size < data.length && (
+                            <button
+                                onClick={() => {
+                                    const allCurrentPageIds = currentItems.map(item => item.id);
+                                    setSelectedRows(new Set(allCurrentPageIds));
+                                }}
+                                className="text-[#9012FF] underline"
+                            >
+                                Select all {data.length}
+                            </button>
+                        )}
+                    </div>
+                    <div className="flex flex-row gap-2">
+                        <Popover placement="bottom">
+                            <PopoverTrigger>
+                                <button className="flex flex-row items-center gap-1 px-[0.875rem] py-[0.625rem] outline-none bg-white border border-lightGrey rounded-md">
+                                    <Image src='/icons/user.svg' alt="assignee" width={20} height={20} />
+                                    <p className="text-sm text-[#1D2939] font-medium leading-[1.125rem]">Assignee</p>
+                                </button>
+                            </PopoverTrigger>
+                            <PopoverContent className="w-[11.375rem] px-0 border border-[#EAECF0] rounded-md">
+                                <div className="w-full">
+                                    <button className="flex flex-row items-center w-full px-4 py-[0.625rem] hover:bg-[#F2F4F7]">
+                                        <Image
+                                            src="/icons/big-profile-pic.svg"
+                                            width={24}
+                                            height={24}
+                                            alt="profile" />
+                                        <span className="text-[#1D2939] font-medium text-sm ml-2">Darrell Steward</span>
+                                    </button>
+                                    <button className="flex flex-row items-center w-full px-4 py-[0.625rem] hover:bg-[#F2F4F7]">
+                                        <Image
+                                            src="/icons/big-profile-pic.svg"
+                                            width={24}
+                                            height={24}
+                                            alt="profile" />
+                                        <span className="text-[#1D2939] font-medium text-sm ml-2">Darrell Steward</span>
+                                    </button>
+                                    <button className="flex flex-row items-center w-full px-4 py-[0.625rem] hover:bg-[#F2F4F7]">
+                                        <Image
+                                            src="/icons/big-profile-pic.svg"
+                                            width={24}
+                                            height={24}
+                                            alt="profile" />
+                                        <span className="text-[#1D2939] font-medium text-sm ml-2">Darrell Steward</span>
+                                    </button>
+                                </div>
+                            </PopoverContent>
+                        </Popover>
+                        <Popover placement="bottom">
+                            <PopoverTrigger>
+                                <button className="flex flex-row items-center gap-1 px-[0.875rem] py-[0.625rem] bg-white border border-lightGrey rounded-md">
+                                    <p className="text-sm text-[#1D2939] font-medium leading-[1.125rem]">Status</p>
+                                    <Image src='/icons/chevron-down-dark.svg' alt="status" width={20} height={20} />
+                                </button>
+                            </PopoverTrigger>
+                            <PopoverContent className="w-auto py-1 px-0 bg-white border border-lightGrey rounded-md">
+                                <button className="flex flex-row items-center justify-start w-full px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7]"
+                                    onClick={() =>
+                                        handleIconSelect({
+                                            text: "Blocker",
+                                            bgColor: "#FEE4E2",
+                                            dotColor: "#9A221A",
+                                            textColor: "#9A221A",
+                                        })
+                                    }
+                                >
+                                    <div className="bg-[#FEE4E2] py-2 px-3 gap-1 flex flex-row rounded-[6px] items-center h-6 w-auto">
+                                        <span className="w-[6px] h-[6px] bg-[#9A221A] rounded-full "></span>
+                                        <span className="font-medium text-[#9A221A] text-xs">Blocker</span>
+                                    </div>
+                                </button>
+                                <button className="flex flex-row items-center justify-start w-full px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7]"
+                                    onClick={() =>
+                                        handleIconSelect({
+                                            text: "Resolved",
+                                            bgColor: "#D3F8E0",
+                                            dotColor: "#0A5B39",
+                                            textColor: "#0A5B39",
+                                        })
+                                    }
+                                >
+                                    <div className="bg-[#D3F8E0] py-2 px-3 gap-1 flex flex-row rounded-[6px] items-center h-6 w-auto">
+                                        <span className="w-[6px] h-[6px] bg-[#0A5B39] rounded-full "></span>
+                                        <span className="font-medium text-[#0A5B39] text-xs">Resolved</span>
+                                    </div>
+                                </button>
+                            </PopoverContent>
+                        </Popover>
+                        <Popover placement="bottom">
+                            <PopoverTrigger>
+                                <button className="flex flex-row items-center gap-1 px-[0.875rem] py-[0.625rem] bg-white border border-lightGrey rounded-md">
+                                    <p className="text-sm text-[#1D2939] font-medium leading-[1.125rem]">Priority</p>
+                                    <Image src='/icons/chevron-down-dark.svg' alt="status" width={20} height={20} />
+                                </button>
+                            </PopoverTrigger>
+                            <PopoverContent className="w-auto py-1 px-0 bg-white border border-lightGrey rounded-md">
+                                <button className="flex flex-row items-center justify-start w-full px-4 py-[0.625rem]  gap-2 hover:bg-[#F2F4F7]"
+                                    onClick={() =>
+                                        handleIconSelectforpriority({
+                                            text: "Low",
+                                            bgColor: "#F2F4F7",
+                                            dotColor: "#182230",
+                                            textColor: "#182230",
+                                        })
+                                    }
+                                >
+                                    <div className="bg-[#F2F4F7] py-2 px-3 gap-1 flex flex-row rounded-[6px] items-center h-6 w-auto">
+                                        <span className="w-[6px] h-[6px] bg-[#182230] rounded-full "></span>
+                                        <span className="font-medium text-[#182230] text-xs">Low</span>
+                                    </div>
+                                </button>
+                                <button className="flex flex-row items-center justify-start w-full px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7]"
+                                    onClick={() =>
+                                        handleIconSelectforpriority({
+                                            text: "Medium",
+                                            bgColor: "#FFEFC6",
+                                            dotColor: "#93360D",
+                                            textColor: "#93360D",
+                                        })
+                                    }
+                                >
+                                    <div className="bg-[#FFEFC6] py-2 px-3 gap-1 flex flex-row rounded-[6px] items-center h-6 w-auto">
+                                        <span className="w-[6px] h-[6px] bg-[#93360D] rounded-full "></span>
+                                        <span className="font-medium text-[#93360D] text-xs">Medium</span>
+                                    </div>
+                                </button>
+                                <button className="flex flex-row items-center justify-start w-full px-4 py-[0.625rem]  gap-2 hover:bg-[#F2F4F7]"
+                                    onClick={() =>
+                                        handleIconSelectforpriority({
+                                            text: "High",
+                                            bgColor: "#FEE4E2",
+                                            dotColor: "#9A221A]",
+                                            textColor: "#9A221A]",
+                                        })
+                                    }
+                                >
+                                    <div className="bg-[#FEE4E2] py-2 px-3 gap-1 flex flex-row rounded-[6px] items-center h-6 w-auto">
+                                        <span className="w-[6px] h-[6px] bg-[#9A221A] rounded-full "></span>
+                                        <span className="font-medium text-[#9A221A] text-xs">High</span>
+                                    </div>
+                                </button>
+                            </PopoverContent>
+                        </Popover>
+                    </div>
+                </div>
+            )}
+
             <div className="flex flex-col justify-between h-full">
                 <div className="flex border border-[#EAECF0] rounded-xl">
                     <table className="w-full h-auto bg-white rounded-xl">
                         <thead>
                             <tr>
                                 <th className="w-10 pl-8">
-                                    {/* <input
-                                        type="checkbox"
-                                        checked={isAllSelected}
-                                        onChange={(e) => handleSelectAll(e.target.checked)}
-                                    /> */}
                                     <Checkbox
                                         size="md"
                                         color="primary"
-                                        checked={isAllSelected}
-                                        onChange={(e) => handleSelectAll(e.target.checked)}
+                                        isSelected={selectedRows.size === currentItems.length && currentItems.length > 0}
+                                        isIndeterminate={selectedRows.size > 0 && selectedRows.size < currentItems.length}
+                                        onChange={handleHeaderCheckboxSelect}
                                     />
                                 </th>
                                 <th className="w-10 pl-4 py-4 text-center text-[#667085] font-medium text-sm">
@@ -322,16 +476,12 @@ function CustomerCare() {
                             {currentItems.map((quiz, index) => (
                                 <tr key={quiz.id} onClick={() => handleTabClick('/admin/customercare/customerinfo')} className="h-auto border-t border-solid border-[#EAECF0] cursor-pointer">
                                     <td className="pl-8 py-4 text-center text-[#101828] text-sm">
-                                        {/* <input
-                                            type="checkbox"
-                                            checked={globalSelectedItems.has(quiz.id)}
-                                            onChange={() => handleCheckboxChange(quiz.id)}
-                                        /> */}
                                         <Checkbox
                                             size="md"
                                             color="primary"
-                                            isSelected={globalSelectedItems.has(quiz.id)}
-                                            onValueChange={() => handleCheckboxChange(quiz.id)}
+                                            isSelected={selectedRows.has(quiz.id)}
+                                            onChange={() => handleRowSelect(quiz.id)}
+                                            onClick={(e) => e.stopPropagation()} // Prevent row click when checking checkbox
                                         />
                                     </td>
                                     <td className="py-4 text-center text-[#101828] text-sm">
@@ -402,7 +552,7 @@ function CustomerCare() {
                     </div>
                 </div>
             </div>
-            <div className={`fixed right-[33%] flex flex-row items-center p-4 gap-4 bg-white border border-[#D0D5DD] rounded-xl shadow-[4px_8px_13px_0_rgba(0,0,0,0.05), 4px_4px_12px_0_rgba(0,0,0,0.05), 4px_8px_14px_0_rgba(0,0,0,0.04)] transition-all duration-500 transform ${globalSelectedItems.size > 0 ? 'translate-y-0 opacity-100' : 'translate-y-full opacity-0'
+            {/* <div className={`fixed right-[33%] flex flex-row items-center p-4 gap-4 bg-white border border-[#D0D5DD] rounded-xl shadow-[4px_8px_13px_0_rgba(0,0,0,0.05), 4px_4px_12px_0_rgba(0,0,0,0.05), 4px_8px_14px_0_rgba(0,0,0,0.04)] transition-all duration-500 transform ${globalSelectedItems.size > 0 ? 'translate-y-0 opacity-100' : 'translate-y-full opacity-0'
                 } bottom-8`}>
                 <p className="text-balance text-[#1D2939] font-semibold">{globalSelectedItems.size} Selected</p>
                 <div className="flex flex-row gap-2">
@@ -461,7 +611,7 @@ function CustomerCare() {
                         </button>
                     </PopoverContent>
                 </Popover>
-            </div>
+            </div> */}
         </div>
     );
 }
