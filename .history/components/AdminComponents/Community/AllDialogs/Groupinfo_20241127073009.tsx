@@ -1,17 +1,13 @@
-'use client'
-import { useState } from "react";
 import { Dialog, DialogBackdrop, DialogPanel } from "@headlessui/react";
 import Image from "next/image";
 import React from "react";
 import { Popover, PopoverContent, PopoverTrigger } from "@nextui-org/popover";
-import CreateGroup from "./CreateGroup";
 // Define the props interface
-interface groupinfoProps {
+interface channelrequestsProps {
     open: boolean; // Prop to control dialog visibility
     onClose: () => void; // Define onClose as a function
 }
-function groupinfo({ open, onClose }: groupinfoProps) {
-    const [creategroup, setCreategroup] = useState(false)
+function channelrequests({ open, onClose }: channelrequestsProps) {
     return (
         <Dialog open={open} onClose={onClose} className="relative z-50">
             <DialogBackdrop className="fixed inset-0 bg-black/30" />
@@ -22,7 +18,7 @@ function groupinfo({ open, onClose }: groupinfoProps) {
                             <h1 className='text-[#1D2939] font-bold text-lg'>Group info</h1>
                             <Image src="/icons/cancel.svg" alt="Cancel" width={20} height={20} onClick={onClose} />
                         </div>
-                        <div className="flex flex-row items-center py-2 justify-between group gap-2">
+                        <div className="flex flex-row items-center py-6 justify-between group gap-2 border-b border-lightGrey">
                             <div className='flex flex-row gap-2 items-center'>
                                 <div className="rounded-full w-[44px] h-[44px] bg-[#C0EAFF] items-center flex justify-center border-2 border-solid border-[#FFFFFF]">
                                     <h1 className="text-[#124B68] text-base font-bold">J</h1>
@@ -51,8 +47,7 @@ function groupinfo({ open, onClose }: groupinfoProps) {
                                     </button>
                                 </PopoverTrigger>
                                 <PopoverContent className=" py-0 px-0 bg-white rounded-md  shadow-md flex flex-col border border-solid border-[#EAECF0] h-12 w-auto hover:bg-[#EAECF0]">
-                                    <button className="px-2  gap-2 flex flex-row justify-center items-center  rounded-md "
-                                        onClick={() => { setCreategroup(true) }}>
+                                    <button className="px-2  gap-2 flex flex-row justify-center items-center  rounded-md ">
                                         <Image
                                             src="/icons/edit-02.svg"
                                             width={18}
@@ -64,15 +59,14 @@ function groupinfo({ open, onClose }: groupinfoProps) {
                                 </PopoverContent>
                             </Popover>
                         </div>
-                        <span className='text-[#667085] font-normal text-sm'>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididun</span>
+                        <span className='text-[#667085] font-normal text-sm'>Lorem ipsum is placeholder text commonly used</span>
                     </div>
                     <div className="flex flex-row justify-end mx-6 my-4 gap-4">
                         <button className="py-[0.625rem] w-[98px] px-6 text-white shadow-inner-button bg-[#8501FF] border border-[#9012FF] rounded-md" onClick={onClose} >ok</button>
                     </div>
                 </DialogPanel>
             </div >
-            {creategroup && <CreateGroup open={creategroup} onClose={() => setCreategroup(false)} />}
         </Dialog >
     )
 }
-export default groupinfo;
+export default channelrequests;

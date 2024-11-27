@@ -52,7 +52,7 @@ function groupinfo({ open, onClose }: groupinfoProps) {
                                 </PopoverTrigger>
                                 <PopoverContent className=" py-0 px-0 bg-white rounded-md  shadow-md flex flex-col border border-solid border-[#EAECF0] h-12 w-auto hover:bg-[#EAECF0]">
                                     <button className="px-2  gap-2 flex flex-row justify-center items-center  rounded-md "
-                                        onClick={() => { setCreategroup(true) }}>
+                                        onClick={() => { setCreategroup(false) }}>
                                         <Image
                                             src="/icons/edit-02.svg"
                                             width={18}
@@ -71,7 +71,7 @@ function groupinfo({ open, onClose }: groupinfoProps) {
                     </div>
                 </DialogPanel>
             </div >
-            {creategroup && <CreateGroup open={creategroup} onClose={() => setCreategroup(false)} />}
+            {creategroup && <CreateGroup open={creategroup} onClose={() => setCreategroup(true)} />}
         </Dialog >
     )
 }

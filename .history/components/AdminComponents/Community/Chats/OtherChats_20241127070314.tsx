@@ -7,7 +7,7 @@ import Mute from "./Mute";
 import Delete from "./Delete";
 function OtherChats() {
     const [mute, setMute] = useState(false);
-    const [deletemessage, setDeletemessage] = useState(false);
+    const [delete, setDelete]=useState(false);
     return (
         <div className='flex flex-col justify-start w-full pl-6 gap-4'>
             <div className='flex flex-col group w-full'>
@@ -91,8 +91,7 @@ function OtherChats() {
                                     <Image src='/icons/user-block-red-01.svg' alt="mute" width={18} height={18} />
                                     <span className='font-normal text-[#DE3024] text-sm'>Mute User</span>
                                 </button>
-                                <button className='flex flex-row items-center gap-2   h-10 text-left px-4 py-[10px] w-full transition-colors hover:bg-neutral-100'
-                                    onClick={() => setDeletemessage(true)}>
+                                <button className='flex flex-row items-center gap-2   h-10 text-left px-4 py-[10px] w-full transition-colors hover:bg-neutral-100'>
                                     <Image src='/icons/delete.svg' alt='delete icon' width={18} height={18} />
                                     <span className='font-normal text-[#DE3024] text-sm'>Delete Message</span>
                                 </button>
@@ -115,8 +114,6 @@ function OtherChats() {
                     </button>
                 </div>
             </div>
-            {mute && <Mute open={mute} onClose={() => setMute(false)} />}
-            {deletemessage && <Delete open={deletemessage} onClose={() => setDeletemessage(false)} />}
         </div>
     );
 }

@@ -7,14 +7,12 @@ import { Popover, PopoverContent, PopoverTrigger } from "@nextui-org/popover";
 import { Checkbox } from "@nextui-org/react";
 
 const membersData = [
-    { name: "BITSET Full Course", action: "Remove" },
-    { name: "BITSET Full Course", action: "Remove" },
-    { name: "BITSET Full Course", action: "Remove" },
-    { name: "BITSET Full Course", action: "Remove" },
-    { name: "BITSET Full Course", action: "Remove" },
-    { name: "BITSET Full Course", action: "Remove" },
-    { name: "BITSET Full Course", action: "Remove" },
-    { name: "BITSET Full Course", action: "Remove" },
+    { name: "Jenny Wilson", username: "jenny#8547" },
+    { name: "John Doe", username: "john#1234" },
+    { name: "Alice Brown", username: "alice#9876" },
+    { name: "Jenny Wilson", username: "jenny#8547" },
+    { name: "John Doe", username: "john#1234" },
+    { name: "Alice Brown", username: "alice#9876" },
 ];
 function RoleManagementInfo() {
     const router = useRouter(); // Initialize useRouter
@@ -34,7 +32,7 @@ function RoleManagementInfo() {
                 <span className='text-base font-medium text-[#667085]'>Ralph Edwards</span>
             </button>
 
-            <div className='w-full gap-6 flex flex-row '>
+            <div className='w-full gap-6 flex flex-row h-full'>
                 <div className='h-[292px] w-1/2 bg-[#FFFFFF] border border-solid border-[#EAECF0] shadow-md rounded-lg p-6 gap-6 flex flex-col'>
                     <div className='h-[72px] flex flex-row justify-between'>
                         <div className='flex flex-row gap-2'>
@@ -100,7 +98,7 @@ function RoleManagementInfo() {
 
                 </div>
                 {/* not div */}
-                <div className='max-h-[540px]  w-1/2 bg-[#FFFFFF] border border-solid border-[#EAECF0] shadow-md rounded-lg p-6 gap-6 flex flex-col'>
+                <div className='h-100 w-1/2 bg-[#FFFFFF] border border-solid border-[#EAECF0] shadow-md rounded-lg p-6 gap-6 flex flex-col'>
                     <div className='h-10 flex flex-row justify-between items-center focus:outline-none'>
                         <span className='text-lg font-semibold text-[#1D2939]'>Accessed Course</span>
                         <Popover placement="bottom">
@@ -135,40 +133,36 @@ function RoleManagementInfo() {
                         </Popover>
                     </div>
 
-                    <div className="border border-[#EAECF0] rounded-xl overflow-hidden">
-                        <div className="max-h-[300px] overflow-y-auto">
-                            <table className="w-full">
-                                <thead className="sticky top-0 bg-white">
-                                    <tr className="h-[48px]">
-                                        <th className="py-3 px-8 text-left text-sm text-[#667085] font-medium">Courses</th>
-                                        <th className="py-3 px-8 text-right text-sm text-[#667085] font-medium">Action</th>
+                    <div className="border border-solid border-[#EAECF0] rounded-lg h-auto max-h-[300px] overflow-y-auto">
+                        <table className="w-full">
+                            <thead>
+                                <tr className="h-[48px]">
+                                    <th className="py-3 px-8 text-left test-sm text-[#667085] font-medium">Courses</th>
+                                    <th className="py-3 px-8 text-right text-sm text-[#667085] font-medium">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {members.map((member, index) => (
+                                    <tr
+                                        key={index}
+                                        className="border-t h-[64px]">
+                                        <div className='flex flex-row gap-2 py-3 px-8 text-left items-center'>
+                                            <Image
+                                                src="/icons/profile-pic2.svg"
+                                                width={40}
+                                                height={40}
+                                                alt="plus-icon" />
+                                            <td className="text-[#9012FF] font-semibold text-sm underline flex items-center">BITSET Full Course</td>
+                                        </div>
+                                        <td className="py-2 px-8 text-right text-[#DE3024] text-sm font-normal">Remove</td>
                                     </tr>
-                                </thead>
-                                <tbody>
-                                    {members.map((member, index) => (
-                                        <tr key={index} className="border-t h-[64px]">
-                                            <td className="py-3 px-8 text-left flex items-center gap-2">
-                                                <Image
-                                                    src="/icons/profile-pic2.svg"
-                                                    width={40}
-                                                    height={40}
-                                                    alt="profile-icon"
-                                                />
-                                                <span className="text-[#9012FF] font-semibold text-sm underline">
-                                                    {member.name}
-                                                </span>
-                                            </td>
-                                            <td className="py-2 px-8 text-right text-[#DE3024] text-sm font-normal">
-                                                {member.action}
-                                            </td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
-                        </div>
+                                {/* You can add more rows here to see the scrolling effect */ }
+                                ))}
+                            </tbody>
+                        </table>
                     </div>
-
                 </div>
+
 
             </div>
         </div>

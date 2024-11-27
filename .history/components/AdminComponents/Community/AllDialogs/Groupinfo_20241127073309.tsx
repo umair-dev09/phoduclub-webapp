@@ -1,17 +1,14 @@
-'use client'
-import { useState } from "react";
 import { Dialog, DialogBackdrop, DialogPanel } from "@headlessui/react";
 import Image from "next/image";
 import React from "react";
 import { Popover, PopoverContent, PopoverTrigger } from "@nextui-org/popover";
 import CreateGroup from "./CreateGroup";
 // Define the props interface
-interface groupinfoProps {
+interface channelrequestsProps {
     open: boolean; // Prop to control dialog visibility
     onClose: () => void; // Define onClose as a function
 }
-function groupinfo({ open, onClose }: groupinfoProps) {
-    const [creategroup, setCreategroup] = useState(false)
+function channelrequests({ open, onClose }: channelrequestsProps) {
     return (
         <Dialog open={open} onClose={onClose} className="relative z-50">
             <DialogBackdrop className="fixed inset-0 bg-black/30" />
@@ -51,8 +48,7 @@ function groupinfo({ open, onClose }: groupinfoProps) {
                                     </button>
                                 </PopoverTrigger>
                                 <PopoverContent className=" py-0 px-0 bg-white rounded-md  shadow-md flex flex-col border border-solid border-[#EAECF0] h-12 w-auto hover:bg-[#EAECF0]">
-                                    <button className="px-2  gap-2 flex flex-row justify-center items-center  rounded-md "
-                                        onClick={() => { setCreategroup(true) }}>
+                                    <button className="px-2  gap-2 flex flex-row justify-center items-center  rounded-md ">
                                         <Image
                                             src="/icons/edit-02.svg"
                                             width={18}
@@ -71,8 +67,7 @@ function groupinfo({ open, onClose }: groupinfoProps) {
                     </div>
                 </DialogPanel>
             </div >
-            {creategroup && <CreateGroup open={creategroup} onClose={() => setCreategroup(false)} />}
         </Dialog >
     )
 }
-export default groupinfo;
+export default channelrequests;

@@ -11,7 +11,7 @@ interface groupinfoProps {
     onClose: () => void; // Define onClose as a function
 }
 function groupinfo({ open, onClose }: groupinfoProps) {
-    const [creategroup, setCreategroup] = useState(false)
+    const [creategroup, setCreategroup] = useState(true)
     return (
         <Dialog open={open} onClose={onClose} className="relative z-50">
             <DialogBackdrop className="fixed inset-0 bg-black/30" />

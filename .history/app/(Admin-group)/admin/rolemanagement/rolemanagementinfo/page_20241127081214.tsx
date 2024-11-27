@@ -9,12 +9,12 @@ import { Checkbox } from "@nextui-org/react";
 const membersData = [
     { name: "BITSET Full Course", action: "Remove" },
     { name: "BITSET Full Course", action: "Remove" },
-    { name: "BITSET Full Course", action: "Remove" },
-    { name: "BITSET Full Course", action: "Remove" },
-    { name: "BITSET Full Course", action: "Remove" },
-    { name: "BITSET Full Course", action: "Remove" },
-    { name: "BITSET Full Course", action: "Remove" },
-    { name: "BITSET Full Course", action: "Remove" },
+    // { name: "BITSET Full Course", action: "Remove" },
+    // { name: "BITSET Full Course", action: "Remove" },
+    // { name: "BITSET Full Course", action: "Remove" },
+    // { name: "BITSET Full Course", action: "Remove" },
+    // { name: "BITSET Full Course", action: "Remove" },
+    // { name: "BITSET Full Course", action: "Remove" },
 ];
 function RoleManagementInfo() {
     const router = useRouter(); // Initialize useRouter
@@ -135,39 +135,36 @@ function RoleManagementInfo() {
                         </Popover>
                     </div>
 
-                    <div className="border border-[#EAECF0] rounded-xl overflow-hidden">
-                        <div className="max-h-[300px] overflow-y-auto">
+                    <div className=" border border-[#EAECF0] rounded-xl overflow-hidden">
+                        <div className="max-h-[300px] overflow-y-auto ">
                             <table className="w-full">
-                                <thead className="sticky top-0 bg-white">
+                                <thead className='sticky bg-[#FFFFFF]'>
                                     <tr className="h-[48px]">
-                                        <th className="py-3 px-8 text-left text-sm text-[#667085] font-medium">Courses</th>
+                                        <th className="py-3 px-8 text-left test-sm text-[#667085] font-medium">Courses</th>
                                         <th className="py-3 px-8 text-right text-sm text-[#667085] font-medium">Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     {members.map((member, index) => (
-                                        <tr key={index} className="border-t h-[64px]">
-                                            <td className="py-3 px-8 text-left flex items-center gap-2">
+                                        <tr
+                                            key={index}
+                                            className="border-t h-[64px]">
+                                            <div className='flex flex-row gap-2 py-3 px-8 text-left items-center'>
                                                 <Image
                                                     src="/icons/profile-pic2.svg"
                                                     width={40}
                                                     height={40}
-                                                    alt="profile-icon"
-                                                />
-                                                <span className="text-[#9012FF] font-semibold text-sm underline">
-                                                    {member.name}
-                                                </span>
-                                            </td>
-                                            <td className="py-2 px-8 text-right text-[#DE3024] text-sm font-normal">
-                                                {member.action}
-                                            </td>
+                                                    alt="plus-icon" />
+                                                <td className="text-[#9012FF] font-semibold text-sm underline flex items-center">{member.name}</td>
+                                            </div>
+                                            <td className="py-2 px-8 text-right text-[#DE3024] text-sm font-normal">{member.action}</td>
                                         </tr>
+
                                     ))}
                                 </tbody>
                             </table>
                         </div>
                     </div>
-
                 </div>
 
             </div>

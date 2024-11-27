@@ -116,7 +116,7 @@ function OtherChats() {
                 </div>
             </div>
             {mute && <Mute open={mute} onClose={() => setMute(false)} />}
-            {deletemessage && <Delete open={deletemessage} onClose={() => setDeletemessage(false)} />}
+            {deletemessage && <Delete open={mute} onClose={() => setDeletemessage(false)} />}
         </div>
     );
 }

@@ -6,12 +6,12 @@ import React from "react";
 import { Popover, PopoverContent, PopoverTrigger } from "@nextui-org/popover";
 import CreateGroup from "./CreateGroup";
 // Define the props interface
-interface groupinfoProps {
+interface channelrequestsProps {
     open: boolean; // Prop to control dialog visibility
     onClose: () => void; // Define onClose as a function
 }
-function groupinfo({ open, onClose }: groupinfoProps) {
-    const [creategroup, setCreategroup] = useState(false)
+function channelrequests({ open, onClose }: channelrequestsProps) {
+    const [creategroup, setCreategroup] = useState(true)
     return (
         <Dialog open={open} onClose={onClose} className="relative z-50">
             <DialogBackdrop className="fixed inset-0 bg-black/30" />
@@ -71,8 +71,8 @@ function groupinfo({ open, onClose }: groupinfoProps) {
                     </div>
                 </DialogPanel>
             </div >
-            {creategroup && <CreateGroup open={creategroup} onClose={() => setCreategroup(false)} />}
+            {creategroup && <CreateGroup open={creategroup} onClose={() => setCreategroup(true)} />}
         </Dialog >
     )
 }
-export default groupinfo;
+export default channelrequests;
