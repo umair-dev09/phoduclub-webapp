@@ -8,6 +8,8 @@ import { Dialog, DialogBackdrop, DialogPanel } from "@headlessui/react";
 import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
 import { storage, db } from '@/firebase'; // Adjust path if needed
 import { toast } from "react-toastify";
+import {Checkbox} from "@nextui-org/react";
+
 type TestSeriesInfoProps = {
     name: string;
     setName: (name: string) => void;
@@ -367,8 +369,19 @@ function TestSeriesInfo({ name, setName, description, setDescription, imageUrl, 
                         </div>
                     )}
                 </div>
+            </div>
+             
+            <Checkbox className="mt-3 ml-1 font-medium text-sm" defaultSelected>Include with course</Checkbox>
 
-                <div className="flex flex-row w-full gap-4">
+            <div className="mt-4 h-auto rounded-xl border border-solid border-[#EAECF0] bg-[#FFFFFF] flex flex-col p-5 gap-3">
+                <h3>Select product (Optional)</h3>
+
+             </div>
+
+             <div className="mt-4 h-auto rounded-xl border border-solid border-[#EAECF0] bg-[#FFFFFF] flex flex-col p-5 gap-3">
+                <h3>Price</h3>
+
+                <div className="flex flex-row w-full gap-4 mb-1">
                     <div className="flex flex-col gap-1 w-1/2 flex-grow">
                         <label htmlFor="discount-price" className="text-[#1D2939] text-sm font-medium">Price</label>
                         <div className="flex flex-row py-2 px-4 w-full gap-2 border border-solid border-[#D0D5DD] rounded-md transition duration-200 ease-in-out focus:border-red-300">
@@ -400,6 +413,10 @@ function TestSeriesInfo({ name, setName, description, setDescription, imageUrl, 
                         </div>
                     </div>
                 </div>
+             </div>
+           
+             <div className="mt-4 h-auto rounded-xl border border-solid border-[#EAECF0] bg-[#FFFFFF] flex flex-col p-5 gap-3 mb-4">
+             <h3>Ratings</h3>
                 {/* Ratings of Courses */}
                 <div className="flex flex-row w-full gap-4">
                     <div className="flex flex-col gap-1 w-1/2 flex-grow">
@@ -485,8 +502,10 @@ function TestSeriesInfo({ name, setName, description, setDescription, imageUrl, 
                         <span className="text-[#1D2939] font-medium text-sm"></span>
                     </div>
                 )}
-            </div>
 
+             </div>          
+           
+              
         </>
     );
 }
