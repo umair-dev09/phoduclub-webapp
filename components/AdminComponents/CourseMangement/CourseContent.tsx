@@ -80,7 +80,7 @@ function CourseContent({courseId}:CourseContentProps) {
     const [isCreateSection, setIsCreateSection] = useState(false);
     const [hasClickedCreate, setHasClickedCreate] = useState(false);
     const [name, setName] = useState("");
-    const [sectionScheduleDate, setSectionScheduleDate] = useState("");
+    const [sectionScheduleDate, setSectionScheduleDate] = useState(""); 
     const [showDrawerfortest, setShowDrawerfortest] = useState(false);
     const [showDrawerforQuiz, setShowDrawerforQuiz] = useState(false);
     const [showDrawerforVideo, setShowDrawerforVideo] = useState(false);    

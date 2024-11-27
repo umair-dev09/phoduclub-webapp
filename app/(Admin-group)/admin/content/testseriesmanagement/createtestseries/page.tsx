@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { useRouter } from 'next/navigation';
+import { useRouter,useSearchParams } from 'next/navigation';
 import Image from "next/image";
 import TestSeriesInfo from "@/components/AdminComponents/TestSeriesComponents/TestSeriesInfo";
 import Sections from "@/components/AdminComponents/TestSeriesComponents/Sections";
@@ -8,6 +8,9 @@ import Review from "@/components/AdminComponents/TestSeriesComponents/Review";
 import Perference from "@/components/AdminComponents/TestSeriesComponents/Perference";
 import { toast, ToastContainer } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
+import { collection, addDoc, updateDoc, doc } from 'firebase/firestore';
+import {auth, storage, db } from '@/firebase'; // Adjust path if needed
+
 // Define an enum for the steps with updated names
 enum Step {
     TestSeriesInfo = 0,
@@ -21,7 +24,6 @@ function CreateTestSeries() {
 
     const [isPublished, setIsPublished] = useState(false);
     const [currentStep, setCurrentStep] = useState<Step>(Step.TestSeriesInfo);
-    const [sectionsCount, setSectionsCount] = useState(1);
     const [name, setName] = useState('');
     const [description, setDescription] = useState('');
     const [image, setImage] = useState('');
@@ -29,16 +31,66 @@ function CreateTestSeries() {
     const [discountPrice, setDiscountPrice] = useState('');
     const [rating, setRating] = useState('');
     const [noOfRating, setNoOfRating] = useState('');
-
+    const userId = auth.currentUser ? auth.currentUser.uid : null;
+    const [isCreateSection, setIsCreateSection] = useState(false);
+    const searchParams = useSearchParams();
+    const testId = searchParams.get('tId');
 
     const router = useRouter();
 
     const handleNextClick = () => {
-        if (currentStep === Step.Perference) {
-            setIsPublished(true); // Set quiz as published
-        } else if (currentStep < Step.Perference) {
-            setCurrentStep(currentStep + 1);
+        if(currentStep < Step.Sections){
+            if(testId){
+                setCurrentStep(currentStep + 1);
+            }
+            else{
+                toast.promise(
+                    new Promise(async (resolve, reject) => {
+                        try {
+                            const docRef = await addDoc(collection(db, 'testseries'), {
+                                testName: name,
+                                testDescription: description,
+                                testImage: image,
+                                price: price,
+                                discountPrice: discountPrice,
+                                rating: rating,
+                                noOfRating: noOfRating,
+                                publishDate: new Date().toISOString(),
+                                status: 'saved',
+                                isInCourse: false,
+                                inCourseId: '',
+                                createdBy: userId,
+                            });
+        
+                            await updateDoc(doc(db, 'testseries', docRef.id), {
+                                testId: docRef.id,
+                            });
+                            resolve("Test Series Created!");
+                          setCurrentStep(currentStep + 1);
+                          router.replace(`/admin/content/testseriesmanagement/createtestseries/?tId=${docRef.id}`)
+                        } catch (error) {
+                            reject("Failed to Create Test Series!")
+                            // Handle errors in both image upload and Firestore update
+                            // toast.error("Failed to upload image or update profile.");
+                            console.error("Error:", error);
+                        }
+        
+                    }),
+                    {
+                        pending: 'Creating Test Series...',
+                        success: 'Test Series Created!',
+                        error: 'Error Creating Test Series'
+                    }
+                );
+            }
+           
         }
+        else if (currentStep === Step.Perference) {
+            setIsPublished(true); // Set quiz as published
+        }
+        //  else if (currentStep < Step.Perference) {
+        //     setCurrentStep(currentStep + 1);
+        // }
     };
 
     const handlePreviousClick = () => {
@@ -66,7 +118,7 @@ function CreateTestSeries() {
             case Step.TestSeriesInfo:
                 return <TestSeriesInfo name={name} setName={setName} description={description} setDescription={setDescription} imageUrl={image} setImageUrl={setImage} price={price} setPrice={setPrice} discountPrice={discountPrice} setDiscountPrice={setDiscountPrice} rating={rating} setRating={setRating} noOfRating={noOfRating} setNoOfRating={setNoOfRating}/>;
             case Step.Sections:
-                return <Sections sectionsCount={sectionsCount} />;
+                return <Sections  isCreateSection={isCreateSection} setIsCreateSection={setIsCreateSection} testId={testId || ''}/>;
             case Step.Review:
                 return <Review />;
             case Step.Perference:
@@ -85,9 +137,7 @@ function CreateTestSeries() {
             return "border-2 border-[#D0D5DE]";
         }
     };
-    const handleAddSection = () => {
-        setSectionsCount(prev => prev + 1);
-    };
+   
 
 
     return (
@@ -128,7 +178,7 @@ function CreateTestSeries() {
                         <div className="flex flex-row gap-3 mb-3">
                             {currentStep === Step.Sections && (
                                 <button
-                                    onClick={handleAddSection}
+                                    onClick={() => setIsCreateSection(true)}
                                     className="flex flex-row gap-1 items-center h-[44px] w-[162px] justify-center"
                                 >
                                     <Image src="/icons/plus-sign.svg" height={18} width={18} alt="Plus Sign" />

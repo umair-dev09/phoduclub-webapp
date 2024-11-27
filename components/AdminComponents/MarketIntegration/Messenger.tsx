@@ -61,6 +61,18 @@ const fetchQuizzes = async (): Promise<Quiz[]> => {
     return allQuizzes;
 };
 
+type TruncatedTextProps = {
+    text: string;
+    maxLength: number;
+  };
+  
+  const TruncatedText: React.FC<TruncatedTextProps> = ({ text, maxLength }) => {
+    const truncatedText =
+      text.length > maxLength ? text.substring(0, maxLength) + "..." : text;
+  
+    return <span>{truncatedText}</span>;
+  };
+
 function Messenger() {
     const router = useRouter();
     const [data, setData] = useState<Quiz[]>([]);
@@ -194,7 +206,7 @@ function Messenger() {
                             {currentItems.map((quiz, index) => (
                                 <tr key={index} className="border-t border-solid border-[#EAECF0]">
                                     <td className="text-[#667085] text-center font-medium text-sm">
-                                        1
+                                        {index + 1}
                                     </td>
                                     <td className="py-2">
                                         <div className="flex flex-row items-start ml-8 gap-2">
@@ -207,7 +219,7 @@ function Messenger() {
                                                     Quiz Competition
                                                 </button>
                                                 <p className="text-[0.813rem] text-[#667085] font-medium">
-                                                    Ready to test your knowledge? Join our quiz competition and compete for exciting prizes!
+                                                <TruncatedText text={'Ready to test your knowledge? Join our quiz competition and compete for exciting prizes!'} maxLength={50} />
                                                 </p>
                                             </div>
                                         </div>
