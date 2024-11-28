@@ -229,7 +229,7 @@ function CustomerCare() {
                                     <Image src='/icons/Frame.svg' alt="filter" width={20} height={20} />
                                 </button>
                             </PopoverTrigger>
-                            <PopoverContent className="w-[12.875rem] items-start py-2 px-0 h-auto gap-1 border border-lightGrey rounded-md shadow-[0_12px_16px_-4px_rgba(16,24,40,0.08)]">
+                            <PopoverContent className="w-[12.875rem] items-start py-2 px-0 h-auto  border border-lightGrey rounded-md shadow-[0_12px_16px_-4px_rgba(16,24,40,0.08)]">
                                 <div className="flex flex-col w-full ">
                                     <span className="text-xs font-normal text-[#475467] mb-1 px-2 ">Students</span>
                                     <button className="flex flex-row w-full gap-2  items-center  hover:bg-neutral-100 h-10 px-2">

@@ -16,7 +16,6 @@ import {
     PaginationPrevious,
 } from "@/components/ui/pagination";
 import { Popover, PopoverContent, PopoverTrigger } from "@nextui-org/popover";
-import { Checkbox } from "@nextui-org/react";
 import Ban from "@/components/AdminComponents/UserDatabaseMangement/Ban";
 import Delete from "@/components/AdminComponents/UserDatabaseMangement/Delete";
 import { collection, getDocs, addDoc, setDoc, query, where, doc, getDoc, onSnapshot, deleteDoc, Timestamp } from 'firebase/firestore';

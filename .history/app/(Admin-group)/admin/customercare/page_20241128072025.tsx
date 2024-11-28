@@ -25,22 +25,22 @@ type Quiz = {
     email: string;
     Priority: 'Low' | 'Medium' | 'Hard';
     joiningDate: string;
-    status: 'Latest' | 'Opened' | 'Resolved' | 'Re-opened' | 'Blocker' | 'Replied';
+    status: 'New' | 'Open' | 'Answered' | 'Resolved';
 }
 
 // Mock fetchQuizzes function with types
 const fetchQuizzes = async (): Promise<Quiz[]> => {
     const allQuizzes: Quiz[] = [
-        { id: "1", Priority: "Medium", joiningDate: "Dec 1, 2023", email: "Jun 1, 2024", status: "Opened" },
-        { id: "2", Priority: "Low", joiningDate: "Nov 15, 2023", email: "May 15, 2024", status: "Resolved" },
-        { id: "3", Priority: "Medium", joiningDate: "Oct 1, 2023", email: "Apr 1, 2024", status: "Re-opened" },
+        { id: "1", Priority: "Medium", joiningDate: "Dec 1, 2023", email: "Jun 1, 2024", status: "New" },
+        { id: "2", Priority: "Low", joiningDate: "Nov 15, 2023", email: "May 15, 2024", status: "Open" },
+        { id: "3", Priority: "Medium", joiningDate: "Oct 1, 2023", email: "Apr 1, 2024", status: "Answered" },
         { id: "4", Priority: "Hard", joiningDate: "Sep 1, 2023", email: "Mar 1, 2024", status: "Resolved" },
-        { id: "5", Priority: "Low", joiningDate: "Jan 1, 2024", email: "Jul 1, 2024", status: "Latest" },
-        { id: "6", Priority: "Low", joiningDate: "Feb 1, 2024", email: "Aug 1, 2024", status: "Blocker" },
-        { id: "7", Priority: "Hard", joiningDate: "Jul 15, 2023", email: "Jan 15, 2024", status: "Replied" },
+        { id: "5", Priority: "Low", joiningDate: "Jan 1, 2024", email: "Jul 1, 2024", status: "New" },
+        { id: "6", Priority: "Low", joiningDate: "Feb 1, 2024", email: "Aug 1, 2024", status: "Open" },
+        { id: "7", Priority: "Hard", joiningDate: "Jul 15, 2023", email: "Jan 15, 2024", status: "Answered" },
         { id: "8", Priority: "Low", joiningDate: "Dec 10, 2023", email: "Jun 10, 2024", status: "Resolved" },
-        { id: "9", Priority: "Medium", joiningDate: "Nov 25, 2023", email: "May 25, 2024", status: "Opened" },
-        { id: "10", Priority: "Hard", joiningDate: "Aug 20, 2023", email: "Feb 20, 2024", status: "Latest" }
+        { id: "9", Priority: "Medium", joiningDate: "Nov 25, 2023", email: "May 25, 2024", status: "New" },
+        { id: "10", Priority: "Hard", joiningDate: "Aug 20, 2023", email: "Feb 20, 2024", status: "Answered" }
 
     ];
     return allQuizzes;
@@ -229,39 +229,22 @@ function CustomerCare() {
                                     <Image src='/icons/Frame.svg' alt="filter" width={20} height={20} />
                                 </button>
                             </PopoverTrigger>
-                            <PopoverContent className="w-[12.875rem] items-start py-2 px-0 h-auto gap-1 border border-lightGrey rounded-md shadow-[0_12px_16px_-4px_rgba(16,24,40,0.08)]">
-                                <div className="flex flex-col w-full ">
-                                    <span className="text-xs font-normal text-[#475467] mb-1 px-2 ">Students</span>
-                                    <button className="flex flex-row w-full gap-2  items-center  hover:bg-neutral-100 h-10 px-2">
+                            <PopoverContent className="w-[12.875rem] items-start py-2 px-0 h-auto gap-2 border border-lightGrey rounded-md shadow-[0_12px_16px_-4px_rgba(16,24,40,0.08)]">
+                                <div className="flex flex-col w-full px-2">
+                                    <span className="text-xs font-normal text-[#475467] mb-3">Students</span>
+                                    <div className="flex flex-row w-full gap-2 mb-4 items-center">
                                         <Checkbox color="primary" />
                                         <span className="text-[#1D2939] font-medium text-sm">Free</span>
-                                    </button>
-                                    <button className="flex flex-row w-full gap-2  items-center hover:bg-neutral-100 h-10 px-2">
+                                    </div>
+                                    <div className="flex flex-row w-full gap-2 mb-2 items-center">
                                         <Checkbox color="primary" />
                                         <span className="text-[#1D2939] font-medium text-sm">Premium</span>
-                                    </button>
+                                    </div>
                                 </div>
                                 <hr className="w-[12.875rem]" />
-                                <div className="flex flex-col w-full ">
-                                    <span className="text-xs font-normal text-[#475467] mb-1 px-2 ">Priority</span>
-                                    <button className="flex flex-row w-full gap-2  items-center  hover:bg-neutral-100 h-10 px-2">
-                                        <Checkbox color="primary" />
-                                        <span className="text-[#1D2939] font-medium text-sm">Low</span>
-                                    </button>
-                                    <button className="flex flex-row w-full gap-2  items-center hover:bg-neutral-100 h-10 px-2">
-                                        <Checkbox color="primary" />
-                                        <span className="text-[#1D2939] font-medium text-sm">Medium</span>
-                                    </button>
-                                    <button className="flex flex-row w-full gap-2  items-center hover:bg-neutral-100 h-10 px-2">
-                                        <Checkbox color="primary" />
-                                        <span className="text-[#1D2939] font-medium text-sm">High</span>
-                                    </button>
-                                </div>
-                                <hr className="w-[12.875rem]" />
-
-                                <span className="text-xs font-normal text-[#475467]  px-2">Assignee</span>
-                                <div className="flex flex-col w-full  ">
-                                    <button className="flex flex-row items-center hover:bg-neutral-100 h-10 px-2">
+                                <span className="text-xs font-normal text-[#475467] mb-2 px-2">Assignee</span>
+                                <div className="flex flex-col w-full mb-1 px-2 gap-4">
+                                    <div className="flex flex-row items-center">
                                         <Checkbox color="primary" />
                                         <Image
                                             src="/icons/big-profile-pic.svg"
@@ -269,8 +252,8 @@ function CustomerCare() {
                                             height={24}
                                             alt="profile" />
                                         <span className="text-[#1D2939] font-medium text-sm ml-2">Assigned to me</span>
-                                    </button>
-                                    <button className="flex flex-row items-center hover:bg-neutral-100 h-10 px-2">
+                                    </div>
+                                    <div className="flex flex-row items-center">
                                         <Checkbox color="primary" />
                                         <Image
                                             src="/icons/big-profile-pic.svg"
@@ -278,8 +261,8 @@ function CustomerCare() {
                                             height={24}
                                             alt="profile" />
                                         <span className="text-[#1D2939] font-medium text-sm ml-2">Theresa Webb</span>
-                                    </button>
-                                    <button className="flex flex-row items-center hover:bg-neutral-100 h-10 px-2">
+                                    </div>
+                                    <div className="flex flex-row items-center">
                                         <Checkbox color="primary" />
                                         <Image
                                             src="/icons/big-profile-pic.svg"
@@ -287,7 +270,7 @@ function CustomerCare() {
                                             height={24}
                                             alt="profile" />
                                         <span className="text-[#1D2939] font-medium text-sm ml-2">Darrell Steward</span>
-                                    </button>
+                                    </div>
                                 </div>
                             </PopoverContent>
                         </Popover>
@@ -480,6 +463,7 @@ function CustomerCare() {
                                     Priority
                                 </th>
                                 <th className="text-center py-4 text-[#667085] font-medium text-sm">
+
                                     <div className="flex flex-row justify-center gap-1">
                                         <p>Date</p>
                                         <Image src='/icons/unfold-more-round.svg' alt="more" width={16} height={16} />

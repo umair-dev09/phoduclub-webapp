@@ -4,7 +4,8 @@ import Image from "next/image";
 import { Dialog, DialogBackdrop, DialogPanel } from "@headlessui/react";
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
-
+import { Popover, PopoverContent, PopoverTrigger } from "@nextui-org/popover";
+import { Checkbox } from "@nextui-org/react";
 function UserDetails() {
     const [phone, setPhone] = useState("");
     const [openDialog, setOpenDialog] = useState(false);
@@ -194,20 +195,7 @@ function UserDetails() {
                                         <span className="font-normal text-[#667085] text-sm">jenny#8745</span>
                                     </div>
                                 </div>
-                                <div className="flex flex-col gap-1 w-full">
-                                    <label className="text-[#1D2939] text-sm font-medium">Preparing Exams</label>
-                                    <button className="focus:outline-none flex flex-row py-2 px-4 w-full gap-2 border border-solid border-[#D0D5DD] rounded-md transition duration-200 ease-in-out justify-between">
-                                        <span className="font-normal text-sm text-[#A1A1A1]">Select Exams</span>
-                                        <Image src="/icons/Arrow-down-1.svg" width={20} height={20} alt="Select-role Button" />
-                                    </button>
-                                </div>
-                                <div className="flex flex-col gap-1 w-full">
-                                    <label className="text-[#1D2939] text-sm font-medium">Target Year</label>
-                                    <button className="focus:outline-none flex flex-row py-2 px-4 w-full gap-2 border border-solid border-[#D0D5DD] rounded-md transition duration-200 ease-in-out justify-between">
-                                        <span className="font-normal text-sm text-[#A1A1A1]">Select year</span>
-                                        <Image src="/icons/Arrow-down-1.svg" width={20} height={20} alt="Select-role Button" />
-                                    </button>
-                                </div>
+
                             </div>
                             <div className="flex justify-end gap-4 border-t p-4">
                                 <button onClick={closeDialog} className="px-6 py-2 border rounded-md text-sm font-semibold">

@@ -1,12 +1,12 @@
 import React from 'react';
 
 interface CustomerCareImportanceProps {
-    Priority: string;
+    importance: string;
 }
 
-const CustomerCareStatus: React.FC<CustomerCareImportanceProps> = ({ Priority }) => {
+const CustomerCareStatus: React.FC<CustomerCareImportanceProps> = ({ importance }) => {
     const CustomerCareImportance = () => {
-        switch (Priority) {
+        switch (importance) {
             case 'Medium':
                 return (
                     <div className="bg-[#FFEFC6] py-2 px-3 gap-1 flex flex-row rounded-[6px] items-center h-6">

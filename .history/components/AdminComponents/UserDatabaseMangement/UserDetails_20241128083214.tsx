@@ -196,10 +196,32 @@ function UserDetails() {
                                 </div>
                                 <div className="flex flex-col gap-1 w-full">
                                     <label className="text-[#1D2939] text-sm font-medium">Preparing Exams</label>
-                                    <button className="focus:outline-none flex flex-row py-2 px-4 w-full gap-2 border border-solid border-[#D0D5DD] rounded-md transition duration-200 ease-in-out justify-between">
-                                        <span className="font-normal text-sm text-[#A1A1A1]">Select Exams</span>
-                                        <Image src="/icons/Arrow-down-1.svg" width={20} height={20} alt="Select-role Button" />
-                                    </button>
+                                    <Popover placement="bottom-end">
+                                        <PopoverTrigger>
+                                            <button className="focus:outline-none flex flex-row py-2 px-4 w-full gap-2 border border-solid border-[#D0D5DD] rounded-md transition duration-200 ease-in-out justify-between">
+                                                <span className="font-normal text-sm text-[#A1A1A1]">Select Exams</span>
+                                                <Image src="/icons/Arrow-down-1.svg" width={20} height={20} alt="Select-role Button" />
+                                            </button>
+                                        </PopoverTrigger>
+                                        <PopoverContent className="w-[450px] ml-5 px-0 py-1 bg-white border border-lightGrey rounded-md">
+                                            <div className="flex flex-row w-full h-10 justify-start items-center hover:bg-[#EAECF0] px-2">
+                                                <Checkbox color="primary" />
+                                                <span className="text-[#0C111D] font-normal text-sm">JEE</span>
+                                            </div>
+                                            <div className="flex flex-row w-full h-10 justify-start items-center hover:bg-[#EAECF0] px-2">
+                                                <Checkbox color="primary" />
+                                                <span className="text-[#0C111D] font-normal text-sm">BITSET</span>
+                                            </div>
+                                            <div className="flex flex-row w-full h-10 justify-start items-center hover:bg-[#EAECF0] px-2">
+                                                <Checkbox color="primary" />
+                                                <span className="text-[#0C111D] font-normal text-sm">SRM</span>
+                                            </div>
+                                            <div className="flex flex-row w-full h-10 justify-start items-center hover:bg-[#EAECF0] px-2">
+                                                <Checkbox color="primary" />
+                                                <span className="text-[#0C111D] font-normal text-sm">KCET</span>
+                                            </div>
+                                        </PopoverContent>
+                                    </Popover>
                                 </div>
                                 <div className="flex flex-col gap-1 w-full">
                                     <label className="text-[#1D2939] text-sm font-medium">Target Year</label>

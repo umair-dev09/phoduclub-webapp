@@ -58,22 +58,22 @@ function UserDetails() {
             </div>
             <div className="flex flex-row w-full">
                 <div className="flex flex-col w-1/2">
-                    <span className="font-normal text-[#667085] text-[16px]">Email ID</span>
-                    <span className="font-semibold text-[#1D2939] text-[16px]">jenny@racme.com</span>
+                    <span className="font-normal text-[#667085] text-[16px]">User ID</span>
+                    <span className="font-semibold text-[#1D2939] text-[16px]">jenny#8745</span>
                 </div>
                 <div className="flex flex-col w-1/2">
                     <span className="font-normal text-[#667085] text-[16px]">Mobile No.</span>
                     <span className="font-semibold text-[#1D2939] text-[16px]">+918431823329</span>
                 </div>
             </div>
-            <div className="flex flex-row w-full">
+            <div className="flex flex-col w-full">
                 <div className="flex flex-col w-1/2">
-                    <span className="font-normal text-[#667085] text-[16px]">User ID</span>
-                    <span className="font-semibold text-[#1D2939] text-[16px]">jenny#8745</span>
+                    <span className="font-normal text-[#667085] text-[16px]">Joining Date</span>
+                    <span className="font-semibold text-[#1D2939] text-[16px]">Jan 6, 2024</span>
                 </div>
                 <div className="flex flex-col w-1/2">
-                    <span className="font-normal text-[#667085] text-[16px]">Account Created</span>
-                    <span className="font-semibold text-[#1D2939] text-[16px]">Jan 6,2024</span>
+                    <span className="font-normal text-[#667085] text-[16px]">Mobile No.</span>
+                    <span className="font-semibold text-[#1D2939] text-[16px]">+918431823329</span>
                 </div>
             </div>
             <hr />
@@ -151,7 +151,7 @@ function UserDetails() {
                                     <div className="flex flex-col gap-1 w-1/2 flex-grow">
                                         <label className="text-[#1D2939] text-sm font-medium">First Name</label>
                                         <input
-                                            className="w-full text-sm focus:outline-none font-normal text-[#1D2939] placeholder:text-[#A1A1A1] rounded-md border border-[#D0D5DD] px-4 py-2"
+                                            className="w-full text-sm font-medium text-[#1D2939] placeholder:text-[#A1A1A1] rounded-md border border-[#D0D5DD] px-4 py-2"
                                             type="text"
                                             placeholder="First Name"
                                         />
@@ -159,14 +159,14 @@ function UserDetails() {
                                     <div className="flex flex-col gap-1 w-1/2 flex-grow">
                                         <label className="text-[#1D2939] text-sm font-medium">Last Name</label>
                                         <input
-                                            className="w-full text-sm font-normal focus:outline-none text-[#1D2939] placeholder:text-[#A1A1A1] rounded-md border border-[#D0D5DD] px-4 py-2"
+                                            className="w-full text-sm font-medium text-[#1D2939] placeholder:text-[#A1A1A1] rounded-md border border-[#D0D5DD] px-4 py-2"
                                             type="text"
                                             placeholder="Last Name"
                                         />
                                     </div>
                                 </div>
                                 <div className="flex flex-col gap-1">
-                                    <label className="text-[#1D2939] text-sm font-medium">Mobile No.</label>
+                                    <label className="text-[#344054] text-sm font-medium">Mobile No.</label>
                                     <PhoneInput
                                         country="in"
                                         value={phone}
@@ -179,34 +179,6 @@ function UserDetails() {
                                             height: "42px",
                                         }}
                                     />
-                                </div>
-                                <div className="flex flex-col gap-1 w-full flex-grow">
-                                    <label className="text-[#1D2939] text-sm font-medium">Email Id</label>
-                                    <input
-                                        className="w-full text-sm font-normal focus:outline-none text-[#1D2939] placeholder:text-[#A1A1A1] rounded-md border border-[#D0D5DD] px-4 py-2"
-                                        type="text"
-                                        placeholder="Email Id"
-                                    />
-                                </div>
-                                <div className="flex flex-col gap-1 w-full flex-grow bg ">
-                                    <label className="text-[#1D2939] text-sm font-medium">User Id</label>
-                                    <div className="w-full bg-[#EAECF0] text-sm font-medium text-[#1D2939] placeholder:text-[#A1A1A1] rounded-md border border-[#D0D5DD] px-4 py-2">
-                                        <span className="font-normal text-[#667085] text-sm">jenny#8745</span>
-                                    </div>
-                                </div>
-                                <div className="flex flex-col gap-1 w-full">
-                                    <label className="text-[#1D2939] text-sm font-medium">Preparing Exams</label>
-                                    <button className="focus:outline-none flex flex-row py-2 px-4 w-full gap-2 border border-solid border-[#D0D5DD] rounded-md transition duration-200 ease-in-out justify-between">
-                                        <span className="font-normal text-sm text-[#A1A1A1]">Select Exams</span>
-                                        <Image src="/icons/Arrow-down-1.svg" width={20} height={20} alt="Select-role Button" />
-                                    </button>
-                                </div>
-                                <div className="flex flex-col gap-1 w-full">
-                                    <label className="text-[#1D2939] text-sm font-medium">Target Year</label>
-                                    <button className="focus:outline-none flex flex-row py-2 px-4 w-full gap-2 border border-solid border-[#D0D5DD] rounded-md transition duration-200 ease-in-out justify-between">
-                                        <span className="font-normal text-sm text-[#A1A1A1]">Select year</span>
-                                        <Image src="/icons/Arrow-down-1.svg" width={20} height={20} alt="Select-role Button" />
-                                    </button>
                                 </div>
                             </div>
                             <div className="flex justify-end gap-4 border-t p-4">
