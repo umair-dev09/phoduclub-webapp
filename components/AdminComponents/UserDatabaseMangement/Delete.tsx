@@ -5,20 +5,23 @@ import { toast } from 'react-toastify';
 import { doc, deleteDoc } from 'firebase/firestore';
 import { db } from '@/firebase';
 
-// Define the props interface
 interface DeleteProps {
     open: boolean; // Prop to control dialog visibility
     onClose: () => void; // Define onClose as a function
-    name: string;
-    authId: string;
+    name?: string;
+    authId?: string;
 }
 
-function Delete({ open, onClose, name, authId }: DeleteProps) { 
-      
-    const[confirmedName, setConfirmedName] = useState('');
+function Delete({ open, onClose, name, authId }: DeleteProps) {
+    const [confirmedName, setConfirmedName] = useState('');
     const isFormValid = name === confirmedName;
 
     const handleDeleteUser = async () => {
+        if (!authId) {
+            toast.error('User ID is missing. Cannot delete user.');
+            return;
+        }
+
         try {
             await deleteDoc(doc(db, 'users', authId));
             toast.success('User Removed Successfully!');
@@ -30,7 +33,7 @@ function Delete({ open, onClose, name, authId }: DeleteProps) {
     };
 
     return (
-        <Dialog open={true} onClose={onClose} className="relative z-50">
+        <Dialog open={open} onClose={onClose} className="relative z-50">
             <DialogBackdrop className="fixed inset-0 bg-black/30 " />
             <div className="fixed inset-0 flex items-center justify-center ">
                 <DialogPanel transition className="bg-white rounded-2xl w-[480px] h-auto">
@@ -41,14 +44,12 @@ function Delete({ open, onClose, name, authId }: DeleteProps) {
                         <div className="mx-6 h-auto  pt-6 flex flex-col">
                             <h3 className="pb-3 font-bold text-[#1D2939]">Delete User?</h3>
                             <span className="text-sm font-normal text-[#667085]">Deleting the user will permanently remove all their data from the platform, including their account, activity, and content.</span>
-
                         </div>
                         <div className="mx-6 h-auto pt-4 pb-6 gap-2 flex flex-col">
                             <h3 className="font-medium text-sm text-[#1D2939]">To confirm, please enter the name of the user.</h3>
-                            <div className="flex flex-row py-2 px-4 w-full gap-2 border border-solid border-[#D0D5DD] rounded-md transition duration-200 ease-in-out ">
+                            <div className="flex flex-row py-2 px-4 w-full gap-2 border border-solid border-[#D0D5DD] rounded-md transition duration-200 ease-in-out">
                                 <input
-
-                                    className="w-full text-base font-normal text-[#1D2939]  rounded-md outline-none"
+                                    className="w-full text-base font-normal text-[#1D2939] rounded-md outline-none"
                                     type="text"
                                     placeholder={name}
                                     value={confirmedName}

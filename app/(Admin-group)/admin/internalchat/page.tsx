@@ -5,6 +5,8 @@ import Image from 'next/image';
 import { useRouter } from "next/navigation";
 import { Popover, PopoverContent, PopoverTrigger } from "@nextui-org/popover";
 import CreateChannelDialogue from '@/components/AdminComponents/InternalChat/CreateChannelDialogue';
+import OwnChats from '@/components/AdminComponents/Community/Chats/OwnChats';
+import OtherChats from '@/components/AdminComponents/Community/Chats/OtherChats';
 
 function InternalChat() {
     const [text, setText] = useState("");
@@ -78,7 +80,10 @@ function InternalChat() {
                         </button>
                     </div>
                 </div>
-                <div className="shadow-[0_8px_32px_0_rgba(0,0,0,0.02)]"></div>
+                <div className="shadow-[0_8px_32px_0_rgba(0,0,0,0.02)] pt-6">
+                    {/* <OwnChats /> */}
+                    <OtherChats />
+                </div>
                 <div className="flex flex-row items-center min-h-[6.25rem] px-6 py-6 gap-2 bg-white">
                     <div className="border border-solid bg-[#FCFCFD] border-[#D0D5DD] h-auto w-full rounded-md flex flex-row items-center p-2 justify-between">
                         <textarea

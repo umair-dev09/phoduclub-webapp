@@ -23,6 +23,7 @@ import { db } from '@/firebase';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import LoadingData from "@/components/Loading";
+import { Checkbox } from "@nextui-org/react";
 
 
 interface UserData {
@@ -75,6 +76,7 @@ function Banned() {
     const [userTypePopup, setUserTypePopup] = useState(false);
 
     const router = useRouter();
+    const [selectedRows, setSelectedRows] = useState<Set<string>>(new Set());
 
     useEffect(() => {
         let filteredUsers = users;
@@ -162,6 +164,29 @@ function Banned() {
     };
     const [phone, setPhone] = useState("");
 
+        // Function to handle header checkbox selection
+        const handleHeaderCheckboxSelect = () => {
+            if (selectedRows.size === currentItems.length) {
+                // If all rows are already selected, unselect all
+                setSelectedRows(new Set());
+            } else {
+                // Select all current page rows
+                const allCurrentPageIds = currentItems.map(item => item.name);
+                setSelectedRows(new Set(allCurrentPageIds));
+            }
+        };
+    
+        // Function to handle row selection
+        const handleRowSelect = (quizId: string) => {
+            const newSelectedRows = new Set(selectedRows);
+            if (newSelectedRows.has(quizId)) {
+                newSelectedRows.delete(quizId);
+            } else {
+                newSelectedRows.add(quizId);
+            }
+            setSelectedRows(newSelectedRows);
+        };
+
     return (
         <div className="flex flex-col w-full gap-4 ">
             <div className="flex flex-row justify-between items-center">
@@ -219,102 +244,141 @@ function Banned() {
                 </div>
             </div>
 
-            <div className="flex flex-col justify-between h-full">
-                <div className="flex border border-[#EAECF0] rounded-xl">
-                    <table className="w-full h-auto bg-white rounded-xl">
-                        <thead>
-                            <tr>
-                                <th className="text-left px-8 py-4 rounded-tl-xl flex flex-row">
-                                    <span className="text-[#667085] font-medium text-sm">Name</span>
-                                </th>
-                                <th className="text-center px-8 py-4 text-[#667085] font-medium text-sm">
-                                    <div className="flex flex-row justify-center gap-1">
-                                        <p>Email</p>
-                                    </div>
-                                </th>
-                                <th className="text-center px-8 py-4 text-[#667085] font-medium text-sm">
-                                    <div className="flex flex-row justify-center gap-1">
-                                        <p>Mobile No.</p>
-                                    </div>
-                                </th>
-                                <th className="text-center px-8 py-4 text-[#667085] font-medium text-sm">
-                                    <div className="flex flex-row justify-center gap-1">
-                                        <p>Joining Date</p>
-                                    </div>
-                                </th>
-                                <th className="w-[12%] text-center px-8 py-4 rounded-tr-xl text-[#667085] font-medium text-sm">Action</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {currentItems.map((banned, index) => (
-                                <tr key={index} className="h-auto border-t border-solid border-[#EAECF0]">
-                                    <td className="py-2">
-                                        <div className="flex flex-row ml-8 gap-2">
-                                            <div className="flex items-center">
-                                                <div className="relative">
-                                                <Image className="rounded-full min-w-[36px] min-h-[36px]" src={banned.profilePic} alt="DP" width={36} height={36} />
-                                                    {banned.isPremium && (
-                                                        <Image className="absolute right-0 bottom-0" src='/icons/winnerBatch.svg' alt="Batch" width={18} height={18} />
-                                                    )}
-                                                </div>
-                                            </div>
-                                            <div className="flex items-start justify-start flex-col">
-                                                <div
-                                                    className="font-semibold cursor-pointer"
-                                                    onClick={() => handleTabClick('/admin/userdatabase/userdatabaseinfo')}
-                                                >
-                                                    {banned.name}
-                                                </div>
-                                                <div className="flex justify-start items-start text-[13px] text-[#667085]">{banned.userId}</div>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td className="px-8 py-4 text-center text-[#101828] text-sm">{banned.email}</td>
-                                    <td className="px-8 py-4 text-center text-[#101828] text-sm">{banned.phone}</td>
-                                    <td className="px-8 py-4 text-center text-[#101828] text-sm">{formatFirestoreTimestamp(banned.createdAt)}</td>
-                                    <td className="flex items-center justify-center px-8 py-4 text-[#101828] text-sm">
-                                        <Popover placement="bottom-end">
-                                            <PopoverTrigger>
-                                                <button className="ml-[25%] outline-none">
-                                                    <Image
-                                                        src="/icons/three-dots.svg"
-                                                        width={20}
-                                                        height={20}
-                                                        alt="More Actions"
-                                                    />
-                                                </button>
-                                            </PopoverTrigger>
-                                            <PopoverContent className=" w-[167px] px-0 border border-solid border-[#EAECF0] bg-[#FFFFFF] rounded-md  shadow-lg">
-                                                <button className=" flex flex-row items-center justify-start w-full py-[0.625rem] px-4 gap-2 hover:bg-[#F2F4F7]"
-                                                onClick={() => {setIsBanOpen(true); setUserId(banned.uniqueId) }}>
-                                                    <Image src='/icons/user-block-green-01.svg' alt="Revoke Ban" width={18} height={18} />
-                                                    <p className="text-sm text-[#0B9055] font-normal">Revoke Ban</p>
-                                                </button>
-                                                <button className=" flex flex-row items-center justify-start w-full py-[0.625rem] px-4 gap-2 hover:bg-[#F2F4F7]"
-                                                    onClick={() => { setIsDeleteOpen(true); setName(banned.name); setUserId(banned.uniqueId); }}>
-                                                    <Image src='/icons/delete.svg' alt="Delete" width={18} height={18} />
-                                                    <p className="text-sm text-[#DE3024] font-normal">Delete</p>
-                                                </button>
-                                            </PopoverContent>
-                                        </Popover>
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                </div>
-
-                {/* Pagination Section */}
-                <div className="flex items-end justify-end h-auto">
-                    <div className="flex justify-right h-auto">
-                        <PaginationSection
-                            totalItems={data.length}
-                            itemsPerPage={itemsPerPage}
-                            currentPage={currentPage}
-                            setCurrentPage={setCurrentPage}
-                        />
+            {selectedRows.size > 0 && (
+                <div
+                    className="flex flex-row items-center justify-between
+                                min-h-9
+                                transition-all duration-300 ease-in-out 
+                                transform opacity-100 translate-y-0 
+                                overflow-hidden"
+                >
+                    <div className="flex flex-row gap-3 text-sm font-semibold leading-5">
+                        <p className="text-[#1D2939]">({selectedRows.size}) Selected</p>
+                        {selectedRows.size < data.length && (
+                            <button
+                                onClick={() => {
+                                    const allCurrentPageIds = currentItems.map(item => item.name);
+                                    setSelectedRows(new Set(allCurrentPageIds));
+                                }}
+                                className="text-[#9012FF] underline"
+                            >
+                                Select all {data.length}
+                            </button>
+                        )}
+                    </div>
+                    <div className="flex flex-row gap-2">
+                        <button className="flex flex-row items-center px-[0.875rem] py-[0.625rem] gap-1 bg-white border border-lightGrey rounded-md">
+                            <Image src='/icons/user-block-green-01.svg' alt="revoke ban" width={20} height={20} />
+                            <p className="text-sm text-[#0B9055] font-medium leading-[1.125rem]">Revoke Ban</p>
+                        </button>
+                        <button className="flex flex-row items-center px-[0.875rem] py-[0.625rem] gap-1 bg-white border border-lightGrey rounded-md">
+                            <Image src='/icons/delete.svg' alt="revoke ban" width={20} height={20} />
+                            <p className="text-sm text-[#DE3024] font-medium leading-[1.125rem]">Delete</p>
+                        </button>
                     </div>
                 </div>
+            )}
+
+            <div className="flex border border-[#EAECF0] rounded-xl">
+                <table className="w-full h-auto bg-white rounded-xl">
+                    <thead>
+                        <tr>
+                            <th className="w-[5%] pl-8 py-4 rounded-tl-xl">
+                                <Checkbox
+                                    size="md"
+                                    color="primary"
+                                    isSelected={selectedRows.size === currentItems.length && currentItems.length > 0}
+                                    isIndeterminate={selectedRows.size > 0 && selectedRows.size < currentItems.length}
+                                    onChange={handleHeaderCheckboxSelect}
+                                />
+                            </th>
+                            <th className="text-left px-8 py-4 flex flex-row">
+                                <span className="text-[#667085] font-medium text-sm">Name</span>
+                            </th>
+                            <th className="text-center px-8 py-4 text-[#667085] font-medium text-sm">
+                                <div className="flex flex-row justify-center gap-1">
+                                    <p>Email</p>
+                                </div>
+                            </th>
+                            <th className="text-center px-8 py-4 text-[#667085] font-medium text-sm">
+                                <div className="flex flex-row justify-center gap-1">
+                                    <p>Mobile No.</p>
+                                </div>
+                            </th>
+                            <th className="text-center px-8 py-4 text-[#667085] font-medium text-sm">
+                                <div className="flex flex-row justify-center gap-1">
+                                    <p>Joining Date</p>
+                                </div>
+                            </th>
+                            <th className="w-[12%] text-center px-8 py-4 rounded-tr-xl text-[#667085] font-medium text-sm">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {currentItems.map((banned, index) => (
+                            <tr key={index} className="h-auto border-t border-solid border-[#EAECF0]">
+                                <td className="text-center pl-8">
+                                    <Checkbox
+                                        size="md"
+                                        color="primary"
+                                        isSelected={selectedRows.has(banned.name)}
+                                        onChange={() => handleRowSelect(banned.name)}
+                                        onClick={(e) => e.stopPropagation()} // Prevent row click when checking checkbox
+                                    />
+                                </td>
+                                <td className="py-2">
+                                    <div className="flex flex-row ml-8 gap-2">
+                                        <div className="flex items-center">
+                                            <div className="relative">
+                                            <Image className="rounded-full min-w-[36px] min-h-[36px]" src={banned.profilePic} alt="DP" width={36} height={36} />
+                                            {banned.isPremium && (
+                                                        <Image className="absolute right-0 bottom-0" src='/icons/winnerBatch.svg' alt="Batch" width={18} height={18} />
+                                                    )}
+                                            </div>
+                                        </div>
+                                        <div className="flex items-start justify-start flex-col">
+                                            <div
+                                                className="font-semibold cursor-pointer"
+                                                onClick={() => handleTabClick('/admin/userdatabase/userdatabaseinfo')}
+                                            >
+                                                {banned.name}
+                                            </div>
+                                            <div className="flex justify-start items-start text-[13px] text-[#667085]">jenny#8547</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td className="px-8 py-4 text-center text-[#101828] text-sm">{banned.email}</td>
+                                <td className="px-8 py-4 text-center text-[#101828] text-sm">{banned.phone}</td>
+                                <td className="px-8 py-4 text-center text-[#101828] text-sm">{formatFirestoreTimestamp(banned.createdAt)}</td>
+                                <td className="flex items-center justify-center px-8 py-4 text-[#101828] text-sm">
+                                    <Popover placement="bottom-end">
+                                        <PopoverTrigger>
+                                            <button className="ml-[25%] outline-none">
+                                                <Image
+                                                    src="/icons/three-dots.svg"
+                                                    width={20}
+                                                    height={20}
+                                                    alt="More Actions"
+                                                />
+                                            </button>
+                                        </PopoverTrigger>
+                                        <PopoverContent className=" w-[167px] px-0 border border-solid border-[#EAECF0] bg-[#FFFFFF] rounded-md  shadow-lg">
+                                            <button className=" flex flex-row items-center justify-start w-full py-[0.625rem] px-4 gap-2 hover:bg-[#F2F4F7]"
+                                              onClick={() => {setIsBanOpen(true); setUserId(banned.uniqueId) }}>
+                                                <Image src='/icons/user-block-green-01.svg' alt="Revoke Ban" width={18} height={18} />
+                                                <p className="text-sm text-[#0B9055] font-normal">Revoke Ban</p>
+                                            </button>
+                                            <button className=" flex flex-row items-center justify-start w-full py-[0.625rem] px-4 gap-2 hover:bg-[#F2F4F7]"
+                                              onClick={() => { setIsDeleteOpen(true); setName(banned.name); setUserId(banned.uniqueId); }}>
+                                                <Image src='/icons/delete.svg' alt="Delete" width={18} height={18} />
+                                                <p className="text-sm text-[#DE3024] font-normal">Delete</p>
+                                            </button>
+                                        </PopoverContent>
+                                    </Popover>
+                                </td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
             </div>
             {isBanOpen && <Ban onClose={closeBan} open={true} id={userId} banUser={false}/>}
             {isDeleteOpen && <Delete onClose={closeDelete} open={true} authId={userId} name={name}/>}
@@ -406,124 +470,6 @@ function Banned() {
             </Dialog>
             <ToastContainer/>
         </div>
-    );
-}
-
-// Pagination Component
-function PaginationSection({
-    totalItems,
-    itemsPerPage,
-    currentPage,
-    setCurrentPage,
-}: {
-    totalItems: number;
-    itemsPerPage: number;
-    currentPage: number;
-    setCurrentPage: (page: number) => void;
-}) {
-    const totalPages = Math.ceil(totalItems / itemsPerPage);
-
-    const handleNextPage = () => {
-        if (currentPage < totalPages) {
-            setCurrentPage(currentPage + 1);
-        }
-    };
-
-    const handlePrevPage = () => {
-        if (currentPage > 1) {
-            setCurrentPage(currentPage - 1);
-        }
-    };
-
-    const renderPageNumbers = () => {
-        const pages = [];
-        const maxVisiblePages = 4; // Maximum visible pages in pagination
-        const visiblePagesAroundCurrent = Math.floor(maxVisiblePages / 2);
-
-        let startPage = Math.max(1, currentPage - visiblePagesAroundCurrent);
-        let endPage = Math.min(totalPages, currentPage + visiblePagesAroundCurrent);
-
-        if (currentPage <= visiblePagesAroundCurrent) {
-            endPage = Math.min(totalPages, maxVisiblePages);
-        } else if (currentPage + visiblePagesAroundCurrent >= totalPages) {
-            startPage = Math.max(1, totalPages - maxVisiblePages + 1);
-        }
-
-        // First page with ellipsis if needed
-        if (startPage > 1) {
-            pages.push(
-                <PaginationItem key={1}>
-                    <PaginationLink onClick={() => setCurrentPage(1)}>1</PaginationLink>
-                </PaginationItem>
-            );
-            if (startPage > 2) {
-                pages.push(
-                    <PaginationItem key="start-ellipsis">
-                        <PaginationEllipsis />
-                    </PaginationItem>
-                );
-            }
-        }
-
-        // Visible pages
-        for (let page = startPage; page <= endPage; page++) {
-            pages.push(
-                <PaginationItem key={page}>
-                    <PaginationLink
-                        onClick={() => setCurrentPage(page)}
-                        className={`${currentPage === page ? "bg-purple text-white hover:bg-purple hover:text-white" : "hover:bg-neutral-200"}`}
-                    >
-                        {page}
-                    </PaginationLink>
-                </PaginationItem>
-            );
-        }
-
-        // Last page with ellipsis if needed
-        if (endPage < totalPages) {
-            if (endPage < totalPages - 1) {
-                pages.push(
-                    <PaginationItem key="end-ellipsis">
-                        <PaginationEllipsis />
-                    </PaginationItem>
-                );
-            }
-            pages.push(
-                <PaginationItem key={totalPages}>
-                    <PaginationLink onClick={() => setCurrentPage(totalPages)}>{totalPages}</PaginationLink>
-                </PaginationItem>
-            );
-        }
-
-        return pages;
-    };
-
-    return (
-        <Pagination className="mt-4 justify-end">
-            <PaginationContent className="bg-white border border-lightGrey rounded-md flex flex-row items-center">
-                <PaginationItem>
-                    <button
-                        onClick={handlePrevPage}
-                        disabled={currentPage === 1}
-                        className="disabled:opacity-50"
-                    >
-                        <PaginationPrevious />
-                    </button>
-                </PaginationItem>
-                <div className="flex flex-row items-center gap-1">
-                    {renderPageNumbers()}
-                </div>
-                <PaginationItem>
-                    <button
-                        onClick={handleNextPage}
-                        disabled={currentPage === totalPages}
-                        className="disabled:opacity-50"
-                    >
-                        <PaginationNext />
-                    </button>
-                </PaginationItem>
-            </PaginationContent>
-        </Pagination>
     );
 }
 

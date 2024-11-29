@@ -3,6 +3,7 @@ import Image from "next/image";
 import React, { useState } from 'react';
 import { Popover, PopoverContent, PopoverTrigger } from "@nextui-org/popover";
 import { Checkbox } from "@nextui-org/react";
+
 function customerinfo() {
     const [isChecked, setIsChecked] = useState(false);
     const [height, setHeight] = useState("32px");

@@ -1,12 +1,12 @@
 import Image from "next/image";
 import React, { useState, useEffect, useRef, SetStateAction, Dispatch } from "react";
 import 'react-quill/dist/quill.snow.css';
-import ReactQuill from 'react-quill-new'; // Ensure correct import
-import Quill from 'quill'; // Import Quill to use it for types
+import ReactQuill from 'react-quill-new';
+import Quill from 'quill';
 import { Popover, PopoverTrigger, PopoverContent } from '@nextui-org/popover';
 import { Dialog, DialogBackdrop, DialogPanel } from "@headlessui/react";
 import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
-import { storage,db } from '@/firebase'; // Adjust path if needed
+import { storage, db } from '@/firebase'; // Adjust path if needed
 import { toast } from "react-toastify";
 import {Checkbox} from "@nextui-org/react";
 
@@ -27,7 +27,7 @@ type TestSeriesInfoProps = {
     setNoOfRating: (noOfRating: string) => void;
 }
 
-function TestSeriesInfo({name,setName,description,setDescription,imageUrl,setImageUrl,price,setPrice,discountPrice,setDiscountPrice,rating,setRating,noOfRating,setNoOfRating}:TestSeriesInfoProps) { 
+function TestSeriesInfo({ name, setName, description, setDescription, imageUrl, setImageUrl, price, setPrice, discountPrice, setDiscountPrice, rating, setRating, noOfRating, setNoOfRating }: TestSeriesInfoProps) {
 
     // State to manage each dialog's for Upload Image
     // -------------------------------------------------------------------------------------------------------------------------------
@@ -144,41 +144,41 @@ function TestSeriesInfo({name,setName,description,setDescription,imageUrl,setIma
         if (file) {
             // setImage(file);
             toast.promise(
-                new Promise(async (resolve, reject) => { 
-                  try {
-                    const storageRef = ref(storage, `TestSeriesImages/${file.name}`);
-                    const uploadTask = uploadBytesResumable(storageRef, file);
-        
-                    // Monitor upload progress and completion
-                    uploadTask.on(
-                        'state_changed',
-                        (snapshot) => {
-                            const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-                            console.log(`Upload is ${progress}% done`);
-                        },
-                        (error) => {
-                            console.error("Upload failed:", error);
-                        },
-                        async () => {
-                            const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
-                            setImageUrl(downloadURL);
-                            resolve("Image Updated!");
-                        }
-                    );
-                  } catch (error) {
-                    reject("Failed to Update Image!")
-                    // Handle errors in both image upload and Firestore update
-                    // toast.error("Failed to upload image or update profile.");
-                    console.error("Error:", error);
-                  }
-      
+                new Promise(async (resolve, reject) => {
+                    try {
+                        const storageRef = ref(storage, `TestSeriesImages/${file.name}`);
+                        const uploadTask = uploadBytesResumable(storageRef, file);
+
+                        // Monitor upload progress and completion
+                        uploadTask.on(
+                            'state_changed',
+                            (snapshot) => {
+                                const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                                console.log(`Upload is ${progress}% done`);
+                            },
+                            (error) => {
+                                console.error("Upload failed:", error);
+                            },
+                            async () => {
+                                const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
+                                setImageUrl(downloadURL);
+                                resolve("Image Updated!");
+                            }
+                        );
+                    } catch (error) {
+                        reject("Failed to Update Image!")
+                        // Handle errors in both image upload and Firestore update
+                        // toast.error("Failed to upload image or update profile.");
+                        console.error("Error:", error);
+                    }
+
                 }),
                 {
-                  pending: 'Uploading Course Image...',
-                  success: 'Image Uploaded.',
-                  error: 'Failed to Upload Image.',
+                    pending: 'Uploading Course Image...',
+                    success: 'Image Uploaded.',
+                    error: 'Failed to Upload Image.',
                 }
-              );
+            );
         }
     };
 
@@ -194,41 +194,41 @@ function TestSeriesInfo({name,setName,description,setDescription,imageUrl,setIma
         if (file && file.type.startsWith('image/')) {
             // setImage(file);
             toast.promise(
-                new Promise(async (resolve, reject) => { 
-                  try {
-                    const storageRef = ref(storage, `TestSeriesImages/${file.name}`);
-                    const uploadTask = uploadBytesResumable(storageRef, file);
-        
-                    // Monitor upload progress and completion
-                    uploadTask.on(
-                        'state_changed',
-                        (snapshot) => {
-                            const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-                            console.log(`Upload is ${progress}% done`);
-                        },
-                        (error) => {
-                            console.error("Upload failed:", error);
-                        },
-                        async () => {
-                            const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
-                            setImageUrl(downloadURL);
-                            resolve("Image Updated!");
-                        }
-                    );
-                  } catch (error) {
-                    reject("Failed to Update Image!")
-                    // Handle errors in both image upload and Firestore update
-                    // toast.error("Failed to upload image or update profile.");
-                    console.error("Error:", error);
-                  }
-      
+                new Promise(async (resolve, reject) => {
+                    try {
+                        const storageRef = ref(storage, `TestSeriesImages/${file.name}`);
+                        const uploadTask = uploadBytesResumable(storageRef, file);
+
+                        // Monitor upload progress and completion
+                        uploadTask.on(
+                            'state_changed',
+                            (snapshot) => {
+                                const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                                console.log(`Upload is ${progress}% done`);
+                            },
+                            (error) => {
+                                console.error("Upload failed:", error);
+                            },
+                            async () => {
+                                const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
+                                setImageUrl(downloadURL);
+                                resolve("Image Updated!");
+                            }
+                        );
+                    } catch (error) {
+                        reject("Failed to Update Image!")
+                        // Handle errors in both image upload and Firestore update
+                        // toast.error("Failed to upload image or update profile.");
+                        console.error("Error:", error);
+                    }
+
                 }),
                 {
-                  pending: 'Uploading Image...',
-                  success: 'Image Uploaded.',
-                  error: 'Failed to Upload Image.',
+                    pending: 'Uploading Image...',
+                    success: 'Image Uploaded.',
+                    error: 'Failed to Upload Image.',
                 }
-              );
+            );
         }
     };
 
@@ -331,20 +331,20 @@ function TestSeriesInfo({name,setName,description,setDescription,imageUrl,setIma
                 <div className=" flex flex-col gap-3">
                     <span className="text-[#1D2939] font-semibold text-sm">Test Series Image</span>
                     {imageUrl ? (
-                    <div className="flex flex-row items-center gap-3">
-                    <Image className="w-[280px] h-[190px] rounded-[4px] object-cover" src={imageUrl} width={100} height={100} alt="course image" quality={100}/>  
-                    <button className="flex flex-row gap-1 items-center" onClick={() => {setImageUrl(''); }}>
-                    <Image src="/icons/delete.svg" width={18} height={18} alt="Delete icon" />  
-                     <span className="text-sm font-semibold text-[#DE3024] mt-[2px]">Delete</span>
-                    </button>   
-                    </div>
-                     ) : (   
+                        <div className="flex flex-row items-center gap-3">
+                            <Image className="w-[280px] h-[190px] rounded-[4px] object-cover" src={imageUrl} width={100} height={100} alt="course image" quality={100} />
+                            <button className="flex flex-row gap-1 items-center" onClick={() => { setImageUrl(''); }}>
+                                <Image src="/icons/delete.svg" width={18} height={18} alt="Delete icon" />
+                                <span className="text-sm font-semibold text-[#DE3024] mt-[2px]">Delete</span>
+                            </button>
+                        </div>
+                    ) : (
                         <div className="flex flex-col gap-2">
-                        <div
-                            className="h-[180px] rounded-xl bg-[#F9FAFB] border-2 border-dashed border-[#D0D5DD] flex items-center justify-center"
-                            onDragOver={handleDragOver}
-                            onDrop={handleDrop}
-                        >
+                            <div
+                                className="h-[180px] rounded-xl bg-[#F9FAFB] border-2 border-dashed border-[#D0D5DD] flex items-center justify-center"
+                                onDragOver={handleDragOver}
+                                onDrop={handleDrop}
+                            >
                                 <button className="flex flex-col items-center justify-center gap-4 h-full w-full">
                                     <div className="flex flex-col items-center">
                                         <div className="h-10 w-10 rounded-md border border-solid border-[#EAECF0] bg-[#FFFFFF] p-[10px]">
@@ -365,9 +365,9 @@ function TestSeriesInfo({name,setName,description,setDescription,imageUrl,setIma
                                         <span className="text-[#182230] text-sm font-medium">or drag and drop</span>
                                     </div>
                                 </button>
+                            </div>
                         </div>
-                    </div>
-                     )}   
+                    )}
                 </div>
             </div>
              

@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { useRouter,useSearchParams } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import Image from "next/image";
 import TestSeriesInfo from "@/components/AdminComponents/TestSeriesComponents/TestSeriesInfo";
 import Sections from "@/components/AdminComponents/TestSeriesComponents/Sections";
@@ -9,12 +9,12 @@ import Perference from "@/components/AdminComponents/TestSeriesComponents/Perfer
 import { toast, ToastContainer } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
 import { collection, addDoc, updateDoc, doc } from 'firebase/firestore';
-import {auth, storage, db } from '@/firebase'; // Adjust path if needed
+import { auth, storage, db } from '@/firebase'; // Adjust path if needed
 
 // Define an enum for the steps with updated names
 enum Step {
     TestSeriesInfo = 0,
-    Sections = 1, 
+    Sections = 1,
     Review = 2,
     Perference = 3,
 }
@@ -39,11 +39,11 @@ function CreateTestSeries() {
     const router = useRouter();
 
     const handleNextClick = () => {
-        if(currentStep < Step.Sections){
-            if(testId){
+        if (currentStep < Step.Sections) {
+            if (testId) {
                 setCurrentStep(currentStep + 1);
             }
-            else{
+            else {
                 toast.promise(
                     new Promise(async (resolve, reject) => {
                         try {
@@ -61,20 +61,20 @@ function CreateTestSeries() {
                                 inCourseId: '',
                                 createdBy: userId,
                             });
-        
+
                             await updateDoc(doc(db, 'testseries', docRef.id), {
                                 testId: docRef.id,
                             });
                             resolve("Test Series Created!");
-                          setCurrentStep(currentStep + 1);
-                          router.replace(`/admin/content/testseriesmanagement/createtestseries/?tId=${docRef.id}`)
+                            setCurrentStep(currentStep + 1);
+                            router.replace(`/admin/content/testseriesmanagement/createtestseries/?tId=${docRef.id}`)
                         } catch (error) {
                             reject("Failed to Create Test Series!")
                             // Handle errors in both image upload and Firestore update
                             // toast.error("Failed to upload image or update profile.");
                             console.error("Error:", error);
                         }
-        
+
                     }),
                     {
                         pending: 'Creating Test Series...',
@@ -83,7 +83,6 @@ function CreateTestSeries() {
                     }
                 );
             }
-           
         }
         else if (currentStep === Step.Perference) {
             setIsPublished(true); // Set quiz as published
@@ -101,10 +100,10 @@ function CreateTestSeries() {
 
     const isFormValid = () => {
         if (currentStep === Step.TestSeriesInfo) {
-            return name.trim() !== '' && description.trim() !== '' && image.trim() !== '' && price.trim() !== '' && discountPrice.trim() !== ''&& rating.trim() !== ''&& noOfRating.trim() !== ''  ;
+            return name.trim() !== '' && description.trim() !== '' && image.trim() !== '' && price.trim() !== '' && discountPrice.trim() !== '' && rating.trim() !== '' && noOfRating.trim() !== '';
         }
     };
-    
+
     const isNextButtonDisabled = !isFormValid();
 
     const handleBackClick = () => {
@@ -116,15 +115,15 @@ function CreateTestSeries() {
     const renderStepContent = () => {
         switch (currentStep) {
             case Step.TestSeriesInfo:
-                return <TestSeriesInfo name={name} setName={setName} description={description} setDescription={setDescription} imageUrl={image} setImageUrl={setImage} price={price} setPrice={setPrice} discountPrice={discountPrice} setDiscountPrice={setDiscountPrice} rating={rating} setRating={setRating} noOfRating={noOfRating} setNoOfRating={setNoOfRating}/>;
+                return <TestSeriesInfo name={name} setName={setName} description={description} setDescription={setDescription} imageUrl={image} setImageUrl={setImage} price={price} setPrice={setPrice} discountPrice={discountPrice} setDiscountPrice={setDiscountPrice} rating={rating} setRating={setRating} noOfRating={noOfRating} setNoOfRating={setNoOfRating} />;
             case Step.Sections:
-                return <Sections  isCreateSection={isCreateSection} setIsCreateSection={setIsCreateSection} testId={testId || ''}/>;
+                return <Sections isCreateSection={isCreateSection} setIsCreateSection={setIsCreateSection} testId={testId || ''} />;
             case Step.Review:
                 return <Review />;
             case Step.Perference:
                 return <Perference />;
             default:
-                return <TestSeriesInfo name={name} setName={setName} description={description} setDescription={setDescription} imageUrl={image} setImageUrl={setImage} price={price} setPrice={setPrice} discountPrice={discountPrice} setDiscountPrice={setDiscountPrice} rating={rating} setRating={setRating} noOfRating={noOfRating} setNoOfRating={setNoOfRating}/>;
+                return <TestSeriesInfo name={name} setName={setName} description={description} setDescription={setDescription} imageUrl={image} setImageUrl={setImage} price={price} setPrice={setPrice} discountPrice={discountPrice} setDiscountPrice={setDiscountPrice} rating={rating} setRating={setRating} noOfRating={noOfRating} setNoOfRating={setNoOfRating} />;
         }
     };
 
@@ -137,8 +136,6 @@ function CreateTestSeries() {
             return "border-2 border-[#D0D5DE]";
         }
     };
-   
-
 
     return (
         <div className="flex flex-row flex-1">
