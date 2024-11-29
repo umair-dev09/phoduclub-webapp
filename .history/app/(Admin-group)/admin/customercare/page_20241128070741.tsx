@@ -23,25 +23,24 @@ import { Popover, PopoverContent, PopoverTrigger } from "@nextui-org/popover";
 type Quiz = {
     id: string;
     email: string;
-    Priority: 'Low' | 'Medium' | 'Hard';
+    Importance: 'Low' | 'Medium' | 'Hard';
     joiningDate: string;
-    status: 'Latest' | 'Opened' | 'Resolved' | 'Re-opened' | 'Blocker' | 'Replied';
+    status: 'New' | 'Open' | 'Answered' | 'Resolved';
 }
 
 // Mock fetchQuizzes function with types
 const fetchQuizzes = async (): Promise<Quiz[]> => {
     const allQuizzes: Quiz[] = [
-        { id: "1", Priority: "Medium", joiningDate: "Dec 1, 2023", email: "Jun 1, 2024", status: "Opened" },
-        { id: "2", Priority: "Low", joiningDate: "Nov 15, 2023", email: "May 15, 2024", status: "Resolved" },
-        { id: "3", Priority: "Medium", joiningDate: "Oct 1, 2023", email: "Apr 1, 2024", status: "Re-opened" },
-        { id: "4", Priority: "Hard", joiningDate: "Sep 1, 2023", email: "Mar 1, 2024", status: "Resolved" },
-        { id: "5", Priority: "Low", joiningDate: "Jan 1, 2024", email: "Jul 1, 2024", status: "Latest" },
-        { id: "6", Priority: "Low", joiningDate: "Feb 1, 2024", email: "Aug 1, 2024", status: "Blocker" },
-        { id: "7", Priority: "Hard", joiningDate: "Jul 15, 2023", email: "Jan 15, 2024", status: "Replied" },
-        { id: "8", Priority: "Low", joiningDate: "Dec 10, 2023", email: "Jun 10, 2024", status: "Resolved" },
-        { id: "9", Priority: "Medium", joiningDate: "Nov 25, 2023", email: "May 25, 2024", status: "Opened" },
-        { id: "10", Priority: "Hard", joiningDate: "Aug 20, 2023", email: "Feb 20, 2024", status: "Latest" }
-
+        { id: "1", Importance: "Medium", joiningDate: "Dec 1, 2023", email: "Jun 1, 2024", status: "New" },
+        { id: "2", Importance: "Low", joiningDate: "Nov 15, 2023", email: "May 15, 2024", status: "Open" },
+        { id: "3", Importance: "Medium", joiningDate: "Oct 1, 2023", email: "Apr 1, 2024", status: "Answered" },
+        { id: "4", Importance: "Hard", joiningDate: "Sep 1, 2023", email: "Mar 1, 2024", status: "Resolved" },
+        { id: "5", Importance: "Low", joiningDate: "Jan 1, 2024", email: "Jul 1, 2024", status: "New" },
+        { id: "6", Importance: "Low", joiningDate: "Feb 1, 2024", email: "Aug 1, 2024", status: "Open" },
+        { id: "7", Importance: "Hard", joiningDate: "Jul 15, 2023", email: "Jan 15, 2024", status: "Answered" },
+        { id: "8", Importance: "Low", joiningDate: "Dec 10, 2023", email: "Jun 10, 2024", status: "Resolved" },
+        { id: "9", Importance: "Medium", joiningDate: "Nov 25, 2023", email: "May 25, 2024", status: "New" },
+        { id: "10", Importance: "Hard", joiningDate: "Aug 20, 2023", email: "Feb 20, 2024", status: "Answered" }
     ];
     return allQuizzes;
 };
@@ -53,18 +52,10 @@ function CustomerCare() {
     const [itemsPerPage] = useState(5);
     const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState('');
+    const [selectedItems, setSelectedItems] = useState<Set<string>>(new Set());
     const router = useRouter();
     const [isPopoverOpen, setIsPopoverOpen] = useState(false);
     const [selectedRows, setSelectedRows] = useState<Set<string>>(new Set());
-
-    // Global Selection State
-    const [selectedItems, setSelectedItems] = useState<{
-        pageSelected: Set<string>,
-        allSelected: Set<string>
-    }>({
-        pageSelected: new Set(),
-        allSelected: new Set()
-    });
 
     // Fetch quizzes when component mounts
     useEffect(() => {
@@ -91,28 +82,28 @@ function CustomerCare() {
     const firstItemIndex = lastItemIndex - itemsPerPage;
     const currentItems = data.slice(firstItemIndex, lastItemIndex);
 
-    const handlePageSelectAll = () => {
-        const currentPageIds = currentItems.map(item => item.id);
-
-        // Toggle between fully selected and not selected
-        if (selectedItems.pageSelected.size === currentItems.length) {
-            // If all are currently selected, deselect everything
-            setSelectedItems(prev => ({
-                pageSelected: new Set(),
-                allSelected: new Set()
-            }));
+    // Function to handle row selection
+    const handleRowSelect = (quizId: string) => {
+        const newSelectedRows = new Set(selectedRows);
+        if (newSelectedRows.has(quizId)) {
+            newSelectedRows.delete(quizId);
         } else {
-            // Select all items on the current page
-            setSelectedItems(prev => ({
-                pageSelected: new Set(currentPageIds),
-                allSelected: new Set() // Reset global selection when page selection changes
-            }));
+            newSelectedRows.add(quizId);
         }
+        setSelectedRows(newSelectedRows);
     };
 
-    // Calculation for checkbox states
-    const isPageFullySelected = selectedItems.pageSelected.size === currentItems.length && currentItems.length > 0;
-    const isPagePartiallySelected = selectedItems.pageSelected.size > 0 && selectedItems.pageSelected.size < currentItems.length;
+    // Function to handle header checkbox selection
+    const handleHeaderCheckboxSelect = () => {
+        if (selectedRows.size === currentItems.length) {
+            // If all rows are already selected, unselect all
+            setSelectedRows(new Set());
+        } else {
+            // Select all current page rows
+            const allCurrentPageIds = currentItems.map(item => item.id);
+            setSelectedRows(new Set(allCurrentPageIds));
+        }
+    };
 
     // Function to handle tab click and navigate to a new route
     const handleTabClick = (path: string) => {
@@ -155,36 +146,6 @@ function CustomerCare() {
         textColor: string;
     }) => {
         setSelectedforpriority(status);
-    };
-
-    // Uncomment and modify search useEffect
-    useEffect(() => {
-        const filteredQuizzes = quizzes.filter(quiz =>
-            // Search across multiple fields
-            quiz.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            quiz.Importance.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            quiz.status.toLowerCase().includes(searchTerm.toLowerCase())
-        );
-        setData(filteredQuizzes);
-        setCurrentPage(1); // Reset to first page on new search
-    }, [searchTerm, quizzes]);
-
-    // Update handleItemSelect to handle both page and global selection
-    const handleItemSelect = (itemId: string) => {
-        const newPageSelected = new Set(selectedItems.pageSelected);
-        const newAllSelected = new Set(selectedItems.allSelected);
-
-        if (newPageSelected.has(itemId)) {
-            newPageSelected.delete(itemId);
-            newAllSelected.delete(itemId);
-        } else {
-            newPageSelected.add(itemId);
-        }
-
-        setSelectedItems(prev => ({
-            pageSelected: newPageSelected,
-            allSelected: newAllSelected
-        }));
     };
 
     return (
@@ -236,6 +197,23 @@ function CustomerCare() {
                             alt="Arrow-Down Button"
                         />
                     </div>
+
+                    {/* <Popover
+                        placement="bottom-end">
+                        <PopoverTrigger>
+                            <button className=" px-[0.875rem] py-[0.625rem] bg-white border border-[#D0D5DD] rounded-md shadow-[0_1px_2px_0_rgba(16,24,40,0.05)]">
+                                <Image src='/icons/Frame.svg' alt="filter" width={20} height={20} />
+                            </button>
+                        </PopoverTrigger>
+                        <PopoverContent className=" w-[206px] rounded-2 border border-solid border-[#EAECF0] p-3 gap-2  hover:bg-[#F2F4F7]">
+
+                            <span className="text-xs font-normal text-[#475467]">Students</span>
+                            <div className="flex flex-row gap-2">
+                                <Checkbox color="primary" />
+                                <span className="text-[#0C111D] font-normal text-xs">Free</span>
+                            </div>
+                        </PopoverContent>
+                    </Popover> */}
                     <div className="relative">
                         <Popover
                             placement="bottom-end"
@@ -250,39 +228,22 @@ function CustomerCare() {
                                     <Image src='/icons/Frame.svg' alt="filter" width={20} height={20} />
                                 </button>
                             </PopoverTrigger>
-                            <PopoverContent className="w-[12.875rem] items-start py-2 px-0 h-auto gap-1 border border-lightGrey rounded-md shadow-[0_12px_16px_-4px_rgba(16,24,40,0.08)]">
-                                <div className="flex flex-col w-full ">
-                                    <span className="text-xs font-normal text-[#475467] mb-1 px-2 ">Students</span>
-                                    <button className="flex flex-row w-full gap-2  items-center  hover:bg-neutral-100 h-10 px-2">
+                            <PopoverContent className="w-[12.875rem] items-start py-2 px-0 h-auto gap-2 border border-lightGrey rounded-md shadow-[0_12px_16px_-4px_rgba(16,24,40,0.08)]">
+                                <div className="flex flex-col w-full px-2">
+                                    <span className="text-xs font-normal text-[#475467] mb-3">Students</span>
+                                    <div className="flex flex-row w-full gap-2 mb-4 items-center">
                                         <Checkbox color="primary" />
                                         <span className="text-[#1D2939] font-medium text-sm">Free</span>
-                                    </button>
-                                    <button className="flex flex-row w-full gap-2  items-center hover:bg-neutral-100 h-10 px-2">
+                                    </div>
+                                    <div className="flex flex-row w-full gap-2 mb-2 items-center">
                                         <Checkbox color="primary" />
                                         <span className="text-[#1D2939] font-medium text-sm">Premium</span>
-                                    </button>
+                                    </div>
                                 </div>
                                 <hr className="w-[12.875rem]" />
-                                <div className="flex flex-col w-full ">
-                                    <span className="text-xs font-normal text-[#475467] mb-1 px-2 ">Priority</span>
-                                    <button className="flex flex-row w-full gap-2  items-center  hover:bg-neutral-100 h-10 px-2">
-                                        <Checkbox color="primary" />
-                                        <span className="text-[#1D2939] font-medium text-sm">Low</span>
-                                    </button>
-                                    <button className="flex flex-row w-full gap-2  items-center hover:bg-neutral-100 h-10 px-2">
-                                        <Checkbox color="primary" />
-                                        <span className="text-[#1D2939] font-medium text-sm">Medium</span>
-                                    </button>
-                                    <button className="flex flex-row w-full gap-2  items-center hover:bg-neutral-100 h-10 px-2">
-                                        <Checkbox color="primary" />
-                                        <span className="text-[#1D2939] font-medium text-sm">High</span>
-                                    </button>
-                                </div>
-                                <hr className="w-[12.875rem]" />
-
-                                <span className="text-xs font-normal text-[#475467]  px-2">Assignee</span>
-                                <div className="flex flex-col w-full  ">
-                                    <button className="flex flex-row items-center hover:bg-neutral-100 h-10 px-2">
+                                <span className="text-xs font-normal text-[#475467] mb-2 px-2">Assignee</span>
+                                <div className="flex flex-col w-full mb-1 px-2 gap-4">
+                                    <div className="flex flex-row items-center">
                                         <Checkbox color="primary" />
                                         <Image
                                             src="/icons/big-profile-pic.svg"
@@ -290,8 +251,8 @@ function CustomerCare() {
                                             height={24}
                                             alt="profile" />
                                         <span className="text-[#1D2939] font-medium text-sm ml-2">Assigned to me</span>
-                                    </button>
-                                    <button className="flex flex-row items-center hover:bg-neutral-100 h-10 px-2">
+                                    </div>
+                                    <div className="flex flex-row items-center">
                                         <Checkbox color="primary" />
                                         <Image
                                             src="/icons/big-profile-pic.svg"
@@ -299,8 +260,8 @@ function CustomerCare() {
                                             height={24}
                                             alt="profile" />
                                         <span className="text-[#1D2939] font-medium text-sm ml-2">Theresa Webb</span>
-                                    </button>
-                                    <button className="flex flex-row items-center hover:bg-neutral-100 h-10 px-2">
+                                    </div>
+                                    <div className="flex flex-row items-center">
                                         <Checkbox color="primary" />
                                         <Image
                                             src="/icons/big-profile-pic.svg"
@@ -308,7 +269,7 @@ function CustomerCare() {
                                             height={24}
                                             alt="profile" />
                                         <span className="text-[#1D2939] font-medium text-sm ml-2">Darrell Steward</span>
-                                    </button>
+                                    </div>
                                 </div>
                             </PopoverContent>
                         </Popover>
@@ -317,37 +278,22 @@ function CustomerCare() {
                 </div>
             </div>
 
-            {(selectedItems.pageSelected.size > 0 || selectedItems.allSelected.size > 0) && (
+            {selectedRows.size > 0 && (
                 <div
-                    className="flex flex-row items-center justify-between
-                                min-h-9
+                    className="flex flex-row items-center justify-between 
                                 transition-all duration-300 ease-in-out 
                                 transform opacity-100 translate-y-0 
                                 overflow-hidden"
                 >
                     <div className="flex flex-row gap-3 text-sm font-semibold leading-5">
-                        <p className="text-[#1D2939]">
-                            {selectedItems.allSelected.size > 0
-                                ? `(${selectedItems.allSelected.size}) Selected`
-                                : `(${selectedItems.pageSelected.size}) Selected`}
-                        </p>
-                        {selectedItems.allSelected.size === data.length ? (
+                        <p className="text-[#1D2939]">({selectedRows.size}) Selected</p>
+                        {selectedRows.size < data.length && (
                             <button
-                                className="text-[#9012FF] underline"
                                 onClick={() => {
-                                    // Deselect all logic
-                                    selectedItems.allSelected.clear(); // Or update your state logic
+                                    const allCurrentPageIds = currentItems.map(item => item.id);
+                                    setSelectedRows(new Set(allCurrentPageIds));
                                 }}
-                            >
-                                Deselect all
-                            </button>
-                        ) : (
-                            <button
                                 className="text-[#9012FF] underline"
-                                onClick={() => {
-                                    // Select all logic
-                                    data.forEach((item) => selectedItems.allSelected.add(item)); // Or update your state logic
-                                }}
                             >
                                 Select all {data.length}
                             </button>
@@ -498,9 +444,9 @@ function CustomerCare() {
                                     <Checkbox
                                         size="md"
                                         color="primary"
-                                        isSelected={isPageFullySelected}
-                                        isIndeterminate={isPagePartiallySelected}
-                                        onChange={handlePageSelectAll}
+                                        isSelected={selectedRows.size === currentItems.length && currentItems.length > 0}
+                                        isIndeterminate={selectedRows.size > 0 && selectedRows.size < currentItems.length}
+                                        onChange={handleHeaderCheckboxSelect}
                                     />
                                 </th>
                                 <th className="w-10 pl-4 py-4 text-center text-[#667085] font-medium text-sm">
@@ -516,10 +462,7 @@ function CustomerCare() {
                                     Priority
                                 </th>
                                 <th className="text-center py-4 text-[#667085] font-medium text-sm">
-                                    <div className="flex flex-row justify-center gap-1">
-                                        <p>Date</p>
-                                        <Image src='/icons/unfold-more-round.svg' alt="more" width={16} height={16} />
-                                    </div>
+                                    Date
                                 </th>
                                 <th className="text-left py-4 text-[#667085] font-medium text-sm">
                                     Assigned
@@ -536,12 +479,9 @@ function CustomerCare() {
                                         <Checkbox
                                             size="md"
                                             color="primary"
-                                            isSelected={
-                                                selectedItems.allSelected.has(quiz.id) ||
-                                                selectedItems.pageSelected.has(quiz.id)
-                                            }
-                                            onChange={() => handleItemSelect(quiz.id)}
-                                            onClick={(e) => e.stopPropagation()}
+                                            isSelected={selectedRows.has(quiz.id)}
+                                            onChange={() => handleRowSelect(quiz.id)}
+                                            onClick={(e) => e.stopPropagation()} // Prevent row click when checking checkbox
                                         />
                                     </td>
                                     <td className="py-4 text-center text-[#101828] text-sm">
@@ -568,7 +508,7 @@ function CustomerCare() {
                                             <p className="text-[#101828] text-left text-sm whitespace-nowrap overflow-hidden text-ellipsis">This message is not relevant to study.</p>
                                             <div className="flex flex-col justify-start gap-1">
                                                 <div className="flex flex-row gap-1">
-                                                    <p className="w-fit px-3 py-1 text-xs text-[#475467] border border-solid border-[#EAECF0] font-medium bg-[#FFFFFF] rounded-[0.375rem]">Scam</p>
+                                                    <p className="w-fit px-3 py-1 text-xs text-white font-medium bg-[#344054] rounded-[0.375rem]">Scam</p>
                                                     {/* <p className="w-fit px-3 py-1 text-xs text-white font-medium bg-[#344054] rounded-[0.375rem]">General</p>
                                                     <p className="w-fit px-3 py-1 text-xs text-white font-medium bg-[#344054] rounded-[0.375rem]">Product</p> */}
                                                 </div>
@@ -577,7 +517,7 @@ function CustomerCare() {
                                         </div>
                                     </td>
                                     <td className="flex items-centre justify-left h-full pl-10 py-4 text-[#101828] text-sm">
-                                        <CustomerCareImportance Priority={quiz.Priority} />
+                                        <CustomerCareImportance importance={quiz.Importance} />
                                     </td>
                                     <td className="py-4 text-center text-[#101828] text-sm">Mon Jan 6, 2024</td>
                                     <td className="py-4 text-[#101828] text-sm">
@@ -612,6 +552,66 @@ function CustomerCare() {
                     </div>
                 </div>
             </div>
+            {/* <div className={`fixed right-[33%] flex flex-row items-center p-4 gap-4 bg-white border border-[#D0D5DD] rounded-xl shadow-[4px_8px_13px_0_rgba(0,0,0,0.05), 4px_4px_12px_0_rgba(0,0,0,0.05), 4px_8px_14px_0_rgba(0,0,0,0.04)] transition-all duration-500 transform ${globalSelectedItems.size > 0 ? 'translate-y-0 opacity-100' : 'translate-y-full opacity-0'
+                } bottom-8`}>
+                <p className="text-balance text-[#1D2939] font-semibold">{globalSelectedItems.size} Selected</p>
+                <div className="flex flex-row gap-2">
+                    <button
+                        onClick={() => {
+                            const allIds = quizzes.map(item => item.id);
+                            setGlobalSelectedItems(new Set(allIds));
+                            handleSelectAll(true);
+                        }}
+                        className="px-4 py-[0.625rem] text-sm text-[#1D2939] font-medium border border-lightGrey rounded-md"
+                    >
+                        Select all
+                    </button>
+                    <button
+                        onClick={() => {
+                            setGlobalSelectedItems(new Set());
+                            handleSelectAll(false);
+                        }}
+                        className="px-4 py-[0.625rem] text-sm text-[#1D2939] font-medium border border-lightGrey rounded-md"
+                    >
+                        Unselect all
+                    </button>
+                </div>
+                <div className="w-0 h-9 border-[0.5px] border-lightGrey rounded-full"></div>
+                <Popover placement="top-start">
+                    <PopoverTrigger>
+                        <button className="flex flex-row justify-between w-[6.438rem] px-4 py-[0.625rem] text-xs text-[#182230] font-medium bg-[#EDE4FF] rounded-[0.375rem]">
+                            New
+                            <Image src='/icons/arrow-down-01-round.svg' alt="open" width={18} height={18} />
+                        </button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto py-1 px-0 bg-white border border-lightGrey rounded-md">
+                        <button className="flex flex-row items-center justify-start w-full px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7]">
+                            <div className="bg-[#C6F5FF] py-2 px-3 gap-1 flex flex-row rounded-[6px] items-center h-6 w-auto">
+                                <span className="w-[6px] h-[6px] bg-[#0D7A93] rounded-full "></span>
+                                <span className="font-medium text-[#0D7A93] text-xs">Opened</span>
+                            </div>
+                        </button>
+                        <button className="flex flex-row items-center justify-start w-full px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7]">
+                            <div className="bg-[#FEE4E2] py-2 px-3 gap-1 flex flex-row rounded-[6px] items-center h-6 w-auto">
+                                <span className="w-[6px] h-[6px] bg-[#9A221A] rounded-full "></span>
+                                <span className="font-medium text-[#9A221A] text-xs">Blocker</span>
+                            </div>
+                        </button>
+                        <button className="flex flex-row items-center justify-start w-full px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7]">
+                            <div className="bg-[#FFEFC6] py-2 px-3 gap-1 flex flex-row rounded-[6px] items-center h-6 w-auto">
+                                <span className="w-[6px] h-[6px] bg-[#93360D] rounded-full "></span>
+                                <span className="font-medium text-[#93360D] text-xs">Repiled</span>
+                            </div>
+                        </button>
+                        <button className="flex flex-row items-center justify-start w-full px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7]">
+                            <div className="bg-[#D3F8E0] py-2 px-3 gap-1 flex flex-row rounded-[6px] items-center h-6 w-auto">
+                                <span className="w-[6px] h-[6px] bg-[#0A5B39] rounded-full "></span>
+                                <span className="font-medium text-[#0A5B39] text-xs">Resolved</span>
+                            </div>
+                        </button>
+                    </PopoverContent>
+                </Popover>
+            </div> */}
         </div>
     );
 }
