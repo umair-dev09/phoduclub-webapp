@@ -15,51 +15,28 @@ import {
     PaginationPrevious,
 } from "@/components/ui/pagination";
 import QuizStatus from '@/components/AdminComponents/QuizzesManagement/quizStatus';
-
+import {DatePicker} from "@nextui-org/react";
+import {now, today, CalendarDate, getLocalTimeZone,parseDateTime} from "@internationalized/date";
+import { db } from '@/firebase';
+import { collection, getDocs, query, where, doc, getDoc, onSnapshot, deleteDoc, addDoc, setDoc } from 'firebase/firestore';
+import { toast, ToastContainer } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
+import LoadingData from "@/components/Loading";
 // Define types for quiz data
-interface Quiz {
-    userid: string;
-    moblieid: string;
-    role: string;
-    status: 'live' | 'paused' | 'finished' | 'scheduled' | 'saved' | 'ended';
-}
 
-// Mock fetchQuizzes function with types
-const fetchQuizzes = async (): Promise<Quiz[]> => {
-    const allQuizzes: Quiz[] = [
-        { userid: "1,324", moblieid: "Jan 6, 2024", role: "Admin", status: "live" },
-        { userid: "1,324", moblieid: "Jan 6, 2024", role: "Customer Care", status: "saved" },
-        { userid: "1,324", moblieid: "Jan 6, 2024", role: "Teacher", status: "paused" },
-        { userid: "1,324", moblieid: "Jan 6, 2024", role: "Chief Moderator", status: "saved" },
-        { userid: "1,324", moblieid: "Jan 6, 2024", role: "Guide", status: "finished" },
-        { userid: "1,324", moblieid: "Jan 6, 2024", role: "Editor", status: "ended" },
-        { userid: "1,324", moblieid: "Jan 6, 2024", role: "Admin", status: "scheduled" },
-        { userid: "1,324", moblieid: "Jan 6, 2024", role: "Customer Care", status: "live" },
-        { userid: "1,324", moblieid: "Jan 6, 2024", role: "Teacher", status: "saved" },
-        { userid: "1,324", moblieid: "Jan 6, 2024", role: "Chief Moderator", status: "paused" },
-        { userid: "1,324", moblieid: "Jan 6, 2024", role: "Guide", status: "saved" },
-        { userid: "1,324", moblieid: "Jan 6, 2024", role: "Editor", status: "finished" },
-        { userid: "1,324", moblieid: "Jan 6, 2024", role: "Admin", status: "ended" },
-        { userid: "1,324", moblieid: "Jan 6, 2024", role: "Customer Care", status: "live" },
-        { userid: "1,324", moblieid: "Jan 6, 2024", role: "Teacher", status: "scheduled" },
-        { userid: "1,324", moblieid: "Jan 6, 2024", role: "Chief Moderator", status: "finished" },
-        { userid: "1,324", moblieid: "Jan 6, 2024", role: "Guide", status: "saved" },
-        { userid: "1,324", moblieid: "Jan 6, 2024", role: "Editor", status: "paused" },
-        { userid: "1,324", moblieid: "Jan 6, 2024", role: "Admin", status: "saved" },
-        { userid: "1,324", moblieid: "Jan 6, 2024", role: "Customer Care", status: "live" },
-        { userid: "1,324", moblieid: "Jan 6, 2024", role: "Teacher", status: "ended" },
-        { userid: "1,324", moblieid: "Jan 6, 2024", role: "Chief Moderator", status: "scheduled" },
-        { userid: "1,324", moblieid: "Jan 6, 2024", role: "Guide", status: "finished" },
-        { userid: "1,324", moblieid: "Jan 6, 2024", role: "Editor", status: "saved" },
-        { userid: "1,324", moblieid: "Jan 6, 2024", role: "Admin", status: "live" },
-        { userid: "1,324", moblieid: "Jan 6, 2024", role: "Customer Care", status: "saved" },
-        { userid: "1,324", moblieid: "Jan 6, 2024", role: "Teacher", status: "paused" },
-        { userid: "1,324", moblieid: "Jan 6, 2024", role: "Chief Moderator", status: "ended" },
-        { userid: "1,324", moblieid: "Jan 6, 2024", role: "Guide", status: "saved" },
-        { userid: "1,324", moblieid: "Jan 6, 2024", role: "Editor", status: "saved" }
-    ];
-    return allQuizzes;
-};
+interface NotificationData {
+    name: string;
+    description: string;
+    createdAt: string;
+    cta: string;
+    endDate: string;
+    hyperLink: string;
+    notificationIcon: string;
+    notificationId: string;
+    startDate: string;
+    status: string;
+
+}
 
 type TruncatedTextProps = {
     text: string;
@@ -72,15 +49,34 @@ type TruncatedTextProps = {
   
     return <span>{truncatedText}</span>;
   };
+  function formatDate(dateString: string): string {
+    const date = new Date(dateString);
+    return date.toLocaleDateString("en-US", {
+        month: "short",
+        day: "numeric",
+        year: "numeric",
+    });
+}
 
 function Messenger() {
     const router = useRouter();
-    const [data, setData] = useState<Quiz[]>([]);
-    const [quizzes, setQuizzes] = useState<Quiz[]>([]);
+    const [data, setData] = useState<NotificationData[]>([]);
+    const [notification, setNotification] = useState<NotificationData[]>([]);
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage] = useState(5);
     const [loading, setLoading] = useState(true);
+    const [notiIconPop, setNotiIconPop] = useState(false);
     const [searchTerm, setSearchTerm] = useState('');
+    const [name, setName] = useState('');
+    const [description, setDescription] = useState("");
+    const [cta, setCta] = useState("");
+    const [hyperLink, setHyperLink] = useState("");
+    const [timer, setTimer] = useState("");
+    const [startDate, setStartDate] = useState("");
+    const [endDate, setEndDate] = useState("");
+    const [timerIcon, setTimerIcon] = useState("");
+
+    const isFormValid = name && description && cta && hyperLink && startDate && endDate;
 
     const [isOpen, setIsOpen] = useState(false);
     // Handler to open the dialog
@@ -88,11 +84,11 @@ function Messenger() {
 
     // -------------------------------------------------------------------------------
     // State to track the selected icon
-    const [selectedIcon, setSelectedIcon] = useState("/icons/idea-2.svg");
+    const [notificationIcon, setNotificationIcon] = useState("/icons/idea-2.svg");
 
     // Function to handle icon selection
     const handleIconSelect = (iconPath: React.SetStateAction<string>) => {
-        setSelectedIcon(iconPath); // Update the selected icon state
+        setNotificationIcon(iconPath); // Update the selected icon state
     };
 
     // -------------------------------------------------------------------------------
@@ -104,7 +100,6 @@ function Messenger() {
     };
     // -------------------------------------------------------------------------------
     // State for Description words(0/100)
-    const [description, setDescription] = useState("");
     const handleInputChange = (e: any) => {
         const inputText = e.target.value;
         if (inputText.length <= 100) {
@@ -113,7 +108,6 @@ function Messenger() {
     };
     // -------------------------------------------------------------------------------
     // State for Name words(0/100)
-    const [name, setName] = useState("");
     const handleInputChangeforName = (e: any) => {
         const inputText = e.target.value;
         if (inputText.length <= 50) {
@@ -122,7 +116,6 @@ function Messenger() {
     };
     // -------------------------------------------------------------------------------
     // State for  words(0/100)
-    const [cta, setCta] = useState("");
     const handleInputChangeforCta = (e: any) => {
         const inputText = e.target.value;
         if (inputText.length <= 30) {
@@ -138,17 +131,71 @@ function Messenger() {
     const firstItemIndex = lastItemIndex - itemsPerPage;
     const currentItems = data.slice(firstItemIndex, lastItemIndex);
 
-    // Fetch quizzes when component mounts
     useEffect(() => {
-        const loadQuizzes = async () => {
-            setLoading(true);
-            const quizzes = await fetchQuizzes();
-            setQuizzes(quizzes);
-            setData(quizzes);
+        const usersCollection = collection(db, 'notifications');
+        const unsubscribe = onSnapshot(usersCollection, (snapshot) => {
+            const updatedNoti: NotificationData[] = snapshot.docs.map((doc) => {
+                const userData = doc.data();
+                return {
+                    name: userData.name,
+                    description: userData.description,
+                    cta: userData.cta,
+                    createdAt: userData.createdAt,
+                    endDate: userData.endDate,
+                    hyperLink: userData.hyperLink,
+                    notificationIcon: userData.notificationIcon,
+                    notificationId: userData.notificationId,
+                    startDate: userData.startDate,
+                    status: userData.status,
+                } as NotificationData;
+            });
+
+            setNotification(updatedNoti);
+            setData(updatedNoti); // Update data for pagination and search
             setLoading(false);
-        };
-        loadQuizzes();
+        });
+
+        // Cleanup listener on component unmount
+        return () => unsubscribe();
     }, []);
+
+    const handleSendNotification = async () => {
+
+        try {
+             // Add new user data to Firestore
+             const docRef = await addDoc(collection(db, "notifications"), {
+                name,
+                description,
+                cta,
+                hyperLink,
+                startDate,
+                endDate,
+                notificationIcon,
+                status : 'scheduled',
+                createdAt: new Date().toISOString(),
+            });
+
+            // Update the document with the generated adminId
+            await setDoc(docRef, { notificationId: docRef.id }, {merge: true});
+            toast.success("Notification Added Successfully!");
+            setIsOpen(false);
+            setName('');
+            setDescription('');
+            setCta('');
+            setHyperLink('');
+            setStartDate('');
+            setEndDate('');
+            setNotificationIcon('/icons/idea-2.svg');
+
+        } catch (error) {
+            console.error("Error adding notification in Firestore:", error);
+            toast.error("Failed to add notification. Please try again.");
+        }
+    };
+
+    if(loading){
+        return <LoadingData />
+    }
 
     return (
         <div className="flex flex-col h-full gap-3">
@@ -203,32 +250,32 @@ function Messenger() {
                             </tr>
                         </thead>
                         <tbody>
-                            {currentItems.map((quiz, index) => (
-                                <tr key={index} className="border-t border-solid border-[#EAECF0]">
+                            {currentItems.map((noti, index) => (
+                                <tr key={index} className="border-t border-solid border-[#EAECF0] ">
                                     <td className="text-[#667085] text-center font-medium text-sm">
                                         {index + 1}
                                     </td>
                                     <td className="py-2">
                                         <div className="flex flex-row items-start ml-8 gap-2">
-                                            <Image src='/icons/idea-01 (1).svg' alt="idea" width={24} height={24} />
+                                            <Image className='w-5 h-5' src={noti.notificationIcon} alt="idea" width={24} height={24} />
                                             <div className="flex items-start justify-start flex-col">
                                                 <button
                                                     className="text-sm text-[#9012FF] font-semibold underline"
-                                                    onClick={() => handleButtonClick('/admin/marketingintegration/marketinfo')}
+                                                    onClick={() => handleButtonClick(`/admin/marketingintegration/${noti.name.toLowerCase().replace(/\s+/g, '-')}?nId=${noti.notificationId}`)}
                                                 >
-                                                    Quiz Competition
+                                                    {noti.name}
                                                 </button>
                                                 <p className="text-[0.813rem] text-[#667085] font-medium">
-                                                <TruncatedText text={'Ready to test your knowledge? Join our quiz competition and compete for exciting prizes!'} maxLength={50} />
+                                                <TruncatedText text={noti.description} maxLength={50} />
                                                 </p>
                                             </div>
                                         </div>
                                     </td>
-                                    <td className="px-8 py-4 text-center text-[#101828] text-sm">{quiz.moblieid}</td>
-                                    <td className="px-8 py-4 text-center text-[#101828] text-sm">{quiz.userid}</td>
+                                    <td className="px-8 py-4 text-center text-[#101828] text-sm">{formatDate(noti.createdAt)}</td>
+                                    <td className="px-8 py-4 text-center text-[#101828] text-sm">1,321</td>
                                     <td className="px-8 py-4 text-[#101828] text-sm">
                                         <span className='flex items-start justify-start ml-[25%] rounded-full'>
-                                            <QuizStatus status={quiz.status} />
+                                            <QuizStatus status={noti.status} />
                                         </span>
                                     </td>
                                     <td className="flex items-center justify-center px-8 py-4 text-[#101828] text-sm">
@@ -281,7 +328,7 @@ function Messenger() {
             <Dialog open={isOpen} onClose={() => setIsOpen(false)} className="relative z-50">
                 <DialogBackdrop className="fixed inset-0 bg-black/30" />
                 <div className="fixed inset-0 flex items-center justify-center">
-                    <DialogPanel className="bg-white rounded-2xl w-[500px] h-auto ">
+                    <DialogPanel className="bg-white rounded-2xl w-[500px] max-h-[92%]  overflow-y-auto">
                         <div className="flex flex-col relative px-6 ">
                             <div className="flex flex-row justify-between my-6">
                                 <h3 className="text-lg font-bold text-[#1D2939]">Create Push Notification</h3>
@@ -292,11 +339,12 @@ function Messenger() {
                             <div className="flex flex-col w-full gap-1 ">
                                 <label className="text-[#1D2939] text-sm font-medium">Name</label>
                                 <div className="flex flex-row p-2 w-full gap-2 border border-solid border-[#D0D5DD] rounded-md ">
-                                    <Popover placement="bottom">
+                                    <Popover placement="bottom" isOpen={notiIconPop}>
                                         <PopoverTrigger>
-                                            <button className="flex flex-row w-[44px] items-center rounded-md transition duration-200 ease-in-out justify-between">
+                                            <button className="flex flex-row w-[44px] items-center rounded-md transition duration-200 ease-in-out justify-between"
+                                            onClick={() => setNotiIconPop(true)}>
                                                 <Image
-                                                    src={selectedIcon}
+                                                    src={notificationIcon}
                                                     width={24}
                                                     height={24}
                                                     alt="Selected Icon"
@@ -310,11 +358,11 @@ function Messenger() {
                                             </button>
                                         </PopoverTrigger>
                                         <PopoverContent>
-                                            <div className="py-1 w-[56px] border border-solid border-[#EAECF0] bg-[#FFFFFF] rounded-md flex flex-col shadow-lg">
+                                            <div className="flex flex-col gap-1">
                                                 {/* Idea Button */}
                                                 <button
                                                     className="flex flex-row w-full p-1 hover:bg-[#F2F4F7] justify-center items-center"
-                                                    onClick={() => handleIconSelect("/icons/idea-2.svg")}
+                                                    onClick={() => {handleIconSelect("/icons/idea-2.svg"); setNotiIconPop(false);}}
                                                 >
                                                     <Image
                                                         src="/icons/idea-2.svg"
@@ -326,7 +374,7 @@ function Messenger() {
                                                 {/* Megaphone Button */}
                                                 <button
                                                     className="flex flex-row w-full p-1 hover:bg-[#F2F4F7] justify-center items-center"
-                                                    onClick={() => handleIconSelect("/icons/megaphone.svg")}
+                                                    onClick={() => {handleIconSelect("/icons/megaphone.svg"); setNotiIconPop(false);}}
                                                 >
                                                     <Image
                                                         src="/icons/megaphone.svg"
@@ -338,7 +386,7 @@ function Messenger() {
                                                 {/* Read Button */}
                                                 <button
                                                     className="flex flex-row w-full p-1 hover:bg-[#F2F4F7] justify-center items-center"
-                                                    onClick={() => handleIconSelect("/icons/read-2.svg")}
+                                                    onClick={() =>{ handleIconSelect("/icons/read-2.svg"); setNotiIconPop(false);}}
                                                 >
                                                     <Image
                                                         src="/icons/read-2.svg"
@@ -365,7 +413,7 @@ function Messenger() {
                                 <input
                                     className="w-full py-2 px-4 text-sm font-medium text-[#1D2939] border border-[#D0D5DD] rounded-md"
                                     type="text"
-                                    placeholder="Button Name"
+                                    placeholder="Notification Content"
                                     value={description}
                                     onChange={handleInputChange}
                                 />
@@ -376,7 +424,7 @@ function Messenger() {
                                 <input
                                     className="w-full py-2 px-4 text-sm font-medium text-[#1D2939] border border-[#D0D5DD] rounded-md"
                                     type="text"
-                                    placeholder="Notification Content"
+                                    placeholder="Button Name"
                                     value={cta}
                                     onChange={handleInputChangeforCta}
                                 />
@@ -388,7 +436,8 @@ function Messenger() {
                                     className="w-full py-2 px-4 text-sm font-medium text-[#1D2939] border border-[#D0D5DD] rounded-md"
                                     type="text"
                                     placeholder="Add hyperlink"
-                                />
+                                    onChange={(e) => setHyperLink(e.target.value)} // Controlled input for quiz name
+                                    />
                             </div>
                             <div className="flex flex-col gap-1 w-full mt-4">
                                 <label className="text-[#1D2939] text-sm font-medium">Countdown Timer</label>
@@ -424,7 +473,7 @@ function Messenger() {
                                                 </button>
                                             </PopoverTrigger>
                                             <PopoverContent>
-                                                <div className="py-1 w-[56px] border border-solid border-[#EAECF0] bg-[#FFFFFF] rounded-md flex flex-col shadow-lg">
+                                                <div className="flex flex-col gap-1">
                                                     {/* Idea Button */}
                                                     <button
                                                         className="flex flex-row w-full p-1 hover:bg-[#F2F4F7] justify-center items-center"
@@ -468,43 +517,35 @@ function Messenger() {
                                 </div>
                             </div>
                             <hr className="my-5" />
-                            <h1 className="text-[#1D2939] font-semibold text-lg ">Schedule notification</h1>
-                            <div className="flex flex-row w-full gap-4  mt-1">
-                                <div className="flex flex-col gap-1 w-1/2 flex-grow">
-                                    <label htmlFor="rating" className="text-[#1D2939] text-sm font-medium">
-                                        Date
-                                    </label>
-                                    <div className="flex flex-row p-2 w-full gap-2 border border-solid border-[#D0D5DD] rounded-md  ">
-                                        <Image
-                                            src="/icons/calendar-03.svg"
-                                            width={24}
-                                            height={24}
-                                            alt="calender" />
-                                        <input
-                                            className="w-full text-sm font-medium text-[#1D2939] placeholder:font-normal placeholder:text-[#A1A1A1] rounded-md outline-none"
-                                            type="text"
-                                            placeholder="Select Date"
-                                        />
-                                    </div>
-                                </div>
-                                <div className="flex flex-col gap-1 w-1/2 flex-grow">
-                                    <label htmlFor="num-ratings" className="text-[#1D2939] text-sm font-medium">
-                                        Time
-                                    </label>
-                                    <div className="flex flex-row p-2 w-full gap-2 border border-solid border-[#D0D5DD] rounded-md ">
-                                        <Image
-                                            src="/icons/clock-01.svg"
-                                            width={24}
-                                            height={24}
-                                            alt="calender" />
-                                        <input
-                                            className="w-full text-sm font-medium text-[#1D2939] placeholder:font-normal placeholder:text-[#A1A1A1] rounded-md outline-none"
-                                            type="text"
-                                            placeholder="Select Time"
-                                        />
-                                    </div>
-                                </div>
-                            </div>
+                            <h1 className="text-[#1D2939] font-semibold text-lg mb-2">Schedule notification</h1>
+                           <div className="flex flex-col gap-4">
+                           <div className='flex flex-col w-full gap-1'>
+                        <span className='font-medium text-[#1D2939] text-sm'>Start Date & Time</span>
+                        <DatePicker 
+                        granularity="minute" 
+                        // minValue={dateValue}
+                        showMonthAndYearPickers
+                        onChange={(date) => {
+                            // Convert the date object to a string in your desired format
+                            const dateString = date ? date.toString() : ""; // Customize format if needed
+                            setStartDate(dateString);
+                        }}
+                       />
+                    </div>
+                    <div className='flex flex-col w-full gap-1'>
+                        <span className='font-medium text-[#1D2939] text-sm'>End Date & Time</span>
+                        <DatePicker 
+                        granularity="minute" 
+                        // minValue={dateValue}
+                        showMonthAndYearPickers
+                        onChange={(date) => {
+                            // Convert the date object to a string in your desired format
+                            const dateString = date ? date.toString() : ""; // Customize format if needed
+                            setEndDate(dateString);
+                        }}
+                       />
+                    </div>
+                           </div>
                         </div>
                         <div className="flex flex-row justify-end mt-6 gap-4 border-t border-[#EAECF0] pt-4 p-4 rounded-md">
                             <button
@@ -513,14 +554,16 @@ function Messenger() {
                                 Cancel
                             </button>
                             <button
-                                onClick={() => setIsOpen(false)}
-                                className="py-2 px-6 bg-[#9012FF] text-white rounded-md font-semibold text-sm">
+                                onClick={handleSendNotification}
+                                disabled={!isFormValid}
+                                className={`py-2 px-6 ${!isFormValid ? 'bg-[#CDA0FC]' : 'bg-[#9012FF]'} text-white rounded-md font-semibold text-sm`}>
                                 Send Notification
                             </button>
                         </div>
                     </DialogPanel>
                 </div>
             </Dialog>
+            <ToastContainer />
         </div>
     );
 }

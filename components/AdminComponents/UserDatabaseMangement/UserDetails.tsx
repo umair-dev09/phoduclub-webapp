@@ -1,13 +1,93 @@
 "use client";
-import { useState } from "react";
 import Image from "next/image";
 import { Dialog, DialogBackdrop, DialogPanel } from "@headlessui/react";
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
+import { useState, useEffect } from "react";
+import { doc, onSnapshot,Timestamp} from 'firebase/firestore';
+import { db } from "@/firebase";
+import LoadingData from "@/components/Loading";
+import EditUserDialog from "./EditUserDialog";
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
-function UserDetails() {
+type UserDetailsProps = {
+  userId: string;
+}
+
+interface UserData {
+    name: string;
+    email: string;
+    userId: string;
+    phone: string;
+    profilePic: string;
+    isPremium: boolean;
+    createdAt: string;
+    targetYear: string;
+    targetExams: string[];
+}
+
+const formatFirestoreTimestamp = (timestamp: Timestamp | string): string => {
+    let date: Date;
+
+    // Check if the input is a Firebase Timestamp
+    if (timestamp instanceof Timestamp) {
+        date = timestamp.toDate(); // Convert Timestamp to JavaScript Date
+    } else if (typeof timestamp === "string") {
+        // Handle if the input is a string in the given format
+        const [datePart, timePart] = timestamp.split(" at ");
+        date = new Date(`${datePart} ${timePart}`);
+    } else {
+        return "Invalid Timestamp"; // Handle unexpected inputs
+    }
+
+    // Format the date to "Dec 1, 2023"
+    return date.toLocaleDateString("en-US", {
+        year: "numeric",
+        month: "short", // Abbreviated month like Jan, Feb
+        day: "numeric",
+    });
+};
+
+function UserDetails({userId}:UserDetailsProps) {
     const [phone, setPhone] = useState("");
     const [openDialog, setOpenDialog] = useState(false);
+    const [user, setUser] = useState<UserData | null>(null);
+    const [loading, setLoading] = useState(true);
+    const [firstName, setFirstName] = useState('');
+    const [lastName, setLastName] = useState('');
+    const closeEdit = () => setOpenDialog(false);
+
+    useEffect(() => {
+        if (!userId) return;
+      
+        const userDocRef = doc(db, 'users', userId);
+      
+        // Listen for real-time changes in the admin document
+        const unsubscribe = onSnapshot(userDocRef, (userDocSnap) => {
+          if (userDocSnap.exists()) {
+            setUser(userDocSnap.data() as UserData);
+          } else {
+            console.error('User data not found');
+          }
+          setLoading(false); // Set loading to false after fetching data
+        }, (error) => {
+          console.error('Error fetching real-time data:', error);
+          setLoading(false);
+        });
+      
+        // Cleanup function to unsubscribe from the real-time listener
+        return () => unsubscribe();
+      }, [userId]); // Re-run this effect when userId changes
+
+      useEffect(() => {
+        if(user){
+      const nameParts = user?.name.split(' ');
+      setFirstName(nameParts[0] || '');
+      setLastName(nameParts[1] || '');
+      
+        }
+      });
 
     const handleOpenDialog = () => {
         setOpenDialog(true);
@@ -17,13 +97,21 @@ function UserDetails() {
         setOpenDialog(false);
     };
 
+    if(loading){
+        return <LoadingData />
+    }
+
+    const colors = ['bg-red-500', 'bg-orange-500','bg-green-500', 'bg-blue-500' ]
+
     return (
         <div className="flex flex-col m-8 gap-6">
             <h1 className="text-[#1D2939] font-semibold text-lg">User Details</h1>
             <div className="flex flex-row justify-between w-full h-[72px]">
                 <div className="flex flex-row gap-3">
                     <div className="relative">
-                        <Image src="/images/DP_Lion.svg" alt="DP" width={72} height={72} />
+
+                        <Image className="rounded-full w-[72px] h-[72px]" src={user?.profilePic || "/images/DP_Lion.svg"} alt="DP" width={72} height={72} />
+                        {user?.isPremium && (
                         <Image
                             className="absolute right-0 bottom-0"
                             src="/icons/winnerBatch.svg"
@@ -31,10 +119,11 @@ function UserDetails() {
                             width={32}
                             height={32}
                         />
+                       )}
                     </div>
                     <div className="flex items-start flex-col justify-center">
-                        <div className="font-semibold text-[#1D2939] text-2xl">Jenny Wilson</div>
-                        <div className="flex justify-start items-start text-[16px] font-medium text-[#667085]">jenny#8547</div>
+                        <div className="font-semibold text-[#1D2939] text-2xl">{user?.name}</div>
+                        <div className="flex justify-start items-start text-[16px] font-medium text-[#667085]">{user?.userId}</div>
                     </div>
                 </div>
                 <button
@@ -49,144 +138,52 @@ function UserDetails() {
             <div className="flex flex-row w-full">
                 <div className="flex flex-col w-1/2">
                     <span className="font-normal text-[#667085] text-[16px]">First Name</span>
-                    <span className="font-semibold text-[#1D2939] text-[16px]">Jenny</span>
+                    <span className="font-semibold text-[#1D2939] text-[16px]">{firstName}</span>
                 </div>
                 <div className="flex flex-col w-1/2">
                     <span className="font-normal text-[#667085] text-[16px]">Last Name</span>
-                    <span className="font-semibold text-[#1D2939] text-[16px]">Wilson</span>
+                    <span className="font-semibold text-[#1D2939] text-[16px]">{lastName}</span>
                 </div>
             </div>
             <div className="flex flex-row w-full">
                 <div className="flex flex-col w-1/2">
                     <span className="font-normal text-[#667085] text-[16px]">User ID</span>
-                    <span className="font-semibold text-[#1D2939] text-[16px]">jenny#8745</span>
+                    <span className="font-semibold text-[#1D2939] text-[16px]">{user?.userId}</span>
                 </div>
                 <div className="flex flex-col w-1/2">
                     <span className="font-normal text-[#667085] text-[16px]">Mobile No.</span>
-                    <span className="font-semibold text-[#1D2939] text-[16px]">+918431823329</span>
+                    <span className="font-semibold text-[#1D2939] text-[16px]">{user?.phone}</span>
                 </div>
             </div>
             <div className="flex flex-col w-full">
                 <span className="font-normal text-[#667085] text-[16px]">Joining Date</span>
-                <span className="font-semibold text-[#1D2939] text-[16px]">Jan 6, 2024</span>
+                <span className="font-semibold text-[#1D2939] text-[16px]">{formatFirestoreTimestamp(user?.createdAt || '')}</span>
             </div>
             <hr />
             <p className="font-semibold text-[#1D2939] text-lg">Exam Details</p>
             <div className="flex flex-col gap-2 ">
                 <span className="text-[#667085] font-normal text-base">Preparing Exams</span>
-                <div className="flex flex-wrap gap-2">
-                    <div className="flex items-center gap-1.5 px-3 py-1.5 text-sm text-gray-700 font-medium border border-solid border-[#D0D5DD] rounded-full cursor-pointer hover:bg-gray-100">
-                        <span className="w-2 h-2 rounded-full bg-red-500"></span> JEE
-                    </div>
-                    <div className="flex items-center gap-1.5 px-3 py-1.5 text-sm text-[#344054] font-medium border border-solid border-[#D0D5DD] rounded-full cursor-pointer hover:bg-gray-100">
-                        <span className="w-2 h-2 rounded-full bg-orange-500"></span> BITSAT
-                    </div>
-                    <div className="flex items-center gap-1.5 px-3 py-1.5 text-sm text-gray-700 font-medium border border-solid border-[#D0D5DD] rounded-full cursor-pointer hover:bg-gray-100">
-                        <span className="w-2 h-2 rounded-full bg-green-500"></span> VITEEE
-                    </div>
-                    <div className="flex items-center gap-1.5 px-3 py-1.5 text-sm text-gray-700 font-medium border border-solid border-[#D0D5DD] rounded-full cursor-pointer hover:bg-gray-100">
-                        <span className="w-2 h-2 rounded-full bg-blue-500"></span> SRMJEEE
-                    </div>
-                    <div className="flex items-center gap-1.5 px-3 py-1.5 text-sm text-gray-700 font-medium border border-solid border-[#D0D5DD] rounded-full cursor-pointer hover:bg-gray-100">
-                        <span className="w-2 h-2 rounded-full bg-blue-500"></span> KCET
-                    </div>
-                    <div className="flex items-center gap-1.5 px-3 py-1.5 text-sm text-gray-700 font-medium border border-solid border-[#D0D5DD] rounded-full cursor-pointer hover:bg-gray-100">
-                        <span className="w-2 h-2 rounded-full bg-red-500"></span> COMEDK
-                    </div>
-                    <div className="flex items-center gap-1.5 px-3 py-1.5 text-sm text-gray-700 font-medium border border-solid border-[#D0D5DD] rounded-full cursor-pointer hover:bg-gray-100">
-                        <span className="w-2 h-2 rounded-full bg-orange-500"></span> MET
-                    </div>
+                            <div className='flex flex-wrap gap-2'>
+                    {user?.targetExams?.map((exam, index) => {
+                        const randomColor = colors[Math.floor(Math.random() * colors.length)];
+                        return (
+                            <div key={index} className='flex items-center gap-1.5 px-3 py-1.5 text-sm text-gray-700 font-medium border border-solid border-[#D0D5DD] rounded-full cursor-pointer hover:bg-gray-100'>
+                                <span className={`${'w-2 h-2 rounded-[50%] mr-1'} ${randomColor}`}></span> 
+                                {exam}
+                            </div>
+                        );
+                    })}
                 </div>
+            
             </div>
             <div className="flex flex-col gap-2 ">
                 <span className="text-[#667085] font-normal text-base">Target Year</span>
                 <div className="flex flex-wrap gap-2">
-                    <div className="flex items-center gap-1.5 px-3 py-1.5 text-sm text-gray-700 font-medium border border-solid border-[#D0D5DD] rounded-full cursor-pointer hover:bg-gray-100">
-                        <span className="w-2 h-2 rounded-full bg-red-500"></span> 2024
-                    </div>
-                    <div className="flex items-center gap-1.5 px-3 py-1.5 text-sm text-[#344054] font-medium  border border-solid border-[#D0D5DD] rounded-full cursor-pointer hover:bg-gray-100">
-                        <span className="w-2 h-2 rounded-full bg-orange-500"></span> 2025
-                    </div>
-                    <div className="flex items-center gap-1.5 px-3 py-1.5 text-sm text-gray-700 font-medium border border-solid border-[#D0D5DD] rounded-full cursor-pointer hover:bg-gray-100">
-                        <span className="w-2 h-2 rounded-full bg-blue-500"></span> 2026
-                    </div>
-
+                     {user?.targetYear}
                 </div>
             </div>
-
-            {/* Dialog Component */}
-            <Dialog open={openDialog} onClose={closeDialog} className="relative z-50">
-                <DialogBackdrop className="fixed inset-0 bg-black/30" />
-                <div className="fixed inset-0 flex items-center justify-center">
-                    <DialogPanel className="bg-white rounded-2xl w-[500px] h-auto ">
-                        <div className="flex flex-col relative gap-6">
-                            <div className="flex flex-col px-6 gap-6">
-                                <div className="flex flex-row justify-between mt-6">
-                                    <h3 className="text-lg font-bold text-[#1D2939]">Edit Info</h3>
-                                    <button onClick={closeDialog}>
-                                        <Image src="/icons/cancel.svg" alt="Cancel" width={20} height={20} />
-                                    </button>
-                                </div>
-                                <div className="flex flex-col gap-3 items-center">
-                                    <div className="relative">
-                                        <Image src="/images/DP_Lion.svg" alt="DP" width={152} height={152} />
-                                        <Image
-                                            className="absolute right-0 bottom-0"
-                                            src="/icons/winnerBatch.svg"
-                                            alt="Batch"
-                                            width={68}
-                                            height={68}
-                                        />
-                                    </div>
-                                    <span className="font-semibold text-sm text-[#9012FF]">Change</span>
-                                </div>
-                                {/* Input Fields */}
-                                <div className="flex flex-row w-full gap-4">
-                                    <div className="flex flex-col gap-1 w-1/2 flex-grow">
-                                        <label className="text-[#1D2939] text-sm font-medium">First Name</label>
-                                        <input
-                                            className="w-full text-sm font-medium text-[#1D2939] placeholder:text-[#A1A1A1] rounded-md border border-[#D0D5DD] px-4 py-2"
-                                            type="text"
-                                            placeholder="First Name"
-                                        />
-                                    </div>
-                                    <div className="flex flex-col gap-1 w-1/2 flex-grow">
-                                        <label className="text-[#1D2939] text-sm font-medium">Last Name</label>
-                                        <input
-                                            className="w-full text-sm font-medium text-[#1D2939] placeholder:text-[#A1A1A1] rounded-md border border-[#D0D5DD] px-4 py-2"
-                                            type="text"
-                                            placeholder="Last Name"
-                                        />
-                                    </div>
-                                </div>
-                                <div className="flex flex-col gap-1">
-                                    <label className="text-[#344054] text-sm font-medium">Mobile No.</label>
-                                    <PhoneInput
-                                        country="in"
-                                        value={phone}
-                                        onChange={(value) => setPhone(value)}
-                                        inputProps={{ required: true }}
-                                        inputStyle={{
-                                            width: "100%",
-                                            borderRadius: "8px",
-                                            border: "1px solid #D0D5DD",
-                                            height: "42px",
-                                        }}
-                                    />
-                                </div>
-                            </div>
-                            <div className="flex justify-end gap-4 border-t p-4">
-                                <button onClick={closeDialog} className="px-6 py-2 border rounded-md text-sm font-semibold">
-                                    Discard
-                                </button>
-                                <button onClick={closeDialog} className="px-6 py-2 bg-[#9012FF] text-white rounded-md text-sm">
-                                    Save Changes
-                                </button>
-                            </div>
-                        </div>
-                    </DialogPanel>
-                </div>
-            </Dialog>
+       {openDialog && <EditUserDialog name={user?.name || ''} email={user?.email || ''} phonee={user?.phone || ''} targetExams={user?.targetExams || []} targetYear={user?.targetYear || ''} profilePic={user?.profilePic || ''} userIdd={user?.userId || ''} authId={userId} isPremium={user?.isPremium || false} open={true} onClose={closeEdit} />}
+        
         </div>
     );
 }

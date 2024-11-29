@@ -49,7 +49,7 @@ type QuizData = {
     let sanitizedDescription = DOMPurify.sanitize(description);
     sanitizedDescription = sanitizedDescription.replace(
       /<span class="ql-ui" contenteditable="false"><\/span>/g,
-      ''
+      ''  
     );
     return sanitizedDescription;
   };

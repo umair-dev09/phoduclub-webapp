@@ -21,6 +21,8 @@ type AddNewUserProps = {
     setLastName: (lastName: string) => void;
     userId: string;
     setUserId: (userId: string) => void;
+    profilePic: string;
+    setProfilePic: (userId: string) => void;
     phone: string;
     setPhone: (phone: string) => void;
     selectedRole: string;
@@ -41,6 +43,8 @@ function AddNewUser({
     setAdminId,
     userId,
     setUserId,
+    profilePic,
+    setProfilePic,
     phone,
     setPhone,
     selectedRole,
@@ -49,10 +53,11 @@ function AddNewUser({
     const [loading, setLoading] = useState(false); // Loading state
     const [roleDialogOpen, setRoleDialogOpen] = useState(false); // Loading state
 
-    const ROLE_OPTIONS = ["Admin", "Teacher", "Customer Care", "Guide", "Editor", "Chief Moderator"];
+    const ROLE_OPTIONS = ["Admin", "Teacher", "Customer Care", "Editor", "Chief Moderator"];
 
     const handleRoleSelect = (role: string) => {
         setSelectedRole(role);
+        setRoleDialogOpen(false);
     };
 
     // Check if all required fields are filled
@@ -72,6 +77,7 @@ function AddNewUser({
                     userId,
                     phone,
                     role: selectedRole,
+                    profilePic: profilePic,
                 }, { merge: true });
                 toast.success("User Updated Successfully!");
             } else {
@@ -182,10 +188,10 @@ function AddNewUser({
                                     </PopoverTrigger>
                                     <PopoverContent className="w-[450px] ml-5 px-0 py-1 bg-white border border-lightGrey rounded-md">
                                         <div className="w-full">
-                                            {["Admin", "Teacher", "Customer Care", "Guide", "Editor", "Chief Moderator"].map((role) => (
+                                            {["Admin", "Teacher", "Customer Care", "Editor", "Chief Moderator"].map((role) => (
                                                 <button
                                                     key={role}
-                                                    onClick={() => { handleRoleSelect(role); setRoleDialogOpen(false); }}
+                                                    onClick={() => { handleRoleSelect(role); }}
                                                     className="flex flex-row items-center justify-start w-full py-[0.625rem] px-4 gap-2 hover:bg-[#F2F4F7]"
                                                 >
                                                     <span className="text-sm text-[#0C111D] font-normal">{role}</span>
@@ -196,7 +202,7 @@ function AddNewUser({
                                 </Popover>
                             </div>
                         </div>
-                        {selectedRole === "Teacher" && (
+                        {/* {selectedRole === "Teacher" && (
                             <div className="flex flex-col gap-1 w-full">
                                 <label className="text-[#1D2939] text-sm font-medium">Select Course</label>
                                 <Popover placement="bottom-end">
@@ -226,7 +232,7 @@ function AddNewUser({
                                     </PopoverContent>
                                 </Popover>
                             </div>
-                        )}
+                        )} */}
                         <div className="flex flex-row justify-end my-2 items-center gap-4 border-t border-solid border-[#EAECF0] pt-4">
                             <button onClick={close} className="py-[0.625rem] px-6 border-[1.5px] border-lightGrey rounded-md text-[#1D2939] font-semibold text-sm">Cancel</button>
                             <button

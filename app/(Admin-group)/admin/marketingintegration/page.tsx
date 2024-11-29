@@ -5,7 +5,7 @@ import Messenger from "@/components/AdminComponents/MarketIntegration/Messenger"
 
 function MarketIntegration() {
     // Example counts for messenger and coupons
-    const messengerCount = 180; // Replace with dynamic value if necessary
+    const messengerCount = 0; // Replace with dynamic value if necessary
     const couponCount = 0; // Replace with dynamic value if necessary
 
     return (
