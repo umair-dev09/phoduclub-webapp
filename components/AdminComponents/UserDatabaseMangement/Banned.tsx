@@ -342,7 +342,7 @@ function Banned() {
                                             >
                                                 {banned.name}
                                             </div>
-                                            <div className="flex justify-start items-start text-[13px] text-[#667085]">jenny#8547</div>
+                                            <div className="flex justify-start items-start text-[13px] text-[#667085]">{banned.userId}</div>
                                         </div>
                                     </div>
                                 </td>
