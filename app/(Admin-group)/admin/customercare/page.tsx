@@ -52,10 +52,18 @@ function CustomerCare() {
     const [itemsPerPage] = useState(5);
     const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState('');
-    const [selectedItems, setSelectedItems] = useState<Set<string>>(new Set());
     const router = useRouter();
     const [isPopoverOpen, setIsPopoverOpen] = useState(false);
     const [selectedRows, setSelectedRows] = useState<Set<string>>(new Set());
+
+    // Global Selection State
+    const [selectedItems, setSelectedItems] = useState<{
+        pageSelected: Set<string>,
+        allSelected: Set<string>
+    }>({
+        pageSelected: new Set(),
+        allSelected: new Set()
+    });
 
     // Fetch quizzes when component mounts
     useEffect(() => {
@@ -82,28 +90,27 @@ function CustomerCare() {
     const firstItemIndex = lastItemIndex - itemsPerPage;
     const currentItems = data.slice(firstItemIndex, lastItemIndex);
 
-    // Function to handle row selection
-    const handleRowSelect = (quizId: string) => {
-        const newSelectedRows = new Set(selectedRows);
-        if (newSelectedRows.has(quizId)) {
-            newSelectedRows.delete(quizId);
+    const handlePageSelectAll = () => {
+        const currentPageIds = currentItems.map(item => item.id);
+
+        // If all current page items are already selected, unselect them
+        if (selectedItems.pageSelected.size === currentItems.length) {
+            setSelectedItems(prev => ({
+                ...prev,
+                pageSelected: new Set()
+            }));
         } else {
-            newSelectedRows.add(quizId);
+            // Otherwise, select all current page items
+            setSelectedItems(prev => ({
+                ...prev,
+                pageSelected: new Set(currentPageIds)
+            }));
         }
-        setSelectedRows(newSelectedRows);
     };
 
-    // Function to handle header checkbox selection
-    const handleHeaderCheckboxSelect = () => {
-        if (selectedRows.size === currentItems.length) {
-            // If all rows are already selected, unselect all
-            setSelectedRows(new Set());
-        } else {
-            // Select all current page rows
-            const allCurrentPageIds = currentItems.map(item => item.id);
-            setSelectedRows(new Set(allCurrentPageIds));
-        }
-    };
+    // Calculation for checkbox states
+    const isPageFullySelected = selectedItems.pageSelected.size === currentItems.length && currentItems.length > 0;
+    const isPagePartiallySelected = selectedItems.pageSelected.size > 0 && selectedItems.pageSelected.size < currentItems.length;
 
     // Function to handle tab click and navigate to a new route
     const handleTabClick = (path: string) => {
@@ -146,6 +153,70 @@ function CustomerCare() {
         textColor: string;
     }) => {
         setSelectedforpriority(status);
+    };
+
+    // Uncomment and modify search useEffect
+    useEffect(() => {
+        const filteredQuizzes = quizzes.filter(quiz =>
+            // Search across multiple fields
+            quiz.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            quiz.Importance.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            quiz.status.toLowerCase().includes(searchTerm.toLowerCase())
+        );
+        setData(filteredQuizzes);
+        setCurrentPage(1); // Reset to first page on new search
+    }, [searchTerm, quizzes]);
+
+    // Update handleItemSelect to handle both page and global selection
+    const handleItemSelect = (itemId: string) => {
+        const newPageSelected = new Set(selectedItems.pageSelected);
+        const newAllSelected = new Set(selectedItems.allSelected);
+
+        if (newPageSelected.has(itemId)) {
+            newPageSelected.delete(itemId);
+            newAllSelected.delete(itemId);
+        } else {
+            newPageSelected.add(itemId);
+        }
+
+        setSelectedItems(prev => ({
+            pageSelected: newPageSelected,
+            allSelected: newAllSelected
+        }));
+    };
+
+    // Modify handleGlobalSelectAll to clear other selections
+    const handleGlobalSelectAll = () => {
+        const allIds = data.map(item => item.id);
+
+        if (selectedItems.allSelected.size > 0) {
+            // If already selected, clear all
+            setSelectedItems({
+                pageSelected: new Set(),
+                allSelected: new Set()
+            });
+        } else {
+            // Select all items globally
+            setSelectedItems({
+                pageSelected: new Set(),
+                allSelected: new Set(allIds)
+            });
+        }
+    };
+
+    // Add a method to clear all selections
+    const clearAllSelections = () => {
+        setSelectedItems({
+            pageSelected: new Set(),
+            allSelected: new Set()
+        });
+    };
+
+    const handleGlobalDeselectAll = () => {
+        setSelectedItems({
+            pageSelected: new Set(),
+            allSelected: new Set()
+        });
     };
 
     return (
@@ -278,26 +349,38 @@ function CustomerCare() {
                 </div>
             </div>
 
-            {selectedRows.size > 0 && (
+            {(selectedItems.pageSelected.size > 0 || selectedItems.allSelected.size > 0) && (
                 <div
-                    className="flex flex-row items-center justify-between 
+                    className="flex flex-row items-center justify-between
+                                min-h-9
                                 transition-all duration-300 ease-in-out 
                                 transform opacity-100 translate-y-0 
                                 overflow-hidden"
                 >
                     <div className="flex flex-row gap-3 text-sm font-semibold leading-5">
-                        <p className="text-[#1D2939]">({selectedRows.size}) Selected</p>
-                        {selectedRows.size < data.length && (
-                            <button
-                                onClick={() => {
-                                    const allCurrentPageIds = currentItems.map(item => item.id);
-                                    setSelectedRows(new Set(allCurrentPageIds));
-                                }}
-                                className="text-[#9012FF] underline"
-                            >
-                                Select all {data.length}
-                            </button>
-                        )}
+                        <p className="text-[#1D2939]">
+                            {selectedItems.allSelected.size > 0
+                                ? `(${selectedItems.allSelected.size}) Selected`
+                                : `(${selectedItems.pageSelected.size}) Selected`}
+                        </p>
+                        {selectedItems.pageSelected.size !== data.length &&
+                            selectedItems.pageSelected.size !== data.length && (
+                                <button
+                                    onClick={handleGlobalSelectAll}
+                                    className="text-[#9012FF] underline"
+                                >
+                                    Select all {data.length}
+                                </button>
+                            )}
+                        {(selectedItems.pageSelected.size === data.length ||
+                            selectedItems.allSelected.size === data.length) && (
+                                <button
+                                    onClick={handleGlobalDeselectAll}
+                                    className="text-[#9012FF] underline"
+                                >
+                                    Deselect all
+                                </button>
+                            )}
                     </div>
                     <div className="flex flex-row gap-2">
                         <Popover placement="bottom">
@@ -444,9 +527,9 @@ function CustomerCare() {
                                     <Checkbox
                                         size="md"
                                         color="primary"
-                                        isSelected={selectedRows.size === currentItems.length && currentItems.length > 0}
-                                        isIndeterminate={selectedRows.size > 0 && selectedRows.size < currentItems.length}
-                                        onChange={handleHeaderCheckboxSelect}
+                                        isSelected={isPageFullySelected}
+                                        isIndeterminate={isPagePartiallySelected}
+                                        onChange={handlePageSelectAll}
                                     />
                                 </th>
                                 <th className="w-10 pl-4 py-4 text-center text-[#667085] font-medium text-sm">
@@ -479,9 +562,12 @@ function CustomerCare() {
                                         <Checkbox
                                             size="md"
                                             color="primary"
-                                            isSelected={selectedRows.has(quiz.id)}
-                                            onChange={() => handleRowSelect(quiz.id)}
-                                            onClick={(e) => e.stopPropagation()} // Prevent row click when checking checkbox
+                                            isSelected={
+                                                selectedItems.allSelected.has(quiz.id) ||
+                                                selectedItems.pageSelected.has(quiz.id)
+                                            }
+                                            onChange={() => handleItemSelect(quiz.id)}
+                                            onClick={(e) => e.stopPropagation()}
                                         />
                                     </td>
                                     <td className="py-4 text-center text-[#101828] text-sm">
