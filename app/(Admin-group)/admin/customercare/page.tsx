@@ -93,17 +93,18 @@ function CustomerCare() {
     const handlePageSelectAll = () => {
         const currentPageIds = currentItems.map(item => item.id);
 
-        // If all current page items are already selected, unselect them
+        // Toggle between fully selected and not selected
         if (selectedItems.pageSelected.size === currentItems.length) {
+            // If all are currently selected, deselect everything
             setSelectedItems(prev => ({
-                ...prev,
-                pageSelected: new Set()
+                pageSelected: new Set(),
+                allSelected: new Set()
             }));
         } else {
-            // Otherwise, select all current page items
+            // Select all items on the current page
             setSelectedItems(prev => ({
-                ...prev,
-                pageSelected: new Set(currentPageIds)
+                pageSelected: new Set(currentPageIds),
+                allSelected: new Set() // Reset global selection when page selection changes
             }));
         }
     };
@@ -185,40 +186,6 @@ function CustomerCare() {
         }));
     };
 
-    // Modify handleGlobalSelectAll to clear other selections
-    const handleGlobalSelectAll = () => {
-        const allIds = data.map(item => item.id);
-
-        if (selectedItems.allSelected.size > 0) {
-            // If already selected, clear all
-            setSelectedItems({
-                pageSelected: new Set(),
-                allSelected: new Set()
-            });
-        } else {
-            // Select all items globally
-            setSelectedItems({
-                pageSelected: new Set(),
-                allSelected: new Set(allIds)
-            });
-        }
-    };
-
-    // Add a method to clear all selections
-    const clearAllSelections = () => {
-        setSelectedItems({
-            pageSelected: new Set(),
-            allSelected: new Set()
-        });
-    };
-
-    const handleGlobalDeselectAll = () => {
-        setSelectedItems({
-            pageSelected: new Set(),
-            allSelected: new Set()
-        });
-    };
-
     return (
         <div className="flex flex-col w-full gap-4 p-6">
             <div className="flex flex-row justify-between items-center">
@@ -268,23 +235,6 @@ function CustomerCare() {
                             alt="Arrow-Down Button"
                         />
                     </div>
-
-                    {/* <Popover
-                        placement="bottom-end">
-                        <PopoverTrigger>
-                            <button className=" px-[0.875rem] py-[0.625rem] bg-white border border-[#D0D5DD] rounded-md shadow-[0_1px_2px_0_rgba(16,24,40,0.05)]">
-                                <Image src='/icons/Frame.svg' alt="filter" width={20} height={20} />
-                            </button>
-                        </PopoverTrigger>
-                        <PopoverContent className=" w-[206px] rounded-2 border border-solid border-[#EAECF0] p-3 gap-2  hover:bg-[#F2F4F7]">
-
-                            <span className="text-xs font-normal text-[#475467]">Students</span>
-                            <div className="flex flex-row gap-2">
-                                <Checkbox color="primary" />
-                                <span className="text-[#0C111D] font-normal text-xs">Free</span>
-                            </div>
-                        </PopoverContent>
-                    </Popover> */}
                     <div className="relative">
                         <Popover
                             placement="bottom-end"
@@ -363,24 +313,27 @@ function CustomerCare() {
                                 ? `(${selectedItems.allSelected.size}) Selected`
                                 : `(${selectedItems.pageSelected.size}) Selected`}
                         </p>
-                        {selectedItems.pageSelected.size !== data.length &&
-                            selectedItems.pageSelected.size !== data.length && (
-                                <button
-                                    onClick={handleGlobalSelectAll}
-                                    className="text-[#9012FF] underline"
-                                >
-                                    Select all {data.length}
-                                </button>
-                            )}
-                        {(selectedItems.pageSelected.size === data.length ||
-                            selectedItems.allSelected.size === data.length) && (
-                                <button
-                                    onClick={handleGlobalDeselectAll}
-                                    className="text-[#9012FF] underline"
-                                >
-                                    Deselect all
-                                </button>
-                            )}
+                        {selectedItems.allSelected.size === data.length ? (
+                            <button
+                                className="text-[#9012FF] underline"
+                                onClick={() => {
+                                    // Deselect all logic
+                                    selectedItems.allSelected.clear(); // Or update your state logic
+                                }}
+                            >
+                                Deselect all
+                            </button>
+                        ) : (
+                            <button
+                                className="text-[#9012FF] underline"
+                                onClick={() => {
+                                    // Select all logic
+                                    data.forEach((item) => selectedItems.allSelected.add(item)); // Or update your state logic
+                                }}
+                            >
+                                Select all {data.length}
+                            </button>
+                        )}
                     </div>
                     <div className="flex flex-row gap-2">
                         <Popover placement="bottom">
@@ -638,66 +591,6 @@ function CustomerCare() {
                     </div>
                 </div>
             </div>
-            {/* <div className={`fixed right-[33%] flex flex-row items-center p-4 gap-4 bg-white border border-[#D0D5DD] rounded-xl shadow-[4px_8px_13px_0_rgba(0,0,0,0.05), 4px_4px_12px_0_rgba(0,0,0,0.05), 4px_8px_14px_0_rgba(0,0,0,0.04)] transition-all duration-500 transform ${globalSelectedItems.size > 0 ? 'translate-y-0 opacity-100' : 'translate-y-full opacity-0'
-                } bottom-8`}>
-                <p className="text-balance text-[#1D2939] font-semibold">{globalSelectedItems.size} Selected</p>
-                <div className="flex flex-row gap-2">
-                    <button
-                        onClick={() => {
-                            const allIds = quizzes.map(item => item.id);
-                            setGlobalSelectedItems(new Set(allIds));
-                            handleSelectAll(true);
-                        }}
-                        className="px-4 py-[0.625rem] text-sm text-[#1D2939] font-medium border border-lightGrey rounded-md"
-                    >
-                        Select all
-                    </button>
-                    <button
-                        onClick={() => {
-                            setGlobalSelectedItems(new Set());
-                            handleSelectAll(false);
-                        }}
-                        className="px-4 py-[0.625rem] text-sm text-[#1D2939] font-medium border border-lightGrey rounded-md"
-                    >
-                        Unselect all
-                    </button>
-                </div>
-                <div className="w-0 h-9 border-[0.5px] border-lightGrey rounded-full"></div>
-                <Popover placement="top-start">
-                    <PopoverTrigger>
-                        <button className="flex flex-row justify-between w-[6.438rem] px-4 py-[0.625rem] text-xs text-[#182230] font-medium bg-[#EDE4FF] rounded-[0.375rem]">
-                            New
-                            <Image src='/icons/arrow-down-01-round.svg' alt="open" width={18} height={18} />
-                        </button>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-auto py-1 px-0 bg-white border border-lightGrey rounded-md">
-                        <button className="flex flex-row items-center justify-start w-full px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7]">
-                            <div className="bg-[#C6F5FF] py-2 px-3 gap-1 flex flex-row rounded-[6px] items-center h-6 w-auto">
-                                <span className="w-[6px] h-[6px] bg-[#0D7A93] rounded-full "></span>
-                                <span className="font-medium text-[#0D7A93] text-xs">Opened</span>
-                            </div>
-                        </button>
-                        <button className="flex flex-row items-center justify-start w-full px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7]">
-                            <div className="bg-[#FEE4E2] py-2 px-3 gap-1 flex flex-row rounded-[6px] items-center h-6 w-auto">
-                                <span className="w-[6px] h-[6px] bg-[#9A221A] rounded-full "></span>
-                                <span className="font-medium text-[#9A221A] text-xs">Blocker</span>
-                            </div>
-                        </button>
-                        <button className="flex flex-row items-center justify-start w-full px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7]">
-                            <div className="bg-[#FFEFC6] py-2 px-3 gap-1 flex flex-row rounded-[6px] items-center h-6 w-auto">
-                                <span className="w-[6px] h-[6px] bg-[#93360D] rounded-full "></span>
-                                <span className="font-medium text-[#93360D] text-xs">Repiled</span>
-                            </div>
-                        </button>
-                        <button className="flex flex-row items-center justify-start w-full px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7]">
-                            <div className="bg-[#D3F8E0] py-2 px-3 gap-1 flex flex-row rounded-[6px] items-center h-6 w-auto">
-                                <span className="w-[6px] h-[6px] bg-[#0A5B39] rounded-full "></span>
-                                <span className="font-medium text-[#0A5B39] text-xs">Resolved</span>
-                            </div>
-                        </button>
-                    </PopoverContent>
-                </Popover>
-            </div> */}
         </div>
     );
 }
