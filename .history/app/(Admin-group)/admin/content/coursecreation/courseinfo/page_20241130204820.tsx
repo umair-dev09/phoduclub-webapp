@@ -148,7 +148,7 @@ function CourseInfo() {
                             {/* Button for Delete */}
                             {/* <button
                                 className="w-auto p-3 gap-2 flex-row flex bg-[#FFFFFF] border border-solid border-[#EAECF0] rounded-[8px] h-[40px] items-center"
-                                onClick={() => setIsDeleteDialogOpen(true)}>
+                                   onClick={() =>  setIsDeleteDialogOpen(true)}>
                                 <Image src="/icons/delete.svg" width={18} height={18} alt="Delete" />
                                 <span className="text-sm text-[#DE3024]  font-medium">Delete</span>
                             </button> */}

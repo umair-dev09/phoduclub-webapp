@@ -111,8 +111,7 @@ function CourseInfo() {
                                         <Image src='/icons/publish-quiz.svg' alt="Publish-icon" width={18} height={18} />
                                         <p className="text-sm text-[#0C111D] font-normal">Publish</p>
                                     </button>
-                                    <button className=" flex flex-row items-center justify-start w-full py-[0.625rem] px-4 gap-2 hover:bg-[#F2F4F7]"
-                                        onClick={() => setIsDeleteDialogOpen(true)}>
+                                    <button className=" flex flex-row items-center justify-start w-full py-[0.625rem] px-4 gap-2 hover:bg-[#F2F4F7]">
                                         <Image src='/icons/delete.svg' alt="Delete-icon" width={18} height={18} />
                                         <p className="text-sm text-[#DE3024] font-normal">Delete</p>
                                     </button>
@@ -147,8 +146,7 @@ function CourseInfo() {
                             </button> */}
                             {/* Button for Delete */}
                             {/* <button
-                                className="w-auto p-3 gap-2 flex-row flex bg-[#FFFFFF] border border-solid border-[#EAECF0] rounded-[8px] h-[40px] items-center"
-                                onClick={() => setIsDeleteDialogOpen(true)}>
+                                className="w-auto p-3 gap-2 flex-row flex bg-[#FFFFFF] border border-solid border-[#EAECF0] rounded-[8px] h-[40px] items-center">
                                 <Image src="/icons/delete.svg" width={18} height={18} alt="Delete" />
                                 <span className="text-sm text-[#DE3024]  font-medium">Delete</span>
                             </button> */}

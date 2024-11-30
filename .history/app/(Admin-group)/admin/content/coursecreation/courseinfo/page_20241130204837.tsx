@@ -146,12 +146,12 @@ function CourseInfo() {
                                 <span className="text-sm text-[#0C111D]  font-medium">Schedule</span>
                             </button> */}
                             {/* Button for Delete */}
-                            {/* <button
+                            <button
                                 className="w-auto p-3 gap-2 flex-row flex bg-[#FFFFFF] border border-solid border-[#EAECF0] rounded-[8px] h-[40px] items-center"
                                 onClick={() => setIsDeleteDialogOpen(true)}>
                                 <Image src="/icons/delete.svg" width={18} height={18} alt="Delete" />
                                 <span className="text-sm text-[#DE3024]  font-medium">Delete</span>
-                            </button> */}
+                            </button>
                         </div>
                     </div>
                     <div className="flex flex-row gap-2">
