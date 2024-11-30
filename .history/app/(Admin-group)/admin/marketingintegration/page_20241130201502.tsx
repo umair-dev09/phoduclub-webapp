@@ -198,8 +198,8 @@ function Messenger() {
     }
 
     return (
-        <div className="flex flex-col h-full gap-3 w-full p-8">
-            <div className="flex flex-row justify-between h-[44px] items-center ">
+        <div className="flex flex-col h-full gap-3">
+            <div className="flex flex-row justify-between h-[44px] items-center mt-4">
                 <h1 className="font-semibold text-lg text-[#1D2939]">Messenger</h1>
                 <button
                     onClick={handleCreate}
