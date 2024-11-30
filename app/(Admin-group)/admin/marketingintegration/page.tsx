@@ -16,6 +16,7 @@ import {
 } from "@/components/ui/pagination";
 import QuizStatus from '@/components/AdminComponents/QuizzesManagement/quizStatus';
 
+<<<<<<< HEAD
 // Define types for quiz data
 interface Quiz {
     userid: string;
@@ -149,6 +150,12 @@ function Messenger() {
         };
         loadQuizzes();
     }, []);
+=======
+function MarketIntegration() {
+    // Example counts for messenger and coupons
+    const messengerCount = 0; // Replace with dynamic value if necessary
+    const couponCount = 0; // Replace with dynamic value if necessary
+>>>>>>> 37895976c9a8a20c9950658bb016e0b5363249a6
 
     return (
         <div className="flex flex-col h-full gap-3 w-full p-8 overflow-y-auto">

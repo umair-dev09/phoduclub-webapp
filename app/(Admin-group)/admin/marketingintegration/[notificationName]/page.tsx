@@ -2,6 +2,8 @@
 
 import Image from "next/image";
 import { useState, useEffect } from "react";
+import { doc, getDoc, collection, getDocs } from 'firebase/firestore';
+import { db } from "@/firebase";
 import {
     Pagination,
     PaginationContent,
@@ -11,6 +13,9 @@ import {
     PaginationNext,
     PaginationPrevious,
 } from "@/components/ui/pagination";
+import { useRouter, useSearchParams } from 'next/navigation';
+import QuizStatus from "@/components/AdminComponents/QuizzesManagement/quizStatus";
+import LoadingData from "@/components/Loading";
 
 // Define types for quiz data
 type Quiz = {
@@ -19,63 +24,75 @@ type Quiz = {
     time: string;
 }
 
-// Mock fetchQuizzes function with types
-const fetchQuizzes = async (): Promise<Quiz[]> => {
-    const allQuizzes: Quiz[] = [
-        { userId: "jenny#8547", date: "Jan 6, 2024", time: "01:00 AM" },
-        { userId: "jenny#8547", date: "Jan 6, 2024", time: "01:00 AM" },
-        { userId: "jenny#8547", date: "Jan 6, 2024", time: "01:00 AM" },
-        { userId: "jenny#8547", date: "Jan 6, 2024", time: "01:00 AM" },
-        { userId: "jenny#8547", date: "Jan 6, 2024", time: "01:00 AM" },
-        { userId: "jenny#8547", date: "Jan 6, 2024", time: "01:00 AM" },
-        { userId: "jenny#8547", date: "Jan 6, 2024", time: "01:00 AM" },
-        { userId: "jenny#8547", date: "Jan 6, 2024", time: "01:00 AM" },
-        { userId: "jenny#8547", date: "Jan 6, 2024", time: "01:00 AM" },
-        { userId: "jenny#8547", date: "Jan 6, 2024", time: "01:00 AM" }
-    ];
+type NotificationData = {
+    name: string;
+    description: string;
+    createdAt: string;
+    cta: string;
+    endDate: string;
+    hyperLink: string;
+    notificationIcon: string;
+    notificationId: string;
+    startDate: string;
+    status: string;
 
-    return allQuizzes;
-};
+}
 
-function marketinfo() {
 
-    const [data, setData] = useState<Quiz[]>([]);
-    const [quizzes, setQuizzes] = useState<Quiz[]>([]);
+function NotificationName () { 
+    const searchParams = useSearchParams();
+    const notiId = searchParams.get('nId');
+    const [data, setData] = useState<NotificationData | null>(null);
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage] = useState(5);
     const [loading, setLoading] = useState(true);
 
-    // Fetch quizzes when component mounts
     useEffect(() => {
-        const loadQuizzes = async () => {
-            setLoading(true);
-            const quizzes = await fetchQuizzes();
-            setQuizzes(quizzes);
-            setData(quizzes);
+        const fetchNotiData = async () => {
+          if (!notiId) return;
+    
+          try {
+            const notiDocRef = doc(db, 'notifications', notiId);
+            const notiDocSnap = await getDoc(notiDocRef);
+    
+            if (notiDocSnap.exists()) {
+              setData(notiDocSnap.data() as NotificationData);
+              setLoading(false);
+            } else {
+              console.error('Notification data not found');
+              setLoading(false);
+
+            }
+    
+          } catch (error) {
+            console.error('Error fetching noti data:', error);
             setLoading(false);
+          }
         };
-        loadQuizzes();
-    }, []);
+    
+        fetchNotiData();
+      }, [notiId]);
 
     const lastItemIndex = currentPage * itemsPerPage;
     const firstItemIndex = lastItemIndex - itemsPerPage;
-    const currentItems = data.slice(firstItemIndex, lastItemIndex);
-
+    // const currentItems = data.slice(firstItemIndex, lastItemIndex);
+   
+    if(loading){
+        return <LoadingData />
+    }
     return (
         <div className="py-8 flex flex-col w-full h-auto overflow-y-auto">
             <div className="flex flex-col px-8 gap-1">
                 <div className="flex flex-row justify-between items-center">
                     <div className="flex flex-row gap-2 items-center">
                         <Image
-                            src="/icons/idea-01.svg"
+                            src={data?.notificationIcon || ''}
                             width={24}
                             height={24}
                             alt="idea-icon" />
-                        <h1 className="text-[#1D2939] font-semibold text-2xl">Quiz competition</h1>
-                        <div className="bg-[#EDE4FF] py-2 px-3 gap-1 flex flex-row rounded-[6px] items-center h-6">
-                            <span className="w-[6px] h-[6px] bg-[#7400E0] rounded-full "></span>
-                            <span className="font-medium text-[#7400E0] text-xs">Live</span>
-                        </div>
+                        <h1 className="text-[#1D2939] font-semibold text-2xl">{data?.name}</h1>
+                            <div>{<QuizStatus status={data?.status || ''}/>}</div>
+                        
                     </div>
                     <div className="flex flex-row gap-2">
                         {/* Button for Pause Quiz */}
@@ -119,7 +136,7 @@ function marketinfo() {
                         <Image src="/icons/edit-icon.svg" width={18} height={18} alt="Edit-quiz" />
                     </button>
                 </div>
-                <span className="font-normal text-sm text-[#1D2939]">Ready to test your knowledge? Join our quiz competition and compete for exciting prizes!</span>
+                <span className="font-normal text-sm text-[#1D2939]">{data?.description}</span>
             </div>
             <hr className="my-8" />
             <h2 className="mb-4 px-8 text-base text-[#1D2939] font-semibold">Notification Click Activity</h2>
@@ -135,7 +152,7 @@ function marketinfo() {
                             </tr>
                         </thead>
                         <tbody>
-                            {currentItems.map((quiz, index) => (
+                            {/* {currentItems.map((quiz, index) => (
                                 <tr key={index} className="h-auto border-t border-solid border-[#EAECF0]">
                                     <td className="py-2">
                                         <div className="flex flex-row ml-8 gap-2">
@@ -159,7 +176,7 @@ function marketinfo() {
                                     <td className="px-8 py-4 text-center text-[#101828] text-sm">{quiz.date}</td>
                                     <td className="px-8 py-4 text-center text-[#101828] text-sm">{quiz.time}</td>
                                 </tr>
-                            ))}
+                            ))} */}
                         </tbody>
                     </table>
                 </div>
@@ -167,12 +184,12 @@ function marketinfo() {
                 {/* Pagination Section */}
                 <div className="flex items-end justify-end h-auto">
                     <div className="flex justify-right h-auto">
-                        <PaginationSection
+                        {/* <PaginationSection
                             totalItems={data.length}
                             itemsPerPage={itemsPerPage}
                             currentPage={currentPage}
                             setCurrentPage={setCurrentPage}
-                        />
+                        /> */}
                     </div>
                 </div>
             </div>
@@ -298,4 +315,4 @@ function PaginationSection({
     );
 }
 
-export default marketinfo;
+export default NotificationName;

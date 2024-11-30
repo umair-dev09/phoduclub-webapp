@@ -173,7 +173,7 @@ function TargetExamUpdate({ setIsEditing }: TargetExamsUpdateProps) {
                 options={exams}
                 isMulti
                 placeholder="Select exams..."
-                className={styles.examSelect}
+                // className={styles.examSelect}
                 styles={{
                   option: (provided, state) => ({
                     ...provided,

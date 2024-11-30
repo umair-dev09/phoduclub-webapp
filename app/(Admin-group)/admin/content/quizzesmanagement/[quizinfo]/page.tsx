@@ -321,7 +321,7 @@ function Quizinfo({ params }: { params: { quizName: string } }) {
                 <div
                     className="quiz-description p-1"
                     dangerouslySetInnerHTML={{
-                        __html: cleanQuizDescription(quizData?.quizDescription || ''),
+                        __html: (quizData?.quizDescription || ''),
                     }}
                 />
             </div>

@@ -4,15 +4,21 @@ import UserDetails from "@/components/AdminComponents/UserDatabaseMangement/User
 import Products from "@/components/AdminComponents/UserDatabaseMangement/Products";
 import Community from "@/components/AdminComponents/UserDatabaseMangement/Community";
 import SupportAndFeedBack from "@/components/AdminComponents/UserDatabaseMangement/Support&FeedBack";
+import { useRouter,useSearchParams } from 'next/navigation';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 function UserInfo() {
+    const router = useRouter(); // Initialize useRouter
+    const searchParams = useSearchParams();
+    const userId = searchParams.get('uId');
     const [activeComponent, setActiveComponent] = useState("PersonalDetails");
 
     // Function to render the selected component
     const renderComponent = () => {
         switch (activeComponent) {
             case "PersonalDetails":
-                return <UserDetails />;
+                return <UserDetails userId={userId || ''}/>;
             case "Products":
                 return <Products />;
             case "Community":
@@ -20,7 +26,7 @@ function UserInfo() {
             case "Support":
                 return <SupportAndFeedBack />;
             default:
-                return <UserDetails />;
+                return <UserDetails userId={userId || ''}/>;
         }
     };
 
@@ -64,6 +70,7 @@ function UserInfo() {
             <div className=" flex-grow h-auto w-full overflow-y-auto ">
                 {renderComponent()}
             </div>
+            <ToastContainer />
         </div>
 
 

@@ -21,6 +21,8 @@ type AddNewUserProps = {
     setLastName: (lastName: string) => void;
     userId: string;
     setUserId: (userId: string) => void;
+    profilePic: string;
+    setProfilePic: (userId: string) => void;
     phone: string;
     setPhone: (phone: string) => void;
     selectedRole: string;
@@ -28,6 +30,8 @@ type AddNewUserProps = {
     adminIdd: string;
     setAdminId: (adminIdd: string) => void;
 }
+
+const courses: string[] = ["Physics - 101", "BITSET Full Course", "JEE - 2024", "Physics - 201"]
 
 function AddNewUser({
     open,
@@ -41,6 +45,8 @@ function AddNewUser({
     setAdminId,
     userId,
     setUserId,
+    profilePic,
+    setProfilePic,
     phone,
     setPhone,
     selectedRole,
@@ -48,11 +54,20 @@ function AddNewUser({
 }: AddNewUserProps) {
     const [loading, setLoading] = useState(false); // Loading state
     const [roleDialogOpen, setRoleDialogOpen] = useState(false); // Loading state
+    const [selectedCourses, setSelectedCourses] = useState<string[]>([]); // Track selected courses
 
-    const ROLE_OPTIONS = ["Admin", "Teacher", "Customer Care", "Guide", "Editor", "Chief Moderator"];
+    // Toggle course selection
+    const toggleCourse = (course: string) => {
+        setSelectedCourses((prev) =>
+            prev.includes(course) ? prev.filter((item) => item !== course) : [...prev, course]
+        );
+    }
+
+    const ROLE_OPTIONS = ["Admin", "Teacher", "Customer Care", "Editor", "Chief Moderator"];
 
     const handleRoleSelect = (role: string) => {
         setSelectedRole(role);
+        setRoleDialogOpen(false);
     };
 
     // Check if all required fields are filled
@@ -72,6 +87,7 @@ function AddNewUser({
                     userId,
                     phone,
                     role: selectedRole,
+                    profilePic: profilePic,
                 }, { merge: true });
                 toast.success("User Updated Successfully!");
             } else {
@@ -97,7 +113,6 @@ function AddNewUser({
             setLoading(false); // End loading
         }
     };
-
 
     return (
         <Dialog open={open} onClose={close} className="relative z-50">
@@ -182,10 +197,10 @@ function AddNewUser({
                                     </PopoverTrigger>
                                     <PopoverContent className="w-[450px] ml-5 px-0 py-1 bg-white border border-lightGrey rounded-md">
                                         <div className="w-full">
-                                            {["Admin", "Teacher", "Customer Care", "Guide", "Editor", "Chief Moderator"].map((role) => (
+                                            {["Admin", "Teacher", "Customer Care", "Editor", "Chief Moderator"].map((role) => (
                                                 <button
                                                     key={role}
-                                                    onClick={() => { handleRoleSelect(role); setRoleDialogOpen(false); }}
+                                                    onClick={() => { handleRoleSelect(role); }}
                                                     className="flex flex-row items-center justify-start w-full py-[0.625rem] px-4 gap-2 hover:bg-[#F2F4F7]"
                                                 >
                                                     <span className="text-sm text-[#0C111D] font-normal">{role}</span>
@@ -196,38 +211,78 @@ function AddNewUser({
                                 </Popover>
                             </div>
                         </div>
-                        {selectedRole === "Teacher" && (
+                        {/* {selectedRole === "Teacher" && (
                             <div className="flex flex-col gap-1 w-full">
                                 <label className="text-[#1D2939] text-sm font-medium">Select Course</label>
                                 <Popover placement="bottom-end">
                                     <PopoverTrigger>
-                                        <button className="flex flex-row py-2 px-4 w-full gap-2 border border-solid border-[#D0D5DD] rounded-md transition duration-200 ease-in-out justify-between">
-                                            <span className="font-normal text-sm text-[#182230]">Select Course</span>
-                                            <Image src="/icons/by-role-arrow-down.svg" width={20} height={20} alt="Select-role Button" />
+                                        <button
+                                            className="flex flex-row py-2 px-4 w-full gap-2 border border-solid border-[#D0D5DD] rounded-md transition duration-200 ease-in-out justify-between"
+                                            onClick={(e) => {
+                                                if ((e.target as HTMLElement).closest('.course-capsule')) {
+                                                    e.preventDefault();
+                                                    e.stopPropagation();
+                                                    return;
+                                                }
+                                            }}
+                                        >
+                                            {selectedCourses.length === 0 ? (
+                                                <span className="font-normal text-sm text-[#182230]">Select Course</span>
+                                            ) : (
+                                                <div className="flex flex-wrap gap-2">
+                                                    {selectedCourses.map((course) => (
+                                                        <div
+                                                            key={course}
+                                                            className="course-capsule px-3 py-1 bg-[#EDE4FF] text-xs font-medium rounded-full flex items-center gap-1 z-50"
+                                                            onClick={(e) => e.stopPropagation()}
+                                                        >
+                                                            {course}
+                                                            <button
+                                                                onClick={(e) => {
+                                                                    e.stopPropagation();
+                                                                    toggleCourse(course);
+                                                                }}
+                                                                className="text-[#6941C6]"
+                                                            >
+                                                                <Image
+                                                                    src="/icons/cancel.svg"
+                                                                    alt="Remove"
+                                                                    width={12}
+                                                                    height={12}
+                                                                />
+                                                            </button>
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                            )}
+                                            <Image
+                                                src="/icons/by-role-arrow-down.svg"
+                                                width={20}
+                                                height={20}
+                                                alt="Dropdown Arrow"
+                                            />
                                         </button>
                                     </PopoverTrigger>
-                                    <PopoverContent className="w-[450px] ml-5 px-0 py-1 bg-white border border-lightGrey rounded-md">
-                                        <div className="flex flex-row w-full h-10 justify-start items-center hover:bg-[#EAECF0] px-2">
-                                            <Checkbox color="primary" />
-                                            <span className="text-[#0C111D] font-normal text-sm">Physics - 101</span>
-                                        </div>
-                                        <div className="flex flex-row w-full h-10 justify-start items-center hover:bg-[#EAECF0] px-2">
-                                            <Checkbox color="primary" />
-                                            <span className="text-[#0C111D] font-normal text-sm">BITSET Full Course</span>
-                                        </div>
-                                        <div className="flex flex-row w-full h-10 justify-start items-center hover:bg-[#EAECF0] px-2">
-                                            <Checkbox color="primary" />
-                                            <span className="text-[#0C111D] font-normal text-sm">JEE - 2024</span>
-                                        </div>
-                                        <div className="flex flex-row w-full h-10 justify-start items-center hover:bg-[#EAECF0] px-2">
-                                            <Checkbox color="primary" />
-                                            <span className="text-[#0C111D] font-normal text-sm">Physics - 201</span>
+                                    <PopoverContent className="w-[450px] ml-5 px-0 py-2 bg-white border border-lightGrey rounded-md">
+                                        <div className="flex flex-col w-full">
+                                            {courses.map((course) => (
+                                                <div
+                                                    key={course}
+                                                    onClick={() => toggleCourse(course)}
+                                                    className="flex flex-row items-center gap-2 px-4 py-2 hover:bg-[#EAECF0] cursor-pointer"
+                                                >
+                                                    <Checkbox
+                                                        isSelected={selectedCourses.includes(course)}
+                                                        color="primary"
+                                                    />
+                                                    <span className="text-sm text-[#0C111D] font-normal">{course}</span>
+                                                </div>
+                                            ))}
                                         </div>
                                     </PopoverContent>
                                 </Popover>
                             </div>
-                        )}
-
+                        )} */}
                         <div className="flex flex-row justify-end my-2 items-center gap-4 border-t border-solid border-[#EAECF0] pt-4">
                             <button onClick={close} className="py-[0.625rem] px-6 border-[1.5px] border-lightGrey rounded-md text-[#1D2939] font-semibold text-sm">Cancel</button>
                             <button
