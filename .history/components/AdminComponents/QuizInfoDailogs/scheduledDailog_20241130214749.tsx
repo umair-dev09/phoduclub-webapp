@@ -41,10 +41,9 @@ function ScheduledDialog({ onClose }: ScheduledDialogProps) { // Use the interfa
                             </div>
                         </div>
                         <p className=" text-sm text-[#475467] font-normal">Quiz will be live for 2 hours.</p>
-
+                        <hr />
                     </div>
-                    <hr />
-                    <div className="flex flex-row justify-end gap-4 items-center pr-6 h-[76px]">
+                    <div className="flex flex-row justify-end gap-4">
                         <button className="py-[0.625rem] px-6 border-[1.5px] border-lightGrey text-[#1D2939] font-semibold text-sm rounded-md" onClick={onClose}>Cancel</button>
                         <button className="py-[0.625rem] px-6 text-[#FFFFFF] shadow-inner-button bg-[#9012FF] border border-[#8501FF] font-semibold text-sm rounded-md">Schedule Quiz</button>
                     </div>

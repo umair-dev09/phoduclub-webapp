@@ -24,8 +24,8 @@ function ResumeQuiz({ open, onClose }: ResumeQuizProps) { // Use the interface
                         </div>
                         <hr />
                         <div className="flex flex-row justify-end mx-6 my-4 gap-4">
-                            <button className="py-[0.625rem] px-6 border-[1.5px] border-lightGrey rounded-md font-semibold text-sm" onClick={onClose}>Cancel</button>
-                            <button className="py-[0.625rem] px-6 text-white shadow-inner-button bg-[#8501FF]  font-semibold text-sm border border-[#9012FF] rounded-md">Make the quiz live now</button>
+                            <button className="py-[0.625rem] px-6 border-[1.5px] border-lightGrey rounded-md" onClick={onClose}>Cancel</button>
+                            <button className="py-[0.625rem] px-6 text-white shadow-inner-button bg-[#8501FF] border border-[#9012FF] rounded-md">Make the quiz live now</button>
                         </div>
                     </div>
                 </DialogPanel>
