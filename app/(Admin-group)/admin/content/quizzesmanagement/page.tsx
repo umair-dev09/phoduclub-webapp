@@ -253,36 +253,6 @@ function Quizz() {
         ? selectedDate.toLocaleDateString("en-US", { year: 'numeric', month: 'short', day: 'numeric' })
         : "Select dates";
 
-    useEffect(() => {
-        // Start with all quizzes
-        let filteredQuizzes = quizzes;
-
-        // First, filter by search term if there is one
-        if (searchTerm) {
-            filteredQuizzes = filteredQuizzes.filter(quiz =>
-                "Phodu JEE Mains Test Series 2025".toLowerCase().includes(searchTerm.toLowerCase())
-            );
-        }
-
-        // Get list of selected statuses
-        const selectedStatuses = Object.entries(checkedState)
-            .filter(([_, isChecked]) => isChecked)  // Get only checked statuses
-            .map(([status]) => statusMapping[status as Option])  // Convert to actual status names
-            .flat();
-
-        // If any statuses are selected, filter by those statuses
-        if (selectedStatuses.length > 0) {
-            filteredQuizzes = filteredQuizzes.filter(quiz =>
-                selectedStatuses.includes(quiz.status)
-            );
-        }
-
-        // Update the displayed data
-        setData(filteredQuizzes);
-        // Go back to first page whenever filters change
-        setCurrentPage(1);
-    }, [searchTerm, checkedState, quizzes]);
-
     const statusColors: Record<Option, string> = {
         Saved: '#7400E0',
         Live: '#7400E0',
