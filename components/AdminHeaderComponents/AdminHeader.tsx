@@ -44,10 +44,11 @@ function Header({ currentPage }: HeaderProps) {
                 try {
                     const docSnapshot = await getDoc(userDocRef);
                     if (docSnapshot.exists()) {
-                        setUserData(docSnapshot.data() as UserData);
+                        const data = docSnapshot.data() as UserData;
+                        setUserData(data);
                         setLoading(false);
                     } else {
-                        // console.error("User ID not found in Firestore!");
+                        console.error("User ID not found in Firestore!");
                         setError(true);
                         router.push("/admin-login");
                     }
@@ -56,7 +57,7 @@ function Header({ currentPage }: HeaderProps) {
                     setError(true);
                 }
             } else {
-                // console.error('No user is logged in');
+                console.error('No user is logged in');
                 setError(true);
                 router.push("/admin-login");
             }

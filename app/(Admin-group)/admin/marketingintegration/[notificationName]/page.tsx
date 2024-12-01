@@ -81,7 +81,7 @@ function NotificationName () {
         return <LoadingData />
     }
     return (
-        <div className="py-8 flex flex-col w-full h-auto">
+        <div className="py-8 flex flex-col w-full h-auto overflow-y-auto">
             <div className="flex flex-col px-8 gap-1">
                 <div className="flex flex-row justify-between items-center">
                     <div className="flex flex-row gap-2 items-center">

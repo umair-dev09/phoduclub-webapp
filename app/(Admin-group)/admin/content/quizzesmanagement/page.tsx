@@ -18,11 +18,11 @@ import { Calendar } from "@nextui-org/calendar";
 import { Pause } from "lucide-react";
 import { today, getLocalTimeZone } from "@internationalized/date";
 import ScheduledDialog from "@/components/AdminComponents/QuizInfoDailogs/scheduledDailog";
-import DeleteQuiz from "@/components/AdminComponents/QuizInfoDailogs/DeleteQuiz";
-import EndQuiz from "@/components/AdminComponents/QuizInfoDailogs/EndQuiz";
-import PausedQuiz from "@/components/AdminComponents/QuizInfoDailogs/PausedQuiz";
+import DeleteQuiz from "@/components/AdminComponents/QuizInfoDailogs/DeleteDailogue";
+import EndQuiz from "@/components/AdminComponents/QuizInfoDailogs/EndDailogue";
+import PausedQuiz from "@/components/AdminComponents/QuizInfoDailogs/PauseDailogue";
 import MakeLiveNow from "@/components/AdminComponents/QuizInfoDailogs/MakeLiveNow";
-import ResumeQuiz from "@/components/AdminComponents/QuizInfoDailogs/ResumeQuiz";
+import ResumeQuiz from "@/components/AdminComponents/QuizInfoDailogs/ResumeDailogue";
 import ViewAnalytics from "@/components/AdminComponents/QuizInfoDailogs/ViewAnalytics";
 import QuizStatus from '@/components/AdminComponents/QuizzesManagement/quizStatus';
 import { collection, getDocs, query, where, doc, getDoc } from 'firebase/firestore';
@@ -253,36 +253,6 @@ function Quizz() {
         ? selectedDate.toLocaleDateString("en-US", { year: 'numeric', month: 'short', day: 'numeric' })
         : "Select dates";
 
-    useEffect(() => {
-        // Start with all quizzes
-        let filteredQuizzes = quizzes;
-
-        // First, filter by search term if there is one
-        if (searchTerm) {
-            filteredQuizzes = filteredQuizzes.filter(quiz =>
-                "Phodu JEE Mains Test Series 2025".toLowerCase().includes(searchTerm.toLowerCase())
-            );
-        }
-
-        // Get list of selected statuses
-        const selectedStatuses = Object.entries(checkedState)
-            .filter(([_, isChecked]) => isChecked)  // Get only checked statuses
-            .map(([status]) => statusMapping[status as Option])  // Convert to actual status names
-            .flat();
-
-        // If any statuses are selected, filter by those statuses
-        if (selectedStatuses.length > 0) {
-            filteredQuizzes = filteredQuizzes.filter(quiz =>
-                selectedStatuses.includes(quiz.status)
-            );
-        }
-
-        // Update the displayed data
-        setData(filteredQuizzes);
-        // Go back to first page whenever filters change
-        setCurrentPage(1);
-    }, [searchTerm, checkedState, quizzes]);
-
     const statusColors: Record<Option, string> = {
         Saved: '#7400E0',
         Live: '#7400E0',
@@ -489,28 +459,28 @@ function Quizz() {
                                                                 <button className="flex flex-row w-[11.563rem] px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors"
                                                                     onClick={() => handleTabClick('/admin/content/quizzesmanagement/createquiz')}>
                                                                     <Image src='/icons/edit-icon.svg' alt="edit" width={18} height={18} />
-                                                                    <p>Edit Quiz</p>
+                                                                    <p>Edit</p>
                                                                 </button>
                                                             )}
                                                             {quiz.status === 'scheduled' && (
                                                                 <button className="flex flex-row w-[10.438rem] px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors"
                                                                     onClick={() => handleTabClick('/admin/content/quizzesmanagement/createquiz')}>
                                                                     <Image src='/icons/edit-icon.svg' alt="edit" width={18} height={18} />
-                                                                    <p>Edit Quiz</p>
+                                                                    <p>Edit</p>
                                                                 </button>
                                                             )}
                                                             {quiz.status === 'saved' && (
                                                                 <button className="flex flex-row w-[10.438rem] px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors"
                                                                     onClick={() => handleTabClick('/admin/content/quizzesmanagement/createquiz')}>
                                                                     <Image src='/icons/edit-icon.svg' alt="edit" width={18} height={18} />
-                                                                    <p>Edit Quiz</p>
+                                                                    <p>Edit</p>
                                                                 </button>
                                                             )}
                                                             {quiz.status === 'live' && (
                                                                 <button className="flex flex-row w-[10.438rem] px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors"
                                                                     onClick={openPausedQuiz}>
                                                                     <Image src='/icons/pause-dark.svg' alt="pause quiz" width={18} height={18} />
-                                                                    <p>Paused Quiz</p>
+                                                                    <p>Pause</p>
                                                                 </button>
                                                             )}
                                                             {quiz.status === 'finished' && (
@@ -527,7 +497,7 @@ function Quizz() {
                                                             <button className="flex flex-row w-full px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors"
                                                                 onClick={openResumeQuiz}>
                                                                 <Image src='/icons/play-dark.svg' alt="resume quiz" width={20} height={20} />
-                                                                <p>Resume Quiz</p>
+                                                                <p>Resume</p>
                                                             </button>
                                                         )}
                                                         {quiz.status === 'saved' && (
@@ -544,13 +514,13 @@ function Quizz() {
                                                                     <button className="flex flex-row justify-between w-[11.563rem] px-4 py-[0.625rem] hover:bg-[#F2F4F7] transition-colors">
                                                                         <div className="flex flex-row gap-2">
                                                                             <Image src='/icons/calendar-03.svg' alt="schedule" width={18} height={18} />
-                                                                            <p>Schedule quiz</p>
+                                                                            <p>Schedule</p>
                                                                         </div>
                                                                         <Image src='/icons/collapse-right-02.svg' alt="schedule popup" width={18} height={18} />
                                                                     </button>
                                                                 </PopoverTrigger>
                                                                 <PopoverContent className="flex flex-col items-start text-sm font-normal py-1 px-0 bg-white border border-lightGrey rounded-md w-[11.25rem]">
-                                                                    <button className="w-full px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors" onClick={openScheduledDialog}>Schedule Quiz</button>
+                                                                    <button className="w-full px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors" onClick={openScheduledDialog}>Schedule</button>
                                                                     <button className="w-full px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors">Make Live Now</button>
                                                                 </PopoverContent>
                                                             </Popover>
@@ -562,35 +532,35 @@ function Quizz() {
                                                                 <button className="flex flex-row w-[11.563rem] px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors"
                                                                     onClick={openDeleteDialog}>
                                                                     <Image src='/icons/delete.svg' alt="delete" width={18} height={18} />
-                                                                    <p className="text-[#DE3024]">Delete Quiz</p>
+                                                                    <p className="text-[#DE3024]">Delete</p>
                                                                 </button>
                                                             )}
                                                             {quiz.status === 'scheduled' && (
                                                                 <button className="flex flex-row w-[10.438rem] px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors"
                                                                     onClick={openDeleteDialog}>
                                                                     <Image src='/icons/delete.svg' alt="delete" width={18} height={18} />
-                                                                    <p className="text-[#DE3024]">Delete Quiz</p>
+                                                                    <p className="text-[#DE3024]">Delete</p>
                                                                 </button>
                                                             )}
                                                             {quiz.status === 'finished' && (
                                                                 <button className="flex flex-row w-[10.438rem] px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors"
                                                                     onClick={openDeleteDialog}>
                                                                     <Image src='/icons/delete.svg' alt="delete" width={18} height={18} />
-                                                                    <p className="text-[#DE3024]">Delete Quiz</p>
+                                                                    <p className="text-[#DE3024]">Delete</p>
                                                                 </button>
                                                             )}
                                                             {quiz.status === 'saved' && (
                                                                 <button className="flex flex-row w-[10.438rem] px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors"
                                                                     onClick={openDeleteDialog}>
                                                                     <Image src='/icons/delete.svg' alt="delete" width={18} height={18} />
-                                                                    <p className="text-[#DE3024]">Delete Quiz</p>
+                                                                    <p className="text-[#DE3024]">Delete</p>
                                                                 </button>
                                                             )}
                                                             {quiz.status === 'live' && (
                                                                 <button className="flex flex-row w-[10.438rem] px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors"
                                                                     onClick={openEndQuiz}>
                                                                     <Image src='/icons/license-no.svg' alt="end quiz" width={18} height={18} />
-                                                                    <p className="text-[#DE3024]">End Quiz</p>
+                                                                    <p className="text-[#DE3024]">End</p>
                                                                 </button>
                                                             )}
                                                         </div>
