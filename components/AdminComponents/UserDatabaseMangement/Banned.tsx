@@ -20,7 +20,7 @@ import Ban from "@/components/AdminComponents/UserDatabaseMangement/Ban";
 import Delete from "@/components/AdminComponents/UserDatabaseMangement/Delete";
 import { Checkbox } from "@nextui-org/react";
 
-// Define types for quiz data
+// Define types for banned data
 interface Banned {
     name: string;
     email: string;
@@ -28,8 +28,8 @@ interface Banned {
     joiningDate: string;
 }
 
-// Mock fetchQuizzes function with types
-const fetchQuizzes = async (): Promise<Banned[]> => {
+// Mock fetchBans function with types
+const fetchBans = async (): Promise<Banned[]> => {
     const allData = [
         { name: "John Doe", MobileNo: "50%", joiningDate: "Dec 1, 2023", email: "user1@example.com" },
         { name: "Jane Smith", MobileNo: "30%", joiningDate: "Nov 15, 2023", email: "user2@example.com" },
@@ -47,7 +47,7 @@ const fetchQuizzes = async (): Promise<Banned[]> => {
 
 function Banned() {
     const [data, setData] = useState<Banned[]>([]);
-    const [quizzes, setQuizzes] = useState<Banned[]>([]);
+    const [bans, setBans] = useState<Banned[]>([]);
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage] = useState(5);
     const [loading, setLoading] = useState(true);
@@ -56,16 +56,16 @@ function Banned() {
     const router = useRouter();
     const [selectedRows, setSelectedRows] = useState<Set<string>>(new Set());
 
-    // Fetch quizzes when component mounts
+    // Fetch bans when component mounts
     useEffect(() => {
-        const loadQuizzes = async () => {
+        const loadBans = async () => {
             setLoading(true);
-            const banned = await fetchQuizzes();
-            setQuizzes(banned);
+            const banned = await fetchBans();
+            setBans(banned);
             setData(banned);
             setLoading(false);
         };
-        loadQuizzes();
+        loadBans();
     }, []);
 
     const lastItemIndex = currentPage * itemsPerPage;
@@ -117,12 +117,12 @@ function Banned() {
     };
 
     // Function to handle row selection
-    const handleRowSelect = (quizId: string) => {
+    const handleRowSelect = (bannedId: string) => {
         const newSelectedRows = new Set(selectedRows);
-        if (newSelectedRows.has(quizId)) {
-            newSelectedRows.delete(quizId);
+        if (newSelectedRows.has(bannedId)) {
+            newSelectedRows.delete(bannedId);
         } else {
-            newSelectedRows.add(quizId);
+            newSelectedRows.add(bannedId);
         }
         setSelectedRows(newSelectedRows);
     };

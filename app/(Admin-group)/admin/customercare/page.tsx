@@ -19,8 +19,8 @@ import { Calendar } from "@nextui-org/calendar";
 import { Checkbox } from "@nextui-org/react";
 import { Popover, PopoverContent, PopoverTrigger } from "@nextui-org/popover";
 
-// Define types for quiz data
-type Quiz = {
+// Define types for customer care data
+type Customer = {
     id: string;
     email: string;
     Priority: 'Low' | 'Medium' | 'Hard';
@@ -28,9 +28,9 @@ type Quiz = {
     status: 'Latest' | 'Opened' | 'Resolved' | 'Re-opened' | 'Blocker' | 'Replied';
 }
 
-// Mock fetchQuizzes function with types
-const fetchQuizzes = async (): Promise<Quiz[]> => {
-    const allQuizzes: Quiz[] = [
+// Mock fetchCustomerCares function with types
+const fetchCustomerCare = async (): Promise<Customer[]> => {
+    const allCustomerCare: Customer[] = [
         { id: "1", Priority: "Medium", joiningDate: "Dec 1, 2023", email: "Jun 1, 2024", status: "Opened" },
         { id: "2", Priority: "Low", joiningDate: "Nov 15, 2023", email: "May 15, 2024", status: "Resolved" },
         { id: "3", Priority: "Medium", joiningDate: "Oct 1, 2023", email: "Apr 1, 2024", status: "Re-opened" },
@@ -43,12 +43,12 @@ const fetchQuizzes = async (): Promise<Quiz[]> => {
         { id: "10", Priority: "Hard", joiningDate: "Aug 20, 2023", email: "Feb 20, 2024", status: "Latest" }
 
     ];
-    return allQuizzes;
+    return allCustomerCare;
 };
 
 function CustomerCare() {
-    const [data, setData] = useState<Quiz[]>([]);
-    const [quizzes, setQuizzes] = useState<Quiz[]>([]);
+    const [data, setData] = useState<Customer[]>([]);
+    const [customerCare, setCustomerCare] = useState<Customer[]>([]);
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage] = useState(5);
     const [loading, setLoading] = useState(true);
@@ -66,26 +66,17 @@ function CustomerCare() {
         allSelected: new Set()
     });
 
-    // Fetch quizzes when component mounts
+    // Fetch customer care when component mounts
     useEffect(() => {
-        const loadQuizzes = async () => {
+        const loadCustomerCare = async () => {
             setLoading(true);
-            const quizzes = await fetchQuizzes();
-            setQuizzes(quizzes);
-            setData(quizzes);
+            const customerCare = await fetchCustomerCare();
+            setCustomerCare(customerCare);
+            setData(customerCare);
             setLoading(false);
         };
-        loadQuizzes();
+        loadCustomerCare();
     }, []);
-
-    // Filter quizzes based on search term
-    // useEffect(() => {
-    //     const filteredQuizzes = quizzes.filter(quiz =>
-    //         quiz.title.toLowerCase().includes(searchTerm.toLowerCase())
-    //     );
-    //     setData(filteredQuizzes);
-    //     setCurrentPage(1); // Reset to first page on new search
-    // }, [searchTerm, quizzes]);
 
     const lastItemIndex = currentPage * itemsPerPage;
     const firstItemIndex = lastItemIndex - itemsPerPage;
@@ -159,15 +150,15 @@ function CustomerCare() {
 
     // Uncomment and modify search useEffect
     useEffect(() => {
-        const filteredQuizzes = quizzes.filter(quiz =>
+        const filteredCustomerCare = customerCare.filter(customer =>
             // Search across multiple fields
-            quiz.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            quiz.Importance.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            quiz.status.toLowerCase().includes(searchTerm.toLowerCase())
+            customer.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            customer.Priority.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            customer.status.toLowerCase().includes(searchTerm.toLowerCase())
         );
-        setData(filteredQuizzes);
+        setData(filteredCustomerCare);
         setCurrentPage(1); // Reset to first page on new search
-    }, [searchTerm, quizzes]);
+    }, [searchTerm, customerCare]);
 
     // Update handleItemSelect to handle both page and global selection
     const handleItemSelect = (itemId: string) => {
@@ -184,6 +175,13 @@ function CustomerCare() {
         setSelectedItems(prev => ({
             pageSelected: newPageSelected,
             allSelected: newAllSelected
+        }));
+    };
+
+    const selectAllItems = () => {
+        setSelectedItems(prev => ({
+            pageSelected: new Set(),
+            allSelected: new Set(data.map(item => item.id))
         }));
     };
 
@@ -344,10 +342,7 @@ function CustomerCare() {
                         ) : (
                             <button
                                 className="text-[#9012FF] underline"
-                                onClick={() => {
-                                    // Select all logic
-                                    data.forEach((item) => selectedItems.allSelected.add(item)); // Or update your state logic
-                                }}
+                                onClick={selectAllItems}
                             >
                                 Select all {data.length}
                             </button>
@@ -530,17 +525,17 @@ function CustomerCare() {
                             </tr>
                         </thead>
                         <tbody>
-                            {currentItems.map((quiz, index) => (
-                                <tr key={quiz.id} onClick={() => handleTabClick('/admin/customercare/customerinfo')} className="h-auto border-t border-solid border-[#EAECF0] cursor-pointer">
+                            {currentItems.map((customer, index) => (
+                                <tr key={customer.id} onClick={() => handleTabClick('/admin/customercare/customerinfo')} className="h-auto border-t border-solid border-[#EAECF0] cursor-pointer">
                                     <td className="pl-8 py-4 text-center text-[#101828] text-sm">
                                         <Checkbox
                                             size="md"
                                             color="primary"
                                             isSelected={
-                                                selectedItems.allSelected.has(quiz.id) ||
-                                                selectedItems.pageSelected.has(quiz.id)
+                                                selectedItems.allSelected.has(customer.id) ||
+                                                selectedItems.pageSelected.has(customer.id)
                                             }
-                                            onChange={() => handleItemSelect(quiz.id)}
+                                            onChange={() => handleItemSelect(customer.id)}
                                             onClick={(e) => e.stopPropagation()}
                                         />
                                     </td>
@@ -577,7 +572,7 @@ function CustomerCare() {
                                         </div>
                                     </td>
                                     <td className="flex items-centre justify-left h-full pl-10 py-4 text-[#101828] text-sm">
-                                        <CustomerCareImportance Priority={quiz.Priority} />
+                                        <CustomerCareImportance Priority={customer.Priority} />
                                     </td>
                                     <td className="py-4 text-center text-[#101828] text-sm">Mon Jan 6, 2024</td>
                                     <td className="py-4 text-[#101828] text-sm">
@@ -592,7 +587,7 @@ function CustomerCare() {
                                         </div>
                                     </td>
                                     <td className="flex items-center justify-start pr-4 py-4 text-[#101828] text-sm">
-                                        <CustomerCareStatus status={quiz.status} />
+                                        <CustomerCareStatus status={customer.status} />
                                     </td>
                                 </tr>
                             ))}

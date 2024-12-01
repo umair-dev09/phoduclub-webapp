@@ -16,86 +16,27 @@ import Remove from "@/components/AdminComponents/QuizInfoDailogs/Remove";
 
 // Define types for quiz data
 interface Quiz {
+    name: string;
+    id: string;
     enrollmentType: string;
     progress: string;
     enrolledDate: string;
-    expiryDate: string;
     status: 'Live' | 'Paused' | 'Finished' | 'Scheduled' | 'Cancelled' | 'Saved';
 }
 
 // Mock fetchQuizzes function with types
 const fetchQuizzes = async (): Promise<Quiz[]> => {
     const allQuizzes: Quiz[] = [
-        {
-            enrollmentType: "Free",
-            progress: "50%",
-            enrolledDate: "Dec 1, 2023",
-            expiryDate: "Jun 1, 2024",
-            status: "Live"
-        },
-        {
-            enrollmentType: "Paid",
-            progress: "30%",
-            enrolledDate: "Nov 15, 2023",
-            expiryDate: "May 15, 2024",
-            status: "Saved"
-        },
-        {
-            enrollmentType: "Free",
-            progress: "75%",
-            enrolledDate: "Oct 1, 2023",
-            expiryDate: "Apr 1, 2024",
-            status: "Paused"
-        },
-        {
-            enrollmentType: "Paid",
-            progress: "100%",
-            enrolledDate: "Sep 1, 2023",
-            expiryDate: "Mar 1, 2024",
-            status: "Finished"
-        },
-        {
-            enrollmentType: "Free",
-            progress: "10%",
-            enrolledDate: "Jan 1, 2024",
-            expiryDate: "Jul 1, 2024",
-            status: "Scheduled"
-        },
-        {
-            enrollmentType: "Paid",
-            progress: "0%",
-            enrolledDate: "Feb 1, 2024",
-            expiryDate: "Aug 1, 2024",
-            status: "Cancelled"
-        },
-        {
-            enrollmentType: "Free",
-            progress: "85%",
-            enrolledDate: "Jul 15, 2023",
-            expiryDate: "Jan 15, 2024",
-            status: "Live"
-        },
-        {
-            enrollmentType: "Paid",
-            progress: "20%",
-            enrolledDate: "Dec 10, 2023",
-            expiryDate: "Jun 10, 2024",
-            status: "Saved"
-        },
-        {
-            enrollmentType: "Free",
-            progress: "45%",
-            enrolledDate: "Nov 25, 2023",
-            expiryDate: "May 25, 2024",
-            status: "Paused"
-        },
-        {
-            enrollmentType: "Paid",
-            progress: "100%",
-            enrolledDate: "Aug 20, 2023",
-            expiryDate: "Feb 20, 2024",
-            status: "Finished"
-        }
+        { name: "John Doe", id: "John#8547", enrollmentType: "Free", progress: "50%", enrolledDate: "Dec 1, 2023", status: "Live" },
+        { name: "Jane Smith", id: "Jane#4372", enrollmentType: "Paid", progress: "30%", enrolledDate: "Nov 15, 2023", status: "Saved" },
+        { name: "Alice Johnson", id: "Alice#9831", enrollmentType: "Free", progress: "75%", enrolledDate: "Oct 1, 2023", status: "Paused" },
+        { name: "Robert Brown", id: "Robert#6124", enrollmentType: "Paid", progress: "100%", enrolledDate: "Sep 1, 2023", status: "Finished" },
+        { name: "Emily Davis", id: "Emily#7538", enrollmentType: "Free", progress: "10%", enrolledDate: "Jan 1, 2024", status: "Scheduled" },
+        { name: "Michael Wilson", id: "Michael#4295", enrollmentType: "Paid", progress: "0%", enrolledDate: "Feb 1, 2024", status: "Cancelled" },
+        { name: "Sophia Miller", id: "Sophia#3147", enrollmentType: "Free", progress: "85%", enrolledDate: "Jul 15, 2023", status: "Live" },
+        { name: "James Anderson", id: "James#2289", enrollmentType: "Paid", progress: "20%", enrolledDate: "Dec 10, 2023", status: "Saved" },
+        { name: "Olivia Thomas", id: "Olivia#5823", enrollmentType: "Free", progress: "45%", enrolledDate: "Nov 25, 2023", status: "Paused" },
+        { name: "William Martinez", id: "William#7391", enrollmentType: "Paid", progress: "100%", enrolledDate: "Aug 20, 2023", status: "Finished" }
     ];
     return allQuizzes;
 };
@@ -255,31 +196,23 @@ function StudentsAttemptedCourseInfo() {
                     <table className="w-full bg-white rounded-xl">
                         <thead>
                             <tr>
-                                <th className="w-1/4 text-left px-8 py-4 pl-8 rounded-tl-xl flex flex-row ">
+                                <th className="text-left px-8 py-4 pl-8 rounded-tl-xl flex flex-row ">
                                     <span className="text-[#667085] font-medium text-sm">Name</span>
-                                    <Image src="/icons/expandall.svg" width={28} height={18} alt="Expand all icon" />
                                 </th>
-                                <th className=" w-[17%] text-center px-8 py-4 text-[#667085] font-medium text-sm">
+                                <th className="text-center px-8 py-4 text-[#667085] font-medium text-sm">
                                     <div className="flex flex-row justify-center gap-1">
                                         <p>Enrollment Type</p>
-                                        <Image src='/icons/unfold-more-round.svg' alt="" width={16} height={16} />
                                     </div>
                                 </th>
-                                <th className=" w-[17%] text-center px-8 py-4 text-[#667085] font-medium text-sm">
+                                <th className="text-center px-8 py-4 text-[#667085] font-medium text-sm">
                                     <div className="flex flex-row justify-center gap-1">
                                         <p>Progress</p>
                                         <Image src='/icons/unfold-more-round.svg' alt="" width={16} height={16} />
                                     </div>
                                 </th>
-                                <th className=" w-[17%] text-center px-8 py-4 text-[#667085] font-medium text-sm">
+                                <th className="text-center px-8 py-4 text-[#667085] font-medium text-sm">
                                     <div className="flex flex-row justify-center gap-1">
                                         <p>Enrollment Date</p>
-                                        <Image src='/icons/unfold-more-round.svg' alt="" width={16} height={16} />
-                                    </div>
-                                </th>
-                                <th className=" w-[17%] text-center px-8 py-4 rounded-tr-xl text-[#667085] font-medium text-sm">
-                                    <div className="flex flex-row justify-center gap-1">
-                                        <p>Expiry Date</p>
                                         <Image src='/icons/unfold-more-round.svg' alt="" width={16} height={16} />
                                     </div>
                                 </th>
@@ -298,15 +231,14 @@ function StudentsAttemptedCourseInfo() {
                                                 </div>
                                             </div>
                                             <div className="flex items-start justify-start flex-col">
-                                                <div className="font-semibold">Jenny Wilson</div>
-                                                <div className="flex justify-start items-start text-[13px] text-[#667085]">jenny#8547</div>
+                                                <div className="font-semibold">{quiz.name}</div>
+                                                <div className="flex justify-start items-start text-[13px] text-[#667085]">{quiz.id}</div>
                                             </div>
                                         </div>
                                     </td>
                                     <td className="px-8 py-4 text-center text-[#101828] text-sm">{quiz.enrollmentType}</td>
                                     <td className="px-8 py-4 text-center text-[#101828] text-sm">{quiz.progress}</td>
                                     <td className="px-8 py-4 text-center text-[#101828] text-sm">{quiz.enrolledDate}</td>
-                                    <td className="px-8 py-4 text-center text-[#101828] text-sm">{quiz.expiryDate}</td>
                                     <td className="flex items-center justify-center px-8 py-4 text-[#101828] text-sm">
                                         <Popover placement="bottom-end">
                                             <PopoverTrigger>

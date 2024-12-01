@@ -15,16 +15,16 @@ import {
 import { Popover, PopoverContent, PopoverTrigger } from "@nextui-org/popover";
 import { Pause } from "lucide-react";
 import ScheduledDialog from "@/components/AdminComponents/QuizInfoDailogs/scheduledDailog";
-import DeleteQuiz from "@/components/AdminComponents/QuizInfoDailogs/DeleteQuiz";
-import EndQuiz from "@/components/AdminComponents/QuizInfoDailogs/EndQuiz";
-import PausedQuiz from "@/components/AdminComponents/QuizInfoDailogs/PausedQuiz";
+import Delete from "@/components/AdminComponents/QuizInfoDailogs/DeleteDailogue";
+import End from "@/components/AdminComponents/QuizInfoDailogs/EndDailogue";
+import Paused from "@/components/AdminComponents/QuizInfoDailogs/PauseDailogue";
 import MakeLiveNow from "@/components/AdminComponents/QuizInfoDailogs/MakeLiveNow";
-import ResumeQuiz from "@/components/AdminComponents/QuizInfoDailogs/ResumeQuiz";
+import Resume from "@/components/AdminComponents/QuizInfoDailogs/ResumeDailogue";
 import ViewAnalytics from "@/components/AdminComponents/QuizInfoDailogs/ViewAnalytics";
-import QuizStatus from '@/components/AdminComponents/QuizzesManagement/quizStatus';
+import Status from '@/components/AdminComponents/QuizzesManagement/quizStatus';
 
-// Define types for quiz data
-interface Quiz {
+// Define types for course data
+interface Course {
     title: string;
     price: number; // Replaced 'questions' with 'price'
     date: string; // Can be Date type if desired
@@ -32,9 +32,9 @@ interface Quiz {
     status: 'live' | 'paused' | 'finished' | 'scheduled' | 'ended' | 'saved'; // Converted to lowercase
 }
 
-// Mock fetchQuizzes function with updated types
-const fetchQuizzes = async (): Promise<Quiz[]> => {
-    const allQuizzes: Quiz[] = [
+// Mock fetchCourses function with updated types
+const fetchCourses = async (): Promise<Course[]> => {
+    const allCourses: Course[] = [
         { title: 'Maths', price: 250, date: 'Jan 6, 2024', students: 2147, status: 'live' },
         { title: 'Ancient Civilizations', price: 180, date: 'Mar 15, 2024', students: 900, status: 'saved' },
         { title: 'Science', price: 300, date: 'Jan 8, 2024', students: 1875, status: 'paused' },
@@ -67,40 +67,40 @@ const fetchQuizzes = async (): Promise<Quiz[]> => {
         { title: 'Genetics', price: 270, date: 'Mar 25, 2024', students: 1300, status: 'saved' },
         { title: 'Linguistics', price: 200, date: 'Apr 10, 2024', students: 1050, status: 'saved' }
     ];
-    return allQuizzes;
+    return allCourses;
 };
 
 type Option = 'Saved' | 'Live' | 'Scheduled' | 'Pause' | 'Finished' | 'Canceled';
 
-function Quizz() {
-    const [data, setData] = useState<Quiz[]>([]);
-    const [quizzes, setQuizzes] = useState<Quiz[]>([]);
+function Course() {
+    const [data, setData] = useState<Course[]>([]);
+    const [Courses, setCourses] = useState<Course[]>([]);
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage] = useState(5);
     const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState('');
     const router = useRouter();
 
-    // Fetch quizzes when component mounts
+    // Fetch courses when component mounts
     useEffect(() => {
-        const loadQuizzes = async () => {
+        const loadCourses = async () => {
             setLoading(true);
-            const quizzes = await fetchQuizzes();
-            setQuizzes(quizzes);
-            setData(quizzes);
+            const coourses = await fetchCourses();
+            setCourses(coourses);
+            setData(coourses);
             setLoading(false);
         };
-        loadQuizzes();
+        loadCourses();
     }, []);
 
-    // Filter quizzes based on search term
+    // Filter courses based on search term
     useEffect(() => {
-        const filteredQuizzes = quizzes.filter(quiz =>
-            quiz.title.toLowerCase().includes(searchTerm.toLowerCase())
+        const filteredCourses = Courses.filter(course =>
+            course.title.toLowerCase().includes(searchTerm.toLowerCase())
         );
-        setData(filteredQuizzes);
+        setData(filteredCourses);
         setCurrentPage(1); // Reset to first page on new search
-    }, [searchTerm, quizzes]);
+    }, [searchTerm, Courses]);
 
     const lastItemIndex = currentPage * itemsPerPage;
     const firstItemIndex = lastItemIndex - itemsPerPage;
@@ -123,32 +123,32 @@ function Quizz() {
     const [isEndDialogOpen, setIsEndDialogOpen] = useState(false);
     const [isPausedDialogOpen, setIsPausedDialogOpen] = useState(false);
     const [isMakeLiveNowDialogOpen, setIsMakeLiveNowDialogOpen] = useState(false);
-    const [isResumeQuizOpen, setIsResumeQuizOpen] = useState(false);
+    const [isResumeOpen, setIsResumeOpen] = useState(false);
     const [isViewAnalyticsOpen, setIsViewAnalyticsOpen] = useState(false);
 
     // Handlers for ScheduledDialog
     const openScheduledDialog = () => setIsScheduledDialogOpen(true);
     const closeScheduledDialog = () => setIsScheduledDialogOpen(false);
 
-    // Handlers for DeleteQuiz dialog
+    // Handlers for DeleteCourse dialog
     const openDeleteDialog = () => setIsDeleteDialogOpen(true);
     const closeDeleteDialog = () => setIsDeleteDialogOpen(false);
 
-    // Handlers for EndQuiz dialog
-    const openEndQuiz = () => setIsEndDialogOpen(true);
-    const closeEndQuiz = () => setIsEndDialogOpen(false);
+    // Handlers for EndCourse dialog
+    const openEnd = () => setIsEndDialogOpen(true);
+    const closeEnd = () => setIsEndDialogOpen(false);
 
-    // Handlers for  PausedQuiz dialog
-    const openPausedQuiz = () => setIsPausedDialogOpen(true);
-    const closePausedQuiz = () => setIsPausedDialogOpen(false);
+    // Handlers for  Paused dialog
+    const openPaused = () => setIsPausedDialogOpen(true);
+    const closePaused = () => setIsPausedDialogOpen(false);
 
     // Handlers for  MakeLiveNow dialog
-    const openMakeLiveNowQuiz = () => setIsMakeLiveNowDialogOpen(true);
-    const closeMakeLiveNowQuiz = () => setIsMakeLiveNowDialogOpen(false);
+    const openMakeLiveNow = () => setIsMakeLiveNowDialogOpen(true);
+    const closeMakeLiveNow = () => setIsMakeLiveNowDialogOpen(false);
 
-    // Handlers for ResumeQuiz dialog
-    const openResumeQuiz = () => setIsResumeQuizOpen(true);
-    const closeResumeQuiz = () => setIsResumeQuizOpen(false);
+    // Handlers for Resume dialog
+    const openResume = () => setIsResumeOpen(true);
+    const closeResume = () => setIsResumeOpen(false);
 
     // Handlers for ViewAnalytics dialog
     const openViewAnalytics = () => setIsViewAnalyticsOpen(true);
@@ -185,13 +185,13 @@ function Quizz() {
 
 
     useEffect(() => {
-        // Start with all quizzes
-        let filteredQuizzes = quizzes;
+        // Start with all courses
+        let filteredCourses = Courses;  // Changed from 'courses' to 'Courses' to match the variable name
 
         // First, filter by search term if there is one
         if (searchTerm) {
-            filteredQuizzes = filteredQuizzes.filter(quiz =>
-                "Phodu JEE Mains Test Series 2025".toLowerCase().includes(searchTerm.toLowerCase())
+            filteredCourses = filteredCourses.filter(course =>  // Changed 'courses' to 'course' in the parameter
+                course.title.toLowerCase().includes(searchTerm.toLowerCase())  // Replaced hardcoded string with actual course title
             );
         }
 
@@ -203,16 +203,16 @@ function Quizz() {
 
         // If any statuses are selected, filter by those statuses
         if (selectedStatuses.length > 0) {
-            filteredQuizzes = filteredQuizzes.filter(quiz =>
-                selectedStatuses.includes(quiz.status)
+            filteredCourses = filteredCourses.filter(course =>  // Changed 'courses' to 'course' in the parameter
+                selectedStatuses.includes(course.status)
             );
         }
 
         // Update the displayed data
-        setData(filteredQuizzes);
+        setData(filteredCourses);
         // Go back to first page whenever filters change
         setCurrentPage(1);
-    }, [searchTerm, checkedState, quizzes]);
+    }, [searchTerm, checkedState, Courses]);
 
     const statusColors: Record<Option, string> = {
         Saved: '#7400E0',
@@ -298,7 +298,7 @@ function Quizz() {
                         </PopoverContent>
                     </Popover>
 
-                    {/* Create Quiz Button */}
+                    {/* Create Course Button */}
                     <button
                         className="h-[44px] w-[135px] bg-[#8501FF] rounded-md shadow-inner-button border border-solid border-[#800EE2] flex items-center justify-center"
                         onClick={() => handleTabClick('/admin/content/coursecreation/createcourse')}
@@ -310,7 +310,7 @@ function Quizz() {
 
             {loading ? (
                 <div className="flex justify-center items-center h-48">
-                    <span className="text-lg">Loading quizzes...</span>
+                    <span className="text-lg">Loading courses...</span>
                 </div>
             ) : (
                 <div className="flex flex-1 flex-col">
@@ -364,7 +364,7 @@ function Quizz() {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {currentItems.map((quiz, index) => (
+                                    {currentItems.map((course, index) => (
                                         <tr key={index} className="border-t border-solid border-[#EAECF0]">
                                             <td onClick={() => handleTabClick('/admin/content/coursecreation/courseinfo')}>
                                                 <button className="flex flex-row items-center px-8 py-3 gap-2 text-[#9012FF] underline text-sm font-medium">
@@ -372,12 +372,12 @@ function Quizz() {
                                                     <p className="text-start">BITSET Full Course</p>
                                                 </button>
                                             </td>
-                                            <td className="px-8 py-4 text-center text-[#101828] text-sm"><span className="mr-1">&#8377;</span>{quiz.price}</td>
-                                            <td className="px-8 py-4 text-center text-[#101828] text-sm">{quiz.date}</td>
-                                            <td className="px-8 py-4 text-center text-[#101828] text-sm">{quiz.students}</td>
+                                            <td className="px-8 py-4 text-center text-[#101828] text-sm"><span className="mr-1">&#8377;</span>{course.price}</td>
+                                            <td className="px-8 py-4 text-center text-[#101828] text-sm">{course.date}</td>
+                                            <td className="px-8 py-4 text-center text-[#101828] text-sm">{course.students}</td>
                                             <td className="px-8 py-4 text-[#101828] text-sm">
                                                 <span className='flex items-center justify-start rounded-full'>
-                                                    <QuizStatus status={quiz.status} />
+                                                    <Status status={course.status} />
                                                 </span>
                                             </td>
                                             <td className="flex items-center justify-center px-8 py-4 text-[#101828] text-sm">
@@ -392,39 +392,38 @@ function Quizz() {
                                                             />
                                                         </button>
                                                     </PopoverTrigger>
-                                                    <PopoverContent className={`flex flex-col items-start text-sm font-normal py-1 px-0 bg-white border border-lightGrey rounded-md ${quiz.status === 'paused' ? 'w-[11.563rem]' : 'w-[10.438rem]'}`}>
-
-                                                        {/* Option 1: Edit Quiz */}
+                                                    <PopoverContent className={`flex flex-col items-start text-sm font-normal py-1 px-0 bg-white border border-lightGrey rounded-md ${course.status === 'paused' ? 'w-[11.563rem]' : 'w-[10.438rem]'}`}>
+                                                        {/* Option 1: Edit Course */}
                                                         <div>
-                                                            {quiz.status === 'paused' && (
+                                                            {course.status === 'paused' && (
                                                                 <div className="flex flex-row w-[11.563rem] px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors"
                                                                     onClick={() => handleTabClick('/admin/content/quizzesmanagement/createquiz')}>
                                                                     <Image src='/icons/edit-icon.svg' alt="edit" width={18} height={18} />
-                                                                    <p>Edit Quiz</p>
+                                                                    <p>Edit</p>
                                                                 </div>
                                                             )}
-                                                            {quiz.status === 'scheduled' && (
+                                                            {course.status === 'scheduled' && (
                                                                 <div className="flex flex-row w-[10.438rem] px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors"
                                                                     onClick={() => handleTabClick('/admin/content/quizzesmanagement/createquiz')}>
                                                                     <Image src='/icons/edit-icon.svg' alt="edit" width={18} height={18} />
-                                                                    <p>Edit Quiz</p>
+                                                                    <p>Edit</p>
                                                                 </div>
                                                             )}
-                                                            {quiz.status === 'saved' && (
+                                                            {course.status === 'saved' && (
                                                                 <div className="flex flex-row w-[10.438rem] px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors"
                                                                     onClick={() => handleTabClick('/admin/content/quizzesmanagement/createquiz')}>
                                                                     <Image src='/icons/edit-icon.svg' alt="edit" width={18} height={18} />
-                                                                    <p>Edit Quiz</p>
+                                                                    <p>Edit</p>
                                                                 </div>
                                                             )}
-                                                            {quiz.status === 'live' && (
+                                                            {course.status === 'live' && (
                                                                 <div className="flex flex-row w-[10.438rem] px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors"
-                                                                    onClick={openPausedQuiz}>
-                                                                    <Image src='/icons/pause-dark.svg' alt="pause quiz" width={18} height={18} />
-                                                                    <p>Paused Quiz</p>
+                                                                    onClick={openPaused}>
+                                                                    <Image src='/icons/pause-dark.svg' alt="pause" width={18} height={18} />
+                                                                    <p>Pause</p>
                                                                 </div>
                                                             )}
-                                                            {quiz.status === 'finished' && (
+                                                            {course.status === 'finished' && (
                                                                 <div className="flex flex-row w-[10.438rem] px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors"
                                                                     onClick={openViewAnalytics}>
                                                                     <Image src='/icons/analytics-01.svg' alt="view analytics" width={18} height={18} />
@@ -432,67 +431,67 @@ function Quizz() {
                                                                 </div>
                                                             )}
                                                         </div>
-                                                        {/* Option 3: Resume Quiz (only if status is Paused) */}
-                                                        {quiz.status === 'paused' && (
+                                                        {/* Option 3: Resume Course (only if status is Paused) */}
+                                                        {course.status === 'paused' && (
                                                             <div className="flex flex-row w-full px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors"
-                                                                onClick={openResumeQuiz}>
-                                                                <Image src='/icons/play-dark.svg' alt="resume quiz" width={20} height={20} />
-                                                                <p>Resume Quiz</p>
+                                                                onClick={openResume}>
+                                                                <Image src='/icons/play-dark.svg' alt="resume" width={20} height={20} />
+                                                                <p>Resume</p>
                                                             </div>
                                                         )}
-                                                        {/* Option 3: Schedule Quiz (only if status is Paused) */}
-                                                        {quiz.status === 'paused' && (
+                                                        {/* Option 3: Schedule Course (only if status is Paused) */}
+                                                        {course.status === 'paused' && (
                                                             <Popover placement="left-start">
                                                                 <PopoverTrigger>
                                                                     <div className="flex flex-row justify-between w-[11.563rem] px-4 py-[0.625rem] hover:bg-[#F2F4F7] transition-colors">
                                                                         <div className="flex flex-row gap-2">
                                                                             <Image src='/icons/calendar-03.svg' alt="schedule" width={18} height={18} />
-                                                                            <p>Schedule quiz</p>
+                                                                            <p>Schedule</p>
                                                                         </div>
                                                                         <Image src='/icons/collapse-right-02.svg' alt="schedule popup" width={18} height={18} />
                                                                     </div>
                                                                 </PopoverTrigger>
                                                                 <PopoverContent className="flex flex-col items-start text-sm font-normal py-1 px-0 bg-white border border-lightGrey rounded-md w-[11.25rem]">
-                                                                    <div className="w-full px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors" onClick={openScheduledDialog}>Schedule Quiz</div>
+                                                                    <div className="w-full px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors" onClick={openScheduledDialog}>Schedule</div>
                                                                     <div className="w-full px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors">Make Live Now</div>
                                                                 </PopoverContent>
                                                             </Popover>
                                                         )}
-                                                        {/* Option 4: Delete Quiz */}
+                                                        {/* Option 4: Delete Course */}
                                                         <div>
-                                                            {quiz.status === 'paused' && (
+                                                            {course.status === 'paused' && (
                                                                 <div className="flex flex-row w-[11.563rem] px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors"
                                                                     onClick={openDeleteDialog}>
                                                                     <Image src='/icons/delete.svg' alt="delete" width={18} height={18} />
-                                                                    <p className="text-[#DE3024]">Delete Quiz</p>
+                                                                    <p className="text-[#DE3024]">Delete</p>
                                                                 </div>
                                                             )}
-                                                            {quiz.status === 'scheduled' && (
+                                                            {course.status === 'scheduled' && (
                                                                 <div className="flex flex-row w-[10.438rem] px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors"
                                                                     onClick={openDeleteDialog}>
                                                                     <Image src='/icons/delete.svg' alt="delete" width={18} height={18} />
-                                                                    <p className="text-[#DE3024]">Delete Quiz</p>
+                                                                    <p className="text-[#DE3024]">Delete</p>
                                                                 </div>
                                                             )}
-                                                            {quiz.status === 'finished' && (
+                                                            {course.status === 'finished' && (
                                                                 <div className="flex flex-row w-[10.438rem] px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors"
                                                                     onClick={openDeleteDialog}>
                                                                     <Image src='/icons/delete.svg' alt="delete" width={18} height={18} />
-                                                                    <p className="text-[#DE3024]">Delete Quiz</p>
+                                                                    <p className="text-[#DE3024]">Delete</p>
                                                                 </div>
                                                             )}
-                                                            {quiz.status === 'saved' && (
+                                                            {course.status === 'saved' && (
                                                                 <div className="flex flex-row w-[10.438rem] px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors"
                                                                     onClick={openDeleteDialog}>
                                                                     <Image src='/icons/delete.svg' alt="delete" width={18} height={18} />
-                                                                    <p className="text-[#DE3024]">Delete Quiz</p>
+                                                                    <p className="text-[#DE3024]">Delete</p>
                                                                 </div>
                                                             )}
-                                                            {quiz.status === 'live' && (
+                                                            {course.status === 'live' && (
                                                                 <div className="flex flex-row w-[10.438rem] px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors"
-                                                                    onClick={openEndQuiz}>
-                                                                    <Image src='/icons/license-no.svg' alt="end quiz" width={18} height={18} />
-                                                                    <p className="text-[#DE3024]">End Quiz</p>
+                                                                    onClick={openEnd}>
+                                                                    <Image src='/icons/license-no.svg' alt="end" width={18} height={18} />
+                                                                    <p className="text-[#DE3024]">End</p>
                                                                 </div>
                                                             )}
                                                         </div>
@@ -522,11 +521,11 @@ function Quizz() {
             )}
             {/* Dialog components with conditional rendering */}
             {isScheduledDialogOpen && <ScheduledDialog onClose={closeScheduledDialog} />}
-            {isDeleteDialogOpen && <DeleteQuiz onClose={closeDeleteDialog} open={true} />}
-            {isEndDialogOpen && <EndQuiz onClose={closeEndQuiz} />}
-            {isPausedDialogOpen && <PausedQuiz onClose={closePausedQuiz} />}
-            {isMakeLiveNowDialogOpen && < MakeLiveNow onClose={closeMakeLiveNowQuiz} open={true} />}
-            {isResumeQuizOpen && < ResumeQuiz onClose={closeResumeQuiz} open={true} />}
+            {isDeleteDialogOpen && <Delete onClose={closeDeleteDialog} open={true} />}
+            {isEndDialogOpen && <End onClose={closeEnd} />}
+            {isPausedDialogOpen && <Paused onClose={closePaused} />}
+            {isMakeLiveNowDialogOpen && < MakeLiveNow onClose={closeMakeLiveNow} open={true} />}
+            {isResumeOpen && < Resume onClose={closeResume} open={true} />}
             {isViewAnalyticsOpen && < ViewAnalytics onClose={closeViewAnalytics} open={true} />}
         </div>
     );
@@ -650,4 +649,4 @@ function PaginationSection({
     );
 }
 
-export default Quizz;
+export default Course;

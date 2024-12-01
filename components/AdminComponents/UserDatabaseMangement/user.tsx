@@ -99,7 +99,7 @@ function User() {
         if (userTypeFilter == 'Free') {
             filteredUsers = filteredUsers.filter(user => !user.isPremium);
         }
-        // Update state with filtered and sorted quizzes
+        // Update state with filtered and sorted users
         setData(filteredUsers);
         setCurrentPage(1); // Reset to first page when filters change
     }, [searchTerm, users, userTypeFilter]);

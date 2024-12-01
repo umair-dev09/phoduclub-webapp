@@ -1,12 +1,12 @@
 "use client";
 import Image from "next/image";
-import React, { useState,useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import ScheduledDialog from "@/components/AdminComponents/QuizInfoDailogs/scheduledDailog";
-import DeleteQuiz from "@/components/AdminComponents/QuizInfoDailogs/DeleteQuiz";
-import EndQuiz from "@/components/AdminComponents/QuizInfoDailogs/EndQuiz";
-import PausedQuiz from "@/components/AdminComponents/QuizInfoDailogs/PausedQuiz";
+import DeleteQuiz from "@/components/AdminComponents/QuizInfoDailogs/DeleteDailogue";
+import EndQuiz from "@/components/AdminComponents/QuizInfoDailogs/EndDailogue";
+import PausedQuiz from "@/components/AdminComponents/QuizInfoDailogs/PauseDailogue";
 import MakeLiveNow from "@/components/AdminComponents/QuizInfoDailogs/MakeLiveNow";
-import ResumeQuiz from "@/components/AdminComponents/QuizInfoDailogs/ResumeQuiz";
+import ResumeQuiz from "@/components/AdminComponents/QuizInfoDailogs/ResumeDailogue";
 import Questions from "@/components/AdminComponents/QuizInfo/Questions";
 import StudentsAttempts from "@/components/AdminComponents/QuizInfo/StudentsAttempts";
 import { Popover, PopoverContent, PopoverTrigger } from "@nextui-org/popover";
@@ -28,15 +28,16 @@ type QuizData = {
     quizTime: string;
     quizId: string;
 };
-  
-  // Define the type for individual questions within the quiz
-  type Options = {
+
+// Define the type for individual questions within the quiz
+type Options = {
     A: string;
     B: string;
     C: string;
     D: string;
 }
-  type QuestionData = {
+
+type QuestionData = {
     question: string;
     correctAnswer: string;
     answerExplanation: string;
@@ -45,14 +46,14 @@ type QuizData = {
 
 };
 
-  const cleanQuizDescription = (description: string) => {
+const cleanQuizDescription = (description: string) => {
     let sanitizedDescription = DOMPurify.sanitize(description);
     sanitizedDescription = sanitizedDescription.replace(
-      /<span class="ql-ui" contenteditable="false"><\/span>/g,
-      ''
+        /<span class="ql-ui" contenteditable="false"><\/span>/g,
+        ''
     );
     return sanitizedDescription;
-  };
+};
 function Quizinfo({ params }: { params: { quizName: string } }) {
     const router = useRouter();
     const searchParams = useSearchParams();
@@ -100,92 +101,92 @@ function Quizinfo({ params }: { params: { quizName: string } }) {
 
     useEffect(() => {
         const fetchQuizData = async () => {
-          if (!quizId) return;
-    
-          try {
-            const quizDocRef = doc(db, 'quiz', quizId);
-            const quizDocSnap = await getDoc(quizDocRef);
-    
-            if (quizDocSnap.exists()) {
-              setQuizData(quizDocSnap.data() as QuizData);
-              setLoading(false);
-            } else {
-              console.error('Quiz data not found');
-              setLoading(false);
+            if (!quizId) return;
 
+            try {
+                const quizDocRef = doc(db, 'quiz', quizId);
+                const quizDocSnap = await getDoc(quizDocRef);
+
+                if (quizDocSnap.exists()) {
+                    setQuizData(quizDocSnap.data() as QuizData);
+                    setLoading(false);
+                } else {
+                    console.error('Quiz data not found');
+                    setLoading(false);
+
+                }
+
+                const questionsCollectionRef = collection(db, `quiz/${quizId}/Questions`);
+                const questionsSnapshot = await getDocs(questionsCollectionRef);
+
+                const questionsData = questionsSnapshot.docs.map(doc => ({
+                    id: doc.id,
+                    ...doc.data()
+                })) as unknown as QuestionData[];
+
+                setQuestions(questionsData);
+            } catch (error) {
+                console.error('Error fetching quiz data:', error);
+                setLoading(false);
             }
-    
-            const questionsCollectionRef = collection(db, `quiz/${quizId}/Questions`);
-            const questionsSnapshot = await getDocs(questionsCollectionRef);
-    
-            const questionsData = questionsSnapshot.docs.map(doc => ({
-                id: doc.id,
-                ...doc.data()
-            })) as unknown as QuestionData[];
-    
-            setQuestions(questionsData);
-          } catch (error) {
-            console.error('Error fetching quiz data:', error);
-            setLoading(false);
-          }
         };
-    
+
         fetchQuizData();
-      }, [quizId]);
-      
-      let formattedStartDate: string | undefined; // Declare the variable outside the block
-      if (quizData?.startDate) {
+    }, [quizId]);
+
+    let formattedStartDate: string | undefined; // Declare the variable outside the block
+    if (quizData?.startDate) {
         const dateObj = new Date(quizData.startDate);
-      
+
         // Format the date as per your required format
         formattedStartDate = dateObj.toLocaleString('en-GB', {
-          day: '2-digit',
-          month: 'short',
-          year: 'numeric',
-          hour: '2-digit',
-          minute: '2-digit',
-          hour12: true
+            day: '2-digit',
+            month: 'short',
+            year: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: true
         });
-      
+
         // Adjust the comma placement manually
         formattedStartDate = formattedStartDate.replace(' ', ', '); // Add a comma between the day and the month
         formattedStartDate = formattedStartDate.replace(',', ''); // Remove the unwanted comma between year and time
-      }
-      else {
+    }
+    else {
         formattedStartDate = "-"; // If startDate is null, set it to "-"
-      }
-      
-      let formattedEndDate: string | undefined; // Declare the variable outside the block
-      if (quizData?.endDate) {
+    }
+
+    let formattedEndDate: string | undefined; // Declare the variable outside the block
+    if (quizData?.endDate) {
         const dateObj = new Date(quizData.endDate);
-      
+
         // Format the date as per your required format
         formattedEndDate = dateObj.toLocaleString('en-GB', {
-          day: '2-digit',
-          month: 'short',
-          year: 'numeric',
-          hour: '2-digit',
-          minute: '2-digit',
-          hour12: true
+            day: '2-digit',
+            month: 'short',
+            year: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: true
         });
-      
+
         // Adjust the comma placement manually
         formattedEndDate = formattedEndDate.replace(' ', ', '); // Add a comma between the day and the month
         formattedEndDate = formattedEndDate.replace(',', ''); // Remove the unwanted comma between year and time
-      }
-      else {
+    }
+    else {
         formattedEndDate = "-"; // If startDate is null, set it to "-"
-      }
+    }
 
-      const formattedQuizTime = quizData?.quizTime 
-      ? quizData.quizTime.replace(/ Minute\(s\)/, ' min').replace(/ Hour\(s\)/, ' hours') 
-      : "-"; 
+    const formattedQuizTime = quizData?.quizTime
+        ? quizData.quizTime.replace(/ Minute\(s\)/, ' min').replace(/ Hour\(s\)/, ' hours')
+        : "-";
 
-      if (loading) {
-        return <LoadingData/>;
-      }
+    if (loading) {
+        return <LoadingData />;
+    }
 
-      const handlePublishQuiz = (path: string) => {
+    const handlePublishQuiz = (path: string) => {
         router.push(path);
     };
 
@@ -200,7 +201,7 @@ function Quizinfo({ params }: { params: { quizName: string } }) {
                             <span className="w-[6px] h-[6px] bg-[#182230] rounded-full "></span>
                             <span className="font-medium text-[#182230] text-xs">{quizData?.quizStatus}</span>
                         </div> */}
-                       <QuizStatus status={quizData?.quizStatus ?? ''} />
+                        <QuizStatus status={quizData?.quizStatus ?? ''} />
                     </div>
                     <div className="flex flex-row gap-1">
                         {/* BUTTON FOR EDIT AND DELETE QUIZ */}
@@ -213,119 +214,119 @@ function Quizinfo({ params }: { params: { quizName: string } }) {
                             <span className="text-sm text-[#DE3024] font-normal">Delete Quiz</span>
                         </button> */}
                         {/* Button for Resume Quiz */}
-                        {quizData?.quizStatus === 'saved' &&(        
-                        <button className="w-auto p-3 gap-2 flex-row flex bg-[#FFFFFF] border border-solid border-[#EAECF0] rounded-[8px] h-[40px] items-center"
-                        onClick={() => handlePublishQuiz(`/admin/content/quizzesmanagement/createquiz/?s=${quizData?.quizStatus}&qId=${quizData?.quizId}`)}>
-                            <Image src="/icons/publish-quiz.svg" width={18} height={18} alt="publish-quiz" />
-                            <span className="text-sm text-[#0C111D] font-normal">Publish Quiz</span>
-                        </button>
+                        {quizData?.quizStatus === 'saved' && (
+                            <button className="w-auto p-3 gap-2 flex-row flex bg-[#FFFFFF] border border-solid border-[#EAECF0] rounded-[8px] h-[40px] items-center"
+                                onClick={() => handlePublishQuiz(`/admin/content/quizzesmanagement/createquiz/?s=${quizData?.quizStatus}&qId=${quizData?.quizId}`)}>
+                                <Image src="/icons/publish-quiz.svg" width={18} height={18} alt="publish-quiz" />
+                                <span className="text-sm text-[#0C111D] font-normal">Publish Quiz</span>
+                            </button>
                         )}
 
-                        {quizData?.quizStatus === 'live' &&( 
-                           <div className="flex flex-row gap-[8px]">
-                        <button className="w-auto p-3 gap-2 flex-row flex bg-[#FFFFFF] border border-solid border-[#EAECF0] rounded-[8px] h-[40px] items-center">
-                            <Image src="/icons/duplicate.svg" width={18} height={18} alt="duplicate" />
-                            <span className="text-sm text-[#0C111D] font-normal">Duplicate</span>
-                        </button>
+                        {quizData?.quizStatus === 'live' && (
+                            <div className="flex flex-row gap-[8px]">
+                                <button className="w-auto p-3 gap-2 flex-row flex bg-[#FFFFFF] border border-solid border-[#EAECF0] rounded-[8px] h-[40px] items-center">
+                                    <Image src="/icons/duplicate.svg" width={18} height={18} alt="duplicate" />
+                                    <span className="text-sm text-[#0C111D] font-normal">Duplicate</span>
+                                </button>
 
-                         <button className="w-auto p-3 gap-2 flex-row flex bg-[#FFFFFF] border border-solid border-[#EAECF0] rounded-[8px] h-[40px] items-center"
-                            onClick={openPausedQuiz}>
-                            <Image src="/icons/pausequiz.svg" width={18} height={18} alt="Paused-quiz" />
-                            <span className="text-sm text-[#0C111D] font-normal">Pause Quiz</span>
-                        </button>
+                                <button className="w-auto p-3 gap-2 flex-row flex bg-[#FFFFFF] border border-solid border-[#EAECF0] rounded-[8px] h-[40px] items-center"
+                                    onClick={openPausedQuiz}>
+                                    <Image src="/icons/pausequiz.svg" width={18} height={18} alt="Paused-quiz" />
+                                    <span className="text-sm text-[#0C111D] font-normal">Pause Quiz</span>
+                                </button>
 
-                        <button className="w-auto p-3 gap-2 flex-row flex bg-[#FFFFFF] border border-solid border-[#EAECF0] rounded-[8px] h-[40px] items-center"
-                            onClick={openEndQuiz}>
-                            <Image src="/icons/endquiz.svg" width={18} height={18} alt="End-quiz" />
-                            <span className="text-sm text-[#DE3024]  font-normal">End Quiz</span>
-                        </button>
+                                <button className="w-auto p-3 gap-2 flex-row flex bg-[#FFFFFF] border border-solid border-[#EAECF0] rounded-[8px] h-[40px] items-center"
+                                    onClick={openEndQuiz}>
+                                    <Image src="/icons/endquiz.svg" width={18} height={18} alt="End-quiz" />
+                                    <span className="text-sm text-[#DE3024]  font-normal">End Quiz</span>
+                                </button>
 
-                           </div>    
+                            </div>
                         )}
 
-                        {quizData?.quizStatus === 'paused' &&( 
-                           <div className="flex flex-row gap-[8px]">
-                 
-                        <button
-                            className="w-auto p-3 gap-2 flex-row flex rounded-[8px] h-[40px] items-center"
-                            onClick={openResumeQuiz}>
-                            <Image src="/icons/resume.svg" width={18} height={18} alt="Resume Quiz" />
-                            <span className="text-sm text-[#9012FF]  font-medium">Resume Quiz</span>
-                        </button>
+                        {quizData?.quizStatus === 'paused' && (
+                            <div className="flex flex-row gap-[8px]">
 
-                        <button
-                            className="w-auto p-3 gap-2 flex-row flex bg-[#FFFFFF] border border-solid border-[#EAECF0] rounded-[8px] h-[40px] items-center"
-                            onClick={openScheduledDialog}>
-                            <Image src="/icons/select-date.svg" width={18} height={18} alt="Calendar" />
-                            <span className="text-sm text-[#0C111D]  font-medium">Schedule Quiz</span>
-                        </button>
+                                <button
+                                    className="w-auto p-3 gap-2 flex-row flex rounded-[8px] h-[40px] items-center"
+                                    onClick={openResumeQuiz}>
+                                    <Image src="/icons/resume.svg" width={18} height={18} alt="Resume Quiz" />
+                                    <span className="text-sm text-[#9012FF]  font-medium">Resume Quiz</span>
+                                </button>
 
-                           </div>    
+                                <button
+                                    className="w-auto p-3 gap-2 flex-row flex bg-[#FFFFFF] border border-solid border-[#EAECF0] rounded-[8px] h-[40px] items-center"
+                                    onClick={openScheduledDialog}>
+                                    <Image src="/icons/select-date.svg" width={18} height={18} alt="Calendar" />
+                                    <span className="text-sm text-[#0C111D]  font-medium">Schedule Quiz</span>
+                                </button>
+
+                            </div>
                         )}
 
-                     {quizData?.quizStatus !== 'live' &&( 
-                        <Popover
-                        placement="bottom-end"
-                        >
-                        <PopoverTrigger>
-                            <button
-                                className="w-10 p-[10px] h-[40px] gap-1 flex-row flex  bg-[#FFFFFF] rounded-md 
+                        {quizData?.quizStatus !== 'live' && (
+                            <Popover
+                                placement="bottom-end"
+                            >
+                                <PopoverTrigger>
+                                    <button
+                                        className="w-10 p-[10px] h-[40px] gap-1 flex-row flex  bg-[#FFFFFF] rounded-md 
                                     border border-solid border-[#EAECF0] shadow-none"
-                                style={{ outline: "none" }}
-                            >
-                                <Image src="/icons/three-dots.svg" width={18} height={18} alt="three-dots" />
-                            </button>
-                        </PopoverTrigger>
-                        <PopoverContent className="flex flex-col px-0 text-sm font-normal bg-white border border-lightGrey rounded-md w-[167px] shadow-md"
-                        >
-                            {quizData?.quizStatus !== 'finished' &&(
-                                <button className=" p-3 gap-2 flex-row flex h-[40px] hover:bg-[#F2F4F7] w-full">
-                                <Image src="/icons/edit-icon.svg" width={18} height={18} alt="Edit-quiz" />
-                                <span className="text-sm text-[#0C111D] font-normal">Edit Quiz</span>
-                            </button>
-                            )}
-                            
-                            <button className=" p-3 gap-2 flex-row flex h-[40px] hover:bg-[#F2F4F7] w-full">
-                                <Image src="/icons/duplicate.svg" width={18} height={18} alt="Edit-quiz" />
-                                <span className="text-sm text-[#0C111D] font-normal">Duplicate</span>
-                            </button>
-                            <button className=" p-3 gap-2 flex-row flex h-[40px] hover:bg-[#F2F4F7] w-full"
-                                onClick={openDeleteDialog}
-                            >
-                                <Image src="/icons/delete.svg" width={18} height={18} alt="delete-quiz" />
-                                <span className="text-sm text-[#DE3024] font-normal">Delete Quiz</span>
-                            </button>
-                        </PopoverContent>
-                        </Popover>
-                     )}   
-                       
+                                        style={{ outline: "none" }}
+                                    >
+                                        <Image src="/icons/three-dots.svg" width={18} height={18} alt="three-dots" />
+                                    </button>
+                                </PopoverTrigger>
+                                <PopoverContent className="flex flex-col px-0 text-sm font-normal bg-white border border-lightGrey rounded-md w-[167px] shadow-md"
+                                >
+                                    {quizData?.quizStatus !== 'finished' && (
+                                        <button className=" p-3 gap-2 flex-row flex h-[40px] hover:bg-[#F2F4F7] w-full">
+                                            <Image src="/icons/edit-icon.svg" width={18} height={18} alt="Edit-quiz" />
+                                            <span className="text-sm text-[#0C111D] font-normal">Edit Quiz</span>
+                                        </button>
+                                    )}
+
+                                    <button className=" p-3 gap-2 flex-row flex h-[40px] hover:bg-[#F2F4F7] w-full">
+                                        <Image src="/icons/duplicate.svg" width={18} height={18} alt="Edit-quiz" />
+                                        <span className="text-sm text-[#0C111D] font-normal">Duplicate</span>
+                                    </button>
+                                    <button className=" p-3 gap-2 flex-row flex h-[40px] hover:bg-[#F2F4F7] w-full"
+                                        onClick={openDeleteDialog}
+                                    >
+                                        <Image src="/icons/delete.svg" width={18} height={18} alt="delete-quiz" />
+                                        <span className="text-sm text-[#DE3024] font-normal">Delete Quiz</span>
+                                    </button>
+                                </PopoverContent>
+                            </Popover>
+                        )}
+
                     </div>
                 </div>
-                {quizData?.quizStatus === 'scheduled' &&(
-                <div className="flex flex-row gap-2 mt-2 mb-2">
-                <div className="bg-[#EAECF0] rounded-[8px] p-2 flex flex-row gap-1">
-                    <Image
-                        src="/icons/information-circle.svg"
-                        width={20}
-                        height={20}
-                        alt="information-icon"
-                    />
-                    <span className="text-[#475467] font-normal text-[13px]">Quiz will be live on 12 Jan, 2024  05:30 PM</span>
-                </div>
-                <button
-                    onClick={openScheduledDialog}               >
-                    <Image src="/icons/edit-icon.svg" width={18} height={18} alt="Edit-quiz" />
-                </button>
-                </div>
+                {quizData?.quizStatus === 'scheduled' && (
+                    <div className="flex flex-row gap-2 mt-2 mb-2">
+                        <div className="bg-[#EAECF0] rounded-[8px] p-2 flex flex-row gap-1">
+                            <Image
+                                src="/icons/information-circle.svg"
+                                width={20}
+                                height={20}
+                                alt="information-icon"
+                            />
+                            <span className="text-[#475467] font-normal text-[13px]">Quiz will be live on 12 Jan, 2024  05:30 PM</span>
+                        </div>
+                        <button
+                            onClick={openScheduledDialog}               >
+                            <Image src="/icons/edit-icon.svg" width={18} height={18} alt="Edit-quiz" />
+                        </button>
+                    </div>
                 )}
-               
-                  <div
-                className="quiz-description p-1"
-                dangerouslySetInnerHTML={{
-                    __html: cleanQuizDescription(quizData?.quizDescription || ''),
-                }}
+
+                <div
+                    className="quiz-description p-1"
+                    dangerouslySetInnerHTML={{
+                        __html: cleanQuizDescription(quizData?.quizDescription || ''),
+                    }}
                 />
-                 </div>
+            </div>
             <div className="flex flex-row gap-1">
                 <p className="text-[#667085] font-normal text-sm">Created by</p>
                 <Image
@@ -397,7 +398,7 @@ function Quizinfo({ params }: { params: { quizName: string } }) {
             </div>
             {activeTab === 'Questions' && (
                 <div>
-                    <Questions questionsList={questions}/>
+                    <Questions questionsList={questions} />
                 </div>
             )}
             {activeTab === 'StudentsAttempts' && (

@@ -115,22 +115,34 @@ function RoleManagementInfo() {
                                 </button>
                             </PopoverTrigger>
                             <PopoverContent className="w-[200px] rounded-md shadow-md border border-solid border-[#EAECF0] px-0 flex flex-col h-auto">
-                                <div className='flex flex-row w-full h-10 justify-start items-center hover:bg-[#EAECF0] px-2'>
-                                    <Checkbox color="primary" />
-                                    <span className='text-[#0C111D] font-normal text-sm'>Physics - 101</span>
-                                </div>
-                                <div className='flex flex-row w-full h-10 justify-start items-center hover:bg-[#EAECF0] px-2'>
-                                    <Checkbox color="primary" />
-                                    <span className='text-[#0C111D] font-normal text-sm'>BITSET Full Course</span>
-                                </div>
-                                <div className='flex flex-row w-full h-10 justify-start items-center hover:bg-[#EAECF0] px-2'>
-                                    <Checkbox color="primary" />
-                                    <span className='text-[#0C111D] font-normal text-sm'>JEE - 2024</span>
-                                </div>
-                                <div className='flex flex-row w-full h-10 justify-start items-center hover:bg-[#EAECF0] px-2'>
-                                    <Checkbox color="primary" />
-                                    <span className='text-[#0C111D] font-normal text-sm'>Physics - 201</span>
-                                </div>
+                                <label className="flex flex-row w-full h-10 justify-start items-center hover:bg-[#EAECF0] px-2 cursor-pointer">
+                                    <Checkbox
+                                        color="primary"
+                                        className="outline-none focus:ring-0 focus:outline-none" // Removes any focus styles
+                                    />
+                                    <p className="text-[#0C111D] font-normal text-sm">Physics - 101</p>
+                                </label>
+                                <label className='flex flex-row w-full h-10 justify-start items-center hover:bg-[#EAECF0] px-2 cursor-pointer'>
+                                    <Checkbox
+                                        color="primary"
+                                        className="outline-none focus:ring-0 focus:outline-none" // Removes any focus styles
+                                    />
+                                    <p className='text-[#0C111D] font-normal text-sm'>BITSET Full Course</p>
+                                </label>
+                                <label className='flex flex-row w-full h-10 justify-start items-center hover:bg-[#EAECF0] px-2 cursor-pointer'>
+                                    <Checkbox
+                                        color="primary"
+                                        className="outline-none focus:ring-0 focus:outline-none" // Removes any focus styles
+                                    />
+                                    <p className='text-[#0C111D] font-normal text-sm'>JEE - 2024</p>
+                                </label>
+                                <label className='flex flex-row w-full h-10 justify-start items-center hover:bg-[#EAECF0] px-2 cursor-pointer'>
+                                    <Checkbox
+                                        color="primary"
+                                        className="outline-none focus:ring-0 focus:outline-none" // Removes any focus styles
+                                    />
+                                    <p className='text-[#0C111D] font-normal text-sm'>Physics - 201</p>
+                                </label>
                             </PopoverContent>
                         </Popover>
                     </div>
@@ -158,8 +170,10 @@ function RoleManagementInfo() {
                                                     {member.name}
                                                 </span>
                                             </td>
-                                            <td className="py-2 px-8 text-right text-[#DE3024] text-sm font-normal">
-                                                {member.action}
+                                            <td className='text-right'>
+                                                <button className="py-2 px-8 text-[#DE3024] text-sm font-normal">
+                                                    {member.action}
+                                                </button>
                                             </td>
                                         </tr>
                                     ))}

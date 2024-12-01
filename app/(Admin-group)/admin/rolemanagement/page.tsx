@@ -21,7 +21,7 @@ import { db } from '@/firebase';
 import LoadingData from "@/components/Loading";
 import UserRolesView from "@/components/AdminComponents/RoleMangement/UserRolesView";
 
-// Define types for quiz data
+// Define types for role data
 interface RoleManagementInfo {
     adminId: string;
     name: string;
@@ -165,7 +165,7 @@ function rolemangement() {
             );
         }
 
-        // Update state with filtered and sorted quizzes
+        // Update state with filtered and sorted roles
         setData(filteredUsers);
         setCurrentPage(1); // Reset to first page when filters change
     }, [searchTerm, users]);
