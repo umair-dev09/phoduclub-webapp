@@ -293,7 +293,7 @@ function Courses() {
                             title={
                                 <div className="flex items-center space-x-2">
                                     <span className="font-medium text-base">
-                                        Content
+                                        Users
                                     </span>
                                 </div>
                             }
@@ -306,7 +306,7 @@ function Courses() {
                             key="Discussion"
                             title={
                                 <div className="flex items-center space-x-2">
-                                    <span className="font-medium text-base">
+                                    <span className="inline-flex items-center justify-center px-3 py-1  text-sm bg-[#EDE4FF] border border-[#EDE4FF] font-medium text-[#7400E0]">
                                         Discussion
                                     </span>
                                 </div>

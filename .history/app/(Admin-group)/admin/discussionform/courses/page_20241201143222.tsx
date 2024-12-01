@@ -307,7 +307,7 @@ function Courses() {
                             title={
                                 <div className="flex items-center space-x-2">
                                     <span className="font-medium text-base">
-                                        Discussion
+                                        Content
                                     </span>
                                 </div>
                             }

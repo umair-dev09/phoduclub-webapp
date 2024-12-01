@@ -291,8 +291,8 @@ function Courses() {
                         <Tab
                             key="Content"
                             title={
-                                <div className="flex items-center space-x-2">
-                                    <span className="font-medium text-base">
+                                <div className="flex items-center space-x-2" onClick={() => setActiveTab("Content")}>
+                                    <span className={`font-medium text-base ${activeTab === "Content" ? 'text-[#7400E0]' : 'text-[#667085]'} hover:text-[#7400E0]`}>
                                         Content
                                     </span>
                                 </div>
@@ -305,8 +305,8 @@ function Courses() {
                         <Tab
                             key="Discussion"
                             title={
-                                <div className="flex items-center space-x-2">
-                                    <span className="font-medium text-base">
+                                <div className="flex items-center space-x-2" onClick={() => setActiveTab("Discussion")}>
+                                    <span className={`font-medium text-base ${activeTab === "Discussion" ? 'text-[#7400E0]' : 'text-[#667085]'} hover:text-[#7400E0]`}>
                                         Discussion
                                     </span>
                                 </div>
