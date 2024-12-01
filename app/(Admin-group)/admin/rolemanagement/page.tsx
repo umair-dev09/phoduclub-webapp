@@ -31,32 +31,13 @@ interface RoleManagementInfo {
     profilePic: string;
 }
 
-const fetchUsers = async (): Promise<RoleManagementInfo[]> => {
-    const usersCollection = collection(db, 'admin');
-    const usersSnapshot = await getDocs(usersCollection);
 
-    const usersData = await Promise.all(
-        usersSnapshot.docs.map(async (userDoc) => {
-            const userData = userDoc.data();
 
-            return {
-                adminId: userData.adminId,
-                name: userData.name,
-                userId: userData.userId,
-                phone: userData.phone,
-                role: userData.role,
-                profilePic: userData.profilePic,
-            } as RoleManagementInfo;
-        })
-    );
-
-    return usersData;
-};
-
-type Option = "Admin" | "Customer Care" | "Teacher" | "Chief Modrator" | "Guide" | "Editor";
+type Option = "Admin" | "Customer Care" | "Teacher" | "Chief Modrator" | "Editor";
 
 function rolemangement() {
     const [firstName, setFirstName] = useState('');
+    const [profilePic, setProfilePic] = useState('');
     const [lastName, setLastName] = useState('');
     const [userId, setUserId] = useState('');
     const [phone, setPhone] = useState('');
@@ -86,6 +67,7 @@ function rolemangement() {
         setUserId('');
         setPhone('');
         setSelectedRole('');
+        setProfilePic('');
     };
 
     const closeAddUser = () => {
@@ -134,6 +116,7 @@ function rolemangement() {
             setFirstName(nameParts[0] || '');
             setLastName(nameParts[1] || '');
             setUserId(user.userId);
+            setProfilePic(user.profilePic);
             setPhone(user.phone);
             setSelectedRole(user.role);
             setAdminIdd(user.adminId);
@@ -175,11 +158,10 @@ function rolemangement() {
         'Customer Care': ['customercare'],
         'Teacher': ['teacher'],
         'Chief Modrator': ['chiefmodrator'],
-        'Guide': ['guide'],
         'Editor': ['editor']  // Map 'Canceled' to 'ended' status
     };
 
-    const options: Option[] = ["Admin", "Customer Care", "Teacher", "Chief Modrator", "Guide", "Editor"];
+    const options: Option[] = ["Admin", "Customer Care", "Teacher", "Chief Modrator", "Editor"];
 
     // Update the type to use a more specific index signature
     const [checkedState, setCheckedState] = useState<Record<Option, boolean>>(
@@ -364,7 +346,7 @@ function rolemangement() {
                                             <div className="flex flex-row ml-8 gap-[10px] min-w-[260px]">
                                                 <Image className='rounded-full object-cover' src={users.profilePic || '/defaultAdminDP.jpg'} alt="DP" width={38} height={38} />
                                                 <div className="flex items-start justify-center flex-col mb-[2px]">
-                                                    <button onClick={() => handleTabClick('/admin/rolemanagement/rolemanagementinfo')} className="font-semibold text-sm text-[#9012FF] underline">{users.name}</button>
+                                                    <button onClick={() => handleTabClick(`/admin/rolemanagement/${users.name.toLowerCase().replace(/\s+/g, '-')}?rId=${users.adminId}`)} className="font-semibold text-sm text-[#9012FF] underline">{users.name}</button>
                                                 </div>
                                             </div>
                                         </td>
@@ -424,7 +406,7 @@ function rolemangement() {
             )}
             {isRemoveOpen && < Remove onClose={closeRemove} open={true} />}
             {/* Dialog Component  for AddNewUser*/}
-            {isAddUser && <Addnewuser close={closeAddUser} open={true} isEditing={isEditing} firstName={firstName} setFirstName={setFirstName} lastName={lastName} setLastName={setLastName} userId={userId} setUserId={setUserId} phone={phone} setPhone={setPhone} selectedRole={selectedRole} setSelectedRole={setSelectedRole} adminIdd={adminIdd} setAdminId={setAdminIdd} />}
+            {isAddUser && <Addnewuser close={closeAddUser} open={true} isEditing={isEditing} profilePic={profilePic} setProfilePic={setProfilePic} firstName={firstName} setFirstName={setFirstName} lastName={lastName} setLastName={setLastName} userId={userId} setUserId={setUserId} phone={phone} setPhone={setPhone} selectedRole={selectedRole} setSelectedRole={setSelectedRole} adminIdd={adminIdd} setAdminId={setAdminIdd} />}
             <ToastContainer />
         </div>
     );

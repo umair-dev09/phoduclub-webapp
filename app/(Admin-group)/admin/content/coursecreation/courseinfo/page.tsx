@@ -12,44 +12,20 @@ import Questions from "@/components/AdminComponents/QuizInfo/Questions";
 import StudentsAttemptedCourseInfo from '@/components/AdminComponents/Courseinfo/StudentsAttemptedCourseInfo';
 import CourseContent from '@/components/AdminComponents/Courseinfo/CourseContent'
 import { Popover, PopoverContent, PopoverTrigger } from "@nextui-org/popover";
+import { Tabs, Tab } from "@nextui-org/react";
 
 function CourseInfo() {
+    const CourseContentCount = 78;
+    const StudentspurchasedCount = 10;
     const [activeTab, setActiveTab] = useState('CourseContent');
 
-    const handleTabClick = (tabName: React.SetStateAction<string>) => {
-        setActiveTab(tabName);
-    };
+
     // State to manage each dialog's visibility
     const [isScheduledDialogOpen, setIsScheduledDialogOpen] = useState(false);
     const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
     const [isEndDialogOpen, setIsEndDialogOpen] = useState(false);
     const [isPausedDialogOpen, setIsPausedDialogOpen] = useState(false);
-    const [isMakeLiveNowDialogOpen, setIsMakeLiveNowDialogOpen] = useState(false);
-    const [isResumeQuizOpen, setIsResumeQuizOpen] = useState(false);
-
-    // Handlers for ScheduledDialog
-    const openScheduledDialog = () => setIsScheduledDialogOpen(true);
-    const closeScheduledDialog = () => setIsScheduledDialogOpen(false);
-
-    // Handlers for DeleteQuiz dialog
-    const openDeleteDialog = () => setIsDeleteDialogOpen(true);
-    const closeDeleteDialog = () => setIsDeleteDialogOpen(false);
-
-    // Handlers for EndQuiz dialog
-    const openEndQuiz = () => setIsEndDialogOpen(true);
-    const closeEndQuiz = () => setIsEndDialogOpen(false);
-
-    // Handlers for  PausedQuiz dialog
-    const openPausedQuiz = () => setIsPausedDialogOpen(true);
-    const closePausedQuiz = () => setIsPausedDialogOpen(false);
-
-    // Handlers for  MakeLiveNow dialog
-    const openMakeLiveNowQuiz = () => setIsMakeLiveNowDialogOpen(true);
-    const closeMakeLiveNowQuiz = () => setIsMakeLiveNowDialogOpen(false);
-
-    // Handlers for ResumeQuiz dialog
-    const openResumeQuiz = () => setIsResumeQuizOpen(true);
-    const closeResumeQuiz = () => setIsResumeQuizOpen(false);
+    const [isResumeOpen, setIsResumeOpen] = useState(false);
 
     const router = useRouter();
     // this logic is for rating 
@@ -92,24 +68,108 @@ function CourseInfo() {
                     alt="left-arrow" />
                 <div className="flex flex-col gap-4 w-full">
                     <div className="flex flex-row justify-between items-center h-[40px]">
+                        {/* SAVED */}
                         <div className="bg-[#F2F4F7] py-2 px-3 gap-1 flex flex-row rounded-[6px] items-center h-6">
                             <span className="w-[6px] h-[6px] bg-[#182230] rounded-full "></span>
                             <span className="font-medium text-[#182230] text-xs">Saved</span>
                         </div>
+                        {/* FINISHED */}
+                        {/* <div className="bg-[#D3F8E0] py-2 px-3 gap-1 flex flex-row rounded-[6px] items-center h-6">
+                            <span className="w-[6px] h-[6px] bg-[#0A5B39] rounded-full "></span>
+                            <span className="font-medium text-[#0A5B39] text-xs">Finished</span>
+                        </div> */}
+                        {/* PAUSED */}
+                        {/* <div className="bg-[#FFEFC6] py-2 px-3 gap-1 flex flex-row rounded-[6px] items-center h-6">
+                            <span className="w-[6px] h-[6px] bg-[#93360D] rounded-full "></span>
+                            <span className="font-medium text-[#93360D] text-xs">Pause</span>
+                        </div> */}
+                        {/* SCHEDULED */}
+                        {/* <div className="bg-[#E5F4FF] py-2 px-3 gap-1 flex flex-row rounded-[6px] items-center h-6">
+                            <span className="w-[6px] h-[6px] bg-[#175CD3] rounded-full "></span>
+                            <span className="font-medium text-[#175CD3] text-xs">Scheduled</span>
+                        </div> */}
+                        {/* LIVE*/}
+                        {/* <div className="bg-[#EDE4FF] py-2 px-3 gap-1 flex flex-row rounded-[6px] items-center h-6">
+                            <span className="w-[6px] h-[6px] bg-[#7400E0] rounded-full "></span>
+                            <span className="font-medium text-[#7400E0] text-xs">Live</span>
+                        </div> */}
+
                         <div className="flex flex-row gap-2">
+                            {/* FOR SAVED--> */}
+                            <button className="w-auto p-3 gap-2 flex-row flex bg-[#FFFFFF] border border-solid border-[#EAECF0] rounded-[8px] h-[40px] items-center">
+                                <Image src="/icons/edit-icon.svg" width={18} height={18} alt="Edit-icon" />
+                                <span className="text-sm text-[#0C111D] font-normal">Edit</span>
+                            </button>
+                            <Popover placement="bottom-end">
+                                <PopoverTrigger>
+                                    <button
+                                        className="w-10 p-[10px] h-[40px] gap-1 flex-row flex  bg-[#FFFFFF] rounded-md  focus:outline-none
+                                        border border-solid border-[#EAECF0] shadow-none">
+                                        <Image src="/icons/three-dots.svg" width={18} height={18} alt="three-dots" />
+                                    </button>
+                                </PopoverTrigger>
+                                <PopoverContent className="w-[10.438rem] py-1 px-0 bg-white border border-lightGrey rounded-md">
+                                    <button className="flex flex-row items-center justify-start w-full py-[0.625rem] px-4 gap-2 hover:bg-[#F2F4F7]">
+                                        <Image src='/icons/publish-quiz.svg' alt="Publish-icon" width={18} height={18} />
+                                        <p className="text-sm text-[#0C111D] font-normal">Publish</p>
+                                    </button>
+                                    <button className=" flex flex-row items-center justify-start w-full py-[0.625rem] px-4 gap-2 hover:bg-[#F2F4F7]"
+                                        onClick={() => setIsDeleteDialogOpen(true)}>
+                                        <Image src='/icons/delete.svg' alt="Delete-icon" width={18} height={18} />
+                                        <p className="text-sm text-[#DE3024] font-normal">Delete</p>
+                                    </button>
+                                </PopoverContent>
+                            </Popover>
+                            {/* Button for Pause  */}
+                            {/* <button className="w-auto p-3 gap-2 flex-row flex bg-[#FFFFFF] border border-solid border-[#EAECF0] rounded-[8px] h-[40px] items-center"
+                                onClick={() => setIsPausedDialogOpen(true)}>
+                                <Image src="/icons/pausequiz.svg" width={18} height={18} alt="Paused-icon" />
+                                <span className="text-sm text-[#0C111D] font-normal">Pause</span>
+                            </button>
+                            {/* Button for End  
                             <button className="w-auto p-3 gap-2 flex-row flex bg-[#FFFFFF] border border-solid border-[#EAECF0] rounded-[8px] h-[40px] items-center"
+                                onClick={() => setIsEndDialogOpen(true)}>
+                                <Image src="/icons/endquiz.svg" width={18} height={18} alt="End-icon" />
+                                <span className="text-sm text-[#DE3024]  font-normal">End</span>
+                            </button> */}
+                            {/* Button for Resume  */}
+                            {/* <button
+                                className="w-auto p-3 gap-2 flex-row flex rounded-[8px] h-[40px] items-center"
+                                onClick={() => setIsResumeOpen(true)}
                             >
-                                <Image src="/icons/publish-quiz.svg" width={18} height={18} alt="publish-quiz" />
-                                <span className="text-sm text-[#0C111D] font-normal">Publish</span>
-                            </button>
-                            <button
-                                className="w-10 p-[10px] h-[40px] gap-1 flex-row flex  bg-[#FFFFFF] rounded-md 
-                                        border border-solid border-[#EAECF0] shadow-none"
-                                style={{ outline: "none" }}
-                            >
-                                <Image src="/icons/three-dots.svg" width={18} height={18} alt="three-dots" />
-                            </button>
+                                <Image src="/icons/resume.svg" width={18} height={18} alt="Resume -icon" />
+                                <span className="text-sm text-[#9012FF]  font-medium">Resume</span>
+                            </button> */}
+                            {/* Button for Scheduled  */}
+                            {/* <button
+                                className="w-auto p-3 gap-2 flex-row flex bg-[#FFFFFF] border border-solid border-[#EAECF0] rounded-[8px] h-[40px] items-center"
+                                onClick={() => setIsScheduledDialogOpen(true)}>
+                                <Image src="/icons/select-date.svg" width={18} height={18} alt="Calendar" />
+                                <span className="text-sm text-[#0C111D]  font-medium">Schedule</span>
+                            </button> */}
+                            {/* Button for Delete */}
+                            {/* <button
+                                className="w-auto p-3 gap-2 flex-row flex bg-[#FFFFFF] border border-solid border-[#EAECF0] rounded-[8px] h-[40px] items-center"
+                                onClick={() => setIsDeleteDialogOpen(true)}>
+                                <Image src="/icons/delete.svg" width={18} height={18} alt="Delete" />
+                                <span className="text-sm text-[#DE3024]  font-medium">Delete</span>
+                            </button> */}
                         </div>
+                    </div>
+                    <div className="flex flex-row gap-2">
+                        <div className="bg-[#EAECF0] rounded-[8px] p-2 flex flex-row gap-1">
+                            <Image
+                                src="/icons/information-circle.svg"
+                                width={20}
+                                height={20}
+                                alt="information-icon"
+                            />
+                            <span className="text-[#475467] font-normal text-[13px]">Course will be live on 12 Jan, 2024   05:30 PM</span>
+                        </div>
+                        <button
+                            onClick={() => setIsScheduledDialogOpen(true)}>
+                            <Image src="/icons/edit-icon.svg" width={18} height={18} alt="Edit-icon" />
+                        </button>
                     </div>
                     <span className="text-[#1D2939] font-bold text-lg">BITSET Full Course</span>
                     <div className=' text-[#667085] text-sm font-normal '>
@@ -149,62 +209,65 @@ function CourseInfo() {
                     </div>
                 </div>
             </div>
-            <div className="flex flex-col mt-4">
-                <div className="relative flex">
-                    <div className="pt-[10px]">
-                        <button
-                            onClick={() => handleTabClick('CourseContent')}
-                            className={`relative py-2 pr-4 text-base font-medium transition duration-200 ${activeTab === 'CourseContent' ? 'text-[#7400E0]' : 'text-[#667085] hover:text-[#7400E0]'
-                                } focus:outline-none`}
-                        >
-                            Course Content
-                        </button>
-                    </div>
-                    <div className="pt-[10px]">
-                        <button
-                            onClick={() => handleTabClick('StudentsPurchased')}
-                            className={`relative py-2 px-4 text-base transition duration-200 ${activeTab === 'StudentsPurchased' ? 'text-[#7400E0]' : 'text-[#667085] hover:text-[#7400E0]'
-                                } focus:outline-none`}
-                            style={{ fontSize: '16px', fontWeight: '500' }}
-                        >
-                            Students purchased
-                            <span
-                                className="ml-2 min-w-6 px-2 py-[0px] top-[-1px] text-sm text-[#9012FF] text-center font-medium bg-[#EDE4FF] rounded-full relative"
-                            >
-                                10
-                            </span>
-                        </button>
-                    </div>
-                    <div
-                        className="absolute bg-[#7400E0] transition-all duration-300"
-                        style={{
-                            height: '1.8px',
-                            width: activeTab === 'CourseContent' ? '128px' : '200px', // Adjusted width to match the text
-                            left: activeTab === 'CourseContent' ? '0px' : '155px', // Adjust left position to match each button
-                            bottom: '-8px',
-                        }}
-                    />
-                </div>
-                <hr className="h-px bg-[#EAECF0] mt-2" />
+
+            <div className="pt-3 w-full flex flex-col">
+                <Tabs
+                    aria-label="Test series Info Tabs"
+                    color="primary"
+                    variant="underlined"
+                    selectedKey={activeTab}
+                    onSelectionChange={(key) => setActiveTab(key as string)}
+                    classNames={{
+                        tabList: "gap-6 w-full relative rounded-none p-0 border-b border-solid border-[#EAECF0]",
+                        cursor: "w-full bg-[#7400E0]",
+                        tab: "max-w-fit px-0 h-12",
+                        tabContent: "group-data-[selected=true]:text-[#7400E0] hover:text-[#7400E0] ",
+                    }}
+                >
+                    <Tab
+                        key="Course Content"
+                        title={
+                            <div className="flex items-center space-x-2">
+                                <span className="font-medium text-base">
+                                    Course Content
+                                </span>
+                                {CourseContentCount > 0 && (
+                                    <div className="inline-flex items-center justify-center px-3 py-1 rounded-full text-sm bg-[#EDE4FF] border border-[#EDE4FF] font-medium text-[#7400E0]">
+                                        {CourseContentCount}
+                                    </div>
+                                )}
+                            </div>
+                        }
+                    >
+                        <CourseContent />
+                    </Tab>
+
+                    <Tab
+                        key="Students purchased"
+                        title={
+                            <div className="flex items-center space-x-2">
+                                <span className="font-medium text-base">
+                                    Students purchased
+                                </span>
+                                {StudentspurchasedCount > 0 && (
+                                    <div className="inline-flex items-center justify-center px-3 py-1 rounded-full text-sm bg-[#EDE4FF] border border-[#EDE4FF] font-medium text-[#7400E0]">
+                                        {StudentspurchasedCount}
+                                    </div>
+                                )}
+                            </div>
+                        }
+                    >
+                        <StudentsAttemptedCourseInfo />
+                    </Tab>
+                </Tabs>
             </div>
-            {activeTab === 'CourseContent' && (
-                <div>
-                    <CourseContent />
-                </div>
-            )}
-            {activeTab === 'StudentsPurchased' && (
-                <div>
-                    <StudentsAttemptedCourseInfo />
-                </div>
-            )}
 
             {/* Dialog components with conditional rendering */}
-            {isScheduledDialogOpen && <ScheduledDialog onClose={closeScheduledDialog} />}
-            {isDeleteDialogOpen && <DeleteQuiz onClose={closeDeleteDialog} open={true} />}
-            {isEndDialogOpen && <EndQuiz onClose={closeEndQuiz} />}
-            {isPausedDialogOpen && <PausedQuiz onClose={closePausedQuiz} />}
-            {isMakeLiveNowDialogOpen && < MakeLiveNow onClose={closeMakeLiveNowQuiz} open={true} />}
-            {isResumeQuizOpen && < ResumeQuiz onClose={closeResumeQuiz} open={true} />}
+            {isScheduledDialogOpen && <ScheduledDialog onClose={() => setIsScheduledDialogOpen(false)} />}
+            {isDeleteDialogOpen && <DeleteQuiz onClose={() => setIsDeleteDialogOpen(false)} open={isDeleteDialogOpen} />}
+            {isEndDialogOpen && <EndQuiz onClose={() => setIsEndDialogOpen(false)} />}
+            {isPausedDialogOpen && <PausedQuiz onClose={() => setIsPausedDialogOpen(false)} />}
+            {isResumeOpen && < ResumeQuiz open={isResumeOpen} onClose={() => setIsResumeOpen(false)} />}
 
         </div>
     );

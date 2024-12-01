@@ -3,33 +3,120 @@ import React from 'react';
 import Image from 'next/image';
 import { Popover, PopoverContent, PopoverTrigger } from "@nextui-org/popover";
 import { Dialog, DialogBackdrop, DialogPanel } from "@headlessui/react";
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { collection, getDocs, addDoc, setDoc, query, where, doc, getDoc, onSnapshot, deleteDoc, updateDoc } from 'firebase/firestore';
+import LoadingData from "@/components/Loading";
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { db } from '@/firebase';
+interface UserData {
+    userId: string;
+    name: string;
+    uniqueId: string;
+    phone: string;
+    createdAt: string;
+    profilePic: string;
+    email: string;
+    isPremium: boolean;
+    isGuide: boolean;
+}
+
+
 function rolemanagementguide() {
-    const currentItems = [
-        {
-            adminId: 1,
-            name: 'John Doe',
-            userId: 'johndoe123',
-            phone: '123-456-7890',
-            role: 'Admin',
-            profilePic: '/defaultAdminDP.jpg',
-        },
-        {
-            adminId: 2,
-            name: 'Jane Smith',
-            userId: 'janesmith456',
-            phone: '987-654-3210',
-            role: 'Admin',
-            profilePic: '/defaultAdminDP.jpg',
-        },
-        // Add more user objects here
-    ];
     const [uniqueID, setUniqueID] = useState('');
+    const [removeId, setRemoveId] = useState('');
     const [isOpen, setIsOpen] = useState(false); // Control popover visibility
     const [isDialogOpen, setIsDialogOpen] = useState(false);
+    const [data, setData] = useState<UserData[]>([]);
+    const [users, setUsers] = useState<UserData[]>([]);
+    const [loading, setLoading] = useState(true);
 
 
+    useEffect(() => {
+        const usersCollection = collection(db, 'users');
+    
+        const unsubscribe = onSnapshot(usersCollection, (snapshot) => {
+          const updatedUsers: UserData[] = snapshot.docs
+            .map((doc) => {
+              const userData = doc.data();
+              return {
+                uniqueId: userData.uniqueId,
+                name: userData.name,
+                userId: userData.userId,
+                phone: userData.phone,
+                email: userData.email,
+                profilePic: userData.profilePic,
+                createdAt: userData.createdAt,
+                isPremium: userData.isPremium,
+                isGuide: userData.isGuide, // Ensure this field exists
+              } as UserData;
+            })
+            .filter((user) => user.isGuide); // Filter users with isGuide true
+    
+          setUsers(updatedUsers);
+          setData(updatedUsers); // Update data for pagination and search
+          setLoading(false);
+        });
+    
+        // Cleanup listener on component unmount
+        return () => unsubscribe();
+      }, []);
 
+      const handleAddGuide = async () => {
+        if (!uniqueID) return;
+    
+        try {
+          const usersCollection = collection(db, 'users');
+          const q = query(usersCollection, where('userId', '==', uniqueID));
+          const querySnapshot = await getDocs(q);
+    
+          if (querySnapshot.empty) {
+            alert('No user found with the provided ID');
+            return;
+          }
+    
+          // Assuming `uniqueId` is the document ID
+          const userDoc = querySnapshot.docs[0];
+          const uniqueId = userDoc.id; // Firestore document ID
+    
+          // Update the user document
+          const userRef = doc(db, 'users', uniqueId);
+          await updateDoc(userRef, { isGuide: true });
+    
+          toast.success('User successfully updated as a guide');
+          setIsOpen(false);
+          setUniqueID('');
+          setIsOpen(false);
+        } catch (error) {
+          console.error('Error updating user document:', error);
+          toast.error('Failed to update user');
+        }
+      };
+
+      const handleDeleteGuide = async () => {
+        try {
+          if (!removeId) {
+            alert('Invalid user ID');
+            return;
+          }
+      
+          // Get a reference to the user document using the uniqueId (document ID)
+          const userRef = doc(db, 'users', removeId);
+      
+          // Update the `isGuide` field to false
+          await updateDoc(userRef, { isGuide: false });
+          toast.success('Guide role successfully removed!');
+          setIsDialogOpen(false);
+          setRemoveId('');
+        } catch (error) {
+          console.error('Error removing guide role:', error);
+          toast.error('Failed to remove guide role. Please try again later.');
+        }
+      };
+
+      if (loading) {
+        return <LoadingData />
+    }
 
     return (
         <div className="flex flex-col w-full  gap-4 p-8">
@@ -83,7 +170,7 @@ function rolemanagementguide() {
                                 <button
                                     className={`h-11 w-[120px]  rounded-md flex items-center justify-center shadow-inner-button ${uniqueID ? 'bg-[#9012FF] border border-solid border-[#800EE2]' : 'bg-[#CDA0FC] cursor-not-allowed'}`}
                                     disabled={!uniqueID}
-                                    onClick={() => setIsOpen(false)}>
+                                    onClick={handleAddGuide}>
                                     <span className='font-semibold text-[#FFFFFF] text-sm'>Add</span>
                                 </button>
                             </div>
@@ -118,7 +205,7 @@ function rolemanagementguide() {
                         </tr>
                     </thead>
                     <tbody>
-                        {currentItems.map((users, index) => (
+                        {users.map((users, index) => (
                             <tr key={index} className="border-t border-solid border-[#EAECF0]">
                                 <td className="py-[12px]">
                                     <div className="flex flex-row ml-8 gap-[10px] min-w-[260px]">
@@ -137,16 +224,16 @@ function rolemanagementguide() {
                                 <td className="px-8 py-4 ">
 
                                     <div className="bg-[#F2F4F7] py-2 px-3 gap-1 flex flex-row rounded-[6px] items-center h-6 w-[72px]">
-                                        <span className="w-[10px] h-[6px] bg-[#182230] rounded-full"></span>
-                                        <span className="font-medium text-[#182230] text-xs">{users.role}</span>
+                                        <span className="w-[6px] h-[6px] bg-[#182230] rounded-full"></span>
+                                        <span className="font-medium text-[#182230] text-xs">Guide</span>
                                     </div>
 
 
                                 </td>
                                 <td className="flex items-center justify-center px-8 py-4">
                                     <button
-                                        className="text-[#DE3024] font-normal text-sm cursor-pointer"
-                                        onClick={() => setIsDialogOpen(true)}  // Open the dialog on click
+                                        className="text-[#DE3024] font-medium text-sm cursor-pointer pt-[2px]"
+                                        onClick={() =>{ setIsDialogOpen(true); setRemoveId(users.uniqueId)}} // Open the dialog on click
                                     >
                                         Remove
                                     </button>
@@ -170,11 +257,12 @@ function rolemanagementguide() {
                         </div>
                         <div className="flex flex-row justify-end mx-6 my-4 gap-4">
                             <button className="py-[0.625rem] px-6 border-2  border-solid border-[#EAECF0] font-semibold text-sm text-[#1D2939] rounded-md" onClick={() => setIsDialogOpen(false)} >Cancel</button>
-                            <button className="py-[0.625rem] px-6 text-white shadow-inner-button bg-[#BB241A] border border-[#DE3024] rounded-md" onClick={() => setIsDialogOpen(false)} >Remove</button>
+                            <button className="py-[0.625rem] px-6 text-white shadow-inner-button bg-[#BB241A] border border-[#DE3024] rounded-md" onClick={handleDeleteGuide} >Remove</button>
                         </div>
                     </DialogPanel>
                 </div >
             </Dialog >
+            <ToastContainer />
         </div>
     )
 }

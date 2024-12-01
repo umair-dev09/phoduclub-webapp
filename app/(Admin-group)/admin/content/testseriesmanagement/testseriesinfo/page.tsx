@@ -3,53 +3,29 @@ import Image from "next/image";
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import ScheduledDialog from "@/components/AdminComponents/QuizInfoDailogs/scheduledDailog";
-import DeleteQuiz from "@/components/AdminComponents/QuizInfoDailogs/DeleteDailogue";
-import EndQuiz from "@/components/AdminComponents/QuizInfoDailogs/EndDailogue";
-import PausedQuiz from "@/components/AdminComponents/QuizInfoDailogs/PauseDailogue";
+import Delete from "@/components/AdminComponents/QuizInfoDailogs/DeleteDailogue";
+import End from "@/components/AdminComponents/QuizInfoDailogs/EndDailogue";
+import Paused from "@/components/AdminComponents/QuizInfoDailogs/PauseDailogue";
 import MakeLiveNow from "@/components/AdminComponents/QuizInfoDailogs/MakeLiveNow";
-import ResumeQuiz from "@/components/AdminComponents/QuizInfoDailogs/ResumeDailogue";
-import Questions from "@/components/AdminComponents/QuizInfo/Questions";
+import Resume from "@/components/AdminComponents/QuizInfoDailogs/ResumeDailogue";
 import StudentsAttemptedTestseries from '@/components/AdminComponents/TestseriesInfo/StudentsAttemptedTestseries';
 import Content from '@/components/AdminComponents/TestseriesInfo/Content';
 import { Popover, PopoverContent, PopoverTrigger } from "@nextui-org/popover";
+import { Tabs, Tab } from "@nextui-org/react";
 
-function TestSeriesMangInfo() {
+function TestSeriesInfo() {
+
+    const ContentCount = 78;
+    const StudentsattemptedCount = 10;
     const [activeTab, setActiveTab] = useState('Content');
 
-    const handleTabClick = (tabName: React.SetStateAction<string>) => {
-        setActiveTab(tabName);
-    };
     // State to manage each dialog's visibility
     const [isScheduledDialogOpen, setIsScheduledDialogOpen] = useState(false);
     const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
     const [isEndDialogOpen, setIsEndDialogOpen] = useState(false);
     const [isPausedDialogOpen, setIsPausedDialogOpen] = useState(false);
     const [isMakeLiveNowDialogOpen, setIsMakeLiveNowDialogOpen] = useState(false);
-    const [isResumeQuizOpen, setIsResumeQuizOpen] = useState(false);
-
-    // Handlers for ScheduledDialog
-    const openScheduledDialog = () => setIsScheduledDialogOpen(true);
-    const closeScheduledDialog = () => setIsScheduledDialogOpen(false);
-
-    // Handlers for DeleteQuiz dialog
-    const openDeleteDialog = () => setIsDeleteDialogOpen(true);
-    const closeDeleteDialog = () => setIsDeleteDialogOpen(false);
-
-    // Handlers for EndQuiz dialog
-    const openEndQuiz = () => setIsEndDialogOpen(true);
-    const closeEndQuiz = () => setIsEndDialogOpen(false);
-
-    // Handlers for  PausedQuiz dialog
-    const openPausedQuiz = () => setIsPausedDialogOpen(true);
-    const closePausedQuiz = () => setIsPausedDialogOpen(false);
-
-    // Handlers for  MakeLiveNow dialog
-    const openMakeLiveNowQuiz = () => setIsMakeLiveNowDialogOpen(true);
-    const closeMakeLiveNowQuiz = () => setIsMakeLiveNowDialogOpen(false);
-
-    // Handlers for ResumeQuiz dialog
-    const openResumeQuiz = () => setIsResumeQuizOpen(true);
-    const closeResumeQuiz = () => setIsResumeQuizOpen(false);
+    const [isResumeOpen, setIsResumeOpen] = useState(false);
 
     const router = useRouter();
     // this logic is for rating 
@@ -84,53 +60,53 @@ function TestSeriesMangInfo() {
                         </div> */}
                     </div>
                     <div className="flex flex-row gap-1">
-                        {/* BUTTON FOR EDIT AND DELETE QUIZ */}
+                        {/* BUTTON FOR EDIT AND DELETE */}
                         {/* <button className=" p-3 gap-2 flex-row flex h-[40px] hover:bg-[#F2F4F7] w-full">
-                            <Image src="/icons/edit-icon.svg" width={18} height={18} alt="Edit-quiz" />
-                            <span className="text-sm text-[#0C111D] font-normal">Edit Quiz</span>
+                            <Image src="/icons/edit-icon.svg" width={18} height={18} alt="Edit-icon" />
+                            <span className="text-sm text-[#0C111D] font-normal">Edit </span>
                         </button>
                         <button className=" p-3 gap-2 flex-row flex h-[40px] hover:bg-[#F2F4F7] w-full">
-                            <Image src="/icons/delete.svg" width={18} height={18} alt="delete-quiz" />
-                            <span className="text-sm text-[#DE3024] font-normal">Delete Quiz</span>
+                            <Image src="/icons/delete.svg" width={18} height={18} alt="delete-icon" />
+                            <span className="text-sm text-[#DE3024] font-normal">Delete </span>
                         </button> */}
-                        {/* Button for Resume Quiz */}
+                        {/* Button for Resume  */}
                         <button
                             className="w-auto p-3 gap-2 flex-row flex rounded-[8px] h-[40px] items-center"
-                            onClick={openResumeQuiz}
+                            onClick={() => setIsResumeOpen(true)}
                         >
-                            <Image src="/icons/resume.svg" width={18} height={18} alt="Resume Quiz" />
-                            <span className="text-sm text-[#9012FF]  font-medium">Resume Quiz</span>
+                            <Image src="/icons/resume.svg" width={18} height={18} alt="Resume -icon" />
+                            <span className="text-sm text-[#9012FF]  font-medium">Resume</span>
                         </button>
-                        {/* Button for Scheduled Quiz */}
+                        {/* Button for Scheduled  */}
                         <button
                             className="w-auto p-3 gap-2 flex-row flex bg-[#FFFFFF] border border-solid border-[#EAECF0] rounded-[8px] h-[40px] items-center"
-                            onClick={openScheduledDialog}>
+                            onClick={() => setIsScheduledDialogOpen(true)}>
                             <Image src="/icons/select-date.svg" width={18} height={18} alt="Calendar" />
-                            <span className="text-sm text-[#0C111D]  font-medium">Schedule Quiz</span>
+                            <span className="text-sm text-[#0C111D]  font-medium">Schedule</span>
                         </button>
-                        {/* Button for Publish Quiz */}
+                        {/* Button for Publish  */}
                         <button className="w-auto p-3 gap-2 flex-row flex bg-[#FFFFFF] border border-solid border-[#EAECF0] rounded-[8px] h-[40px] items-center"
                         >
-                            <Image src="/icons/publish-quiz.svg" width={18} height={18} alt="publish-quiz" />
-                            <span className="text-sm text-[#0C111D] font-normal">Publish Quiz</span>
+                            <Image src="/icons/publish-quiz.svg" width={18} height={18} alt="publish-icon" />
+                            <span className="text-sm text-[#0C111D] font-normal">Publish</span>
                         </button>
-                        {/* Button for Duplicate Quiz */}
+                        {/* Button for Duplicate  */}
                         <button className="w-auto p-3 gap-2 flex-row flex bg-[#FFFFFF] border border-solid border-[#EAECF0] rounded-[8px] h-[40px] items-center"
                         >
                             <Image src="/icons/duplicate.svg" width={18} height={18} alt="duplicate" />
                             <span className="text-sm text-[#0C111D] font-normal">Duplicate</span>
                         </button>
-                        {/* Button for Pause Quiz */}
+                        {/* Button for Pause  */}
                         <button className="w-auto p-3 gap-2 flex-row flex bg-[#FFFFFF] border border-solid border-[#EAECF0] rounded-[8px] h-[40px] items-center"
-                            onClick={openPausedQuiz}>
-                            <Image src="/icons/pausequiz.svg" width={18} height={18} alt="Paused-quiz" />
-                            <span className="text-sm text-[#0C111D] font-normal">Pause Quiz</span>
+                            onClick={() => setIsPausedDialogOpen(true)}>
+                            <Image src="/icons/pausequiz.svg" width={18} height={18} alt="Paused-icon" />
+                            <span className="text-sm text-[#0C111D] font-normal">Pause</span>
                         </button>
-                        {/* Button for End Quiz */}
+                        {/* Button for End  */}
                         <button className="w-auto p-3 gap-2 flex-row flex bg-[#FFFFFF] border border-solid border-[#EAECF0] rounded-[8px] h-[40px] items-center"
-                            onClick={openEndQuiz}>
-                            <Image src="/icons/endquiz.svg" width={18} height={18} alt="End-quiz" />
-                            <span className="text-sm text-[#DE3024]  font-normal">End Quiz</span>
+                            onClick={() => setIsEndDialogOpen(true)}>
+                            <Image src="/icons/endquiz.svg" width={18} height={18} alt="End-icon" />
+                            <span className="text-sm text-[#DE3024]  font-normal">End</span>
                         </button>
                         {/* Button of Three dots */}
                         <Popover
@@ -148,14 +124,13 @@ function TestSeriesMangInfo() {
                             <PopoverContent className="flex flex-col px-0 text-sm font-normal bg-white border border-lightGrey rounded-md w-[167px] shadow-md"
                             >
                                 <button className=" p-3 gap-2 flex-row flex h-[40px] hover:bg-[#F2F4F7] w-full">
-                                    <Image src="/icons/edit-icon.svg" width={18} height={18} alt="Edit-quiz" />
-                                    <span className="text-sm text-[#0C111D] font-normal">Edit Quiz</span>
+                                    <Image src="/icons/edit-icon.svg" width={18} height={18} alt="Edit-icon" />
+                                    <span className="text-sm text-[#0C111D] font-normal">Edit</span>
                                 </button>
                                 <button className=" p-3 gap-2 flex-row flex h-[40px] hover:bg-[#F2F4F7] w-full"
-                                    onClick={openDeleteDialog}
-                                >
-                                    <Image src="/icons/delete.svg" width={18} height={18} alt="delete-quiz" />
-                                    <span className="text-sm text-[#DE3024] font-normal">Delete Quiz</span>
+                                    onClick={() => setIsDeleteDialogOpen(true)}>
+                                    <Image src="/icons/delete.svg" width={18} height={18} alt="delete-icon" />
+                                    <span className="text-sm text-[#DE3024] font-normal">Delete</span>
                                 </button>
                             </PopoverContent>
                         </Popover>
@@ -170,11 +145,11 @@ function TestSeriesMangInfo() {
                         height={20}
                         alt="information-icon"
                     />
-                    <span className="text-[#475467] font-normal text-[13px]">Quiz will be live on 12 Jan, 2024  05:30 PM</span>
+                    <span className="text-[#475467] font-normal text-[13px]">Test Series will be live on 12 Jan, 2024   05:30 PM</span>
                 </div>
                 <button
-                    onClick={openScheduledDialog}               >
-                    <Image src="/icons/edit-icon.svg" width={18} height={18} alt="Edit-quiz" />
+                    onClick={() => setIsScheduledDialogOpen(true)}>
+                    <Image src="/icons/edit-icon.svg" width={18} height={18} alt="Edit-icon" />
                 </button>
             </div>
             <div className="flex flex-row mt-4 gap-4">
@@ -234,66 +209,66 @@ function TestSeriesMangInfo() {
                     <span className="font-medium text-[#1D2939] text-base">95</span>
                 </div>
             </div>
-            <div className="flex flex-col">
-                <div className="relative flex">
-                    <div className="pt-[10px]">
-                        <button
-                            onClick={() => handleTabClick('Content')}
-                            className={`relative py-2 pr-4 text-base transition duration-200 ${activeTab === 'Content' ? 'text-[#7400E0]' : 'text-[#667085] hover:text-[#7400E0]'
-                                } focus:outline-none`}
-                            style={{ fontSize: '16px', fontWeight: '500' }}
-                        >
-                            Content
-                        </button>
-                    </div>
-                    <div className="pt-[10px]">
-                        <button
-                            onClick={() => handleTabClick('StudentsAttempts')}
-                            className={`relative py-2 px-4 text-base transition duration-200 ${activeTab === 'StudentsAttempts' ? 'text-[#7400E0]' : 'text-[#667085] hover:text-[#7400E0]'
-                                } focus:outline-none`}
-                            style={{ fontSize: '16px', fontWeight: '500' }}
-                        >
-                            Students attempted
-                            <span
-                                className="ml-2 px-2 py-[0px] text-[#9012FF] bg-[#EDE4FF] rounded-full relative"
-                                style={{ fontSize: '14px', fontWeight: '500', minWidth: '24px', textAlign: 'center', top: '-1px' }}
-                            >
-                                10
-                            </span>
-                        </button>
-                    </div>
-                    <div
-                        className="absolute bg-[#7400E0] transition-all duration-300"
-                        style={{
-                            height: '1.8px',
-                            width: activeTab === 'Content' ? '68px' : '200px', // Adjusted width to match the text
-                            left: activeTab === 'Content' ? '0px' : '95px', // Adjust left position to match each button
-                            bottom: '-8px',
-                        }}
-                    />
-                </div>
-                <hr className="h-px bg-[#EAECF0] mt-2" />
-            </div>
-            {activeTab === 'Content' && (
-                <div>
-                    <Content />
-                </div>
-            )}
-            {activeTab === 'StudentsAttempts' && (
-                <div>
-                    <StudentsAttemptedTestseries />
-                </div>
-            )}
+            <div className="pt-3 w-full flex flex-col">
+                <Tabs
+                    aria-label="Test series Info Tabs"
+                    color="primary"
+                    variant="underlined"
+                    selectedKey={activeTab}
+                    onSelectionChange={(key) => setActiveTab(key as string)}
+                    classNames={{
+                        tabList: "gap-6 w-full relative rounded-none p-0 border-b border-solid border-[#EAECF0]",
+                        cursor: "w-full bg-[#7400E0]",
+                        tab: "max-w-fit px-0 h-12",
+                        tabContent: "group-data-[selected=true]:text-[#7400E0] hover:text-[#7400E0] ",
+                    }}
+                >
+                    <Tab
+                        key="Content"
+                        title={
+                            <div className="flex items-center space-x-2">
+                                <span className="font-medium text-base">
+                                    Content
+                                </span>
+                                {ContentCount > 0 && (
+                                    <div className="inline-flex items-center justify-center px-3 py-1 rounded-full text-sm bg-[#EDE4FF] border border-[#EDE4FF] font-medium text-[#7400E0]">
+                                        {ContentCount}
+                                    </div>
+                                )}
+                            </div>
+                        }
+                    >
+                        <Content />
+                    </Tab>
 
+                    <Tab
+                        key="Students attempted"
+                        title={
+                            <div className="flex items-center space-x-2">
+                                <span className="font-medium text-base">
+                                    Students attempted
+                                </span>
+                                {StudentsattemptedCount > 0 && (
+                                    <div className="inline-flex items-center justify-center px-3 py-1 rounded-full text-sm bg-[#EDE4FF] border border-[#EDE4FF] font-medium text-[#7400E0]">
+                                        {StudentsattemptedCount}
+                                    </div>
+                                )}
+                            </div>
+                        }
+                    >
+                        <StudentsAttemptedTestseries />
+                    </Tab>
+                </Tabs>
+            </div>
             {/* Dialog components with conditional rendering */}
-            {isScheduledDialogOpen && <ScheduledDialog onClose={closeScheduledDialog} />}
-            {isDeleteDialogOpen && <DeleteQuiz onClose={closeDeleteDialog} open={true} />}
-            {isEndDialogOpen && <EndQuiz onClose={closeEndQuiz} />}
-            {isPausedDialogOpen && <PausedQuiz onClose={closePausedQuiz} />}
-            {isMakeLiveNowDialogOpen && < MakeLiveNow onClose={closeMakeLiveNowQuiz} open={true} />}
-            {isResumeQuizOpen && < ResumeQuiz onClose={closeResumeQuiz} open={true} />}
+            {isScheduledDialogOpen && <ScheduledDialog onClose={() => setIsScheduledDialogOpen(false)} />}
+            {isDeleteDialogOpen && <Delete onClose={() => setIsDeleteDialogOpen(false)} open={isDeleteDialogOpen} />}
+            {isEndDialogOpen && <End onClose={() => setIsEndDialogOpen(false)} />}
+            {isPausedDialogOpen && <Paused onClose={() => setIsPausedDialogOpen(false)} />}
+            {isMakeLiveNowDialogOpen && < MakeLiveNow onClose={() => setIsMakeLiveNowDialogOpen(false)} open={isMakeLiveNowDialogOpen} />}
+            {isResumeOpen && < Resume open={isResumeOpen} onClose={() => setIsResumeOpen(false)} />}
         </div>
     );
 }
 
-export default TestSeriesMangInfo;
+export default TestSeriesInfo;

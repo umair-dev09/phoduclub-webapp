@@ -16,6 +16,7 @@ import QuizStatus from '@/components/AdminComponents/QuizzesManagement/quizStatu
 import { db } from "@/firebase";
 import LoadingData from "@/components/Loading";
 import DOMPurify from 'dompurify';
+import { Tabs, Tab } from "@nextui-org/react";
 
 type QuizData = {
     quizName: string;
@@ -36,7 +37,6 @@ type Options = {
     C: string;
     D: string;
 }
-
 type QuestionData = {
     question: string;
     correctAnswer: string;
@@ -64,9 +64,6 @@ function Quizinfo({ params }: { params: { quizName: string } }) {
     const [questions, setQuestions] = useState<QuestionData[]>([]);
     const [loading, setLoading] = useState(true);
 
-    const handleTabClick = (tabName: React.SetStateAction<string>) => {
-        setActiveTab(tabName);
-    };
     // State to manage each dialog's visibility
     const [isScheduledDialogOpen, setIsScheduledDialogOpen] = useState(false);
     const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
@@ -189,7 +186,8 @@ function Quizinfo({ params }: { params: { quizName: string } }) {
     const handlePublishQuiz = (path: string) => {
         router.push(path);
     };
-
+    const questionsCount = 8;
+    const studentsattemptsCount = 7;
     return (
         <div className="flex w-full h-auto overflow-y-auto flex-col p-8">
             <div className="w-full h-auto flex flex-col pb-2">
@@ -323,7 +321,7 @@ function Quizinfo({ params }: { params: { quizName: string } }) {
                 <div
                     className="quiz-description p-1"
                     dangerouslySetInnerHTML={{
-                        __html: cleanQuizDescription(quizData?.quizDescription || ''),
+                        __html: (quizData?.quizDescription || ''),
                     }}
                 />
             </div>
@@ -356,56 +354,59 @@ function Quizinfo({ params }: { params: { quizName: string } }) {
                     <span className="font-medium text-[#1D2939] text-base">{formattedQuizTime}</span>
                 </div>
             </div>
-            <div className="flex flex-col">
-                <div className="relative flex">
-                    <div className="pt-[10px]">
-                        <button
-                            onClick={() => handleTabClick('Questions')}
-                            className={`relative py-2 pr-4 text-base transition duration-200 ${activeTab === 'Questions' ? 'text-[#7400E0]' : 'text-[#667085] hover:text-[#7400E0]'
-                                } focus:outline-none`}
-                            style={{ fontSize: '16px', fontWeight: '500' }}
-                        >
-                            Questions
-                        </button>
-                    </div>
-                    <div className="pt-[10px]">
-                        <button
-                            onClick={() => handleTabClick('StudentsAttempts')}
-                            className={`relative py-2 px-4 text-base transition duration-200 ${activeTab === 'StudentsAttempts' ? 'text-[#7400E0]' : 'text-[#667085] hover:text-[#7400E0]'
-                                } focus:outline-none`}
-                            style={{ fontSize: '16px', fontWeight: '500' }}
-                        >
-                            StudentsAttempts
-                            <span
-                                className="ml-2 px-2 py-[0px] text-[#9012FF] bg-[#EDE4FF] rounded-full relative"
-                                style={{ fontSize: '14px', fontWeight: '500', minWidth: '24px', textAlign: 'center', top: '-1px' }}
-                            >
-                                10
-                            </span>
-                        </button>
-                    </div>
-                    <div
-                        className="absolute bg-[#7400E0] transition-all duration-300"
-                        style={{
-                            height: '1.8px',
-                            width: activeTab === 'Questions' ? '80px' : '180px', // Adjusted width to match the text
-                            left: activeTab === 'Questions' ? '0px' : '113px', // Adjust left position to match each button
-                            bottom: '-8px',
-                        }}
-                    />
-                </div>
-                <hr className="h-px bg-[#EAECF0] mt-2" />
+
+            {/* Tabs */}
+            <div className="pt-2">
+                <Tabs
+                    aria-label="Market Integration Tabs"
+                    color="primary"
+                    variant="underlined"
+                    selectedKey={activeTab}
+                    onSelectionChange={(key) => setActiveTab(key as string)}
+                    classNames={{
+                        tabList: "gap-6 w-full relative rounded-none p-0 border-b border-solid border-[#EAECF0]",
+                        cursor: "w-full bg-[#7400E0]",
+                        tab: "max-w-fit px-0 h-12",
+                        tabContent: "group-data-[selected=true]:text-[#7400E0] hover:text-[#7400E0] ",
+                    }}
+                >
+                    <Tab
+                        key="Questions"
+                        title={
+                            <div className="flex items-center space-x-2">
+                                <span className="font-medium text-base">
+                                    Questions
+                                </span>
+                                {questionsCount > 0 && (
+                                    <div className="inline-flex items-center justify-center px-3 py-1 rounded-full text-sm bg-[#EDE4FF] border border-[#EDE4FF] font-medium text-[#7400E0]">
+                                        {questionsCount}
+                                    </div>
+                                )}
+                            </div>
+                        }
+                    >
+                        <Questions questionsList={questions} />
+                    </Tab>
+
+                    <Tab
+                        key="Students attempted"
+                        title={
+                            <div className="flex items-center space-x-2">
+                                <span className="font-medium text-base">
+                                    Students attempted
+                                </span>
+                                {studentsattemptsCount > 0 && (
+                                    <div className="inline-flex items-center justify-center px-3 py-1 rounded-full text-sm bg-[#EDE4FF] border border-[#EDE4FF] font-medium text-[#7400E0]">
+                                        {studentsattemptsCount}
+                                    </div>
+                                )}
+                            </div>
+                        }
+                    >
+                        <StudentsAttempts />
+                    </Tab>
+                </Tabs>
             </div>
-            {activeTab === 'Questions' && (
-                <div>
-                    <Questions questionsList={questions} />
-                </div>
-            )}
-            {activeTab === 'StudentsAttempts' && (
-                <div>
-                    <StudentsAttempts />
-                </div>
-            )}
 
             {/* Dialog components with conditional rendering */}
             {isScheduledDialogOpen && <ScheduledDialog onClose={closeScheduledDialog} />}

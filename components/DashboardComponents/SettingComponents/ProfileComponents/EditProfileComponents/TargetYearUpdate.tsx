@@ -184,7 +184,7 @@ function TargetYearUpdate({setIsEditing}: TargetYearUpdateProps){
               ...provided,
               border: '1px solid #e6e6e6',
               borderRadius: '8px',
-              padding: '4px',
+              padding: '4px', 
               boxShadow: 'none',
               '&:hover': {
                 outline: '1px solid #e5a1f5',

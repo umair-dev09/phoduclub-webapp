@@ -24,6 +24,7 @@ import LoadingData from "@/components/Loading";
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { db } from '@/firebase';
+import Select,{SingleValue } from 'react-select';
 
 interface UserData {
     userId: string;
@@ -34,6 +35,9 @@ interface UserData {
     profilePic: string;
     email: string;
     isPremium: boolean;
+    isBanned: boolean;
+    targetExams: string[];
+    targetYear: string;
 }
 
 const formatFirestoreTimestamp = (timestamp: Timestamp | string): string => {
@@ -58,12 +62,17 @@ const formatFirestoreTimestamp = (timestamp: Timestamp | string): string => {
     });
 };
 
+type Option = {
+    value: string;
+    label: string;
+  };
 
 
 function User() {
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage] = useState(5);
     const [loading, setLoading] = useState(true);
+    const [isEditing, setIsEditing] = useState(false);
     const [searchTerm, setSearchTerm] = useState('');
     const [userTypeFilter, setUserTypeFilter] = useState('All');
     const [firstName, setFirstName] = useState('');
@@ -77,10 +86,30 @@ function User() {
     const [data, setData] = useState<UserData[]>([]);
     const [users, setUsers] = useState<UserData[]>([]);
     const isFormValid = firstName && lastName && userId && phone.length >= 12 && emailId;
-
+    const [selectedExams, setSelectedExams] = useState<Option[]>([]);
+    const exams: Option[] = [
+        { value: 'BITSAT', label: 'BITSAT' },
+        { value: 'JEE', label: 'JEE' },
+        { value: 'SRMJEEE', label: 'SRMJEEE' },
+        { value: 'COMEDK', label: 'COMEDK' },
+        { value: 'KCET', label: 'KCET' },
+        { value: 'VITEEE', label: 'VITEEE' },
+        { value: 'MET', label: 'MET' },
+      ];
     const [userTypePopup, setUserTypePopup] = useState(false);
     const router = useRouter();
-
+      
+      type CustomState = {
+        isSelected: boolean;
+        isFocused: boolean;
+      };
+      
+      const years: Option[] = [
+        { value: '2024', label: '2024' },
+        { value: '2025', label: '2025' },
+        { value: '2026', label: '2026' },
+      ];
+      const [selectedYear, setSelectedYear] = useState<SingleValue<Option>>(null);
     useEffect(() => {
         let filteredUsers = users;
 
@@ -115,7 +144,9 @@ function User() {
     };
     // THIS STATE IS USED FOR THE DAILOG OF BAN
     const [isBanOpen, setIsBanOpen] = useState(false);
-    const openBan = () => setIsBanOpen(true);
+    // const openBan = () => {
+    //     setIsBanOpen(true);
+    // }
     const closeBan = () => setIsBanOpen(false);
 
     // THIS STATE IS USED FOR THE DAILOG OF DELETE
@@ -128,7 +159,7 @@ function User() {
             const updatedUsers: UserData[] = snapshot.docs.map((doc) => {
                 const userData = doc.data();
                 return {
-                    uniqueId: userData.uniqueId,
+                    uniqueId: userData.uniqueId, 
                     name: userData.name,
                     userId: userData.userId,
                     phone: userData.phone,
@@ -136,8 +167,11 @@ function User() {
                     profilePic: userData.profilePic,
                     createdAt: userData.createdAt,
                     isPremium: userData.isPremium,
+                    targetExams: userData.targetExams,
+                    targetYear: userData.targetYear, 
+                    isBanned: userData.isBanned, 
                 } as UserData;
-            });
+            }) .filter((user) => !user.isBanned); // Filter users with isGuide true
 
             setUsers(updatedUsers);
             setData(updatedUsers); // Update data for pagination and search
@@ -148,11 +182,11 @@ function User() {
     }, []);
     const [openDialog, setOpenDialog] = useState(false);
 
-    const handleEditDetails = (name: string, email: string, phone: string, authId: string, userId: string, pic: string) => {
+    const handleEditDetails = (name: string, email: string, phone: string, authId: string, userId: string, pic: string, targetYear: string, targetExams: string[]) => {
         const nameParts = name.trim().split(" "); // Split by spaces
         const firstName = nameParts[0] || ""; // First part is the first name
         const lastName = nameParts.slice(1).join(" ") || ""; // Join remaining parts for the last name
-
+        setIsEditing(true);
         setFirstName(firstName);
         setLastName(lastName);
         setPhone(phone);
@@ -161,6 +195,15 @@ function User() {
         setUserId(userId);
         setPic(pic);
         setOpenDialog(true);
+        if (targetExams) {
+            const defaultExams = targetExams.map((exam) => ({
+              value: exam,
+              label: exam,
+            }));
+            setSelectedExams(defaultExams);
+          }
+          const defaultYear = years.find(year => year.value === targetYear);
+          setSelectedYear(defaultYear || null);
     };
 
     const handleAddDialog = () => {
@@ -172,6 +215,9 @@ function User() {
         setAuthId('');
         setUserId('');
         setPic('');
+        setSelectedExams([]);
+        setSelectedYear(null);
+        setIsEditing(false);
     };
 
     const closeDialog = () => {
@@ -188,8 +234,11 @@ function User() {
                     name: fullName,
                     phone,
                     email: emailId,
+                    targetYear: selectedYear?.value,
+                    targetExams: selectedExams.map(exam => exam.value),
                 }, { merge: true });
                 toast.success("User Updated Successfully!");
+                setIsEditing(false);
             } else {
                 // Add new user data to Firestore
                 const docRef = await addDoc(collection(db, "users"), {
@@ -201,6 +250,9 @@ function User() {
                     profilePic: 'https://firebasestorage.googleapis.com/v0/b/phodu-club.appspot.com/o/Default%20Avatar%2Favatar1.png?alt=media&token=f794198a-0d5b-4542-a7bd-8c8586e4ef85',
                     createdAt: Timestamp.now(),
                     isPremium: false,
+                    isGuide: false,
+                    targetYear: selectedYear?.value,
+                    targetExams: selectedExams.map(exam => exam.value),
                 });
 
                 // Update the document with the generated adminId
@@ -212,6 +264,8 @@ function User() {
                 setPhone('');
                 setEmailId('');
                 setPic('');
+                setSelectedExams([]);
+                setSelectedYear(null);
             }
 
             setOpenDialog(false);
@@ -222,7 +276,16 @@ function User() {
             // setLoading(false); // End loading
         }
     };
-
+  
+    useEffect(() => {
+        if(!isEditing){
+    const firstNamePart = firstName.slice(0, 4).toLowerCase();
+    const lastNamePart = lastName.slice(0, 4).toLowerCase();
+    const phoneNumberPart = phone.slice(-4);
+    const userId = `${firstNamePart}${lastNamePart}${phoneNumberPart}`;
+       setUserId(userId);
+        }
+     });
     if (loading) {
         return <LoadingData />
     }
@@ -331,7 +394,7 @@ function User() {
                                             <div className="flex items-start justify-start flex-col">
                                                 <div
                                                     className="font-semibold text-sm cursor-pointer"
-                                                    onClick={() => handleTabClick('/admin/userdatabase/userdatabaseinfo')}
+                                                    onClick={() => handleTabClick(`/admin/userdatabase/${users.name.toLowerCase().replace(/\s+/g, '-')}?uId=${users.uniqueId}`)}
                                                 >
                                                     {users.name}
                                                 </div>
@@ -356,12 +419,12 @@ function User() {
                                             </PopoverTrigger>
                                             <PopoverContent className=" w-[167px] px-0 border border-solid border-[#EAECF0] bg-[#FFFFFF] rounded-md  shadow-lg">
                                                 <button className="flex flex-row items-center justify-start w-full py-[0.625rem] px-4 gap-2 hover:bg-[#F2F4F7]"
-                                                    onClick={() => handleEditDetails(users.name, users.email, users.phone, users.uniqueId, users.userId, users.profilePic)}>
+                                                    onClick={() => handleEditDetails(users.name, users.email, users.phone, users.uniqueId, users.userId, users.profilePic, users.targetYear, users.targetExams)}>
                                                     <Image src='/icons/edit-icon.svg' alt="user profile" width={18} height={18} />
                                                     <p className="text-sm text-[#0C111D] font-normal">Edit details</p>
                                                 </button>
                                                 <button className=" flex flex-row items-center justify-start w-full py-[0.625rem] px-4 gap-2 hover:bg-[#F2F4F7]"
-                                                    onClick={openBan}>
+                                                    onClick={() => {setIsBanOpen(true); setAuthId(users.uniqueId) }}>
                                                     <Image src='/icons/user-block-red-01.svg' alt="user profile" width={18} height={18} />
                                                     <p className="text-sm text-[#DE3024] font-normal">Ban</p>
                                                 </button>
@@ -392,167 +455,202 @@ function User() {
                 </div>
             </div>
 
-            {isBanOpen && <Ban onClose={closeBan} open={true} />}
+            {isBanOpen && <Ban onClose={closeBan} open={true} id={authId} banUser={true}/>}
             {isDeleteOpen && <Delete onClose={closeDelete} open={true} authId={authId} name={name} />}
             {/* Dialog Component */}
-            <Dialog open={openDialog} onClose={closeDialog} className="relative z-50">
-                <DialogBackdrop className="fixed inset-0 bg-black/30" />
-                <div className="fixed inset-0 flex items-center justify-center">
-                    <DialogPanel className="bg-white rounded-2xl w-[500px] h-auto ">
-                        <div className="flex flex-col relative gap-6">
-                            <div className="flex flex-col px-6 gap-6">
-                                <div className="flex flex-row justify-between mt-6">
-                                    <h3 className="text-lg font-bold text-[#1D2939]">{!authId ? 'Add New User' : 'Edit User Details'}</h3>
-                                    <button onClick={closeDialog}>
-                                        <Image src="/icons/cancel.svg" alt="Cancel" width={20} height={20} />
+                <Dialog open={openDialog} onClose={closeDialog} className="relative z-50">
+                    <DialogBackdrop className="fixed inset-0 bg-black/30" />
+                    <div className="fixed inset-0 flex items-center justify-center">
+                        <DialogPanel className="bg-white rounded-2xl w-[500px] max-h-[92%] overflow-y-auto">
+                            <div className="flex flex-col relative gap-6">
+                                <div className="flex flex-col px-6 gap-6">
+                                    <div className="flex flex-row justify-between mt-6">
+                                        <h3 className="text-lg font-bold text-[#1D2939]">{!authId ? 'Add New User' : 'Edit User Details'}</h3>
+                                        <button onClick={closeDialog}>
+                                            <Image src="/icons/cancel.svg" alt="Cancel" width={20} height={20} />
+                                        </button>
+                                    </div>
+                                    <div className="flex flex-col gap-3 items-center">
+                                        <div className="relative">
+                                            <Image className="rounded-full" src={pic ||"/images/DP_Lion.svg"} alt="DP" width={130} height={130} />
+                                        </div>
+                                        {/* <span className="font-semibold text-sm text-[#9012FF]">Change</span> */}
+                                    </div>
+                                    {/* Input Fields */}
+                                    <div className="flex flex-row w-full gap-4">
+                                        <div className="flex flex-col gap-1 w-1/2 flex-grow">
+                                            <label className="text-[#1D2939] text-sm font-medium">First Name</label>
+                                            <input
+                                                className="w-full text-sm font-medium text-[#1D2939] placeholder:text-[#A1A1A1] rounded-md border border-[#D0D5DD] px-4 py-2 focus:outline-none"
+                                                type="text"
+                                                placeholder="First Name"
+                                                value={firstName}
+                                                onChange={(e) => setFirstName(e.target.value)}
+                                            />
+                                        </div>
+                                        <div className="flex flex-col gap-1 w-1/2 flex-grow">
+                                            <label className="text-[#1D2939] text-sm font-medium">Last Name</label>
+                                            <input
+                                                className="w-full text-sm font-medium text-[#1D2939] placeholder:text-[#A1A1A1] rounded-md border border-[#D0D5DD] px-4 py-2 focus:outline-none"
+                                                type="text"
+                                                placeholder="Last Name"
+                                                value={lastName}
+                                                onChange={(e) => setLastName(e.target.value)}
+                                            />
+                                        </div>
+                                    </div>
+
+
+                                    <div className="flex flex-col gap-1 w-full ">
+                                        <label htmlFor="num-ratings" className="text-[#1D2939] text-sm font-medium">
+                                            Email Id
+                                        </label>
+                                        <div className="flex flex-row py-2 px-4 w-full gap-2 border border-solid border-[#D0D5DD] rounded-md transition duration-200 ease-in-out ">
+                                            <input
+                                                className="w-full text-sm font-medium text-[#1D2939] placeholder:font-normal placeholder:text-[#A1A1A1] rounded-md outline-none"
+                                                type="text"
+                                                placeholder="Email Id"
+                                                value={emailId}
+                                                onChange={(e) => setEmailId(e.target.value)}
+                                            />
+                                        </div>
+                                    </div>
+                                    <div className="flex flex-col gap-1 w-full ">
+                                        <label htmlFor="num-ratings" className="text-[#1D2939] text-sm font-medium">
+                                            User Id
+                                        </label>
+                                        <div className="flex flex-row  w-full gap-2 border border-solid border-[#D0D5DD] rounded-md transition duration-200 ease-in-out ">
+                                            <input
+                                                className="w-full text-sm py-2 px-4 font-medium text-[#1D2939] placeholder:font-normal placeholder:text-[#A1A1A1] rounded-md outline-none"
+                                                type="text"
+                                                placeholder="User Id"
+                                                value={userId}
+                                                // onChange={(e) => setUserId(e.target.value)}
+                                                disabled={true}
+                                            />
+                                        </div>
+                                    </div>
+                                    <div className="flex flex-col gap-1">
+                                        <label className="text-[#344054] text-sm font-medium">Mobile No.</label>
+                                        <PhoneInput
+                                            country="in"
+                                            value={phone}
+                                            onChange={(phone) => setPhone("+" + phone)}
+                                            inputProps={{ required: true }}
+                                            inputStyle={{
+                                                width: "100%",
+                                                borderRadius: "8px",
+                                                border: "1px solid #D0D5DD",
+                                                height: "42px",
+                                            }}
+                                        />
+                                    </div>
+
+                                    <div className='w-full'>
+                <p className='mb-1 font-medium text-sm'>Target Exam</p>
+                <Select
+                    id="target-exam"
+                    value={selectedExams}
+                    onChange={(newValue) => setSelectedExams(newValue as Option[])}  // Explicit type casting
+                    options={exams}
+                    isMulti
+                    placeholder="Select exams..."
+                    styles={{
+                    option: (provided, state) => ({
+                        ...provided,
+                        color: 'black',
+                        backgroundColor: state.isFocused ? '#E39FF6' : 'white',
+                    }),
+                    multiValue: (provided) => ({
+                        ...provided,
+                        backgroundColor: 'white',
+                        border: '1.2px solid #D0D5DD',
+                        borderRadius: '8px',
+                        fontWeight: '500',
+                        marginRight: '7px',
+                    }),
+                    multiValueLabel: (provided) => ({
+                        ...provided,
+                        color: 'black',
+                    }),
+                    multiValueRemove: (provided) => ({
+                        ...provided,
+                        color: 'gray',
+                        cursor: 'pointer',
+                        ':hover': {
+                        backgroundColor: '#ffffff',
+                        borderRadius: '8px',
+                        },
+                    }),
+                    menu: (provided) => ({
+                        ...provided,
+                        backgroundColor: 'white',
+                    }),
+                    menuList: (provided) => ({
+                        ...provided,
+                        padding: '0',
+                    }),
+                    control: (provided) => ({
+                        ...provided,
+                        border: '1px solid #e6e6e6',
+                        borderRadius: '8px',
+                        padding: '4px',
+                        boxShadow: 'none',
+                        '&:hover': {
+                        outline: '1px solid #e5a1f5',
+                        },
+                    }),
+                    }}
+                />
+                </div>
+
+                <div className='w-full'>
+            <label htmlFor="target-year" className='mb-1 font-medium text-sm'>Target Year</label>
+            <Select
+            id="target-year"
+            value={selectedYear}
+            onChange={setSelectedYear}
+            options={years}
+            placeholder="Select year..."
+            styles={{
+                option: (provided, state: CustomState) => ({
+                ...provided,
+                color: 'black',
+                backgroundColor: state.isFocused ? '#E39FF6' : 'white', // Purple color when focused
+                }),
+                singleValue: (provided) => ({
+                ...provided,
+                color: 'black',
+                fontWeight: '500'
+                }),
+                control: (provided) => ({
+                ...provided,
+                border: '1px solid #e6e6e6',
+                borderRadius: '8px',
+                padding: '4px',
+                boxShadow: 'none',
+                '&:hover': {
+                    outline: '1px solid #e5a1f5',
+                },
+                }),
+                
+            }}
+            />
+        </div>
+
+                                </div>
+                                <div className="flex justify-end gap-4 border-t p-4">
+                                    <button onClick={closeDialog} className="px-6 py-2 border rounded-md text-sm font-semibold">
+                                        Discard
+                                    </button>
+                                    <button onClick={handleAddUser} disabled={!isFormValid} className={`px-6 py-2  text-white rounded-md text-sm ${!isFormValid ? 'bg-[#CDA0FC]' : 'bg-[#9012FF]'}`}>
+                                        {!authId ? 'Add New User' : 'Save Changes'}
                                     </button>
                                 </div>
-                                <div className="flex flex-col gap-3 items-center">
-                                    <div className="relative">
-                                        <Image src="/images/DP_Lion.svg" alt="DP" width={130} height={130} />
-                                    </div>
-                                    <span className="font-semibold text-sm text-[#9012FF]">Change</span>
-                                </div>
-                                {/* Input Fields */}
-                                <div className="flex flex-row w-full gap-4">
-                                    <div className="flex flex-col gap-1 w-1/2 flex-grow">
-                                        <label className="text-[#1D2939] text-sm font-medium">First Name</label>
-                                        <input
-                                            className="w-full text-sm font-medium text-[#1D2939] placeholder:text-[#A1A1A1] rounded-md border border-[#D0D5DD] px-4 py-2 focus:outline-none"
-                                            type="text"
-                                            placeholder="First Name"
-                                            value={firstName}
-                                            onChange={(e) => setFirstName(e.target.value)}
-                                        />
-                                    </div>
-                                    <div className="flex flex-col gap-1 w-1/2 flex-grow">
-                                        <label className="text-[#1D2939] text-sm font-medium">Last Name</label>
-                                        <input
-                                            className="w-full text-sm font-medium text-[#1D2939] placeholder:text-[#A1A1A1] rounded-md border border-[#D0D5DD] px-4 py-2 focus:outline-none"
-                                            type="text"
-                                            placeholder="Last Name"
-                                            value={lastName}
-                                            onChange={(e) => setLastName(e.target.value)}
-                                        />
-                                    </div>
-                                </div>
-
-
-                                <div className="flex flex-col gap-1 w-full ">
-                                    <label htmlFor="num-ratings" className="text-[#1D2939] text-sm font-medium">
-                                        Email Id
-                                    </label>
-                                    <div className="flex flex-row py-2 px-4 w-full gap-2 border border-solid border-[#D0D5DD] rounded-md transition duration-200 ease-in-out ">
-                                        <input
-                                            className="w-full text-sm font-medium text-[#1D2939] placeholder:font-normal placeholder:text-[#A1A1A1] rounded-md outline-none"
-                                            type="text"
-                                            placeholder="User Id"
-                                            value={emailId}
-                                            onChange={(e) => setEmailId(e.target.value)}
-                                        />
-                                    </div>
-                                </div>
-                                <div className="flex flex-col gap-1 w-full ">
-                                    <label htmlFor="num-ratings" className="text-[#1D2939] text-sm font-medium">
-                                        User Id
-                                    </label>
-                                    <div className="flex flex-row  w-full gap-2 border border-solid border-[#D0D5DD] rounded-md transition duration-200 ease-in-out ">
-                                        <input
-                                            className="w-full text-sm py-2 px-4 font-medium text-[#1D2939] placeholder:font-normal placeholder:text-[#A1A1A1] rounded-md outline-none"
-                                            type="text"
-                                            placeholder="User Id"
-                                            value={userId}
-                                            onChange={(e) => setUserId(e.target.value)}
-                                            disabled={authId !== ''}
-                                        />
-                                    </div>
-                                </div>
-                                <div className="flex flex-col gap-1">
-                                    <label className="text-[#344054] text-sm font-medium">Mobile No.</label>
-                                    <PhoneInput
-                                        country="in"
-                                        value={phone}
-                                        onChange={(phone) => setPhone("+" + phone)}
-                                        inputProps={{ required: true }}
-                                        inputStyle={{
-                                            width: "100%",
-                                            borderRadius: "8px",
-                                            border: "1px solid #D0D5DD",
-                                            height: "42px",
-                                        }}
-                                    />
-                                </div>
-                                <div className="flex flex-col gap-1 w-full">
-                                    <label className="text-[#1D2939] text-sm font-medium">Preparing Exams</label>
-                                    <Popover placement="bottom-end">
-                                        <PopoverTrigger>
-                                            <button className="focus:outline-none flex flex-row py-2 px-4 w-full gap-2 border border-solid border-[#D0D5DD] rounded-md transition duration-200 ease-in-out justify-between">
-                                                <span className="font-normal text-sm text-[#A1A1A1]">Select Exams</span>
-                                                <Image src="/icons/Arrow-down-1.svg" width={20} height={20} alt="Select-role Button" />
-                                            </button>
-                                        </PopoverTrigger>
-                                        <PopoverContent className="w-[450px] ml-5 px-0 py-1 bg-white border border-lightGrey rounded-md">
-                                            <div className="flex flex-row w-full h-10 justify-start items-center hover:bg-[#EAECF0] px-2">
-                                                <Checkbox color="primary" />
-                                                <span className="text-[#0C111D] font-normal text-sm">JEE</span>
-                                            </div>
-                                            <div className="flex flex-row w-full h-10 justify-start items-center hover:bg-[#EAECF0] px-2">
-                                                <Checkbox color="primary" />
-                                                <span className="text-[#0C111D] font-normal text-sm">BITSET</span>
-                                            </div>
-                                            <div className="flex flex-row w-full h-10 justify-start items-center hover:bg-[#EAECF0] px-2">
-                                                <Checkbox color="primary" />
-                                                <span className="text-[#0C111D] font-normal text-sm">SRM</span>
-                                            </div>
-                                            <div className="flex flex-row w-full h-10 justify-start items-center hover:bg-[#EAECF0] px-2">
-                                                <Checkbox color="primary" />
-                                                <span className="text-[#0C111D] font-normal text-sm">KCET</span>
-                                            </div>
-                                        </PopoverContent>
-                                    </Popover>
-                                </div>
-                                <div className="flex flex-col gap-1 w-full">
-                                    <label className="text-[#1D2939] text-sm font-medium">Target Year</label>
-                                    <Popover placement="bottom-end">
-                                        <PopoverTrigger>
-                                            <button className="focus:outline-none flex flex-row py-2 px-4 w-full gap-2 border border-solid border-[#D0D5DD] rounded-md transition duration-200 ease-in-out justify-between">
-                                                <span className="font-normal text-sm text-[#A1A1A1]">Select year</span>
-                                                <Image src="/icons/Arrow-down-1.svg" width={20} height={20} alt="Select-role Button" />
-                                            </button>
-                                        </PopoverTrigger>
-                                        <PopoverContent className="w-[450px] ml-5 px-0 py-1 bg-white border border-lightGrey rounded-md">
-                                            <div className="flex flex-row w-full h-10 justify-start items-center hover:bg-[#EAECF0] px-2">
-                                                <Checkbox color="primary" />
-                                                <span className="text-[#0C111D] font-normal text-sm">2026</span>
-                                            </div>
-                                            <div className="flex flex-row w-full h-10 justify-start items-center hover:bg-[#EAECF0] px-2">
-                                                <Checkbox color="primary" />
-                                                <span className="text-[#0C111D] font-normal text-sm">2027</span>
-                                            </div>
-                                            <div className="flex flex-row w-full h-10 justify-start items-center hover:bg-[#EAECF0] px-2">
-                                                <Checkbox color="primary" />
-                                                <span className="text-[#0C111D] font-normal text-sm">2028</span>
-                                            </div>
-                                            <div className="flex flex-row w-full h-10 justify-start items-center hover:bg-[#EAECF0] px-2">
-                                                <Checkbox color="primary" />
-                                                <span className="text-[#0C111D] font-normal text-sm">2029</span>
-                                            </div>
-                                        </PopoverContent>
-                                    </Popover>
-                                </div>
                             </div>
-                            <div className="flex justify-end gap-4 border-t p-4">
-                                <button onClick={closeDialog} className="px-6 py-2 border rounded-md text-sm font-semibold">
-                                    Discard
-                                </button>
-                                <button onClick={handleAddUser} disabled={!isFormValid} className={`px-6 py-2  text-white rounded-md text-sm ${!isFormValid ? 'bg-[#CDA0FC]' : 'bg-[#9012FF]'}`}>
-                                    {!authId ? 'Add New User' : 'Save Changes'}
-                                </button>
-                            </div>
-                        </div>
-                    </DialogPanel>
-                </div>
-            </Dialog>
+                        </DialogPanel>
+                    </div>
+                </Dialog>
             <ToastContainer />
 
         </div>
