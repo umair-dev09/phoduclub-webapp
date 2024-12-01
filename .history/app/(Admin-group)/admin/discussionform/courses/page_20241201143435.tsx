@@ -311,7 +311,10 @@ function Courses() {
                                 </div>
                             }
                         >
+
                             <Discussion />
+
+
                         </Tab>
                     </Tabs>
                 </div>
