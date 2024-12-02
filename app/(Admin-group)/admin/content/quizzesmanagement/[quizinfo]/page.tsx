@@ -2,11 +2,11 @@
 import Image from "next/image";
 import React, { useState, useEffect } from "react";
 import ScheduledDialog from "@/components/AdminComponents/QuizInfoDailogs/scheduledDailog";
-import DeleteQuiz from "@/components/AdminComponents/QuizInfoDailogs/DeleteQuiz";
-import EndQuiz from "@/components/AdminComponents/QuizInfoDailogs/EndQuiz";
-import PausedQuiz from "@/components/AdminComponents/QuizInfoDailogs/PausedQuiz";
+import DeleteQuiz from "@/components/AdminComponents/QuizInfoDailogs/DeleteDailogue";
+import EndQuiz from "@/components/AdminComponents/QuizInfoDailogs/EndDailogue";
+import PausedQuiz from "@/components/AdminComponents/QuizInfoDailogs/PauseDailogue";
 import MakeLiveNow from "@/components/AdminComponents/QuizInfoDailogs/MakeLiveNow";
-import ResumeQuiz from "@/components/AdminComponents/QuizInfoDailogs/ResumeQuiz";
+import ResumeQuiz from "@/components/AdminComponents/QuizInfoDailogs/ResumeDailogue";
 import Questions from "@/components/AdminComponents/QuizInfo/Questions";
 import StudentsAttempts from "@/components/AdminComponents/QuizInfo/StudentsAttempts";
 import { Popover, PopoverContent, PopoverTrigger } from "@nextui-org/popover";
@@ -407,8 +407,6 @@ function Quizinfo({ params }: { params: { quizName: string } }) {
                     </Tab>
                 </Tabs>
             </div>
-
-
 
             {/* Dialog components with conditional rendering */}
             {isScheduledDialogOpen && <ScheduledDialog onClose={closeScheduledDialog} />}

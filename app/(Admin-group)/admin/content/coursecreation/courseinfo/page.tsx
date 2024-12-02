@@ -3,11 +3,13 @@ import Image from "next/image";
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import ScheduledDialog from "@/components/AdminComponents/QuizInfoDailogs/scheduledDailog";
-import Delete from "@/components/AdminComponents/QuizInfoDailogs/DeleteQuiz";
-import End from "@/components/AdminComponents/QuizInfoDailogs/EndQuiz";
-import Paused from "@/components/AdminComponents/QuizInfoDailogs/PausedQuiz";
-import Resume from "@/components/AdminComponents/QuizInfoDailogs/ResumeQuiz";
-import StudentspurchasedInfo from '@/components/AdminComponents/Courseinfo/StudentspurchasedInfo';
+import DeleteQuiz from "@/components/AdminComponents/QuizInfoDailogs/DeleteDailogue";
+import EndQuiz from "@/components/AdminComponents/QuizInfoDailogs/EndDailogue";
+import PausedQuiz from "@/components/AdminComponents/QuizInfoDailogs/PauseDailogue";
+import MakeLiveNow from "@/components/AdminComponents/QuizInfoDailogs/MakeLiveNow";
+import ResumeQuiz from "@/components/AdminComponents/QuizInfoDailogs/ResumeDailogue";
+import Questions from "@/components/AdminComponents/QuizInfo/Questions";
+import StudentsAttemptedCourseInfo from '@/components/AdminComponents/Courseinfo/StudentsAttemptedCourseInfo';
 import CourseContent from '@/components/AdminComponents/Courseinfo/CourseContent'
 import { Popover, PopoverContent, PopoverTrigger } from "@nextui-org/popover";
 import { Tabs, Tab } from "@nextui-org/react";
@@ -255,17 +257,17 @@ function CourseInfo() {
                             </div>
                         }
                     >
-                        <StudentspurchasedInfo />
+                        <StudentsAttemptedCourseInfo />
                     </Tab>
                 </Tabs>
             </div>
 
             {/* Dialog components with conditional rendering */}
             {isScheduledDialogOpen && <ScheduledDialog onClose={() => setIsScheduledDialogOpen(false)} />}
-            {isDeleteDialogOpen && <Delete onClose={() => setIsDeleteDialogOpen(false)} open={isDeleteDialogOpen} />}
-            {isEndDialogOpen && <End onClose={() => setIsEndDialogOpen(false)} />}
-            {isPausedDialogOpen && <Paused onClose={() => setIsPausedDialogOpen(false)} />}
-            {isResumeOpen && < Resume open={isResumeOpen} onClose={() => setIsResumeOpen(false)} />}
+            {isDeleteDialogOpen && <DeleteQuiz onClose={() => setIsDeleteDialogOpen(false)} open={isDeleteDialogOpen} />}
+            {isEndDialogOpen && <EndQuiz onClose={() => setIsEndDialogOpen(false)} />}
+            {isPausedDialogOpen && <PausedQuiz onClose={() => setIsPausedDialogOpen(false)} />}
+            {isResumeOpen && < ResumeQuiz open={isResumeOpen} onClose={() => setIsResumeOpen(false)} />}
 
         </div>
     );

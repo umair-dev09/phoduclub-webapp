@@ -14,19 +14,18 @@ import {
     PaginationNext,
     PaginationPrevious,
 } from "@/components/ui/pagination";
-import QuizStatus from '@/components/AdminComponents/QuizzesManagement/quizStatus';
+import Status from '@/components/AdminComponents/QuizzesManagement/quizStatus';
 
-// Define types for quiz data
-interface Quiz {
+// Define types for messenger data
+interface Messenger {
     userid: string;
     moblieid: string;
     role: string;
     status: 'live' | 'paused' | 'finished' | 'scheduled' | 'saved' | 'ended';
 }
 
-// Mock fetchQuizzes function with types
-const fetchQuizzes = async (): Promise<Quiz[]> => {
-    const allQuizzes: Quiz[] = [
+const fetchMessengers = async (): Promise<Messenger[]> => {
+    const allMessengers: Messenger[] = [
         { userid: "1,324", moblieid: "Jan 6, 2024", role: "Admin", status: "live" },
         { userid: "1,324", moblieid: "Jan 6, 2024", role: "Customer Care", status: "saved" },
         { userid: "1,324", moblieid: "Jan 6, 2024", role: "Teacher", status: "paused" },
@@ -58,7 +57,7 @@ const fetchQuizzes = async (): Promise<Quiz[]> => {
         { userid: "1,324", moblieid: "Jan 6, 2024", role: "Guide", status: "saved" },
         { userid: "1,324", moblieid: "Jan 6, 2024", role: "Editor", status: "saved" }
     ];
-    return allQuizzes;
+    return allMessengers;
 };
 
 type TruncatedTextProps = {
@@ -75,8 +74,8 @@ const TruncatedText: React.FC<TruncatedTextProps> = ({ text, maxLength }) => {
 
 function Messenger() {
     const router = useRouter();
-    const [data, setData] = useState<Quiz[]>([]);
-    const [quizzes, setQuizzes] = useState<Quiz[]>([]);
+    const [data, setData] = useState<Messenger[]>([]);
+    const [messengerss, setMessengers] = useState<Messenger[]>([]);
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage] = useState(5);
     const [loading, setLoading] = useState(true);
@@ -138,16 +137,16 @@ function Messenger() {
     const firstItemIndex = lastItemIndex - itemsPerPage;
     const currentItems = data.slice(firstItemIndex, lastItemIndex);
 
-    // Fetch quizzes when component mounts
+    // Fetch messages when component mounts
     useEffect(() => {
-        const loadQuizzes = async () => {
+        const loadMessengers = async () => {
             setLoading(true);
-            const quizzes = await fetchQuizzes();
-            setQuizzes(quizzes);
-            setData(quizzes);
+            const messengers = await fetchMessengers();
+            setMessengers(messengers);
+            setData(messengers);
             setLoading(false);
         };
-        loadQuizzes();
+        loadMessengers();
     }, []);
 
     return (
@@ -203,7 +202,7 @@ function Messenger() {
                             </tr>
                         </thead>
                         <tbody>
-                            {currentItems.map((quiz, index) => (
+                            {currentItems.map((messenger, index) => (
                                 <tr key={index} className="border-t border-solid border-[#EAECF0]">
                                     <td className="text-[#667085] text-center font-medium text-sm">
                                         {index + 1}
@@ -224,11 +223,11 @@ function Messenger() {
                                             </div>
                                         </div>
                                     </td>
-                                    <td className="px-8 py-4 text-center text-[#101828] text-sm">{quiz.moblieid}</td>
-                                    <td className="px-8 py-4 text-center text-[#101828] text-sm">{quiz.userid}</td>
+                                    <td className="px-8 py-4 text-center text-[#101828] text-sm">{messenger.moblieid}</td>
+                                    <td className="px-8 py-4 text-center text-[#101828] text-sm">{messenger.userid}</td>
                                     <td className="px-8 py-4 text-[#101828] text-sm">
                                         <span className='flex items-start justify-start ml-[25%] rounded-full'>
-                                            <QuizStatus status={quiz.status} />
+                                            <Status status={messenger.status} />
                                         </span>
                                     </td>
                                     <td className="flex items-center justify-center px-8 py-4 text-[#101828] text-sm">

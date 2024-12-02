@@ -107,7 +107,7 @@ function Banned() {
             const updatedUsers: UserData[] = snapshot.docs.map((doc) => {
                 const userData = doc.data();
                 return {
-                    uniqueId: userData.uniqueId, 
+                    uniqueId: userData.uniqueId,
                     name: userData.name,
                     userId: userData.userId,
                     phone: userData.phone,
@@ -116,10 +116,10 @@ function Banned() {
                     createdAt: userData.createdAt,
                     isPremium: userData.isPremium,
                     targetExams: userData.targetExams,
-                    targetYear: userData.targetYear, 
-                    isBanned: userData.isBanned, 
+                    targetYear: userData.targetYear,
+                    isBanned: userData.isBanned,
                 } as UserData;
-            }) .filter((user) => user.isBanned); // Filter users with isGuide true
+            }).filter((user) => user.isBanned); // Filter users with isGuide true
 
             setUsers(updatedUsers);
             setData(updatedUsers); // Update data for pagination and search
@@ -164,28 +164,28 @@ function Banned() {
     };
     const [phone, setPhone] = useState("");
 
-        // Function to handle header checkbox selection
-        const handleHeaderCheckboxSelect = () => {
-            if (selectedRows.size === currentItems.length) {
-                // If all rows are already selected, unselect all
-                setSelectedRows(new Set());
-            } else {
-                // Select all current page rows
-                const allCurrentPageIds = currentItems.map(item => item.name);
-                setSelectedRows(new Set(allCurrentPageIds));
-            }
-        };
-    
-        // Function to handle row selection
-        const handleRowSelect = (quizId: string) => {
-            const newSelectedRows = new Set(selectedRows);
-            if (newSelectedRows.has(quizId)) {
-                newSelectedRows.delete(quizId);
-            } else {
-                newSelectedRows.add(quizId);
-            }
-            setSelectedRows(newSelectedRows);
-        };
+    // Function to handle header checkbox selection
+    const handleHeaderCheckboxSelect = () => {
+        if (selectedRows.size === currentItems.length) {
+            // If all rows are already selected, unselect all
+            setSelectedRows(new Set());
+        } else {
+            // Select all current page rows
+            const allCurrentPageIds = currentItems.map(item => item.name);
+            setSelectedRows(new Set(allCurrentPageIds));
+        }
+    };
+
+    // Function to handle row selection
+    const handleRowSelect = (quizId: string) => {
+        const newSelectedRows = new Set(selectedRows);
+        if (newSelectedRows.has(quizId)) {
+            newSelectedRows.delete(quizId);
+        } else {
+            newSelectedRows.add(quizId);
+        }
+        setSelectedRows(newSelectedRows);
+    };
 
     return (
         <div className="flex flex-col w-full gap-4 ">
@@ -329,10 +329,10 @@ function Banned() {
                                     <div className="flex flex-row ml-8 gap-2">
                                         <div className="flex items-center">
                                             <div className="relative">
-                                            <Image className="rounded-full min-w-[36px] min-h-[36px]" src={banned.profilePic} alt="DP" width={36} height={36} />
-                                            {banned.isPremium && (
-                                                        <Image className="absolute right-0 bottom-0" src='/icons/winnerBatch.svg' alt="Batch" width={18} height={18} />
-                                                    )}
+                                                <Image className="rounded-full min-w-[36px] min-h-[36px]" src={banned.profilePic} alt="DP" width={36} height={36} />
+                                                {banned.isPremium && (
+                                                    <Image className="absolute right-0 bottom-0" src='/icons/winnerBatch.svg' alt="Batch" width={18} height={18} />
+                                                )}
                                             </div>
                                         </div>
                                         <div className="flex items-start justify-start flex-col">
@@ -363,12 +363,12 @@ function Banned() {
                                         </PopoverTrigger>
                                         <PopoverContent className=" w-[167px] px-0 border border-solid border-[#EAECF0] bg-[#FFFFFF] rounded-md  shadow-lg">
                                             <button className=" flex flex-row items-center justify-start w-full py-[0.625rem] px-4 gap-2 hover:bg-[#F2F4F7]"
-                                              onClick={() => {setIsBanOpen(true); setUserId(banned.uniqueId) }}>
+                                                onClick={() => { setIsBanOpen(true); setUserId(banned.uniqueId) }}>
                                                 <Image src='/icons/user-block-green-01.svg' alt="Revoke Ban" width={18} height={18} />
                                                 <p className="text-sm text-[#0B9055] font-normal">Revoke Ban</p>
                                             </button>
                                             <button className=" flex flex-row items-center justify-start w-full py-[0.625rem] px-4 gap-2 hover:bg-[#F2F4F7]"
-                                              onClick={() => { setIsDeleteOpen(true); setName(banned.name); setUserId(banned.uniqueId); }}>
+                                                onClick={() => { setIsDeleteOpen(true); setName(banned.name); setUserId(banned.uniqueId); }}>
                                                 <Image src='/icons/delete.svg' alt="Delete" width={18} height={18} />
                                                 <p className="text-sm text-[#DE3024] font-normal">Delete</p>
                                             </button>
@@ -380,8 +380,8 @@ function Banned() {
                     </tbody>
                 </table>
             </div>
-            {isBanOpen && <Ban onClose={closeBan} open={true} id={userId} banUser={false}/>}
-            {isDeleteOpen && <Delete onClose={closeDelete} open={true} authId={userId} name={name}/>}
+            {isBanOpen && <Ban onClose={closeBan} open={true} id={userId} banUser={false} />}
+            {isDeleteOpen && <Delete onClose={closeDelete} open={true} authId={userId} name={name} />}
             {/* Dialog Component */}
             <Dialog open={openDialog} onClose={closeDialog} className="relative z-50">
                 <DialogBackdrop className="fixed inset-0 bg-black/30" />
@@ -468,7 +468,7 @@ function Banned() {
                     </DialogPanel>
                 </div>
             </Dialog>
-            <ToastContainer/>
+            <ToastContainer />
         </div>
     );
 }
