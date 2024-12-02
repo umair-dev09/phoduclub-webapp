@@ -157,16 +157,16 @@ function Quizinfo({ quizName, setQuizName, quizDescription, setQuizDescription }
                             <div className="h-[24px] w-[288px] gap-[24px] flex flex-row">
                                 {/* Icons for formatting */}
                                 <button onClick={() => handleIconClick('bold')}>
-                                    <Image src="/icons/Bold.svg" width={24} height={24} alt="bold" />
+                                    <Image src="/icons/Bold.svg" width={50} height={50} alt="bold" />
                                 </button>
                                 <button onClick={() => handleIconClick('italic')}>
-                                    <Image src="/icons/italic-icon.svg" width={24} height={24} alt="italic-icon" />
+                                    <Image src="/icons/italic-icon.svg" width={50} height={50} alt="italic-icon" />
                                 </button>
                                 <button onClick={() => handleIconClick('underline')}>
-                                    <Image src="/icons/underline-icon.svg" width={24} height={24} alt="underline-icon" />
+                                    <Image src="/icons/underline-icon.svg" width={50} height={50} alt="underline-icon" />
                                 </button>
                                 <button onClick={() => handleIconClick('underline')}>
-                                    <Image src="/icons/underline-icon.svg" width={24} height={24} alt="underline-icon" />
+                                    <Image src="/icons/underline-icon.svg" width={50} height={50} alt="underline-icon" />
                                 </button>
                                 {/* Alignment options in a popover */}
                                 <Popover placement="bottom-start" className="flex flex-row justify-end">
@@ -181,8 +181,9 @@ function Quizinfo({ quizName, setQuizName, quizDescription, setQuizDescription }
                                             )}
                                         </button>
                                     </PopoverTrigger>
-                                    <PopoverContent className="flex flex-row bg-white rounded-[8px] border-[1px] border-solid border-[#EAECF0] p-2 w-[120px] shadow-[0_2px_4px_#EAECF0] gap-2 ">
+                                    <PopoverContent className="flex flex-row bg-white rounded-[8px] border-[1px] border-solid border-[#EAECF0] px-0 py-0 w-[120px] h-[40px] shadow-[0_2px_4px_#EAECF0] gap-2 ">
                                         {/* Alignment options inside the popover */}
+
                                         <button onClick={() => handleIconClick("align-left")} className="flex items-center justify-center hover:bg-[#EAECF0]">
                                             <Image src="/icons/align-left.svg" width={30} height={30} alt="align-left" />
                                         </button>
@@ -197,13 +198,13 @@ function Quizinfo({ quizName, setQuizName, quizDescription, setQuizDescription }
                                 </Popover>
                                 <button
                                     onClick={() => handleIconClick('ordered')}>
-                                    <Image src="/icons/dropdown-icon-2.svg" width={27} height={27} alt="dropdown-icon" />
+                                    <Image src="/icons/dropdown-icon-2.svg" width={50} height={50} alt="dropdown-icon" />
                                 </button>
                                 <button onClick={() => handleIconClick('link')}>
-                                    <Image src="/icons/link-icon.svg" width={24} height={24} alt="link-icon" />
+                                    <Image src="/icons/link-icon.svg" width={50} height={50} alt="link-icon" />
                                 </button>
                                 <button onClick={() => handleIconClick('image')}>
-                                    <Image src="/icons/upload-image-icon.svg" width={24} height={24} alt="upload-image-icon" />
+                                    <Image src="/icons/upload-image-icon.svg" width={50} height={50} alt="upload-image-icon" />
                                 </button>
                             </div>
                         </div>

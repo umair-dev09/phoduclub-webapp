@@ -11,14 +11,13 @@ function Dashboard() {
     const [value, setValue] = useState('');
     const modules = {
         toolbar: [
-            ["bold", "italic", "underline"],
+            [{ header: [1, 2, 3, 4, 5, 6, false] }],
+            ["bold", "italic", "underline", "strike", "blockquote"],
             [{ align: ["right", "center", "justify"] }],
-            [{ list: "ordered" }, { list: "bullet" }],  // Ensure this line exists
+            [{ list: "ordered" }, { list: "bullet" }],
             ["link", "image"],
-
         ],
     };
-
     const handleLogout = async () => {
         try {
             await signOut(auth);
@@ -36,24 +35,12 @@ function Dashboard() {
             <button onClick={handleLogout} className="text-white bg-red-500 px-4 py-2 rounded">
                 Logout
             </button>
-            <div className="bg-[#F7F8FB] border border-solid border-[#EAECF0] rounded-tl-[12px] rounded-tr-[12px]">
-
-                <ReactQuill
-                    modules={modules}
-                    value={value}
-                    onChange={onChangeHandler}
-                    placeholder="Enter the message..........."
-                    className=" text-[#1D2939] focus:outline-none rounded-b-[12px] custom-quill placeholder:not-italic"
-                    style={{
-                        minHeight: "10px", // Initial height
-                        maxHeight: "150px", // Maximum height before scrolling
-                        overflowY: "auto",  // Enable scrolling if content exceeds max height
-                        padding: "1rem",   // Padding to create space inside the editor
-                        border: 'none',
-                        fontStyle: 'normal',
-                    }}
-                />
-            </div>
+            <ReactQuill
+                modules={modules}
+                value={value} // Use the state value
+                onChange={onChangeHandler} // Use the defined change handler
+                placeholder="Enter the message..........."
+            />
         </div>
     );
 }

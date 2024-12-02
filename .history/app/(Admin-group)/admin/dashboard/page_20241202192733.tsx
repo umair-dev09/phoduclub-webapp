@@ -14,7 +14,7 @@ function Dashboard() {
             ["bold", "italic", "underline"],
             [{ align: ["right", "center", "justify"] }],
             [{ list: "ordered" }, { list: "bullet" }],  // Ensure this line exists
-            ["link", "image"],
+            ["image"],
 
         ],
     };
@@ -46,7 +46,7 @@ function Dashboard() {
                     className=" text-[#1D2939] focus:outline-none rounded-b-[12px] custom-quill placeholder:not-italic"
                     style={{
                         minHeight: "10px", // Initial height
-                        maxHeight: "150px", // Maximum height before scrolling
+                        maxHeight: "550px", // Maximum height before scrolling
                         overflowY: "auto",  // Enable scrolling if content exceeds max height
                         padding: "1rem",   // Padding to create space inside the editor
                         border: 'none',

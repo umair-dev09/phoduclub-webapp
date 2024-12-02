@@ -38,49 +38,46 @@ function Quizinfo({ quizName, setQuizName, quizDescription, setQuizDescription }
             if (range) {
                 const currentFormats = quill.getFormat(range);  // Get current formatting at selection
 
+                // Handle link insertion
                 if (format === 'link') {
                     const url = prompt("Enter the link URL:");
                     if (url) {
                         quill.format('link', url);  // Apply link formatting with the provided URL
                     }
-                } else if (format === 'image') {
-                    const fileInput = document.createElement('input');
-                    fileInput.type = 'file';
-                    fileInput.accept = 'image/*';
-                    fileInput.onchange = () => {
-                        const file = fileInput.files?.[0];  // Safely access file
-                        if (file) {
-                            const reader = new FileReader();
-                            reader.onload = (e) => {
-                                if (e.target && e.target.result) {  // Validate e.target
-                                    const imageUrl = e.target.result as string;  // Type assertion
-                                    quill.insertEmbed(range.index, 'image', imageUrl);
-                                }
-                            };
-                            reader.readAsDataURL(file);
-                        }
-                    };
-                    fileInput.click();
-                } else if (format === 'ordered') {
+                }
+                // Handle image insertion
+                else if (format === 'image') {
+                    const imageUrl = prompt("Enter the image URL:");
+                    if (imageUrl) {
+                        quill.insertEmbed(range.index, 'image', imageUrl);  // Insert the image at the cursor position
+                    }
+                }
+                // Toggle ordered list
+                else if (format === 'ordered') {
                     quill.format('list', currentFormats.list === 'ordered' ? false : 'ordered');
-                } else if (format === 'bullet') {
+                }
+                // Toggle bullet list
+                else if (format === 'bullet') {
                     quill.format('list', currentFormats.list === 'bullet' ? false : 'bullet');
-                } else if (format.startsWith('align')) {
+                }
+                // Handle text alignment
+                else if (format.startsWith('align')) {
                     if (format === 'align-left') {
-                        quill.format('align', false);
-                        setAlignment('left');
+                        quill.format('align', false);  // Remove alignment
+                        setAlignment('left');  // Update alignment state to 'left'
                     } else {
-                        quill.format('align', format.split('-')[1]);
+                        quill.format('align', format.split('-')[1]);  // Set the specified alignment
                         setAlignment(format.split('-')[1]);
                     }
-                } else {
+                }
+                // Toggle other formats like bold, italic, etc.
+                else {
                     const isActive = currentFormats[format];
-                    quill.format(format, !isActive);
+                    quill.format(format, !isActive);  // Toggle formatting (e.g., bold, italic)
                 }
             }
         }
     };
-
 
 
     useEffect(() => {
@@ -165,9 +162,6 @@ function Quizinfo({ quizName, setQuizName, quizDescription, setQuizDescription }
                                 <button onClick={() => handleIconClick('underline')}>
                                     <Image src="/icons/underline-icon.svg" width={24} height={24} alt="underline-icon" />
                                 </button>
-                                <button onClick={() => handleIconClick('underline')}>
-                                    <Image src="/icons/underline-icon.svg" width={24} height={24} alt="underline-icon" />
-                                </button>
                                 {/* Alignment options in a popover */}
                                 <Popover placement="bottom-start" className="flex flex-row justify-end">
                                     <PopoverTrigger className="">
@@ -181,24 +175,21 @@ function Quizinfo({ quizName, setQuizName, quizDescription, setQuizDescription }
                                             )}
                                         </button>
                                     </PopoverTrigger>
-                                    <PopoverContent className="flex flex-row bg-white rounded-[8px] border-[1px] border-solid border-[#EAECF0] p-2 w-[120px] shadow-[0_2px_4px_#EAECF0] gap-2 ">
+                                    <PopoverContent className="ml-1 gap-4">
                                         {/* Alignment options inside the popover */}
-                                        <button onClick={() => handleIconClick("align-left")} className="flex items-center justify-center hover:bg-[#EAECF0]">
-                                            <Image src="/icons/align-left.svg" width={30} height={30} alt="align-left" />
-                                        </button>
-                                        <button onClick={() => handleIconClick("align-center")} className="flex items-center justify-center hover:bg-[#EAECF0]">
-                                            <Image src="/icons/align-middle.svg" width={30} height={30} alt="align-center" />
-                                        </button>
-                                        <button onClick={() => handleIconClick("align-right")} className="flex items-center justify-center hover:bg-[#EAECF0]">
-                                            <Image src="/icons/align-right.svg" width={30} height={30} alt="align-right" />
-                                        </button>
-
+                                        <div className="flex flex-row bg-white rounded-[8px] border-[1px] border-solid border-[#EAECF0] p-2 w-[120px] shadow-[0_2px_4px_#EAECF0] gap-2 ">
+                                            <button onClick={() => handleIconClick("align-left")} className="flex items-center justify-center">
+                                                <Image src="/icons/align-left.svg" width={30} height={30} alt="align-left" />
+                                            </button>
+                                            <button onClick={() => handleIconClick("align-center")} className="flex items-center justify-center">
+                                                <Image src="/icons/align-middle.svg" width={30} height={30} alt="align-center" />
+                                            </button>
+                                            <button onClick={() => handleIconClick("align-right")} className="flex items-center justify-center">
+                                                <Image src="/icons/align-right.svg" width={30} height={30} alt="align-right" />
+                                            </button>
+                                        </div>
                                     </PopoverContent>
                                 </Popover>
-                                <button
-                                    onClick={() => handleIconClick('ordered')}>
-                                    <Image src="/icons/dropdown-icon-2.svg" width={27} height={27} alt="dropdown-icon" />
-                                </button>
                                 <button onClick={() => handleIconClick('link')}>
                                     <Image src="/icons/link-icon.svg" width={24} height={24} alt="link-icon" />
                                 </button>

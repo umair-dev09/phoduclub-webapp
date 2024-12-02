@@ -165,9 +165,6 @@ function Quizinfo({ quizName, setQuizName, quizDescription, setQuizDescription }
                                 <button onClick={() => handleIconClick('underline')}>
                                     <Image src="/icons/underline-icon.svg" width={24} height={24} alt="underline-icon" />
                                 </button>
-                                <button onClick={() => handleIconClick('underline')}>
-                                    <Image src="/icons/underline-icon.svg" width={24} height={24} alt="underline-icon" />
-                                </button>
                                 {/* Alignment options in a popover */}
                                 <Popover placement="bottom-start" className="flex flex-row justify-end">
                                     <PopoverTrigger className="">
@@ -181,24 +178,21 @@ function Quizinfo({ quizName, setQuizName, quizDescription, setQuizDescription }
                                             )}
                                         </button>
                                     </PopoverTrigger>
-                                    <PopoverContent className="flex flex-row bg-white rounded-[8px] border-[1px] border-solid border-[#EAECF0] p-2 w-[120px] shadow-[0_2px_4px_#EAECF0] gap-2 ">
+                                    <PopoverContent className="ml-1 gap-4">
                                         {/* Alignment options inside the popover */}
-                                        <button onClick={() => handleIconClick("align-left")} className="flex items-center justify-center hover:bg-[#EAECF0]">
-                                            <Image src="/icons/align-left.svg" width={30} height={30} alt="align-left" />
-                                        </button>
-                                        <button onClick={() => handleIconClick("align-center")} className="flex items-center justify-center hover:bg-[#EAECF0]">
-                                            <Image src="/icons/align-middle.svg" width={30} height={30} alt="align-center" />
-                                        </button>
-                                        <button onClick={() => handleIconClick("align-right")} className="flex items-center justify-center hover:bg-[#EAECF0]">
-                                            <Image src="/icons/align-right.svg" width={30} height={30} alt="align-right" />
-                                        </button>
-
+                                        <div className="flex flex-row bg-white rounded-[8px] border-[1px] border-solid border-[#EAECF0] p-2 w-[120px] shadow-[0_2px_4px_#EAECF0] gap-2 ">
+                                            <button onClick={() => handleIconClick("align-left")} className="flex items-center justify-center">
+                                                <Image src="/icons/align-left.svg" width={30} height={30} alt="align-left" />
+                                            </button>
+                                            <button onClick={() => handleIconClick("align-center")} className="flex items-center justify-center">
+                                                <Image src="/icons/align-middle.svg" width={30} height={30} alt="align-center" />
+                                            </button>
+                                            <button onClick={() => handleIconClick("align-right")} className="flex items-center justify-center">
+                                                <Image src="/icons/align-right.svg" width={30} height={30} alt="align-right" />
+                                            </button>
+                                        </div>
                                     </PopoverContent>
                                 </Popover>
-                                <button
-                                    onClick={() => handleIconClick('ordered')}>
-                                    <Image src="/icons/dropdown-icon-2.svg" width={27} height={27} alt="dropdown-icon" />
-                                </button>
                                 <button onClick={() => handleIconClick('link')}>
                                     <Image src="/icons/link-icon.svg" width={24} height={24} alt="link-icon" />
                                 </button>

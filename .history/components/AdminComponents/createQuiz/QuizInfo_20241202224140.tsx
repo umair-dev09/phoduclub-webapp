@@ -183,13 +183,14 @@ function Quizinfo({ quizName, setQuizName, quizDescription, setQuizDescription }
                                     </PopoverTrigger>
                                     <PopoverContent className="flex flex-row bg-white rounded-[8px] border-[1px] border-solid border-[#EAECF0] p-2 w-[120px] shadow-[0_2px_4px_#EAECF0] gap-2 ">
                                         {/* Alignment options inside the popover */}
-                                        <button onClick={() => handleIconClick("align-left")} className="flex items-center justify-center hover:bg-[#EAECF0]">
+
+                                        <button onClick={() => handleIconClick("align-left")} className="flex items-center justify-center">
                                             <Image src="/icons/align-left.svg" width={30} height={30} alt="align-left" />
                                         </button>
-                                        <button onClick={() => handleIconClick("align-center")} className="flex items-center justify-center hover:bg-[#EAECF0]">
+                                        <button onClick={() => handleIconClick("align-center")} className="flex items-center justify-center">
                                             <Image src="/icons/align-middle.svg" width={30} height={30} alt="align-center" />
                                         </button>
-                                        <button onClick={() => handleIconClick("align-right")} className="flex items-center justify-center hover:bg-[#EAECF0]">
+                                        <button onClick={() => handleIconClick("align-right")} className="flex items-center justify-center">
                                             <Image src="/icons/align-right.svg" width={30} height={30} alt="align-right" />
                                         </button>
 
@@ -203,7 +204,7 @@ function Quizinfo({ quizName, setQuizName, quizDescription, setQuizDescription }
                                     <Image src="/icons/link-icon.svg" width={24} height={24} alt="link-icon" />
                                 </button>
                                 <button onClick={() => handleIconClick('image')}>
-                                    <Image src="/icons/upload-image-icon.svg" width={24} height={24} alt="upload-image-icon" />
+                                    <Image src="/icons/upload-image-icon.svg" width={50} height={50} alt="upload-image-icon" />
                                 </button>
                             </div>
                         </div>

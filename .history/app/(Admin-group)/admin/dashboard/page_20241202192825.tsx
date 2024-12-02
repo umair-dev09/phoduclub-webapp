@@ -14,7 +14,7 @@ function Dashboard() {
             ["bold", "italic", "underline"],
             [{ align: ["right", "center", "justify"] }],
             [{ list: "ordered" }, { list: "bullet" }],  // Ensure this line exists
-            ["link", "image"],
+            ["image"],
 
         ],
     };
