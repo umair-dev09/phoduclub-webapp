@@ -52,11 +52,11 @@ type Chat = {
   replyingToFileName: string;
 };
 
-export default function CommunityName({ params }: { params: { communityName: string } }) {
+export default function CommunityName() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const communityId = searchParams.get('communityId');
-  const { communityName } = params;
+  // const { communityName } = params;
   const [groupData, setGroupData] = useState<GroupData | null>(null);
   const [channelHeadings, setChannelHeadings] = useState<ChannelHeading[]>([]);
   const [user, setUser] = useState<User | null>(null);
@@ -192,7 +192,7 @@ export default function CommunityName({ params }: { params: { communityName: str
     setIsMounted(true);
   }, []);
 
-  if (!isMounted || !communityName) {
+  if (!isMounted) {
     return <LoadingData />;
   }
 
@@ -320,8 +320,11 @@ export default function CommunityName({ params }: { params: { communityName: str
       {/* Right Sidebar */}
       {selectedChannel ? (
         <div
-          className={`flex flex-col bg-white border-lightGrey overflow-hidden transition-all duration-500 ease-in-out transform ${isCollapsed ? 'max-w-0 opacity-0' : 'w-[270px] max-w-[270px] opacity-100'}`}
-        >
+        className={`bg-white h-full transition-all duration-500 ease-in-out overflow-hidden ${isCollapsed ? "max-w-[16.875rem]" : "max-w-0"
+        }`}
+    style={{
+        width: isCollapsed ? "16.875rem" : "0",
+    }}        >
           <div className="flex items-center justify-center min-h-[72px] border-b border-lightGrey">
             <div className="flex flex-row justify-between w-full mx-6">
               <h3 className="text-base">Details</h3>
