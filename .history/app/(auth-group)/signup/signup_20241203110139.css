@@ -1,0 +1,18 @@
+.page_to_login {
+    align-items: center;
+    justify-content: center;
+    padding-bottom: 30px;
+}
+
+.phoneinputcontainer .forminput {
+    width: 375px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    height: 40px;
+    color: #000;
+}
+
+.phoneinputcontainer .forminput:hover,
+.phoneinputcontainer .forminput:focus {
+    outline: 1.5px solid #D6BBFB;
+}

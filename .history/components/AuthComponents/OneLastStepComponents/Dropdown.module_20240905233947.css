@@ -1,0 +1,72 @@
+/* components/Dropdown.module.css */
+.dropdownContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 375px; /* Set the width of the dropdown container */
+  margin: 0 auto; /* Center the container */
+}
+
+.dropdownWrapper {
+  display: flex;
+  flex-direction: column;
+}
+
+.label {
+  margin-bottom: 8px;
+  font-weight: 500;
+  color: #333;
+  font-size: 14px;
+}
+
+
+.yearSelect, .examSelect {
+  width: 100%; /* Ensure the select input takes the full width of the container */
+}
+
+
+/* Styling for the control (dropdown container) */
+.yearSelect .react-select__control, .examSelect .react-select__control {
+  border: 1px solid #e6e6e6;
+  border-radius: 8px;
+  padding: 4px;
+  box-shadow: none;
+  font-weight: 500;
+}
+
+/* Styling for multi-value tags */
+.yearSelect .react-select__multi-value, .examSelect .react-select__multi-value {
+  background-color: #e9e5ff;
+  border-radius: 8px;
+  font-weight: 500;
+
+}
+
+.yearSelect .react-select__multi-value__label, .examSelect .react-select__multi-value__label {
+  color: black; /* Change text color of multi-value labels to black */
+  font-weight: 500;
+
+}
+
+/* Styling for option items */
+.yearSelect .react-select__option, .examSelect .react-select__option {
+  color: black; /* Change text color of options to black */
+  font-weight: 500;
+
+}
+
+/* Styling for selected option */
+.yearSelect .react-select__option--is-selected, .examSelect .react-select__option--is-selected {
+  background-color: #4c35b3;
+  color: white; /* Ensure selected option text is white for contrast */
+  font-weight: 500;
+
+}
+
+/* Styling for focused option */
+.yearSelect .react-select__option--is-focused, .examSelect .react-select__option--is-focused {
+  background-color: #fcfcfc;
+  color: black; /* Ensure focused option text is black */
+  font-weight: 500;
+
+}

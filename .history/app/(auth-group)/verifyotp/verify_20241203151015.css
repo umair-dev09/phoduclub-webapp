@@ -1,0 +1,29 @@
+.button {
+  font-weight: 500;
+  width: 50%;
+  height: 40px;
+  border: none;
+  background: #d4a9fc;
+  /* Default color when button is disabled */
+  border-radius: 7px;
+  color: white;
+  font-size: 13px;
+  cursor: not-allowed;
+  transition: background 0.15s;
+}
+
+/* Button enabled state */
+.button.enabled {
+  background-color: #7400e0;
+  /* Purple color when button is enabled */
+  cursor: pointer;
+}
+
+.button.disabled:hover {
+  cursor: not-allowed;
+}
+
+.button:active {
+  background: #7400e0;
+  opacity: 0.5;
+}

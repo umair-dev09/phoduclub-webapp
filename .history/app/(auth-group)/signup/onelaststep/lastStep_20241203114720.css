@@ -1,0 +1,27 @@
+/* Add these styles to verify.css */
+
+.resend {
+  color: #AD72FF;
+  /* Default color */
+  transition: color 0.3s ease;
+  font-weight: 700;
+}
+
+.resend:enabled {
+  color: #9012FF;
+  font-weight: 700;
+  /* Color when resend is enabled */
+}
+
+
+/* Utility class for screen readers */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  border-color: 0;
+}

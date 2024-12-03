@@ -1,0 +1,81 @@
+.input {
+  font-weight: 500;
+  width: 50px;
+  height: 50px;
+  border: solid;
+  border-width: 1px;
+  border-radius: 5px;
+  border-color: #98a2b3;
+  margin: 5px;
+  text-align: center;
+  font-size: 30px;
+  color: #000000;
+  /* Set input text color to black */
+}
+
+.input:focus {
+  border: 1px solid #7400e0;
+  outline: none;
+}
+
+
+
+
+.button {
+  font-weight: 500;
+  width: 375px;
+  height: 40px;
+  border: none;
+  background: #d4a9fc;
+  border-radius: 7px;
+  color: white;
+  font-size: 13px;
+  cursor: not-allowed;
+  transition: background 0.15s;
+  margin-top: 25px;
+}
+
+.button.enabled {
+  background-color: #7400e0;
+  cursor: pointer;
+}
+
+.button.disabled:hover {
+  cursor: not-allowed;
+}
+
+.button:active {
+  background: #7400e0;
+  opacity: 0.5;
+}
+
+
+
+
+/* Add these styles to verify.css */
+
+.resend {
+  color: #AD72FF;
+  /* Default color */
+  transition: color 0.3s ease;
+  font-weight: 700;
+}
+
+.resend:enabled {
+  color: #9012FF;
+  font-weight: 700;
+  /* Color when resend is enabled */
+}
+
+
+/* Utility class for screen readers */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  border-color: 0;
+}
