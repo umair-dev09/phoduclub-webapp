@@ -1,0 +1,54 @@
+import { useEffect, useRef, useState } from "react";
+import videojs from "video.js"; // Import video.js
+import "video.js/dist/video-js.css"; // Core Video.js styles
+import "@videojs/themes/dist/fantasy/index.css"; // Fantasy theme styles
+import Player from "video.js/dist/types/player"; // Import Player type
+import Image from "next/image";
+
+interface VideoPlayerProps {
+  videoSrc: string;
+}
+
+const VideoPlayer: React.FC<VideoPlayerProps> = ({ videoSrc }) => {
+  const videoNode = useRef<HTMLVideoElement | null>(null);
+  const playerRef = useRef<Player | null>(null); // Use VideoJsPlayer type from videojs namespace
+
+
+  useEffect(() => {
+    if (videoNode.current) {
+      playerRef.current = videojs(videoNode.current, {
+        controls: true,
+        controlBar: {
+          pictureInPictureToggle: false, // Disable PiP button
+        },
+        responsive: true,
+        fluid: true,
+        aspectRatio: "16:9", // Set aspect ratio
+      });
+
+      // Add Fantasy theme
+      playerRef.current.addClass("vjs-theme-fantasy");
+    }
+
+    // return () => {
+    //   if (playerRef.current) {
+    //     playerRef.current.dispose();
+    //   }
+    // };ss
+  }, []);
+
+  return (
+    <div className="flex min-w-[350px] w-[75%] h-[75%] mx-auto justify-center">
+    <video ref={videoNode} className="video-js vjs-theme-fantasy" 
+    controls
+    preload="auto" 
+    autoPlay
+    data-setup="{}">
+      <source src={videoSrc} type="video/mp4" />
+      Your browser does not support the video tag.
+    </video>
+  </div>
+  );
+};
+
+export default VideoPlayer;

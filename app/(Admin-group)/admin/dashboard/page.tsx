@@ -5,7 +5,6 @@ import { useRouter } from 'next/navigation';
 
 function Dashboard() {
     const router = useRouter();
-
     const handleLogout = async () => {
         try {
             await signOut(auth);

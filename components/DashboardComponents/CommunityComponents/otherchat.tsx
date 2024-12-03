@@ -2,19 +2,37 @@
 import Image from "next/image";
 import { useState, useRef, useEffect, forwardRef } from "react";
 import { PopoverContent, PopoverTrigger, Popover } from '@nextui-org/popover';
+import { deleteDoc, doc, Timestamp } from "firebase/firestore";
 
 type OtherChatProps = {
     message: string | null;
+    messageType: string | null;
+    isReplying: boolean ;
+    replyingToId: string | null;
+    replyingToChatId: string | null;
+    replyingToMsg: string | null;
+    replyingToMsgType: string | null;
+    replyingToFileUrl: string ;
+    replyingToFileName: string | null;
+    fileUrl: string ;
+    fileName: string | null;
+    fileSize: number ;
     senderId: string | null;
-    timestamp: any | null;
-
+    timestamp: Timestamp | null;
+    chatId: string ;
+    communityId: string ;
+    headingId: string ;
+    channelId: string ;
+    isAdmin: boolean;
+    setShowReplyLayout: (value: boolean) => void;
+    handleReply: (message: string | null, senderId: string | null, messageType: string | null, fileUrl: string | null, fileName: string | null,  chatId: string | null) => void; // New prop to handle reply data
 }
-
-const OtherChat = ({ message, senderId, timestamp }: OtherChatProps) => {
+const OtherChat = ({message, messageType, fileUrl, fileName, fileSize, senderId, timestamp, communityId, headingId, channelId, chatId, isReplying, replyingToId, replyingToFileName, replyingToFileUrl, replyingToMsg, replyingToMsgType, setShowReplyLayout, handleReply }: OtherChatProps) => {
     const messageStart = `Hey 
 In publishing and graphic design, Lorem ipsum is a placeholder text commonly used to demonstrate the visual form of a document or a typeface without relying on meaningful content. Lorem ipsum may be used as a placeholder before the final copy is available.`;
     const messageStart1 = `Hey everyone,
 Welcome to the channel`;
+const [activeButtonIndex, setActiveButtonIndex] = useState<number | null>(null); // Use a single index to track the active button
 
     const [isExpanded, setIsExpanded] = useState(false);
     const [isPopoverOpen, setIsPopoverOpen] = useState(false);
@@ -36,7 +54,6 @@ Welcome to the channel`;
             document.removeEventListener("mousedown", handleClickOutside);
         };
     }, []);
-    const [activeButtonIndex, setActiveButtonIndex] = useState<number | null>(null); // Use a single index to track the active button
 
     const handleClick = (index: number) => {
         setActiveButtonIndex(index); // Set the clicked button as active

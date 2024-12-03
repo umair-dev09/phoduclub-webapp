@@ -5,7 +5,11 @@ import { useState, useRef, useEffect, forwardRef } from "react";
 import EmojiPicker, { EmojiClickData } from "emoji-picker-react";
 import { deleteDoc, doc, Timestamp } from "firebase/firestore";
 import { db } from "@/firebase";
-
+import { toast } from 'react-toastify';
+import LoadingData from "@/components/Loading";
+import MessageLoading from "@/components/MessageLoading";
+import CommunityVideoPlayer from "@/components/CommunityVideoPlayer";
+import MediaViewDialog from "./MediaViewDialog";
 type OwnChatProps = {
     message: string | null;
     messageType: string | null;
@@ -25,16 +29,18 @@ type OwnChatProps = {
     communityId: string ;
     headingId: string ;
     channelId: string ;
+    isAdmin: boolean;
     setShowReplyLayout: (value: boolean) => void;
     handleReply: (message: string | null, senderId: string | null, messageType: string | null, fileUrl: string | null, fileName: string | null,  chatId: string | null) => void; // New prop to handle reply data
 }
-function OwnChat({message, messageType, fileUrl, fileName, fileSize, senderId, timestamp, communityId, headingId, channelId, chatId, isReplying, replyingToId, replyingToFileName, replyingToFileUrl, replyingToMsg, replyingToMsgType, setShowReplyLayout, handleReply}:OwnChatProps) {
+function OwnChat({message, messageType, fileUrl, fileName, isAdmin, fileSize, senderId, timestamp, communityId, headingId, channelId, chatId, isReplying, replyingToId, replyingToFileName, replyingToFileUrl, replyingToMsg, replyingToMsgType, setShowReplyLayout, handleReply}:OwnChatProps) {
 
     const [activeButtonIndex, setActiveButtonIndex] = useState<number | null>(null); // Use a single index to track the active button
     const [copySuccess, setCopySuccess] = useState<string | null>(null);
     const [isOpen, setIsOpen] = useState(false);
     const [showBookmark, setShowBookmark] = useState(false); // Use a single index to track the active button
     const [showEmojiLyt, setShowEmojiLyt] = useState(false); // Use a single index to track the active button
+    const [showMediaDialog, setShowMediaDialog] = useState(false); // Use a single index to track the active button
 
 
     const handleClick = (index: number) => {
@@ -57,7 +63,7 @@ function OwnChat({message, messageType, fileUrl, fileName, fileSize, senderId, t
     }
     // Check if firestoreTimestamp is null or undefined
   if (!timestamp) {
-    return <p>Loading...</p>; // or any placeholder while waiting for data
+    return <MessageLoading />
   }
 
   // Convert Firestore timestamp to JavaScript Date object
@@ -73,8 +79,7 @@ const handleCopy = async () => {
         if (message) {
             try {
                 await navigator.clipboard.writeText(message);
-                setCopySuccess("Message copied!"); // Show success message
-                setTimeout(() => setCopySuccess(null), 2000); // Hide success message after 2 seconds
+                toast.success("Message copied!"); // Show success message
                 setIsOpen(false);
             } catch (error) {
                 console.error("Failed to copy message: ", error);
@@ -141,12 +146,10 @@ const handleCopy = async () => {
                             </button>
                         </PopoverTrigger>
 
-                        <PopoverContent>
+                        <PopoverContent className="p-0">
                             <div
-                                className='flex flex-col bg-[#FFFFFF] w-auto h-auto border border-[#EAECF0] rounded-md '
-                                style={{
-                                    boxShadow: '0px 4px 6px -2px rgba(16, 24, 40, 0.08), 0px 12px 16px -4px rgba(16, 24, 40, 0.14)',
-                                }}>
+                                className='flex flex-col bg-[#FFFFFF] w-auto h-auto border border-[#EAECF0] rounded-[12px] '
+                               >
                                 {/* Emoji list */}
                                 <EmojiPicker onEmojiClick={handleEmojiClick} height={280} searchDisabled={true} reactions={['1f44d','1f496','1f602','1f60d','1f62e']}
                                     style={{
@@ -166,10 +169,12 @@ const handleCopy = async () => {
                                     <Image src='/icons/Reply.svg' alt='search icon' width={19} height={19} />
                                     <span className='font-normal text-[#0C111D] text-sm'>Reply</span>
                                 </button>
+                                {message &&(
                                 <button onClick={handleCopy} className='flex flex-row items-center gap-2 w-30 px-4 py-[10px] transition-colors hover:bg-neutral-100'>
-                                    <Image src='/icons/copy.svg' alt='search icon' width={18} height={18} />
-                                    <span className='font-normal text-[#0C111D] text-sm'>Copy</span>
+                                <Image src='/icons/copy.svg' alt='search icon' width={18} height={18} />
+                                <span className='font-normal text-[#0C111D] text-sm'>Copy</span>
                                 </button>
+                                )}
                                 <button className='flex flex-row items-center gap-2 w-30 px-4 py-[10px] transition-colors hover:bg-neutral-100' onClick={() => {setShowBookmark(true); setIsOpen(false); }}>
                                     <Image src='/icons/Bookmark.svg' alt='search icon' width={18} height={18} />
                                     <span className='font-normal text-[#0C111D] text-sm'>Bookmark</span>
@@ -183,16 +188,21 @@ const handleCopy = async () => {
                         </PopoverContent>
                     </Popover>
 
-                    <div className={`flex flex-col px-4 py-3 bg-purple rounded-xl gap-[8px] ${messageType === 'image' || messageType === 'document' ? 'max-w-[380px]' :'max-w-[600px]'} `}
+                    <div className={`flex flex-col px-4 py-3 bg-purple rounded-xl gap-[8px]  ${messageType === 'image' || messageType === 'document' ? 'max-w-[380px]' :'max-w-[600px]'} `}
                     >
                         {/*Image Layout*/}
                         {messageType === 'image' && fileUrl && (
+                            <div>
+                            <button onClick={() => setShowMediaDialog(true)}>
                             <Image className='w-[360px] self-end h-[320px] mt-[3px] object-cover' src={fileUrl} alt="image" width={360} height={320} quality={100} />
+                            </button>
+                            </div>
                         )}
-                        {/* {messageType === 'video' && fileUrl && (
-                            // <ReactPlayer url={fileUrl} controls/> 
-                                  
-                         )} */}
+                        {messageType === 'video' && fileUrl && (
+                            <button onClick={() => setShowMediaDialog(true)}>
+                        <CommunityVideoPlayer videoSrc={fileUrl} />
+                            </button>
+                         )}
                         {/*Document Layout*/}
                         {messageType === 'document' && fileUrl && (
                             <div className="w-[350px] h-auto rounded-md mt-[3px] bg-[#973AFF] border border-[#AD72FF] flex flex-row p-3 justify-between">
@@ -282,6 +292,7 @@ const handleCopy = async () => {
                     </div>
                 </div>
             </div> */}
+            {showMediaDialog && <MediaViewDialog open={true} onClose={() => setShowMediaDialog(false)} src={fileUrl} mediaType={messageType || ''}/> }
         </div>
     );
 }
