@@ -1,4 +1,5 @@
 "use client";
+import "./dashboard.css"; // Adjust the path if needed
 import Announcement from '@/components/DashboardComponents/HomeComponents/Announcement/Announcement';
 import SubjectComp from '@/components/DashboardComponents/HomeComponents/SubjectComp/subject';
 import TestSeries from '@/components/DashboardComponents/HomeComponents/TestSeries/Testseries';

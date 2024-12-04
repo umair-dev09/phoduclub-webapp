@@ -30,7 +30,7 @@ export default function AnalyticsPage() {
      }
      return (
           <div className=" flex flex-col  flex-1 h-auto overflow-y-auto ">
-               {/* <div className="flex flex-row w-full gap-4 pt-6 px-6">
+               <div className="flex flex-row w-full gap-4 pt-6 px-6">
                     <div className="flex flex-col flex-1 bg-white  rounded-lg h-[327px] w-1/2 ">
                          <div className="flex flex-row justify-between pt-6 px-6 w-full text-[#1D2939] text-lg font-bold">
                               <h3>Subject Progress Tracker</h3>
@@ -67,8 +67,7 @@ export default function AnalyticsPage() {
                               <Course />
                          </div>
                     </div>
-               </div> */}
-               jabir
+               </div>
 
           </div>
 
