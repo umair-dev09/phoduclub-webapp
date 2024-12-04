@@ -28,7 +28,7 @@ const CustomerCareStatus: React.FC<CustomerCareStatusProps> = ({ status }) => {
                         <span className="font-medium text-[#93360D] text-xs">Replied</span>
                     </div>
                 );
-            case 'Re-opened':
+            case 'Reopened':
                 return (
                     <div className="bg-[#F8D3F7] py-2 px-3 gap-1 flex flex-row rounded-[6px] items-center h-6">
                         <span className="w-[6px] h-[6px] bg-[#570A5B] rounded-full "></span>

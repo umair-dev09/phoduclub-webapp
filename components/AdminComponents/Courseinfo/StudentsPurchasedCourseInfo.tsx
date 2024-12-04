@@ -2,6 +2,8 @@
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
+import { Calendar } from "@nextui-org/calendar";
+import { today, getLocalTimeZone } from "@internationalized/date";
 import {
     Pagination,
     PaginationContent,
@@ -50,6 +52,7 @@ function StudentsPurchasedCourseInfo() {
     const [searchTerm, setSearchTerm] = useState('');
     const [popoveropen, setPopoveropen] = useState(false);
     const router = useRouter();
+    const [isSelcetDateOpen, setIsSelectDateOpen] = useState(false);
 
     // Fetch students when component mounts
     useEffect(() => {
@@ -62,15 +65,6 @@ function StudentsPurchasedCourseInfo() {
         };
         loadStudents();
     }, []);
-
-    // Filter students based on search term
-    useEffect(() => {
-        const filteredStudents = students.filter(student =>
-            student.title.toLowerCase().includes(searchTerm.toLowerCase())
-        );
-        setData(filteredStudents);
-        setCurrentPage(1); // Reset to first page on new search
-    }, [searchTerm, students]);
 
     const lastItemIndex = currentPage * itemsPerPage;
     const firstItemIndex = lastItemIndex - itemsPerPage;
@@ -92,6 +86,60 @@ function StudentsPurchasedCourseInfo() {
 
     // Check if all fields are filled
     const isAddButtonDisabled = !uniqueId || !startDate || !endDate;
+
+    const [selectedDate, setSelectedDate] = useState<Date | null>(null); // Store selected date as Date object
+
+    // Format selected date as 'Nov 9, 2024'
+    const formattedDate = selectedDate
+        ? selectedDate.toLocaleDateString("en-US", { year: 'numeric', month: 'short', day: 'numeric' })
+        : "Select dates";
+
+    useEffect(() => {
+        let filteredStudentsPurchased = students;
+
+        // Filter by search term
+        if (searchTerm) {
+            filteredStudentsPurchased = filteredStudentsPurchased.filter(course =>
+                course.title.toLowerCase().includes(searchTerm.toLowerCase())
+            );
+        }
+
+        // Filter by selected date
+        if (selectedDate) {
+            const selectedDateString = selectedDate instanceof Date && !isNaN(selectedDate.getTime())
+                ? selectedDate.toISOString().split('T')[0] // Convert to YYYY-MM-DD
+                : null;
+
+            if (selectedDateString) {
+                filteredStudentsPurchased = filteredStudentsPurchased.filter(course => {
+                    const courseDate = new Date(course.enrolledDate); // Convert quiz.date string to Date object
+                    const courseDateString = courseDate instanceof Date && !isNaN(courseDate.getTime())
+                        ? courseDate.toISOString().split('T')[0]
+                        : null;
+
+                    return courseDateString === selectedDateString; // Compare only the date part (not time)
+                });
+            }
+        }
+
+        // Sort by quizPublishedDate in ascending order (earliest date first)
+        filteredStudentsPurchased = filteredStudentsPurchased.sort((a, b) => {
+            const dateA = new Date(a.enrolledDate).getTime();
+            const dateB = new Date(b.enrolledDate).getTime();
+
+            // Handle invalid date values (e.g., when date cannot be parsed)
+            if (isNaN(dateA) || isNaN(dateB)) {
+                console.error("Invalid date value", a.enrolledDate, b.enrolledDate);
+                return 0; // If dates are invalid, no sorting will occur
+            }
+
+            return dateA - dateB; // Sort by time in ascending order (earliest first)
+        });
+
+        // Update state with filtered and sorted quizzes
+        setData(filteredStudentsPurchased);
+        setCurrentPage(1); // Reset to first page when filters change
+    }, [searchTerm, students, selectedDate]);
 
     return (
         <div className="flex flex-col w-full mt-4 gap-4">
@@ -116,15 +164,46 @@ function StudentsPurchasedCourseInfo() {
                 </button>
                 <div className="flex flex-row gap-3">
                     {/* Select Date Button */}
-                    <button className="h-[44px] w-[143px] rounded-md bg-[#FFFFFF] border border-solid border-[#D0D5DD] flex items-center p-3">
-                        <Image
-                            src="/icons/select-date.svg"
-                            width={20}
-                            height={20}
-                            alt="Select-date Button"
-                        />
-                        <span className="font-medium text-sm text-[#667085] ml-2">Select dates</span>
-                    </button>
+                    <Popover placement="bottom" isOpen={isSelcetDateOpen}>
+                        <PopoverTrigger>
+                            <button className="h-[44px] w-[143px] rounded-md bg-[#FFFFFF] border border-solid border-[#D0D5DD] flex items-center p-3" onClick={() => setIsSelectDateOpen(true)}>
+                                <Image
+                                    src="/icons/select-date.svg"
+                                    width={20}
+                                    height={20}
+                                    alt="Select-date Button"
+                                />
+                                <span className="font-medium text-sm text-[#667085] ml-2">{formattedDate}</span>
+                            </button>
+                        </PopoverTrigger>
+                        <PopoverContent className="flex flex-col gap-2 p-0 h-auto">
+                            <Calendar
+                                defaultValue={today(getLocalTimeZone())}
+                                showMonthAndYearPickers
+                                color="secondary"
+                                onChange={(value) => {
+                                    const date = new Date(value.year, value.month - 1, value.day); // Adjust for zero-based month index
+                                    setSelectedDate(date); // Update state with the new Date object
+                                    setIsSelectDateOpen(false);
+                                }}
+                            />
+
+                            {/* Conditionally render the "Clear" button */}
+                            {selectedDate && (
+                                <button
+                                    className="min-w-[84px] min-h-[30px] rounded-md bg-[#9012FF] text-[14px] font-medium text-white mb-2"
+                                    onClick={() => {
+                                        setSelectedDate(null); // Clear the selected date
+                                        setIsSelectDateOpen(false);
+                                    }}
+                                >
+                                    Clear
+                                </button>
+                            )}
+                        </PopoverContent>
+                    </Popover>
+
+                    {/* Sort Button */}
                     <button className="h-[44px] w-[105px] rounded-md bg-[#FFFFFF] border border-solid border-[#D0D5DD] flex items-center justify-center gap-2">
                         <span className="font-medium text-sm text-[#667085] ml-2">Sort By</span>
                         <Image
