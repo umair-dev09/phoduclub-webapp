@@ -1,0 +1,78 @@
+"use client";
+import Image from "next/image";
+import { Popover, PopoverTrigger, PopoverContent } from '@nextui-org/popover';
+
+function Purchase() {
+    const data = [
+        { item: 'JEE Crash Course', date: '1st Jul, 2024', price: '₹2400', paymentType: 'Credit Card', duration: '3 Months', actions: '' },
+        { item: 'BITSET Crash Course', date: '1st Jul, 2024', price: '₹2400', paymentType: 'Credit Card', duration: '3 Months', actions: '' },
+        { item: 'KCET Crash Course', date: '1st Jul, 2024', price: '₹2400', paymentType: 'Credit Card', duration: '3 Months', actions: '' },
+        { item: 'MIT Crash Course', date: '1st Jul, 2024', price: '₹2400', paymentType: 'Credit Card', duration: '3 Months', actions: '' },
+        { item: 'JEE Crash Course', date: '1st Jul, 2024', price: '₹2400', paymentType: 'Credit Card', duration: '3 Months', actions: '' },
+        { item: 'BITSET Crash Course', date: '1st Jul, 2024', price: '₹2400', paymentType: 'Credit Card', duration: '3 Months', actions: '' },
+        { item: 'KCET Crash Course', date: '1st Jul, 2024', price: '₹2400', paymentType: 'Credit Card', duration: '3 Months', actions: '' },
+        { item: 'MIT Crash Course', date: '1st Jul, 2024', price: '₹2400', paymentType: 'Credit Card', duration: '3 Months', actions: '' },
+        // Add more rows as needed
+        { item: 'MIT Crash Course', date: '1st Jul, 2024', price: '₹2400', paymentType: 'Credit Card', duration: '3 Months', actions: '' }
+    ];
+
+
+    return (
+        <div className="mx-6  border border-solid border-[#EAECF0] rounded-lg h-full">
+            <table className="w-full border-collapse border-spacing-0 ">
+                <thead className="bg-gray-100">
+                    <tr className="text-gray-600">
+                        <th className="text-left py-4 px-6 font-medium w-[40%]">ITEMS</th>
+                        <th className="text-left py-4 px-6 font-medium w-[15%]">DATE</th>
+                        <th className="text-left py-4 px-6 font-medium w-[15%]">PRICE</th>
+                        <th className="text-left py-4 px-6 font-medium w-[20%]">PAYMENT TYPE</th>
+                        <th className="text-left py-4 px-6 font-medium w-[10%]">ACTIONS</th>
+                    </tr>
+                </thead>
+            </table>
+            <div className="overflow-y-auto max-h-80"> {/* Set a max-height for scrollable body */}
+                <table className="w-full border-collapse border-spacing-0 h-full">
+                    <tbody className="divide-y divide-gray-200">
+                        {data.map((row, index) => (
+                            <tr key={index} className="hover:bg-gray-50">
+                                <td className="px-6 py-4">
+                                    <div className="flex flex-col">
+                                        <span className="font-semibold text-gray-800">{row.item}</span>
+                                        <span className="text-sm text-gray-500">{row.duration}</span>
+                                    </div>
+                                </td>
+                                <td className="px-6 py-4 text-gray-600">{row.date}</td>
+                                <td className="px-6 py-4 text-gray-600">{row.price}</td>
+                                <td className="px-6 py-4 text-gray-600">{row.paymentType}</td>
+                                <td className="px-6 py-4">
+                                    <div className="text-xl text-right cursor-pointer">⋮</div>
+                                    <Popover placement="bottom">
+                                        <PopoverTrigger>
+                                            <button>
+                                                <div className="text-xl text-right cursor-pointer">⋮</div>
+                                            </button>
+                                        </PopoverTrigger>
+                                        <PopoverContent className="flex flex-col bg-white border border-lightGrey rounded-md w-[167px] px-0 shadow-md">
+                                            <button
+                                                className="flex items-center p-3 hover:bg-[#F2F4F7] w-full">
+                                                <Image src="/icons/profile.svg" width={18} height={18} alt="Edit-profile" />
+                                                <p className="text-sm text-[#0C111D] ml-2">My profile</p>
+                                            </button>
+                                            <button className="flex items-center p-3 hover:bg-[#F2F4F7] w-full">
+                                                <Image src="/icons/logout-03.svg" width={18} height={18} alt="Log out" />
+                                                <p className="text-sm text-[#DE3024] ml-2">Log out</p>
+                                            </button>
+                                        </PopoverContent>
+                                    </Popover>
+                                </td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+            </div>
+        </div >
+
+    );
+}
+
+export default Purchase;
