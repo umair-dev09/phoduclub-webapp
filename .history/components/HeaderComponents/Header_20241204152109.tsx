@@ -1,5 +1,6 @@
 "use client";
 import NotficationDropDown from './NotificationDropdown';
+import styles from '../../components/DashboardComponents/TabComps.module.css';
 import Image from 'next/image';
 import { Popover, PopoverTrigger, PopoverContent } from '@nextui-org/popover';
 import { auth } from '@/firebase';
@@ -72,30 +73,31 @@ function Header() {
     if (loading || error) {
         return <HeaderLoading />;
     }
+
     return (
         <div>
-            <div className="flex w-[100%] flex-row items-center justify-between pl-[25px] pr-[25px] bg-[#FFFFFF] h-[65px] rounded-t-md border border-t-white border-r-white border-l-white border-b-gray-200">
-                <div className="text-lg">
+            <div className={styles.headtab}>
+                <div className={styles.greeting}>
                     <h2>
                         <span id="hi">Hey, <span>{userData?.name}</span>,</span> Keep up the great work!
                     </h2>
                 </div>
-                <div className=" flex flex-row items-center">
+                <div className={styles.profileParentLyt}>
                     <HelpDropDown />
                     <NotficationDropDown />
-                    <div className="w-[1.5px] h-[14px] bg-[#eaecf0] border-none ml-[14px] mr-[14px]" />
+                    <div className={styles.divider1} />
                     <Popover placement="bottom">
                         <PopoverTrigger>
-                            <button className='flex flex-row items-center focus:outline-none'>
-                                <Image className="rounded-[50%] ml-[8px]" src={userData?.profilePic || "/defaultDP.svg"} width={38} height={38} quality={100} alt="Profile Picture" />
+                            <div className='flex flex-row items-center'>
+                                <Image className={styles.profilePic} src={userData?.profilePic || "/defaultDP.svg"} width={38} height={38} quality={100} alt="Profile Picture" />
                                 <div className='flex flex-col ml-1 mr-1'>
                                     <p className='font-semibold text-[14px] mb-[-2px]'>{userData?.name}</p>
                                     <p className='text-[13px] text-[#667085]'>{userData?.userId}</p>
                                 </div>
                                 <button className="w-[22px] h-[22px] flex items-center justify-center ml-[12px] mb-[2px]">
-                                    <Image className="w-[15px] h-[15px] min-h-[15px] max-h-[15px]" src="/icons/arrowHeader.svg" width={15} height={15} alt="Arrow Icon" />
+                                    <Image className={styles.arrowIcon} src="/icons/arrowHeader.svg" width={15} height={15} alt="Arrow Icon" />
                                 </button>
-                            </button>
+                            </div>
                         </PopoverTrigger>
                         <PopoverContent className="flex flex-col bg-white border border-lightGrey rounded-md w-[167px] px-0 shadow-md">
                             <button

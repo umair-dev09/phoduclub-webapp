@@ -1,5 +1,6 @@
 "use client";
 import NotficationDropDown from './NotificationDropdown';
+import styles from '../../components/DashboardComponents/TabComps.module.css';
 import Image from 'next/image';
 import { Popover, PopoverTrigger, PopoverContent } from '@nextui-org/popover';
 import { auth } from '@/firebase';
@@ -72,9 +73,10 @@ function Header() {
     if (loading || error) {
         return <HeaderLoading />;
     }
+
     return (
         <div>
-            <div className="flex w-[100%] flex-row items-center justify-between pl-[25px] pr-[25px] bg-[#FFFFFF] h-[65px] rounded-t-md border border-t-white border-r-white border-l-white border-b-gray-200">
+            <div className={styles.headtab}>
                 <div className="text-lg">
                     <h2>
                         <span id="hi">Hey, <span>{userData?.name}</span>,</span> Keep up the great work!

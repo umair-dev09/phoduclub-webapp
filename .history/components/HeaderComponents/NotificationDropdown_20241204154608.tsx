@@ -5,7 +5,7 @@ function NotficationDropDown() {
 
   return (
     <div>
-      <Popover placement='bottom-end'>
+      <Popover backdrop='blur' placement='bottom-end'>
         <PopoverTrigger>
           <div className="relative flex flex-col">
             <div className="absolute w-[10px] h-[10px] bg-[#FF6262] rounded-full border border-white ml-[22px] mt-[1px]"></div>
@@ -14,9 +14,9 @@ function NotficationDropDown() {
             </button>
           </div>
         </PopoverTrigger>
-        <PopoverContent className="flex flex-col bg-white rounded-lg   border border-[#EAECF0] py-[12px] w-[360px] shadow-md shadow-[#EAECF0]">
+        <PopoverContent className="flex flex-col bg-white rounded-lg border border-[#EAECF0] py-[12px] w-[360px] shadow-md shadow-[#EAECF0]">
 
-          <div className="flex flex-row items-center justify-between w-full ">
+          <div className="flex flex-row items-center justify-between mx-[14px]">
             <h3 className="font-semibold text-[15px]">Notifications</h3>
             <button>
               <p className="text-[#7400e0] text-[12px] font-semibold mt-[1px]">Mark all as read</p>

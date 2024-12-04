@@ -16,7 +16,7 @@ function NotficationDropDown() {
         </PopoverTrigger>
         <PopoverContent className="flex flex-col bg-white rounded-lg   border border-[#EAECF0] py-[12px] w-[360px] shadow-md shadow-[#EAECF0]">
 
-          <div className="flex flex-row items-center justify-between w-full ">
+          <div className="flex flex-row items-center justify-between ">
             <h3 className="font-semibold text-[15px]">Notifications</h3>
             <button>
               <p className="text-[#7400e0] text-[12px] font-semibold mt-[1px]">Mark all as read</p>

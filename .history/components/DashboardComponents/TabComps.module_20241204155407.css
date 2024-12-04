@@ -1,0 +1,40 @@
+.headerInfo {
+    margin-left: 3px;
+    margin-right: 3px
+}
+
+
+
+
+
+
+
+
+
+
+
+.headerButton {
+    width: 32px;
+    height: 32px;
+    background-color: #F7F8FA;
+    border: 1.5px solid #EAECF0;
+    border-radius: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.headerName {
+    font-weight: 600;
+    font-size: 14px;
+    margin-bottom: -2px;
+}
+
+.headerEmail {
+    font-size: 13px;
+    color: #667085;
+}
+
+.help {
+    margin-right: 10px;
+}

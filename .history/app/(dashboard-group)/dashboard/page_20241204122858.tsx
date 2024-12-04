@@ -30,9 +30,33 @@ export default function AnalyticsPage() {
           );
      }
      return (
-          <div className=" flex flex-col  flex-1 h-full overflow-y-auto p-6">
-               <div className="flex flex-row flex-1 w-full gap-4">
-                    <div className="flex flex-col flex-1 bg-white  rounded-lg h-[327px] w-1/2 ">
+          // <div className="flex flex-col flex-1 overflow-y-auto  h-full px-6">
+
+
+          //      <div className="flex flex-row flex-1 overflow-y-auto">
+          //           <div className="flex flex-col flex-1 bg-white m-2 rounded-lg">
+          //                <div className="flex flex-row justify-between pt-6 px-6 w-full text-[#1D2939] text-lg font-bold">
+          //                     <h3>Test Series</h3>
+          //                     <button className="text-sm font-semibold text-[#7400E0] cursor-pointer">View all</button>
+          //                </div>
+          //                <div className="flex justify-center flex-1 overflow-y-auto rounded-b-lg">
+          //                     <TestSeries />
+          //                </div>
+          //           </div>
+          //           <div className="flex flex-col flex-1 bg-white m-2 rounded-lg">
+          //                <div className="flex flex-row justify-between pt-6 px-6 w-full text-[#1D2939] text-lg font-bold">
+          //                     <h3>Courses</h3>
+          //                     <button className="text-sm font-semibold text-[#7400E0] cursor-pointer">View all</button>
+          //                </div>
+          //                <div className="flex justify-center flex-1 overflow-y-auto rounded-b-lg">
+          //                     <Course />
+          //                </div>
+          //           </div>
+          //      </div>
+          // </div>
+          <div className=" flex flex-col  flex-1 bg-green-400 h-full overflow-y-auto">
+               <div className="flex flex-row flex-1 ">
+                    <div className="flex flex-col flex-1 bg-white m-2 rounded-lg ">
                          <div className="flex flex-row justify-between pt-6 px-6 w-full text-[#1D2939] text-lg font-bold">
                               <h3>Subject Progress Tracker</h3>
                          </div>
@@ -40,32 +64,12 @@ export default function AnalyticsPage() {
                               <SubjectComp />
                          </div>
                     </div>
-                    <div className="flex flex-col flex-1 bg-white  rounded-lg  h-[327px] w-1/2 ">
+                    <div className="flex flex-col flex-1 bg-white m-2 rounded-lg ">
                          <div className="flex flex-row justify-between pt-6 px-6 w-full text-[#1D2939] text-lg font-bold">
                               <h3>Announcements</h3>
                          </div>
                          <div className="flex items-center justify-center flex-1 overflow-y-auto rounded-b-lg">
                               <Announcement />
-                         </div>
-                    </div>
-               </div>
-               <div className="flex flex-row flex-1  w-full mt-4 gap-4">
-                    <div className="flex flex-col flex-1 bg-white  rounded-lg  h-[327px] w-1/2 ">
-                         <div className="flex flex-row justify-between pt-6 px-6 w-full text-[#1D2939] text-lg font-bold">
-                              <h3>Test Series</h3>
-                              <button className="text-sm font-semibold text-[#7400E0] cursor-pointer">View all</button>
-                         </div>
-                         <div className="flex justify-center flex-1 overflow-y-auto rounded-b-lg">
-                              <TestSeries />
-                         </div>
-                    </div>
-                    <div className="flex flex-col flex-1 bg-white rounded-lg  h-[327px] w-1/2">
-                         <div className="flex flex-row justify-between pt-6 px-6 w-full text-[#1D2939] text-lg font-bold">
-                              <h3>Courses</h3>
-                              <button className="text-sm font-semibold text-[#7400E0] cursor-pointer">View all</button>
-                         </div>
-                         <div className="flex justify-center flex-1 overflow-y-auto rounded-b-lg">
-                              <Course />
                          </div>
                     </div>
                </div>
