@@ -14,95 +14,36 @@ import {
 import { Popover, PopoverContent, PopoverTrigger } from "@nextui-org/popover";
 import Remove from "@/components/AdminComponents/QuizInfoDailogs/Remove";
 
-// Define types for quiz data
-interface Quiz {
+// Define types for student data
+interface StudentPurchased {
+    title: string;
+    uniqueId: string;
     enrollmentType: string;
     progress: string;
     enrolledDate: string;
-    expiryDate: string;
     status: 'Live' | 'Paused' | 'Finished' | 'Scheduled' | 'Cancelled' | 'Saved';
 }
 
-// Mock fetchQuizzes function with types
-const fetchQuizzes = async (): Promise<Quiz[]> => {
-    const allQuizzes: Quiz[] = [
-        {
-            enrollmentType: "Free",
-            progress: "50%",
-            enrolledDate: "Dec 1, 2023",
-            expiryDate: "Jun 1, 2024",
-            status: "Live"
-        },
-        {
-            enrollmentType: "Paid",
-            progress: "30%",
-            enrolledDate: "Nov 15, 2023",
-            expiryDate: "May 15, 2024",
-            status: "Saved"
-        },
-        {
-            enrollmentType: "Free",
-            progress: "75%",
-            enrolledDate: "Oct 1, 2023",
-            expiryDate: "Apr 1, 2024",
-            status: "Paused"
-        },
-        {
-            enrollmentType: "Paid",
-            progress: "100%",
-            enrolledDate: "Sep 1, 2023",
-            expiryDate: "Mar 1, 2024",
-            status: "Finished"
-        },
-        {
-            enrollmentType: "Free",
-            progress: "10%",
-            enrolledDate: "Jan 1, 2024",
-            expiryDate: "Jul 1, 2024",
-            status: "Scheduled"
-        },
-        {
-            enrollmentType: "Paid",
-            progress: "0%",
-            enrolledDate: "Feb 1, 2024",
-            expiryDate: "Aug 1, 2024",
-            status: "Cancelled"
-        },
-        {
-            enrollmentType: "Free",
-            progress: "85%",
-            enrolledDate: "Jul 15, 2023",
-            expiryDate: "Jan 15, 2024",
-            status: "Live"
-        },
-        {
-            enrollmentType: "Paid",
-            progress: "20%",
-            enrolledDate: "Dec 10, 2023",
-            expiryDate: "Jun 10, 2024",
-            status: "Saved"
-        },
-        {
-            enrollmentType: "Free",
-            progress: "45%",
-            enrolledDate: "Nov 25, 2023",
-            expiryDate: "May 25, 2024",
-            status: "Paused"
-        },
-        {
-            enrollmentType: "Paid",
-            progress: "100%",
-            enrolledDate: "Aug 20, 2023",
-            expiryDate: "Feb 20, 2024",
-            status: "Finished"
-        }
+// Mock fetchstudents function with types
+const fetchStudents = async (): Promise<StudentPurchased[]> => {
+    const allStudents: StudentPurchased[] = [
+        { title: "John Doe", uniqueId: "john#1234", enrollmentType: "Free", progress: "50%", enrolledDate: "Dec 1, 2023", status: "Live" },
+        { title: "Jane Smith", uniqueId: "jane#5678", enrollmentType: "Paid", progress: "30%", enrolledDate: "Nov 15, 2023", status: "Saved" },
+        { title: "Alice Johnson", uniqueId: "alice#9101", enrollmentType: "Free", progress: "75%", enrolledDate: "Oct 1, 2023", status: "Paused" },
+        { title: "Robert Brown", uniqueId: "robert#1122", enrollmentType: "Paid", progress: "100%", enrolledDate: "Sep 1, 2023", status: "Finished" },
+        { title: "Emily Davis", uniqueId: "emily#3344", enrollmentType: "Free", progress: "10%", enrolledDate: "Jan 1, 2024", status: "Scheduled" },
+        { title: "Michael Wilson", uniqueId: "michael#5566", enrollmentType: "Paid", progress: "0%", enrolledDate: "Feb 1, 2024", status: "Cancelled" },
+        { title: "Sophia Moore", uniqueId: "sophia#7788", enrollmentType: "Free", progress: "85%", enrolledDate: "Jul 15, 2023", status: "Live" },
+        { title: "Chris Taylor", uniqueId: "chris#9900", enrollmentType: "Paid", progress: "20%", enrolledDate: "Dec 10, 2023", status: "Saved" },
+        { title: "Olivia Martinez", uniqueId: "olivia#1112", enrollmentType: "Free", progress: "45%", enrolledDate: "Nov 25, 2023", status: "Paused" },
+        { title: "Daniel Garcia", uniqueId: "daniel#1314", enrollmentType: "Paid", progress: "100%", enrolledDate: "Aug 20, 2023", status: "Finished" }
     ];
-    return allQuizzes;
+    return allStudents;
 };
 
-function StudentsAttemptedCourseInfo() {
-    const [data, setData] = useState<Quiz[]>([]);
-    const [quizzes, setQuizzes] = useState<Quiz[]>([]);
+function StudentsPurchasedCourseInfo() {
+    const [data, setData] = useState<StudentPurchased[]>([]);
+    const [students, setStudents] = useState<StudentPurchased[]>([]);
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage] = useState(5);
     const [loading, setLoading] = useState(true);
@@ -110,26 +51,26 @@ function StudentsAttemptedCourseInfo() {
     const [popoveropen, setPopoveropen] = useState(false);
     const router = useRouter();
 
-    // Fetch quizzes when component mounts
+    // Fetch students when component mounts
     useEffect(() => {
-        const loadQuizzes = async () => {
+        const loadStudents = async () => {
             setLoading(true);
-            const quizzes = await fetchQuizzes();
-            setQuizzes(quizzes);
-            setData(quizzes);
+            const students = await fetchStudents();
+            setStudents(students);
+            setData(students);
             setLoading(false);
         };
-        loadQuizzes();
+        loadStudents();
     }, []);
 
-    // Filter quizzes based on search term
-    // useEffect(() => {
-    //     const filteredQuizzes = quizzes.filter(quiz =>
-    //         quiz.title.toLowerCase().includes(searchTerm.toLowerCase())
-    //     );
-    //     setData(filteredQuizzes);
-    //     setCurrentPage(1); // Reset to first page on new search
-    // }, [searchTerm, quizzes]);
+    // Filter students based on search term
+    useEffect(() => {
+        const filteredStudents = students.filter(student =>
+            student.title.toLowerCase().includes(searchTerm.toLowerCase())
+        );
+        setData(filteredStudents);
+        setCurrentPage(1); // Reset to first page on new search
+    }, [searchTerm, students]);
 
     const lastItemIndex = currentPage * itemsPerPage;
     const firstItemIndex = lastItemIndex - itemsPerPage;
@@ -157,7 +98,7 @@ function StudentsAttemptedCourseInfo() {
             <div className="flex flex-row justify-between items-center">
                 {/* Search Button */}
                 <button className="h-[44px] w-[250px] rounded-md bg-[#FFFFFF] border border-solid border-[#D0D5DD] flex items-center">
-                    <div className="flex flex-row items-center gap-2 pl-2">
+                    <div className="flex flex-row items-center w-full gap-2 pl-2">
                         <Image
                             src="/icons/search-button.svg"
                             width={20}
@@ -165,7 +106,7 @@ function StudentsAttemptedCourseInfo() {
                             alt="Search Button"
                         />
                         <input
-                            className="font-normal text-[#667085] text-sm placeholder:text-[#A1A1A1] rounded-md px-1 py-1 focus:outline-none focus:ring-0 border-none"
+                            className="font-normal text-[#667085] text-sm placeholder:text-[#A1A1A1] rounded-md w-full px-1 py-1 focus:outline-none focus:ring-0 border-none"
                             placeholder="Search"
                             type="text"
                             value={searchTerm}
@@ -268,31 +209,23 @@ function StudentsAttemptedCourseInfo() {
                     <table className="w-full bg-white rounded-xl">
                         <thead>
                             <tr>
-                                <th className="w-1/4 text-left px-8 py-4 pl-8 rounded-tl-xl flex flex-row ">
+                                <th className="text-left px-8 py-4 pl-8 rounded-tl-xl flex flex-row ">
                                     <span className="text-[#667085] font-medium text-sm">Name</span>
-                                    <Image src="/icons/expandall.svg" width={28} height={18} alt="Expand all icon" />
                                 </th>
-                                <th className=" w-[17%] text-center px-8 py-4 text-[#667085] font-medium text-sm">
+                                <th className="text-center px-8 py-4 text-[#667085] font-medium text-sm">
                                     <div className="flex flex-row justify-center gap-1">
-                                        <p>Enrollment Type</p>
-                                        <Image src='/icons/unfold-more-round.svg' alt="" width={16} height={16} />
+                                        <p>Enrollment</p>
                                     </div>
                                 </th>
-                                <th className=" w-[17%] text-center px-8 py-4 text-[#667085] font-medium text-sm">
+                                <th className="text-center px-8 py-4 text-[#667085] font-medium text-sm">
                                     <div className="flex flex-row justify-center gap-1">
                                         <p>Progress</p>
                                         <Image src='/icons/unfold-more-round.svg' alt="" width={16} height={16} />
                                     </div>
                                 </th>
-                                <th className=" w-[17%] text-center px-8 py-4 text-[#667085] font-medium text-sm">
+                                <th className="text-center px-8 py-4 text-[#667085] font-medium text-sm">
                                     <div className="flex flex-row justify-center gap-1">
                                         <p>Enrollment Date</p>
-                                        <Image src='/icons/unfold-more-round.svg' alt="" width={16} height={16} />
-                                    </div>
-                                </th>
-                                <th className=" w-[17%] text-center px-8 py-4 rounded-tr-xl text-[#667085] font-medium text-sm">
-                                    <div className="flex flex-row justify-center gap-1">
-                                        <p>Expiry Date</p>
                                         <Image src='/icons/unfold-more-round.svg' alt="" width={16} height={16} />
                                     </div>
                                 </th>
@@ -300,7 +233,7 @@ function StudentsAttemptedCourseInfo() {
                             </tr>
                         </thead>
                         <tbody>
-                            {currentItems.map((quiz, index) => (
+                            {currentItems.map((student, index) => (
                                 <tr key={index} className="border-t border-solid border-[#EAECF0]">
                                     <td className="py-2">
                                         <div className="flex flex-row ml-8 gap-2">
@@ -311,15 +244,14 @@ function StudentsAttemptedCourseInfo() {
                                                 </div>
                                             </div>
                                             <div className="flex items-start justify-start flex-col">
-                                                <div className="font-semibold">Jenny Wilson</div>
-                                                <div className="flex justify-start items-start text-[13px] text-[#667085]">jenny#8547</div>
+                                                <div className="font-semibold">{student.title}</div>
+                                                <div className="flex justify-start items-start text-[13px] text-[#667085]">{student.uniqueId}</div>
                                             </div>
                                         </div>
                                     </td>
-                                    <td className="px-8 py-4 text-center text-[#101828] text-sm">{quiz.enrollmentType}</td>
-                                    <td className="px-8 py-4 text-center text-[#101828] text-sm">{quiz.progress}</td>
-                                    <td className="px-8 py-4 text-center text-[#101828] text-sm">{quiz.enrolledDate}</td>
-                                    <td className="px-8 py-4 text-center text-[#101828] text-sm">{quiz.expiryDate}</td>
+                                    <td className="px-8 py-4 text-center text-[#101828] text-sm">{student.enrollmentType}</td>
+                                    <td className="px-8 py-4 text-center text-[#101828] text-sm">{student.progress}</td>
+                                    <td className="px-8 py-4 text-center text-[#101828] text-sm">{student.enrolledDate}</td>
                                     <td className="flex items-center justify-center px-8 py-4 text-[#101828] text-sm">
                                         <Popover placement="bottom-end">
                                             <PopoverTrigger>
@@ -488,4 +420,4 @@ function PaginationSection({
     );
 }
 
-export default StudentsAttemptedCourseInfo;
+export default StudentsPurchasedCourseInfo;

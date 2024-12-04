@@ -3,6 +3,8 @@
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import React, { useState, useEffect } from "react";
+import { Calendar } from "@nextui-org/calendar";
+import { today, getLocalTimeZone } from "@internationalized/date";
 import {
     Pagination,
     PaginationContent,
@@ -22,49 +24,60 @@ import MakeLiveNow from "@/components/AdminComponents/QuizInfoDailogs/MakeLiveNo
 import Resume from "@/components/AdminComponents/QuizInfoDailogs/ResumeDailogue";
 import ViewAnalytics from "@/components/AdminComponents/QuizInfoDailogs/ViewAnalytics";
 import Status from '@/components/AdminComponents/QuizzesManagement/quizStatus';
+import test from "node:test";
 
 // Define types for test data
 type Test = {
+    title: string;
     questions: number;
     date: string; // Can be Date type if desired
     students: number;
     status: 'live' | 'paused' | 'finished' | 'scheduled' | 'ended' | 'saved';
 }
 
+function formatDate(dateString: string): string {
+    const date = new Date(dateString);
+    return date.toLocaleDateString("en-US", {
+        month: "short",
+        day: "numeric",
+        year: "numeric",
+    });
+}
+
 // Mock fetchTests function with types
 const fetchTests = async (): Promise<Test[]> => {
     const allTests: Test[] = [
-        { questions: 10, date: 'Jan 6, 2024', students: 2147, status: 'live' },
-        { questions: 10, date: 'Mar 15, 2024', students: 900, status: 'saved' },
-        { questions: 8, date: 'Jan 8, 2024', students: 1875, status: 'paused' },
-        { questions: 7, date: 'Mar 17, 2024', students: 1250, status: 'saved' },
-        { questions: 12, date: 'Jan 10, 2024', students: 1290, status: 'finished' },
-        { questions: 6, date: 'Jan 12, 2024', students: 950, status: 'ended' },
-        { questions: 15, date: 'Feb 1, 2024', students: 1800, status: 'scheduled' },
-        { questions: 9, date: 'Feb 3, 2024', students: 1600, status: 'live' },
-        { questions: 12, date: 'Mar 22, 2024', students: 1400, status: 'saved' },
-        { questions: 12, date: 'Feb 5, 2024', students: 1950, status: 'paused' },
-        { questions: 9, date: 'Mar 20, 2024', students: 1150, status: 'saved' },
-        { questions: 10, date: 'Feb 8, 2024', students: 2100, status: 'finished' },
-        { questions: 8, date: 'Feb 10, 2024', students: 2200, status: 'ended' },
-        { questions: 6, date: 'Mar 28, 2024', students: 1100, status: 'saved' },
-        { questions: 7, date: 'Feb 12, 2024', students: 1700, status: 'live' },
-        { questions: 10, date: 'Feb 15, 2024', students: 1300, status: 'scheduled' },
-        { questions: 11, date: 'Feb 18, 2024', students: 1450, status: 'finished' },
-        { questions: 10, date: 'Apr 2, 2024', students: 1450, status: 'saved' },
-        { questions: 9, date: 'Feb 20, 2024', students: 1900, status: 'paused' },
-        { questions: 10, date: 'Apr 6, 2024', students: 1250, status: 'saved' },
-        { questions: 12, date: 'Feb 25, 2024', students: 1750, status: 'live' },
-        { questions: 8, date: 'Mar 1, 2024', students: 2000, status: 'ended' },
-        { questions: 7, date: 'Mar 3, 2024', students: 1500, status: 'scheduled' },
-        { questions: 10, date: 'Mar 5, 2024', students: 1850, status: 'finished' },
-        { questions: 11, date: 'Mar 30, 2024', students: 1000, status: 'saved' },
-        { questions: 9, date: 'Mar 8, 2024', students: 1700, status: 'live' },
-        { questions: 8, date: 'Apr 4, 2024', students: 1350, status: 'saved' },
-        { questions: 8, date: 'Mar 10, 2024', students: 1400, status: 'paused' },
-        { questions: 6, date: 'Mar 12, 2024', students: 1200, status: 'ended' },
-        { questions: 8, date: 'Mar 25, 2024', students: 1300, status: 'saved' },
-        { questions: 7, date: 'Apr 10, 2024', students: 1050, status: 'saved' }
+        { title: 'Phodu JEE Mains Test Series 2025', questions: 10, date: 'Jan 6, 2024', students: 2147, status: 'live' },
+        { title: 'Advanced Physics Practice Test', questions: 10, date: 'Mar 15, 2024', students: 900, status: 'saved' },
+        { title: 'Ultimate Physics Test Series', questions: 8, date: 'Jan 8, 2024', students: 1875, status: 'paused' },
+        { title: 'Math Genius Practice Exam', questions: 7, date: 'Mar 17, 2024', students: 1250, status: 'saved' },
+        { title: 'Concept Mastery Challenge', questions: 12, date: 'Jan 10, 2024', students: 1290, status: 'finished' },
+        { title: 'Quick Revision Test', questions: 6, date: 'Jan 12, 2024', students: 950, status: 'ended' },
+        { title: 'February Marathon Quiz', questions: 15, date: 'Feb 1, 2024', students: 1800, status: 'scheduled' },
+        { title: 'Ace JEE Mock Test', questions: 9, date: 'Feb 3, 2024', students: 1600, status: 'live' },
+        { title: 'Comprehensive Chemistry Drill', questions: 12, date: 'Mar 22, 2024', students: 1400, status: 'saved' },
+        { title: 'Physics Power Practice', questions: 12, date: 'Feb 5, 2024', students: 1950, status: 'paused' },
+        { title: 'Math Proficiency Quiz', questions: 9, date: 'Mar 20, 2024', students: 1150, status: 'saved' },
+        { title: 'Final Sprint Test', questions: 10, date: 'Feb 8, 2024', students: 2100, status: 'finished' },
+        { title: 'Endgame Practice Exam', questions: 8, date: 'Feb 10, 2024', students: 2200, status: 'ended' },
+        { title: 'Basic Concepts Practice', questions: 6, date: 'Mar 28, 2024', students: 1100, status: 'saved' },
+        { title: 'JEE Essentials Test', questions: 7, date: 'Feb 12, 2024', students: 1700, status: 'live' },
+        { title: 'Math Drill Series', questions: 10, date: 'Feb 15, 2024', students: 1300, status: 'scheduled' },
+        { title: 'Physics Insight Challenge', questions: 11, date: 'Feb 18, 2024', students: 1450, status: 'finished' },
+        { title: 'JEE Mock Drill - March Edition', questions: 10, date: 'Apr 2, 2024', students: 1450, status: 'saved' },
+        { title: 'Problem Solving Test', questions: 9, date: 'Feb 20, 2024', students: 1900, status: 'paused' },
+        { title: 'Chemical Concepts Practice', questions: 10, date: 'Apr 6, 2024', students: 1250, status: 'saved' },
+        { title: 'JEE Advanced Prep Test', questions: 12, date: 'Feb 25, 2024', students: 1750, status: 'live' },
+        { title: 'Physics Recall Test', questions: 8, date: 'Mar 1, 2024', students: 2000, status: 'ended' },
+        { title: 'Challenge Day Mock Test', questions: 7, date: 'Mar 3, 2024', students: 1500, status: 'scheduled' },
+        { title: 'March Excellence Test', questions: 10, date: 'Mar 5, 2024', students: 1850, status: 'finished' },
+        { title: 'Subject Mastery Drill', questions: 11, date: 'Mar 30, 2024', students: 1000, status: 'saved' },
+        { title: 'Dynamic Quiz Series', questions: 9, date: 'Mar 8, 2024', students: 1700, status: 'live' },
+        { title: 'Topic Deep Dive Quiz', questions: 8, date: 'Apr 4, 2024', students: 1350, status: 'saved' },
+        { title: 'February Physics Test', questions: 8, date: 'Mar 10, 2024', students: 1400, status: 'paused' },
+        { title: 'Speed Quiz Series', questions: 6, date: 'Mar 12, 2024', students: 1200, status: 'ended' },
+        { title: 'Practice Makes Perfect Test', questions: 8, date: 'Mar 25, 2024', students: 1300, status: 'saved' },
+        { title: 'Advanced Skills Quiz', questions: 7, date: 'Apr 10, 2024', students: 1050, status: 'saved' }
     ];
     return allTests;
 };
@@ -115,6 +128,7 @@ function TesstseriesInfo() {
     const [isMakeLiveNowDialogOpen, setIsMakeLiveNowDialogOpen] = useState(false);
     const [isResumeOpen, setIsResumeOpen] = useState(false);
     const [isViewAnalyticsOpen, setIsViewAnalyticsOpen] = useState(false);
+    const [isSelcetDateOpen, setIsSelectDateOpen] = useState(false);
 
     // Handlers for ScheduledDialog
     const openScheduledDialog = () => setIsScheduledDialogOpen(true);
@@ -172,36 +186,71 @@ function TesstseriesInfo() {
     const options: Option[] = ["Saved", "Live", "Scheduled", "Pause", "Finished", "Canceled"];
 
     const selectedCount = Object.values(checkedState).filter(Boolean).length;
+    const [selectedDate, setSelectedDate] = useState<Date | null>(null); // Store selected date as Date object
 
     useEffect(() => {
-        // Start with all tests
         let filteredTests = tests;
 
-        // First, filter by search term if there is one
+        // Filter by search term
         if (searchTerm) {
             filteredTests = filteredTests.filter(test =>
-                "Phodu JEE Mains Test Series 2025".toLowerCase().includes(searchTerm.toLowerCase())
+                test.title.toLowerCase().includes(searchTerm.toLowerCase())
             );
         }
 
-        // Get list of selected statuses
+        // Filter by selected statuses
         const selectedStatuses = Object.entries(checkedState)
-            .filter(([_, isChecked]) => isChecked)  // Get only checked statuses
-            .map(([status]) => statusMapping[status as Option])  // Convert to actual status names
+            .filter(([_, isChecked]) => isChecked)
+            .map(([status]) => statusMapping[status as Option])
             .flat();
 
-        // If any statuses are selected, filter by those statuses
         if (selectedStatuses.length > 0) {
             filteredTests = filteredTests.filter(test =>
                 selectedStatuses.includes(test.status)
             );
         }
 
-        // Update the displayed data
+        // Filter by selected date
+        if (selectedDate) {
+            const selectedDateString = selectedDate instanceof Date && !isNaN(selectedDate.getTime())
+                ? selectedDate.toISOString().split('T')[0] // Convert to YYYY-MM-DD
+                : null;
+
+            if (selectedDateString) {
+                filteredTests = filteredTests.filter(test => {
+                    const testDate = new Date(test.date); // Convert quiz.date string to Date object
+                    const testDateString = testDate instanceof Date && !isNaN(testDate.getTime())
+                        ? testDate.toISOString().split('T')[0]
+                        : null;
+
+                    return testDateString === selectedDateString; // Compare only the date part (not time)
+                });
+            }
+        }
+
+        // Sort by quizPublishedDate in ascending order (earliest date first)
+        filteredTests = filteredTests.sort((a, b) => {
+            const dateA = new Date(a.date).getTime();
+            const dateB = new Date(b.date).getTime();
+
+            // Handle invalid date values (e.g., when date cannot be parsed)
+            if (isNaN(dateA) || isNaN(dateB)) {
+                console.error("Invalid date value", a.date, b.date);
+                return 0; // If dates are invalid, no sorting will occur
+            }
+
+            return dateA - dateB; // Sort by time in ascending order (earliest first)
+        });
+
+        // Update state with filtered and sorted quizzes
         setData(filteredTests);
-        // Go back to first page whenever filters change
-        setCurrentPage(1);
-    }, [searchTerm, checkedState, tests]);
+        setCurrentPage(1); // Reset to first page when filters change
+    }, [searchTerm, checkedState, tests, selectedDate]);
+
+    // Format selected date as 'Nov 9, 2024'
+    const formattedDate = selectedDate
+        ? selectedDate.toLocaleDateString("en-US", { year: 'numeric', month: 'short', day: 'numeric' })
+        : "Select dates";
 
     const statusColors: Record<Option, string> = {
         Saved: '#7400E0',
@@ -240,15 +289,44 @@ function TesstseriesInfo() {
                     </button>
 
                     {/* Select Date Button */}
-                    <button className="h-[44px] w-[143px] rounded-md bg-[#FFFFFF] border border-solid border-[#D0D5DD] flex items-center p-3">
-                        <Image
-                            src="/icons/select-date.svg"
-                            width={20}
-                            height={20}
-                            alt="Select-date Button"
-                        />
-                        <span className="font-medium text-sm text-[#667085] ml-2">Select dates</span>
-                    </button>
+                    <Popover placement="bottom" isOpen={isSelcetDateOpen}>
+                        <PopoverTrigger>
+                            <button className="h-[44px] w-[143px] rounded-md bg-[#FFFFFF] border border-solid border-[#D0D5DD] flex items-center p-3" onClick={() => setIsSelectDateOpen(true)}>
+                                <Image
+                                    src="/icons/select-date.svg"
+                                    width={20}
+                                    height={20}
+                                    alt="Select-date Button"
+                                />
+                                <span className="font-medium text-sm text-[#667085] ml-2">{formattedDate}</span>
+                            </button>
+                        </PopoverTrigger>
+                        <PopoverContent className="flex flex-col gap-2 p-0 h-auto">
+                            <Calendar
+                                defaultValue={today(getLocalTimeZone())}
+                                showMonthAndYearPickers
+                                color="secondary"
+                                onChange={(value) => {
+                                    const date = new Date(value.year, value.month - 1, value.day); // Adjust for zero-based month index
+                                    setSelectedDate(date); // Update state with the new Date object
+                                    setIsSelectDateOpen(false);
+                                }}
+                            />
+
+                            {/* Conditionally render the "Clear" button */}
+                            {selectedDate && (
+                                <button
+                                    className="min-w-[84px] min-h-[30px] rounded-md bg-[#9012FF] text-[14px] font-medium text-white mb-2"
+                                    onClick={() => {
+                                        setSelectedDate(null); // Clear the selected date
+                                        setIsSelectDateOpen(false);
+                                    }}
+                                >
+                                    Clear
+                                </button>
+                            )}
+                        </PopoverContent>
+                    </Popover>
 
                     {/* By Status Button */}
                     <Popover placement="bottom-start">
@@ -348,7 +426,7 @@ function TesstseriesInfo() {
                                             <td onClick={() => handleTabClick('/admin/content/testseriesmanagement/testseriesinfo')}>
                                                 <button className="flex flex-row items-center px-8 py-3 gap-2 text-[#9012FF] underline text-sm font-medium">
                                                     <Image src='/images/TSM-DP.png' alt="DP" width={40} height={40} />
-                                                    <p className="text-start">Phodu JEE Mains Test Series 2025</p>
+                                                    <p className="text-start">{test.title}</p>
                                                 </button>
                                             </td>
                                             <td className="px-8 py-4 text-center text-[#101828] text-sm"><span className="mr-1">&#8377;</span>{test.students}</td>
