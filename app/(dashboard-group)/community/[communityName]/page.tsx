@@ -16,7 +16,8 @@ import OtherChat from '@/components/DashboardComponents/CommunityComponents/othe
 import BottomText from '@/components/DashboardComponents/CommunityComponents/BottomText';
 import OwnChat from '@/components/DashboardComponents/CommunityComponents/ownChat';
 import { PopoverContent, PopoverTrigger, Popover } from '@nextui-org/popover';
-
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 type Channel = {
   channelId: string;
   channelName: string;
@@ -196,7 +197,7 @@ export default function CommunityName() {
     return <LoadingData />;
   }
 
-  if (loading || error) {
+  if (loading ) {
     return <LoadingData />;
   }
 
@@ -297,9 +298,9 @@ export default function CommunityName() {
                     </div>
                   )}
                   {chat.senderId === user?.uid ? (
-                    <OwnChat handleReply={handleReply} setShowReplyLayout={setShowReplyLayout} message={chat.message} messageType={chat.messageType} fileUrl={chat.fileUrl} fileName={chat.fileName} fileSize={chat.fileSize} senderId={chat.senderId} timestamp={chat.timestamp} isReplying={chat.isReplying} replyingToId={chat.replyingToId} replyingToMsg={chat.replyingToMsg} replyingToMsgType={chat.replyingToMsgType} replyingToFileName={chat.replyingToFileName} replyingToFileUrl={chat.replyingToFileUrl} replyingToChatId={chat.replyingToChatId} chatId={chat.chatId} communityId={communityId ?? ''} channelId={selectedChannel.channelId} headingId={selectedChannel.headingId ?? ''} />
+                    <OwnChat handleReply={handleReply} setShowReplyLayout={setShowReplyLayout} message={chat.message} messageType={chat.messageType} fileUrl={chat.fileUrl} fileName={chat.fileName} fileSize={chat.fileSize} senderId={chat.senderId} timestamp={chat.timestamp} isReplying={chat.isReplying} replyingToId={chat.replyingToId} replyingToMsg={chat.replyingToMsg} replyingToMsgType={chat.replyingToMsgType} replyingToFileName={chat.replyingToFileName} replyingToFileUrl={chat.replyingToFileUrl} replyingToChatId={chat.replyingToChatId} chatId={chat.chatId} communityId={communityId ?? ''} channelId={selectedChannel.channelId} headingId={selectedChannel.headingId ?? ''} isAdmin={false}/>
                   ) : (
-                    <OtherChat message={chat.message} senderId={chat.senderId} timestamp={chat.timestamp} />
+                    <OtherChat  handleReply={handleReply} setShowReplyLayout={setShowReplyLayout} message={chat.message} messageType={chat.messageType} fileUrl={chat.fileUrl} fileName={chat.fileName} fileSize={chat.fileSize} senderId={chat.senderId} timestamp={chat.timestamp} isReplying={chat.isReplying} replyingToId={chat.replyingToId} replyingToMsg={chat.replyingToMsg} replyingToMsgType={chat.replyingToMsgType} replyingToFileName={chat.replyingToFileName} replyingToFileUrl={chat.replyingToFileUrl} replyingToChatId={chat.replyingToChatId} chatId={chat.chatId} communityId={communityId ?? ''} channelId={selectedChannel.channelId} headingId={selectedChannel.headingId ?? ''} isAdmin={false} />
                   )}
                 </React.Fragment>
               ))}
@@ -390,7 +391,7 @@ export default function CommunityName() {
         <>
         </>
       )}
-
+     <ToastContainer />
     </div>
   );
 }

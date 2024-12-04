@@ -334,7 +334,7 @@ function InternalChat() {
           </>
         )}
   
-  {openDialogue && <CreateChannelDialogue open={true} onClose={() => setOpenDialogue(false)} internalChatId={internalchatId}/>}
+    {openDialogue && <CreateChannelDialogue open={true} onClose={() => setOpenDialogue(false)} internalChatId={internalchatId}/>}
           
       </div>
 
