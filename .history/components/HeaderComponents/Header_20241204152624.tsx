@@ -1,5 +1,6 @@
 "use client";
 import NotficationDropDown from './NotificationDropdown';
+import styles from '../../components/DashboardComponents/TabComps.module.css';
 import Image from 'next/image';
 import { Popover, PopoverTrigger, PopoverContent } from '@nextui-org/popover';
 import { auth } from '@/firebase';
@@ -72,18 +73,20 @@ function Header() {
     if (loading || error) {
         return <HeaderLoading />;
     }
+
     return (
         <div>
-            <div className="flex w-[100%] flex-row items-center justify-between pl-[25px] pr-[25px] bg-[#FFFFFF] h-[65px] rounded-t-md border border-t-white border-r-white border-l-white border-b-gray-200">
-                <div className="text-lg">
+            <div className={styles.headtab}>
+                <div className={styles.greeting}>
                     <h2>
                         <span id="hi">Hey, <span>{userData?.name}</span>,</span> Keep up the great work!
                     </h2>
                 </div>
-                <div className=" flex flex-row items-center">
+                <div className={styles.profileParentLyt}>
                     <HelpDropDown />
                     <NotficationDropDown />
-                    <div className="w-[1.5px] h-[14px] bg-[#eaecf0] border-none ml-[14px] mr-[14px]" />
+
+                    <div className={styles.divider1} />
                     <Popover placement="bottom">
                         <PopoverTrigger>
                             <button className='flex flex-row items-center focus:outline-none'>

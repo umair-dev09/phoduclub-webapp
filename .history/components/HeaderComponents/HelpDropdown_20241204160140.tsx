@@ -8,7 +8,7 @@ function HelpDropDown() {
         <div >
             <Popover placement='bottom-end'>
                 <PopoverTrigger >
-                    <div className="mx-2">
+                    <div className="mx-[6px]">
                         <button className="w-[32px] h-[32px] bg-[#F7F8FA] border-[1.5px] border-[#EAECF0] rounded-full flex items-center justify-center">
                             <Image src="/icons/help-circle.svg" width={16} height={16} alt="Help Icon" />
                         </button>

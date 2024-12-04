@@ -1,0 +1,218 @@
+.profilePic {
+    border-radius: 50%;
+    margin-right: 8px;
+
+}
+
+.headerInfo {
+    margin-left: 3px;
+    margin-right: 3px
+}
+
+.arrowButton {
+    width: 22px;
+    height: 22px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: 12px;
+    margin-bottom: 2px;
+}
+
+.arrowIcon {
+    width: 15px;
+    height: 15px;
+    min-width: 15px;
+    min-height: 15px;
+}
+
+.divider1 {
+    width: 1.5px;
+
+    height: 14px;
+    background-color: #eaecf0;
+
+    border: none;
+    margin-left: 14px;
+    margin-right: 14px;
+}
+
+.notification {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+}
+
+.notificationIndicator {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    background-color: #FF6262;
+    border-radius: 100px;
+    margin-left: 22px;
+    margin-top: 1px;
+    border: 1px solid white;
+}
+
+.notificationDropDownLyt {
+    display: flex;
+    flex-direction: column;
+    background-color: white;
+    border-radius: 8px;
+    border: 1px solid #EAECF0;
+    padding-top: 12px;
+    padding-bottom: 12px;
+    width: 360px;
+    box-shadow: 0px 2px 4px #EAECF0;
+
+}
+
+.notiText {
+    font-weight: 600;
+    font-size: 15px;
+}
+
+.notiText2 {
+    font-weight: 600;
+    font-size: 15px;
+    margin-top: 12px;
+    margin-bottom: 8px;
+}
+
+.markAllText {
+    color: #7400e0;
+    font-size: 12px;
+    font-weight: 600;
+    margin-top: 1px;
+}
+
+.notiHeadLyt {
+    margin-left: 14px;
+    margin-right: 14px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.notiDivider {
+    width: auto;
+    height: 1px;
+    background-color: #F2F4F7;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.emptyNotificationLyt {
+    margin-top: 40px;
+    margin-bottom: 40px;
+    margin-left: 15px;
+    margin-right: 15px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+}
+
+
+
+.headerButton {
+    width: 32px;
+    height: 32px;
+    background-color: #F7F8FA;
+    border: 1.5px solid #EAECF0;
+    border-radius: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.headerName {
+    font-weight: 600;
+    font-size: 14px;
+    margin-bottom: -2px;
+}
+
+.headerEmail {
+    font-size: 13px;
+    color: #667085;
+}
+
+.help {
+    margin-right: 10px;
+}
+
+.profileParentLyt {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.myProfButton {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.logoutProfButton {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin-top: 10px;
+}
+
+.profPopupIcon {
+    margin-right: 8px;
+}
+
+.profPopupText1 {
+    font-size: 14px;
+}
+
+.profPopupText2 {
+    font-size: 14px;
+    color: #DE3024;
+}
+
+.profilePopup {
+    display: flex;
+    flex-direction: column;
+    background-color: white;
+    border-radius: 8px;
+    border: 1px solid #EAECF0;
+    padding-top: 12px;
+    padding-bottom: 12px;
+    padding-left: 12px;
+    padding-right: 12px;
+    width: 180px;
+    box-shadow: 0px 2px 4px #EAECF0;
+}
+
+.profileChildLyt {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.greeting {
+    font-size: 18px;
+}
+
+.headtab {
+    display: flex;
+    width: 100%;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    padding-left: 25px;
+    padding-right: 25px;
+    background: #FFFFFF;
+    height: 65px;
+    border-radius: 5px 5px 0 0;
+    border-width: 1px;
+    border-bottom-color: #e9ebf0;
+    border-top-color: #FFFFFF;
+    border-right-color: #FFFFFF;
+    border-left-color: #FFFFFF;
+
+}
