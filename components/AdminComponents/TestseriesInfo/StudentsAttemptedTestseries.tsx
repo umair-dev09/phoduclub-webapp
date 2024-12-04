@@ -2,6 +2,8 @@
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
+import { Calendar } from "@nextui-org/calendar";
+import { today, getLocalTimeZone } from "@internationalized/date";
 import {
     Pagination,
     PaginationContent,
@@ -14,122 +16,55 @@ import {
 import { Popover, PopoverContent, PopoverTrigger } from "@nextui-org/popover";
 import Remove from "@/components/AdminComponents/QuizInfoDailogs/Remove";
 
-// Define types for quiz data
-interface Quiz {
+// Define types for StudentAttempts data
+interface StudentAttempts {
+    title: string;
+    uniqueId: string;
     enrollmentType: string;
     progress: string;
     enrolledDate: string;
     expiryDate: string;
-    status: 'Live' | 'Paused' | 'Finished' | 'Scheduled' | 'Cancelled' | 'Saved';
 }
 
-// Mock fetchQuizzes function with types
-const fetchQuizzes = async (): Promise<Quiz[]> => {
-    const allQuizzes: Quiz[] = [
-        {
-            enrollmentType: "Free",
-            progress: "50%",
-            enrolledDate: "Dec 1, 2023",
-            expiryDate: "Jun 1, 2024",
-            status: "Live"
-        },
-        {
-            enrollmentType: "Paid",
-            progress: "30%",
-            enrolledDate: "Nov 15, 2023",
-            expiryDate: "May 15, 2024",
-            status: "Saved"
-        },
-        {
-            enrollmentType: "Free",
-            progress: "75%",
-            enrolledDate: "Oct 1, 2023",
-            expiryDate: "Apr 1, 2024",
-            status: "Paused"
-        },
-        {
-            enrollmentType: "Paid",
-            progress: "100%",
-            enrolledDate: "Sep 1, 2023",
-            expiryDate: "Mar 1, 2024",
-            status: "Finished"
-        },
-        {
-            enrollmentType: "Free",
-            progress: "10%",
-            enrolledDate: "Jan 1, 2024",
-            expiryDate: "Jul 1, 2024",
-            status: "Scheduled"
-        },
-        {
-            enrollmentType: "Paid",
-            progress: "0%",
-            enrolledDate: "Feb 1, 2024",
-            expiryDate: "Aug 1, 2024",
-            status: "Cancelled"
-        },
-        {
-            enrollmentType: "Free",
-            progress: "85%",
-            enrolledDate: "Jul 15, 2023",
-            expiryDate: "Jan 15, 2024",
-            status: "Live"
-        },
-        {
-            enrollmentType: "Paid",
-            progress: "20%",
-            enrolledDate: "Dec 10, 2023",
-            expiryDate: "Jun 10, 2024",
-            status: "Saved"
-        },
-        {
-            enrollmentType: "Free",
-            progress: "45%",
-            enrolledDate: "Nov 25, 2023",
-            expiryDate: "May 25, 2024",
-            status: "Paused"
-        },
-        {
-            enrollmentType: "Paid",
-            progress: "100%",
-            enrolledDate: "Aug 20, 2023",
-            expiryDate: "Feb 20, 2024",
-            status: "Finished"
-        }
+// Mock fetchStudentAttempts function with types
+const fetchStudentAttempts = async (): Promise<StudentAttempts[]> => {
+    const allStudentAttempts: StudentAttempts[] = [
+        { title: "Alice", uniqueId: "alice#1234", enrollmentType: "Free", progress: "50%", enrolledDate: "Dec 1, 2023", expiryDate: "Jun 1, 2024" },
+        { title: "Bob", uniqueId: "bob#5678", enrollmentType: "Paid", progress: "30%", enrolledDate: "Nov 15, 2023", expiryDate: "May 15, 2024" },
+        { title: "Charlie", uniqueId: "charlie#9101", enrollmentType: "Free", progress: "75%", enrolledDate: "Oct 1, 2023", expiryDate: "Apr 1, 2024" },
+        { title: "Diana", uniqueId: "diana#1121", enrollmentType: "Paid", progress: "100%", enrolledDate: "Sep 1, 2023", expiryDate: "Mar 1, 2024" },
+        { title: "Eve", uniqueId: "eve#3141", enrollmentType: "Free", progress: "10%", enrolledDate: "Jan 1, 2024", expiryDate: "Jul 1, 2024" },
+        { title: "Frank", uniqueId: "frank#5161", enrollmentType: "Paid", progress: "0%", enrolledDate: "Feb 1, 2024", expiryDate: "Aug 1, 2024" },
+        { title: "Grace", uniqueId: "grace#7181", enrollmentType: "Free", progress: "85%", enrolledDate: "Jul 15, 2023", expiryDate: "Jan 15, 2024" },
+        { title: "Hank", uniqueId: "hank#9202", enrollmentType: "Paid", progress: "20%", enrolledDate: "Dec 10, 2023", expiryDate: "Jun 10, 2024" },
+        { title: "Ivy", uniqueId: "ivy#1233", enrollmentType: "Free", progress: "45%", enrolledDate: "Nov 25, 2023", expiryDate: "May 25, 2024" },
+        { title: "Jack", uniqueId: "jack#4567", enrollmentType: "Paid", progress: "100%", enrolledDate: "Aug 20, 2023", expiryDate: "Feb 20, 2024" }
     ];
-    return allQuizzes;
+    return allStudentAttempts;
 };
 
 function StudentsAttemptedTestseries() {
-    const [data, setData] = useState<Quiz[]>([]);
-    const [quizzes, setQuizzes] = useState<Quiz[]>([]);
+    const [data, setData] = useState<StudentAttempts[]>([]);
+    const [studentAttempts, setStudentAttempts] = useState<StudentAttempts[]>([]);
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage] = useState(5);
     const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState('');
     const router = useRouter();
     const [popoveropen, setPopoveropen] = useState(false);
+    const [isSelcetDateOpen, setIsSelectDateOpen] = useState(false);
 
-    // Fetch quizzes when component mounts
+    // Fetch StudentAttempts when component mounts
     useEffect(() => {
-        const loadQuizzes = async () => {
+        const loadStudentAttempts = async () => {
             setLoading(true);
-            const quizzes = await fetchQuizzes();
-            setQuizzes(quizzes);
-            setData(quizzes);
+            const studentAttempts = await fetchStudentAttempts();
+            setStudentAttempts(studentAttempts);
+            setData(studentAttempts);
             setLoading(false);
         };
-        loadQuizzes();
+        loadStudentAttempts();
     }, []);
-
-    // Filter quizzes based on search term
-    // useEffect(() => {
-    //     const filteredQuizzes = quizzes.filter(quiz =>
-    //         quiz.title.toLowerCase().includes(searchTerm.toLowerCase())
-    //     );
-    //     setData(filteredQuizzes);
-    //     setCurrentPage(1); // Reset to first page on new search
-    // }, [searchTerm, quizzes]);
 
     const lastItemIndex = currentPage * itemsPerPage;
     const firstItemIndex = lastItemIndex - itemsPerPage;
@@ -149,6 +84,62 @@ function StudentsAttemptedTestseries() {
     const [startDate, setStartDate] = useState('');
     const [endDate, setEndDate] = useState('');
 
+    const [selectedDate, setSelectedDate] = useState<Date | null>(null); // Store selected date as Date object
+
+    useEffect(() => {
+        let filterStudentsAttempts = studentAttempts;
+
+        // Filter by search term
+        if (searchTerm) {
+            filterStudentsAttempts = filterStudentsAttempts.filter(student =>
+                student.title.toLowerCase().includes(searchTerm.toLowerCase())
+            );
+        }
+
+        // Filter by selected date
+        if (selectedDate) {
+            const selectedDateString = selectedDate instanceof Date && !isNaN(selectedDate.getTime())
+                ? selectedDate.toLocaleDateString("en-US", { month: 'short', day: 'numeric', year: 'numeric' })
+                : null;
+
+            if (selectedDateString) {
+                filterStudentsAttempts = filterStudentsAttempts.filter(student =>
+                    student.enrolledDate === selectedDateString ||
+                    student.expiryDate === selectedDateString
+                );
+            }
+        }
+
+        // Sort by studentsAttemptsPublishedDate in ascending order (earliest date first)
+        filterStudentsAttempts = filterStudentsAttempts.sort((a, b) => {
+            // Parse dates for both enrolled and expiry dates
+            const dateA = new Date(a.enrolledDate).getTime();
+            const dateB = new Date(b.enrolledDate).getTime();
+
+            // Optionally, you can add a secondary sort by expiry date if enrolled dates are the same
+            const expiryDateA = new Date(a.expiryDate).getTime();
+            const expiryDateB = new Date(b.expiryDate).getTime();
+
+            // Handle invalid date values
+            if (isNaN(dateA) || isNaN(dateB)) {
+                console.error("Invalid date value", a.enrolledDate, b.enrolledDate);
+                return 0;
+            }
+
+            // Primary sort by enrolled date
+            return dateA - dateB;
+        });
+
+        // Update state with filtered and sorted StudentsAttempts
+        setData(filterStudentsAttempts);
+        setCurrentPage(1); // Reset to first page when filters change
+    }, [searchTerm, studentAttempts, selectedDate]);
+
+    // Format selected date as 'Nov 9, 2024'
+    const formattedDate = selectedDate
+        ? selectedDate.toLocaleDateString("en-US", { year: 'numeric', month: 'short', day: 'numeric' })
+        : "Select dates";
+
     // Check if all fields are filled
     const isAddButtonDisabled = !uniqueId || !startDate || !endDate;
 
@@ -156,7 +147,7 @@ function StudentsAttemptedTestseries() {
         <div className="flex flex-col w-full pt-4 gap-4">
             <div className="flex flex-row justify-between items-center">
                 <button className="h-[44px] w-[250px] rounded-md bg-[#FFFFFF] shadow-sm border border-solid border-[#D0D5DD] flex items-center">
-                    <div className="flex flex-row items-center gap-2 pl-2">
+                    <div className="flex flex-row items-center w-full gap-2 pl-2">
                         <Image
                             src="/icons/search-button.svg"
                             width={20}
@@ -164,7 +155,7 @@ function StudentsAttemptedTestseries() {
                             alt="Search Button"
                         />
                         <input
-                            className="font-normal text-[#667085] text-sm placeholder:text-[#A1A1A1] rounded-md px-1 py-1 focus:outline-none focus:ring-0 border-none"
+                            className="font-normal text-[#667085] text-sm placeholder:text-[#A1A1A1] rounded-md w-full px-1 py-1 focus:outline-none focus:ring-0 border-none"
                             placeholder="Search"
                             type="text"
                             value={searchTerm}
@@ -173,15 +164,46 @@ function StudentsAttemptedTestseries() {
                     </div>
                 </button>
                 <div className="flex flex-row gap-3">
-                    <button className="h-[44px] w-[143px] rounded-md bg-[#FFFFFF] border border-solid border-[#D0D5DD] flex items-center p-3">
-                        <Image
-                            src="/icons/select-date.svg"
-                            width={20}
-                            height={20}
-                            alt="Select-date Button"
-                        />
-                        <span className="font-medium text-sm text-[#667085] ml-2">Select dates</span>
-                    </button>
+                    {/* Select Date Button */}
+                    <Popover placement="bottom" isOpen={isSelcetDateOpen}>
+                        <PopoverTrigger>
+                            <button className="h-[44px] w-[143px] rounded-md bg-[#FFFFFF] border border-solid border-[#D0D5DD] flex items-center p-3" onClick={() => setIsSelectDateOpen(true)}>
+                                <Image
+                                    src="/icons/select-date.svg"
+                                    width={20}
+                                    height={20}
+                                    alt="Select-date Button"
+                                />
+                                <span className="font-medium text-sm text-[#667085] ml-2">{formattedDate}</span>
+                            </button>
+                        </PopoverTrigger>
+                        <PopoverContent className="flex flex-col gap-2 p-0 h-auto">
+                            <Calendar
+                                defaultValue={today(getLocalTimeZone())}
+                                showMonthAndYearPickers
+                                color="secondary"
+                                onChange={(value) => {
+                                    const date = new Date(value.year, value.month - 1, value.day); // Adjust for zero-based month index
+                                    setSelectedDate(date); // Update state with the new Date object
+                                    setIsSelectDateOpen(false);
+                                }}
+                            />
+
+                            {/* Conditionally render the "Clear" button */}
+                            {selectedDate && (
+                                <button
+                                    className="min-w-[84px] min-h-[30px] rounded-md bg-[#9012FF] text-[14px] font-medium text-white mb-2"
+                                    onClick={() => {
+                                        setSelectedDate(null); // Clear the selected date
+                                        setIsSelectDateOpen(false);
+                                    }}
+                                >
+                                    Clear
+                                </button>
+                            )}
+                        </PopoverContent>
+                    </Popover>
+
                     <button className="h-[44px] w-[105px] rounded-md bg-[#FFFFFF] border border-solid border-[#D0D5DD] flex items-center justify-center gap-2">
                         <span className="font-medium text-sm text-[#667085] ml-2">Sort By</span>
                         <Image
@@ -196,13 +218,12 @@ function StudentsAttemptedTestseries() {
                         isOpen={popoveropen}
                         onOpenChange={() => setPopoveropen(!popoveropen)} >
                         <PopoverTrigger>
-                            <button className="flex flex-row items-center py-[0.625rem] px-6 gap-1 bg-purple border border-[#800EE2] rounded-md shadow-inner-button">
+                            <button className="flex flex-row items-center py-[0.625rem] px-6 gap-1 bg-purple border border-[#800EE2] rounded-md shadow-inner-button outline-none">
                                 <Image src='/icons/plus-sign-white.svg' alt="add" width={18} height={18} />
                                 <p className="text-sm text-white font-semibold">Add User</p>
                             </button>
                         </PopoverTrigger>
                         <PopoverContent className="flex flex-col w-[304px] h-auto p-6 gap-4 bg-white border border-lightGrey rounded-xl">
-
                             <div className="flex flex-col gap-2 w-full">
                                 <div className="flex flex-col items-start gap-2">
                                     <p>Unique ID</p>
@@ -298,7 +319,7 @@ function StudentsAttemptedTestseries() {
                             </tr>
                         </thead>
                         <tbody>
-                            {currentItems.map((quiz, index) => (
+                            {currentItems.map((students, index) => (
                                 <tr key={index} className="border-t border-solid border-[#EAECF0]">
                                     <td className="py-2">
                                         <div className="flex flex-row ml-8 gap-2">
@@ -309,19 +330,19 @@ function StudentsAttemptedTestseries() {
                                                 </div>
                                             </div>
                                             <div className="flex items-start justify-start flex-col">
-                                                <div className="font-semibold">Jenny Wilson</div>
-                                                <div className="flex justify-start items-start text-[13px] text-[#667085]">jenny#8547</div>
+                                                <div className="font-semibold">{students.title}</div>
+                                                <div className="flex justify-start items-start text-[13px] text-[#667085]">{students.uniqueId}</div>
                                             </div>
                                         </div>
                                     </td>
-                                    <td className="px-8 py-4 text-center text-[#101828] text-sm">{quiz.enrollmentType}</td>
-                                    <td className="px-8 py-4 text-center text-[#101828] text-sm">{quiz.progress}</td>
-                                    <td className="px-8 py-4 text-center text-[#101828] text-sm">{quiz.enrolledDate}</td>
-                                    <td className="px-8 py-4 text-center text-[#101828] text-sm">{quiz.expiryDate}</td>
+                                    <td className="px-8 py-4 text-center text-[#101828] text-sm">{students.enrollmentType}</td>
+                                    <td className="px-8 py-4 text-center text-[#101828] text-sm">{students.progress}</td>
+                                    <td className="px-8 py-4 text-center text-[#101828] text-sm">{students.enrolledDate}</td>
+                                    <td className="px-8 py-4 text-center text-[#101828] text-sm">{students.expiryDate}</td>
                                     <td className="flex items-center justify-center px-8 py-4 text-[#101828] text-sm">
                                         <Popover placement="bottom-end">
                                             <PopoverTrigger>
-                                                <button>
+                                                <button className="outline-none">
                                                     <Image
                                                         src="/icons/three-dots.svg"
                                                         width={20}
@@ -331,17 +352,15 @@ function StudentsAttemptedTestseries() {
                                                 </button>
                                             </PopoverTrigger>
                                             <PopoverContent className="w-[10.438rem] py-1 px-0 bg-white border border-lightGrey rounded-md">
-
-                                                <button className="flex flex-row items-center justify-start w-full py-[0.625rem] px-4 gap-2 hover:bg-[#F2F4F7]">
+                                                <button className="flex flex-row items-center justify-start w-full py-[0.625rem] px-4 gap-2 hover:bg-[#F2F4F7] outline-none">
                                                     <Image src='/icons/user-account.svg' alt="user profile" width={18} height={18} />
                                                     <p className="text-sm text-[#0C111D] font-normal">Go to Profile</p>
                                                 </button>
-                                                <button className=" flex flex-row items-center justify-start w-full py-[0.625rem] px-4 gap-2 hover:bg-[#F2F4F7]"
+                                                <button className=" flex flex-row items-center justify-start w-full py-[0.625rem] px-4 gap-2 hover:bg-[#F2F4F7] outline-none"
                                                     onClick={openRemove}>
                                                     <Image src='/icons/delete.svg' alt="user profile" width={18} height={18} />
                                                     <p className="text-sm text-[#DE3024] font-normal">Remove</p>
                                                 </button>
-
                                             </PopoverContent>
                                         </Popover>
                                     </td>

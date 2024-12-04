@@ -9,7 +9,7 @@ import PausedQuiz from "@/components/AdminComponents/QuizInfoDailogs/PauseDailog
 import MakeLiveNow from "@/components/AdminComponents/QuizInfoDailogs/MakeLiveNow";
 import ResumeQuiz from "@/components/AdminComponents/QuizInfoDailogs/ResumeDailogue";
 import Questions from "@/components/AdminComponents/QuizInfo/Questions";
-import StudentsAttemptedCourseInfo from '@/components/AdminComponents/Courseinfo/StudentsAttemptedCourseInfo';
+import StudentsAttemptedCourseInfo from '@/components/AdminComponents/Courseinfo/StudentsPurchasedCourseInfo';
 import CourseContent from '@/components/AdminComponents/Courseinfo/CourseContent'
 import { Popover, PopoverContent, PopoverTrigger } from "@nextui-org/popover";
 import { Tabs, Tab } from "@nextui-org/react";

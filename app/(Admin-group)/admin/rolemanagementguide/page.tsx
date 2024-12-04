@@ -21,7 +21,6 @@ interface UserData {
     isGuide: boolean;
 }
 
-
 function rolemanagementguide() {
     const [uniqueID, setUniqueID] = useState('');
     const [removeId, setRemoveId] = useState('');
@@ -34,88 +33,87 @@ function rolemanagementguide() {
 
     useEffect(() => {
         const usersCollection = collection(db, 'users');
-    
+
         const unsubscribe = onSnapshot(usersCollection, (snapshot) => {
-          const updatedUsers: UserData[] = snapshot.docs
-            .map((doc) => {
-              const userData = doc.data();
-              return {
-                uniqueId: userData.uniqueId,
-                name: userData.name,
-                userId: userData.userId,
-                phone: userData.phone,
-                email: userData.email,
-                profilePic: userData.profilePic,
-                createdAt: userData.createdAt,
-                isPremium: userData.isPremium,
-                isGuide: userData.isGuide, // Ensure this field exists
-              } as UserData;
-            })
-            .filter((user) => user.isGuide); // Filter users with isGuide true
-    
-          setUsers(updatedUsers);
-          setData(updatedUsers); // Update data for pagination and search
-          setLoading(false);
+            const updatedUsers: UserData[] = snapshot.docs
+                .map((doc) => {
+                    const userData = doc.data();
+                    return {
+                        uniqueId: userData.uniqueId,
+                        name: userData.name,
+                        userId: userData.userId,
+                        phone: userData.phone,
+                        email: userData.email,
+                        profilePic: userData.profilePic,
+                        createdAt: userData.createdAt,
+                        isPremium: userData.isPremium,
+                        isGuide: userData.isGuide, // Ensure this field exists
+                    } as UserData;
+                })
+                .filter((user) => user.isGuide); // Filter users with isGuide true
+
+            setUsers(updatedUsers);
+            setData(updatedUsers); // Update data for pagination and search
+            setLoading(false);
         });
-    
+
         // Cleanup listener on component unmount
         return () => unsubscribe();
-      }, []);
+    }, []);
 
-      const handleAddGuide = async () => {
+    const handleAddGuide = async () => {
         if (!uniqueID) return;
-    
-        try {
-          const usersCollection = collection(db, 'users');
-          const q = query(usersCollection, where('userId', '==', uniqueID));
-          const querySnapshot = await getDocs(q);
-    
-          if (querySnapshot.empty) {
-            alert('No user found with the provided ID');
-            return;
-          }
-    
-          // Assuming `uniqueId` is the document ID
-          const userDoc = querySnapshot.docs[0];
-          const uniqueId = userDoc.id; // Firestore document ID
-    
-          // Update the user document
-          const userRef = doc(db, 'users', uniqueId);
-          await updateDoc(userRef, { isGuide: true });
-    
-          toast.success('User successfully updated as a guide');
-          setIsOpen(false);
-          setUniqueID('');
-          setIsOpen(false);
-        } catch (error) {
-          console.error('Error updating user document:', error);
-          toast.error('Failed to update user');
-        }
-      };
 
-      const handleDeleteGuide = async () => {
         try {
-          if (!removeId) {
-            alert('Invalid user ID');
-            return;
-          }
-      
-          // Get a reference to the user document using the uniqueId (document ID)
-          const userRef = doc(db, 'users', removeId);
-      
-          // Update the `isGuide` field to false
-          await updateDoc(userRef, { 
-            isGuide: false });
-          toast.success('Guide role successfully removed!');
-          setIsDialogOpen(false);
-          setRemoveId('');
-        } catch (error) {
-          console.error('Error removing guide role:', error);
-          toast.error('Failed to remove guide role. Please try again later.');
-        }
-      };
+            const usersCollection = collection(db, 'users');
+            const q = query(usersCollection, where('userId', '==', uniqueID));
+            const querySnapshot = await getDocs(q);
 
-      if (loading) {
+            if (querySnapshot.empty) {
+                alert('No user found with the provided ID');
+                return;
+            }
+
+            // Assuming `uniqueId` is the document ID
+            const userDoc = querySnapshot.docs[0];
+            const uniqueId = userDoc.id; // Firestore document ID
+
+            // Update the user document
+            const userRef = doc(db, 'users', uniqueId);
+            await updateDoc(userRef, { isGuide: true });
+
+            toast.success('User successfully updated as a guide');
+            setIsOpen(false);
+            setUniqueID('');
+            setIsOpen(false);
+        } catch (error) {
+            console.error('Error updating user document:', error);
+            toast.error('Failed to update user');
+        }
+    };
+
+    const handleDeleteGuide = async () => {
+        try {
+            if (!removeId) {
+                alert('Invalid user ID');
+                return;
+            }
+
+            // Get a reference to the user document using the uniqueId (document ID)
+            const userRef = doc(db, 'users', removeId);
+
+            // Update the `isGuide` field to false
+            await updateDoc(userRef, { isGuide: false });
+            toast.success('Guide role successfully removed!');
+            setIsDialogOpen(false);
+            setRemoveId('');
+        } catch (error) {
+            console.error('Error removing guide role:', error);
+            toast.error('Failed to remove guide role. Please try again later.');
+        }
+    };
+
+    if (loading) {
         return <LoadingData />
     }
 
@@ -126,7 +124,7 @@ function rolemanagementguide() {
                 <div className="flex flex-row gap-3">
                     {/* Search Button */}
                     <button className="h-[44px] w-[250px] rounded-md bg-[#FFFFFF] border border-solid border-[#D0D5DD] flex items-center">
-                        <div className="flex flex-row items-center gap-2 pl-2">
+                        <div className="flex flex-row items-center w-full gap-2 pl-2">
                             <Image
                                 src="/icons/search-button.svg"
                                 width={20}
@@ -134,7 +132,7 @@ function rolemanagementguide() {
                                 alt="Search Button"
                             />
                             <input
-                                className="font-normal text-[#667085] text-sm placeholder:text-[#A1A1A1] rounded-md px-1 py-1 focus:outline-none focus:ring-0 border-none"
+                                className="font-normal text-[#667085] text-sm placeholder:text-[#A1A1A1] rounded-md w-full px-1 py-1 focus:outline-none focus:ring-0 border-none"
                                 placeholder="Search"
                                 type="text"
                             />
@@ -177,7 +175,6 @@ function rolemanagementguide() {
                             </div>
                         </PopoverContent>
                     </Popover>
-
                 </div>
             </div>
             <div className="border border-[#EAECF0] rounded-xl ">
@@ -223,23 +220,19 @@ function rolemanagementguide() {
                                     <span className="flex min-w-fit">{users.phone}</span>
                                 </td>
                                 <td className="px-8 py-4 ">
-
                                     <div className="bg-[#F2F4F7] py-2 px-3 gap-1 flex flex-row rounded-[6px] items-center h-6 w-[72px]">
                                         <span className="w-[6px] h-[6px] bg-[#182230] rounded-full"></span>
                                         <span className="font-medium text-[#182230] text-xs">Guide</span>
                                     </div>
-
-
                                 </td>
                                 <td className="flex items-center justify-center px-8 py-4">
                                     <button
                                         className="text-[#DE3024] font-medium text-sm cursor-pointer pt-[2px]"
-                                        onClick={() =>{ setIsDialogOpen(true); setRemoveId(users.uniqueId)}} // Open the dialog on click
+                                        onClick={() => { setIsDialogOpen(true); setRemoveId(users.uniqueId) }} // Open the dialog on click
                                     >
                                         Remove
                                     </button>
                                 </td>
-
                             </tr>
                         ))}
                     </tbody>

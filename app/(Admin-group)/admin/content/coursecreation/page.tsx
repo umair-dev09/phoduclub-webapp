@@ -3,6 +3,8 @@
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
+import { Calendar } from "@nextui-org/calendar";
+import { today, getLocalTimeZone } from "@internationalized/date";
 import {
     Pagination,
     PaginationContent,
@@ -28,45 +30,46 @@ interface Course {
     title: string;
     price: number; // Replaced 'questions' with 'price'
     date: string; // Can be Date type if desired
-    students: number;
+    opted: number;
+    participated: number;
     status: 'live' | 'paused' | 'finished' | 'scheduled' | 'ended' | 'saved'; // Converted to lowercase
 }
 
 // Mock fetchCourses function with updated types
 const fetchCourses = async (): Promise<Course[]> => {
     const allCourses: Course[] = [
-        { title: 'Maths', price: 250, date: 'Jan 6, 2024', students: 2147, status: 'live' },
-        { title: 'Ancient Civilizations', price: 180, date: 'Mar 15, 2024', students: 900, status: 'saved' },
-        { title: 'Science', price: 300, date: 'Jan 8, 2024', students: 1875, status: 'paused' },
-        { title: 'Astronomy', price: 220, date: 'Mar 17, 2024', students: 1250, status: 'saved' },
-        { title: 'History', price: 270, date: 'Jan 10, 2024', students: 1290, status: 'finished' },
-        { title: 'Geography', price: 150, date: 'Jan 12, 2024', students: 950, status: 'ended' },
-        { title: 'Physics', price: 320, date: 'Feb 1, 2024', students: 1800, status: 'scheduled' },
-        { title: 'Chemistry', price: 290, date: 'Feb 3, 2024', students: 1600, status: 'live' },
-        { title: 'Creative Writing', price: 210, date: 'Mar 22, 2024', students: 1400, status: 'saved' },
-        { title: 'English Literature', price: 200, date: 'Feb 5, 2024', students: 1950, status: 'paused' },
-        { title: 'Marine Biology', price: 310, date: 'Mar 20, 2024', students: 1150, status: 'saved' },
-        { title: 'Biology', price: 280, date: 'Feb 8, 2024', students: 2100, status: 'finished' },
-        { title: 'Computer Science', price: 400, date: 'Feb 10, 2024', students: 2200, status: 'ended' },
-        { title: 'Anthropology', price: 180, date: 'Mar 28, 2024', students: 1100, status: 'saved' },
-        { title: 'Art History', price: 220, date: 'Feb 12, 2024', students: 1700, status: 'live' },
-        { title: 'Philosophy', price: 260, date: 'Feb 15, 2024', students: 1300, status: 'scheduled' },
-        { title: 'Economics', price: 290, date: 'Feb 18, 2024', students: 1450, status: 'finished' },
-        { title: 'Public Health', price: 200, date: 'Apr 2, 2024', students: 1450, status: 'saved' },
-        { title: 'Political Science', price: 240, date: 'Feb 20, 2024', students: 1900, status: 'paused' },
-        { title: 'Neuroscience', price: 310, date: 'Apr 6, 2024', students: 1250, status: 'saved' },
-        { title: 'Sociology', price: 230, date: 'Feb 25, 2024', students: 1750, status: 'live' },
-        { title: 'Psychology', price: 280, date: 'Mar 1, 2024', students: 2000, status: 'ended' },
-        { title: 'Environmental Science', price: 190, date: 'Mar 3, 2024', students: 1500, status: 'scheduled' },
-        { title: 'World History', price: 250, date: 'Mar 5, 2024', students: 1850, status: 'finished' },
-        { title: 'Ethics', price: 220, date: 'Mar 30, 2024', students: 1000, status: 'saved' },
-        { title: 'Statistics', price: 300, date: 'Mar 8, 2024', students: 1700, status: 'live' },
-        { title: 'Robotics', price: 280, date: 'Apr 4, 2024', students: 1350, status: 'saved' },
-        { title: 'Business Studies', price: 310, date: 'Mar 10, 2024', students: 1400, status: 'paused' },
-        { title: 'Music Theory', price: 150, date: 'Mar 12, 2024', students: 1200, status: 'ended' },
-        { title: 'Genetics', price: 270, date: 'Mar 25, 2024', students: 1300, status: 'saved' },
-        { title: 'Linguistics', price: 200, date: 'Apr 10, 2024', students: 1050, status: 'saved' }
-    ];
+        { title: 'Maths', price: 250, date: 'Jan 6, 2024', opted: 2147, participated: 2147, status: 'live' },
+        { title: 'Ancient Civilizations', price: 180, date: 'Mar 15, 2024', opted: 900, participated: 900, status: 'saved' },
+        { title: 'Science', price: 300, date: 'Jan 8, 2024', opted: 1875, participated: 1875, status: 'paused' },
+        { title: 'Astronomy', price: 220, date: 'Mar 17, 2024', opted: 1250, participated: 1250, status: 'saved' },
+        { title: 'History', price: 270, date: 'Jan 10, 2024', opted: 1290, participated: 1290, status: 'finished' },
+        { title: 'Geography', price: 150, date: 'Jan 12, 2024', opted: 950, participated: 950, status: 'ended' },
+        { title: 'Physics', price: 320, date: 'Feb 1, 2024', opted: 1800, participated: 1800, status: 'scheduled' },
+        { title: 'Chemistry', price: 290, date: 'Feb 3, 2024', opted: 1600, participated: 1600, status: 'live' },
+        { title: 'Creative Writing', price: 210, date: 'Mar 22, 2024', opted: 1400, participated: 1400, status: 'saved' },
+        { title: 'English Literature', price: 200, date: 'Feb 5, 2024', opted: 1950, participated: 1950, status: 'paused' },
+        { title: 'Marine Biology', price: 310, date: 'Mar 20, 2024', opted: 1150, participated: 1150, status: 'saved' },
+        { title: 'Biology', price: 280, date: 'Feb 8, 2024', opted: 2100, participated: 2100, status: 'finished' },
+        { title: 'Computer Science', price: 400, date: 'Feb 10, 2024', opted: 2200, participated: 2200, status: 'ended' },
+        { title: 'Anthropology', price: 180, date: 'Mar 28, 2024', opted: 1100, participated: 1100, status: 'saved' },
+        { title: 'Art History', price: 220, date: 'Feb 12, 2024', opted: 1700, participated: 1700, status: 'live' },
+        { title: 'Philosophy', price: 260, date: 'Feb 15, 2024', opted: 1300, participated: 1300, status: 'scheduled' },
+        { title: 'Economics', price: 290, date: 'Feb 18, 2024', opted: 1450, participated: 1450, status: 'finished' },
+        { title: 'Public Health', price: 200, date: 'Apr 2, 2024', opted: 1450, participated: 1450, status: 'saved' },
+        { title: 'Political Science', price: 240, date: 'Feb 20, 2024', opted: 1900, participated: 1900, status: 'paused' },
+        { title: 'Neuroscience', price: 310, date: 'Apr 6, 2024', opted: 1250, participated: 1250, status: 'saved' },
+        { title: 'Sociology', price: 230, date: 'Feb 25, 2024', opted: 1750, participated: 1750, status: 'live' },
+        { title: 'Psychology', price: 280, date: 'Mar 1, 2024', opted: 2000, participated: 2000, status: 'ended' },
+        { title: 'Environmental Science', price: 190, date: 'Mar 3, 2024', opted: 1500, participated: 1500, status: 'scheduled' },
+        { title: 'World History', price: 250, date: 'Mar 5, 2024', opted: 1850, participated: 1850, status: 'finished' },
+        { title: 'Ethics', price: 220, date: 'Mar 30, 2024', opted: 1000, participated: 1000, status: 'saved' },
+        { title: 'Statistics', price: 300, date: 'Mar 8, 2024', opted: 1700, participated: 1700, status: 'live' },
+        { title: 'Robotics', price: 280, date: 'Apr 4, 2024', opted: 1350, participated: 1350, status: 'saved' },
+        { title: 'Business Studies', price: 310, date: 'Mar 10, 2024', opted: 1400, participated: 1400, status: 'paused' },
+        { title: 'Music Theory', price: 150, date: 'Mar 12, 2024', opted: 1200, participated: 1200, status: 'ended' },
+        { title: 'Genetics', price: 270, date: 'Mar 25, 2024', opted: 1300, participated: 1300, status: 'saved' },
+        { title: 'Linguistics', price: 200, date: 'Apr 10, 2024', opted: 1050, participated: 1050, status: 'saved' }
+    ]
     return allCourses;
 };
 
@@ -125,6 +128,7 @@ function Course() {
     const [isMakeLiveNowDialogOpen, setIsMakeLiveNowDialogOpen] = useState(false);
     const [isResumeOpen, setIsResumeOpen] = useState(false);
     const [isViewAnalyticsOpen, setIsViewAnalyticsOpen] = useState(false);
+    const [isSelcetDateOpen, setIsSelectDateOpen] = useState(false);
 
     // Handlers for ScheduledDialog
     const openScheduledDialog = () => setIsScheduledDialogOpen(true);
@@ -175,6 +179,12 @@ function Course() {
     });
 
     const selectedCount = Object.values(checkedState).filter(Boolean).length;
+    const [selectedDate, setSelectedDate] = useState<Date | null>(null); // Store selected date as Date object
+
+    // Format selected date as 'Nov 9, 2024'
+    const formattedDate = selectedDate
+        ? selectedDate.toLocaleDateString("en-US", { year: 'numeric', month: 'short', day: 'numeric' })
+        : "Select dates";
 
     const toggleCheckbox = (option: Option) => {
         setCheckedState((prevState) => ({
@@ -183,36 +193,64 @@ function Course() {
         }));
     };
 
-
     useEffect(() => {
-        // Start with all courses
-        let filteredCourses = Courses;  // Changed from 'courses' to 'Courses' to match the variable name
+        let filteredCourses = Courses;
 
-        // First, filter by search term if there is one
+        // Filter by search term
         if (searchTerm) {
-            filteredCourses = filteredCourses.filter(course =>  // Changed 'courses' to 'course' in the parameter
-                course.title.toLowerCase().includes(searchTerm.toLowerCase())  // Replaced hardcoded string with actual course title
+            filteredCourses = filteredCourses.filter(course =>
+                course.title.toLowerCase().includes(searchTerm.toLowerCase())
             );
         }
 
-        // Get list of selected statuses
+        // Filter by selected statuses
         const selectedStatuses = Object.entries(checkedState)
-            .filter(([_, isChecked]) => isChecked)  // Get only checked statuses
-            .map(([status]) => statusMapping[status as Option])  // Convert to actual status names
+            .filter(([_, isChecked]) => isChecked)
+            .map(([status]) => statusMapping[status as Option])
             .flat();
 
-        // If any statuses are selected, filter by those statuses
         if (selectedStatuses.length > 0) {
-            filteredCourses = filteredCourses.filter(course =>  // Changed 'courses' to 'course' in the parameter
+            filteredCourses = filteredCourses.filter(course =>
                 selectedStatuses.includes(course.status)
             );
         }
 
-        // Update the displayed data
+        // Filter by selected date
+        if (selectedDate) {
+            const selectedDateString = selectedDate instanceof Date && !isNaN(selectedDate.getTime())
+                ? selectedDate.toISOString().split('T')[0] // Convert to YYYY-MM-DD
+                : null;
+
+            if (selectedDateString) {
+                filteredCourses = filteredCourses.filter(course => {
+                    const courseDate = new Date(course.date); // Convert quiz.date string to Date object
+                    const courseDateString = courseDate instanceof Date && !isNaN(courseDate.getTime())
+                        ? courseDate.toISOString().split('T')[0]
+                        : null;
+
+                    return courseDateString === selectedDateString; // Compare only the date part (not time)
+                });
+            }
+        }
+
+        // Sort by quizPublishedDate in ascending order (earliest date first)
+        filteredCourses = filteredCourses.sort((a, b) => {
+            const dateA = new Date(a.date).getTime();
+            const dateB = new Date(b.date).getTime();
+
+            // Handle invalid date values (e.g., when date cannot be parsed)
+            if (isNaN(dateA) || isNaN(dateB)) {
+                console.error("Invalid date value", a.date, b.date);
+                return 0; // If dates are invalid, no sorting will occur
+            }
+
+            return dateA - dateB; // Sort by time in ascending order (earliest first)
+        });
+
+        // Update state with filtered and sorted quizzes
         setData(filteredCourses);
-        // Go back to first page whenever filters change
-        setCurrentPage(1);
-    }, [searchTerm, checkedState, Courses]);
+        setCurrentPage(1); // Reset to first page when filters change
+    }, [searchTerm, checkedState, Courses, selectedDate]);
 
     const statusColors: Record<Option, string> = {
         Saved: '#7400E0',
@@ -233,7 +271,7 @@ function Course() {
                 <div className="flex flex-row gap-3">
                     {/* Search Button */}
                     <button className="h-[44px] w-[250px] rounded-md bg-[#FFFFFF] border border-solid border-[#D0D5DD] flex items-center">
-                        <div className="flex flex-row items-center gap-2 pl-2">
+                        <div className="flex flex-row items-center gap-2 w-full pl-2">
                             <Image
                                 src="/icons/search-button.svg"
                                 width={20}
@@ -241,7 +279,7 @@ function Course() {
                                 alt="Search Button"
                             />
                             <input
-                                className="font-normal text-[#667085] text-sm placeholder:text-[#A1A1A1] rounded-md px-1 py-1 focus:outline-none focus:ring-0 border-none"
+                                className="font-normal text-[#667085] text-sm placeholder:text-[#A1A1A1] rounded-md w-full px-1 py-1 focus:outline-none focus:ring-0 border-none"
                                 placeholder="Search"
                                 type="text"
                                 value={searchTerm}
@@ -251,15 +289,44 @@ function Course() {
                     </button>
 
                     {/* Select Date Button */}
-                    <button className="h-[44px] w-[143px] rounded-md bg-[#FFFFFF] border border-solid border-[#D0D5DD] flex items-center p-3">
-                        <Image
-                            src="/icons/select-date.svg"
-                            width={20}
-                            height={20}
-                            alt="Select-date Button"
-                        />
-                        <span className="font-medium text-sm text-[#667085] ml-2">Select dates</span>
-                    </button>
+                    <Popover placement="bottom" isOpen={isSelcetDateOpen}>
+                        <PopoverTrigger>
+                            <button className="h-[44px] w-[143px] rounded-md bg-[#FFFFFF] border border-solid border-[#D0D5DD] flex items-center p-3" onClick={() => setIsSelectDateOpen(true)}>
+                                <Image
+                                    src="/icons/select-date.svg"
+                                    width={20}
+                                    height={20}
+                                    alt="Select-date Button"
+                                />
+                                <span className="font-medium text-sm text-[#667085] ml-2">{formattedDate}</span>
+                            </button>
+                        </PopoverTrigger>
+                        <PopoverContent className="flex flex-col gap-2 p-0 h-auto">
+                            <Calendar
+                                defaultValue={today(getLocalTimeZone())}
+                                showMonthAndYearPickers
+                                color="secondary"
+                                onChange={(value) => {
+                                    const date = new Date(value.year, value.month - 1, value.day); // Adjust for zero-based month index
+                                    setSelectedDate(date); // Update state with the new Date object
+                                    setIsSelectDateOpen(false);
+                                }}
+                            />
+
+                            {/* Conditionally render the "Clear" button */}
+                            {selectedDate && (
+                                <button
+                                    className="min-w-[84px] min-h-[30px] rounded-md bg-[#9012FF] text-[14px] font-medium text-white mb-2"
+                                    onClick={() => {
+                                        setSelectedDate(null); // Clear the selected date
+                                        setIsSelectDateOpen(false);
+                                    }}
+                                >
+                                    Clear
+                                </button>
+                            )}
+                        </PopoverContent>
+                    </Popover>
 
                     {/* By Status Button */}
                     <Popover placement="bottom-start">
@@ -336,27 +403,35 @@ function Course() {
                             <table className="w-full bg-white rounded-xl">
                                 <thead>
                                     <tr>
-                                        <th className="w-1/4 text-left px-8 py-4 pl-8 rounded-tl-xl text-[#667085] font-medium text-sm">Courses</th>
-                                        <th className="w-[17%] text-center px-8 py-4 text-[#667085] font-medium text-sm">
+                                        <th className="w-[28%] text-left px-8 py-4 pl-8 rounded-tl-xl text-[#667085] font-medium text-sm">
+                                            Courses
+                                        </th>
+                                        <th className="text-center px-8 py-4 text-[#667085] font-medium text-sm">
                                             <div className="flex flex-row justify-center gap-1">
                                                 <p>Price</p>
                                                 <Image src='/icons/unfold-more-round.svg' alt="more" width={16} height={16} />
                                             </div>
                                         </th>
-                                        <th className="w-[17%] text-center px-8 py-4 text-[#667085] font-medium text-sm">
+                                        <th className="text-center px-8 py-4 text-[#667085] font-medium text-sm">
                                             <div className="flex flex-row justify-center gap-1">
                                                 <p>Published on</p>
                                                 <Image src='/icons/unfold-more-round.svg' alt="more" width={16} height={16} />
                                             </div>
                                         </th>
-                                        <th className="w-[17%] text-center px-8 py-4 text-[#667085] font-medium text-sm">
+                                        <th className="text-center px-8 py-4 text-[#667085] font-medium text-sm">
                                             <div className="flex flex-row justify-center gap-1">
-                                                <p>Purchased</p>
+                                                <p>Opted</p>
                                                 <Image src='/icons/unfold-more-round.svg' alt="more" width={16} height={16} />
                                             </div>
                                         </th>
-                                        <th className="flex w-[17%] px-8 py-4 rounded-tr-xl text-[#667085] font-medium text-sm">
-                                            <span className="ml-[33%]">
+                                        <th className="text-center px-8 py-4 text-[#667085] font-medium text-sm">
+                                            <div className="flex flex-row justify-center gap-1">
+                                                <p>Participated</p>
+                                                <Image src='/icons/unfold-more-round.svg' alt="more" width={16} height={16} />
+                                            </div>
+                                        </th>
+                                        <th className="flex px-8 py-4 rounded-tr-xl text-[#667085] font-medium text-sm">
+                                            <span className="">
                                                 Status
                                             </span>
                                         </th>
@@ -374,7 +449,8 @@ function Course() {
                                             </td>
                                             <td className="px-8 py-4 text-center text-[#101828] text-sm"><span className="mr-1">&#8377;</span>{course.price}</td>
                                             <td className="px-8 py-4 text-center text-[#101828] text-sm">{course.date}</td>
-                                            <td className="px-8 py-4 text-center text-[#101828] text-sm">{course.students}</td>
+                                            <td className="px-8 py-4 text-center text-[#101828] text-sm">{course.opted}</td>
+                                            <td className="px-8 py-4 text-center text-[#101828] text-sm">{course.participated}</td>
                                             <td className="px-8 py-4 text-[#101828] text-sm">
                                                 <span className='flex items-center justify-start rounded-full'>
                                                     <Status status={course.status} />

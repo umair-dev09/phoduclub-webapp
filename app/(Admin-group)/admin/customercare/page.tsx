@@ -16,32 +16,35 @@ import {
 import CustomerCareStatus from '@/components/AdminComponents/CustomerCare/CustomerCareStatus';
 import CustomerCareImportance from '@/components/AdminComponents/CustomerCare/CustomerCareImportance';
 import { Calendar } from "@nextui-org/calendar";
+import { today, getLocalTimeZone } from "@internationalized/date";
 import { Checkbox } from "@nextui-org/react";
 import { Popover, PopoverContent, PopoverTrigger } from "@nextui-org/popover";
 
 // Define types for customer care data
 type Customer = {
-    id: string;
+    uniqueId: string;
+    title: string;
     email: string;
     Priority: 'Low' | 'Medium' | 'Hard';
     joiningDate: string;
-    status: 'Latest' | 'Opened' | 'Resolved' | 'Re-opened' | 'Blocker' | 'Replied';
+    status: 'Latest' | 'Opened' | 'Resolved' | 'Reopened' | 'Blocker' | 'Replied';
 }
+
+type Option = 'Latest' | 'Opened' | 'Resolved' | 'Reopened' | 'Blocker' | 'Replied';
 
 // Mock fetchCustomerCares function with types
 const fetchCustomerCare = async (): Promise<Customer[]> => {
     const allCustomerCare: Customer[] = [
-        { id: "1", Priority: "Medium", joiningDate: "Dec 1, 2023", email: "Jun 1, 2024", status: "Opened" },
-        { id: "2", Priority: "Low", joiningDate: "Nov 15, 2023", email: "May 15, 2024", status: "Resolved" },
-        { id: "3", Priority: "Medium", joiningDate: "Oct 1, 2023", email: "Apr 1, 2024", status: "Re-opened" },
-        { id: "4", Priority: "Hard", joiningDate: "Sep 1, 2023", email: "Mar 1, 2024", status: "Resolved" },
-        { id: "5", Priority: "Low", joiningDate: "Jan 1, 2024", email: "Jul 1, 2024", status: "Latest" },
-        { id: "6", Priority: "Low", joiningDate: "Feb 1, 2024", email: "Aug 1, 2024", status: "Blocker" },
-        { id: "7", Priority: "Hard", joiningDate: "Jul 15, 2023", email: "Jan 15, 2024", status: "Replied" },
-        { id: "8", Priority: "Low", joiningDate: "Dec 10, 2023", email: "Jun 10, 2024", status: "Resolved" },
-        { id: "9", Priority: "Medium", joiningDate: "Nov 25, 2023", email: "May 25, 2024", status: "Opened" },
-        { id: "10", Priority: "Hard", joiningDate: "Aug 20, 2023", email: "Feb 20, 2024", status: "Latest" }
-
+        { uniqueId: "Alice#8547", title: "Alice Johnson", Priority: "Medium", joiningDate: "Dec 1, 2023", email: "alice.johnson@example.com", status: "Opened" },
+        { uniqueId: "Bob#1298", title: "Bob Smith", Priority: "Low", joiningDate: "Nov 15, 2023", email: "bob.smith@example.com", status: "Resolved" },
+        { uniqueId: "Charlie#4521", title: "Charlie Davis", Priority: "Medium", joiningDate: "Oct 1, 2023", email: "charlie.davis@example.com", status: "Reopened" },
+        { uniqueId: "Diana#7845", title: "Diana Martinez", Priority: "Hard", joiningDate: "Sep 1, 2023", email: "diana.martinez@example.com", status: "Resolved" },
+        { uniqueId: "Ethan#3264", title: "Ethan Brown", Priority: "Low", joiningDate: "Jan 1, 2024", email: "ethan.brown@example.com", status: "Latest" },
+        { uniqueId: "Fiona#9087", title: "Fiona Clark", Priority: "Low", joiningDate: "Feb 1, 2024", email: "fiona.clark@example.com", status: "Blocker" },
+        { uniqueId: "George#6721", title: "George Wilson", Priority: "Hard", joiningDate: "Jul 15, 2023", email: "george.wilson@example.com", status: "Replied" },
+        { uniqueId: "Hannah#4532", title: "Hannah White", Priority: "Low", joiningDate: "Dec 10, 2023", email: "hannah.white@example.com", status: "Resolved" },
+        { uniqueId: "Isaac#8974", title: "Isaac Lewis", Priority: "Medium", joiningDate: "Nov 25, 2023", email: "isaac.lewis@example.com", status: "Opened" },
+        { uniqueId: "Julia#1453", title: "Julia Walker", Priority: "Hard", joiningDate: "Aug 20, 2023", email: "julia.walker@example.com", status: "Latest" }
     ];
     return allCustomerCare;
 };
@@ -56,6 +59,7 @@ function CustomerCare() {
     const router = useRouter();
     const [isPopoverOpen, setIsPopoverOpen] = useState(false);
     const [selectedRows, setSelectedRows] = useState<Set<string>>(new Set());
+    const [isSelcetDateOpen, setIsSelectDateOpen] = useState(false);
 
     // Global Selection State
     const [selectedItems, setSelectedItems] = useState<{
@@ -83,7 +87,7 @@ function CustomerCare() {
     const currentItems = data.slice(firstItemIndex, lastItemIndex);
 
     const handlePageSelectAll = () => {
-        const currentPageIds = currentItems.map(item => item.id);
+        const currentPageIds = currentItems.map(item => item.uniqueId);
 
         // Toggle between fully selected and not selected
         if (selectedItems.pageSelected.size === currentItems.length) {
@@ -148,17 +152,93 @@ function CustomerCare() {
         setSelectedforpriority(status);
     };
 
-    // Uncomment and modify search useEffect
+    const statusMapping: Record<Option, string[]> = {
+        Latest: ['Latest'],
+        Opened: ['Opened'],
+        Resolved: ['Resolved'],
+        Reopened: ['Reopened'],    // Maps to 'paused' status in lowercase
+        Blocker: ['Blocker'],
+        Replied: ['Replied']   // Maps to 'ended' status in lowercase
+    };
+
+    const [checkedState, setCheckedState] = useState<Record<Option, boolean>>({
+        Latest: false,
+        Opened: false,
+        Resolved: false,
+        Reopened: false,
+        Blocker: false,
+        Replied: false,
+    });
+
+    const toggleCheckbox = (option: Option) => {
+        setCheckedState((prevState) => ({
+            ...prevState,
+            [option]: !prevState[option],
+        }));
+    };
+
+    const [selectedDate, setSelectedDate] = useState<Date | null>(null); // Store selected date as Date object
+    const options: Option[] = ["Latest", "Opened", "Resolved", "Reopened", "Blocker", "Replied"];
+    const selectedCount = Object.values(checkedState).filter(Boolean).length;
+
     useEffect(() => {
-        const filteredCustomerCare = customerCare.filter(customer =>
-            // Search across multiple fields
-            customer.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            customer.Priority.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            customer.status.toLowerCase().includes(searchTerm.toLowerCase())
-        );
+        let filteredCustomerCare = customerCare;
+
+        // Filter by search term
+        if (searchTerm) {
+            filteredCustomerCare = filteredCustomerCare.filter(customer =>
+                customer.title.toLowerCase().includes(searchTerm.toLowerCase())
+            );
+        }
+
+        // Filter by selected statuses
+        const selectedStatuses = Object.entries(checkedState)
+            .filter(([_, isChecked]) => isChecked)
+            .map(([status]) => statusMapping[status as Option])
+            .flat();
+
+        if (selectedStatuses.length > 0) {
+            filteredCustomerCare = filteredCustomerCare.filter(quiz =>
+                selectedStatuses.includes(quiz.status)
+            );
+        }
+
+        // Filter by selected date
+        if (selectedDate) {
+            const selectedDateString = selectedDate instanceof Date && !isNaN(selectedDate.getTime())
+                ? selectedDate.toISOString().split('T')[0] // Convert to YYYY-MM-DD
+                : null;
+
+            if (selectedDateString) {
+                filteredCustomerCare = filteredCustomerCare.filter(quiz => {
+                    const quizDate = new Date(quiz.joiningDate); // Convert quiz.date string to Date object
+                    const quizDateString = quizDate instanceof Date && !isNaN(quizDate.getTime())
+                        ? quizDate.toISOString().split('T')[0]
+                        : null;
+
+                    return quizDateString === selectedDateString; // Compare only the date part (not time)
+                });
+            }
+        }
+
+        // Sort by quizPublishedDate in ascending order (earliest date first)
+        filteredCustomerCare = filteredCustomerCare.sort((a, b) => {
+            const dateA = new Date(a.joiningDate).getTime();
+            const dateB = new Date(b.joiningDate).getTime();
+
+            // Handle invalid date values (e.g., when date cannot be parsed)
+            if (isNaN(dateA) || isNaN(dateB)) {
+                console.error("Invalid date value", a.joiningDate, b.joiningDate);
+                return 0; // If dates are invalid, no sorting will occur
+            }
+
+            return dateA - dateB; // Sort by time in ascending order (earliest first)
+        });
+
+        // Update state with filtered and sorted quizzes
         setData(filteredCustomerCare);
-        setCurrentPage(1); // Reset to first page on new search
-    }, [searchTerm, customerCare]);
+        setCurrentPage(1); // Reset to first page when filters change
+    }, [searchTerm, checkedState, customerCare, selectedDate]);
 
     // Update handleItemSelect to handle both page and global selection
     const handleItemSelect = (itemId: string) => {
@@ -181,8 +261,24 @@ function CustomerCare() {
     const selectAllItems = () => {
         setSelectedItems(prev => ({
             pageSelected: new Set(),
-            allSelected: new Set(data.map(item => item.id))
+            allSelected: new Set(data.map(item => item.uniqueId))
         }));
+    };
+
+    // Format selected date as 'Nov 9, 2024'
+    const formattedDate = selectedDate
+        ? selectedDate.toLocaleDateString("en-US", { year: 'numeric', month: 'short', day: 'numeric' })
+        : "Select dates";
+
+    const selectedStatuses = options.filter((option) => checkedState[option]);
+
+    const statusColors: Record<Option, string> = {
+        Latest: '#7400E0',
+        Opened: '#7400E0',
+        Resolved: '#7400E0',
+        Reopened: '#7400E0',
+        Blocker: '#7400E0',
+        Replied: '#7400E0',
     };
 
     return (
@@ -194,7 +290,7 @@ function CustomerCare() {
                 <div className="flex flex-row gap-3">
                     {/* Search Button */}
                     <button className="h-[44px] w-[250px] rounded-md bg-[#FFFFFF] border border-solid border-[#D0D5DD] flex items-center shadow-[0_1px_2px_0_rgba(16,24,40,0.05)]">
-                        <div className="flex flex-row items-center gap-2 pl-2">
+                        <div className="flex flex-row items-center w-full gap-2 pl-2">
                             <Image
                                 src="/icons/search-button.svg"
                                 width={20}
@@ -202,7 +298,7 @@ function CustomerCare() {
                                 alt="Search Button"
                             />
                             <input
-                                className="font-normal text-[#667085] text-sm placeholder:text-[#A1A1A1] rounded-md px-1 py-1 focus:outline-none focus:ring-0 border-none"
+                                className="font-normal text-[#667085] text-sm placeholder:text-[#A1A1A1] rounded-md w-full px-1 py-1 focus:outline-none focus:ring-0 border-none"
                                 placeholder="Search"
                                 type="text"
                                 value={searchTerm}
@@ -212,28 +308,83 @@ function CustomerCare() {
                     </button>
 
                     {/* Select Date Button */}
-                    <button className="h-[44px] w-[143px] rounded-md bg-[#FFFFFF] border border-solid border-[#D0D5DD] flex items-center p-3 shadow-[0_1px_2px_0_rgba(16,24,40,0.05)]">
-                        <Image
-                            src="/icons/select-date.svg"
-                            width={20}
-                            height={20}
-                            alt="Select-date Button"
-                        />
-                        <span className="font-medium text-sm text-[#667085] ml-2">Select dates</span>
-                    </button>
+                    <Popover placement="bottom" isOpen={isSelcetDateOpen}>
+                        <PopoverTrigger>
+                            <button className="h-[44px] w-[143px] rounded-md bg-[#FFFFFF] border border-solid border-[#D0D5DD] flex items-center p-3" onClick={() => setIsSelectDateOpen(true)}>
+                                <Image
+                                    src="/icons/select-date.svg"
+                                    width={20}
+                                    height={20}
+                                    alt="Select-date Button"
+                                />
+                                <span className="font-medium text-sm text-[#667085] ml-2">{formattedDate}</span>
+                            </button>
+                        </PopoverTrigger>
+                        <PopoverContent className="flex flex-col gap-2 p-0 h-auto">
+                            <Calendar
+                                defaultValue={today(getLocalTimeZone())}
+                                showMonthAndYearPickers
+                                color="secondary"
+                                onChange={(value) => {
+                                    const date = new Date(value.year, value.month - 1, value.day); // Adjust for zero-based month index
+                                    setSelectedDate(date); // Update state with the new Date object
+                                    setIsSelectDateOpen(false);
+                                }}
+                            />
+
+                            {/* Conditionally render the "Clear" button */}
+                            {selectedDate && (
+                                <button
+                                    className="min-w-[84px] min-h-[30px] rounded-md bg-[#9012FF] text-[14px] font-medium text-white mb-2"
+                                    onClick={() => {
+                                        setSelectedDate(null); // Clear the selected date
+                                        setIsSelectDateOpen(false);
+                                    }}
+                                >
+                                    Clear
+                                </button>
+                            )}
+                        </PopoverContent>
+                    </Popover>
 
                     {/* By Status Button */}
-                    <div className="h-[44px] w-[126px] rounded-md bg-[#FFFFFF] border border-solid border-[#D0D5DD] flex items-center justify-between p-3 cursor-pointer shadow-[0_1px_2px_0_rgba(16,24,40,0.05)]">
-                        <p className="font-medium text-sm text-[#667085] ml-2">
-                            By status
-                        </p>
-                        <Image
-                            src="/icons/selectdate-Arrowdown.svg"
-                            width={20}
-                            height={20}
-                            alt="Arrow-Down Button"
-                        />
-                    </div>
+                    <Popover placement="bottom-start">
+                        <PopoverTrigger>
+                            <div className="h-[44px] w-[126px] rounded-md bg-[#FFFFFF] border border-solid border-[#D0D5DD] flex items-center justify-between p-3 cursor-pointer">
+                                <p className={`flex flex-row font-medium text-sm ${selectedCount > 0 ? 'text-[#182230]' : 'text-[#667085]'}`}>
+                                    {selectedCount > 0 ? `${selectedCount} selected` : 'By status'}
+                                </p>
+                                <Image
+                                    src="/icons/selectdate-Arrowdown.svg"
+                                    width={20}
+                                    height={20}
+                                    alt="Arrow-Down Button"
+                                />
+                            </div>
+                        </PopoverTrigger>
+                        <PopoverContent className="flex flex-col w-[10.438rem] h-auto px-0 py-1 bg-white border border-lightGrey rounded-md">
+                            <div>
+                                {options.map((option) => (
+                                    <div
+                                        key={option}
+                                        className="flex flex-row items-center w-[10.313rem] my-0 py-[0.625rem] px-4 gap-2 cursor-pointer transition-colors hover:bg-[#F2F4F7]"
+                                        onClick={() => toggleCheckbox(option)}
+                                    >
+                                        <div
+                                            className={`flex items-center justify-center w-4 h-4 border border-[#D0D5DE] rounded-sm ${checkedState[option] ? 'bg-purple border-purple' : 'bg-white'}`}
+                                        >
+                                            {checkedState[option] && (
+                                                <Image src="/icons/check.svg" alt="choose" width={12} height={12} />
+                                            )}
+                                        </div>
+                                        <p className="text-sm text-[#0C111D] font-normal">{option}</p>
+                                    </div>
+                                ))}
+                            </div>
+                        </PopoverContent>
+                    </Popover>
+
+                    {/* Filter Button */}
                     <div className="relative">
                         <Popover
                             placement="bottom-end"
@@ -484,6 +635,24 @@ function CustomerCare() {
                 </div>
             )}
 
+            <div className="flex flex-row items-center justify-between w-full">
+                <div className="flex flex-row gap-2">
+                    {selectedStatuses.map((status) => (
+                        <div key={status} className="flex flex-row items-center w-fit px-3 py-2 gap-1 text-xs font-medium bg-[#EDE4FF] rounded-[0.375rem]" style={{ color: statusColors[status] }}>
+                            {status}
+                            <button onClick={() => toggleCheckbox(status)}>
+                                <Image src='/icons/multiplication-sign.svg' alt="close" width={16} height={16} />
+                            </button>
+                        </div>
+                    ))}
+                </div>
+                {selectedStatuses.length > 0 && (
+                    <button className="text-sm text-[#9012FF] font-semibold" onClick={() => setCheckedState({ Latest: false, Opened: false, Resolved: false, Reopened: false, Blocker: false, Replied: false })}>
+                        clear all
+                    </button>
+                )}
+            </div>
+
             <div className="flex flex-col justify-between h-full">
                 <div className="flex border border-[#EAECF0] rounded-xl">
                     <table className="w-full h-auto bg-white rounded-xl">
@@ -526,23 +695,23 @@ function CustomerCare() {
                         </thead>
                         <tbody>
                             {currentItems.map((customer, index) => (
-                                <tr key={customer.id} onClick={() => handleTabClick('/admin/customercare/customerinfo')} className="h-auto border-t border-solid border-[#EAECF0] cursor-pointer">
+                                <tr key={customer.uniqueId} onClick={() => handleTabClick('/admin/customercare/customerinfo')} className="h-auto border-t border-solid border-[#EAECF0] cursor-pointer">
                                     <td className="pl-8 py-4 text-center text-[#101828] text-sm">
                                         <Checkbox
                                             size="md"
                                             color="primary"
                                             isSelected={
-                                                selectedItems.allSelected.has(customer.id) ||
-                                                selectedItems.pageSelected.has(customer.id)
+                                                selectedItems.allSelected.has(customer.uniqueId) ||
+                                                selectedItems.pageSelected.has(customer.uniqueId)
                                             }
-                                            onChange={() => handleItemSelect(customer.id)}
+                                            onChange={() => handleItemSelect(customer.uniqueId)}
                                             onClick={(e) => e.stopPropagation()}
                                         />
                                     </td>
                                     <td className="py-4 text-center text-[#101828] text-sm">
                                         {index + 1}
                                     </td>
-                                    <td className="pl-6 py-2">
+                                    <td className="pl-6 py-0">
                                         <div className="flex flex-row gap-2">
                                             <div className="flex items-center">
                                                 <div className="relative">
@@ -552,9 +721,9 @@ function CustomerCare() {
                                             </div>
                                             <div className="flex items-start justify-start flex-col">
                                                 <div className="text-sm font-semibold whitespace-nowrap">
-                                                    Jenny Wilson
+                                                    {customer.title}
                                                 </div>
-                                                <div className="flex justify-start items-start text-[13px] text-[#667085]">jenny#8547</div>
+                                                <div className="flex justify-start items-start text-[13px] text-[#667085]">{customer.uniqueId}</div>
                                             </div>
                                         </div>
                                     </td>

@@ -39,6 +39,7 @@ interface Quiz {
     status: string;
     quizPublishedDate: string;
 }
+
 function formatDate(dateString: string): string {
     const date = new Date(dateString);
     return date.toLocaleDateString("en-US", {
@@ -83,7 +84,6 @@ const fetchQuizzes = async (): Promise<Quiz[]> => {
     return quizzesData;
 };
 
-
 function Quizz() {
     const [data, setData] = useState<Quiz[]>([]);
     const [quizzes, setQuizzes] = useState<Quiz[]>([]);
@@ -104,7 +104,6 @@ function Quizz() {
         };
         loadQuizzes();
     }, []);
-
 
     const lastItemIndex = currentPage * itemsPerPage;
     const firstItemIndex = lastItemIndex - itemsPerPage;
