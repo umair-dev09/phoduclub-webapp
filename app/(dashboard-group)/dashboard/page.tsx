@@ -17,18 +17,18 @@ export default function AnalyticsPage() {
 
      onAuthStateChanged(auth, (user) => {
           if (!user) {
-             router.push("/login");
-          } 
-          else{
-         setLoading(false);
+               router.push("/login");
           }
-        });
-             
-        if (loading) {
+          else {
+               setLoading(false);
+          }
+     });
+
+     if (loading) {
           return (
-              <LoadingData/>
+               <LoadingData />
           );
-      } 
+     }
      return (
           <div className="homeContainer">
                <div className="topColumn">
@@ -37,7 +37,7 @@ export default function AnalyticsPage() {
                               <h3>Subject Progress Tracker</h3>
                          </div>
                          <div className="progress">
-                              <SubjectComp/>
+                              <SubjectComp />
                          </div>
                     </div>
                     <div className="announcementBlock">
@@ -45,7 +45,7 @@ export default function AnalyticsPage() {
                               <h3>Announcements</h3>
                          </div>
                          <div className="announcements">
-                              <Announcement/>
+                              <Announcement />
                          </div>
                     </div>
                </div>
@@ -56,7 +56,7 @@ export default function AnalyticsPage() {
                               <button className="viewAll">View all</button>
                          </div>
                          <div className="testSeries">
-                              <TestSeries/>
+                              <TestSeries />
                          </div>
                     </div>
                     <div className="course">
@@ -65,8 +65,8 @@ export default function AnalyticsPage() {
                               <button className="viewAll">View all</button>
                          </div>
                          <div className="courses">
-                              <Course/>
-                         </div>                        
+                              <Course />
+                         </div>
                     </div>
                </div>
           </div>
