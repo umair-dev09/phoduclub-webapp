@@ -179,8 +179,9 @@ function HelpDropDown() {
                             </div>
                             <span className="font-normal text-sm text-[#667085]">Lorem ipsum is a dummy text widely used in digital industry will be used here in as a preview</span>
                         </div>
-                        <div className="flex flex-row justify-end mx-6 my-4 ">
-                            <button className={`py-[0.625rem] w-[103px] px-6 text-white text-sm shadow-inner-button font-semibold bg-[#9012FF] rounded-md`} onClick={handleCloseAll}>Ok</button>
+                        <div className="flex flex-row justify-end mx-6 my-4 gap-4">
+                            <button className="py-[0.625rem] px-6 border-2  border-solid border-[#EAECF0] font-semibold text-sm text-[#1D2939] rounded-md" onClick={handleCloseAll} >Cancel</button>
+                            <button className={`py-[0.625rem] px-6 text-white text-sm shadow-inner-button font-semibold ${uniqueID ? "bg-[#BB241A]  border border-solid  border-[#DE3024]" : "bg-[#f3b7b3] cursor-not-allowed"} rounded-md`} onClick={handleCloseAll}>Delete Channel</button>
                         </div>
                     </DialogPanel>
                 </div >

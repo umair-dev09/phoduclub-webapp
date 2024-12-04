@@ -11,11 +11,13 @@ type Option = {
 };
 
 function HelpDropDown() {
-
+    // State to manage dialog visibility
+    const [isOpen, setIsOpen] = useState(false);
     const [uniqueID, setUniqueID] = useState('');
     const [reasonText, setReasonText] = useState("");  // State to track textarea value
-
-
+    // Handlers for opening and closing the dialog
+    const handleOpen = () => setIsOpen(true);
+    const handleClose = () => setIsOpen(false);
     const SelectCategory: Option[] = [
         { value: 'Course related', label: 'Course related' },
         { value: 'Test series related', label: 'Test series related' },
@@ -27,27 +29,14 @@ function HelpDropDown() {
         isSelected: boolean;
         isFocused: boolean;
     };
-    // --------------------------------------------------------------------------------------------
-    const [open1, setOpen1] = useState(false);  // Initial state for the first dialog
-    const [open2, setOpen2] = useState(false);  // Initial state for the second dialog
-    const handleOpen = () => setOpen1(true);
 
-    const openanotherdialog = () => {
-        setOpen1(false);  // Close first dialog
-        setOpen2(true);   // Open second dialog
-    };
-
-    const handleCloseAll = () => {
-        setOpen1(false);
-        setOpen2(false);
-    };
     return (
         <div>
             {/* Trigger Button */}
             <div className="mx-2">
                 <button
                     className="w-[32px] h-[32px] bg-[#F7F8FA] border-[1.5px] border-[#EAECF0] rounded-full flex items-center justify-center hover:bg-[#F2F4F7]"
-                    onClick={handleOpen}  // Corrected to open first dialog
+                    onClick={handleOpen}
                 >
                     <Image
                         src="/icons/help-circle.svg"
@@ -59,7 +48,7 @@ function HelpDropDown() {
             </div>
 
             {/* Dialog Component */}
-            <Dialog open={open1} onClose={handleCloseAll} className="relative z-50">
+            <Dialog open={isOpen} onClose={handleClose} className="relative z-50">
                 <DialogBackdrop className="fixed inset-0 bg-black/30" />
                 <div className="fixed inset-0 flex items-center justify-center">
                     <DialogPanel className="bg-white rounded-2xl w-[480px] h-auto flex flex-col">
@@ -73,7 +62,7 @@ function HelpDropDown() {
                                     alt="Cancel"
                                     width={20}
                                     height={20}
-                                    onClick={handleCloseAll}
+                                    onClick={handleClose}
                                 />
                             </div>
                             <span className="font-normal text-sm text-[#667085]">
@@ -90,6 +79,7 @@ function HelpDropDown() {
                                         setselectcategory(selectedOption);        // Set the selected category
                                         setUniqueID(selectedOption?.value || ""); // Set uniqueID to the selected value
                                     }}
+
                                     options={SelectCategory}
                                     placeholder="Select Category"
                                     className='placeholder:text-[#667085] placeholder:text-sm placeholder:font-normal'
@@ -148,7 +138,7 @@ function HelpDropDown() {
                         <div className="flex flex-row justify-end mx-6 my-4 gap-4">
                             <button
                                 className="py-[0.625rem] px-6 border-2 border-solid border-[#EAECF0] font-semibold text-sm text-[#1D2939] rounded-md"
-                                onClick={handleCloseAll}
+                                onClick={handleClose}
                             >
                                 Cancel
                             </button>
@@ -157,10 +147,8 @@ function HelpDropDown() {
                                     ? "bg-[#9012FF] border border-solid border-[#9012FF]"
                                     : "bg-[#CDA0FC] cursor-not-allowed"
                                     } rounded-md`}
-                                onClick={openanotherdialog}
-                                disabled={!selectcategory || reasonText.trim() === ""}
-
-
+                                onClick={handleClose}
+                                disabled={!uniqueID}
                             >
                                 Submit report
                             </button>
@@ -168,23 +156,6 @@ function HelpDropDown() {
                     </DialogPanel>
                 </div>
             </Dialog>
-            <Dialog open={open2} onClose={handleCloseAll} className="relative z-50">
-                <DialogBackdrop className="fixed inset-0 bg-black/30" />
-                <div className="fixed inset-0 flex items-center justify-center">
-                    <DialogPanel className="bg-white rounded-2xl w-[480px] h-auto flex flex-col ">
-                        <div className=' flex flex-col p-6 gap-3 border-solid border-[#EAECF0] border-b rounded-t-2xl'>
-                            <div className='flex flex-row justify-between items-center'>
-                                <h1 className='text-[#1D2939] font-bold text-lg'>Thank you for reporting</h1>
-                                <Image src="/icons/cancel.svg" alt="Cancel" width={20} height={20} onClick={handleCloseAll} />
-                            </div>
-                            <span className="font-normal text-sm text-[#667085]">Lorem ipsum is a dummy text widely used in digital industry will be used here in as a preview</span>
-                        </div>
-                        <div className="flex flex-row justify-end mx-6 my-4 ">
-                            <button className={`py-[0.625rem] w-[103px] px-6 text-white text-sm shadow-inner-button font-semibold bg-[#9012FF] rounded-md`} onClick={handleCloseAll}>Ok</button>
-                        </div>
-                    </DialogPanel>
-                </div >
-            </Dialog >
         </div>
     );
 }

@@ -180,7 +180,7 @@ function HelpDropDown() {
                             <span className="font-normal text-sm text-[#667085]">Lorem ipsum is a dummy text widely used in digital industry will be used here in as a preview</span>
                         </div>
                         <div className="flex flex-row justify-end mx-6 my-4 ">
-                            <button className={`py-[0.625rem] w-[103px] px-6 text-white text-sm shadow-inner-button font-semibold bg-[#9012FF] rounded-md`} onClick={handleCloseAll}>Ok</button>
+                            <button className={`py-[0.625rem] px-6 text-white text-sm shadow-inner-button font-semibold bg-[#9012FF] rounded-md`} onClick={handleCloseAll}>Ok</button>
                         </div>
                     </DialogPanel>
                 </div >

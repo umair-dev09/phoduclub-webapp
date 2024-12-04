@@ -32,7 +32,7 @@ function HelpDropDown() {
     const [open2, setOpen2] = useState(false);  // Initial state for the second dialog
     const handleOpen = () => setOpen1(true);
 
-    const openanotherdialog = () => {
+    const handleCreateChannel = () => {
         setOpen1(false);  // Close first dialog
         setOpen2(true);   // Open second dialog
     };
@@ -157,7 +157,7 @@ function HelpDropDown() {
                                     ? "bg-[#9012FF] border border-solid border-[#9012FF]"
                                     : "bg-[#CDA0FC] cursor-not-allowed"
                                     } rounded-md`}
-                                onClick={openanotherdialog}
+                                onClick={handleCloseAll}
                                 disabled={!selectcategory || reasonText.trim() === ""}
 
 
@@ -174,13 +174,26 @@ function HelpDropDown() {
                     <DialogPanel className="bg-white rounded-2xl w-[480px] h-auto flex flex-col ">
                         <div className=' flex flex-col p-6 gap-3 border-solid border-[#EAECF0] border-b rounded-t-2xl'>
                             <div className='flex flex-row justify-between items-center'>
-                                <h1 className='text-[#1D2939] font-bold text-lg'>Thank you for reporting</h1>
+                                <h1 className='text-[#1D2939] font-bold text-lg'>Delete channel “Announcement”?</h1>
                                 <Image src="/icons/cancel.svg" alt="Cancel" width={20} height={20} onClick={handleCloseAll} />
                             </div>
-                            <span className="font-normal text-sm text-[#667085]">Lorem ipsum is a dummy text widely used in digital industry will be used here in as a preview</span>
+                            <span className="font-normal text-sm text-[#667085]">All data inside this channel will be gone.</span>
+                            <div className="flex flex-col gap-1">
+                                <span className="font-semibold text-sm text-[#1D2939]">To confirm, please enter the name of the channel.</span>
+                                <div className='flex px-2 items-center h-[40px] border border-solid border-[#D0D5DD] shadow-sm rounded-md'>
+                                    <input
+                                        className="font-normal text-[#667085] w-full text-sm placeholder:text-[#A1A1A1] rounded-md px-1 py-1 focus:outline-none focus:ring-0 border-none"
+                                        type="text"
+                                        value={uniqueID}
+                                        onChange={(e) => setUniqueID(e.target.value)}
+                                    />
+                                </div>
+                            </div>
+
                         </div>
-                        <div className="flex flex-row justify-end mx-6 my-4 ">
-                            <button className={`py-[0.625rem] w-[103px] px-6 text-white text-sm shadow-inner-button font-semibold bg-[#9012FF] rounded-md`} onClick={handleCloseAll}>Ok</button>
+                        <div className="flex flex-row justify-end mx-6 my-4 gap-4">
+                            <button className="py-[0.625rem] px-6 border-2  border-solid border-[#EAECF0] font-semibold text-sm text-[#1D2939] rounded-md" onClick={handleCloseAll} >Cancel</button>
+                            <button className={`py-[0.625rem] px-6 text-white text-sm shadow-inner-button font-semibold ${uniqueID ? "bg-[#BB241A]  border border-solid  border-[#DE3024]" : "bg-[#f3b7b3] cursor-not-allowed"} rounded-md`} onClick={handleCloseAll}>Delete Channel</button>
                         </div>
                     </DialogPanel>
                 </div >
