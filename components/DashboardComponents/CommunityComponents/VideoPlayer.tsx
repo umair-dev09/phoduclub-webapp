@@ -3,7 +3,6 @@ import videojs from "video.js"; // Import video.js
 import "video.js/dist/video-js.css"; // Core Video.js styles
 import "@videojs/themes/dist/fantasy/index.css"; // Fantasy theme styles
 import Player from "video.js/dist/types/player"; // Import Player type
-import Image from "next/image";
 
 interface VideoPlayerProps {
   videoSrc: string;
@@ -18,6 +17,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ videoSrc }) => {
     if (videoNode.current) {
       playerRef.current = videojs(videoNode.current, {
         controls: true,
+        playbackRates: [0.5, 1, 1.5, 2], // Define playback speeds
         controlBar: {
           pictureInPictureToggle: false, // Disable PiP button
         },

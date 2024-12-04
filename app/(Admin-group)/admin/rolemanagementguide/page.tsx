@@ -104,7 +104,8 @@ function rolemanagementguide() {
           const userRef = doc(db, 'users', removeId);
       
           // Update the `isGuide` field to false
-          await updateDoc(userRef, { isGuide: false });
+          await updateDoc(userRef, { 
+            isGuide: false });
           toast.success('Guide role successfully removed!');
           setIsDialogOpen(false);
           setRemoveId('');

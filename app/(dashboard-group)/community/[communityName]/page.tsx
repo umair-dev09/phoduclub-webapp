@@ -18,6 +18,7 @@ import OwnChat from '@/components/DashboardComponents/CommunityComponents/ownCha
 import { PopoverContent, PopoverTrigger, Popover } from '@nextui-org/popover';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import Delete from '@/components/DashboardComponents/CommunityComponents/Delete';
 type Channel = {
   channelId: string;
   channelName: string;
@@ -51,6 +52,7 @@ type Chat = {
   replyingToMsgType: string;
   replyingToFileUrl: string;
   replyingToFileName: string;
+  isDeleted: boolean;
 };
 
 export default function CommunityName() {
@@ -64,11 +66,20 @@ export default function CommunityName() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const [isCollapsed, setIsCollapsed] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
   const [chats, setChats] = useState<Chat[]>([]); // State to hold chat messages
-  const bottomRef = useRef<HTMLDivElement>(null); // Reference for auto-scrolling
   const [showReplyLayout, setShowReplyLayout] = useState(false); // State lifted to parent
   const [replyData, setReplyData] = useState<{ message: string | null; senderId: string | null; messageType: string | null; fileUrl: string | null; fileName: string | null; chatId: string | null; } | null>(null); // Holds reply message data
+  const chatRefs = useRef<{ [key: string]: HTMLDivElement | null }>({});
+  const bottomRef = useRef<HTMLDivElement | null>(null);
+  const [highlightedChatId, setHighlightedChatId] = useState<string | null>(null);
+  const [isDelayed, setIsDelayed] = useState(false); // State to handle the delay before showing chats
+  const [searchQuery, setSearchQuery] = useState(""); // Stores the search text
+  const [searchResults, setSearchResults] = useState<number[]>([]); // Stores the indices of messages containing the search text
+  const [currentResultIndex, setCurrentResultIndex] = useState(-1); // Tracks which result is currently active
+  const [showScrollButton, setShowScrollButton] = useState(false); // New state to control button visibility
+  const containerRef = useRef<HTMLDivElement | null>(null); // Ref for the scrollable container
 
   // State for selected channel info
   const [selectedChannel, setSelectedChannel] = useState<{
@@ -183,11 +194,77 @@ export default function CommunityName() {
       fetchChats();
     }
   }, [communityId, selectedChannel]);
-
-  // Scroll to the latest message
+ 
+  // Scroll to the last message immediately after chats are updated
   useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [chats]);
+    if (bottomRef.current) {
+      bottomRef.current.scrollIntoView({ behavior: "auto" });
+    }
+  }, [chats]); // Run this effect every time chats are updated
+
+  useEffect(() => {
+    if (searchQuery.trim() === "") {
+      setSearchResults([]);
+      setCurrentResultIndex(-1);
+      return;
+    }
+  
+    const results = chats
+      .map((chat, index) =>
+        chat.message && typeof chat.message === "string" &&
+        chat.message.toLowerCase().includes(searchQuery.toLowerCase())
+          ? index
+          : -1
+      )
+      .filter((index) => index !== -1);
+  
+    setSearchResults(results);
+    setCurrentResultIndex(results.length > 0 ? 0 : -1);
+  }, [searchQuery, chats]);
+
+  useEffect(() => {
+    if (currentResultIndex >= 0) {
+      const chatId = chats[searchResults[currentResultIndex]]?.chatId;
+  
+      if (chatId && chatRefs.current[chatId]) {
+        chatRefs.current[chatId].scrollIntoView({
+          behavior: "auto",
+          block: "center",
+        });
+      }
+    }
+  }, [currentResultIndex, chats, searchResults]);
+
+  const handleSearchUp = () => {
+    if (searchResults.length === 0) return;
+    setCurrentResultIndex((prevIndex) =>
+      prevIndex > 0 ? prevIndex - 1 : searchResults.length - 1 // Cycle to the last result if at the first
+    );
+  };
+
+  const handleSearchDown = () => {
+    if (searchResults.length === 0) return;
+    setCurrentResultIndex((prevIndex) =>
+      prevIndex < searchResults.length - 1 ? prevIndex + 1 : 0 // Cycle to the first result if at the last
+    );
+  };
+
+  const handleScroll = () => {
+    if (containerRef.current) {
+      const { scrollTop, scrollHeight, clientHeight } = containerRef.current;
+      // If the user has scrolled up, show the button
+      if (scrollHeight - scrollTop > clientHeight + 50) {
+        setShowScrollButton(true);
+      } else {
+        setShowScrollButton(false);
+      }
+    }
+  };
+
+  const scrollToBottom = () => {
+    bottomRef.current?.scrollIntoView({ behavior: "auto" });
+    setShowScrollButton(false); // Hide the button after scrolling
+  };
 
   useEffect(() => {
     setIsMounted(true);
@@ -225,6 +302,21 @@ export default function CommunityName() {
     setReplyData({ message, senderId, messageType, fileUrl, fileName, chatId }); // Set the data to be replied to
     setShowReplyLayout(true); // Show the reply layout
   };
+
+
+  const scrollToReply = (replyingToChatId: string) => {
+    const element = chatRefs.current[replyingToChatId];
+    if (element) {
+      element.scrollIntoView({ behavior: 'instant', block: 'center' });
+  
+      // Highlight the message
+      setHighlightedChatId(replyingToChatId);
+  
+      // Remove the highlight after 2 seconds
+      setTimeout(() => setHighlightedChatId(null), 700);
+    }
+  };
+  
 
   return (
     <div className="flex h-full flex-row">
@@ -281,32 +373,151 @@ export default function CommunityName() {
               {/* Pass the selected channel info to ChatHead */}
               <ChatHead channelId={selectedChannel?.channelId ?? null} channelName={selectedChannel?.channelName ?? null} channelEmoji={selectedChannel?.channelEmoji ?? null} />
               <div className="flex flex-row mr-6 gap-4">
-                <button>
+              <Popover placement="bottom" isOpen={searchOpen} onClose={() =>{setSearchOpen(false); setSearchQuery('')}}>
+              <PopoverTrigger>
+              <button onClick={() => setSearchOpen(true)}>
                   <Image src="/icons/search.svg" alt="search icon" width={18} height={18} />
                 </button>
+              </PopoverTrigger>
+              <PopoverContent>
+               <div className='flex flex-row p-2 gap-3 items-center justify-center'>
+               <input
+                id="input"
+                placeholder='Search...'
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className='w-[220px] h-[36px] rounded-md border-solid border-[1px] border-[#d0d5dd] px-[8px] hover:border-none hover:outline hover:outline-[1.5px] hover:outline-[#D6BBFB] focus:outline focus:outline-[1.5px] focus:outline-[#D6BBFB] focus:border-none'
+                />
+                <div className='text-[13px] text-gray-400 mr-1'>{searchResults.length > 0 ? `${currentResultIndex + 1}/${searchResults.length}` : '0/0'}</div>
+                <button onClick={handleSearchUp}><Image src="/icons/Arrow-up.svg" alt="search up icon" width={22} height={22} /></button>
+                <button onClick={handleSearchDown}><Image src="/icons/arrow-down-1.svg" alt="search down icon" width={22} height={22} /></button>
+                <div className='w-[1.5px]  h-[15px] bg-[#e0e0e0] mr-1 ml-[2px]'/>
+                <button onClick={() =>{ setSearchOpen(false); setSearchQuery('')}}><Image src="/icons/cancel.svg" alt="close icon" width={18} height={18} /></button>
+               </div>
+              </PopoverContent>
+            </Popover>
                 <button className="transition-colors hover:bg-neutral-100" onClick={() => setIsCollapsed(!isCollapsed)}>
                   <Image src="/icons/collapseDetails.svg" alt="collapse details icon" width={24} height={24} />
                 </button>
               </div>
             </div>
-            <div className="overflow-y-auto p-4 flex flex-col flex-1 gap-4 overflow-x-hidden">
-              {chats.map((chat, index) => (
-                <React.Fragment key={index}>
-                  {shouldShowDateHeader(chat, chats[index - 1]) && (
-                    <div className="chat-date-header text-gray-500 text-center my-2 text-[14px]">
-                      {formatDate(chat.timestamp)} {/* Only call formatDate if timestamp is valid */}
-                    </div>
-                  )}
-                  {chat.senderId === user?.uid ? (
-                    <OwnChat handleReply={handleReply} setShowReplyLayout={setShowReplyLayout} message={chat.message} messageType={chat.messageType} fileUrl={chat.fileUrl} fileName={chat.fileName} fileSize={chat.fileSize} senderId={chat.senderId} timestamp={chat.timestamp} isReplying={chat.isReplying} replyingToId={chat.replyingToId} replyingToMsg={chat.replyingToMsg} replyingToMsgType={chat.replyingToMsgType} replyingToFileName={chat.replyingToFileName} replyingToFileUrl={chat.replyingToFileUrl} replyingToChatId={chat.replyingToChatId} chatId={chat.chatId} communityId={communityId ?? ''} channelId={selectedChannel.channelId} headingId={selectedChannel.headingId ?? ''} isAdmin={false}/>
-                  ) : (
-                    <OtherChat  handleReply={handleReply} setShowReplyLayout={setShowReplyLayout} message={chat.message} messageType={chat.messageType} fileUrl={chat.fileUrl} fileName={chat.fileName} fileSize={chat.fileSize} senderId={chat.senderId} timestamp={chat.timestamp} isReplying={chat.isReplying} replyingToId={chat.replyingToId} replyingToMsg={chat.replyingToMsg} replyingToMsgType={chat.replyingToMsgType} replyingToFileName={chat.replyingToFileName} replyingToFileUrl={chat.replyingToFileUrl} replyingToChatId={chat.replyingToChatId} chatId={chat.chatId} communityId={communityId ?? ''} channelId={selectedChannel.channelId} headingId={selectedChannel.headingId ?? ''} isAdmin={false} />
-                  )}
-                </React.Fragment>
-              ))}
-              <div ref={bottomRef} />
-            </div>
-            <div>
+            <div
+  className="overflow-y-auto p-4 flex flex-col flex-1 gap-4 overflow-x-hidden relative"
+  ref={containerRef}
+  onScroll={handleScroll}
+>
+  {chats.map((chat, index) => {
+    const highlightedText =
+      searchQuery && searchQuery.trim() !== "" && chat.message
+        ? chat.message
+            .split(new RegExp(`(${searchQuery})`, "gi"))
+            .map((part, i) =>
+              part && part.toLowerCase() === searchQuery.toLowerCase() ? (
+                <span key={i} className="bg-[#d1a7ff] font-bold">
+                  {part}
+                </span>
+              ) : (
+                part
+              )
+            )
+        : chat.message || ""; // Fallback to empty string if `chat.message` is null or undefined
+    return (
+      <React.Fragment key={index}>
+        {shouldShowDateHeader(chat, chats[index - 1]) && (
+          <div className="chat-date-header text-gray-500 text-center my-2 text-[14px]">
+            {formatDate(chat.timestamp)} {/* Only call formatDate if timestamp is valid */}
+          </div>
+        )}
+        <div
+          ref={(el) => {
+            if (el) {
+              // Store reference for the current chat message
+              chatRefs.current[chat.chatId] = el;
+
+              // Assign the bottom reference to the last message for initial scrolling
+              if (index === chats.length - 1) {
+                bottomRef.current = el;
+              }
+            }
+          }}
+        >
+          {chat.senderId === user?.uid ? (
+            <OwnChat
+              handleReply={handleReply}
+              scrollToReply={scrollToReply}
+              isHighlighted={highlightedChatId === chat.chatId}
+              setShowReplyLayout={setShowReplyLayout}
+              highlightedText={highlightedText}
+              messageType={chat.messageType}
+              fileUrl={chat.fileUrl}
+              fileName={chat.fileName}
+              fileSize={chat.fileSize}
+              senderId={chat.senderId}
+              timestamp={chat.timestamp}
+              isReplying={chat.isReplying}
+              replyingToId={chat.replyingToId}
+              replyingToMsg={chat.replyingToMsg}
+              replyingToMsgType={chat.replyingToMsgType}
+              replyingToFileName={chat.replyingToFileName}
+              replyingToFileUrl={chat.replyingToFileUrl}
+              replyingToChatId={chat.replyingToChatId}
+              chatId={chat.chatId}
+              communityId={communityId ?? ""}
+              channelId={selectedChannel.channelId}
+              headingId={selectedChannel.headingId ?? ""}
+              isAdmin={false}
+              message={chat.message}
+              isDeleted={chat.isDeleted}
+            />
+          ) : (
+            <OtherChat
+              handleReply={handleReply}
+              setShowReplyLayout={setShowReplyLayout}
+              highlightedText={highlightedText}
+              messageType={chat.messageType}
+              fileUrl={chat.fileUrl}
+              fileName={chat.fileName}
+              fileSize={chat.fileSize}
+              senderId={chat.senderId}
+              timestamp={chat.timestamp}
+              isReplying={chat.isReplying}
+              replyingToId={chat.replyingToId}
+              replyingToMsg={chat.replyingToMsg}
+              replyingToMsgType={chat.replyingToMsgType}
+              replyingToFileName={chat.replyingToFileName}
+              replyingToFileUrl={chat.replyingToFileUrl}
+              replyingToChatId={chat.replyingToChatId}
+              chatId={chat.chatId}
+              communityId={communityId ?? ""}
+              channelId={selectedChannel.channelId}
+              headingId={selectedChannel.headingId ?? ""}
+              isAdmin={false}
+              message={chat.message}
+            />
+          )}
+        </div>
+      </React.Fragment>
+    );
+  })}
+ 
+</div>
+
+            <div className='relative'>
+            {showScrollButton && (
+              
+              <button
+                onClick={scrollToBottom}
+                className="flex items-center justify-center absolute bottom-[85px] right-3 bg-white border pt-[2px] text-white rounded-full shadow-md hover:bg-[#f7f7f7] transition-all w-[38px] h-[38px]"
+              >
+                <Image
+                  src="/icons/Arrow-down-1.svg"
+                  alt="Scroll to bottom"
+                  width={22}
+                  height={22}
+                />
+              </button>
+            )}
               <BottomText showReplyLayout={showReplyLayout} setShowReplyLayout={setShowReplyLayout} replyData={replyData} channelId={selectedChannel?.channelId} communityId={communityId} headingId={selectedChannel.headingId ?? ''} />
             </div>
           </>
