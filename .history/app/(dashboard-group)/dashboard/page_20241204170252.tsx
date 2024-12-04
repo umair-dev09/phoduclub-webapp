@@ -31,7 +31,30 @@ export default function AnalyticsPage() {
      }
      return (
           <div className=" flex flex-col  flex-1 h-auto overflow-y-auto ">
-               <div className="flex flex-row w-full gap-4 pt-6 px-6">
+               <div className="bg-[#FEDAAA] h-[58px] w-full flex flex-row gap-[89px] ">
+
+                    <div className=" items-center justify-center">
+                         <div className="flex flex-row gap-2 items-center justify-center">
+                              <Image
+                                   src="icons/quiz-02.svg"
+                                   width={24}
+                                   height={24}
+                                   alt="Quiz-Questions-mark-icon" />
+                              <h1 className="font-bold text-[#1D2939] text-sm">Quiz competition:</h1>
+                              <h1 className="font-normal text-[#1D2939] text-sm">Ready to test your knowledge? Join our quiz competition and compete for exciting prizes!</h1>
+                              <div className="w-[87px] h-[32px] flex items-center justify-center bg-[#FFFFFF] rounded-[6px] border border-solid border-[#00000033]">
+                                   <span className="text-[13px] text-[#1D2939] font-semibold">Join Now</span>
+                              </div>
+                         </div>
+                         {/* <Image
+                         src="icons/quiz-02.svg"
+                         width={24}
+                         height={24}
+                         alt="Quiz-Questions-mark-icon" /> */}
+                    </div>
+               </div>
+
+               {/* <div className="flex flex-row w-full gap-4 pt-6 px-6">
                     <div className="flex flex-col flex-1 bg-white  rounded-lg h-[327px] w-1/2 ">
                          <div className="flex flex-row justify-between pt-6 px-6 w-full text-[#1D2939] text-lg font-bold">
                               <h3>Subject Progress Tracker</h3>
@@ -68,7 +91,7 @@ export default function AnalyticsPage() {
                               <Course />
                          </div>
                     </div>
-               </div>
+               </div> */}
 
           </div>
 

@@ -35,7 +35,7 @@ function HelpDropDown() {
             {/* Trigger Button */}
             <div className="mx-2">
                 <button
-                    className="w-[32px] h-[32px] bg-[#F7F8FA] border-[1.5px] border-[#EAECF0] rounded-full flex items-center justify-center hover:bg-[#F2F4F7]"
+                    className="w-[32px] h-[32px] bg-[#F7F8FA] border-[1.5px] border-[#EAECF0] rounded-full flex items-center justify-center"
                     onClick={handleOpen}
                 >
                     <Image
@@ -52,7 +52,7 @@ function HelpDropDown() {
                 <DialogBackdrop className="fixed inset-0 bg-black/30" />
                 <div className="fixed inset-0 flex items-center justify-center">
                     <DialogPanel className="bg-white rounded-2xl w-[480px] h-auto flex flex-col">
-                        <div className="flex flex-col p-4 px-6 gap-3 border-solid border-[#EAECF0] border-b rounded-t-2xl">
+                        <div className="flex flex-col p-6 gap-3 border-solid border-[#EAECF0] border-b rounded-t-2xl">
                             <div className="flex flex-row justify-between items-center">
                                 <h1 className="text-[#1D2939] font-bold text-lg">
                                     Support
@@ -69,7 +69,7 @@ function HelpDropDown() {
                                 Lorem ipsum is a dummy text widely used in digital industry will be used here in as a preview
                             </span>
                         </div>
-                        <div className='w-full border-solid border-[#EAECF0] border-b flex flex-col p-6 gap-3'>
+                        <div className='w-full border-solid border-[#EAECF0] border-b flex flex-col px-6 gap-3'>
                             <div className='flex flex-col gap-1'>
                                 <label htmlFor="Select-Category" className='mb-1 font-medium  text-[#1D2939] text-sm'>Select Category</label>
                                 <Select

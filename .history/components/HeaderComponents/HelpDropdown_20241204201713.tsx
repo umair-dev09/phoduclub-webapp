@@ -18,13 +18,12 @@ function HelpDropDown() {
     // Handlers for opening and closing the dialog
     const handleOpen = () => setIsOpen(true);
     const handleClose = () => setIsOpen(false);
-    const SelectCategory: Option[] = [
-        { value: 'Course related', label: 'Course related' },
-        { value: 'Test series related', label: 'Test series related' },
-        { value: 'Analytics related', label: 'Analytics related' },
-        { value: 'Payment related', label: 'Payment related' },
+    const years: Option[] = [
+        { value: '2024', label: '2024' },
+        { value: '2025', label: '2025' },
+        { value: '2026', label: '2026' },
     ];
-    const [selectcategory, setselectcategory] = useState<SingleValue<Option>>(null);
+    const [selectedYear, setSelectedYear] = useState<SingleValue<Option>>(null);
     type CustomState = {
         isSelected: boolean;
         isFocused: boolean;
@@ -35,7 +34,7 @@ function HelpDropDown() {
             {/* Trigger Button */}
             <div className="mx-2">
                 <button
-                    className="w-[32px] h-[32px] bg-[#F7F8FA] border-[1.5px] border-[#EAECF0] rounded-full flex items-center justify-center hover:bg-[#F2F4F7]"
+                    className="w-[32px] h-[32px] bg-[#F7F8FA] border-[1.5px] border-[#EAECF0] rounded-full flex items-center justify-center"
                     onClick={handleOpen}
                 >
                     <Image
@@ -52,7 +51,7 @@ function HelpDropDown() {
                 <DialogBackdrop className="fixed inset-0 bg-black/30" />
                 <div className="fixed inset-0 flex items-center justify-center">
                     <DialogPanel className="bg-white rounded-2xl w-[480px] h-auto flex flex-col">
-                        <div className="flex flex-col p-4 px-6 gap-3 border-solid border-[#EAECF0] border-b rounded-t-2xl">
+                        <div className="flex flex-col p-6 gap-3 border-solid border-[#EAECF0] border-b rounded-t-2xl">
                             <div className="flex flex-row justify-between items-center">
                                 <h1 className="text-[#1D2939] font-bold text-lg">
                                     Support
@@ -71,14 +70,13 @@ function HelpDropDown() {
                         </div>
                         <div className='w-full border-solid border-[#EAECF0] border-b flex flex-col p-6 gap-3'>
                             <div className='flex flex-col gap-1'>
-                                <label htmlFor="Select-Category" className='mb-1 font-medium  text-[#1D2939] text-sm'>Select Category</label>
+                                <label htmlFor="target-year" className='mb-1 font-medium text-sm'>Target Year</label>
                                 <Select
-                                    id="Select-Category"
-                                    value={selectcategory}
-                                    onChange={setselectcategory}
-                                    options={SelectCategory}
-                                    placeholder="Select Category"
-                                    className='placeholder:text-[#667085] placeholder:text-sm placeholder:font-normal'
+                                    id="target-year"
+                                    value={selectedYear}
+                                    onChange={setSelectedYear}
+                                    options={years}
+                                    placeholder="Select year..."
                                     styles={{
                                         option: (provided, state: CustomState) => ({
                                             ...provided,
@@ -87,7 +85,7 @@ function HelpDropDown() {
                                         }),
                                         singleValue: (provided) => ({
                                             ...provided,
-                                            color: '#0C111D',
+                                            color: 'black',
                                             fontWeight: '500'
                                         }),
                                         control: (provided) => ({
@@ -105,7 +103,7 @@ function HelpDropDown() {
                                 />
                             </div>
                             <div className='flex flex-col gap-1'>
-                                <label htmlFor="target-year" className='mb-1 font-medium text-sm text-[#1D2939]'>Reason</label>
+                                <label htmlFor="target-year" className='mb-1 font-medium text-sm'>Reason</label>
                                 <div
                                     className={`rounded-md border border-solid ${reasonText.trim() !== "" ? "border-[#D6BBFB]" : "border-[#D0D5DD]"
                                         } h-[160px]`}
@@ -117,7 +115,7 @@ function HelpDropDown() {
                                     }}
                                 >
                                     <textarea
-                                        placeholder="Write a message"
+                                        placeholder="Write your report here"
                                         className="outline-none placeholder-[#667085] text-sm font-normal w-full h-full p-2 resize-none rounded-md text-[#182230]"
                                         value={reasonText}                     // Bind textarea to state
                                         onChange={(e) => setReasonText(e.target.value)}  // Update state on input change

@@ -7,10 +7,10 @@ function NotficationDropDown() {
     <div>
       <Popover placement='bottom-end'>
         <PopoverTrigger>
-          <div className="relative flex flex-col">
+          <div className="relative flex flex-col hover:bg-[#F2F4F7] rounded-full">
             <div className="absolute w-[10px] h-[10px] bg-[#FF6262] rounded-full border border-white ml-[22px] mt-[1px]"></div>
-            <button className="w-[32px] h-[32px] bg-[#F7F8FA] border-[1.5px] border-[#EAECF0] rounded-full flex items-center justify-center hover:bg-[#F2F4F7]">
-              <Image src="/icons/notification.svg" width={15} height={15} alt="Notification Icon" />
+            <button className="w-[32px] h-[32px] bg-[#F7F8FA] border-[1.5px] border-[#EAECF0] rounded-full flex items-center justify-center ">
+              <Image src="/icons/notification.svg" width={30} height={30} alt="Notification Icon" />
             </button>
           </div>
         </PopoverTrigger>

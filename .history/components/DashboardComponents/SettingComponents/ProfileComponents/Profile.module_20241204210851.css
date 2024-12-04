@@ -540,7 +540,7 @@
 }
 
 /* THIS BELOW CSS CODE IS USED FOR TARGET.TSX */
- .ExamType {
+ /* .ExamType {
     display: flex;
     flex-wrap: wrap;
     gap: 10px;
@@ -589,4 +589,4 @@
 
 .blue {
     background-color: #2196f3;
-}
+} */

@@ -86,7 +86,7 @@ function Header() {
                     <div className="w-[1.5px] h-[14px] bg-[#eaecf0] border-none ml-[14px] mr-[14px]" />
                     <Popover placement="bottom">
                         <PopoverTrigger>
-                            <button className='flex flex-row items-center focus:outline-none  '>
+                            <button className='flex flex-row items-center focus:outline-none  hover:bg-[#F2F4F7]'>
                                 <Image className="rounded-[50%] ml-[8px]" src={userData?.profilePic || "/defaultDP.svg"} width={38} height={38} quality={100} alt="Profile Picture" />
                                 <div className='flex flex-col ml-1 mr-1'>
                                     <p className='font-semibold text-[14px] mb-[-2px]'>{userData?.name}</p>
@@ -99,7 +99,7 @@ function Header() {
                         </PopoverTrigger>
                         <PopoverContent className="flex flex-col bg-white border border-lightGrey rounded-md w-[167px] px-0 shadow-md">
                             <button
-                                className="flex items-center p-3 hover:bg-[#F2F4F7] w-full ">
+                                className="flex items-center p-3 hover:bg-[#F2F4F7] w-full">
                                 <Image src="/icons/profile.svg" width={18} height={18} alt="Edit-profile" />
                                 <p className="text-sm text-[#0C111D] ml-2">My profile</p>
                             </button>
