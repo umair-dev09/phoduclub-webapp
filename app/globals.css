@@ -14,7 +14,11 @@ body {
   align-items: center;
   height: 100vh;
 }
+.video-js .vjs-playback-rate {
+  font-size: 10px;
+  transform: translateY(12px); /* Moves the button down by 10px */
 
+}
 .heading .head {
   font-family: 'Sora', sans-serif;
   font-size: 24px;

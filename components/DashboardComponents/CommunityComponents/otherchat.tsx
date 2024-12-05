@@ -23,11 +23,12 @@ type OtherChatProps = {
     communityId: string ;
     headingId: string ;
     channelId: string ;
+    highlightedText: string | React.ReactNode[];
     isAdmin: boolean;
     setShowReplyLayout: (value: boolean) => void;
     handleReply: (message: string | null, senderId: string | null, messageType: string | null, fileUrl: string | null, fileName: string | null,  chatId: string | null) => void; // New prop to handle reply data
 }
-const OtherChat = ({message, messageType, fileUrl, fileName, fileSize, senderId, timestamp, communityId, headingId, channelId, chatId, isReplying, replyingToId, replyingToFileName, replyingToFileUrl, replyingToMsg, replyingToMsgType, setShowReplyLayout, handleReply }: OtherChatProps) => {
+const OtherChat = ({message, highlightedText, messageType, fileUrl, fileName, fileSize, senderId, timestamp, communityId, headingId, channelId, chatId, isReplying, replyingToId, replyingToFileName, replyingToFileUrl, replyingToMsg, replyingToMsgType, setShowReplyLayout, handleReply }: OtherChatProps) => {
     const messageStart = `Hey 
 In publishing and graphic design, Lorem ipsum is a placeholder text commonly used to demonstrate the visual form of a document or a typeface without relying on meaningful content. Lorem ipsum may be used as a placeholder before the final copy is available.`;
     const messageStart1 = `Hey everyone,
