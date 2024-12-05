@@ -1,7 +1,9 @@
 "use client";
+
+import styles from '../homeComponents.module.css';
 import Image from 'next/image';
 import { useState } from 'react';
-import BottomSheet from '@/components/DashboardComponents/HomeComponents/SubjectComp/bottomUpSheet';
+import BottomSheet from './bottomUpSheet';
 
 interface CircularProgressProps {
     percentage: number;
@@ -37,7 +39,7 @@ const SubjectLayout: React.FC = () => {
         { name: 'Overall', numerator: 98, denominator: 98, icon: '/icons/overall.svg' },
         { name: 'Physics', numerator: 0, denominator: 33, icon: '/icons/physics.svg' },
         { name: 'Chemistry', numerator: 8, denominator: 34, icon: '/icons/chemistry.svg' },
-        { name: 'Maths', numerator: 15, denominator: 31, icon: '/icons/maths.svg' },
+        { name: 'Maths', numerator: 31, denominator: 31, icon: '/icons/maths.svg' },
     ];
 
     const calculatePercentage = (numerator: number, denominator: number) => {
@@ -58,40 +60,29 @@ const SubjectLayout: React.FC = () => {
     };
 
     return (
-        <div className="grid grid-cols-2 gap-5 p-6 w-full">
+        <div className="grid grid-cols-2 gap-5 p-6">
             {subjectsData.map((subject) => {
                 const percentage = calculatePercentage(subject.numerator, subject.denominator);
-                const isComplete = percentage === 100; // Check if progress is 100%
-
                 return (
                     <button
                         onClick={() => openBottomSheet(subject.name)}
                         key={subject.name}
-                        className={`border border-gray-200 rounded-lg px-6 py-2 flex items-center justify-between transition-transform duration-300 ease-in-out hover:border-[#7400E03D] hover:shadow-lg hover:scale-105 ${isComplete ? 'bg-[#F9FAFB] hover:border-gray-200' : 'bg-white hover:border-[#7400E03D] '  // Conditional background color
-                            }`}
+                        className="bg-white border border-gray-200 rounded-lg px-6 py-2 flex items-center justify-between cursor-pointer transition-transform duration-300 ease-in-out hover:border-purple-300 hover:shadow-lg hover:scale-105"
                     >
                         <div className="pt-2">
-                            <div className="flex items-center flex-row gap-[6px]">
+                            <div className="flex items-center">
                                 <Image
                                     src={subject.icon}
                                     alt={`${subject.name}-icon`}
-                                    width={16}
-                                    height={16}
+                                    width={20}
+                                    height={20}
+                                    className="mr-2"
                                 />
-                                <div className="text-[#667085] text-xs font-semibold ">{subject.name}</div>
-                                {/* Conditionally render the right-mark.svg */}
-                                {isComplete && (
-                                    <Image
-                                        src="/icons/right-mark.svg"
-                                        alt="right-mark"
-                                        width={16}
-                                        height={16}
-                                    />
-                                )}
+                                <div className="text-gray-600 text-sm font-semibold ml-1">{subject.name}</div>
                             </div>
-                            <div className="flex items-center leading-none mt-2">
-                                <span className="text-3xl font-semibold text-[#1D2939]">{subject.numerator}</span>
-                                <span className="text-base text-[#1D2939] ml-1 font-semibold">/{subject.denominator}</span>
+                            <div className="text-gray-900 font-semibold flex items-center leading-none mt-2">
+                                <span className="text-2xl font-semibold text-gray-800">{subject.numerator}</span>
+                                <span className="text-lg text-gray-800 ml-1 font-semibold">/{subject.denominator}</span>
                             </div>
                         </div>
                         <div className="relative w-16 h-16">
@@ -100,10 +91,10 @@ const SubjectLayout: React.FC = () => {
                     </button>
                 );
             })}
-
             {showBottomSheet && <BottomSheet closeModal={closeBottomSheet} subjectName={selectedSubject} />}
-
         </div>
+
+
     );
 };
 

@@ -1,6 +1,6 @@
 "use client";
 import Announcement from '@/components/DashboardComponents/HomeComponents/Announcement/Announcement';
-import Subject from '@/components/DashboardComponents/HomeComponents/SubjectComp/subject';
+import SubjectComp from '@/components/DashboardComponents/HomeComponents/SubjectComp/subject';
 import TestSeries from '@/components/DashboardComponents/HomeComponents/TestSeries/Testseries';
 import Course from '@/components/DashboardComponents/HomeComponents/Course/Course';
 import { useRouter } from "next/navigation";
@@ -36,7 +36,7 @@ export default function AnalyticsPage() {
                               <h3 className='text-[#1D2939] font-bold text-lg'>Subject Progress Tracker</h3>
                          </div>
                          <div className="flex flex-1">
-                              <Subject />
+                              <SubjectComp />
                          </div>
                     </div>
                     <div className="flex flex-col flex-1 bg-white pb-4 rounded-lg  h-[327px] w-1/2 ">

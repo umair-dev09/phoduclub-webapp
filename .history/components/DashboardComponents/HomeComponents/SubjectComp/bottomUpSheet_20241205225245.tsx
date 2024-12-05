@@ -9,6 +9,9 @@ interface BottomUpSheet {
 }
 
 const BottomSheet: React.FC<BottomUpSheet> = ({ closeModal, subjectName }) => {
+
+
+
     const [numRows, setNumRows] = useState(10);
     const [numColumns, setNumColumns] = useState(5);
     const [isOpen, setIsOpen] = useState(false); // New state for transition
@@ -92,6 +95,10 @@ const BottomSheet: React.FC<BottomUpSheet> = ({ closeModal, subjectName }) => {
             document.removeEventListener('click', handleOutsideClick);
         };
     }, [closeModal]);
+
+
+
+
 
     const handleCheckboxChange = (rowIndex: number, checkboxIndex: number) => {
         const updatedCheckboxes = [...checkboxes];

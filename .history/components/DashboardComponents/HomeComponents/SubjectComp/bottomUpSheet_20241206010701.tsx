@@ -9,6 +9,9 @@ interface BottomUpSheet {
 }
 
 const BottomSheet: React.FC<BottomUpSheet> = ({ closeModal, subjectName }) => {
+    const [selectedDate, setSelectedDate] = useState<Date | null>(new Date());
+    const [tempDate, setTempDate] = useState<Date | null>(new Date());
+    const [calendarVisible, setCalendarVisible] = useState(false);
     const [numRows, setNumRows] = useState(10);
     const [numColumns, setNumColumns] = useState(5);
     const [isOpen, setIsOpen] = useState(false); // New state for transition
@@ -92,6 +95,31 @@ const BottomSheet: React.FC<BottomUpSheet> = ({ closeModal, subjectName }) => {
             document.removeEventListener('click', handleOutsideClick);
         };
     }, [closeModal]);
+
+    const handleDateChange = (date: Date | null) => {
+        setTempDate(date);
+    };
+
+    const applyDate = () => {
+        setSelectedDate(tempDate);
+        setCalendarVisible(false);
+    };
+
+    const cancelDate = () => {
+        setTempDate(selectedDate);
+        setCalendarVisible(false);
+    };
+
+    const CustomCalendarContainer = ({ className, children }: any) => (
+        <div className={`${className} ${styles.customCalendarContainer}`}>
+            {children}
+            <div className={styles.customButtons}>
+                <button onClick={cancelDate} className={styles.cancelButton}>Cancel</button>
+                <button onClick={applyDate} className={styles.applyButton}>Apply</button>
+            </div>
+        </div>
+
+    );
 
     const handleCheckboxChange = (rowIndex: number, checkboxIndex: number) => {
         const updatedCheckboxes = [...checkboxes];

@@ -1,6 +1,6 @@
 "use client";
 import Announcement from '@/components/DashboardComponents/HomeComponents/Announcement/Announcement';
-import Subject from '@/components/DashboardComponents/HomeComponents/SubjectComp/subject';
+import SubjectComp from '@/components/DashboardComponents/HomeComponents/SubjectComp/subject';
 import TestSeries from '@/components/DashboardComponents/HomeComponents/TestSeries/Testseries';
 import Course from '@/components/DashboardComponents/HomeComponents/Course/Course';
 import { useRouter } from "next/navigation";
@@ -36,14 +36,14 @@ export default function AnalyticsPage() {
                               <h3 className='text-[#1D2939] font-bold text-lg'>Subject Progress Tracker</h3>
                          </div>
                          <div className="flex flex-1">
-                              <Subject />
+                              <SubjectComp />
                          </div>
                     </div>
                     <div className="flex flex-col flex-1 bg-white pb-4 rounded-lg  h-[327px] w-1/2 ">
                          <div className="flex flex-row justify-between pt-6 px-6 w-full text-[#1D2939] text-lg font-bold">
-                              <h3 className='text-[#1D2939] font-bold text-lg'>Announcements</h3>
+                              <h3>Announcements</h3>
                          </div>
-                         <div className='h-full overflow-y-auto'>
+                         <div>
                               <Announcement />
                          </div>
                     </div>
@@ -51,7 +51,7 @@ export default function AnalyticsPage() {
                <div className="flex flex-row   w-full mt-4 gap-4 px-6 ">
                     <div className="flex flex-col flex-1 bg-white  rounded-lg  h-[327px] w-1/2 ">
                          <div className="flex flex-row justify-between pt-6 px-6 w-full text-[#1D2939] text-lg font-bold">
-                              <h3 className='text-[#1D2939] font-bold text-lg'>Test Series</h3>
+                              <h3>Test Series</h3>
                               <button className="text-sm font-semibold text-[#7400E0] cursor-pointer">View all</button>
                          </div>
                          <div className="flex justify-center flex-1 overflow-y-auto rounded-b-lg">
@@ -60,8 +60,7 @@ export default function AnalyticsPage() {
                     </div>
                     <div className="flex flex-col flex-1 bg-white rounded-lg  h-[327px] w-1/2">
                          <div className="flex flex-row justify-between pt-6 px-6 w-full text-[#1D2939] text-lg font-bold">
-
-                              <h3 className='text-[#1D2939] font-bold text-lg'>Courses</h3>
+                              <h3>Courses</h3>
                               <button className="text-sm font-semibold text-[#7400E0] cursor-pointer">View all</button>
                          </div>
                          <div className="flex justify-center flex-1 overflow-y-auto rounded-b-lg">

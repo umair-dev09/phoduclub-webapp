@@ -67,18 +67,18 @@ const SubjectLayout: React.FC = () => {
                     <button
                         onClick={() => openBottomSheet(subject.name)}
                         key={subject.name}
-                        className={`border border-gray-200 rounded-lg px-6 py-2 flex items-center justify-between transition-transform duration-300 ease-in-out hover:border-[#7400E03D] hover:shadow-lg hover:scale-105 ${isComplete ? 'bg-[#F9FAFB] hover:border-gray-200' : 'bg-white hover:border-[#7400E03D] '  // Conditional background color
+                        className={`border border-gray-200 rounded-lg px-6 py-2 flex items-center justify-between transition-transform duration-300 ease-in-out hover:border-[#7400E03D] hover:shadow-lg hover:scale-105 ${isComplete ? 'bg-[#F9FAFB]' : 'bg-white'  // Conditional background color
                             }`}
                     >
                         <div className="pt-2">
-                            <div className="flex items-center flex-row gap-[6px]">
+                            <div className="flex items-center flex-row gap-2">
                                 <Image
                                     src={subject.icon}
                                     alt={`${subject.name}-icon`}
                                     width={16}
                                     height={16}
                                 />
-                                <div className="text-[#667085] text-xs font-semibold ">{subject.name}</div>
+                                <div className="text-[#667085] text-xs font-semibold ml-1">{subject.name}</div>
                                 {/* Conditionally render the right-mark.svg */}
                                 {isComplete && (
                                     <Image

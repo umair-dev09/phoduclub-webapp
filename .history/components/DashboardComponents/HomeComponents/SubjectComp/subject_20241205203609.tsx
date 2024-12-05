@@ -1,7 +1,9 @@
 "use client";
+
+import styles from '../homeComponents.module.css';
 import Image from 'next/image';
 import { useState } from 'react';
-import BottomSheet from '@/components/DashboardComponents/HomeComponents/SubjectComp/bottomUpSheet';
+import BottomSheet from './bottomUpSheet';
 
 interface CircularProgressProps {
     percentage: number;
@@ -37,7 +39,7 @@ const SubjectLayout: React.FC = () => {
         { name: 'Overall', numerator: 98, denominator: 98, icon: '/icons/overall.svg' },
         { name: 'Physics', numerator: 0, denominator: 33, icon: '/icons/physics.svg' },
         { name: 'Chemistry', numerator: 8, denominator: 34, icon: '/icons/chemistry.svg' },
-        { name: 'Maths', numerator: 15, denominator: 31, icon: '/icons/maths.svg' },
+        { name: 'Maths', numerator: 31, denominator: 31, icon: '/icons/maths.svg' },
     ];
 
     const calculatePercentage = (numerator: number, denominator: number) => {
@@ -58,49 +60,36 @@ const SubjectLayout: React.FC = () => {
     };
 
     return (
-        <div className="grid grid-cols-2 gap-5 p-6 w-full">
-            {subjectsData.map((subject) => {
+        <div className={styles.container}>
+            {subjectsData.map(subject => {
                 const percentage = calculatePercentage(subject.numerator, subject.denominator);
-                const isComplete = percentage === 100; // Check if progress is 100%
-
                 return (
                     <button
                         onClick={() => openBottomSheet(subject.name)}
+                        className={styles.Buttons}
                         key={subject.name}
-                        className={`border border-gray-200 rounded-lg px-6 py-2 flex items-center justify-between transition-transform duration-300 ease-in-out hover:border-[#7400E03D] hover:shadow-lg hover:scale-105 ${isComplete ? 'bg-[#F9FAFB] hover:border-gray-200' : 'bg-white hover:border-[#7400E03D] '  // Conditional background color
-                            }`}
                     >
-                        <div className="pt-2">
-                            <div className="flex items-center flex-row gap-[6px]">
+                        <div className={styles.box1}>
+                            <div className={styles.IconContainer}>
                                 <Image
                                     src={subject.icon}
                                     alt={`${subject.name}-icon`}
-                                    width={16}
-                                    height={16}
+                                    width={20}
+                                    height={20}
                                 />
-                                <div className="text-[#667085] text-xs font-semibold ">{subject.name}</div>
-                                {/* Conditionally render the right-mark.svg */}
-                                {isComplete && (
-                                    <Image
-                                        src="/icons/right-mark.svg"
-                                        alt="right-mark"
-                                        width={16}
-                                        height={16}
-                                    />
-                                )}
+                                <div className={styles.work}>{subject.name}</div>
                             </div>
-                            <div className="flex items-center leading-none mt-2">
-                                <span className="text-3xl font-semibold text-[#1D2939]">{subject.numerator}</span>
-                                <span className="text-base text-[#1D2939] ml-1 font-semibold">/{subject.denominator}</span>
+                            <div className={styles.totalMarks}>
+                                <span className={styles.numerator}>{subject.numerator}</span>
+                                <span className={styles.denominator}>/{subject.denominator}</span>
                             </div>
                         </div>
-                        <div className="relative w-16 h-16">
+                        <div className={styles.progressValue}>
                             <CircularProgress percentage={percentage} />
                         </div>
                     </button>
                 );
             })}
-
             {showBottomSheet && <BottomSheet closeModal={closeBottomSheet} subjectName={selectedSubject} />}
 
         </div>

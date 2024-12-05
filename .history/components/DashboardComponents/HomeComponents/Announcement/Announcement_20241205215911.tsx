@@ -10,14 +10,14 @@ interface AnnouncementItem {
 }
 function Announcement() {
     const announcements: AnnouncementItem[] = [
-        // {
-        //     id: 1,
-        //     name: "Robert Fox",
-        //     time: "3:24 PM",
-        //     title: "Mock test series are LIVE",
-        //     body: "Our new mock test series is now live. Check it out now.",
-        //     imageUrl: "/icons/RobertFox.png",
-        // },
+        {
+            id: 1,
+            name: "Robert Fox",
+            time: "3:24 PM",
+            title: "Mock test series are LIVE",
+            body: "Our new mock test series is now live. Check it out now.",
+            imageUrl: "/icons/RobertFox.png",
+        },
         // {
         //     id: 1,
         //     name: "Robert Fox",
@@ -38,7 +38,7 @@ function Announcement() {
     ];
 
     return (
-        <div className="flex-col  flex   rounded-b-lg">
+        <div className="h-[300px]  flex-col  flex   rounded-b-lg">
             {announcements.length > 0 ? (
                 // Display announcements if they exist
                 announcements.map((announcement, index: number) => (

@@ -43,7 +43,7 @@ export default function AnalyticsPage() {
                          <div className="flex flex-row justify-between pt-6 px-6 w-full text-[#1D2939] text-lg font-bold">
                               <h3 className='text-[#1D2939] font-bold text-lg'>Announcements</h3>
                          </div>
-                         <div className='h-full overflow-y-auto'>
+                         <div className=' overflow-y-auto'>
                               <Announcement />
                          </div>
                     </div>

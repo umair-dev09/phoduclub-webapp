@@ -2,7 +2,7 @@
 
 
 
-/* .Buttons {
+.Buttons {
     background-color: #FFFFFF;
     border: 1px solid #EAECF0;
     padding-right: 24px;
@@ -69,7 +69,7 @@
     font-weight: 600;
 }
 
-
+/* Container for the progress value */
 .progressValue {
     position: relative;
     display: flex;
@@ -79,14 +79,14 @@
     height: 64px;
 }
 
-
+/* Style for the SVG */
 .circular {
     transform: rotate(360deg);
     width: 64px;
     height: 64px;
 }
 
-
+/* Style for the circle paths */
 .circleBackground,
 .circleProgress {
     fill: none;
@@ -94,18 +94,18 @@
     stroke-linecap: round;
 }
 
-
+/* Background circle */
 .circleBackground {
     stroke: #EDEFF6;
 }
 
-
+/* Progress circle */
 .circleProgress {
     stroke: #7400E0;
     transition: stroke-dasharray 0.3s ease;
 }
 
-
+/* Label inside the circle */
 .label {
     position: absolute;
     top: 50%;
@@ -113,9 +113,9 @@
     transform: translate(-50%, -50%);
     font-size: 14px;
     font-weight: 600;
-
+    /* Font size of the label */
     text-align: center;
-} */
+}
 
 
 

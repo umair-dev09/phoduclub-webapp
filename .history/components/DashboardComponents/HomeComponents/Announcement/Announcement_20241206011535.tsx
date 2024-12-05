@@ -38,7 +38,7 @@ function Announcement() {
     ];
 
     return (
-        <div className="flex-col  flex   rounded-b-lg">
+        <div className="h-[300px]  flex-col  flex   rounded-b-lg">
             {announcements.length > 0 ? (
                 // Display announcements if they exist
                 announcements.map((announcement, index: number) => (

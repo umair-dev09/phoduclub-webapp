@@ -71,14 +71,14 @@ const SubjectLayout: React.FC = () => {
                             }`}
                     >
                         <div className="pt-2">
-                            <div className="flex items-center flex-row gap-[6px]">
+                            <div className="flex items-center flex-row gap-2">
                                 <Image
                                     src={subject.icon}
                                     alt={`${subject.name}-icon`}
                                     width={16}
                                     height={16}
                                 />
-                                <div className="text-[#667085] text-xs font-semibold ">{subject.name}</div>
+                                <div className="text-[#667085] text-xs font-semibold ml-1">{subject.name}</div>
                                 {/* Conditionally render the right-mark.svg */}
                                 {isComplete && (
                                     <Image

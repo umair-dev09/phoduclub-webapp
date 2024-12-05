@@ -10,39 +10,39 @@ interface AnnouncementItem {
 }
 function Announcement() {
     const announcements: AnnouncementItem[] = [
-        // {
-        //     id: 1,
-        //     name: "Robert Fox",
-        //     time: "3:24 PM",
-        //     title: "Mock test series are LIVE",
-        //     body: "Our new mock test series is now live. Check it out now.",
-        //     imageUrl: "/icons/RobertFox.png",
-        // },
-        // {
-        //     id: 1,
-        //     name: "Robert Fox",
-        //     time: "3:24 PM",
-        //     title: "Mock test series are LIVE",
-        //     body: "Our new mock test series is now live. Check it out now.",
-        //     imageUrl: "/icons/RobertFox.png",
-        // },
-        // {
-        //     id: 1,
-        //     name: "Robert Fox",
-        //     time: "3:24 PM",
-        //     title: "Mock test series are LIVE",
-        //     body: "Our new mock test series is now live. Check it out now.",
-        //     imageUrl: "/icons/RobertFox.png",
-        // },
+        {
+            id: 1,
+            name: "Robert Fox",
+            time: "3:24 PM",
+            title: "Mock test series are LIVE",
+            body: "Our new mock test series is now live. Check it out now.",
+            imageUrl: "/icons/RobertFox.png",
+        },
+        {
+            id: 1,
+            name: "Robert Fox",
+            time: "3:24 PM",
+            title: "Mock test series are LIVE",
+            body: "Our new mock test series is now live. Check it out now.",
+            imageUrl: "/icons/RobertFox.png",
+        },
+        {
+            id: 1,
+            name: "Robert Fox",
+            time: "3:24 PM",
+            title: "Mock test series are LIVE",
+            body: "Our new mock test series is now live. Check it out now.",
+            imageUrl: "/icons/RobertFox.png",
+        },
 
     ];
 
     return (
-        <div className="flex-col  flex   rounded-b-lg">
+        <div className="h-[300px]  flex-col  flex   overflow-y-auto rounded-b-lg">
             {announcements.length > 0 ? (
                 // Display announcements if they exist
                 announcements.map((announcement, index: number) => (
-                    <div key={announcement.id} className=' flex flex-col gap-4 pt-6 px-6 items-start  h-auto '>
+                    <div key={announcement.id} className=' flex flex-col gap-4 p-6 items-start  h-auto '>
                         <div className=' flex flex-row gap-3 items-center'>
                             <Image
                                 src={announcement.imageUrl}

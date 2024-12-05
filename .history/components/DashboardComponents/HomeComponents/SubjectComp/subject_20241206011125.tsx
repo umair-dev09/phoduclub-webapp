@@ -71,7 +71,7 @@ const SubjectLayout: React.FC = () => {
                             }`}
                     >
                         <div className="pt-2">
-                            <div className="flex items-center flex-row gap-[6px]">
+                            <div className="flex items-center flex-row gap-2">
                                 <Image
                                     src={subject.icon}
                                     alt={`${subject.name}-icon`}
