@@ -25,7 +25,7 @@ function Announcement() {
         <div className="h-[300px]  flex-col  flex   overflow-y-auto rounded-b-lg">
             {announcements.length > 0 ? (
                 // Display announcements if they exist
-                announcements.map((announcement, index: number) => (
+                announcements.map((announcement, index) => (
                     <div key={announcement.id} className=' flex flex-col gap-4 p-6 items-start  h-auto '>
                         <div className=' flex flex-row gap-3 items-center'>
                             <Image

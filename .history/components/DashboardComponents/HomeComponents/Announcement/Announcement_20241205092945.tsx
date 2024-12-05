@@ -1,0 +1,91 @@
+import Image from 'next/image';
+// Define an interface for the announcement object
+interface AnnouncementItem {
+    id: number;
+    name: string;
+    time: string;
+    title: string;
+    body: string;
+    imageUrl: string;
+}
+function Announcement() {
+    const announcements: AnnouncementItem[] = [
+        {
+            id: 1,
+            name: "Robert Fox",
+            time: "3:24 PM",
+            title: "Mock test series are LIVE",
+            body: "Our new mock test series is now live. Check it out now.",
+            imageUrl: "/icons/RobertFox.png",
+        },
+        {
+            id: 2,
+            name: "Jenny Wilson",
+            time: "4:10 PM",
+            title: "New course material available",
+            body: "Updated course materials have been uploaded.",
+            imageUrl: "/icons/JennyWillsion.png",
+        },
+    ];
+
+    return (
+        <div className="h-auto flex-col   flex  flex-1 overflow-y-auto rounded-b-lg">
+            {/* {announcements.length > 0 ? (
+                // Display announcements if they exist
+                announcements.map((announcement, index) => (
+                    <div key={announcement.id} className="ml-6">
+                        <div className="flex items-start mb-5 pb-5 w-full box-border ">
+                            <Image
+                                className="w-10 h-10 rounded-full mr-4"
+                                src={announcement.imageUrl}
+                                alt={announcement.name}
+                                height={40}
+                                width={40}
+                            />
+                            <div className="flex flex-col flex-1">
+                                <p className="font-medium text-sm text-gray-800 m-0">{announcement.name}</p>
+                                <p className="text-xs text-gray-600 font-normal mt-0.5">{announcement.time}</p>
+                                <h3 className="font-semibold text-sm text-gray-800 mt-2">{announcement.title}</h3>
+                                <p className="text-sm text-gray-600 font-normal mt-1">{announcement.body}</p>
+                            </div>
+                            {index < announcements.length - 1 && <hr className="w-full border-t border-gray-200 mt-4" />}
+                        </div>
+                    </div>
+                ))
+            ) : (
+                // Show this message if there are no announcements
+                <div className="flex flex-col items-center  flex-1 ">
+                    <Image
+                        src="/images/no_announcement_img.svg"
+                        alt="No announcement image"
+                        width={140}
+                        height={140}
+                    />
+                    <h3 className="text-lg font-bold text-gray-800 ">No announcements for now</h3>
+                    <p className="text-sm text-gray-600 font-normal text-center">Will show relevant announcements here</p>
+                </div>
+            )} */}
+            <div className=' flex flex-col gap-4 px-6 pt-6 items-start  h-auto '>
+                <div className=' flex flex-row gap-3 items-center'>
+                    <Image
+                        src="/icons/JennyWillsion.png"
+                        alt="icons/JennyWillsion"
+                        height={40}
+                        width={40}
+                    />
+                    <div className='flex flex-col gap-[2px]'>
+                        <span className='font-medium text-sm text-[#1F2937]'>Robert Fox</span>
+                        <span className='font-normal text-xs text-[#475467]'>3:24 PM</span>
+                    </div>
+                </div>
+                <div className='flex flex-col gap-1'>
+                    <h1 className='text-[#1F2937] font-semibold text-sm'>Mock test series are LIVE</h1>
+                    <span className='text-sm font-normal text-[#475467]'>Our new mock test series is now live. check it out now. Lorem ipsum dolor sit amet consectetur adipisicing elit. Eos corrupti, consequatur iste iure rem voluptatem amet itaque quos non modi pariatur molestiae praesentium, nihil voluptate fugit sapiente dolorum? Nesciunt, ut! Lorem, ipsum dolor sit amet consectetur adipisicing elit. Illo earum recusandae quam a culpa voluptatibus ipsam possimus magni nisi itaque tenetur excepturi, dolore reprehenderit explicabo! Molestias veniam facilis doloremque repellendus! Lorem ipsum dolor, sit amet consectetur adipisicing elit. Excepturi qui sunt itaque pariatur, ullam voluptate aspernatur mollitia fuga, doloribus temporibus quis numquam quod nesciunt eos tempora obcaecati cupiditate voluptatem quas.</span>
+                </div>
+                <hr className='bg-[#EAECF0] w-full' />
+            </div>
+        </div>
+    );
+}
+
+export default Announcement;

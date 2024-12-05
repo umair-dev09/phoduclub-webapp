@@ -18,14 +18,21 @@ function Announcement() {
             body: "Our new mock test series is now live. Check it out now.",
             imageUrl: "/icons/RobertFox.png",
         },
-
+        {
+            id: 2,
+            name: "Jenny Wilson",
+            time: "4:10 PM",
+            title: "New course material available",
+            body: "Updated course materials have been uploaded.",
+            imageUrl: "/icons/JennyWillsion.png",
+        },
     ];
 
     return (
         <div className="h-[300px]  flex-col  flex   overflow-y-auto rounded-b-lg">
             {announcements.length > 0 ? (
                 // Display announcements if they exist
-                announcements.map((announcement, index: number) => (
+                announcements.map((announcement, index) => (
                     <div key={announcement.id} className=' flex flex-col gap-4 p-6 items-start  h-auto '>
                         <div className=' flex flex-row gap-3 items-center'>
                             <Image
