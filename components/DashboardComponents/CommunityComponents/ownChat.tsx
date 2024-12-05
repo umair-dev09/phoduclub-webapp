@@ -14,6 +14,7 @@ import CommunityVideoPlayer from "@/components/CommunityVideoPlayer";
 import MediaViewDialog from "./MediaViewDialog";
 import Delete from "./Delete";
 type OwnChatProps = {
+    currentUserId: string;
     message: string | null;
     messageType: string | null;
     isReplying: boolean ;
@@ -33,6 +34,7 @@ type OwnChatProps = {
     headingId: string ;
     channelId: string ;
     isDeleted: boolean;
+    mentions: { userId: string; id: string }[];
     highlightedText: string | React.ReactNode[];
     isAdmin: boolean;
     isHighlighted: boolean; // New prop
@@ -46,10 +48,10 @@ type ReactionCount = {
     count: number;
   };
 
-function OwnChat({message, isDeleted, highlightedText, messageType, fileUrl, fileName, isHighlighted, isAdmin, scrollToReply, fileSize, senderId, timestamp, communityId, headingId, channelId, chatId, isReplying, replyingToId,replyingToChatId, replyingToFileName, replyingToFileUrl, replyingToMsg, replyingToMsgType, setShowReplyLayout, handleReply}:OwnChatProps) {
+
+
+function OwnChat({message, isDeleted, mentions, currentUserId, highlightedText, messageType, fileUrl, fileName, isHighlighted, isAdmin, scrollToReply, fileSize, senderId, timestamp, communityId, headingId, channelId, chatId, isReplying, replyingToId,replyingToChatId, replyingToFileName, replyingToFileUrl, replyingToMsg, replyingToMsgType, setShowReplyLayout, handleReply}:OwnChatProps) {
     const [reactions, setReactions] = useState<ReactionCount[]>([]);
-    const [activeButtonIndex, setActiveButtonIndex] = useState<number  | null>(null); // Use a single index to track the active button
-    const [copySuccess, setCopySuccess] = useState<string | null>(null);
     const [isOpen, setIsOpen] = useState(false);
     const [showBookmark, setShowBookmark] = useState(false); // Use a single index to track the active button
     const [showMediaDialog, setShowMediaDialog] = useState(false); // Use a single index to track the active button
@@ -85,10 +87,69 @@ function OwnChat({message, isDeleted, highlightedText, messageType, fileUrl, fil
         return () => unsubscribe();
       }, [reactionsRef]);
 
-    const handleClick = (index: number) => {
-        setActiveButtonIndex(index); // Set the clicked button as active
-    };
-  
+     
+      const renderMessageWithMentions = () => {
+        if (!highlightedText || !mentions) return highlightedText;
+      
+        // If highlightedText is a string, process mentions
+        if (typeof highlightedText === "string") {
+          const parts = highlightedText.split(/(@\w+)/); // Match mentions starting with "@"
+          return parts.map((part, index) => {
+            if (part.startsWith("@")) {
+              const mentionName = part.substring(1); // Extract mention name without "@"
+              const mention = mentions.find((m) => m.userId === mentionName);
+      
+              if (mention) {
+                // If the part is a mention, render it as a clickable span
+                return (
+                  <span
+                    key={index}
+                    style={{ color: "yellow", cursor: "pointer" }}
+                    onClick={() => alert(`You clicked on mention ID: ${mention.id}`)}
+                  >
+                    {part}
+                  </span>
+                );
+              }
+            }
+            return part; // Render non-mention parts as normal text
+          });
+        }
+      
+        // If highlightedText is an array of ReactNode, iterate through it
+        if (Array.isArray(highlightedText)) {
+          return highlightedText.map((node, index) => {
+            if (typeof node === "string") {
+              const parts = node.split(/(@\w+)/);
+              return parts.map((part, innerIndex) => {
+                if (part.startsWith("@")) {
+                  const mentionName = part.substring(1);
+                  const mention = mentions.find((m) => m.userId === mentionName);
+      
+                  if (mention) {
+                    return (
+                      <span
+                        key={`${index}-${innerIndex}`}
+                        style={{ color: "yellow", cursor: "pointer" }}
+                        onClick={() => alert(`You clicked on mention ID: ${mention.id}`)}
+                      >
+                        {part}
+                      </span>
+                    );
+                  }
+                }
+                return part;
+              });
+            }
+            return node; // Render non-string nodes as they are
+          });
+        }
+      
+        return null; // Return null if highlightedText is neither string nor ReactNode[]
+      };
+      
+      
+
     const handleReplyMessage = () =>{
        setShowReplyLayout(true);
        setIsOpen(false);
@@ -285,7 +346,11 @@ const handleCopy = async () => {
                     onClick={() => scrollToReply(replyingToChatId || '')}>
                         <div className="flex flex-col mr-6 justify-center">
                         <div className="flex flex-row gap-2">
-                        <h4 className="font-semibold">Marvin McKinney</h4>
+                         {replyingToId === currentUserId ?(
+                        <h4 className="font-semibold">You</h4>
+                         ):(
+                            <h4 className="font-semibold">Marvin McKinney</h4>
+                         )}   
                         {/* <div className="">Admin</div> */}
                     </div>
                     <div className="flex flex-row gap-1 mt-[2px] ">
@@ -300,12 +365,12 @@ const handleCopy = async () => {
                     )}    
                     <div className="break-all">
                     {replyingToMsg !== null && replyingToMsgType !== 'document'
-    ? replyingToMsg // Show message if it's not null and not a document
-    : replyingToMsgType === 'document'
-    ? replyingToFileName // Always show fileName for document
-    : (replyingToMsgType === 'image' && 'Image') ||
-      (replyingToMsgType === 'video' && 'Video') ||
-      'Unknown Type'}</div>
+                    ? replyingToMsg // Show message if it's not null and not a document
+                    : replyingToMsgType === 'document'
+                    ? replyingToFileName // Always show fileName for document
+                    : (replyingToMsgType === 'image' && 'Image') ||
+                    (replyingToMsgType === 'video' && 'Video') ||
+                    'Unknown Type'}</div>
                     </div>
                         </div>
                         {replyingToMsgType === 'image' &&(
@@ -319,7 +384,7 @@ const handleCopy = async () => {
                                 <div className="italic text-[#475467]">You deleted this message</div>
                             ) : (
                             <div>
-                            {highlightedText}
+                                {renderMessageWithMentions()}
                             </div>
                             )}
                             
