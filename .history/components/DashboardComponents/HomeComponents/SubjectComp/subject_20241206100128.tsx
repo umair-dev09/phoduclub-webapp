@@ -46,11 +46,13 @@ const SubjectLayout: React.FC = () => {
 
 
     const [selectedSubject, setSelectedSubject] = useState<string | null>(null);
-    const [showDrawer, setShowDrawer] = useState(false);
+
     const openBottomSheet = (subjectName: string) => {
         setSelectedSubject(subjectName);
         setShowDrawer(true);
     };
+    const [showDrawer, setShowDrawer] = useState(false);
+
 
     return (
         <div className="grid grid-cols-2 gap-5 p-6 w-full">
@@ -96,7 +98,7 @@ const SubjectLayout: React.FC = () => {
                 );
             })}
 
-            <BottomSheet isOpen={showDrawer} closeModal={() => setShowDrawer(!showDrawer)} subjectName={selectedSubject} />
+            {showDrawer && <BottomSheet closeModal={() => setShowDrawer(!showDrawer)} subjectName={selectedSubject} />}
 
         </div>
     );

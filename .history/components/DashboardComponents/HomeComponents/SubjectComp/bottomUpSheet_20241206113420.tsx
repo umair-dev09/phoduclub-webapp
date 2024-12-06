@@ -169,8 +169,11 @@ const BottomSheet: React.FC<BottomUpSheet> = ({ closeModal, isOpen, subjectName 
                                         <th className="text-left pl-6 w-1/4">Chapter</th>
                                         <Popover placement="bottom">
                                             <PopoverTrigger>
-                                                <button className="flex flex-row gap-1 justify-center my-4 items-center focus:outline-none">
-                                                    <th className="w-1/8">Priority</th>
+                                                <button className="flex flex-row gap-1 justify-center items-center focus:outline-none">
+                                                    {/* Remove 'flex' from 'th' and wrap the content in a div */}
+                                                    <div className="flex justify-center items-center w-full">
+                                                        <span className="text-center">Priority</span>
+                                                    </div>
                                                 </button>
                                             </PopoverTrigger>
                                             <PopoverContent className="w-auto py-1 px-0 bg-white border border-lightGrey rounded-md">
@@ -185,9 +188,14 @@ const BottomSheet: React.FC<BottomUpSheet> = ({ closeModal, isOpen, subjectName 
                                                 <button className="flex flex-row items-center justify-start w-full px-4 py-[0.625rem]  gap-2 hover:bg-[#F2F4F7]">
                                                     <span className="w-2 h-2 bg-[#DE3024] rounded-full "></span>
                                                     <span className="font-medium text-[#344054] text-sm">High</span>
+
                                                 </button>
                                             </PopoverContent>
                                         </Popover>
+
+
+
+
                                         <th className="w-1/8">Target Date</th>
                                         <th className="w-1/10">Theory</th>
                                         <th className="w-1/10">Practice</th>

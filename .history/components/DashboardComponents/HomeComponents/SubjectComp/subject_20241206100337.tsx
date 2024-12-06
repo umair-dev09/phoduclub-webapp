@@ -96,7 +96,7 @@ const SubjectLayout: React.FC = () => {
                 );
             })}
 
-            <BottomSheet isOpen={showDrawer} closeModal={() => setShowDrawer(!showDrawer)} subjectName={selectedSubject} />
+            {showDrawer && <BottomSheet closeModal={() => setShowDrawer(!showDrawer)} subjectName={selectedSubject} />}
 
         </div>
     );
