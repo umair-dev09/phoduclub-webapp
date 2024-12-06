@@ -1,5 +1,6 @@
 "use client";
 
+import React, { useMemo } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
@@ -19,7 +20,6 @@ import { Calendar } from "@nextui-org/calendar";
 import { today, getLocalTimeZone } from "@internationalized/date";
 import { Checkbox } from "@nextui-org/react";
 import { Popover, PopoverContent, PopoverTrigger } from "@nextui-org/popover";
-import { useMemo } from 'react';
 
 // Define types for customer care data
 type Customer = {
