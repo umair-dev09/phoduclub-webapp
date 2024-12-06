@@ -167,27 +167,38 @@ const BottomSheet: React.FC<BottomUpSheet> = ({ closeModal, isOpen, subjectName 
                                 <thead className="bg-[#F9FAFB] h-11">
                                     <tr className="text-xs text-gray-700">
                                         <th className="text-left pl-6 w-1/4">Chapter</th>
+                                        <th className="w-1/8">Priority</th>
                                         <Popover placement="bottom">
                                             <PopoverTrigger>
-                                                <button className="flex flex-row gap-1 justify-center my-4 items-center focus:outline-none">
-                                                    <th className="w-1/8">Priority</th>
+                                                <button className="flex flex-row gap-1  focus:outline-none">
                                                 </button>
                                             </PopoverTrigger>
                                             <PopoverContent className="w-auto py-1 px-0 bg-white border border-lightGrey rounded-md">
                                                 <button className="flex flex-row items-center justify-start w-full px-4 py-[0.625rem]  gap-2 hover:bg-[#F2F4F7]">
-                                                    <span className="w-2 h-2 bg-[#0B9055] rounded-full "></span>
-                                                    <span className="font-medium text-[#344054] text-sm">Low</span>
+                                                    <div className="bg-[#F2F4F7] py-2 px-3 gap-1 flex flex-row rounded-[6px] items-center h-6 w-auto">
+                                                        <span className="w-[6px] h-[6px] bg-[#182230] rounded-full "></span>
+                                                        <span className="font-medium text-[#182230] text-xs">Low</span>
+                                                    </div>
                                                 </button>
                                                 <button className="flex flex-row items-center justify-start w-full px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7]" >
-                                                    <span className="w-2 h-2 bg-[#DB6704] rounded-full "></span>
-                                                    <span className="font-medium text-[#344054] text-sm">Medium</span>
+                                                    <div className="bg-[#FFEFC6] py-2 px-3 gap-1 flex flex-row rounded-[6px] items-center h-6 w-auto">
+                                                        <span className="w-[6px] h-[6px] bg-[#93360D] rounded-full "></span>
+                                                        <span className="font-medium text-[#93360D] text-xs">Medium</span>
+                                                    </div>
                                                 </button>
                                                 <button className="flex flex-row items-center justify-start w-full px-4 py-[0.625rem]  gap-2 hover:bg-[#F2F4F7]">
-                                                    <span className="w-2 h-2 bg-[#DE3024] rounded-full "></span>
-                                                    <span className="font-medium text-[#344054] text-sm">High</span>
+
+                                                    <div className="bg-[#FEE4E2] py-2 px-3 gap-1 flex flex-row rounded-[6px] items-center h-6 w-auto">
+                                                        <span className="w-[6px] h-[6px] bg-[#9A221A] rounded-full "></span>
+                                                        <span className="font-medium text-[#9A221A] text-xs">High</span>
+                                                    </div>
                                                 </button>
                                             </PopoverContent>
                                         </Popover>
+
+
+
+
                                         <th className="w-1/8">Target Date</th>
                                         <th className="w-1/10">Theory</th>
                                         <th className="w-1/10">Practice</th>

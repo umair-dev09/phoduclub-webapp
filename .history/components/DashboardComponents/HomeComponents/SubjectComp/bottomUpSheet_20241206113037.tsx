@@ -169,25 +169,39 @@ const BottomSheet: React.FC<BottomUpSheet> = ({ closeModal, isOpen, subjectName 
                                         <th className="text-left pl-6 w-1/4">Chapter</th>
                                         <Popover placement="bottom">
                                             <PopoverTrigger>
-                                                <button className="flex flex-row gap-1 justify-center my-4 items-center focus:outline-none">
-                                                    <th className="w-1/8">Priority</th>
+                                                <button className="flex flex-row gap-1 justify-center items-center focus:outline-none">
+                                                    {/* Remove 'flex' from 'th' and wrap the content in a div */}
+                                                    <div className="flex justify-center items-center w-full">
+                                                        <span className="text-center">Priority</span>
+                                                    </div>
                                                 </button>
                                             </PopoverTrigger>
                                             <PopoverContent className="w-auto py-1 px-0 bg-white border border-lightGrey rounded-md">
                                                 <button className="flex flex-row items-center justify-start w-full px-4 py-[0.625rem]  gap-2 hover:bg-[#F2F4F7]">
-                                                    <span className="w-2 h-2 bg-[#0B9055] rounded-full "></span>
-                                                    <span className="font-medium text-[#344054] text-sm">Low</span>
+
+                                                    <span className="w-[6px] h-[6px] bg-[#182230] rounded-full "></span>
+                                                    <span className="font-medium text-[#182230] text-xs">Low</span>
+
                                                 </button>
                                                 <button className="flex flex-row items-center justify-start w-full px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7]" >
-                                                    <span className="w-2 h-2 bg-[#DB6704] rounded-full "></span>
-                                                    <span className="font-medium text-[#344054] text-sm">Medium</span>
+
+                                                    <span className="w-[6px] h-[6px] bg-[#93360D] rounded-full "></span>
+                                                    <span className="font-medium text-[#93360D] text-xs">Medium</span>
+
                                                 </button>
                                                 <button className="flex flex-row items-center justify-start w-full px-4 py-[0.625rem]  gap-2 hover:bg-[#F2F4F7]">
-                                                    <span className="w-2 h-2 bg-[#DE3024] rounded-full "></span>
-                                                    <span className="font-medium text-[#344054] text-sm">High</span>
+
+
+                                                    <span className="w-[6px] h-[6px] bg-[#9A221A] rounded-full "></span>
+                                                    <span className="font-medium text-[#9A221A] text-xs">High</span>
+
                                                 </button>
                                             </PopoverContent>
                                         </Popover>
+
+
+
+
                                         <th className="w-1/8">Target Date</th>
                                         <th className="w-1/10">Theory</th>
                                         <th className="w-1/10">Practice</th>

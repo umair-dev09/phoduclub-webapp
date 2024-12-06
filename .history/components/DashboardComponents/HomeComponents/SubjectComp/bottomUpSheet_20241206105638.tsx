@@ -1,9 +1,10 @@
+
+import styles from './bottomUpSheet.module.css';
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
 import { Checkbox } from "@nextui-org/react";
 import Drawer from "react-modern-drawer";
 import "react-modern-drawer/dist/index.css";
-import { Popover, PopoverContent, PopoverTrigger } from "@nextui-org/popover";
 
 interface BottomUpSheet {
     isOpen: boolean;
@@ -30,7 +31,7 @@ const BottomSheet: React.FC<BottomUpSheet> = ({ closeModal, isOpen, subjectName 
     };
 
     const chapterPriorityMapping: Record<string, string> = {
-        'Algebra': 'Medium',
+        'Algebra': 'High',
         'Calculus': 'easy',
         'Geometry': 'Low',
         'History': 'High',
@@ -112,8 +113,8 @@ const BottomSheet: React.FC<BottomUpSheet> = ({ closeModal, isOpen, subjectName 
                         </td>
                         <td>
                             <div>
-                                <div className="inline-flex items-center justify-center border border-gray-300 rounded-full bg-white text-sm font-medium text-gray-700 gap-2 w-auto h-auto p-4 whitespace-nowrap overflow-hidden shadow-sm" style={{ width: '67px', height: '28px' }}>
-                                    <span className="w-2 h-2 bg-red-500 rounded-full "></span>
+                                <div className="inline-flex items-center justify-center border border-gray-300 rounded-full bg-white text-sm font-medium text-gray-700 p-2 max-w-full whitespace-nowrap overflow-hidden shadow-sm" style={{ width: '67px', height: '28px' }}>
+                                    <span className="w-2 h-2 bg-red-500 rounded-full mr-2"></span>
                                     <p className="m-0 text-sm text-gray-700">{getPriorityText(chapterName)}</p>
                                 </div>
                             </div>
@@ -146,48 +147,26 @@ const BottomSheet: React.FC<BottomUpSheet> = ({ closeModal, isOpen, subjectName 
                 className="rounded-tl-md rounded-tr-md "
                 style={{ height: "98vh" }}
             >
-                <div className="flex flex-col h-full justify-between">
-                    {/* jabir ali */}
-                    <div className="flex flex-col h-full overflow-auto">
-                        <div className="flex flex-row items-center justify-between rounded-t-xl h-[69px]">
-                            <h3 className="ml-6">{subjectName || "Subject"}</h3>
-                            <button onClick={closeModal}>
-                                <Image
-                                    className="mr-6"
-                                    src="/icons/VectorcloseButton.svg"
-                                    alt="close button"
-                                    width={11.67}
-                                    height={11.67}
-                                />
-                            </button>
-                        </div>
-
-                        <div className="overflow-auto h-auto">
+                <div className="flex flex-col h-full">
+                    <div className="flex flex-row items-center justify-between rounded-t-xl h-[69px]">
+                        <h3 className="ml-6">{subjectName || "Subject"}</h3>
+                        <button onClick={closeModal}>
+                            <Image
+                                className="mr-6"
+                                src="/icons/VectorcloseButton.svg"
+                                alt="close button"
+                                width={11.67}
+                                height={11.67}
+                            />
+                        </button>
+                    </div>
+                    <div>
+                        <div className="overflow-auto">
                             <table className="w-full table-fixed border border-solid border-[#EAECF0]">
                                 <thead className="bg-[#F9FAFB] h-11">
                                     <tr className="text-xs text-gray-700">
                                         <th className="text-left pl-6 w-1/4">Chapter</th>
-                                        <Popover placement="bottom">
-                                            <PopoverTrigger>
-                                                <button className="flex flex-row gap-1 justify-center my-4 items-center focus:outline-none">
-                                                    <th className="w-1/8">Priority</th>
-                                                </button>
-                                            </PopoverTrigger>
-                                            <PopoverContent className="w-auto py-1 px-0 bg-white border border-lightGrey rounded-md">
-                                                <button className="flex flex-row items-center justify-start w-full px-4 py-[0.625rem]  gap-2 hover:bg-[#F2F4F7]">
-                                                    <span className="w-2 h-2 bg-[#0B9055] rounded-full "></span>
-                                                    <span className="font-medium text-[#344054] text-sm">Low</span>
-                                                </button>
-                                                <button className="flex flex-row items-center justify-start w-full px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7]" >
-                                                    <span className="w-2 h-2 bg-[#DB6704] rounded-full "></span>
-                                                    <span className="font-medium text-[#344054] text-sm">Medium</span>
-                                                </button>
-                                                <button className="flex flex-row items-center justify-start w-full px-4 py-[0.625rem]  gap-2 hover:bg-[#F2F4F7]">
-                                                    <span className="w-2 h-2 bg-[#DE3024] rounded-full "></span>
-                                                    <span className="font-medium text-[#344054] text-sm">High</span>
-                                                </button>
-                                            </PopoverContent>
-                                        </Popover>
+                                        <th className="w-1/8">Priority</th>
                                         <th className="w-1/8">Target Date</th>
                                         <th className="w-1/10">Theory</th>
                                         <th className="w-1/10">Practice</th>
@@ -202,34 +181,20 @@ const BottomSheet: React.FC<BottomUpSheet> = ({ closeModal, isOpen, subjectName 
                                 </tbody>
                             </table>
                         </div>
-                        <h1>jabir</h1>
-                        <h1>jabir</h1>
 
-                        <h1>jabir</h1>
-                        <h1>jabir</h1>
-                        <h1>jabir</h1>
-                        <h1>jabir</h1>
-                        <h1>jabir</h1>
-                        <h1>jabir</h1>
-                        <h1>jabir</h1>
-                        <h1>jabir</h1>
-                        <h1>jabir</h1>
 
                     </div>
-
-                    <div className="flex flex-row items-center gap-4 justify-end border-t border-[#EAECF0] h-[76px] pr-6">
-                        <button
-                            className="h-11 w-22 py-4 px-6 shadow-inner-button flex flex-row items-center justify-center rounded-md bg-[#FFFFFF] border-2 border-solid border-[#EAECF0]"
+                    <div className="flex flex-row justify-end mx-6 my-4 gap-4">
+                        <button className="h-11 w-22 shadow-inner-button flex items-center justify-center rounded-md bg-[#9012FF] border border-solid border-[#800EE2]"
                             onClick={closeModal}
                         >
-                            <p className="font-semibold text-sm text-[#1D2939]">Cancel</p>
+                            <p>Cancel</p>
                         </button>
-                        <button className="h-11 w-22 py-4 px-6 shadow-inner-button flex flex-row items-center justify-center rounded-md bg-[#9012FF]">
-                            <p className="text-sm font-semibold text-[#FFFFFF]">Save</p>
+                        <button className="h-11 w-22 shadow-inner-button flex items-center justify-center rounded-md bg-[#9012FF] border border-solid border-[#800EE2]">
+                            <p className='text-sm font-semibold text-[#FFFFFF]'>Save</p>
                         </button>
                     </div>
                 </div>
-
 
             </Drawer >
         </>

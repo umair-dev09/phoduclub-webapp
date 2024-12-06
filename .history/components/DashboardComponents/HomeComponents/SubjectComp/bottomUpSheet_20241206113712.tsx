@@ -170,7 +170,10 @@ const BottomSheet: React.FC<BottomUpSheet> = ({ closeModal, isOpen, subjectName 
                                         <Popover placement="bottom">
                                             <PopoverTrigger>
                                                 <button className="flex flex-row gap-1 justify-center my-4 items-center focus:outline-none">
+
+
                                                     <th className="w-1/8">Priority</th>
+
                                                 </button>
                                             </PopoverTrigger>
                                             <PopoverContent className="w-auto py-1 px-0 bg-white border border-lightGrey rounded-md">
