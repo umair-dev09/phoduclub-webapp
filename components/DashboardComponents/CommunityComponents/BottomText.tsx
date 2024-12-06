@@ -3,7 +3,7 @@ import { PopoverContent, PopoverTrigger, Popover } from "@nextui-org/popover";
 import Image from "next/image";
 import EmojiPicker, { EmojiClickData } from "emoji-picker-react";
 import { auth, db, storage } from "@/firebase";
-import { addDoc, collection, doc, getDoc, serverTimestamp, setDoc } from "firebase/firestore";
+import { addDoc, collection, doc, getDoc,getDocs, serverTimestamp, setDoc } from "firebase/firestore";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import MuxUploader from "@mux/mux-uploader-react";
 type BottomTextProps = {
@@ -14,6 +14,18 @@ type BottomTextProps = {
   communityId: string | null;
   replyData: { message: string | null; senderId: string | null; messageType: string | null; fileUrl: string | null; fileName: string | null; chatId: string | null; } | null;
 };
+
+type UserData = {
+  name: string;
+  uniqueId: string;
+  userId: string;
+  profilePic: string;
+}
+
+interface Mention {
+  userId: string;
+  id: string;
+}
 
 function BottomText({
   showReplyLayout,
@@ -34,6 +46,12 @@ function BottomText({
   const [isMediaPopupOpen, setIsMediaPopupOpen] = useState(false);
   const [uploadTaskRef, setUploadTaskRef] = useState<any>(null); // State to hold the upload task reference
   const [replyName, setReplyName] = useState<string | null>(null);
+  const [users, setUsers] = useState<UserData[]>([]);
+  const [filteredUsers, setFilteredUsers] = useState<UserData[]>([]);
+  const [showUserList, setShowUserList] = useState(false);
+  const [cursorPosition, setCursorPosition] = useState<number | null>(null);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const [mentions, setMentions] = useState<Mention[]>([]);
 
   useEffect(() => {
     const fetchReplyName = async () => {
@@ -62,17 +80,102 @@ function BottomText({
     }
   }, [showReplyLayout, replyData]);
 
+ // Fetch users from Firestore
+ useEffect(() => {
+  const fetchUsers = async () => {
+    try {
+      const currentUser = auth.currentUser; // Get the current user from Firebase Auth
+      if (!currentUser) {
+        console.error("User is not authenticated");
+        return;
+      }
+
+      const currentUserId = currentUser.uid; // Use the current user's UID
+
+      const usersCollection = collection(db, "users");
+      const querySnapshot = await getDocs(usersCollection);
+
+      const userList: UserData[] = querySnapshot.docs
+        .map((doc) => ({
+          name: doc.data().name,
+          uniqueId: doc.data().uniqueId,
+          userId: doc.data().userId,
+          profilePic: doc.data().profilePic,
+        }))
+        .filter((user) => user.uniqueId !== currentUserId); // Exclude current user
+
+      setUsers(userList);
+    } catch (error) {
+      console.error("Error fetching users:", error);
+    }
+  };
+
+  fetchUsers();
+}, []);
+
+  const highlightMentions = (value: string) => {
+    const mentionRegex = /@(\w+)/g; // Match @username
+    return value.replace(
+      mentionRegex,
+      (match) => `<span class="text-purple">${match}</span>`
+    );
+  };
+
   const handleInput = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    const text = e.target.value;
-    setText(text);
+    const value = e.target.value;
+    setText(value);
+  
+    // Detect `@` symbol
+    const caretPosition = e.target.selectionStart;
+    setCursorPosition(caretPosition);
+  
+    const words = value.slice(0, caretPosition).split(" ");
+    const lastWord = words[words.length - 1];
+  
+    if (lastWord.startsWith("@")) {
+      const searchText = lastWord.slice(1).toLowerCase();
+      const matchingUsers = users.filter((user) =>
+        user.name.toLowerCase().includes(searchText)
+      );
+      setFilteredUsers(matchingUsers);
+      setShowUserList(true);
+    } else {
+      setShowUserList(false);
+    }
 
     e.target.style.height = "32px";
     const newHeight = e.target.scrollHeight <= 120 ? e.target.scrollHeight : 120;
     e.target.style.height = `${newHeight}px`;
-
     setHeight(newHeight < 120 ? "32px" : "120px");
   };
-
+  
+  const handleUserSelect = (user: UserData) => {
+    if (!textareaRef.current || cursorPosition === null) return;
+  
+    const beforeCursor = text.slice(0, cursorPosition);
+    const afterCursor = text.slice(cursorPosition);
+  
+    // Replace `@text` with selected username
+    const words = beforeCursor.split(" ");
+    words.pop(); // Remove the partial mention
+    const newText = `${words.join(" ")} @${user.userId} ${afterCursor}`.trim();
+  
+    setText(newText);
+    setShowUserList(false);
+  
+    // Store the mention with both name and uniqueId
+    setMentions((prevMentions) => [
+      ...prevMentions,
+      { userId: user.userId, id: user.uniqueId },
+    ]);
+  
+    // Set the cursor position after the inserted username
+    setTimeout(() => {
+      const newPosition = newText.length - afterCursor.length;
+      textareaRef.current!.setSelectionRange(newPosition, newPosition);
+    }, 0);
+  };
+  
   const handleFocus = () => setIsFocused(true);
   const handleBlur = () => setIsFocused(false);
 
@@ -85,24 +188,25 @@ function BottomText({
       console.error("Missing required information");
       return;
     }
-
+  
     try {
       const user = auth.currentUser;
       if (!user) {
         console.error("User is not authenticated");
         return;
       }
-
+  
       const chatsRef = collection(
         db,
         `communities/${communityId}/channelsHeading/${headingId}/channels/${channelId}/chats`
       );
-
+  
       const newChatRef = doc(chatsRef);
       const chatId = newChatRef.id;
-
+  
+      // Prepare message data
       const messageData = {
-        message: text || null, // store text only if available
+        message: text || null,
         chatId: chatId,
         senderId: user.uid,
         timestamp: serverTimestamp(),
@@ -114,23 +218,30 @@ function BottomText({
         replyingToFileUrl: showReplyLayout ? replyData?.fileUrl : null,
         replyingToFileName: showReplyLayout ? replyData?.fileName : null,
         messageType: fileUrl ? fileType : "text", // Set message type based on file upload
-        fileUrl: fileUrl || null, // Store file URL if media is uploaded
-        fileName: fileName || null, // Store file name
-        fileSize: selectedFile?.size || null, // Store file size if a file is uploaded
+        fileUrl: fileUrl || null,
+        fileName: fileName || null,
+        fileSize: selectedFile?.size || null,
+        mentions: mentions.length ? mentions : [], // Store mentions as an array of objects
       };
-
+  
+      // Store the message with mentions in Firestore
       await setDoc(newChatRef, messageData);
       console.log("Message stored successfully");
-      setText(""); 
-      setFileUrl(null); // Reset file URL after message is sent
-      setProgress(null); 
-      setFileName(null); // Reset file name after sending
-      setSelectedFile(null); // Reset selected file
+  
+      // Reset states after sending message
+      setText("");
+      setFileUrl(null);
+      setProgress(null);
+      setFileName(null);
+      setSelectedFile(null);
+      setMentions([]); // Clear mentions
       setShowReplyLayout(false);
+      setHeight('32px');
     } catch (error) {
       console.error("Error sending message:", error);
     }
   };
+  
 
 
   const handleMediaUpload = async (file: File, type: "image" | "video" | "document") => {
@@ -265,11 +376,32 @@ function BottomText({
       
       {/* Reply Layout End */}
 
-      
+      {showUserList && (
+        <div className="flex flex-col w-full bg-white max-h-[200px] overflow-y-auto  mb-2 justify-between items-start">
+          {filteredUsers.length > 0 ? (
+            filteredUsers.map((user) => (
+              <div className="flex flex-col w-full">
+              <div
+                key={user.uniqueId}
+                className="flex flex-row gap-2 p-2 cursor-pointer w-full hover:bg-gray-100 items-center"
+                onClick={() => handleUserSelect(user)}
+              >
+              <Image className="w-[36px] h-[36px] rounded-full" src={user.profilePic} alt='pic' width={36} height={36} />
+                <span className="text-sm">{user.name}</span>
+              </div>
+              <hr className="border-[#f1f1f1]"/>
+              </div>
+            ))
+          ) : (
+            <div className="p-1 text-gray-500 text-sm mb-1 mt-[-4px]">No users found</div>
+          )}
+        </div>
+      )}
 
       <div className='flex flex-row'>
         <div className={`flex flex-row rounded-md w-full h-auto bg-[#FCFCFD] py-[6px] ${isFocused ? 'border border-[#D6BBFB]' : 'border border-[#D0D5DD]'}`}>
           <textarea
+          ref={textareaRef}
             value={text}
             onChange={handleInput}
             onFocus={handleFocus}
@@ -285,7 +417,7 @@ function BottomText({
                   <Image src='/icons/emojies.svg' alt='emojis icon' width={21} height={21} />
                 </button>
               </PopoverTrigger>
-              <PopoverContent>
+              <PopoverContent className="p-0">
                 <EmojiPicker onEmojiClick={handleEmojiClick} hiddenEmojis={['1f595']} />
               </PopoverContent>
             </Popover>
@@ -296,7 +428,7 @@ function BottomText({
                   <Image src='/icons/files.svg' alt='attachment icon' width={21} height={21} />
                 </button>
               </PopoverTrigger>
-              <PopoverContent>
+              <PopoverContent className="p-0">
                 <div className='flex flex-col bg-[#FFFFFF] w-auto h-auto border border-[#EAECF0] rounded-md shadow-md'>
                   <button
                     className='flex flex-row items-center gap-2 w-30 px-4 py-[10px] transition-colors hover:bg-neutral-100 rounded-tr-md rounded-tl-md'

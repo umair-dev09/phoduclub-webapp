@@ -53,6 +53,8 @@ type Chat = {
   replyingToFileUrl: string;
   replyingToFileName: string;
   isDeleted: boolean;
+  isAdmin: boolean;
+  mentions: { userId: string; id: string }[];
 };
 
 export default function CommunityName() {
@@ -448,8 +450,10 @@ export default function CommunityName() {
               scrollToReply={scrollToReply}
               isHighlighted={highlightedChatId === chat.chatId}
               setShowReplyLayout={setShowReplyLayout}
+              currentUserId={user.uid}
               highlightedText={highlightedText}
               messageType={chat.messageType}
+              mentions={chat.mentions}
               fileUrl={chat.fileUrl}
               fileName={chat.fileName}
               fileSize={chat.fileSize}
@@ -466,34 +470,40 @@ export default function CommunityName() {
               communityId={communityId ?? ""}
               channelId={selectedChannel.channelId}
               headingId={selectedChannel.headingId ?? ""}
-              isAdmin={false}
+              isAdmin={chat.isAdmin}
               message={chat.message}
               isDeleted={chat.isDeleted}
             />
           ) : (
             <OtherChat
-              handleReply={handleReply}
-              setShowReplyLayout={setShowReplyLayout}
-              highlightedText={highlightedText}
-              messageType={chat.messageType}
-              fileUrl={chat.fileUrl}
-              fileName={chat.fileName}
-              fileSize={chat.fileSize}
-              senderId={chat.senderId}
-              timestamp={chat.timestamp}
-              isReplying={chat.isReplying}
-              replyingToId={chat.replyingToId}
-              replyingToMsg={chat.replyingToMsg}
-              replyingToMsgType={chat.replyingToMsgType}
-              replyingToFileName={chat.replyingToFileName}
-              replyingToFileUrl={chat.replyingToFileUrl}
-              replyingToChatId={chat.replyingToChatId}
-              chatId={chat.chatId}
-              communityId={communityId ?? ""}
-              channelId={selectedChannel.channelId}
-              headingId={selectedChannel.headingId ?? ""}
-              isAdmin={false}
-              message={chat.message}
+            handleReply={handleReply}
+            scrollToReply={scrollToReply}
+            currentUserId={user?.uid || ''}
+            isHighlighted={highlightedChatId === chat.chatId}
+            setShowReplyLayout={setShowReplyLayout}
+            highlightedText={highlightedText}
+            messageType={chat.messageType}
+            fileUrl={chat.fileUrl}
+            mentions={chat.mentions}
+            fileName={chat.fileName}
+            fileSize={chat.fileSize}
+            senderId={chat.senderId}
+            timestamp={chat.timestamp}
+            isReplying={chat.isReplying}
+            replyingToId={chat.replyingToId}
+            replyingToMsg={chat.replyingToMsg}
+            replyingToMsgType={chat.replyingToMsgType}
+            replyingToFileName={chat.replyingToFileName}
+            replyingToFileUrl={chat.replyingToFileUrl}
+            replyingToChatId={chat.replyingToChatId}
+            chatId={chat.chatId}
+            communityId={communityId ?? ""}
+            channelId={selectedChannel.channelId}
+            headingId={selectedChannel.headingId ?? ""}
+            isAdmin={chat.isAdmin}
+            message={chat.message}
+            isDeleted={chat.isDeleted}
+            setLoading={setLoading}
             />
           )}
         </div>

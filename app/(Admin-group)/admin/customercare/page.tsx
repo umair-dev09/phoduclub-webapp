@@ -19,6 +19,7 @@ import { Calendar } from "@nextui-org/calendar";
 import { today, getLocalTimeZone } from "@internationalized/date";
 import { Checkbox } from "@nextui-org/react";
 import { Popover, PopoverContent, PopoverTrigger } from "@nextui-org/popover";
+import { useMemo } from 'react';
 
 // Define types for customer care data
 type Customer = {
@@ -58,17 +59,7 @@ function CustomerCare() {
     const [searchTerm, setSearchTerm] = useState('');
     const router = useRouter();
     const [isPopoverOpen, setIsPopoverOpen] = useState(false);
-    const [selectedRows, setSelectedRows] = useState<Set<string>>(new Set());
     const [isSelcetDateOpen, setIsSelectDateOpen] = useState(false);
-
-    // Global Selection State
-    const [selectedItems, setSelectedItems] = useState<{
-        pageSelected: Set<string>,
-        allSelected: Set<string>
-    }>({
-        pageSelected: new Set(),
-        allSelected: new Set()
-    });
 
     // Fetch customer care when component mounts
     useEffect(() => {
@@ -81,33 +72,6 @@ function CustomerCare() {
         };
         loadCustomerCare();
     }, []);
-
-    const lastItemIndex = currentPage * itemsPerPage;
-    const firstItemIndex = lastItemIndex - itemsPerPage;
-    const currentItems = data.slice(firstItemIndex, lastItemIndex);
-
-    const handlePageSelectAll = () => {
-        const currentPageIds = currentItems.map(item => item.uniqueId);
-
-        // Toggle between fully selected and not selected
-        if (selectedItems.pageSelected.size === currentItems.length) {
-            // If all are currently selected, deselect everything
-            setSelectedItems(prev => ({
-                pageSelected: new Set(),
-                allSelected: new Set()
-            }));
-        } else {
-            // Select all items on the current page
-            setSelectedItems(prev => ({
-                pageSelected: new Set(currentPageIds),
-                allSelected: new Set() // Reset global selection when page selection changes
-            }));
-        }
-    };
-
-    // Calculation for checkbox states
-    const isPageFullySelected = selectedItems.pageSelected.size === currentItems.length && currentItems.length > 0;
-    const isPagePartiallySelected = selectedItems.pageSelected.size > 0 && selectedItems.pageSelected.size < currentItems.length;
 
     // Function to handle tab click and navigate to a new route
     const handleTabClick = (path: string) => {
@@ -240,31 +204,6 @@ function CustomerCare() {
         setCurrentPage(1); // Reset to first page when filters change
     }, [searchTerm, checkedState, customerCare, selectedDate]);
 
-    // Update handleItemSelect to handle both page and global selection
-    const handleItemSelect = (itemId: string) => {
-        const newPageSelected = new Set(selectedItems.pageSelected);
-        const newAllSelected = new Set(selectedItems.allSelected);
-
-        if (newPageSelected.has(itemId)) {
-            newPageSelected.delete(itemId);
-            newAllSelected.delete(itemId);
-        } else {
-            newPageSelected.add(itemId);
-        }
-
-        setSelectedItems(prev => ({
-            pageSelected: newPageSelected,
-            allSelected: newAllSelected
-        }));
-    };
-
-    const selectAllItems = () => {
-        setSelectedItems(prev => ({
-            pageSelected: new Set(),
-            allSelected: new Set(data.map(item => item.uniqueId))
-        }));
-    };
-
     // Format selected date as 'Nov 9, 2024'
     const formattedDate = selectedDate
         ? selectedDate.toLocaleDateString("en-US", { year: 'numeric', month: 'short', day: 'numeric' })
@@ -279,6 +218,66 @@ function CustomerCare() {
         Reopened: '#7400E0',
         Blocker: '#7400E0',
         Replied: '#7400E0',
+    };
+
+    // ------------------------------------------ checkbox logic ------------------------------------------
+
+    const [selectedRows, setSelectedRows] = useState<Set<string>>(new Set());
+
+    // Compute current page items
+    const lastItemIndex = currentPage * itemsPerPage;
+    const firstItemIndex = lastItemIndex - itemsPerPage;
+    const currentItems = data.slice(firstItemIndex, lastItemIndex);
+
+    // Compute if all items on current page are selected and handle indeterminate state
+    const { isAllSelected, isIndeterminate } = useMemo(() => {
+        const totalItems = data.length; // Total items in the dataset
+        const selectedItemsCount = data.filter(item => selectedRows.has(item.uniqueId)).length;
+
+        return {
+            // Check if all items in the dataset are selected
+            isAllSelected: totalItems > 0 && selectedItemsCount === totalItems,
+            // Check if there are some selected but not all
+            isIndeterminate: selectedItemsCount > 0 && selectedItemsCount < totalItems
+        };
+    }, [data, selectedRows]);
+
+    const deselectAllRows = () => {
+        setSelectedRows(new Set()); // Clear all selected rows
+    };
+
+    // Function to toggle selection of a single row
+    const toggleRowSelection = (uniqueId: string) => {
+        setSelectedRows(prev => {
+            const newSelectedRows = new Set(prev);
+            if (newSelectedRows.has(uniqueId)) {
+                newSelectedRows.delete(uniqueId);
+            } else {
+                newSelectedRows.add(uniqueId);
+            }
+            return newSelectedRows;
+        });
+    };
+
+    const toggleAllRowsSelection = () => {
+        setSelectedRows(prev => {
+            const newSelectedRows = new Set(prev);
+
+            // Check if ALL items are currently selected across all pages
+            const allItemsSelected = data.every(item => newSelectedRows.has(item.uniqueId));
+
+            if (allItemsSelected) {
+                // If all items are selected, clear the selection completely
+                newSelectedRows.clear();
+            } else {
+                // Select ALL items across all pages
+                data.forEach(item => {
+                    newSelectedRows.add(item.uniqueId);
+                });
+            }
+
+            return newSelectedRows;
+        });
     };
 
     return (
@@ -466,191 +465,191 @@ function CustomerCare() {
                 </div>
             </div>
 
-            {(selectedItems.pageSelected.size > 0 || selectedItems.allSelected.size > 0) && (
-                <div
-                    className="flex flex-row items-center justify-between
-                                min-h-9
-                                transition-all duration-300 ease-in-out 
-                                transform opacity-100 translate-y-0 
-                                overflow-hidden"
-                >
-                    <div className="flex flex-row gap-3 text-sm font-semibold leading-5">
-                        <p className="text-[#1D2939]">
-                            {selectedItems.allSelected.size > 0
-                                ? `(${selectedItems.allSelected.size}) Selected`
-                                : `(${selectedItems.pageSelected.size}) Selected`}
-                        </p>
-                        {selectedItems.allSelected.size === data.length ? (
-                            <button
-                                className="text-[#9012FF] underline"
-                                onClick={() => {
-                                    // Deselect all logic
-                                    selectedItems.allSelected.clear(); // Or update your state logic
-                                }}
-                            >
-                                Deselect all
-                            </button>
-                        ) : (
-                            <button
-                                className="text-[#9012FF] underline"
-                                onClick={selectAllItems}
-                            >
-                                Select all {data.length}
+            <div>
+                {(selectedRows.size > 0) && (
+                    <div
+                        className="flex flex-row items-center justify-between
+                                    min-h-9 -mb-2 -pb-2
+                                    transition-all duration-300 ease-in-out
+                                    transform opacity-100 translate-y-0
+                                    overflow-hidden"
+                    >
+                        <div className="flex flex-row gap-3 text-sm font-semibold leading-5">
+                            <p className="text-[#1D2939]">
+                                ({selectedRows.size}) Selected
+                            </p>
+                            {!isAllSelected && (
+                                <button
+                                    className="text-[#9012FF] underline mr-2"
+                                    onClick={toggleAllRowsSelection}
+                                >
+                                    Select all {data.length}
+                                </button>
+                            )}
+                            {isAllSelected && (
+                                <button
+                                    className="text-[#9012FF] underline"
+                                    onClick={deselectAllRows}
+                                >
+                                    Deselect all
+                                </button>
+                            )}
+                        </div>
+                        <div className="flex flex-row gap-2">
+                            <Popover placement="bottom">
+                                <PopoverTrigger>
+                                    <button className="flex flex-row items-center gap-1 px-[0.875rem] py-[0.625rem] outline-none bg-white border border-lightGrey rounded-md">
+                                        <Image src='/icons/user.svg' alt="assignee" width={20} height={20} />
+                                        <p className="text-sm text-[#1D2939] font-medium leading-[1.125rem]">Assignee</p>
+                                    </button>
+                                </PopoverTrigger>
+                                <PopoverContent className="w-[11.375rem] px-0 border border-[#EAECF0] rounded-md">
+                                    <div className="w-full">
+                                        <button className="flex flex-row items-center w-full px-4 py-[0.625rem] hover:bg-[#F2F4F7]">
+                                            <Image
+                                                src="/icons/big-profile-pic.svg"
+                                                width={24}
+                                                height={24}
+                                                alt="profile" />
+                                            <span className="text-[#1D2939] font-medium text-sm ml-2">Darrell Steward</span>
+                                        </button>
+                                        <button className="flex flex-row items-center w-full px-4 py-[0.625rem] hover:bg-[#F2F4F7]">
+                                            <Image
+                                                src="/icons/big-profile-pic.svg"
+                                                width={24}
+                                                height={24}
+                                                alt="profile" />
+                                            <span className="text-[#1D2939] font-medium text-sm ml-2">Darrell Steward</span>
+                                        </button>
+                                        <button className="flex flex-row items-center w-full px-4 py-[0.625rem] hover:bg-[#F2F4F7]">
+                                            <Image
+                                                src="/icons/big-profile-pic.svg"
+                                                width={24}
+                                                height={24}
+                                                alt="profile" />
+                                            <span className="text-[#1D2939] font-medium text-sm ml-2">Darrell Steward</span>
+                                        </button>
+                                    </div>
+                                </PopoverContent>
+                            </Popover>
+                            <Popover placement="bottom">
+                                <PopoverTrigger>
+                                    <button className="flex flex-row items-center gap-1 px-[0.875rem] py-[0.625rem] bg-white border border-lightGrey rounded-md">
+                                        <p className="text-sm text-[#1D2939] font-medium leading-[1.125rem]">Status</p>
+                                        <Image src='/icons/chevron-down-dark.svg' alt="status" width={20} height={20} />
+                                    </button>
+                                </PopoverTrigger>
+                                <PopoverContent className="w-auto py-1 px-0 bg-white border border-lightGrey rounded-md">
+                                    <button className="flex flex-row items-center justify-start w-full px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7]"
+                                        onClick={() =>
+                                            handleIconSelect({
+                                                text: "Blocker",
+                                                bgColor: "#FEE4E2",
+                                                dotColor: "#9A221A",
+                                                textColor: "#9A221A",
+                                            })
+                                        }
+                                    >
+                                        <div className="bg-[#FEE4E2] py-2 px-3 gap-1 flex flex-row rounded-[6px] items-center h-6 w-auto">
+                                            <span className="w-[6px] h-[6px] bg-[#9A221A] rounded-full "></span>
+                                            <span className="font-medium text-[#9A221A] text-xs">Blocker</span>
+                                        </div>
+                                    </button>
+                                    <button className="flex flex-row items-center justify-start w-full px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7]"
+                                        onClick={() =>
+                                            handleIconSelect({
+                                                text: "Resolved",
+                                                bgColor: "#D3F8E0",
+                                                dotColor: "#0A5B39",
+                                                textColor: "#0A5B39",
+                                            })
+                                        }
+                                    >
+                                        <div className="bg-[#D3F8E0] py-2 px-3 gap-1 flex flex-row rounded-[6px] items-center h-6 w-auto">
+                                            <span className="w-[6px] h-[6px] bg-[#0A5B39] rounded-full "></span>
+                                            <span className="font-medium text-[#0A5B39] text-xs">Resolved</span>
+                                        </div>
+                                    </button>
+                                </PopoverContent>
+                            </Popover>
+                            <Popover placement="bottom">
+                                <PopoverTrigger>
+                                    <button className="flex flex-row items-center gap-1 px-[0.875rem] py-[0.625rem] bg-white border border-lightGrey rounded-md">
+                                        <p className="text-sm text-[#1D2939] font-medium leading-[1.125rem]">Priority</p>
+                                        <Image src='/icons/chevron-down-dark.svg' alt="status" width={20} height={20} />
+                                    </button>
+                                </PopoverTrigger>
+                                <PopoverContent className="w-auto py-1 px-0 bg-white border border-lightGrey rounded-md">
+                                    <button className="flex flex-row items-center justify-start w-full px-4 py-[0.625rem]  gap-2 hover:bg-[#F2F4F7]"
+                                        onClick={() =>
+                                            handleIconSelectforpriority({
+                                                text: "Low",
+                                                bgColor: "#F2F4F7",
+                                                dotColor: "#182230",
+                                                textColor: "#182230",
+                                            })
+                                        }
+                                    >
+                                        <div className="bg-[#F2F4F7] py-2 px-3 gap-1 flex flex-row rounded-[6px] items-center h-6 w-auto">
+                                            <span className="w-[6px] h-[6px] bg-[#182230] rounded-full "></span>
+                                            <span className="font-medium text-[#182230] text-xs">Low</span>
+                                        </div>
+                                    </button>
+                                    <button className="flex flex-row items-center justify-start w-full px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7]"
+                                        onClick={() =>
+                                            handleIconSelectforpriority({
+                                                text: "Medium",
+                                                bgColor: "#FFEFC6",
+                                                dotColor: "#93360D",
+                                                textColor: "#93360D",
+                                            })
+                                        }
+                                    >
+                                        <div className="bg-[#FFEFC6] py-2 px-3 gap-1 flex flex-row rounded-[6px] items-center h-6 w-auto">
+                                            <span className="w-[6px] h-[6px] bg-[#93360D] rounded-full "></span>
+                                            <span className="font-medium text-[#93360D] text-xs">Medium</span>
+                                        </div>
+                                    </button>
+                                    <button className="flex flex-row items-center justify-start w-full px-4 py-[0.625rem]  gap-2 hover:bg-[#F2F4F7]"
+                                        onClick={() =>
+                                            handleIconSelectforpriority({
+                                                text: "High",
+                                                bgColor: "#FEE4E2",
+                                                dotColor: "#9A221A]",
+                                                textColor: "#9A221A]",
+                                            })
+                                        }
+                                    >
+                                        <div className="bg-[#FEE4E2] py-2 px-3 gap-1 flex flex-row rounded-[6px] items-center h-6 w-auto">
+                                            <span className="w-[6px] h-[6px] bg-[#9A221A] rounded-full "></span>
+                                            <span className="font-medium text-[#9A221A] text-xs">High</span>
+                                        </div>
+                                    </button>
+                                </PopoverContent>
+                            </Popover>
+                        </div>
+                    </div>
+                )}
+
+                {selectedStatuses.map((status) => (
+                    <div className="flex flex-row items-center justify-between w-full">
+                        <div className="flex flex-row gap-2">
+                            {selectedStatuses.map((status) => (
+                                <div key={status} className="flex flex-row items-center w-fit px-3 py-2 gap-1 text-xs font-medium bg-[#EDE4FF] rounded-[0.375rem]" style={{ color: statusColors[status] }}>
+                                    {status}
+                                    <button onClick={() => toggleCheckbox(status)}>
+                                        <Image src='/icons/multiplication-sign.svg' alt="close" width={16} height={16} />
+                                    </button>
+                                </div>
+                            ))}
+                        </div>
+                        {selectedStatuses.length > 0 && (
+                            <button className="text-sm text-[#9012FF] font-semibold" onClick={() => setCheckedState({ Latest: false, Opened: false, Resolved: false, Reopened: false, Blocker: false, Replied: false })}>
+                                clear all
                             </button>
                         )}
                     </div>
-                    <div className="flex flex-row gap-2">
-                        <Popover placement="bottom">
-                            <PopoverTrigger>
-                                <button className="flex flex-row items-center gap-1 px-[0.875rem] py-[0.625rem] outline-none bg-white border border-lightGrey rounded-md">
-                                    <Image src='/icons/user.svg' alt="assignee" width={20} height={20} />
-                                    <p className="text-sm text-[#1D2939] font-medium leading-[1.125rem]">Assignee</p>
-                                </button>
-                            </PopoverTrigger>
-                            <PopoverContent className="w-[11.375rem] px-0 border border-[#EAECF0] rounded-md">
-                                <div className="w-full">
-                                    <button className="flex flex-row items-center w-full px-4 py-[0.625rem] hover:bg-[#F2F4F7]">
-                                        <Image
-                                            src="/icons/big-profile-pic.svg"
-                                            width={24}
-                                            height={24}
-                                            alt="profile" />
-                                        <span className="text-[#1D2939] font-medium text-sm ml-2">Darrell Steward</span>
-                                    </button>
-                                    <button className="flex flex-row items-center w-full px-4 py-[0.625rem] hover:bg-[#F2F4F7]">
-                                        <Image
-                                            src="/icons/big-profile-pic.svg"
-                                            width={24}
-                                            height={24}
-                                            alt="profile" />
-                                        <span className="text-[#1D2939] font-medium text-sm ml-2">Darrell Steward</span>
-                                    </button>
-                                    <button className="flex flex-row items-center w-full px-4 py-[0.625rem] hover:bg-[#F2F4F7]">
-                                        <Image
-                                            src="/icons/big-profile-pic.svg"
-                                            width={24}
-                                            height={24}
-                                            alt="profile" />
-                                        <span className="text-[#1D2939] font-medium text-sm ml-2">Darrell Steward</span>
-                                    </button>
-                                </div>
-                            </PopoverContent>
-                        </Popover>
-                        <Popover placement="bottom">
-                            <PopoverTrigger>
-                                <button className="flex flex-row items-center gap-1 px-[0.875rem] py-[0.625rem] bg-white border border-lightGrey rounded-md">
-                                    <p className="text-sm text-[#1D2939] font-medium leading-[1.125rem]">Status</p>
-                                    <Image src='/icons/chevron-down-dark.svg' alt="status" width={20} height={20} />
-                                </button>
-                            </PopoverTrigger>
-                            <PopoverContent className="w-auto py-1 px-0 bg-white border border-lightGrey rounded-md">
-                                <button className="flex flex-row items-center justify-start w-full px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7]"
-                                    onClick={() =>
-                                        handleIconSelect({
-                                            text: "Blocker",
-                                            bgColor: "#FEE4E2",
-                                            dotColor: "#9A221A",
-                                            textColor: "#9A221A",
-                                        })
-                                    }
-                                >
-                                    <div className="bg-[#FEE4E2] py-2 px-3 gap-1 flex flex-row rounded-[6px] items-center h-6 w-auto">
-                                        <span className="w-[6px] h-[6px] bg-[#9A221A] rounded-full "></span>
-                                        <span className="font-medium text-[#9A221A] text-xs">Blocker</span>
-                                    </div>
-                                </button>
-                                <button className="flex flex-row items-center justify-start w-full px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7]"
-                                    onClick={() =>
-                                        handleIconSelect({
-                                            text: "Resolved",
-                                            bgColor: "#D3F8E0",
-                                            dotColor: "#0A5B39",
-                                            textColor: "#0A5B39",
-                                        })
-                                    }
-                                >
-                                    <div className="bg-[#D3F8E0] py-2 px-3 gap-1 flex flex-row rounded-[6px] items-center h-6 w-auto">
-                                        <span className="w-[6px] h-[6px] bg-[#0A5B39] rounded-full "></span>
-                                        <span className="font-medium text-[#0A5B39] text-xs">Resolved</span>
-                                    </div>
-                                </button>
-                            </PopoverContent>
-                        </Popover>
-                        <Popover placement="bottom">
-                            <PopoverTrigger>
-                                <button className="flex flex-row items-center gap-1 px-[0.875rem] py-[0.625rem] bg-white border border-lightGrey rounded-md">
-                                    <p className="text-sm text-[#1D2939] font-medium leading-[1.125rem]">Priority</p>
-                                    <Image src='/icons/chevron-down-dark.svg' alt="status" width={20} height={20} />
-                                </button>
-                            </PopoverTrigger>
-                            <PopoverContent className="w-auto py-1 px-0 bg-white border border-lightGrey rounded-md">
-                                <button className="flex flex-row items-center justify-start w-full px-4 py-[0.625rem]  gap-2 hover:bg-[#F2F4F7]"
-                                    onClick={() =>
-                                        handleIconSelectforpriority({
-                                            text: "Low",
-                                            bgColor: "#F2F4F7",
-                                            dotColor: "#182230",
-                                            textColor: "#182230",
-                                        })
-                                    }
-                                >
-                                    <div className="bg-[#F2F4F7] py-2 px-3 gap-1 flex flex-row rounded-[6px] items-center h-6 w-auto">
-                                        <span className="w-[6px] h-[6px] bg-[#182230] rounded-full "></span>
-                                        <span className="font-medium text-[#182230] text-xs">Low</span>
-                                    </div>
-                                </button>
-                                <button className="flex flex-row items-center justify-start w-full px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7]"
-                                    onClick={() =>
-                                        handleIconSelectforpriority({
-                                            text: "Medium",
-                                            bgColor: "#FFEFC6",
-                                            dotColor: "#93360D",
-                                            textColor: "#93360D",
-                                        })
-                                    }
-                                >
-                                    <div className="bg-[#FFEFC6] py-2 px-3 gap-1 flex flex-row rounded-[6px] items-center h-6 w-auto">
-                                        <span className="w-[6px] h-[6px] bg-[#93360D] rounded-full "></span>
-                                        <span className="font-medium text-[#93360D] text-xs">Medium</span>
-                                    </div>
-                                </button>
-                                <button className="flex flex-row items-center justify-start w-full px-4 py-[0.625rem]  gap-2 hover:bg-[#F2F4F7]"
-                                    onClick={() =>
-                                        handleIconSelectforpriority({
-                                            text: "High",
-                                            bgColor: "#FEE4E2",
-                                            dotColor: "#9A221A]",
-                                            textColor: "#9A221A]",
-                                        })
-                                    }
-                                >
-                                    <div className="bg-[#FEE4E2] py-2 px-3 gap-1 flex flex-row rounded-[6px] items-center h-6 w-auto">
-                                        <span className="w-[6px] h-[6px] bg-[#9A221A] rounded-full "></span>
-                                        <span className="font-medium text-[#9A221A] text-xs">High</span>
-                                    </div>
-                                </button>
-                            </PopoverContent>
-                        </Popover>
-                    </div>
-                </div>
-            )}
-
-            <div className="flex flex-row items-center justify-between w-full">
-                <div className="flex flex-row gap-2">
-                    {selectedStatuses.map((status) => (
-                        <div key={status} className="flex flex-row items-center w-fit px-3 py-2 gap-1 text-xs font-medium bg-[#EDE4FF] rounded-[0.375rem]" style={{ color: statusColors[status] }}>
-                            {status}
-                            <button onClick={() => toggleCheckbox(status)}>
-                                <Image src='/icons/multiplication-sign.svg' alt="close" width={16} height={16} />
-                            </button>
-                        </div>
-                    ))}
-                </div>
-                {selectedStatuses.length > 0 && (
-                    <button className="text-sm text-[#9012FF] font-semibold" onClick={() => setCheckedState({ Latest: false, Opened: false, Resolved: false, Reopened: false, Blocker: false, Replied: false })}>
-                        clear all
-                    </button>
-                )}
+                ))}
             </div>
 
             <div className="flex flex-col justify-between h-full">
@@ -662,9 +661,9 @@ function CustomerCare() {
                                     <Checkbox
                                         size="md"
                                         color="primary"
-                                        isSelected={isPageFullySelected}
-                                        isIndeterminate={isPagePartiallySelected}
-                                        onChange={handlePageSelectAll}
+                                        isSelected={isAllSelected}
+                                        isIndeterminate={isIndeterminate}
+                                        onChange={toggleAllRowsSelection}
                                     />
                                 </th>
                                 <th className="w-10 pl-4 py-4 text-center text-[#667085] font-medium text-sm">
@@ -700,12 +699,8 @@ function CustomerCare() {
                                         <Checkbox
                                             size="md"
                                             color="primary"
-                                            isSelected={
-                                                selectedItems.allSelected.has(customer.uniqueId) ||
-                                                selectedItems.pageSelected.has(customer.uniqueId)
-                                            }
-                                            onChange={() => handleItemSelect(customer.uniqueId)}
-                                            onClick={(e) => e.stopPropagation()}
+                                            isSelected={selectedRows.has(customer.uniqueId)}
+                                            onChange={() => toggleRowSelection(customer.uniqueId)}
                                         />
                                     </td>
                                     <td className="py-4 text-center text-[#101828] text-sm">
