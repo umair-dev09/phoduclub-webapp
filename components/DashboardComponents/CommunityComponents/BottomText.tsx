@@ -386,8 +386,11 @@ function BottomText({
                 className="flex flex-row gap-2 p-2 cursor-pointer w-full hover:bg-gray-100 items-center"
                 onClick={() => handleUserSelect(user)}
               >
-              <Image className="w-[36px] h-[36px] rounded-full" src={user.profilePic} alt='pic' width={36} height={36} />
-                <span className="text-sm">{user.name}</span>
+              <Image className="w-[38px] h-[38px] rounded-full" src={user.profilePic} alt='pic' width={38} height={38} />
+                <div className="flex flex-col">
+                <span className="text-sm font-medium">{user.name}</span>
+                <span className="text-[12px] text-gray-500 ">{'@' + user.userId}</span>
+                </div>
               </div>
               <hr className="border-[#f1f1f1]"/>
               </div>

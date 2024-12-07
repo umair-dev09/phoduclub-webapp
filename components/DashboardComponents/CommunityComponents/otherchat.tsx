@@ -139,7 +139,7 @@ type ReactionCount = {
                 return (
                   <span
                     key={index}
-                    style={{ color: "yellow", cursor: "pointer" }}
+                    style={{ color: "#C74FE6", cursor: "pointer" }}
                     onClick={() => alert(`You clicked on mention ID: ${mention.id}`)}
                   >
                     {part}
@@ -165,7 +165,7 @@ type ReactionCount = {
                     return (
                       <span
                         key={`${index}-${innerIndex}`}
-                        style={{ color: "yellow", cursor: "pointer" }}
+                        style={{ color: "#C74FE6", cursor: "pointer" }}
                         onClick={() => alert(`You clicked on mention ID: ${mention.id}`)}
                       >
                         {part}
