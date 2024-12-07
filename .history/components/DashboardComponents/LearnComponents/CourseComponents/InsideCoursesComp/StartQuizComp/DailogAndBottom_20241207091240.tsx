@@ -2,12 +2,12 @@
 import { useState, useEffect } from "react";
 import { Dialog, DialogBackdrop, DialogPanel } from "@headlessui/react";
 import Image from "next/image";
-import React from "react";
-import Radio from "@mui/material/Radio";
-import RadioGroup from "@mui/material/RadioGroup";
-import FormControlLabel from "@mui/material/FormControlLabel";
+import React from 'react';
+import Radio from '@mui/material/Radio';
+import RadioGroup from '@mui/material/RadioGroup';
+import FormControlLabel from '@mui/material/FormControlLabel';
 import Drawer from "react-modern-drawer";
-import "react-modern-drawer/dist/index.css"
+import "react-modern-drawer/dist/index.css";
 
 type QuizProps = {
     isOpen: boolean;
@@ -17,34 +17,22 @@ type QuizProps = {
     showBottomSheet: boolean;
 };
 
-function Quiz({
-    isOpen,
-    setIsOpen,
-    showBottomSheet,
-    setShowBottomSheet,
-    onSubmit,
-}: QuizProps) {
-    const [isDialogOpen, setIsDialogOpen] = useState(false); // New state for "submit" dialog
+function Quiz({ isOpen, setIsOpen, showBottomSheet, setShowBottomSheet, onSubmit, }: QuizProps) {
+    const [isJabirDialogOpen, setIsJabirDialogOpen] = useState(false); // New state for "Jabir" dialog
 
     const openBottomSheet = () => {
-        setIsOpen(false); // Close the quiz dialog
+        setIsOpen(false); // Close the dialog
         setShowBottomSheet(true); // Show the bottom sheet
     };
 
     const handleSubmit = () => {
-        // Close the bottom sheet and open submit Dialog
-        setIsDialogOpen(true); // Open submit Dialog
+        // Close both dialogs when submit is clicked
+        setIsJabirDialogOpen(true); // Open Jabir Dialog
         setShowBottomSheet(false); // Close Bottom Sheet
     };
 
-    const handleSaveExit = () => {
-        // Close the quiz dialog and do not open submit Dialog
-        setIsOpen(false); // Close the quiz dialog
-        setShowBottomSheet(false); // Close Bottom Sheet
-    };
-
-    const handleDialogSubmit = () => {
-        setIsDialogOpen(false); // Close submit dialog after submitting
+    const handleJabirDialogSubmit = () => {
+        setIsJabirDialogOpen(false); // Close Jabir dialog after submitting
         setIsOpen(false); // Close Quiz Dialog
         setShowBottomSheet(false); // Close Bottom Sheet
     };
@@ -123,7 +111,7 @@ function Quiz({
                             className={`w-[150px] h-[44px] bg-[#FFFFFF] border-[1px] border-[#EAECF0] rounded-[8px] flex items-center justify-center transition-transform duration-500 ease-in-out transform z-50 `}
                         >
                             <button
-                                onClick={handleSaveExit}
+                                onClick={handleSubmit}
                                 className="w-full h-full flex items-center justify-center text-sm font-semibold text-[#1D2939] border-none p-[10px_24px] z-50"
                             >
                                 Save and Exit
@@ -377,7 +365,7 @@ function Quiz({
                     </div>
                 </div>
             </Drawer >
-            <Dialog open={isDialogOpen} onClose={() => setIsDialogOpen(false)} className="relative z-50">
+            <Dialog open={isJabirDialogOpen} onClose={() => setIsJabirDialogOpen(false)} className="relative z-50">
                 {/* Backdrop */}
                 <DialogBackdrop className="fixed inset-0 bg-black/30 " />
 
@@ -388,7 +376,7 @@ function Quiz({
                             {/* Header Section */}
                             <div className="flex items-center justify-between mb-4">
                                 <span className="text-lg font-bold text-[#1D2939]">Submit Quiz</span>
-                                <button onClick={() => setIsDialogOpen(false)}>
+                                <button onClick={() => setIsJabirDialogOpen(false)}>
                                     <Image src="/icons/cancel.svg" alt="cancel" width={18} height={18} />
                                 </button>
                             </div>
@@ -407,17 +395,14 @@ function Quiz({
                                     <button
                                         className="bg-[#FFFFFF] text-[#1D2939] text-sm font-semibold py-2 px-5 rounded-md w-[118px] h-[44px]"
                                         style={{ border: "1.5px solid #EAECF0" }}
-                                        onClick={() => setIsDialogOpen(false)}
+                                        onClick={() => setIsJabirDialogOpen(false)}
                                     >
                                         Cancel
                                     </button>
                                 </div>
                                 <div className="mt-5">
                                     <button
-                                        onClick={() => {
-                                            handleDialogSubmit();
-                                            onSubmit();
-                                        }}
+                                        onClick={handleJabirDialogSubmit}
                                         className="bg-[#8501FF] text-[#FFFFFF] text-sm font-semibold py-2 px-5 rounded-md w-[118px] h-[44px]"
                                         style={{
                                             border: "1px solid #800EE2",
@@ -437,6 +422,5 @@ function Quiz({
 }
 
 export default Quiz;
-
 
 

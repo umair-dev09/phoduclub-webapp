@@ -341,11 +341,6 @@
 
 }
 
-.editProfileButton:hover {
-    background-color: #F0F0F0;
-
-}
-
 .editIcon {
     margin-right: 5px;
 }
@@ -430,10 +425,6 @@
     font-weight: bold;
 }
 
-.updateIconButton:hover {
-    background-color: #F0F0F0;
-}
-
 .divider {
     margin-top: 25px;
     margin-bottom: 25px;
@@ -498,10 +489,10 @@
     font-weight: bold;
 }
 
-.updateNameButton:hover,
-.updateEmailButton:hover,
-.updateMobButton:hover,
-.updateYearButton:hover {
+.updateNameButton,
+.updateEmailButton,
+.updateMobButton,
+.updateYearButton {
     background-color: #F0F0F0;
 }
 

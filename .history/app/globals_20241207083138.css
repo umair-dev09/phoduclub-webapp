@@ -192,4 +192,8 @@ div {
   }
 }
 
-
+/* Tailwind CSS */
+.custom-checkbox input:checked ~ span:before {
+  color: white !important; /* Makes the checkmark white */
+  background-color: #22c55e !important; /* Green background */
+}

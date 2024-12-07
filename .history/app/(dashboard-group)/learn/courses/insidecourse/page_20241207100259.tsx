@@ -10,28 +10,15 @@ import { Tabs, Tab } from "@nextui-org/react";
 
 function SideButton() {
     const router = useRouter();
-    const [active, setActive] = useState<string>("overview");
-
-    const handleSelectionChange = (key: string) => {
-        setActive(key);
-
-        // Handle logic based on the selected tab without routing
-        if (key === "overview") {
-            // Do something related to 'overview'
-            console.log("Overview tab selected");
-        } else if (key === "Discussion") {
-            // Do something related to 'Discussion'
-            console.log("Discussion tab selected");
-        }
-    };
-
 
     // Initialize state using localStorage values if they exist, otherwise default values
     const [activeComponent, setActiveComponent] = useState<string>(() => {
         return localStorage.getItem('activeComponent') || 'Read';
     });
 
-
+    const [activetab, setActiveTab] = useState<string>(() => {
+        return localStorage.getItem('activetab') || 'overview';
+    });
 
     const [hoverRead, setHoverRead] = useState(false);
     const [hoverVideo, setHoverVideo] = useState(false);
@@ -47,7 +34,9 @@ function SideButton() {
         localStorage.setItem('activeComponent', activeComponent);
     }, [activeComponent]);
 
-    ;
+    useEffect(() => {
+        localStorage.setItem('activetab', activetab);
+    }, [activetab]);
 
 
     return (
@@ -97,22 +86,31 @@ function SideButton() {
                             </div>
                         </div>
 
-                        <div className="ml-8 mr-8 h-auto mt-[20px] w-full gap-[16px] flex border-b border-solid border-[#EAECF0]">
+                        <div className="ml-8 mr-8 h-[45px] mt-[20px] w-full gap-[16px] flex" style={{ borderBottom: "2px solid #EAECF0" }}>
+                            {/* <button className="font-medium text-base text-[#667085] mb-3" onClick={() => setActiveTab('overview')}>
+                                <span className={`hover:text-[#8501FF] ${activetab === 'overview' ? 'text-[#8501FF]' : ''}`}>
+                                    Overview
+                                </span>
+                            </button>
+                            <button className="font-medium text-base text-[#667085] mb-3" onClick={() => setActiveTab('Discussion')}>
+                                <span className={`hover:text-[#8501FF] ${activetab === 'Discussion' ? 'text-[#8501FF]' : ''}`}>
+                                    Discussion
+                                </span>
+                            </button> */}
                             <Tabs
-                                aria-label="course Tabs"
+                                aria-label="Analytics Tabs"
                                 color="primary"
                                 variant="underlined"
-                                selectedKey={active}
-                                onSelectionChange={(key) => handleSelectionChange(key as string)}
                                 classNames={{
-                                    tabList: "gap-6 w-full relative rounded-none p-0 border-b border-solid border-[#EAECF0]",
+                                    tabList: "gap-6 w-full relative rounded-none p-0 ",
                                     cursor: "w-full bg-[#7400E0]",
                                     tab: "max-w-fit px-0 h-12",
                                     tabContent: "group-data-[selected=true]:text-[#7400E0] hover:text-[#7400E0]",
                                 }}
                             >
                                 <Tab
-                                    key="overview"
+                                    key="overview'"
+                                    onClick={() => setActiveTab('overview')}
                                     title={
                                         <div className="flex items-center space-x-2">
                                             <span className="font-medium text-base">Overview</span>
@@ -121,6 +119,7 @@ function SideButton() {
                                 />
                                 <Tab
                                     key="Discussion"
+                                    onClick={() => setActiveTab('Discussion')}
                                     title={
                                         <div className="flex items-center space-x-2">
                                             <span className="font-medium text-base">Discussion</span>
@@ -130,7 +129,7 @@ function SideButton() {
                             </Tabs>
                         </div>
 
-                        {active === 'overview' && (
+                        {activetab === 'overview' && (
                             <div className="mt-4">
                                 <div className="font-bold text-lg text-[#1D2939]">
                                     <span className="ml-8">Overview</span>
@@ -140,7 +139,7 @@ function SideButton() {
                                 </div>
                             </div>
                         )}
-                        {active === 'Discussion' && (
+                        {activetab === 'Discussion' && (
                             <div className="flex flex-col mt-[30px] ml-8 bg-[#FFFFFF] h-auto w-auto overflow-y-auto mr-8 pb-5 border border-solid border-[#EAECF0] rounded-[12px]">
                                 <Discussion />
                             </div>

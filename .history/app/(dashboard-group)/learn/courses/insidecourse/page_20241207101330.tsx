@@ -97,7 +97,17 @@ function SideButton() {
                             </div>
                         </div>
 
-                        <div className="ml-8 mr-8 h-auto mt-[20px] w-full gap-[16px] flex border-b border-solid border-[#EAECF0]">
+                        <div className="ml-8 mr-8 h-[45px] mt-[20px] w-full gap-[16px] flex border-b border-solid border-[#EAECF0]">
+                            {/* <button className="font-medium text-base text-[#667085] mb-3" onClick={() => setActiveTab('overview')}>
+                                <span className={`hover:text-[#8501FF] ${activetab === 'overview' ? 'text-[#8501FF]' : ''}`}>
+                                    Overview
+                                </span>
+                            </button>
+                            <button className="font-medium text-base text-[#667085] mb-3" onClick={() => setActiveTab('Discussion')}>
+                                <span className={`hover:text-[#8501FF] ${activetab === 'Discussion' ? 'text-[#8501FF]' : ''}`}>
+                                    Discussion
+                                </span>
+                            </button> */}
                             <Tabs
                                 aria-label="course Tabs"
                                 color="primary"

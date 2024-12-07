@@ -418,6 +418,7 @@ function Quiz({
                                             handleDialogSubmit();
                                             onSubmit();
                                         }}
+
                                         className="bg-[#8501FF] text-[#FFFFFF] text-sm font-semibold py-2 px-5 rounded-md w-[118px] h-[44px]"
                                         style={{
                                             border: "1px solid #800EE2",

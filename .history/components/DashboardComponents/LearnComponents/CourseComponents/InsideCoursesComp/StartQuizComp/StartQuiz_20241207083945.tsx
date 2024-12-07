@@ -2,14 +2,14 @@
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import Quiz from "./DailogAndBottom"
+import StartQuiz from "./DailogAndBottom"
 
 function startquiz() {
 
-    const [showQuizDialog, setShowQuizDialog] = useState(false);
-    const [isQuizOpen, setIsQuizOpen] = useState(false);
-    const [isQuizSubmitted, setIsQuizSubmitted] = useState(false);
-    const [showBottomSheet, setShowBottomSheet] = useState(false);
+    let [showQuizDialog, setShowQuizDialog] = useState(false);
+    let [isQuizOpen, setIsQuizOpen] = useState(false);
+    let [isQuizSubmitted, setIsQuizSubmitted] = useState(false);
+    const router = useRouter();
 
     const onStartQuiz = () => {
         setShowQuizDialog(true);
@@ -18,7 +18,8 @@ function startquiz() {
 
     const handleQuizSubmit = () => {
         setIsQuizSubmitted(true);
-        setShowBottomSheet(false); // Close bottom sheet
+        setShowQuizDialog(false);
+        setIsQuizOpen(false);
     };
 
     return (
@@ -80,8 +81,11 @@ function startquiz() {
                     {!isQuizSubmitted && (
                         <button
                             onClick={onStartQuiz}
-                            className="bg-[#8501FF] text-[#FFFFFF] text-sm font-semibold py-2 px-5 rounded-md w-[118px] h-[44px] ml-auto border-[1px] border-[#800EE2] shadow-[inset_0px_-4px_4px_0px_#1018281F,inset_0px_3px_2px_0px_#FFFFFF3D]"
-
+                            className="bg-[#8501FF] text-[#FFFFFF] text-sm font-semibold py-2 px-5 rounded-md w-[118px] h-[44px] ml-auto"
+                            style={{
+                                border: "1px solid #800EE2",
+                                boxShadow: "0px -4px 4px 0px #1018281F inset, 0px 3px 2px 0px #FFFFFF3D inset"
+                            }}
                         >
                             Start Quiz
                         </button>
@@ -96,15 +100,7 @@ function startquiz() {
             </div>
 
 
-            {showQuizDialog && (
-                <Quiz
-                    isOpen={isQuizOpen}
-                    setIsOpen={setIsQuizOpen}
-                    setShowBottomSheet={setShowBottomSheet}
-                    onSubmit={handleQuizSubmit}
-                    showBottomSheet={showBottomSheet}
-                />
-            )}
+            {showQuizDialog && <StartQuiz isOpen={isQuizOpen} setIsOpen={setIsQuizOpen} />}
 
         </div>
 

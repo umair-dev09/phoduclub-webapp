@@ -80,7 +80,7 @@ function startquiz() {
                     {!isQuizSubmitted && (
                         <button
                             onClick={onStartQuiz}
-                            className="bg-[#8501FF] text-[#FFFFFF] text-sm font-semibold py-2 px-5 rounded-md w-[118px] h-[44px] ml-auto border-[1px] border-[#800EE2] shadow-[inset_0px_-4px_4px_0px_#1018281F,inset_0px_3px_2px_0px_#FFFFFF3D]"
+                            className="bg-[#8501FF] text-[#FFFFFF] text-sm font-semibold py-2 px-5 rounded-md w-[118px] h-[44px] ml-auto shadow-inner-button"
 
                         >
                             Start Quiz

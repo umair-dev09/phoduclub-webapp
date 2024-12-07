@@ -193,7 +193,7 @@ function EmailUpdate({ setIsEditing }: EmailUpdateProps) {
             </div>
             <div className={styles.commonDivider} />
             <div className={styles.commonButtons}>
-              <button className={styles.emailCancelBtn} onClick={() => setIsOpen(false)}>Cancel</button>
+              <button className="hover:bg-[#F0F0F0] {styles.emailCancelBtn}" onClick={() => setIsOpen(false)}>Cancel</button>
               <button
                 className={`min-w-[100px] flex justify-center items-center px-6 py-[10px] rounded-[8px] text-white font-medium shadow-inner-button ${isButtonDisabled ? 'bg-[#d8acff]' : 'bg-[#8501FF]'}`}
                 onClick={handleButtonClick}

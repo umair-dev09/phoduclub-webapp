@@ -219,11 +219,6 @@
     font-weight: 500;
 }
 
-.emailCancelBtn:hover {
-    background-color: #F0F0F0;
-}
-
-
 .emailVerifyBtn {
     padding: 10px 24px 10px 24px;
     background-color: #8501FF;
@@ -266,10 +261,6 @@
     border-radius: 8px;
     border: 1.5px solid #EAECF0;
     font-weight: 500;
-}
-
-.tExamCancelBtn:hover {
-    background-color: #F0F0F0;
 }
 
 .tExamContinueBtn {
@@ -338,11 +329,6 @@
     display: flex;
     flex-direction: row;
     margin-left: 5px;
-
-}
-
-.editProfileButton:hover {
-    background-color: #F0F0F0;
 
 }
 
@@ -430,10 +416,6 @@
     font-weight: bold;
 }
 
-.updateIconButton:hover {
-    background-color: #F0F0F0;
-}
-
 .divider {
     margin-top: 25px;
     margin-bottom: 25px;
@@ -497,14 +479,6 @@
     font-size: 14px;
     font-weight: bold;
 }
-
-.updateNameButton:hover,
-.updateEmailButton:hover,
-.updateMobButton:hover,
-.updateYearButton:hover {
-    background-color: #F0F0F0;
-}
-
 
 .input {
     border: 1px solid #d0d5dd;

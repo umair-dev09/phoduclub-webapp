@@ -97,7 +97,17 @@ function SideButton() {
                             </div>
                         </div>
 
-                        <div className="ml-8 mr-8 h-auto mt-[20px] w-full gap-[16px] flex border-b border-solid border-[#EAECF0]">
+                        <div className="ml-8 mr-8 h-[45px] mt-[20px] w-full gap-[16px] flex">
+                            {/* <button className="font-medium text-base text-[#667085] mb-3" onClick={() => setActiveTab('overview')}>
+                                <span className={`hover:text-[#8501FF] ${activetab === 'overview' ? 'text-[#8501FF]' : ''}`}>
+                                    Overview
+                                </span>
+                            </button>
+                            <button className="font-medium text-base text-[#667085] mb-3" onClick={() => setActiveTab('Discussion')}>
+                                <span className={`hover:text-[#8501FF] ${activetab === 'Discussion' ? 'text-[#8501FF]' : ''}`}>
+                                    Discussion
+                                </span>
+                            </button> */}
                             <Tabs
                                 aria-label="course Tabs"
                                 color="primary"
@@ -105,7 +115,7 @@ function SideButton() {
                                 selectedKey={active}
                                 onSelectionChange={(key) => handleSelectionChange(key as string)}
                                 classNames={{
-                                    tabList: "gap-6 w-full relative rounded-none p-0 border-b border-solid border-[#EAECF0]",
+                                    tabList: "gap-6 w-full relative rounded-none  border-b border-solid border-[#EAECF0]",
                                     cursor: "w-full bg-[#7400E0]",
                                     tab: "max-w-fit px-0 h-12",
                                     tabContent: "group-data-[selected=true]:text-[#7400E0] hover:text-[#7400E0]",
