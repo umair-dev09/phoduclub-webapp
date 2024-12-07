@@ -1,0 +1,598 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    justify-content: space-between;
+    /* Ensures the base stays at the bottom */
+
+}
+
+.mainProfileContent {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    margin: 20px;
+    overflow-y: auto;
+    /* Enables scrolling */
+}
+
+.info {
+    display: flex;
+    flex-direction: column;
+    margin-right: 5px;
+}
+
+.nameSection {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.nameInfo {
+    display: flex;
+    flex-direction: row;
+    flex: 0.5;
+    margin-bottom: 10px;
+    align-items: center;
+
+}
+
+/* .nameId {
+    position: relative;
+} */
+
+.name {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: left;
+}
+
+.label {
+    font-size: 16px;
+    font-weight: 500;
+    color: #344054;
+
+}
+
+.changeRemove {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    /* Adjust gap between the buttons if needed */
+}
+
+.dp {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+.actualProfileName {
+    display: flex;
+    color: #1D2939;
+    font-size: 18px;
+    font-weight: 600;
+    justify-content: left;
+}
+
+.ProfileName {
+    color: #1D2939;
+    font-weight: 600;
+}
+
+
+.changeButton {
+
+    border: 1.5px solid #EAECF0;
+    box-shadow: 0 0 0 0px #EAECF0;
+    display: flex;
+    flex-direction: row;
+    margin-left: 5px;
+    color: #1D2939;
+    font-weight: 600;
+
+
+
+    /* Aligns the "Change" button to the right */
+}
+
+
+.removeButton {
+
+    margin-right: 0;
+    color: #1D2939;
+    font-weight: 600;
+    border: 1.5px solid #EAECF0;
+    box-shadow: 0 0 0 0px #EAECF0;
+
+    /* Keeps the "Remove" button next to the "Change" button */
+}
+
+.changeRemove {
+    display: flex;
+    flex-direction: column;
+    /* Ensures items stack vertically */
+    align-items: flex-start;
+    /* Aligns content to the left */
+}
+
+.buttonGroup {
+    display: flex;
+    flex-direction: row;
+    /* Keeps buttons side by side */
+    gap: 10px;
+    /* Adds space between the buttons */
+}
+
+.changeText {
+    margin-right: 10px;
+    overflow: hidden;
+    font-size: 14px;
+}
+
+.removeText {
+    margin-right: 5px;
+    margin-left: 5px;
+    font-size: 14px;
+    color: #D0D5DD;
+}
+
+.changeButton:hover,
+.removeButton:hover {
+    background-color: #f0f0f0;
+
+}
+
+/*  Common Dialog CSS   */
+.commonUpdateHeader {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 15px;
+    margin-left: 24px;
+    margin-right: 24px;
+}
+
+.commonDivider {
+    width: auto;
+    height: 1px;
+    background-color: #F2F4F7;
+}
+
+.commonDialogBox {
+    border-radius: 12px;
+    background-color: white;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    width: 500px;
+    height: auto;
+}
+
+.commonButtons {
+    display: flex;
+    flex-direction: row;
+    margin-left: 24px;
+    margin-right: 24px;
+    justify-content: end;
+    margin-top: 16px;
+    gap: 15px;
+}
+
+/*  Common Dialog CSS   */
+
+/*  Email Dialog CSS   */
+
+
+.emailInputDiv {
+    display: flex;
+    flex-direction: column;
+    margin-left: 24px;
+    margin-right: 24px;
+    gap: 3px;
+}
+
+.emailInput {
+    padding: 7px;
+    font-size: 16px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    /* color: #080808; */
+    width: 100%;
+    height: 40px;
+}
+
+.emailInput:hover,
+.emailInput:focus {
+    outline: 1.5px solid #D6BBFB;
+}
+
+.emailCancelBtn {
+    padding: 10px 24px 10px 24px;
+    border-radius: 8px;
+    border: 1.5px solid #EAECF0;
+    font-weight: 500;
+}
+
+.emailCancelBtn:hover {
+    background-color: #F0F0F0;
+}
+
+
+.emailVerifyBtn {
+    padding: 10px 24px 10px 24px;
+    background-color: #8501FF;
+    border-radius: 8px;
+    color: #fff;
+    font-weight: 500;
+}
+
+/*  Email Dialog CSS   */
+
+/*  ProfilePic Dialog CSS   */
+
+.picBox {
+    display: flex;
+    flex-direction: row;
+    margin-top: 15px;
+    margin-left: 24px;
+    margin-right: 24px;
+    margin-bottom: 10px;
+    justify-content: center;
+    column-gap: 28px;
+}
+
+.profOptionBox {
+    display: flex;
+    flex-direction: column;
+    padding: 30px 48px 30px 48px;
+    border-radius: 8px;
+    border: 1px solid #EAECF0;
+    row-gap: 20px;
+    align-items: center;
+}
+
+
+/*  ProfilePic Dialog CSS   */
+
+/*  TargetExam Dialog CSS   */
+.tExamCancelBtn {
+    padding: 10px 24px 10px 24px;
+    border-radius: 8px;
+    border: 1.5px solid #EAECF0;
+    font-weight: 500;
+}
+
+.tExamContinueBtn {
+    padding: 10px 24px 10px 24px;
+    background-color: #8501FF;
+    border-radius: 8px;
+    color: #fff;
+    font-weight: 500;
+
+}
+
+.dropdownWrapper {
+    margin: 30px 24px 30px 24px;
+}
+
+.labelTargetExam {
+    margin-bottom: 5px;
+    font-weight: 500;
+    color: #333;
+    font-size: 14px;
+}
+
+/*  TargetExam Dialog CSS   */
+
+/*  PhoneNumber Dialog CSS   */
+.phoneinputcontainer .forminput {
+    min-width: 100%;
+    min-height: 42px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    /* height: 40px; */
+    color: #000;
+}
+
+.phoneinputcontainer .forminput:hover,
+.phoneinputcontainer .forminput:focus {
+    outline: 1.5px solid #D6BBFB;
+}
+
+
+/*  PhoneNumber Dialog CSS   */
+
+/*  this css is for "File size must be less than 5MB"    */
+.files {
+    font-size: 14px;
+    color: #667085;
+    font-weight: 400;
+    margin-left: 10px;
+    margin-left: 10px;
+}
+
+.editProfile {
+    display: flex;
+    align-items: start;
+    justify-content: right;
+    flex: 0.5;
+    color: #1D2939;
+}
+
+.editProfileButton {
+    display: flex;
+    align-items: center;
+    border-radius: 8px;
+    padding: 10px 14px 10px 14px;
+    border: 1.5px solid #EAECF0;
+    display: flex;
+    flex-direction: row;
+    margin-left: 5px;
+
+}
+
+.editIcon {
+    margin-right: 5px;
+}
+
+.editText {
+    display: flex;
+    align-items: center;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.id {
+    display: flex;
+    flex-direction: row;
+    color: #667085;
+    font-size: 16px;
+    font-weight: 400;
+}
+
+.actualId {
+    display: flex;
+    flex-direction: row;
+    /* overflow: visible; */
+}
+
+.copyIcon {
+    margin-left: 5px;
+}
+
+.copyButtons {
+    display: flex;
+    flex-direction: row;
+}
+
+.sizeRecommendation {
+    position: absolute;
+    margin-top: 20px;
+    /* z-index: 10; */
+}
+
+.copyMessage {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+}
+
+.examSection {
+    display: flex;
+    flex-wrap: wrap;
+    /* Ensures items wrap to the next line */
+    /* Sets the fixed width */
+    margin-left: 12px;
+    justify-content: space-between;
+}
+
+.enrolledExams {
+    width: 45%;
+    display: flex;
+    flex-wrap: wrap;
+    /* Allows items to wrap within the available space */
+    gap: 12px;
+    /* Adds gap between the items */
+}
+
+.updateIcon {
+    display: flex;
+    justify-content: right;
+    flex: 0.5;
+}
+
+.updateIconButton {
+    border: 1.5px solid #EAECF0;
+    border-radius: 8px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    padding-left: 15px;
+    padding-right: 15px;
+    max-height: 40px;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.divider {
+    margin-top: 25px;
+    margin-bottom: 25px;
+    margin-left: 5px;
+    margin-right: 10px;
+}
+
+.name {
+    display: flex;
+    flex-direction: row;
+    margin-left: 5px;
+    margin-right: 10px;
+}
+
+.label {
+    display: flex;
+    flex: 0.5;
+}
+
+.username {
+    display: flex;
+    justify-content: right;
+    flex: 0.5;
+    color: #667085;
+    font-size: 16px;
+    font-weight: 400;
+}
+
+.icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 15px;
+}
+
+.UserDetail {
+    display: flex;
+    flex-direction: column;
+}
+
+.updateName,
+.updateEmail,
+.updateMob,
+.updateYear {
+    display: flex;
+    flex: 1;
+    justify-content: right;
+
+}
+
+.updateNameButton,
+.updateEmailButton,
+.updateMobButton,
+.updateYearButton {
+    border: 1.5px solid #EAECF0;
+    border-radius: 8px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    padding-left: 15px;
+    padding-right: 15px;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.input {
+    border: 1px solid #d0d5dd;
+    border-radius: 8px;
+    text-indent: 5px;
+    height: 40px;
+    width: 320px;
+}
+
+.afterEdit {
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.base {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    width: 100%;
+    padding: 20px;
+    /* Adds padding for better alignment */
+    border-top: 1px solid #eaecf0;
+    height: 70px;
+    background-color: white;
+    /* Ensure it has a background */
+    position: sticky;
+}
+
+.insideBase {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.cancleButton {
+    border: 1px solid #D1D5DB;
+    border-radius: 6px;
+    padding: 10px 20px;
+    background: transparent;
+    color: #374151;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.saveChangesButton {
+    border: none;
+    border-radius: 6px;
+    padding: 10px 20px;
+    margin-right: 30px;
+    margin-left: 15px;
+    background-color: #7400E0;
+    color: white;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.3s ease;
+}
+
+.saveChangesButton:hover {
+    background-color: #5e00b3;
+}
+
+/* THIS BELOW CSS CODE IS USED FOR TARGET.TSX */
+.ExamType {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    padding: 10px;
+}
+
+.button {
+    display: flex;
+    align-items: center;
+
+    padding-left: 10px;
+    padding-right: 10px;
+    border: 1px solid #d1d1d1;
+    border-radius: 20px;
+    background-color: #fff;
+    font-size: 14px;
+    color: #344054;
+    font-weight: 500;
+    min-height: 32px;
+    max-height: 32px;
+
+}
+
+.examText {
+    font-size: 14px;
+}
+
+.dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    margin-right: 5px;
+}
+
+.red {
+    background-color: #f44336;
+}
+
+.orange {
+    background-color: #ff9800;
+}
+
+.green {
+    background-color: #4caf50;
+}
+
+.blue {
+    background-color: #2196f3;
+}
