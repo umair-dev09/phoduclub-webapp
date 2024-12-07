@@ -166,7 +166,9 @@ export type IconsType =
   | "download-reciepts"
   | "Download Invoice"
   | "quiz-02"
-  | "right-mark";
+  | "right-mark"
+  | 'red-cancel-icon'
+  | "green-right-mark";
 
 
 

@@ -156,92 +156,6 @@ function Quiz({
                                                                 sx={{
                                                                     color: '#D0D5DD',
                                                                     '&.Mui-checked': {
-                                                                        color: '#DE3024',
-                                                                    },
-                                                                }}
-                                                            />
-                                                        }
-                                                        label="Option 1"
-                                                    />
-                                                    <FormControlLabel
-                                                        value="option2"
-                                                        control={
-                                                            <Radio
-                                                                sx={{
-                                                                    color: '#D0D5DD',
-                                                                    '&.Mui-checked': {
-                                                                        color: '#DE3024',
-                                                                    },
-                                                                }}
-                                                            />
-                                                        }
-                                                        label="Option 2"
-                                                    />
-                                                    <FormControlLabel
-                                                        value="option4"
-                                                        control={
-                                                            <Radio
-                                                                sx={{
-                                                                    color: '#D0D5DD',
-                                                                    '&.Mui-checked': {
-                                                                        color: '#DE3024',
-                                                                    },
-                                                                }}
-                                                            />
-                                                        }
-                                                        label="Option 4"
-                                                    />
-                                                    <FormControlLabel
-                                                        value="option3"
-                                                        control={
-                                                            <Radio
-                                                                sx={{
-                                                                    color: '#D0D5DD',
-                                                                    '&.Mui-checked': {
-                                                                        color: '#DE3024',
-                                                                    },
-                                                                }}
-                                                            />
-                                                        }
-                                                        label="Option 3"
-                                                    />
-                                                </RadioGroup>
-                                            </div>
-                                        </div>
-                                        <hr />
-                                        <div className="w-[121px] h-10 px-2 flex flex-row items-center bg-[#FEF3F2] border border-solid border-[#FFCDC9] rounded-[6px] gap-1">
-                                            <Image
-                                                src="/icons/red-cancel-icon.svg"
-                                                width={24}
-                                                height={24}
-                                                alt="red-cancel-icon" />
-                                            <span className="text-[#9A221A] font-medium text-base">Incorrect</span>
-                                        </div>
-                                        <div className="w-full h-auto bg-[#F9FAFB] border-2 border-solid border-[#F2F4F7] rounded-[8px] flex p-4">
-                                            <span className="text-[#1D2939] font-normal text-sm italic leading-[25px]">The bitwise AND operation compares each corresponding bit of two binary numbers and returns a new binary number where each bit is 1 if both corresponding bits are 1, and 0 otherwise.</span>
-                                        </div>
-                                    </div>
-
-                                </div>
-                            </div>
-                            <div className="flex items-center justify-center ">
-                                <div className="w-[880px] h-auto rounded-[12px] border-2 border-[#EAECF0]  flex py-4 flex-col items-center justify-center">
-                                    <div className="bg-[#FFFFFF] w-[832px] h-auto flex  flex-col gap-[20px]">
-                                        <div className="w-[832px] h-[24px] ">
-                                            <span className="text-[#1D2939] font-semibold text-base">
-                                                Q1. What is the result of the bitwise AND operation between 1010 and 1100?
-                                            </span>
-                                        </div>
-                                        <div className="w-[168.75px] h-[160px] gap-[20px] flex flex-col">
-                                            <div className="w-[168.75px] h-[160px] gap-[15px] flex flex-col ">
-                                                <RadioGroup>
-                                                    <FormControlLabel
-                                                        value="option1"
-                                                        control={
-                                                            <Radio
-                                                                sx={{
-                                                                    color: '#D0D5DD',
-                                                                    '&.Mui-checked': {
                                                                         color: '#0B9055',
                                                                     },
                                                                 }}
@@ -397,6 +311,113 @@ function Quiz({
                                                 height={24}
                                                 alt="right-mark-icon" />
                                             <span className="text-[#0A5B39] font-medium text-base">Correct</span>
+
+                                        </div>
+                                        <div className="w-[121px] h-10 px-2 flex flex-row items-center bg-[#FEF3F2] border border-solid border-[#FFCDC9] rounded-[6px] gap-1">
+                                            <Image
+                                                src="/icons/red-cancel-icon.svg"
+                                                width={24}
+                                                height={24}
+                                                alt="red-cancel-icon" />
+                                            <span className="text-[#9A221A] font-medium text-base">Incorrect</span>
+                                        </div>
+                                        <div className="w-full h-auto bg-[#F9FAFB] border-2 border-solid border-[#F2F4F7] rounded-[8px] flex p-4">
+                                            <span className="text-[#1D2939] font-normal text-sm italic leading-[25px]">The bitwise AND operation compares each corresponding bit of two binary numbers and returns a new binary number where each bit is 1 if both corresponding bits are 1, and 0 otherwise.</span>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                            <div className="flex items-center justify-center ">
+                                <div className="w-[880px] h-auto rounded-[12px] border-2 border-[#EAECF0]  flex py-4 flex-col items-center justify-center">
+                                    <div className="bg-[#FFFFFF] w-[832px] h-auto flex  flex-col gap-[20px]">
+                                        <div className="w-[832px] h-[24px] ">
+                                            <span className="text-[#1D2939] font-semibold text-base">
+                                                Q1. What is the result of the bitwise AND operation between 1010 and 1100?
+                                            </span>
+                                        </div>
+                                        <div className="w-[168.75px] h-[160px] gap-[20px] flex flex-col">
+                                            <div className="w-[168.75px] h-[160px] gap-[15px] flex flex-col ">
+                                                <RadioGroup>
+                                                    <FormControlLabel
+                                                        value="option1"
+                                                        control={
+                                                            <Radio
+                                                                sx={{
+                                                                    color: '#D0D5DD',
+                                                                    '&.Mui-checked': {
+                                                                        color: '#0B9055',
+                                                                    },
+                                                                }}
+                                                            />
+                                                        }
+                                                        label="Option 1"
+                                                    />
+                                                    <FormControlLabel
+                                                        value="option2"
+                                                        control={
+                                                            <Radio
+                                                                sx={{
+                                                                    color: '#D0D5DD',
+                                                                    '&.Mui-checked': {
+                                                                        color: '#0B9055',
+                                                                    },
+                                                                }}
+                                                            />
+                                                        }
+                                                        label="Option 2"
+                                                    />
+                                                    <FormControlLabel
+                                                        value="option4"
+                                                        control={
+                                                            <Radio
+                                                                sx={{
+                                                                    color: '#D0D5DD',
+                                                                    '&.Mui-checked': {
+                                                                        color: '#0B9055',
+                                                                    },
+                                                                }}
+                                                            />
+                                                        }
+                                                        label="Option 4"
+                                                    />
+                                                    <FormControlLabel
+                                                        value="option3"
+                                                        control={
+                                                            <Radio
+                                                                sx={{
+                                                                    color: '#D0D5DD',
+                                                                    '&.Mui-checked': {
+                                                                        color: '#0B9055',
+                                                                    },
+                                                                }}
+                                                            />
+                                                        }
+                                                        label="Option 3"
+                                                    />
+                                                </RadioGroup>
+                                            </div>
+                                        </div>
+                                        <hr />
+                                        <div className="w-[121px] h-10 items-center px-2 flex flex-row  bg-[#EDFCF3] border border-solid border-[#AAF0C7] rounded-[6px] gap-1">
+                                            <Image
+                                                src="/icons/green-right-mark.svg"
+                                                width={24}
+                                                height={24}
+                                                alt="right-mark-icon" />
+                                            <span className="text-[#0A5B39] font-medium text-base">Correct</span>
+
+                                        </div>
+                                        <div className="w-[121px] h-10 px-2 flex flex-row items-center bg-[#FEF3F2] border border-solid border-[#FFCDC9] rounded-[6px] gap-1">
+                                            <Image
+                                                src="/icons/red-cancel-icon.svg"
+                                                width={24}
+                                                height={24}
+                                                alt="red-cancel-icon" />
+                                            <span className="text-[#9A221A] font-medium text-base">Incorrect</span>
+                                        </div>
+                                        <div className="w-full h-auto bg-[#F9FAFB] border-2 border-solid border-[#F2F4F7] rounded-[8px] flex p-4">
+                                            <span className="text-[#1D2939] font-normal text-sm italic leading-[25px]">The bitwise AND operation compares each corresponding bit of two binary numbers and returns a new binary number where each bit is 1 if both corresponding bits are 1, and 0 otherwise.</span>
                                         </div>
                                     </div>
 

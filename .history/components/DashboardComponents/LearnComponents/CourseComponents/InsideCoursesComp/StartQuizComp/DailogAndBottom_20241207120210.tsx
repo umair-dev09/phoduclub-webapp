@@ -156,7 +156,7 @@ function Quiz({
                                                                 sx={{
                                                                     color: '#D0D5DD',
                                                                     '&.Mui-checked': {
-                                                                        color: '#DE3024',
+                                                                        color: '#0B9055',
                                                                     },
                                                                 }}
                                                             />
@@ -170,7 +170,7 @@ function Quiz({
                                                                 sx={{
                                                                     color: '#D0D5DD',
                                                                     '&.Mui-checked': {
-                                                                        color: '#DE3024',
+                                                                        color: '#0B9055',
                                                                     },
                                                                 }}
                                                             />
@@ -184,7 +184,7 @@ function Quiz({
                                                                 sx={{
                                                                     color: '#D0D5DD',
                                                                     '&.Mui-checked': {
-                                                                        color: '#DE3024',
+                                                                        color: '#0B9055',
                                                                     },
                                                                 }}
                                                             />
@@ -198,7 +198,7 @@ function Quiz({
                                                                 sx={{
                                                                     color: '#D0D5DD',
                                                                     '&.Mui-checked': {
-                                                                        color: '#DE3024',
+                                                                        color: '#0B9055',
                                                                     },
                                                                 }}
                                                             />
@@ -209,6 +209,15 @@ function Quiz({
                                             </div>
                                         </div>
                                         <hr />
+                                        <div className="w-[121px] h-10 items-center px-2 flex flex-row  bg-[#EDFCF3] border border-solid border-[#AAF0C7] rounded-[6px] gap-1">
+                                            <Image
+                                                src="/icons/green-right-mark.svg"
+                                                width={24}
+                                                height={24}
+                                                alt="right-mark-icon" />
+                                            <span className="text-[#0A5B39] font-medium text-base">Correct</span>
+
+                                        </div>
                                         <div className="w-[121px] h-10 px-2 flex flex-row items-center bg-[#FEF3F2] border border-solid border-[#FFCDC9] rounded-[6px] gap-1">
                                             <Image
                                                 src="/icons/red-cancel-icon.svg"

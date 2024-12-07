@@ -156,7 +156,7 @@ function Quiz({
                                                                 sx={{
                                                                     color: '#D0D5DD',
                                                                     '&.Mui-checked': {
-                                                                        color: '#DE3024',
+                                                                        color: '#0B9055',
                                                                     },
                                                                 }}
                                                             />
@@ -170,7 +170,7 @@ function Quiz({
                                                                 sx={{
                                                                     color: '#D0D5DD',
                                                                     '&.Mui-checked': {
-                                                                        color: '#DE3024',
+                                                                        color: '#0B9055',
                                                                     },
                                                                 }}
                                                             />
@@ -184,7 +184,7 @@ function Quiz({
                                                                 sx={{
                                                                     color: '#D0D5DD',
                                                                     '&.Mui-checked': {
-                                                                        color: '#DE3024',
+                                                                        color: '#0B9055',
                                                                     },
                                                                 }}
                                                             />
@@ -198,7 +198,7 @@ function Quiz({
                                                                 sx={{
                                                                     color: '#D0D5DD',
                                                                     '&.Mui-checked': {
-                                                                        color: '#DE3024',
+                                                                        color: '#0B9055',
                                                                     },
                                                                 }}
                                                             />
