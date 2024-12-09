@@ -7,7 +7,6 @@ interface AnnouncementItem {
     title: string;
     body: string;
     imageUrl: string;
-    group: String;
 }
 function Announcement() {
     const announcements: AnnouncementItem[] = [
@@ -18,7 +17,6 @@ function Announcement() {
             title: "Mock test series are LIVE",
             body: "Our new mock test series is now live. Check it out now.",
             imageUrl: "/icons/RobertFox.png",
-            group: " JEE-2024",
         },
         {
             id: 1,
@@ -27,7 +25,6 @@ function Announcement() {
             title: "Mock test series are LIVE",
             body: "Our new mock test series is now live. Check it out now.",
             imageUrl: "/icons/RobertFox.png",
-            group: " BITS-2024",
         },
         {
             id: 1,
@@ -36,7 +33,6 @@ function Announcement() {
             title: "Mock test series are LIVE",
             body: "Our new mock test series is now live. Check it out now.",
             imageUrl: "/icons/RobertFox.png",
-            group: "VIT-2024",
         },
 
     ];
@@ -60,14 +56,14 @@ function Announcement() {
                                     <span className='font-normal text-xs text-[#475467]'>{announcement.time}</span>
                                 </div>
                             </div>
-                            <div className='flex flex-row gap-1 bg-[#F8E9FE] rounded-[19px] h-[26px] w-[97px] items-center justify-center'>
+                            <div className='flex flex-row gap-1 bg-[#F8E9FE] rounded-[19px] h-[24px] w-[97px] items-center justify-center'>
                                 <Image
                                     src="/icons/community-pink-color.svg"
                                     height={16}
                                     width={16}
                                     alt="community-pink-color"
                                 />
-                                <span className='font-normal text-xs text-[#791F89]'>{announcement.group}</span>
+                                <span className='font-normal text-xs text-[#791F89]'>JEE-2024</span>
                             </div>
                         </div>
                         <div className='flex flex-col gap-1'>

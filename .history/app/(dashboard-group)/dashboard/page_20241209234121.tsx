@@ -29,8 +29,8 @@ export default function AnalyticsPage() {
           );
      }
      return (
-          <div className=" flex flex-col  flex-1 h-auto overflow-y-auto  p-6">
-               <div className="flex flex-row w-full gap-4  ">
+          <div className=" flex flex-col  flex-1 h-auto overflow-y-auto  pb-6">
+               <div className="flex flex-row w-full gap-4 pt-6 px-6">
                     <div className="flex flex-col flex-1 bg-white  rounded-lg h-[327px] w-1/2 ">
                          <div className="flex flex-row justify-between pt-6 px-6 w-full text-[#1D2939] text-lg font-bold">
                               <h3 className='text-[#1D2939] font-bold text-lg'>Subject Progress Tracker</h3>
@@ -48,7 +48,7 @@ export default function AnalyticsPage() {
                          </div>
                     </div>
                </div>
-               <div className="flex flex-row   w-full mt-4 gap-4  ">
+               <div className="flex flex-row   w-full mt-4 gap-4 px-6 ">
                     <div className="flex flex-col flex-1 bg-white  rounded-lg  h-[327px] w-1/2 ">
                          <div className="flex flex-row justify-between pt-6 px-6 w-full text-[#1D2939] text-lg font-bold">
                               <h3 className='text-[#1D2939] font-bold text-lg'>Test Series</h3>

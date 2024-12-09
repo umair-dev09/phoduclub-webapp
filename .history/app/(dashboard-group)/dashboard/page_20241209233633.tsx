@@ -29,9 +29,9 @@ export default function AnalyticsPage() {
           );
      }
      return (
-          <div className=" flex flex-col  flex-1 h-auto overflow-y-auto  p-6">
-               <div className="flex flex-row w-full gap-4  ">
-                    <div className="flex flex-col flex-1 bg-white  rounded-lg h-[327px] w-1/2 ">
+          <div className=" flex flex-row  flex-1 h-auto overflow-y-auto m-6 gap-4">
+               <div className="flex flex-col w-full gap-4 ">
+                    {/* <div className="flex flex-col flex-1 bg-white  rounded-lg h-[327px] w-1/2 ">
                          <div className="flex flex-row justify-between pt-6 px-6 w-full text-[#1D2939] text-lg font-bold">
                               <h3 className='text-[#1D2939] font-bold text-lg'>Subject Progress Tracker</h3>
                          </div>
@@ -46,10 +46,10 @@ export default function AnalyticsPage() {
                          <div className='h-full overflow-y-auto'>
                               <Announcement />
                          </div>
-                    </div>
+                    </div> */}
                </div>
-               <div className="flex flex-row   w-full mt-4 gap-4  ">
-                    <div className="flex flex-col flex-1 bg-white  rounded-lg  h-[327px] w-1/2 ">
+               <div className="flex flex-col w-full gap-4  ">
+                    {/* <div className="flex flex-col flex-1 bg-white  rounded-lg  h-[327px] w-1/2 ">
                          <div className="flex flex-row justify-between pt-6 px-6 w-full text-[#1D2939] text-lg font-bold">
                               <h3 className='text-[#1D2939] font-bold text-lg'>Test Series</h3>
                               <button className="text-sm font-semibold text-[#7400E0] cursor-pointer">View all</button>
@@ -67,7 +67,7 @@ export default function AnalyticsPage() {
                          <div className="flex justify-center flex-1 overflow-y-auto rounded-b-lg">
                               <Course />
                          </div>
-                    </div>
+                    </div> */}
                </div>
 
 

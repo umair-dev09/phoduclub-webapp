@@ -101,42 +101,9 @@ function Discussion() {
         }
     }, [value]);
 
-    // ------------------------------------------------------------------------------------------------------------------------------
-    // Below logic for the "SHOW MORE AND SHOW LESS"
-    interface ExpandableTextProps {
-        content: string; // Ensures 'content' is a string
-        wordLimit?: number; // Optional word limit, default to 100
-    }
+    const { getCollapseProps, getToggleProps, isExpanded } = useCollapse()  // THIS STATE IS USED FOR A "SEE MORE AND SEE LESS"
 
-    const ExpandableText: React.FC<ExpandableTextProps> = ({ content, wordLimit = 100 }) => {
-        const [isExpanded, setIsExpanded] = useState(false);
-        // Split the content into words
-        const words = content.split(' ');
-        // Check if content exceeds the word limit
-        const exceedsLimit = words.length > wordLimit;
-        // Truncated and full content
-        const displayedContent = isExpanded || !exceedsLimit
-            ? content
-            : words.slice(0, wordLimit).join(' ') + '...';
-
-        return (
-            <div>
-                <p>{displayedContent}</p>
-                {exceedsLimit && (
-                    <button
-                        onClick={() => setIsExpanded(!isExpanded)}
-                        className="text-[#9012FF] font-semibold text-sm"
-                    >
-                        {isExpanded ? 'Show Less' : 'Show More'}
-                    </button>
-                )}
-            </div>
-        );
-    };
-    const content = `The BITSET Full Course is designed to provide students with an in-depth understanding  of bit manipulation techniques and the use of bitsets in data structures. This course will cover fundamental concepts, practical applications, and advanced techniques used in competitive programming and software development. Students will learn how to efficiently solve problems using bitwise operations and gain hands-on experience through coding exercises and    The BITSET Full Course is designed to provide students with an in-depth understanding  of bit manipulation techniques and the use of bitsets in data structures. This course will cover fundamental concepts, practical applications, and advanced techniques used in competitive programming and software development. Students will learn how to efficiently solve problems using bitwise operations and gain hands-on experience through coding exercises and projects.`;
-    //   ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ 
     return (
-
         <div className="flex flex-col overflow-y-auto h-auto  w-auto">
             <span className="ml-[24px] mt-[20px] w-[149px] h-[24px] text-1g text-[#1D2939] font-medium">Share your doubts</span>
 
@@ -174,11 +141,10 @@ function Discussion() {
                 <div className="h-[66px] bg-[#F7F8FB] rounded-bl-[12px] rounded-br-[12px] flex justify-center items-center">
                     <div className="flex flex-row w-full justify-between items-center mx-5">
                         {/* First div with text */}
-                        <div className="h-[24px] w-[288px] gap-[24px] flex flex-row ">
+                        <div className="h-[24px] w-[288px] gap-[24px] flex flex-row">
                             {/* Icons */}
                             <button
                                 onClick={() => handleIconClick('bold')}
-                                className="hover:bg-[#EAECF0]"
                             >
                                 <Image src="/icons/Bold.svg" width={24} height={24} alt="bold" />
 
@@ -186,14 +152,12 @@ function Discussion() {
 
                             </button>
                             <button
-                                className="hover:bg-[#EAECF0]"
                                 onClick={() => handleIconClick('italic')}>
 
                                 <Image src="/icons/italic-icon.svg" width={24} height={24} alt="italic-icon" />
                             </button>
 
                             <button
-                                className="hover:bg-[#EAECF0]"
                                 onClick={() => handleIconClick('underline')}>
                                 <Image src="/icons/underline-icon.svg" width={24} height={24} alt="underline-icon" />
                             </button>
@@ -212,19 +176,19 @@ function Discussion() {
                                     </button>
                                 </PopoverTrigger>
 
-                                <PopoverContent className="flex flex-row bg-white rounded-[8px] border-[1px] border-solid border-[#EAECF0] px-2 w-[120px] shadow-[0_2px_4px_#EAECF0] gap-2">
+                                <PopoverContent className="ml-1 gap-4">
                                     {/* These buttons will be inside the popover */}
-
-                                    <button onClick={() => handleIconClick("align-left")} className="flex items-center justify-center hover:bg-[#EAECF0]">
-                                        <Image src="/icons/align-left.svg" width={30} height={30} alt="align-left" />
-                                    </button>
-                                    <button onClick={() => handleIconClick("align-center")} className="flex items-center justify-center hover:bg-[#EAECF0]">
-                                        <Image src="/icons/align-middle.svg" width={30} height={30} alt="align-center" />
-                                    </button>
-                                    <button onClick={() => handleIconClick("align-right")} className="flex items-center justify-center hover:bg-[#EAECF0]">
-                                        <Image src="/icons/align-right.svg" width={30} height={30} alt="align-right" />
-                                    </button>
-
+                                    <div className="flex flex-row bg-white rounded-[8px] border-[1px] border-solid border-[#EAECF0] p-2 w-[120px] shadow-[0_2px_4px_#EAECF0] gap-2 ">
+                                        <button onClick={() => handleIconClick("align-left")} className="flex items-center justify-center">
+                                            <Image src="/icons/align-left.svg" width={30} height={30} alt="align-left" />
+                                        </button>
+                                        <button onClick={() => handleIconClick("align-center")} className="flex items-center justify-center">
+                                            <Image src="/icons/align-middle.svg" width={30} height={30} alt="align-center" />
+                                        </button>
+                                        <button onClick={() => handleIconClick("align-right")} className="flex items-center justify-center">
+                                            <Image src="/icons/align-right.svg" width={30} height={30} alt="align-right" />
+                                        </button>
+                                    </div>
                                 </PopoverContent>
                             </Popover>
 
@@ -234,12 +198,10 @@ function Discussion() {
                             {/* --------------------------------------------------------------------------------------------------------------------------------- */}
 
                             <button
-                                className="hover:bg-[#EAECF0]"
                                 onClick={() => handleIconClick('ordered')}>
                                 <Image src="/icons/dropdown-icon-2.svg" width={27} height={27} alt="dropdown-icon" />
                             </button>
-                            <button onClick={() => handleIconClick('image')}
-                                className="hover:bg-[#EAECF0]">
+                            <button onClick={() => handleIconClick('image')}>
                                 <Image src="/icons/upload-image-icon.svg" width={24} height={24} alt="upload-image-icon" />
                             </button>
 
@@ -296,7 +258,21 @@ function Discussion() {
 
                     </div>
                     <div className="mr-[24px] ml-[24px] mt-[12px] font-normal text-[#1D2939] text-sm opacity-[70%] leading-relaxed">
-                        <ExpandableText content={content} />
+                        <p>The BITSET Full Course is designed to provide students with an in-depth understanding of bit manipulation techniques and the use of bitsets in data structures. This course will cover fundamental concepts, practical applications, and advanced techniques used in competitive programming and software development. Students will learn how to efficiently solve problems using bitwise operations and gain hands-on experience through coding exercises and projects.</p>
+                        {isExpanded ? '' : (
+                            <button {...getToggleProps()} className="text-[#9012FF] font-semibold text-sm">
+                                Show More
+                            </button>
+                        )}
+                        <section {...getCollapseProps()}>
+                            <p>The BITSET Full Course is designed to provide students with an in-depth understanding of bit manipulation techniques and the use of bitsets in data structures. This course will cover fundamental concepts, practical applications, and advanced techniques used in competitive programming and software development. Students will learn how to efficiently solve problems using bitwise operations and gain hands-on experience through coding exercises and projects.</p>
+
+                        </section>
+                        {!isExpanded ? '' : (
+                            <button {...getToggleProps()} className="text-[#9012FF] font-semibold text-sm">
+                                Show Less
+                            </button>
+                        )}
 
                     </div>
                     <div className="flex flex-row  ml-[24px] mt-[10px]">

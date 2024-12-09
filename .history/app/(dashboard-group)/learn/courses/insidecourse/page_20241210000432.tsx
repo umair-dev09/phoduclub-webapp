@@ -88,7 +88,7 @@ function SideButton() {
                     <div>
                         <div className="ml-8 h-[60px] mr-8 mt-[20px] rounded-md flex items-center justify-center">
                             <div className="flex flex-row justify-between w-full h-[44px]">
-                                <button className="h-full w-[111px] rounded-[8px] bg-[#FFFFFF] border-[1.5px] border-solid border-[#EAECF0] hover:bg-[#f0f0f0]">
+                                <button className="h-full w-[111px] rounded-[8px] bg-[#FFFFFF] border-[1.5px] border-solid border-[#EAECF0]">
                                     <span className="font-normal text-sm text-[#1D2939]">Previous</span>
                                 </button>
                                 <button className="h-full w-[111px] rounded-[8px] bg-[#8501FF] shadow-inner-button border-[1px] border- solid border-[#800EE2]">

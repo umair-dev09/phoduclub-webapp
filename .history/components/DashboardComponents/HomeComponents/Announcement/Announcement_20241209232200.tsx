@@ -7,7 +7,6 @@ interface AnnouncementItem {
     title: string;
     body: string;
     imageUrl: string;
-    group: String;
 }
 function Announcement() {
     const announcements: AnnouncementItem[] = [
@@ -18,7 +17,6 @@ function Announcement() {
             title: "Mock test series are LIVE",
             body: "Our new mock test series is now live. Check it out now.",
             imageUrl: "/icons/RobertFox.png",
-            group: " JEE-2024",
         },
         {
             id: 1,
@@ -27,7 +25,6 @@ function Announcement() {
             title: "Mock test series are LIVE",
             body: "Our new mock test series is now live. Check it out now.",
             imageUrl: "/icons/RobertFox.png",
-            group: " BITS-2024",
         },
         {
             id: 1,
@@ -36,7 +33,6 @@ function Announcement() {
             title: "Mock test series are LIVE",
             body: "Our new mock test series is now live. Check it out now.",
             imageUrl: "/icons/RobertFox.png",
-            group: "VIT-2024",
         },
 
     ];
@@ -47,27 +43,25 @@ function Announcement() {
                 // Display announcements if they exist
                 announcements.map((announcement, index: number) => (
                     <div key={announcement.id} className=' flex flex-col gap-4 pt-6 px-6 items-start  h-auto '>
-                        <div className=' flex flex-row gap-3 items-start'>
-                            <div className='flex flex-row gap-3 items-center'>
-                                <Image
-                                    src={announcement.imageUrl}
-                                    alt={announcement.name}
-                                    height={40}
-                                    width={40}
-                                />
-                                <div className='flex flex-col gap-[2px]'>
-                                    <span className='font-medium text-sm text-[#1F2937]'>{announcement.name}</span>
-                                    <span className='font-normal text-xs text-[#475467]'>{announcement.time}</span>
-                                </div>
+                        <div className=' flex flex-row gap-3 items-center'>
+                            <Image
+                                src={announcement.imageUrl}
+                                alt={announcement.name}
+                                height={40}
+                                width={40}
+                            />
+                            <div className='flex flex-col gap-[2px]'>
+                                <span className='font-medium text-sm text-[#1F2937]'>{announcement.name}</span>
+                                <span className='font-normal text-xs text-[#475467]'>{announcement.time}</span>
                             </div>
-                            <div className='flex flex-row gap-1 bg-[#F8E9FE] rounded-[19px] h-[26px] w-[97px] items-center justify-center'>
+                            <div className='flex flex-row gap-1 bg-[#F8E9FE] rounded-[19px] h-[22px] w-[97px] items-center'>
                                 <Image
-                                    src="/icons/community-pink-color.svg"
+                                    src="community-pink-color.svg"
                                     height={16}
                                     width={16}
                                     alt="community-pink-color"
                                 />
-                                <span className='font-normal text-xs text-[#791F89]'>{announcement.group}</span>
+                                <span className='font-normal text-xs text-[#791F89]'>JEE-2024</span>
                             </div>
                         </div>
                         <div className='flex flex-col gap-1'>

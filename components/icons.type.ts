@@ -168,7 +168,8 @@ export type IconsType =
   | "quiz-02"
   | "right-mark"
   | 'red-cancel-icon'
-  | "green-right-mark";
+  | "green-right-mark"
+  | "community-pink-color";
 
 
 

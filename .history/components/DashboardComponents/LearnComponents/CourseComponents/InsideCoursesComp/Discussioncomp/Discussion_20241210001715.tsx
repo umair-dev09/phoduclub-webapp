@@ -110,10 +110,13 @@ function Discussion() {
 
     const ExpandableText: React.FC<ExpandableTextProps> = ({ content, wordLimit = 100 }) => {
         const [isExpanded, setIsExpanded] = useState(false);
+
         // Split the content into words
         const words = content.split(' ');
+
         // Check if content exceeds the word limit
         const exceedsLimit = words.length > wordLimit;
+
         // Truncated and full content
         const displayedContent = isExpanded || !exceedsLimit
             ? content

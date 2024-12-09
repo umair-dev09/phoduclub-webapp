@@ -101,19 +101,15 @@ function Discussion() {
         }
     }, [value]);
 
-    // ------------------------------------------------------------------------------------------------------------------------------
-    // Below logic for the "SHOW MORE AND SHOW LESS"
-    interface ExpandableTextProps {
-        content: string; // Ensures 'content' is a string
-        wordLimit?: number; // Optional word limit, default to 100
-    }
-
-    const ExpandableText: React.FC<ExpandableTextProps> = ({ content, wordLimit = 100 }) => {
+    const ExpandableText = ({ content, wordLimit = 100 }) => {
         const [isExpanded, setIsExpanded] = useState(false);
+
         // Split the content into words
         const words = content.split(' ');
+
         // Check if content exceeds the word limit
         const exceedsLimit = words.length > wordLimit;
+
         // Truncated and full content
         const displayedContent = isExpanded || !exceedsLimit
             ? content
@@ -133,10 +129,8 @@ function Discussion() {
             </div>
         );
     };
-    const content = `The BITSET Full Course is designed to provide students with an in-depth understanding  of bit manipulation techniques and the use of bitsets in data structures. This course will cover fundamental concepts, practical applications, and advanced techniques used in competitive programming and software development. Students will learn how to efficiently solve problems using bitwise operations and gain hands-on experience through coding exercises and    The BITSET Full Course is designed to provide students with an in-depth understanding  of bit manipulation techniques and the use of bitsets in data structures. This course will cover fundamental concepts, practical applications, and advanced techniques used in competitive programming and software development. Students will learn how to efficiently solve problems using bitwise operations and gain hands-on experience through coding exercises and projects.`;
-    //   ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ 
+    const content = `The BITSET Full Course is designed to provide students with an in-depth understanding of bit manipulation techniques and the use of bitsets in data structures. This course will cover fundamental concepts, practical applications, and advanced techniques used in competitive programming and software development. Students will learn how to efficiently solve problems using bitwise operations and gain hands-on experience through coding exercises and projects.`;
     return (
-
         <div className="flex flex-col overflow-y-auto h-auto  w-auto">
             <span className="ml-[24px] mt-[20px] w-[149px] h-[24px] text-1g text-[#1D2939] font-medium">Share your doubts</span>
 
