@@ -13,6 +13,7 @@ import MessageLoading from "@/components/MessageLoading";
 import CommunityVideoPlayer from "@/components/CommunityVideoPlayer";
 import MediaViewDialog from "./MediaViewDialog";
 import Delete from "./Delete";
+import MemberClickDialog from "./MemberClickDialog";
 
 type OtherChatProps = {
     message: string | null;
@@ -38,7 +39,7 @@ type OtherChatProps = {
     isAdmin: boolean;
     currentUserId: string;
     isHighlighted: boolean; // New prop
-    mentions: { userId: string; id: string }[];
+    mentions: { userId: string; id: string, isAdmin: boolean, }[];
     scrollToReply: (replyingToChatId: string) => void;
     setShowReplyLayout: (value: boolean) => void;
     setLoading: (value: boolean) => void;
@@ -63,6 +64,9 @@ type ReactionCount = {
     const [showMediaDialog, setShowMediaDialog] = useState(false); // Use a single index to track the active button
     const [deleteDialog, setDeleteDialog] = useState(false); 
     const [sender, setSenderData] = useState<UserData | null>(null);
+    const [openDialogue, setOpenDialogue] = useState(false);
+    const [id, setId] = useState<string>('');
+    const [admin, setAdmin] = useState<boolean>(false);
 
     useEffect(() => {
 
@@ -139,9 +143,8 @@ type ReactionCount = {
                 return (
                   <span
                     key={index}
-                    style={{ color: "yellow", cursor: "pointer" }}
-                    onClick={() => alert(`You clicked on mention ID: ${mention.id}`)}
-                  >
+                    style={{ color: "#C74FE6", cursor: "pointer" }}
+                    onClick={() => {setOpenDialogue(true); setId(mention.id); setAdmin(mention.isAdmin)}}>
                     {part}
                   </span>
                 );
@@ -165,9 +168,8 @@ type ReactionCount = {
                     return (
                       <span
                         key={`${index}-${innerIndex}`}
-                        style={{ color: "yellow", cursor: "pointer" }}
-                        onClick={() => alert(`You clicked on mention ID: ${mention.id}`)}
-                      >
+                        style={{ color: "#C74FE6", cursor: "pointer" }}
+                        onClick={() => {setOpenDialogue(true); setId(mention.id); setAdmin(mention.isAdmin)}}>
                         {part}
                       </span>
                     );
@@ -266,13 +268,13 @@ const handleCopy = async () => {
         <>
             <div className="w-full h-auto flex flex-col pr-[10%] ">
                 <div className="gap-2 flex items-center">
-                    <div className="relative">
+                    <button className="relative" onClick={() => {setOpenDialogue(true); setId(senderId || ''); setAdmin(isAdmin)}}>
                         <Image className="w-[40px] h-[40px] rounded-full" src={sender?.profilePic || '/icons/profile-pic2.svg'} alt="DP" width={40} height={40} />
                          {!isAdmin && sender?.isPremium &&(
                             <Image className="absolute right-0 bottom-0" src='/icons/winnerBatch.svg' alt="Batch" width={18} height={18} />
                          )}
-                    </div>
-                    <span className="text-[#182230] font-semibold text-sm">{sender?.name}</span>
+                    </button>
+                    <button onClick={() => {setOpenDialogue(true); setId(senderId || ''); setAdmin(isAdmin)}}><span className="text-[#182230] font-semibold text-sm">{sender?.name}</span></button>
                     {isAdmin &&(
                     <span className="font-normal text-sm text-[#475467]">{sender?.role}</span>
                     )}
@@ -443,7 +445,9 @@ const handleCopy = async () => {
                       </div>     
                 )}
             {showMediaDialog && <MediaViewDialog open={true} onClose={() => setShowMediaDialog(false)} src={fileUrl} mediaType={messageType || ''}/> }
-
+            {openDialogue && (
+        <MemberClickDialog open={true} onClose={() => setOpenDialogue(false)} id={id} isAdmin={admin} />
+      )}
             </div>
         </>
     );

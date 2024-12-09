@@ -13,6 +13,7 @@ import MessageLoading from "@/components/MessageLoading";
 import CommunityVideoPlayer from "@/components/CommunityVideoPlayer";
 import MediaViewDialog from "./MediaViewDialog";
 import Delete from "./Delete";
+import MemberClickDialog from "./MemberClickDialog";
 type OwnChatProps = {
     currentUserId: string;
     message: string | null;
@@ -34,7 +35,7 @@ type OwnChatProps = {
     headingId: string ;
     channelId: string ;
     isDeleted: boolean;
-    mentions: { userId: string; id: string }[];
+    mentions: { userId: string; id: string, isAdmin: boolean, }[];
     highlightedText: string | React.ReactNode[];
     isAdmin: boolean;
     isHighlighted: boolean; // New prop
@@ -56,6 +57,9 @@ function OwnChat({message, isDeleted, mentions, currentUserId, highlightedText, 
     const [showBookmark, setShowBookmark] = useState(false); // Use a single index to track the active button
     const [showMediaDialog, setShowMediaDialog] = useState(false); // Use a single index to track the active button
     const [deleteDialog, setDeleteDialog] = useState(false); 
+    const [id, setId] = useState<string>('');
+    const [admin, setAdmin] = useState<boolean>(false);
+    const [openDialogue, setOpenDialogue] = useState(false);
 
     const reactionsRef = useMemo(() => {
         return collection(
@@ -105,8 +109,7 @@ function OwnChat({message, isDeleted, mentions, currentUserId, highlightedText, 
                   <span
                     key={index}
                     style={{ color: "yellow", cursor: "pointer" }}
-                    onClick={() => alert(`You clicked on mention ID: ${mention.id}`)}
-                  >
+                    onClick={() => {setOpenDialogue(true); setId(mention.id); setAdmin(mention.isAdmin)}} >
                     {part}
                   </span>
                 );
@@ -131,7 +134,7 @@ function OwnChat({message, isDeleted, mentions, currentUserId, highlightedText, 
                       <span
                         key={`${index}-${innerIndex}`}
                         style={{ color: "yellow", cursor: "pointer" }}
-                        onClick={() => alert(`You clicked on mention ID: ${mention.id}`)}
+                        onClick={() => {setOpenDialogue(true); setId(mention.id); setAdmin(mention.isAdmin)}}
                       >
                         {part}
                       </span>
@@ -408,9 +411,12 @@ const handleCopy = async () => {
                 )}
          
             </div>
-
+            {openDialogue && (
+        <MemberClickDialog open={true} onClose={() => setOpenDialogue(false)} id={id} isAdmin={admin} />
+      )}
             {showMediaDialog && <MediaViewDialog open={true} onClose={() => setShowMediaDialog(false)} src={fileUrl} mediaType={messageType || ''}/> }
             {deleteDialog && <Delete communityId={communityId} headingId={headingId} channelId={channelId} chatId={chatId} open={true} onClose={() => setDeleteDialog(false)}/>}
+           
         </div>
     );
 }

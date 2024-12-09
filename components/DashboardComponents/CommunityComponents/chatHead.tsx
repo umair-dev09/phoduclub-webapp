@@ -50,7 +50,7 @@ function ChatHead({channelName,channelId,channelEmoji}:chatHeadProps) {
                             <Image src='/icons/chevron-down.svg' alt='arrow down' width={20} height={20} />
                         </button>
                     </PopoverTrigger>
-                    <PopoverContent>
+                    <PopoverContent className='p-0'>
                         <div className='flex flex-col bg-white w-auto h-auto py-1 border border-lightGrey rounded-md shadow-md'>
                             <button
                                 className='flex flex-row items-center gap-2 w-48 px-4 py-[10px] transition-colors hover:bg-neutral-100'
