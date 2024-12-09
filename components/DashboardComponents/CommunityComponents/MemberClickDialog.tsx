@@ -4,7 +4,7 @@ import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
 import { useState, useEffect } from "react";
 import { doc, onSnapshot,Timestamp} from 'firebase/firestore';
-import { db } from "@/firebase";
+import { db, auth } from "@/firebase";
 import LoadingData from "@/components/Loading";
 
 interface MemberClickDialogProps {
@@ -21,6 +21,7 @@ type UserData = {
     targetYear: string;
     targetExams: string[];
     role: string;
+    isPremium: boolean | false;
 }
 
 function MemberClickDialog({open, onClose, id ,isAdmin}:MemberClickDialogProps){
@@ -66,9 +67,20 @@ function MemberClickDialog({open, onClose, id ,isAdmin}:MemberClickDialogProps){
                     <DialogPanel transition className="bg-white rounded-2xl  w-[480px] h-auto">
                        <div className="flex flex-col">
                         <div className="flex flex-row items-start justify-between bg-purple p-4 rounded-t-2xl">
-                         <div className="flex flex-row gap-2">
-                         <Image className="rounded-full w-[96px] h-[96px]" src={user?.profilePic || '/defaultDP.svg'} alt="Profile Pic" width={96} height={96}
+                         <div className="flex flex-row gap-3">
+                         <div className="relative">
+                         <Image className="rounded-full w-[96px] h-[96px]" src={user?.profilePic || '/defaultDP.svg'} alt="Profile Pic" width={96} height={96} />
+                      {user?.isPremium === true && (
+                        <Image
+                            className="absolute right-0 bottom-0"
+                            src="/icons/winnerBatch.svg"
+                            alt="Batch"
+                            width={28}
+                            height={28}
                         />
+                       )}
+                      </div>
+                        
                         <div className="flex flex-col justify-center">
                         <h3 className="text-white text-[20px]">{user?.name}</h3>
                         <span className="text-white">{user?.userId}</span>

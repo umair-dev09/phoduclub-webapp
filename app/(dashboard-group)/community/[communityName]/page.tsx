@@ -56,7 +56,7 @@ type Chat = {
   replyingToFileName: string;
   isDeleted: boolean;
   isAdmin: boolean;
-  mentions: { userId: string; id: string }[];
+  mentions: { userId: string; id: string, isAdmin: boolean, }[];
 };
 
 export default function CommunityName() {

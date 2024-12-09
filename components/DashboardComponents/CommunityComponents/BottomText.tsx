@@ -166,7 +166,7 @@ function BottomText({
     // Store the mention with both name and uniqueId
     setMentions((prevMentions) => [
       ...prevMentions,
-      { userId: user.userId, id: user.uniqueId },
+      { userId: user.userId, id: user.uniqueId, isAdmin: false, },
     ]);
   
     // Set the cursor position after the inserted username

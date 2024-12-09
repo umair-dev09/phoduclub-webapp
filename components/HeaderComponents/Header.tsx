@@ -17,6 +17,7 @@ type UserData = {
     name: string | null;
     userId: string | null;
     profilePic: string | null;
+    isPremium: boolean | null;
 };
 
 function Header() {
@@ -87,7 +88,18 @@ function Header() {
                     <Popover placement="bottom">
                         <PopoverTrigger>
                             <button className='flex flex-row items-center focus:outline-none  '>
-                                <Image className="rounded-[50%] ml-[8px]" src={userData?.profilePic || "/defaultDP.svg"} width={38} height={38} quality={100} alt="Profile Picture" />
+                            <div className="relative">
+                            <Image className="rounded-[50%] ml-[8px]" src={userData?.profilePic || "/defaultDP.svg"} width={38} height={38} quality={100} alt="Profile Picture" />
+                            {userData?.isPremium && (
+                                <Image
+                                    className="absolute right-[-2px] bottom-0"
+                                    src="/icons/winnerBatch.svg"
+                                    alt="Batch"
+                                    width={18}
+                                    height={18}
+                                />
+                            )}
+                            </div>
                                 <div className='flex flex-col ml-1 mr-1'>
                                     <p className='font-semibold text-[14px] mb-[-2px]'>{userData?.name}</p>
                                     <p className='text-[13px] text-[#667085]'>{userData?.userId}</p>

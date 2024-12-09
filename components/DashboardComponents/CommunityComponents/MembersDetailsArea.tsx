@@ -168,13 +168,25 @@ function MembersDetailsArea({ members }: MembersDetailsAreaProps) {
                       }
                     >
                     <div className="flex flex-row items-center my-1 gap-2">
-                        <Image
+                      <div className="relative">
+                      <Image
                         className="rounded-full w-[35px] h-[35px]"
                         src={member.profilePic}
                         alt="Profile Pic"
                         width={35}
                         height={35}
                         />
+                      {member.isPremium && (
+                        <Image
+                            className="absolute right-[-2px] bottom-0"
+                            src="/icons/winnerBatch.svg"
+                            alt="Batch"
+                            width={16}
+                            height={16}
+                        />
+                       )}
+                      </div>
+                      
                         <p className="text-[#4B5563] text-[13px] font-medium">
                         {member.name}
                         {isCurrentUser && " (You)"}
@@ -226,13 +238,24 @@ function MembersDetailsArea({ members }: MembersDetailsAreaProps) {
                       }
                     >
                     <div className="flex flex-row items-center my-1 gap-2">
-                        <Image
+                    <div className="relative">
+                      <Image
                         className="rounded-full w-[35px] h-[35px]"
                         src={member.profilePic}
                         alt="Profile Pic"
                         width={35}
                         height={35}
                         />
+                      {member.isPremium && (
+                        <Image
+                            className="absolute right-[-2px] bottom-0"
+                            src="/icons/winnerBatch.svg"
+                            alt="Batch"
+                            width={16}
+                            height={16}
+                        />
+                       )}
+                      </div>
                         <p className="text-[#4B5563] text-[13px] font-medium">
                         {member.name}
                         {isCurrentUser && " (You)"}
