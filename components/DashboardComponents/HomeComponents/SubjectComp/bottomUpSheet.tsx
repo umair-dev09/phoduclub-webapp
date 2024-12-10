@@ -4,6 +4,7 @@ import { Checkbox } from "@nextui-org/react";
 import Drawer from "react-modern-drawer";
 import "react-modern-drawer/dist/index.css";
 import { Popover, PopoverContent, PopoverTrigger } from "@nextui-org/popover";
+import { Calendar } from "@nextui-org/calendar";
 
 interface BottomUpSheet {
     isOpen: boolean;
@@ -23,10 +24,57 @@ const BottomSheet: React.FC<BottomUpSheet> = ({ closeModal, isOpen, subjectName 
 
     const [checkboxes, setCheckboxes] = useState<boolean[][]>(initializeCheckboxes(numRows, numColumns));
     const subjectChapterNames: Record<string, string[]> = {
-        'Maths': ['Algebra', 'Calculus', 'Geometry'],
-        'Overall': ['History', 'Geography', 'Civics'],
-        'Physics': ['Motion', 'Energy', 'Newton', 'Momentum', 'Work Done'],
-        'Chemistry': ['Organic Chemistry', 'Inorganic Chemistry', 'Physical Chemistry'],
+        'Maths': [
+            'Algebra',
+            'Calculus',
+            'Geometry',
+            'Trigonometry',
+            'Probability',
+            'Statistics',
+            'Linear Programming',
+            'Set Theory',
+            'Matrices',
+            'Complex Numbers'
+        ],
+        'Overall': [
+            'History',
+            'Geography',
+            'Civics',
+            'Economics',
+            'Political Science',
+            'Environmental Studies',
+            'World History',
+            'Indian History',
+            'Constitution of India'
+        ],
+        'Physics': [
+            'Motion',
+            'Energy',
+            'Newton',
+            'Momentum',
+            'Work Done',
+            'Electricity',
+            'Magnetism',
+            'Gravitation',
+            'Optics',
+            'Thermodynamics',
+            'Waves',
+            'Modern Physics'
+        ],
+        'Chemistry': [
+            'Organic Chemistry',
+            'Inorganic Chemistry',
+            'Physical Chemistry',
+            'Atomic Structure',
+            'Chemical Bonding',
+            'Thermochemistry',
+            'Equilibrium',
+            'Electrochemistry',
+            'Periodic Table',
+            'Coordination Compounds',
+            'Kinetics',
+            'Biomolecules'
+        ]
     };
 
     const chapterPriorityMapping: Record<string, string> = {
@@ -89,7 +137,7 @@ const BottomSheet: React.FC<BottomUpSheet> = ({ closeModal, isOpen, subjectName 
         return (
             <>
                 {chapterNames.map((chapterName, rowIndex) => (
-                    <tr key={rowIndex} className='h-[84px]'>
+                    <tr key={rowIndex} className='h-[84px] border-t border-lightGrey'>
                         <td>
                             <div className='ml-6 text-[14px] font-medium'>
                                 <p>{chapterName}</p>
@@ -108,21 +156,52 @@ const BottomSheet: React.FC<BottomUpSheet> = ({ closeModal, isOpen, subjectName 
                                     <p>{getProgress(rowIndex)}%</p>
                                 </div>
                             </div>
-
                         </td>
                         <td>
-                            <div>
-                                <div className="inline-flex items-center justify-center border border-gray-300 rounded-full bg-white text-sm font-medium text-gray-700 gap-2 w-auto h-auto p-4 whitespace-nowrap overflow-hidden shadow-sm" style={{ width: '67px', height: '28px' }}>
-                                    <span className="w-2 h-2 bg-red-500 rounded-full "></span>
-                                    <p className="m-0 text-sm text-gray-700">{getPriorityText(chapterName)}</p>
-                                </div>
+                            <div className="inline-flex items-center border border-gray-300 rounded-full bg-white text-sm font-medium text-gray-700 gap-1 w-fit h-auto px-[10px] py-1 whitespace-nowrap overflow-hidden shadow-sm">
+                                <div className="w-2 h-2 bg-red-500 rounded-full text-red-500"></div>
+                                <p className="text-sm text-gray-700">{getPriorityText(chapterName)}</p>
                             </div>
                         </td>
                         <td>
-                            <p>01-10-2024</p>
+                            {/* <p>01-10-2024</p> */}
+                            {/* <Popover placement="bottom" isOpen={isSelcetDateOpen}> */}
+                            <Popover placement="bottom">
+                                <PopoverTrigger>
+                                    {/* <button className="h-[44px] w-[143px] rounded-md bg-[#FFFFFF] border border-solid border-[#D0D5DD] flex items-center p-3" onClick={() => setIsSelectDateOpen(true)}> */}
+                                    <button className="rounded-md bg-[#FFFFFF] flex items-center justify-center w-full p-3">
+                                        <span className="font-normal text-sm text-[#475467] leading-5">01-10-2024</span>
+                                    </button>
+                                </PopoverTrigger>
+                                <PopoverContent className="flex flex-col gap-2 p-0 h-auto">
+                                    <Calendar
+                                        // defaultValue={today(getLocalTimeZone())}
+                                        showMonthAndYearPickers
+                                        color="secondary"
+                                    // onChange={(value) => {
+                                    //     const date = new Date(value.year, value.month - 1, value.day); // Adjust for zero-based month index
+                                    //     setSelectedDate(date); // Update state with the new Date object
+                                    //     setIsSelectDateOpen(false);
+                                    // }}
+                                    />
+
+                                    {/* Conditionally render the "Clear" button */}
+                                    {/* {selectedDate && ( */}
+                                    <button
+                                        className="min-w-[84px] min-h-[30px] rounded-md bg-[#9012FF] text-[14px] font-medium text-white mb-2"
+                                    // onClick={() => {
+                                    //     setSelectedDate(null); // Clear the selected date
+                                    //     setIsSelectDateOpen(false);
+                                    // }}
+                                    >
+                                        Clear
+                                    </button>
+                                    {/* )} */}
+                                </PopoverContent>
+                            </Popover>
                         </td>
                         {checkboxes[rowIndex].map((checked, index) => (
-                            <td key={index}>
+                            <td key={index} className='pl-[4.7%]'>
                                 <Checkbox
                                     color="primary"
                                     size="md"
@@ -163,31 +242,33 @@ const BottomSheet: React.FC<BottomUpSheet> = ({ closeModal, isOpen, subjectName 
                         </div>
 
                         <div className="overflow-auto h-auto">
-                            <table className="w-full table-fixed border border-solid border-[#EAECF0]">
+                            <table className="w-full table-fixed border-t border-[#EAECF0]">
                                 <thead className="bg-[#F9FAFB] h-11">
                                     <tr className="text-xs text-gray-700">
                                         <th className="text-left pl-6 w-1/4">Chapter</th>
-                                        <Popover placement="bottom">
-                                            <PopoverTrigger>
-                                                <button className="flex flex-row gap-1 justify-center my-4 items-center focus:outline-none">
-                                                    <th className="w-1/8">Priority</th>
-                                                </button>
-                                            </PopoverTrigger>
-                                            <PopoverContent className="w-auto py-1 px-0 bg-white border border-lightGrey rounded-md">
-                                                <button className="flex flex-row items-center justify-start w-full px-4 py-[0.625rem]  gap-2 hover:bg-[#F2F4F7]">
-                                                    <span className="w-2 h-2 bg-[#0B9055] rounded-full "></span>
-                                                    <span className="font-medium text-[#344054] text-sm">Low</span>
-                                                </button>
-                                                <button className="flex flex-row items-center justify-start w-full px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7]" >
-                                                    <span className="w-2 h-2 bg-[#DB6704] rounded-full "></span>
-                                                    <span className="font-medium text-[#344054] text-sm">Medium</span>
-                                                </button>
-                                                <button className="flex flex-row items-center justify-start w-full px-4 py-[0.625rem]  gap-2 hover:bg-[#F2F4F7]">
-                                                    <span className="w-2 h-2 bg-[#DE3024] rounded-full "></span>
-                                                    <span className="font-medium text-[#344054] text-sm">High</span>
-                                                </button>
-                                            </PopoverContent>
-                                        </Popover>
+                                        <th>
+                                            <Popover placement="bottom">
+                                                <PopoverTrigger>
+                                                    <button className="flex flex-row gap-1 justify-center my-4 items-center focus:outline-none">
+                                                        <th className="w-1/8">Priority</th>
+                                                    </button>
+                                                </PopoverTrigger>
+                                                <PopoverContent className="w-auto py-1 px-0 bg-white border border-lightGrey rounded-md">
+                                                    <button className="flex flex-row items-center justify-start w-full px-4 py-[0.625rem]  gap-2 hover:bg-[#F2F4F7]">
+                                                        <span className="w-2 h-2 bg-[#0B9055] rounded-full "></span>
+                                                        <span className="font-medium text-[#344054] text-sm">Low</span>
+                                                    </button>
+                                                    <button className="flex flex-row items-center justify-start w-full px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7]" >
+                                                        <span className="w-2 h-2 bg-[#DB6704] rounded-full "></span>
+                                                        <span className="font-medium text-[#344054] text-sm">Medium</span>
+                                                    </button>
+                                                    <button className="flex flex-row items-center justify-start w-full px-4 py-[0.625rem]  gap-2 hover:bg-[#F2F4F7]">
+                                                        <span className="w-2 h-2 bg-[#DE3024] rounded-full "></span>
+                                                        <span className="font-medium text-[#344054] text-sm">High</span>
+                                                    </button>
+                                                </PopoverContent>
+                                            </Popover>
+                                        </th>
                                         <th className="w-1/8">Target Date</th>
                                         <th className="w-1/10">Theory</th>
                                         <th className="w-1/10">Practice</th>
@@ -196,25 +277,11 @@ const BottomSheet: React.FC<BottomUpSheet> = ({ closeModal, isOpen, subjectName 
                                         <th className="w-1/10">Revision 2</th>
                                     </tr>
                                 </thead>
-
                                 <tbody>
                                     {getContent()}
                                 </tbody>
                             </table>
                         </div>
-                        <h1>jabir</h1>
-                        <h1>jabir</h1>
-
-                        <h1>jabir</h1>
-                        <h1>jabir</h1>
-                        <h1>jabir</h1>
-                        <h1>jabir</h1>
-                        <h1>jabir</h1>
-                        <h1>jabir</h1>
-                        <h1>jabir</h1>
-                        <h1>jabir</h1>
-                        <h1>jabir</h1>
-
                     </div>
 
                     <div className="flex flex-row items-center gap-4 justify-end border-t border-[#EAECF0] h-[76px] pr-6">
