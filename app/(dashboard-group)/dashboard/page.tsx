@@ -1,4 +1,5 @@
 "use client";
+
 import Announcement from '@/components/DashboardComponents/HomeComponents/Announcement/Announcement';
 import Subject from '@/components/DashboardComponents/HomeComponents/SubjectComp/subject';
 import TestSeries from '@/components/DashboardComponents/HomeComponents/TestSeries/Testseries';
@@ -10,7 +11,9 @@ import LoadingData from "@/components/Loading";
 import { auth } from "@/firebase";
 import router from "next/router";
 import Image from "next/image"
+
 export default function AnalyticsPage() {
+
      const router = useRouter();
      const [loading, setLoading] = useState(true);
 
@@ -28,6 +31,7 @@ export default function AnalyticsPage() {
                <LoadingData />
           );
      }
+
      return (
           <div className=" flex flex-col  flex-1 h-auto overflow-y-auto  p-6">
                <div className="flex flex-row w-full gap-4  ">
@@ -60,7 +64,6 @@ export default function AnalyticsPage() {
                     </div>
                     <div className="flex flex-col flex-1 bg-white rounded-lg  h-[327px] w-1/2">
                          <div className="flex flex-row justify-between pt-6 px-6 w-full text-[#1D2939] text-lg font-bold">
-
                               <h3 className='text-[#1D2939] font-bold text-lg'>Courses</h3>
                               <button className="text-sm font-semibold text-[#7400E0] cursor-pointer">View all</button>
                          </div>
@@ -69,9 +72,6 @@ export default function AnalyticsPage() {
                          </div>
                     </div>
                </div>
-
-
           </div>
-
      );
 }

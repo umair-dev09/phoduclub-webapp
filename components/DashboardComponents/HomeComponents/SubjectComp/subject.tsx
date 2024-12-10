@@ -56,7 +56,7 @@ const SubjectLayout: React.FC = () => {
         <div className="grid grid-cols-2 gap-5 p-6 w-full">
             {subjectsData.map((subject) => {
                 const percentage = calculatePercentage(subject.numerator, subject.denominator);
-                const isComplete = percentage === 100; // Check if progress is 100%
+                const isComplete = percentage === 100;
 
                 return (
                     <button
@@ -74,7 +74,7 @@ const SubjectLayout: React.FC = () => {
                                     height={16}
                                 />
                                 <div className="text-[#667085] text-xs font-semibold ">{subject.name}</div>
-                                {/* Conditionally render the right-mark.svg */}
+
                                 {isComplete && (
                                     <Image
                                         src="/icons/right-mark.svg"

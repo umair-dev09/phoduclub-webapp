@@ -4,8 +4,8 @@ import styles from '../homeComponents.module.css';
 import Image from 'next/image';
 import CoursesComp from '@/components/DashboardComponents/HomeComponents/Course/courseComp/coursesComp';
 
-function Course(){
-    return(
+function Course() {
+    return (
         <div className={styles.courseComp}>
             <div className={styles.beforeBuying}>
                 <div className={styles.course1}>
