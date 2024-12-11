@@ -37,7 +37,7 @@ function TestSeries() {
                             </div>
                             <div className={styles.courseLength}>
                                 <p>3 Lessons</p>
-                                <span>&#x2022;</span> {/* This adds a bullet between */}
+                                <span>&#x2022;</span>
                                 <p>3hr 14m</p>
                             </div>
                         </div>
@@ -81,7 +81,7 @@ function TestSeries() {
                             </div>
                             <div className={styles.courseLength}>
                                 <p>3 Lessons</p>
-                                <span>&#x2022;</span> {/* This adds a bullet between */}
+                                <span>&#x2022;</span>
                                 <p>3hr 14m</p>
                             </div>
                         </div>
