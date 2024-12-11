@@ -1,103 +1,363 @@
-"use client";
+import React from "react";
 import Image from "next/image";
-import { useState, useRef, useEffect, forwardRef } from "react";
 import { PopoverContent, PopoverTrigger, Popover } from '@nextui-org/popover';
+import { useState, useRef, useEffect, forwardRef, useMemo } from "react";
+import EmojiPicker, { EmojiClickData } from "emoji-picker-react";
+import { deleteDoc, doc, Timestamp, collection, getDoc, setDoc,  onSnapshot, getDocs } from "firebase/firestore";
+import { db } from "@/firebase";
+import { getAuth } from 'firebase/auth';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import LoadingData from "@/components/Loading";
+import MessageLoading from "@/components/MessageLoading";
+import CommunityVideoPlayer from "@/components/CommunityVideoPlayer";
+import Delete from "./Delete";
+import MediaViewDialog from "@/components/DashboardComponents/CommunityComponents/MediaViewDialog";
+import MemberClickDialog from "@/components/DashboardComponents/CommunityComponents/MemberClickDialog";
 
 type OtherChatProps = {
+    currentUserId: string;
     message: string | null;
+    messageType: string | null;
+    isReplying: boolean ;
+    replyingToId: string | null;
+    replyingToChatId: string | null;
+    replyingToMsg: string | null;
+    replyingToMsgType: string | null;
+    replyingToFileUrl: string ;
+    replyingToFileName: string | null;
+    fileUrl: string ;
+    fileName: string | null;
+    fileSize: number ;
     senderId: string | null;
-    timestamp: any | null;
-
+    timestamp: Timestamp | null; 
+    chatId: string ;
+    internalChatId: string ;
+    channelId: string ;
+    isDeleted: boolean;
+    mentions: { userId: string, id: string}[];
+    highlightedText: string | React.ReactNode[];
+    isHighlighted: boolean; // New prop
+    scrollToReply: (replyingToChatId: string) => void;
+    setShowReplyLayout: (value: boolean) => void;
+    handleReply: (message: string | null, senderId: string | null, messageType: string | null, fileUrl: string | null, fileName: string | null,  chatId: string | null) => void; // New prop to handle reply data
 }
 
-const OtherChat = ({ message, senderId, timestamp }: OtherChatProps) => {
-    const messageStart = `Hey 
-In publishing and graphic design, Lorem ipsum is a placeholder text commonly used to demonstrate the visual form of a document or a typeface without relying on meaningful content. Lorem ipsum may be used as a placeholder before the final copy is available.`;
-    const messageStart1 = `Hey everyone,
-Welcome to the channel`;
+type ReactionCount = {
+    emoji: string;
+    count: number;
+  };
+  type UserData = {
+    name: string;
+    profilePic: string;   
+    role: string;  
+    isPremium: string;
+  };
 
-    const [isExpanded, setIsExpanded] = useState(false);
-    const [isPopoverOpen, setIsPopoverOpen] = useState(false);
-    const [isHovering, setIsHovering] = useState(false);
-    const popoverRef = useRef<HTMLDivElement>(null); // Properly typed ref
-
-    const handleToggle = () => setIsExpanded(!isExpanded);
-    const handlePopoverToggle = () => setIsPopoverOpen(!isPopoverOpen);
+  function OtherChat ({message, currentUserId, mentions, isDeleted, internalChatId, highlightedText, messageType, fileUrl, fileName, isHighlighted, scrollToReply, fileSize, senderId, timestamp, channelId, chatId, isReplying, replyingToId,replyingToChatId, replyingToFileName, replyingToFileUrl, replyingToMsg, replyingToMsgType, setShowReplyLayout, handleReply}: OtherChatProps) {
+    const [reactions, setReactions] = useState<ReactionCount[]>([]);
+    const [isOpen, setIsOpen] = useState(false);
+    const [showBookmark, setShowBookmark] = useState(false); // Use a single index to track the active button
+    const [showMediaDialog, setShowMediaDialog] = useState(false); // Use a single index to track the active button
+    const [deleteDialog, setDeleteDialog] = useState(false); 
+    const [sender, setSenderData] = useState<UserData | null>(null);
+    const [openDialogue, setOpenDialogue] = useState(false);
+    const [id, setId] = useState<string>('');
+    const [admin, setAdmin] = useState<boolean>(false);
 
     useEffect(() => {
-        function handleClickOutside(event: MouseEvent) {
-            if (popoverRef.current && !popoverRef.current.contains(event.target as Node)) {
-                setIsPopoverOpen(false);
+
+        if (!senderId) return;
+        const fetchUserData = async () => {
+                try {
+                    // Reference the document in Firestore
+                    const userDocRef = doc(db, "admin", senderId);
+                     const userDoc = await getDoc(userDocRef);
+    
+                    if (userDoc.exists()) {
+                    // Set the user data
+                    setSenderData(userDoc.data() as UserData);
+                    } else {
+                    console.log("User not found");
+                    }
+               
+              } catch (err) {
+                console.log("Failed to fetch user data");
+              } 
+        };
+
+        fetchUserData();
+      }, [senderId]);
+
+
+    const reactionsRef = useMemo(() => {
+        return collection(
+          db,
+          `internalchat/${internalChatId}/channels/${channelId}/chats/${chatId}/reactions`
+        );
+      }, [channelId, chatId]);
+    
+      // Firestore listener for reactions
+      useEffect(() => {
+        const unsubscribe = onSnapshot(reactionsRef, (snapshot) => {
+          const emojiCountMap: Record<string, number> = {};
+    
+          snapshot.forEach((doc) => {
+            const { emoji } = doc.data();
+            if (emoji) {
+              emojiCountMap[emoji] = (emojiCountMap[emoji] || 0) + 1;
+            }
+          });
+    
+          const updatedReactions = Object.entries(emojiCountMap).map(([emoji, count]) => ({
+            emoji,
+            count,
+          }));
+    
+          setReactions(updatedReactions);
+        });
+    
+        return () => unsubscribe();
+      }, [reactionsRef]);
+
+   const renderMessageWithMentions = () => {
+        if (!highlightedText || !mentions) return highlightedText;
+      
+        // If highlightedText is a string, process mentions
+        if (typeof highlightedText === "string") {
+          const parts = highlightedText.split(/(@\w+)/); // Match mentions starting with "@"
+          return parts.map((part, index) => {
+            if (part.startsWith("@")) {
+              const mentionName = part.substring(1); // Extract mention name without "@"
+              const mention = mentions.find((m) => m.userId === mentionName);
+      
+              if (mention) {
+                // If the part is a mention, render it as a clickable span
+                return (
+                  <span
+                    key={index}
+                    style={{ color: "#C74FE6", cursor: "pointer" }}
+                    onClick={() => {setOpenDialogue(true); setId(mention.id);}}>
+                    {part}
+                  </span>
+                );
+              }
+            }
+            return part; // Render non-mention parts as normal text
+          });
+        }
+      
+        // If highlightedText is an array of ReactNode, iterate through it
+        if (Array.isArray(highlightedText)) {
+          return highlightedText.map((node, index) => {
+            if (typeof node === "string") {
+              const parts = node.split(/(@\w+)/);
+              return parts.map((part, innerIndex) => {
+                if (part.startsWith("@")) {
+                  const mentionName = part.substring(1);
+                  const mention = mentions.find((m) => m.userId === mentionName);
+      
+                  if (mention) {
+                    return (
+                      <span
+                        key={`${index}-${innerIndex}`}
+                        style={{ color: "#C74FE6", cursor: "pointer" }}
+                        onClick={() => {setOpenDialogue(true); setId(mention.id);}}>
+                        {part}
+                      </span>
+                    );
+                  }
+                }
+                return part;
+              });
+            }
+            return node; // Render non-string nodes as they are
+          });
+        }
+      
+        return null; // Return null if highlightedText is neither string nor ReactNode[]
+      };
+    const handleReplyMessage = () =>{
+       setShowReplyLayout(true);
+       setIsOpen(false);
+       handleReply(message, senderId, messageType,fileUrl, fileName, chatId); // Pass the message and senderId to the parent
+    }
+    // Check if firestoreTimestamp is null or undefined
+  if (!timestamp) {
+    return <MessageLoading />
+  }
+  // Convert Firestore timestamp to JavaScript Date object
+  const date = timestamp.toDate();
+
+  // Format the date to 3:24 PM format
+  const formattedTime = new Intl.DateTimeFormat('en-US', {
+    hour: 'numeric',
+    minute: 'numeric',
+    hour12: true,
+  }).format(date);
+
+
+const handleCopy = async () => {
+        if (message) {
+            try {
+                await navigator.clipboard.writeText(message);
+                toast.success("Message copied!"); // Show success message
+                setIsOpen(false);
+            } catch (error) {
+                console.error("Failed to copy message: ", error);
             }
         }
-
-        document.addEventListener("mousedown", handleClickOutside);
-        return () => {
-            document.removeEventListener("mousedown", handleClickOutside);
-        };
-    }, []);
-    const [activeButtonIndex, setActiveButtonIndex] = useState<number | null>(null); // Use a single index to track the active button
-
-    const handleClick = (index: number) => {
-        setActiveButtonIndex(index); // Set the clicked button as active
     };
+
+
+    const formatFileSize = (size: number): string => {
+        if (size < 1024) return `${size} bytes`;
+        else if (size >= 1024 && size < 1024 * 1024) return `${(size / 1024).toFixed(2)} KB`;
+        else if (size >= 1024 * 1024 && size < 1024 * 1024 * 1024) return `${(size / (1024 * 1024)).toFixed(2)} MB`;
+        else return `${(size / (1024 * 1024 * 1024)).toFixed(2)} GB`;
+    };
+
+
+    const handleDownload = (fileUrl: string, fileName: string) => {
+        // Create an anchor element
+        const link = document.createElement('a');
+        link.href = fileUrl;
+        link.download = fileName; // This ensures the file is downloaded, not opened
+        link.target = '_blank'; // Optional: in case the file is large, it opens in a new tab
+        document.body.appendChild(link); // Append the link to the body
+        link.click(); // Trigger the download
+        document.body.removeChild(link); // Remove the link after download starts
+    };
+    
+    const handleBookMarkClick = () =>{
+        setIsOpen(false);
+         }
+
+    const handleAddReaction = async (emoji: EmojiClickData) => {
+        try {
+
+            const auth = getAuth();
+            const currentUser = auth.currentUser;
+            if (!currentUser) {
+            console.error("User not authenticated.");
+            return;
+            }
+
+            const userId = currentUser.uid;
+
+            const reactionsRef = doc(db, `internalchat/${internalChatId}/channels/${channelId}/chats/${chatId}/reactions`,userId);
+        
+           await setDoc(reactionsRef, { emoji: emoji.emoji, userId });
+
+            setIsOpen(false);
+
+            console.log("Reaction added successfully with reactionId!");
+          } catch (error) {
+            console.error("Error adding reaction: ", error);
+          }
+        };
 
     return (
         <>
-            <div className="w-full h-auto flex flex-col pr-[10%] ml-3 ">
+            <div className="w-full h-auto flex flex-col pr-[10%] ">
                 <div className="gap-2 flex items-center">
-                    <div className="relative">
-                        <Image src='/icons/profile-pic2.svg' alt="DP" width={40} height={40} />
-                        <Image className="absolute right-0 bottom-0" src='/icons/winnerBatch.svg' alt="Batch" width={18} height={18} />
-                    </div>
-                    <span className="text-[#182230] font-semibold text-sm">Brooklyn Simmons</span>
-                    <span className="font-normal text-sm text-[#475467]">Admin</span>
-                    <span className="font-normal text-sm text-[#475467]">3:24 PM</span>
+                    <button className="relative" onClick={() => {setOpenDialogue(true); setId(senderId || '');}}>
+                        <Image className="w-[40px] h-[40px] rounded-full" src={sender?.profilePic || '/icons/profile-pic2.svg'} alt="DP" width={40} height={40} />
+                    </button>
+                    <button onClick={() => {setOpenDialogue(true); setId(senderId || '');}}><span className="text-[#182230] font-semibold text-sm">{sender?.name}</span></button>
+                    <span className="font-normal text-sm text-[#475467]">{sender?.role}</span>
+                    <span className="font-normal text-sm text-[#475467]">{formattedTime}</span>
                 </div>
 
                 <div className="ml-11 flex flex-row gap-2 items-center relative group">
-                    <div className="bg-white rounded-md border border-solid border-[#EAECF0] px-4 py-3 inline-block">
-                        {/* */}
-                        {/* <Image src='/images/impNotes.png' alt="image" width={359} height={293} /> */}
-                        {/* */}
-                        {/* <div className="w-full h-auto rounded-md border border-solid border-[#D0D5DD] flex flex-col bg-[#F2F4F7] p-4">
-                            <div className="gap-2 flex items-center">
+                    <div className={`flex flex-col px-4 py-3 transition-all duration-500 border border-[#EAECF0] ${isDeleted ? 'bg-[#EDE4FF]' : isHighlighted ? 'bg-[#EAECF0]' : 'bg-white' } rounded-xl gap-[8px]  ${messageType === 'image' || messageType === 'document' ? 'max-w-[380px]' :'max-w-[600px]'} `}>
 
-                                <span className="text-[#182230] font-semibold text-sm">Brooklyn Simmons</span>
-                                <span className="font-normal text-sm text-[#475467]">Admin</span>
-                                <span className="font-normal text-sm text-[#475467]">3:24 PM</span>
+                        {/*Image Layout*/}
+                        {messageType === 'image' && !isDeleted && fileUrl && (
+                            <div>
+                            <button onClick={() => setShowMediaDialog(true)}>
+                            <Image className='w-[360px] self-end h-[320px] mt-[3px] object-cover' src={fileUrl} alt="image" width={360} height={320} quality={100} />
+                            </button>
                             </div>
-                            <span className="break-words whitespace-pre-wrap font-normal text-[#182230] text-sm">
-                             {messageStart1}
-                            </span>
-                </div> */}
-                        {/* */}
-                        {/* <div className="w-full h-auto rounded-md border border-solid border-[#D0D5DD] flex flex-row bg-[#F2F4F7] p-4 justify-between">
-                    <div className="flex flex-row gap-2 items-start">
-                    <Image className="mt-1" src="/icons/file-02.svg" width={16} height={16} alt="File" />
-                    <div className="flex flex-col ">
-                        <p className="text-sm">History of Skate.pdf</p>
-                        <p className="text-[11px]">16.53KB</p>
-                    </div>
-                    </div>
-                    <button>
-                    <Image src="/icons/download.svg" width={22} height={22} alt="Download" />
-                    </button>
-                </div> */}
-                        {/* */}
-                        <span className="break-all whitespace-pre-wrap font-normal text-[#182230] text-sm ">
-                            {messageStart}
-                        </span>
+                        )}
+                        {messageType === 'video' && !isDeleted && fileUrl && (
+                            <button onClick={() => setShowMediaDialog(true)}>
+                        <CommunityVideoPlayer videoSrc={fileUrl} />
+                            </button>
+                         )}
+                        {/*Document Layout*/}
+                        {messageType === 'document' && !isDeleted && fileUrl && (
+                            <div className="w-[350px] h-auto rounded-md mt-[3px] bg-[#973AFF] border border-[#AD72FF] flex flex-row p-3 justify-between">
+                                <div className="flex flex-row gap-2 items-start mr-[10px] w-[300px]">
+                                    <Image className="mt-1" src="/icons/file-white.svg" width={16} height={16} alt="File" />
+                                    <div className="flex flex-col break-all">
+                                        <p className="text-[13px]">{fileName}</p>
+                                        <p className="text-[11px]">{formatFileSize(fileSize)}</p>
+                                    </div>
+                                </div>
+                                <button className="w-[24px] h-[24px]" onClick={() => handleDownload(fileUrl, fileName ?? '')}>
+                                    <Image className='w-[24px] h-[24px]' src="/icons/download-white.svg" width={24} height={24} alt="Download" />
+                                </button>
+                            </div>
+                        )}
 
+                    {isReplying && !isDeleted  && (
+                    <div className="flex flex-row p-[10px] bg-[#F2F4F7] border border-[#D0D5DD] rounded-md text-xs gap-1 justify-between cursor-pointer" 
+                    onClick={() => scrollToReply(replyingToChatId || '')}>
+                        <div className="flex flex-col mr-6 justify-center">
+                        <div className="flex flex-row gap-2">
+                        {replyingToId === currentUserId ?(
+                        <h4 className="font-semibold">You</h4>
+                         ):(
+                            <h4 className="font-semibold">Marvin McKinney</h4>
+                         )}                        {/* <div className="">Admin</div> */}
                     </div>
+                    <div className="flex flex-row gap-1 mt-[2px] ">
+                    {replyingToMsgType === 'image' && (
+                    <Image src='/icons/image-white.svg' alt='attachment icon' width={12} height={12} />
+                    )}
+                    {replyingToMsgType === 'video' && (
+                    <Image src='/icons/video-01.svg' alt='attachment icon' width={12} height={12} />
+                    )}
+                    {replyingToMsgType === 'document' && (
+                    <Image src='/icons/file-white.svg' alt='attachment icon' width={12} height={12} />
+                    )}    
+                    <div className="break-all">
+                    {replyingToMsg !== null && replyingToMsgType !== 'document'
+                    ? replyingToMsg // Show message if it's not null and not a document
+                    : replyingToMsgType === 'document'
+                    ? replyingToFileName // Always show fileName for document
+                    : (replyingToMsgType === 'image' && 'Image') ||
+                    (replyingToMsgType === 'video' && 'Video') ||
+                    'Unknown Type'}</div>
+                    </div>
+                        </div>
+                        {replyingToMsgType === 'image' &&(
+                        <Image className="rounded-sm min-h-[40px] object-cover" src={replyingToFileUrl} alt='Image' width={50} height={45} />
+                        )}
+                    </div>
+                   )}
+                    <div className="text-sm break-all w-full max-w-full mt-[6px]">
+                            {isDeleted ? (
+                                <div className="italic text-[#475467]">You deleted this message</div>
+                            ) : (
+                            <div>
+                            {renderMessageWithMentions()}
+                            </div>
+                            )}
+                            
+                        </div>
+
+                </div>
 
 
                     <Popover
                         placement="bottom-start"
+                        isOpen={isOpen} onOpenChange={(open) => setIsOpen(open)}
                     >
                         <PopoverTrigger>
                             <button
-                                onClick={handlePopoverToggle}
+                                // onClick={handlePopoverToggle}
                                 className='w-[48px] h-[26px] rounded-[54px] border border-solid border-[#6770A9]  hover:bg-[#D0D5DD] flex invisible min-w-[46px] items-center justify-center focus:outline-none bg-[#F2F4F7] ml-1 group-hover:flex group-hover:visible'
                             >
                                 <Image
@@ -116,30 +376,41 @@ Welcome to the channel`;
                             </button>
                         </PopoverTrigger>
 
-                        <PopoverContent>
-                            <div
-                                className='flex flex-col bg-[#FFFFFF] w-auto h-auto border border-[#EAECF0] rounded-md'
-                                style={{
-                                    boxShadow: '0px 4px 6px -2px rgba(16, 24, 40, 0.08), 0px 12px 16px -4px rgba(16, 24, 40, 0.14)',
-                                }}>
+                        <PopoverContent className="p-0">
+                        <div
+                                className='flex flex-col bg-[#FFFFFF] w-auto h-auto border border-[#EAECF0] rounded-[12px] '
+                               >
                                 {/* Emoji list */}
-
+                                <EmojiPicker onEmojiClick={handleAddReaction} height={280} searchDisabled={true} reactions={['1f44d','1f496','1f602','1f60d','1f62e']}
+                                    style={{
+                                           border: "none", 
+                        
+                                        }}
+                                   previewConfig={
+                                    {
+                                        showPreview: false, // defaults to: true
+                                      }
+                                   }
+                                reactionsDefaultOpen={true} allowExpandReactions={true} hiddenEmojis={['1f595']}/>
 
                                 {/* Other options */}
-                                <button className='flex flex-row items-center gap-2 w-30 px-4 py-[10px] transition-colors hover:bg-neutral-100'>
-                                    <Image src='/icons/Reply.svg' alt='search icon' width={15} height={15} />
+                                <button onClick={handleReplyMessage} className='flex flex-row items-center gap-2 w-30 px-4 py-[10px] transition-colors hover:bg-neutral-100'>
+                                    <Image src='/icons/Reply.svg' alt='search icon' width={19} height={19} />
                                     <span className='font-normal text-[#0C111D] text-sm'>Reply</span>
                                 </button>
-                                <button className='flex flex-row items-center gap-2 w-30 px-4 py-[10px] transition-colors hover:bg-neutral-100'>
-                                    <Image src='/icons/copy.svg' alt='search icon' width={20} height={20} />
-                                    <span className='font-normal text-[#0C111D] text-sm'>Copy</span>
+                                {highlightedText &&(
+                                <button onClick={handleCopy} className='flex flex-row items-center gap-2 w-30 px-4 py-[10px] transition-colors hover:bg-neutral-100'>
+                                <Image src='/icons/copy.svg' alt='search icon' width={18} height={18} />
+                                <span className='font-normal text-[#0C111D] text-sm'>Copy</span>
                                 </button>
-                                <button className='flex flex-row items-center gap-2 w-30 px-4 py-[10px] transition-colors hover:bg-neutral-100'>
-                                    <Image src='/icons/Bookmark.svg' alt='search icon' width={20} height={20} />
+                                )}
+                                <button className='flex flex-row items-center gap-2 w-30 px-4 py-[10px] transition-colors hover:bg-neutral-100' onClick={() => {setShowBookmark(true); setIsOpen(false); }}>
+                                    <Image src='/icons/Bookmark.svg' alt='search icon' width={18} height={18} />
                                     <span className='font-normal text-[#0C111D] text-sm'>Bookmark</span>
                                 </button>
-                                <button className='flex flex-row items-center gap-2 w-30 px-4 py-[10px] transition-colors hover:bg-neutral-100 rounded-br-md rounded-bl-md'>
-                                    <Image src='/icons/Report.svg' alt='search icon' width={20} height={20} />
+                                {/* Report Message Button */}
+                                <button   className='flex flex-row items-center gap-2 w-30 px-4 pt-[10px] pb-3 transition-colors hover:bg-neutral-100 rounded-br-md rounded-bl-md '>
+                                    <Image src='/icons/Report.svg' alt='search icon' width={17} height={17} />
                                     <span className='font-normal text-[#0C111D] text-sm'>Report Message</span>
                                 </button>
                             </div>
@@ -147,26 +418,24 @@ Welcome to the channel`;
                     </Popover>
 
                 </div>
-                {/* <div className="flex flex-row mt-1 gap-2 h-auto w-full ml-11 flex-wrap">
-                    {Array.from({ length: 10 }).map((_, index) => ( // Create 10 buttons
-                        <button
-                            key={index}
-                            onClick={() => handleClick(index)}
-                            className={`rounded-[54px] border border-solid border-[#D0D5DD] h-[26px] w-[48px] p-1 flex flex-row justify-center gap-1 transition-colors duration-200 ${activeButtonIndex === index // Check if this button is active
-                                ? 'bg-[#F8F0FF] border-[#7400E0] text-[#7400E0]' // Active styles
-                                : 'bg-[#F2F4F7] text-[#475467] hover:bg-[#F8F0FF] hover:border-[#7400E0]' // Default and hover styles
-                                }`}
-                        >
-                            <Image
-                                src="/icons/emoji-5.png"
-                                width={15}
-                                height={15}
-                                alt="ohh-reaction-emoji"
-                            />
-                            <span className="font-medium text-xs">12</span>
-                        </button>
+                {!isDeleted &&(
+                   <div className="flex flex-row justify-start mt-1 gap-2 h-auto w-full ml-11 flex-wrap">
+                   {reactions.map((reaction) => (
+                              <button
+                              key={reaction.emoji}
+                                  className={`rounded-[54px] border border-solid border-[#D0D5DD] h-[26px] w-auto p-1 flex flex-row justify-center items-center gap-1 transition-colors duration-200 
+                                      bg-[#F2F4F7] text-[#475467] hover:bg-[#F8F0FF] hover:border-[#7400E0]`}
+                              >
+                                 <p className="text-sm">{reaction.emoji}</p>
+                                  <span className="font-medium text-xs">{reaction.count}</span>
+                              </button>
                     ))}
-                </div> */}
+                      </div>     
+                )}
+            {showMediaDialog && <MediaViewDialog open={true} onClose={() => setShowMediaDialog(false)} src={fileUrl} mediaType={messageType || ''}/> }
+            {openDialogue && (
+        <MemberClickDialog open={true} onClose={() => setOpenDialogue(false)} id={id} isAdmin={true} />
+      )}
             </div>
         </>
     );

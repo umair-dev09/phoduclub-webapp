@@ -10,13 +10,14 @@ type BottomTextProps = {
   showReplyLayout: boolean;
   setShowReplyLayout: (value: boolean) => void;
   channelId: string | null;
-  internalChatId: string | null;
+  headingId: string | null;
+  communityId: string | null;
   replyData: { message: string | null; senderId: string | null; messageType: string | null; fileUrl: string | null; fileName: string | null; chatId: string | null; } | null;
 };
 
 type UserData = {
   name: string;
-  adminId: string;
+  uniqueId: string;
   userId: string;
   profilePic: string;
 }
@@ -26,12 +27,13 @@ interface Mention {
   id: string;
 }
 
-function MessageTypeArea({
+function BottomText({
   showReplyLayout,
   replyData,
   setShowReplyLayout,
   channelId,
-  internalChatId,
+  headingId,
+  communityId,
 }: BottomTextProps) {
   const [text, setText] = useState("");
   const [height, setHeight] = useState("32px");
@@ -90,17 +92,17 @@ function MessageTypeArea({
 
       const currentUserId = currentUser.uid; // Use the current user's UID
 
-      const usersCollection = collection(db, "admin");
+      const usersCollection = collection(db, "users");
       const querySnapshot = await getDocs(usersCollection);
 
       const userList: UserData[] = querySnapshot.docs
         .map((doc) => ({
           name: doc.data().name,
-          adminId: doc.data().adminId,
+          uniqueId: doc.data().uniqueId,
           userId: doc.data().userId,
           profilePic: doc.data().profilePic,
         }))
-        .filter((user) => user.adminId !== currentUserId); // Exclude current user
+        .filter((user) => user.uniqueId !== currentUserId); // Exclude current user
 
       setUsers(userList);
     } catch (error) {
@@ -148,7 +150,7 @@ function MessageTypeArea({
   };
   
   const handleUserSelect = (user: UserData) => {
-    if (!textareaRef.current || cursorPosition === null) return; 
+    if (!textareaRef.current || cursorPosition === null) return;
   
     const beforeCursor = text.slice(0, cursorPosition);
     const afterCursor = text.slice(cursorPosition);
@@ -164,7 +166,7 @@ function MessageTypeArea({
     // Store the mention with both name and uniqueId
     setMentions((prevMentions) => [
       ...prevMentions,
-      { userId: user.userId, id: user.adminId,},
+      { userId: user.userId, id: user.uniqueId, isAdmin: false, },
     ]);
   
     // Set the cursor position after the inserted username
@@ -182,7 +184,7 @@ function MessageTypeArea({
   };
 
   const handleSend = async () => {
-    if ((!text.trim() && !fileUrl) || !channelId) {
+    if ((!text.trim() && !fileUrl) || !communityId || !headingId || !channelId) {
       console.error("Missing required information");
       return;
     }
@@ -196,7 +198,7 @@ function MessageTypeArea({
   
       const chatsRef = collection(
         db,
-         `internalchat/${internalChatId}/channels/${channelId}/chats`
+        `communities/${communityId}/channelsHeading/${headingId}/channels/${channelId}/chats`
       );
   
       const newChatRef = doc(chatsRef);
@@ -215,6 +217,7 @@ function MessageTypeArea({
         replyingToMsgType: showReplyLayout ? replyData?.messageType : null,
         replyingToFileUrl: showReplyLayout ? replyData?.fileUrl : null,
         replyingToFileName: showReplyLayout ? replyData?.fileName : null,
+        isAdmin: true,
         messageType: fileUrl ? fileType : "text", // Set message type based on file upload
         fileUrl: fileUrl || null,
         fileName: fileName || null,
@@ -243,10 +246,10 @@ function MessageTypeArea({
 
 
   const handleMediaUpload = async (file: File, type: "image" | "video" | "document") => {
-    if (!channelId) return;
+    if (!communityId || !headingId || !channelId) return;
   
     try {
-      const storageRef = ref(storage, `uploads/${channelId}/${internalChatId}/${file.name}`);
+      const storageRef = ref(storage, `uploads/${communityId}/${headingId}/${channelId}/${file.name}`);
       const uploadTask = uploadBytesResumable(storageRef, file);
       setUploadTaskRef(uploadTask); // Set the upload task reference
   
@@ -380,7 +383,7 @@ function MessageTypeArea({
             filteredUsers.map((user) => (
               <div className="flex flex-col w-full">
               <div
-                key={user.adminId}
+                key={user.uniqueId}
                 className="flex flex-row gap-2 p-2 cursor-pointer w-full hover:bg-gray-100 items-center"
                 onClick={() => handleUserSelect(user)}
               >
@@ -498,4 +501,4 @@ function MessageTypeArea({
   );
 }
 
-export default MessageTypeArea;
+export default BottomText;

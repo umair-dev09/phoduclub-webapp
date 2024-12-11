@@ -25,6 +25,7 @@ function Header() {
     const [userData, setUserData] = useState<UserData | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(false);
+    const [open, setOpen] = useState(false);
     const [user, setUser] = useState<User | null>(null);
     const db = getFirestore();
 
@@ -85,9 +86,9 @@ function Header() {
                     <HelpDropDown />
                     <NotficationDropDown />
                     <div className="w-[1.5px] h-[14px] bg-[#eaecf0] border-none ml-[14px] mr-[14px]" />
-                    <Popover placement="bottom">
+                    <Popover placement="bottom" isOpen={open} onOpenChange={(open) => setOpen(open)} onClose={() => setOpen(false)}>
                         <PopoverTrigger>
-                            <button className='flex flex-row items-center focus:outline-none  '>
+                            <button className='flex flex-row items-center focus:outline-none'>
                             <div className="relative">
                             <Image className="rounded-[50%] ml-[8px]" src={userData?.profilePic || "/defaultDP.svg"} width={38} height={38} quality={100} alt="Profile Picture" />
                             {userData?.isPremium && (
@@ -111,7 +112,7 @@ function Header() {
                         </PopoverTrigger>
                         <PopoverContent className="flex flex-col bg-white border border-lightGrey rounded-md w-[167px] px-0 shadow-md">
                             <button
-                                className="flex items-center p-3 hover:bg-[#F2F4F7] w-full ">
+                                className="flex items-center p-3 hover:bg-[#F2F4F7] w-full" onClick={() => {router.push('/settings/profile'); setOpen(false)}}>
                                 <Image src="/icons/profile.svg" width={18} height={18} alt="Edit-profile" />
                                 <p className="text-sm text-[#0C111D] ml-2">My profile</p>
                             </button>

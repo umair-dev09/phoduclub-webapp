@@ -356,7 +356,7 @@ export default function CommunityName() {
             ))}
           </div>
         </div>
-        <div className='w-full border-t border-[#e8e8e8]'>
+        {/* <div className='w-full border-t border-[#e8e8e8]'>
           <div className='mx-4 mt-3'>
             <button
               className="ChannelName flex flex-row w-full items-center justify-between pr-3 group rounded-[7px] transition-colors hover:bg-[#F8F0FF]"
@@ -367,7 +367,7 @@ export default function CommunityName() {
               </div>
             </button>
           </div>
-        </div>
+        </div> */}
       </div>
 
       {/* Chat Area */}
@@ -475,6 +475,7 @@ export default function CommunityName() {
               channelId={selectedChannel.channelId}
               headingId={selectedChannel.headingId ?? ""}
               isAdmin={chat.isAdmin}
+              isCurrentUserAdmin={false}
               message={chat.message}
               isDeleted={chat.isDeleted}
             />
@@ -505,6 +506,7 @@ export default function CommunityName() {
             channelId={selectedChannel.channelId}
             headingId={selectedChannel.headingId ?? ""}
             isAdmin={chat.isAdmin}
+            isCurrentUserAdmin={false}
             message={chat.message}
             isDeleted={chat.isDeleted}
             setLoading={setLoading}

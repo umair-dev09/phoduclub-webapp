@@ -213,7 +213,7 @@ function BottomText({
         isReplying: showReplyLayout ? true : false,
         replyingToId: showReplyLayout ? replyData?.senderId : null,
         replyingToChatId: showReplyLayout ? replyData?.chatId : null,
-        replyingToMsg: showReplyLayout ? replyData?.message : null,
+        replyingToMsg: showReplyLayout ? replyData?.message : null,  
         replyingToMsgType: showReplyLayout ? replyData?.messageType : null,
         replyingToFileUrl: showReplyLayout ? replyData?.fileUrl : null,
         replyingToFileName: showReplyLayout ? replyData?.fileName : null,

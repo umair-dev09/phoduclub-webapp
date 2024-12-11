@@ -79,10 +79,10 @@ function CreateChannelDialogue({ open, onClose, internalChatId }: CreateChannelD
                                 <p className="text-sm font-normal mt-6 mb-2">Channel name</p>
                                 <div className="flex flex-row w-full mb-6 gap-1 border border-lightGrey rounded-md">
                                     
-                                    <Popover className='mb-2' placement="top-end" isOpen={isEmojiPopupOpen} onClose={() => setIsEmojiPopupOpen(false)}>
+                                    <Popover className='mb-2' placement="top-end" isOpen={isEmojiPopupOpen} onOpenChange={(open) => setIsEmojiPopupOpen(open)} onClose={() => setIsEmojiPopupOpen(false)}>
                                     <PopoverTrigger>
                                         <button className="flex flex-row pr-[14px] pl-[10px] py-2 gap-1 items-center border-r border-lightGrey  transition-colors hover:bg-neutral-100 hover:rounded-[100px] focus:outline-none"
-                                        onClick={() => setIsEmojiPopupOpen(true)}>
+                                        >
                                             {channelEmoji === '' ?(
                                         <Image className='w-[18px] h-[18px]' src='/icons/emojies.svg' alt='emojis icon' width={21} height={21} />
                                             ) : (
@@ -98,7 +98,7 @@ function CreateChannelDialogue({ open, onClose, internalChatId }: CreateChannelD
                                        
                                     </PopoverTrigger>
                                     <PopoverContent className="p-0">
-                                        <EmojiPicker onEmojiClick={handleEmojiClick} hiddenEmojis={['1f595']} />
+                                        <EmojiPicker onEmojiClick={handleEmojiClick}/>
                                     </PopoverContent>
                                     </Popover>
 

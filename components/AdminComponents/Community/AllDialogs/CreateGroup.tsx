@@ -8,6 +8,7 @@ import React from "react";
 interface creategroupProps {
     open: boolean; // Prop to control dialog visibility
     onClose: () => void; // Define onClose as a function
+
 }
 function creategroup({ open, onClose }: creategroupProps) {
     const [uniqueIDforname, setUniqueIDforname] = useState('');
@@ -29,7 +30,7 @@ function creategroup({ open, onClose }: creategroupProps) {
                     <div className=' flex flex-col p-6 gap-6 border-solid border-[#EAECF0] border-b rounded-t-2xl'>
                         <div className='flex flex-row justify-between items-center'>
                             <h1 className='text-[#1D2939] font-bold text-lg'>Create Group</h1>
-                            <Image src="/icons/cancel.svg" alt="Cancel" width={20} height={20} onClick={onClose} />
+                         <button><Image src="/icons/cancel.svg" alt="Cancel" width={20} height={20} onClick={onClose} /></button>
                         </div>
                         <div className="flex flex-col items-center gap-2">
                             <Image

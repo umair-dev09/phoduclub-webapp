@@ -4,6 +4,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import Image from 'next/image';
 import { doc, getDoc, setDoc, deleteDoc } from "firebase/firestore";
 import { auth, db } from '@/firebase';
+import { MoonLoader } from "react-spinners";
 
 const AdminVerify: React.FC = () => {
     const router = useRouter();
@@ -11,6 +12,7 @@ const AdminVerify: React.FC = () => {
     const adminId = searchParams.get("adminId");
     const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
     const [inputValues, setInputValues] = useState<string[]>(Array(6).fill(""));
+    const [showLoading, setShowLoading] = useState(false);
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
         const value = e.target.value;
@@ -29,11 +31,10 @@ const AdminVerify: React.FC = () => {
     const verifyOTP = async () => {
         const otp = inputValues.join('');
         if (otp.length !== 6) return;
-
+        setShowLoading(true);
         try {
             const result = await window.confirmationResult.confirm(otp);
             const currentUserId = result.user.uid;
-
             // Check if a document with the authId (currentUserId) already exists
             const existingAdminDocRef = doc(db, "admin", currentUserId);
             const existingAdminSnapshot = await getDoc(existingAdminDocRef);
@@ -41,6 +42,7 @@ const AdminVerify: React.FC = () => {
             if (existingAdminSnapshot.exists()) {
                 // If a document with currentUserId exists, allow login without data migration
                 router.push('/admin');
+                setShowLoading(false);
             } else if (adminId) {
                 // If no document with currentUserId exists, proceed with data migration
                 const adminDocRef = doc(db, "admin", adminId);
@@ -61,19 +63,23 @@ const AdminVerify: React.FC = () => {
 
                 // Redirect to the admin page after OTP verification and data migration
                 router.push('/admin');
+                setShowLoading(false);
+                
             }
         } catch (error) {
             console.error("OTP verification or data migration failed:", error);
+            setShowLoading(false);
         }
     };
 
 
     return (
-        <div className="flex flex-col items-center justify-center pt-10 gap-10">
+        <div className="flex flex-col items-center justify-center gap-10 h-screen w-screen">
             <div className=" flex flex-col justify-center items-center">
                 <Image src="/images/phoduclublogo.png" alt="Description of image" width={134} height={20} />
                 <p className="text-[12px] text-[#667085]">Admin</p>
             </div>
+            <MoonLoader className={`self-center mt-[-30px] mb-[-30px] ${showLoading ?'visible':'invisible' }`} color="#7400e0" size={32} speedMultiplier={1.5}/>
             <h3 className="text-2xl font-bold ">Verification Code</h3>
             <p className="text-center font-medium text-[#667085] w-[19.563rem] ">
                 Please enter the verification code we sent to your mobile
@@ -95,12 +101,13 @@ const AdminVerify: React.FC = () => {
                 ))}
             </div>
             <button
-                className={`w-[24.688rem] border-b shadow-inner-button rounded-md text-white text-sm font-semibold py-[0.625rem] transition-colors ${inputValues.every(value => value) ? 'bg-[#8601FF] border-[#8601FF]' : 'bg-[#D3A7FC] border-[#D3A7FC] cursor-not-allowed'}`}
+                className={`w-[24.688rem] border-b shadow-inner-button rounded-md text-white text-sm font-semibold py-[0.625rem] transition-colors ${inputValues.every(value => value) && !showLoading ? 'bg-[#8601FF] border-[#8601FF]' : 'bg-[#D3A7FC] border-[#D3A7FC] cursor-not-allowed'}`}
                 onClick={verifyOTP}
-                disabled={!inputValues.every(value => value)}
+                disabled={!inputValues.every(value => value) && !showLoading}
             >
                 Done
             </button>
+
         </div>
     );
 };
