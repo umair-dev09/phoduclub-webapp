@@ -332,7 +332,7 @@ function InternalChat() {
                 <p className='text-medium'>{selectedChannel.channelEmoji}</p>
                 <p className="text-[15px] font-semibold text-[#4B5563]">{selectedChannel.channelName}</p>
               </div>
-              <div className="flex flex-row mr-6 gap-4">
+              <div className="flex flex-row mr-4 gap-4">
                 <Popover placement="bottom" isOpen={searchOpen} onClose={() => { setSearchOpen(false); setSearchQuery('') }}>
                   <PopoverTrigger>
                     <button onClick={() => setSearchOpen(true)}>
@@ -358,13 +358,13 @@ function InternalChat() {
                   </PopoverContent>
                 </Popover>
                 <button
-                  className="transition-colors hover:bg-neutral-100"
-                  onClick={() => setIsDetailsVisible(!isDetailsVisible)}
+                  className="flex w-[30px] h-[30px] transition-colors hover:bg-neutral-100 rounded-full items-center"
+                  onClick={() => setIsCollapsed(!isCollapsed)}
                 >
-                  {isDetailsVisible ? (
-                    <Image src="/icons/collapseDetails.svg" alt="collapse details icon" width={24} height={24} />
+                  {isCollapsed ? (
+                    <Image className='w-[26px] h-[26px] pl-[-2px]' src="/icons/collapseDetails.svg" alt="collapse details icon" width={26} height={26} />
                   ) : (
-                    <Image src="/icons/collaspeDetails-2.svg" alt="collapse details icon" width={24} height={24} />
+                    <Image className='w-[26px] h-[26px] pl-[-2px]' src="/icons/collaspeDetails-2.svg" alt="collapse details icon" width={26} height={26} />
                   )}
                 </button>
               </div>
