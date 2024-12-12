@@ -231,9 +231,9 @@ function InternalChat() {
                   onClick={() => setIsDetailsVisible(!isDetailsVisible)}
                 >
                   {isDetailsVisible ? (
-                    <Image src="/icons/collapseDetails.svg" alt="collapse details icon" width={24} height={24} />
+                    <Image src="/icons/collapseDetails-2.svg" alt="collapse details icon" width={24} height={24} />
                   ) : (
-                    <Image src="/icons/collaspeDetails-2.svg" alt="collapse details icon" width={24} height={24} />
+                    <Image src="/icons/collapseDetails.svg" alt="collapse details icon" width={24} height={24} />
                   )}
                 </button>
 

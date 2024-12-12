@@ -17,8 +17,8 @@ function JeeMains() {
     };
     const sectionMap = {
         'overview': '#overview',
-        'attempts-difficulty-analysis': '#Attempts',
-        'attempts-over-3-hours': '#Attemptsoverthe3hours',
+        'attempts': '#Attempts',
+        'hours': '#Attemptsoverthe3hours',
         'complete-analysis': '#CompleteAnalysis',
         'summary': '#Summary'
     } as const;
@@ -71,9 +71,9 @@ function JeeMains() {
                     }}
                 >
                     <Tab key="overview" title="Overview" />
-                    <Tab key="attempts-difficulty-analysis" title="Attempts & Difficulty Analysis" />
-                    <Tab key="attempts-over-3-hours" title="Attempts over the 3 hours" />
-                    <Tab key="complete-analysis" title="Complete Analysis" />
+                    <Tab key="attempts" title="Attempts&DifficultyAnalysis" />
+                    <Tab key="hours" title="Attemptsoverthe3hours" />
+                    <Tab key="complete-analysis" title="CompleteAnalysis" />
                     <Tab key="summary" title="Summary" />
                 </Tabs>
 
@@ -147,7 +147,7 @@ function JeeMains() {
                     </div>
                 </div>
                 {/* Attempts & Difficulty Analysis */}
-                <div id="Attempts" className=" flex flex-col">
+                <div id="attempts" className=" flex flex-col">
                     <div className="h-[44px] flex flex-col justify-end mb-2">
                         <span className="text-[#1D2939] text-lg font-semibold">Attempts & Difficulty Analysis</span>
                     </div>
@@ -156,7 +156,7 @@ function JeeMains() {
                     </div>
                 </div>
                 {/* Attempts over the 3 hours */}
-                <div id="Attemptsoverthe3hours" className="flex flex-col">
+                <div id="hours" className="flex flex-col">
                     <div className="h-[44px] flex flex-col justify-end mb-2">
                         <span className="text-[#1D2939] text-lg font-semibold">Attempts over the 3 hours</span>
                     </div>
@@ -166,7 +166,7 @@ function JeeMains() {
 
                 </div>
                 {/* Complete Analysis */}
-                <div id="CompleteAnalysis" className="flex flex-col">
+                <div id="complete-analysis" className="flex flex-col">
                     <div className="h-[44px] flex flex-col justify-end mb-2 ">
                         <span className="text-[#1D2939] text-lg font-semibold">Complete Analysis</span>
                     </div>

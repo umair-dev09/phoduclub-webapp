@@ -9,30 +9,8 @@ import Attemptsoverthehours from "@/components/DashboardComponents/AnalyticsComp
 import CompleteAnalysis from "@/components/DashboardComponents/AnalyticsComponents/Test-Series-Components/AllSubjectsComponents/CompleteAnalysis";
 import Overview from "@/components/DashboardComponents/AnalyticsComponents/Test-Series-Components/AllSubjectsComponents/Overview";
 import { Tabs, Tab } from "@nextui-org/react";
-import { Key } from '@react-types/shared';
-import React from "react";
 function JeeMains() {
     const router = useRouter();
-
-    const sectionMap = {
-        'overview': '#overview',
-        'graphical-view': '#Graphicalviewofoverview',
-        'time-accuracy': '#TimeAccuracy',
-        'attempts': '#Attempts',
-        'difficulty-analysis': '#DifficultyAnalysis',
-        'attempts-3-hours': '#Attemptsoverthe3hours',
-        'complete-analysis': '#CompleteAnalysis',
-        'summary': '#Summary'
-    } as const;
-
-    const handleTabChange = React.useCallback((key: Key) => {
-        const sectionSelector = sectionMap[key as keyof typeof sectionMap];
-        const element = document.querySelector(sectionSelector);
-
-        if (element) {
-            element.scrollIntoView({ behavior: 'smooth' });
-        }
-    }, [sectionMap]);
     return (
         <div className="flex flex-1 flex-col h-auto overflow-y-auto pb-2">
 
@@ -65,23 +43,97 @@ function JeeMains() {
                         aria-label="Analytics Tabs"
                         color="primary"
                         variant="underlined"
-                        onSelectionChange={handleTabChange}
+                        selectedKey={activeTab}
+                        onSelectionChange={(key) => handleSelectionChange(key as string)}
                         classNames={{
                             tabList: "gap-6 w-full relative rounded-none p-0",
                             cursor: "w-full bg-[#7400E0]",
                             tab: "max-w-fit px-0 h-12",
-                            tabContent: "group-data-[selected=true]:text-[#7400E0] hover:text-[#7400E0] text-[15px] font-medium",
+                            tabContent: "group-data-[selected=true]:text-[#7400E0] hover:text-[#7400E0]",
                         }}
                     >
-                        <Tab key="overview" title="Overview" />
-                        <Tab key="graphical-view" title="Graphical view of overview" />
-                        <Tab key="time-accuracy" title="Time & Accuracy" />
-                        <Tab key="attempts" title="Attempts" />
-                        <Tab key="difficulty-analysis" title="Difficulty Analysis" />
-                        <Tab key="attempts-3-hours" title="Attempts over the 3 hours" />
-                        <Tab key="complete-analysis" title="Complete Analysis" />
-                        <Tab key="summary" title="Summary" />
+                        <Tab
+                            key="overview"
+                            title={
+                                <div className="flex items-center space-x-2">
+                                    <a href="#overview" className="font-medium text-base">
+                                        Overview
+                                    </a>
+                                </div>
+                            }
+                        />
+                        <Tab
+                            key="graphical-view"
+                            title={
+                                <div className="flex items-center space-x-2">
+                                    <a href="#graphical-view" className="font-medium text-base">
+                                        Graphical View of Overview
+                                    </a>
+                                </div>
+                            }
+                        />
+                        <Tab
+                            key="time-accuracy"
+                            title={
+                                <div className="flex items-center space-x-2">
+                                    <a href="#time-accuracy" className="font-medium text-base">
+                                        Time & Accuracy
+                                    </a>
+                                </div>
+                            }
+                        />
+                        <Tab
+                            key="attempts"
+                            title={
+                                <div className="flex items-center space-x-2">
+                                    <a href="#attempts" className="font-medium text-base">
+                                        Attempts
+                                    </a>
+                                </div>
+                            }
+                        />
+                        <Tab
+                            key="difficulty-analysis"
+                            title={
+                                <div className="flex items-center space-x-2">
+                                    <a href="#difficulty-analysis" className="font-medium text-base">
+                                        Difficulty Analysis
+                                    </a>
+                                </div>
+                            }
+                        />
+                        <Tab
+                            key="attempts-over-3-hours"
+                            title={
+                                <div className="flex items-center space-x-2">
+                                    <a href="#attempts-over-3-hours" className="font-medium text-base">
+                                        Attempts over 3 Hours
+                                    </a>
+                                </div>
+                            }
+                        />
+                        <Tab
+                            key="complete-analysis"
+                            title={
+                                <div className="flex items-center space-x-2">
+                                    <a href="#complete-analysis" className="font-medium text-base">
+                                        Complete Analysis
+                                    </a>
+                                </div>
+                            }
+                        />
+                        <Tab
+                            key="summary"
+                            title={
+                                <div className="flex items-center space-x-2">
+                                    <a href="#summary" className="font-medium text-base">
+                                        Summary
+                                    </a>
+                                </div>
+                            }
+                        />
                     </Tabs>
+
                 </div>
             </div>
             <div className="overflow-y-auto flex-1 flex flex-col h-auto px-8">
@@ -101,7 +153,7 @@ function JeeMains() {
                 </div>
                 {/* --------------------------------------******************************************************---------------------------------------------- */}
                 {/* Time & Accuracy */}
-                <div id="TimeAccuracy" className="flex flex-col">
+                <div id="Time&Accuracy" className="flex flex-col">
                     <div className="h-[44px] flex flex-row  mb-2 items-center gap-2">
                         <span className="text-[#1D2939] text-lg font-semibold ">Time & Accuracy</span>
                         <Image

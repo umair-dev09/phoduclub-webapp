@@ -17,7 +17,7 @@ function JeeMains() {
     const sectionMap = {
         'overview': '#overview',
         'graphical-view': '#Graphicalviewofoverview',
-        'time-accuracy': '#TimeAccuracy',
+        'time-accuracy': '#Time&Accuracy',
         'attempts': '#Attempts',
         'difficulty-analysis': '#DifficultyAnalysis',
         'attempts-3-hours': '#Attemptsoverthe3hours',
@@ -70,7 +70,7 @@ function JeeMains() {
                             tabList: "gap-6 w-full relative rounded-none p-0",
                             cursor: "w-full bg-[#7400E0]",
                             tab: "max-w-fit px-0 h-12",
-                            tabContent: "group-data-[selected=true]:text-[#7400E0] hover:text-[#7400E0] text-[15px] font-medium",
+                            tabContent: "group-data-[selected=true]:text-[#7400E0] hover:text-[#7400E0]",
                         }}
                     >
                         <Tab key="overview" title="Overview" />
@@ -101,7 +101,7 @@ function JeeMains() {
                 </div>
                 {/* --------------------------------------******************************************************---------------------------------------------- */}
                 {/* Time & Accuracy */}
-                <div id="TimeAccuracy" className="flex flex-col">
+                <div id="Time&Accuracy" className="flex flex-col">
                     <div className="h-[44px] flex flex-row  mb-2 items-center gap-2">
                         <span className="text-[#1D2939] text-lg font-semibold ">Time & Accuracy</span>
                         <Image
