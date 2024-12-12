@@ -55,6 +55,8 @@ type Chat = {
   replyingToFileUrl: string;
   replyingToFileName: string;
   isDeleted: boolean;
+  adminThatDeletedId: string;
+    isDeletedByAdmin: boolean;
   isAdmin: boolean;
   mentions: { userId: string; id: string, isAdmin: boolean, }[];
 };
@@ -184,30 +186,73 @@ export default function CommunityName() {
     if (selectedChannel) {
       const fetchChats = async () => {
         try {
-          const chatsRef = collection(db, `communities/${communityId}/channelsHeading/${selectedChannel.headingId}/channels/${selectedChannel.channelId}/chats`);
+          const chatsRef = collection(
+            db,
+            `communities/${communityId}/channelsHeading/${selectedChannel.headingId}/channels/${selectedChannel.channelId}/chats`
+          );
           const q = query(chatsRef, orderBy('timestamp', 'asc')); // Order by timestamp
+  
+          // Listen only to the currently selected channel
           const unsubscribe = onSnapshot(q, (snapshot) => {
-            const chatData = snapshot.docs.map(doc => doc.data()) as Chat[];
-            setChats(chatData);
+            if (selectedChannel) {
+              const chatData = snapshot.docs.map((doc) => doc.data()) as Chat[];
+              setChats(chatData);
+            }
           });
-
+  
           return () => unsubscribe();
         } catch (error) {
+          console.error("Error fetching chats: ", error);
           setError(true);
         }
       };
-
+  
       fetchChats();
     }
   }, [communityId, selectedChannel]);
+  
  
   // Scroll to the last message immediately after chats are updated
+  const initialLoadRef = useRef(true); // Tracks if the user just selected a channel
+  
   useEffect(() => {
-    if (bottomRef.current) {
-      bottomRef.current.scrollIntoView({ behavior: "auto" });
-    }
-  }, [chats]); // Run this effect every time chats are updated
+    const chatContainer = containerRef.current;
 
+    if (!chatContainer) return;
+
+    // Attach the existing `handleScroll` function
+    chatContainer.addEventListener("scroll", handleScroll);
+
+    // Clean up the event listener
+    return () => {
+      chatContainer.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
+
+  // Effect to handle scrolling when new messages are added
+  useEffect(() => {
+    if (bottomRef.current && chats.length > 0) {
+      const lastChat = chats[chats.length - 1]; // Get the last chat message
+
+      // Scroll logic based on `showScrollButton` state
+      if (initialLoadRef.current) {
+        // Scroll to the latest message on the first load or channel selection
+        bottomRef.current.scrollIntoView({ behavior: "auto" });
+        initialLoadRef.current = false;
+      } else if (!showScrollButton || lastChat.senderId === user?.uid) {
+        // Scroll if the user is at the bottom (showScrollButton is false) or the last message is from the current user
+        bottomRef.current.scrollIntoView({ behavior: "auto" });
+      }
+    }
+  }, [chats, showScrollButton, user]);
+
+  // Reset the flag whenever a new channel is selected
+  useEffect(() => {
+    if (selectedChannel) {
+      initialLoadRef.current = true; // Reset the initial load flag
+    }
+  }, [selectedChannel]);
+  
   useEffect(() => {
     if (searchQuery.trim() === "") {
       setSearchResults([]);
@@ -478,6 +523,8 @@ export default function CommunityName() {
               isCurrentUserAdmin={false}
               message={chat.message}
               isDeleted={chat.isDeleted}
+              isDeletedByAdmin={chat.isDeletedByAdmin}
+            adminThatDeletedId={chat.adminThatDeletedId}
             />
           ) : (
             <OtherChat
@@ -509,6 +556,8 @@ export default function CommunityName() {
             isCurrentUserAdmin={false}
             message={chat.message}
             isDeleted={chat.isDeleted}
+            isDeletedByAdmin={chat.isDeletedByAdmin}
+            adminThatDeletedId={chat.adminThatDeletedId}
             setLoading={setLoading}
             />
           )}

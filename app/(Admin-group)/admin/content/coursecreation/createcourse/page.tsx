@@ -414,7 +414,7 @@ function createcourse() {
                                             <input
                                                 type="file"
                                                 id="upload"
-                                                className="hidden"
+                                                className="hidden" 
                                                 accept="image/*"
                                                 onChange={handleImageUpload}
                                             />

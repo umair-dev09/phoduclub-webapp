@@ -3,14 +3,33 @@ import { useState } from "react"
 import { Dialog, DialogBackdrop, DialogPanel } from "@headlessui/react";
 import Image from "next/image";
 import React from "react";
-
+import { toast } from 'react-toastify';
+import { doc, deleteDoc } from 'firebase/firestore';
+import { db } from '@/firebase';
+import {useRouter} from "next/navigation";
 // Define the props interface
 interface DeleteGroupProps {
     open: boolean; // Prop to control dialog visibility
     onClose: () => void; // Define onClose as a function
+    communityId: string; 
+    communityName: string;
 }
-function DeleteGroup({ open, onClose }: DeleteGroupProps) {
-    const [uniqueID, setUniqueID] = useState('');
+function DeleteGroup({ open, onClose, communityId, communityName }: DeleteGroupProps) {
+    const[confirmedName, setConfirmedName] = useState('');
+    const isFormValid = communityName === confirmedName;
+    const router = useRouter();
+    const handleDeleteGroup = async () => {
+        try {
+            await deleteDoc(doc(db, `communities`, communityId));
+            toast.success('Category Deleted Successfully!');
+            onClose();
+            router.replace('/admin/community');
+        } catch (error) {
+            console.error('Error removing user from Firestore:', error);
+            toast.error('Failed to delete category. Please try again.');
+        }
+    };
+
     return (
         <Dialog open={open} onClose={onClose} className="relative z-50">
             <DialogBackdrop className="fixed inset-0 bg-black/30" />
@@ -18,18 +37,19 @@ function DeleteGroup({ open, onClose }: DeleteGroupProps) {
                 <DialogPanel className="bg-white rounded-2xl w-[480px] h-auto flex flex-col ">
                     <div className=' flex flex-col p-6 gap-3 border-solid border-[#EAECF0] border-b rounded-t-2xl'>
                         <div className='flex flex-row justify-between items-center'>
-                            <h1 className='text-[#1D2939] font-bold text-lg'>Delete group “JEE-2024”?</h1>
-                            <Image src="/icons/cancel.svg" alt="Cancel" width={20} height={20} onClick={onClose} />
+                            <h1 className='text-[#1D2939] font-bold text-lg'>{`Delete group “${communityName}”?`}</h1>
+                         <button><Image src="/icons/cancel.svg" alt="Cancel" width={20} height={20} onClick={onClose} /></button>   
                         </div>
-                        <span className="font-normal text-sm text-[#667085]">All channels inside this category will be gone.</span>
+                        <span className="font-normal text-sm text-[#667085]">All category, channels & chats inside this group will be gone.</span>
                         <div className="flex flex-col gap-1">
                             <span className="font-semibold text-sm text-[#1D2939]">To confirm, please enter the name of the category.</span>
                             <div className='flex px-2 items-center h-[40px] border border-solid border-[#D0D5DD] shadow-sm rounded-md'>
                                 <input
                                     className="font-normal text-[#667085] w-full text-sm placeholder:text-[#A1A1A1] rounded-md px-1 py-1 focus:outline-none focus:ring-0 border-none"
                                     type="text"
-                                    value={uniqueID}
-                                    onChange={(e) => setUniqueID(e.target.value)}
+                                    placeholder={communityName}
+                                    value={confirmedName}
+                                    onChange={(e) => setConfirmedName(e.target.value)}
                                 />
                             </div>
                         </div>
@@ -37,7 +57,7 @@ function DeleteGroup({ open, onClose }: DeleteGroupProps) {
                     </div>
                     <div className="flex flex-row justify-end mx-6 my-4 gap-4">
                         <button className="py-[0.625rem] px-6 border-2  border-solid border-[#EAECF0] font-semibold text-sm text-[#1D2939] rounded-md" onClick={onClose} >Cancel</button>
-                        <button className={`py-[0.625rem] px-6 text-white text-sm shadow-inner-button font-semibold ${uniqueID ? "bg-[#BB241A]  border border-solid  border-[#DE3024]" : "bg-[#f3b7b3] cursor-not-allowed"} rounded-md`} onClick={onClose}>Delete Group</button>
+                        <button className={`py-[0.625rem] px-6 text-white text-sm shadow-inner-button font-semibold border border-solid  border-white ${!isFormValid ?"bg-[#f3b7b3] cursor-not-allowed" :  "bg-[#BB241A]" } rounded-md`} onClick={handleDeleteGroup}>Delete Group</button>
                     </div>
                 </DialogPanel>
             </div >

@@ -6,6 +6,7 @@ import { useState, useEffect } from "react";
 import { doc, onSnapshot,Timestamp} from 'firebase/firestore';
 import { db, auth } from "@/firebase";
 import LoadingData from "@/components/Loading";
+import MessageLoading from "@/components/MessageLoading";
 
 interface MemberClickDialogProps {
     open: boolean;
@@ -51,9 +52,9 @@ function MemberClickDialog({open, onClose, id ,isAdmin}:MemberClickDialogProps){
 
       const colors = ['bg-red-500', 'bg-orange-500','bg-green-500', 'bg-blue-500' ]
 
-      if(loading){
-        return <LoadingData />
-      }
+      // if(loading){
+      //   return <LoadingData />
+      // }
     
     return(
          <Dialog
@@ -65,7 +66,12 @@ function MemberClickDialog({open, onClose, id ,isAdmin}:MemberClickDialogProps){
                 <DialogBackdrop className="fixed inset-0 bg-black/30" />
                 <div className="fixed inset-0 flex items-center justify-center">
                     <DialogPanel transition className="bg-white rounded-2xl  w-[480px] h-auto">
-                       <div className="flex flex-col">
+                       {loading ? (
+                         <div className="flex w-[480px] h-[200px] items-center justify-center">
+                         <MessageLoading />
+                         </div>
+                       ) : (
+                        <div className="flex flex-col">
                         <div className="flex flex-row items-start justify-between bg-purple p-4 rounded-t-2xl">
                          <div className="flex flex-row gap-3">
                          <div className="relative">
@@ -129,6 +135,8 @@ function MemberClickDialog({open, onClose, id ,isAdmin}:MemberClickDialogProps){
                         )}
                        
                        </div>
+                       )}                      
+                       
                     </DialogPanel>
                 </div>
             </Dialog>

@@ -16,6 +16,8 @@ import OwnChat from '@/components/DashboardComponents/CommunityComponents/ownCha
 import { PopoverContent, PopoverTrigger, Popover } from '@nextui-org/popover';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import Skeleton, { SkeletonTheme } from 'react-loading-skeleton' 
+import 'react-loading-skeleton/dist/skeleton.css'
 import MembersDetailsArea from '@/components/DashboardComponents/CommunityComponents/MembersDetailsArea';
 import Delete from "@/components/AdminComponents/Community/AllDialogs/Delete";
 import ChannelRequests from "@/components/AdminComponents/Community/AllDialogs/ChannelRequests";
@@ -29,11 +31,13 @@ import CreateChannel from "@/components/AdminComponents/Community/AllDialogs/Cre
 import OwnChats from "@/components/AdminComponents/Community/Chats/OwnChats";
 import OtherChats from "@/components/AdminComponents/Community/Chats/OtherChats";
 import BottomText from '@/components/AdminComponents/Community/BottomText';
+import AddMembersChannel from '@/components/AdminComponents/Community/AllDialogs/AddMembersChannel';
 
 type Channel = {
     channelId: string;
     channelName: string;
     channelEmoji: string;
+    channelDescription: string;
     members: {id:string, isAdmin: boolean}[] | null;
   };
   
@@ -65,6 +69,8 @@ type Channel = {
     replyingToFileUrl: string;
     replyingToFileName: string;
     isDeleted: boolean;
+    adminThatDeletedId: string;
+    isDeletedByAdmin: boolean;
     isAdmin: boolean;
     mentions: { userId: string; id: string, isAdmin: boolean, }[];
   };
@@ -101,6 +107,7 @@ function Chatinfo() {
       channelId: string;
       channelName: string;
       channelEmoji: string;
+      channelDescription: string;
       headingId?: string; // Adding headingId to the selected channel state
       members: {id:string, isAdmin: boolean}[] | null;
     } | null>(null);
@@ -113,11 +120,17 @@ function Chatinfo() {
     const [deleteDialog, setDeleteDialog] = useState(false);
     const [channelRequestsDialog, setChannelRequestsDialog] = useState(false);
     const [channelInfoDialog, setChannelInfoDialog] = useState(false);
-    const [groupInfoDialog, setGroupInfoDialog] = useState(false);
-    const [deleteGroupDialog, setDeleteGroupDialog] = useState(false);
     const [deleteCategoryDialog, setDeleteCategoryDialog] = useState(false);
-    const [editDetailsDialog, setEditDetailsDialog] = useState(false);
+    const [isEditingCategory, setIsEditingCategory] = useState(false);
     const [createCategoryDialog, setCreateCategoryDialog] = useState(false);
+    const [categoryName, setCategoryName] = useState('');
+    const [categoryId, setCategoryId] = useState('');
+    const [channelName, setChannelName] = useState('');
+    const [channelDescription, setChannelDescription] = useState('');
+    const [channelId, setChannelId] = useState('');
+    const [isEditingChannel, setIsEditingChannel] = useState(false);
+    const [channelEmoji, setChannelEmoji] = useState("");
+    const [addMembersChannelDialog, setAddMembersChannelDialog] = useState(false);
 
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
@@ -166,43 +179,83 @@ function Chatinfo() {
       }, [user, communityId]);
     
       useEffect(() => {
-        const fetchChannelHeadings = async () => {
+        const fetchChannelHeadingsRealtime = () => {
           try {
             const headingsRef = collection(db, `communities/${communityId}/channelsHeading`);
-            const headingsSnapshot = await getDocs(headingsRef);
-    
-            const headingsData: ChannelHeading[] = [];
-    
-            for (const headingDoc of headingsSnapshot.docs) {
-              const headingId = headingDoc.id;
-              const headingData = headingDoc.data();
-              const channelsRef = collection(db, `communities/${communityId}/channelsHeading/${headingId}/channels`);
-              const channelsSnapshot = await getDocs(channelsRef);
-    
-              const channels: Channel[] = channelsSnapshot.docs.map(channelDoc => ({
-                channelId: channelDoc.id,
-                channelName: channelDoc.data().channelName,
-                channelEmoji: channelDoc.data().channelEmoji,
-                members: channelDoc.data().members,
-              }));
-    
-              headingsData.push({
-                headingId,
-                headingName: headingData.headingName,
-                channels,
+      
+            // Set up a real-time listener for channel headings
+            const unsubscribeHeadings = onSnapshot(headingsRef, (headingsSnapshot) => {
+              const headingsData: ChannelHeading[] = [];
+              const channelListeners: (() => void)[] = []; // Array to store channel listeners for cleanup
+      
+              headingsSnapshot.docs.forEach((headingDoc) => {
+                const headingId = headingDoc.id;
+                const headingData = headingDoc.data();
+      
+                const channelsRef = collection(
+                  db,
+                  `communities/${communityId}/channelsHeading/${headingId}/channels`
+                );
+      
+                // Set up a real-time listener for channels under each heading
+                const unsubscribeChannels = onSnapshot(channelsRef, (channelsSnapshot) => {
+                  const channels: Channel[] = channelsSnapshot.docs.map((channelDoc) => ({
+                    channelId: channelDoc.id,
+                    channelName: channelDoc.data().channelName,
+                    channelEmoji: channelDoc.data().channelEmoji,
+                    channelDescription: channelDoc.data().channelDescription,
+                    members: channelDoc.data().members,
+                  }));
+      
+                  // Update the headingsData array with the new channels
+                  const existingHeadingIndex = headingsData.findIndex((h) => h.headingId === headingId);
+                  if (existingHeadingIndex !== -1) {
+                    headingsData[existingHeadingIndex] = {
+                      ...headingsData[existingHeadingIndex],
+                      channels,
+                    };
+                  } else {
+                    headingsData.push({
+                      headingId,
+                      headingName: headingData.headingName,
+                      channels,
+                    });
+                  }
+      
+                  // Update state
+                  setChannelHeadings([...headingsData]);
+                });
+      
+                // Store the channel listener for cleanup
+                channelListeners.push(unsubscribeChannels);
               });
-            }
-    
-            setChannelHeadings(headingsData);
-            setLoading(false);
+      
+              // Cleanup all channel listeners when the component unmounts or `communityId` changes
+              return () => {
+                channelListeners.forEach((unsubscribe) => unsubscribe());
+              };
+            });
+      
+            // Cleanup the heading listener
+            return () => {
+              unsubscribeHeadings();
+            };
           } catch (error) {
-            console.error("Error fetching channels data: ", error);
+            console.error("Error fetching channels data in real-time: ", error);
             setLoading(false);
           }
         };
+      
+        const unsubscribe = fetchChannelHeadingsRealtime();
+      
+        return () => {
+          if (unsubscribe) {
+            unsubscribe();
+          }
+        };
+      }, [communityId, db]);
+      
     
-        fetchChannelHeadings();
-      }, [communityId]);
     
       // Fetch Chats for the selected channel
       useEffect(() => {
@@ -401,8 +454,8 @@ function Chatinfo() {
       {/* Middle Section */}
       <div className="flex flex-col w-[230px] bg-white border-r border-b border-lightGrey">
         <GroupName communityId={communityId} />
-        <div className="flex flex-col justify-start items-center mx-4 mt-[15px] gap-6">
-          <div className="ChannelHeadingDiv w-full h-auto">
+        <div className="flex flex-col justify-start items-center h-full mt-[15px] gap-6">
+          <div className="ChannelHeadingDiv w-full h-auto px-4 overflow-y-auto">
             {channelHeadings.map((heading) => (
               <div key={heading.headingId} className="ChannelHeadingDiv w-full h-auto mb-[13px]">
                 <div className="flex flex-row justify-between items-center mb-[12px] px-2">
@@ -415,7 +468,7 @@ function Chatinfo() {
                 </PopoverTrigger>
                 <PopoverContent className="w-auto py-1 px-0 bg-white border border-lightGrey rounded-md flex flex-col">
                     <button className='flex flex-row gap-2 items-center h-10 w-[173px] px-4 hover:bg-[#EAECF0]'
-                        onClick={() => setCreateCategoryDialog(true)}>
+                        onClick={() => {setCreateCategoryDialog(true); setCategoryName(''); setCategoryId(''); setIsEditingCategory(false);}}>
                         <Image
                             src="/icons/Create-category.svg"
                             width={18}
@@ -425,7 +478,7 @@ function Chatinfo() {
                         <span className='font-normal text-[#0C111D] text-sm'>Create category</span>
                     </button>
                     <button className='flex flex-row gap-2 items-center h-10 w-[173px] px-4 hover:bg-[#EAECF0]'
-                        onClick={() => setEditDetailsDialog(true)}>
+                        onClick={() => {setIsEditingCategory(true); setCreateCategoryDialog(true); setCategoryName(heading.headingName); setCategoryId(heading.headingId)}}>
                         <Image
                             src="/icons/edit-02.svg"
                             width={18}
@@ -435,7 +488,7 @@ function Chatinfo() {
                         <span className='font-normal text-[#0C111D] text-sm'>Edit details</span>
                     </button>
                     <button className='flex flex-row gap-2 items-center h-10 w-[173px] px-4 hover:bg-[#EAECF0]'
-                        onClick={() => setDeleteCategoryDialog(true)}>
+                        onClick={() => {setDeleteCategoryDialog(true); setCategoryName(heading.headingName); setCategoryId(heading.headingId)}}>
                         <Image
                             src="/icons/delete.svg"
                             width={18}
@@ -463,15 +516,22 @@ function Chatinfo() {
                     </button>
                   ))}
                   <button className='flex flex-row items-center justify-center w-full px-2 py-[0.375rem] gap-2 border border-lightGrey rounded-full'
-                                    onClick={() => setCreateChannel(true)}>
+                                    onClick={() => {setCreateChannel(true); setCategoryId(heading.headingId); setIsEditingChannel(false); setChannelName(''); setChannelDescription(''); setChannelEmoji(''); }}>
                                     <Image src='/icons/plus-dark.svg' alt='create channel' width={18} height={18} />
                                     <p className='text-[0.813rem] text-[#182230] font-semibold leading-6'>Create Channel</p>
-                                </button>
+                   </button>
                 </div>
                
               </div>
             ))}
-           
+            {channelHeadings.length < 1 &&(
+                <button className='flex flex-row items-center justify-center w-full px-2 py-[0.375rem] gap-2 border border-lightGrey rounded-full'
+                onClick={() => {setCreateCategoryDialog(true); setCategoryName(''); setCategoryId(''); setIsEditingCategory(false);}}>
+                <Image src='/icons/plus-dark.svg' alt='create channel' width={18} height={18} />
+                <p className='text-[0.813rem] text-[#182230] font-semibold leading-6'>Create Category</p>
+                </button>
+            )}
+          
           </div>
         </div>
         {/* <div className='w-full border-t border-[#e8e8e8]'>
@@ -596,6 +656,8 @@ function Chatinfo() {
               isCurrentUserAdmin={true}
               message={chat.message}
               isDeleted={chat.isDeleted}
+              isDeletedByAdmin={chat.isDeletedByAdmin}
+              adminThatDeletedId={chat.adminThatDeletedId}
             />
           ) : (
             <OtherChat
@@ -627,6 +689,8 @@ function Chatinfo() {
             isCurrentUserAdmin={true}
             message={chat.message}
             isDeleted={chat.isDeleted}
+            isDeletedByAdmin={chat.isDeletedByAdmin}
+            adminThatDeletedId={chat.adminThatDeletedId}
             setLoading={setLoading}
             />
           )}
@@ -687,6 +751,13 @@ function Chatinfo() {
         <>
         </>
       )}
+          {createChannel && <CreateChannel open={createChannel} openAddMembers={() => setAddMembersChannelDialog(true)} onClose={() => setCreateChannel(false)} headingId={categoryId} channelEmoji={channelEmoji} setChannelEmoji={setChannelEmoji} channelId={channelId} isEditing={isEditingChannel} communityId={communityId || ''} channelName={channelName} setChannelName={setChannelName} channelDescription={channelDescription} setChannelDescription={setChannelDescription} setChannelId={setChannelId}/>}
+            {createCategoryDialog && <CreateCategory open={createCategoryDialog} onClose={() => setCreateCategoryDialog(false)} communityId={communityId || ''} isEditing={isEditingCategory} categoryName={categoryName} setCategoryName={setCategoryName} categoryId={categoryId} />}
+            {deleteCategoryDialog && <DeleteCategory open={deleteCategoryDialog} onClose={() => setDeleteCategoryDialog(false)} communityId={communityId || ''} categoryName={categoryName} categoryId={categoryId}/>}
+            {channelInfoDialog && <Channelinfo open={channelInfoDialog} onClose={() => setChannelInfoDialog(false)} />}
+            {channelRequestsDialog && <ChannelRequests open={channelRequestsDialog} onClose={() => setChannelRequestsDialog(false)} />}
+            {deleteDialog && <Delete open={deleteDialog} onClose={() => setDeleteDialog(false)} />}
+            {addMembersChannelDialog && <AddMembersChannel communityId={communityId || ''} headingId={categoryId} channelId={channelId} open={addMembersChannelDialog} onClose={() => setAddMembersChannelDialog(false)}/>}    
      <ToastContainer />
     </div>
 
@@ -710,69 +781,7 @@ function Chatinfo() {
         //                     </div>
         //                 </div>
         //             </div>
-        //             <Popover placement="bottom-end">
-        //                 <PopoverTrigger>
-        //                     <button className='focus:outline-none'>
-        //                         <Image
-        //                             src="/icons/selectdate-Arrowdown.svg"
-        //                             width={20}
-        //                             height={20}
-        //                             alt="Arrow-Down Button"
-        //                         />
-        //                     </button>
-        //                 </PopoverTrigger>
-        //                 <PopoverContent className="w-auto py-1 px-0 bg-white border border-lightGrey rounded-md flex flex-col">
-        //                     <button className='flex flex-row gap-2 items-center h-10 w-[206px] px-4 hover:bg-[#EAECF0]'
-        //                     >
-        //                         <Image
-        //                             src="/icons/mark as read.svg"
-        //                             width={18}
-        //                             height={18}
-        //                             alt="mark as read"
-        //                         />
-        //                         <span className='font-normal text-[#0C111D] text-sm'>Mark as read</span>
-        //                     </button>
-
-        //                     <button className='flex flex-row gap-2 items-center justify-between h-10 w-[206px] px-4 hover:bg-[#EAECF0]'>
-        //                         <div className='flex flex-row gap-2'>
-        //                             <Image
-        //                                 src="/icons/mute.svg"
-        //                                 width={18}
-        //                                 height={18}
-        //                                 alt="mute-icon"
-        //                             />
-        //                             <span className='font-normal text-[#0C111D] text-sm'>Mute</span>
-        //                         </div>
-        //                         <Image
-        //                             src="/icons/arrow-right-01-round.svg"
-        //                             width={18}
-        //                             height={18}
-        //                             alt="arrow-right-01-round"
-        //                         />
-        //                     </button>
-
-        //                     <button className='flex flex-row gap-2 items-center h-10 w-[206px] px-4 hover:bg-[#EAECF0]'
-        //                         onClick={() => setGroupInfoDialog(true)}>
-        //                         <Image
-        //                             src="/icons/information-circle.svg"
-        //                             width={18}
-        //                             height={18}
-        //                             alt="information-circle"
-        //                         />
-        //                         <span className='font-normal text-[#0C111D] text-sm'>Group info</span>
-        //                     </button>
-        //                     <button className='flex flex-row gap-2 items-center h-10 w-[206px] px-4 hover:bg-[#EAECF0]'
-        //                         onClick={() => setDeleteGroupDialog(true)}>
-        //                         <Image
-        //                             src="/icons/delete.svg"
-        //                             width={18}
-        //                             height={18}
-        //                             alt="delete"
-        //                         />
-        //                         <span className='font-normal text-[#DE3024] text-sm'>Delete group</span>
-        //                     </button>
-        //                 </PopoverContent>
-        //             </Popover>
+                    
         //         </div>
 
         //         <div className="flex flex-col p-4 gap-2">
@@ -1092,15 +1101,7 @@ function Chatinfo() {
         //             </div>
         //         </div>
         //     </div>
-        //     {createChannel && <CreateChannel open={createChannel} onClose={() => setCreateChannel(false)} />}
-        //     {groupInfoDialog && <Groupinfo open={groupInfoDialog} onClose={() => setGroupInfoDialog(false)} />}
-        //     {deleteGroupDialog && <DeleteGroup open={deleteGroupDialog} onClose={() => setDeleteGroupDialog(false)} />}
-        //     {createCategoryDialog && <CreateCategory open={createCategoryDialog} onClose={() => setCreateCategoryDialog(false)} />}
-        //     {editDetailsDialog && <EditDetails open={editDetailsDialog} onClose={() => setEditDetailsDialog(false)} />}
-        //     {deleteCategoryDialog && <DeleteCategory open={deleteCategoryDialog} onClose={() => setDeleteCategoryDialog(false)} />}
-        //     {channelInfoDialog && <Channelinfo open={channelInfoDialog} onClose={() => setChannelInfoDialog(false)} />}
-        //     {channelRequestsDialog && <ChannelRequests open={channelRequestsDialog} onClose={() => setChannelRequestsDialog(false)} />}
-        //     {deleteDialog && <Delete open={deleteDialog} onClose={() => setDeleteDialog(false)} />}
+        
         // </div>
     );
 }

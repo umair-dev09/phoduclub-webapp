@@ -12,7 +12,7 @@ interface DeleteProps {
     onClose: () => void; // Define onClose as a function
     name: string;
     authId: string;
-}
+} 
 
 function Delete({ open, onClose, name, authId }: DeleteProps) { 
       const router = useRouter();

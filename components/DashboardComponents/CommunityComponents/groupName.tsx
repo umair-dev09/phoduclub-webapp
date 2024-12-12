@@ -6,7 +6,10 @@ import Image from "next/image";
 import { onAuthStateChanged, User } from "firebase/auth";
 import { auth, db } from "@/firebase";
 import { doc, getDoc } from "firebase/firestore";
-
+import Skeleton, { SkeletonTheme } from 'react-loading-skeleton' 
+import 'react-loading-skeleton/dist/skeleton.css'
+import Groupinfo from "@/components/AdminComponents/Community/AllDialogs/Groupinfo";
+import DeleteGroup from "@/components/AdminComponents/Community/AllDialogs/DeleteGroup";
 type GroupData = {
     communityName: string | null;
     members: {id:string, isAdmin: boolean}[] | null;   
@@ -22,8 +25,11 @@ function GroupName({communityId}:groupNameProps) {
     const [user, setUser] = useState<User | null>(null);
     const [isPopoverOpen, setIsPopoverOpen] = useState(false);
     const [isMutePopoverOpen, setIsMutePopoverOpen] = useState(false);
-    const [isMuted, setIsMuted] = useState(false); // Tracks mute state
-
+    const [isMuted, setIsMuted] = useState(false); 
+    const [loading, setLoading] = useState(true); 
+    const [groupInfoDialog, setGroupInfoDialog] = useState(false);
+    const [deleteGroupDialog, setDeleteGroupDialog] = useState(false);
+    
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
           if (currentUser) {
@@ -46,6 +52,7 @@ function GroupName({communityId}:groupNameProps) {
               if (groupSnapshot.exists()) {
                 const data = groupSnapshot.data() as GroupData;
                 setGroupData(data);
+                setLoading(false);
               } else {
                 console.error('No user data found!');
                 setError(true);
@@ -55,7 +62,7 @@ function GroupName({communityId}:groupNameProps) {
             console.error('Error fetching user data:', error);
             setError(true);
           } finally {
-            // setLoading(false);
+            setLoading(false);
           }
         };
     
@@ -78,84 +85,98 @@ function GroupName({communityId}:groupNameProps) {
 
 
     return (
-        <div className='flex flex-row items-center justify-between h-[72px] border-b border-lightGrey'>
+        <div className='flex flex-row items-center justify-between h-[72px] border-b border-lightGrey py-[12px]'>
             <div className='flex flex-row gap-2 ml-6'>
                 <div className="flex items-center justify-center w-[46px] h-[46px] rounded-full">
-                <Image className="rounded-full w-10 h-10" src={groupData?.communityImg || '/icons/membersIcon.svg'} alt='group icon' quality={100} width={42} height={42} />
+                {loading ? (
+                    <Skeleton width={40} height={40} borderRadius={1000}/>
+                ) : (
+                    <Image className="rounded-full w-10 h-10 object-cover" src={groupData?.communityImg || '/icons/membersIcon.svg'} alt='group icon' quality={100} width={42} height={42} />
+                )}
                 </div>
                 <div className='flex flex-col justify-evenly text-sm'>
-                    <div className='font-semibold'><h4>{groupData?.communityName}</h4></div>
-                    <div className='flex flex-row gap-2 text-[#4B5563]'>
+                    <div className='font-semibold'><h4>{groupData?.communityName || <Skeleton width={80} height={20}/>}</h4></div>
+                    {loading ? (
+                      <Skeleton width={60} height={18}/>
+                      ) : (  
+                        <div className='flex flex-row gap-2 text-[#4B5563]'>
                         <Image src='/icons/membersIcon.svg' alt='members icon' width={18} height={18} />
                         <p>{groupData?.members ? groupData.members.length : 0}</p> {/* Display the number of members */}
                     </div>
+                    )}
+                    
                 </div>
             </div>
             <div className='flex items-center justify-center mr-6 gap-2'>
                 {isMuted && (
                     <Image className={`{isMuted ? 'flex : 'none'}`} src='/icons/notification-off-02.svg' alt="Muted" width={16} height={16} />
                 )}
-                <Popover
-                    placement="bottom-end"
-                    isOpen={isPopoverOpen}
-                    onOpenChange={setIsPopoverOpen}
-                >
-                    <PopoverTrigger>
-                        <button>
-                            <Image src='/icons/chevron-down.svg' alt='arrow down' width={20} height={20} />
-                        </button>
-                    </PopoverTrigger>
-                    <PopoverContent className="p-0">
-                        <div className='flex flex-col bg-white  w-auto h-auto py-1 border border-lightGrey rounded-md shadow-md'>
-                            <button
-                                className='flex flex-row items-center gap-2 w-48 px-4 py-[10px] transition-colors hover:bg-neutral-100'
-                                onClick={closePopover}
-                            >
-                                <Image src='/icons/bubble-chat-notification.svg' alt='mark as read' width={18} height={18} />
-                                <p className='text-sm'>Mark as read</p>
+              <Popover placement="bottom-end">
+                        <PopoverTrigger>
+                            <button className='focus:outline-none'>
+                                <Image
+                                    src="/icons/selectdate-Arrowdown.svg"
+                                    width={20}
+                                    height={20}
+                                    alt="Arrow-Down Button"
+                                />
                             </button>
-                            <Popover
-                                placement='right-start'
-                                isOpen={isMutePopoverOpen}
-                                onOpenChange={setIsMutePopoverOpen}
+                        </PopoverTrigger>
+                        <PopoverContent className="w-auto py-1 px-0 bg-white border border-lightGrey rounded-md flex flex-col">
+                            <button className='flex flex-row gap-2 items-center h-10 w-[206px] px-4 hover:bg-[#EAECF0]'
                             >
-                                <PopoverTrigger>
-                                    <button className='flex flex-row items-center justify-between w-48 px-4 py-[10px] transition-colors hover:bg-neutral-100'>
-                                        <div className='flex flex-row items-center gap-2'>
-                                            <Image src={isMuted ? '/icons/cancleBell.svg' : '/icons/bell.svg'} alt={isMuted ? 'Unmute' : 'Mute'} width={18} height={18} />
-                                            <p className='text-sm'>{isMuted ? 'Muted' : 'Mute'}</p>
-                                        </div>
-                                        <Image src='/icons/collapse-right.svg' alt='mute options' width={8} height={8} />
-                                    </button>
-                                </PopoverTrigger>
-                                <PopoverContent className="p-0">
-                                    {!isMuted && (
-                                        <div className='flex flex-col w-32 h-auto bg-white border border-lightGrey rounded-md py-1'>
-                                            <button onClick={() => { toggleMute(); closeBothPopovers(); }} className='text-sm text-[#0C111D] text-start px-4 py-[10px] hover:bg-[#F2F4F7]'>For 8 hours</button>
-                                            <button onClick={() => { toggleMute(); closeBothPopovers(); }} className='text-sm text-[#0C111D] text-start px-4 py-[10px] hover:bg-[#F2F4F7]'>For 1 week</button>
-                                            <button onClick={() => { toggleMute(); closeBothPopovers(); }} className='text-sm text-[#0C111D] text-start px-4 py-[10px] hover:bg-[#F2F4F7]'>Always</button>
-                                        </div>
-                                    )}
+                                <Image
+                                    src="/icons/mark as read.svg"
+                                    width={18}
+                                    height={18}
+                                    alt="mark as read"
+                                />
+                                <span className='font-normal text-[#0C111D] text-sm'>Mark as read</span>
+                            </button>
 
-                                    {isMuted && (
-                                        <div className="flex flex-col w-[182px] h-auto bg-white border border-lightGrey rounded-md py-1">
-                                            <p className="text-sm font-normal text-[#667085] px-4 py-[10px]">Muted until 05:57 pm</p>
-                                            <button onClick={() => { toggleMute(); closeBothPopovers(); }} className='text-sm text-[#0C111D] text-start px-4 py-[10px] hover:bg-[#F2F4F7]'>Unmute</button>
-                                        </div>
-                                    )}
-                                </PopoverContent>
-                            </Popover>
-                            <button
-                                className='flex flex-row items-center gap-2 w-48 px-4 py-[10px] transition-colors hover:bg-neutral-100'
-                                onClick={closePopover}
-                            >
-                                <Image src='/icons/exitGrp.svg' alt='exit group' width={18} height={18} />
-                                <p className='text-sm text-red-600'>Exit group</p>
+                            <button className='flex flex-row gap-2 items-center justify-between h-10 w-[206px] px-4 hover:bg-[#EAECF0]'>
+                                <div className='flex flex-row gap-2'>
+                                    <Image
+                                        src="/icons/mute.svg"
+                                        width={18}
+                                        height={18}
+                                        alt="mute-icon"
+                                    />
+                                    <span className='font-normal text-[#0C111D] text-sm'>Mute</span>
+                                </div>
+                                <Image
+                                    src="/icons/arrow-right-01-round.svg"
+                                    width={18}
+                                    height={18}
+                                    alt="arrow-right-01-round"
+                                />
                             </button>
-                        </div>
-                    </PopoverContent>
-                </Popover>
+
+                            <button className='flex flex-row gap-2 items-center h-10 w-[206px] px-4 hover:bg-[#EAECF0]'
+                                onClick={() => setGroupInfoDialog(true)}>
+                                <Image
+                                    src="/icons/information-circle.svg"
+                                    width={18}
+                                    height={18}
+                                    alt="information-circle"
+                                />
+                                <span className='font-normal text-[#0C111D] text-sm'>Group info</span>
+                            </button>
+                            <button className='flex flex-row gap-2 items-center h-10 w-[206px] px-4 hover:bg-[#EAECF0]'
+                                onClick={() => setDeleteGroupDialog(true)}>
+                                <Image
+                                    src="/icons/delete.svg"
+                                    width={18}
+                                    height={18}
+                                    alt="delete"
+                                />
+                                <span className='font-normal text-[#DE3024] text-sm'>Delete group</span>
+                            </button>
+                        </PopoverContent>
+                    </Popover>
             </div>
+            {groupInfoDialog && <Groupinfo open={groupInfoDialog} onClose={() => setGroupInfoDialog(false)} />}
+            {deleteGroupDialog && <DeleteGroup open={deleteGroupDialog} onClose={() => setDeleteGroupDialog(false)} communityId={communityId || ''} communityName={groupData?.communityName || ''}/>}
         </div>
     );
 }

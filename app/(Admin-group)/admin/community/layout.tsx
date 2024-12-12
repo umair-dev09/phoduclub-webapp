@@ -3,6 +3,8 @@ import { ReactNode, useState, useEffect } from 'react';
 import { usePathname, useRouter } from "next/navigation";
 import Image from 'next/image';
 import GroupIcons from '@/components/AdminComponents/Community/GroupIcons';
+import { toast, ToastContainer } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
 interface CommunityProps {
     children: ReactNode;
 }
@@ -23,7 +25,7 @@ function Community({ children }: CommunityProps) {
     };
 
     return (
-        <div className="flex flex-1 flex-row ">
+        <div className="flex flex-1 flex-row">
 
                 <div className="flex flex-col w-[90px] bg-white  border-r border-b border-lightGrey">
                 <GroupIcons />
@@ -33,6 +35,7 @@ function Community({ children }: CommunityProps) {
             {children}
 
         </div>
+        <ToastContainer />
     </div>
     );
 }

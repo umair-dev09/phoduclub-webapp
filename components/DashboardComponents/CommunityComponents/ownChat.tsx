@@ -36,6 +36,8 @@ type OwnChatProps = {
     isCurrentUserAdmin: boolean;
     channelId: string ;
     isDeleted: boolean;
+    adminThatDeletedId: string;
+    isDeletedByAdmin: boolean;
     mentions: { userId: string; id: string, isAdmin: boolean, }[];
     highlightedText: string | React.ReactNode[]; 
     isAdmin: boolean;
@@ -52,7 +54,7 @@ type ReactionCount = {
 
 
 
-function OwnChat({message, isDeleted, mentions, isCurrentUserAdmin, currentUserId, highlightedText, messageType, fileUrl, fileName, isHighlighted, isAdmin, scrollToReply, fileSize, senderId, timestamp, communityId, headingId, channelId, chatId, isReplying, replyingToId,replyingToChatId, replyingToFileName, replyingToFileUrl, replyingToMsg, replyingToMsgType, setShowReplyLayout, handleReply}:OwnChatProps) {
+function OwnChat({message, isDeleted, mentions, adminThatDeletedId, isDeletedByAdmin, isCurrentUserAdmin, currentUserId, highlightedText, messageType, fileUrl, fileName, isHighlighted, isAdmin, scrollToReply, fileSize, senderId, timestamp, communityId, headingId, channelId, chatId, isReplying, replyingToId,replyingToChatId, replyingToFileName, replyingToFileUrl, replyingToMsg, replyingToMsgType, setShowReplyLayout, handleReply}:OwnChatProps) {
     const [reactions, setReactions] = useState<ReactionCount[]>([]);
     const [isOpen, setIsOpen] = useState(false);
     const [showBookmark, setShowBookmark] = useState(false); // Use a single index to track the active button
@@ -416,7 +418,7 @@ const handleCopy = async () => {
         <MemberClickDialog open={true} onClose={() => setOpenDialogue(false)} id={id} isAdmin={admin} />
       )}
             {showMediaDialog && <MediaViewDialog open={true} onClose={() => setShowMediaDialog(false)} src={fileUrl} mediaType={messageType || ''}/> }
-            {deleteDialog && <Delete communityId={communityId} headingId={headingId} channelId={channelId} chatId={chatId} open={true} onClose={() => setDeleteDialog(false)}/>}
+            {deleteDialog && <Delete communityId={communityId} headingId={headingId} channelId={channelId} chatId={chatId} open={true} onClose={() => setDeleteDialog(false)} deletedByAdmin={false} adminThatDeletedId=""/>}
            
         </div>
     );

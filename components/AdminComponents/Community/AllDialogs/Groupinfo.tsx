@@ -20,8 +20,8 @@ function groupinfo({ open, onClose }: groupinfoProps) {
                     <div className=' flex flex-col p-6 gap-2 border-solid border-[#EAECF0] border-b rounded-t-2xl'>
                         <div className='flex flex-row justify-between items-center'>
                             <h1 className='text-[#1D2939] font-bold text-lg'>Group info</h1>
-                            <Image src="/icons/cancel.svg" alt="Cancel" width={20} height={20} onClick={onClose} />
-                        </div>
+                            <button><Image src="/icons/cancel.svg" alt="Cancel" width={20} height={20} onClick={onClose} /></button>   
+                            </div>
                         <div className="flex flex-row items-center py-2 justify-between group gap-2">
                             <div className='flex flex-row gap-2 items-center'>
                                 <div className="rounded-full w-[44px] h-[44px] bg-[#C0EAFF] items-center flex justify-center border-2 border-solid border-[#FFFFFF]">
@@ -71,7 +71,7 @@ function groupinfo({ open, onClose }: groupinfoProps) {
                     </div>
                 </DialogPanel>
             </div >
-            {creategroup && <CreateGroup open={creategroup} onClose={() => setCreategroup(false)} />}
+            {/* {creategroup && <CreateGroup open={creategroup} onClose={() => setCreategroup(false)} />} */}
         </Dialog >
     )
 }

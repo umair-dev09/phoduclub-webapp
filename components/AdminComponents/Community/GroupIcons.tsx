@@ -1,11 +1,12 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { getFirestore, collection, getDocs, query, where } from "firebase/firestore";
+import { getFirestore, collection, getDocs, query, onSnapshot } from "firebase/firestore";
 import { onAuthStateChanged, User } from 'firebase/auth'; // Import the User type from Firebase
 import { auth } from "@/firebase";
 import { useRouter } from 'next/navigation';
 import Image from "next/image";
 import CreateGroup from "@/components/AdminComponents/Community/AllDialogs/CreateGroup";
+import AddMembersGroup from "./AllDialogs/AddMembersGroup";
 
 type CommunityData = {
     communityName: string | null;
@@ -22,8 +23,9 @@ function GroupIcons() {
     const db = getFirestore();
     const router = useRouter();
     const [creategroup, setcreategroup] = useState(false);
-
-    useEffect(() => {
+    const [openAddMembers, setOpenAddMembers]  =useState(false);
+    const [communityId, setCommunityId] = useState('');
+     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
           if (currentUser) {
             setUser(currentUser);
@@ -37,37 +39,48 @@ function GroupIcons() {
       }, []);
       
       useEffect(() => {
-        const fetchUserCommunities = async () => {
-          if (user) {
-            const userId = user.uid; // Get the current user's ID
-            const communityRef = collection(db, "communities");
-            const communitySnapshot = await getDocs(communityRef);
-      
-            const userCommunities: CommunityData[] = [];
-      
-            communitySnapshot.forEach((doc) => {
-              const community = doc.data();
-              const members = community.members || [];
-      
-              // Check if the current user ID exists in the members array
-              const isUserInCommunity = members.some((member: { id: string }) => member.id === userId);
-      
-              if (isUserInCommunity) {
-                userCommunities.push({
-                  communityName: community.communityName,
-                  communityId: community.communityId,
-                  members,
-                  communityImg: community.communityImg,
+        const fetchUserCommunitiesRealtime = () => {
+            if (user) {
+                const userId = user.uid; // Get the current user's ID
+                const communityRef = collection(db, "communities");
+    
+                // Set up a real-time listener on the "communities" collection
+                const unsubscribe = onSnapshot(communityRef, (snapshot) => {
+                    const userCommunities: CommunityData[] = [];
+    
+                    snapshot.forEach((doc) => {
+                        const community = doc.data();
+                        const members = community.members || [];
+    
+                        // Check if the current user ID exists in the members array
+                        const isUserInCommunity = members.some((member: { id: string }) => member.id === userId);
+    
+                        if (isUserInCommunity) {
+                            userCommunities.push({
+                                communityName: community.communityName,
+                                communityId: community.communityId,
+                                members,
+                                communityImg: community.communityImg,
+                            });
+                        }
+                    });
+    
+                    setCommunities(userCommunities); // Update the state
                 });
-              }
-            });
-      
-            setCommunities(userCommunities);
-          }
+    
+                // Cleanup the listener when the component unmounts
+                return () => unsubscribe();
+            }
         };
-      
-        fetchUserCommunities();
-      }, [user, db]);
+    
+        const unsubscribe = fetchUserCommunitiesRealtime();
+    
+        return () => {
+            if (unsubscribe) {
+                unsubscribe();
+            }
+        };
+    }, [user, db]);
     
       const onItemClick = (communityName: string | null, communityId: string | null) => {
         if (communityName && communityId) {
@@ -84,8 +97,8 @@ function GroupIcons() {
         router.push('/community/general-chat')
     };
     return (
-        <div>
-            <div className="flex items-center justify-center h-[72px] border-b border-lightGrey">
+        <div className="flex flex-col h-full">
+            <div className="flex items-center justify-center h-[72px] py-3  border-b border-lightGrey">
             <button className={`group flex items-center justify-center relative w-[46px] h-[46px] rounded-full border-[#C74FE6] border-2 ${
                         selectedButton === "message" ? "border-darkPurple" : "hover:border-darkPurple"}`}
             // onClick={onMessageButtonClick}
@@ -100,7 +113,7 @@ function GroupIcons() {
             </button>
           </div>
             
- <div className="flex flex-col justify-start items-center pt-[15px]">
+ <div className="flex flex-col justify-start items-center pt-[15px] overflow-y-auto ">
         {communities.map((community, index) => (
           <button
             key={community.communityId}
@@ -121,7 +134,8 @@ function GroupIcons() {
                     </div>
                 </button>
       </div>
-      {setcreategroup && <CreateGroup open={creategroup} onClose={() => setcreategroup(false)} />}
+      {setcreategroup && <CreateGroup open={creategroup} onClose={() => setcreategroup(false)} openAddMembers={() => setOpenAddMembers(true)} setCommunityId={setCommunityId}/>}
+      {openAddMembers && <AddMembersGroup open={openAddMembers} onClose={() => setOpenAddMembers(false)} communityId={communityId}/>}
         </div>
        
     );
