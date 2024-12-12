@@ -556,11 +556,11 @@ function Chatinfo() {
             <div className="flex items-center justify-between h-[72px] bg-white border-b border-lightGrey">
               {/* Pass the selected channel info to ChatHead */}
               <ChatHead channelId={selectedChannel?.channelId ?? null} channelName={selectedChannel?.channelName ?? null} channelEmoji={selectedChannel?.channelEmoji ?? null} />
-              <div className="flex flex-row mr-6 gap-4">
+              <div className="flex flex-row mr-4 gap-4">
               <Popover placement="bottom" isOpen={searchOpen} onClose={() =>{setSearchOpen(false); setSearchQuery('')}}>
               <PopoverTrigger>
               <button onClick={() => setSearchOpen(true)}>
-                  <Image src="/icons/search.svg" alt="search icon" width={18} height={18} />
+                  <Image className='w-[18px] h-[18px]' src="/icons/search.svg" alt="search icon" width={18} height={18} />
                 </button>
               </PopoverTrigger>
               <PopoverContent>
@@ -581,14 +581,17 @@ function Chatinfo() {
                </div>
               </PopoverContent>
             </Popover>
-            <button
-                  className="transition-colors hover:bg-neutral-100"
-                  onClick={() => setIsDetailsVisible(!isDetailsVisible)}
+                {/* <button className="transition-colors hover:bg-neutral-100" onClick={() => setIsCollapsed(!isCollapsed)}>
+                  <Image src="/icons/collapseDetails.svg" alt="collapse details icon" width={24} height={24} />
+                </button> */}
+                <button
+                  className="flex w-[30px] h-[30px] transition-colors hover:bg-neutral-100 rounded-full items-center"
+                  onClick={() => setIsCollapsed(!isCollapsed)}
                 >
-                  {isDetailsVisible ? (
-                    <Image src="/icons/collapseDetails.svg" alt="collapse details icon" width={24} height={24} />
+                  {isCollapsed ? (
+                    <Image className='w-[26px] h-[26px] pl-[-2px]' src="/icons/collapseDetails.svg" alt="collapse details icon" width={26} height={26} />
                   ) : (
-                    <Image src="/icons/collaspeDetails-2.svg" alt="collapse details icon" width={24} height={24} />
+                    <Image className='w-[26px] h-[26px] pl-[-2px]' src="/icons/collaspeDetails-2.svg" alt="collapse details icon" width={26} height={26} />
                   )}
                 </button>
               </div>
