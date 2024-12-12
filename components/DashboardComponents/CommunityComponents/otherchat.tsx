@@ -4,7 +4,7 @@ import { PopoverContent, PopoverTrigger, Popover } from '@nextui-org/popover';
 import { useState, useRef, useEffect, forwardRef, useMemo } from "react";
 import EmojiPicker, { EmojiClickData } from "emoji-picker-react";
 import { deleteDoc, doc, Timestamp, collection, getDoc, setDoc,  onSnapshot, getDocs } from "firebase/firestore";
-import { db } from "@/firebase";
+import { db, auth } from "@/firebase";
 import { getAuth } from 'firebase/auth';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -14,6 +14,8 @@ import CommunityVideoPlayer from "@/components/CommunityVideoPlayer";
 import MediaViewDialog from "./MediaViewDialog";
 import Delete from "./Delete";
 import MemberClickDialog from "./MemberClickDialog";
+import Skeleton, { SkeletonTheme } from 'react-loading-skeleton'
+import 'react-loading-skeleton/dist/skeleton.css'
 
 type OtherChatProps = {
     message: string | null;
@@ -35,6 +37,8 @@ type OtherChatProps = {
     headingId: string ;
     channelId: string ;
     isDeleted: boolean;
+    adminThatDeletedId: string;
+    isDeletedByAdmin: boolean;
     highlightedText: string | React.ReactNode[];
     isAdmin: boolean;
     isCurrentUserAdmin: boolean;
@@ -58,7 +62,7 @@ type ReactionCount = {
     isPremium: string;
   };
 
-  function OtherChat ({message, currentUserId, isCurrentUserAdmin, setLoading, mentions, isDeleted, highlightedText, messageType, fileUrl, fileName, isHighlighted, isAdmin, scrollToReply, fileSize, senderId, timestamp, communityId, headingId, channelId, chatId, isReplying, replyingToId,replyingToChatId, replyingToFileName, replyingToFileUrl, replyingToMsg, replyingToMsgType, setShowReplyLayout, handleReply}: OtherChatProps) {
+  function OtherChat ({message, currentUserId, adminThatDeletedId, isDeletedByAdmin, isCurrentUserAdmin, setLoading, mentions, isDeleted, highlightedText, messageType, fileUrl, fileName, isHighlighted, isAdmin, scrollToReply, fileSize, senderId, timestamp, communityId, headingId, channelId, chatId, isReplying, replyingToId,replyingToChatId, replyingToFileName, replyingToFileUrl, replyingToMsg, replyingToMsgType, setShowReplyLayout, handleReply}: OtherChatProps) {
     const [reactions, setReactions] = useState<ReactionCount[]>([]);
     const [isOpen, setIsOpen] = useState(false);
     const [showBookmark, setShowBookmark] = useState(false); // Use a single index to track the active button
@@ -66,11 +70,10 @@ type ReactionCount = {
     const [deleteDialog, setDeleteDialog] = useState(false); 
     const [sender, setSenderData] = useState<UserData | null>(null);
     const [openDialogue, setOpenDialogue] = useState(false);
+    const [userLoading, setUserLoading] = useState(true);
     const [id, setId] = useState<string>('');
     const [admin, setAdmin] = useState<boolean>(false);
-   
     useEffect(() => {
-
         if (!senderId) return;
         const fetchUserData = async () => {
                 try {
@@ -83,8 +86,8 @@ type ReactionCount = {
                     if (userDoc.exists()) {
                     // Set the user data
                     setSenderData(userDoc.data() as UserData);
-                    setLoading(false);
-
+                    // setLoading(false);
+                    setUserLoading(false);
                     } else {
                     console.log("User not found");
                     }
@@ -266,21 +269,28 @@ const handleCopy = async () => {
         };
 
     return (
-        <>
-            <div className="w-full h-auto flex flex-col pr-[10%] ">
-                <div className="gap-2 flex items-center">
+             <div className="w-full h-auto flex flex-col pr-[10%] ">
+                
+                  <div className="gap-2 flex items-center">
                     <button className="relative" onClick={() => {setOpenDialogue(true); setId(senderId || ''); setAdmin(isAdmin)}}>
-                        <Image className="w-[40px] h-[40px] rounded-full" src={sender?.profilePic || '/icons/profile-pic2.svg'} alt="DP" width={40} height={40} />
+                         {userLoading ? (
+                           <Skeleton width={40} height={40} borderRadius={1000}/>
+                         ) : (
+                          <Image className="w-[40px] h-[40px] rounded-full" src={sender?.profilePic || '/icons/profile-pic2.svg'} alt="DP" width={40} height={40} />
+                         )}
                          {!isAdmin && sender?.isPremium &&(
                             <Image className="absolute right-0 bottom-0" src='/icons/winnerBatch.svg' alt="Batch" width={18} height={18} />
                          )}
                     </button>
-                    <button onClick={() => {setOpenDialogue(true); setId(senderId || ''); setAdmin(isAdmin)}}><span className="text-[#182230] font-semibold text-sm">{sender?.name}</span></button>
+                    <button className="flex items-center justify-center" onClick={() => {setOpenDialogue(true); setId(senderId || ''); setAdmin(isAdmin)}}>
+                      <span className={`text-[#182230] font-semibold text-sm self-center ${userLoading ? 'mt-[-4px]' : ''}`}>{sender?.name || <Skeleton width={120} height={20}/>}</span> </button>
                     {isAdmin &&(
                     <span className="font-normal text-sm text-[#475467]">{sender?.role}</span>
                     )}
                     <span className="font-normal text-sm text-[#475467]">{formattedTime}</span>
                 </div>
+               
+                
 
                 <div className="ml-11 flex flex-row gap-2 items-center relative group">
                     <div className={`flex flex-col px-4 py-3 transition-all duration-500 border border-[#EAECF0] ${isHighlighted ? 'bg-[#EAECF0]' : 'bg-white' } rounded-xl gap-[8px]  ${messageType === 'image' || messageType === 'document' ? 'max-w-[380px]' :'max-w-[600px]'} `}>
@@ -352,7 +362,7 @@ const handleCopy = async () => {
                    )}
                     <div className="text-sm break-all w-full max-w-full ">
                             {isDeleted ? (
-                                <div className="italic text-[#475467]">This message was deleted</div>
+                                <div className="italic text-[#475467]">{isDeletedByAdmin ? `This message was deleted by ${adminThatDeletedId}` : 'This message was deleted'}</div>
                             ) : (
                             <div>
                             {renderMessageWithMentions()}
@@ -434,7 +444,7 @@ const handleCopy = async () => {
                               </button>
                                 )}
                                {isCurrentUserAdmin && !isAdmin &&(
-                                <button  className='flex flex-row items-center gap-2 w-30 px-4 pt-[10px] pb-3 transition-colors hover:bg-neutral-100 rounded-br-md rounded-bl-md '>
+                                <button onClick={() => setDeleteDialog(true)} className='flex flex-row items-center gap-2 w-30 px-4 pt-[10px] pb-3 transition-colors hover:bg-neutral-100 rounded-br-md rounded-bl-md '>
                                     <Image src='/icons/delete.svg' alt='search icon' width={17} height={17} />
                                     <span className='font-normal text-[#DE3024] text-sm'>Delete Message</span>
                                 </button>
@@ -463,8 +473,10 @@ const handleCopy = async () => {
             {openDialogue && (
         <MemberClickDialog open={true} onClose={() => setOpenDialogue(false)} id={id} isAdmin={admin} />
       )}
+     {deleteDialog && <Delete communityId={communityId} headingId={headingId} channelId={channelId} chatId={chatId} open={true} onClose={() => setDeleteDialog(false)} deletedByAdmin={true} adminThatDeletedId={auth.currentUser?.uid || ''}/>}
+
             </div>
-        </>
+
     );
 }
 

@@ -14,10 +14,11 @@ interface DeleteProps {
     headingId: string;
     channelId: string;
     chatId: string;
-
+    deletedByAdmin: boolean;
+    adminThatDeletedId: string;
 }
 
-function Delete({ open, onClose, communityId, headingId, channelId, chatId}: DeleteProps) { 
+function Delete({ open, onClose, communityId, deletedByAdmin, adminThatDeletedId, headingId, channelId, chatId}: DeleteProps) { 
      
 
     const handleDeleteMessage = async () => {
@@ -26,6 +27,8 @@ function Delete({ open, onClose, communityId, headingId, channelId, chatId}: Del
             await setDoc(doc(db, `communities/${communityId}/channelsHeading/${headingId}/channels/${channelId}/chats`, chatId), {
                 isDeleted: true,
                 message: 'deleted',
+                adminThatDeletedId: deletedByAdmin ? adminThatDeletedId : null,
+                isDeletedByAdmin: true,
             }, { merge: true });
             toast.success('Message Deleted!');
             onClose();

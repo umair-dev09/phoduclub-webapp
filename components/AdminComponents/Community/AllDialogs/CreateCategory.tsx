@@ -3,14 +3,49 @@ import { useState } from "react"
 import { Dialog, DialogBackdrop, DialogPanel } from "@headlessui/react";
 import Image from "next/image";
 import React from "react";
+import { collection, addDoc, doc, setDoc } from 'firebase/firestore';
+import { db } from '@/firebase'; // Adjust path if needed
+import { toast, ToastContainer } from "react-toastify";
 
 // Define the props interface
 interface createcategoryProps {
     open: boolean; // Prop to control dialog visibility
     onClose: () => void; // Define onClose as a function
+    communityId: string;
+    isEditing: boolean;
+    categoryName: string;
+    setCategoryName: (categoryName: string) => void;
+    categoryId: string;
 }
-function createcategory({ open, onClose }: createcategoryProps) {
-    const [uniqueID, setUniqueID] = useState('');
+function createcategory({ open, onClose, communityId, isEditing, categoryName, setCategoryName, categoryId }: createcategoryProps) {
+
+    const handleCreateCategory = async () => {
+        
+        try {
+            if(isEditing){
+                await setDoc(doc(db, `communities/${communityId}/channelsHeading`, categoryId), {
+                    headingName: categoryName,
+                }, { merge: true });
+                toast.success("Category Updated Successfully!");
+            }
+            else{
+            // Add new user data to Firestore
+            const docRef = await addDoc(collection(db, `communities/${communityId}/channelsHeading`), {
+                headingName: categoryName,
+           });
+           // Update the document with the generated adminId
+           await setDoc(docRef, { headingId: docRef.id }, {merge: true});
+           toast.success("Category Created Successfully!");
+           }
+           setCategoryName('');
+           onClose();
+
+       } catch (error) {
+           console.error("Error adding channel in Firestore:", error);
+           toast.error("Failed to create Category. Please try again.");
+       }
+    };
+
     return (
         <Dialog open={open} onClose={onClose} className="relative z-50">
             <DialogBackdrop className="fixed inset-0 bg-black/30" />
@@ -18,8 +53,8 @@ function createcategory({ open, onClose }: createcategoryProps) {
                 <DialogPanel className="bg-white rounded-2xl w-[568px] h-auto flex flex-col ">
                     <div className=' flex flex-col p-6 gap-6 border-solid border-[#EAECF0] border-b rounded-t-2xl'>
                         <div className='flex flex-row justify-between items-center'>
-                            <h1 className='text-[#1D2939] font-bold text-lg'>Create Category</h1>
-                            <Image src="/icons/cancel.svg" alt="Cancel" width={20} height={20} onClick={onClose} />
+                            <h1 className='text-[#1D2939] font-bold text-lg'>{isEditing ? 'Edit Category' : 'Create Category'}</h1>
+                            <button><Image src="/icons/cancel.svg" alt="Cancel" width={20} height={20} onClick={onClose} /></button>
                         </div>
                         <div className="flex flex-col gap-1">
                             <span className="font-semibold text-sm text-[#1D2939]">Category name</span>
@@ -28,8 +63,8 @@ function createcategory({ open, onClose }: createcategoryProps) {
                                     className="font-normal text-[#667085] w-full text-sm placeholder:text-[#A1A1A1] rounded-md px-1 py-1 focus:outline-none focus:ring-0 border-none"
                                     placeholder="Category name"
                                     type="text"
-                                    value={uniqueID}
-                                    onChange={(e) => setUniqueID(e.target.value)}
+                                    value={categoryName}
+                                    onChange={(e) => setCategoryName(e.target.value)}
                                 />
                             </div>
                         </div>
@@ -37,7 +72,7 @@ function createcategory({ open, onClose }: createcategoryProps) {
                     </div>
                     <div className="flex flex-row justify-end mx-6 my-4 gap-4">
                         <button className="py-[0.625rem] px-6 border-2  border-solid border-[#EAECF0] font-semibold text-sm text-[#1D2939] rounded-md" onClick={onClose} >Cancel</button>
-                        <button className={`py-[0.625rem] px-6 text-white text-sm shadow-inner-button font-semibold ${uniqueID ? "bg-[#9012FF]  border border-solid  border-[#9012FF]" : "bg-[#CDA0FC] cursor-not-allowed"} rounded-md`} onClick={onClose}>Create Category</button>
+                        <button className={`py-[0.625rem] px-6 text-white text-sm shadow-inner-button font-semibold border border-solid  border-white ${categoryName ? "bg-[#9012FF] " : "bg-[#CDA0FC] cursor-not-allowed"} rounded-md`} onClick={handleCreateCategory}>{isEditing ? 'Save Changes' : 'Create Category'}</button>
                     </div>
                 </DialogPanel>
             </div >
