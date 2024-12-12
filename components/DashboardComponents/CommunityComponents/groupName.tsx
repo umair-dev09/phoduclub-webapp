@@ -9,7 +9,8 @@ import { doc, getDoc } from "firebase/firestore";
 
 type GroupData = {
     communityName: string | null;
-    membersId: string[] | null;
+    members: {id:string, isAdmin: boolean}[] | null;   
+    communityImg: string | null; 
   };
 
 type groupNameProps = {
@@ -80,15 +81,13 @@ function GroupName({communityId}:groupNameProps) {
         <div className='flex flex-row items-center justify-between h-[72px] border-b border-lightGrey'>
             <div className='flex flex-row gap-2 ml-6'>
                 <div className="flex items-center justify-center w-[46px] h-[46px] rounded-full">
-                    <div className="flex items-center justify-center w-[42px] h-[42px] rounded-full bg-[#C0D5FF] border-2 border-[#C0D5FF] text-[#124B68] font-bold">
-                    <h3>{groupData?.communityName ? groupData.communityName.charAt(0).toUpperCase() : '?'}</h3>
-                    </div>
+                <Image className="rounded-full w-10 h-10" src={groupData?.communityImg || '/icons/membersIcon.svg'} alt='group icon' quality={100} width={42} height={42} />
                 </div>
                 <div className='flex flex-col justify-evenly text-sm'>
                     <div className='font-semibold'><h4>{groupData?.communityName}</h4></div>
                     <div className='flex flex-row gap-2 text-[#4B5563]'>
                         <Image src='/icons/membersIcon.svg' alt='members icon' width={18} height={18} />
-                        <p>{groupData?.membersId ? groupData.membersId.length : 0}</p> {/* Display the number of members */}
+                        <p>{groupData?.members ? groupData.members.length : 0}</p> {/* Display the number of members */}
                     </div>
                 </div>
             </div>

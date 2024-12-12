@@ -1,12 +1,22 @@
 import React from "react";
 import Image from "next/image";
 import { PopoverContent, PopoverTrigger, Popover } from '@nextui-org/popover';
-import { useState, useRef, useEffect, forwardRef } from "react";
+import { useState, useRef, useEffect, forwardRef, useMemo } from "react";
 import EmojiPicker, { EmojiClickData } from "emoji-picker-react";
-import { deleteDoc, doc, Timestamp } from "firebase/firestore";
+import { deleteDoc, doc, Timestamp, collection, addDoc, setDoc,  onSnapshot, getDocs } from "firebase/firestore";
 import { db } from "@/firebase";
+import { getAuth } from 'firebase/auth';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import LoadingData from "@/components/Loading";
+import MessageLoading from "@/components/MessageLoading";
+import CommunityVideoPlayer from "@/components/CommunityVideoPlayer";
+import MemberClickDialog from "@/components/DashboardComponents/CommunityComponents/MemberClickDialog";
+import MediaViewDialog from "@/components/DashboardComponents/CommunityComponents/MediaViewDialog";
+import Delete from "./Delete";
 
 type OwnChatProps = {
+    currentUserId: string;
     message: string | null;
     messageType: string | null;
     isReplying: boolean ;
@@ -20,35 +30,128 @@ type OwnChatProps = {
     fileName: string | null;
     fileSize: number ;
     senderId: string | null;
-    timestamp: Timestamp | null;
+    timestamp: Timestamp | null; 
     chatId: string ;
     internalChatId: string ;
     channelId: string ;
+    isDeleted: boolean;
+    mentions: { userId: string, id: string}[];
+    highlightedText: string | React.ReactNode[];
+    isHighlighted: boolean; // New prop
+    scrollToReply: (replyingToChatId: string) => void;
     setShowReplyLayout: (value: boolean) => void;
     handleReply: (message: string | null, senderId: string | null, messageType: string | null, fileUrl: string | null, fileName: string | null,  chatId: string | null) => void; // New prop to handle reply data
 }
-function OwnChat({message, messageType, fileUrl, fileName, fileSize, senderId, timestamp, internalChatId, channelId, chatId, isReplying, replyingToId, replyingToFileName, replyingToFileUrl, replyingToMsg, replyingToMsgType, setShowReplyLayout, handleReply}:OwnChatProps) {
 
-    const [activeButtonIndex, setActiveButtonIndex] = useState<number | null>(null); // Use a single index to track the active button
-    const [copySuccess, setCopySuccess] = useState<string | null>(null);
+type ReactionCount = {
+    emoji: string;
+    count: number;
+  };
+
+
+
+function OwnChat({message, isDeleted, mentions, currentUserId, highlightedText, messageType, fileUrl, fileName, isHighlighted, scrollToReply, fileSize, senderId, timestamp, internalChatId, channelId, chatId, isReplying, replyingToId,replyingToChatId, replyingToFileName, replyingToFileUrl, replyingToMsg, replyingToMsgType, setShowReplyLayout, handleReply}:OwnChatProps) {
+    const [reactions, setReactions] = useState<ReactionCount[]>([]);
     const [isOpen, setIsOpen] = useState(false);
     const [showBookmark, setShowBookmark] = useState(false); // Use a single index to track the active button
-    const [showEmojiLyt, setShowEmojiLyt] = useState(false); // Use a single index to track the active button
+    const [showMediaDialog, setShowMediaDialog] = useState(false); // Use a single index to track the active button
+    const [deleteDialog, setDeleteDialog] = useState(false); 
+    const [id, setId] = useState<string>('');
+    const [admin, setAdmin] = useState<boolean>(false);
+    const [openDialogue, setOpenDialogue] = useState(false);
 
+    const reactionsRef = useMemo(() => {
+        return collection(
+          db,
+          `internalchat/${internalChatId}/channels/${channelId}/chats/${chatId}/reactions`
+        );
+      }, [channelId, internalChatId, chatId]);
+    
+      // Firestore listener for reactions
+      useEffect(() => {
+        const unsubscribe = onSnapshot(reactionsRef, (snapshot) => {
+          const emojiCountMap: Record<string, number> = {};
+    
+          snapshot.forEach((doc) => {
+            const { emoji } = doc.data();
+            if (emoji) {
+              emojiCountMap[emoji] = (emojiCountMap[emoji] || 0) + 1;
+            }
+          });
+    
+          const updatedReactions = Object.entries(emojiCountMap).map(([emoji, count]) => ({
+            emoji,
+            count,
+          }));
+    
+          setReactions(updatedReactions);
+        });
+    
+        return () => unsubscribe();
+      }, [reactionsRef]);
 
-    const handleClick = (index: number) => {
-        setActiveButtonIndex(index); // Set the clicked button as active
-    };
-    const handleDeleteMessage = async () => {
-        try {
-            // Delete the message from Firestore
-            const messageRef = doc(db, `internalchat/${internalChatId}/channels/${channelId}/chats`, chatId);
-            await deleteDoc(messageRef);
-            console.log("Message deleted successfully");
-        } catch (error) {
-            console.error("Error deleting message: ", error);
+     
+      const renderMessageWithMentions = () => {
+        if (!highlightedText || !mentions) return highlightedText;
+      
+        // If highlightedText is a string, process mentions
+        if (typeof highlightedText === "string") {
+          const parts = highlightedText.split(/(@\w+)/); // Match mentions starting with "@"
+          return parts.map((part, index) => {
+            if (part.startsWith("@")) {
+              const mentionName = part.substring(1); // Extract mention name without "@"
+              const mention = mentions.find((m) => m.userId === mentionName);
+      
+              if (mention) {
+                // If the part is a mention, render it as a clickable span
+                return (
+                  <span
+                    key={index}
+                    style={{ color: "yellow", cursor: "pointer" }}
+                    onClick={() => {setOpenDialogue(true); setId(mention.id);}} >
+                    {part}
+                  </span>
+                );
+              }
+            }
+            return part; // Render non-mention parts as normal text
+          });
         }
-    };
+      
+        // If highlightedText is an array of ReactNode, iterate through it
+        if (Array.isArray(highlightedText)) {
+          return highlightedText.map((node, index) => {
+            if (typeof node === "string") {
+              const parts = node.split(/(@\w+)/);
+              return parts.map((part, innerIndex) => {
+                if (part.startsWith("@")) {
+                  const mentionName = part.substring(1);
+                  const mention = mentions.find((m) => m.userId === mentionName);
+      
+                  if (mention) {
+                    return (
+                      <span
+                        key={`${index}-${innerIndex}`}
+                        style={{ color: "yellow", cursor: "pointer" }}
+                        onClick={() => {setOpenDialogue(true); setId(mention.id);}}
+                      >
+                        {part}
+                      </span>
+                    );
+                  }
+                }
+                return part;
+              });
+            }
+            return node; // Render non-string nodes as they are
+          });
+        }
+      
+        return null; // Return null if highlightedText is neither string nor ReactNode[]
+      };
+      
+      
+
     const handleReplyMessage = () =>{
        setShowReplyLayout(true);
        setIsOpen(false);
@@ -56,7 +159,7 @@ function OwnChat({message, messageType, fileUrl, fileName, fileSize, senderId, t
     }
     // Check if firestoreTimestamp is null or undefined
   if (!timestamp) {
-    return <p>Loading...</p>; // or any placeholder while waiting for data
+    return <MessageLoading />
   }
 
   // Convert Firestore timestamp to JavaScript Date object
@@ -68,24 +171,29 @@ function OwnChat({message, messageType, fileUrl, fileName, fileSize, senderId, t
     minute: 'numeric',
     hour12: true,
   }).format(date);
+
+
 const handleCopy = async () => {
         if (message) {
             try {
                 await navigator.clipboard.writeText(message);
-                setCopySuccess("Message copied!"); // Show success message
-                setTimeout(() => setCopySuccess(null), 2000); // Hide success message after 2 seconds
+                toast.success("Message copied!"); // Show success message
                 setIsOpen(false);
             } catch (error) {
                 console.error("Failed to copy message: ", error);
             }
         }
     };
+
+
     const formatFileSize = (size: number): string => {
         if (size < 1024) return `${size} bytes`;
         else if (size >= 1024 && size < 1024 * 1024) return `${(size / 1024).toFixed(2)} KB`;
         else if (size >= 1024 * 1024 && size < 1024 * 1024 * 1024) return `${(size / (1024 * 1024)).toFixed(2)} MB`;
         else return `${(size / (1024 * 1024 * 1024)).toFixed(2)} GB`;
     };
+
+
     const handleDownload = (fileUrl: string, fileName: string) => {
         // Create an anchor element
         const link = document.createElement('a');
@@ -100,10 +208,32 @@ const handleCopy = async () => {
     const handleBookMarkClick = () =>{
         setIsOpen(false);
          }
-         const handleEmojiClick = (emoji: EmojiClickData) => {
+
+    const handleAddReaction = async (emoji: EmojiClickData) => {
+        try {
+
+            const auth = getAuth();
+            const currentUser = auth.currentUser;
+            if (!currentUser) {
+            console.error("User not authenticated.");
+            return;
+            }
+
+            const userId = currentUser.uid;
+
+            const reactionsRef = doc(db, `internalchat/${internalChatId}/channels/${channelId}/chats/${chatId}/reactions`,userId);
+        
+           await setDoc(reactionsRef, { emoji: emoji.emoji, userId });
+
             setIsOpen(false);
-            setShowEmojiLyt(true);
+
+            console.log("Reaction added successfully with reactionId!");
+          } catch (error) {
+            console.error("Error adding reaction: ", error);
+          }
         };
+       
+          
     return (
         <div className="flex mr-3 justify-end pl-[15%] ">
             
@@ -115,7 +245,7 @@ const handleCopy = async () => {
                 <div className="text-xs text-neutral-600">{formattedTime}</div>
                 </div>
                 <div className="flex flex-row items-center justify-end gap-3 group">
-
+                     {!isDeleted && (
                     <Popover
                         placement="bottom-end"
                         isOpen={isOpen} onOpenChange={(open) => setIsOpen(open)}>
@@ -140,14 +270,12 @@ const handleCopy = async () => {
                             </button>
                         </PopoverTrigger>
 
-                        <PopoverContent>
+                        <PopoverContent className="p-0">
                             <div
-                                className='flex flex-col bg-[#FFFFFF] w-auto h-auto border border-[#EAECF0] rounded-md '
-                                style={{
-                                    boxShadow: '0px 4px 6px -2px rgba(16, 24, 40, 0.08), 0px 12px 16px -4px rgba(16, 24, 40, 0.14)',
-                                }}>
+                                className='flex flex-col bg-[#FFFFFF] w-auto h-auto border border-[#EAECF0] rounded-[12px] '
+                               >
                                 {/* Emoji list */}
-                                <EmojiPicker onEmojiClick={handleEmojiClick} height={280} searchDisabled={true} reactions={['1f44d','1f496','1f602','1f60d','1f62e']}
+                                <EmojiPicker onEmojiClick={handleAddReaction} height={280} searchDisabled={true} reactions={['1f44d','1f496','1f602','1f60d','1f62e']}
                                     style={{
                                            border: "none", 
                         
@@ -157,7 +285,6 @@ const handleCopy = async () => {
                                         showPreview: false, // defaults to: true
                                       }
                                    }
-                                //  onEmojiClick={handleEmojiClick} 
                                 reactionsDefaultOpen={true} allowExpandReactions={true} hiddenEmojis={['1f595']}/>
 
                                 {/* Other options */}
@@ -165,35 +292,38 @@ const handleCopy = async () => {
                                     <Image src='/icons/Reply.svg' alt='search icon' width={19} height={19} />
                                     <span className='font-normal text-[#0C111D] text-sm'>Reply</span>
                                 </button>
+                                {highlightedText &&(
                                 <button onClick={handleCopy} className='flex flex-row items-center gap-2 w-30 px-4 py-[10px] transition-colors hover:bg-neutral-100'>
-                                    <Image src='/icons/copy.svg' alt='search icon' width={18} height={18} />
-                                    <span className='font-normal text-[#0C111D] text-sm'>Copy</span>
+                                <Image src='/icons/copy.svg' alt='search icon' width={18} height={18} />
+                                <span className='font-normal text-[#0C111D] text-sm'>Copy</span>
                                 </button>
-                                <button className='flex flex-row items-center gap-2 w-30 px-4 py-[10px] transition-colors hover:bg-neutral-100' onClick={() => {setShowBookmark(true); setIsOpen(false); }}>
-                                    <Image src='/icons/Bookmark.svg' alt='search icon' width={18} height={18} />
-                                    <span className='font-normal text-[#0C111D] text-sm'>Bookmark</span>
-                                </button>
+                                )}
                                 {/* Delete Message Button */}
-                                <button onClick={handleDeleteMessage}  className='flex flex-row items-center gap-2 w-30 px-4 pt-[10px] pb-3 transition-colors hover:bg-[#FEE4E2] rounded-br-md rounded-bl-md'>
+                                <button onClick={() => setDeleteDialog(true)}  className='flex flex-row items-center gap-2 w-30 px-4 pt-[10px] pb-3 transition-colors hover:bg-[#FEE4E2] rounded-br-md rounded-bl-md'>
                                     <Image src='/icons/delete.svg' alt='search icon' width={17} height={17} />
                                     <span className='font-normal text-[#DE3024] text-sm'>Delete Message</span>
                                 </button>
                             </div>
                         </PopoverContent>
                     </Popover>
-
-                    <div className={`flex flex-col px-4 py-3 bg-purple rounded-xl gap-[8px] ${messageType === 'image' || messageType === 'document' ? 'max-w-[380px]' :'max-w-[600px]'} `}
+                    )}
+                    <div className={`flex flex-col px-4 py-3 transition-all duration-500  ${isDeleted ? 'bg-[#EDE4FF]' : isHighlighted ? 'bg-[#CDA0FC]' : 'bg-purple' } rounded-xl gap-[8px]  ${messageType === 'image' || messageType === 'document' ? 'max-w-[380px]' :'max-w-[600px]'} `}
                     >
                         {/*Image Layout*/}
-                        {messageType === 'image' && fileUrl && (
+                        {messageType === 'image' && !isDeleted && fileUrl && (
+                            <div>
+                            <button onClick={() => setShowMediaDialog(true)}>
                             <Image className='w-[360px] self-end h-[320px] mt-[3px] object-cover' src={fileUrl} alt="image" width={360} height={320} quality={100} />
+                            </button>
+                            </div>
                         )}
-                        {/* {messageType === 'video' && fileUrl && (
-                            // <ReactPlayer url={fileUrl} controls/> 
-                                  
-                         )} */}
+                        {messageType === 'video' && !isDeleted && fileUrl && (
+                            <button onClick={() => setShowMediaDialog(true)}>
+                        <CommunityVideoPlayer videoSrc={fileUrl} />
+                            </button>
+                         )}
                         {/*Document Layout*/}
-                        {messageType === 'document' && fileUrl && (
+                        {messageType === 'document' && !isDeleted && fileUrl && (
                             <div className="w-[350px] h-auto rounded-md mt-[3px] bg-[#973AFF] border border-[#AD72FF] flex flex-row p-3 justify-between">
                                 <div className="flex flex-row gap-2 items-start mr-[10px] w-[300px]">
                                     <Image className="mt-1" src="/icons/file-white.svg" width={16} height={16} alt="File" />
@@ -209,11 +339,16 @@ const handleCopy = async () => {
                         )}
 
                 {/* */}
-                   {isReplying && (
-                    <div className="flex flex-row p-[10px] bg-[#973AFF] border border-[#AD72FF] rounded-md text-xs gap-1 justify-between cursor-pointer" >
+                   {isReplying && !isDeleted  && (
+                    <div className="flex flex-row p-[10px] bg-[#973AFF] border border-[#AD72FF] rounded-md text-xs gap-1 justify-between cursor-pointer" 
+                    onClick={() => scrollToReply(replyingToChatId || '')}>
                         <div className="flex flex-col mr-6 justify-center">
                         <div className="flex flex-row gap-2">
-                        <h4 className="font-semibold">Marvin McKinney</h4>
+                         {replyingToId === currentUserId ?(
+                        <h4 className="font-semibold">You</h4>
+                         ):(
+                            <h4 className="font-semibold">Marvin McKinney</h4>
+                         )}   
                         {/* <div className="">Admin</div> */}
                     </div>
                     <div className="flex flex-row gap-1 mt-[2px] ">
@@ -221,19 +356,19 @@ const handleCopy = async () => {
                     <Image src='/icons/image-white.svg' alt='attachment icon' width={12} height={12} />
                     )}
                     {replyingToMsgType === 'video' && (
-                    <Image src='/icons/video-icon.svg' alt='attachment icon' width={12} height={12} />
+                    <Image src='/icons/video-01.svg' alt='attachment icon' width={12} height={12} />
                     )}
                     {replyingToMsgType === 'document' && (
                     <Image src='/icons/file-white.svg' alt='attachment icon' width={12} height={12} />
                     )}    
                     <div className="break-all">
                     {replyingToMsg !== null && replyingToMsgType !== 'document'
-    ? replyingToMsg // Show message if it's not null and not a document
-    : replyingToMsgType === 'document'
-    ? replyingToFileName // Always show fileName for document
-    : (replyingToMsgType === 'image' && 'Image') ||
-      (replyingToMsgType === 'video' && 'Video') ||
-      'Unknown Type'}</div>
+                    ? replyingToMsg // Show message if it's not null and not a document
+                    : replyingToMsgType === 'document'
+                    ? replyingToFileName // Always show fileName for document
+                    : (replyingToMsgType === 'image' && 'Image') ||
+                    (replyingToMsgType === 'video' && 'Video') ||
+                    'Unknown Type'}</div>
                     </div>
                         </div>
                         {replyingToMsgType === 'image' &&(
@@ -243,44 +378,40 @@ const handleCopy = async () => {
                    )}
                 {/* */}
                         <div className="text-sm break-all w-full max-w-full">
-                            {message}
+                            {isDeleted ? (
+                                <div className="italic text-[#475467]">You deleted this message</div>
+                            ) : (
+                            <div>
+                                {renderMessageWithMentions()}
+                            </div>
+                            )}
+                            
                         </div>
                     </div>
                 </div>
                 {/* */}
-               
-              {showEmojiLyt && (<div className="flex flex-row justify-end mt-1 gap-2 h-auto w-full ml-11 flex-wrap">
-                    {Array.from({ length: 1 }).map((_, index) => ( // Create 10 buttons
-                        <button
-                            key={index}
-                            onClick={() => handleClick(index)}
-                            className={`rounded-[54px] border border-solid border-[#D0D5DD] h-[26px] w-auto p-1 flex flex-row justify-center gap-1 transition-colors duration-200 ${activeButtonIndex === index // Check if this button is active
-                                ? 'bg-[#F8F0FF] border-[#7400E0] text-[#7400E0]' // Active styles
-                                : 'bg-[#F2F4F7] text-[#475467] hover:bg-[#F8F0FF] hover:border-[#7400E0]' // Default and hover styles
-                                }`}
-                        >
-                            <Image
-                                src="/icons/emoji-5.png"
-                                width={15}
-                                height={15}
-                                alt="ohh-reaction-emoji"
-                            />
-                            <span className="font-medium text-xs">1</span>
-                        </button>
+                {!isDeleted &&(
+                   <div className="flex flex-row justify-end mt-1 gap-2 h-auto w-full ml-11 flex-wrap">
+                   {reactions.map((reaction) => (
+                              <button
+                              key={reaction.emoji}
+                                  className={`rounded-[54px] border border-solid border-[#D0D5DD] h-[26px] w-auto p-1 flex flex-row justify-center items-center gap-1 transition-colors duration-200 
+                                      bg-[#F2F4F7] text-[#475467] hover:bg-[#F8F0FF] hover:border-[#7400E0]`}
+                              >
+                                 <p className="text-sm">{reaction.emoji}</p>
+                                  <span className="font-medium text-xs">{reaction.count}</span>
+                              </button>
                     ))}
-                </div>)}  
+                      </div>     
+                )}
+         
             </div>
-
-            {/* THIRD MESSAGE */}
-            {/* <div className="flex flex-col items-end w-full text-white pb-4">
-                <div className="text-xs text-neutral-600 mb-2">3:24 PM</div>
-                <div className="flex flex-row items-center justify-end gap-3 w-full group">
-                    <div className="flex px-4 py-3 text-sm bg-[#EDE4FF] rounded-xl gap-2">
-                        <p className="text-[#475467]">Message deleted.</p>
-                        <button className="text-purple italic hover:underline">Undo</button>
-                    </div>
-                </div>
-            </div> */}
+            {openDialogue && (
+        <MemberClickDialog open={true} onClose={() => setOpenDialogue(false)} id={id} isAdmin={true} />
+      )}
+            {showMediaDialog && <MediaViewDialog open={true} onClose={() => setShowMediaDialog(false)} src={fileUrl} mediaType={messageType || ''}/> }
+            {deleteDialog && <Delete internalChatId={internalChatId} channelId={channelId} chatId={chatId} open={true} onClose={() => setDeleteDialog(false)}/>}
+           
         </div>
     );
 }

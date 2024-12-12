@@ -37,6 +37,7 @@ type OtherChatProps = {
     isDeleted: boolean;
     highlightedText: string | React.ReactNode[];
     isAdmin: boolean;
+    isCurrentUserAdmin: boolean;
     currentUserId: string;
     isHighlighted: boolean; // New prop
     mentions: { userId: string; id: string, isAdmin: boolean, }[];
@@ -57,7 +58,7 @@ type ReactionCount = {
     isPremium: string;
   };
 
-  function OtherChat ({message, currentUserId, setLoading, mentions, isDeleted, highlightedText, messageType, fileUrl, fileName, isHighlighted, isAdmin, scrollToReply, fileSize, senderId, timestamp, communityId, headingId, channelId, chatId, isReplying, replyingToId,replyingToChatId, replyingToFileName, replyingToFileUrl, replyingToMsg, replyingToMsgType, setShowReplyLayout, handleReply}: OtherChatProps) {
+  function OtherChat ({message, currentUserId, isCurrentUserAdmin, setLoading, mentions, isDeleted, highlightedText, messageType, fileUrl, fileName, isHighlighted, isAdmin, scrollToReply, fileSize, senderId, timestamp, communityId, headingId, channelId, chatId, isReplying, replyingToId,replyingToChatId, replyingToFileName, replyingToFileUrl, replyingToMsg, replyingToMsgType, setShowReplyLayout, handleReply}: OtherChatProps) {
     const [reactions, setReactions] = useState<ReactionCount[]>([]);
     const [isOpen, setIsOpen] = useState(false);
     const [showBookmark, setShowBookmark] = useState(false); // Use a single index to track the active button
@@ -67,7 +68,7 @@ type ReactionCount = {
     const [openDialogue, setOpenDialogue] = useState(false);
     const [id, setId] = useState<string>('');
     const [admin, setAdmin] = useState<boolean>(false);
-
+   
     useEffect(() => {
 
         if (!senderId) return;
@@ -282,13 +283,13 @@ const handleCopy = async () => {
                 </div>
 
                 <div className="ml-11 flex flex-row gap-2 items-center relative group">
-                    <div className={`flex flex-col px-4 py-3 transition-all duration-500 border border-[#EAECF0] ${isDeleted ? 'bg-[#EDE4FF]' : isHighlighted ? 'bg-[#EAECF0]' : 'bg-white' } rounded-xl gap-[8px]  ${messageType === 'image' || messageType === 'document' ? 'max-w-[380px]' :'max-w-[600px]'} `}>
+                    <div className={`flex flex-col px-4 py-3 transition-all duration-500 border border-[#EAECF0] ${isHighlighted ? 'bg-[#EAECF0]' : 'bg-white' } rounded-xl gap-[8px]  ${messageType === 'image' || messageType === 'document' ? 'max-w-[380px]' :'max-w-[600px]'} `}>
 
                         {/*Image Layout*/}
                         {messageType === 'image' && !isDeleted && fileUrl && (
                             <div>
                             <button onClick={() => setShowMediaDialog(true)}>
-                            <Image className='w-[360px] self-end h-[320px] mt-[3px] object-cover' src={fileUrl} alt="image" width={360} height={320} quality={100} />
+                            <Image className='w-[360px] self-end h-[320px] mt-[3px] mb-[-4px] object-cover' src={fileUrl} alt="image" width={360} height={320} quality={100} />
                             </button>
                             </div>
                         )}
@@ -299,16 +300,16 @@ const handleCopy = async () => {
                          )}
                         {/*Document Layout*/}
                         {messageType === 'document' && !isDeleted && fileUrl && (
-                            <div className="w-[350px] h-auto rounded-md mt-[3px] bg-[#973AFF] border border-[#AD72FF] flex flex-row p-3 justify-between">
+                            <div className="w-[350px] h-auto rounded-md mt-[3px] bg-[#f2f4f7] border border-[#d0d5dd] flex flex-row p-3 justify-between">
                                 <div className="flex flex-row gap-2 items-start mr-[10px] w-[300px]">
-                                    <Image className="mt-1" src="/icons/file-white.svg" width={16} height={16} alt="File" />
+                                    <Image className="mt-1" src="/icons/file-02.svg" width={16} height={16} alt="File" />
                                     <div className="flex flex-col break-all">
                                         <p className="text-[13px]">{fileName}</p>
                                         <p className="text-[11px]">{formatFileSize(fileSize)}</p>
                                     </div>
                                 </div>
                                 <button className="w-[24px] h-[24px]" onClick={() => handleDownload(fileUrl, fileName ?? '')}>
-                                    <Image className='w-[24px] h-[24px]' src="/icons/download-white.svg" width={24} height={24} alt="Download" />
+                                    <Image className='w-[24px] h-[24px]' src="/icons/download.svg" width={24} height={24} alt="Download" />
                                 </button>
                             </div>
                         )}
@@ -326,13 +327,13 @@ const handleCopy = async () => {
                     </div>
                     <div className="flex flex-row gap-1 mt-[2px] ">
                     {replyingToMsgType === 'image' && (
-                    <Image src='/icons/image-white.svg' alt='attachment icon' width={12} height={12} />
+                    <Image src='/icons/image.svg' alt='attachment icon' width={12} height={12} />
                     )}
                     {replyingToMsgType === 'video' && (
-                    <Image src='/icons/video-01.svg' alt='attachment icon' width={12} height={12} />
+                    <Image src='/icons/vedio.svg' alt='attachment icon' width={12} height={12} />
                     )}
                     {replyingToMsgType === 'document' && (
-                    <Image src='/icons/file-white.svg' alt='attachment icon' width={12} height={12} />
+                    <Image src='/icons/file-02.svg' alt='attachment icon' width={12} height={12} />
                     )}    
                     <div className="break-all">
                     {replyingToMsg !== null && replyingToMsgType !== 'document'
@@ -349,9 +350,9 @@ const handleCopy = async () => {
                         )}
                     </div>
                    )}
-                    <div className="text-sm break-all w-full max-w-full mt-[6px]">
+                    <div className="text-sm break-all w-full max-w-full ">
                             {isDeleted ? (
-                                <div className="italic text-[#475467]">You deleted this message</div>
+                                <div className="italic text-[#475467]">This message was deleted</div>
                             ) : (
                             <div>
                             {renderMessageWithMentions()}
@@ -420,11 +421,25 @@ const handleCopy = async () => {
                                     <Image src='/icons/Bookmark.svg' alt='search icon' width={18} height={18} />
                                     <span className='font-normal text-[#0C111D] text-sm'>Bookmark</span>
                                 </button>
-                                {/* Report Message Button */}
+                                {!isCurrentUserAdmin && !isAdmin &&(
                                 <button   className='flex flex-row items-center gap-2 w-30 px-4 pt-[10px] pb-3 transition-colors hover:bg-neutral-100 rounded-br-md rounded-bl-md '>
-                                    <Image src='/icons/Report.svg' alt='search icon' width={17} height={17} />
-                                    <span className='font-normal text-[#0C111D] text-sm'>Report Message</span>
+                                <Image src='/icons/Report.svg' alt='search icon' width={17} height={17} />
+                                <span className='font-normal text-[#0C111D] text-sm'>Report Message</span>
                                 </button>
+                                )}
+                                {isCurrentUserAdmin && !isAdmin &&(
+                                  <button   className='flex flex-row items-center gap-2 w-30 px-4 pt-[10px] pb-3 transition-colors hover:bg-neutral-100 rounded-br-md rounded-bl-md '>
+                                  <Image src='/icons/user-block-red-01.svg' alt='search icon' width={17} height={17} />
+                                  <span className='font-normal text-[#DE3024] text-sm'>Mute User</span>
+                              </button>
+                                )}
+                               {isCurrentUserAdmin && !isAdmin &&(
+                                <button  className='flex flex-row items-center gap-2 w-30 px-4 pt-[10px] pb-3 transition-colors hover:bg-neutral-100 rounded-br-md rounded-bl-md '>
+                                    <Image src='/icons/delete.svg' alt='search icon' width={17} height={17} />
+                                    <span className='font-normal text-[#DE3024] text-sm'>Delete Message</span>
+                                </button>
+                                )}
+                                
                             </div>
                         </PopoverContent>
                     </Popover>

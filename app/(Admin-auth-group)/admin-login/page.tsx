@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import PhoneInput from 'react-phone-input-2';
-import { MoonLoader } from "react-spinners";
+import { MoonLoader } from "react-spinners"; 
 import 'react-phone-input-2/lib/style.css';
 import Image from 'next/image';
 import { collection, query, where, getDocs, updateDoc } from "firebase/firestore";
