@@ -5,7 +5,7 @@ import { PopoverContent, PopoverTrigger, Popover } from '@nextui-org/popover';
 import Image from "next/image";
 import { onAuthStateChanged, User } from "firebase/auth";
 import { auth, db } from "@/firebase";
-import { doc, getDoc } from "firebase/firestore";
+import { doc, onSnapshot } from "firebase/firestore";
 import Skeleton, { SkeletonTheme } from 'react-loading-skeleton' 
 import 'react-loading-skeleton/dist/skeleton.css'
 import Groupinfo from "@/components/AdminComponents/Community/AllDialogs/Groupinfo";
@@ -14,6 +14,7 @@ type GroupData = {
     communityName: string | null;
     members: {id:string, isAdmin: boolean}[] | null;   
     communityImg: string | null; 
+    communityDescription: string | null;
   };
 
 type groupNameProps = {
@@ -43,31 +44,36 @@ function GroupName({communityId}:groupNameProps) {
         return () => unsubscribe();
       }, []);
       useEffect(() => {
-        const fetchGroupData = async () => {
+        const fetchGroupDataRealtime = async () => {
           try {
             if (user) {
               const groupDoc = doc(db, `communities/${communityId}`);
-              const groupSnapshot = await getDoc(groupDoc);
-    
-              if (groupSnapshot.exists()) {
-                const data = groupSnapshot.data() as GroupData;
-                setGroupData(data);
-                setLoading(false);
-              } else {
-                console.error('No user data found!');
-                setError(true);
-              }
+              
+              // Listen to real-time updates on the document
+              const unsubscribe = onSnapshot(groupDoc, (docSnapshot) => {
+                if (docSnapshot.exists()) {
+                  const data = docSnapshot.data() as GroupData;
+                  setGroupData(data);
+                  setLoading(false);
+                } else {
+                  console.error('No group data found!');
+                  setError(true);
+                }
+              });
+      
+              // Cleanup listener on component unmount
+              return () => unsubscribe();
             }
           } catch (error) {
-            console.error('Error fetching user data:', error);
+            console.error('Error fetching group data in real-time:', error);
             setError(true);
           } finally {
             setLoading(false);
           }
         };
-    
+      
         if (user) {
-          fetchGroupData();
+          fetchGroupDataRealtime();
         }
       }, [user, communityId]);
 
@@ -175,7 +181,7 @@ function GroupName({communityId}:groupNameProps) {
                         </PopoverContent>
                     </Popover>
             </div>
-            {groupInfoDialog && <Groupinfo open={groupInfoDialog} onClose={() => setGroupInfoDialog(false)} />}
+            {groupInfoDialog && <Groupinfo open={groupInfoDialog} onClose={() => setGroupInfoDialog(false)} communityId={communityId || ''} communityName={groupData?.communityName || ''}  communityDescription={groupData?.communityDescription || ''} communityImage={groupData?.communityImg || ''} members={groupData?.members || []}/>}
             {deleteGroupDialog && <DeleteGroup open={deleteGroupDialog} onClose={() => setDeleteGroupDialog(false)} communityId={communityId || ''} communityName={groupData?.communityName || ''}/>}
         </div>
     );

@@ -3,14 +3,34 @@ import { useState } from "react"
 import { Dialog, DialogBackdrop, DialogPanel } from "@headlessui/react";
 import Image from "next/image";
 import React from "react";
+import { doc, deleteDoc } from 'firebase/firestore';
+import { db } from '@/firebase';
+import { toast } from 'react-toastify';
 
 // Define the props interface
 interface Deleteprops {
     open: boolean; // Prop to control dialog visibility
     onClose: () => void; // Define onClose as a function
+    communityId: string; 
+    categoryId: string; 
+    channelId: string; 
+    channelName: string; 
 }
-function Delete({ open, onClose }: Deleteprops) {
-    const [uniqueID, setUniqueID] = useState('');
+function DeleteChannel({ open, onClose, communityId, channelId, channelName, categoryId }: Deleteprops) {
+    const[confirmedName, setConfirmedName] = useState('');
+    const isFormValid = channelName === confirmedName;
+    
+    const handleDeleteChannel = async () => {
+        try {
+            await deleteDoc(doc(db, `communities/${communityId}/channelsHeading/${categoryId}/channels`, channelId));
+            toast.success('Channel Deleted Successfully!');
+            onClose();
+        } catch (error) {
+            console.error('Error removing user from Firestore:', error);
+            toast.error('Failed to delete channel. Please try again.');
+        }
+    };
+
     return (
         <Dialog open={open} onClose={onClose} className="relative z-50">
             <DialogBackdrop className="fixed inset-0 bg-black/30" />
@@ -18,7 +38,7 @@ function Delete({ open, onClose }: Deleteprops) {
                 <DialogPanel className="bg-white rounded-2xl w-[480px] h-auto flex flex-col ">
                     <div className=' flex flex-col p-6 gap-3 border-solid border-[#EAECF0] border-b rounded-t-2xl'>
                         <div className='flex flex-row justify-between items-center'>
-                            <h1 className='text-[#1D2939] font-bold text-lg'>Delete channel “Announcement”?</h1>
+                            <h1 className='text-[#1D2939] font-bold text-lg'>{`Delete channel “${channelName}”?`}</h1>
                             <Image src="/icons/cancel.svg" alt="Cancel" width={20} height={20} onClick={onClose} />
                         </div>
                         <span className="font-normal text-sm text-[#667085]">All data inside this channel will be gone.</span>
@@ -28,8 +48,9 @@ function Delete({ open, onClose }: Deleteprops) {
                                 <input
                                     className="font-normal text-[#667085] w-full text-sm placeholder:text-[#A1A1A1] rounded-md px-1 py-1 focus:outline-none focus:ring-0 border-none"
                                     type="text"
-                                    value={uniqueID}
-                                    onChange={(e) => setUniqueID(e.target.value)}
+                                    placeholder={channelName}
+                                    value={confirmedName}
+                                    onChange={(e) => setConfirmedName(e.target.value)}
                                 />
                             </div>
                         </div>
@@ -37,12 +58,12 @@ function Delete({ open, onClose }: Deleteprops) {
                     </div>
                     <div className="flex flex-row justify-end mx-6 my-4 gap-4">
                         <button className="py-[0.625rem] px-6 border-2  border-solid border-[#EAECF0] font-semibold text-sm text-[#1D2939] rounded-md" onClick={onClose} >Cancel</button>
-                        <button className={`py-[0.625rem] px-6 text-white text-sm shadow-inner-button font-semibold ${uniqueID ? "bg-[#BB241A]  border border-solid  border-[#DE3024]" : "bg-[#f3b7b3] cursor-not-allowed"} rounded-md`} onClick={onClose}>Delete Channel</button>
+                        <button className={`py-[0.625rem] px-6 text-white text-sm shadow-inner-button font-semibold  border border-solid  border-white ${isFormValid ? "bg-[#BB241A] " : "bg-[#f3b7b3] cursor-not-allowed"} rounded-md`} onClick={handleDeleteChannel}>Delete Channel</button>
                     </div>
                 </DialogPanel>
             </div >
         </Dialog >
     )
 }
-export default Delete;
+export default DeleteChannel;
 

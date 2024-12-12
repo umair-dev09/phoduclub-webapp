@@ -19,7 +19,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import Skeleton, { SkeletonTheme } from 'react-loading-skeleton' 
 import 'react-loading-skeleton/dist/skeleton.css'
 import MembersDetailsArea from '@/components/DashboardComponents/CommunityComponents/MembersDetailsArea';
-import Delete from "@/components/AdminComponents/Community/AllDialogs/Delete";
+import Delete from "@/components/AdminComponents/Community/AllDialogs/DeleteChannel";
 import ChannelRequests from "@/components/AdminComponents/Community/AllDialogs/ChannelRequests";
 import Channelinfo from "@/components/AdminComponents/Community/AllDialogs/Channelinfo";
 import Groupinfo from "@/components/AdminComponents/Community/AllDialogs/Groupinfo";
@@ -117,9 +117,6 @@ function Chatinfo() {
     const [isDetailsVisible, setIsDetailsVisible] = useState(true);
     // STATES FOR THE DIALOGS
     const [createChannel, setCreateChannel] = useState(false);
-    const [deleteDialog, setDeleteDialog] = useState(false);
-    const [channelRequestsDialog, setChannelRequestsDialog] = useState(false);
-    const [channelInfoDialog, setChannelInfoDialog] = useState(false);
     const [deleteCategoryDialog, setDeleteCategoryDialog] = useState(false);
     const [isEditingCategory, setIsEditingCategory] = useState(false);
     const [createCategoryDialog, setCreateCategoryDialog] = useState(false);
@@ -555,7 +552,7 @@ function Chatinfo() {
 
             <div className="flex items-center justify-between h-[72px] bg-white border-b border-lightGrey">
               {/* Pass the selected channel info to ChatHead */}
-              <ChatHead channelId={selectedChannel?.channelId ?? null} channelName={selectedChannel?.channelName ?? null} channelEmoji={selectedChannel?.channelEmoji ?? null} />
+              <ChatHead channelDescription={selectedChannel.channelDescription || ''} communityId={communityId} categoryId={selectedChannel.headingId || ''} channelId={selectedChannel?.channelId ?? null} channelName={selectedChannel?.channelName ?? null} channelEmoji={selectedChannel?.channelEmoji ?? null} />
               <div className="flex flex-row mr-4 gap-4">
               <Popover placement="bottom" isOpen={searchOpen} onClose={() =>{setSearchOpen(false); setSearchQuery('')}}>
               <PopoverTrigger>
@@ -593,7 +590,7 @@ function Chatinfo() {
                   ) : (
                     <Image className='w-[26px] h-[26px] pl-[-2px]' src="/icons/collaspeDetails-2.svg" alt="collapse details icon" width={26} height={26} />
                   )}
-                </button>
+               </button>
               </div>
             </div>
             <div
@@ -764,9 +761,6 @@ function Chatinfo() {
           {createChannel && <CreateChannel open={createChannel} openAddMembers={() => setAddMembersChannelDialog(true)} onClose={() => setCreateChannel(false)} headingId={categoryId} channelEmoji={channelEmoji} setChannelEmoji={setChannelEmoji} channelId={channelId} isEditing={isEditingChannel} communityId={communityId || ''} channelName={channelName} setChannelName={setChannelName} channelDescription={channelDescription} setChannelDescription={setChannelDescription} setChannelId={setChannelId}/>}
             {createCategoryDialog && <CreateCategory open={createCategoryDialog} onClose={() => setCreateCategoryDialog(false)} communityId={communityId || ''} isEditing={isEditingCategory} categoryName={categoryName} setCategoryName={setCategoryName} categoryId={categoryId} />}
             {deleteCategoryDialog && <DeleteCategory open={deleteCategoryDialog} onClose={() => setDeleteCategoryDialog(false)} communityId={communityId || ''} categoryName={categoryName} categoryId={categoryId}/>}
-            {channelInfoDialog && <Channelinfo open={channelInfoDialog} onClose={() => setChannelInfoDialog(false)} />}
-            {channelRequestsDialog && <ChannelRequests open={channelRequestsDialog} onClose={() => setChannelRequestsDialog(false)} />}
-            {deleteDialog && <Delete open={deleteDialog} onClose={() => setDeleteDialog(false)} />}
             {addMembersChannelDialog && <AddMembersChannel communityId={communityId || ''} headingId={categoryId} channelId={channelId} open={addMembersChannelDialog} onClose={() => setAddMembersChannelDialog(false)}/>}    
      <ToastContainer />
     </div>
@@ -857,93 +851,7 @@ function Chatinfo() {
         //     {/* Main Chat Area */}
         //     <div className="grid grid-rows-[4.5rem_1fr_auto] w-full">
         //         <div className="flex flex-row items-center justify-between px-6 bg-white border-b border-lightGrey">
-        //             <Popover placement="bottom">
-        //                 <PopoverTrigger>
-        //                     <button className="flex flex-row gap-2 focus:outline-none">
-        //                         <Image
-        //                             src="/icons/bell.png"
-        //                             width={16}
-        //                             height={24}
-        //                             alt="bell-icon" />
-        //                         <h4 className="text-base text-[#182230] font-semibold leading-[1.26rem]">Announcement</h4>
-        //                         <Image
-        //                             src="/icons/selectdate-Arrowdown.svg"
-        //                             width={20}
-        //                             height={20}
-        //                             alt="Arrow-Down Button"
-        //                         />
-        //                     </button>
-        //                 </PopoverTrigger>
-        //                 <PopoverContent className="w-auto py-1 px-0 bg-white border border-lightGrey rounded-md flex flex-col">
-        //                     <button className='flex flex-row gap-2 items-center h-10 w-[206px] px-4 hover:bg-[#EAECF0]'>
-        //                         <Image
-        //                             src="/icons/mark as read.svg"
-        //                             width={18}
-        //                             height={18}
-        //                             alt="mark as read"
-        //                         />
-        //                         <span className='font-normal text-[#0C111D] text-sm'>Mark as read</span>
-        //                     </button>
-
-        //                     <button className='flex flex-row gap-2 items-center justify-between h-10 w-[206px] px-4 hover:bg-[#EAECF0]'>
-        //                         <div className='flex flex-row gap-2'>
-        //                             <Image
-        //                                 src="/icons/mute.svg"
-        //                                 width={18}
-        //                                 height={18}
-        //                                 alt="mute-icon"
-        //                             />
-        //                             <span className='font-normal text-[#0C111D] text-sm'>Mute</span>
-        //                         </div>
-        //                         <Image
-        //                             src="/icons/arrow-right-01-round.svg"
-        //                             width={18}
-        //                             height={18}
-        //                             alt="arrow-right-01-round"
-        //                         />
-        //                     </button>
-        //                     <button className='flex flex-row gap-2 items-center h-10 w-[206px] px-4 hover:bg-[#EAECF0]'>
-        //                         <Image
-        //                             src="/icons/media.svg"
-        //                             width={18}
-        //                             height={18}
-        //                             alt="media-icon"
-        //                         />
-        //                         <span className='font-normal text-[#0C111D] text-sm'>Media</span>
-        //                     </button>
-        //                     <button className='flex flex-row gap-2 items-center h-10 w-[206px] px-4 hover:bg-[#EAECF0]'
-        //                         onClick={() => setChannelInfoDialog(true)}>
-        //                         <Image
-        //                             src="/icons/information-circle.svg"
-        //                             width={18}
-        //                             height={18}
-        //                             alt="information-circle"
-        //                         />
-        //                         <span className='font-normal text-[#0C111D] text-sm'>Channel info</span>
-        //                     </button>
-        //                     <button className='flex flex-row gap-2 items-center h-10 w-[206px] px-4 hover:bg-[#EAECF0]'
-        //                         onClick={() => setChannelRequestsDialog(true)}>
-        //                         <Image
-        //                             src="/icons/channel-requests.svg"
-        //                             width={18}
-        //                             height={18}
-        //                             alt="channel-requests"
-        //                         />
-        //                         <span className='font-normal text-[#0C111D] text-sm'>Channel Requests</span>
-        //                     </button>
-        //                     <button className='flex flex-row gap-2 items-center h-10 w-[206px] px-4 hover:bg-[#EAECF0]'
-        //                         onClick={() => setDeleteDialog(true)}>
-        //                         <Image
-        //                             src="/icons/delete.svg"
-        //                             width={18}
-        //                             height={18}
-        //                             alt="delete"
-        //                         />
-        //                         <span className='font-normal text-[#DE3024] text-sm'>Delete</span>
-        //                     </button>
-
-        //                 </PopoverContent>
-        //             </Popover>
+                    
         //             <div className="flex flex-row gap-4">
         //                 <button>
         //                     <Image src="/icons/search.svg" alt="search" width={18} height={18} />
