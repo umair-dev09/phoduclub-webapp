@@ -581,9 +581,16 @@ function Chatinfo() {
                </div>
               </PopoverContent>
             </Popover>
-                <button className="transition-colors hover:bg-neutral-100" onClick={() => setIsCollapsed(!isCollapsed)}>
-                  <Image src="/icons/collapseDetails.svg" alt="collapse details icon" width={24} height={24} />
-                </button>
+            <button
+                  className="transition-colors hover:bg-neutral-100"
+                  onClick={() => setIsDetailsVisible(!isDetailsVisible)}
+                >
+                  {isDetailsVisible ? (
+                    <Image src="/icons/collapseDetails.svg" alt="collapse details icon" width={24} height={24} />
+                  ) : (
+                    <Image src="/icons/collaspeDetails-2.svg" alt="collapse details icon" width={24} height={24} />
+                  )}
+                </button>
               </div>
             </div>
             <div
