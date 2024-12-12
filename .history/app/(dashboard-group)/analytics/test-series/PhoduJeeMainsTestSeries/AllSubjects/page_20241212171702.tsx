@@ -1,5 +1,6 @@
 "use client";
 import { useRouter } from "next/navigation";
+import React, { useState } from "react";
 import Image from "next/image";
 import Graphicalviewofoverview from "@/components/DashboardComponents/AnalyticsComponents/Test-Series-Components/AllSubjectsComponents/Graphicalviewofoverview";
 import TimeAccuracy from "@/components/DashboardComponents/AnalyticsComponents/Test-Series-Components/AllSubjectsComponents/TimeAccuracy";
@@ -9,30 +10,19 @@ import Attemptsoverthehours from "@/components/DashboardComponents/AnalyticsComp
 import CompleteAnalysis from "@/components/DashboardComponents/AnalyticsComponents/Test-Series-Components/AllSubjectsComponents/CompleteAnalysis";
 import Overview from "@/components/DashboardComponents/AnalyticsComponents/Test-Series-Components/AllSubjectsComponents/Overview";
 import { Tabs, Tab } from "@nextui-org/react";
-import { Key } from '@react-types/shared';
-import React from "react";
 function JeeMains() {
     const router = useRouter();
+    const [activeTab, setActiveTab] = useState<string>("overview");
 
-    const sectionMap = {
-        'overview': '#overview',
-        'graphical-view': '#Graphicalviewofoverview',
-        'time-accuracy': '#TimeAccuracy',
-        'attempts': '#Attempts',
-        'difficulty-analysis': '#DifficultyAnalysis',
-        'attempts-3-hours': '#Attemptsoverthe3hours',
-        'complete-analysis': '#CompleteAnalysis',
-        'summary': '#Summary'
-    } as const;
+    const handleSelectionChange = (key: string) => {
+        setActiveTab(key);
 
-    const handleTabChange = React.useCallback((key: Key) => {
-        const sectionSelector = sectionMap[key as keyof typeof sectionMap];
-        const element = document.querySelector(sectionSelector);
-
-        if (element) {
-            element.scrollIntoView({ behavior: 'smooth' });
+        // Scroll to the corresponding section programmatically
+        const section = document.getElementById(key);
+        if (section) {
+            section.scrollIntoView({ behavior: "smooth", block: "start" });
         }
-    }, [sectionMap]);
+    };
     return (
         <div className="flex flex-1 flex-col h-auto overflow-y-auto pb-2">
 
@@ -65,22 +55,77 @@ function JeeMains() {
                         aria-label="Analytics Tabs"
                         color="primary"
                         variant="underlined"
-                        onSelectionChange={handleTabChange}
+                        selectedKey={activeTab}
+                        onSelectionChange={(key) => handleSelectionChange(key as string)}
                         classNames={{
                             tabList: "gap-6 w-full relative rounded-none p-0",
                             cursor: "w-full bg-[#7400E0]",
                             tab: "max-w-fit px-0 h-12",
-                            tabContent: "group-data-[selected=true]:text-[#7400E0] hover:text-[#7400E0] text-[15px] font-medium",
+                            tabContent: "group-data-[selected=true]:text-[#7400E0] hover:text-[#7400E0]",
                         }}
                     >
-                        <Tab key="overview" title="Overview" />
-                        <Tab key="graphical-view" title="Graphical view of overview" />
-                        <Tab key="time-accuracy" title="Time & Accuracy" />
-                        <Tab key="attempts" title="Attempts" />
-                        <Tab key="difficulty-analysis" title="Difficulty Analysis" />
-                        <Tab key="attempts-3-hours" title="Attempts over the 3 hours" />
-                        <Tab key="complete-analysis" title="Complete Analysis" />
-                        <Tab key="summary" title="Summary" />
+                        <Tab
+                            key="overview"
+                            title={
+                                <a href="#overview" className="flex items-center space-x-2 w-full h-full">
+                                    <span className="font-medium text-base">Overview</span>
+                                </a>
+                            }
+                        />
+                        <Tab
+
+                            title={
+                                <div className="flex items-center space-x-2">
+                                    <a href="#Graphicalviewofoverview" className=" font-medium text-base">Graphical view of overview</a>
+                                </div>
+                            }
+                        />
+                        <Tab
+
+                            title={
+                                <div className="flex items-center space-x-2">
+                                    <a href="#Time&Accuracy" className=" font-medium text-base">Time & Accuracy</a>
+                                </div>
+                            }
+                        />
+                        <Tab
+
+                            title={
+                                <div className="flex items-center space-x-2">
+                                    <a href="#Attempts" className=" font-medium text-base">Attempts</a>
+                                </div>
+                            }
+                        />
+                        <Tab
+
+                            title={
+                                <div className="flex items-center space-x-2">
+                                    <a href="#DifficultyAnalysis" className=" font-medium text-base">Difficulty Analysis</a>
+                                </div>
+                            }
+                        />
+                        <Tab
+
+                            title={
+                                <div className="flex items-center space-x-2">
+                                    <a href="#Attemptsoverthe3hours" className=" font-medium text-base">Attempts over the 3 hours</a>
+                                </div>
+                            }
+                        />
+                        <Tab
+                            title={
+                                <div className="flex items-center space-x-2">
+                                    <a href="#CompleteAnalysis" className=" font-medium text-base">Complete Analysis</a>
+                                </div>
+                            }
+                        />
+                        <Tab
+                            title={
+                                <div className="flex items-center space-x-2">
+                                    <a href="#Summary" className=" font-medium text-base">Summary</a>
+                                </div>
+                            }
+                        />
                     </Tabs>
                 </div>
             </div>
@@ -101,7 +146,7 @@ function JeeMains() {
                 </div>
                 {/* --------------------------------------******************************************************---------------------------------------------- */}
                 {/* Time & Accuracy */}
-                <div id="TimeAccuracy" className="flex flex-col">
+                <div id="Time&Accuracy" className="flex flex-col">
                     <div className="h-[44px] flex flex-row  mb-2 items-center gap-2">
                         <span className="text-[#1D2939] text-lg font-semibold ">Time & Accuracy</span>
                         <Image

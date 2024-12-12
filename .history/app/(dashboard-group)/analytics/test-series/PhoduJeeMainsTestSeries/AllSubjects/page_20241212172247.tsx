@@ -9,15 +9,13 @@ import Attemptsoverthehours from "@/components/DashboardComponents/AnalyticsComp
 import CompleteAnalysis from "@/components/DashboardComponents/AnalyticsComponents/Test-Series-Components/AllSubjectsComponents/CompleteAnalysis";
 import Overview from "@/components/DashboardComponents/AnalyticsComponents/Test-Series-Components/AllSubjectsComponents/Overview";
 import { Tabs, Tab } from "@nextui-org/react";
-import { Key } from '@react-types/shared';
-import React from "react";
 function JeeMains() {
     const router = useRouter();
 
     const sectionMap = {
         'overview': '#overview',
         'graphical-view': '#Graphicalviewofoverview',
-        'time-accuracy': '#TimeAccuracy',
+        'time-accuracy': '#Time&Accuracy',
         'attempts': '#Attempts',
         'difficulty-analysis': '#DifficultyAnalysis',
         'attempts-3-hours': '#Attemptsoverthe3hours',
@@ -25,14 +23,17 @@ function JeeMains() {
         'summary': '#Summary'
     } as const;
 
-    const handleTabChange = React.useCallback((key: Key) => {
-        const sectionSelector = sectionMap[key as keyof typeof sectionMap];
+    type SectionKey = keyof typeof sectionMap;
+
+    const handleTabChange = (key: SectionKey) => {
+        // Scroll to the corresponding section
+        const sectionSelector = sectionMap[key];
         const element = document.querySelector(sectionSelector);
 
         if (element) {
             element.scrollIntoView({ behavior: 'smooth' });
         }
-    }, [sectionMap]);
+    };
     return (
         <div className="flex flex-1 flex-col h-auto overflow-y-auto pb-2">
 
@@ -70,7 +71,7 @@ function JeeMains() {
                             tabList: "gap-6 w-full relative rounded-none p-0",
                             cursor: "w-full bg-[#7400E0]",
                             tab: "max-w-fit px-0 h-12",
-                            tabContent: "group-data-[selected=true]:text-[#7400E0] hover:text-[#7400E0] text-[15px] font-medium",
+                            tabContent: "group-data-[selected=true]:text-[#7400E0] hover:text-[#7400E0]",
                         }}
                     >
                         <Tab key="overview" title="Overview" />
@@ -101,7 +102,7 @@ function JeeMains() {
                 </div>
                 {/* --------------------------------------******************************************************---------------------------------------------- */}
                 {/* Time & Accuracy */}
-                <div id="TimeAccuracy" className="flex flex-col">
+                <div id="Time&Accuracy" className="flex flex-col">
                     <div className="h-[44px] flex flex-row  mb-2 items-center gap-2">
                         <span className="text-[#1D2939] text-lg font-semibold ">Time & Accuracy</span>
                         <Image

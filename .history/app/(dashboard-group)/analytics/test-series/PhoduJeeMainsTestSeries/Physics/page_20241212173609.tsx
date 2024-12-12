@@ -6,7 +6,7 @@ import AttemptsDifficultyAnalysis from "@/components/DashboardComponents/Analyti
 import Attemptsoverthehours from "@/components/DashboardComponents/AnalyticsComponents/Test-Series-Components/PhysicsComponents/Attemptsoverthehours"
 import { Dialog, DialogBackdrop, DialogPanel } from "@headlessui/react";
 import { Tabs, Tab } from "@nextui-org/react";
-import { Key } from '@react-types/shared';
+
 function JeeMains() {
 
     const router = useRouter();
@@ -17,8 +17,8 @@ function JeeMains() {
     };
     const sectionMap = {
         'overview': '#overview',
-        'attempts-difficulty-analysis': '#Attempts',
-        'attempts-over-3-hours': '#Attemptsoverthe3hours',
+        'attempts': '#Attempts',
+        'hours': '#Attemptsoverthe3hours',
         'complete-analysis': '#CompleteAnalysis',
         'summary': '#Summary'
     } as const;
@@ -70,11 +70,46 @@ function JeeMains() {
                         tabContent: "group-data-[selected=true]:text-[#7400E0] hover:text-[#7400E0] text-[15px] font-medium",
                     }}
                 >
-                    <Tab key="overview" title="Overview" />
-                    <Tab key="attempts-difficulty-analysis" title="Attempts & Difficulty Analysis" />
-                    <Tab key="attempts-over-3-hours" title="Attempts over the 3 hours" />
-                    <Tab key="complete-analysis" title="Complete Analysis" />
-                    <Tab key="summary" title="Summary" />
+                    <Tab
+                        key="overview"
+                        title={
+                            <div className="flex items-center space-x-2">
+                                <span className="font-medium text-base">Overview</span>
+                            </div>
+                        }
+                    />
+                    <Tab
+                        key="attempts"
+                        title={
+                            <div className="flex items-center space-x-2">
+                                <span className="font-medium text-base">Attempts & Difficulty Analysis</span>
+                            </div>
+                        }
+                    />
+                    <Tab
+                        key="hours"
+                        title={
+                            <div className="flex items-center space-x-2">
+                                <span className="font-medium text-base">Attempts over the 3 hours</span>
+                            </div>
+                        }
+                    />
+                    <Tab
+                        key="complete-analysis"
+                        title={
+                            <div className="flex items-center space-x-2">
+                                <span className="font-medium text-base">Complete Analysis</span>
+                            </div>
+                        }
+                    />
+                    <Tab
+                        key="summary"
+                        title={
+                            <div className="flex items-center space-x-2">
+                                <span className="font-medium text-base">Summary</span>
+                            </div>
+                        }
+                    />
                 </Tabs>
 
             </div>
@@ -147,7 +182,7 @@ function JeeMains() {
                     </div>
                 </div>
                 {/* Attempts & Difficulty Analysis */}
-                <div id="Attempts" className=" flex flex-col">
+                <div id="attempts" className=" flex flex-col">
                     <div className="h-[44px] flex flex-col justify-end mb-2">
                         <span className="text-[#1D2939] text-lg font-semibold">Attempts & Difficulty Analysis</span>
                     </div>
@@ -156,7 +191,7 @@ function JeeMains() {
                     </div>
                 </div>
                 {/* Attempts over the 3 hours */}
-                <div id="Attemptsoverthe3hours" className="flex flex-col">
+                <div id="hours" className="flex flex-col">
                     <div className="h-[44px] flex flex-col justify-end mb-2">
                         <span className="text-[#1D2939] text-lg font-semibold">Attempts over the 3 hours</span>
                     </div>
@@ -166,7 +201,7 @@ function JeeMains() {
 
                 </div>
                 {/* Complete Analysis */}
-                <div id="CompleteAnalysis" className="flex flex-col">
+                <div id="complete-analysis" className="flex flex-col">
                     <div className="h-[44px] flex flex-col justify-end mb-2 ">
                         <span className="text-[#1D2939] text-lg font-semibold">Complete Analysis</span>
                     </div>
