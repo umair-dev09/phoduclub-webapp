@@ -57,7 +57,7 @@ function JeeMains() {
                     </div>
                 </div>
             </div>
-            <div className="h-[50px] border-b border-solid border-[#EAECF0] flex flex-row gap-[16px] mt-2 px-8 w-full overflow-x-auto">
+            <div className="h-[50px] border-b border-solid border-[#EAECF0] flex flex-row gap-[16px] mt-2 px-8 w-full">
                 <Tabs
                     aria-label="Analytics Tabs"
                     color="primary"

@@ -57,7 +57,7 @@ function JeeMains() {
                     </div>
                 </div>
             </div>
-            <div className="h-[50px] border-b border-solid border-[#EAECF0] flex flex-row gap-[16px] mt-2 px-8 w-full overflow-x-auto">
+            <div className="h-[50px] border-b border-solid border-[#EAECF0] flex flex-row gap-[16px] mt-2 px-8 w-full">
                 <Tabs
                     aria-label="Analytics Tabs"
                     color="primary"
@@ -81,7 +81,7 @@ function JeeMains() {
 
             <div className="overflow-y-auto flex-1 flex flex-col h-auto px-8">
                 {/* overview Line */}
-                <div onClick={onStartQuiz} id="overview" className="h-[44px] flex flex-col justify-end py-2 cursor-pointer">
+                <div onClick={onStartQuiz} id="overview" className="h-[44px] flex flex-col justify-end items-center cursor-pointer">
                     <span className="text-[#1D2939] text-lg font-semibold">Overview</span>
                 </div>
                 {/* Overall Data */}
@@ -170,7 +170,7 @@ function JeeMains() {
                     <div className="h-[44px] flex flex-col justify-end mb-2 ">
                         <span className="text-[#1D2939] text-lg font-semibold">Complete Analysis</span>
                     </div>
-                    <div className="h-auto rounded-xl  bg-[#FFFFFF] border border-solid border-[#EAECF0]">
+                    <div className="h-auto rounded-xl mb-6 bg-[#FFFFFF] border border-solid border-[#EAECF0]">
                         <table className="w-full rounded-xl bg-white text-sm font-medium">
                             <thead>
                                 <tr className="text-[#667085]">

@@ -60,17 +60,17 @@ function JeeMains() {
                     </div>
                 </div>
                 {/* scroll anchoring */}
-                <div className="h-[50px] px-8 border-b border-solid border-[#EAECF0] flex flex-row overflow-x-auto w-full">
+                <div className="h-[50px] border-b border-solid border-[#EAECF0] flex flex-row gap-[16px] mt-2 mx-8">
                     <Tabs
                         aria-label="Analytics Tabs"
                         color="primary"
                         variant="underlined"
                         onSelectionChange={handleTabChange}
                         classNames={{
-                            tabList: "gap-6 w-full relative rounded-none p-0 min-w-max", // Added min-w-max
+                            tabList: "gap-6 w-full relative rounded-none p-0 overflow-x-auto whitespace-nowrap",
                             cursor: "w-full bg-[#7400E0]",
-                            tab: "max-w-fit px-0 h-12 whitespace-nowrap", // Added whitespace-nowrap
-                            tabContent: "group-data-[selected=true]:text-[#7400E0] hover:text-[#7400E0] text-[15px] font-medium",
+                            tab: "px-4 h-12 inline-block",  // Ensure the tab is inline-block to allow horizontal scrolling
+                            tabContent: "group-data-[selected=true]:text-[#7400E0] hover:text-[#7400E0] text-[15px] font-medium h-full w-full",
                         }}
                     >
                         <Tab key="overview" title="Overview" />
@@ -82,6 +82,7 @@ function JeeMains() {
                         <Tab key="complete-analysis" title="Complete Analysis" />
                         <Tab key="summary" title="Summary" />
                     </Tabs>
+
                 </div>
             </div>
             <div className="overflow-y-auto flex-1 flex flex-col h-auto px-8">

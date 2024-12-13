@@ -57,7 +57,7 @@ export default function AnalyticsPage() {
                          <div className="flex flex-row justify-between pt-6 px-6 w-full text-[#1D2939] text-lg font-bold">
                               <h3 className='text-[#1D2939] font-bold text-lg'>Test Series</h3>
                               <button className="text-sm font-semibold text-[#7400E0] cursor-pointer"
-                                   onClick={() => router.replace('learn/test')}>View all</button>
+                                   onClick={() => router.replace('/analytics/test-series')}>View all</button>
                          </div>
                          <div className="flex justify-center flex-1 overflow-y-auto rounded-b-lg">
                               <TestSeries />
@@ -67,7 +67,7 @@ export default function AnalyticsPage() {
                          <div className="flex flex-row justify-between pt-6 px-6 w-full text-[#1D2939] text-lg font-bold">
                               <h3 className='text-[#1D2939] font-bold text-lg'>Courses</h3>
                               <button className="text-sm font-semibold text-[#7400E0] cursor-pointer"
-                                   onClick={() => router.replace('learn/courses')}
+                                   onClick={() => router.replace('/analytics/test-series')}
                               >View all</button>
                          </div>
                          <div className="flex justify-center flex-1 overflow-y-auto rounded-b-lg">

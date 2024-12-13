@@ -60,7 +60,7 @@ function JeeMains() {
                     </div>
                 </div>
                 {/* scroll anchoring */}
-                <div className="h-[50px] px-8 border-b border-solid border-[#EAECF0] flex flex-row overflow-x-auto w-full">
+                <div className="h-[50px] border-b border-solid border-[#EAECF0] flex flex-row overflow-x-auto w-full">
                     <Tabs
                         aria-label="Analytics Tabs"
                         color="primary"
