@@ -70,9 +70,8 @@ function JeeMains() {
                             tabList: "gap-6 w-full relative rounded-none p-0",
                             cursor: "w-full bg-[#7400E0]",
                             tab: "max-w-fit px-0 h-12",
-                            tabContent: "group-data-[selected=true]:text-[#7400E0] hover:text-[#7400E0] text-[15px] font-medium ",
+                            tabContent: "group-data-[selected=true]:text-[#7400E0] hover:text-[#7400E0] text-[15px] font-medium h-full w-full overflow-x-auto",
                         }}
-
                     >
                         <Tab key="overview" title="Overview" />
                         <Tab key="graphical-view" title="Graphical view of overview" />

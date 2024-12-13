@@ -72,7 +72,6 @@ function JeeMains() {
                             tab: "max-w-fit px-0 h-12",
                             tabContent: "group-data-[selected=true]:text-[#7400E0] hover:text-[#7400E0] text-[15px] font-medium ",
                         }}
-
                     >
                         <Tab key="overview" title="Overview" />
                         <Tab key="graphical-view" title="Graphical view of overview" />

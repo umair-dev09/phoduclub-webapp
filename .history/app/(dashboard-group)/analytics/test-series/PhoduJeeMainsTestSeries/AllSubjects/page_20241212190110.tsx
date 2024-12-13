@@ -67,12 +67,11 @@ function JeeMains() {
                         variant="underlined"
                         onSelectionChange={handleTabChange}
                         classNames={{
-                            tabList: "gap-6 w-full relative rounded-none p-0",
+                            tabList: "gap-6 w-full relative rounded-none p-0 overflow-x-auto whitespace-nowrap",
                             cursor: "w-full bg-[#7400E0]",
-                            tab: "max-w-fit px-0 h-12",
-                            tabContent: "group-data-[selected=true]:text-[#7400E0] hover:text-[#7400E0] text-[15px] font-medium ",
+                            tab: "px-4 h-12 inline-block",  // Ensure the tab is inline-block to allow horizontal scrolling
+                            tabContent: "group-data-[selected=true]:text-[#7400E0] hover:text-[#7400E0] text-[15px] font-medium h-full w-full",
                         }}
-
                     >
                         <Tab key="overview" title="Overview" />
                         <Tab key="graphical-view" title="Graphical view of overview" />
@@ -83,6 +82,7 @@ function JeeMains() {
                         <Tab key="complete-analysis" title="Complete Analysis" />
                         <Tab key="summary" title="Summary" />
                     </Tabs>
+
                 </div>
             </div>
             <div className="overflow-y-auto flex-1 flex flex-col h-auto px-8">

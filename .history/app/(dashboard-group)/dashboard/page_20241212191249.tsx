@@ -53,7 +53,7 @@ export default function AnalyticsPage() {
                     </div>
                </div>
                <div className="flex flex-row   w-full mt-4 gap-4  ">
-                    <div className="flex flex-col flex-1 bg-white  rounded-lg  h-[737px] w-1/2 ">
+                    <div className="flex flex-col flex-1 bg-white  rounded-lg  max-h-[737px] w-1/2 ">
                          <div className="flex flex-row justify-between pt-6 px-6 w-full text-[#1D2939] text-lg font-bold">
                               <h3 className='text-[#1D2939] font-bold text-lg'>Test Series</h3>
                               <button className="text-sm font-semibold text-[#7400E0] cursor-pointer"
@@ -63,7 +63,7 @@ export default function AnalyticsPage() {
                               <TestSeries />
                          </div>
                     </div>
-                    <div className="flex flex-col flex-1 bg-white rounded-lg  h-[737px] w-1/2">
+                    <div className="flex flex-col flex-1 bg-white rounded-lg  max-h-[737px] w-1/2">
                          <div className="flex flex-row justify-between pt-6 px-6 w-full text-[#1D2939] text-lg font-bold">
                               <h3 className='text-[#1D2939] font-bold text-lg'>Courses</h3>
                               <button className="text-sm font-semibold text-[#7400E0] cursor-pointer"
