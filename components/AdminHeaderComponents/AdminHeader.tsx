@@ -134,7 +134,7 @@ function Header({ currentPage }: HeaderProps) {
                 )}
                 {currentPage !== 'My Profile' && (
                     <h2 className={!isBackPage ? "" : "text-[#667085] text-base font-medium"}>
-                        {currentPage}
+                        {currentPage || ''}
                     </h2>
                 )}
                 {currentPage === 'My Profile' && (
@@ -144,7 +144,7 @@ function Header({ currentPage }: HeaderProps) {
 
             <div className="flex flex-row items-center gap-4">
 
-                {(currentPage === 'Role Management' || currentPage === 'User Database' || currentPage === 'Marketing Integration' || currentPage === 'Quizzes Management' || currentPage === 'Test Series Management' || currentPage === 'Course Creation' || currentPage === "Dashboard") && (
+                {(currentPage === 'Role Management' || currentPage === 'User Database' || currentPage === 'Marketing Integration' || currentPage === 'Quizzes Management' || currentPage === 'Test Series Management' || currentPage === 'Course Creation' || currentPage === "") && (
                     <Popover placement="bottom-end">
                         <PopoverTrigger>
                             <button className='flex flex-row gap-3 items-center justify-center'>

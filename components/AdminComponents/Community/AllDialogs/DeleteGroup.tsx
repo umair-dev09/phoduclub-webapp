@@ -21,12 +21,12 @@ function DeleteGroup({ open, onClose, communityId, communityName }: DeleteGroupP
     const handleDeleteGroup = async () => {
         try {
             await deleteDoc(doc(db, `communities`, communityId));
-            toast.success('Category Deleted Successfully!');
+            toast.success('Group Deleted Successfully!');
             onClose();
             router.replace('/admin/community');
         } catch (error) {
             console.error('Error removing user from Firestore:', error);
-            toast.error('Failed to delete category. Please try again.');
+            toast.error('Failed to delete group. Please try again.');
         }
     };
 

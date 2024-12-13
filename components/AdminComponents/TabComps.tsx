@@ -38,7 +38,7 @@ function TabComps() {
             if (subPath && currentPath === 'content') {
                 setActiveTab(subPath);
             } else {
-                setActiveTab(currentPath || 'dashboard');
+                setActiveTab(currentPath || '');
             }
         }
     }, [pathname]);
@@ -134,7 +134,6 @@ function TabComps() {
             <hr className="border-t border-gray-700 mb-4" />
 
             {/* Dashboard Tab */}
-            {renderButtonWith('Dashboard', '/icons/admin-dashboard-2.svg', '/icons/admin-dashboard.svg', activeTab === 'dashboard', () => handleTabClick('dashboard', '/admin/dashboard'))}
 
             {/* Content Section with Collapsible Menu */}
             <Collapsible

@@ -9,7 +9,14 @@ import Editgroup from "./Createchannel";
 interface channelinfoProps {
     open: boolean; // Prop to control dialog visibility
     onClose: () => void; // Define onClose as a function
+    channelName: string;
+    channelId: string;
+    channelEmoji: string;
+    channelDescription: string;
+    communityId: string;
+    categoryId: string;
 }
+
 const membersData = [
     { name: "Jenny Wilson", username: "jenny#8547", role: "Admin" },
     { name: "John Doe", username: "john#1234", role: "Teacher" },
@@ -18,7 +25,7 @@ const membersData = [
     { name: "John Doe", username: "john#1234", role: "Teacher" },
     { name: "Alice Brown", username: "alice#9876", role: "Editor" },
 ];
-function channelinfo({ open, onClose }: channelinfoProps) {
+function channelinfo({ open, onClose, channelDescription, channelEmoji, channelId, channelName, categoryId, communityId }: channelinfoProps) {
     const [edigroupdetails, setEditgroupdetails] = useState(false);
     const [uniqueID, setUniqueID] = useState('');
     const [isOpen, setIsOpen] = useState(false); // Control popover visibility
@@ -37,12 +44,8 @@ function channelinfo({ open, onClose }: channelinfoProps) {
                         </div>
                         <div className="flex flex-row items-center  justify-between group gap-2  mb-1">
                             <div className='flex flex-row gap-2 items-center'>
-                                <Image
-                                    src="/icons/bell.png"
-                                    width={20}
-                                    height={24}
-                                    alt="bell-icon" />
-                                <p className="text-xl font-semibold text-[#182230]">Announcement</p>
+                                <p>{channelEmoji}</p>
+                                <p className="text-xl font-semibold text-[#182230]">{channelName}</p>
                             </div>
                             <Popover placement="bottom-end">
                                 <PopoverTrigger>
@@ -69,7 +72,7 @@ function channelinfo({ open, onClose }: channelinfoProps) {
                                 </PopoverContent>
                             </Popover>
                         </div>
-                        <span className='text-[#667085] font-normal text-sm'>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididun</span>
+                        <span className='text-[#667085] font-normal text-sm'>{channelDescription}</span>
                         <div className=" flex flex-row justify-between items-center">
                             <p className="text-[#1D2939] font-semibold text-lg">Users</p>
                             <div className="flex flex-row gap-4">
@@ -229,7 +232,7 @@ function channelinfo({ open, onClose }: channelinfoProps) {
                     </div>
                 </DialogPanel>
             </div >
-            {edigroupdetails && <Editgroup open={edigroupdetails} onClose={() => setEditgroupdetails(true)} />}
+            
         </Dialog >
     )
 }

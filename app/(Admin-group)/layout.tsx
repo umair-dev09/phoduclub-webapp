@@ -12,11 +12,11 @@ interface DashboardGroupProps {
 
 export default function DashboardGroup({ children }: DashboardGroupProps) {
     const pathname = usePathname();
-    const [currentPage, setCurrentPage] = useState<string>('Dashboard');
+    const [currentPage, setCurrentPage] = useState<string>('');
 
     useEffect(() => {
         const pathArray = pathname?.split('/');
-        let pageName = pathArray?.[pathArray.length - 1] || 'Dashboard';
+        let pageName = pathArray?.[pathArray.length - 1] || '';
 
         if (pathname?.includes('quizzesmanagement')) {
             if (pathArray?.[pathArray.length - 1] === 'quizzesmanagement') {
@@ -28,9 +28,7 @@ export default function DashboardGroup({ children }: DashboardGroupProps) {
             }
         } else {
             switch (pageName) {
-                case 'dashboard':
-                    pageName = 'Dashboard';
-                    break;
+               
                 case 'rolemanagement':
                     pageName = 'Role Management';
                     break;
@@ -92,7 +90,7 @@ export default function DashboardGroup({ children }: DashboardGroupProps) {
                     pageName = 'Customer Care';
                     break;
                 default:
-                    pageName = 'Dashboard';
+                    pageName = '';
             }
         }
 

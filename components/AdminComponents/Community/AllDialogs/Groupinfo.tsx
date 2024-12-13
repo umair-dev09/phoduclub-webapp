@@ -5,13 +5,24 @@ import Image from "next/image";
 import React from "react";
 import { Popover, PopoverContent, PopoverTrigger } from "@nextui-org/popover";
 import CreateGroup from "./CreateGroup";
+import EditGroup from "./EditGroup";
 // Define the props interface
 interface groupinfoProps {
     open: boolean; // Prop to control dialog visibility
     onClose: () => void; // Define onClose as a function
+    communityId: string; 
+    communityName: string;
+    communityDescription: string; 
+    communityImage: string; 
+    members: {id:string, isAdmin: boolean}[] | null;   
+
 }
-function groupinfo({ open, onClose }: groupinfoProps) {
-    const [creategroup, setCreategroup] = useState(false)
+function groupinfo({ open, onClose, communityId, communityName, communityDescription, members, communityImage}: groupinfoProps) {
+    const [editGroup, setEditGroup] = useState(false);
+    const [name, setName] = useState('');
+    const [img, setImg] = useState('');
+    const [description, setDescription] = useState('');
+
     return (
         <Dialog open={open} onClose={onClose} className="relative z-50">
             <DialogBackdrop className="fixed inset-0 bg-black/30" />
@@ -24,18 +35,16 @@ function groupinfo({ open, onClose }: groupinfoProps) {
                             </div>
                         <div className="flex flex-row items-center py-2 justify-between group gap-2">
                             <div className='flex flex-row gap-2 items-center'>
-                                <div className="rounded-full w-[44px] h-[44px] bg-[#C0EAFF] items-center flex justify-center border-2 border-solid border-[#FFFFFF]">
-                                    <h1 className="text-[#124B68] text-base font-bold">J</h1>
-                                </div>
+                            <Image className="w-11 h-11 rounded-full object-cover" src={communityImage} alt="group icon" width={20} height={20} />
                                 <div className='flex flex-col '>
-                                    <p className='font-semibold text-normal text-sm'>JEE - 2024</p>
+                                    <p className='font-semibold text-normal text-sm'>{communityName}</p>
                                     <div className='gap-1 flex flex-row'>
                                         <Image
                                             src="/icons/communityicon.svg"
                                             width={18}
                                             height={18}
                                             alt="communiy-icon" />
-                                        <span className='text-sm text-[#4B5563] font-normal'>100</span>
+                                        <span className='text-sm text-[#4B5563] font-normal'>{members?.length}</span>
                                     </div>
                                 </div>
                             </div>
@@ -52,7 +61,7 @@ function groupinfo({ open, onClose }: groupinfoProps) {
                                 </PopoverTrigger>
                                 <PopoverContent className=" py-0 px-0 bg-white rounded-md  shadow-md flex flex-col border border-solid border-[#EAECF0] h-12 w-auto hover:bg-[#EAECF0]">
                                     <button className="px-2  gap-2 flex flex-row justify-center items-center  rounded-md "
-                                        onClick={() => { setCreategroup(true) }}>
+                                        onClick={() => { setEditGroup(true); setName(communityName); setImg(communityImage); setDescription(communityDescription); }}>
                                         <Image
                                             src="/icons/edit-02.svg"
                                             width={18}
@@ -64,14 +73,14 @@ function groupinfo({ open, onClose }: groupinfoProps) {
                                 </PopoverContent>
                             </Popover>
                         </div>
-                        <span className='text-[#667085] font-normal text-sm'>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididun</span>
+                        <span className='text-[#667085] font-normal text-sm'>{communityDescription}</span>
                     </div>
                     <div className="flex flex-row justify-end mx-6 my-4 gap-4">
                         <button className="py-[0.625rem] w-[98px] px-6 text-white shadow-inner-button bg-[#8501FF] border border-[#9012FF] rounded-md" onClick={onClose} >ok</button>
                     </div>
                 </DialogPanel>
             </div >
-            {/* {creategroup && <CreateGroup open={creategroup} onClose={() => setCreategroup(false)} />} */}
+            {editGroup && <EditGroup open={editGroup} onClose={() => setEditGroup(false)} onClose1={onClose} communityId={communityId} communityName={name} communityDescription={description} communityImg={img} setCommunityName={setName} setCommunityDescription={setDescription} setCommunityImage={setImg}/>}
         </Dialog >
     )
 }
