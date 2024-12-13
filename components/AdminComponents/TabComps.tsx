@@ -4,13 +4,65 @@ import { useRouter, usePathname } from 'next/navigation';
 import { useState, useEffect } from 'react';
 import Collapsible from 'react-collapsible';
 import { Tooltip } from "@nextui-org/react";
+import { onAuthStateChanged, User } from 'firebase/auth'; // Import the User type from Firebase
+import { auth } from '@/firebase';
+import { getFirestore, doc, getDoc, updateDoc, onSnapshot } from 'firebase/firestore';
+type CurrentUserData = {
+    role: string;
+    adminId: string;
+}
 
 function TabComps() {
-
     const router = useRouter();
     const pathname = usePathname();
     const [isCollapsed, setIsCollapsed] = useState(false);
     const [isOpenArray, setIsOpenArray] = useState([false, false, false]);
+    const [currentUserData, setCurrentUserData] = useState<CurrentUserData | null>(null); 
+    const [loading, setLoading] = useState(true); // Track loading state
+    const [user, setUser] = useState<User | null>(null); 
+    const db = getFirestore();
+
+    useEffect(() => { 
+        const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+            if (currentUser) {
+                setUser(currentUser);
+            } else {
+                console.error('No user is logged in');
+                 router.push("/admin-login");
+                setLoading(false); // Ensure loading is set to false even when no user is found
+            }
+        });
+    
+        return () => unsubscribe();
+    }, []);
+  
+    useEffect(() => {
+        let unsubscribeFromSnapshot: () => void;
+        if (user) {
+            const uniqueId = user.uid;
+            const userDocRef = doc(db, `admin/${uniqueId}`);
+
+            unsubscribeFromSnapshot = onSnapshot(userDocRef, (docSnapshot) => {
+                if (docSnapshot.exists()) {
+                    const data = docSnapshot.data() as CurrentUserData;
+                    setCurrentUserData(data);
+                    setLoading(false);
+                } else {
+                    console.error('No user data found!');
+                    setLoading(false);
+                }
+            }, (err) => {
+                console.error('Error fetching real-time updates:', err);
+                setLoading(false);
+            });
+        }
+
+        return () => {
+            if (unsubscribeFromSnapshot) {
+                unsubscribeFromSnapshot();
+            }
+        };
+    }, [user, db]);
 
     useEffect(() => {
         const savedState = localStorage.getItem('isSidebarCollapsed');
@@ -136,7 +188,8 @@ function TabComps() {
             {/* Dashboard Tab */}
 
             {/* Content Section with Collapsible Menu */}
-            <Collapsible
+            {(currentUserData?.role === 'Admin' || currentUserData?.role === 'Editor') &&(
+                <Collapsible
                 trigger=
                 {isCollapsed ? (
                     <Tooltip
@@ -173,7 +226,7 @@ function TabComps() {
                 ) : (
                     <div
                         className={`flex items-center justify-between w-full relative group mb-2 py-2 px-3 h-11 overflow-hidden rounded-md 
-                          ${isContentSection()
+                        ${isContentSection()
                                 ? 'bg-[#7400E0] text-white'
                                 : 'hover:bg-[#e1ffe11a] text-[#AAAAAA]'
                             }`}
@@ -212,7 +265,7 @@ function TabComps() {
 
                 open={isOpenArray[0]}
                 transitionTime={300}
-            >
+                >
                 {/* Quizzes Management Button */}
                 {isCollapsed && (
                     <Tooltip content="Quizzes Management" placement='right' offset={15} closeDelay={100}
@@ -343,17 +396,41 @@ function TabComps() {
                     </button>
                 )}
 
-            </Collapsible>
+                </Collapsible>
+
+            )}
+           
 
             {/* Additional Tabs */}
-            {renderButtonWith('Role Management', '/icons/Role Management-2.svg', '/icons/Role Management.svg', activeTab === 'rolemanagement', () => handleTabClick('rolemanagement', '/admin/rolemanagement'))}
-            {renderButtonWith('Marketing Integration', '/icons/Marketing Integration-2.svg', '/icons/Marketing Integration.svg', activeTab === 'marketingintegration', () => handleTabClick('marketingintegration', '/admin/marketingintegration'))}
-            {renderButtonWith('User Database', '/icons/community-2.svg', '/icons/community.svg', activeTab === 'userdatabase', () => handleTabClick('userdatabase', '/admin/userdatabase'))}
-            {renderButtonWith('Customer Care', '/icons/community-2.svg', '/icons/community.svg', activeTab === 'customercare', () => handleTabClick('customercare', '/admin/customercare'))}
-            {renderButtonWith('Internal Chat', '/icons/internal-chat-1.svg', '/icons/internal-chat-2.svg', activeTab === 'internalchat', () => handleTabClick('internalchat', '/admin/internalchat'))}
-            {renderButtonWith('Discussion Forum', '/icons/discussion-form.svg', '/icons/discussion-form-2.svg', activeTab === 'discussionform', () => handleTabClick('discussionform', '/admin/discussionform'))}
+            {(currentUserData?.role === 'Admin') &&(
+                <>
+                {renderButtonWith('Role Management', '/icons/Role Management-2.svg', '/icons/Role Management.svg', activeTab === 'rolemanagement', () => handleTabClick('rolemanagement', '/admin/rolemanagement'))}
+                {renderButtonWith('User Database', '/icons/community-2.svg', '/icons/community.svg', activeTab === 'userdatabase', () => handleTabClick('userdatabase', '/admin/userdatabase'))}   
+                {renderButtonWith('Marketing Integration', '/icons/Marketing Integration-2.svg', '/icons/Marketing Integration.svg', activeTab === 'marketingintegration', () => handleTabClick('marketingintegration', '/admin/marketingintegration'))}    
+                </>
+            )}
+            {(currentUserData?.role === 'Admin' || currentUserData?.role === 'Customer Care') &&(
+                <>
+                {renderButtonWith('Customer Care', '/icons/community-2.svg', '/icons/community.svg', activeTab === 'customercare', () => handleTabClick('customercare', '/admin/customercare'))}
+                </>
+            )}
+          {(currentUserData?.role === 'Admin' || currentUserData?.role === 'Cheif Moderator') &&(
+                <>
             {renderButtonWith('Role Management Guide', '/icons/Role Management-2.svg', '/icons/Role Management.svg', activeTab === 'rolemanagementguide', () => handleTabClick('rolemanagementguide', '/admin/rolemanagementguide'))}
+               </>
+            )}
+          {(currentUserData?.role === 'Admin' || currentUserData?.role === 'Teacher') &&(
+                <>
+            {renderButtonWith('Discussion Forum', '/icons/discussion-form.svg', '/icons/discussion-form-2.svg', activeTab === 'discussionform', () => handleTabClick('discussionform', '/admin/discussionform'))}
+            </>
+            )}  
+            {(currentUserData?.role === 'Admin' || currentUserData?.role === 'Teacher' || currentUserData?.role === 'Cheif Moderator') &&(
+                <>
             {renderButtonWith('Community', '/icons/community-2.svg', '/icons/community.svg', activeTab === 'community', () => handleTabClick("community", '/admin/community'))}
+            </>
+            )}
+            <div className='w-full h-[1px] bg-[#E2E5E91A] mb-[6px]'/> 
+           {renderButtonWith('Internal Chat', '/icons/internal-chat-1.svg', '/icons/internal-chat-2.svg', activeTab === 'internalchat', () => handleTabClick('internalchat', '/admin/internalchat'))}
         </div>
     );
 }
