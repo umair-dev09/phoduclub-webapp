@@ -1,0 +1,306 @@
+"use client";
+import Collapsible from 'react-collapsible';
+import { Tabs, Tab } from "@nextui-org/react";
+import Image from "next/image";
+import React, { useState, useEffect, useRef } from "react";
+import 'react-quill/dist/quill.snow.css';
+import ReactQuill from 'react-quill-new';
+import Quill from 'quill';
+import { Popover, PopoverContent, PopoverTrigger } from "@nextui-org/popover";
+function discussion() {
+
+    const [value, setValue] = useState('');
+    const quillRef = useRef<ReactQuill | null>(null); // Ref to hold ReactQuill instance
+    const [quill, setQuill] = useState<Quill | null>(null);
+    const [alignment, setAlignment] = useState<string | null>(null); // State to hold Quill instance
+    const [isButtonDisabled, setIsButtonDisabled] = useState(true);
+
+    const handleChange = (content: string) => {
+        setValue(content);
+    };
+
+    const handleIconClick = (format: string) => {
+        if (quill) {
+            const range = quill.getSelection();
+            if (range) {
+                const currentFormats = quill.getFormat(range);
+
+                if (format === 'ordered') {
+                    // Toggle ordered list
+                    quill.format('list', currentFormats.list === 'ordered' ? false : 'ordered');
+                }
+                else if (format.startsWith('align')) {
+                    if (format === 'align-left') {
+                        quill.format('align', false); // Remove alignment for 'left'
+                        setAlignment('left'); // Update alignment state to 'left'
+                    } else {
+                        quill.format('align', format.split('-')[1]);
+                        setAlignment(format.split('-')[1]);
+                    }
+                }
+                else {
+                    const isActive = currentFormats[format];
+                    quill.format(format, !isActive); // Toggle other formatting options
+                }
+            }
+        }
+    };
+
+    useEffect(() => {
+        if (quillRef.current) {
+            setQuill(quillRef.current.getEditor());
+        }
+    }, []);
+
+    // This will clear formatting when the user types
+    const handleKeyDown = () => {
+        if (quill) {
+            const range = quill.getSelection();
+            if (range) {
+                const currentFormats = quill.getFormat(range);
+                if (currentFormats.bold) {
+                    quill.format('bold', false); // Clear bold formatting when typing starts
+                }
+                if (currentFormats.italic) {
+                    quill.format('italic', false); // Clear italic formatting when typing starts
+                }
+                if (currentFormats.underline) {
+                    quill.format('underline', false);
+                }
+
+
+
+            }
+        }
+    };
+    useEffect(() => {
+        if (value.trim() === '') {
+            setIsButtonDisabled(true); // Disable the button if the input is empty
+        } else {
+            setIsButtonDisabled(false); // Enable the button if there is content
+        }
+    }, [value]);
+    return (
+        <div className="flex-1 w-full h-auto flex flex-col  overflow-y-auto">
+            <div className=' flex flex-col px-6 gap-4'>
+                <div className="flex flex-col gap-4">
+                    <div className="flex flex-row justify-between items-center">
+                        <div className="flex flex-row gap-2">
+                            <Image
+                                src="/images/photo.png"
+                                width={36}
+                                height={36}
+                                alt="profile-icon" />
+                            <div className="flex flex-col">
+                                <h1 className="font-semibold text-sm text-[#182230]">Marvin McKinney</h1>
+                                <span className="font-normal text-sm text-[#667085]">devon#8852</span>
+                            </div>
+                        </div>
+                        <div className="flex flex-row gap-2">
+                            <span className="text-xs font-normal text-[#475467]">3:24 PM</span>
+
+                            <Popover placement="bottom-end">
+                                <PopoverTrigger>
+                                    <button className='focus:outline-none'>
+                                        <Image src="/icons/three-dots.svg" width={24} height={24} alt="three-icon" />
+                                    </button>
+                                </PopoverTrigger>
+                                <PopoverContent className="w-auto py-1 px-0 bg-white border border-lightGrey rounded-md flex flex-col">
+                                    <button className='flex flex-row gap-2 items-center h-10 w-[173px] px-4 hover:bg-[#EAECF0]'>
+                                        <Image
+                                            src="/icons/pin-icon.svg"
+                                            width={18}
+                                            height={18}
+                                            alt="pin-icon"
+                                        />
+                                        <span className='font-normal text-[#0C111D] text-sm'>Pin</span>
+                                    </button>
+                                    <button className='flex flex-row gap-2 items-center h-10 w-[173px] px-4 hover:bg-[#EAECF0]'>
+                                        <Image
+                                            src="/icons/delete.svg"
+                                            width={18}
+                                            height={18}
+                                            alt="delete-icon"
+                                        />
+                                        <span className='font-normal text-[#DE3024] text-sm'>Delete message</span>
+                                    </button>
+                                </PopoverContent>
+                            </Popover>
+                        </div>
+                    </div>
+                    <div className="border border-solid border-[#EAECF0] rounded-[16px] bg-[#FFFFFF] px-4 py-3 h-auto ml-10">
+                        <p className="font-normal text-sm text-[#182230]">The BITSET Full Course is designed to provide students with an in-depth understanding of bit manipulation techniques and the use of bitsets in data structures. This course will cover fundamental concepts, practical applications, and advanced techniques used in competitive programming and software development. Students will learn how to efficiently solve problems using bitwise operations and gain hands-on experience through coding exercises and projects.</p>
+                    </div>
+                    <button className="ml-10 flex flex-row gap-2 items-center">
+                        <Image
+                            src="/icons/comment-icon.svg"
+                            width={20}
+                            height={20}
+                            alt="three-icon" />
+                        <span className="text-[#1D2939] font-normal text-sm">30 Reply</span>
+                    </button>
+                </div>
+                <div className="flex flex-col gap-4 ml-10">
+                    <div className="flex flex-row justify-between items-center">
+                        <div className="flex flex-row gap-2">
+                            <Image
+                                src="/images/photo.png"
+                                width={36}
+                                height={36}
+                                alt="profile-icon" />
+                            <div className="flex flex-col">
+                                <h1 className="font-semibold text-sm text-[#182230]">Marvin McKinney</h1>
+                                <span className="font-normal text-sm text-[#667085]">devon#8852</span>
+                            </div>
+                        </div>
+                        <div className="flex flex-row gap-2">
+                            <span className="text-xs font-normal text-[#475467]">3:24 PM</span>
+                            <Image
+                                src="/icons/three-dots.svg"
+                                width={24}
+                                height={24}
+                                alt="three-icon" />
+                        </div>
+                    </div>
+                    <div className="border border-solid border-[#EAECF0] rounded-[16px] bg-[#FFFFFF] px-4 py-3 h-auto ml-10">
+                        <p className="font-normal text-sm text-[#182230]">The BITSET Full Course is designed to provide students with an in-depth understanding of bit manipulation techniques and the use of bitsets in data structures. This course will cover fundamental concepts, practical applications, and advanced techniques used in competitive programming and software development. Students will learn how to efficiently solve problems using bitwise operations and gain hands-on experience through coding exercises and projects.</p>
+                    </div>
+                    <div className="flex flex-row gap-6">
+                        <button className=" ml-10 flex flex-row gap-2 items-center">
+                            <Image
+                                src="/icons/unpin-icon.svg"
+                                width={20}
+                                height={20}
+                                alt="three-icon" />
+                            <span className="text-[#9012FF] font-normal text-sm">Unpin</span>
+                        </button>
+                        <button className="flex flex-row gap-2 items-center">
+                            <Image
+                                src="/icons/comment-icon.svg"
+                                width={20}
+                                height={20}
+                                alt="three-icon" />
+                            <span className="text-[#1D2939] font-normal text-sm">30 Reply</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div className="sticky bottom-0 w-full p-6 bg-[#FFFFFF] z-50">
+
+                <div className=" bg-[#F7F8FB] w-full border border-solid border-[#EAECF0] rounded-[12px] h-auto">
+
+
+                    {/* Textarea for writing the comment */}
+                    <div className="bg-[#F7F8FB] border-b border-solid border-b-[#EAECF0] rounded-tl-[12px] rounded-tr-[12px]">
+                        <ReactQuill
+                            ref={quillRef}
+                            value={value}
+                            onChange={handleChange}
+                            onKeyDown={handleKeyDown}
+                            modules={{ toolbar: false }}
+                            placeholder="Type your response here..."
+                            className=" text-[#1D2939] focus:outline-none rounded-b-[12px] custom-quill placeholder:not-italic"
+                            style={{
+                                minHeight: "10px", // Initial height
+                                maxHeight: "150px", // Maximum height before scrolling
+                                overflowY: "auto",  // Enable scrolling if content exceeds max height
+                                padding: "1rem",   // Padding to create space inside the editor
+                                border: 'none',
+                                fontStyle: 'normal',
+                            }}
+                        />
+
+
+
+                    </div>
+
+                    {/* ---------------------------------------------------------------- */}
+                    {/* THIS IS  THE PART WHERE WE CHANGE THE STYLING OF COMMENT AND SEND */}
+                    <div className="h-[66px] bg-[#F7F8FB] rounded-bl-[12px] rounded-br-[12px] flex justify-center items-center">
+                        <div className="flex flex-row w-full justify-between items-center mx-5">
+                            {/* First div with text */}
+                            <div className="h-[24px] w-[288px] gap-[24px] flex flex-row ">
+                                {/* Icons */}
+                                <button
+                                    onClick={() => handleIconClick('bold')}
+                                    className="hover:bg-[#EAECF0]"
+                                >
+                                    <Image src="/icons/Bold.svg" width={24} height={24} alt="bold" />
+
+
+
+                                </button>
+                                <button
+                                    className="hover:bg-[#EAECF0]"
+                                    onClick={() => handleIconClick('italic')}>
+
+                                    <Image src="/icons/italic-icon.svg" width={24} height={24} alt="italic-icon" />
+                                </button>
+
+                                <button
+                                    className="hover:bg-[#EAECF0]"
+                                    onClick={() => handleIconClick('underline')}>
+                                    <Image src="/icons/underline-icon.svg" width={24} height={24} alt="underline-icon" />
+                                </button>
+                                {/* -------------------------------------------------------------------------------------------------------------------------------- */}
+                                <Popover placement="bottom-start" className="flex flex-row justify-end">
+                                    <PopoverTrigger className="">
+                                        {/* Display the current alignment icon in the trigger */}
+                                        <button className="flex items-center justify-center p-1">
+                                            {alignment === 'center' ? (
+                                                <Image src="/icons/align-middle.svg" width={24} height={26} alt="align-center" />
+                                            ) : alignment === 'right' ? (
+                                                <Image src="/icons/align-right.svg" width={24} height={26} alt="align-right" />
+                                            ) : (
+                                                <Image src="/icons/dropdown-icon-1.svg" width={32} height={32} alt="align-left" />
+                                            )}
+                                        </button>
+                                    </PopoverTrigger>
+
+                                    <PopoverContent className="flex flex-row bg-white rounded-[8px] border-[1px] border-solid border-[#EAECF0] px-2 w-[120px] shadow-[0_2px_4px_#EAECF0] gap-2">
+                                        {/* These buttons will be inside the popover */}
+
+                                        <button onClick={() => handleIconClick("align-left")} className="flex items-center justify-center hover:bg-[#EAECF0]">
+                                            <Image src="/icons/align-left.svg" width={30} height={30} alt="align-left" />
+                                        </button>
+                                        <button onClick={() => handleIconClick("align-center")} className="flex items-center justify-center hover:bg-[#EAECF0]">
+                                            <Image src="/icons/align-middle.svg" width={30} height={30} alt="align-center" />
+                                        </button>
+                                        <button onClick={() => handleIconClick("align-right")} className="flex items-center justify-center hover:bg-[#EAECF0]">
+                                            <Image src="/icons/align-right.svg" width={30} height={30} alt="align-right" />
+                                        </button>
+
+                                    </PopoverContent>
+                                </Popover>
+
+
+
+
+                                {/* --------------------------------------------------------------------------------------------------------------------------------- */}
+
+                                <button
+                                    className="hover:bg-[#EAECF0]"
+                                    onClick={() => handleIconClick('ordered')}>
+                                    <Image src="/icons/dropdown-icon-2.svg" width={27} height={27} alt="dropdown-icon" />
+                                </button>
+                            </div>
+                            {/* Button */}
+                            <button
+                                className={` w-[88px] h-[36px] flex justify-center items-center rounded-md shadow-inner-button 
+                                                        ${isButtonDisabled ? 'bg-[#d8acff]' : 'bg-[#8501FF]'} 
+                                                        ${isButtonDisabled ? '' : 'border border-solid border-[#800EE2]'}`}
+
+                                disabled={isButtonDisabled} // Disable button if needed
+                            >
+                                <span className="font-semibold text-[#FFFFFF] text-sm">Send</span>
+                            </button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    )
+}
+export default discussion;

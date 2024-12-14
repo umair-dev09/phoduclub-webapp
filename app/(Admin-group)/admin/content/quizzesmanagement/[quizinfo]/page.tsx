@@ -356,7 +356,7 @@ function Quizinfo({ params }: { params: { quizName: string } }) {
             </div>
 
             {/* Tabs */}
-            <div className="pt-2">
+            <div className="pt-3 w-full flex flex-col">
                 <Tabs
                     aria-label="Market Integration Tabs"
                     color="primary"
