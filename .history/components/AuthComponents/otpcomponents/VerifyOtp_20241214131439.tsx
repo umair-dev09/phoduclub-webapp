@@ -248,7 +248,7 @@ function VerifyOtp() {
                 />
             </div>
             <button className="flex flex-row gap-2 items-center mt-[20px] ml-10 "
-                onClick={() => router.back()}>
+                onClick={() => router.back("/verifyotp")}>
                 <p>&larr;</p>
                 <span className="font-medium text-base text-[#98a2b3]">Back</span>
             </button>

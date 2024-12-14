@@ -167,7 +167,9 @@ function Questions({ questionsList, setQuestionsList }: QuestionsProps) {
         const plainText = content.replace(/<[^>]+>/g, '').trim();
         setIsWriting(plainText.length > 0);
     };
-
+    const handleBlur = () => {
+        setIsWriting(false); // Reset isWriting when user clicks outside
+    };
 
 
     const handleIconClick = (format: string) => {
@@ -305,6 +307,15 @@ function Questions({ questionsList, setQuestionsList }: QuestionsProps) {
                         <div className='h-auto bg-[#FFFFFF] flex flex-col pb-5 px-5 gap-2 rounded-br-md rounded-bl-md'>
                             <div className="flex flex-col gap-2">
                                 <span className="font-semibold text-base text-[#1D2939]">Question</span>
+                                {/* <input
+                                    className="font-medium pl-3 text-[#101828] text-sm placeholder:text-[#A1A1A1] rounded-md placeholder:font-normal
+                                        focus:outline-none focus:ring-0 border border-solid border-[#D0D5DD] h-[40px] focus:border-[#D6BBFB]
+                                              focus:shadow-[0px_0px_0px_4px_rgba(158,119,237,0.25),0px_1px_2px_0px_rgba(16,24,40,0.05)]"
+                                    placeholder="Enter question"
+                                    type="text"
+                                    value={question.question}
+                                    onChange={(e) => handleInputChange(index, e)}
+                                /> */}
                                 {/* CODE FOR REACT QUILL */}
                                 <div
                                     className={`pt-2 bg-[#FFFFFF] border ${isWriting ? 'border-[#D6BBFB]  shadow-[0px_0px_0px_4px_rgba(158,119,237,0.25),0px_1px_2px_0px_rgba(16,24,40,0.05)]' : 'border-[#EAECF0]'
@@ -312,6 +323,7 @@ function Questions({ questionsList, setQuestionsList }: QuestionsProps) {
                                     <div className="bg-[#FFFFFF] ">
                                         <ReactQuill
                                             ref={quillRef}
+                                            onBlur={handleBlur}
                                             value={question.question}
                                             onChange={(value) => handleInputChange(index, value)}
                                             onKeyDown={handleKeyDown}
@@ -474,6 +486,7 @@ function Questions({ questionsList, setQuestionsList }: QuestionsProps) {
                                 <div className="bg-[#FFFFFF] ">
                                     <ReactQuill
                                         ref={quillRef}
+                                        onBlur={handleBlur}
                                         value={question.explanation}
                                         onChange={(value) => handleExplanationChange(index, value)} // Use `value` directly
                                         onKeyDown={handleKeyDown}
@@ -528,10 +541,6 @@ function Questions({ questionsList, setQuestionsList }: QuestionsProps) {
                                             <button
                                                 onClick={() => handleIconClick('ordered')}>
                                                 <Image src="/icons/dropdown-icon-2.svg" width={27} height={27} alt="dropdown-icon" />
-                                            </button>
-                                            <button onClick={() => handleIconClick('image')}
-                                                className="hover:bg-[#EAECF0]">
-                                                <Image src="/icons/upload-image-icon.svg" width={24} height={24} alt="upload-image-icon" />
                                             </button>
                                         </div>
                                     </div>

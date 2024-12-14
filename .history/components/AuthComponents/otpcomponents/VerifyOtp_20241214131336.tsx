@@ -247,10 +247,10 @@ function VerifyOtp() {
                     height={25}
                 />
             </div>
-            <button className="flex flex-row gap-2 items-center mt-[20px] ml-10 "
-                onClick={() => router.back()}>
-                <p>&larr;</p>
-                <span className="font-medium text-base text-[#98a2b3]">Back</span>
+            <button className="flex flex-row  items-center mt-[20px] ml-10 "
+                onClick={() => router.push("/verifyotp")}>
+                <p>--</p>
+                <span className="font-medium text-base mt-[20px] ml-10 text-[#98a2b3]">Back</span>
             </button>
             <div className="flex flex-col mt-[60px] items-center h-full gap-4">
                 <h1 className=" text-[#101828] font-bold text-2xl">Verification Code</h1>

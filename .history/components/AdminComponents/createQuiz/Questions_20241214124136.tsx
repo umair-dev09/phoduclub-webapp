@@ -467,10 +467,10 @@ function Questions({ questionsList, setQuestionsList }: QuestionsProps) {
 
                                 </PopoverContent>
                             </Popover>
-                            <div
+                            {/* <div
                                 className={`pt-2 bg-[#FFFFFF] border ${isWriting ? 'border-[#D6BBFB]  shadow-[0px_0px_0px_4px_rgba(158,119,237,0.25),0px_1px_2px_0px_rgba(16,24,40,0.05)]' : 'border-[#EAECF0]'
                                     } rounded-[12px] h-auto`}>
-                                {/* Textarea for writing the description */}
+                                {/* Textarea for writing the description 
                                 <div className="bg-[#FFFFFF] ">
                                     <ReactQuill
                                         ref={quillRef}
@@ -486,9 +486,9 @@ function Questions({ questionsList, setQuestionsList }: QuestionsProps) {
 
                                 <div className="h-[66px] bg-[#FFFFFF] rounded-bl-[12px] rounded-br-[12px] flex justify-center items-center">
                                     <div className="flex flex-row w-full justify-between items-center mx-5">
-                                        {/* Formatting options */}
+                                        {/* Formatting options 
                                         <div className="h-[24px] w-[288px] gap-[24px] flex flex-row">
-                                            {/* Icons for formatting */}
+                                            {/* Icons for formatting 
                                             <button onClick={() => handleIconClick('bold')}>
                                                 <Image src="/icons/Bold.svg" width={24} height={24} alt="bold" />
                                             </button>
@@ -498,7 +498,7 @@ function Questions({ questionsList, setQuestionsList }: QuestionsProps) {
                                             <button onClick={() => handleIconClick('underline')}>
                                                 <Image src="/icons/underline-icon.svg" width={24} height={24} alt="underline-icon" />
                                             </button>
-                                            {/* Alignment options in a popover */}
+                                            {/* Alignment options in a popover 
                                             <Popover placement="bottom-start" className="flex flex-row justify-end">
                                                 <PopoverTrigger className="">
                                                     <button className="flex items-center justify-center p-1">
@@ -512,7 +512,7 @@ function Questions({ questionsList, setQuestionsList }: QuestionsProps) {
                                                     </button>
                                                 </PopoverTrigger>
                                                 <PopoverContent className="flex flex-row bg-white rounded-[8px] border-[1px] border-solid border-[#EAECF0] p-2 w-[120px] shadow-[0_2px_4px_#EAECF0] gap-2 ">
-                                                    {/* Alignment options inside the popover */}
+                                                    {/* Alignment options inside the popover 
                                                     <button onClick={() => handleIconClick("align-left")} className="flex items-center justify-center hover:bg-[#EAECF0]">
                                                         <Image src="/icons/align-left.svg" width={30} height={30} alt="align-left" />
                                                     </button>
@@ -536,7 +536,7 @@ function Questions({ questionsList, setQuestionsList }: QuestionsProps) {
                                         </div>
                                     </div>
                                 </div>
-                            </div>
+                            </div> */}
                         </div>
                     </Collapsible>
                 </div>

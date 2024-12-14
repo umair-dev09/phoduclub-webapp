@@ -276,7 +276,7 @@ export default function Sign() {
                                 onChange={() => handleInputChange('terms', '')}
                             />
                             <label className='text-sm text-gray-900 mb-1.5' htmlFor="terms">
-                                I agree to the Phodu.club <a href="https://phodu.club/privacy-policy/" className="text-[#6646A2] underline">privacy policy</a> and <a href="https://phodu.club/terms-and-conditions/" className="text-[#6646A2] underline">terms of use</a>.
+                                I agree to the Phodu.club <a href="#https://phodu.club/privacy-policy/" className="text-[#6646A2] underline">privacy policy</a> and <a href="#" className="text-[#6646A2] underline">terms of use</a>.
                             </label>
                             {isSubmitted && errors.terms && (
                                 <div id="terms_error" className="text-red-500 text-[12px] mt-[2px]">

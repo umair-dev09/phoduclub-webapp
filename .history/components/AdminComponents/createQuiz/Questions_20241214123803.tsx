@@ -167,7 +167,9 @@ function Questions({ questionsList, setQuestionsList }: QuestionsProps) {
         const plainText = content.replace(/<[^>]+>/g, '').trim();
         setIsWriting(plainText.length > 0);
     };
-
+    const handleBlur = () => {
+        setIsWriting(false); // Reset isWriting when user clicks outside
+    };
 
 
     const handleIconClick = (format: string) => {
