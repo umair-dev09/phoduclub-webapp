@@ -14,7 +14,7 @@ import {
     PaginationNext,
     PaginationPrevious,
 } from "@/components/ui/pagination";
-import QuizStatus from '@/components/AdminComponents/QuizzesManagement/quizStatus';
+import QuizStatus from '@/components/AdminComponents/StatusDisplay';
 import { DatePicker } from "@nextui-org/react";
 import { now, today, CalendarDate, getLocalTimeZone, parseDateTime } from "@internationalized/date";
 import { db } from '@/firebase';

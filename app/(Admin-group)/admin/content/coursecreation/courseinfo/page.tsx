@@ -46,19 +46,7 @@ function CourseInfo() {
 
     return (
         <div className="flex w-full h-auto overflow-y-auto flex-col  p-8">
-            <div className="flex items-center">
-                <button className="flex items-center ml-1" onClick={() => router.back()}>
-                    <div className="text-[#1D2939] h-[24px] w-auto text-[16px] font-semibold">
-                        Courses
-                    </div>
-                    <div className="ml-3 w-[24px]">
-                        <Image src="/icons/course-left.svg" width={6} height={12} alt="left-arrow" />
-                    </div>
-                </button>
-                <div className="text-[#667085] h-full w-auto -ml-1 text-[16px] font-semibold">
-                    BITSET Full Course
-                </div>
-            </div>
+           
             {/* Course content */}
             <div className="bg-[#FFFFFF] mt-4 p-6 border border-solid border-[#EAECF0] rounded-[16px] flex flex-row  gap-6 h-auto">
                 <Image
@@ -121,56 +109,42 @@ function CourseInfo() {
                                 </PopoverContent>
                             </Popover>
                             {/* Button for Pause  */}
-                            {/* <button className="w-auto p-3 gap-2 flex-row flex bg-[#FFFFFF] border border-solid border-[#EAECF0] rounded-[8px] h-[40px] items-center"
+                            <button className="w-auto p-3 gap-2 flex-row flex bg-[#FFFFFF] border border-solid border-[#EAECF0] rounded-[8px] h-[40px] items-center"
                                 onClick={() => setIsPausedDialogOpen(true)}>
                                 <Image src="/icons/pausequiz.svg" width={18} height={18} alt="Paused-icon" />
                                 <span className="text-sm text-[#0C111D] font-normal">Pause</span>
                             </button>
-                            {/* Button for End  
+                            {/* Button for End */}  
                             <button className="w-auto p-3 gap-2 flex-row flex bg-[#FFFFFF] border border-solid border-[#EAECF0] rounded-[8px] h-[40px] items-center"
                                 onClick={() => setIsEndDialogOpen(true)}>
                                 <Image src="/icons/endquiz.svg" width={18} height={18} alt="End-icon" />
                                 <span className="text-sm text-[#DE3024]  font-normal">End</span>
-                            </button> */}
+                            </button>
                             {/* Button for Resume  */}
-                            {/* <button
+                            <button
                                 className="w-auto p-3 gap-2 flex-row flex rounded-[8px] h-[40px] items-center"
                                 onClick={() => setIsResumeOpen(true)}
                             >
                                 <Image src="/icons/resume.svg" width={18} height={18} alt="Resume -icon" />
                                 <span className="text-sm text-[#9012FF]  font-medium">Resume</span>
-                            </button> */}
+                            </button>
                             {/* Button for Scheduled  */}
-                            {/* <button
+                            <button
                                 className="w-auto p-3 gap-2 flex-row flex bg-[#FFFFFF] border border-solid border-[#EAECF0] rounded-[8px] h-[40px] items-center"
                                 onClick={() => setIsScheduledDialogOpen(true)}>
                                 <Image src="/icons/select-date.svg" width={18} height={18} alt="Calendar" />
                                 <span className="text-sm text-[#0C111D]  font-medium">Schedule</span>
-                            </button> */}
+                            </button>
                             {/* Button for Delete */}
-                            {/* <button
+                            <button
                                 className="w-auto p-3 gap-2 flex-row flex bg-[#FFFFFF] border border-solid border-[#EAECF0] rounded-[8px] h-[40px] items-center"
                                 onClick={() => setIsDeleteDialogOpen(true)}>
                                 <Image src="/icons/delete.svg" width={18} height={18} alt="Delete" />
                                 <span className="text-sm text-[#DE3024]  font-medium">Delete</span>
-                            </button> */}
+                            </button>
                         </div>
                     </div>
-                    <div className="flex flex-row gap-2">
-                        <div className="bg-[#EAECF0] rounded-[8px] p-2 flex flex-row gap-1">
-                            <Image
-                                src="/icons/information-circle.svg"
-                                width={20}
-                                height={20}
-                                alt="information-icon"
-                            />
-                            <span className="text-[#475467] font-normal text-[13px]">Course will be live on 12 Jan, 2024   05:30 PM</span>
-                        </div>
-                        <button
-                            onClick={() => setIsScheduledDialogOpen(true)}>
-                            <Image src="/icons/edit-icon.svg" width={18} height={18} alt="Edit-icon" />
-                        </button>
-                    </div>
+               
                     <span className="text-[#1D2939] font-bold text-lg">BITSET Full Course</span>
                     <div className=' text-[#667085] text-sm font-normal '>
                         <p>The BITSET Full Course is designed to provide students with an in-depth understanding of bit manipulation techniques and the use of bitsets in data structures.</p>

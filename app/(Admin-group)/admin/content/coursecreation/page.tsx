@@ -23,57 +23,66 @@ import Paused from "@/components/AdminComponents/QuizInfoDailogs/PauseDailogue";
 import MakeLiveNow from "@/components/AdminComponents/QuizInfoDailogs/MakeLiveNow";
 import Resume from "@/components/AdminComponents/QuizInfoDailogs/ResumeDailogue";
 import ViewAnalytics from "@/components/AdminComponents/QuizInfoDailogs/ViewAnalytics";
-import Status from '@/components/AdminComponents/QuizzesManagement/quizStatus';
+import StatusDisplay from "@/components/AdminComponents/StatusDisplay";
+import { collection, getDocs, query, where, doc, getDoc } from 'firebase/firestore';
+import { db } from "@/firebase";
+import LoadingData from "@/components/Loading";
 
-// Define types for course data
 interface Course {
-    title: string;
-    price: number; // Replaced 'questions' with 'price'
+    courseName: string;
+    price: number;
+    discountPrice: string;
+    courseId: string; 
     date: string; // Can be Date type if desired
-    opted: number;
-    participated: number;
-    status: 'live' | 'paused' | 'finished' | 'scheduled' | 'ended' | 'saved'; // Converted to lowercase
+    courseImage: string;
+    status: string;
+    publishDate: string;
 }
 
-// Mock fetchCourses function with updated types
-const fetchCourses = async (): Promise<Course[]> => {
-    const allCourses: Course[] = [
-        { title: 'Maths', price: 250, date: 'Jan 6, 2024', opted: 2147, participated: 2147, status: 'live' },
-        { title: 'Ancient Civilizations', price: 180, date: 'Mar 15, 2024', opted: 900, participated: 900, status: 'saved' },
-        { title: 'Science', price: 300, date: 'Jan 8, 2024', opted: 1875, participated: 1875, status: 'paused' },
-        { title: 'Astronomy', price: 220, date: 'Mar 17, 2024', opted: 1250, participated: 1250, status: 'saved' },
-        { title: 'History', price: 270, date: 'Jan 10, 2024', opted: 1290, participated: 1290, status: 'finished' },
-        { title: 'Geography', price: 150, date: 'Jan 12, 2024', opted: 950, participated: 950, status: 'ended' },
-        { title: 'Physics', price: 320, date: 'Feb 1, 2024', opted: 1800, participated: 1800, status: 'scheduled' },
-        { title: 'Chemistry', price: 290, date: 'Feb 3, 2024', opted: 1600, participated: 1600, status: 'live' },
-        { title: 'Creative Writing', price: 210, date: 'Mar 22, 2024', opted: 1400, participated: 1400, status: 'saved' },
-        { title: 'English Literature', price: 200, date: 'Feb 5, 2024', opted: 1950, participated: 1950, status: 'paused' },
-        { title: 'Marine Biology', price: 310, date: 'Mar 20, 2024', opted: 1150, participated: 1150, status: 'saved' },
-        { title: 'Biology', price: 280, date: 'Feb 8, 2024', opted: 2100, participated: 2100, status: 'finished' },
-        { title: 'Computer Science', price: 400, date: 'Feb 10, 2024', opted: 2200, participated: 2200, status: 'ended' },
-        { title: 'Anthropology', price: 180, date: 'Mar 28, 2024', opted: 1100, participated: 1100, status: 'saved' },
-        { title: 'Art History', price: 220, date: 'Feb 12, 2024', opted: 1700, participated: 1700, status: 'live' },
-        { title: 'Philosophy', price: 260, date: 'Feb 15, 2024', opted: 1300, participated: 1300, status: 'scheduled' },
-        { title: 'Economics', price: 290, date: 'Feb 18, 2024', opted: 1450, participated: 1450, status: 'finished' },
-        { title: 'Public Health', price: 200, date: 'Apr 2, 2024', opted: 1450, participated: 1450, status: 'saved' },
-        { title: 'Political Science', price: 240, date: 'Feb 20, 2024', opted: 1900, participated: 1900, status: 'paused' },
-        { title: 'Neuroscience', price: 310, date: 'Apr 6, 2024', opted: 1250, participated: 1250, status: 'saved' },
-        { title: 'Sociology', price: 230, date: 'Feb 25, 2024', opted: 1750, participated: 1750, status: 'live' },
-        { title: 'Psychology', price: 280, date: 'Mar 1, 2024', opted: 2000, participated: 2000, status: 'ended' },
-        { title: 'Environmental Science', price: 190, date: 'Mar 3, 2024', opted: 1500, participated: 1500, status: 'scheduled' },
-        { title: 'World History', price: 250, date: 'Mar 5, 2024', opted: 1850, participated: 1850, status: 'finished' },
-        { title: 'Ethics', price: 220, date: 'Mar 30, 2024', opted: 1000, participated: 1000, status: 'saved' },
-        { title: 'Statistics', price: 300, date: 'Mar 8, 2024', opted: 1700, participated: 1700, status: 'live' },
-        { title: 'Robotics', price: 280, date: 'Apr 4, 2024', opted: 1350, participated: 1350, status: 'saved' },
-        { title: 'Business Studies', price: 310, date: 'Mar 10, 2024', opted: 1400, participated: 1400, status: 'paused' },
-        { title: 'Music Theory', price: 150, date: 'Mar 12, 2024', opted: 1200, participated: 1200, status: 'ended' },
-        { title: 'Genetics', price: 270, date: 'Mar 25, 2024', opted: 1300, participated: 1300, status: 'saved' },
-        { title: 'Linguistics', price: 200, date: 'Apr 10, 2024', opted: 1050, participated: 1050, status: 'saved' }
-    ]
-    return allCourses;
-};
+function formatDate(dateString: string): string {
+    const date = new Date(dateString);
+    return date.toLocaleDateString("en-US", {
+        month: "short",
+        day: "numeric",
+        year: "numeric",
+    });
+}
+
 
 type Option = 'Saved' | 'Live' | 'Scheduled' | 'Pause' | 'Finished' | 'Canceled';
+
+const fetchCourses = async (): Promise<Course[]> => {
+    const coursesCollection = collection(db, 'course');
+    const coursesSnapshot = await getDocs(coursesCollection);
+
+    const coursesData = await Promise.all(
+        coursesSnapshot.docs.map(async (courseDoc) => {
+            const courseData = courseDoc.data();
+            const courseId = courseDoc.id;
+
+            // Get subcollection counts
+            // const questionsCollection = collection(db, 'course', quizId, 'Questions');
+            // const questionsSnapshot = await getDocs(questionsCollection);
+            // const questionsCount = questionsSnapshot.size;
+
+            // const studentsAttemptedCollection = collection(db, 'quiz', quizId, 'studentsAttempted');
+            // const studentsAttemptedSnapshot = await getDocs(studentsAttemptedCollection);
+            // const studentsCount = studentsAttemptedSnapshot.size;
+
+            return {
+                courseName: courseData.courseName,
+                courseId: courseData.courseId,
+                date: formatDate(courseData.publishDate),
+                status: courseData.status,
+                courseImage: courseData.courseImage,
+                price: courseData.price,
+                discountPrice: courseData.discountPrice,
+            } as Course;
+        })
+    );
+
+    return coursesData;
+};
 
 function Course() {
     const [data, setData] = useState<Course[]>([]);
@@ -88,9 +97,9 @@ function Course() {
     useEffect(() => {
         const loadCourses = async () => {
             setLoading(true);
-            const coourses = await fetchCourses();
-            setCourses(coourses);
-            setData(coourses);
+            const courses = await fetchCourses();
+            setCourses(courses);
+            setData(courses);
             setLoading(false);
         };
         loadCourses();
@@ -99,7 +108,7 @@ function Course() {
     // Filter courses based on search term
     useEffect(() => {
         const filteredCourses = Courses.filter(course =>
-            course.title.toLowerCase().includes(searchTerm.toLowerCase())
+            course.courseName.toLowerCase().includes(searchTerm.toLowerCase())
         );
         setData(filteredCourses);
         setCurrentPage(1); // Reset to first page on new search
@@ -199,7 +208,7 @@ function Course() {
         // Filter by search term
         if (searchTerm) {
             filteredCourses = filteredCourses.filter(course =>
-                course.title.toLowerCase().includes(searchTerm.toLowerCase())
+                course.courseName.toLowerCase().includes(searchTerm.toLowerCase())
             );
         }
 
@@ -376,9 +385,7 @@ function Course() {
             </div>
 
             {loading ? (
-                <div className="flex justify-center items-center h-48">
-                    <span className="text-lg">Loading courses...</span>
-                </div>
+                <LoadingData />
             ) : (
                 <div className="flex flex-1 flex-col">
                     <div className="flex flex-row items-center justify-between w-full">
@@ -430,7 +437,7 @@ function Course() {
                                                 <Image src='/icons/unfold-more-round.svg' alt="more" width={16} height={16} />
                                             </div>
                                         </th>
-                                        <th className="flex px-8 py-4 rounded-tr-xl text-[#667085] font-medium text-sm">
+                                        <th className="w-[12%] text-center px-8 py-4 rounded-tr-xl text-[#667085] font-medium text-sm">
                                             <span className="">
                                                 Status
                                             </span>
@@ -441,24 +448,24 @@ function Course() {
                                 <tbody>
                                     {currentItems.map((course, index) => (
                                         <tr key={index} className="border-t border-solid border-[#EAECF0]">
-                                            <td onClick={() => handleTabClick('/admin/content/coursecreation/courseinfo')}>
+                                            <td onClick={() => handleTabClick(`/admin/content/coursecreation/${course.courseName.toLowerCase().replace(/\s+/g, '-')}/?cId=${course.courseId}`)}>
                                                 <button className="flex flex-row items-center px-8 py-3 gap-2 text-[#9012FF] underline text-sm font-medium">
-                                                    <Image src='/images/TSM-DP.png' alt="DP" width={40} height={40} />
-                                                    <p className="text-start">BITSET Full Course</p>
+                                                    <Image className="w-10 h-10 rounded-full object-cover" src={course.courseImage || '/images/TSM-DP.png'} alt="DP" width={40} height={40} />
+                                                    <p className="text-start">{course.courseName || '-'}</p>
                                                 </button>
                                             </td>
-                                            <td className="px-8 py-4 text-center text-[#101828] text-sm"><span className="mr-1">&#8377;</span>{course.price}</td>
-                                            <td className="px-8 py-4 text-center text-[#101828] text-sm">{course.date}</td>
-                                            <td className="px-8 py-4 text-center text-[#101828] text-sm">{course.opted}</td>
-                                            <td className="px-8 py-4 text-center text-[#101828] text-sm">{course.participated}</td>
+                                            <td className="px-8 py-4 text-center text-[#101828] text-sm"><span className="mr-1">&#8377;</span>{course.discountPrice || '-'}</td>
+                                            <td className="px-8 py-4 text-center text-[#101828] text-sm">{course.date || '-'}</td>
+                                            <td className="px-8 py-4 text-center text-[#101828] text-sm">200</td>
+                                            <td className="px-8 py-4 text-center text-[#101828] text-sm">134</td>
                                             <td className="px-8 py-4 text-[#101828] text-sm">
-                                                <span className='flex items-center justify-start rounded-full'>
-                                                    <Status status={course.status} />
+                                                <span className='flex items-center justify-center rounded-full'>
+                                                          <StatusDisplay status={course.status}/>
                                                 </span>
                                             </td>
-                                            <td className="flex items-center justify-center px-8 py-4 text-[#101828] text-sm">
+                                            <td className="flex items-center justify-center px-8 py-4 text-center text-[#101828] text-sm">
                                                 <Popover placement="bottom-end">
-                                                    <PopoverTrigger className="outline-none">
+                                                    <PopoverTrigger className="flex outline-none">
                                                         <button className="ml-[30%]">
                                                             <Image
                                                                 src="/icons/three-dots.svg"
@@ -468,7 +475,7 @@ function Course() {
                                                             />
                                                         </button>
                                                     </PopoverTrigger>
-                                                    <PopoverContent className={`flex flex-col items-start text-sm font-normal py-1 px-0 bg-white border border-lightGrey rounded-md ${course.status === 'paused' ? 'w-[11.563rem]' : 'w-[10.438rem]'}`}>
+                                                    <PopoverContent className={`flex flex-col items-center text-sm font-normal py-1 px-0 bg-white border border-lightGrey rounded-md ${course.status === 'paused' ? 'w-[11.563rem]' : 'w-[10.438rem]'}`}>
                                                         {/* Option 1: Edit Course */}
                                                         <div>
                                                             {course.status === 'paused' && (

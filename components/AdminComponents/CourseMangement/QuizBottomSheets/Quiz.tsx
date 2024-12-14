@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import Drawer from "react-modern-drawer";
 import "react-modern-drawer/dist/index.css";
@@ -9,8 +9,9 @@ import Questions from "./Questions";
 import Review from "./Review";
 import Schedule from "./Schedule";
 import { auth, db, storage } from "@/firebase";
-import { collection, doc, setDoc } from "firebase/firestore";
+import { collection, doc, getDoc, getDocs, setDoc, updateDoc } from "firebase/firestore";
 import {toast} from 'react-toastify';
+import React from "react";
 // Define interfaces for question options and structure
 interface Options {
     A: string;
@@ -42,8 +43,10 @@ interface QuizProps {
     toggleDrawer: () => void;  // toggleDrawer is a function that returns void
     courseId: string;
     sectionId: string;
+    isEditing: boolean;
+    contentId: string;
 }
-function Quiz({ isOpen, toggleDrawer, courseId, sectionId }: QuizProps) {
+function Quiz({ isOpen, toggleDrawer, courseId, sectionId, isEditing, contentId }: QuizProps) {
 
     const [marksPerQ, setMarksPerQ] = useState("");
     const [nMarksPerQ, setnMarksPerQ] = useState("");
@@ -53,13 +56,86 @@ function Quiz({ isOpen, toggleDrawer, courseId, sectionId }: QuizProps) {
     const [quizName, setQuizName] = useState<string>('');
     const [quizDescription, setQuizDescription] = useState<string>('');
     const [anyQuestionAdded, setAnyQuestionAdded] = useState<string>('');
+    const [loading, setLoading] = useState(false);
 
     // Validation function to check if all fields are filled
     const [currentStep, setCurrentStep] = useState<Step>(Step.QuizInfo);
     // Add questionsList state here
     const [questionsList, setQuestionsList] = useState<Question[]>([]);
-
+   useEffect(() => {
+            if (isEditing) {
+                setLoading(true);
+                fetchContentData(contentId || '');
+            }
+            else{
+                setCurrentStep(0);
+                setQuizName('');
+                setQuizDescription('');
+                setMarksPerQ('');
+                setnMarksPerQ('');
+                setQuizScheduleDate('');
+                setTimeNumber('');
+                setTimeText('Minute(s)');
+                setQuestionsList([]);
+                setAnyQuestionAdded('');
+            }
+        }, [isEditing,contentId]);
    
+         const fetchContentData = async (contentId: string) => {
+            try {
+                const contentDocRef = doc(db, "course", courseId, 'sections', sectionId, 'content', contentId);
+                const contentDocSnap = await getDoc(contentDocRef);
+        
+                if (contentDocSnap.exists()) {
+                    const content = contentDocSnap.data();
+                    setQuizName(content.lessonHeading || '');
+                    setQuizDescription(content.lessonOverView || '');
+                    setQuizScheduleDate(content.lessonScheduleDate || '');
+                    setMarksPerQ(content.marksPerQuestion || '');
+                    setnMarksPerQ(content.nMarksPerQuestion || '');
+                    const quizTime = content.quizTime || "";
+
+                    // Use regex to extract the number and the text (Minute(s)/Hour(s))
+                    const timeMatch = quizTime.match(/(\d+)\s*(Minute\(s\)|Hour\(s\))/);
+                    
+                    if (timeMatch) {
+                        setTimeNumber(timeMatch[1]);  // The first capturing group will give the number
+                        setTimeText(timeMatch[2]);    // The second capturing group will give 'Minute(s)' or 'Hour(s)'
+                    } else {
+                        setTimeNumber("");  // Default if no match found
+                        setTimeText("Minute(s)");    // Default if no match found
+                    }
+
+                    const questionsCollectionRef = collection(contentDocRef, "Questions");
+                                    const questionsSnapshot = await getDocs(questionsCollectionRef);
+                                    const fetchedQuestions: Question[] = questionsSnapshot.docs.map((doc) => {
+                                        const data = doc.data();
+                                        return {
+                                            question: data.question,
+                                            questionId: data.questionId,
+                                            isChecked: false,
+                                            isActive: false,
+                                            options: {
+                                                A: data.options.A,
+                                                B: data.options.B,
+                                                C: data.options.C,
+                                                D: data.options.D
+                                            },
+                                            correctAnswer: data.correctAnswer?.replace('option', ''),
+                                            explanation: data.answerExplanation || ''
+                                        };
+                                    });
+                                    setQuestionsList(fetchedQuestions);
+                    setLoading(false);
+                } else {
+                    toast.error("Content not found!");
+                }
+            } catch (error) {
+                console.error("Error fetching quiz data:", error);
+                toast.error("Error loading content data.");
+            }
+        };    
+
     // Validation function to check if all fields are filled for the Questions step
     const isFormValid = () => {
         if (currentStep === Step.QuizInfo) {
@@ -68,18 +144,21 @@ function Quiz({ isOpen, toggleDrawer, courseId, sectionId }: QuizProps) {
         else if(currentStep === Step.Schedule){
             return marksPerQ.trim() !== '' && quizScheduleDate.trim() !== '' && nMarksPerQ.trim() !== '' && timeNumber.trim() !== '' && timeText.trim() !== '' ;
         }
-            
-         return anyQuestionAdded !== '' && questionsList.every(question =>
-                question.question.trim() !== '' &&
-                question.options.A.trim() !== '' &&
-                question.options.B.trim() !== '' &&
-                question.options.C.trim() !== '' &&
-                question.options.D.trim() !== '' &&
-                question.correctAnswer !== null &&
-                question.explanation.trim() !== ''
-            );  
-        
-        
+        else if(currentStep === Step.Questions && isEditing){  
+            return true;
+        } 
+        else if(currentStep === Step.Review && isEditing){  
+            return true;
+        } 
+        return anyQuestionAdded !== '' && questionsList.every(question =>
+            question.question.trim() !== '' &&
+            question.options.A.trim() !== '' &&
+            question.options.B.trim() !== '' &&
+            question.options.C.trim() !== '' &&
+            question.options.D.trim() !== '' &&
+            question.correctAnswer !== null &&
+            question.explanation.trim() !== ''
+        );  
     };
 
     const isNextButtonDisabled = !isFormValid();
@@ -146,6 +225,61 @@ function Quiz({ isOpen, toggleDrawer, courseId, sectionId }: QuizProps) {
     
     const handleSaveClick = async () => {
         try {
+            if(isEditing){
+              const contentRef = doc(db, "course", courseId, 'sections', sectionId, 'content', contentId);
+                  const courseData = { 
+                    lessonHeading: quizName,
+                lessonOverView: quizDescription, 
+                lessonScheduleDate: quizScheduleDate,
+                quizTime: timeNumber + " " + timeText,
+                marksPerQuestion: marksPerQ,
+                nMarksPerQuestion: nMarksPerQ,
+                     };
+                 await updateDoc(contentRef, courseData);
+                 for (let question of questionsList) {
+                    const questionRef = doc(collection(contentRef, "Questions"), question.questionId || '');
+                    const questionId = questionRef.id;
+    
+                    const options = {
+                        A: question.options.A,
+                        B: question.options.B,
+                        C: question.options.C,
+                        D: question.options.D,
+                    };
+    
+                    let correctAnswer;
+                    switch (question.correctAnswer) {
+                        case "A":
+                            correctAnswer = 'A';
+                            break;
+                        case "B":
+                            correctAnswer = 'B';
+                            break;
+                        case "C":
+                            correctAnswer = 'C';
+                            break;
+                        case "D":
+                            correctAnswer = 'D';
+                            break;
+                        default:
+                            correctAnswer = null;
+                    }
+    
+                    const questionData = {
+                        questionId,
+                        question: question.question,
+                        options,
+                        correctAnswer,
+                        answerExplanation: question.explanation,
+                    };
+    
+                    await updateDoc(questionRef, questionData);
+                }
+                 toast.success('Changes saved!');
+                 toggleDrawer();
+                 
+            }
+            else{
             // Generate a unique section ID (Firestore will auto-generate if you use addDoc)
             // const newContentRef = doc(collection(db, 'course', courseId, 'sections', sectionId, 'content')); 
             const newContentRef = doc(collection(db, 'course', courseId, 'sections', sectionId, 'content'));
@@ -216,6 +350,7 @@ function Quiz({ isOpen, toggleDrawer, courseId, sectionId }: QuizProps) {
             setTimeText('Minute(s)');
             setQuestionsList([]);
             setAnyQuestionAdded('');
+        }
           } catch (error) {
             console.error('Error adding quiz: ', error);
           }

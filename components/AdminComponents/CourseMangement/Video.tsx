@@ -12,7 +12,7 @@ import {DatePicker} from "@nextui-org/react";
 import { today, getLocalTimeZone,DateValue, parseDate,} from "@internationalized/date";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { auth, db, storage } from "@/firebase";
-import { collection, doc, setDoc } from "firebase/firestore";
+import { collection, doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
 import {toast} from 'react-toastify';
 // Define the props interface
 interface VideoProps {
@@ -20,8 +20,10 @@ interface VideoProps {
     toggleDrawer: () => void;  // toggleDrawer is a function that returns void
     courseId: string;
     sectionId: string;
+    isEditing: boolean;
+    contentId: string;
 }
-function Video({ isOpen, toggleDrawer, sectionId, courseId }: VideoProps) {
+function Video({ isOpen, toggleDrawer, sectionId, courseId, isEditing, contentId}: VideoProps) {
     // state for ReactQuill
     const quillRef = useRef<ReactQuill | null>(null); // Ref to hold ReactQuill instance
     const [quill, setQuill] = useState<Quill | null>(null);
@@ -36,8 +38,49 @@ function Video({ isOpen, toggleDrawer, sectionId, courseId }: VideoProps) {
     const [progress, setProgress] = useState<number | null>(null);
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
     const [uploadTaskRef, setUploadTaskRef] = useState<any>(null); // State to hold the upload task reference
+    const [loading, setLoading] = useState(false);
 
     const isFormValid = lessonHeading && lessonOverView && videoLink && contentScheduleDate;
+
+    
+        useEffect(() => {
+                if (isEditing) {
+                    setLoading(true);
+                    fetchContentData(contentId || '');
+                }
+                else{
+                    setLessonHeading('');
+            setLessonOverView('');
+            setVideoLink(null);
+            setProgress(null); // Reset progress
+            setFileName(null);
+            setContentScheduleDate('');
+            setDisscusionOpen(false);
+                }
+            }, [isEditing,contentId]);
+
+             const fetchContentData = async (contentId: string) => {
+            try {
+                const contentDocRef = doc(db, "course", courseId, 'sections', sectionId, 'content', contentId);
+                const contentDocSnap = await getDoc(contentDocRef);
+        
+                if (contentDocSnap.exists()) {
+                    const content = contentDocSnap.data();
+                    setLessonHeading(content.lessonHeading || '');
+                    setLessonOverView(content.lessonOverView || '');
+                    setVideoLink(content.videoLink || '');
+                    setContentScheduleDate(content.lessonScheduleDate || '');
+                    setDisscusionOpen(content.isDisscusionOpen || '');
+                    setFileName(content.videoFileName);
+                    setLoading(false);
+                } else {
+                    toast.error("Content not found!");
+                }
+            } catch (error) {
+                console.error("Error fetching quiz data:", error);
+                toast.error("Error loading content data.");
+            }
+        };    
 
     const handleChange = (content: string) => {
         setLessonOverView(content);
@@ -203,6 +246,22 @@ function Video({ isOpen, toggleDrawer, sectionId, courseId }: VideoProps) {
 
     const handleSaveVideo = async () => {
         try {
+            
+            if(isEditing){
+                 const contentRef = doc(db, "course", courseId, 'sections', sectionId, 'content', contentId);
+                                  const courseData = {
+                                    lessonHeading: lessonHeading,
+                                    lessonOverView: lessonOverView,
+                                    videoLink: videoLink ? videoLink : null,
+                                    lessonScheduleDate: contentScheduleDate,
+                                    isDisscusionOpen: disscusionOpen,
+                                    videoFileName: fileName,
+                                     };
+                                 await updateDoc(contentRef, courseData);
+                                 toast.success('Changes saved!');
+                                 toggleDrawer();
+            }
+            else{
             // Generate a unique section ID (Firestore will auto-generate if you use addDoc)
             const newContentRef = doc(collection(db, 'course', courseId, 'sections', sectionId, 'content')); // No need for custom sectionId generation if using Firestore auto-ID
             await setDoc(newContentRef, {
@@ -213,6 +272,7 @@ function Video({ isOpen, toggleDrawer, sectionId, courseId }: VideoProps) {
               videoLink: videoLink ? videoLink : null,
               lessonScheduleDate: contentScheduleDate,
               isDisscusionOpen: disscusionOpen,
+              videoFileName: fileName,
             });
             toast.success('Video Content added!');
             toggleDrawer();
@@ -223,6 +283,7 @@ function Video({ isOpen, toggleDrawer, sectionId, courseId }: VideoProps) {
             setFileName(null);
             setContentScheduleDate('');
             setDisscusionOpen(false);
+        }
           } catch (error) {
             console.error('Error adding content: ', error);
           }
@@ -344,7 +405,7 @@ function Video({ isOpen, toggleDrawer, sectionId, courseId }: VideoProps) {
                             {/* Upload the Image */}
                             <div className=" flex flex-col gap-2">
                                 <span className="text-[#1D2939] font-semibold text-sm">Upload Video</span>
-                                {!fileName &&(
+                                {!videoLink &&(
                                 <div className="h-[148px] rounded-xl bg-[#F9FAFB] border-2 border-dashed border-[#D0D5DD]"
                                 onDragOver={handleDragOver}
                                 onDrop={handleDrop}>
@@ -376,7 +437,7 @@ function Video({ isOpen, toggleDrawer, sectionId, courseId }: VideoProps) {
                                 </div>
                                 )}
                                
-                                {fileName && (
+                                {videoLink && (
                                  <div className="border border-solid border-[#EAECF0] rounded-md h-[58px] flex flex-row justify-between items-center px-4">
                                  <div className="flex flex-row gap-1 items-center">
                                      <Image className="w-[30px] h-[20px]" src='/icons/play.svg' alt="Video" width={32} height={15} />

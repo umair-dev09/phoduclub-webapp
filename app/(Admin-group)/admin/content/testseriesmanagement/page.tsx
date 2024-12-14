@@ -23,7 +23,7 @@ import Paused from "@/components/AdminComponents/QuizInfoDailogs/PauseDailogue";
 import MakeLiveNow from "@/components/AdminComponents/QuizInfoDailogs/MakeLiveNow";
 import Resume from "@/components/AdminComponents/QuizInfoDailogs/ResumeDailogue";
 import ViewAnalytics from "@/components/AdminComponents/QuizInfoDailogs/ViewAnalytics";
-import Status from '@/components/AdminComponents/QuizzesManagement/quizStatus';
+import Status from '@/components/AdminComponents/StatusDisplay';
 import test from "node:test";
 
 // Define types for test data
@@ -54,30 +54,7 @@ const fetchTests = async (): Promise<Test[]> => {
         { title: 'Concept Mastery Challenge', questions: 12, date: 'Jan 10, 2024', students: 1290, status: 'finished' },
         { title: 'Quick Revision Test', questions: 6, date: 'Jan 12, 2024', students: 950, status: 'ended' },
         { title: 'February Marathon Quiz', questions: 15, date: 'Feb 1, 2024', students: 1800, status: 'scheduled' },
-        { title: 'Ace JEE Mock Test', questions: 9, date: 'Feb 3, 2024', students: 1600, status: 'live' },
-        { title: 'Comprehensive Chemistry Drill', questions: 12, date: 'Mar 22, 2024', students: 1400, status: 'saved' },
-        { title: 'Physics Power Practice', questions: 12, date: 'Feb 5, 2024', students: 1950, status: 'paused' },
-        { title: 'Math Proficiency Quiz', questions: 9, date: 'Mar 20, 2024', students: 1150, status: 'saved' },
-        { title: 'Final Sprint Test', questions: 10, date: 'Feb 8, 2024', students: 2100, status: 'finished' },
-        { title: 'Endgame Practice Exam', questions: 8, date: 'Feb 10, 2024', students: 2200, status: 'ended' },
-        { title: 'Basic Concepts Practice', questions: 6, date: 'Mar 28, 2024', students: 1100, status: 'saved' },
-        { title: 'JEE Essentials Test', questions: 7, date: 'Feb 12, 2024', students: 1700, status: 'live' },
-        { title: 'Math Drill Series', questions: 10, date: 'Feb 15, 2024', students: 1300, status: 'scheduled' },
-        { title: 'Physics Insight Challenge', questions: 11, date: 'Feb 18, 2024', students: 1450, status: 'finished' },
-        { title: 'JEE Mock Drill - March Edition', questions: 10, date: 'Apr 2, 2024', students: 1450, status: 'saved' },
-        { title: 'Problem Solving Test', questions: 9, date: 'Feb 20, 2024', students: 1900, status: 'paused' },
-        { title: 'Chemical Concepts Practice', questions: 10, date: 'Apr 6, 2024', students: 1250, status: 'saved' },
-        { title: 'JEE Advanced Prep Test', questions: 12, date: 'Feb 25, 2024', students: 1750, status: 'live' },
-        { title: 'Physics Recall Test', questions: 8, date: 'Mar 1, 2024', students: 2000, status: 'ended' },
-        { title: 'Challenge Day Mock Test', questions: 7, date: 'Mar 3, 2024', students: 1500, status: 'scheduled' },
-        { title: 'March Excellence Test', questions: 10, date: 'Mar 5, 2024', students: 1850, status: 'finished' },
-        { title: 'Subject Mastery Drill', questions: 11, date: 'Mar 30, 2024', students: 1000, status: 'saved' },
-        { title: 'Dynamic Quiz Series', questions: 9, date: 'Mar 8, 2024', students: 1700, status: 'live' },
-        { title: 'Topic Deep Dive Quiz', questions: 8, date: 'Apr 4, 2024', students: 1350, status: 'saved' },
-        { title: 'February Physics Test', questions: 8, date: 'Mar 10, 2024', students: 1400, status: 'paused' },
-        { title: 'Speed Quiz Series', questions: 6, date: 'Mar 12, 2024', students: 1200, status: 'ended' },
-        { title: 'Practice Makes Perfect Test', questions: 8, date: 'Mar 25, 2024', students: 1300, status: 'saved' },
-        { title: 'Advanced Skills Quiz', questions: 7, date: 'Apr 10, 2024', students: 1050, status: 'saved' }
+        
     ];
     return allTests;
 };

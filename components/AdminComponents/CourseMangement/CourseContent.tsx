@@ -77,8 +77,9 @@ const formatScheduleDate = (dateString: string | null): string => {
   };
 
 function CourseContent({courseId}:CourseContentProps) {
-    const [isCreateSection, setIsCreateSection] = useState(false);
+    const [openSectionDialog, setOpenSectionDialog] = useState(false);
     const [hasClickedCreate, setHasClickedCreate] = useState(false);
+    const [contentPopupOpen, setContentPopupOpen] = useState(false);
     const [name, setName] = useState("");
     const [sectionScheduleDate, setSectionScheduleDate] = useState(""); 
     const [showDrawerfortest, setShowDrawerfortest] = useState(false);
@@ -88,7 +89,8 @@ function CourseContent({courseId}:CourseContentProps) {
     const [loading, setLoading] = useState(true);
     const [isSectionEditing, setIsSectionEditing] = useState(false);
     const [passedSectionId, setPassedSectionId] = useState('');
-
+    const [isContentEditing, setIsContentEditing] = useState(false);
+    const [contentId, setContentId] = useState('');
     const [dateForPicker, setDateForPicker] = useState<DateValue | null>(null);
 
     useEffect(() => {
@@ -151,19 +153,21 @@ function CourseContent({courseId}:CourseContentProps) {
     
       
     const openCreateSection = () => {
-        setIsCreateSection(true);
+        setOpenSectionDialog(true);
+        setName('');
+        setSectionScheduleDate('');
+        setPassedSectionId('');
+        setDateForPicker(null);
     };
     const editCreateSection = async (secName: string, secDate: string, secId: string) => {
-        setIsCreateSection(true);
+        setIsSectionEditing(true);
+        setOpenSectionDialog(true);
         setName(secName);
         setSectionScheduleDate(secDate);
-        const parsedDate = parseAbsoluteToLocal(secDate); // Converts string to DateValue
-       setDateForPicker(parsedDate);
-       setIsSectionEditing(true);
        setPassedSectionId(secId);
     };
     const closeCreateSection = () => {
-        setIsCreateSection(false);
+        setOpenSectionDialog(false);
         setHasClickedCreate(true);
     };
 
@@ -190,22 +194,32 @@ function CourseContent({courseId}:CourseContentProps) {
        
         if(isSectionEditing){
             try {
-                // Generate a unique section ID (Firestore will auto-generate if you use addDoc)
-                const newSectionRef = doc(db, 'course', courseId, 'sections',passedSectionId); // No need for custom sectionId generation if using Firestore auto-ID
+                if (!courseId || !passedSectionId) {
+                    throw new Error("Invalid course ID or section ID");
+                }
+            
+                // Generate a valid document reference
+                const newSectionRef = doc(db, `course/${courseId}/sections/${passedSectionId}`);
+            
+                // Update the section
                 await updateDoc(newSectionRef, {
-                  sectionName: name,
-                  sectionScheduleDate: sectionScheduleDate,
+                    sectionName: name,
+                    sectionScheduleDate: sectionScheduleDate,
                 });
-                toast.success('Section added successfully');
+            
+                toast.success('Changes saved successfully');
                 closeCreateSection();
+            
+                // Reset the form and states
                 setName('');
                 setSectionScheduleDate('');
                 setPassedSectionId('');
                 setIsSectionEditing(false);
                 setDateForPicker(null);
-              } catch (error) {
-                console.error('Error adding section: ', error);
-              }
+            } catch (error) {
+                console.error('Error adding section:', error);
+                toast.error('Failed to save changes. Please try again.');
+            }
         }
         else{
         try {
@@ -240,6 +254,20 @@ function CourseContent({courseId}:CourseContentProps) {
           console.error('Error deleting section:', error);
         }
       };
+
+      const handleDeleteContent = async (sectionId: string, contentId: string) => {
+        try {
+          // Create a reference to the specific section document
+          const sectionRef = doc(db, 'course', courseId, 'sections', sectionId, 'content', contentId);
+      
+          // Delete the section document
+          await deleteDoc(sectionRef);
+      
+          toast.success('Content deleted successfully!');
+        } catch (error) {
+          console.error('Error deleting section:', error);
+        }
+      };  
 
     if (loading) {
         return <LoadingData/>
@@ -311,7 +339,7 @@ function CourseContent({courseId}:CourseContentProps) {
 
                           
                             <Popover 
-                                placement="bottom">
+                                placement="bottom" >
                                 <PopoverTrigger>
                                 <button
                                     className="flex flex-row gap-1 items-center rounded-md  h-[44px] w-auto justify-center"
@@ -322,17 +350,17 @@ function CourseContent({courseId}:CourseContentProps) {
                                 </PopoverTrigger>
                                 <PopoverContent className="flex flex-col px-0 text-sm font-normal bg-white border border-lightGrey rounded-md w-[167px] shadow-md">
                                     <button className=" p-3 gap-2 flex-row flex h-[40px] hover:bg-[#F2F4F7] w-full"
-                                        onClick={() => {openDrawerfortest(); setPassedSectionId(section.sectionId)}}>
+                                        onClick={() => {openDrawerfortest(); setPassedSectionId(section.sectionId);  setIsContentEditing(false)}}>
                                         <Image src="/icons/read.svg" alt="learn-icon" width={20} height={20} />
                                         <span className="text-sm text-[#0C111D] font-normal">Text</span>
                                     </button>
                                     <button className=" p-3 gap-2 flex-row flex h-[40px] hover:bg-[#F2F4F7] w-full"
-                                        onClick={() => {openDrawerforVideo(); setPassedSectionId(section.sectionId)}}>
+                                        onClick={() => {openDrawerforVideo(); setPassedSectionId(section.sectionId); setIsContentEditing(false)}}>
                                         <Image src="/icons/vedio.svg" alt="video-icon" width={20} height={20} />
                                         <span className="text-sm text-[#0C111D] font-normal">Video</span>
                                     </button>
                                     <button className=" p-3 gap-2 flex-row flex h-[40px] hover:bg-[#F2F4F7] w-full"
-                                        onClick={() => {openDrawerforQuiz(); setPassedSectionId(section.sectionId)}}>
+                                        onClick={() => {openDrawerforQuiz(); setPassedSectionId(section.sectionId); setIsContentEditing(false)}}>
                                         <Image src="/icons/test.svg" alt="test-icon" width={20} height={20} />
                                         <span className="text-sm text-[#0C111D] font-normal">Quiz</span>
                                     </button>
@@ -412,12 +440,22 @@ function CourseContent({courseId}:CourseContentProps) {
                                             <PopoverContent className="flex px-0 rounded-md w-auto py-2">
                                                 <div >
                                                     <button className="flex flex-row items-center justify-start w-full py-2 gap-2 hover:bg-[#F2F4F7] pl-4 pr-9"
-                                                        >
+                                                       onClick={() =>{
+                                                        if(content.type === 'Quiz'){
+                                                            setShowDrawerforQuiz(true);
+                                                        }
+                                                        else if(content.type === 'Video'){
+                                                            setShowDrawerforVideo(true);
+                                                        }
+                                                        else if(content.type === 'Text'){
+                                                            setShowDrawerfortest(true);
+                                                        }
+                                                        setPassedSectionId(section.sectionId); setIsContentEditing(true); setContentId(content.contentId)}} >
                                                         <Image src="/icons/edit-02.svg" width={18} height={18} alt="edit" />
                                                         <span className="text-sm text-[#0C111D] font-normal">Edit</span>
                                                     </button>
                                                     <button className=" flex flex-row items-center justify-start w-full py-2 gap-2 hover:bg-[#F2F4F7] pl-4 pr-9"
-                                                     >
+                                                      onClick={() => handleDeleteContent(section.sectionId, content.contentId)}>
                                                         <Image src='/icons/delete.svg' alt="user profile" width={18} height={18} />
                                                         <p className="text-sm text-[#DE3024] font-normal">Remove</p>
                                                     </button>
@@ -448,17 +486,17 @@ function CourseContent({courseId}:CourseContentProps) {
                                 </PopoverTrigger>
                                 <PopoverContent className="flex flex-col px-0 text-sm font-normal bg-white border border-lightGrey rounded-md w-[167px] shadow-md">
                                     <button className=" p-3 gap-2 flex-row flex h-[40px] hover:bg-[#F2F4F7] w-full"
-                                        onClick={() => {setShowDrawerfortest(true); setPassedSectionId(section.sectionId)}}>
+                                        onClick={() => {setShowDrawerfortest(true); setPassedSectionId(section.sectionId); setIsContentEditing(false) } }>
                                         <Image src="/icons/read.svg" alt="learn-icon" width={20} height={20} />
                                         <span className="text-sm text-[#0C111D] font-normal">Text</span>
                                     </button>
                                     <button className=" p-3 gap-2 flex-row flex h-[40px] hover:bg-[#F2F4F7] w-full"
-                                        onClick={() => {openDrawerforVideo(); setPassedSectionId(section.sectionId)}}>
+                                        onClick={() => {openDrawerforVideo(); setPassedSectionId(section.sectionId); setIsContentEditing(false)}}>
                                         <Image src="/icons/vedio.svg" alt="video-icon" width={20} height={20} />
                                         <span className="text-sm text-[#0C111D] font-normal">Video</span>
                                     </button>
                                     <button className=" p-3 gap-2 flex-row flex h-[40px] hover:bg-[#F2F4F7] w-full"
-                                        onClick={() => {openDrawerforQuiz(); setPassedSectionId(section.sectionId)}}>
+                                        onClick={() => {openDrawerforQuiz(); setPassedSectionId(section.sectionId); setIsContentEditing(false)}}>
                                         <Image src="/icons/test.svg" alt="test-icon" width={20} height={20} />
                                         <span className="text-sm text-[#0C111D] font-normal">Quiz</span>
                                     </button>
@@ -471,13 +509,13 @@ function CourseContent({courseId}:CourseContentProps) {
             </div>
              ))}            
 
-            <Dialog open={isCreateSection} onClose={closeCreateSection} className="relative z-50">
+            <Dialog open={openSectionDialog} onClose={closeCreateSection} className="relative z-50">
                 <DialogBackdrop className="fixed inset-0 bg-black/30" />
                 <div className="fixed inset-0 flex items-center justify-center">
                     <DialogPanel className="bg-white rounded-2xl w-[559px] h-auto">
                         <div className="flex flex-col relative gap-6">
                             <div className="flex flex-row items-center justify-between px-5 pt-4">
-                            <h3 className="text-2xl font-semibold text-[#1D2939]">Create Section</h3>
+                            <h3 className="text-2xl font-semibold text-[#1D2939]">{isSectionEditing ? 'Edit Section' : 'Create Section'}</h3>
                             <button onClick={closeCreateSection} className="">
                                 <Image src="/icons/cancel.svg" alt="Cancel" width={20} height={20} />
                             </button>
@@ -497,34 +535,15 @@ function CourseContent({courseId}:CourseContentProps) {
                             </div>
                             <div className="flex flex-col w-full gap-2 px-6 mb-2">
                                 <p className="text-start text-lg text-[#1D2939] font-semibold">Schedule Section</p>
+                                <p className="text-sm">Selected Date: {formatScheduleDate(sectionScheduleDate) || 'Date not set'}</p>
                                 <DatePicker 
                                     granularity="minute" 
                                     minValue={today(getLocalTimeZone())}
-                                    value={dateForPicker}
+                                    // value={dateForPicker}
                                     hideTimeZone
                                     onChange={(date) => {
-                                        if (date) {
-                                            // Get timezone offset in minutes
-                                            const timezoneOffset = new Date().getTimezoneOffset() * -1; // Offset in minutes
-                                            const offsetHours = Math.floor(Math.abs(timezoneOffset) / 60);
-                                            const offsetMinutes = Math.abs(timezoneOffset) % 60;
-                                            const sign = timezoneOffset >= 0 ? "+" : "-";
-                                    
-                                            // Format offset as +hh:mm or -hh:mm
-                                            const formattedOffset = `${sign}${String(offsetHours).padStart(2, "0")}:${String(offsetMinutes).padStart(2, "0")}`;
-                                    
-                                            // Combine ISO string with the offset
-                                            const isoString = date.toString().split(".")[0]; // Remove milliseconds
-                                            const dateString = `${isoString}${formattedOffset}`;
-                                    
-                                            // Set the formatted string
-                                            setSectionScheduleDate(dateString);
-                                            
-                                            const parsedDate = parseAbsoluteToLocal(sectionScheduleDate); // Converts string to DateValue
-                                            setDateForPicker(parsedDate);
-                                        } else {
-                                            setSectionScheduleDate("");
-                                        }
+                                        const dateString = date ? date.toString() : ""; // Customize format if needed
+                                        setSectionScheduleDate(dateString);  
                                     }}
                                 />       
                             </div>
@@ -535,7 +554,7 @@ function CourseContent({courseId}:CourseContentProps) {
                                     onClick={() => handleAddSection()}
                                     disabled={!isCreateSectionFilled}
                                     className={`py-[0.625rem] px-6 text-white shadow-inner-button border border-white ${!isCreateSectionFilled? 'bg-[#CDA0FC]' : 'bg-[#9012FF]'} rounded-md font-semibold text-sm`}>
-                                    Create Section
+                                    {isSectionEditing ? 'Save Changes' : 'Create Section'}
                                 </button>
                             </div>
                         </div>
@@ -543,11 +562,11 @@ function CourseContent({courseId}:CourseContentProps) {
                 </div>
             </Dialog>
             {/* Drawer for Test */}
-            <Text isOpen={showDrawerfortest} toggleDrawer={() => setShowDrawerfortest(!showDrawerfortest)} sectionId={passedSectionId} courseId={courseId}/>
+            <Text isOpen={showDrawerfortest} toggleDrawer={() => setShowDrawerfortest(!showDrawerfortest)} sectionId={passedSectionId} courseId={courseId} isEditing={isContentEditing} contentId={contentId}/>
             {/* Drawer for Quiz */}
-            <Quiz isOpen={showDrawerforQuiz} toggleDrawer={() => setShowDrawerforQuiz(!showDrawerforQuiz)} sectionId={passedSectionId} courseId={courseId}/>
+            <Quiz isOpen={showDrawerforQuiz} toggleDrawer={() => setShowDrawerforQuiz(!showDrawerforQuiz)} sectionId={passedSectionId} courseId={courseId} isEditing={isContentEditing} contentId={contentId}/>
             {/* Drawer for Video */}
-            <Video isOpen={showDrawerforVideo} toggleDrawer={() => setShowDrawerforVideo(!showDrawerforVideo)} sectionId={passedSectionId} courseId={courseId}/>
+            <Video isOpen={showDrawerforVideo} toggleDrawer={() => setShowDrawerforVideo(!showDrawerforVideo)} sectionId={passedSectionId} courseId={courseId} isEditing={isContentEditing} contentId={contentId}/>
         </div>
     );
 }

@@ -18,7 +18,7 @@ interface Options {
     C: string;
     D: string;
 } 
-interface Question {
+export interface Question {
     question: string;
     isChecked: boolean;
     isActive: boolean;
@@ -49,8 +49,8 @@ function CreateQuiz() {
     const [endDate, setEndDate] = useState("");
     let [liveQuizNow, setLiveQuizNow] = useState<boolean>(false);
     const searchParams = useSearchParams();
-    const status = searchParams.get("s");
-    const quizId = searchParams.get("qId");
+    const status = searchParams.get("s"); 
+    const quizId = searchParams.get("qId"); 
     const router = useRouter();
     const [quizName, setQuizName] = useState<string>('');
     const [quizDescription, setQuizDescription] = useState<string>('');

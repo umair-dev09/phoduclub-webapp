@@ -12,7 +12,7 @@ import StudentsAttempts from "@/components/AdminComponents/QuizInfo/StudentsAtte
 import { Popover, PopoverContent, PopoverTrigger } from "@nextui-org/popover";
 import { useRouter, useSearchParams } from 'next/navigation';
 import { doc, getDoc, collection, getDocs } from 'firebase/firestore';
-import QuizStatus from '@/components/AdminComponents/QuizzesManagement/quizStatus';
+import QuizStatus from '@/components/AdminComponents/StatusDisplay';
 import { db } from "@/firebase";
 import LoadingData from "@/components/Loading";
 import DOMPurify from 'dompurify';

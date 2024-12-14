@@ -12,6 +12,10 @@ import 'react-toastify/dist/ReactToastify.css';
 import { Dialog, DialogBackdrop, DialogPanel } from "@headlessui/react";
 import {DatePicker} from "@nextui-org/react";
 import {now, today, CalendarDate, getLocalTimeZone,parseDateTime} from "@internationalized/date";
+import StatusDisplay from "@/components/AdminComponents/StatusDisplay";
+import { Popover, PopoverContent, PopoverTrigger } from "@nextui-org/popover";
+import StudentsAttemptedCourseInfo from '@/components/AdminComponents/Courseinfo/StudentsPurchasedCourseInfo';
+import DeleteCourse from "@/components/AdminComponents/Courseinfo/DeleteCourse";
 
 type priceprops ={
     Price: number;
@@ -76,6 +80,7 @@ function courses() {
     const [startDate, setStartDate] = useState(''); 
     const [endDate, setEndDate] = useState(''); 
     const [liveCourseNow, setLiveCourseNow] = useState(false);
+    const [deleteCourseDialog, setDeleteCourseDialog] = useState(false);
 
     const isFormValid =  endDate;
 // Check if dateString is not empty and in the correct format (YYYY-MM-DD)
@@ -147,37 +152,142 @@ const currentDate = new Date();
 
     return (
         <div className="px-[32px] pt-[25px] w-full h-auto overflow-y-auto pb-24 flex flex-col gap-5 ">
+             <div className="flex items-center">
+                            <button className="flex items-center ml-1" onClick={() => router.back()}>
+                                <div className="text-[#1D2939] h-[24px] w-auto text-[16px] font-semibold">
+                                    Courses
+                                </div>
+                                <div className="ml-3 w-[24px]">
+                                    <Image src="/icons/course-left.svg" width={6} height={12} alt="left-arrow" />
+                                </div>
+                            </button>
+                            <div className="text-[#667085] h-full w-auto -ml-1 text-[16px] font-semibold">
+                                BITSET Full Course
+                            </div>
+                        </div>
             {/* Course content */}
-            <div className="bg-[#FFFFFF] p-6 border border-solid border-[#EAECF0] rounded-[16px] flex flex-row  gap-6 h-auto">
+            <div className="bg-[#FFFFFF] p-6 border border-solid border-[#EAECF0] rounded-[16px] flex flex-row  gap-6 h-auto items-center justify-center">
                 <Image
-                  className="w-[440px] h-[280px] rounded-[16px]"
+                  className="min-w-[350px] h-[280px] rounded-[16px] object-cover"
                     src={courseData?.courseImage || "/icons/image.png"}
                     width={437}
                     height={271}
                     alt="left-arrow" />
                 <div className="flex flex-col gap-4 w-full">
                     <div className="flex flex-row justify-between items-center h-[40px]">
-                        <div className="bg-[#F2F4F7] py-2 px-3 gap-1 flex flex-row rounded-[6px] items-center h-6">
-                            <span className="w-[6px] h-[6px] bg-[#182230] rounded-full "></span>
-                            <span className="font-medium text-[#182230] text-xs">{courseData?.status}</span>
-                        </div>
+                        <StatusDisplay status={courseData?.status || ''}/>
                         <div className="flex flex-row gap-2">
-                            <button className="w-auto p-3 gap-2 flex-row flex bg-[#FFFFFF] border border-solid border-[#EAECF0] rounded-[8px] h-[40px] items-center"
-                             onClick={() => setPublishDialogOpen(true)}>
+                            {/* FOR SAVED--> */}
+                            {courseData?.status === 'saved' &&(
+                                 <>
+                                  <button className="w-auto p-3 gap-2 flex-row flex bg-[#FFFFFF] border border-solid border-[#EAECF0] rounded-[8px] h-[40px] items-center">
                                 <Image src="/icons/publish-quiz.svg" width={18} height={18} alt="publish-quiz" />
                                 <span className="text-sm text-[#0C111D] font-normal">Publish</span>
                             </button>
-                            <button
-                                className="w-10 p-[10px] h-[40px] gap-1 flex-row flex  bg-[#FFFFFF] rounded-md 
-                                        border border-solid border-[#EAECF0] shadow-none"
-                                style={{ outline: "none" }}
-                            >
-                                <Image src="/icons/three-dots.svg" width={18} height={18} alt="three-dots" />
+                                 </>
+                            )}
+                           {courseData?.status === 'live' &&(
+                                  <>
+                              {/* Button for Pause  */}
+                            <button className="w-auto p-3 gap-2 flex-row flex bg-[#FFFFFF] border border-solid border-[#EAECF0] rounded-[8px] h-[40px] items-center"
+                                // onClick={() => setIsPausedDialogOpen(true)}
+                                >
+                                <Image src="/icons/pausequiz.svg" width={18} height={18} alt="Paused-icon" />
+                                <span className="text-sm text-[#0C111D] font-normal">Pause</span>
                             </button>
+                            {/* Button for End */}  
+                            <button className="w-auto p-3 gap-2 flex-row flex bg-[#FFFFFF] border border-solid border-[#EAECF0] rounded-[8px] h-[40px] items-center"
+                                // onClick={() => setIsEndDialogOpen(true)}
+                                >
+                                <Image src="/icons/endquiz.svg" width={18} height={18} alt="End-icon" />
+                                <span className="text-sm text-[#DE3024]  font-normal">End</span>
+                            </button>
+                                  </>
+                           )}
+
+                           
+                            {courseData?.status === 'paused' &&(
+                               <>
+                                {/* Button for Resume  */}
+                            <button
+                                className="w-auto p-3 gap-2 flex-row flex rounded-[8px] h-[40px] items-center"
+                                // onClick={() => setIsResumeOpen(true)}
+                            >
+                                <Image src="/icons/resume.svg" width={18} height={18} alt="Resume -icon" />
+                                <span className="text-sm text-[#9012FF]  font-medium">Resume</span>
+                            </button>
+                            {/* Button for Scheduled  */}
+                            <button
+                                className="w-auto p-3 gap-2 flex-row flex bg-[#FFFFFF] border border-solid border-[#EAECF0] rounded-[8px] h-[40px] items-center"
+                                // onClick={() => setIsScheduledDialogOpen(true)}
+                                >
+                                <Image src="/icons/select-date.svg" width={18} height={18} alt="Calendar" />
+                                <span className="text-sm text-[#0C111D]  font-medium">Schedule</span>
+                            </button>
+                               </>
+                           )}
+                        
+                        {courseData?.status === 'finished' &&(
+                            <>
+                              {/* Button for Delete */}
+                              <button
+                                className="w-auto p-3 gap-2 flex-row flex bg-[#FFFFFF] border border-solid border-[#EAECF0] rounded-[8px] h-[40px] items-center"
+                                // onClick={() => setIsDeleteDialogOpen(true)}
+                                >
+                                <Image src="/icons/delete.svg" width={18} height={18} alt="Delete" />
+                                <span className="text-sm text-[#DE3024]  font-medium">Delete</span>
+                            </button>
+                            </>
+                        )}
+                           
+                           {(courseData?.status === 'scheduled' || courseData?.status === 'saved' || courseData?.status === 'paused') &&(
+                            <>
+                             <Popover placement="bottom-end">
+                                <PopoverTrigger>
+                                    <button
+                                        className="w-10 p-[10px] h-[40px] gap-1 flex-row flex  bg-[#FFFFFF] rounded-md  focus:outline-none
+                                        border border-solid border-[#EAECF0] shadow-none">
+                                        <Image src="/icons/three-dots.svg" width={18} height={18} alt="three-dots" />
+                                    </button>
+                                </PopoverTrigger>
+                                <PopoverContent className="w-[10.438rem] py-1 px-0 bg-white border border-lightGrey rounded-md">
+                                    <button className="flex flex-row items-center justify-start w-full py-[0.625rem] px-4 gap-2 hover:bg-[#F2F4F7]"
+                                     onClick={() => router.push(`/admin/content/coursecreation/createcourse/?s=${courseData.status}&cId=${courseId}`)}>
+                                   <Image src="/icons/edit-icon.svg" width={18} height={18} alt="Edit-icon" />
+                                        <p className="text-sm text-[#0C111D] font-normal">Edit</p>
+                                    </button>
+                                    <button className=" flex flex-row items-center justify-start w-full py-[0.625rem] px-4 gap-2 hover:bg-[#F2F4F7]"
+                                        onClick={() => setDeleteCourseDialog(true)}
+                                        >
+                                        <Image src='/icons/delete.svg' alt="Delete-icon" width={18} height={18} />
+                                        <p className="text-sm text-[#DE3024] font-normal">Delete</p>
+                                    </button>
+                                </PopoverContent>
+                            </Popover>
+                            </>
+                           )}
                         </div>
                     </div>
+                    {courseData?.status === 'scheduled' &&(
+                        <div className="flex flex-row gap-2">
+                        <div className="bg-[#EAECF0] rounded-[8px] p-2 flex flex-row gap-1">
+                            <Image
+                                src="/icons/information-circle.svg"
+                                width={20}
+                                height={20}
+                                alt="information-icon"
+                            />
+                            <span className="text-[#475467] font-normal text-[13px]">Course will be live on 12 Jan, 2024   05:30 PM</span>
+                        </div>
+                        <button
+                            >
+                            <Image src="/icons/edit-icon.svg" width={18} height={18} alt="Edit-icon" />
+                        </button>
+                    </div>
+                    )}
+                
                     <span className="text-[#1D2939] font-bold text-lg">{courseData?.courseName}</span>
-                    <div className=' text-[#667085] text-sm font-normal ' dangerouslySetInnerHTML={{
+                    <div className=' text-[#667085] text-sm font-normal break-all' dangerouslySetInnerHTML={{
                     __html: courseData?.courseDescription || '',
                 }}/>
                     {/* this code below is for rating  */}
@@ -253,8 +363,8 @@ const currentDate = new Date();
             )}
             {activeTab === 'StudentsPurchased ' && (
                 <div>
-                    < StudentsPurchased />
-                </div>
+                        <StudentsAttemptedCourseInfo />
+               </div>
             )}
           
           <Dialog open={publishDialogOpen} onClose={() => setPublishDialogOpen(false)} className="relative z-50">
@@ -330,6 +440,7 @@ const currentDate = new Date();
             </Dialog>
 
         <ToastContainer/>
+        {deleteCourseDialog && <DeleteCourse open={deleteCourseDialog} onClose={() => setDeleteCourseDialog(false)} courseId={courseId || ''} courseName={courseData?.courseName || ''}/>}
         </div>
     )
 }

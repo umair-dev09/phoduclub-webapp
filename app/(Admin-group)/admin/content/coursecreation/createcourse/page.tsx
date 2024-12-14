@@ -5,12 +5,13 @@ import 'react-quill/dist/quill.snow.css';
 import ReactQuill from 'react-quill-new'; // Ensure correct import
 import Quill from 'quill'; // Import Quill to use it for types
 import { Popover, PopoverTrigger, PopoverContent } from '@nextui-org/popover';
-import { useRouter } from "next/navigation";
 import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
 import { storage, db } from '@/firebase'; // Adjust path if needed
 import { toast, ToastContainer } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
-import { collection, addDoc, updateDoc, doc } from 'firebase/firestore';
+import { collection, addDoc, updateDoc, doc, getDoc, getDocs } from 'firebase/firestore';
+import { useRouter, useSearchParams } from "next/navigation";
+import { Question } from "../../quizzesmanagement/createquiz/page";
 
 interface priceprops {
     Price: number;
@@ -29,12 +30,43 @@ function createcourse() {
     const [discountPrice, setDiscountPrice] = useState('');
     const [rating, setRating] = useState<string>('');
     const [numRatings, setNumRatings] = useState<string>('');
-    const [value, setValue] = useState(courseDescription);
     const [image, setImage] = useState<File | null>(null);
     const [imageUrl, setImageUrl] = useState<string | null>(null);
+    const searchParams = useSearchParams();
+    const status = searchParams.get("s"); 
+    const courseId = searchParams.get("cId");
+
+    useEffect(() => {
+        if (status === "saved" || status === "scheduled" || status === "paused" && courseId) {
+            fetchCourseData(courseId || '');
+        }
+    }, [status, courseId]);
+
+    
+    const fetchCourseData = async (courseId: string) => {
+        try {
+            const courseDocRef = doc(db, "course", courseId);
+            const courseDocSnap = await getDoc(courseDocRef);
+    
+            if (courseDocSnap.exists()) {
+                const courseData = courseDocSnap.data();
+                setCourseName(courseData.courseName || "");
+                setCourseDescription(courseData.courseDescription || "");
+                setImageUrl(courseData.courseImage || "");
+                setPrice(courseData.price || "");
+                setDiscountPrice(courseData.discountPrice || "");
+                setRating(courseData.rating || "");
+                setNumRatings(courseData.noOfRating || "");
+            } else {
+                toast.error("Course not found!");
+            }
+        } catch (error) {
+            console.error("Error fetching quiz data:", error);
+            toast.error("Error loading course data.");
+        }
+    };
 
     const handleChange = (content: string) => {
-        setValue(content);
         checkTextContent(content);
         setCourseDescription(content);
 
@@ -254,23 +286,40 @@ function createcourse() {
         toast.promise(
             new Promise(async (resolve, reject) => {
                 try {
-                    const docRef = await addDoc(collection(db, 'course'), {
-                        courseName: courseName,
-                        courseDescription: courseDescription,
-                        courseImage: imageUrl,
-                        price: price,
-                        discountPrice: discountPrice,
-                        rating: rating,
-                        noOfRating: numRatings,
-                        publishDate: new Date().toISOString(),
-                        status: 'saved',
-                    });
-
-                    await updateDoc(doc(db, 'course', docRef.id), {
-                        courseId: docRef.id,
-                    });
-                    resolve("Course Created!");
-                    router.replace(`/admin/content/coursecreation/createcourse/${courseName.toLowerCase().replace(/\s+/g, '-')}/?cId=${docRef.id}`)
+                    if (courseId) {
+                        const courseRef = doc(db, "course", courseId);
+                        const courseData = {
+                            courseName,
+                            courseDescription,
+                            courseImage: imageUrl,
+                            price,
+                            discountPrice,
+                            rating,
+                            noOfRating: numRatings,
+                        };
+                        await updateDoc(courseRef, courseData);
+                        router.back();
+                    }
+                    else{
+                        const docRef = await addDoc(collection(db, 'course'), {
+                            courseName: courseName,
+                            courseDescription: courseDescription,
+                            courseImage: imageUrl,
+                            price: price,
+                            discountPrice: discountPrice,
+                            rating: rating,
+                            noOfRating: numRatings,
+                            publishDate: new Date().toISOString(),
+                            status: 'saved',
+                        });
+    
+                        await updateDoc(doc(db, 'course', docRef.id), {
+                            courseId: docRef.id,
+                        });
+                        resolve("Course Created!");
+                        router.replace(`/admin/content/coursecreation/${courseName.toLowerCase().replace(/\s+/g, '-')}/?cId=${docRef.id}`)
+                    }
+                   
                 } catch (error) {
                     reject("Failed to Create Course!")
                     // Handle errors in both image upload and Firestore update
@@ -292,7 +341,7 @@ function createcourse() {
             {/* Header part*/}
             <div className="flex flex-row justify-between h-[60px] border-b border-solid border-[#D0D5DD]">
                 <div className="flex flex-row items-center">
-                    <span className="text-[#1D2939] text-lg font-semibold ">Create course</span>
+                    <span className="text-[#1D2939] text-lg font-semibold ">{courseId ? 'Edit Course' : 'Create course'}</span>
                 </div>
                 <div className="flex flex-row ">
                     <button className="h-[44px] w-[120px] rounded-md items-center flex border border-solid border-[#EAECF0] bg-[#FFFFFF] justify-center" onClick={() => router.back()}>
@@ -301,7 +350,7 @@ function createcourse() {
                     <button className={`h-[44px] w-[120px] ml-4 rounded-md items-center flex border border-solid border-white  ${!isFormValid ? 'bg-[#CDA0FC]' : 'bg-[#9012FF]'} justify-center shadow-inner-button`}
                         onClick={handleCreateClick}
                         disabled={!isFormValid}>
-                        <span className="text-[#FFFFFF] font-semibold text-sm">Create</span>
+                        <span className="text-[#FFFFFF] font-semibold text-sm">{courseId ? 'Save' : 'Create'}</span>
                     </button>
                 </div>
             </div>
@@ -332,7 +381,7 @@ function createcourse() {
                                 <ReactQuill
                                     ref={quillRef}
                                     onBlur={handleBlur}
-                                    value={value}
+                                    value={courseDescription}
                                     onChange={handleChange}
                                     onKeyDown={handleKeyDown}
                                     modules={modules}
@@ -387,9 +436,9 @@ function createcourse() {
                         </div>
                     </div>
                     {/* Upload the Image */}
-                    {image ? (
+                    {imageUrl ? (
                         <div className="flex flex-row items-center gap-3">
-                            <Image className="w-[280px] h-[190px] rounded-[4px] object-cover" src={URL.createObjectURL(image)} width={0} height={0} alt="course image" />
+                            <Image className="w-[280px] h-[190px] rounded-[4px] object-cover" src={imageUrl} width={280} height={190} alt="course image"/>
                             <button className="flex flex-row gap-1 items-center" onClick={() => { setImageUrl(null); setImage(null); }}>
                                 <Image src="/icons/delete.svg" width={18} height={18} alt="Delete icon" />
                                 <span className="text-sm font-semibold text-[#DE3024] mt-[2px]">Delete</span>

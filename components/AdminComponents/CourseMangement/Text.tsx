@@ -12,8 +12,9 @@ import {DatePicker} from "@nextui-org/react";
 import { today, getLocalTimeZone} from "@internationalized/date";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { auth, db, storage } from "@/firebase";
-import { collection, doc, setDoc } from "firebase/firestore";
+import { collection, doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
 import {toast} from 'react-toastify';
+import LoadingData from "@/components/Loading";
 
 // Define the props interface
 interface TestProps {
@@ -21,9 +22,10 @@ interface TestProps {
     toggleDrawer: () => void;  // toggleDrawer is a function that returns void
     courseId: string;
     sectionId: string;
-
+    isEditing: boolean;
+    contentId: string;
 }
-function Text({ isOpen, toggleDrawer, sectionId, courseId }: TestProps) {
+function Text({ isOpen, toggleDrawer, sectionId, courseId, isEditing, contentId }: TestProps) {
     // state for ReactQuill
     const quillRef = useRef<ReactQuill | null>(null); // Ref to hold ReactQuill instance
     const [quill, setQuill] = useState<Quill | null>(null);
@@ -35,6 +37,7 @@ function Text({ isOpen, toggleDrawer, sectionId, courseId }: TestProps) {
     const [pdfLink, setPdfLink] = useState<string | null>(null);
     const [contentScheduleDate, setContentScheduleDate] = useState('');
     const [disscusionOpen, setDisscusionOpen] = useState(false);
+    const [loading, setLoading] = useState(false);
     const [value, setValue] = useState(lessonContent);
     const [fileName, setFileName] = useState<string | null>(null); // State to hold the file name
     const [progress, setProgress] = useState<number | null>(null);
@@ -43,8 +46,48 @@ function Text({ isOpen, toggleDrawer, sectionId, courseId }: TestProps) {
 
     const isFormValid = lessonHeading && lessonOverView && lessonContent && contentScheduleDate;
 
+    useEffect(() => {
+            if (isEditing) {
+                setLoading(true);
+                fetchContentData(contentId || '');
+            }
+            else{
+                setLessonHeading('');
+                setLessonOverView('');
+                setLessonContent('');
+                setPdfLink(null);
+                setProgress(null); // Reset progress
+                setFileName(null);
+                setContentScheduleDate('');
+                setDisscusionOpen(false);
+                setValue('');
+            }
+        }, [isEditing,contentId]);
+
+      const fetchContentData = async (contentId: string) => {
+            try {
+                const contentDocRef = doc(db, "course", courseId, 'sections', sectionId, 'content', contentId);
+                const contentDocSnap = await getDoc(contentDocRef);
+        
+                if (contentDocSnap.exists()) {
+                    const content = contentDocSnap.data();
+                    setLessonHeading(content.lessonHeading || '');
+                    setLessonOverView(content.lessonOverView || '');
+                    setLessonContent(content.lessonContent || '');
+                    setPdfLink(content.pdfLink || '');
+                    setContentScheduleDate(content.lessonScheduleDate || '');
+                    setDisscusionOpen(content.isDisscusionOpen || '');
+                    setLoading(false);
+                } else {
+                    toast.error("Content not found!");
+                }
+            } catch (error) {
+                console.error("Error fetching quiz data:", error);
+                toast.error("Error loading content data.");
+            }
+        };    
+
     const handleChange = (content: string) => {
-        setValue(content);
         checkTextContent(content);
         setLessonContent(content);
     };
@@ -202,6 +245,22 @@ function Text({ isOpen, toggleDrawer, sectionId, courseId }: TestProps) {
 
     const handleSaveText = async () => {
         try {
+            if(isEditing){
+              const contentRef = doc(db, "course", courseId, 'sections', sectionId, 'content', contentId);
+                  const courseData = {
+                    lessonHeading: lessonHeading,
+                    lessonOverView: lessonOverView,
+                    lessonContent: lessonContent,
+                    pdfLink: pdfLink ? pdfLink : null,
+                    lessonScheduleDate: contentScheduleDate,
+                    isDisscusionOpen: disscusionOpen,
+                     };
+                 await updateDoc(contentRef, courseData);
+                 toast.success('Changes saved!');
+                 toggleDrawer();
+                
+            }
+            else{
             // Generate a unique section ID (Firestore will auto-generate if you use addDoc)
             const newContentRef = doc(collection(db, 'course', courseId, 'sections', sectionId, 'content')); // No need for custom sectionId generation if using Firestore auto-ID
             await setDoc(newContentRef, {
@@ -225,11 +284,16 @@ function Text({ isOpen, toggleDrawer, sectionId, courseId }: TestProps) {
             setContentScheduleDate('');
             setDisscusionOpen(false);
             setValue('');
+        }
           } catch (error) {
             console.error('Error adding content: ', error);
           }
         
     };
+    
+    if(loading){
+        return <LoadingData />
+    }
 
     return (
         <div>
@@ -294,7 +358,7 @@ function Text({ isOpen, toggleDrawer, sectionId, courseId }: TestProps) {
                                         <ReactQuill
                                             ref={quillRef}
                                             onBlur={handleBlur}
-                                            value={value}
+                                            value={lessonContent}
                                             onChange={handleChange}
                                             onKeyDown={handleKeyDown}
                                             modules={{ toolbar: false }}

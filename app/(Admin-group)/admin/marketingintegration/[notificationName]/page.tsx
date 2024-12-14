@@ -14,7 +14,7 @@ import {
     PaginationPrevious,
 } from "@/components/ui/pagination";
 import { useRouter, useSearchParams } from 'next/navigation';
-import QuizStatus from "@/components/AdminComponents/QuizzesManagement/quizStatus";
+import QuizStatus from "@/components/AdminComponents/StatusDisplay";
 import LoadingData from "@/components/Loading";
 
 // Define types for quiz data

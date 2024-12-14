@@ -1,10 +1,10 @@
 import React from 'react';
 
-interface QuizStatusProps {
+interface StatusProps {
     status: string;
 }
 
-const QuizStatus: React.FC<QuizStatusProps> = ({ status }) => {
+function StatusDisplay({status}:StatusProps) {
     const renderStatus = () => {
         switch (status) {
             case 'finished': 
@@ -50,11 +50,16 @@ const QuizStatus: React.FC<QuizStatusProps> = ({ status }) => {
                     </div>
                 );
             default:
-                return null;
+                return (
+                    <div className="bg-[#f0f0f0] py-2 px-3 gap-1 flex flex-row rounded-[6px] items-center h-6">
+                    <span className="w-[6px] h-[6px] bg-[#182230] rounded-full "></span>
+                    <span className="font-medium text-[#182230] text-xs">Undefined</span>
+                </div>
+                );
         }
     };
 
     return <div>{renderStatus()}</div>;
 };
 
-export default QuizStatus;
+export default StatusDisplay;

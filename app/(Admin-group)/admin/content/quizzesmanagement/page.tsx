@@ -24,10 +24,10 @@ import PausedQuiz from "@/components/AdminComponents/QuizInfoDailogs/PauseDailog
 import MakeLiveNow from "@/components/AdminComponents/QuizInfoDailogs/MakeLiveNow";
 import ResumeQuiz from "@/components/AdminComponents/QuizInfoDailogs/ResumeDailogue";
 import ViewAnalytics from "@/components/AdminComponents/QuizInfoDailogs/ViewAnalytics";
-import QuizStatus from '@/components/AdminComponents/QuizzesManagement/quizStatus';
 import { collection, getDocs, query, where, doc, getDoc } from 'firebase/firestore';
 import { db } from "@/firebase";
 import type { DateValue } from "@react-types/calendar"; // Correct import for DateValue from React Spectrum
+import StatusDisplay from "@/components/AdminComponents/StatusDisplay";
 
 // Define types for quiz data
 interface Quiz {
@@ -107,7 +107,10 @@ function Quizz() {
 
     const lastItemIndex = currentPage * itemsPerPage;
     const firstItemIndex = lastItemIndex - itemsPerPage;
+    
+    // Ensure `data` is correctly sliced for the current page
     const currentItems = data.slice(firstItemIndex, lastItemIndex);
+
 
     // Function to handle tab click and navigate to a new route
     const handleTabClick = (path: string) => {
@@ -435,8 +438,8 @@ function Quizz() {
                                             <td className="px-8 py-4 text-center text-[#101828] text-sm">{quiz.students}</td>
                                             <td className="px-8 py-4 text-center text-[#101828] text-sm">
                                                 <span className='flex items-center justify-start ml-[30%] rounded-full'>
-                                                    <QuizStatus status={quiz.status} />
-                                                </span>
+                                                   <StatusDisplay status={quiz.status}/>
+                                                 </span>
                                             </td>
                                             <td className="flex items-center justify-center px-8 py-4 text-[#101828] text-sm">
                                                 <Popover placement="bottom-end">
