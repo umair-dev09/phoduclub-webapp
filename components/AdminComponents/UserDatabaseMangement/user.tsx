@@ -323,7 +323,7 @@ function User() {
                         onOpenChange={(open) => setUserTypePopup(open)}
                     >
                         <PopoverTrigger>
-                            <button className={`h-[44px] w-[143px] rounded-md bg-[#FFFFFF] hover:bg-[#F2F4F7] border border-solid border-[#D0D5DD] outline-none justify-between flex items-center p-3 transition-colors ${userTypePopup
+                            <button className={`h-[44px] w-[143px] rounded-md bg-[#FFFFFF] border border-solid border-[#D0D5DD] outline-none justify-between flex items-center p-3 transition-colors ${userTypePopup
                                 ? "border-[#C7A5FF] ring-4 ring-[#E2D9F8]"
                                 : "border-[#D0D5DD]"
                                 }`}>
@@ -357,7 +357,16 @@ function User() {
                     <table className="w-full h-auto bg-white rounded-xl">
                         <thead>
                             <tr>
-                                <th className="w-[35%] text-left px-8 py-4 pl-8 rounded-tl-xl flex flex-row">
+                                <th className="w-[5%] pl-8 py-4 rounded-tl-xl">
+                                    <Checkbox
+                                        size="md"
+                                        color="primary"
+                                    // isSelected={selectedRows.size === currentItems.length && currentItems.length > 0}
+                                    // isIndeterminate={selectedRows.size > 0 && selectedRows.size < currentItems.length}
+                                    // onChange={handleHeaderCheckboxSelect}
+                                    />
+                                </th>
+                                <th className="w-[30%] text-left px-8 py-4 pl-8 rounded-tl-xl flex flex-row">
                                     <span className="text-[#667085] font-medium text-sm">Name</span>
                                 </th>
                                 <th className=" w-[25%] text-center px-8 py-4 text-[#667085] font-medium text-sm">
@@ -381,6 +390,15 @@ function User() {
                         <tbody>
                             {currentItems.map((users, index) => (
                                 <tr key={index} className="h-auto border-t border-solid border-[#EAECF0]">
+                                    <td className="text-center pl-8">
+                                        <Checkbox
+                                            size="md"
+                                            color="primary"
+                                        // isSelected={selectedRows.has(banned.name)}
+                                        // onChange={() => handleRowSelect(banned.name)}
+                                        // onClick={(e) => e.stopPropagation()}
+                                        />
+                                    </td>
                                     <td className="py-2">
                                         <div className="flex flex-row ml-8 gap-2 py-[2px]">
                                             <div className="flex items-center">
