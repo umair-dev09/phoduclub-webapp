@@ -81,8 +81,8 @@ function discussion() {
         }
     }, [value]);
     return (
-        <div className="flex-1 w-full h-auto flex flex-col  overflow-y-auto">
-            <div className=' flex flex-col px-6 gap-4'>
+        <div className="flex-1 w-full h-auto flex flex-col gap-4 overflow-y-auto">
+            <div className=' flex flex-col px-6'>
                 <div className="flex flex-col gap-4">
                     <div className="flex flex-row justify-between items-center">
                         <div className="flex flex-row gap-2">
@@ -185,9 +185,9 @@ function discussion() {
                     </div>
                 </div>
             </div>
-            <div className='justify-end bg-[#FFFFFF] w-full p-6 flex-col flex' style={{ position: 'sticky', top: '0', zIndex: '100' }}>
+            <div className=' justify-end bg-[#FFFFFF] h-auto w-full px-[-24px] flex-col flex sticky'>
 
-                <div className=" bg-[#F7F8FB] w-full border border-solid border-[#EAECF0] rounded-[12px] h-auto">
+                <div className=" bg-[#F7F8FB] border border-solid border-[#EAECF0] rounded-[12px] h-auto">
 
 
                     {/* Textarea for writing the comment */}

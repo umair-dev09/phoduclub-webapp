@@ -81,8 +81,8 @@ function discussion() {
         }
     }, [value]);
     return (
-        <div className="flex-1 w-full h-auto flex flex-col  overflow-y-auto">
-            <div className=' flex flex-col px-6 gap-4'>
+        <div className="flex-1 w-full h-auto flex flex-col gap-4 overflow-y-auto">
+            <div className=' flex flex-col px-6'>
                 <div className="flex flex-col gap-4">
                     <div className="flex flex-row justify-between items-center">
                         <div className="flex flex-row gap-2">
@@ -184,123 +184,122 @@ function discussion() {
                         </button>
                     </div>
                 </div>
-            </div>
-            <div className='justify-end bg-[#FFFFFF] w-full p-6 flex-col flex' style={{ position: 'sticky', top: '0', zIndex: '100' }}>
+                <div className=' justify-end bg-[#FFFFFF] h-auto w-full px-[-24px] flex-col flex sticky'>
 
-                <div className=" bg-[#F7F8FB] w-full border border-solid border-[#EAECF0] rounded-[12px] h-auto">
-
-
-                    {/* Textarea for writing the comment */}
-                    <div className="bg-[#F7F8FB] border-b border-solid border-b-[#EAECF0] rounded-tl-[12px] rounded-tr-[12px]">
-                        <ReactQuill
-                            ref={quillRef}
-                            value={value}
-                            onChange={handleChange}
-                            onKeyDown={handleKeyDown}
-                            modules={{ toolbar: false }}
-                            placeholder="Type your response here..."
-                            className=" text-[#1D2939] focus:outline-none rounded-b-[12px] custom-quill placeholder:not-italic"
-                            style={{
-                                minHeight: "10px", // Initial height
-                                maxHeight: "150px", // Maximum height before scrolling
-                                overflowY: "auto",  // Enable scrolling if content exceeds max height
-                                padding: "1rem",   // Padding to create space inside the editor
-                                border: 'none',
-                                fontStyle: 'normal',
-                            }}
-                        />
+                    <div className=" bg-[#F7F8FB] border border-solid border-[#EAECF0] rounded-[12px] h-auto">
 
 
+                        {/* Textarea for writing the comment */}
+                        <div className="bg-[#F7F8FB] border-b border-solid border-b-[#EAECF0] rounded-tl-[12px] rounded-tr-[12px]">
+                            <ReactQuill
+                                ref={quillRef}
+                                value={value}
+                                onChange={handleChange}
+                                onKeyDown={handleKeyDown}
+                                modules={{ toolbar: false }}
+                                placeholder="Type your response here..."
+                                className=" text-[#1D2939] focus:outline-none rounded-b-[12px] custom-quill placeholder:not-italic"
+                                style={{
+                                    minHeight: "10px", // Initial height
+                                    maxHeight: "150px", // Maximum height before scrolling
+                                    overflowY: "auto",  // Enable scrolling if content exceeds max height
+                                    padding: "1rem",   // Padding to create space inside the editor
+                                    border: 'none',
+                                    fontStyle: 'normal',
+                                }}
+                            />
 
-                    </div>
 
-                    {/* ---------------------------------------------------------------- */}
-                    {/* THIS IS  THE PART WHERE WE CHANGE THE STYLING OF COMMENT AND SEND */}
-                    <div className="h-[66px] bg-[#F7F8FB] rounded-bl-[12px] rounded-br-[12px] flex justify-center items-center">
-                        <div className="flex flex-row w-full justify-between items-center mx-5">
-                            {/* First div with text */}
-                            <div className="h-[24px] w-[288px] gap-[24px] flex flex-row ">
-                                {/* Icons */}
+
+                        </div>
+
+                        {/* ---------------------------------------------------------------- */}
+                        {/* THIS IS  THE PART WHERE WE CHANGE THE STYLING OF COMMENT AND SEND */}
+                        <div className="h-[66px] bg-[#F7F8FB] rounded-bl-[12px] rounded-br-[12px] flex justify-center items-center">
+                            <div className="flex flex-row w-full justify-between items-center mx-5">
+                                {/* First div with text */}
+                                <div className="h-[24px] w-[288px] gap-[24px] flex flex-row ">
+                                    {/* Icons */}
+                                    <button
+                                        onClick={() => handleIconClick('bold')}
+                                        className="hover:bg-[#EAECF0]"
+                                    >
+                                        <Image src="/icons/Bold.svg" width={24} height={24} alt="bold" />
+
+
+
+                                    </button>
+                                    <button
+                                        className="hover:bg-[#EAECF0]"
+                                        onClick={() => handleIconClick('italic')}>
+
+                                        <Image src="/icons/italic-icon.svg" width={24} height={24} alt="italic-icon" />
+                                    </button>
+
+                                    <button
+                                        className="hover:bg-[#EAECF0]"
+                                        onClick={() => handleIconClick('underline')}>
+                                        <Image src="/icons/underline-icon.svg" width={24} height={24} alt="underline-icon" />
+                                    </button>
+                                    {/* -------------------------------------------------------------------------------------------------------------------------------- */}
+                                    <Popover placement="bottom-start" className="flex flex-row justify-end">
+                                        <PopoverTrigger className="">
+                                            {/* Display the current alignment icon in the trigger */}
+                                            <button className="flex items-center justify-center p-1">
+                                                {alignment === 'center' ? (
+                                                    <Image src="/icons/align-middle.svg" width={24} height={26} alt="align-center" />
+                                                ) : alignment === 'right' ? (
+                                                    <Image src="/icons/align-right.svg" width={24} height={26} alt="align-right" />
+                                                ) : (
+                                                    <Image src="/icons/dropdown-icon-1.svg" width={32} height={32} alt="align-left" />
+                                                )}
+                                            </button>
+                                        </PopoverTrigger>
+
+                                        <PopoverContent className="flex flex-row bg-white rounded-[8px] border-[1px] border-solid border-[#EAECF0] px-2 w-[120px] shadow-[0_2px_4px_#EAECF0] gap-2">
+                                            {/* These buttons will be inside the popover */}
+
+                                            <button onClick={() => handleIconClick("align-left")} className="flex items-center justify-center hover:bg-[#EAECF0]">
+                                                <Image src="/icons/align-left.svg" width={30} height={30} alt="align-left" />
+                                            </button>
+                                            <button onClick={() => handleIconClick("align-center")} className="flex items-center justify-center hover:bg-[#EAECF0]">
+                                                <Image src="/icons/align-middle.svg" width={30} height={30} alt="align-center" />
+                                            </button>
+                                            <button onClick={() => handleIconClick("align-right")} className="flex items-center justify-center hover:bg-[#EAECF0]">
+                                                <Image src="/icons/align-right.svg" width={30} height={30} alt="align-right" />
+                                            </button>
+
+                                        </PopoverContent>
+                                    </Popover>
+
+
+
+
+                                    {/* --------------------------------------------------------------------------------------------------------------------------------- */}
+
+                                    <button
+                                        className="hover:bg-[#EAECF0]"
+                                        onClick={() => handleIconClick('ordered')}>
+                                        <Image src="/icons/dropdown-icon-2.svg" width={27} height={27} alt="dropdown-icon" />
+                                    </button>
+                                </div>
+                                {/* Button */}
                                 <button
-                                    onClick={() => handleIconClick('bold')}
-                                    className="hover:bg-[#EAECF0]"
-                                >
-                                    <Image src="/icons/Bold.svg" width={24} height={24} alt="bold" />
-
-
-
-                                </button>
-                                <button
-                                    className="hover:bg-[#EAECF0]"
-                                    onClick={() => handleIconClick('italic')}>
-
-                                    <Image src="/icons/italic-icon.svg" width={24} height={24} alt="italic-icon" />
-                                </button>
-
-                                <button
-                                    className="hover:bg-[#EAECF0]"
-                                    onClick={() => handleIconClick('underline')}>
-                                    <Image src="/icons/underline-icon.svg" width={24} height={24} alt="underline-icon" />
-                                </button>
-                                {/* -------------------------------------------------------------------------------------------------------------------------------- */}
-                                <Popover placement="bottom-start" className="flex flex-row justify-end">
-                                    <PopoverTrigger className="">
-                                        {/* Display the current alignment icon in the trigger */}
-                                        <button className="flex items-center justify-center p-1">
-                                            {alignment === 'center' ? (
-                                                <Image src="/icons/align-middle.svg" width={24} height={26} alt="align-center" />
-                                            ) : alignment === 'right' ? (
-                                                <Image src="/icons/align-right.svg" width={24} height={26} alt="align-right" />
-                                            ) : (
-                                                <Image src="/icons/dropdown-icon-1.svg" width={32} height={32} alt="align-left" />
-                                            )}
-                                        </button>
-                                    </PopoverTrigger>
-
-                                    <PopoverContent className="flex flex-row bg-white rounded-[8px] border-[1px] border-solid border-[#EAECF0] px-2 w-[120px] shadow-[0_2px_4px_#EAECF0] gap-2">
-                                        {/* These buttons will be inside the popover */}
-
-                                        <button onClick={() => handleIconClick("align-left")} className="flex items-center justify-center hover:bg-[#EAECF0]">
-                                            <Image src="/icons/align-left.svg" width={30} height={30} alt="align-left" />
-                                        </button>
-                                        <button onClick={() => handleIconClick("align-center")} className="flex items-center justify-center hover:bg-[#EAECF0]">
-                                            <Image src="/icons/align-middle.svg" width={30} height={30} alt="align-center" />
-                                        </button>
-                                        <button onClick={() => handleIconClick("align-right")} className="flex items-center justify-center hover:bg-[#EAECF0]">
-                                            <Image src="/icons/align-right.svg" width={30} height={30} alt="align-right" />
-                                        </button>
-
-                                    </PopoverContent>
-                                </Popover>
-
-
-
-
-                                {/* --------------------------------------------------------------------------------------------------------------------------------- */}
-
-                                <button
-                                    className="hover:bg-[#EAECF0]"
-                                    onClick={() => handleIconClick('ordered')}>
-                                    <Image src="/icons/dropdown-icon-2.svg" width={27} height={27} alt="dropdown-icon" />
-                                </button>
-                            </div>
-                            {/* Button */}
-                            <button
-                                className={` w-[88px] h-[36px] flex justify-center items-center rounded-md shadow-inner-button 
+                                    className={` w-[88px] h-[36px] flex justify-center items-center rounded-md shadow-inner-button 
                                                         ${isButtonDisabled ? 'bg-[#d8acff]' : 'bg-[#8501FF]'} 
                                                         ${isButtonDisabled ? '' : 'border border-solid border-[#800EE2]'}`}
 
-                                disabled={isButtonDisabled} // Disable button if needed
-                            >
-                                <span className="font-semibold text-[#FFFFFF] text-sm">Send</span>
-                            </button>
+                                    disabled={isButtonDisabled} // Disable button if needed
+                                >
+                                    <span className="font-semibold text-[#FFFFFF] text-sm">Send</span>
+                                </button>
+                            </div>
                         </div>
+
                     </div>
-
                 </div>
-            </div>
 
-        </div>
-    )
+            </div>
+            )
 }
-export default discussion;
+            export default discussion;

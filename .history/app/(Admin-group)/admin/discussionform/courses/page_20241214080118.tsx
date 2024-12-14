@@ -204,7 +204,7 @@ function Courses() {
                 <div className="h-[72px] p-6 flex items-center border-b border-solid border-[#EAECF0] bg-[#FFFFFF]">
                     <span className="text-[#182230] font-semibold text-base">1. Welcome and Introduction</span>
                 </div>
-                <div className=" flex flex-col flex-1 h-full w-full">
+                <div className=" flex flex-col flex-1  w-full ">
                     <Tabs
                         aria-label="Course Tabs"
                         color="primary"
@@ -234,7 +234,7 @@ function Courses() {
                         <Tab
                             key="Discussion"
                             title={
-                                <div className="flex items-center space-x-2 h-full overflow-y-auto w-full">
+                                <div className="flex items-center space-x-2">
                                     <span className="font-medium text-base">
                                         Discussion
                                     </span>

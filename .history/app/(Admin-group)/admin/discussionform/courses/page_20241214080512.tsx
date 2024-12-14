@@ -204,7 +204,7 @@ function Courses() {
                 <div className="h-[72px] p-6 flex items-center border-b border-solid border-[#EAECF0] bg-[#FFFFFF]">
                     <span className="text-[#182230] font-semibold text-base">1. Welcome and Introduction</span>
                 </div>
-                <div className=" flex flex-col flex-1 h-full w-full">
+                <div className=" flex flex-col flex-1 h-full w-full ">
                     <Tabs
                         aria-label="Course Tabs"
                         color="primary"
@@ -212,7 +212,7 @@ function Courses() {
                         selectedKey={activeTab}
                         onSelectionChange={(key) => setActiveTab(key as string)}
                         classNames={{
-                            tabList: "gap-6 w-full relative rounded-none p-0 border-b border-solid border-[#EAECF0] mx-6 mt-6",
+                            tabList: "gap-6 w-full relative rounded-none  border-b border-solid border-[#EAECF0] mx-6 mt-6",
                             cursor: "w-full bg-[#7400E0]",
                             tab: "max-w-fit px-0 h-12",
                             tabContent: "group-data-[selected=true]:text-[#7400E0] hover:text-[#7400E0] w-full",

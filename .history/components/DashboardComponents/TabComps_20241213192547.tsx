@@ -101,11 +101,11 @@ function TabComps() {
             </button>
 
             {/* Logo Section */}
-            <div className='overflow-hidden'>
-                <p className={`items-center justify-center w-10 h-10 mt-3 mb-[0.73rem] ml-[0.2rem] text-white font-bold bg-[#3c2f40] rounded-[0.375rem] transition-all ${isCollapsed ? 'flex' : 'hidden'}`}>P</p>
+            <div className='overflow-hidden '>
+                <p className={`items-center justify-center w-10 h-10 mt-3 mb-2 ml-[0.2rem] text-white font-bold bg-[#3c2f40] rounded-[0.375rem] transition-all ${isCollapsed ? 'flex' : 'hidden'}`}>P</p>
                 <div className={`flex-col mt-2 mb-[0.475rem] ml-2 transition-all ${!isCollapsed ? 'flex' : 'hidden'}`}>
                     <p className='text-white text-lg font-bold'>phodu<span className='text-[#e29ff5] text-lg font-bold'>.club</span></p>
-                    <p className='text-sm text-[#131313] font-normal'>xxxxx</p>
+                    {/* <p className='text-sm text-[#131313] font-normal'>Admin</p> */}
                 </div>
             </div>
 
