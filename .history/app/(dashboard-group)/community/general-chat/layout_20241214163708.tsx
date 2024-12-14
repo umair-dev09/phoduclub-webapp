@@ -73,10 +73,8 @@ function GeneralChatLayout({ children }: GeneralChatLayoutProps) {
                     </div>
                     <Popover placement="bottom-end">
                         <PopoverTrigger>
-                            <button className="w-[32px] h-[32px]  rounded-full flex items-center justify-center transition-all duration-300 ease-in-out hover:bg-[#F2F4F7]">
-                                <button className="border-none outline-none p-0 bg-transparent ">
-                                    <Image src='/icons/more-vertical.svg' alt="more options" width={24} height={24} />
-                                </button>
+                            <button className="border-none outline-none p-0 bg-transparent">
+                                <Image src='/icons/more-vertical.svg' alt="more options" width={24} height={24} />
                             </button>
                         </PopoverTrigger>
                         <PopoverContent className='flex flex-col bg-white w-auto h-auto py-1 px-0 border border-lightGrey rounded-md shadow-md'>
@@ -105,11 +103,11 @@ function GeneralChatLayout({ children }: GeneralChatLayoutProps) {
                                 </PopoverTrigger>
                                 <PopoverContent className="flex flex-col w-32 h-auto bg-white border border-lightGrey rounded-md py-1 px-0">
                                     {!isMuted && (
-                                        <div className=''>
-                                            <button onClick={() => { toggleMute(); closeBothPopovers(); }} className='text-sm text-[#0C111D] text-start  w-full px-4 py-[10px] hover:bg-[#F2F4F7]'>For 8 hours</button>
-                                            <button onClick={() => { toggleMute(); closeBothPopovers(); }} className='text-sm text-[#0C111D] text-start w-full px-4 py-[10px] hover:bg-[#F2F4F7]'>For 1 week</button>
-                                            <button onClick={() => { toggleMute(); closeBothPopovers(); }} className='text-sm text-[#0C111D] text-start w-full px-4 py-[10px] hover:bg-[#F2F4F7]'>Always</button>
-                                        </div>
+                                      
+                                            <button onClick={() => { toggleMute(); closeBothPopovers(); }} className='text-sm text-[#0C111D] text-start px-4 py-[10px] hover:bg-[#F2F4F7]'>For 8 hours</button>
+                                            <button onClick={() => { toggleMute(); closeBothPopovers(); }} className='text-sm text-[#0C111D] text-start px-4 py-[10px] hover:bg-[#F2F4F7]'>For 1 week</button>
+                                            <button onClick={() => { toggleMute(); closeBothPopovers(); }} className='text-sm text-[#0C111D] text-start px-4 py-[10px] hover:bg-[#F2F4F7]'>Always</button>
+
                                     )}
 
                                     {isMuted && (
