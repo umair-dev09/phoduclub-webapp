@@ -25,9 +25,6 @@ const config: Config = {
 				"text-area":
 					"0px 4px 6px -2px rgba(16, 24, 40, 0.08), 0px 12px 16px -4px rgba(16, 24, 40, 0.14)",
 			},
-			borderColor: {
-				'hover-custom': 'rgba(158, 119, 237, 0.5)', // Replace with your desired border color
-			},
 			backgroundImage: {
 				"gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
 				"gradient-conic": "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",

@@ -25,9 +25,6 @@ const config: Config = {
 				"text-area":
 					"0px 4px 6px -2px rgba(16, 24, 40, 0.08), 0px 12px 16px -4px rgba(16, 24, 40, 0.14)",
 			},
-			borderColor: {
-				'hover-custom': 'rgba(158, 119, 237, 0.5)', // Replace with your desired border color
-			},
 			backgroundImage: {
 				"gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
 				"gradient-conic": "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
@@ -64,7 +61,9 @@ const config: Config = {
 			slideUp: "slideUp 0.3s ease-out",
 			slideDown: "slideDown 0.5s ease-in-out",
 		},
-
+		boxShadow: {
+			'custom-hover': '0px 1px 2px 0px rgba(16, 24, 40, 0.05), 0px 0px 0px 4px rgba(158, 119, 237, 0.12)',
+		},
 	},
 	plugins: [
 		nextui({
