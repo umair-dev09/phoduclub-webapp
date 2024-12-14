@@ -134,9 +134,7 @@ const BottomSheet: React.FC<BottomUpSheet> = ({ closeModal, isOpen, subjectName 
         return (checkedCount / checkboxes[rowIndex].length) * 100;
     };
 
-    const [selectedPriority, setSelectedPriority] = useState<string>(
-        chapterNames.length > 0 ? getPriorityText(chapterNames[0]) : 'Priority'
-    );
+    const [selectedPriority, setSelectedPriority] = useState<string>(getPriorityText(chapterName)); // Type annotated as string
 
     const handlePriorityChange = (priority: string) => {
         setSelectedPriority(priority); // Update the selected priority

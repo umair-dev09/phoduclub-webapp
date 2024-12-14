@@ -68,19 +68,13 @@ function HelpDropDown() {
                                 <h1 className="text-[#1D2939] font-bold text-lg">
                                     Support
                                 </h1>
-                                <div
-                                    className="w-8 h-8 flex items-center justify-center  hover:rounded-full hover:bg-[#F7F8FB] transition-all duration-300 ease-in-out"
-                                >
-                                    <Image
-                                        src="/icons/cancel.svg"
-                                        alt="Cancel"
-                                        width={20}
-                                        height={20}
-                                        onClick={handleCloseAll}
-                                    />
-                                </div>
-
-
+                                <Image
+                                    src="/icons/cancel.svg"
+                                    alt="Cancel"
+                                    width={20}
+                                    height={20}
+                                    onClick={handleCloseAll}
+                                />
                             </div>
                             <span className="font-normal text-sm text-[#667085]">
                                 Lorem ipsum is a dummy text widely used in digital industry will be used here in as a preview
@@ -126,9 +120,8 @@ function HelpDropDown() {
                             </div>
                             <div className='flex flex-col gap-1'>
                                 <label htmlFor="target-year" className='mb-1 font-medium text-sm text-[#1D2939]'>Reason</label>
-                                <button
-                                    className={`rounded-md border  hover:border hover:border-hover-custom 
-                                              hover:shadow-text-area   hover:border-[#D6BBFB] border-solid ${reasonText.trim() !== "" ? "border-[#D6BBFB]" : "border-[#D0D5DD]"
+                                <div
+                                    className={`rounded-md border border-solid ${reasonText.trim() !== "" ? "border-[#D6BBFB]" : "border-[#D0D5DD]"
                                         } h-[160px]`}
                                     style={{
                                         boxShadow:
@@ -147,14 +140,14 @@ function HelpDropDown() {
                                         }}
 
                                     />
-                                </button>
+                                </div>
                             </div>
 
 
                         </div>
                         <div className="flex flex-row justify-end mx-6 my-4 gap-4">
                             <button
-                                className="py-[0.625rem] px-6 border-2 border-solid border-[#EAECF0] font-semibold text-sm text-[#1D2939] rounded-md hover:bg-[#f0f0f0]"
+                                className="py-[0.625rem] px-6 border-2 border-solid border-[#EAECF0] font-semibold text-sm text-[#1D2939] rounded-md bg-[#f0f0f0]"
                                 onClick={handleCloseAll}
                             >
                                 Cancel

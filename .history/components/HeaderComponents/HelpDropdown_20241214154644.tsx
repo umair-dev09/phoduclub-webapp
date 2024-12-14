@@ -69,7 +69,7 @@ function HelpDropDown() {
                                     Support
                                 </h1>
                                 <div
-                                    className="w-8 h-8 flex items-center justify-center  hover:rounded-full hover:bg-[#F7F8FB] transition-all duration-300 ease-in-out"
+                                    className="w-8 h-8 flex items-center justify-center  hover:rounded-full hover:bg-[#F8F0FF] transition-all duration-300 ease-in-out"
                                 >
                                     <Image
                                         src="/icons/cancel.svg"
