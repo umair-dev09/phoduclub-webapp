@@ -1,5 +1,5 @@
+import CoursesList from '@/components/DashboardComponents/LearnComponents/CourseComponents/CoursesList';
 import MainCourse from '@/components/DashboardComponents/LearnComponents/CourseComponents/MainCourse';
-import MainCourse2 from '@/components/DashboardComponents/LearnComponents/CourseComponents/MainCourse2';
 
 export default function MyCourse() {
     return (
@@ -17,7 +17,7 @@ export default function MyCourse() {
                     <h3>Suggested</h3>
                 </div>
                 <div className='flex '>
-                    <MainCourse2 />
+                    <CoursesList />
                 </div>
             </div>
         </div>
