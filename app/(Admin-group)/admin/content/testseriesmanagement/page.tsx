@@ -20,7 +20,6 @@ import ScheduledDialog from "@/components/AdminComponents/QuizInfoDailogs/schedu
 import Delete from "@/components/AdminComponents/QuizInfoDailogs/DeleteDailogue";
 import End from "@/components/AdminComponents/QuizInfoDailogs/EndDailogue";
 import Paused from "@/components/AdminComponents/QuizInfoDailogs/PauseDailogue";
-import MakeLiveNow from "@/components/AdminComponents/QuizInfoDailogs/MakeLiveNow";
 import Resume from "@/components/AdminComponents/QuizInfoDailogs/ResumeDailogue";
 import ViewAnalytics from "@/components/AdminComponents/QuizInfoDailogs/ViewAnalytics";
 import Status from '@/components/AdminComponents/StatusDisplay';
@@ -268,7 +267,7 @@ function TesstseriesInfo() {
                     {/* Select Date Button */}
                     <Popover placement="bottom" isOpen={isSelcetDateOpen} onOpenChange={(open) => setIsSelectDateOpen(open)}>
                         <PopoverTrigger>
-                            <button className="h-[44px] w-[143px] rounded-md bg-[#FFFFFF] outline-none border border-solid border-[#D0D5DD] flex items-center p-3">
+                            <button className="h-[44px] w-[143px]  hover:bg-[#F2F4F7] rounded-md bg-[#FFFFFF] border border-solid border-[#D0D5DD] flex items-center p-3" onClick={() => setIsSelectDateOpen(true)}>
                                 <Image
                                     src="/icons/select-date.svg"
                                     width={20}
@@ -307,7 +306,7 @@ function TesstseriesInfo() {
                     {/* By Status Button */}
                     <Popover placement="bottom-start">
                         <PopoverTrigger>
-                            <button className="h-[44px] w-[126px] rounded-md bg-[#FFFFFF] outline-none border border-solid border-[#D0D5DD] flex items-center justify-between p-3 cursor-pointer">
+                            <button className="h-[44px]  hover:bg-[#F2F4F7] w-[126px] rounded-md bg-[#FFFFFF] outline-none border border-solid border-[#D0D5DD] flex items-center justify-between p-3 cursor-pointer">
                                 <p className={`flex flex-row font-medium text-sm ${selectedCount > 0 ? 'text-[#182230]' : 'text-[#667085]'}`}>
                                     {selectedCount > 0 ? `${selectedCount} selected` : 'By status'}
                                 </p>
@@ -565,7 +564,6 @@ function TesstseriesInfo() {
             {isDeleteDialogOpen && <Delete onClose={closeDeleteDialog} open={true} />}
             {isEndDialogOpen && <End onClose={closeEnd} />}
             {isPausedDialogOpen && <Paused onClose={closePaused} />}
-            {isMakeLiveNowDialogOpen && < MakeLiveNow onClose={closeMakeLiveNow} open={true} />}
             {isResumeOpen && < Resume onClose={closeResume} open={true} />}
             {isViewAnalyticsOpen && < ViewAnalytics onClose={closeViewAnalytics} open={true} />}
         </div>

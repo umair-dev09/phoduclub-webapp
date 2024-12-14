@@ -21,7 +21,6 @@ import ScheduledDialog from "@/components/AdminComponents/QuizInfoDailogs/schedu
 import DeleteQuiz from "@/components/AdminComponents/QuizInfoDailogs/DeleteDailogue";
 import EndQuiz from "@/components/AdminComponents/QuizInfoDailogs/EndDailogue";
 import PausedQuiz from "@/components/AdminComponents/QuizInfoDailogs/PauseDailogue";
-import MakeLiveNow from "@/components/AdminComponents/QuizInfoDailogs/MakeLiveNow";
 import ResumeQuiz from "@/components/AdminComponents/QuizInfoDailogs/ResumeDailogue";
 import ViewAnalytics from "@/components/AdminComponents/QuizInfoDailogs/ViewAnalytics";
 import { collection, getDocs, query, where, doc, getDoc } from 'firebase/firestore';
@@ -128,7 +127,6 @@ function Quizz() {
     const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
     const [isEndDialogOpen, setIsEndDialogOpen] = useState(false);
     const [isPausedDialogOpen, setIsPausedDialogOpen] = useState(false);
-    const [isMakeLiveNowDialogOpen, setIsMakeLiveNowDialogOpen] = useState(false);
     const [isResumeQuizOpen, setIsResumeQuizOpen] = useState(false);
     const [isViewAnalyticsOpen, setIsViewAnalyticsOpen] = useState(false);
     const [isSelcetDateOpen, setIsSelectDateOpen] = useState(false);
@@ -148,10 +146,6 @@ function Quizz() {
     // Handlers for  PausedQuiz dialog
     const openPausedQuiz = () => setIsPausedDialogOpen(true);
     const closePausedQuiz = () => setIsPausedDialogOpen(false);
-
-    // Handlers for  MakeLiveNow dialog
-    const openMakeLiveNowQuiz = () => setIsMakeLiveNowDialogOpen(true);
-    const closeMakeLiveNowQuiz = () => setIsMakeLiveNowDialogOpen(false);
 
     // Handlers for ResumeQuiz dialog
     const openResumeQuiz = () => setIsResumeQuizOpen(true);
@@ -294,7 +288,7 @@ function Quizz() {
                     {/* Select Date Button */}
                     <Popover placement="bottom" isOpen={isSelcetDateOpen} onOpenChange={(open) => setIsSelectDateOpen(open)}>
                         <PopoverTrigger>
-                            <button className="h-[44px] w-[143px] rounded-md bg-[#FFFFFF] outline-none border border-solid border-[#D0D5DD] flex items-center p-3">
+                            <button className="h-[44px] w-[143px] rounded-md bg-[#FFFFFF] border border-solid border-[#D0D5DD] flex items-center p-3  hover:bg-[#F2F4F7]">
                                 <Image
                                     src="/icons/select-date.svg"
                                     width={20}
@@ -333,7 +327,7 @@ function Quizz() {
                     {/* By Status Button */}
                     <Popover placement="bottom-start">
                         <PopoverTrigger>
-                            <div className="h-[44px] w-[126px] rounded-md bg-[#FFFFFF] border border-solid border-[#D0D5DD] flex items-center justify-between p-3 cursor-pointer">
+                            <div className="h-[44px] w-[126px] hover:bg-[#F2F4F7] rounded-md bg-[#FFFFFF] border border-solid border-[#D0D5DD] flex items-center justify-between p-3 cursor-pointer">
                                 <p className={`flex flex-row font-medium text-sm ${selectedCount > 0 ? 'text-[#182230]' : 'text-[#667085]'}`}>
                                     {selectedCount > 0 ? `${selectedCount} selected` : 'By status'}
                                 </p>
@@ -592,7 +586,6 @@ function Quizz() {
             {isDeleteDialogOpen && <DeleteQuiz onClose={closeDeleteDialog} open={true} />}
             {isEndDialogOpen && <EndQuiz onClose={closeEndQuiz} />}
             {isPausedDialogOpen && <PausedQuiz onClose={closePausedQuiz} />}
-            {isMakeLiveNowDialogOpen && < MakeLiveNow onClose={closeMakeLiveNowQuiz} open={true} />}
             {isResumeQuizOpen && < ResumeQuiz onClose={closeResumeQuiz} open={true} />}
             {isViewAnalyticsOpen && < ViewAnalytics onClose={closeViewAnalytics} open={true} />}
         </div>

@@ -1,11 +1,12 @@
 "use client";
-
 import Image from "next/image";
 import { useRouter, usePathname } from "next/navigation";
-import { db } from '@/firebase';
-import { collection, getDocs, addDoc, setDoc, query, where, doc, getDoc, onSnapshot, deleteDoc, updateDoc } from 'firebase/firestore';
+import { db, auth } from '@/firebase';
+import { collection, getDocs, onSnapshot } from 'firebase/firestore';
 import { useState, useEffect } from "react";
 import LoadingData from "@/components/Loading";
+import { onAuthStateChanged } from "firebase/auth";
+
 // Import useRouter hook
 interface CourseData {
   courseName: string;
@@ -18,6 +19,7 @@ interface CourseData {
   publishDate: string;
   sections : SectionData[];
   totalContentCount: number; // Total number of content across all sections
+  StudentsPurchased: string[];
 }
 
 interface SectionData {
@@ -33,60 +35,80 @@ function CoursesList() {
      const [loading, setLoading] = useState(true);
   
      useEffect(() => {
-      const fetchCourses = async () => {
-          const coursesCollection = collection(db, 'course');
-  
-          const unsubscribe = onSnapshot(coursesCollection, async (snapshot) => {
-              const updatedCourses: CourseData[] = await Promise.all(
-                  snapshot.docs.map(async (doc) => {
-                      const courseData = doc.data();
-                      const sectionsCollection = collection(doc.ref, 'sections'); // Access the subcollection
-                      const sectionsSnapshot = await getDocs(sectionsCollection); // Fetch the subcollection documents
-                      
-                      // Map sections to include content count and calculate total content count
-                      let totalContentCount = 0;
-  
-                      const sectionsData: SectionData[] = await Promise.all(
-                          sectionsSnapshot.docs.map(async (sectionDoc) => {
-                              const sectionData = sectionDoc.data();
-                              const contentCollection = collection(sectionDoc.ref, 'content'); // Access the sub-subcollection
-                              const contentSnapshot = await getDocs(contentCollection);
-  
-                              const contentCount = contentSnapshot.size; // Count of documents in 'content'
-                              totalContentCount += contentCount; // Accumulate total content count
-  
-                              return {
-                                  sectionName: sectionData.sectionName || 'Untitled Section',
-                                  contentCount,
-                              };
-                          })
-                      );
-  
-                      return {
-                          courseName: courseData.courseName,
-                          price: courseData.price,
-                          discountPrice: courseData.discountPrice,
-                          courseId: courseData.courseId,
-                          courseImage: courseData.courseImage,
-                          status: courseData.status,
-                          date: courseData.date || '', // Provide a default value if missing
-                          publishDate: courseData.publishDate || '', // Provide a default value if missing
-                          sections: sectionsData, // Include sections with content count
-                          totalContentCount, // Add total content count for the course
-                      } as CourseData;
-                  })
+      const fetchCourses = async (currentUserId: string) => {
+        const coursesCollection = collection(db, 'course');
+    
+        const unsubscribe = onSnapshot(coursesCollection, async (snapshot) => {
+          const allCourses: CourseData[] = [];
+    
+          for (const doc of snapshot.docs) {
+            const courseData = doc.data();
+    
+            // Only add courses where the currentUserId is NOT in StudentsPurchased
+            if (!courseData.StudentsPurchased?.includes(currentUserId)) {
+              const sectionsCollection = collection(doc.ref, 'sections');
+              const sectionsSnapshot = await getDocs(sectionsCollection);
+    
+              let totalContentCount = 0;
+    
+              const sectionsData: SectionData[] = await Promise.all(
+                sectionsSnapshot.docs.map(async (sectionDoc) => {
+                  const sectionData = sectionDoc.data();
+                  const contentCollection = collection(sectionDoc.ref, 'content');
+                  const contentSnapshot = await getDocs(contentCollection);
+    
+                  const contentCount = contentSnapshot.size;
+                  totalContentCount += contentCount;
+    
+                  return {
+                    sectionName: sectionData.sectionName || 'Untitled Section',
+                    contentCount,
+                  };
+                })
               );
-  
-              setCourses(updatedCourses);
-              setLoading(false);
-          });
-  
-          // Cleanup listener on component unmount
-          return () => unsubscribe();
+    
+              allCourses.push({
+                courseName: courseData.courseName,
+                price: courseData.price,
+                discountPrice: courseData.discountPrice,
+                courseId: courseData.courseId,
+                courseImage: courseData.courseImage,
+                StudentsPurchased: courseData.StudentsPurchased,
+                status: courseData.status,
+                date: courseData.date || '',
+                publishDate: courseData.publishDate || '',
+                sections: sectionsData,
+                totalContentCount,
+              });
+            }
+          }
+    
+          setCourses(allCourses);
+          setLoading(false);
+        });
+    
+        return () => unsubscribe();
       };
-  
-      fetchCourses();
-  }, []);
+    
+      const initialize = () => {
+        setLoading(true);
+        const unsubscribeAuth = onAuthStateChanged(auth, (user) => {
+          if (user?.uid) {
+            fetchCourses(user.uid);
+          } else {
+            setCourses([]); // No user logged in
+            setLoading(false);
+          }
+        });
+    
+        return () => unsubscribeAuth();
+      };
+    
+      initialize();
+    }, []);
+    
+    
+    
   
   
 
@@ -106,7 +128,7 @@ if(loading){
           {/* Container for the suggestion badge and course image */}
           <div>
             {/* Suggestion badge with icon and text */}
-            <div className="flex items-center absolute top-3 left-5 mr-5 bg-[#FFEC45] text-xs font-medium border border-[#FFEC45] rounded-full py-1 px-3 z-10 transition-transform transition-font-size duration-300 ease-in-out">
+            <div className="flex items-center absolute top-3 left-3 mr-5 bg-[#FFEC45] text-xs font-medium border border-[#FFEC45] rounded-full py-1 px-3 z-10 transition-transform transition-font-size duration-300 ease-in-out">
               <Image
                 className="mr-[5px]"
                 src="/icons/suggestion_icon.svg"
