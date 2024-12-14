@@ -162,7 +162,7 @@ const currentDate = new Date();
                                 </div>
                             </button>
                             <div className="text-[#667085] h-full w-auto -ml-1 text-[16px] font-semibold">
-                                BITSET Full Course
+                                {courseData?.courseName}
                             </div>
                         </div>
             {/* Course content */}
@@ -172,7 +172,7 @@ const currentDate = new Date();
                     src={courseData?.courseImage || "/icons/image.png"}
                     width={437}
                     height={271}
-                    alt="left-arrow" />
+                    alt="course-image" />
                 <div className="flex flex-col gap-4 w-full">
                     <div className="flex flex-row justify-between items-center h-[40px]">
                         <StatusDisplay status={courseData?.status || ''}/>

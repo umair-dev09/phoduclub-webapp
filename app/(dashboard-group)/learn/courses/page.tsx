@@ -1,5 +1,5 @@
 import CoursesList from '@/components/DashboardComponents/LearnComponents/CourseComponents/CoursesList';
-import MainCourse from '@/components/DashboardComponents/LearnComponents/CourseComponents/MainCourse';
+import MyCourses from '@/components/DashboardComponents/LearnComponents/CourseComponents/MyCourses';
 
 export default function MyCourse() {
     return (
@@ -9,7 +9,7 @@ export default function MyCourse() {
                     <h3>My Courses</h3>
                 </div>
                 <div className='flex flex-1'>
-                    <MainCourse />
+                    <MyCourses />
                 </div>
             </div>
             <div className='flex flex-col w-full  ml-6'>

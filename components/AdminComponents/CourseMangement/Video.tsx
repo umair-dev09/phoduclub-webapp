@@ -31,6 +31,7 @@ function Video({ isOpen, toggleDrawer, sectionId, courseId, isEditing, contentId
     const [isWriting, setIsWriting] = useState(false); // Track if text is being written
     const [lessonHeading, setLessonHeading] = useState('');
     const [lessonOverView, setLessonOverView] = useState('');
+    const [videoDuration, setVideoDuration] = useState<number | null>(null);
     const [videoLink, setVideoLink] = useState<string | null>(null);
     const [contentScheduleDate, setContentScheduleDate] = useState('');
     const [disscusionOpen, setDisscusionOpen] = useState(false);
@@ -49,7 +50,7 @@ function Video({ isOpen, toggleDrawer, sectionId, courseId, isEditing, contentId
                     fetchContentData(contentId || '');
                 }
                 else{
-                    setLessonHeading('');
+             setLessonHeading('');
             setLessonOverView('');
             setVideoLink(null);
             setProgress(null); // Reset progress
@@ -57,7 +58,7 @@ function Video({ isOpen, toggleDrawer, sectionId, courseId, isEditing, contentId
             setContentScheduleDate('');
             setDisscusionOpen(false);
                 }
-            }, [isEditing,contentId]);
+            }, [isEditing, contentId]);
 
              const fetchContentData = async (contentId: string) => {
             try {
@@ -163,85 +164,133 @@ function Video({ isOpen, toggleDrawer, sectionId, courseId, isEditing, contentId
         event.preventDefault();
         event.stopPropagation();
     };
-
+    
     const handleDrop = (event: React.DragEvent<HTMLDivElement>) => {
         event.preventDefault();
         event.stopPropagation();
-      
+    
         const file = event.dataTransfer.files?.[0]; // Get the first dropped file
         if (file) {
-          if (file.type.startsWith("video/")) { // Check if the file is a Video
-            setFileName(file.name); // Set file name when a file is selected
-            setVideoLink(null); // Reset file URL until the upload is complete
-            try {
-              const storageRef = ref(storage, `CourseContentFiles/${courseId}/${sectionId}/${file.name}`);
-              const uploadTask = uploadBytesResumable(storageRef, file);
-              setUploadTaskRef(uploadTask); // Set the upload task reference
-      
-              setSelectedFile(file); // Store the selected file to access its size
-      
-              uploadTask.on(
-                "state_changed",
-                (snapshot) => {
-                  const progressPercentage = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-                  setProgress(progressPercentage);
-                },
-                (error) => {
-                  console.error("Upload error:", error);
-                  setProgress(null);
-                },
-                async () => {
-                  const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
-                  setVideoLink(downloadURL);
-                  setProgress(null);
+            if (file.type.startsWith("video/")) { // Check if the file is a video
+                setFileName(file.name); // Set file name when a file is selected
+                setVideoLink(null); // Reset file URL until the upload is complete
+    
+                // Create a video element to extract duration
+                const videoElement = document.createElement("video");
+                videoElement.src = URL.createObjectURL(file);
+                videoElement.onloadedmetadata = () => {
+                    setVideoDuration(videoElement.duration); // Set the duration in seconds
+                    URL.revokeObjectURL(videoElement.src); // Clean up the object URL
+                };
+    
+                try {
+                    const storageRef = ref(storage, `CourseContentFiles/${courseId}/${sectionId}/${file.name}`);
+                    const uploadTask = uploadBytesResumable(storageRef, file);
+                    setUploadTaskRef(uploadTask); // Set the upload task reference
+                    setSelectedFile(file); // Store the selected file to access its size
+    
+                    // Wrap the upload process with toast.promise
+                    toast.promise(
+                        new Promise((resolve, reject) => {
+                            uploadTask.on(
+                                "state_changed",
+                                (snapshot) => {
+                                    const progressPercentage = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                                    setProgress(progressPercentage);
+                                },
+                                (error) => {
+                                    console.error("Upload error:", error);
+                                    setProgress(null);
+                                    reject("Failed to upload video. Please try again.");
+                                },
+                                async () => {
+                                    try {
+                                        const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
+                                        setVideoLink(downloadURL);
+                                        setProgress(null);
+                                        resolve("Video uploaded successfully!");
+                                    } catch (error) {
+                                        console.error("Error fetching download URL:", error);
+                                        reject("Failed to fetch video URL. Please try again.");
+                                    }
+                                }
+                            );
+                        }),
+                        {
+                            pending: "Uploading video...",
+                            success: "Video uploaded successfully! 🎉",
+                            error: "Failed to upload video. Please try again.",
+                        }
+                    );
+                } catch (error) {
+                    console.error("Error uploading file:", error);
+                    toast.error("An unexpected error occurred during upload.");
                 }
-              );
-            } catch (error) {
-              console.error("Error uploading file:", error);
+            } else {
+                console.error("Invalid file type. Only Videos are allowed.");
+                alert("Only videos are allowed!");
             }
-          } else {
-            console.error("Invalid file type. Only Videos are allowed.");
-            alert("Only videos are allowed!");
-          }
         }
-      };
-      
-
+    };
+    
     const handleVideoUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
-       
         const file = event.target.files?.[0];
-        if(file){
+        if (file) {
             setFileName(file.name); // Set file name when a file is selected
             setVideoLink(null); // Reset file URL until the upload is complete
+    
+            // Create a video element to extract duration
+            const videoElement = document.createElement("video");
+            videoElement.src = URL.createObjectURL(file);
+            videoElement.onloadedmetadata = () => {
+                setVideoDuration(videoElement.duration); // Set the duration in seconds
+                URL.revokeObjectURL(videoElement.src); // Clean up the object URL
+            };
+    
             try {
                 const storageRef = ref(storage, `CourseContentFiles/${courseId}/${sectionId}/${file.name}`);
                 const uploadTask = uploadBytesResumable(storageRef, file);
                 setUploadTaskRef(uploadTask); // Set the upload task reference
-            
                 setSelectedFile(file); // Store the selected file to access its size
-            
-                uploadTask.on(
-                  "state_changed",
-                  (snapshot) => {
-                    const progressPercentage = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-                    setProgress(progressPercentage);
-                  },
-                  (error) => {
-                    console.error("Upload error:", error);
-                    setProgress(null);
-                  },
-                  async () => {
-                    const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
-                    setVideoLink(downloadURL);
-                    // setFileType(type);
-                    setProgress(null);
-                  }
+    
+                // Wrap the upload process with toast.promise
+                toast.promise(
+                    new Promise((resolve, reject) => {
+                        uploadTask.on(
+                            "state_changed",
+                            (snapshot) => {
+                                const progressPercentage = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                                setProgress(progressPercentage);
+                            },
+                            (error) => {
+                                console.error("Upload error:", error);
+                                setProgress(null);
+                                reject("Failed to upload video. Please try again.");
+                            },
+                            async () => {
+                                try {
+                                    const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
+                                    setVideoLink(downloadURL);
+                                    setProgress(null);
+                                    resolve("Video uploaded successfully!");
+                                } catch (error) {
+                                    console.error("Error fetching download URL:", error);
+                                    reject("Failed to fetch video URL. Please try again.");
+                                }
+                            }
+                        );
+                    }),
+                    {
+                        pending: "Uploading video...",
+                        success: "Video uploaded successfully!",
+                        error: "Failed to upload video. Please try again.",
+                    }
                 );
-              } catch (error) {
+            } catch (error) {
                 console.error("Error uploading file:", error);
-              }
+                toast.error("An unexpected error occurred during upload.");
+            }
         }
-       
     };
 
     const handleSaveVideo = async () => {
@@ -256,6 +305,7 @@ function Video({ isOpen, toggleDrawer, sectionId, courseId, isEditing, contentId
                                     lessonScheduleDate: contentScheduleDate,
                                     isDisscusionOpen: disscusionOpen,
                                     videoFileName: fileName,
+                                    videoDuration,
                                      };
                                  await updateDoc(contentRef, courseData);
                                  toast.success('Changes saved!');
@@ -273,6 +323,7 @@ function Video({ isOpen, toggleDrawer, sectionId, courseId, isEditing, contentId
               lessonScheduleDate: contentScheduleDate,
               isDisscusionOpen: disscusionOpen,
               videoFileName: fileName,
+              videoDuration,
             });
             toast.success('Video Content added!');
             toggleDrawer();

@@ -1,10 +1,14 @@
 "use client";
-
 import Image from "next/image";
-import { useState, useEffect } from "react";
 import { useRouter, usePathname } from "next/navigation";
+import { db, auth } from '@/firebase';
+import { collection, getDocs, onSnapshot } from 'firebase/firestore';
+import { useState, useEffect } from "react";
+import LoadingData from "@/components/Loading";
+import { onAuthStateChanged } from "firebase/auth";
 
-function Main() {
+
+function MyCourses() {
     const [activeTab, setActiveTab] = useState<string>('');
     const router = useRouter();
     const pathname = usePathname();
@@ -367,4 +371,4 @@ function Main() {
     );
 }
 
-export default Main;
+export default MyCourses;

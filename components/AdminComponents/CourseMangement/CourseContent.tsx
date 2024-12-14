@@ -15,7 +15,7 @@ import {useEffect} from 'react';
 import LoadingData from "@/components/Loading";
 import { DateTime } from 'luxon';  // Import luxon
 
-type Sections = {
+export type Sections = {
   sectionName: string;
   sectionId: string;
   sectionScheduleDate: string;
@@ -23,7 +23,7 @@ type Sections = {
   content?: Content[]; 
 } 
 
-type Content ={
+export type Content ={
   type: string;
   contentId: string;
   isDisscusionOpen: boolean;
@@ -76,7 +76,7 @@ const formatScheduleDate = (dateString: string | null): string => {
     }
   };
 
-function CourseContent({courseId}:CourseContentProps) {
+function   CourseContent({courseId}:CourseContentProps) {
     const [openSectionDialog, setOpenSectionDialog] = useState(false);
     const [hasClickedCreate, setHasClickedCreate] = useState(false);
     const [contentPopupOpen, setContentPopupOpen] = useState(false);
