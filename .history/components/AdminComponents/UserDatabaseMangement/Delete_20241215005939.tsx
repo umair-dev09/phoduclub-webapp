@@ -41,7 +41,7 @@ function Delete({ open, onClose, name, authId }: DeleteProps) {
                         <div className="flex flex-row justify-between items-center">
                             <h3 className=" font-bold text-[#1D2939]">Delete User?</h3>
                             <button className="w-[32px] h-[32px]  rounded-full flex items-center justify-center transition-all duration-300 ease-in-out hover:bg-[#F2F4F7]">
-                                <button onClick={onClose}>
+                                <button className="absolute right-6 top-6" onClick={onClose}>
                                     <Image src="/icons/cancel.svg" alt="Cancel" width={20} height={20} />
                                 </button>
                             </button>

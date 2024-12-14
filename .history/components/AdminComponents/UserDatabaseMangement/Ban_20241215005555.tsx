@@ -41,20 +41,17 @@ function Ban({ open, onClose, id, banUser }: BanProps) { // Use the interface
             <div className="fixed inset-0 flex items-center justify-center ">
                 <DialogPanel transition className="bg-white rounded-2xl w-[480px] h-auto">
                     <div className="flex flex-col gap-4 p-6">
-                        <div className="flex flex-row justify-between items-center">
-                            <h3 className="font-bold text-[#1D2939]">{banUser ? 'Ban User?' : 'Revoke Ban?'}</h3>
-                            <button className="w-[32px] h-[32px]  rounded-full flex items-center justify-center transition-all duration-300 ease-in-out hover:bg-[#F2F4F7]">
-                                <button onClick={onClose}>
-                                    <Image src="/icons/cancel.svg" alt="Cancel" width={20} height={20} />
-                                </button>
+                        <button className="w-[32px] h-[32px]  rounded-full flex items-center justify-center transition-all duration-300 ease-in-out hover:bg-[#F2F4F7]">
+                            <button className="absolute right-6 top-6" onClick={onClose}>
+                                <Image src="/icons/cancel.svg" alt="Cancel" width={20} height={20} />
                             </button>
-                        </div>
-                        <div className="h-auto flex flex-col">
-                            <span className="text-sm font-normal text-[#667085]">{banUser ? 'Are you sure you want to ban this user?' : 'Are you sure you want to revoke ban for this user?'}</span>
+                        </button>
+                        <div className="mx-6 h-auto  py-6 flex flex-col">
+                            <h3 className="pb-3 font-bold text-[#1D2939]">{banUser ? 'Ban User?' : 'Revoke Ban?'}</h3>
+                            <span className="pb-6 text-sm font-normal text-[#667085]">{banUser ? 'Are you sure you want to ban this user?' : 'Are you sure you want to revoke ban for this user?'}</span>
                             <p className="text-sm font-normal text-[#667085]">{banUser ? 'Banning will immediately restrict their access to the platform and disable their account.' : 'Revoking Ban will immediately give user access to the platform and enable their account.'}</p>
                         </div>
                     </div>
-                    <hr />
                     <div className="flex flex-row justify-end mx-6 my-4 gap-4">
                         <button className="py-[0.625rem] px-6 border-[1.5px] border-lightGrey font-semibold text-sm text-[#1D2939] rounded-md hover:bg-[#F2F4F7]" onClick={onClose}>Cancel</button>
                         <button className={`py-[0.625rem] px-6 text-white shadow-inner-button  ${banUser ? 'bg-[#BB241A]' : 'bg-[#0B9055]'} border border-white rounded-md`} onClick={handleBanUser}>{banUser ? 'Ban User' : 'Revoke Ban'}</button>

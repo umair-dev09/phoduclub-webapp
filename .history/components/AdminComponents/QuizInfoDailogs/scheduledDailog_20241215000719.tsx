@@ -36,9 +36,9 @@ function ScheduledDialog({ onClose }: ScheduledDialogProps) { // Use the interfa
                             </div>
                             <div className="flex flex-col w-full gap-2">
                                 <p className="text-start text-sm text-[#1D2939] font-medium">Start Date</p>
-                                <div className="flex flex-row w-full h-10 px-3 outline-none border border-[#D0D5DD] rounded-md">
+                                <div className="flex flex-row w-full h-10 px-3 outline-none border border-[#D0D5DD] rounded-md hover:outline hover:outline-[1.5px] hover:shadow-[#D6BBFB] focus:outline-none shadow-[0px_1px_2px_0px_rgba(16,24,40,0.05)]">
                                     <Image src='/icons/calendar-03.svg' alt="date" width={24} height={24} />
-                                    <input type="text" className="w-full px-2 text-sm text-[#182230] font-normal outline-none rounded-md focus:outline focus:outline-[1.5px] focus:outline-[#D6BBFB] hover:outline hover:outline-[1.5px] hover:outline-[#D6BBFB]" />
+                                    <input type="text" className="w-full px-2 text-sm text-[#182230] font-normal outline-none rounded-md" />
                                 </div>
                             </div>
                         </div>

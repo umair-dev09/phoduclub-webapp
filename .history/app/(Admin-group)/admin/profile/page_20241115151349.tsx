@@ -22,9 +22,9 @@ type UserData = {
 
 
 function Profile() {
-    const [userData, setUserData] = useState<UserData | null>(null);
+    const [userData, setUserData] = useState<UserData | null>(null); 
     const [loading, setLoading] = useState(true); // Track loading state
-    const [user, setUser] = useState<User | null>(null);
+    const [user, setUser] = useState<User | null>(null); 
     const [isEdit, setIsEdit] = useState(false);
     const openEdit = () => setIsEdit(true);
     const closeEdit = () => setIsEdit(false);
@@ -34,20 +34,20 @@ function Profile() {
     const db = getFirestore();
     const router = useRouter();
 
-    useEffect(() => {
+    useEffect(() => { 
         const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
             if (currentUser) {
                 setUser(currentUser);
             } else {
                 console.error('No user is logged in');
-                router.push("/admin-login");
+                 router.push("/admin-login");
                 setLoading(false); // Ensure loading is set to false even when no user is found
             }
         });
-
+    
         return () => unsubscribe();
     }, []);
-
+  
     useEffect(() => {
         let unsubscribeFromSnapshot: () => void;
         if (user) {
@@ -76,19 +76,19 @@ function Profile() {
         };
     }, [user, db]);
 
-    // Function to split name into first and last names
-    const getFirstAndLastName = (fullName: string | null) => {
-        if (!fullName) return { firstName: "", lastName: "" };
-        const nameParts = fullName.split(" ");
-        return {
-            firstName: nameParts[0] || "",
-            lastName: nameParts.slice(1).join(" ") || ""
-        };
+ // Function to split name into first and last names
+ const getFirstAndLastName = (fullName: string | null) => {
+    if (!fullName) return { firstName: "", lastName: "" };
+    const nameParts = fullName.split(" ");
+    return {
+        firstName: nameParts[0] || "",
+        lastName: nameParts.slice(1).join(" ") || ""
     };
+};
 
-    const { firstName, lastName } = getFirstAndLastName(userData?.name || "");
+const { firstName, lastName } = getFirstAndLastName(userData?.name || "");
 
-    if (loading) {
+    if (loading ) {
         return <LoadingData />;
     }
 
@@ -104,12 +104,12 @@ function Profile() {
                         </div>
                     </div>
                     <div className="flex flex-row gap-3">
-                        <button className="py-2 px-4 bg-[#FFFFFF] hover:bg-[#F2F4F7] gap-2 h-[40px] w-auto items-center border border-solid border-[#EAECF0] rounded-[8px] flex flex-row justify-between"
+                        <button className="py-2 px-4 bg-[#FFFFFF] gap-2 h-[40px] w-auto items-center border border-solid border-[#EAECF0] rounded-[8px] flex flex-row justify-between"
                             onClick={openEdit} >
                             <Image src="/icons/edit-02.svg" width={18} height={18} alt="edit" />
                             <span className="text-sm text-[#0C111D] font-normal">Edit</span>
                         </button>
-                        <button className="py-2 px-4 bg-[#FFFFFF] hover:bg-[#F2F4F7] gap-2 h-[40px] w-auto items-center border border-solid border-[#EAECF0] rounded-[8px] flex flex-row justify-between"
+                        <button className="py-2 px-4 bg-[#FFFFFF] gap-2 h-[40px] w-auto items-center border border-solid border-[#EAECF0] rounded-[8px] flex flex-row justify-between"
                             onClick={openlogout}>
                             <Image src="/icons/logout-03.svg" width={18} height={18} alt="logout" />
                             <span className="text-sm text-[#DE3024] font-normal">Log out</span>
@@ -142,7 +142,7 @@ function Profile() {
             {/* Dailog for Log out */}
             {islogout && <Logout onclose={closelogout} open={true} />}
             {/* Dialog Component  for Edit*/}
-            {isEdit && <EditProfile close={closeEdit} open={true} adminId={userData?.adminId || ''} />}
+            {isEdit && <EditProfile close={closeEdit} open={true} adminId={userData?.adminId || ''}/>}
             <ToastContainer />
 
         </div>

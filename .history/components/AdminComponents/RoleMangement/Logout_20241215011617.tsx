@@ -30,16 +30,16 @@ function Logout({ open, onclose }: LogoutProps) {
             <DialogBackdrop className="fixed inset-0 bg-black/30" />
             <div className="fixed inset-0 flex items-center justify-center">
                 <DialogPanel transition className="bg-white rounded-2xl w-[480px] h-auto">
-                    <div className="flex flex-col p-6 gap-4">
-                        <div className='flex flex-row items-center justify-between'>
-                            <h3 className="font-bold text-[#1D2939]">Log Out</h3>
-                            <button className="w-[32px] h-[32px]  rounded-full flex items-center justify-center transition-all duration-300 ease-in-out hover:bg-[#F2F4F7]">
-                                <button onClick={onclose}>
-                                    <Image src="/icons/cancel.svg" alt="Cancel" width={20} height={20} />
-                                </button>
+                    <div className="flex flex-col relative">
+                        <button className="w-[32px] h-[32px]  rounded-full flex items-center justify-center transition-all duration-300 ease-in-out hover:bg-[#F2F4F7]">
+                            <button className="absolute right-6 top-6" onClick={onclose}>
+                                <Image src="/icons/cancel.svg" alt="Cancel" width={20} height={20} />
                             </button>
+                        </button>
+                        <div className="mx-6">
+                            <h3 className="mt-6 font-bold task-[#1D2939]">Log Out</h3>
+                            <p className="my-4 text-sm font-normal text-[#667085]">Lorem ipsum is placeholder text commonly used in the grap</p>
                         </div>
-                        <p className="text-sm font-normal text-[#667085]">Lorem ipsum is placeholder text commonly used in the grap</p>
                     </div>
                     <hr />
                     <div className="flex flex-row justify-end mx-6 my-4 gap-4">

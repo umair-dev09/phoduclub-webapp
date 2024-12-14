@@ -323,7 +323,7 @@ function User() {
                         onOpenChange={(open) => setUserTypePopup(open)}
                     >
                         <PopoverTrigger>
-                            <button className={`h-[44px] w-[143px] rounded-md bg-[#FFFFFF] border border-solid border-[#D0D5DD] outline-none justify-between flex items-center p-3 transition-colors ${userTypePopup
+                            <button className={`h-[44px] w-[143px] rounded-md bg-[#FFFFFF] hover:bg-[#F2F4F7] border border-solid border-[#D0D5DD] outline-none justify-between flex items-center p-3 transition-colors ${userTypePopup
                                 ? "border-[#C7A5FF] ring-4 ring-[#E2D9F8]"
                                 : "border-[#D0D5DD]"
                                 }`}>
@@ -467,7 +467,7 @@ function User() {
                                 <div className="flex flex-row justify-between mt-6">
                                     <h3 className="text-lg font-bold text-[#1D2939]">{!authId ? 'Add New User' : 'Edit User Details'}</h3>
                                     <button className="w-[32px] h-[32px]  rounded-full flex items-center justify-center transition-all duration-300 ease-in-out hover:bg-[#F2F4F7] ">
-                                        <button onClick={closeDialog}>
+                                        <button className="" onClick={closeDialog}>
                                             <Image src="/icons/cancel.svg" alt="Cancel" width={20} height={20} />
                                         </button>
                                     </button>
@@ -493,7 +493,7 @@ function User() {
                                     <div className="flex flex-col gap-1 w-1/2 flex-grow">
                                         <label className="text-[#1D2939] text-sm font-medium">Last Name</label>
                                         <input
-                                            className="w-full text-sm font-medium text-[#1D2939] placeholder:text-[#A1A1A1] rounded-md border border-gray-300  h-10 focus:outline focus:outline-[1.5px] focus:outline-[#D6BBFB] hover:outline hover:outline-[1.5px] hover:outline-[#D6BBFB] px-4 py-2 "
+                                            className="w-full text-sm font-medium text-[#1D2939] placeholder:text-[#A1A1A1] rounded-md  px-4 py-2 border border-gray-300  h-10 focus:outline focus:outline-[1.5px] focus:outline-[#D6BBFB] hover:outline hover:outline-[1.5px] hover:outline-[#D6BBFB]"
                                             type="text"
                                             placeholder="Last Name"
                                             value={lastName}
@@ -507,9 +507,9 @@ function User() {
                                     <label htmlFor="num-ratings" className="text-[#1D2939] text-sm font-medium">
                                         Email Id
                                     </label>
-                                    <div className="flex flex-row py-2 px-4 w-full gap-2 border border-gray-300  h-10 focus:outline focus:outline-[1.5px] focus:outline-[#D6BBFB] hover:outline hover:outline-[1.5px] hover:outline-[#D6BBFB] rounded-md transition duration-200 ease-in-out ">
+                                    <div className="flex flex-row py-2 px-4 w-full items-center justify-center gap-2 border border-gray-300  h-10 focus:outline focus:outline-[1.5px] focus:outline-[#D6BBFB] hover:outline hover:outline-[1.5px] hover:outline-[#D6BBFB] rounded-md transition duration-200 ease-in-out ">
                                         <input
-                                            className="w-full text-sm font-medium text-[#1D2939] placeholder:font-normal placeholder:text-[#A1A1A1] rounded-md outline-none"
+                                            className="w-full text-sm h-full font-medium text-[#1D2939] placeholder:font-normal placeholder:text-[#A1A1A1] rounded-md  outline-none"
                                             type="text"
                                             placeholder="Email Id"
                                             value={emailId}
@@ -521,9 +521,9 @@ function User() {
                                     <label htmlFor="num-ratings" className="text-[#1D2939] text-sm font-medium">
                                         User Id
                                     </label>
-                                    <div className="flex flex-row  w-full gap-2 border border-gray-300  h-10 focus:outline focus:outline-[1.5px] focus:outline-[#D6BBFB] hover:outline hover:outline-[1.5px] hover:outline-[#D6BBFB] rounded-md transition duration-200 ease-in-out ">
+                                    <div className="flex flex-row py-2 px-4 w-full items-center justify-center gap-2 border border-gray-300  h-10 focus:outline focus:outline-[1.5px] focus:outline-[#D6BBFB] hover:outline hover:outline-[1.5px] hover:outline-[#D6BBFB] rounded-md transition duration-200 ease-in-out ">
                                         <input
-                                            className="w-full text-sm py-2 px-4 font-medium text-[#1D2939] placeholder:font-normal placeholder:text-[#A1A1A1] rounded-md outline-none"
+                                            className="w-full text-sm h-full font-medium text-[#1D2939] placeholder:font-normal placeholder:text-[#A1A1A1] rounded-md  outline-none"
                                             type="text"
                                             placeholder="User Id"
                                             value={userId}
@@ -646,7 +646,7 @@ function User() {
 
                             </div>
                             <div className="flex justify-end gap-4 border-t p-4">
-                                <button onClick={closeDialog} className="px-6 py-2 border rounded-md text-sm font-semibold hover:bg-[#F2F4F7]">
+                                <button onClick={closeDialog} className="px-6 py-2 border rounded-md text-sm font-semibold hover:bg-[#F2F4F7] ">
                                     Discard
                                 </button>
                                 <button onClick={handleAddUser} disabled={!isFormValid} className={`px-6 py-2  text-white rounded-md text-sm ${!isFormValid ? 'bg-[#CDA0FC]' : 'bg-[#9012FF]'}`}>

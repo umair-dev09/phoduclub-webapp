@@ -413,7 +413,7 @@ function Messenger() {
                             <div className="flex flex-col gap-1 w-full">
                                 <label className="text-[#1D2939] text-sm font-medium">Description</label>
                                 <input
-                                    className="w-full py-2 px-4 text-sm font-medium text-[#1D2939] border border-gray-300  h-10 focus:outline focus:outline-[1.5px] focus:outline-[#D6BBFB] hover:outline hover:outline-[1.5px] hover:outline-[#D6BBFB] rounded-md"
+                                    className="w-full py-2 px-4 text-sm font-medium text-[#1D2939] border border-[#D0D5DD] rounded-md"
                                     type="text"
                                     placeholder="Notification Content"
                                     value={description}
@@ -424,7 +424,7 @@ function Messenger() {
                             <div className="flex flex-col gap-1 w-full">
                                 <label className="text-[#1D2939] text-sm font-medium">CTA</label>
                                 <input
-                                    className="w-full py-2 px-4 text-sm font-medium text-[#1D2939] border border-gray-300  h-10 focus:outline focus:outline-[1.5px] focus:outline-[#D6BBFB] hover:outline hover:outline-[1.5px] hover:outline-[#D6BBFB] rounded-md"
+                                    className="w-full py-2 px-4 text-sm font-medium text-[#1D2939] border border-[#D0D5DD] rounded-md"
                                     type="text"
                                     placeholder="Button Name"
                                     value={cta}
@@ -435,7 +435,7 @@ function Messenger() {
                             <div className="flex flex-col gap-1 w-full ">
                                 <label className="text-[#1D2939] text-sm font-medium">Hyperlink</label>
                                 <input
-                                    className="w-full py-2 px-4 text-sm font-medium text-[#1D2939] border border-gray-300  h-10 focus:outline focus:outline-[1.5px] focus:outline-[#D6BBFB] hover:outline hover:outline-[1.5px] hover:outline-[#D6BBFB] rounded-md"
+                                    className="w-full py-2 px-4 text-sm font-medium text-[#1D2939] border border-[#D0D5DD] rounded-md"
                                     type="text"
                                     placeholder="Add hyperlink"
                                     onChange={(e) => setHyperLink(e.target.value)} // Controlled input for quiz name
@@ -443,7 +443,7 @@ function Messenger() {
                             </div>
                             <div className="flex flex-col gap-1 w-full mt-4">
                                 <label className="text-[#1D2939] text-sm font-medium">Countdown Timer</label>
-                                <div className="flex flex-row p-2 w-full justify-between border border-gray-300  h-10 focus:outline focus:outline-[1.5px] focus:outline-[#D6BBFB] hover:outline hover:outline-[1.5px] hover:outline-[#D6BBFB] rounded-md ">
+                                <div className="flex flex-row p-2 w-full justify-between border border-solid border-[#D0D5DD] rounded-md ">
                                     <div className="flex flex-row gap-2">
                                         <Image
                                             src="/icons/clock-01.svg"

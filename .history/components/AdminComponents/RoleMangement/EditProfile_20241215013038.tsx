@@ -226,6 +226,14 @@ function Editprofile({ open, close, adminId }: EditProfileProps) {
                                             boxShadow: "0px 1px 2px 0px #1018280D ",
 
                                         }}
+                                        // inputStyle={{
+                                        //     width: "100%",
+                                        //     borderRadius: "4px",
+                                        //     border: "1px solid #D0D5DD",
+                                        //     height: "42px",
+                                        //     boxShadow: "0px 1px 2px 0px rgba(16, 24, 40, 0.05)",
+                                        //     outline: "none"
+                                        // }}
                                         onFocus={(e) => e.target.style.boxShadow = "0 0 0 2px #D6BBFB"}
                                         onBlur={(e) => e.target.style.boxShadow = "0px 1px 2px 0px rgba(16, 24, 40, 0.05)"}
 

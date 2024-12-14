@@ -343,7 +343,7 @@ function Messenger() {
                                 <div className="flex flex-row p-2 w-full gap-2 border border-gray-300  h-10 focus:outline focus:outline-[1.5px] focus:outline-[#D6BBFB] hover:outline hover:outline-[1.5px] hover:outline-[#D6BBFB] rounded-md ">
                                     <Popover placement="bottom" isOpen={notiIconPop}>
                                         <PopoverTrigger>
-                                            <button className="flex flex-row w-[44px] items-center rounded-md transition duration-200 ease-in-out justify-between focus:outline-none"
+                                            <button className="flex flex-row w-[44px] items-center rounded-md transition duration-200 ease-in-out justify-between"
                                                 onClick={() => setNotiIconPop(true)}>
                                                 <Image
                                                     src={notificationIcon}
@@ -359,45 +359,45 @@ function Messenger() {
                                                 />
                                             </button>
                                         </PopoverTrigger>
-                                        <PopoverContent className="flex flex-col gap-1 px-0 w-10">
-
-                                            {/* Idea Button */}
-                                            <button
-                                                className="flex flex-row w-full p-1 hover:bg-[#F2F4F7] justify-center items-center"
-                                                onClick={() => { handleIconSelect("/icons/idea-2.svg"); setNotiIconPop(false); }}
-                                            >
-                                                <Image
-                                                    src="/icons/idea-2.svg"
-                                                    width={24}
-                                                    height={24}
-                                                    alt="Idea Button"
-                                                />
-                                            </button>
-                                            {/* Megaphone Button */}
-                                            <button
-                                                className="flex flex-row w-full p-1 hover:bg-[#F2F4F7] justify-center items-center"
-                                                onClick={() => { handleIconSelect("/icons/megaphone.svg"); setNotiIconPop(false); }}
-                                            >
-                                                <Image
-                                                    src="/icons/megaphone.svg"
-                                                    width={24}
-                                                    height={24}
-                                                    alt="Megaphone Button"
-                                                />
-                                            </button>
-                                            {/* Read Button */}
-                                            <button
-                                                className="flex flex-row w-full p-1 hover:bg-[#F2F4F7] justify-center items-center"
-                                                onClick={() => { handleIconSelect("/icons/read-2.svg"); setNotiIconPop(false); }}
-                                            >
-                                                <Image
-                                                    src="/icons/read-2.svg"
-                                                    width={24}
-                                                    height={24}
-                                                    alt="Read Button"
-                                                />
-                                            </button>
-
+                                        <PopoverContent>
+                                            <div className="flex flex-col gap-1">
+                                                {/* Idea Button */}
+                                                <button
+                                                    className="flex flex-row w-full p-1 hover:bg-[#F2F4F7] justify-center items-center"
+                                                    onClick={() => { handleIconSelect("/icons/idea-2.svg"); setNotiIconPop(false); }}
+                                                >
+                                                    <Image
+                                                        src="/icons/idea-2.svg"
+                                                        width={24}
+                                                        height={24}
+                                                        alt="Idea Button"
+                                                    />
+                                                </button>
+                                                {/* Megaphone Button */}
+                                                <button
+                                                    className="flex flex-row w-full p-1 hover:bg-[#F2F4F7] justify-center items-center"
+                                                    onClick={() => { handleIconSelect("/icons/megaphone.svg"); setNotiIconPop(false); }}
+                                                >
+                                                    <Image
+                                                        src="/icons/megaphone.svg"
+                                                        width={24}
+                                                        height={24}
+                                                        alt="Megaphone Button"
+                                                    />
+                                                </button>
+                                                {/* Read Button */}
+                                                <button
+                                                    className="flex flex-row w-full p-1 hover:bg-[#F2F4F7] justify-center items-center"
+                                                    onClick={() => { handleIconSelect("/icons/read-2.svg"); setNotiIconPop(false); }}
+                                                >
+                                                    <Image
+                                                        src="/icons/read-2.svg"
+                                                        width={24}
+                                                        height={24}
+                                                        alt="Read Button"
+                                                    />
+                                                </button>
+                                            </div>
                                         </PopoverContent>
                                     </Popover>
                                     <input
@@ -413,7 +413,7 @@ function Messenger() {
                             <div className="flex flex-col gap-1 w-full">
                                 <label className="text-[#1D2939] text-sm font-medium">Description</label>
                                 <input
-                                    className="w-full py-2 px-4 text-sm font-medium text-[#1D2939] border border-gray-300  h-10 focus:outline focus:outline-[1.5px] focus:outline-[#D6BBFB] hover:outline hover:outline-[1.5px] hover:outline-[#D6BBFB] rounded-md"
+                                    className="w-full py-2 px-4 text-sm font-medium text-[#1D2939] border border-[#D0D5DD] rounded-md"
                                     type="text"
                                     placeholder="Notification Content"
                                     value={description}
@@ -424,7 +424,7 @@ function Messenger() {
                             <div className="flex flex-col gap-1 w-full">
                                 <label className="text-[#1D2939] text-sm font-medium">CTA</label>
                                 <input
-                                    className="w-full py-2 px-4 text-sm font-medium text-[#1D2939] border border-gray-300  h-10 focus:outline focus:outline-[1.5px] focus:outline-[#D6BBFB] hover:outline hover:outline-[1.5px] hover:outline-[#D6BBFB] rounded-md"
+                                    className="w-full py-2 px-4 text-sm font-medium text-[#1D2939] border border-[#D0D5DD] rounded-md"
                                     type="text"
                                     placeholder="Button Name"
                                     value={cta}
@@ -435,7 +435,7 @@ function Messenger() {
                             <div className="flex flex-col gap-1 w-full ">
                                 <label className="text-[#1D2939] text-sm font-medium">Hyperlink</label>
                                 <input
-                                    className="w-full py-2 px-4 text-sm font-medium text-[#1D2939] border border-gray-300  h-10 focus:outline focus:outline-[1.5px] focus:outline-[#D6BBFB] hover:outline hover:outline-[1.5px] hover:outline-[#D6BBFB] rounded-md"
+                                    className="w-full py-2 px-4 text-sm font-medium text-[#1D2939] border border-[#D0D5DD] rounded-md"
                                     type="text"
                                     placeholder="Add hyperlink"
                                     onChange={(e) => setHyperLink(e.target.value)} // Controlled input for quiz name
@@ -443,7 +443,7 @@ function Messenger() {
                             </div>
                             <div className="flex flex-col gap-1 w-full mt-4">
                                 <label className="text-[#1D2939] text-sm font-medium">Countdown Timer</label>
-                                <div className="flex flex-row p-2 w-full justify-between border border-gray-300  h-10 focus:outline focus:outline-[1.5px] focus:outline-[#D6BBFB] hover:outline hover:outline-[1.5px] hover:outline-[#D6BBFB] rounded-md ">
+                                <div className="flex flex-row p-2 w-full justify-between border border-solid border-[#D0D5DD] rounded-md ">
                                     <div className="flex flex-row gap-2">
                                         <Image
                                             src="/icons/clock-01.svg"

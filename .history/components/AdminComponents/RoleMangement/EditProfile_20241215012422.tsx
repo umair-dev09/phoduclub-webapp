@@ -162,7 +162,7 @@ function Editprofile({ open, close, adminId }: EditProfileProps) {
                                     <label htmlFor="rating" className="text-[#1D2939] text-sm font-medium">
                                         First Name
                                     </label>
-                                    <div className="flex flex-row py-2 px-4 w-full gap-2 border border-gray-300  h-10 focus:outline focus:outline-[1.5px] focus:outline-[#D6BBFB] hover:outline hover:outline-[1.5px] hover:outline-[#D6BBFB] rounded-md transition duration-200 ease-in-out ">
+                                    <div className="flex flex-row py-2 px-4 w-full gap-2 border border-solid border-[#D0D5DD] rounded-md transition duration-200 ease-in-out ">
                                         <input
 
                                             className="w-full text-sm font-medium text-[#1D2939] placeholder:font-normal placeholder:text-[#A1A1A1] rounded-md outline-none"
@@ -177,7 +177,7 @@ function Editprofile({ open, close, adminId }: EditProfileProps) {
                                     <label htmlFor="num-ratings" className="text-[#1D2939] text-sm font-medium">
                                         Last Name
                                     </label>
-                                    <div className="flex flex-row py-2 px-4 w-full gap-2 border border-gray-300  h-10 focus:outline focus:outline-[1.5px] focus:outline-[#D6BBFB] hover:outline hover:outline-[1.5px] hover:outline-[#D6BBFB] rounded-md transition duration-200 ease-in-out ">
+                                    <div className="flex flex-row py-2 px-4 w-full gap-2 border border-solid border-[#D0D5DD] rounded-md transition duration-200 ease-in-out ">
                                         <input
 
                                             className="w-full text-sm font-medium text-[#1D2939] placeholder:font-normal placeholder:text-[#A1A1A1] rounded-md outline-none"
@@ -193,7 +193,7 @@ function Editprofile({ open, close, adminId }: EditProfileProps) {
                                 <label htmlFor="num-ratings" className="text-[#1D2939] text-sm font-medium">
                                     User ID
                                 </label>
-                                <div className="flex flex-row  w-full gap-2  border border-gray-300  h-10 focus:outline focus:outline-[1.5px] focus:outline-[#D6BBFB] hover:outline hover:outline-[1.5px] hover:outline-[#D6BBFB]  rounded-md transition duration-200 ease-in-out ">
+                                <div className="flex flex-row  w-full gap-2 border border-solid border-[#D0D5DD] rounded-md transition duration-200 ease-in-out ">
                                     <input
 
                                         className="w-full text-sm font-medium py-2 px-4 text-[#1D2939] placeholder:font-normal placeholder:text-[#A1A1A1] rounded-md outline-none"
@@ -221,13 +221,11 @@ function Editprofile({ open, close, adminId }: EditProfileProps) {
                                         inputStyle={{
                                             width: '450px',
                                             height: '42px',
-                                            borderRadius: "4px",
+                                            borderRadius: "8px",
                                             border: "1px solid #D0D5DD",
                                             boxShadow: "0px 1px 2px 0px #1018280D ",
 
                                         }}
-                                        onFocus={(e) => e.target.style.boxShadow = "0 0 0 2px #D6BBFB"}
-                                        onBlur={(e) => e.target.style.boxShadow = "0px 1px 2px 0px rgba(16, 24, 40, 0.05)"}
 
                                     />
                                 </div>

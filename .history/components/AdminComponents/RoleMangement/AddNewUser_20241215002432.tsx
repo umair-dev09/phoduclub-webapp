@@ -192,7 +192,7 @@ function AddNewUser({
 
                         <div className="flex flex-col gap-1 w-full">
                             <label className="text-[#1D2939] text-sm font-medium">Role</label>
-                            <div className="flex flex-row py-2 px-4 w-full gap-2 border border-gray-300  h-10 focus:outline focus:outline-[1.5px] focus:outline-[#D6BBFB] hover:outline hover:outline-[1.5px] hover:outline-[#D6BBFB] rounded-md transition duration-200 ease-in-out justify-between" onClick={() => setRoleDialogOpen(true)}>
+                            <div className="flex flex-row py-2 px-4 w-full gap-2 border border-solid border-[#D0D5DD] rounded-md transition duration-200 ease-in-out justify-between" onClick={() => setRoleDialogOpen(true)}>
                                 <span className="font-normal text-sm text-[#182230]">{selectedRole || "Select Role"}</span>
                                 <Popover placement="bottom-end" isOpen={roleDialogOpen} onOpenChange={(open) => setRoleDialogOpen(open)}>
                                     <PopoverTrigger>

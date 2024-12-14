@@ -38,18 +38,16 @@ function Delete({ open, onClose, name, authId }: DeleteProps) {
             <div className="fixed inset-0 flex items-center justify-center ">
                 <DialogPanel transition className="bg-white rounded-2xl w-[480px] h-auto">
                     <div className="flex flex-col gap-4 p-6">
-                        <div className="flex flex-row justify-between items-center">
-                            <h3 className=" font-bold text-[#1D2939]">Delete User?</h3>
-                            <button className="w-[32px] h-[32px]  rounded-full flex items-center justify-center transition-all duration-300 ease-in-out hover:bg-[#F2F4F7]">
-                                <button onClick={onClose}>
-                                    <Image src="/icons/cancel.svg" alt="Cancel" width={20} height={20} />
-                                </button>
+                        <button className="w-[32px] h-[32px]  rounded-full flex items-center justify-center transition-all duration-300 ease-in-out hover:bg-[#F2F4F7]">
+                            <button className="absolute right-6 top-6" onClick={onClose}>
+                                <Image src="/icons/cancel.svg" alt="Cancel" width={20} height={20} />
                             </button>
-                        </div>
-                        <div className=" h-auto   flex flex-col">
+                        </button>
+                        <div className="mx-6 h-auto  pt-6 flex flex-col">
+                            <h3 className="pb-3 font-bold text-[#1D2939]">Delete User?</h3>
                             <span className="text-sm font-normal text-[#667085]">Deleting the user will permanently remove all their data from the platform, including their account, activity, and content.</span>
                         </div>
-                        <div className=" h-auto  gap-2 flex flex-col">
+                        <div className="mx-6 h-auto pt-4 pb-6 gap-2 flex flex-col">
                             <h3 className="font-medium text-sm text-[#1D2939]">To confirm, please enter the name of the user.</h3>
                             <div className="flex flex-row py-2 px-4 w-full gap-2 border border-solid border-[#D0D5DD] rounded-md transition duration-200 ease-in-out">
                                 <input

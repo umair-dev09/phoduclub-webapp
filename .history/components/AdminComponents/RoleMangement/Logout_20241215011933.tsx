@@ -31,7 +31,7 @@ function Logout({ open, onclose }: LogoutProps) {
             <div className="fixed inset-0 flex items-center justify-center">
                 <DialogPanel transition className="bg-white rounded-2xl w-[480px] h-auto">
                     <div className="flex flex-col p-6 gap-4">
-                        <div className='flex flex-row items-center justify-between'>
+                        <div className='flex flex-row items-center justify-center'>
                             <h3 className="font-bold text-[#1D2939]">Log Out</h3>
                             <button className="w-[32px] h-[32px]  rounded-full flex items-center justify-center transition-all duration-300 ease-in-out hover:bg-[#F2F4F7]">
                                 <button onClick={onclose}>
@@ -39,7 +39,7 @@ function Logout({ open, onclose }: LogoutProps) {
                                 </button>
                             </button>
                         </div>
-                        <p className="text-sm font-normal text-[#667085]">Lorem ipsum is placeholder text commonly used in the grap</p>
+                        <p className=" text-sm font-normal text-[#667085]">Lorem ipsum is placeholder text commonly used in the grap</p>
                     </div>
                     <hr />
                     <div className="flex flex-row justify-end mx-6 my-4 gap-4">

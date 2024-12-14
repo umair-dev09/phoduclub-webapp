@@ -42,12 +42,12 @@ function Ban({ open, onClose, id, banUser }: BanProps) { // Use the interface
                 <DialogPanel transition className="bg-white rounded-2xl w-[480px] h-auto">
                     <div className="flex flex-col gap-4 p-6">
                         <div className="flex flex-row justify-between items-center">
-                            <h3 className="font-bold text-[#1D2939]">{banUser ? 'Ban User?' : 'Revoke Ban?'}</h3>
                             <button className="w-[32px] h-[32px]  rounded-full flex items-center justify-center transition-all duration-300 ease-in-out hover:bg-[#F2F4F7]">
-                                <button onClick={onClose}>
+                                <button className="absolute right-6 top-6" onClick={onClose}>
                                     <Image src="/icons/cancel.svg" alt="Cancel" width={20} height={20} />
                                 </button>
                             </button>
+                            <h3 className="pb-3 font-bold text-[#1D2939]">{banUser ? 'Ban User?' : 'Revoke Ban?'}</h3>
                         </div>
                         <div className="h-auto flex flex-col">
                             <span className="text-sm font-normal text-[#667085]">{banUser ? 'Are you sure you want to ban this user?' : 'Are you sure you want to revoke ban for this user?'}</span>

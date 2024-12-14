@@ -483,7 +483,7 @@ function User() {
                                     <div className="flex flex-col gap-1 w-1/2 flex-grow">
                                         <label className="text-[#1D2939] text-sm font-medium">First Name</label>
                                         <input
-                                            className="w-full text-sm font-medium text-[#1D2939] placeholder:text-[#A1A1A1] rounded-md  px-4 py-2 border border-gray-300  h-10 focus:outline focus:outline-[1.5px] focus:outline-[#D6BBFB] hover:outline hover:outline-[1.5px] hover:outline-[#D6BBFB]"
+                                            className="w-full text-sm font-medium text-[#1D2939] placeholder:text-[#A1A1A1] rounded-md border border-[#D0D5DD] px-4 py-2 focus:outline-none"
                                             type="text"
                                             placeholder="First Name"
                                             value={firstName}
@@ -493,7 +493,7 @@ function User() {
                                     <div className="flex flex-col gap-1 w-1/2 flex-grow">
                                         <label className="text-[#1D2939] text-sm font-medium">Last Name</label>
                                         <input
-                                            className="w-full text-sm font-medium text-[#1D2939] placeholder:text-[#A1A1A1] rounded-md border border-gray-300  h-10 focus:outline focus:outline-[1.5px] focus:outline-[#D6BBFB] hover:outline hover:outline-[1.5px] hover:outline-[#D6BBFB] px-4 py-2 "
+                                            className="w-full text-sm font-medium text-[#1D2939] placeholder:text-[#A1A1A1] rounded-md border border-[#D0D5DD] px-4 py-2 focus:outline-none"
                                             type="text"
                                             placeholder="Last Name"
                                             value={lastName}
@@ -507,7 +507,7 @@ function User() {
                                     <label htmlFor="num-ratings" className="text-[#1D2939] text-sm font-medium">
                                         Email Id
                                     </label>
-                                    <div className="flex flex-row py-2 px-4 w-full gap-2 border border-gray-300  h-10 focus:outline focus:outline-[1.5px] focus:outline-[#D6BBFB] hover:outline hover:outline-[1.5px] hover:outline-[#D6BBFB] rounded-md transition duration-200 ease-in-out ">
+                                    <div className="flex flex-row py-2 px-4 w-full gap-2 border border-solid border-[#D0D5DD] rounded-md transition duration-200 ease-in-out ">
                                         <input
                                             className="w-full text-sm font-medium text-[#1D2939] placeholder:font-normal placeholder:text-[#A1A1A1] rounded-md outline-none"
                                             type="text"
@@ -521,7 +521,7 @@ function User() {
                                     <label htmlFor="num-ratings" className="text-[#1D2939] text-sm font-medium">
                                         User Id
                                     </label>
-                                    <div className="flex flex-row  w-full gap-2 border border-gray-300  h-10 focus:outline focus:outline-[1.5px] focus:outline-[#D6BBFB] hover:outline hover:outline-[1.5px] hover:outline-[#D6BBFB] rounded-md transition duration-200 ease-in-out ">
+                                    <div className="flex flex-row  w-full gap-2 border border-solid border-[#D0D5DD] rounded-md transition duration-200 ease-in-out ">
                                         <input
                                             className="w-full text-sm py-2 px-4 font-medium text-[#1D2939] placeholder:font-normal placeholder:text-[#A1A1A1] rounded-md outline-none"
                                             type="text"
@@ -541,14 +541,10 @@ function User() {
                                         inputProps={{ required: true }}
                                         inputStyle={{
                                             width: "100%",
-                                            borderRadius: "4px",
+                                            borderRadius: "8px",
                                             border: "1px solid #D0D5DD",
                                             height: "42px",
-                                            boxShadow: "0px 1px 2px 0px rgba(16, 24, 40, 0.05)",
-                                            outline: "none"
                                         }}
-                                        onFocus={(e) => e.target.style.boxShadow = "0 0 0 2px #D6BBFB"}
-                                        onBlur={(e) => e.target.style.boxShadow = "0px 1px 2px 0px rgba(16, 24, 40, 0.05)"}
                                     />
                                 </div>
 
@@ -646,7 +642,7 @@ function User() {
 
                             </div>
                             <div className="flex justify-end gap-4 border-t p-4">
-                                <button onClick={closeDialog} className="px-6 py-2 border rounded-md text-sm font-semibold hover:bg-[#F2F4F7]">
+                                <button onClick={closeDialog} className="px-6 py-2 border rounded-md text-sm font-semibold">
                                     Discard
                                 </button>
                                 <button onClick={handleAddUser} disabled={!isFormValid} className={`px-6 py-2  text-white rounded-md text-sm ${!isFormValid ? 'bg-[#CDA0FC]' : 'bg-[#9012FF]'}`}>

@@ -39,7 +39,7 @@ function Logout({ open, onclose }: LogoutProps) {
                                 </button>
                             </button>
                         </div>
-                        <p className="text-sm font-normal text-[#667085]">Lorem ipsum is placeholder text commonly used in the grap</p>
+                        <p className=" text-sm font-normal text-[#667085]">Lorem ipsum is placeholder text commonly used in the grap</p>
                     </div>
                     <hr />
                     <div className="flex flex-row justify-end mx-6 my-4 gap-4">
