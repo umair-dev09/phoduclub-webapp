@@ -16,14 +16,12 @@ function Delete({ open, onClose }: DeleteProps) {
                     <div className=' flex flex-col p-6 gap-2 border-solid border-[#EAECF0] border-b rounded-t-2xl'>
                         <div className='flex flex-row justify-between items-center'>
                             <h1 className='text-[#1D2939] font-bold text-lg'>Delete message?</h1>
-                            <button className="w-[32px] h-[32px]  rounded-full flex items-center justify-center transition-all duration-300 ease-in-out hover:bg-[#F2F4F7]">
-                                <Image src="/icons/cancel.svg" alt="Cancel" width={20} height={20} onClick={onClose} />
-                            </button>
+                            <Image src="/icons/cancel.svg" alt="Cancel" width={20} height={20} onClick={onClose} />
                         </div>
                         <span className='text-[#667085] font-normal text-sm'>Lorem ipsum is a dummy text widely used in digital industry will be used here in as a preview</span>
                     </div>
                     <div className="flex flex-row justify-end mx-6 my-4 gap-4">
-                        <button className="py-[0.625rem] px-6 border-2  border-solid border-[#EAECF0] font-semibold text-sm text-[#1D2939] hover:bg-[#F2F4F7] rounded-md" onClick={onClose} >Cancel</button>
+                        <button className="py-[0.625rem] px-6 border-2  border-solid border-[#EAECF0] font-semibold text-sm text-[#1D2939] rounded-md" onClick={onClose} >Cancel</button>
                         <button className="py-[0.625rem] px-6 text-white shadow-inner-button bg-[#BB241A] border border-[#DE3024] rounded-md" onClick={onClose} >Delete</button>
                     </div>
                 </DialogPanel>

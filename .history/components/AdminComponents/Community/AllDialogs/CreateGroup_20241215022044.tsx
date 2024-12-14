@@ -7,30 +7,27 @@ import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
 import { storage, db, auth } from '@/firebase'; // Adjust path if needed
 import { toast, ToastContainer } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
-import { collection, doc, updateDoc, setDoc } from 'firebase/firestore';
+import { collection, addDoc, updateDoc, setDoc } from 'firebase/firestore';
 
 // Define the props interface
 interface creategroupProps {
     open: boolean; // Prop to control dialog visibility
     onClose: () => void; // Define onClose as a function
-    onClose1: () => void; // Define onClose as a function
-    communityId: string;
-    communityName: string;
-    setCommunityName: (communityName: string) => void;
-    communityDescription: string;
-    setCommunityDescription: (communityDescription: string) => void;
-    communityImg: string;
-    setCommunityImage: (communityImage: string) => void;
+    openAddMembers: () => void; // Define onClose as a function
+    setCommunityId: (communityId: string) => void;
 
 }
-function EditGroup({ open, onClose, communityName, communityId, communityDescription, communityImg, onClose1, setCommunityName, setCommunityDescription, setCommunityImage }: creategroupProps) {
-
-    const isFormValid = communityName && communityDescription && communityImg;
+function creategroup({ open, onClose, openAddMembers, setCommunityId }: creategroupProps) {
+    const [name, setName] = useState('');
+    const [description, setDescription] = useState('');
+    const [image, setImage] = useState<File | null>(null);
+    const [imageUrl, setImageUrl] = useState<string | null>(null);
+    const isFormValid = name && description && imageUrl;
 
     const handleInputChange = (e: any) => {
         const inputText = e.target.value;
         if (inputText.length <= 100) {
-            setCommunityDescription(inputText);
+            setDescription(inputText);
 
         }
 
@@ -40,23 +37,32 @@ function EditGroup({ open, onClose, communityName, communityId, communityDescrip
 
         try {
             // Add new user data to Firestore
-            await setDoc(doc(db, `communities`, communityId), {
-                communityName,
-                communityImg,
-                communityDescription,
-            }, { merge: true });
-            toast.success("Group Updated Successfully!");
+            const docRef = await addDoc(collection(db, `communities`), {
+                communityName: name,
+                communityImg: imageUrl,
+                communityDescription: description,
+                members: [{ id: auth.currentUser?.uid, isAdmin: true, }],
+            });
+
+            // Update the document with the generated adminId
+            await setDoc(docRef, { communityId: docRef.id }, { merge: true });
+            setCommunityId(docRef.id);
+            toast.success("Group Created Successfully!");
+            setName('');
+            setImageUrl('');
+            setDescription('');
             onClose();
-            onClose1();
+            openAddMembers();
         } catch (error) {
             console.error("Error adding channel in Firestore:", error);
-            toast.error("Failed to edit group. Please try again.");
+            toast.error("Failed to create Group. Please try again.");
         }
     };
 
     const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0];
         if (file) {
+            setImage(file);
             toast.promise(
                 new Promise(async (resolve, reject) => {
                     try {
@@ -75,7 +81,7 @@ function EditGroup({ open, onClose, communityName, communityId, communityDescrip
                             },
                             async () => {
                                 const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
-                                setCommunityImage(downloadURL);
+                                setImageUrl(downloadURL);
                                 resolve("Image Updated!");
                             }
                         );
@@ -103,14 +109,14 @@ function EditGroup({ open, onClose, communityName, communityId, communityDescrip
                 <DialogPanel className="bg-white rounded-2xl w-[568px] h-auto flex flex-col ">
                     <div className=' flex flex-col p-6 gap-6 border-solid border-[#EAECF0] border-b rounded-t-2xl'>
                         <div className='flex flex-row justify-between items-center'>
-                            <h1 className='text-[#1D2939] font-bold text-lg'>Edit Group</h1>
+                            <h1 className='text-[#1D2939] font-bold text-lg'>Create Group</h1>
                             <button className="w-[32px] h-[32px]  rounded-full flex items-center justify-center transition-all duration-300 ease-in-out hover:bg-[#F2F4F7]">
                                 <button><Image src="/icons/cancel.svg" alt="Cancel" width={20} height={20} onClick={onClose} /></button>
                             </button>
                         </div>
                         <div className="flex flex-col items-center gap-2">
                             <Image className=" w-[120px] h-[120px] rounded-full object-cover"
-                                src={communityImg || "/icons/upload-icon.svg"}
+                                src={imageUrl || "/icons/upload-icon.svg"}
                                 width={120}
                                 height={120}
                                 quality={100}
@@ -134,40 +140,40 @@ function EditGroup({ open, onClose, communityName, communityId, communityDescrip
                         </div>
                         <div className="flex flex-col gap-1">
                             <span className="font-semibold text-sm text-[#1D2939]">Group name</span>
-                            <div className='flex px-2 items-center h-[40px] border border-gray-300   focus:outline focus:outline-[1.5px] focus:outline-[#D6BBFB] hover:outline hover:outline-[1.5px] hover:outline-[#D6BBFB] shadow-sm rounded-md'>
+                            <div className='flex px-2 items-center h-[40px] border border-gray-300  h-10 focus:outline focus:outline-[1.5px] focus:outline-[#D6BBFB] hover:outline hover:outline-[1.5px] hover:outline-[#D6BBFB] shadow-sm rounded-md'>
                                 <input
                                     className="font-normal text-[#667085] w-full text-sm placeholder:text-[#A1A1A1] rounded-md px-1 py-1 focus:outline-none focus:ring-0 "
                                     placeholder="Group name"
                                     type="text"
-                                    value={communityName}
-                                    onChange={(e) => setCommunityName(e.target.value)}
+                                    value={name}
+                                    onChange={(e) => setName(e.target.value)}
                                 />
                             </div>
                         </div>
                         <div className="flex flex-col gap-1">
                             <span className="font-semibold text-sm text-[#1D2939]">Group description</span>
-                            <div className="flex px-2 items-center h-[40px] border border-gray-300  focus:outline focus:outline-[1.5px] focus:outline-[#D6BBFB] hover:outline hover:outline-[1.5px] hover:outline-[#D6BBFB] shadow-sm rounded-md">
+                            <div className="flex px-2 items-center h-[40px] border border-gray-300   focus:outline focus:outline-[1.5px] focus:outline-[#D6BBFB] hover:outline hover:outline-[1.5px] hover:outline-[#D6BBFB] shadow-sm rounded-md">
 
                                 <input
                                     className="text-[#667085] w-full text-sm placeholder-[#A1A1A1] px-1 py-1 focus:outline-none border-none"
                                     placeholder="Group description"
-                                    value={communityDescription}
+                                    value={description}
                                     onChange={handleInputChange}
                                 />
                             </div>
-                            <span className="text-sm text-[#475467] self-end">{communityDescription.length}/100</span>
+                            <span className="text-sm text-[#475467] self-end">{description.length}/100</span>
                         </div>
 
 
                     </div>
                     <div className="flex flex-row justify-end mx-6 my-4 gap-4">
                         <button className="py-[0.625rem] px-6 border-2  border-solid border-[#EAECF0] font-semibold text-sm text-[#1D2939] rounded-md hover:bg-[#F2F4F7]" onClick={onClose} >Cancel</button>
-                        <button className={`py-[0.625rem] px-6 text-white text-sm shadow-inner-button font-semibold ${!isFormValid ? "bg-[#CDA0FC] cursor-not-allowed" : "bg-[#9012FF]  border border-solid  border-[#9012FF]"} rounded-md`} onClick={handleCreateGroup}>Save Changes</button>
+                        <button className={`py-[0.625rem] px-6 text-white text-sm shadow-inner-button font-semibold ${!isFormValid ? "bg-[#CDA0FC] cursor-not-allowed" : "bg-[#9012FF]  border border-solid  border-[#9012FF]"} rounded-md`} onClick={handleCreateGroup}>Create Group</button>
                     </div>
                 </DialogPanel>
             </div >
         </Dialog >
     )
 }
-export default EditGroup;
+export default creategroup;
 

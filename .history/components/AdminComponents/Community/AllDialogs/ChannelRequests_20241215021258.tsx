@@ -153,18 +153,19 @@ const ChannelRequests: React.FC<ChannelRequestsProps> = ({ open, onClose }) => {
                 <div className="fixed inset-0 flex items-center justify-center">
                     <DialogPanel
                         transition
-                        className=" max-h-[92%] overflow-y-auto"
                     >
-                        <div className="flex flex-col p-6 gap-4 bg-white rounded-2xl w-[38.375rem] h-auto overflow-hidden" >
+                        <div className="flex flex-col  bg-white rounded-2xl w-[38.375rem] h-auto overflow-hidden" >
                             <div className="flex flex-row justify-between items-center">
-                                <h3 className="font-medium text-[#1D2939]">Add Members</h3>
+                                <h3 className="mt-5 ml-6 mb-4 text-[#1D2939]">Add Members</h3>
                                 <button className="w-[32px] h-[32px]  rounded-full flex items-center justify-center transition-all duration-300 ease-in-out hover:bg-[#F2F4F7]">
                                     <button onClick={onClose}>
                                         <Image src="/icons/cancel.svg" alt="Cancel" width={20} height={20} />
                                     </button>
                                 </button>
                             </div>
-                            <div className=" border border-[#EAECF0] rounded-xl overflow-hidden">
+
+
+                            <div className="mx-6 mb-6 border border-[#EAECF0] rounded-xl overflow-hidden">
                                 <div className="max-h-[30rem] overflow-y-auto">
                                     <table className="w-full">
                                         <thead className="sticky top-0 z-10 bg-white shadow-sm">

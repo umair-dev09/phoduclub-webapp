@@ -35,7 +35,7 @@ function channelinfo({ open, onClose, channelDescription, channelEmoji, channelI
     return (
         <Dialog open={open} onClose={onClose} className="relative z-50">
             <DialogBackdrop className="fixed inset-0 bg-black/30" />
-            <div className="fixed inset-0 flex items-center justify-center">
+            <div className="fixed inset-0 flex items-center justify-center  max-h-[92%] overflow-y-auto">
                 <DialogPanel className="bg-white rounded-2xl w-[568px] h-auto flex flex-col  max-h-[92%] overflow-y-auto">
                     <div className=' flex flex-col p-6 gap-2 rounded-t-2xl'>
                         <div className='flex flex-row justify-between items-center'>

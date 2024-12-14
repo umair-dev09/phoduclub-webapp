@@ -25,7 +25,7 @@ function EditDetails({ open, onClose }: EditDetailsProps) {
                         </div>
                         <div className="flex flex-col gap-1">
                             <span className="font-semibold text-sm text-[#1D2939]">Category name</span>
-                            <div className='flex px-2 items-center h-[40px] border border-gray-300   focus:outline focus:outline-[1.5px] focus:outline-[#D6BBFB] hover:outline hover:outline-[1.5px] hover:outline-[#D6BBFB] shadow-sm rounded-md'>
+                            <div className='flex px-2 items-center h-[40px] border border-gray-300  h-10 focus:outline focus:outline-[1.5px] focus:outline-[#D6BBFB] hover:outline hover:outline-[1.5px] hover:outline-[#D6BBFB] shadow-sm rounded-md'>
                                 <input
                                     className="font-normal text-[#667085] w-full text-sm placeholder:text-[#A1A1A1] rounded-md px-1 py-1 focus:outline-none focus:ring-0 border-none"
                                     placeholder="Category name"

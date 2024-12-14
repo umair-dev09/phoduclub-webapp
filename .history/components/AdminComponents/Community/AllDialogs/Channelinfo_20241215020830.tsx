@@ -36,7 +36,7 @@ function channelinfo({ open, onClose, channelDescription, channelEmoji, channelI
         <Dialog open={open} onClose={onClose} className="relative z-50">
             <DialogBackdrop className="fixed inset-0 bg-black/30" />
             <div className="fixed inset-0 flex items-center justify-center">
-                <DialogPanel className="bg-white rounded-2xl w-[568px] h-auto flex flex-col  max-h-[92%] overflow-y-auto">
+                <DialogPanel className="bg-white rounded-2xl w-[568px] h-auto flex flex-col ">
                     <div className=' flex flex-col p-6 gap-2 rounded-t-2xl'>
                         <div className='flex flex-row justify-between items-center'>
                             <h1 className='text-[#1D2939] font-bold text-lg'>Channel info</h1>
@@ -80,7 +80,7 @@ function channelinfo({ open, onClose, channelDescription, channelEmoji, channelI
                             <div className="flex flex-row gap-4">
                                 <Popover placement="bottom">
                                     <PopoverTrigger>
-                                        <button className="w-[116px] h-10 rounded-md  justify-center border-2  gap-1 border-solid border-[#EAECF0] flex flex-row items-center hover:bg-[#F2F4F7] focus:outline-none">
+                                        <button className="w-[116px] h-10 rounded-md  justify-center border-2  gap-1 border-solid border-[#EAECF0] flex flex-row items-center  focus:outline-none">
                                             <span className="text-[#1D2939] text-sm font-semibold">All Users</span>
                                             <Image
                                                 src="/icons/arrow-dark-down-1.svg"
@@ -101,7 +101,7 @@ function channelinfo({ open, onClose, channelDescription, channelEmoji, channelI
 
                                 <Popover placement="bottom" >
                                     <PopoverTrigger>
-                                        <button className="w-[135px] h-10 rounded-md  justify-center border-2  focus:outline-none gap-1 border-solid border-[#EAECF0] hover:bg-[#F2F4F7] flex flex-row items-center">
+                                        <button className="w-[135px] h-10 rounded-md  justify-center border-2  focus:outline-none gap-1 border-solid border-[#EAECF0] flex flex-row items-center">
                                             <Image
                                                 src="/icons/plus-dark.svg"
                                                 width={16}

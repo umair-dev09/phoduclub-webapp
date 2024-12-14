@@ -153,7 +153,6 @@ const ChannelRequests: React.FC<ChannelRequestsProps> = ({ open, onClose }) => {
                 <div className="fixed inset-0 flex items-center justify-center">
                     <DialogPanel
                         transition
-                        className=" max-h-[92%] overflow-y-auto"
                     >
                         <div className="flex flex-col p-6 gap-4 bg-white rounded-2xl w-[38.375rem] h-auto overflow-hidden" >
                             <div className="flex flex-row justify-between items-center">

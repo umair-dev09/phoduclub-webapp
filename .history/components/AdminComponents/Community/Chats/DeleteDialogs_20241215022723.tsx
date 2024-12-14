@@ -23,7 +23,7 @@ function Delete({ open, onClose }: DeleteProps) {
                         <span className='text-[#667085] font-normal text-sm'>Lorem ipsum is a dummy text widely used in digital industry will be used here in as a preview</span>
                     </div>
                     <div className="flex flex-row justify-end mx-6 my-4 gap-4">
-                        <button className="py-[0.625rem] px-6 border-2  border-solid border-[#EAECF0] font-semibold text-sm text-[#1D2939] hover:bg-[#F2F4F7] rounded-md" onClick={onClose} >Cancel</button>
+                        <button className="py-[0.625rem] px-6 border-2  border-solid border-[#EAECF0] font-semibold text-sm text-[#1D2939] rounded-md" onClick={onClose} >Cancel</button>
                         <button className="py-[0.625rem] px-6 text-white shadow-inner-button bg-[#BB241A] border border-[#DE3024] rounded-md" onClick={onClose} >Delete</button>
                     </div>
                 </DialogPanel>
