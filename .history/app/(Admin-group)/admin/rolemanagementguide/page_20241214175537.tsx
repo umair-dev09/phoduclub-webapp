@@ -162,7 +162,7 @@ function rolemanagementguide() {
                                 <span className='text-[#667085] font-normal text-sm'>You are allowed to add only Mentor/Guide role</span>
                             </div>
                             <div className='w-auto h-auto gap-4 flex flex-row'>
-                                <button className='h-11 w-[120px] border border-solid border-[#EAECF0] rounded-md bg-[#FFFFFF] flex items-center justify-center hover:bg-[#F2F4F7]'
+                                <button className='h-11 w-[120px] border border-solid border-[#EAECF0] rounded-md bg-[#FFFFFF] flex items-center justify-center'
                                     onClick={() => setIsOpen(false)}>
                                     <span className='font-semibold text-[#1D2939] text-sm'>Cancel</span>
                                 </button>
@@ -252,7 +252,7 @@ function rolemanagementguide() {
                             <span className='text-[#667085] font-normal text-sm'>Lorem ipsum is placeholder text commonly used</span>
                         </div>
                         <div className="flex flex-row justify-end mx-6 my-4 gap-4">
-                            <button className="py-[0.625rem] px-6 border-2  border-solid border-[#EAECF0] font-semibold text-sm text-[#1D2939] rounded-md hover:bg-[#F2F4F7]" onClick={() => setIsDialogOpen(false)} >Cancel</button>
+                            <button className="py-[0.625rem] px-6 border-2  border-solid border-[#EAECF0] font-semibold text-sm text-[#1D2939] rounded-md" onClick={() => setIsDialogOpen(false)} >Cancel</button>
                             <button className="py-[0.625rem] px-6 text-white shadow-inner-button bg-[#BB241A] border border-[#DE3024] rounded-md" onClick={handleDeleteGuide} >Remove</button>
                         </div>
                     </DialogPanel>

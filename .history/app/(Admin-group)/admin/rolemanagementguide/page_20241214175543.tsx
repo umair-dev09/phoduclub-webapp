@@ -162,7 +162,7 @@ function rolemanagementguide() {
                                 <span className='text-[#667085] font-normal text-sm'>You are allowed to add only Mentor/Guide role</span>
                             </div>
                             <div className='w-auto h-auto gap-4 flex flex-row'>
-                                <button className='h-11 w-[120px] border border-solid border-[#EAECF0] rounded-md bg-[#FFFFFF] flex items-center justify-center hover:bg-[#F2F4F7]'
+                                <button className='h-11 w-[120px] border border-solid border-[#EAECF0] rounded-md bg-[#FFFFFF] flex items-center justify-center'
                                     onClick={() => setIsOpen(false)}>
                                     <span className='font-semibold text-[#1D2939] text-sm'>Cancel</span>
                                 </button>

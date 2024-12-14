@@ -333,8 +333,10 @@ function Messenger() {
                             <div className="flex flex-row justify-between my-6">
                                 <h3 className="text-lg font-bold text-[#1D2939]">Create Push Notification</h3>
                                 <button className="w-[32px] h-[32px]  rounded-full flex items-center justify-center transition-all duration-300 ease-in-out hover:bg-[#F2F4F7]">
-                                    <button onClick={() => setIsOpen(false)}>
-                                        <Image src="/icons/cancel.svg" alt="Cancel" width={20} height={20} />
+                                    <button className="w-[32px] h-[32px]  rounded-full flex items-center justify-center transition-all duration-300 ease-in-out hover:bg-[#F2F4F7]">
+                                        <button onClick={() => setIsOpen(false)}>
+                                            <Image src="/icons/cancel.svg" alt="Cancel" width={20} height={20} />
+                                        </button>
                                     </button>
                                 </button>
                             </div>

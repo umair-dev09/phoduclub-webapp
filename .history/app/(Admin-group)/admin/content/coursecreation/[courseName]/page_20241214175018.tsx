@@ -428,7 +428,7 @@ function courses() {
 
                             <hr />
                             <div className="flex flex-row justify-end mx-6 my-2 items-center gap-4 pb-2">
-                                <button onClick={() => setPublishDialogOpen(false)} className="py-[0.625rem] px-6 border-[1.5px] border-lightGrey rounded-md text-[#1D2939] font-semibold text-sm hover:bg-[#F2F4F7]">Cancel</button>
+                                <button onClick={() => setPublishDialogOpen(false)} className="py-[0.625rem] px-6 border-[1.5px] border-lightGrey rounded-md text-[#1D2939] font-semibold text-sm">Cancel</button>
                                 <button
                                     onClick={() => handlePublishCourse()}
                                     disabled={!isFormValid}
