@@ -32,7 +32,7 @@ interface Course {
     courseName: string;
     price: number;
     discountPrice: string;
-    courseId: string; 
+    courseId: string;
     date: string; // Can be Date type if desired
     courseImage: string;
     status: string;
@@ -298,9 +298,9 @@ function Course() {
                     </button>
 
                     {/* Select Date Button */}
-                    <Popover placement="bottom" isOpen={isSelcetDateOpen}>
+                    <Popover placement="bottom" isOpen={isSelcetDateOpen} onOpenChange={(open) => setIsSelectDateOpen(open)}>
                         <PopoverTrigger>
-                            <button className="h-[44px] w-[143px] rounded-md bg-[#FFFFFF] border border-solid border-[#D0D5DD] flex items-center p-3" onClick={() => setIsSelectDateOpen(true)}>
+                            <button className="h-[44px] w-[143px] rounded-md bg-[#FFFFFF] outline-none border border-solid border-[#D0D5DD] flex items-center p-3">
                                 <Image
                                     src="/icons/select-date.svg"
                                     width={20}
@@ -314,7 +314,6 @@ function Course() {
                             <Calendar
                                 defaultValue={today(getLocalTimeZone())}
                                 showMonthAndYearPickers
-                                color="secondary"
                                 onChange={(value) => {
                                     const date = new Date(value.year, value.month - 1, value.day); // Adjust for zero-based month index
                                     setSelectedDate(date); // Update state with the new Date object
@@ -460,7 +459,7 @@ function Course() {
                                             <td className="px-8 py-4 text-center text-[#101828] text-sm">134</td>
                                             <td className="px-8 py-4 text-[#101828] text-sm">
                                                 <span className='flex items-center justify-center rounded-full'>
-                                                          <StatusDisplay status={course.status}/>
+                                                    <StatusDisplay status={course.status} />
                                                 </span>
                                             </td>
                                             <td className="flex items-center justify-center px-8 py-4 text-center text-[#101828] text-sm">

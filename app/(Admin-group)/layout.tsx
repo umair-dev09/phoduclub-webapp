@@ -28,7 +28,6 @@ export default function DashboardGroup({ children }: DashboardGroupProps) {
             }
         } else {
             switch (pageName) {
-               
                 case 'rolemanagement':
                     pageName = 'Role Management';
                     break;
@@ -98,7 +97,7 @@ export default function DashboardGroup({ children }: DashboardGroupProps) {
     }, [pathname]);
 
     return (
-        <div className="body">
+        <div className="body overflow-none">
             <div>
                 <TabComps />
             </div>
