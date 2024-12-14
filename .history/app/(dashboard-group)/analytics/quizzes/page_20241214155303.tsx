@@ -161,7 +161,7 @@ function Quizzes() {
     ];
 
     return (
-        <div className="flex flex-1 flex-col py-6 mx-8">
+        <div className="flex flex-1 flex-col my-6 mx-8">
             <div className="text-[#1D2939]"><h3>Overview</h3></div>
             <div className="mt-5 mb-4">
                 <div className="bg-white p-4 flex flex-col rounded-2xl border border-lightGrey">
@@ -337,7 +337,7 @@ function Quizzes() {
                     <Leaderboard />
                     <Leaderboard />
                 </table>
-                <div className="pb-4">
+                <div>
                     <table className="flex flex-col w-full h-min border border-lightGrey rounded-xl bg-[#973AFF] text-white text-sm font-medium">
                         <tr className="flex flex-1 py-3">
                             <td className="flex items-center justify-center w-[8%]"><p>10,545</p></td>

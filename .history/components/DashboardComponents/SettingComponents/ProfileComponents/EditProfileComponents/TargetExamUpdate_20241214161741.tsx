@@ -2,36 +2,51 @@ import styles from '../Profile.module.css';
 import { useEffect, useRef, useState } from 'react';
 import { Dialog, DialogBackdrop, DialogPanel } from '@headlessui/react';
 import Image from 'next/image';
-import Select, { MultiValue, SingleValue } from 'react-select';
-import OtpForUpdate from './OtpForUpdate';
+import Select, { MultiValue } from 'react-select';
+import { doc, getDoc, getFirestore } from 'firebase/firestore';
 import { onAuthStateChanged, RecaptchaVerifier, signInWithPhoneNumber, User } from 'firebase/auth';
 import { auth } from '@/firebase';
+import OtpForUpdate from './OtpForUpdate';
 import { toast } from 'react-toastify';
-import { doc, getDoc, getFirestore } from 'firebase/firestore';
-import LoadingData from '@/components/Loading';
 
 type UserData = {
   phone: string | null;
-  targetYear: string | null;
-}
+  targetExams: string[] | null;
+};
 
-type TargetYearUpdateProps = {
+type Option = {
+  value: string;
+  label: string;
+};
+
+type TargetExamsUpdateProps = {
   setIsEditing: (isEditing: boolean) => void; // Add this prop to update isEditing in Profile
-
 }
 
-function TargetYearUpdate({ setIsEditing }: TargetYearUpdateProps) {
+function TargetExamUpdate({ setIsEditing }: TargetExamsUpdateProps) {
   const recaptchaVerifierRef = useRef<any>(null);
   let [showComponent, setShowComponent] = useState(false);
   const [isOtpOpen, setIsOtpOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
   const [userData, setUserData] = useState<UserData | null>(null);
   const [user, setUser] = useState<User | null>(null);
-  const [error, setError] = useState(false);
+  const [selectedExams, setSelectedExams] = useState<Option[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
 
   const db = getFirestore();
 
+  const exams: Option[] = [
+    { value: 'BITSAT', label: 'BITSAT' },
+    { value: 'JEE', label: 'JEE' },
+    { value: 'SRMJEEE', label: 'SRMJEEE' },
+    { value: 'COMEDK', label: 'COMEDK' },
+    { value: 'KCET', label: 'KCET' },
+    { value: 'VITEEE', label: 'VITEEE' },
+    { value: 'MET', label: 'MET' },
+  ];
 
+  // Handle authentication state change
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       if (currentUser) {
@@ -41,26 +56,20 @@ function TargetYearUpdate({ setIsEditing }: TargetYearUpdateProps) {
         setError(true);
       }
     });
-
     return () => unsubscribe();
   }, []);
 
+  // Fetch user data from Firestore
   useEffect(() => {
     const fetchUserData = async () => {
       try {
         if (user) {
-          const uniqueId = user.uid;
-          const userDoc = doc(db, `users/${uniqueId}`);
+          const userDoc = doc(db, `users/${user.uid}`);
           const userSnapshot = await getDoc(userDoc);
 
           if (userSnapshot.exists()) {
             const data = userSnapshot.data() as UserData;
             setUserData(data);
-
-            if (data.targetYear) {
-              const defaultYear = years.find(year => year.value === data.targetYear);
-              setSelectedYear(defaultYear || null); // Set the found year or null if not found
-            }
           } else {
             console.error('No user data found!');
             setError(true);
@@ -79,26 +88,16 @@ function TargetYearUpdate({ setIsEditing }: TargetYearUpdateProps) {
     }
   }, [user, db]);
 
-  // if (loading || error) {
-  //   return <LoadingData />;
-  // }
-  type Option = {
-    value: string;
-    label: string;
-  };
-
-  type CustomState = {
-    isSelected: boolean;
-    isFocused: boolean;
-  };
-
-  const years: Option[] = [
-    { value: '2024', label: '2024' },
-    { value: '2025', label: '2025' },
-    { value: '2026', label: '2026' },
-  ];
-  let [isOpen, setIsOpen] = useState(false)
-  const [selectedYear, setSelectedYear] = useState<SingleValue<Option>>(null);
+  // Set default selected exams once userData is available
+  useEffect(() => {
+    if (userData?.targetExams) {
+      const defaultExams = userData.targetExams.map((exam) => ({
+        value: exam,
+        label: exam,
+      }));
+      setSelectedExams(defaultExams);
+    }
+  }, [userData]);
 
   const setUpRecaptcha = () => {
     if (!recaptchaVerifierRef.current) {
@@ -131,7 +130,6 @@ function TargetYearUpdate({ setIsEditing }: TargetYearUpdateProps) {
             .catch((error: any) => {
               console.error('Error sending OTP', error);
               reject(new Error('Failed to send OTP'));
-
             });
         }),
         {
@@ -145,42 +143,73 @@ function TargetYearUpdate({ setIsEditing }: TargetYearUpdateProps) {
     }
   };
 
-  return (
+  // Map the selected exams to an array of strings
+  const selectedExamValues = selectedExams.map((exam) => exam.value);
 
-    <div className={styles.updateYear}>
-      <button className={styles.updateYearButton} onClick={() => setIsOpen(true)}>Update</button>
+  return (
+    <div className={styles.updateIcon}>
+      <button className={styles.updateIconButton} onClick={() => setIsOpen(true)}>Update</button>
       <Dialog open={isOpen} onClose={() => setIsOpen(false)} className="relative z-50">
         <DialogBackdrop className="fixed inset-0 bg-black/30" />
-        <div className="fixed inset-0 flex w-screen items-center justify-center p-4 ">
+        <div className="fixed inset-0 flex w-screen items-center justify-center p-4">
           <DialogPanel transition className={styles.commonDialogBox}>
             <div className={styles.commonUpdateHeader}>
-              <h3>Update Target Year</h3>
-              <button className="w-[32px] h-[32px] rounded-full flex items-center justify-center transition-all duration-300 ease-in-out hover:bg-[#F2F4F7]">
-                <button onClick={() => setIsOpen(false)}><Image src='/icons/cancel.svg' alt="profile-image" width={18} height={18} /></button>
+              <h3>Update Exam</h3>
+              <button className="w-[32px] h-[32px] bg-[#F7F8FA]  rounded-full flex items-center justify-center transition-all duration-200 hover:bg-[#F2F4F7]">
+                <button onClick={() => setIsOpen(false)}>
+                  <Image src='/icons/cancel.svg' alt="profile-image" width={18} height={18} />
+                </button>
               </button>
             </div>
-            <p className='text-sm mx-6 text-[#667085] mb-4'>Lorem ipsum is a dummy text widely used in digital industry will be used here in as a preview</p>
+            <p className='text-sm mx-6 text-[#667085] mb-4'>
+              Lorem ipsum is a dummy text widely used in digital industry will be used here in as a preview
+            </p>
             <div className={styles.commonDivider} />
 
             <div className={styles.dropdownWrapper}>
-              <label htmlFor="target-year" className={styles.label}>Target Year</label>
+              <p className={styles.labelTargetExam}>Target Exam</p>
               <Select
-                id="target-year"
-                value={selectedYear}
-                onChange={setSelectedYear}
-                options={years}
-                placeholder="Select year..."
-                className={styles.yearSelect}
+                id="target-exam"
+                value={selectedExams}
+                onChange={(newValue) => setSelectedExams(newValue as Option[])}  // Explicit type casting
+                options={exams}
+                isMulti
+                placeholder="Select exams..."
+                // className={styles.examSelect}
                 styles={{
-                  option: (provided, state: CustomState) => ({
+                  option: (provided, state) => ({
                     ...provided,
                     color: 'black',
-                    backgroundColor: state.isFocused ? '#E39FF6' : 'white', // Purple color when focused
+                    backgroundColor: state.isFocused ? '#E39FF6' : 'white',
                   }),
-                  singleValue: (provided) => ({
+                  multiValue: (provided) => ({
+                    ...provided,
+                    backgroundColor: 'white',
+                    border: '1.2px solid #D0D5DD',
+                    borderRadius: '8px',
+                    fontWeight: '500',
+                    marginRight: '7px',
+                  }),
+                  multiValueLabel: (provided) => ({
                     ...provided,
                     color: 'black',
-                    fontWeight: '500'
+                  }),
+                  multiValueRemove: (provided) => ({
+                    ...provided,
+                    color: 'gray',
+                    cursor: 'pointer',
+                    ':hover': {
+                      backgroundColor: '#ffffff',
+                      borderRadius: '8px',
+                    },
+                  }),
+                  menu: (provided) => ({
+                    ...provided,
+                    backgroundColor: 'white',
+                  }),
+                  menuList: (provided) => ({
+                    ...provided,
+                    padding: '0',
                   }),
                   control: (provided) => ({
                     ...provided,
@@ -192,21 +221,21 @@ function TargetYearUpdate({ setIsEditing }: TargetYearUpdateProps) {
                       outline: '1px solid #e5a1f5',
                     },
                   }),
-
                 }}
               />
             </div>
             <div className={styles.commonDivider} />
 
             <div className={styles.commonButtons}>
-              <button className={styles.tExamCancelBtn} onClick={() => setIsOpen(false)}>Cancel</button>
+              <button className={styles.tExamCancelBtn}>Cancel</button>
               <button className={styles.tExamContinueBtn} onClick={onContinueClick}>Continue</button>
             </div>
           </DialogPanel>
         </div>
       </Dialog>
-      {showComponent && <OtpForUpdate newEmail={''} isOpen={isOtpOpen} setIsOpen={setIsOtpOpen} targetYear={selectedYear?.value || ''} setIsEditing={setIsEditing} targetExams={[]} />}
+      {showComponent && <OtpForUpdate newEmail={''} isOpen={isOtpOpen} setIsOpen={setIsOtpOpen} targetYear={''} setIsEditing={setIsEditing} targetExams={selectedExamValues} />}
     </div>
   );
 }
-export default TargetYearUpdate;
+
+export default TargetExamUpdate;

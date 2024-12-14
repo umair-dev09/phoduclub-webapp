@@ -157,7 +157,7 @@ const ImageCropper = ({ imageFile, setShowCropper, isOpen, setIsOpen, setIsEditi
             <div>
               <div className={styles.commonUpdateHeader}>
                 <h3>Crop Image</h3>
-                <button className="w-[32px] h-[32px] rounded-full flex items-center justify-center transition-all duration-300 ease-in-out hover:bg-[#F2F4F7]">
+                <button className="w-[32px] h-[32px] bg-[#F7F8FA] rounded-full flex items-center justify-center transition-all duration-200 hover:bg-[#F2F4F7]">
                   <button onClick={() => setIsOpen(false)}>
                     <Image src='/icons/cancel.svg' alt="cancel-image" width={18} height={18} />
                   </button>

@@ -246,7 +246,7 @@ function JeeMains() {
                 {/* --------------------------------------******************************************************---------------------------------------------- */}
                 {/* Complete Analysis */}
                 <div id="CompleteAnalysis" className="flex flex-col">
-                    <div className="h-[44px] flex flex-col mt-2">
+                    <div className="h-[44px] flex flex-col  mt-2">
                         <span className="text-[#1D2939] text-lg font-semibold">Complete Analysis </span>
                     </div>
                     <div>
@@ -256,8 +256,17 @@ function JeeMains() {
                 {/* --------------------------------------******************************************************---------------------------------------------- */}
                 {/* Summary */}
                 <div id="Summary" className="flex flex-col">
-                    <div className="h-[44px] flex flex-row items-center  mb-2 gap-2">
+
+
+                    <div className="h-[44px] flex flex-row items-center mt-6 mb-2 gap-2">
                         <span className="text-[#1D2939] text-lg font-semibold ">Summary</span>
+                        <Image
+                            src="/icons/information-circle.svg"
+                            width={20}
+                            height={20}
+                            alt="information-icon"
+
+                        />
                     </div>
 
                     <div className="flex flex-col mb-8 gap-4">

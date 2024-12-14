@@ -26,48 +26,48 @@ const avatars = [
   'https://firebasestorage.googleapis.com/v0/b/phodu-club.appspot.com/o/Default%20Avatar%2Favatar8.png?alt=media&token=40cc97cf-aa18-43df-8a5a-254e0a92c603'
 ];
 
-function ChooseAvatarBox({ isOpen, setIsOpen, setIsEditing }: ChooseAvatarProps) {
-  const [user, setUser] = useState<User | null>(null);
-  const db = getFirestore();
+function ChooseAvatarBox({ isOpen, setIsOpen,setIsEditing }: ChooseAvatarProps) {
+    const [user, setUser] = useState<User | null>(null); 
+    const db = getFirestore();
 
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-      if (currentUser) {
-        setUser(currentUser);
-      } else {
-        console.error('No user is logged in');
-      }
-    });
-
-    return () => unsubscribe();
-  }, []);
+    useEffect(() => {
+        const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+            if (currentUser) {
+                setUser(currentUser);
+            } else {
+                console.error('No user is logged in');
+            }
+        });
+    
+        return () => unsubscribe();
+    }, []);
 
 
   const handleImageClick = async (imageUrl: string) => {
     if (user) {
-      try {
-        // Reference to the user's document in Firestore
-        const userRef = doc(db, 'users', user.uid);
-
-        // Update the Firestore document with profilePic and isAvatar fields
-        await updateDoc(userRef, {
-          profilePic: imageUrl,
-          isAvatar: true
-        });
-        toast.success('Avatar updated successfully!');
-        setTimeout(() => {
-          setIsEditing(false); // This will change the isEditing state in the Profile page
-          setIsOpen(false);
-        }, 500);
-
-      } catch (error) {
-        toast.error('Failed to update avatar.');
-        console.error('Error updating avatar:', error);
-      }
-    } else {
-      toast.error('No user logged in.');
-    }
-
+        try {
+          // Reference to the user's document in Firestore
+          const userRef = doc(db, 'users', user.uid);
+  
+          // Update the Firestore document with profilePic and isAvatar fields
+          await updateDoc(userRef, {
+            profilePic: imageUrl,
+            isAvatar: true
+          });
+          toast.success('Avatar updated successfully!');
+          setTimeout(() => {
+            setIsEditing(false); // This will change the isEditing state in the Profile page
+            setIsOpen(false);
+          }, 500);
+        
+        } catch (error) {
+          toast.error('Failed to update avatar.');
+          console.error('Error updating avatar:', error);
+        }
+      } else {
+        toast.error('No user logged in.');
+      }    
+    
   };
 
   return (
@@ -77,10 +77,8 @@ function ChooseAvatarBox({ isOpen, setIsOpen, setIsEditing }: ChooseAvatarProps)
         <DialogPanel transition className={styles.commonDialogBox}>
           <div className={styles.commonUpdateHeader}>
             <h3>Choose an Avatar</h3>
-            <button className="w-[32px] h-[32px] rounded-full flex items-center justify-center transition-all duration-200 hover:bg-[#F2F4F7]">
-              <button onClick={() => setIsOpen(false)}>
-                <Image src='/icons/cancel.svg' alt="cancel-image" width={18} height={18} />
-              </button>
+            <button onClick={() => setIsOpen(false)}>
+              <Image src='/icons/cancel.svg' alt="cancel-image" width={18} height={18} />
             </button>
           </div>
           <div className={styles.commonDivider} />

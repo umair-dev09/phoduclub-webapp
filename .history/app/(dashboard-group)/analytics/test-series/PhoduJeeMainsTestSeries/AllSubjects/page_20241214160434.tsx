@@ -246,7 +246,7 @@ function JeeMains() {
                 {/* --------------------------------------******************************************************---------------------------------------------- */}
                 {/* Complete Analysis */}
                 <div id="CompleteAnalysis" className="flex flex-col">
-                    <div className="h-[44px] flex flex-col mt-2">
+                    <div className="h-[44px] flex flex-col">
                         <span className="text-[#1D2939] text-lg font-semibold">Complete Analysis </span>
                     </div>
                     <div>

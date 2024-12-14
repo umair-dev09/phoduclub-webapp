@@ -29,19 +29,19 @@ const ImageCropper = ({ imageFile, setShowCropper, isOpen, setIsOpen, setIsEditi
   const [crop, setCrop] = useState<PixelCrop | undefined>();
   const [error, setError] = useState<string>('');
   const [croppedImageUrl, setCroppedImageUrl] = useState<string | null>(null);
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<User | null>(null); 
   const [isButtonDisabled, setIsButtonDisabled] = useState(false); // State to disable/enable the button
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-      if (currentUser) {
-        setUser(currentUser);
-      } else {
-        console.error('No user is logged in');
-      }
+        if (currentUser) {
+            setUser(currentUser);
+        } else {
+            console.error('No user is logged in');
+        }
     });
 
     return () => unsubscribe();
-  }, []);
+}, []);
   // Read file and set image URL
   useEffect(() => {
     if (imageFile) {
@@ -84,27 +84,27 @@ const ImageCropper = ({ imageFile, setShowCropper, isOpen, setIsOpen, setIsEditi
         previewCanvasRef.current,
         crop
       );
-
+  
       const dataUrl = previewCanvasRef.current.toDataURL(); // Get the cropped image as a Data URL
       setCroppedImageUrl(dataUrl);
       console.log(user);
-      if (user) {
+      if(user){
         toast.promise(
-          new Promise(async (resolve, reject) => {
+          new Promise(async (resolve, reject) => { 
             try {
               // Upload the cropped image to Firebase Storage
               const storageRef = ref(storage, `ProfilePicture/${imageFile.name}`);
               const uploadResult = await uploadString(storageRef, dataUrl, "data_url");
-
+        
               // Check if the upload was successful
               if (uploadResult) {
                 // Get the download URL of the uploaded image
                 const downloadUrl = await getDownloadURL(storageRef);
-
+        
                 if (downloadUrl) {
                   // Update Firestore user document with the image URL
                   const userDocRef = doc(db, "users", user.uid);
-
+        
                   await updateDoc(userDocRef, {
                     profilePic: downloadUrl,
                     isAvatar: false,
@@ -114,7 +114,7 @@ const ImageCropper = ({ imageFile, setShowCropper, isOpen, setIsOpen, setIsEditi
                   setIsButtonDisabled(false);
                   // Toast notifications for success
                   resolve("Profile Picture Updated!");
-
+                  
                   // toast.success("Image uploaded and profile updated!");
                   // toast.info(`Profile picture URL: ${downloadUrl}`);
                 } else {
@@ -142,9 +142,9 @@ const ImageCropper = ({ imageFile, setShowCropper, isOpen, setIsOpen, setIsEditi
             error: 'Failed to Upload Image or Update Profile.',
           }
         );
-
+      
       }
-
+      
     }
   };
 
@@ -155,15 +155,13 @@ const ImageCropper = ({ imageFile, setShowCropper, isOpen, setIsOpen, setIsEditi
         <DialogPanel transition className={styles.commonDialogBox}>
           <>
             <div>
-              <div className={styles.commonUpdateHeader}>
-                <h3>Crop Image</h3>
-                <button className="w-[32px] h-[32px] rounded-full flex items-center justify-center transition-all duration-300 ease-in-out hover:bg-[#F2F4F7]">
-                  <button onClick={() => setIsOpen(false)}>
-                    <Image src='/icons/cancel.svg' alt="cancel-image" width={18} height={18} />
-                  </button>
-                </button>
-              </div>
-              <div className={styles.commonDivider} />
+            <div className={styles.commonUpdateHeader}>
+            <h3>Crop Image</h3>
+            <button onClick={() => setIsOpen(false)}>
+              <Image src='/icons/cancel.svg' alt="cancel-image" width={18} height={18} />
+            </button>
+          </div>
+          <div className={styles.commonDivider} />
             </div>
             {error && <p className="text-red-400 text-xs">{error}</p>}
             {imgSrc && (
@@ -185,12 +183,12 @@ const ImageCropper = ({ imageFile, setShowCropper, isOpen, setIsOpen, setIsEditi
                   />
                 </ReactCrop>
                 <button
-                  className={`min-w-[100px] mt-4 px-4 py-2 rounded-md text-white font-medium shadow-inner-button ${isButtonDisabled ? 'bg-[#d8acff]' : 'bg-[#8501FF]'}`}
-                  onClick={handleCropImage}
-                  disabled={isButtonDisabled} // Disable the button if the state is true
-                >
-                  Save Image
-                </button>
+                className={`min-w-[100px] mt-4 px-4 py-2 rounded-md text-white font-medium shadow-inner-button ${isButtonDisabled ? 'bg-[#d8acff]' : 'bg-[#8501FF]'}`}
+                onClick={handleCropImage}
+                disabled={isButtonDisabled} // Disable the button if the state is true
+              >
+                Save Image
+              </button>
 
                 <canvas
                   ref={previewCanvasRef}

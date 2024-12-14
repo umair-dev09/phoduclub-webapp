@@ -46,7 +46,7 @@ function HelpDropDown() {
             {/* Trigger Button */}
             <div className="mx-2">
                 <button
-                    className="w-[32px] h-[32px] bg-[#F7F8FA] border-[1.5px] border-[#EAECF0] rounded-full flex items-center justify-center transition-all duration-300 ease-in-out hover:bg-[#F2F4F7]"
+                    className="w-[32px] h-[32px]  rounded-full flex items-center justify-center transition-all duration-200 hover:bg-[#F2F4F7]"
                     onClick={handleOpen}  // Corrected to open first dialog
                 >
                     <Image

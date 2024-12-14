@@ -251,7 +251,7 @@ function OtpForUpdate({ isOpen, setIsOpen, newEmail, targetYear, setIsEditing, t
           <DialogPanel transition className={styles.commonDialogBox}>
             <div className={styles.commonUpdateHeader}>
               <h3>OTP Verification</h3>
-              <button className="w-[32px] h-[32px]  rounded-full flex items-center justify-center transition-all duration-300 ease-in-out hover:bg-[#F2F4F7]">
+              <button className="w-[32px] h-[32px]  rounded-full flex items-center justify-center transition-all duration-200 hover:bg-[#F2F4F7]">
                 <button onClick={() => setIsOpen(false)}><Image src='/icons/cancel.svg' alt="profile-image" width={18} height={18} /></button>
               </button>
             </div>
