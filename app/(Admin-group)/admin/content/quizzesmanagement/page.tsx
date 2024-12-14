@@ -302,7 +302,6 @@ function Quizz() {
                             <Calendar
                                 defaultValue={today(getLocalTimeZone())}
                                 showMonthAndYearPickers
-                                color="secondary"
                                 onChange={(value) => {
                                     const date = new Date(value.year, value.month - 1, value.day); // Adjust for zero-based month index
                                     setSelectedDate(date); // Update state with the new Date object

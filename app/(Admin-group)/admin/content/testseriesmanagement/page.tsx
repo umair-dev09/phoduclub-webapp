@@ -265,7 +265,7 @@ function TesstseriesInfo() {
                     </button>
 
                     {/* Select Date Button */}
-                    <Popover placement="bottom" isOpen={isSelcetDateOpen}>
+                    <Popover placement="bottom" isOpen={isSelcetDateOpen} onOpenChange={(open) => setIsSelectDateOpen(open)}>
                         <PopoverTrigger>
                             <button className="h-[44px] w-[143px]  hover:bg-[#F2F4F7] rounded-md bg-[#FFFFFF] border border-solid border-[#D0D5DD] flex items-center p-3" onClick={() => setIsSelectDateOpen(true)}>
                                 <Image
@@ -281,7 +281,6 @@ function TesstseriesInfo() {
                             <Calendar
                                 defaultValue={today(getLocalTimeZone())}
                                 showMonthAndYearPickers
-                                color="secondary"
                                 onChange={(value) => {
                                     const date = new Date(value.year, value.month - 1, value.day); // Adjust for zero-based month index
                                     setSelectedDate(date); // Update state with the new Date object
