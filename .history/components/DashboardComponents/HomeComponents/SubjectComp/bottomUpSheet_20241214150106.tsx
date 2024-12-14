@@ -5,7 +5,6 @@ import Drawer from "react-modern-drawer";
 import "react-modern-drawer/dist/index.css";
 import { Popover, PopoverContent, PopoverTrigger } from "@nextui-org/popover";
 import { Calendar } from "@nextui-org/calendar";
-import { StatusRenderInfo } from 'antd/es/qr-code/interface';
 
 interface BottomUpSheet {
     isOpen: boolean;
@@ -134,11 +133,9 @@ const BottomSheet: React.FC<BottomUpSheet> = ({ closeModal, isOpen, subjectName 
         return (checkedCount / checkboxes[rowIndex].length) * 100;
     };
 
-    const [selectedPriority, setSelectedPriority] = useState<string>(
-        chapterNames.length > 0 ? getPriorityText(chapterNames[0]) : 'Priority'
-    );
+    const [selectedPriority, setSelectedPriority] = useState(getPriorityText(chapterName));
 
-    const handlePriorityChange = (priority: string) => {
+    const handlePriorityChange = (priority) => {
         setSelectedPriority(priority); // Update the selected priority
     };
     const getContent = () => {
@@ -172,8 +169,8 @@ const BottomSheet: React.FC<BottomUpSheet> = ({ closeModal, isOpen, subjectName 
                                     <button className="inline-flex items-center border border-gray-300 rounded-full bg-white text-sm font-medium text-gray-700 gap-1 w-fit h-auto px-[10px] py-1 whitespace-nowrap overflow-hidden shadow-sm">
                                         <div
                                             className={`w-2 h-2 rounded-full ${selectedPriority === 'Low' ? 'bg-[#0B9055]' :
-                                                selectedPriority === 'Medium' ? 'bg-[#DB6704]' :
-                                                    selectedPriority === 'High' ? 'bg-[#DE3024]' : 'bg-red-500'
+                                                    selectedPriority === 'Medium' ? 'bg-[#DB6704]' :
+                                                        selectedPriority === 'High' ? 'bg-[#DE3024]' : 'bg-red-500'
                                                 }`}
                                         ></div>
                                         <p className="text-sm text-gray-700">{selectedPriority}</p>
