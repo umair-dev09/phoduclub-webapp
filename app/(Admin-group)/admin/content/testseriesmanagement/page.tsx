@@ -65,7 +65,7 @@ function TesstseriesInfo() {
     const [data, setData] = useState<Test[]>([]);
     const [tests, setTests] = useState<Test[]>([]);
     const [currentPage, setCurrentPage] = useState(1);
-    const [itemsPerPage] = useState(5);
+    const [itemsPerPage] = useState(10);
     const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState('');
     const router = useRouter();
@@ -375,7 +375,7 @@ function TesstseriesInfo() {
                         )}
                     </div>
                     <div className="h-full">
-                        <div className="border border-[#EAECF0] rounded-xl">
+                        <div className="border border-[#EAECF0] rounded-xl overflow-x-auto">
                             <table className="w-full bg-white rounded-xl">
                                 <thead>
                                     <tr>
@@ -402,11 +402,11 @@ function TesstseriesInfo() {
                                             <td onClick={() => handleTabClick('/admin/content/testseriesmanagement/testseriesinfo')}>
                                                 <button className="flex flex-row items-center px-8 py-3 gap-2 text-[#9012FF] underline text-sm font-medium">
                                                     <Image src='/images/TSM-DP.png' alt="DP" width={40} height={40} />
-                                                    <p className="text-start">{test.title}</p>
+                                                    <p className="text-start whitespace-nowrap">{test.title}</p>
                                                 </button>
                                             </td>
                                             <td className="px-8 py-4 text-center text-[#101828] text-sm"><span className="mr-1">&#8377;</span>{test.students}</td>
-                                            <td className="px-8 py-4 text-center text-[#101828] text-sm">{test.date}</td>
+                                            <td className="px-8 py-4 text-center text-[#101828] text-sm whitespace-nowrap">{test.date}</td>
                                             <td className="px-8 py-4 text-center text-[#101828] text-sm">
                                                 <span className='flex items-center justify-start ml-[20%] rounded-full'>
                                                     <Status status={test.status} />

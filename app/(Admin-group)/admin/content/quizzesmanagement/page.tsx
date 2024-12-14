@@ -88,7 +88,7 @@ function Quizz() {
     const [data, setData] = useState<Quiz[]>([]);
     const [quizzes, setQuizzes] = useState<Quiz[]>([]);
     const [currentPage, setCurrentPage] = useState(1);
-    const [itemsPerPage] = useState(5);
+    const [itemsPerPage] = useState(10);
     const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState('');
     const router = useRouter();
@@ -268,7 +268,7 @@ function Quizz() {
     const selectedStatuses = options.filter((option) => checkedState[option]);
 
     return (
-        <div className="flex flex-col px-[32px] w-full gap-4 overflow-y-auto h-auto my-5">
+        <div className="flex flex-col px-[32px] w-full gap-4 h-auto my-5 overflow-y-auto">
             <div className="flex flex-row justify-between items-center">
                 <span className="text-lg font-semibold text-[#1D2939]">Quizzes</span>
                 <div className="flex flex-row gap-3">
@@ -401,7 +401,7 @@ function Quizz() {
                         )}
                     </div>
                     <div className="h-full">
-                        <div className="border border-[#EAECF0] rounded-xl">
+                        <div className="border border-[#EAECF0] rounded-xl overflow-x-auto">
                             <table className="w-full bg-white rounded-xl">
                                 <thead>
                                     <tr>
@@ -428,12 +428,12 @@ function Quizz() {
                                         <th className="w-[12%] text-center px-8 py-4 rounded-tr-xl text-[#667085] font-medium text-sm">Action</th>
                                     </tr>
                                 </thead>
-                                <tbody>
+                                <tbody className="overflow-y-auto">
                                     {currentItems.map((quiz, index) => (
                                         <tr key={index} className="border-t border-solid border-[#EAECF0]">
-                                            <td onClick={() => handleTabClick(`/admin/content/quizzesmanagement/${quiz.title.toLowerCase().replace(/\s+/g, '-')}/?qId=${quiz.quizId}`)}><button className="px-8 py-4 text-[#9012FF] text-left underline text-sm font-medium">{quiz.title}</button></td>
+                                            <td onClick={() => handleTabClick(`/admin/content/quizzesmanagement/${quiz.title.toLowerCase().replace(/\s+/g, '-')}/?qId=${quiz.quizId}`)}><button className="px-8 py-4 text-[#9012FF] text-left underline text-sm font-medium whitespace-nowrap">{quiz.title}</button></td>
                                             <td className="px-8 py-4 text-center text-[#101828] text-sm">{quiz.questions}</td>
-                                            <td className="px-8 py-4 text-center text-[#101828] text-sm">{quiz.date}</td>
+                                            <td className="px-8 py-4 text-center text-[#101828] text-sm whitespace-nowrap">{quiz.date}</td>
                                             <td className="px-8 py-4 text-center text-[#101828] text-sm">{quiz.students}</td>
                                             <td className="px-8 py-4 text-center text-[#101828] text-sm">
                                                 <span className='flex items-center justify-start ml-[30%] rounded-full'>

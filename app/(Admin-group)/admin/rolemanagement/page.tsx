@@ -47,7 +47,7 @@ function rolemangement() {
     const [data, setData] = useState<RoleManagementInfo[]>([]);
     const [users, setUsers] = useState<RoleManagementInfo[]>([]);
     const [currentPage, setCurrentPage] = useState(1);
-    const [itemsPerPage] = useState(6);
+    const [itemsPerPage] = useState(10);
     const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState('');
     const router = useRouter();
@@ -208,7 +208,7 @@ function rolemangement() {
     };
 
     return (
-        <div className="flex flex-col w-full  gap-4 p-8">
+        <div className="flex flex-col w-full gap-4 p-8">
             <div className="flex flex-row justify-between items-center">
                 <span className="text-lg font-semibold text-[#1D2939]">Users</span>
                 <div className="flex flex-row gap-3">
@@ -282,7 +282,7 @@ function rolemangement() {
                     <LoadingData />
                 </div>
             ) : (
-                <div className="flex flex-col overflow-y-auto">
+                <div className="flex flex-col overflow-y-auto overflow-x-hidden">
                     <div className="flex flex-row items-center justify-between w-full">
                         <div className="flex flex-row gap-2">
                             {Object.keys(checkedState)
@@ -314,7 +314,7 @@ function rolemangement() {
                             </button>
                         )}
                     </div>
-                    <div className="border border-[#EAECF0] rounded-xl ">
+                    <div className="border border-[#EAECF0] rounded-xl overflow-x-auto">
                         <table className="w-full bg-white rounded-xl ">
                             <thead>
                                 <tr className="gap-[200px]">
@@ -346,7 +346,7 @@ function rolemangement() {
                                             <div className="flex flex-row ml-8 gap-[10px] min-w-[260px]">
                                                 <Image className='rounded-full object-cover' src={users.profilePic || '/defaultAdminDP.jpg'} alt="DP" width={38} height={38} />
                                                 <div className="flex items-start justify-center flex-col mb-[2px]">
-                                                    <button onClick={() => handleTabClick(`/admin/rolemanagement/${users.name.toLowerCase().replace(/\s+/g, '-')}?rId=${users.adminId}`)} className="font-semibold text-sm text-[#9012FF] underline">{users.name}</button>
+                                                    <button onClick={() => handleTabClick(`/admin/rolemanagement/${users.name.toLowerCase().replace(/\s+/g, '-')}?rId=${users.adminId}`)} className="font-semibold text-sm text-[#9012FF] underline whitespace-nowrap">{users.name}</button>
                                                 </div>
                                             </div>
                                         </td>
