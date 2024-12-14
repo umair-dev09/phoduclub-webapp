@@ -81,8 +81,8 @@ function discussion() {
         }
     }, [value]);
     return (
-        <div className="flex flex-col h-[calc(100vh-200px)]">
-            <div className="flex-1 overflow-y-auto pr-6 pl-6 pt-4">
+        <div className="flex-1 w-full h-full flex flex-col  overflow-y-auto">
+            <div className=' flex flex-col px-6 gap-4'>
                 <div className="flex flex-col gap-4">
                     <div className="flex flex-row justify-between items-center">
                         <div className="flex flex-row gap-2">
@@ -185,8 +185,12 @@ function discussion() {
                     </div>
                 </div>
             </div>
-            <div className="sticky bottom-0 bg-white z-10 p-6">
+            <div className="sticky bottom-0 w-full p-6 bg-[#FFFFFF] z-50">
+
                 <div className=" bg-[#F7F8FB] w-full border border-solid border-[#EAECF0] rounded-[12px] h-auto">
+
+
+                    {/* Textarea for writing the comment */}
                     <div className="bg-[#F7F8FB] border-b border-solid border-b-[#EAECF0] rounded-tl-[12px] rounded-tr-[12px]">
                         <ReactQuill
                             ref={quillRef}

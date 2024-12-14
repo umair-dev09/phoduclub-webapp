@@ -186,7 +186,11 @@ function discussion() {
                 </div>
             </div>
             <div className="sticky bottom-0 bg-white z-10 p-6">
+
                 <div className=" bg-[#F7F8FB] w-full border border-solid border-[#EAECF0] rounded-[12px] h-auto">
+
+
+                    {/* Textarea for writing the comment */}
                     <div className="bg-[#F7F8FB] border-b border-solid border-b-[#EAECF0] rounded-tl-[12px] rounded-tr-[12px]">
                         <ReactQuill
                             ref={quillRef}

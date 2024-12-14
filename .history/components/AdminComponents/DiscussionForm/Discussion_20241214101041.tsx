@@ -81,7 +81,7 @@ function discussion() {
         }
     }, [value]);
     return (
-        <div className="flex flex-col h-[calc(100vh-200px)]">
+        <div className="flex flex-col h-full">
             <div className="flex-1 overflow-y-auto pr-6 pl-6 pt-4">
                 <div className="flex flex-col gap-4">
                     <div className="flex flex-row justify-between items-center">
