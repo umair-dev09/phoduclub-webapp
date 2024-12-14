@@ -11,7 +11,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { db } from '@/firebase';
 interface UserData {
     userId: string;
-    name: string;
+    name: string; 
     uniqueId: string;
     phone: string;
     createdAt: string;
