@@ -39,20 +39,16 @@ function Delete({ open, onClose, internalChatId, channelId, chatId }: DeleteProp
             <DialogBackdrop className="fixed inset-0 bg-black/30 " />
             <div className="fixed inset-0 flex items-center justify-center ">
                 <DialogPanel transition className="bg-white rounded-2xl w-[480px] h-auto">
-                    <div className="flex flex-col gap-2 p-6">
-                        <div className="flex flex-row justify-between items-center ">
-
-                            <h3 className=" font-bold task-[#1D2939]">Delete Message?</h3>
-                            <button className="w-[32px] h-[32px]  rounded-full flex items-center justify-center transition-all duration-300 ease-in-out hover:bg-[#F2F4F7] ">
-                                <button className="" onClick={onClose}>
-                                    <Image src="/icons/cancel.svg" alt="Cancel" width={20} height={20} />
-                                </button>
+                    <div className="flex flex-col relative">
+                        <button className="w-[32px] h-[32px]  rounded-full flex items-center justify-center transition-all duration-300 ease-in-out hover:bg-[#F2F4F7]">
+                            <button className="absolute right-6 top-6" onClick={onClose}>
+                                <Image src="/icons/cancel.svg" alt="Cancel" width={20} height={20} />
                             </button>
-                        </div>
-                        <p className=" text-sm font-normal text-[#667085]">Once the message is deleted you cannot restore it again.</p>
-
+                        </button>
+                        <h3 className="pb-3 font-bold text-[#1D2939]">Delete Message?</h3>
+                        <span className="text-sm font-normal text-[#667085]"></span>
                     </div>
-                    <hr />
+
                     <div className="flex flex-row justify-end mx-6 my-4 gap-4">
                         <button className="py-[0.625rem] px-6 border-[1.5px] border-lightGrey font-semibold text-sm text-[#1D2939] rounded-md hover:bg-[#F2F4F7]" onClick={onClose}>Cancel</button>
                         <button className={`py-[0.625rem] px-6 text-white shadow-inner-button  bg-[#BB241A] border border-white rounded-md`} onClick={handleDeleteMessage}>Delete</button>
@@ -65,3 +61,15 @@ function Delete({ open, onClose, internalChatId, channelId, chatId }: DeleteProp
 }
 
 export default Delete;
+<div className="flex flex-col gap-2 p-6">
+    <div className="flex flex-row justify-between items-center ">
+        <div className="mx-6 h-auto  pt-6 flex flex-col mb-1">
+            <h3 className=" font-bold task-[#1D2939]">Delete Message?</h3>
+            <button className="w-[32px] h-[32px]  rounded-full flex items-center justify-center transition-all duration-300 ease-in-out hover:bg-[#F2F4F7] ">
+                <button className="" onClick={onClose}>
+                    <Image src="/icons/cancel.svg" alt="Cancel" width={20} height={20} />
+                </button>
+            </button>
+        </div>
+        <p className=" text-sm font-normal text-[#667085]">Once the message is deleted you cannot restore it again.</p>
+    </div>

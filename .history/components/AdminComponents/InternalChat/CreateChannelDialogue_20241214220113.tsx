@@ -126,7 +126,7 @@ function CreateChannelDialogue({ open, onClose, internalChatId }: CreateChannelD
                                 Cancel
                             </button>
                             <button
-                                className={`py-[0.625rem] px-6 text-white font-semibold shadow-inner-button rounded-md transition-all duration-200 bg-[#8501FF] border border-[#9012FF] hover:bg-[#7001CF]
+                                className={`py-[0.625rem] px-6 text-white font-medium shadow-inner-button rounded-md transition-all duration-200 bg-[#8501FF] border border-[#9012FF] hover:bg-[#7001CF]
                                         ${!isCreateButtonDisabled
                                         ? 'cursor-not-allowed opacity-35'
                                         : 'opacity-100'

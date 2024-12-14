@@ -80,8 +80,8 @@ function CreateChannelDialogue({ open, onClose, internalChatId }: CreateChannelD
                                 </button>
                             </div>
 
-                            <p className="text-sm font-medium text-[#1D2939]">Channel name</p>
-                            <div className="flex flex-row w-full  gap-1 border border-lightGrey rounded-md">
+                            <p className="text-sm font-normal  mb-2">Channel name</p>
+                            <div className="flex flex-row w-full mb-6 gap-1 border border-lightGrey rounded-md">
 
                                 <Popover className='mb-2' placement="top-end" isOpen={isEmojiPopupOpen} onOpenChange={(open) => setIsEmojiPopupOpen(open)} onClose={() => setIsEmojiPopupOpen(false)}>
                                     <PopoverTrigger>
@@ -126,7 +126,7 @@ function CreateChannelDialogue({ open, onClose, internalChatId }: CreateChannelD
                                 Cancel
                             </button>
                             <button
-                                className={`py-[0.625rem] px-6 text-white font-semibold shadow-inner-button rounded-md transition-all duration-200 bg-[#8501FF] border border-[#9012FF] hover:bg-[#7001CF]
+                                className={`py-[0.625rem] px-6 text-white font-medium shadow-inner-button rounded-md transition-all duration-200 bg-[#8501FF] border border-[#9012FF] hover:bg-[#7001CF]
                                         ${!isCreateButtonDisabled
                                         ? 'cursor-not-allowed opacity-35'
                                         : 'opacity-100'

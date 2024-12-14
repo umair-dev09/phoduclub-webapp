@@ -52,7 +52,6 @@ function Delete({ open, onClose, internalChatId, channelId, chatId }: DeleteProp
                         <p className=" text-sm font-normal text-[#667085]">Once the message is deleted you cannot restore it again.</p>
 
                     </div>
-                    <hr />
                     <div className="flex flex-row justify-end mx-6 my-4 gap-4">
                         <button className="py-[0.625rem] px-6 border-[1.5px] border-lightGrey font-semibold text-sm text-[#1D2939] rounded-md hover:bg-[#F2F4F7]" onClick={onClose}>Cancel</button>
                         <button className={`py-[0.625rem] px-6 text-white shadow-inner-button  bg-[#BB241A] border border-white rounded-md`} onClick={handleDeleteMessage}>Delete</button>
