@@ -126,7 +126,7 @@ function Quiz({
                         >
                             <button
                                 onClick={handleSaveExit}
-                                className="w-full h-full flex items-center justify-center text-sm font-semibold text-[#1D2939] border-none p-[10px_24px] z-50  hover:bg-[#F2F4F7]"
+                                className="w-full h-full flex items-center justify-center text-sm font-semibold text-[#1D2939] border-none p-[10px_24px] z-50"
                             >
                                 Save and Exit
                             </button>

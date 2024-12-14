@@ -62,10 +62,8 @@ function Quiz({
                             {/* Header Section */}
                             <div className="flex items-center justify-between mb-4">
                                 <span className="text-lg font-bold text-[#1D2939]">Confirmation</span>
-                                <button className="w-[32px] h-[32px]  rounded-full flex items-center justify-center transition-all duration-300 ease-in-out hover:bg-[#F2F4F7]">
-                                    <button onClick={() => setIsOpen(false)}>
-                                        <Image src="/icons/cancel.svg" alt="cancel" width={18} height={18} />
-                                    </button>
+                                <button onClick={() => setIsOpen(false)}>
+                                    <Image src="/icons/cancel.svg" alt="cancel" width={18} height={18} />
                                 </button>
                             </div>
                             {/* Content Section */}
@@ -81,7 +79,7 @@ function Quiz({
                             <div className="border-t border-[#EAECF0] w-full h-[76px] mt-5 flex justify-end gap-2">
                                 <div className="mt-5">
                                     <button
-                                        className="bg-[#FFFFFF] text-[#1D2939] text-sm font-semibold py-2 px-5 rounded-md w-[118px] h-[44px] hover:bg-[#F2F4F7]"
+                                        className="bg-[#FFFFFF] text-[#1D2939] text-sm font-semibold py-2 px-5 rounded-md w-[118px] h-[44px]"
                                         style={{ border: "1.5px solid #EAECF0" }}
                                         onClick={() => setIsOpen(false)}
                                     >
@@ -103,8 +101,8 @@ function Quiz({
                             </div>
                         </div>
                     </DialogPanel>
-                </div >
-            </Dialog >
+                </div>
+            </Dialog>
 
 
             <Drawer
@@ -126,7 +124,7 @@ function Quiz({
                         >
                             <button
                                 onClick={handleSaveExit}
-                                className="w-full h-full flex items-center justify-center text-sm font-semibold text-[#1D2939] border-none p-[10px_24px] z-50  hover:bg-[#F2F4F7]"
+                                className="w-full h-full flex items-center justify-center text-sm font-semibold text-[#1D2939] border-none p-[10px_24px] z-50"
                             >
                                 Save and Exit
                             </button>
@@ -451,7 +449,7 @@ function Quiz({
                             <div className="border-t border-[#EAECF0] w-full h-[76px] mt-5 flex justify-end gap-2">
                                 <div className="mt-5">
                                     <button
-                                        className="bg-[#FFFFFF] text-[#1D2939] text-sm font-semibold py-2 px-5 rounded-md w-[118px] h-[44px] hover:bg-[#F2F4F7]"
+                                        className="bg-[#FFFFFF] text-[#1D2939] text-sm font-semibold py-2 px-5 rounded-md w-[118px] h-[44px]"
                                         style={{ border: "1.5px solid #EAECF0" }}
                                         onClick={() => setIsDialogOpen(false)}
                                     >

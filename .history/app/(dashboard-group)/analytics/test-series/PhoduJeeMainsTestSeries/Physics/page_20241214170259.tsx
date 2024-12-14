@@ -220,7 +220,6 @@ function JeeMains() {
                 </div>
             </div>
             <div>
-                {/* CLICK OVERALL HEADING TO SEE THE DIALOG */}
                 <Dialog open={showQuizDialog} onClose={() => setShowQuizDialog(false)} className="relative z-50">
                     <DialogBackdrop className="fixed inset-0 bg-black/30 " />
                     <div className="fixed inset-0 flex items-center justify-center ">

@@ -220,7 +220,6 @@ function JeeMains() {
                 </div>
             </div>
             <div>
-                {/* CLICK OVERALL HEADING TO SEE THE DIALOG */}
                 <Dialog open={showQuizDialog} onClose={() => setShowQuizDialog(false)} className="relative z-50">
                     <DialogBackdrop className="fixed inset-0 bg-black/30 " />
                     <div className="fixed inset-0 flex items-center justify-center ">
@@ -261,7 +260,7 @@ function JeeMains() {
                                 }}>
                                 <div className="flex w-auto justify-end my-4">
                                     <button
-                                        className="bg-[#FFFFFF] text-[#1D2939] text-sm font-semibold py-2 px-5 rounded-md w-auto h-[44px] shadow-inner-button hover:bg-[#F2F4F7]"
+                                        className="bg-[#FFFFFF] text-[#1D2939] text-sm font-semibold py-2 px-5 rounded-md w-auto h-[44px] shadow-inner-button"
                                         style={{ border: "1.5px solid #EAECF0" }}
                                         onClick={() => setShowQuizDialog(false)}>
                                         Cancel

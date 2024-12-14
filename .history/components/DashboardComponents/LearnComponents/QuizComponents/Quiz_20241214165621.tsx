@@ -144,7 +144,7 @@ function Quiz() {
                             borderBottomLeftRadius: '0px',
                             borderBottomRightRadius: '0px',
                         }}>
-                            <div className="h-[23px]  mt-[23px] mr-[24px] ml-[24px] justify-between  items-center flex">
+                            <div className="h-[23px]  mt-[23px] mr-[24px] ml-[24px] justify-between flex">
                                 <span className="text-[#1D2939] font-semibold text-lg">Start Test</span>
                                 <button className="w-[32px] h-[32px]  rounded-full flex items-center justify-center transition-all duration-300 ease-in-out hover:bg-[#F2F4F7]">
                                     <button onClick={() => setShowQuizDialog(false)}>
@@ -199,7 +199,7 @@ function Quiz() {
                             <div className="ml-[213px] gap-[16px] flex-row flex mt-[16px] h-[44px] ">
 
                                 <button
-                                    className="bg-[#FFFFFF] text-[#1D2939] text-sm font-semibold py-2 px-5 rounded-md w-[118px] h-[44px] shadow-inner-button hover:bg-[#F2F4F7]"
+                                    className="bg-[#FFFFFF] text-[#1D2939] text-sm font-semibold py-2 px-5 rounded-md w-[118px] h-[44px] shadow-inner-button"
                                     style={{ border: "1.5px solid #EAECF0" }}
                                     onClick={() => setShowQuizDialog(false)}>
                                     Cancel

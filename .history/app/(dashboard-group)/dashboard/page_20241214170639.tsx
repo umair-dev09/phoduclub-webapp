@@ -54,29 +54,22 @@ export default function AnalyticsPage() {
                </div>
                <div className="flex flex-row   w-full mt-4 gap-4  ">
                     <div className="flex flex-col flex-1 bg-white  rounded-lg  h-[737px] w-1/2 ">
-                         <div className="flex justify-between items-center pt-6 px-6 w-full text-[#1D2939] text-lg font-bold">
-                              <h3 className="font-bold text-lg">Test Series</h3>
-                              <button
-                                   className="text-sm font-semibold text-[#7400E0] hover:bg-[#F5F0FF] hover:rounded-full px-3 py-1 transition duration-200 ease-in-out"
-                                   onClick={() => router.replace('learn/test')}>
-                                   View all
-                              </button>
+                         <div className="flex flex-row justify-between pt-6 px-6 w-full text-[#1D2939] text-lg font-bold">
+                              <h3 className='text-[#1D2939] font-bold text-lg'>Test Series</h3>
+                              <button className="text-sm font-semibold text-[#7400E0] cursor-pointer hover:bg-red-500"
+                                   onClick={() => router.replace('learn/test')}>View all</button>
                          </div>
-
                          <div className="flex justify-center flex-1 overflow-y-auto rounded-b-lg">
                               <TestSeries />
                          </div>
                     </div>
                     <div className="flex flex-col flex-1 bg-white rounded-lg  h-[737px] w-1/2">
-                         <div className="flex justify-between items-center pt-6 px-6 w-full text-[#1D2939] text-lg font-bold">
-                              <h3 className="font-bold text-lg">Courses</h3>
-                              <button
-                                   className="text-sm font-semibold text-[#7400E0] hover:bg-[#F5F0FF] hover:rounded-full px-3 py-1 transition duration-200 ease-in-out"
-                                   onClick={() => router.replace('learn/courses')}>
-                                   View all
-                              </button>
+                         <div className="flex flex-row justify-between pt-6 px-6 w-full text-[#1D2939] text-lg font-bold">
+                              <h3 className='text-[#1D2939] font-bold text-lg'>Courses</h3>
+                              <button className="text-sm font-semibold text-[#7400E0] cursor-pointer"
+                                   onClick={() => router.replace('learn/courses')}
+                              >View all</button>
                          </div>
-
                          <div className="flex justify-center flex-1 overflow-y-auto rounded-b-lg">
                               <Course />
                          </div>

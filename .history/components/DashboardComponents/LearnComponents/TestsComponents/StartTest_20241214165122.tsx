@@ -3,13 +3,11 @@ import { useState } from "react";
 import { Dialog, DialogBackdrop, DialogPanel } from "@headlessui/react";
 import Image from "next/image";
 import Collapsible from "react-collapsible";
-import { useRouter } from "next/navigation";
 
 export default function TestSubject() {
     let [showQuizDialog, setShowQuizDialog] = useState(false);
     const [accordionOpen, setAccordionOpen] = useState(false);
     const [testCompleted, setTestCompleted] = useState(false); // New state for test completion
-    const router = useRouter();
 
     const onStartQuiz = () => {
         setShowQuizDialog(true);
@@ -209,8 +207,7 @@ export default function TestSubject() {
                                             </div>
                                         </div>
                                     </div>
-                                    <button className="flex flex-row justify-center items-center"
-                                        onClick={() => router.replace('/analytics/test-series')}>
+                                    <div className="flex flex-row justify-center items-center">
                                         <span className="relative font-semibold text-[#9012FF] text-sm mr-1 inline-block">
                                             View Detailed Analytics
                                             <span className="absolute left-0 bottom-[2px] w-full h-[1px] bg-[#9012FF]"></span>
@@ -221,7 +218,7 @@ export default function TestSubject() {
                                             height={24}
                                             alt=" Right-arrow"
                                         />
-                                    </button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
