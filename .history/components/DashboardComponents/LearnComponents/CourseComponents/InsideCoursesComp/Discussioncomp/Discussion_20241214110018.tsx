@@ -5,6 +5,7 @@ import 'react-quill/dist/quill.snow.css';
 import ReactQuill from 'react-quill-new'; // Ensure correct import
 import Quill from 'quill'; // Import Quill to use it for types
 import { Popover, PopoverTrigger, PopoverContent } from '@nextui-org/popover';
+import { useCollapse } from 'react-collapsed';
 
 
 function Discussion() {
@@ -261,111 +262,46 @@ function Discussion() {
 
             {/* -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- */}
             {/* THIS IS THE MIDDLE-LINE */}
-            <hr className="mt-[30px]" />
-            <div className=" flex flex-col gap-4 p-6 h-auto w-full">
-                {/* first comment */}
-                <div className="flex flex-col  gap-3 ">
-                    <div className="flex flex-row w-full justify-between">
-                        <div className=" flex flex-row gap-3">
-                            <Image
-                                src="/icons/profile-pic.png"
-                                width={46}
-                                height={46}
-                                alt=" Proflie -Image" />
-                            <div className="flex flex-col gap-2">
+
+            {/* <hr className="mt-[30px]  border border-solid border-[#EAECF0]" /> */}
+            {/* -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- */}
+            {/* THE COMMENT SESSION STARTS HERE */}
+            {/* <div className="gap-[20px]">
+                <div className="mr-[24px] ml-[24px]  mt-[24px] h-auto ">
+                    <div className="h-[48px] justify-between flex flex-row">
+                        <div className=" flex items-center">
+                            <span>
+                                <Image
+                                    src="/icons/profile-pic.png"
+                                    width={46}
+                                    height={46}
+                                    alt=" Proflie -Image" />
+                            </span>
+                            <div className="flex flex-col ml-3">
                                 <span className="font-medium text-sm text-[#1D2939]">Devon Lane</span>
                                 <span className="font-normal text-sm text-[#1D2939] opacity-[50%]">devon#8852</span>
+
                             </div>
                         </div>
+
                         <span className="text-sm font-normal text-[#1D2939] opacity-[50%] flex items-center">
                             3 min ago
                         </span>
-                    </div>
-                    <div className="  font-normal text-[#1D2939] text-sm opacity-[70%] leading-relaxed">
-                        <ExpandableText content={content} />
-                    </div>
-                    <div className="flex flex-row gap-6 items-center">
-                        <button className="flex flex-row gap-1">
-                            <Image
-                                src="/icons/upvote.svg"
-                                width={20}
-                                height={20}
-                                alt="upvote_button"
-                                className=""
 
-                            />
-                            <span className="font-normal text-[#141B34] text-sm">24</span>
-                            <span className=" font-normal text-[#141B34] text-sm">upvote</span>
-                        </button>
-                        <button>
-                            <span className="view-replies font-semibold text-sm text-[#9012FF]">View all 30 Reply</span>
-                        </button>
-                    </div>
-                </div>
-                {/* second comment */}
-                <div className="flex flex-row w-full justify-between">
-                    <div className=" flex flex-row gap-3">
-                        <Image
-                            src="/images/photo.png"
-                            width={46}
-                            height={46}
-                            alt=" Proflie -Image" />
-                        <div className="flex flex-col gap-2">
-                            <span className="font-medium text-sm text-[#1D2939]">Devon Lane</span>
-                            <span className="font-normal text-sm text-[#1D2939] opacity-[50%]">devon#8852</span>
-                        </div>
-                    </div>
-                    <span className="text-sm font-normal text-[#1D2939] opacity-[50%] flex items-center">
-                        3 min ago
-                    </span>
-                </div>
-                <div className=" flex flex-col ml-12 gap-3">
-                    <div className="font-normal text-[#1D2939] text-sm opacity-[70%] leading-relaxed">
-                        <ExpandableText content={content} />
-                    </div>
-                    <div className=" flex flex-row gap-6 items-center">
-                        <button className="flex flex-row gap-1">
-                            <Image
-                                src="/icons/upvote.svg"
-                                width={20}
-                                height={20}
-                                alt="upvote_button"
-                                className=""
 
-                            />
-                            <span className="font-normal text-[#141B34] text-sm">24</span>
-                            <span className=" font-normal text-[#141B34] text-sm">upvote</span>
-                        </button>
-                        <button className="flex flex-row gap-1 items-center">
-                            <Image
-                                src="/icons/comment-icon.svg"
-                                width={20}
-                                height={20}
-                                alt="three-icon" />
-                            <span className="text-[#1D2939] font-normal text-sm">30 Reply</span>
-                        </button>
+
                     </div>
-                    <div className="flex flex-col gap-3 mt-2">
-                        <div className="flex flex-row gap-3">
-                            <div className="flex items-center">
-                                <div className="relative">
-                                    <Image src='/images/DP_Lion.svg' alt="DP" width={40} height={40} />
-                                    <Image className="absolute right-0 bottom-0" src='/icons/winnerBatch.svg' alt="Batch" width={18} height={18} />
-                                </div>
-                            </div>
-                            <div className="flex flex-col gap-1">
-                                <div className="flex flex-row gap-2">
-                                    <span className="font-semibold text-sm text-[#1D2939]">John Smith</span>
-                                    <div className="w-[66px] h-6 rounded-sm bg-[#EAECF0] flex items-center justify-center">
-                                        <span className="text-[#1D2939] font-semibold text-xs">Teacher</span>
-                                    </div>
-                                </div>
-                                <span className="font-normal text-sm text-[#1D2939] opacity-[50%]">jhon#2355asas</span>
-                            </div>
-                        </div>
-                        <p className="text-[#1D2939] font-normal text-sm">Students will learn how to efficiently solve problems using bitwise operations and gain hands-on experience through coding exercises and projects.</p>
-                        <div className=" flex flex-row gap-6 items-center">
-                            <button className="flex flex-row gap-1">
+
+                </div>
+                <div className="flex flex-col pl-10">
+                    <div className="mr-[24px] ml-[24px] mt-[12px] font-normal text-[#1D2939] text-sm opacity-[70%] leading-relaxed">
+                        <ExpandableText content={content} />
+
+                    </div>
+                    <div className="flex flex-row  ml-[24px] mt-[10px]">
+                        <button className="upvote-btn ">
+                            <div className="flex flex-row">
+
                                 <Image
                                     src="/icons/upvote.svg"
                                     width={20}
@@ -374,99 +310,34 @@ function Discussion() {
                                     className=""
 
                                 />
-                                <span className="font-normal text-[#141B34] text-sm">24</span>
-                                <span className=" font-normal text-[#141B34] text-sm">upvote</span>
-                            </button>
-                            <button className="flex flex-row gap-1 items-center">
-                                <Image
-                                    src="/icons/comment-icon.svg"
-                                    width={20}
-                                    height={20}
-                                    alt="three-icon" />
-                                <span className="text-[#1D2939] font-normal text-sm">30 Reply</span>
-                            </button>
-                        </div>
-                    </div>
-                    <div className="flex flex-col gap-3 mt-2">
-                        <div className="flex flex-row gap-3">
-                            <div className="flex items-center">
-                                <div className="relative">
-                                    <Image src='/images/DP_Lion.svg' alt="DP" width={40} height={40} />
-                                    <Image className="absolute right-0 bottom-0" src='/icons/winnerBatch.svg' alt="Batch" width={18} height={18} />
-                                </div>
-                            </div>
-                            <div className="flex flex-col gap-1">
-                                <div className="flex flex-row gap-2">
-                                    <span className="font-semibold text-sm text-[#1D2939]">Cameron Williamson</span>
-                                </div>
-                                <span className="font-normal text-sm text-[#1D2939] opacity-[50%]">jhon#2355asas</span>
-                            </div>
-                        </div>
-                        <p className="text-[#1D2939] font-normal text-sm">Students will learn how to efficiently solve problems using bitwise operations and gain hands-on experience through coding exercises and projects.</p>
-                        <div className=" flex flex-row gap-6 items-center">
-                            <button className="flex flex-row gap-1">
-                                <Image
-                                    src="/icons/upvote.svg"
-                                    width={20}
-                                    height={20}
-                                    alt="upvote_button"
-                                    className=""
+                                <span className="ml-2 font-normal text-[#141B34] text-sm">24</span>
 
-                                />
-                                <span className="font-normal text-[#141B34] text-sm">0</span>
-                                <span className=" font-normal text-[#141B34] text-sm">Like</span>
+                                <span className="ml-1  font-normal text-[#141B34] text-sm">upvote</span>
+                            </div>
+                        </button>
+
+                        <div className="ml-12">
+
+                            <button>
+                                <span className="view-replies font-semibold text-sm text-[#9012FF]">View all 30 Reply</span>
                             </button>
-                            <button className="flex flex-row gap-1 items-center">
-                                <Image
-                                    src="/icons/comment-icon.svg"
-                                    width={20}
-                                    height={20}
-                                    alt="three-icon" />
-                                <span className="text-[#1D2939] font-normal text-sm">30 Reply</span>
-                            </button>
+
                         </div>
                     </div>
+
 
                 </div>
-                <div className="flex flex-col  gap-3 ">
-                    <div className="flex flex-row w-full justify-between">
-                        <div className=" flex flex-row gap-3">
-                            <Image
-                                src="/icons/profile-pic.png"
-                                width={46}
-                                height={46}
-                                alt=" Proflie -Image" />
-                            <div className="flex flex-col gap-2">
-                                <span className="font-medium text-sm text-[#1D2939]">Devon Lane</span>
-                                <span className="font-normal text-sm text-[#1D2939] opacity-[50%]">devon#8852</span>
-                            </div>
-                        </div>
-                        <span className="text-sm font-normal text-[#1D2939] opacity-[50%] flex items-center">
-                            1 hr ago
-                        </span>
-                    </div>
-                    <div className="  font-normal text-[#1D2939] text-sm opacity-[70%] leading-relaxed">
-                        <ExpandableText content={content} />
-                    </div>
-                    <div className="flex flex-row gap-6 items-center">
-                        <button className="flex flex-row gap-1">
-                            <Image
-                                src="/icons/upvote.svg"
-                                width={20}
-                                height={20}
-                                alt="upvote_button"
-                                className=""
+               
+                
 
-                            />
-                            <span className="font-normal text-[#141B34] text-sm">24</span>
-                            <span className=" font-normal text-[#141B34] text-sm">upvote</span>
-                        </button>
-                        <button>
-                            <span className="view-replies font-semibold text-sm text-[#9012FF]">View all 30 Reply</span>
-                        </button>
-                    </div>
-                </div>
-            </div>
+
+
+            </div> */}
+
+            {/* -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- */}
+
+
+
         </div>
     )
 }

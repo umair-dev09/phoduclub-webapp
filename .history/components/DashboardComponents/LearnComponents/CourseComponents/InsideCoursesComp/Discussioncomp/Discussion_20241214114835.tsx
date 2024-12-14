@@ -5,6 +5,7 @@ import 'react-quill/dist/quill.snow.css';
 import ReactQuill from 'react-quill-new'; // Ensure correct import
 import Quill from 'quill'; // Import Quill to use it for types
 import { Popover, PopoverTrigger, PopoverContent } from '@nextui-org/popover';
+import { useCollapse } from 'react-collapsed';
 
 
 function Discussion() {

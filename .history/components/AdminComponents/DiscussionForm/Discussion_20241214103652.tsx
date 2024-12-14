@@ -82,8 +82,8 @@ function discussion() {
     }, [value]);
     return (
         <div className="flex flex-col h-[calc(100vh-200px)]">
-            <div className="flex-1 overflow-y-auto px-6 gap-4 py-4">
-                <div className="flex flex-col gap-4 pb-4">
+            <div className="flex-1 overflow-y-auto pr-6 pl-6 pt-4 gap-4 pb-4">
+                <div className="flex flex-col gap-4">
                     <div className="flex flex-row justify-between items-center">
                         <div className="flex flex-row gap-2">
                             <Image

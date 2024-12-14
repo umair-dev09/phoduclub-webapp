@@ -5,6 +5,7 @@ import 'react-quill/dist/quill.snow.css';
 import ReactQuill from 'react-quill-new'; // Ensure correct import
 import Quill from 'quill'; // Import Quill to use it for types
 import { Popover, PopoverTrigger, PopoverContent } from '@nextui-org/popover';
+import { useCollapse } from 'react-collapsed';
 
 
 function Discussion() {
@@ -262,6 +263,75 @@ function Discussion() {
             {/* -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- */}
             {/* THIS IS THE MIDDLE-LINE */}
             <hr className="mt-[30px]" />
+            {/* -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- */}
+            {/* THE COMMENT SESSION STARTS HERE */}
+            {/* <div className="gap-[20px]">
+                <div className="mr-[24px] ml-[24px]  mt-[24px] h-auto ">
+                    <div className="h-[48px] justify-between flex flex-row">
+                        <div className=" flex items-center">
+                            <span>
+                                <Image
+                                    src="/icons/profile-pic.png"
+                                    width={46}
+                                    height={46}
+                                    alt=" Proflie -Image" />
+                            </span>
+                            <div className="flex flex-col ml-3">
+                                <span className="font-medium text-sm text-[#1D2939]">Devon Lane</span>
+                                <span className="font-normal text-sm text-[#1D2939] opacity-[50%]">devon#8852</span>
+
+                            </div>
+                        </div>
+
+                        <span className="text-sm font-normal text-[#1D2939] opacity-[50%] flex items-center">
+                            3 min ago
+                        </span>
+
+
+
+                    </div>
+
+                </div>
+                <div className="flex flex-col pl-10">
+                    <div className="mr-[24px] ml-[24px] mt-[12px] font-normal text-[#1D2939] text-sm opacity-[70%] leading-relaxed">
+                        <ExpandableText content={content} />
+
+                    </div>
+                    <div className="flex flex-row  ml-[24px] mt-[10px]">
+                        <button className="upvote-btn ">
+                            <div className="flex flex-row">
+
+                                <Image
+                                    src="/icons/upvote.svg"
+                                    width={20}
+                                    height={20}
+                                    alt="upvote_button"
+                                    className=""
+
+                                />
+                                <span className="ml-2 font-normal text-[#141B34] text-sm">24</span>
+
+                                <span className="ml-1  font-normal text-[#141B34] text-sm">upvote</span>
+                            </div>
+                        </button>
+
+                        <div className="ml-12">
+
+                            <button>
+                                <span className="view-replies font-semibold text-sm text-[#9012FF]">View all 30 Reply</span>
+                            </button>
+
+                        </div>
+                    </div>
+
+
+                </div>
+               
+                
+
+
+
+            </div> */}
             <div className=" flex flex-col gap-4 p-6 h-auto w-full">
                 {/* first comment */}
                 <div className="flex flex-col  gap-3 ">
@@ -442,7 +512,7 @@ function Discussion() {
                             </div>
                         </div>
                         <span className="text-sm font-normal text-[#1D2939] opacity-[50%] flex items-center">
-                            1 hr ago
+                            3 min ago
                         </span>
                     </div>
                     <div className="  font-normal text-[#1D2939] text-sm opacity-[70%] leading-relaxed">
@@ -467,6 +537,11 @@ function Discussion() {
                     </div>
                 </div>
             </div>
+
+
+
+
+
         </div>
     )
 }
