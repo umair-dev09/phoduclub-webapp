@@ -64,7 +64,7 @@ const AdminVerify: React.FC = () => {
                 // Redirect to the admin page after OTP verification and data migration
                 router.push('/admin');
                 setShowLoading(false);
-                
+
             }
         } catch (error) {
             console.error("OTP verification or data migration failed:", error);
@@ -79,26 +79,32 @@ const AdminVerify: React.FC = () => {
                 <Image src="/images/phoduclublogo.png" alt="Description of image" width={134} height={20} />
                 <p className="text-[12px] text-[#667085]">Admin</p>
             </div>
-            <MoonLoader className={`self-center mt-[-30px] mb-[-30px] ${showLoading ?'visible':'invisible' }`} color="#7400e0" size={32} speedMultiplier={1.5}/>
+            <MoonLoader className={`self-center mt-[-30px] mb-[-30px] ${showLoading ? 'visible' : 'invisible'}`} color="#7400e0" size={32} speedMultiplier={1.5} />
             <h3 className="text-2xl font-bold ">Verification Code</h3>
             <p className="text-center font-medium text-[#667085] w-[19.563rem] ">
                 Please enter the verification code we sent to your mobile
-                <button className="text-[#9012FF] ml-2">Edit</button>
+                <button className="text-[#9012FF] ml-2" onClick={() => { router.back() }}>Edit</button>
             </p>
-            <div className="flex flex-row gap-3 ">
-                {[...Array(6)].map((_, index) => (
-                    <input
-                        key={index}
-                        ref={(el) => (inputRefs.current[index] = el)}
-                        className="w-16 h-16 border border-gray-300 rounded-lg py-1 px-2 text-center text-4xl font-semibold text-[#0E2138] placeholder-gray-400 focus:border-[#8601FF] focus:outline-none focus:ring-4 focus:ring-[#D3A7FC]"
-                        type="text"
-                        inputMode="numeric"
-                        maxLength={1}
-                        placeholder="-"
-                        value={inputValues[index]}
-                        onChange={(e) => handleInputChange(e, index)}
-                    />
-                ))}
+            <div className="flex flex-col gap-6">
+                <div className="flex flex-row gap-3 ">
+                    {[...Array(6)].map((_, index) => (
+                        <input
+                            key={index}
+                            ref={(el) => (inputRefs.current[index] = el)}
+                            // className="w-16 h-16 border border-gray-300 rounded-lg py-1 px-2 text-center text-4xl font-semibold text-[#0E2138] placeholder-gray-400 focus:border-[#8601FF] focus:outline-none focus:ring-4 focus:ring-[#D3A7FC]"
+                            className="w-16 h-16 border-2 border-[#F04438] rounded-lg py-1 px-2 text-center text-4xl font-semibold text-[#0E2138] placeholder-gray-400 focus:border-[#8601FF] focus:outline-none focus:ring-4 focus:ring-[#D3A7FC]"
+                            type="text"
+                            inputMode="numeric"
+                            maxLength={1}
+                            placeholder="-"
+                            value={inputValues[index]}
+                            onChange={(e) => handleInputChange(e, index)}
+                        />
+                    ))}
+                </div>
+                <p className="text-sm text-[#F04438] text-center font-medium leading-[21px]">
+                    Incorrect OTP entered, Please enter correct OTP
+                </p>
             </div>
             <button
                 className={`w-[24.688rem] border-b shadow-inner-button rounded-md text-white text-sm font-semibold py-[0.625rem] transition-colors ${inputValues.every(value => value) && !showLoading ? 'bg-[#8601FF] border-[#8601FF]' : 'bg-[#D3A7FC] border-[#D3A7FC] cursor-not-allowed'}`}
@@ -107,7 +113,6 @@ const AdminVerify: React.FC = () => {
             >
                 Done
             </button>
-
         </div>
     );
 };

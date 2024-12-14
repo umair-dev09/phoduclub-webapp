@@ -107,7 +107,7 @@ function Quizz() {
 
     const lastItemIndex = currentPage * itemsPerPage;
     const firstItemIndex = lastItemIndex - itemsPerPage;
-    
+
     // Ensure `data` is correctly sliced for the current page
     const currentItems = data.slice(firstItemIndex, lastItemIndex);
 
@@ -294,7 +294,7 @@ function Quizz() {
                     {/* Select Date Button */}
                     <Popover placement="bottom" isOpen={isSelcetDateOpen} onOpenChange={(open) => setIsSelectDateOpen(open)}>
                         <PopoverTrigger>
-                            <button className="h-[44px] w-[143px] rounded-md bg-[#FFFFFF] border border-solid border-[#D0D5DD] flex items-center p-3">
+                            <button className="h-[44px] w-[143px] rounded-md bg-[#FFFFFF] outline-none border border-solid border-[#D0D5DD] flex items-center p-3">
                                 <Image
                                     src="/icons/select-date.svg"
                                     width={20}
@@ -308,7 +308,6 @@ function Quizz() {
                             <Calendar
                                 defaultValue={today(getLocalTimeZone())}
                                 showMonthAndYearPickers
-                                color="secondary"
                                 onChange={(value) => {
                                     const date = new Date(value.year, value.month - 1, value.day); // Adjust for zero-based month index
                                     setSelectedDate(date); // Update state with the new Date object
@@ -438,8 +437,8 @@ function Quizz() {
                                             <td className="px-8 py-4 text-center text-[#101828] text-sm">{quiz.students}</td>
                                             <td className="px-8 py-4 text-center text-[#101828] text-sm">
                                                 <span className='flex items-center justify-start ml-[30%] rounded-full'>
-                                                   <StatusDisplay status={quiz.status}/>
-                                                 </span>
+                                                    <StatusDisplay status={quiz.status} />
+                                                </span>
                                             </td>
                                             <td className="flex items-center justify-center px-8 py-4 text-[#101828] text-sm">
                                                 <Popover placement="bottom-end">

@@ -54,7 +54,7 @@ const fetchTests = async (): Promise<Test[]> => {
         { title: 'Concept Mastery Challenge', questions: 12, date: 'Jan 10, 2024', students: 1290, status: 'finished' },
         { title: 'Quick Revision Test', questions: 6, date: 'Jan 12, 2024', students: 950, status: 'ended' },
         { title: 'February Marathon Quiz', questions: 15, date: 'Feb 1, 2024', students: 1800, status: 'scheduled' },
-        
+
     ];
     return allTests;
 };
@@ -266,9 +266,9 @@ function TesstseriesInfo() {
                     </button>
 
                     {/* Select Date Button */}
-                    <Popover placement="bottom" isOpen={isSelcetDateOpen}>
+                    <Popover placement="bottom" isOpen={isSelcetDateOpen} onOpenChange={(open) => setIsSelectDateOpen(open)}>
                         <PopoverTrigger>
-                            <button className="h-[44px] w-[143px] rounded-md bg-[#FFFFFF] border border-solid border-[#D0D5DD] flex items-center p-3" onClick={() => setIsSelectDateOpen(true)}>
+                            <button className="h-[44px] w-[143px] rounded-md bg-[#FFFFFF] outline-none border border-solid border-[#D0D5DD] flex items-center p-3">
                                 <Image
                                     src="/icons/select-date.svg"
                                     width={20}
@@ -282,7 +282,6 @@ function TesstseriesInfo() {
                             <Calendar
                                 defaultValue={today(getLocalTimeZone())}
                                 showMonthAndYearPickers
-                                color="secondary"
                                 onChange={(value) => {
                                     const date = new Date(value.year, value.month - 1, value.day); // Adjust for zero-based month index
                                     setSelectedDate(date); // Update state with the new Date object

@@ -8,12 +8,12 @@ import { Popover, PopoverTrigger, PopoverContent } from '@nextui-org/popover';
 import Drawer from "react-modern-drawer";
 import "react-modern-drawer/dist/index.css";
 import { Switch } from "antd";
-import {DatePicker} from "@nextui-org/react";
-import { today, getLocalTimeZone,DateValue, parseDate,} from "@internationalized/date";
+import { DatePicker } from "@nextui-org/react";
+import { today, getLocalTimeZone, DateValue, parseDate, } from "@internationalized/date";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { auth, db, storage } from "@/firebase";
 import { collection, doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
-import {toast} from 'react-toastify';
+import { toast } from 'react-toastify';
 // Define the props interface
 interface VideoProps {
     isOpen: boolean;           // isOpen should be a boolean
@@ -23,7 +23,7 @@ interface VideoProps {
     isEditing: boolean;
     contentId: string;
 }
-function Video({ isOpen, toggleDrawer, sectionId, courseId, isEditing, contentId}: VideoProps) {
+function Video({ isOpen, toggleDrawer, sectionId, courseId, isEditing, contentId }: VideoProps) {
     // state for ReactQuill
     const quillRef = useRef<ReactQuill | null>(null); // Ref to hold ReactQuill instance
     const [quill, setQuill] = useState<Quill | null>(null);
@@ -57,31 +57,31 @@ function Video({ isOpen, toggleDrawer, sectionId, courseId, isEditing, contentId
             setFileName(null);
             setContentScheduleDate('');
             setDisscusionOpen(false);
-                }
-            }, [isEditing, contentId]);
+        }
+    }, [isEditing, contentId]);
 
-             const fetchContentData = async (contentId: string) => {
-            try {
-                const contentDocRef = doc(db, "course", courseId, 'sections', sectionId, 'content', contentId);
-                const contentDocSnap = await getDoc(contentDocRef);
-        
-                if (contentDocSnap.exists()) {
-                    const content = contentDocSnap.data();
-                    setLessonHeading(content.lessonHeading || '');
-                    setLessonOverView(content.lessonOverView || '');
-                    setVideoLink(content.videoLink || '');
-                    setContentScheduleDate(content.lessonScheduleDate || '');
-                    setDisscusionOpen(content.isDisscusionOpen || '');
-                    setFileName(content.videoFileName);
-                    setLoading(false);
-                } else {
-                    toast.error("Content not found!");
-                }
-            } catch (error) {
-                console.error("Error fetching quiz data:", error);
-                toast.error("Error loading content data.");
+    const fetchContentData = async (contentId: string) => {
+        try {
+            const contentDocRef = doc(db, "course", courseId, 'sections', sectionId, 'content', contentId);
+            const contentDocSnap = await getDoc(contentDocRef);
+
+            if (contentDocSnap.exists()) {
+                const content = contentDocSnap.data();
+                setLessonHeading(content.lessonHeading || '');
+                setLessonOverView(content.lessonOverView || '');
+                setVideoLink(content.videoLink || '');
+                setContentScheduleDate(content.lessonScheduleDate || '');
+                setDisscusionOpen(content.isDisscusionOpen || '');
+                setFileName(content.videoFileName);
+                setLoading(false);
+            } else {
+                toast.error("Content not found!");
             }
-        };    
+        } catch (error) {
+            console.error("Error fetching quiz data:", error);
+            toast.error("Error loading content data.");
+        }
+    };
 
     const handleChange = (content: string) => {
         setLessonOverView(content);
@@ -159,7 +159,7 @@ function Video({ isOpen, toggleDrawer, sectionId, courseId, isEditing, contentId
     const handleToggle = () => {
         setCheckedState((prevState) => !prevState);
     };
-    
+
     const handleDragOver = (event: React.DragEvent<HTMLDivElement>) => {
         event.preventDefault();
         event.stopPropagation();
@@ -337,13 +337,13 @@ function Video({ isOpen, toggleDrawer, sectionId, courseId, isEditing, contentId
         }
           } catch (error) {
             console.error('Error adding content: ', error);
-          }
-        
+        }
+
     };
 
     return (
         <div>
-                <Drawer
+            <Drawer
                 open={isOpen}
 
                 direction="bottom"
@@ -358,7 +358,7 @@ function Video({ isOpen, toggleDrawer, sectionId, courseId, isEditing, contentId
                         <div className={`w-auto h-[44px]  rounded-[8px] flex items-center justify-center flex-row gap-4  `}>
                             <button
                                 onClick={toggleDrawer}
-                                className="w-[103px] h-[40px] flex items-center justify-center text-sm  border border-solid border-[#EAECF0] font-semibold text-[#1D2939] rounded-[8px] p-4 ">
+                                className="w-[103px] h-[40px] flex items-center justify-center text-sm  border border-solid border-[#EAECF0] font-semibold text-[#1D2939] rounded-[8px] p-4 hover:bg-[#F2F4F7]">
                                 Cancel
                             </button>
                             <button
@@ -382,10 +382,10 @@ function Video({ isOpen, toggleDrawer, sectionId, courseId, isEditing, contentId
                                     placeholder="Lesson"
                                     type="text"
                                     value={lessonHeading}
-                                    onChange={(e) => setLessonHeading(e.target.value)} 
+                                    onChange={(e) => setLessonHeading(e.target.value)}
                                 />
                             </div>
-                        
+
                             {/* Description of Courses */}
                             <div className="flex flex-col gap-2">
                                 <span className='text-[#1D2939] text-sm font-semibold '> Lesson Overview</span>
@@ -456,93 +456,93 @@ function Video({ isOpen, toggleDrawer, sectionId, courseId, isEditing, contentId
                             {/* Upload the Image */}
                             <div className=" flex flex-col gap-2">
                                 <span className="text-[#1D2939] font-semibold text-sm">Upload Video</span>
-                                {!videoLink &&(
-                                <div className="h-[148px] rounded-xl bg-[#F9FAFB] border-2 border-dashed border-[#D0D5DD]"
-                                onDragOver={handleDragOver}
-                                onDrop={handleDrop}>
-                                    <button className="flex flex-col items-center justify-center gap-4 h-full w-full">
-                                        <div className="flex flex-col items-center">
-                                            <div className="h-10 w-10 rounded-md border border-solid border-[#EAECF0] bg-[#FFFFFF] p-[10px]">
-                                                <Image
-                                                    src="/icons/upload-cloud.svg"
-                                                    width={20}
-                                                    height={20}
-                                                    alt="upload icon"
-                                                />
+                                {!videoLink && (
+                                    <div className="h-[148px] rounded-xl bg-[#F9FAFB] border-2 border-dashed border-[#D0D5DD]"
+                                        onDragOver={handleDragOver}
+                                        onDrop={handleDrop}>
+                                        <button className="flex flex-col items-center justify-center gap-4 h-full w-full">
+                                            <div className="flex flex-col items-center">
+                                                <div className="h-10 w-10 rounded-md border border-solid border-[#EAECF0] bg-[#FFFFFF] p-[10px]">
+                                                    <Image
+                                                        src="/icons/upload-cloud.svg"
+                                                        width={20}
+                                                        height={20}
+                                                        alt="upload icon"
+                                                    />
+                                                </div>
                                             </div>
-                                        </div>
-                                        <div className="flex gap-1">
-                                        <label className="font-semibold text-sm text-[#9012FF] hover:text-black cursor-pointer">
-                                            <input
-                                                type="file"
-                                                id="upload"
-                                                className="hidden"
-                                                accept="video/*"
-                                                onChange={handleVideoUpload}
-                                            />
-                                            Click to upload
-                                        </label>
-                                        <span className="text-[#182230] text-sm font-medium">or drag and drop</span>
+                                            <div className="flex gap-1">
+                                                <label className="font-semibold text-sm text-[#9012FF] hover:text-black cursor-pointer">
+                                                    <input
+                                                        type="file"
+                                                        id="upload"
+                                                        className="hidden"
+                                                        accept="video/*"
+                                                        onChange={handleVideoUpload}
+                                                    />
+                                                    Click to upload
+                                                </label>
+                                                <span className="text-[#182230] text-sm font-medium">or drag and drop</span>
+                                            </div>
+                                        </button>
                                     </div>
-                                    </button>
-                                </div>
                                 )}
-                               
+
                                 {videoLink && (
-                                 <div className="border border-solid border-[#EAECF0] rounded-md h-[58px] flex flex-row justify-between items-center px-4">
-                                 <div className="flex flex-row gap-1 items-center">
-                                     <Image className="w-[30px] h-[20px]" src='/icons/play.svg' alt="Video" width={32} height={15} />
-                                     <span className="text-[#1D2939] font-normal text-sm ">{fileName}</span>
-                                 </div>
-                                 <div className="flex flex-row gap-3 items-center">
-                                    {/* {progress === 100 && ( */}
-                                    <div className="flex relative w-6 h-6 items-center justify-center">
-                                    <svg className="absolute top-0 left-0 w-full h-full transform -rotate-90" viewBox="0 0 36 36">
-                                        <path
-                                        className="text-gray-300"
-                                        strokeLinecap="round"
-                                        fill="none"
-                                        strokeWidth="3"
-                                        stroke="currentColor"
-                                        d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
-                                        />
-                                        <path
-                                        className="text-[#9012FF]" // Change color to purple
-                                        strokeLinecap="round"
-                                        fill="none"
-                                        strokeWidth="3"
-                                        strokeDasharray={`${progress}, 100`}
-                                        stroke="currentColor"
-                                        d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
-                                        />
-                                    </svg>
+                                    <div className="border border-solid border-[#EAECF0] rounded-md h-[58px] flex flex-row justify-between items-center px-4">
+                                        <div className="flex flex-row gap-1 items-center">
+                                            <Image className="w-[30px] h-[20px]" src='/icons/play.svg' alt="Video" width={32} height={15} />
+                                            <span className="text-[#1D2939] font-normal text-sm ">{fileName}</span>
+                                        </div>
+                                        <div className="flex flex-row gap-3 items-center">
+                                            {/* {progress === 100 && ( */}
+                                            <div className="flex relative w-6 h-6 items-center justify-center">
+                                                <svg className="absolute top-0 left-0 w-full h-full transform -rotate-90" viewBox="0 0 36 36">
+                                                    <path
+                                                        className="text-gray-300"
+                                                        strokeLinecap="round"
+                                                        fill="none"
+                                                        strokeWidth="3"
+                                                        stroke="currentColor"
+                                                        d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                                                    />
+                                                    <path
+                                                        className="text-[#9012FF]" // Change color to purple
+                                                        strokeLinecap="round"
+                                                        fill="none"
+                                                        strokeWidth="3"
+                                                        strokeDasharray={`${progress}, 100`}
+                                                        stroke="currentColor"
+                                                        d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                                                    />
+                                                </svg>
+                                            </div>
+                                            {/* )}    */}
+
+                                            <button onClick={() => {
+                                                if (uploadTaskRef) {
+                                                    uploadTaskRef.cancel(); // Cancel the upload if it is ongoing
+                                                    setProgress(null); // Reset progress
+                                                }
+                                                setVideoLink(null);
+                                                setFileName(null); // Reset file name on cancel
+                                            }}>
+                                                <Image
+                                                    src="/icons/delete.svg"
+                                                    alt="cancel icon"
+                                                    width={14}
+                                                    height={14}
+                                                    className="w-[16px] h-[16px]" />
+                                            </button>
+                                        </div>
                                     </div>
-                                    {/* )}    */}
-                                
-                                 <button onClick={() => {
-                                    if (uploadTaskRef) {
-                                    uploadTaskRef.cancel(); // Cancel the upload if it is ongoing
-                                    setProgress(null); // Reset progress
-                                    }
-                                    setVideoLink(null);
-                                    setFileName(null); // Reset file name on cancel
-                                }}> 
-                                <Image 
-                                src="/icons/delete.svg"
-                                alt="cancel icon"
-                                width={14}
-                                height={14}
-                                className="w-[16px] h-[16px]"/>
-                            </button>
-                                 </div>
-                             </div>
                                 )}
-                               
+
                             </div>
                             <div className="flex flex-col gap-2 mb-3 mt-1">
-                            <span className="text-[#1D2939] font-semibold text-sm">Schedule Lesson</span>
-                            <DatePicker 
-                                    granularity="minute" 
+                                <span className="text-[#1D2939] font-semibold text-sm">Schedule Lesson</span>
+                                <DatePicker
+                                    granularity="minute"
                                     minValue={today(getLocalTimeZone())}
                                     showMonthAndYearPickers
                                     onChange={(date) => {
@@ -550,9 +550,9 @@ function Video({ isOpen, toggleDrawer, sectionId, courseId, isEditing, contentId
                                         const dateString = date ? date.toString() : ""; // Customize format if needed
                                         setContentScheduleDate(dateString);
                                     }}
-                                /> 
+                                />
                             </div>
-                            
+
                             <div className="flex flex-row justify-between border border-solid border-[#EAECF0] h-12 p-3 bg-[#F9FAFB] rounded-md">
                                 <span className="text-[#1D2939] font-semibold text-sm">Discussion forum</span>
                                 <div className="flex flex-row gap-3">
