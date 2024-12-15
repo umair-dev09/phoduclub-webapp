@@ -18,6 +18,7 @@ const subjectToExamMap: { [key: string]: string } = {
     physics: 'JEE Crash Course',
     chemistry: 'NEET Preparation',
     math: 'Engineering Entrance',
+
 };
 
 function CoursesComp() {

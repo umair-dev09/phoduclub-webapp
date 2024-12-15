@@ -49,7 +49,11 @@ function testSeriesComp() {
                                 <p className={styles.subject}>{subject.charAt(0).toUpperCase() + subject.slice(1)}</p>
                             </div>
                             <div className={styles.nextButton}>
-                                <Image src='/icons/collapse-right.svg' alt='more icon' width={10} height={10} />
+                                <button className="w-[32px] h-[32px]  rounded-full flex items-center justify-center transition-all duration-300 ease-in-out hover:bg-[#F2F4F7]">
+                                    <button>
+                                        <Image alt="Collapse Icon Right" src="/icons/collapse-right.svg" width={8} height={8} />
+                                    </button>
+                                </button>
                             </div>
                         </div>
 
