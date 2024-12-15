@@ -3,8 +3,16 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import Quiz from "./DailogAndBottom"
+interface QuizContentProps {
+    lessonOverview: string;
+    lessonHeading: string;
+    marksPerQ: string;
+    nMarksPerQ: string;
+    questionCount: number;
+    quizTime: string;
+}
 
-function startquiz() {
+function QuizContent({lessonHeading, lessonOverview, questionCount, marksPerQ, nMarksPerQ, quizTime}:QuizContentProps) {
 
     const [showQuizDialog, setShowQuizDialog] = useState(false);
     const [isQuizOpen, setIsQuizOpen] = useState(false);
@@ -16,7 +24,7 @@ function startquiz() {
         setIsQuizOpen(true);
     };
 
-    const handleQuizSubmit = () => {
+    const handleQuizSubmit = () => { 
         setIsQuizSubmitted(true);
         setShowBottomSheet(false); // Close bottom sheet
     };
@@ -28,18 +36,17 @@ function startquiz() {
 
             <div className="flex flex-col ml-8 gap-[20px] ">
                 <span className="w-[126px] h-[24px] text-[#1D2939] text-lg font-bold ">
-                    Maths Test 01
+                    {lessonHeading}
                 </span>
                 <span className="w-[140px] h-[24px] text-[#1D2939] text-base font-bold">
                     Quiz Information
 
                 </span>
             </div>
-            <div className="w-[741px] h-[125px] ml-8 font-normal  mt-3 text-[#667085] leading-relaxed">
-                <span className="text-sm">The BITSET Full Course is designed to provide students with an in-depth understanding of bit manipulation techniques and the use of bitsets in data structures. This course will cover fundamental concepts, practical applications, and advanced techniques used in competitive programming and software development. Students will learn how to efficiently solve problems using bitwise operations and gain hands-on experience through coding exercises and projects. </span>
+            <div className='text-[#667085] text-base font-normal break-all ml-8 mr-4 mt-2 text-start'  dangerouslySetInnerHTML={{
+                                    __html: lessonOverview || '',
+             }}/>
 
-
-            </div>
             <div className="flex flex-col ml-8 mt-10 w-[602px] h-auto space-y-5">
                 {/* Each pair of icon and text */}
                 <span className="flex items-center font-semibold text-sm text-[#1D2939]">
@@ -50,7 +57,7 @@ function startquiz() {
                         alt="clock"
                         className="mr-2"
                     />
-                    5:00 Minutes
+                    {quizTime}
                 </span>
 
                 <span className="flex items-center font-semibold text-sm text-[#1D2939]">
@@ -61,7 +68,7 @@ function startquiz() {
                         alt="clock"
                         className="mr-2"
                     />
-                    10 Questions
+                    {questionCount} Questions
                 </span>
 
                 <span className="flex items-center font-semibold text-sm text-[#1D2939]">
@@ -72,7 +79,7 @@ function startquiz() {
                         alt="clock"
                         className="mr-2"
                     />
-                    5 Marks per question
+                    {marksPerQ} Marks per question
                 </span>
             </div>
             <div className="h-[65px]  " style={{ borderRadius: "5px", position: "relative" }}>
@@ -112,4 +119,4 @@ function startquiz() {
     )
 }
 
-export default startquiz;
+export default QuizContent;

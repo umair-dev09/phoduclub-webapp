@@ -369,7 +369,7 @@ export default function CommunityName() {
   };
   
 
-  return (
+  return ( 
     <div className="flex h-full flex-row">
       {/* Middle Section */}
       <div className="flex flex-col w-[230px] bg-white border-r border-b border-lightGrey">
@@ -422,7 +422,7 @@ export default function CommunityName() {
 
             <div className="flex items-center justify-between h-[72px] bg-white border-b border-lightGrey">
               {/* Pass the selected channel info to ChatHead */}
-              <ChatHead channelId={selectedChannel?.channelId ?? null} channelName={selectedChannel?.channelName ?? null} channelEmoji={selectedChannel?.channelEmoji ?? null} />
+              <ChatHead channelId={selectedChannel?.channelId ?? null} channelName={selectedChannel?.channelName ?? null} channelEmoji={selectedChannel?.channelEmoji ?? null} communityId={communityId} categoryId={selectedChannel.headingId || ''} channelDescription={''} />
               <div className="flex flex-row mr-4 gap-4">
               <Popover placement="bottom" isOpen={searchOpen} onClose={() =>{setSearchOpen(false); setSearchQuery('')}}>
               <PopoverTrigger>
@@ -457,7 +457,7 @@ export default function CommunityName() {
                   ) : (
                     <Image className='w-[26px] h-[26px] pl-[-2px]' src="/icons/collaspeDetails-2.svg" alt="collapse details icon" width={26} height={26} />
                   )}
-                </button>
+            </button>
               </div>
             </div>
             <div

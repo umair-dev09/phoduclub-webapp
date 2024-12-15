@@ -8,7 +8,7 @@ import { db, auth } from "@/firebase"; // Adjust the path based on your project 
 import LoadingData from '@/components/Loading';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-export type Sections = {
+ type Sections = {
     sectionName: string;
     sectionId: string;
     sectionScheduleDate: string;
@@ -16,7 +16,7 @@ export type Sections = {
     content?: Content[]; 
   } 
   
-  export type Content ={
+type Content = {
     type: string;
     contentId: string;
     isDisscusionOpen: boolean;
