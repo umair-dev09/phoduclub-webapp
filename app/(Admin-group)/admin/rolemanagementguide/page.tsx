@@ -150,7 +150,7 @@ function rolemanagementguide() {
                         <PopoverContent className="w-[304px] p-6 bg-[#FFFFFF] border-solid border-[#EAECF0] rounded-md gap-4">
                             <div className='flex flex-col gap-2'>
                                 <span className='font-medium text-[#1D2939] text-sm'>Unique ID</span>
-                                <div className='flex px-2 items-center h-[40px] border border-solid border-[#D0D5DD] shadow-sm rounded-md'>
+                                <div className='flex px-2 items-center h-[40px] border border-gray-300   focus:outline focus:outline-[1.5px] focus:outline-[#D6BBFB] hover:outline hover:outline-[1.5px] hover:outline-[#D6BBFB] shadow-sm rounded-md'>
                                     <input
                                         className="font-normal text-[#667085] w-full text-sm placeholder:text-[#A1A1A1] rounded-md px-1 py-1 focus:outline-none focus:ring-0 border-none"
                                         placeholder="Enter Unique ID"
@@ -177,7 +177,7 @@ function rolemanagementguide() {
                     </Popover>
                 </div>
             </div>
-            <div className="border border-[#EAECF0] rounded-xl ">
+            <div className="border border-[#EAECF0] rounded-xl overflow-x-auto">
                 <table className="w-full bg-white rounded-xl ">
                     <thead>
                         <tr className="gap-[200px]">
@@ -209,7 +209,7 @@ function rolemanagementguide() {
                                     <div className="flex flex-row ml-8 gap-[10px] min-w-[260px]">
                                         <Image className="rounded-full object-cover" src={users.profilePic || '/defaultAdminDP.jpg'} alt="DP" width={38} height={38} />
                                         <div className="flex items-start justify-center flex-col mb-[2px]">
-                                            <span className="font-semibold text-sm text-[#182230]">{users.name}</span>
+                                            <span className="font-semibold text-sm text-[#182230] whitespace-nowrap">{users.name}</span>
                                         </div>
                                     </div>
                                 </td>

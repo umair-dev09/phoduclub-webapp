@@ -24,7 +24,7 @@ import LoadingData from "@/components/Loading";
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { db } from '@/firebase';
-import Select,{SingleValue } from 'react-select';
+import Select, { SingleValue } from 'react-select';
 
 interface UserData {
     userId: string;
@@ -65,12 +65,12 @@ const formatFirestoreTimestamp = (timestamp: Timestamp | string): string => {
 type Option = {
     value: string;
     label: string;
-  };
+};
 
 
 function User() {
     const [currentPage, setCurrentPage] = useState(1);
-    const [itemsPerPage] = useState(5);
+    const [itemsPerPage] = useState(10);
     const [loading, setLoading] = useState(true);
     const [isEditing, setIsEditing] = useState(false);
     const [searchTerm, setSearchTerm] = useState('');
@@ -95,21 +95,21 @@ function User() {
         { value: 'KCET', label: 'KCET' },
         { value: 'VITEEE', label: 'VITEEE' },
         { value: 'MET', label: 'MET' },
-      ];
+    ];
     const [userTypePopup, setUserTypePopup] = useState(false);
     const router = useRouter();
-      
-      type CustomState = {
+
+    type CustomState = {
         isSelected: boolean;
         isFocused: boolean;
-      };
-      
-      const years: Option[] = [
+    };
+
+    const years: Option[] = [
         { value: '2024', label: '2024' },
         { value: '2025', label: '2025' },
         { value: '2026', label: '2026' },
-      ];
-      const [selectedYear, setSelectedYear] = useState<SingleValue<Option>>(null);
+    ];
+    const [selectedYear, setSelectedYear] = useState<SingleValue<Option>>(null);
     useEffect(() => {
         let filteredUsers = users;
 
@@ -159,7 +159,7 @@ function User() {
             const updatedUsers: UserData[] = snapshot.docs.map((doc) => {
                 const userData = doc.data();
                 return {
-                    uniqueId: userData.uniqueId, 
+                    uniqueId: userData.uniqueId,
                     name: userData.name,
                     userId: userData.userId,
                     phone: userData.phone,
@@ -168,10 +168,10 @@ function User() {
                     createdAt: userData.createdAt,
                     isPremium: userData.isPremium,
                     targetExams: userData.targetExams,
-                    targetYear: userData.targetYear, 
-                    isBanned: userData.isBanned, 
+                    targetYear: userData.targetYear,
+                    isBanned: userData.isBanned,
                 } as UserData;
-            }) .filter((user) => !user.isBanned); // Filter users with isGuide true
+            }).filter((user) => !user.isBanned); // Filter users with isGuide true
 
             setUsers(updatedUsers);
             setData(updatedUsers); // Update data for pagination and search
@@ -197,13 +197,13 @@ function User() {
         setOpenDialog(true);
         if (targetExams) {
             const defaultExams = targetExams.map((exam) => ({
-              value: exam,
-              label: exam,
+                value: exam,
+                label: exam,
             }));
             setSelectedExams(defaultExams);
-          }
-          const defaultYear = years.find(year => year.value === targetYear);
-          setSelectedYear(defaultYear || null);
+        }
+        const defaultYear = years.find(year => year.value === targetYear);
+        setSelectedYear(defaultYear || null);
     };
 
     const handleAddDialog = () => {
@@ -276,16 +276,16 @@ function User() {
             // setLoading(false); // End loading
         }
     };
-  
+
     useEffect(() => {
-        if(!isEditing){
-    const firstNamePart = firstName.slice(0, 4).toLowerCase();
-    const lastNamePart = lastName.slice(0, 4).toLowerCase();
-    const phoneNumberPart = phone.slice(-4);
-    const userId = `${firstNamePart}${lastNamePart}${phoneNumberPart}`;
-       setUserId(userId);
+        if (!isEditing) {
+            const firstNamePart = firstName.slice(0, 4).toLowerCase();
+            const lastNamePart = lastName.slice(0, 4).toLowerCase();
+            const phoneNumberPart = phone.slice(-4);
+            const userId = `${firstNamePart}${lastNamePart}${phoneNumberPart}`;
+            setUserId(userId);
         }
-     });
+    });
     if (loading) {
         return <LoadingData />
     }
@@ -353,11 +353,20 @@ function User() {
             </div>
 
             <div className="flex flex-col justify-between h-full">
-                <div className="flex border border-[#EAECF0] rounded-xl overflow-y-auto">
+                <div className="flex border border-[#EAECF0] rounded-xl overflow-x-auto">
                     <table className="w-full h-auto bg-white rounded-xl">
                         <thead>
                             <tr>
-                                <th className="w-[35%] text-left px-8 py-4 pl-8 rounded-tl-xl flex flex-row">
+                                <th className="w-[5%] pl-8 py-4 rounded-tl-xl">
+                                    <Checkbox
+                                        size="md"
+                                        color="primary"
+                                    // isSelected={selectedRows.size === currentItems.length && currentItems.length > 0}
+                                    // isIndeterminate={selectedRows.size > 0 && selectedRows.size < currentItems.length}
+                                    // onChange={handleHeaderCheckboxSelect}
+                                    />
+                                </th>
+                                <th className="w-[30%] text-left px-8 py-4 pl-8 rounded-tl-xl flex flex-row">
                                     <span className="text-[#667085] font-medium text-sm">Name</span>
                                 </th>
                                 <th className=" w-[25%] text-center px-8 py-4 text-[#667085] font-medium text-sm">
@@ -381,6 +390,15 @@ function User() {
                         <tbody>
                             {currentItems.map((users, index) => (
                                 <tr key={index} className="h-auto border-t border-solid border-[#EAECF0]">
+                                    <td className="text-center pl-8">
+                                        <Checkbox
+                                            size="md"
+                                            color="primary"
+                                        // isSelected={selectedRows.has(banned.name)}
+                                        // onChange={() => handleRowSelect(banned.name)}
+                                        // onClick={(e) => e.stopPropagation()}
+                                        />
+                                    </td>
                                     <td className="py-2">
                                         <div className="flex flex-row ml-8 gap-2 py-[2px]">
                                             <div className="flex items-center">
@@ -393,7 +411,7 @@ function User() {
                                             </div>
                                             <div className="flex items-start justify-start flex-col">
                                                 <div
-                                                    className="font-semibold text-sm cursor-pointer"
+                                                    className="font-semibold text-sm cursor-pointer whitespace-nowrap"
                                                     onClick={() => handleTabClick(`/admin/userdatabase/${users.name.toLowerCase().replace(/\s+/g, '-')}?uId=${users.uniqueId}`)}
                                                 >
                                                     {users.name}
@@ -404,7 +422,7 @@ function User() {
                                     </td>
                                     <td className="px-8 py-4 text-center text-[#101828] text-sm">{users.email}</td>
                                     <td className="px-8 py-4 text-center text-[#101828] text-sm">{users.phone}</td>
-                                    <td className="px-8 py-4 text-center text-[#101828] text-sm w-fit" >{formatFirestoreTimestamp(users.createdAt)}</td>
+                                    <td className="px-8 py-4 text-center text-[#101828] text-sm w-fit whitespace-nowrap">{formatFirestoreTimestamp(users.createdAt)}</td>
                                     <td className="flex items-center justify-center px-8 py-4 text-[#101828] text-sm">
                                         <Popover placement="bottom-end">
                                             <PopoverTrigger>
@@ -424,7 +442,7 @@ function User() {
                                                     <p className="text-sm text-[#0C111D] font-normal">Edit details</p>
                                                 </button>
                                                 <button className=" flex flex-row items-center justify-start w-full py-[0.625rem] px-4 gap-2 hover:bg-[#F2F4F7]"
-                                                    onClick={() => {setIsBanOpen(true); setAuthId(users.uniqueId) }}>
+                                                    onClick={() => { setIsBanOpen(true); setAuthId(users.uniqueId) }}>
                                                     <Image src='/icons/user-block-red-01.svg' alt="user profile" width={18} height={18} />
                                                     <p className="text-sm text-[#DE3024] font-normal">Ban</p>
                                                 </button>
@@ -455,202 +473,208 @@ function User() {
                 </div>
             </div>
 
-            {isBanOpen && <Ban onClose={closeBan} open={true} id={authId} banUser={true}/>}
+            {isBanOpen && <Ban onClose={closeBan} open={true} id={authId} banUser={true} />}
             {isDeleteOpen && <Delete onClose={closeDelete} open={true} authId={authId} name={name} />}
             {/* Dialog Component */}
-                <Dialog open={openDialog} onClose={closeDialog} className="relative z-50">
-                    <DialogBackdrop className="fixed inset-0 bg-black/30" />
-                    <div className="fixed inset-0 flex items-center justify-center">
-                        <DialogPanel className="bg-white rounded-2xl w-[500px] max-h-[92%] overflow-y-auto">
-                            <div className="flex flex-col relative gap-6">
-                                <div className="flex flex-col px-6 gap-6">
-                                    <div className="flex flex-row justify-between mt-6">
-                                        <h3 className="text-lg font-bold text-[#1D2939]">{!authId ? 'Add New User' : 'Edit User Details'}</h3>
+            <Dialog open={openDialog} onClose={closeDialog} className="relative z-50">
+                <DialogBackdrop className="fixed inset-0 bg-black/30" />
+                <div className="fixed inset-0 flex items-center justify-center">
+                    <DialogPanel className="bg-white rounded-2xl w-[500px] max-h-[92%] overflow-y-auto">
+                        <div className="flex flex-col relative gap-6">
+                            <div className="flex flex-col px-6 gap-6">
+                                <div className="flex flex-row justify-between mt-6">
+                                    <h3 className="text-lg font-bold text-[#1D2939]">{!authId ? 'Add New User' : 'Edit User Details'}</h3>
+                                    <button className="w-[32px] h-[32px]  rounded-full flex items-center justify-center transition-all duration-300 ease-in-out hover:bg-[#F2F4F7] ">
                                         <button onClick={closeDialog}>
                                             <Image src="/icons/cancel.svg" alt="Cancel" width={20} height={20} />
                                         </button>
+                                    </button>
+                                </div>
+                                <div className="flex flex-col gap-3 items-center">
+                                    <div className="relative">
+                                        <Image className="rounded-full" src={pic || "/images/DP_Lion.svg"} alt="DP" width={130} height={130} />
                                     </div>
-                                    <div className="flex flex-col gap-3 items-center">
-                                        <div className="relative">
-                                            <Image className="rounded-full" src={pic ||"/images/DP_Lion.svg"} alt="DP" width={130} height={130} />
-                                        </div>
-                                        {/* <span className="font-semibold text-sm text-[#9012FF]">Change</span> */}
-                                    </div>
-                                    {/* Input Fields */}
-                                    <div className="flex flex-row w-full gap-4">
-                                        <div className="flex flex-col gap-1 w-1/2 flex-grow">
-                                            <label className="text-[#1D2939] text-sm font-medium">First Name</label>
-                                            <input
-                                                className="w-full text-sm font-medium text-[#1D2939] placeholder:text-[#A1A1A1] rounded-md border border-[#D0D5DD] px-4 py-2 focus:outline-none"
-                                                type="text"
-                                                placeholder="First Name"
-                                                value={firstName}
-                                                onChange={(e) => setFirstName(e.target.value)}
-                                            />
-                                        </div>
-                                        <div className="flex flex-col gap-1 w-1/2 flex-grow">
-                                            <label className="text-[#1D2939] text-sm font-medium">Last Name</label>
-                                            <input
-                                                className="w-full text-sm font-medium text-[#1D2939] placeholder:text-[#A1A1A1] rounded-md border border-[#D0D5DD] px-4 py-2 focus:outline-none"
-                                                type="text"
-                                                placeholder="Last Name"
-                                                value={lastName}
-                                                onChange={(e) => setLastName(e.target.value)}
-                                            />
-                                        </div>
-                                    </div>
-
-
-                                    <div className="flex flex-col gap-1 w-full ">
-                                        <label htmlFor="num-ratings" className="text-[#1D2939] text-sm font-medium">
-                                            Email Id
-                                        </label>
-                                        <div className="flex flex-row py-2 px-4 w-full gap-2 border border-solid border-[#D0D5DD] rounded-md transition duration-200 ease-in-out ">
-                                            <input
-                                                className="w-full text-sm font-medium text-[#1D2939] placeholder:font-normal placeholder:text-[#A1A1A1] rounded-md outline-none"
-                                                type="text"
-                                                placeholder="Email Id"
-                                                value={emailId}
-                                                onChange={(e) => setEmailId(e.target.value)}
-                                            />
-                                        </div>
-                                    </div>
-                                    <div className="flex flex-col gap-1 w-full ">
-                                        <label htmlFor="num-ratings" className="text-[#1D2939] text-sm font-medium">
-                                            User Id
-                                        </label>
-                                        <div className="flex flex-row  w-full gap-2 border border-solid border-[#D0D5DD] rounded-md transition duration-200 ease-in-out ">
-                                            <input
-                                                className="w-full text-sm py-2 px-4 font-medium text-[#1D2939] placeholder:font-normal placeholder:text-[#A1A1A1] rounded-md outline-none"
-                                                type="text"
-                                                placeholder="User Id"
-                                                value={userId}
-                                                // onChange={(e) => setUserId(e.target.value)}
-                                                disabled={true}
-                                            />
-                                        </div>
-                                    </div>
-                                    <div className="flex flex-col gap-1">
-                                        <label className="text-[#344054] text-sm font-medium">Mobile No.</label>
-                                        <PhoneInput
-                                            country="in"
-                                            value={phone}
-                                            onChange={(phone) => setPhone("+" + phone)}
-                                            inputProps={{ required: true }}
-                                            inputStyle={{
-                                                width: "100%",
-                                                borderRadius: "8px",
-                                                border: "1px solid #D0D5DD",
-                                                height: "42px",
-                                            }}
+                                    {/* <span className="font-semibold text-sm text-[#9012FF]">Change</span> */}
+                                </div>
+                                {/* Input Fields */}
+                                <div className="flex flex-row w-full gap-4">
+                                    <div className="flex flex-col gap-1 w-1/2 flex-grow">
+                                        <label className="text-[#1D2939] text-sm font-medium">First Name</label>
+                                        <input
+                                            className="w-full text-sm font-medium text-[#1D2939] placeholder:text-[#A1A1A1] rounded-md  px-4 py-2 border border-gray-300  h-10 focus:outline focus:outline-[1.5px] focus:outline-[#D6BBFB] hover:outline hover:outline-[1.5px] hover:outline-[#D6BBFB]"
+                                            type="text"
+                                            placeholder="First Name"
+                                            value={firstName}
+                                            onChange={(e) => setFirstName(e.target.value)}
                                         />
                                     </div>
-
-                                    <div className='w-full'>
-                <p className='mb-1 font-medium text-sm'>Target Exam</p>
-                <Select
-                    id="target-exam"
-                    value={selectedExams}
-                    onChange={(newValue) => setSelectedExams(newValue as Option[])}  // Explicit type casting
-                    options={exams}
-                    isMulti
-                    placeholder="Select exams..."
-                    styles={{
-                    option: (provided, state) => ({
-                        ...provided,
-                        color: 'black',
-                        backgroundColor: state.isFocused ? '#E39FF6' : 'white',
-                    }),
-                    multiValue: (provided) => ({
-                        ...provided,
-                        backgroundColor: 'white',
-                        border: '1.2px solid #D0D5DD',
-                        borderRadius: '8px',
-                        fontWeight: '500',
-                        marginRight: '7px',
-                    }),
-                    multiValueLabel: (provided) => ({
-                        ...provided,
-                        color: 'black',
-                    }),
-                    multiValueRemove: (provided) => ({
-                        ...provided,
-                        color: 'gray',
-                        cursor: 'pointer',
-                        ':hover': {
-                        backgroundColor: '#ffffff',
-                        borderRadius: '8px',
-                        },
-                    }),
-                    menu: (provided) => ({
-                        ...provided,
-                        backgroundColor: 'white',
-                    }),
-                    menuList: (provided) => ({
-                        ...provided,
-                        padding: '0',
-                    }),
-                    control: (provided) => ({
-                        ...provided,
-                        border: '1px solid #e6e6e6',
-                        borderRadius: '8px',
-                        padding: '4px',
-                        boxShadow: 'none',
-                        '&:hover': {
-                        outline: '1px solid #e5a1f5',
-                        },
-                    }),
-                    }}
-                />
-                </div>
-
-                <div className='w-full'>
-            <label htmlFor="target-year" className='mb-1 font-medium text-sm'>Target Year</label>
-            <Select
-            id="target-year"
-            value={selectedYear}
-            onChange={setSelectedYear}
-            options={years}
-            placeholder="Select year..."
-            styles={{
-                option: (provided, state: CustomState) => ({
-                ...provided,
-                color: 'black',
-                backgroundColor: state.isFocused ? '#E39FF6' : 'white', // Purple color when focused
-                }),
-                singleValue: (provided) => ({
-                ...provided,
-                color: 'black',
-                fontWeight: '500'
-                }),
-                control: (provided) => ({
-                ...provided,
-                border: '1px solid #e6e6e6',
-                borderRadius: '8px',
-                padding: '4px',
-                boxShadow: 'none',
-                '&:hover': {
-                    outline: '1px solid #e5a1f5',
-                },
-                }),
-                
-            }}
-            />
-        </div>
-
+                                    <div className="flex flex-col gap-1 w-1/2 flex-grow">
+                                        <label className="text-[#1D2939] text-sm font-medium">Last Name</label>
+                                        <input
+                                            className="w-full text-sm font-medium text-[#1D2939] placeholder:text-[#A1A1A1] rounded-md border border-gray-300  h-10 focus:outline focus:outline-[1.5px] focus:outline-[#D6BBFB] hover:outline hover:outline-[1.5px] hover:outline-[#D6BBFB] px-4 py-2 "
+                                            type="text"
+                                            placeholder="Last Name"
+                                            value={lastName}
+                                            onChange={(e) => setLastName(e.target.value)}
+                                        />
+                                    </div>
                                 </div>
-                                <div className="flex justify-end gap-4 border-t p-4">
-                                    <button onClick={closeDialog} className="px-6 py-2 border rounded-md text-sm font-semibold">
-                                        Discard
-                                    </button>
-                                    <button onClick={handleAddUser} disabled={!isFormValid} className={`px-6 py-2  text-white rounded-md text-sm ${!isFormValid ? 'bg-[#CDA0FC]' : 'bg-[#9012FF]'}`}>
-                                        {!authId ? 'Add New User' : 'Save Changes'}
-                                    </button>
+
+
+                                <div className="flex flex-col gap-1 w-full ">
+                                    <label htmlFor="num-ratings" className="text-[#1D2939] text-sm font-medium">
+                                        Email Id
+                                    </label>
+                                    <div className="flex flex-row py-2 px-4 w-full gap-2 border border-gray-300  h-10 focus:outline focus:outline-[1.5px] focus:outline-[#D6BBFB] hover:outline hover:outline-[1.5px] hover:outline-[#D6BBFB] rounded-md transition duration-200 ease-in-out ">
+                                        <input
+                                            className="w-full text-sm font-medium text-[#1D2939] placeholder:font-normal placeholder:text-[#A1A1A1] rounded-md outline-none"
+                                            type="text"
+                                            placeholder="Email Id"
+                                            value={emailId}
+                                            onChange={(e) => setEmailId(e.target.value)}
+                                        />
+                                    </div>
                                 </div>
+                                <div className="flex flex-col gap-1 w-full ">
+                                    <label htmlFor="num-ratings" className="text-[#1D2939] text-sm font-medium">
+                                        User Id
+                                    </label>
+                                    <div className="flex flex-row  w-full gap-2 border border-gray-300  h-10 focus:outline focus:outline-[1.5px] focus:outline-[#D6BBFB] hover:outline hover:outline-[1.5px] hover:outline-[#D6BBFB] rounded-md transition duration-200 ease-in-out ">
+                                        <input
+                                            className="w-full text-sm py-2 px-4 font-medium text-[#1D2939] placeholder:font-normal placeholder:text-[#A1A1A1] rounded-md outline-none"
+                                            type="text"
+                                            placeholder="User Id"
+                                            value={userId}
+                                            // onChange={(e) => setUserId(e.target.value)}
+                                            disabled={true}
+                                        />
+                                    </div>
+                                </div>
+                                <div className="flex flex-col gap-1">
+                                    <label className="text-[#344054] text-sm font-medium">Mobile No.</label>
+                                    <PhoneInput
+                                        country="in"
+                                        value={phone}
+                                        onChange={(phone) => setPhone("+" + phone)}
+                                        inputProps={{ required: true }}
+                                        inputStyle={{
+                                            width: "100%",
+                                            borderRadius: "4px",
+                                            border: "1px solid #D0D5DD",
+                                            height: "42px",
+                                            boxShadow: "0px 1px 2px 0px rgba(16, 24, 40, 0.05)",
+                                            outline: "none"
+                                        }}
+                                        onFocus={(e) => e.target.style.boxShadow = "0 0 0 2px #D6BBFB"}
+                                        onBlur={(e) => e.target.style.boxShadow = "0px 1px 2px 0px rgba(16, 24, 40, 0.05)"}
+                                    />
+                                </div>
+
+                                <div className='w-full'>
+                                    <p className='mb-1 font-medium text-sm'>Target Exam</p>
+                                    <Select
+                                        id="target-exam"
+                                        value={selectedExams}
+                                        onChange={(newValue) => setSelectedExams(newValue as Option[])}  // Explicit type casting
+                                        options={exams}
+                                        isMulti
+                                        placeholder="Select exams..."
+                                        styles={{
+                                            option: (provided, state) => ({
+                                                ...provided,
+                                                color: 'black',
+                                                backgroundColor: state.isFocused ? '#E39FF6' : 'white',
+                                            }),
+                                            multiValue: (provided) => ({
+                                                ...provided,
+                                                backgroundColor: 'white',
+                                                border: '1.2px solid #D0D5DD',
+                                                borderRadius: '8px',
+                                                fontWeight: '500',
+                                                marginRight: '7px',
+                                            }),
+                                            multiValueLabel: (provided) => ({
+                                                ...provided,
+                                                color: 'black',
+                                            }),
+                                            multiValueRemove: (provided) => ({
+                                                ...provided,
+                                                color: 'gray',
+                                                cursor: 'pointer',
+                                                ':hover': {
+                                                    backgroundColor: '#ffffff',
+                                                    borderRadius: '8px',
+                                                },
+                                            }),
+                                            menu: (provided) => ({
+                                                ...provided,
+                                                backgroundColor: 'white',
+                                            }),
+                                            menuList: (provided) => ({
+                                                ...provided,
+                                                padding: '0',
+                                            }),
+                                            control: (provided) => ({
+                                                ...provided,
+                                                border: '1px solid #e6e6e6',
+                                                borderRadius: '8px',
+                                                padding: '4px',
+                                                boxShadow: 'none',
+                                                '&:hover': {
+                                                    outline: '1px solid #e5a1f5',
+                                                },
+                                            }),
+                                        }}
+                                    />
+                                </div>
+
+                                <div className='w-full'>
+                                    <label htmlFor="target-year" className='mb-1 font-medium text-sm'>Target Year</label>
+                                    <Select
+                                        id="target-year"
+                                        value={selectedYear}
+                                        onChange={setSelectedYear}
+                                        options={years}
+                                        placeholder="Select year..."
+                                        styles={{
+                                            option: (provided, state: CustomState) => ({
+                                                ...provided,
+                                                color: 'black',
+                                                backgroundColor: state.isFocused ? '#E39FF6' : 'white', // Purple color when focused
+                                            }),
+                                            singleValue: (provided) => ({
+                                                ...provided,
+                                                color: 'black',
+                                                fontWeight: '500'
+                                            }),
+                                            control: (provided) => ({
+                                                ...provided,
+                                                border: '1px solid #e6e6e6',
+                                                borderRadius: '8px',
+                                                padding: '4px',
+                                                boxShadow: 'none',
+                                                '&:hover': {
+                                                    outline: '1px solid #e5a1f5',
+                                                },
+                                            }),
+
+                                        }}
+                                    />
+                                </div>
+
                             </div>
-                        </DialogPanel>
-                    </div>
-                </Dialog>
+                            <div className="flex justify-end gap-4 border-t p-4">
+                                <button onClick={closeDialog} className="px-6 py-2 border rounded-md text-sm font-semibold hover:bg-[#F2F4F7]">
+                                    Discard
+                                </button>
+                                <button onClick={handleAddUser} disabled={!isFormValid} className={`px-6 py-2  text-white rounded-md text-sm ${!isFormValid ? 'bg-[#CDA0FC]' : 'bg-[#9012FF]'}`}>
+                                    {!authId ? 'Add New User' : 'Save Changes'}
+                                </button>
+                            </div>
+                        </div>
+                    </DialogPanel>
+                </div>
+            </Dialog>
             <ToastContainer />
 
         </div>

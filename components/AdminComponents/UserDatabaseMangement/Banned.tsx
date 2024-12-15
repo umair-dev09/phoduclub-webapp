@@ -66,7 +66,7 @@ function Banned() {
     const [data, setData] = useState<UserData[]>([]);
     const [users, setUsers] = useState<UserData[]>([]);
     const [currentPage, setCurrentPage] = useState(1);
-    const [itemsPerPage] = useState(5);
+    const [itemsPerPage] = useState(10);
     const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState('');
     const [isPopoverOpen, setIsPopoverOpen] = useState(false);
@@ -187,7 +187,7 @@ function Banned() {
         setSelectedRows(newSelectedRows);
     };
 
-    if(loading){
+    if (loading) {
         return <LoadingData />
     }
     return (
@@ -223,7 +223,7 @@ function Banned() {
                         onOpenChange={(open) => setUserTypePopup(open)}
                     >
                         <PopoverTrigger>
-                            <button className={`h-[44px] w-[143px] rounded-md bg-[#FFFFFF] border border-solid border-[#D0D5DD] outline-none justify-between flex items-center p-3 transition-colors ${userTypePopup
+                            <button className={`h-[44px] w-[143px] rounded-md hover:bg-[#F2F4F7] bg-[#FFFFFF] border border-solid border-[#D0D5DD] outline-none justify-between flex items-center p-3 transition-colors ${userTypePopup
                                 ? "border-[#C7A5FF] ring-4 ring-[#E2D9F8]"
                                 : "border-[#D0D5DD]"
                                 }`}>
@@ -282,7 +282,7 @@ function Banned() {
                 </div>
             )}
 
-            <div className="flex border border-[#EAECF0] rounded-xl">
+            <div className="flex border border-[#EAECF0] rounded-xl overflow-x-auto">
                 <table className="w-full h-auto bg-white rounded-xl">
                     <thead>
                         <tr>
@@ -340,7 +340,7 @@ function Banned() {
                                         </div>
                                         <div className="flex items-start justify-start flex-col">
                                             <div
-                                                className="font-semibold cursor-pointer"
+                                                className="font-semibold cursor-pointer whitespace-nowrap"
                                                 onClick={() => handleTabClick('/admin/userdatabase/userdatabaseinfo')}
                                             >
                                                 {banned.name}
@@ -351,7 +351,7 @@ function Banned() {
                                 </td>
                                 <td className="px-8 py-4 text-center text-[#101828] text-sm">{banned.email}</td>
                                 <td className="px-8 py-4 text-center text-[#101828] text-sm">{banned.phone}</td>
-                                <td className="px-8 py-4 text-center text-[#101828] text-sm">{formatFirestoreTimestamp(banned.createdAt)}</td>
+                                <td className="px-8 py-4 text-center text-[#101828] text-sm whitespace-nowrap">{formatFirestoreTimestamp(banned.createdAt)}</td>
                                 <td className="flex items-center justify-center px-8 py-4 text-[#101828] text-sm">
                                     <Popover placement="bottom-end">
                                         <PopoverTrigger>

@@ -180,7 +180,7 @@ function courses() {
                             {/* FOR SAVED--> */}
                             {courseData?.status === 'saved' && (
                                 <>
-                                    <button className="w-auto p-3 gap-2 flex-row flex bg-[#FFFFFF] border border-solid border-[#EAECF0] rounded-[8px] h-[40px] items-center">
+                                    <button className="w-auto p-3 gap-2  hover:bg-[#F2F4F7] flex-row flex bg-[#FFFFFF] border border-solid border-[#EAECF0] rounded-[8px] h-[40px] items-center">
                                         <Image src="/icons/publish-quiz.svg" width={18} height={18} alt="publish-quiz" />
                                         <span className="text-sm text-[#0C111D] font-normal">Publish</span>
                                     </button>
@@ -189,14 +189,14 @@ function courses() {
                             {courseData?.status === 'live' && (
                                 <>
                                     {/* Button for Pause  */}
-                                    <button className="w-auto p-3 gap-2 flex-row flex bg-[#FFFFFF] border border-solid border-[#EAECF0] rounded-[8px] h-[40px] items-center"
+                                    <button className="w-auto p-3 gap-2 flex-row flex  hover:bg-[#F2F4F7] bg-[#FFFFFF] border border-solid border-[#EAECF0] rounded-[8px] h-[40px] items-center"
                                     // onClick={() => setIsPausedDialogOpen(true)}
                                     >
                                         <Image src="/icons/pausequiz.svg" width={18} height={18} alt="Paused-icon" />
                                         <span className="text-sm text-[#0C111D] font-normal">Pause</span>
                                     </button>
                                     {/* Button for End */}
-                                    <button className="w-auto p-3 gap-2 flex-row flex bg-[#FFFFFF] border border-solid border-[#EAECF0] rounded-[8px] h-[40px] items-center"
+                                    <button className="w-auto p-3 gap-2 flex-row flex hover:bg-[#F2F4F7] bg-[#FFFFFF] border border-solid border-[#EAECF0] rounded-[8px] h-[40px] items-center"
                                     // onClick={() => setIsEndDialogOpen(true)}
                                     >
                                         <Image src="/icons/endquiz.svg" width={18} height={18} alt="End-icon" />
@@ -210,7 +210,7 @@ function courses() {
                                 <>
                                     {/* Button for Resume  */}
                                     <button
-                                        className="w-auto p-3 gap-2 flex-row flex rounded-[8px] h-[40px] items-center"
+                                        className="w-auto p-3 gap-2 flex-row flex  hover:bg-[#F2F4F7] rounded-[8px] h-[40px] items-center"
                                     // onClick={() => setIsResumeOpen(true)}
                                     >
                                         <Image src="/icons/resume.svg" width={18} height={18} alt="Resume -icon" />
@@ -218,7 +218,7 @@ function courses() {
                                     </button>
                                     {/* Button for Scheduled  */}
                                     <button
-                                        className="w-auto p-3 gap-2 flex-row flex bg-[#FFFFFF] border border-solid border-[#EAECF0] rounded-[8px] h-[40px] items-center"
+                                        className="w-auto p-3 gap-2 flex-row flex hover:bg-[#F2F4F7] bg-[#FFFFFF] border border-solid border-[#EAECF0] rounded-[8px] h-[40px] items-center"
                                     // onClick={() => setIsScheduledDialogOpen(true)}
                                     >
                                         <Image src="/icons/select-date.svg" width={18} height={18} alt="Calendar" />
@@ -231,7 +231,7 @@ function courses() {
                                 <>
                                     {/* Button for Delete */}
                                     <button
-                                        className="w-auto p-3 gap-2 flex-row flex bg-[#FFFFFF] border border-solid border-[#EAECF0] rounded-[8px] h-[40px] items-center"
+                                        className="w-auto p-3 gap-2 flex-row flex bg-[#FFFFFF] hover:bg-[#F2F4F7] border border-solid border-[#EAECF0] rounded-[8px] h-[40px] items-center"
                                     // onClick={() => setIsDeleteDialogOpen(true)}
                                     >
                                         <Image src="/icons/delete.svg" width={18} height={18} alt="Delete" />
@@ -245,7 +245,7 @@ function courses() {
                                     <Popover placement="bottom-end">
                                         <PopoverTrigger>
                                             <button
-                                                className="w-10 p-[10px] h-[40px] gap-1 flex-row flex  bg-[#FFFFFF] rounded-md  focus:outline-none
+                                                className="w-10 p-[10px] h-[40px] gap-1 flex-row  hover:bg-[#F2F4F7] flex  bg-[#FFFFFF] rounded-md  focus:outline-none
                                         border border-solid border-[#EAECF0] shadow-none">
                                                 <Image src="/icons/three-dots.svg" width={18} height={18} alt="three-dots" />
                                             </button>

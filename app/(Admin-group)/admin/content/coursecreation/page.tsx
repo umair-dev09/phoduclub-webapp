@@ -20,7 +20,6 @@ import ScheduledDialog from "@/components/AdminComponents/QuizInfoDailogs/schedu
 import Delete from "@/components/AdminComponents/QuizInfoDailogs/DeleteDailogue";
 import End from "@/components/AdminComponents/QuizInfoDailogs/EndDailogue";
 import Paused from "@/components/AdminComponents/QuizInfoDailogs/PauseDailogue";
-import MakeLiveNow from "@/components/AdminComponents/QuizInfoDailogs/MakeLiveNow";
 import Resume from "@/components/AdminComponents/QuizInfoDailogs/ResumeDailogue";
 import ViewAnalytics from "@/components/AdminComponents/QuizInfoDailogs/ViewAnalytics";
 import StatusDisplay from "@/components/AdminComponents/StatusDisplay";
@@ -88,7 +87,7 @@ function Course() {
     const [data, setData] = useState<Course[]>([]);
     const [Courses, setCourses] = useState<Course[]>([]);
     const [currentPage, setCurrentPage] = useState(1);
-    const [itemsPerPage] = useState(5);
+    const [itemsPerPage] = useState(10);
     const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState('');
     const router = useRouter();
@@ -274,7 +273,7 @@ function Course() {
     const selectedStatuses = options.filter((option) => checkedState[option]);
 
     return (
-        <div className="flex flex-col px-[32px] w-full gap-4 overflow-y-auto h-auto my-5">
+        <div className="flex flex-col px-[32px] w-full gap-4 overflow-y-auto overflow-x-hidden h-auto my-5">
             <div className="flex flex-row justify-between items-center">
                 <span className="text-lg font-semibold text-[#1D2939]">Courses</span>
                 <div className="flex flex-row gap-3">
@@ -300,7 +299,7 @@ function Course() {
                     {/* Select Date Button */}
                     <Popover placement="bottom" isOpen={isSelcetDateOpen} onOpenChange={(open) => setIsSelectDateOpen(open)}>
                         <PopoverTrigger>
-                            <button className="h-[44px] w-[143px] rounded-md bg-[#FFFFFF] outline-none border border-solid border-[#D0D5DD] flex items-center p-3">
+                            <button className="h-[44px] w-[143px]  hover:bg-[#F2F4F7] rounded-md bg-[#FFFFFF] border border-solid border-[#D0D5DD] flex items-center p-3" onClick={() => setIsSelectDateOpen(true)}>
                                 <Image
                                     src="/icons/select-date.svg"
                                     width={20}
@@ -339,7 +338,7 @@ function Course() {
                     {/* By Status Button */}
                     <Popover placement="bottom-start">
                         <PopoverTrigger>
-                            <button className="h-[44px] w-[126px] rounded-md bg-[#FFFFFF] outline-none border border-solid border-[#D0D5DD] flex items-center justify-between p-3 cursor-pointer">
+                            <button className="h-[44px]  hover:bg-[#F2F4F7] w-[126px] rounded-md bg-[#FFFFFF] outline-none border border-solid border-[#D0D5DD] flex items-center justify-between p-3 cursor-pointer">
                                 <p className={`flex flex-row font-medium text-sm ${selectedCount > 0 ? 'text-[#182230]' : 'text-[#667085]'}`}>
                                     {selectedCount > 0 ? `${selectedCount} selected` : 'By status'}
                                 </p>
@@ -405,7 +404,7 @@ function Course() {
                         )}
                     </div>
                     <div className="h-full">
-                        <div className="border border-[#EAECF0] rounded-xl">
+                        <div className="border border-[#EAECF0] rounded-xl overflow-x-auto">
                             <table className="w-full bg-white rounded-xl">
                                 <thead>
                                     <tr>
@@ -450,11 +449,11 @@ function Course() {
                                             <td onClick={() => handleTabClick(`/admin/content/coursecreation/${course.courseName.toLowerCase().replace(/\s+/g, '-')}/?cId=${course.courseId}`)}>
                                                 <button className="flex flex-row items-center px-8 py-3 gap-2 text-[#9012FF] underline text-sm font-medium">
                                                     <Image className="w-10 h-10 rounded-full object-cover" src={course.courseImage || '/images/TSM-DP.png'} alt="DP" width={40} height={40} />
-                                                    <p className="text-start">{course.courseName || '-'}</p>
+                                                    <p className="text-start whitespace-nowrap">{course.courseName || '-'}</p>
                                                 </button>
                                             </td>
                                             <td className="px-8 py-4 text-center text-[#101828] text-sm"><span className="mr-1">&#8377;</span>{course.discountPrice || '-'}</td>
-                                            <td className="px-8 py-4 text-center text-[#101828] text-sm">{course.date || '-'}</td>
+                                            <td className="px-8 py-4 text-center text-[#101828] text-sm whitespace-nowrap">{course.date || '-'}</td>
                                             <td className="px-8 py-4 text-center text-[#101828] text-sm">200</td>
                                             <td className="px-8 py-4 text-center text-[#101828] text-sm">134</td>
                                             <td className="px-8 py-4 text-[#101828] text-sm">
@@ -606,7 +605,6 @@ function Course() {
             {isDeleteDialogOpen && <Delete onClose={closeDeleteDialog} open={true} />}
             {isEndDialogOpen && <End onClose={closeEnd} />}
             {isPausedDialogOpen && <Paused onClose={closePaused} />}
-            {isMakeLiveNowDialogOpen && < MakeLiveNow onClose={closeMakeLiveNow} open={true} />}
             {isResumeOpen && < Resume onClose={closeResume} open={true} />}
             {isViewAnalyticsOpen && < ViewAnalytics onClose={closeViewAnalytics} open={true} />}
         </div>

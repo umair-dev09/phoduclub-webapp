@@ -1,5 +1,5 @@
 "use client";
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Image from 'next/image';
 import { doc, getDoc, setDoc, deleteDoc } from "firebase/firestore";
@@ -13,6 +13,8 @@ const AdminVerify: React.FC = () => {
     const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
     const [inputValues, setInputValues] = useState<string[]>(Array(6).fill(""));
     const [showLoading, setShowLoading] = useState(false);
+    const [timer, setTimer] = useState<number>(60); // Initialize timer to 60 seconds
+    const [resendDisabled, setResendDisabled] = useState<boolean>(true); // Disable resend initially
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
         const value = e.target.value;
@@ -23,7 +25,16 @@ const AdminVerify: React.FC = () => {
         if (value.length === 1 && index < inputRefs.current.length - 1) {
             inputRefs.current[index + 1]?.focus();
         }
+
+        // Move to previous input box on backspace when current input is empty
         if (value === "" && index > 0) {
+            inputRefs.current[index - 1]?.focus();
+        }
+    };
+
+    const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>, index: number) => {
+        // Move to previous input box on backspace when current input is empty
+        if (e.key === 'Backspace' && inputValues[index] === "" && index > 0) {
             inputRefs.current[index - 1]?.focus();
         }
     };
@@ -72,6 +83,24 @@ const AdminVerify: React.FC = () => {
         }
     };
 
+    // Countdown logic
+    useEffect(() => {
+        if (timer > 0) {
+            const interval = setInterval(() => {
+                setTimer((prev) => prev - 1);
+            }, 1000);
+            return () => clearInterval(interval); // Cleanup on unmount
+        } else {
+            setResendDisabled(false); // Enable resend button when timer hits 0
+        }
+    }, [timer]);
+
+    const handleResend = () => {
+        // Logic to resend the OTP (e.g., call an API)
+        setTimer(60); // Reset the timer
+        setResendDisabled(true); // Disable the resend button
+        console.log("OTP resent");
+    };
 
     return (
         <div className="flex flex-col items-center justify-center gap-10 h-screen w-screen">
@@ -91,14 +120,17 @@ const AdminVerify: React.FC = () => {
                         <input
                             key={index}
                             ref={(el) => (inputRefs.current[index] = el)}
-                            // className="w-16 h-16 border border-gray-300 rounded-lg py-1 px-2 text-center text-4xl font-semibold text-[#0E2138] placeholder-gray-400 focus:border-[#8601FF] focus:outline-none focus:ring-4 focus:ring-[#D3A7FC]"
                             className="w-16 h-16 border-2 border-[#F04438] rounded-lg py-1 px-2 text-center text-4xl font-semibold text-[#0E2138] placeholder-gray-400 focus:border-[#8601FF] focus:outline-none focus:ring-4 focus:ring-[#D3A7FC]"
                             type="text"
                             inputMode="numeric"
                             maxLength={1}
                             placeholder="-"
                             value={inputValues[index]}
-                            onChange={(e) => handleInputChange(e, index)}
+                            onChange={(e) => {
+                                const isNumeric = /^\d?$/.test(e.target.value); // Allow only numeric input
+                                if (isNumeric) handleInputChange(e, index);
+                            }}
+                            onKeyDown={(e) => handleKeyDown(e, index)}
                         />
                     ))}
                 </div>
@@ -113,6 +145,18 @@ const AdminVerify: React.FC = () => {
             >
                 Done
             </button>
+            {/* <p className="text-base text-[#7D7D8A] font-medium leading-6">
+                Didn’t receive the code? <span className="text-[#9012FF] font-semibold cursor-pointer hover:underline">Resend(60)</span>
+            </p> */}
+            <p className="text-base text-[#7D7D8A] font-medium leading-6">
+                Didn’t receive the code?{" "}
+                <span
+                    className={`text-[#9012FF] font-semibold cursor-pointer hover:underline ${resendDisabled ? 'pointer-events-none opacity-50' : ''}`}
+                    onClick={handleResend}
+                >
+                    Resend{resendDisabled ? `(${timer})` : ""}
+                </span>
+            </p>
         </div>
     );
 };
