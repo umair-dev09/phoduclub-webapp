@@ -2,11 +2,14 @@
 
 import styles from "../homeComponents.module.css";
 import Image from "next/image";
-import testSeriesComp from "./testSeriesComp/testSeriesComp";
+import TestSeriesComp from "@/components/DashboardComponents/HomeComponents/TestSeries/testSeriesComp/testSeriesComp";
 
 function TestSeries() {
     return (
         <div className={styles.testSeriesComp}>
+
+            {/* --------------------------- BEFORE BUYING COURSES --------------------------- */}
+
             <div className={styles.beforeBuying}>
                 <div className={styles.course1}>
                     <div>
@@ -21,12 +24,9 @@ function TestSeries() {
                             <p>Suggested for you</p>
                         </div>
                         <div className={styles.image}>
-                            <Image
+                            <img
                                 className={styles.courseImage}
                                 src="/images/course_img.svg"
-                                alt="course image"
-                                width={239}
-                                height={160} 
                             />
                         </div>
                     </div>
@@ -37,7 +37,7 @@ function TestSeries() {
                             </div>
                             <div className={styles.courseLength}>
                                 <p>3 Lessons</p>
-                                <span>&#x2022;</span> {/* This adds a bullet between */}
+                                <span>&#x2022;</span>
                                 <p>3hr 14m</p>
                             </div>
                         </div>
@@ -81,7 +81,7 @@ function TestSeries() {
                             </div>
                             <div className={styles.courseLength}>
                                 <p>3 Lessons</p>
-                                <span>&#x2022;</span> {/* This adds a bullet between */}
+                                <span>&#x2022;</span>
                                 <p>3hr 14m</p>
                             </div>
                         </div>
@@ -96,6 +96,20 @@ function TestSeries() {
                     </div>
                 </div>
             </div>
+
+            {/* --------------------------- BEFORE BUYING COURSES --------------------------- */}
+
+
+
+            {/* --------------------------- AFTER BUYING COURSES --------------------------- */}
+
+            <div className={styles.afterBuying}>
+                <TestSeriesComp />
+            </div>
+
+            {/* --------------------------- AFTER BUYING COURSES --------------------------- */}
+
+
         </div>
     );
 }

@@ -544,15 +544,15 @@ function Questions({ questionsList, setQuestionsList }: QuestionsProps) {
                                 </PopoverContent>
                             </Popover>
                             <div
-                                className={`pt-2 bg-[#FFFFFF] border ${isWriting2 ? 'border-[#D6BBFB]  shadow-[0px_0px_0px_4px_rgba(158,119,237,0.25),0px_1px_2px_0px_rgba(16,24,40,0.05)]' : 'border-[#EAECF0]'
+                                className={`pt-2 bg-[#FFFFFF] border ${isWriting ? 'border-[#D6BBFB]  shadow-[0px_0px_0px_4px_rgba(158,119,237,0.25),0px_1px_2px_0px_rgba(16,24,40,0.05)]' : 'border-[#EAECF0]'
                                     } rounded-[12px] h-auto`}>
                                 {/* Textarea for writing the description */}
                                 <div className="bg-[#FFFFFF] ">
                                     <ReactQuill
-                                        ref={quillRef2}
+                                        ref={quillRef}
                                         value={question.explanation}
                                         onChange={(value) => handleExplanationChange(index, value)} // Use `value` directly
-                                        onKeyDown={handleKeyDown2}
+                                        onKeyDown={handleKeyDown}
                                         modules={{ toolbar: false }}
                                         placeholder="Description"
                                         className="text-[#1D2939] focus:outline-none rounded-b-[12px] custom-quill placeholder:not-italic min-h-[10px] max-h-[150px] overflow-y-auto border-none font-normal break-all"
@@ -565,22 +565,22 @@ function Questions({ questionsList, setQuestionsList }: QuestionsProps) {
                                         {/* Formatting options */}
                                         <div className="h-[24px] w-[288px] gap-[24px] flex flex-row">
                                             {/* Icons for formatting */}
-                                            <button onClick={() => handleIconClick2('bold')}>
+                                            <button onClick={() => handleIconClick('bold')}>
                                                 <Image src="/icons/Bold.svg" width={24} height={24} alt="bold" />
                                             </button>
-                                            <button onClick={() => handleIconClick2('italic')}>
+                                            <button onClick={() => handleIconClick('italic')}>
                                                 <Image src="/icons/italic-icon.svg" width={24} height={24} alt="italic-icon" />
                                             </button>
-                                            <button onClick={() => handleIconClick2('underline')}>
+                                            <button onClick={() => handleIconClick('underline')}>
                                                 <Image src="/icons/underline-icon.svg" width={24} height={24} alt="underline-icon" />
                                             </button>
                                             {/* Alignment options in a popover */}
                                             <Popover placement="bottom-start" className="flex flex-row justify-end">
                                                 <PopoverTrigger className="">
                                                     <button className="flex items-center justify-center p-1">
-                                                        {alignment2 === 'center' ? (
+                                                        {alignment === 'center' ? (
                                                             <Image src="/icons/align-middle.svg" width={24} height={26} alt="align-center" />
-                                                        ) : alignment2 === 'right' ? (
+                                                        ) : alignment === 'right' ? (
                                                             <Image src="/icons/align-right.svg" width={24} height={26} alt="align-right" />
                                                         ) : (
                                                             <Image src="/icons/dropdown-icon-1.svg" width={32} height={32} alt="align-left" />
@@ -589,23 +589,23 @@ function Questions({ questionsList, setQuestionsList }: QuestionsProps) {
                                                 </PopoverTrigger>
                                                 <PopoverContent className="flex flex-row bg-white rounded-[8px] border-[1px] border-solid border-[#EAECF0] p-2 w-[120px] shadow-[0_2px_4px_#EAECF0] gap-2 ">
                                                     {/* Alignment options inside the popover */}
-                                                    <button onClick={() => handleIconClick2("align-left")} className="flex items-center justify-center hover:bg-[#EAECF0]">
+                                                    <button onClick={() => handleIconClick("align-left")} className="flex items-center justify-center hover:bg-[#EAECF0]">
                                                         <Image src="/icons/align-left.svg" width={30} height={30} alt="align-left" />
                                                     </button>
-                                                    <button onClick={() => handleIconClick2("align-center")} className="flex items-center justify-center hover:bg-[#EAECF0]">
+                                                    <button onClick={() => handleIconClick("align-center")} className="flex items-center justify-center hover:bg-[#EAECF0]">
                                                         <Image src="/icons/align-middle.svg" width={30} height={30} alt="align-center" />
                                                     </button>
-                                                    <button onClick={() => handleIconClick2("align-right")} className="flex items-center justify-center hover:bg-[#EAECF0]">
+                                                    <button onClick={() => handleIconClick("align-right")} className="flex items-center justify-center hover:bg-[#EAECF0]">
                                                         <Image src="/icons/align-right.svg" width={30} height={30} alt="align-right" />
                                                     </button>
 
                                                 </PopoverContent>
                                             </Popover>
                                             <button
-                                                onClick={() => handleIconClick2('ordered')}>
+                                                onClick={() => handleIconClick('ordered')}>
                                                 <Image src="/icons/dropdown-icon-2.svg" width={27} height={27} alt="dropdown-icon" />
                                             </button>
-                                            <button onClick={() => handleIconClick2('image')}
+                                            <button onClick={() => handleIconClick('image')}
                                                 className="hover:bg-[#EAECF0]">
                                                 <Image src="/icons/upload-image-icon.svg" width={24} height={24} alt="upload-image-icon" />
                                             </button>
