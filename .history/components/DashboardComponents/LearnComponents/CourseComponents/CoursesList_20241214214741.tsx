@@ -12,12 +12,12 @@ interface CourseData {
   courseName: string;
   price: number;
   discountPrice: string;
-  courseId: string;
+  courseId: string; 
   date: string; // Can be Date type if desired
   courseImage: string;
   status: string;
   publishDate: string;
-  sections: SectionData[];
+  sections : SectionData[];
   totalContentCount: number; // Total number of content across all sections
   StudentsPurchased: string[];
 }
@@ -31,100 +31,100 @@ function CoursesList() {
   const [activeTab, setActiveTab] = useState<string>('');
   const router = useRouter();
   const pathname = usePathname();
-  const [courses, setCourses] = useState<CourseData[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchCourses = async (currentUserId: string) => {
-      const coursesCollection = collection(db, 'course');
-
-      const unsubscribe = onSnapshot(coursesCollection, async (snapshot) => {
-        const allCourses: CourseData[] = [];
-
-        for (const doc of snapshot.docs) {
-          const courseData = doc.data();
-
-          // Only add courses where the currentUserId is NOT in StudentsPurchased
-          if (!courseData.StudentsPurchased?.includes(currentUserId)) {
-            const sectionsCollection = collection(doc.ref, 'sections');
-            const sectionsSnapshot = await getDocs(sectionsCollection);
-
-            let totalContentCount = 0;
-
-            const sectionsData: SectionData[] = await Promise.all(
-              sectionsSnapshot.docs.map(async (sectionDoc) => {
-                const sectionData = sectionDoc.data();
-                const contentCollection = collection(sectionDoc.ref, 'content');
-                const contentSnapshot = await getDocs(contentCollection);
-
-                const contentCount = contentSnapshot.size;
-                totalContentCount += contentCount;
-
-                return {
-                  sectionName: sectionData.sectionName || 'Untitled Section',
-                  contentCount,
-                };
-              })
-            );
-
-            allCourses.push({
-              courseName: courseData.courseName,
-              price: courseData.price,
-              discountPrice: courseData.discountPrice,
-              courseId: courseData.courseId,
-              courseImage: courseData.courseImage,
-              StudentsPurchased: courseData.StudentsPurchased,
-              status: courseData.status,
-              date: courseData.date || '',
-              publishDate: courseData.publishDate || '',
-              sections: sectionsData,
-              totalContentCount,
-            });
+   const [courses, setCourses] = useState<CourseData[]>([]);
+     const [loading, setLoading] = useState(true);
+  
+     useEffect(() => {
+      const fetchCourses = async (currentUserId: string) => {
+        const coursesCollection = collection(db, 'course');
+    
+        const unsubscribe = onSnapshot(coursesCollection, async (snapshot) => {
+          const allCourses: CourseData[] = [];
+    
+          for (const doc of snapshot.docs) {
+            const courseData = doc.data();
+    
+            // Only add courses where the currentUserId is NOT in StudentsPurchased
+            if (!courseData.StudentsPurchased?.includes(currentUserId)) {
+              const sectionsCollection = collection(doc.ref, 'sections');
+              const sectionsSnapshot = await getDocs(sectionsCollection);
+    
+              let totalContentCount = 0;
+    
+              const sectionsData: SectionData[] = await Promise.all(
+                sectionsSnapshot.docs.map(async (sectionDoc) => {
+                  const sectionData = sectionDoc.data();
+                  const contentCollection = collection(sectionDoc.ref, 'content');
+                  const contentSnapshot = await getDocs(contentCollection);
+    
+                  const contentCount = contentSnapshot.size;
+                  totalContentCount += contentCount;
+    
+                  return {
+                    sectionName: sectionData.sectionName || 'Untitled Section',
+                    contentCount,
+                  };
+                })
+              );
+    
+              allCourses.push({
+                courseName: courseData.courseName,
+                price: courseData.price,
+                discountPrice: courseData.discountPrice,
+                courseId: courseData.courseId,
+                courseImage: courseData.courseImage,
+                StudentsPurchased: courseData.StudentsPurchased,
+                status: courseData.status,
+                date: courseData.date || '',
+                publishDate: courseData.publishDate || '',
+                sections: sectionsData,
+                totalContentCount,
+              });
+            }
           }
-        }
-
-        setCourses(allCourses);
-        setLoading(false);
-      });
-
-      return () => unsubscribe();
-    };
-
-    const initialize = () => {
-      setLoading(true);
-      const unsubscribeAuth = onAuthStateChanged(auth, (user) => {
-        if (user?.uid) {
-          fetchCourses(user.uid);
-        } else {
-          setCourses([]); // No user logged in
+    
+          setCourses(allCourses);
           setLoading(false);
-        }
-      });
+        });
+    
+        return () => unsubscribe();
+      };
+    
+      const initialize = () => {
+        setLoading(true);
+        const unsubscribeAuth = onAuthStateChanged(auth, (user) => {
+          if (user?.uid) {
+            fetchCourses(user.uid);
+          } else {
+            setCourses([]); // No user logged in
+            setLoading(false);
+          }
+        });
+    
+        return () => unsubscribeAuth();
+      };
+    
+      initialize();
+    }, []);
+    
+    
+    
+  
+  
 
-      return () => unsubscribeAuth();
-    };
-
-    initialize();
-  }, []);
-
-
-
-
-
-
-  const handleTabClick = (path: string) => {
+  const handleTabClick = ( path: string) => {
     router.push(path);
   };
 
-  if (loading) {
-    return <LoadingData />
-  }
+if(loading){
+  return <LoadingData />
+}
 
 
   return (
     <div className="flex flex-1 flex-row mx-4 gap-7 flex-wrap">
-      {courses.map((course, index) => (
-        <div key={index} className="flex items-center justify-center flex-col rounded-lg relative overflow-hidden transition-transform duration-300 w-[300px] h-auto">
+     {courses.map((course, index) => (      
+          <div key={index} className="flex items-center justify-center flex-col rounded-lg relative overflow-hidden transition-transform duration-300 w-[300px] h-auto">
           {/* Container for the suggestion badge and course image */}
           <div>
             {/* Suggestion badge with icon and text */}
@@ -166,7 +166,7 @@ function CoursesList() {
               </div>
               {/* Buy Now button */}
               <div>
-                <button className="text-xs font-semibold py-2.5 px-3.5 shadow-inner-button rounded-md bg-[#9012FF] border-2 border-[#9012FF] text-white"
+                <button className="text-xs font-semibold py-2.5 px-3.5 rounded-md bg-[#9012FF] border-2 border-[#9012FF] text-white"
                   onClick={() => handleTabClick(`/learn/courses/purchase/${course.courseName.toLowerCase().replace(/\s+/g, '-')}/?cId=${course.courseId}`)}
                 >
                   Buy Now
@@ -174,7 +174,7 @@ function CoursesList() {
               </div>
             </div>
           </div>
-        </div>
+        </div>      
       ))}
 
     </div>

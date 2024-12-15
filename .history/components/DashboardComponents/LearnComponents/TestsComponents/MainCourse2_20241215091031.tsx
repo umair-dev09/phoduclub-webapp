@@ -101,7 +101,7 @@ function Main2() {
             </div>
             {/* Buy Now button */}
             <div>
-              <button className="text-xs font-semibold py-2.5 px-3.5 shadow-inner-button rounded-md bg-[#9012FF] border-2 border-[#9012FF] text-white"
+              <button className="text-xs font-semibold py-2.5 px-3.5 rounded-md bg-[#9012FF] border-2 border-[#9012FF] text-white"
               >
                 Buy Now
               </button>
@@ -151,7 +151,7 @@ function Main2() {
             </div>
             {/* Buy Now button */}
             <div>
-              <button className="text-xs font-semibold py-2.5 px-3.5  shadow-inner-button rounded-md bg-[#9012FF] border-2 border-[#9012FF] text-white"
+              <button className="text-xs font-semibold py-2.5 px-3.5 rounded-md bg-[#9012FF] border-2 border-[#9012FF] text-white"
               >
                 Buy Now
               </button>
