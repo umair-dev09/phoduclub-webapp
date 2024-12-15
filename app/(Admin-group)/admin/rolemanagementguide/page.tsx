@@ -150,7 +150,7 @@ function rolemanagementguide() {
                         <PopoverContent className="w-[304px] p-6 bg-[#FFFFFF] border-solid border-[#EAECF0] rounded-md gap-4">
                             <div className='flex flex-col gap-2'>
                                 <span className='font-medium text-[#1D2939] text-sm'>Unique ID</span>
-                                <div className='flex px-2 items-center h-[40px] border border-solid border-[#D0D5DD] shadow-sm rounded-md'>
+                                <div className='flex px-2 items-center h-[40px] border border-gray-300   focus:outline focus:outline-[1.5px] focus:outline-[#D6BBFB] hover:outline hover:outline-[1.5px] hover:outline-[#D6BBFB] shadow-sm rounded-md'>
                                     <input
                                         className="font-normal text-[#667085] w-full text-sm placeholder:text-[#A1A1A1] rounded-md px-1 py-1 focus:outline-none focus:ring-0 border-none"
                                         placeholder="Enter Unique ID"
