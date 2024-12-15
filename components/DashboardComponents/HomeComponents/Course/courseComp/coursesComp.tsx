@@ -1,7 +1,6 @@
 'use client';
 
 import { useState } from 'react';
-import styles from './courseComp.module.css';
 import Image from 'next/image';
 
 type Subject = {
@@ -25,9 +24,7 @@ const subjectToExamMap: { [key: string]: string } = {
     computer: 'Computer Basics and Programming',
 };
 
-
 function CoursesComp() {
-    // State for multiple subjects
     const [subjects] = useState<{ [key: string]: Subject }>({
         physics: { lessons: 10, totalLessons: 50, attempted: 5, totalAttempted: 10, score: 60, totalScore: 100 },
         chemistry: { lessons: 23, totalLessons: 80, attempted: 10, totalAttempted: 10, score: 100, totalScore: 100 },
@@ -39,81 +36,74 @@ function CoursesComp() {
         computer: { lessons: 22, totalLessons: 60, attempted: 15, totalAttempted: 20, score: 95, totalScore: 100 },
     });
 
-
-    // Function to calculate percentage
     const calculatePercentage = (obtained: number, total: number): number => {
-        if (total === 0) return 0; // To prevent division by zero
-        return Math.round((obtained / total) * 100);
+        return total === 0 ? 0 : Math.round((obtained / total) * 100);
     };
 
-    // Function to calculate combined percentage for Lessons, Attempted, and Score
     const calculateOverallPercentage = (subject: Subject): number => {
         const lessonsPercentage = calculatePercentage(subject.lessons, subject.totalLessons);
         const attemptedPercentage = calculatePercentage(subject.attempted, subject.totalAttempted);
         const scorePercentage = calculatePercentage(subject.score, subject.totalScore);
-        return Math.round((lessonsPercentage + attemptedPercentage + scorePercentage) / 3); // Average of all three percentages
+        return Math.round((lessonsPercentage + attemptedPercentage + scorePercentage) / 3);
     };
 
     return (
-        <div>
+        <div className="space-y-6 px-6 w-full">
             {Object.keys(subjects).map((subject) => {
                 const { lessons, totalLessons, attempted, totalAttempted, score, totalScore } = subjects[subject];
                 const overallPercentage = calculateOverallPercentage(subjects[subject]);
 
                 return (
-                    <div className={styles.messageComp} key={subject}>
-                        <div className={styles.sub}>
-                            <div className={styles.theSub}>
-                                {/* Use the subject to exam name mapping */}
-                                <h3>{subjectToExamMap[subject] || subject.charAt(0).toUpperCase() + subject.slice(1)}</h3>
-                            </div>
-                            <div className={styles.nextButton}>
-                                <button className="w-[32px] h-[32px]  rounded-full flex items-center justify-center transition-all duration-300 ease-in-out hover:bg-[#F2F4F7]">
-                                    <button>
-                                        <Image alt="Collapse Icon Right" src="/icons/collapse-right.svg" width={8} height={8} />
-                                    </button>
-                                </button>
-                            </div>
+                    <div key={subject} className="flex flex-col border-b border-gray-200 pb-6">
+                        <div className="flex items-center justify-between">
+                            <h3 className="text-lg font-medium text-gray-800">
+                                {subjectToExamMap[subject] || subject.charAt(0).toUpperCase() + subject.slice(1)}
+                            </h3>
+                            <button className="w-8 h-8 rounded-full flex items-center justify-center hover:bg-gray-100">
+                                <Image alt="Collapse Icon Right" src="/icons/collapse-right.svg" width={8} height={8} />
+                            </button>
                         </div>
 
-                        <div className={styles.progresses}>
-                            {/* Overall Percentage (average of lessons, attempted, and score) */}
-                            <div className={styles.progressBar}>
-                                <div className={styles.progressFill} style={{ width: `${overallPercentage}%` }}></div>
+                        <div className="flex items-center mt-4">
+                            <div className="relative w-full bg-gray-200 rounded-full h-2">
+                                <div
+                                    className="absolute top-0 left-0 h-full bg-purple-600 rounded-full transition-all"
+                                    style={{ width: `${overallPercentage}%` }}
+                                ></div>
                             </div>
-                            <div className={styles.progressPercent}>
-                                <span>{overallPercentage}%</span>
-                            </div>
+                            <span className="ml-4 text-sm font-medium text-gray-600">{overallPercentage}%</span>
                         </div>
 
-                        <div className={styles.theScores}>
-                            <div className={styles.lessons}>
-                                <p>Lessons</p>
-                                <div className={styles.outoff}>
-                                    <h3><span>{lessons}</span></h3>
-                                    <h3>/</h3>
-                                    <h3><span>{totalLessons}</span></h3>
+                        <div className="flex justify-between mt-8">
+                            <div className="text-center">
+                                <p className="text-sm text-gray-500">Lessons</p>
+                                <div className="flex items-center space-x-1">
+                                    <span className="text-lg font-bold">{lessons}</span>
+                                    <span className="text-gray-500">/</span>
+                                    <span className="text-lg font-bold">{totalLessons}</span>
                                 </div>
                             </div>
-                            <div className={styles.attempted}>
-                                <p>Attempted</p>
-                                <div className={styles.outoff}>
-                                    <h3><span>{attempted}</span></h3>
-                                    <h3>/</h3>
-                                    <h3><span>{totalAttempted}</span></h3>
+                            <div className="text-center">
+                                <p className="text-sm text-gray-500">Attempted</p>
+                                <div className="flex items-center space-x-1">
+                                    <span className="text-lg font-bold">{attempted}</span>
+                                    <span className="text-gray-500">/</span>
+                                    <span className="text-lg font-bold">{totalAttempted}</span>
                                 </div>
                             </div>
-                            <div className={styles.score}>
-                                <p className={styles.scoreText}>Score</p>
-                                <div className={styles.outoff}>
-                                    <h3><span>{score}</span></h3>
-                                    <h3>/</h3>
-                                    <h3><span>{totalScore}</span></h3>
+                            <div className="text-center">
+                                <p className="text-sm text-gray-500">Score</p>
+                                <div className="flex items-center space-x-1">
+                                    <span className="text-lg font-bold">{score}</span>
+                                    <span className="text-gray-500">/</span>
+                                    <span className="text-lg font-bold">{totalScore}</span>
                                 </div>
                             </div>
-                            <div className={styles.timeLeft}>
-                                <p>Time Left</p>
-                                <h3><span>13</span>&nbsp;<span>Days</span></h3>
+                            <div className="text-center">
+                                <p className="text-sm text-gray-500">Time Left</p>
+                                <h3 className="text-lg font-bold">
+                                    <span>13</span>&nbsp;<span className="text-sm">Days</span>
+                                </h3>
                             </div>
                         </div>
                     </div>

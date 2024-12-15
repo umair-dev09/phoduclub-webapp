@@ -1,7 +1,6 @@
 'use client';
 
 import { useState } from 'react';
-import styles from './testSeriesComp.module.css';
 import Image from 'next/image';
 
 type Subject = {
@@ -11,8 +10,8 @@ type Subject = {
     totalScore: number;
 };
 
-function testSeriesComp() {
-    // State for multiple subjects, but only reading subjects, so no need for setSubjects
+function TestSeriesComp() {
+    // State for multiple subjects
     const [subjects] = useState<{ [key: string]: Subject }>({
         physics: { attempted: 5, totalAttempted: 10, score: 60, totalScore: 100 },
         chemistry: { attempted: 10, totalAttempted: 10, score: 100, totalScore: 100 },
@@ -39,54 +38,50 @@ function testSeriesComp() {
                 const overallPercentage = calculateOverallPercentage(subjects[subject]);
 
                 return (
-                    <div className={styles.messageComp} key={subject}>
-                        <div className={styles.sub}>
-                            <div className={styles.theSub}>
-                                <h3>Phodu Super Power JEE</h3>
-                                &nbsp;
-                                <span className={styles.slash}>/</span>
-                                &nbsp;
-                                <p className={styles.subject}>{subject.charAt(0).toUpperCase() + subject.slice(1)}</p>
+                    <div className="flex flex-col mt-6 mx-6" key={subject}>
+                        <div className="flex justify-between items-center">
+                            <div className="flex items-center">
+                                <h3 className="font-semibold text-lg">Phodu Super Power JEE</h3>
+                                <span className="mx-2 text-gray-400 font-semibold">/</span>
+                                <p className="font-normal text-gray-800">{subject.charAt(0).toUpperCase() + subject.slice(1)}</p>
                             </div>
-                            <div className={styles.nextButton}>
-                                <button className="w-[32px] h-[32px]  rounded-full flex items-center justify-center transition-all duration-300 ease-in-out hover:bg-[#F2F4F7]">
-                                    <button>
-                                        <Image alt="Collapse Icon Right" src="/icons/collapse-right.svg" width={8} height={8} />
-                                    </button>
-                                </button>
-                            </div>
+                            <button className="w-8 h-8 rounded-full flex items-center justify-center transition-all duration-300 ease-in-out hover:bg-gray-100">
+                                <Image alt="Collapse Icon Right" src="/icons/collapse-right.svg" width={8} height={8} />
+                            </button>
                         </div>
 
-                        <div className={styles.progresses}>
-                            {/* Overall Percentage (average of both attempted and score) */}
-                            <div className={styles.progressBar}>
-                                <div className={styles.progressFill} style={{ width: `${overallPercentage}%` }}></div>
+                        <div className="flex justify-between items-center mt-2">
+                            <div className="relative w-5/6 h-2 bg-gray-200 rounded-full overflow-hidden">
+                                <div
+                                    className="h-full bg-purple-700 transition-all duration-300"
+                                    style={{ width: `${overallPercentage}%` }}
+                                ></div>
                             </div>
-                            <div className={styles.progressPercent}>
-                                <span>{overallPercentage}%</span>
-                            </div>
+                            <span className="text-sm font-medium">{overallPercentage}%</span>
                         </div>
 
-                        <div className={styles.theScores}>
-                            <div className={styles.attempted}>
-                                <p>Attempted</p>
-                                <div className={styles.outoff}>
-                                    <h3><span>{attempted}</span></h3>
-                                    <h3>/</h3>
-                                    <h3><span>{totalAttempted}</span></h3>
+                        <div className="flex justify-between mt-8 pb-6 border-b border-gray-300">
+                            <div className="flex flex-col items-center">
+                                <p className="font-medium">Attempted</p>
+                                <div className="flex items-center">
+                                    <h3 className="font-semibold text-lg">{attempted}</h3>
+                                    <h3 className="font-semibold mx-1">/</h3>
+                                    <h3 className="font-semibold text-lg">{totalAttempted}</h3>
                                 </div>
                             </div>
-                            <div className={styles.score}>
-                                <p className={styles.scoreText}>Score</p>
-                                <div className={styles.outoff}>
-                                    <h3><span>{score}</span></h3>
-                                    <h3>/</h3>
-                                    <h3><span>{totalScore}</span></h3>
+                            <div className="flex flex-col items-center">
+                                <p className="font-medium">Score</p>
+                                <div className="flex items-center">
+                                    <h3 className="font-semibold text-lg">{score}</h3>
+                                    <h3 className="font-semibold mx-1">/</h3>
+                                    <h3 className="font-semibold text-lg">{totalScore}</h3>
                                 </div>
                             </div>
-                            <div className={styles.timeLeft}>
-                                <p>Time Left</p>
-                                <h3><span>13</span>&nbsp;<span>Days</span></h3>
+                            <div className="flex flex-col items-center">
+                                <p className="font-medium">Time Left</p>
+                                <h3 className="font-semibold text-lg">
+                                    <span>13</span>&nbsp;<span>Days</span>
+                                </h3>
                             </div>
                         </div>
                     </div>
@@ -96,5 +91,4 @@ function testSeriesComp() {
     );
 }
 
-export default testSeriesComp;
-
+export default TestSeriesComp;
