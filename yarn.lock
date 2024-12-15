@@ -2718,17 +2718,10 @@
   resolved "https://registry.npmjs.org/@humanwhocodes/retry/-/retry-0.4.1.tgz"
   integrity sha512-c7hNEllBlenFTHBky65mhq8WD2kbN9Q6gk0bTk8lSBvc554jpXSkST1iePudpt7+A/AQvuHs9EMqjHDXMY1lrA==
 
-"@img/sharp-darwin-arm64@0.33.5":
+"@img/sharp-win32-x64@0.33.5":
   version "0.33.5"
-  resolved "https://registry.npmjs.org/@img/sharp-darwin-arm64/-/sharp-darwin-arm64-0.33.5.tgz"
-  integrity sha512-UT4p+iz/2H4twwAoLCqfA9UH5pI6DggwKEGuaPy7nCVQ8ZsiY5PIcrRvD1DzuY3qYL07NtIQcWnBSY/heikIFQ==
-  optionalDependencies:
-    "@img/sharp-libvips-darwin-arm64" "1.0.4"
-
-"@img/sharp-libvips-darwin-arm64@1.0.4":
-  version "1.0.4"
-  resolved "https://registry.npmjs.org/@img/sharp-libvips-darwin-arm64/-/sharp-libvips-darwin-arm64-1.0.4.tgz"
-  integrity sha512-XblONe153h0O2zuFfTAbQYAX2JhYmDHeWikp1LM9Hul9gVPjFY427k6dFEcOL72O01QxQsWi761svJ/ev9xEDg==
+  resolved "https://registry.npmjs.org/@img/sharp-win32-x64/-/sharp-win32-x64-0.33.5.tgz"
+  integrity sha512-MpY/o8/8kj+EcnxwvrP4aTJSWw/aZ7JIGR4aBeZkZw5B7/Jn+tY9/VNwtcoGmdT7GfggGIU4kygOMSbYnOrAbg==
 
 "@inquirer/checkbox@^2.2.3":
   version "2.5.0"
@@ -3275,10 +3268,10 @@
   resolved "https://registry.npmjs.org/@next/env/-/env-15.0.3.tgz"
   integrity sha512-t9Xy32pjNOvVn2AS+Utt6VmyrshbpfUMhIjFO60gI58deSo/KgLOp31XZ4O+kY/Is8WAGYwA5gR7kOb1eORDBA==
 
-"@next/swc-darwin-arm64@15.0.3":
+"@next/swc-win32-x64-msvc@15.0.3":
   version "15.0.3"
-  resolved "https://registry.npmjs.org/@next/swc-darwin-arm64/-/swc-darwin-arm64-15.0.3.tgz"
-  integrity sha512-s3Q/NOorCsLYdCKvQlWU+a+GeAd3C8Rb3L1YnetsgwXzhc3UTWrtQpB/3eCjFOdGUj5QmXfRak12uocd1ZiiQw==
+  resolved "https://registry.npmjs.org/@next/swc-win32-x64-msvc/-/swc-win32-x64-msvc-15.0.3.tgz"
+  integrity sha512-VNAz+HN4OGgvZs6MOoVfnn41kBzT+M+tB+OK4cww6DNyWS6wKaDpaAm/qLeOUbnMh0oVx1+mg0uoYARF69dJyA==
 
 "@nextui-org/accordion@^2.0.38", "@nextui-org/accordion@2.0.40":
   version "2.0.40"
@@ -7789,10 +7782,10 @@
     is-plain-object "^5.0.0"
     undici "^5.28.4"
 
-"@videojs/http-streaming@^3.16.0":
-  version "3.16.1"
-  resolved "https://registry.npmjs.org/@videojs/http-streaming/-/http-streaming-3.16.1.tgz"
-  integrity sha512-+5FXE0q8sRD6lPVdGsDL0N8q4+IiQEjMtoCSu0js1oftdCchP9bbhR9ac8XUGJUCZ53KoeY02izkjyGYK2hpGw==
+"@videojs/http-streaming@^3.16.2":
+  version "3.16.2"
+  resolved "https://registry.npmjs.org/@videojs/http-streaming/-/http-streaming-3.16.2.tgz"
+  integrity sha512-fvt4ko7FknxiT9FnjyNQt6q2px+awrkM+Orv7IB/4gldvj94u4fowGfmNHynnvNTPgPkdxHklGmFLGfclYw8HA==
   dependencies:
     "@babel/runtime" "^7.12.5"
     "@videojs/vhs-utils" "^4.1.1"
@@ -9735,11 +9728,6 @@ fs.realpath@^1.0.0:
   version "1.0.0"
   resolved "https://registry.npmjs.org/fs.realpath/-/fs.realpath-1.0.0.tgz"
   integrity sha512-OO0pH2lK6a0hZnAdau5ItzHPI6pUlvI7jMVnxUQRtw4owF2wk8lOSabtGDCTP4Ggrg2MbGnWO9X8K1t4+fGMDw==
-
-fsevents@^2.3.2, fsevents@~2.3.2:
-  version "2.3.3"
-  resolved "https://registry.npmjs.org/fsevents/-/fsevents-2.3.3.tgz"
-  integrity sha512-5xoDfX+fL7faATnagmWPpbFtwh/R77WmMMqqHGS65C3vvB0YHrgF+B1YmZ3441tMj5n63k0212XNoJwzlhffQw==
 
 function-bind@^1.1.2:
   version "1.1.2"
@@ -14263,13 +14251,13 @@ victory-vendor@^36.6.8:
     videojs-font "3.2.0"
     videojs-vtt.js "^0.15.5"
 
-"video.js@^7 || ^8", video.js@^8, video.js@^8.20.0:
-  version "8.20.0"
-  resolved "https://registry.npmjs.org/video.js/-/video.js-8.20.0.tgz"
-  integrity sha512-VyXY/DbtfaI22gpWJdo8bmTcpPRfKg0SeQJBusRdIJF1RMI+er1BHpRreg67s5Qfd9ZeSbfKShUOwaxRft/tBw==
+"video.js@^7 || ^8", video.js@^8, video.js@^8.21.0:
+  version "8.21.0"
+  resolved "https://registry.npmjs.org/video.js/-/video.js-8.21.0.tgz"
+  integrity sha512-zcwerRb257QAuWfi8NH9yEX7vrGKFthjfcONmOQ4lxFRpDAbAi+u5LAjCjMWqhJda6zEmxkgdDpOMW3Y21QpXA==
   dependencies:
     "@babel/runtime" "^7.12.5"
-    "@videojs/http-streaming" "^3.16.0"
+    "@videojs/http-streaming" "^3.16.2"
     "@videojs/vhs-utils" "^4.1.1"
     "@videojs/xhr" "2.7.0"
     aes-decrypter "^4.0.2"

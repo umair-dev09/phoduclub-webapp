@@ -9,7 +9,7 @@ import { useState, useEffect } from "react";
 import { Tabs, Tab } from "@nextui-org/react";
 import Collapsible from 'react-collapsible';
 import { Checkbox } from "@nextui-org/react";
-import { getDoc, doc, updateDoc, collection, onSnapshot, query, getDocs, arrayUnion, setDoc } from "firebase/firestore";
+import { getDoc, doc, updateDoc, collection, onSnapshot, query, getDocs, arrayUnion, setDoc, arrayRemove } from "firebase/firestore";
 import { db, auth } from "@/firebase"; // Adjust the path based on your project setup
 import LoadingData from '@/components/Loading';
 import { toast, ToastContainer } from 'react-toastify';
@@ -17,6 +17,24 @@ import 'react-toastify/dist/ReactToastify.css';
 import TextContent from "@/components/DashboardComponents/LearnComponents/CourseComponents/InsideCoursesComp/TextComp/TextContent";
 import VideoContent from "@/components/DashboardComponents/LearnComponents/CourseComponents/InsideCoursesComp/VideoComp/Video";
 import QuizContent from "@/components/DashboardComponents/LearnComponents/CourseComponents/InsideCoursesComp/StartQuizComp/QuizContent";
+import { merge } from "video.js/dist/types/utils/obj";
+
+interface Options {
+    A: string;
+    B: string;
+    C: string;
+    D: string;
+}
+
+interface Question {
+    question: string;
+    isChecked: boolean;
+    isActive: boolean;
+    options: Options;
+    correctAnswer: string | null;
+    explanation: string;
+}
+
 
  type Sections = {
     sectionName: string;
@@ -42,6 +60,8 @@ type Content = {
     videoDuration: number;
     questionsCount: number;
     videoId: string;
+    questionsList: Question[];
+    StudentsCompleted: string[];
   }
 
 type CourseData = {
@@ -63,6 +83,7 @@ function Course() {
      const [courseData, setCourseData] = useState<CourseData | null>(null); 
       const [loading, setLoading] = useState(true); // Track loading state 
       const [sections, setSections] = useState<Sections[]>([]);
+      const [sectionId, setSectionId] = useState('');
       const [courseAlreadyPurchased, setCourseAlreadyPurchased] = useState(false);
         const [selectedContent, setSelectedContent] = useState<{
             type: string;
@@ -80,6 +101,7 @@ function Course() {
             videoDuration: number;
             videoId: string;
             questionsCount: number;
+            questionsList: Question[],
         } | null>(null);
       
      // Fetch course data from Firestore
@@ -150,6 +172,23 @@ function Course() {
                   const contentData: Content[] = await Promise.all(contentSnapshot.docs.map(async (contentDoc) => {
                     const questionsCollection = collection(db, 'course', courseId, 'sections', sectionId, 'content', contentDoc.id, 'Questions');
                     const questionsSnapshot = await getDocs(questionsCollection);
+                     const fetchedQuestions: Question[] = questionsSnapshot.docs.map((doc) => {
+                                        const data = doc.data();
+                                        return {
+                                            question: data.question,
+                                            questionId: data.questionId,
+                                            isChecked: false,
+                                            isActive: false,
+                                            options: {
+                                                A: data.options.A,
+                                                B: data.options.B,
+                                                C: data.options.C,
+                                                D: data.options.D
+                                            },
+                                            correctAnswer: data.correctAnswer?.replace('option', ''),
+                                            explanation: data.answerExplanation || ''
+                                        };
+                                    });
                     const questionsCount = questionsSnapshot.size;
       
                     return {
@@ -168,6 +207,8 @@ function Course() {
                       videoDuration: contentDoc.data().videoDuration,
                       questionsCount: questionsCount,
                       videoId: contentDoc.data().videoId,
+                      questionsList: fetchedQuestions,
+                      StudentsCompleted: contentDoc.data().StudentsCompleted,
                     };
                   }));
       
@@ -256,6 +297,39 @@ function Course() {
         return '00:00';
     }
 };
+ 
+const handleMarkContentCompleted = async (contentId: string, sectionId: string, StudentsCompleted: string[]) => {
+    if (courseId && auth.currentUser?.uid) {
+      try {
+        const currentUserId = auth.currentUser.uid;
+  
+        // Check if the user is already in the StudentsCompleted array
+        const isUserCompleted = StudentsCompleted?.includes(currentUserId);
+  
+        const ref = doc(db, 'course', courseId, 'sections', sectionId, 'content', contentId);
+        
+        if (isUserCompleted) {
+          // Remove the user if they are already in StudentsCompleted
+          await updateDoc(ref, {
+            StudentsCompleted: arrayRemove(currentUserId),
+          });
+          console.log(`User ${currentUserId} removed from StudentsCompleted.`);
+        } else {
+          // Add the user if they are not in StudentsCompleted
+          await updateDoc(ref, {
+            StudentsCompleted: arrayUnion(currentUserId),
+          });
+          console.log(`User ${currentUserId} added to StudentsCompleted.`);
+        }
+      } catch (error) {
+        console.error('Error updating course document:', error);
+        toast.error('Failed to mark lesson completed');
+      }
+    } else {
+      console.error('Invalid course or user');
+    }
+  };
+  
   if(loading){
         return <LoadingData />
     } 
@@ -295,7 +369,7 @@ function Course() {
                 <div className="mr-8 mt-[24px] rounded-md flex flex-col h-auto">
                     {selectedContent?.type === 'Text' && <TextContent lessonContent={selectedContent.lessonContent} />}
                     {selectedContent?.type === 'Video' && <VideoContent videoId={selectedContent.videoId}/>}
-                    {selectedContent?.type === 'Quiz' && <QuizContent quizTime={selectedContent.quizTime} questionCount={selectedContent.questionsCount} marksPerQ={selectedContent.marksPerQuestion} nMarksPerQ={selectedContent.nMarksPerQuestion} lessonOverview={selectedContent.lessonOverView} lessonHeading={selectedContent.lessonHeading}/>}
+                    {selectedContent?.type === 'Quiz' && <QuizContent sectionId={sectionId} courseId={courseId || ''} questionsList={selectedContent.questionsList || []} contentId={selectedContent.contentId} quizTime={selectedContent.quizTime} questionCount={selectedContent.questionsCount} marksPerQ={selectedContent.marksPerQuestion} nMarksPerQ={selectedContent.nMarksPerQuestion} lessonOverview={selectedContent.lessonOverView} lessonHeading={selectedContent.lessonHeading}/>}
                 </div>
 
                 {/* THIS IS THE FOOTER PART OF MAIN---COURSE-----LAYOUT */}
@@ -320,7 +394,7 @@ function Course() {
                                 selectedKey={active}
                                 onSelectionChange={(key) => handleSelectionChange(key as string)}
                                 classNames={{
-                                    tabList: "gap-6 w-full relative rounded-none p-0 border-b border-solid border-[#EAECF0]",
+                                    tabList: "gap-6 w-full relative rounded-none p-0 border-solid border-[#EAECF0]",
                                     cursor: "w-full bg-[#7400E0]",
                                     tab: "max-w-fit px-0 h-12",
                                     tabContent: "group-data-[selected=true]:text-[#7400E0] hover:text-[#7400E0]",
@@ -384,7 +458,7 @@ function Course() {
                             >
                                 <span className="font-semibold text-base text-[#1D2939] text-left">{index + 1}. {section.sectionName}</span>
                                 <Image
-                                    src={openSections.welcome ? '/icons/arrow-up-dark.svg' : '/icons/arrow-down-dark.svg'}
+                                    src={isOpenArray[0] ? '/icons/arrow-up-dark.svg' : '/icons/arrow-down-dark.svg'}
                                     width={20}
                                     height={20}
                                     alt="Arrow-toggle"
@@ -398,48 +472,74 @@ function Course() {
                         <div className="flex flex-col border-t py-2">
                         {section.content && section.content.length > 0 ? ( 
                             <>
-                            {section.content?.map((content, index) =>  (
-                        <button key={index} className='bg-[#FFFFFF] w-full flex flex-row items-top justify-center gap-2 h-[64px] py-2 px-4 hover:bg-[#F8F0FF]'
-                            onClick={() => setSelectedContent(content)}>
-                            <Checkbox
-                                size="md"
-                                color="secondary"
-                                radius='full' />
-                            <div className="flex flex-col gap-1 pt-[-2px] w-full">
-                                <span className="font-semibold text-sm text-[#1D2939] text-left">{index + 1}. {content.lessonHeading}</span>
-                               {content.type === 'Text' &&(
-                                   <div className="flex flex-row text-sm font-normal it">
-                                   <Image className='mr-1'
-                                       src="/icons/read.svg"
-                                       alt="test-icon"
-                                       width={16}
-                                       height={16} />
-                                   <div>---</div>
-                                   </div>
-                                    )}
-                                   {content.type === 'Video' &&(
-                                   <div className="flex flex-row text-sm font-normal it">
-                                   <Image className='mr-1'
-                                       src="/icons/vedio.svg"
-                                       alt="video-icon"
-                                       width={16}
-                                       height={16} />
-                                   <div>{formatDuration(content.videoDuration) || '00:00'}</div>
-                                   </div>
-                                    )} 
-                                    {content.type === 'Quiz' &&(
-                                   <div className="flex flex-row text-sm font-normal it">
-                                   <Image className='mr-1'
-                                       src="/icons/test.svg"
-                                       alt="video-icon"
-                                       width={16}
-                                       height={16} />
-                                   <div>{content.questionsCount} Questions</div>
-                                   </div>
-                                    )}  
-                            </div>
-                        </button>
-                       ))}
+                 {section.content?.map((content, index) => {
+  const userId = auth.currentUser?.uid; // Get the current user's ID
+
+  // Check if the StudentsCompleted array contains the current user's ID
+  const isCompleted = content.StudentsCompleted?.includes(userId || '');
+
+  return (
+    <button
+      key={index}
+      className={`${selectedContent?.contentId === content.contentId ? 'bg-[#F8F0FF]' : 'bg-[#FFFFFF]'} w-auto mx-2 mb-1 rounded-md flex flex-row items-top justify-center gap-2 h-auto py-3 px-4 hover:bg-[#F8F0FF]`}
+      onClick={() => {
+        setSelectedContent(content);
+        setSectionId(section.sectionId);
+      }}
+    >
+      <Checkbox
+        size="md"
+        color="secondary"
+        radius="full"
+        isSelected={isCompleted} // This controls if the checkbox is checked or not
+        onClick={() => handleMarkContentCompleted(content.contentId, section.sectionId, content.StudentsCompleted)}
+      />
+      <div className="flex flex-col gap-1 pt-[-2px] w-full">
+        <span className="font-semibold text-sm text-[#1D2939] text-left">
+          {index + 1}. {content.lessonHeading}
+        </span>
+        {content.type === "Text" && (
+                    <div className="flex flex-row text-sm font-normal it">
+                        <Image
+                            className="mr-1"
+                            src="/icons/read.svg"
+                            alt="test-icon"
+                            width={16}
+                            height={16}
+                        />
+                        <div>---</div>
+                    </div>
+                )}
+                {content.type === "Video" && (
+                    <div className="flex flex-row text-sm font-normal it">
+                        <Image
+                            className="mr-1"
+                            src="/icons/vedio.svg"
+                            alt="video-icon"
+                            width={16}
+                            height={16}
+                        />
+                        <div>{formatDuration(content.videoDuration) || "00:00"}</div>
+                    </div>
+                )}
+                {content.type === "Quiz" && (
+                    <div className="flex flex-row text-sm font-normal it">
+                        <Image
+                            className="mr-1"
+                            src="/icons/test.svg"
+                            alt="video-icon"
+                            width={16}
+                            height={16}
+                        />
+                        <div>{content.questionsCount} Questions</div>
+                    </div>
+                )}
+        {/* Render other content types (Text, Video, Quiz) as before */}
+      </div>
+    </button>
+  );
+})}
+
                        </>
                            ) : (
                             <>

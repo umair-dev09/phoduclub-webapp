@@ -1,7 +1,7 @@
 import { useState } from "react";
 import Image from "next/image";
 import { Popover, PopoverContent, PopoverTrigger } from "@nextui-org/popover";
-import {DatePicker} from "@nextui-org/react";
+import {DatePicker, TimeInput} from "@nextui-org/react";
 import {now, today, CalendarDate, getLocalTimeZone,parseDateTime} from "@internationalized/date";
 
 type ScheduleProps = {
@@ -19,10 +19,32 @@ type ScheduleProps = {
 
 }
 
+const convertToTimeFormat = (timeStr: string): string => {
+    const regex = /(\d+)\s*(Minute|Hour)\(s\)/i;
+    const match = timeStr.match(regex);
+  
+    if (!match) return "00:00"; // Return default value if the format doesn't match
+  
+    const value = parseInt(match[1], 10); // Get the numeric value
+    const unit = match[2].toLowerCase(); // Get the unit (either minute or hour)
+  
+    let totalMinutes = 0;
+  
+    if (unit === "minute") {
+      totalMinutes = value;
+    } else if (unit === "hour") {
+      totalMinutes = value * 60; // Convert hours to minutes
+    }
+  
+    const hours = Math.floor(totalMinutes / 60).toString().padStart(2, "0"); // Calculate hours and format
+    const minutes = (totalMinutes % 60).toString().padStart(2, "0"); // Calculate minutes and format
+  
+    return `${hours}:${minutes}`;
+  };
+
 function Schedule({ marksPerQ ,setMarksPerQ, nMarksPerQ, setnMarksPerQ, timeNumber, setTimeNumber, timeText, setTimeText, quizScheduleDate, setQuizScheduleDate}: ScheduleProps) {
     
     let [isOpenT, setIsOpenT] = useState(false);
-
     return (
         <div className='flex flex-col pt-4 pb-8 gap-4'>
  <div className='flex flex-col w-full h-auto p-6 bg-white border border-lightGrey rounded-xl gap-3'>
@@ -50,6 +72,11 @@ function Schedule({ marksPerQ ,setMarksPerQ, nMarksPerQ, setnMarksPerQ, timeNumb
                 <div className='flex flex-row w-full gap-4'>
                     <div className='flex flex-col w-full gap-1'>
                         <p className='text-sm font-medium text-[#1D2939]'>Time Duration</p>
+                        {/* <input
+                        id="appointment-time"
+                        type="time"
+                        name="appointment-time"
+                        /> */}
                         <div className='flex flex-row items-center w-full py-2 px-3 border border-lightGrey rounded-md gap-1 focus-within:border-[#D7BBFC] focus-within:ring-4 focus-within:ring-[#E8DEFB] focus-within:outline-none transition-colors'>
                             <input type="text" placeholder="0" 
                             maxLength={3} // Limits input to 2 characters
@@ -60,7 +87,6 @@ function Schedule({ marksPerQ ,setMarksPerQ, nMarksPerQ, setnMarksPerQ, timeNumb
                                 setTimeNumber(value); // Stores the input value as a string
                             }}
                             className="w-full text-sm text-[#1D2939] font-normal placeholder:text-[#667085] outline-none" />
-                            {/* <p className="text-sm text-[#1D2939] font-medium">Min</p> */}
                             <Popover placement='bottom' isOpen={isOpenT} onOpenChange={(open) => setIsOpenT(open)}>
                             <PopoverTrigger>
                                 <button className='flex flex-row w-[150px] gap-1 '>

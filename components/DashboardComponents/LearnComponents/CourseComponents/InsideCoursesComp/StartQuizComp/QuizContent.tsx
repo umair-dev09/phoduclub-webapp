@@ -2,7 +2,26 @@
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import Quiz from "./DailogAndBottom"
+import Quiz from "./QuizAttendingArea";
+import QuizAttendingArea from "./QuizAttendingArea";
+
+interface Options {
+    A: string;
+    B: string;
+    C: string;
+    D: string;
+}
+
+interface Question {
+    question: string;
+    isChecked: boolean;
+    isActive: boolean;
+    options: Options;
+    correctAnswer: string | null;
+    explanation: string;
+}
+
+
 interface QuizContentProps {
     lessonOverview: string;
     lessonHeading: string;
@@ -10,9 +29,63 @@ interface QuizContentProps {
     nMarksPerQ: string;
     questionCount: number;
     quizTime: string;
+    contentId: string;
+    questionsList: Question[];
+    courseId: string;
+    sectionId: string;
 }
 
-function QuizContent({lessonHeading, lessonOverview, questionCount, marksPerQ, nMarksPerQ, quizTime}:QuizContentProps) {
+const convertToTimeFormat = (timeStr: string): string => {
+    const regex = /(\d+)\s*(Minute|Hour)\(s\)/i;
+    const match = timeStr.match(regex);
+  
+    if (!match) return "00:00"; // Return default value if the format doesn't match
+  
+    const value = parseInt(match[1], 10); // Get the numeric value
+    const unit = match[2].toLowerCase(); // Get the unit (either minute or hour)
+  
+    let totalMinutes = 0;
+  
+    if (unit === "minute") {
+      totalMinutes = value;
+    } else if (unit === "hour") {
+      totalMinutes = value * 60; // Convert hours to minutes
+    }
+  
+    const hours = Math.floor(totalMinutes / 60).toString().padStart(2, "0"); // Calculate hours and format
+    const minutes = (totalMinutes % 60).toString().padStart(2, "0"); // Calculate minutes and format
+  
+    return `${hours}:${minutes}`;
+  };
+
+  const convertToDisplayTimeFormat = (timeStr: string): string => {
+    const regex = /(\d+)\s*(Minute|Hour)\(s\)/i;
+    const match = timeStr.match(regex);
+  
+    if (!match) return "00:00"; // Return default value if the format doesn't match
+  
+    const value = parseInt(match[1], 10); // Get the numeric value
+    const unit = match[2].toLowerCase(); // Get the unit (either minute or hour)
+  
+    let totalMinutes = 0;
+    let formattedTime = "";
+  
+    if (unit === "minute") {
+      totalMinutes = value;
+      const hours = Math.floor(totalMinutes / 60).toString().padStart(2, "0"); // Calculate hours and format
+      const minutes = (totalMinutes % 60).toString().padStart(2, "0"); // Calculate minutes and format
+      formattedTime = `${hours}:${minutes} Minutes`;
+    } else if (unit === "hour") {
+      totalMinutes = value * 60; // Convert hours to minutes
+      const hours = Math.floor(totalMinutes / 60).toString().padStart(2, "0"); // Format hours
+      const minutes = (totalMinutes % 60).toString().padStart(2, "0"); // Format minutes
+      formattedTime = `${hours}:${minutes} Hours`;
+    }
+  
+    return formattedTime;
+  };
+
+function QuizContent({lessonHeading, courseId, sectionId, lessonOverview, questionCount, marksPerQ, nMarksPerQ, quizTime, contentId, questionsList}:QuizContentProps) {
 
     const [showQuizDialog, setShowQuizDialog] = useState(false);
     const [isQuizOpen, setIsQuizOpen] = useState(false);
@@ -35,7 +108,7 @@ function QuizContent({lessonHeading, lessonOverview, questionCount, marksPerQ, n
             {/* ------------------------------------------------------------------------------------------------------------------------------------------------> */}
 
             <div className="flex flex-col ml-8 gap-[20px] ">
-                <span className="w-[126px] h-[24px] text-[#1D2939] text-lg font-bold ">
+                <span className="w-auto h-[24px] text-[#1D2939] text-lg font-bold ">
                     {lessonHeading}
                 </span>
                 <span className="w-[140px] h-[24px] text-[#1D2939] text-base font-bold">
@@ -57,7 +130,7 @@ function QuizContent({lessonHeading, lessonOverview, questionCount, marksPerQ, n
                         alt="clock"
                         className="mr-2"
                     />
-                    {quizTime}
+                    {convertToDisplayTimeFormat(quizTime)}
                 </span>
 
                 <span className="flex items-center font-semibold text-sm text-[#1D2939]">
@@ -81,7 +154,8 @@ function QuizContent({lessonHeading, lessonOverview, questionCount, marksPerQ, n
                     />
                     {marksPerQ} Marks per question
                 </span>
-            </div>
+                
+             </div>
             <div className="h-[65px]  " style={{ borderRadius: "5px", position: "relative" }}>
                 <div className="relative flex justify-between items-end h-full ml-8">
                     {!isQuizSubmitted && (
@@ -104,12 +178,17 @@ function QuizContent({lessonHeading, lessonOverview, questionCount, marksPerQ, n
 
 
             {showQuizDialog && (
-                <Quiz
+                <QuizAttendingArea
                     isOpen={isQuizOpen}
                     setIsOpen={setIsQuizOpen}
                     setShowBottomSheet={setShowBottomSheet}
                     onSubmit={handleQuizSubmit}
                     showBottomSheet={showBottomSheet}
+                    contentId={contentId}
+                    quizTime={convertToTimeFormat(quizTime)}
+                    sectionId={sectionId}
+                    courseId={courseId}
+                    questionsList={questionsList || []}                    
                 />
             )}
 
