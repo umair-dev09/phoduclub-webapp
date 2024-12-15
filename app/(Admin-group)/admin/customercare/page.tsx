@@ -54,7 +54,7 @@ function CustomerCare() {
     const [data, setData] = useState<Customer[]>([]);
     const [customerCare, setCustomerCare] = useState<Customer[]>([]);
     const [currentPage, setCurrentPage] = useState(1);
-    const [itemsPerPage] = useState(5);
+    const [itemsPerPage] = useState(10);
     const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState('');
     const router = useRouter();
@@ -281,7 +281,7 @@ function CustomerCare() {
     };
 
     return (
-        <div className="flex flex-col w-full gap-4 p-6">
+        <div className="flex flex-col w-full gap-4 p-6 overflow-y-auto">
             <div className="flex flex-row justify-between items-center">
                 <h2 className="text-lg font-semibold text-[#1D2939]">
                     Users
@@ -652,7 +652,7 @@ function CustomerCare() {
             </div>
 
             <div className="flex flex-col justify-between h-full">
-                <div className="flex border border-[#EAECF0] rounded-xl">
+                <div className="flex border border-[#EAECF0] rounded-xl overflow-y-hidden overflow-x-auto">
                     <table className="w-full h-auto bg-white rounded-xl">
                         <thead>
                             <tr>
@@ -737,7 +737,7 @@ function CustomerCare() {
                                     <td className="flex items-centre justify-left h-full pl-10 py-4 text-[#101828] text-sm">
                                         <CustomerCareImportance Priority={customer.Priority} />
                                     </td>
-                                    <td className="py-4 text-center text-[#101828] text-sm">Mon Jan 6, 2024</td>
+                                    <td className="py-4 text-center text-[#101828] text-sm whitespace-nowrap">Mon Jan 6, 2024</td>
                                     <td className="py-4 text-[#101828] text-sm">
                                         <div className="flex flex-row items-center gap-2">
                                             <Image
@@ -746,7 +746,7 @@ function CustomerCare() {
                                                 height={24}
                                                 alt="profile-icons"
                                             />
-                                            <p className="text-[#1D2939] font-medium text-sm whitespace-nowrap">Jenny Wilson</p>
+                                            <p className="text-[#1D2939] font-medium text-sm whitespace-nowrap overflow-hidden">Jenny Wilson</p>
                                         </div>
                                     </td>
                                     <td className="flex items-center justify-start pr-4 py-4 text-[#101828] text-sm">

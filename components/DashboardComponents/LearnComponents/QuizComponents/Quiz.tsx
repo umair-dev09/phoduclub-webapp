@@ -79,11 +79,9 @@ function Quiz() {
                     </div>
 
                     {/* Start Quiz Button */}
-                    <div>
-                        <button className="flex items-center justify-center w-full px-[14px] py-[10px] text-xs text-white font-semibold shadow-inner-button bg-custompurple rounded-[6px] border border-darkPurple">
-                            Start Quiz
-                        </button>
-                    </div>
+                    <button className="flex items-center justify-center w-full px-[14px] py-[10px] text-xs text-white font-semibold shadow-inner-button bg-[#9012FF] rounded-[6px] border border-darkPurple">
+                        Start Quiz
+                    </button>
                 </div>
                 <div className="flex flex-col justify-between h-[11.25rem] rounded-xl py-6 px-6 bg-white border border-lightGrey">
                     <div className="flex flex-col gap-1 text-xs">
@@ -99,7 +97,7 @@ function Quiz() {
                         </div>
                     </div>
                     <div>
-                        <button onClick={onStartQuiz} className="flex items-center justify-center w-full px-[14px] py-[10px] text-xs text-white font-semibold shadow-inner-button bg-custompurple rounded-[6px] border border-darkPurple ">
+                        <button onClick={onStartQuiz} className="flex items-center justify-center w-full px-[14px] py-[10px] text-xs text-white font-semibold shadow-inner-button bg-[#9012FF] rounded-[6px] border border-darkPurple ">
                             Start Quiz
                         </button>
                     </div>
@@ -120,7 +118,7 @@ function Quiz() {
                         </div>
                     </div>
                     <div>
-                        <button className="flex items-center justify-center w-full px-[14px] py-[10px] text-xs text-white font-semibold shadow-inner-button bg-custompurple rounded-[6px] border border-darkPurple ">
+                        <button className="flex items-center justify-center w-full px-[14px] py-[10px] text-xs text-white font-semibold shadow-inner-button bg-[#9012FF] rounded-[6px] border border-darkPurple ">
                             Start Quiz
                         </button>
                     </div>

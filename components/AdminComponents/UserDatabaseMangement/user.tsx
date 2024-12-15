@@ -70,7 +70,7 @@ type Option = {
 
 function User() {
     const [currentPage, setCurrentPage] = useState(1);
-    const [itemsPerPage] = useState(5);
+    const [itemsPerPage] = useState(10);
     const [loading, setLoading] = useState(true);
     const [isEditing, setIsEditing] = useState(false);
     const [searchTerm, setSearchTerm] = useState('');
@@ -353,7 +353,7 @@ function User() {
             </div>
 
             <div className="flex flex-col justify-between h-full">
-                <div className="flex border border-[#EAECF0] rounded-xl overflow-y-auto">
+                <div className="flex border border-[#EAECF0] rounded-xl overflow-x-auto">
                     <table className="w-full h-auto bg-white rounded-xl">
                         <thead>
                             <tr>
@@ -411,7 +411,7 @@ function User() {
                                             </div>
                                             <div className="flex items-start justify-start flex-col">
                                                 <div
-                                                    className="font-semibold text-sm cursor-pointer"
+                                                    className="font-semibold text-sm cursor-pointer whitespace-nowrap"
                                                     onClick={() => handleTabClick(`/admin/userdatabase/${users.name.toLowerCase().replace(/\s+/g, '-')}?uId=${users.uniqueId}`)}
                                                 >
                                                     {users.name}
@@ -422,7 +422,7 @@ function User() {
                                     </td>
                                     <td className="px-8 py-4 text-center text-[#101828] text-sm">{users.email}</td>
                                     <td className="px-8 py-4 text-center text-[#101828] text-sm">{users.phone}</td>
-                                    <td className="px-8 py-4 text-center text-[#101828] text-sm w-fit" >{formatFirestoreTimestamp(users.createdAt)}</td>
+                                    <td className="px-8 py-4 text-center text-[#101828] text-sm w-fit whitespace-nowrap">{formatFirestoreTimestamp(users.createdAt)}</td>
                                     <td className="flex items-center justify-center px-8 py-4 text-[#101828] text-sm">
                                         <Popover placement="bottom-end">
                                             <PopoverTrigger>

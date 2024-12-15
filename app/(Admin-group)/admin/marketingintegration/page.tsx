@@ -63,7 +63,7 @@ function Messenger() {
     const [data, setData] = useState<NotificationData[]>([]);
     const [notification, setNotification] = useState<NotificationData[]>([]);
     const [currentPage, setCurrentPage] = useState(1);
-    const [itemsPerPage] = useState(5);
+    const [itemsPerPage] = useState(10);
     const [loading, setLoading] = useState(true);
     const [notiIconPop, setNotiIconPop] = useState(false);
     const [searchTerm, setSearchTerm] = useState('');
@@ -198,7 +198,7 @@ function Messenger() {
     }
 
     return (
-        <div className="flex flex-col h-full gap-3 w-full p-8">
+        <div className="flex flex-col h-full gap-3 w-full p-8 overflow-y-auto">
             <div className="flex flex-row justify-between h-[44px] items-center ">
                 <h1 className="font-semibold text-lg text-[#1D2939]">Messenger</h1>
                 <button
@@ -225,7 +225,7 @@ function Messenger() {
             </div>
 
             <div className="flex flex-col justify-between h-full">
-                <div className="flex border border-[#EAECF0] rounded-xl">
+                <div className="flex border border-[#EAECF0] rounded-xl overflow-x-auto">
                     <table className="w-full bg-white rounded-xl">
                         <thead>
                             <tr>
@@ -258,20 +258,20 @@ function Messenger() {
                                     <td className="py-2">
                                         <div className="flex flex-row items-start ml-8 gap-2">
                                             <Image className='w-5 h-5' src={noti.notificationIcon} alt="idea" width={24} height={24} />
-                                            <div className="flex items-start justify-start flex-col">
+                                            <div className="flex items-start justify-start flex-col whitespace-nowrap">
                                                 <button
                                                     className="text-sm text-[#9012FF] font-semibold underline"
                                                     onClick={() => handleButtonClick(`/admin/marketingintegration/${noti.name.toLowerCase().replace(/\s+/g, '-')}?nId=${noti.notificationId}`)}
                                                 >
                                                     {noti.name}
                                                 </button>
-                                                <p className="text-[0.813rem] text-[#667085] font-medium">
+                                                <p className="text-[0.813rem] text-[#667085] font-medium truncate">
                                                     <TruncatedText text={noti.description} maxLength={50} />
                                                 </p>
                                             </div>
                                         </div>
                                     </td>
-                                    <td className="px-8 py-4 text-center text-[#101828] text-sm">{formatDate(noti.createdAt)}</td>
+                                    <td className="px-8 py-4 text-center text-[#101828] text-sm whitespace-nowrap">{formatDate(noti.createdAt)}</td>
                                     <td className="px-8 py-4 text-center text-[#101828] text-sm">1,321</td>
                                     <td className="px-8 py-4 text-[#101828] text-sm">
                                         <span className='flex items-start justify-start ml-[25%] rounded-full'>

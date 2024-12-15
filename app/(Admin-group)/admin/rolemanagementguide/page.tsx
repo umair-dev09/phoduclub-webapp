@@ -177,7 +177,7 @@ function rolemanagementguide() {
                     </Popover>
                 </div>
             </div>
-            <div className="border border-[#EAECF0] rounded-xl ">
+            <div className="border border-[#EAECF0] rounded-xl overflow-x-auto">
                 <table className="w-full bg-white rounded-xl ">
                     <thead>
                         <tr className="gap-[200px]">
@@ -209,7 +209,7 @@ function rolemanagementguide() {
                                     <div className="flex flex-row ml-8 gap-[10px] min-w-[260px]">
                                         <Image className="rounded-full object-cover" src={users.profilePic || '/defaultAdminDP.jpg'} alt="DP" width={38} height={38} />
                                         <div className="flex items-start justify-center flex-col mb-[2px]">
-                                            <span className="font-semibold text-sm text-[#182230]">{users.name}</span>
+                                            <span className="font-semibold text-sm text-[#182230] whitespace-nowrap">{users.name}</span>
                                         </div>
                                     </div>
                                 </td>
