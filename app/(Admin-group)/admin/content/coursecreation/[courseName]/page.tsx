@@ -70,7 +70,7 @@ const RatingStars: React.FC<{ rating: string | null }> = ({ rating }) => {
 };
 
 
-function courses() {
+function Courses() {
     const [publishDialogOpen, setPublishDialogOpen] = useState(false);
     const searchParams = useSearchParams();
     const courseId = searchParams.get('cId');
@@ -446,7 +446,7 @@ function courses() {
         </div>
     )
 }
-export default courses;
+export default Courses;
 
 
 

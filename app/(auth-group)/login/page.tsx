@@ -135,9 +135,9 @@ export default function Login_Page() {
                             </div>
                         </form>
                     </div>
-                    <span className="text-center  text-[#7D7D8A] pt-6">
-                        <p>Don't have an account? <a href="./signup" className="text-[#6646A2] hover:underline font-bold">Sign Up</a></p>
-                    </span>
+                    <span className="text-center text-[#7D7D8A] pt-6">
+                    <p>Don&apos;t have an account? <a href="./signup" className="text-[#6646A2] hover:underline font-bold">Sign Up</a></p>
+                </span>
                 </div>
             </div>
             <div className="w-1/2 flex items-center justify-center  bg-[#0E2138] rounded-lg m-2">

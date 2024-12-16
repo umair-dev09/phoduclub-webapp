@@ -15,7 +15,10 @@ function PausedDDialog({ onClose }: PausedDialogProps) { // Use the interface
                 <DialogPanel transition className="bg-white rounded-2xl w-[480px] h-auto">
                     <div className="flex flex-col gap-2 p-6">
                         <div className="flex flex-row justify-between items-center ">
-                            <h3 className=" font-bold task-[#1D2939]">Pause quiz "Physics"?</h3>
+                            <h3 className=" font-bold task-[#1D2939]">
+                                {/* Pause quiz "Physics"? */}
+
+                            </h3>
                             <button className="w-[32px] h-[32px]  rounded-full flex items-center justify-center transition-all duration-300 ease-in-out hover:bg-[#F2F4F7] ">
                                 <button className="" onClick={onClose}>
                                     <Image src="/icons/cancel.svg" alt="Cancel" width={20} height={20} />

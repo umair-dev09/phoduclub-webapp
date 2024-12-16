@@ -281,8 +281,8 @@ function VerifyOtp() {
                 </div>
                 <div className="pt-4">
                     <p className="text-gray-700">
-                        Didn't receive the code?&nbsp;
-                        <a
+                    Didn&apos;t receive the code?&nbsp;
+                    <a
                             href="#"
                             onClick={handleResend}
                             className={`

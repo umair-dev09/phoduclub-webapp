@@ -21,7 +21,7 @@ interface UserData {
     isGuide: boolean;
 }
 
-function rolemanagementguide() {
+function RoleManagementGuide() {
     const [uniqueID, setUniqueID] = useState('');
     const [removeId, setRemoveId] = useState('');
     const [isOpen, setIsOpen] = useState(false); // Control popover visibility
@@ -262,4 +262,4 @@ function rolemanagementguide() {
         </div>
     )
 }
-export default rolemanagementguide;
+export default RoleManagementGuide;

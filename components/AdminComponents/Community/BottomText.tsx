@@ -380,8 +380,8 @@ function BottomText({
       {showUserList && (
         <div className="flex flex-col w-full bg-white max-h-[200px] overflow-y-auto  mb-2 justify-between items-start">
           {filteredUsers.length > 0 ? (
-            filteredUsers.map((user) => (
-              <div className="flex flex-col w-full">
+            filteredUsers.map((user,index) => (
+              <div key={index} className="flex flex-col w-full">
               <div
                 key={user.uniqueId}
                 className="flex flex-row gap-2 p-2 cursor-pointer w-full hover:bg-gray-100 items-center"

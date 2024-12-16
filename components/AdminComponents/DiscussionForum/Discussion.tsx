@@ -24,7 +24,7 @@ interface DiscussionData {
     messageId: string;
   }
 
-function discussion({courseId, sectionId, contentId}:DiscussionProps) {  
+function Discussion({courseId, sectionId, contentId}:DiscussionProps) {  
 
     const [value, setValue] = useState('');
     const quillRef = useRef<ReactQuill | null>(null); // Ref to hold ReactQuill instance
@@ -383,4 +383,4 @@ function discussion({courseId, sectionId, contentId}:DiscussionProps) {
         </div>
     )
 }
-export default discussion;
+export default Discussion;

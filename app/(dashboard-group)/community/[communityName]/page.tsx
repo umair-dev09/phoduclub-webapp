@@ -273,18 +273,21 @@ export default function CommunityName() {
     setCurrentResultIndex(results.length > 0 ? 0 : -1);
   }, [searchQuery, chats]);
 
-  useEffect(() => {
-    if (currentResultIndex >= 0) {
-      const chatId = chats[searchResults[currentResultIndex]]?.chatId;
-  
-      if (chatId && chatRefs.current[chatId]) {
-        chatRefs.current[chatId].scrollIntoView({
-          behavior: "auto",
-          block: "center",
-        });
-      }
-    }
-  }, [currentResultIndex, chats, searchResults]);
+ useEffect(() => {
+     if (currentResultIndex >= 0) {
+       const chatId = chats[searchResults[currentResultIndex]]?.chatId;
+   
+       if (chatId && chatRefs.current[chatId]) {
+         const chatElement = chatRefs.current[chatId];
+         if (chatElement) {
+           chatElement.scrollIntoView({
+             behavior: "auto",
+             block: "center",
+           });
+         }
+       }
+     }
+   }, [currentResultIndex, chats, searchResults]);
 
   const handleSearchUp = () => {
     if (searchResults.length === 0) return;

@@ -35,7 +35,7 @@ interface RoleManagementInfo {
 
 type Option = "Admin" | "Customer Care" | "Teacher" | "Chief Modrator" | "Editor";
 
-function rolemangement() {
+function RoleMangement() {
     const [firstName, setFirstName] = useState('');
     const [profilePic, setProfilePic] = useState('');
     const [lastName, setLastName] = useState('');
@@ -530,4 +530,4 @@ function PaginationSection({
     );
 }
 
-export default rolemangement;
+export default RoleMangement;

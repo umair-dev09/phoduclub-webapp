@@ -365,7 +365,7 @@ function Profile() {
                         <span className={styles.username}>{userData?.phone}</span>
                     )}
                     {isEditing && (
-                        <PhoneUpdate />
+                        <PhoneUpdate setIsEditing={setIsEditing} />
                     )}
                 </div>
 

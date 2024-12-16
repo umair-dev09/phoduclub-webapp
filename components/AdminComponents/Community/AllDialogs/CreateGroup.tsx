@@ -17,7 +17,7 @@ interface creategroupProps {
     setCommunityId: (communityId: string) => void;
 
 }
-function creategroup({ open, onClose, openAddMembers, setCommunityId }: creategroupProps) {
+function CreateGroup({ open, onClose, openAddMembers, setCommunityId }: creategroupProps) {
     const [name, setName] = useState('');
     const [description, setDescription] = useState('');
     const [image, setImage] = useState<File | null>(null);
@@ -175,5 +175,5 @@ function creategroup({ open, onClose, openAddMembers, setCommunityId }: creategr
         </Dialog >
     )
 }
-export default creategroup;
+export default CreateGroup;
 
