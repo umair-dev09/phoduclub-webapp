@@ -261,7 +261,7 @@ function VerifyOtp() {
                 <div className="w-full pt-4 flex flex-col items-center justify-center">
                     <button
                         className={`w-1/2 h-10 rounded-lg text-white font-medium text-sm 
-                                       ${otp.length === 6 ? 'bg-[#7400e0] cursor-pointer' : 'bg-[#d4a9fc] cursor-not-allowed'} 
+                                       ${isLoading || otp.length === 6 ? 'bg-[#7400e0] cursor-pointer' : 'bg-[#d4a9fc] cursor-not-allowed'} 
                                       transition-colors duration-150 
                                    active:opacity-50
                                    flex items-center justify-center`}
@@ -269,10 +269,11 @@ function VerifyOtp() {
                         disabled={isLoading || otp.length !== 6} // Ensure disabled when loading or OTP not filled
                     >
                         {isLoading ? (
-                            <div className="w-5 h-5 border-4 border-white border-opacity-30 border-t-white rounded-full animate-spin"></div> // Spinner
-                        ) : (
-                            'Continue'
-                        )}
+                                <div className='w-5 h-5 animate-spin-loading rounded-[50%] border-4 border-[#ffffff4d] border-solid border-t-4 border-t-customWhite '></div> // Show spinner
+                                ) : (
+                                'Continue'
+                                )}
+
                     </button>
                     {verificationError && (
                         <div className="text-red-500 mt-2 text-sm">{verificationError}</div>

@@ -17,6 +17,7 @@ export default function Login_Page() {
     const [errorMessage, setErrorMessage] = useState('');
     const [buttonColor, setButtonColor] = useState('#E39FF6');
     const db = getFirestore();
+    const [isLoading, setIsLoading] = useState(false); // Loading state
 
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
@@ -51,8 +52,10 @@ export default function Login_Page() {
     }, [phone]);
 
     const handleSendVerificationCode = () => {
+        setIsLoading(true);
         if (!isPhoneValid) {
             setErrorMessage('Please enter a valid phone number.');
+            setIsLoading(false);
             return;
         }
 
@@ -68,6 +71,7 @@ export default function Login_Page() {
                 router.push(`/verifyotp?phone=${encodeURIComponent(phone)}`);
             }).catch((error) => {
                 setErrorMessage("Failed to send verification code. Please try again.");
+                setIsLoading(false);
                 console.error("Error during phone sign-in:", error);
             });
     };
@@ -117,12 +121,16 @@ export default function Login_Page() {
                             <div className="flex justify-center mt-8">
                                 <button
                                     type="button"
-                                    className={`text-white py-2 px-6 rounded-md w-[375px] font-medium`}
+                                    className={`text-white py-2 px-6 rounded-md w-[375px] font-medium flex items-center justify-center`}
                                     style={{ backgroundColor: buttonColor }}
                                     onClick={handleSendVerificationCode}
                                     disabled={!isPhoneValid}
                                 >
-                                    Send Verification Code
+                                        {isLoading ? (
+                                <div className='w-5 h-5 animate-spin-loading rounded-[50%] border-4 border-[#ffffff4d] border-solid border-t-4 border-t-customWhite '></div> // Show spinner
+                                ) : (
+                                'Send Verification Code'
+                                )}
                                 </button>
                             </div>
                         </form>

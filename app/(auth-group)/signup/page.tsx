@@ -228,7 +228,7 @@ export default function Sign() {
                             <label className='text-[14px] text-[#080808] font-medium' htmlFor="Email">Email</label>
                             <div >
                                 <input
-                                    type="email"
+                                    type="email" 
                                     id='Email'
                                     placeholder='Enter email'
                                     value={email}
@@ -289,17 +289,23 @@ export default function Sign() {
                                 className='font-medium w-[375px] h-10 border-none bg-[#e39ff6] rounded-[7px] text-sm text-white cursor-pointer flex items-center justify-center hover:bg-[#7400e0] active:bg-[#7400e0] active:opacity-70 transition-colors duration-150'
                                 type="submit"
                                 style={{
-                                    backgroundColor: isFormValid() ? '#7400e0' : '#E39FF6',
+                                    backgroundColor: isFormValid() && !isLoading ? '#7400e0' : '#E39FF6',
                                     cursor: 'pointer',
                                 }}
+                                disabled={isLoading}
                             >
-                                Send verification code
+                                {isLoading ? (
+                                <div className='w-5 h-5 animate-spin-loading rounded-[50%] border-4 border-[#ffffff4d] border-solid border-t-4 border-t-customWhite '></div> // Show spinner
+                                ) : (
+                                'Send verification code'
+                                )}
+
                             </button>
-                            {isLoading && (
+                            {/* {isLoading && (
                                 <div className='flex items-center justify-center mt-2.5'>
                                     <div className='spinner border-4 border-gray-200 border-l-[#7400e0] rounded-full w-6 h-6 animate-spin ml-2'></div>
                                 </div>
-                            )}
+                            )} */}
                         </div>
 
                         <div className='flex flex-row mt-2 mb-4'>

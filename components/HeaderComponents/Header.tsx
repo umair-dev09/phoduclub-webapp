@@ -55,7 +55,7 @@ function Header() {
                 router.push("/login");
             }
             setLoading(false);
-        });
+        }); 
 
         return () => unsubscribe();
     }, [db, router]);
