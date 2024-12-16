@@ -15,6 +15,7 @@ const AdminVerify: React.FC = () => {
     const [showLoading, setShowLoading] = useState(false);
     const [timer, setTimer] = useState<number>(60); // Initialize timer to 60 seconds
     const [resendDisabled, setResendDisabled] = useState<boolean>(true); // Disable resend initially
+    const [verificationError, setVerificationError] = useState<string | null>(null);
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
         const value = e.target.value;
@@ -75,11 +76,13 @@ const AdminVerify: React.FC = () => {
                 // Redirect to the admin page after OTP verification and data migration
                 router.push('/admin');
                 setShowLoading(false);
+                setVerificationError('');
 
             }
         } catch (error) {
             console.error("OTP verification or data migration failed:", error);
             setShowLoading(false);
+            setVerificationError("Incorrect OTP. Please try again.");
         }
     };
 
@@ -120,7 +123,7 @@ const AdminVerify: React.FC = () => {
                         <input
                             key={index}
                             ref={(el) => (inputRefs.current[index] = el)}
-                            className="w-16 h-16 border-2 border-[#F04438] rounded-lg py-1 px-2 text-center text-4xl font-semibold text-[#0E2138] placeholder-gray-400 focus:border-[#8601FF] focus:outline-none focus:ring-4 focus:ring-[#D3A7FC]"
+                            className={`w-16 h-16 ${verificationError ? 'border-2 border-[#F04438]' : 'border-2'}  rounded-lg py-1 px-2 text-center text-4xl font-semibold text-[#0E2138] placeholder-gray-400 focus:border-[#8601FF] focus:outline-none focus:ring-4 focus:ring-[#D3A7FC]`}
                             type="text"
                             inputMode="numeric"
                             maxLength={1}
@@ -132,11 +135,13 @@ const AdminVerify: React.FC = () => {
                             }}
                             onKeyDown={(e) => handleKeyDown(e, index)}
                         />
-                    ))}
+                    ))} 
                 </div>
+                {verificationError && (
                 <p className="text-sm text-[#F04438] text-center font-medium leading-[21px]">
-                    Incorrect OTP entered, Please enter correct OTP
+                   {verificationError}
                 </p>
+                )}
             </div>
             <button
                 className={`w-[24.688rem] border-b shadow-inner-button rounded-md text-white text-sm font-semibold py-[0.625rem] transition-colors ${inputValues.every(value => value) && !showLoading ? 'bg-[#8601FF] border-[#8601FF]' : 'bg-[#D3A7FC] border-[#D3A7FC] cursor-not-allowed'}`}
