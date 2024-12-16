@@ -1,4 +1,5 @@
 // app/settings/page.tsx
+'use client';
 import { useRouter } from 'next/navigation';
 import Layout from '../layout';  // Ensure this path matches the actual file location
 import MyProfile from './profile/page';  // Import the MyProfile component
