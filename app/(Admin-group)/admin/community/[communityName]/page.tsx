@@ -352,16 +352,19 @@ function Chatinfo() {
   useEffect(() => {
     if (currentResultIndex >= 0) {
       const chatId = chats[searchResults[currentResultIndex]]?.chatId;
-
+  
       if (chatId && chatRefs.current[chatId]) {
-        chatRefs.current[chatId].scrollIntoView({
-          behavior: "auto",
-          block: "center",
-        });
+        const chatElement = chatRefs.current[chatId];
+        if (chatElement) {
+          chatElement.scrollIntoView({
+            behavior: "auto",
+            block: "center",
+          });
+        }
       }
     }
   }, [currentResultIndex, chats, searchResults]);
-
+  
   const handleSearchUp = () => {
     if (searchResults.length === 0) return;
     setCurrentResultIndex((prevIndex) =>
