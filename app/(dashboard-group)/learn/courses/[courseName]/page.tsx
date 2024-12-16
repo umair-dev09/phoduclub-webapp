@@ -2,7 +2,6 @@
 import Image from "next/image";
 import { useRouter, useSearchParams, } from "next/navigation";
 import Discussion from '@/components/DashboardComponents/LearnComponents/CourseComponents/InsideCoursesComp/Discussioncomp/Discussion';
-import Video from '@/components/DashboardComponents/LearnComponents/CourseComponents/InsideCoursesComp/VideoComp/Video';
 import Read from '@/components/DashboardComponents/LearnComponents/CourseComponents/InsideCoursesComp/TextComp/TextContent';
 import StartQuiz from '@/components/DashboardComponents/LearnComponents/CourseComponents/InsideCoursesComp/StartQuizComp/QuizContent';
 import { useState, useEffect } from "react";
@@ -17,7 +16,8 @@ import 'react-toastify/dist/ReactToastify.css';
 import TextContent from "@/components/DashboardComponents/LearnComponents/CourseComponents/InsideCoursesComp/TextComp/TextContent";
 import VideoContent from "@/components/DashboardComponents/LearnComponents/CourseComponents/InsideCoursesComp/VideoComp/Video";
 import QuizContent from "@/components/DashboardComponents/LearnComponents/CourseComponents/InsideCoursesComp/StartQuizComp/QuizContent";
-import { merge } from "video.js/dist/types/utils/obj";
+import Video from 'next-video';
+import CourseVideoPlayer from "@/components/DashboardComponents/LearnComponents/CourseComponents/InsideCoursesComp/VideoComp/Video";
 
 interface Options {
     A: string;
@@ -84,6 +84,7 @@ function Course() {
       const [loading, setLoading] = useState(true); // Track loading state 
       const [sections, setSections] = useState<Sections[]>([]);
       const [sectionId, setSectionId] = useState('');
+      const [d, setD] = useState<number>();
       const [courseAlreadyPurchased, setCourseAlreadyPurchased] = useState(false);
         const [selectedContent, setSelectedContent] = useState<{
             type: string;
@@ -357,19 +358,15 @@ const handleMarkContentCompleted = async (contentId: string, sectionId: string, 
                         </div>
                     </div>
                 </div>
-                {selectedContent.type !== 'Quiz' && (
                      <div className="flex flex-col gap-[17px] ml-8">
                      <span className="font-bold text-[#1D2939] text-1g">{selectedContent?.lessonHeading}</span>
                  </div>         
-                        )}
-                  
-
 
                 {/* Middle Section */}
                 <div className="mr-8 mt-[24px] rounded-md flex flex-col h-auto">
                     {selectedContent?.type === 'Text' && <TextContent lessonContent={selectedContent.lessonContent} />}
-                    {selectedContent?.type === 'Video' && <VideoContent videoId={selectedContent.videoId}/>}
-                    {selectedContent?.type === 'Quiz' && <QuizContent sectionId={sectionId} courseId={courseId || ''} questionsList={selectedContent.questionsList || []} contentId={selectedContent.contentId} quizTime={selectedContent.quizTime} questionCount={selectedContent.questionsCount} marksPerQ={selectedContent.marksPerQuestion} nMarksPerQ={selectedContent.nMarksPerQuestion} lessonOverview={selectedContent.lessonOverView} lessonHeading={selectedContent.lessonHeading}/>}
+                    {selectedContent?.type === 'Video' && <VideoContent videoLink={selectedContent.videoLink || ''}/>}
+                    {selectedContent?.type === 'Quiz' && <QuizContent isAdmin={false} sectionId={sectionId} courseId={courseId || ''} questionsList={selectedContent.questionsList || []} contentId={selectedContent.contentId} quizTime={selectedContent.quizTime} questionCount={selectedContent.questionsCount} marksPerQ={selectedContent.marksPerQuestion} nMarksPerQ={selectedContent.nMarksPerQuestion} lessonOverview={selectedContent.lessonOverView} lessonHeading={selectedContent.lessonHeading}/>}
                 </div>
 
                 {/* THIS IS THE FOOTER PART OF MAIN---COURSE-----LAYOUT */}
@@ -432,7 +429,7 @@ const handleMarkContentCompleted = async (contentId: string, sectionId: string, 
                         {active === 'Discussion' && (
                             <div className="flex flex-col mt-[30px] ml-8 bg-[#FFFFFF] h-auto w-auto overflow-y-auto mr-8 pb-5 border border-solid border-[#EAECF0] rounded-[12px]">
                                 {selectedContent?.isDisscusionOpen ? (
-                                <Discussion />
+                                <Discussion courseId={courseId || ''} sectionId={sectionId} contentId={selectedContent.contentId}/>
                                 ) : (
                                   <p className="pt-4 pb-[-4px] pl-4 text-sm">Discussion forum is not open for this lesson.</p>   
                                 )}
@@ -519,7 +516,10 @@ const handleMarkContentCompleted = async (contentId: string, sectionId: string, 
                             width={16}
                             height={16}
                         />
-                        <div>{formatDuration(content.videoDuration) || "00:00"}</div>
+                        <div>
+                            {formatDuration(content.videoDuration) || "00:00"}
+                        </div>
+                       
                     </div>
                 )}
                 {content.type === "Quiz" && (
@@ -560,7 +560,7 @@ const handleMarkContentCompleted = async (contentId: string, sectionId: string, 
                 <button onClick={() => router.back()}><p className="underline text-purple">Go Back</p></button>
                </div>
             )}
-            
+            <ToastContainer />
         </div>
     );
 }

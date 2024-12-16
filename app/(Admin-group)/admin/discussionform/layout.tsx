@@ -1,6 +1,7 @@
 "use client";
 import { ReactNode, useState, useEffect } from 'react';
 import { usePathname, useRouter } from "next/navigation";
+import CourseIcons from '@/components/AdminComponents/DiscussionForum/CourseIcons';
 interface DiscussionFormProps {
     children: ReactNode;
 }
@@ -16,57 +17,22 @@ function DiscussionForm({ children }: DiscussionFormProps) {
     }, [pathname]);
 
     const handleTabClick = (path: string) => {
-        setActiveTab(path); // Set the active tab state
+        setActiveTab(path); // Set the active tab state 
         router.push(path); // Navigate to the specified route
     };
 
     return (
         <div className="flex flex-1 flex-row">
-            <div className="w-[90px] h-full bg-[#FFFFFF] p-6 flex flex-col gap-2 border-r-2 border-solid border-[#EAECF0]">
-                {/* Button 1 */}
-                <button
-                    className={`border-2 border-solid ${activeTab === "/admin/discussionform/courses" ? "border-[#7400E0]" : "border-transparent"
-                        } rounded-full w-[46px] h-[46px]`}
-                    onClick={() => handleTabClick("/admin/discussionform/courses")}>
-                    <div className="rounded-full w-[42px] h-[42px] bg-[#FFECC0] items-center flex justify-center border-2 border-solid border-[#FFFFFF]">
-                        <h1 className="text-[#624C18] text-base font-bold">B</h1>
-                    </div>
-                </button>
-
-                {/* Button 2 */}
-                <button
-                    className={`border-2 border-solid ${activeTab === "/admin/discussionform/course" ? "border-[#7400E0]" : "border-transparent"
-                        } rounded-full w-[46px] h-[46px]`}
-                    onClick={() => handleTabClick("/admin/discussionform/course")}>
-                    <div className="rounded-full w-[42px] h-[42px] bg-[#C0D5FF] items-center flex justify-center border-2 border-solid border-[#FFFFFF]">
-                        <h1 className="text-[#122368] text-base font-bold">C</h1>
-                    </div>
-                </button>
-
-                {/* Button 3 */}
-                <button
-                    className={`border-2 border-solid ${activeTab === "/admin/discussionform/session" ? "border-[#7400E0]" : "border-transparent"
-                        } rounded-full w-[46px] h-[46px]`}
-                    onClick={() => handleTabClick("/admin/discussionform/session")}>
-                    <div className="rounded-full w-[42px] h-[42px] bg-[#C0EAFF] items-center flex justify-center border-2 border-solid border-[#FFFFFF]">
-                        <h1 className="text-[#124B68] text-base font-bold">S</h1>
-                    </div>
-                </button>
-
-                {/* Button 4 */}
-                <button
-                    className={`border-2 border-solid ${activeTab === "/admin/discussionform/video" ? "border-[#7400E0]" : "border-transparent"
-                        } rounded-full w-[46px] h-[46px]`}
-                    onClick={() => handleTabClick("/admin/discussionform/video")}>
-                    <div className="rounded-full w-[42px] h-[42px] bg-[#FFC0C5] items-center flex justify-center border-2 border-solid border-[#FFFFFF]">
-                        <h1 className="text-[#681219] text-base font-bold">V</h1>
-                    </div>
-                </button>
-            </div>
-            <div className='  flex-1 '>
-                {children}
+        {/* Left Sidebar */}
+        <div className="flex flex-col w-[90px] bg-white  border-r border-b border-lightGrey">
+            <div>
+                <CourseIcons />
             </div>
         </div>
+        <div className="flex-1">
+            {children}
+        </div>
+    </div>
     );
 }
 

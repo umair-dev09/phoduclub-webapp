@@ -48,7 +48,7 @@ interface VideoProps {
         window.open("http://localhost:3000/admin/uploadVideo", "_blank", "noopener,noreferrer");
       }; 
 
-    const isFormValid = lessonHeading && lessonOverView  && contentScheduleDate && videoId;
+    const isFormValid = lessonHeading && lessonOverView  && contentScheduleDate && videoLink;
 
     
         useEffect(() => {
@@ -65,6 +65,7 @@ interface VideoProps {
             setContentScheduleDate('');
             setDisscusionOpen(false);
             setVideoId('');
+            setSelectedFile(null);
         }
     }, [isEditing, contentId]);
 
@@ -315,11 +316,19 @@ interface VideoProps {
                                     isDisscusionOpen: disscusionOpen,
                                     videoFileName: fileName,
                                     videoDuration,
-                                    videoId,
+                                    // videoId,
                                      };
                                  await updateDoc(contentRef, courseData);
                                  toast.success('Changes saved!');
                                  toggleDrawer();
+                                 setLessonHeading('');
+            setLessonOverView('');
+            setVideoLink(null);
+            setProgress(null); // Reset progress
+            setFileName(null);
+            setContentScheduleDate('');
+            setDisscusionOpen(false);
+            setSelectedFile(null);
             }
             else{
             // Generate a unique section ID (Firestore will auto-generate if you use addDoc)
@@ -334,7 +343,7 @@ interface VideoProps {
               isDisscusionOpen: disscusionOpen,
               videoFileName: fileName,
               videoDuration,
-              videoId,
+            //   videoId,
             });
             toast.success('Video Content added!');
             toggleDrawer();
@@ -345,6 +354,7 @@ interface VideoProps {
             setFileName(null);
             setContentScheduleDate('');
             setDisscusionOpen(false);
+            setSelectedFile(null);
         }
           } catch (error) {
             console.error('Error adding content: ', error);
@@ -465,9 +475,9 @@ interface VideoProps {
                                 </div>
                             </div>
                             {/* Upload the Image */}
-                            {/* <div className=" flex flex-col gap-2">
+                            <div className=" flex flex-col gap-2">
                                 <span className="text-[#1D2939] font-semibold text-sm">Upload Video</span>
-                                {!videoLink && (
+                                {(!selectedFile) && (
                                     <div className="h-[148px] rounded-xl bg-[#F9FAFB] border-2 border-dashed border-[#D0D5DD]"
                                         onDragOver={handleDragOver}
                                         onDrop={handleDrop}>
@@ -499,7 +509,7 @@ interface VideoProps {
                                     </div>
                                 )}
 
-                                {videoLink && (
+                                {(selectedFile || videoLink)  && (
                                     <div className="border border-solid border-[#EAECF0] rounded-md h-[58px] flex flex-row justify-between items-center px-4">
                                         <div className="flex flex-row gap-1 items-center">
                                             <Image className="w-[30px] h-[20px]" src='/icons/play.svg' alt="Video" width={32} height={15} />
@@ -535,6 +545,7 @@ interface VideoProps {
                                                 }
                                                 setVideoLink(null);
                                                 setFileName(null); // Reset file name on cancel
+                                                setSelectedFile(null);
                                             }}>
                                                 <Image
                                                     src="/icons/delete.svg"
@@ -547,9 +558,9 @@ interface VideoProps {
                                     </div>
                                 )}
 
-                            </div> */}
+                            </div>
 
-                            <div className='flex flex-col gap-2'>
+                            {/* <div className='flex flex-col gap-2'>
                                 <div className="flex flex-row justify-between items-center">
                                     <div className="flex flex-col">
                                     <span className='text-[#1D2939] text-sm font-semibold'>Video Id</span>
@@ -576,7 +587,7 @@ interface VideoProps {
                                     value={videoId}
                                     onChange={(e) => setVideoId(e.target.value)}
                                 />
-                            </div>
+                            </div> */}
 
                             
                             <div className="flex flex-col gap-2 mb-3 mt-1">

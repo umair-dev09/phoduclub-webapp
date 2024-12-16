@@ -373,7 +373,7 @@ export default function CommunityName() {
     <div className="flex h-full flex-row">
       {/* Middle Section */}
       <div className="flex flex-col w-[230px] bg-white border-r border-b border-lightGrey">
-        <GroupName communityId={communityId} />
+        <GroupName communityId={communityId} isAdmin={false}/>
         <div className="flex flex-col justify-start items-center mx-4 mt-[15px] gap-6">
           <div className="ChannelHeadingDiv w-full h-auto">
             {channelHeadings.map((heading) => (
@@ -422,7 +422,7 @@ export default function CommunityName() {
 
             <div className="flex items-center justify-between h-[72px] bg-white border-b border-lightGrey">
               {/* Pass the selected channel info to ChatHead */}
-              <ChatHead channelId={selectedChannel?.channelId ?? null} channelName={selectedChannel?.channelName ?? null} channelEmoji={selectedChannel?.channelEmoji ?? null} communityId={communityId} categoryId={selectedChannel.headingId || ''} channelDescription={''} />
+              <ChatHead isAdmin={false} channelId={selectedChannel?.channelId ?? null} channelName={selectedChannel?.channelName ?? null} channelEmoji={selectedChannel?.channelEmoji ?? null} communityId={communityId} categoryId={selectedChannel.headingId || ''} channelDescription={''} />
               <div className="flex flex-row mr-4 gap-4">
               <Popover placement="bottom" isOpen={searchOpen} onClose={() =>{setSearchOpen(false); setSearchQuery('')}}>
               <PopoverTrigger>

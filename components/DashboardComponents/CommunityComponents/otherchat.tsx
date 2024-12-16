@@ -57,7 +57,7 @@ type ReactionCount = {
   };
   type UserData = {
     name: string;
-    profilePic: string;   
+    profilePic: string;    
     role: string;  
     isPremium: string;
   };

@@ -12,9 +12,10 @@ type chatHeadProps = {
     communityId: string | null; 
     categoryId: string | null; 
     channelDescription: string | null;
+    isAdmin: boolean;
   }
 
-function ChatHead({channelName,channelId,channelEmoji,communityId,categoryId,channelDescription}:chatHeadProps) {
+function ChatHead({channelName,channelId,channelEmoji,communityId,categoryId,channelDescription, isAdmin}:chatHeadProps) {
 
     const [isPopoverOpen, setIsPopoverOpen] = useState(false);
     const [isMutePopoverOpen, setIsMutePopoverOpen] = useState(false);
@@ -88,7 +89,8 @@ function ChatHead({channelName,channelId,channelEmoji,communityId,categoryId,cha
                                 />
                                 <span className='font-normal text-[#0C111D] text-sm'>Media</span>
                             </button>
-                            <button className='flex flex-row gap-2 items-center h-10 w-[206px] px-4 hover:bg-[#EAECF0]'
+                            {isAdmin &&(
+                                <button className='flex flex-row gap-2 items-center h-10 w-[206px] px-4 hover:bg-[#EAECF0]'
                                 onClick={() => setChannelInfoDialog(true)}>
                                 <Image
                                     src="/icons/information-circle.svg"
@@ -97,8 +99,10 @@ function ChatHead({channelName,channelId,channelEmoji,communityId,categoryId,cha
                                     alt="information-circle"
                                 />
                                 <span className='font-normal text-[#0C111D] text-sm'>Channel info</span>
-                            </button>
-                            <button className='flex flex-row gap-2 items-center h-10 w-[206px] px-4 hover:bg-[#EAECF0]'
+                                </button>
+                            )}
+                            {isAdmin &&(
+                                <button className='flex flex-row gap-2 items-center h-10 w-[206px] px-4 hover:bg-[#EAECF0]'
                                 onClick={() => setChannelRequestsDialog(true)}>
                                 <Image
                                     src="/icons/channel-requests.svg"
@@ -108,16 +112,21 @@ function ChatHead({channelName,channelId,channelEmoji,communityId,categoryId,cha
                                 />
                                 <span className='font-normal text-[#0C111D] text-sm'>Channel Requests</span>
                             </button>
+                            )}
+                            {isAdmin &&(
                             <button className='flex flex-row gap-2 items-center h-10 w-[206px] px-4 hover:bg-[#EAECF0]'
-                                onClick={() => setDeleteDialog(true)}>
-                                <Image
-                                    src="/icons/delete.svg"
-                                    width={18}
-                                    height={18}
-                                    alt="delete"
-                                />
-                                <span className='font-normal text-[#DE3024] text-sm'>Delete</span>
-                            </button>
+                            onClick={() => setDeleteDialog(true)}>
+                            <Image
+                                src="/icons/delete.svg"
+                                width={18}
+                                height={18}
+                                alt="delete"
+                            />
+                            <span className='font-normal text-[#DE3024] text-sm'>Delete</span>
+                        </button>
+                            )}
+                           
+                          
 
                         </PopoverContent>
                     </Popover>

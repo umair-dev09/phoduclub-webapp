@@ -5,17 +5,94 @@ import 'react-quill/dist/quill.snow.css';
 import ReactQuill from 'react-quill-new'; // Ensure correct import
 import Quill from 'quill'; // Import Quill to use it for types
 import { Popover, PopoverTrigger, PopoverContent } from '@nextui-org/popover';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { collection, doc, onSnapshot, orderBy, query, setDoc } from "firebase/firestore";
+import { auth, db } from "@/firebase";
+import DiscussionDisplay from "./DiscussionDisplay";
+import LoadingData from "@/components/Loading";
+
+interface DiscussionProps {
+    courseId: string;
+    sectionId: string;
+    contentId: string;
+}
+
+interface DiscussionData {
+    message: string;
+    isAdmin: boolean;
+    userId: string;
+    timestamp: string;
+    messageId: string;
+  }
 
 
-function Discussion() {
+function Discussion({courseId, sectionId, contentId}:DiscussionProps) {
+
     const [value, setValue] = useState('');
     const quillRef = useRef<ReactQuill | null>(null); // Ref to hold ReactQuill instance
     const [quill, setQuill] = useState<Quill | null>(null);
     const [alignment, setAlignment] = useState<string | null>(null); // State to hold Quill instance
-    const [isButtonDisabled, setIsButtonDisabled] = useState(true);
+    const [loading, setLoading] = useState(true);
+    
+    const isFormValid = value.trim();
 
     const handleChange = (content: string) => {
         setValue(content);
+    };
+
+    const [discussions, setDiscussions] = useState<DiscussionData[]>([]);
+    useEffect(() => {
+        if (courseId && sectionId && contentId) {
+          const fetchChats = async () => {
+            try {
+              const discussionRef = collection(
+                db,
+                `course/${courseId}/sections/${sectionId}/content/${contentId}/Disscussion`
+              );
+              const discussionQuery = query(discussionRef, orderBy('timestamp', 'desc')); // Order by timestamp
+      
+              const unsubscribe = onSnapshot(discussionQuery, (snapshot) => {
+                const discussionData: DiscussionData[] = snapshot.docs.map((doc) => ({
+                  ...doc.data(),
+                  messageId: doc.id, // Include the document ID
+                })) as DiscussionData[];
+                setDiscussions(discussionData); // Update state with the retrieved data
+                setLoading(false);
+              });
+      
+              return () => unsubscribe();
+            } catch (error) {
+              console.error("Error fetching chats: ", error);
+            }
+          };
+      
+          fetchChats();
+        }
+      }, [courseId, sectionId, contentId]);
+
+    const handleSendMessage = async () => {
+        if(auth.currentUser?.uid){
+        try {
+            const ref = doc(collection(db, 'course', courseId, 'sections', sectionId, 'content', contentId, 'Disscussion'));
+            
+            const currentUserId = auth.currentUser.uid;
+
+            const disscusionData = {
+                 message: value,
+                 userId: currentUserId,
+                 timestamp: new Date().toISOString(),
+                 messageId: ref.id,
+                 isAdmin: false,
+            };
+            await setDoc(ref, disscusionData); 
+             setValue('');
+             toast.success('Message sent!');
+          } catch (error) {
+            console.error('Error updating course document:', error);
+            toast.error('Failed to mark lesson completed');
+          }
+        }
     };
 
     const handleIconClick = (format: string) => {
@@ -27,27 +104,7 @@ function Discussion() {
                 if (format === 'ordered') {
                     // Toggle ordered list
                     quill.format('list', currentFormats.list === 'ordered' ? false : 'ordered');
-                } else if (format === 'image') {
-
-                    const fileInput = document.createElement('input');
-                    fileInput.type = 'file';
-                    fileInput.accept = 'image/*';
-                    fileInput.onchange = () => {
-                        const file = fileInput.files?.[0];  // Safely access file
-                        if (file) {
-                            const reader = new FileReader();
-                            reader.onload = (e) => {
-                                if (e.target && e.target.result) {  // Validate e.target
-                                    const imageUrl = e.target.result as string;  // Type assertion
-                                    quill.insertEmbed(range.index, 'image', imageUrl);
-                                }
-                            };
-                            reader.readAsDataURL(file);
-                        }
-                    };
-                    fileInput.click();
-
-                }
+                } 
                 else if (format.startsWith('align')) {
                     if (format === 'align-left') {
                         quill.format('align', false); // Remove alignment for 'left'
@@ -92,46 +149,10 @@ function Discussion() {
             }
         }
     };
-    useEffect(() => {
-        if (value.trim() === '') {
-            setIsButtonDisabled(true); // Disable the button if the input is empty
-        } else {
-            setIsButtonDisabled(false); // Enable the button if there is content
-        }
-    }, [value]);
 
     // ------------------------------------------------------------------------------------------------------------------------------
     // Below logic for the "SHOW MORE AND SHOW LESS"
-    interface ExpandableTextProps {
-        content: string; // Ensures 'content' is a string
-        wordLimit?: number; // Optional word limit, default to 100
-    }
-
-    const ExpandableText: React.FC<ExpandableTextProps> = ({ content, wordLimit = 100 }) => {
-        const [isExpanded, setIsExpanded] = useState(false);
-        // Split the content into words
-        const words = content.split(' ');
-        // Check if content exceeds the word limit
-        const exceedsLimit = words.length > wordLimit;
-        // Truncated and full content
-        const displayedContent = isExpanded || !exceedsLimit
-            ? content
-            : words.slice(0, wordLimit).join(' ') + '...';
-
-        return (
-            <div>
-                <p>{displayedContent}</p>
-                {exceedsLimit && (
-                    <button
-                        onClick={() => setIsExpanded(!isExpanded)}
-                        className="text-[#9012FF] font-semibold text-sm"
-                    >
-                        {isExpanded ? 'Show Less' : 'Show More'}
-                    </button>
-                )}
-            </div>
-        );
-    };
+    
     const content = `The BITSET Full Course is designed to provide students with an in-depth understanding  of bit manipulation techniques and the use of bitsets in data structures. This course will cover fundamental concepts, practical applications, and advanced techniques used in competitive programming and software development. Students will learn how to efficiently solve problems using bitwise operations and gain hands-on experience through coding exercises and    The BITSET Full Course is designed to provide students with an in-depth understanding  of bit manipulation techniques and the use of bitsets in data structures. This course will cover fundamental concepts, practical applications, and advanced techniques used in competitive programming and software development. Students will learn how to efficiently solve problems using bitwise operations and gain hands-on experience through coding exercises and projects.`;
     //   ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ 
     return (
@@ -237,20 +258,18 @@ function Discussion() {
                                 onClick={() => handleIconClick('ordered')}>
                                 <Image src="/icons/dropdown-icon-2.svg" width={27} height={27} alt="dropdown-icon" />
                             </button>
-                            <button onClick={() => handleIconClick('image')}
-                                className="hover:bg-[#EAECF0]">
-                                <Image src="/icons/upload-image-icon.svg" width={24} height={24} alt="upload-image-icon" />
-                            </button>
+                        
 
 
                         </div>
                         {/* Button */}
                         <button
                             className={` w-[88px] h-[36px] flex justify-center items-center rounded-md shadow-inner-button 
-                                  ${isButtonDisabled ? 'bg-[#d8acff]' : 'bg-[#8501FF]'} 
-                                     ${isButtonDisabled ? '' : 'border border-solid border-[#800EE2]'}`}
+                                  ${!isFormValid ? 'bg-[#d8acff]' : 'bg-[#8501FF]'} 
+                                     ${!isFormValid ? '' : 'border border-solid border-[#800EE2]'}`}
 
-                            disabled={isButtonDisabled} // Disable button if needed
+                            disabled={!isFormValid} // Disable button if needed
+                            onClick={handleSendMessage}
                         >
                             <span className="font-semibold text-[#FFFFFF] text-sm">Send</span>
                         </button>
@@ -261,49 +280,22 @@ function Discussion() {
 
             {/* -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- */}
             {/* THIS IS THE MIDDLE-LINE */}
-            <hr className="mt-[30px]" />
-            <div className=" flex flex-col gap-4 p-6 h-auto w-full">
-                {/* first comment */}
-                <div className="flex flex-col  gap-3 ">
-                    <div className="flex flex-row w-full justify-between">
-                        <div className=" flex flex-row gap-3">
-                            <Image
-                                src="/icons/profile-pic.png"
-                                width={46}
-                                height={46}
-                                alt=" Proflie -Image" />
-                            <div className="flex flex-col gap-2">
-                                <span className="font-medium text-sm text-[#1D2939]">Devon Lane</span>
-                                <span className="font-normal text-sm text-[#1D2939] opacity-[50%]">devon#8852</span>
-                            </div>
-                        </div>
-                        <span className="text-sm font-normal text-[#1D2939] opacity-[50%] flex items-center">
-                            3 min ago
-                        </span>
+            <div className="mt-[30px]" />
+            {loading ? (
+                <LoadingData />
+            ) : (
+                <>
+                {discussions.map((d) => ( 
+                    <div key={d.messageId} >
+                    <DiscussionDisplay userId={d.userId} message={d.message} messageId={d.userId} isAdmin={d.isAdmin} timestamp={d.timestamp}/>
                     </div>
-                    <div className="  font-normal text-[#1D2939] text-sm opacity-[70%] leading-relaxed">
-                        <ExpandableText content={content} />
-                    </div>
-                    <div className="flex flex-row gap-6 items-center">
-                        <button className="flex flex-row gap-1">
-                            <Image
-                                src="/icons/upvote.svg"
-                                width={20}
-                                height={20}
-                                alt="upvote_button"
-                                className=""
+                ))}
+                </>
+            )}
+           
 
-                            />
-                            <span className="font-normal text-[#141B34] text-sm">24</span>
-                            <span className=" font-normal text-[#141B34] text-sm">upvote</span>
-                        </button>
-                        <button>
-                            <span className="view-replies font-semibold text-sm text-[#9012FF]">View all 30 Reply</span>
-                        </button>
-                    </div>
-                </div>
                 {/* second comment */}
-                <div className="flex flex-row w-full justify-between">
+                {/* <div className="flex flex-row w-full justify-between">
                     <div className=" flex flex-row gap-3">
                         <Image
                             src="/images/photo.png"
@@ -465,9 +457,8 @@ function Discussion() {
                             <span className="view-replies font-semibold text-sm text-[#9012FF]">View all 30 Reply</span>
                         </button>
                     </div>
-                </div>
+                </div> */}
             </div>
-        </div>
     )
 }
 export default Discussion;

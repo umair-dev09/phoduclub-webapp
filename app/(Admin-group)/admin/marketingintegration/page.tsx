@@ -171,7 +171,7 @@ function Messenger() {
                 startDate,
                 endDate,
                 notificationIcon,
-                status: 'scheduled',
+                status: 'live',
                 createdAt: new Date().toISOString(),
             });
 
@@ -441,7 +441,7 @@ function Messenger() {
                                     onChange={(e) => setHyperLink(e.target.value)} // Controlled input for quiz name
                                 />
                             </div>
-                            <div className="flex flex-col gap-1 w-full mt-4">
+                            {/* <div className="flex flex-col gap-1 w-full mt-4">
                                 <label className="text-[#1D2939] text-sm font-medium">Countdown Timer</label>
                                 <div className="flex flex-row p-2 w-full justify-between border border-gray-300  h-10 focus:outline focus:outline-[1.5px] focus:outline-[#D6BBFB] hover:outline hover:outline-[1.5px] hover:outline-[#D6BBFB] rounded-md ">
                                     <div className="flex flex-row gap-2">
@@ -476,7 +476,6 @@ function Messenger() {
                                             </PopoverTrigger>
                                             <PopoverContent>
                                                 <div className="flex flex-col gap-1">
-                                                    {/* Idea Button */}
                                                     <button
                                                         className="flex flex-row w-full p-1 hover:bg-[#F2F4F7] justify-center items-center"
                                                         onClick={() => handleIconSelectforimage("/icons/annocement.png")}
@@ -488,7 +487,6 @@ function Messenger() {
                                                             alt="Idea Button"
                                                         />
                                                     </button>
-                                                    {/* Megaphone Button */}
                                                     <button
                                                         className="flex flex-row w-full p-1 hover:bg-[#F2F4F7] justify-center items-center"
                                                         onClick={() => handleIconSelectforimage("/icons/megaphone.svg")}
@@ -500,7 +498,6 @@ function Messenger() {
                                                             alt="Megaphone Button"
                                                         />
                                                     </button>
-                                                    {/* Read Button */}
                                                     <button
                                                         className="flex flex-row w-full p-1 hover:bg-[#F2F4F7] justify-center items-center"
                                                         onClick={() => handleIconSelectforimage("/icons/read-2.svg")}
@@ -517,7 +514,7 @@ function Messenger() {
                                         </Popover>
                                     </div>
                                 </div>
-                            </div>
+                            </div> */}
                             <hr className="my-5" />
                             <h1 className="text-[#1D2939] font-semibold text-lg mb-2">Schedule notification</h1>
                             <div className="flex flex-col gap-4">

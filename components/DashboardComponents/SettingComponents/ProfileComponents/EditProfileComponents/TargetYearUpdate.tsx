@@ -120,7 +120,7 @@ function TargetYearUpdate({ setIsEditing }: TargetYearUpdateProps) {
     if (userData?.phone) {
       toast.promise(
         new Promise((resolve, reject) => {
-          signInWithPhoneNumber(auth, `+${userData.phone}`, appVerifier)
+          signInWithPhoneNumber(auth, `${userData.phone}`, appVerifier)
             .then((confirmationResult) => {
               window.confirmationResult = confirmationResult;
               resolve('Otp Sent!');
@@ -205,7 +205,7 @@ function TargetYearUpdate({ setIsEditing }: TargetYearUpdateProps) {
           </DialogPanel>
         </div>
       </Dialog>
-      {showComponent && <OtpForUpdate newEmail={''} isOpen={isOtpOpen} setIsOpen={setIsOtpOpen} targetYear={selectedYear?.value || ''} setIsEditing={setIsEditing} targetExams={[]} />}
+      {showComponent && <OtpForUpdate newEmail={''} newPhone='' isOpen={isOtpOpen} setIsOpen={setIsOtpOpen} targetYear={selectedYear?.value || ''} setIsEditing={setIsEditing} targetExams={[]} />}
     </div>
   );
 }

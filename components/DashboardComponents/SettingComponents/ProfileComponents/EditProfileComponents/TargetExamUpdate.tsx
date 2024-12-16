@@ -119,7 +119,7 @@ function TargetExamUpdate({ setIsEditing }: TargetExamsUpdateProps) {
     if (userData?.phone) {
       toast.promise(
         new Promise((resolve, reject) => {
-          signInWithPhoneNumber(auth, `+${userData.phone}`, appVerifier)
+          signInWithPhoneNumber(auth, `${userData.phone}`, appVerifier)
             .then((confirmationResult) => {
               window.confirmationResult = confirmationResult;
               resolve('Otp Sent!');
@@ -227,13 +227,13 @@ function TargetExamUpdate({ setIsEditing }: TargetExamsUpdateProps) {
             <div className={styles.commonDivider} />
 
             <div className={styles.commonButtons}>
-              <button className={styles.tExamCancelBtn}>Cancel</button>
+              <button onClick={() => setIsOpen(false)} className={styles.tExamCancelBtn}>Cancel</button>
               <button className={styles.tExamContinueBtn} onClick={onContinueClick}>Continue</button>
             </div>
           </DialogPanel>
         </div>
       </Dialog>
-      {showComponent && <OtpForUpdate newEmail={''} isOpen={isOtpOpen} setIsOpen={setIsOtpOpen} targetYear={''} setIsEditing={setIsEditing} targetExams={selectedExamValues} />}
+      {showComponent && <OtpForUpdate newEmail={''} newPhone='' isOpen={isOtpOpen} setIsOpen={setIsOtpOpen} targetYear={''} setIsEditing={setIsEditing} targetExams={selectedExamValues} />}
     </div>
   );
 }

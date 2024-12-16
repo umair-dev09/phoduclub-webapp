@@ -5,16 +5,90 @@ import 'react-quill/dist/quill.snow.css';
 import ReactQuill from 'react-quill-new';
 import Quill from 'quill';
 import { Popover, PopoverContent, PopoverTrigger } from "@nextui-org/popover";
-function discussion() {
+import { auth, db } from "@/firebase";
+import { collection, doc, onSnapshot, orderBy, query, setDoc } from "firebase/firestore";
+import { toast } from "react-toastify";
+import LoadingData from "@/components/Loading";
+import DiscussionDisplay from "@/components/DashboardComponents/LearnComponents/CourseComponents/InsideCoursesComp/Discussioncomp/DiscussionDisplay";
+interface DiscussionProps {
+    courseId: string;
+    sectionId: string;
+    contentId: string;
+}
+
+interface DiscussionData {
+    message: string;
+    isAdmin: boolean;
+    userId: string;
+    timestamp: string;
+    messageId: string;
+  }
+
+function discussion({courseId, sectionId, contentId}:DiscussionProps) {  
 
     const [value, setValue] = useState('');
     const quillRef = useRef<ReactQuill | null>(null); // Ref to hold ReactQuill instance
     const [quill, setQuill] = useState<Quill | null>(null);
     const [alignment, setAlignment] = useState<string | null>(null); // State to hold Quill instance
     const [isButtonDisabled, setIsButtonDisabled] = useState(true);
+    const [loading, setLoading] = useState(true);
 
     const handleChange = (content: string) => {
         setValue(content);
+    };
+
+    const [discussions, setDiscussions] = useState<DiscussionData[]>([]);
+    useEffect(() => {
+        if (courseId && sectionId && contentId) {
+          const fetchChats = async () => {
+            try {
+              const discussionRef = collection(
+                db,
+                `course/${courseId}/sections/${sectionId}/content/${contentId}/Disscussion`
+              );
+              const discussionQuery = query(discussionRef, orderBy('timestamp', 'asc')); // Order by timestamp
+      
+              const unsubscribe = onSnapshot(discussionQuery, (snapshot) => {
+                const discussionData: DiscussionData[] = snapshot.docs.map((doc) => ({
+                  ...doc.data(),
+                  messageId: doc.id, // Include the document ID
+                })) as DiscussionData[];
+                setDiscussions(discussionData); // Update state with the retrieved data
+                setLoading(false);
+              });
+      
+              return () => unsubscribe();
+            } catch (error) {
+              console.error("Error fetching chats: ", error);
+            }
+          };
+      
+          fetchChats();
+        }
+      }, [courseId, sectionId, contentId]);
+
+    const handleSendMessage = async () => {
+        if(auth.currentUser?.uid){
+        try {
+            const ref = doc(collection(db, 'course', courseId, 'sections', sectionId, 'content', contentId, 'Disscussion'));
+            
+            const currentUserId = auth.currentUser.uid;
+
+            const disscusionData = {
+                 message: value,
+                 userId: currentUserId,
+                 timestamp: new Date().toISOString(),
+                 messageId: ref.id,
+                 isAdmin: true,
+            };
+            await setDoc(ref, disscusionData); 
+             setValue('');
+             toast.success('Message sent!');
+          } catch (error) {
+            console.error('Error updating course document:', error);
+            toast.error('Failed to mark lesson completed');
+          }
+        }
     };
 
     const handleIconClick = (format: string) => {
@@ -81,7 +155,18 @@ function discussion() {
     return (
         <div className="flex flex-col h-[calc(100vh-200px)]">
             <div className="flex-1 overflow-y-auto px-6 gap-4 py-4">
-                <div className="flex flex-col gap-4 pb-4">
+            {loading ? (
+                <LoadingData />
+            ) : (
+                <>
+                {discussions.map((d) => ( 
+                    <div key={d.messageId} >
+                    <DiscussionDisplay userId={d.userId} message={d.message} messageId={d.userId} isAdmin={d.isAdmin} timestamp={d.timestamp}/>
+                    </div>
+                ))}
+                </>
+            )}
+                {/* <div className="flex flex-col gap-4 pb-4">
                     <div className="flex flex-row justify-between items-center">
                         <div className="flex flex-row gap-2">
                             <Image
@@ -137,8 +222,8 @@ function discussion() {
                             alt="three-icon" />
                         <span className="text-[#1D2939] font-normal text-sm">30 Reply</span>
                     </button>
-                </div>
-                <div className="flex flex-col gap-4 ml-10">
+                </div> */}
+                {/* <div className="flex flex-col gap-4 ml-10">
                     <div className="flex flex-row justify-between items-center">
                         <div className="flex flex-row gap-2">
                             <Image
@@ -181,7 +266,7 @@ function discussion() {
                             <span className="text-[#1D2939] font-normal text-sm">30 Reply</span>
                         </button>
                     </div>
-                </div>
+                </div> */}
             </div>
             <div className="sticky bottom-0 bg-white z-10 p-6">
                 <div className=" bg-[#F7F8FB] w-full border border-solid border-[#EAECF0] rounded-[12px] h-auto">
@@ -285,6 +370,7 @@ function discussion() {
                                                         ${isButtonDisabled ? '' : 'border border-solid border-[#800EE2]'}`}
 
                                 disabled={isButtonDisabled} // Disable button if needed
+                                onClick={handleSendMessage}
                             >
                                 <span className="font-semibold text-[#FFFFFF] text-sm">Send</span>
                             </button>

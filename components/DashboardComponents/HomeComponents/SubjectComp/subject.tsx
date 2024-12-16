@@ -48,20 +48,20 @@ const SubjectLayout: React.FC = () => {
     const [selectedSubject, setSelectedSubject] = useState<string | null>(null);
     const [showDrawer, setShowDrawer] = useState(false);
     const openBottomSheet = (subjectName: string) => {
-        setSelectedSubject(subjectName);
+        setSelectedSubject('Overall');
         setShowDrawer(true);
     };
 
     return (
         <div className="grid grid-cols-2 gap-5 p-6 w-full">
-            {subjectsData.map((subject) => {
+            {subjectsData.map((subject,index) => {
                 const percentage = calculatePercentage(subject.numerator, subject.denominator);
                 const isComplete = percentage === 100;
 
                 return (
                     <button
                         onClick={() => openBottomSheet(subject.name)}
-                        key={subject.name}
+                        key={index}
                         className={`border border-gray-200 rounded-lg px-6 py-2 flex items-center justify-between transition-transform duration-300 ease-in-out hover:border-[#7400E03D] hover:shadow-lg hover:scale-105 ${isComplete ? 'bg-[#F9FAFB] hover:border-gray-200' : 'bg-white hover:border-[#7400E03D] '  // Conditional background color
                             }`}
                     >

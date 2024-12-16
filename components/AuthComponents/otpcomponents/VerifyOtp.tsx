@@ -258,7 +258,7 @@ function VerifyOtp() {
                 <div className="flex items-center justify-center pt-4">
                     <InputHandler onOtpChange={setOtp} />
                 </div>
-                <div className="w-full pt-4 flex items-center justify-center">
+                <div className="w-full pt-4 flex flex-col items-center justify-center">
                     <button
                         className={`w-1/2 h-10 rounded-lg text-white font-medium text-sm 
                                        ${otp.length === 6 ? 'bg-[#7400e0] cursor-pointer' : 'bg-[#d4a9fc] cursor-not-allowed'} 

@@ -15,7 +15,7 @@ type OtpForUpdateProps = {
   setIsOpen: (isOpen: boolean) => void;
   setIsEditing: (isEditing: boolean) => void; // Add this prop to update isEditing in Profile
   targetExams: string[] | null;
-
+  newPhone: string;
 };
 type UserData = {
   uniqueId: string | null;
@@ -109,7 +109,7 @@ const InputHandler = ({
   );
 };
 
-function OtpForUpdate({ isOpen, setIsOpen, newEmail, targetYear, setIsEditing, targetExams }: OtpForUpdateProps) {
+function OtpForUpdate({ isOpen, setIsOpen, newEmail, targetYear, setIsEditing, targetExams, newPhone}: OtpForUpdateProps) {
   const [error, setError] = useState(false); // Track error state
   const [userData, setUserData] = useState<UserData | null>(null);
   const [loading, setLoading] = useState(true); // Track loading state

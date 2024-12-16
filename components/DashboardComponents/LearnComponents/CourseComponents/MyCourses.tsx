@@ -29,6 +29,7 @@ interface CourseData {
 
 function MyCourses() {
     const [activeTab, setActiveTab] = useState<string>('');
+    const [contentCount, setContentCount] = useState<number>(0);
     const router = useRouter();
     const pathname = usePathname();
 
@@ -60,10 +61,11 @@ function MyCourses() {
     
                   const contentCount = contentSnapshot.size;
                   totalContentCount += contentCount;
-    
+                  setContentCount(contentCount);
                   return {
                     sectionName: sectionData.sectionName || 'Untitled Section',
                     contentCount,
+                    
                   };
                 })
               );
@@ -126,6 +128,12 @@ function MyCourses() {
     
 
     return (
+      <>
+      {contentCount < 1 &&(
+      <div className="flex flex-col">
+          <div className='ml-6 mb-4 mt-2'>
+                    <h3>My Courses</h3>
+        </div>
         <div className="flex flex-1 flex-row flex-wrap mx-4 gap-4">
             {/* ----------- Course Component ----------- */}
             {/* Main course container with flex layout and specified dimensions */}
@@ -184,6 +192,9 @@ function MyCourses() {
             </button> 
             ))}
         </div>
+        </div>
+        )}
+        </>
     );
 }
 

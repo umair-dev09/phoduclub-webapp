@@ -4,19 +4,18 @@ import styles from './video.module.css';
 import Image from 'next/image';
 import Video from 'next-video';
 import Player from 'next-video/player';
+import VideoPlayer from '@/components/DashboardComponents/CommunityComponents/VideoPlayer';
+import CourseVideoPlayer from './CourseVideoPlayer';
 
 interface VideoContentProps {
-    videoId: string;
+    videoLink: string;
 }
 
-function VideoContent({videoId}:VideoContentProps) {
-
+function VideoContent({videoLink}:VideoContentProps) {
+   
     return (
-
-        <div className='flex w-full relative pl-8'>
-            
-           <Video playbackId={videoId}/>
-
+        <div className='flex w-full pl-8'>
+           <CourseVideoPlayer key={videoLink} videoSrc={videoLink}/> 
         </div>
     );
 }
