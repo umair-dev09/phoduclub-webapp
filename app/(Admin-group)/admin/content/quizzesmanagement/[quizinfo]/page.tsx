@@ -53,11 +53,13 @@ const cleanQuizDescription = (description: string) => {
     );
     return sanitizedDescription;
 };
-function Quizinfo({ params }: { params: { quizName: string } }) {
+// { params }: { params: { quizName: string } }
+// const { quizName } = params;
+
+function Quizinfo() {
     const router = useRouter();
     const searchParams = useSearchParams();
     const quizId = searchParams.get('qId');
-    const { quizName } = params;
     const [activeTab, setActiveTab] = useState('Questions');
     const [quizData, setQuizData] = useState<QuizData | null>(null);
     const [questions, setQuestions] = useState<QuestionData[]>([]);
