@@ -158,7 +158,7 @@ function VerifyOtp() {
     }, [counter]);
 
     const handleSubmit = async (e: any) => {
-        e.preventDefault();
+        e.preventDefault(); 
         setIsLoading(true); // Start loading
 
         const verificationId = window.localStorage.getItem('verificationId'); // Retrieve the verification ID stored during sign-in

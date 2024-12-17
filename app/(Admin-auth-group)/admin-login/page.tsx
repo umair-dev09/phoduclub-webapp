@@ -79,7 +79,7 @@ function Login() {
                 const adminDoc = querySnapshot.docs[0];
                 setAdminId(adminDoc.id);  // Store adminId
 
-                setupRecaptcha();
+                setupRecaptcha(); 
 
                 // Trigger Firebase Phone Authentication
                 signInWithPhoneNumber(auth, formattedPhone, window.recaptchaVerifier)

@@ -161,7 +161,7 @@ export default function Sign() {
                 window.confirmationResult = confirmationResult;
                 window.localStorage.setItem('verificationId', confirmationResult.verificationId);
 
-                // toast.success("OTP sent successfully!");
+                toast.success("OTP sent successfully!");
                 setIsLoading(false); // Disable loading indicator
                 // Navigate to verify OTP page with phone number as query parameter
                 router.push(`/verifyotp?phone=${formattedPhone}&firstName=${encodeURIComponent(firstName)}&lastName=${encodeURIComponent(lastName)}&email=${encodeURIComponent(email)}`);
@@ -330,6 +330,7 @@ export default function Sign() {
                     <span className=" text-[#667085] font-normal text-base text-right">- Christine Gregoire</span>
                 </div>
             </div>
+            <div id="recaptcha-container"></div>
 
 
         </div>

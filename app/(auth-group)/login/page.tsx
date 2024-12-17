@@ -7,7 +7,7 @@ import Image from 'next/image';
 import { auth } from '../../../firebase'; // Adjust path as needed
 import { getAuth, onAuthStateChanged, RecaptchaVerifier, signInWithPhoneNumber } from "firebase/auth";
 import LoadingData from "@/components/Loading";
-import { getFirestore, doc, getDoc, onSnapshot } from 'firebase/firestore';
+import { getFirestore, doc, getDoc, onSnapshot, collection, getDocs, query, where } from 'firebase/firestore';
 
 export default function Login_Page() {
     const router = useRouter();
@@ -51,7 +51,19 @@ export default function Login_Page() {
         }
     }, [phone]);
 
-    const handleSendVerificationCode = () => {
+    const setupRecaptcha = () => {
+        if (!window.recaptchaVerifier) {
+            window.recaptchaVerifier = new RecaptchaVerifier(auth,'recaptcha-container', {
+                size: 'invisible',
+                callback: () => {
+                    // reCAPTCHA solved
+                },
+            });
+        }
+    };
+
+    const handleSendVerificationCode = async (e: any) => {
+        e.preventDefault();
         setIsLoading(true);
         if (!isPhoneValid) {
             setErrorMessage('Please enter a valid phone number.');
@@ -59,21 +71,39 @@ export default function Login_Page() {
             return;
         }
 
-        window.recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
-            'size': 'invisible',
-            'callback': (response: any) => { },
-        });
+        try {
+            const formattedPhone = `+${phone.replace(/[^0-9]/g, '')}`;
+            const userRef = collection(db, "users");
+            const q = query(userRef, where("phone", "==", formattedPhone));
+            const querySnapshot = await getDocs(q);
 
-        const appVerifier = window.recaptchaVerifier;
+            // if (!querySnapshot.empty) {
+                setupRecaptcha();
+                // Trigger Firebase Phone Authentication
+                signInWithPhoneNumber(auth, formattedPhone, window.recaptchaVerifier)
+                .then((confirmationResult) => {
+                    window.confirmationResult = confirmationResult;  // Save for OTP verification
+                    router.push(`/verifyotp?phone=${formattedPhone}`);
+                    setIsLoading(false);
+                })
+                .catch((error) => {console.error("SMS not sent:", error);              
+                       setIsLoading(false);
+                       setErrorMessage("Failed to send verification code. Please try again.");
+                }
+                );
 
-        signInWithPhoneNumber(auth, `+${phone}`, appVerifier)
-            .then((confirmationResult) => {
-                router.push(`/verifyotp?phone=${encodeURIComponent(phone)}`);
-            }).catch((error) => {
-                setErrorMessage("Failed to send verification code. Please try again.");
-                setIsLoading(false);
-                console.error("Error during phone sign-in:", error);
-            });
+            // } else {
+            //     setErrorMessage("Your number is not registered. Please Signup first.");
+            //     setIsLoading(false);
+
+            // }
+
+         } catch (error) {
+            console.error("Error while login user:", error);
+            setIsLoading(false);
+        }
+
+    
     };
 
     return (
@@ -153,6 +183,7 @@ export default function Login_Page() {
                     <span className=" text-[#667085] font-normal text-base text-right">- Christine Gregoire</span>
                 </div>
             </div>
+            <div id="recaptcha-container"></div>
         </div>
     );
 }
