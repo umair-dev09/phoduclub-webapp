@@ -160,7 +160,6 @@ export default function Sign() {
                 const confirmationResult = await signInWithPhoneNumber(auth, formattedPhone, window.recaptchaVerifier);
                 window.confirmationResult = confirmationResult;
                 window.localStorage.setItem('verificationId', confirmationResult.verificationId);
-
                 toast.success("OTP sent successfully!");
                 setIsLoading(false); // Disable loading indicator
                 // Navigate to verify OTP page with phone number as query parameter

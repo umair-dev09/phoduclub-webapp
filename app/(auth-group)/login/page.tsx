@@ -83,6 +83,7 @@ export default function Login_Page() {
                 signInWithPhoneNumber(auth, formattedPhone, window.recaptchaVerifier)
                 .then((confirmationResult) => {
                     window.confirmationResult = confirmationResult;  // Save for OTP verification
+                    window.localStorage.setItem('verificationId', confirmationResult.verificationId);
                     router.push(`/verifyotp?phone=${formattedPhone}`);
                     setIsLoading(false);
                 })
