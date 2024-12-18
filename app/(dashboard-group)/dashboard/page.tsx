@@ -8,14 +8,53 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { onAuthStateChanged } from "firebase/auth";
 import LoadingData from "@/components/Loading";
-import { auth } from "@/firebase";
+import { auth, db } from "@/firebase";
 import router from "next/router";
 import Image from "next/image"
+import { collection, onSnapshot, orderBy, query } from 'firebase/firestore';
 
-export default function AnalyticsPage() {
+interface NotificationData {
+    name:string;
+    cta: string;
+    notificationIcon: string;
+    notificationId: string;
+    description: string;
+   }
+
+export default function DashboardPage() {
 
      const router = useRouter();
      const [loading, setLoading] = useState(true);
+     const [showNoti, setShowNoti] = useState(true);
+
+     
+    const [notification, setNotification] = useState<NotificationData[]>([]);
+    useEffect(() => {
+        
+          const fetchNotification = async () => {
+            try {
+              const discussionRef = collection(
+                db,
+                `notifications`
+              );
+              const discussionQuery = query(discussionRef, orderBy("createdAt", "desc")); // Order by timestamp
+      
+              const unsubscribe = onSnapshot(discussionQuery, (snapshot) => {
+                const discussionData: NotificationData[] = snapshot.docs.map((doc) => ({
+                  ...doc.data(),
+                })) as NotificationData[];
+                setNotification(discussionData); // Update state with the retrieved data
+                setLoading(false);
+              });
+      
+              return () => unsubscribe();
+            } catch (error) {
+              console.error("Error fetching chats: ", error);
+            }
+          };
+      
+          fetchNotification();
+      }, []);
 
      onAuthStateChanged(auth, (user) => {
           if (!user) {
@@ -33,8 +72,24 @@ export default function AnalyticsPage() {
      }
 
      return (
-          <div className=" flex flex-col  flex-1 h-auto overflow-y-auto  p-6">
-               <div className="flex flex-row w-full gap-4  ">
+          <div className='flex flex-col mb-6 w-full h-auto'>
+          {showNoti &&(
+         <div className='flex flex-row bg-[#FEDAAA] h-auto w-full py-3 px-4 items-center justify-between'>
+          {notification.length > 0 && (
+         <div key={notification[0].notificationId} className='flex flex-row flex-1 items-center justify-center'>
+         <Image className='w-5 h-5 mr-[6px]' src={notification[0]?.notificationIcon} width={24} height={24} alt='icon'/>
+         <h3 className='text-sm font-bold'>{notification[0]?.name}: </h3>
+         <h3 className='text-sm font-normal ml-1'>{notification[0]?.description}</h3>
+         <button className='ml-3 h-[36px] w-auto px-3 text-[13px] font-semibold border bg-white border-[#cccccc] rounded-md'>{notification[0]?.cta}</button>
+         </div>
+         )}
+         <button onClick={() => setShowNoti(false)}><Image className='w-5 h-5 mr-[6px] ' src='/icons/cancel.svg' width={24} height={24} alt='icon'/></button>
+    
+         </div>
+          )}
+          <div className=" flex flex-col  flex-1 h-auto overflow-y-auto  px-6 py-6">
+              
+               <div className="flex flex-row w-full gap-4">
                     <div className="flex flex-col flex-1 bg-white  rounded-lg h-[327px] w-1/2 ">
                          <div className="flex flex-row justify-between pt-6 px-6 w-full text-[#1D2939] text-lg font-bold">
                               <h3 className='text-[#1D2939] font-bold text-lg'>Subject Progress Tracker</h3>
@@ -82,6 +137,7 @@ export default function AnalyticsPage() {
                          </div>
                     </div>
                </div>
+          </div>
           </div>
      );
 }

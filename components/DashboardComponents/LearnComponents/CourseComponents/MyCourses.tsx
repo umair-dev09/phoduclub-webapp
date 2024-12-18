@@ -7,15 +7,111 @@ import { useState, useEffect } from "react";
 import LoadingData from "@/components/Loading";
 import { onAuthStateChanged } from "firebase/auth";
 
+// Import useRouter hook
+interface CourseData {
+    courseName: string;
+    price: number;
+    discountPrice: string;
+    courseId: string; 
+    date: string; // Can be Date type if desired
+    courseImage: string;
+    status: string;
+    publishDate: string;
+    sections : SectionData[];
+    totalContentCount: number; // Total number of content across all sections
+    StudentsPurchased: string[];
+  }
+  
+  interface SectionData {
+    sectionName: string;
+    contentCount: number; // Number of documents in the 'content' subcollection
+  }
 
 function MyCourses() {
     const [activeTab, setActiveTab] = useState<string>('');
+    const [contentCount, setContentCount] = useState<number>(0);
     const router = useRouter();
     const pathname = usePathname();
-    const handleTabClick = () => {
-        router.push("/learn/courses/insidecourse")
-        // setActiveTab(tabName);
-        // router.push(path);
+
+    const [courses, setCourses] = useState<CourseData[]>([]);
+    const [loading, setLoading] = useState(true);
+  
+     useEffect(() => {
+      const fetchCourses = async (currentUserId: string) => {
+        const coursesCollection = collection(db, 'course');
+    
+        const unsubscribe = onSnapshot(coursesCollection, async (snapshot) => {
+          const allCourses: CourseData[] = [];
+    
+          for (const doc of snapshot.docs) {
+            const courseData = doc.data();
+    
+            // Only add courses where the currentUserId is NOT in StudentsPurchased
+            if (courseData.StudentsPurchased?.includes(currentUserId)) {
+              const sectionsCollection = collection(doc.ref, 'sections');
+              const sectionsSnapshot = await getDocs(sectionsCollection);
+    
+              let totalContentCount = 0;
+    
+              const sectionsData: SectionData[] = await Promise.all(
+                sectionsSnapshot.docs.map(async (sectionDoc) => {
+                  const sectionData = sectionDoc.data();
+                  const contentCollection = collection(sectionDoc.ref, 'content');
+                  const contentSnapshot = await getDocs(contentCollection);
+    
+                  const contentCount = contentSnapshot.size;
+                  totalContentCount += contentCount;
+                  setContentCount(contentCount);
+                  return {
+                    sectionName: sectionData.sectionName || 'Untitled Section',
+                    contentCount,
+                    
+                  };
+                })
+              );
+    
+              allCourses.push({
+                courseName: courseData.courseName,
+                price: courseData.price,
+                discountPrice: courseData.discountPrice,
+                courseId: courseData.courseId,
+                courseImage: courseData.courseImage,
+                StudentsPurchased: courseData.StudentsPurchased,
+                status: courseData.status,
+                date: courseData.date || '',
+                publishDate: courseData.publishDate || '',
+                sections: sectionsData,
+                totalContentCount,
+              });
+            }
+          }
+    
+          setCourses(allCourses);
+          setLoading(false);
+        });
+    
+        return () => unsubscribe();
+      };
+    
+      const initialize = () => {
+        setLoading(true);
+        const unsubscribeAuth = onAuthStateChanged(auth, (user) => {
+          if (user?.uid) {
+            fetchCourses(user.uid);
+          } else {
+            setCourses([]); // No user logged in
+            setLoading(false);
+          }
+        });
+    
+        return () => unsubscribeAuth();
+      };
+    
+      initialize();
+    }, []);
+
+    const handleTabClick = (path:string) => {
+        router.push(path);
     };
     useEffect(() => {
         if (pathname) {
@@ -26,30 +122,27 @@ function MyCourses() {
         }
     }, [pathname]);
 
+    if(loading){
+      return <LoadingData />
+    }
+    
+
     return (
+      <>
+      {contentCount < 1 &&(
+      <div className="flex flex-col">
+          <div className='ml-6 mb-4 mt-2'>
+                    <h3>My Courses</h3>
+        </div>
         <div className="flex flex-1 flex-row flex-wrap mx-4 gap-4">
             {/* ----------- Course Component ----------- */}
             {/* Main course container with flex layout and specified dimensions */}
-            <button onClick={handleTabClick}
+            {courses.map((course, index) => (
+            <button key={index} onClick={() => handleTabClick(`/learn/courses/${course.courseName.toLowerCase().replace(/\s+/g, '-')}/?cId=${course.courseId}`)}
                 className="flex items-center justify-center flex-col rounded-lg relative overflow-hidden transition-transform duration-300 ease-in-out w-[350px] h-[330px]">
                 {/* Course image and suggestion label container */}
                 <div className="flex flex-1 h-[60%] items-center flex-col">
-
-                    {/* Suggestion label positioned absolutely within the container */}
-                    <div className="flex items-center absolute top-3 left-5 mr-5 bg-white bg-opacity-80 text-xs font-medium border border-white rounded-full py-1 px-3 z-10 transition-transform duration-300 ease-in-out">
-                        <Image
-                            className="mr-[5px]"
-                            src="/icons/suggestion_icon.svg"
-                            alt="suggestion icon"
-                            width={16}
-                            height={16}
-                        />
-                        <p>Suggested for you</p>
-                    </div>
-
-                    {/* Course image */}
-
-                    <Image className=" w-full h-[300px]" src="/images/course_img.svg" alt="Course" width={0} height={0} />
+                    <Image className=" w-[352px] h-[300px] object-cover border border-[#EAECF0] rounded-tl-lg rounded-tr-lg" src={course.courseImage || "/images/course_img.svg"} alt="Course" width={350} height={300} />
                 </div>
 
                 {/* Course details container */}
@@ -61,7 +154,7 @@ function MyCourses() {
                         {/* Course name with a collapse icon */}
                         <div className="flex flex-1 text-lg font-semibold leading-6 w-full items-end justify-between mt-5">
                             <div>
-                                <p>BITSET Full Course</p>
+                                <p>{course.courseName}</p>
                             </div>
                             <button className="w-[32px] h-[32px]  rounded-full flex items-center justify-center transition-all duration-300 ease-in-out hover:bg-[#F2F4F7]">
                                 <button>
@@ -72,9 +165,9 @@ function MyCourses() {
 
                         {/* Course details - number of lessons and total duration */}
                         <div className="flex flex-1 text-xs font-normal leading-4 text-[#667085] gap-1 items-start w-full justify-start mt-1.5">
-                            <p>3 Lessons</p>
-                            <span>&#x2022;</span> {/* Bullet point separator */}
-                            <p>3hr 14m</p>
+                            <p>{course.totalContentCount} Lessons</p>
+                            {/* <span>&#x2022;</span>
+                            <p>3hr 14m</p> */}
                         </div>
                     </div>
 
@@ -96,288 +189,12 @@ function MyCourses() {
                         </div>
                     </div>
                 </div>
-            </button> {/* End of course component */}
-
-            {/* ----------- Course Component ----------- */}
-            {/* Main course container with flex layout and specified dimensions */}
-            <div className="flex w-[350px] items-center justify-center flex-col rounded-lg relative overflow-hidden transition-transform duration-300 ease-in-out h-[330px]">
-
-                {/* Course image and suggestion label container */}
-                <div className="flex flex-1 h-[60%] items-center flex-col">
-
-                    {/* Suggestion label positioned absolutely within the container */}
-                    <div className="flex items-center absolute top-3 left-5 mr-5 bg-white bg-opacity-80 text-xs font-medium border border-white rounded-full py-1 px-3 z-10 transition-transform duration-300 ease-in-out">
-                        <Image
-                            className="mr-[5px]"
-                            src="/icons/suggestion_icon.svg"
-                            alt="suggestion icon"
-                            width={16}
-                            height={16}
-                        />
-                        <p>Suggested for you</p>
-                    </div>
-
-                    {/* Course image */}
-                    <Image className=" w-full h-[250px]" src="/images/course_img.svg" alt="Course" width={0} height={0} />
-
-                </div>
-
-                {/* Course details container */}
-                <div className="flex w-full h-full max-h-[9.625rem] flex-col bg-white border border-[#EAECF0] border-t-0 rounded-br-lg rounded-bl-lg px-6">
-
-                    {/* Course title and details (lessons, duration) */}
-                    <div className="flex h-[60%] items-center flex-col">
-
-                        {/* Course name with a collapse icon */}
-                        <div className="flex flex-1 text-lg font-semibold leading-6 w-full items-end justify-between mt-5">
-                            <div>
-                                <p>BITSET Full Course</p>
-                            </div>
-                            <button className="w-[32px] h-[32px]  rounded-full flex items-center justify-center transition-all duration-300 ease-in-out hover:bg-[#F2F4F7]">
-                                <button>
-                                    <Image alt="Collapse Icon Right" src="/icons/collapse-right.svg" width={8} height={8} />
-                                </button>
-                            </button>
-                        </div>
-
-                        {/* Course details - number of lessons and total duration */}
-                        <div className="flex flex-1 text-xs font-normal leading-4 text-[#667085] gap-1 items-start w-full justify-start mt-1.5">
-                            <p>3 Lessons</p>
-                            <span>&#x2022;</span> {/* Bullet point separator */}
-                            <p>3hr 14m</p>
-                        </div>
-                    </div>
-
-                    {/* Progress bar and additional course info (completion, time left) */}
-                    <div className="flex h-[40%] flex-col">
-
-                        {/* Progress bar */}
-                        <div className="flex relative w-full h-2 rounded-full bg-gray-200 mb-1">
-                            <div
-                                className="absolute top-0 left-0 h-2 rounded-full bg-progressPurple"
-                                style={{ width: "43%" }}  // 43% progress is shown
-                            ></div>
-                        </div>
-
-                        {/* Course status - completed percentage and time left */}
-                        <div className="flex flex-1 flex-row justify-between mt-2 text-xs">
-                            <div className="flex flex-row gap-1">Completed: <span className="font-semibold">43%</span></div>
-                            <div className="flex flex-row gap-1">Time Left: <span className="font-semibold">28 days left</span></div>
-                        </div>
-                    </div>
-                </div>
-            </div> {/* End of course component */}
-
-            {/* ----------- Course Component ----------- */}
-            {/* Main course container with flex layout and specified dimensions */}
-            <div className="flex w-[350px] items-center justify-center flex-col rounded-lg relative overflow-hidden transition-transform duration-300 ease-in-out h-[330px]">
-
-                {/* Course image and suggestion label container */}
-                <div className="flex flex-1 h-[60%] items-center flex-col">
-
-                    {/* Suggestion label positioned absolutely within the container */}
-                    <div className="flex items-center absolute top-3 left-5 mr-5 bg-white bg-opacity-80 text-xs font-medium border border-white rounded-full py-1 px-3 z-10 transition-transform duration-300 ease-in-out">
-                        <Image
-                            className="mr-[5px]"
-                            src="/icons/suggestion_icon.svg"
-                            alt="suggestion icon"
-                            width={16}
-                            height={16}
-                        />
-                        <p>Suggested for you</p>
-                    </div>
-
-                    {/* Course image */}
-                    <Image className=" w-full h-[250px]" src="/images/course_img.svg" alt="Course" width={0} height={0} />
-
-                </div>
-
-                {/* Course details container */}
-                <div className="flex w-full h-full max-h-[9.625rem] flex-col bg-white border border-[#EAECF0] border-t-0 rounded-br-lg rounded-bl-lg px-6">
-
-                    {/* Course title and details (lessons, duration) */}
-                    <div className="flex h-[60%] items-center flex-col">
-
-                        {/* Course name with a collapse icon */}
-                        <div className="flex flex-1 text-lg font-semibold leading-6 w-full items-end justify-between mt-5">
-                            <div>
-                                <p>BITSET Full Course</p>
-                            </div>
-                            <button className="w-[32px] h-[32px]  rounded-full flex items-center justify-center transition-all duration-300 ease-in-out hover:bg-[#F2F4F7]">
-                                <button>
-                                    <Image alt="Collapse Icon Right" src="/icons/collapse-right.svg" width={8} height={8} />
-                                </button>
-                            </button>
-                        </div>
-
-                        {/* Course details - number of lessons and total duration */}
-                        <div className="flex flex-1 text-xs font-normal leading-4 text-[#667085] gap-1 items-start w-full justify-start mt-1.5">
-                            <p>3 Lessons</p>
-                            <span>&#x2022;</span> {/* Bullet point separator */}
-                            <p>3hr 14m</p>
-                        </div>
-                    </div>
-
-                    {/* Progress bar and additional course info (completion, time left) */}
-                    <div className="flex h-[40%] flex-col">
-
-                        {/* Progress bar */}
-                        <div className="flex relative w-full h-2 rounded-full bg-gray-200 mb-1">
-                            <div
-                                className="absolute top-0 left-0 h-2 rounded-full bg-progressPurple"
-                                style={{ width: "43%" }}  // 43% progress is shown
-                            ></div>
-                        </div>
-
-                        {/* Course status - completed percentage and time left */}
-                        <div className="flex flex-1 flex-row justify-between mt-2 text-xs">
-                            <div className="flex flex-row gap-1">Completed: <span className="font-semibold">43%</span></div>
-                            <div className="flex flex-row gap-1">Time Left: <span className="font-semibold">28 days left</span></div>
-                        </div>
-                    </div>
-                </div>
-            </div> {/* End of course component */}
-
-            {/* ----------- Course Component ----------- */}
-            {/* Main course container with flex layout and specified dimensions */}
-            <div className="flex w-[350px] items-center justify-center flex-col rounded-lg relative overflow-hidden transition-transform duration-300 ease-in-out h-[330px]">
-
-                {/* Course image and suggestion label container */}
-                <div className="flex flex-1 h-[60%] items-center flex-col">
-
-                    {/* Suggestion label positioned absolutely within the container */}
-                    <div className="flex items-center absolute top-3 left-5 mr-5 bg-white bg-opacity-80 text-xs font-medium border border-white rounded-full py-1 px-3 z-10 transition-transform duration-300 ease-in-out">
-                        <Image
-                            className="mr-[5px]"
-                            src="/icons/suggestion_icon.svg"
-                            alt="suggestion icon"
-                            width={16}
-                            height={16}
-                        />
-                        <p>Suggested for you</p>
-                    </div>
-
-                    {/* Course image */}
-                    <Image className=" w-full h-[250px]" src="/images/course_img.svg" alt="Course" width={0} height={0} />
-
-                </div>
-
-                {/* Course details container */}
-                <div className="flex w-full h-full max-h-[9.625rem] flex-col bg-white border border-[#EAECF0] border-t-0 rounded-br-lg rounded-bl-lg px-6">
-
-                    {/* Course title and details (lessons, duration) */}
-                    <div className="flex h-[60%] items-center flex-col">
-
-                        {/* Course name with a collapse icon */}
-                        <div className="flex flex-1 text-lg font-semibold leading-6 w-full items-end justify-between mt-5">
-                            <div>
-                                <p>BITSET Full Course</p>
-                            </div>
-                            <button className="w-[32px] h-[32px]  rounded-full flex items-center justify-center transition-all duration-300 ease-in-out hover:bg-[#F2F4F7]">
-                                <button>
-                                    <Image alt="Collapse Icon Right" src="/icons/collapse-right.svg" width={8} height={8} />
-                                </button>
-                            </button>
-                        </div>
-
-                        {/* Course details - number of lessons and total duration */}
-                        <div className="flex flex-1 text-xs font-normal leading-4 text-[#667085] gap-1 items-start w-full justify-start mt-1.5">
-                            <p>3 Lessons</p>
-                            <span>&#x2022;</span> {/* Bullet point separator */}
-                            <p>3hr 14m</p>
-                        </div>
-                    </div>
-
-                    {/* Progress bar and additional course info (completion, time left) */}
-                    <div className="flex h-[40%] flex-col">
-
-                        {/* Progress bar */}
-                        <div className="flex relative w-full h-2 rounded-full bg-gray-200 mb-1">
-                            <div
-                                className="absolute top-0 left-0 h-2 rounded-full bg-progressPurple"
-                                style={{ width: "43%" }}  // 43% progress is shown
-                            ></div>
-                        </div>
-
-                        {/* Course status - completed percentage and time left */}
-                        <div className="flex flex-1 flex-row justify-between mt-2 text-xs">
-                            <div className="flex flex-row gap-1">Completed: <span className="font-semibold">43%</span></div>
-                            <div className="flex flex-row gap-1">Time Left: <span className="font-semibold">28 days left</span></div>
-                        </div>
-                    </div>
-                </div>
-            </div> {/* End of course component */}
-
-            {/* ----------- Course Component ----------- */}
-            {/* Main course container with flex layout and specified dimensions */}
-            <div className="flex w-[350px] items-center justify-center flex-col rounded-lg relative overflow-hidden transition-transform duration-300 ease-in-out h-[330px]">
-
-                {/* Course image and suggestion label container */}
-                <div className="flex flex-1 h-[60%] items-center flex-col">
-
-                    {/* Suggestion label positioned absolutely within the container */}
-                    <div className="flex items-center absolute top-3 left-5 mr-5 bg-white bg-opacity-80 text-xs font-medium border border-white rounded-full py-1 px-3 z-10 transition-transform duration-300 ease-in-out">
-                        <Image
-                            className="mr-[5px]"
-                            src="/icons/suggestion_icon.svg"
-                            alt="suggestion icon"
-                            width={16}
-                            height={16}
-                        />
-                        <p>Suggested for you</p>
-                    </div>
-
-                    {/* Course image */}
-                    <Image className=" w-full h-[250px]" src="/images/course_img.svg" alt="Course" width={0} height={0} />
-
-                </div>
-
-                {/* Course details container */}
-                <div className="flex w-full h-full max-h-[9.625rem] flex-col bg-white border border-[#EAECF0] border-t-0 rounded-br-lg rounded-bl-lg px-6">
-
-                    {/* Course title and details (lessons, duration) */}
-                    <div className="flex h-[60%] items-center flex-col">
-
-                        {/* Course name with a collapse icon */}
-                        <div className="flex flex-1 text-lg font-semibold leading-6 w-full items-end justify-between mt-5">
-                            <div>
-                                <p>BITSET Full Course</p>
-                            </div>
-                            <button className="w-[32px] h-[32px]  rounded-full flex items-center justify-center transition-all duration-300 ease-in-out hover:bg-[#F2F4F7]">
-                                <button>
-                                    <Image alt="Collapse Icon Right" src="/icons/collapse-right.svg" width={8} height={8} />
-                                </button>
-                            </button>
-                        </div>
-
-                        {/* Course details - number of lessons and total duration */}
-                        <div className="flex flex-1 text-xs font-normal leading-4 text-[#667085] gap-1 items-start w-full justify-start mt-1.5">
-                            <p>3 Lessons</p>
-                            <span>&#x2022;</span> {/* Bullet point separator */}
-                            <p>3hr 14m</p>
-                        </div>
-                    </div>
-
-                    {/* Progress bar and additional course info (completion, time left) */}
-                    <div className="flex h-[40%] flex-col">
-
-                        {/* Progress bar */}
-                        <div className="flex relative w-full h-2 rounded-full bg-gray-200 mb-1">
-                            <div
-                                className="absolute top-0 left-0 h-2 rounded-full bg-progressPurple"
-                                style={{ width: "43%" }}  // 43% progress is shown
-                            ></div>
-                        </div>
-
-                        {/* Course status - completed percentage and time left */}
-                        <div className="flex flex-1 flex-row justify-between mt-2 text-xs">
-                            <div className="flex flex-row gap-1">Completed: <span className="font-semibold">43%</span></div>
-                            <div className="flex flex-row gap-1">Time Left: <span className="font-semibold">28 days left</span></div>
-                        </div>
-                    </div>
-                </div>
-            </div> {/* End of course component */}
+            </button> 
+            ))}
         </div>
+        </div>
+        )}
+        </>
     );
 }
 

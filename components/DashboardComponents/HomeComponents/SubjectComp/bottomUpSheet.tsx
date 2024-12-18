@@ -278,7 +278,7 @@ const BottomSheet: React.FC<BottomUpSheet> = ({ closeModal, isOpen, subjectName 
                                         <th className="w-1/8">Target Date</th>
                                         <th className="w-1/10">Theory</th>
                                         <th className="w-1/10">Practice</th>
-                                        <th className="w-1/10">PYQ's</th>
+                                        <th className="w-1/10">PYQs</th>
                                         <th className="w-1/10">Revision 1</th>
                                         <th className="w-1/10">Revision 2</th>
                                     </tr>

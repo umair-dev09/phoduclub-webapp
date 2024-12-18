@@ -19,9 +19,10 @@ type GroupData = {
 
 type groupNameProps = {
     communityId: string | null;
+    isAdmin: boolean;
   };
 
-function GroupName({communityId}:groupNameProps) {
+function GroupName({communityId, isAdmin}:groupNameProps) {
     const [groupData, setGroupData] = useState<GroupData | null>(null);
     const [user, setUser] = useState<User | null>(null);
     const [isPopoverOpen, setIsPopoverOpen] = useState(false);
@@ -157,8 +158,8 @@ function GroupName({communityId}:groupNameProps) {
                                     alt="arrow-right-01-round"
                                 />
                             </button>
-
-                            <button className='flex flex-row gap-2 items-center h-10 w-[206px] px-4 hover:bg-[#EAECF0]'
+                            {isAdmin &&(
+                              <button className='flex flex-row gap-2 items-center h-10 w-[206px] px-4 hover:bg-[#EAECF0]'
                                 onClick={() => setGroupInfoDialog(true)}>
                                 <Image
                                     src="/icons/information-circle.svg"
@@ -168,16 +169,22 @@ function GroupName({communityId}:groupNameProps) {
                                 />
                                 <span className='font-normal text-[#0C111D] text-sm'>Group info</span>
                             </button>
-                            <button className='flex flex-row gap-2 items-center h-10 w-[206px] px-4 hover:bg-[#EAECF0]'
-                                onClick={() => setDeleteGroupDialog(true)}>
-                                <Image
-                                    src="/icons/delete.svg"
-                                    width={18}
-                                    height={18}
-                                    alt="delete"
-                                />
-                                <span className='font-normal text-[#DE3024] text-sm'>Delete group</span>
-                            </button>
+                            )}
+
+                            {isAdmin &&(
+                             <button className='flex flex-row gap-2 items-center h-10 w-[206px] px-4 hover:bg-[#EAECF0]'
+                             onClick={() => setDeleteGroupDialog(true)}>
+                             <Image
+                                 src="/icons/delete.svg"
+                                 width={18}
+                                 height={18}
+                                 alt="delete"
+                             />
+                             <span className='font-normal text-[#DE3024] text-sm'>Delete group</span>
+                         </button> 
+                            )}
+                            
+                            
                         </PopoverContent>
                     </Popover>
             </div>

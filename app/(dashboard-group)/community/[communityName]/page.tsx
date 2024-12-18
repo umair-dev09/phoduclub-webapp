@@ -273,18 +273,21 @@ export default function CommunityName() {
     setCurrentResultIndex(results.length > 0 ? 0 : -1);
   }, [searchQuery, chats]);
 
-  useEffect(() => {
-    if (currentResultIndex >= 0) {
-      const chatId = chats[searchResults[currentResultIndex]]?.chatId;
-  
-      if (chatId && chatRefs.current[chatId]) {
-        chatRefs.current[chatId].scrollIntoView({
-          behavior: "auto",
-          block: "center",
-        });
-      }
-    }
-  }, [currentResultIndex, chats, searchResults]);
+ useEffect(() => {
+     if (currentResultIndex >= 0) {
+       const chatId = chats[searchResults[currentResultIndex]]?.chatId;
+   
+       if (chatId && chatRefs.current[chatId]) {
+         const chatElement = chatRefs.current[chatId];
+         if (chatElement) {
+           chatElement.scrollIntoView({
+             behavior: "auto",
+             block: "center",
+           });
+         }
+       }
+     }
+   }, [currentResultIndex, chats, searchResults]);
 
   const handleSearchUp = () => {
     if (searchResults.length === 0) return;
@@ -369,11 +372,11 @@ export default function CommunityName() {
   };
   
 
-  return (
+  return ( 
     <div className="flex h-full flex-row">
       {/* Middle Section */}
       <div className="flex flex-col w-[230px] bg-white border-r border-b border-lightGrey">
-        <GroupName communityId={communityId} />
+        <GroupName communityId={communityId} isAdmin={false}/>
         <div className="flex flex-col justify-start items-center mx-4 mt-[15px] gap-6">
           <div className="ChannelHeadingDiv w-full h-auto">
             {channelHeadings.map((heading) => (
@@ -422,7 +425,7 @@ export default function CommunityName() {
 
             <div className="flex items-center justify-between h-[72px] bg-white border-b border-lightGrey">
               {/* Pass the selected channel info to ChatHead */}
-              <ChatHead channelId={selectedChannel?.channelId ?? null} channelName={selectedChannel?.channelName ?? null} channelEmoji={selectedChannel?.channelEmoji ?? null} />
+              <ChatHead isAdmin={false} channelId={selectedChannel?.channelId ?? null} channelName={selectedChannel?.channelName ?? null} channelEmoji={selectedChannel?.channelEmoji ?? null} communityId={communityId} categoryId={selectedChannel.headingId || ''} channelDescription={''} />
               <div className="flex flex-row mr-4 gap-4">
               <Popover placement="bottom" isOpen={searchOpen} onClose={() =>{setSearchOpen(false); setSearchQuery('')}}>
               <PopoverTrigger>
@@ -457,7 +460,7 @@ export default function CommunityName() {
                   ) : (
                     <Image className='w-[26px] h-[26px] pl-[-2px]' src="/icons/collaspeDetails-2.svg" alt="collapse details icon" width={26} height={26} />
                   )}
-                </button>
+            </button>
               </div>
             </div>
             <div

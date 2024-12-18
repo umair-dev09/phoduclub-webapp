@@ -14,6 +14,7 @@ import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { auth, db, storage } from "@/firebase";
 import { collection, doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
 import { toast } from 'react-toastify';
+
 // Define the props interface
 interface VideoProps {
     isOpen: boolean;           // isOpen should be a boolean
@@ -23,7 +24,7 @@ interface VideoProps {
     isEditing: boolean;
     contentId: string;
 }
-function Video({ isOpen, toggleDrawer, sectionId, courseId, isEditing, contentId }: VideoProps) {
+ function Video({ isOpen, toggleDrawer, sectionId, courseId, isEditing, contentId }: VideoProps) {
     // state for ReactQuill
     const quillRef = useRef<ReactQuill | null>(null); // Ref to hold ReactQuill instance
     const [quill, setQuill] = useState<Quill | null>(null);
@@ -31,6 +32,7 @@ function Video({ isOpen, toggleDrawer, sectionId, courseId, isEditing, contentId
     const [isWriting, setIsWriting] = useState(false); // Track if text is being written
     const [lessonHeading, setLessonHeading] = useState('');
     const [lessonOverView, setLessonOverView] = useState('');
+    const [videoId, setVideoId] = useState('');
     const [videoDuration, setVideoDuration] = useState<number | null>(null);
     const [videoLink, setVideoLink] = useState<string | null>(null);
     const [contentScheduleDate, setContentScheduleDate] = useState('');
@@ -40,8 +42,13 @@ function Video({ isOpen, toggleDrawer, sectionId, courseId, isEditing, contentId
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
     const [uploadTaskRef, setUploadTaskRef] = useState<any>(null); // State to hold the upload task reference
     const [loading, setLoading] = useState(false);
+    const openVideoUploadTab = () => {
+        // navigator.clipboard.writeText(pId || '');
+        // alert('Video Id is copied you can close this tab now.');
+        window.open("http://localhost:3000/admin/uploadVideo", "_blank", "noopener,noreferrer");
+      }; 
 
-    const isFormValid = lessonHeading && lessonOverView && videoLink && contentScheduleDate;
+    const isFormValid = lessonHeading && lessonOverView  && contentScheduleDate && videoLink;
 
     
         useEffect(() => {
@@ -57,6 +64,8 @@ function Video({ isOpen, toggleDrawer, sectionId, courseId, isEditing, contentId
             setFileName(null);
             setContentScheduleDate('');
             setDisscusionOpen(false);
+            setVideoId('');
+            setSelectedFile(null);
         }
     }, [isEditing, contentId]);
 
@@ -73,6 +82,7 @@ function Video({ isOpen, toggleDrawer, sectionId, courseId, isEditing, contentId
                 setContentScheduleDate(content.lessonScheduleDate || '');
                 setDisscusionOpen(content.isDisscusionOpen || '');
                 setFileName(content.videoFileName);
+                setVideoId(content.videoId);
                 setLoading(false);
             } else {
                 toast.error("Content not found!");
@@ -306,10 +316,19 @@ function Video({ isOpen, toggleDrawer, sectionId, courseId, isEditing, contentId
                                     isDisscusionOpen: disscusionOpen,
                                     videoFileName: fileName,
                                     videoDuration,
+                                    // videoId,
                                      };
                                  await updateDoc(contentRef, courseData);
                                  toast.success('Changes saved!');
                                  toggleDrawer();
+                                 setLessonHeading('');
+            setLessonOverView('');
+            setVideoLink(null);
+            setProgress(null); // Reset progress
+            setFileName(null);
+            setContentScheduleDate('');
+            setDisscusionOpen(false);
+            setSelectedFile(null);
             }
             else{
             // Generate a unique section ID (Firestore will auto-generate if you use addDoc)
@@ -324,6 +343,7 @@ function Video({ isOpen, toggleDrawer, sectionId, courseId, isEditing, contentId
               isDisscusionOpen: disscusionOpen,
               videoFileName: fileName,
               videoDuration,
+            //   videoId,
             });
             toast.success('Video Content added!');
             toggleDrawer();
@@ -334,6 +354,7 @@ function Video({ isOpen, toggleDrawer, sectionId, courseId, isEditing, contentId
             setFileName(null);
             setContentScheduleDate('');
             setDisscusionOpen(false);
+            setSelectedFile(null);
         }
           } catch (error) {
             console.error('Error adding content: ', error);
@@ -456,7 +477,7 @@ function Video({ isOpen, toggleDrawer, sectionId, courseId, isEditing, contentId
                             {/* Upload the Image */}
                             <div className=" flex flex-col gap-2">
                                 <span className="text-[#1D2939] font-semibold text-sm">Upload Video</span>
-                                {!videoLink && (
+                                {(!selectedFile) && (
                                     <div className="h-[148px] rounded-xl bg-[#F9FAFB] border-2 border-dashed border-[#D0D5DD]"
                                         onDragOver={handleDragOver}
                                         onDrop={handleDrop}>
@@ -488,14 +509,13 @@ function Video({ isOpen, toggleDrawer, sectionId, courseId, isEditing, contentId
                                     </div>
                                 )}
 
-                                {videoLink && (
+                                {(selectedFile || videoLink)  && (
                                     <div className="border border-solid border-[#EAECF0] rounded-md h-[58px] flex flex-row justify-between items-center px-4">
                                         <div className="flex flex-row gap-1 items-center">
                                             <Image className="w-[30px] h-[20px]" src='/icons/play.svg' alt="Video" width={32} height={15} />
                                             <span className="text-[#1D2939] font-normal text-sm ">{fileName}</span>
                                         </div>
                                         <div className="flex flex-row gap-3 items-center">
-                                            {/* {progress === 100 && ( */}
                                             <div className="flex relative w-6 h-6 items-center justify-center">
                                                 <svg className="absolute top-0 left-0 w-full h-full transform -rotate-90" viewBox="0 0 36 36">
                                                     <path
@@ -517,7 +537,6 @@ function Video({ isOpen, toggleDrawer, sectionId, courseId, isEditing, contentId
                                                     />
                                                 </svg>
                                             </div>
-                                            {/* )}    */}
 
                                             <button onClick={() => {
                                                 if (uploadTaskRef) {
@@ -526,6 +545,7 @@ function Video({ isOpen, toggleDrawer, sectionId, courseId, isEditing, contentId
                                                 }
                                                 setVideoLink(null);
                                                 setFileName(null); // Reset file name on cancel
+                                                setSelectedFile(null);
                                             }}>
                                                 <Image
                                                     src="/icons/delete.svg"
@@ -539,6 +559,37 @@ function Video({ isOpen, toggleDrawer, sectionId, courseId, isEditing, contentId
                                 )}
 
                             </div>
+
+                            {/* <div className='flex flex-col gap-2'>
+                                <div className="flex flex-row justify-between items-center">
+                                    <div className="flex flex-col">
+                                    <span className='text-[#1D2939] text-sm font-semibold'>Video Id</span>
+                                    <span className='text-[#1D2939] text-[12px] font-normal'>To get the video id click on the upload video button.</span>
+                                    </div>
+                                <button
+                                className="text-white text-sm font-semibold rounded-md shadow-inner-button"
+                                style={{
+                                width: "150px",
+                                height: "38px",
+                                backgroundColor: "#9012FF",
+                                borderWidth: "1px 0 0 0",
+                                borderColor: "#9012FF",
+                                }} onClick={openVideoUploadTab}>Upload Video</button>
+                                </div>
+                                <input
+                                    className="font-normal pl-3 text-[#1D2939] text-sm placeholder:text-[#A1A1A1] rounded-md placeholder:font-normal min-h-[10px] max-h-[150px] overflow-y-auto 
+                                    focus:outline-none focus:ring-0 
+                                       border border-solid border-[#D0D5DD] h-[40px] 
+                                       shadow-[0px_1px_2px_0px_rgba(16,24,40,0.05)] 
+                                         transition duration-200 ease-in-out "
+                                    placeholder="Enter the video Id here"
+                                    type="text"
+                                    value={videoId}
+                                    onChange={(e) => setVideoId(e.target.value)}
+                                />
+                            </div> */}
+
+                            
                             <div className="flex flex-col gap-2 mb-3 mt-1">
                                 <span className="text-[#1D2939] font-semibold text-sm">Schedule Lesson</span>
                                 <DatePicker

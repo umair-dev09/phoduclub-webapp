@@ -1,12 +1,146 @@
 import styles from '../Profile.module.css';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Dialog, DialogBackdrop, DialogPanel } from '@headlessui/react';
 import Image from 'next/image';
-import PhoneInput from 'react-phone-input-2';
+import { doc, getDoc, getFirestore } from 'firebase/firestore';
+import { onAuthStateChanged, RecaptchaVerifier, signInWithPhoneNumber, User } from 'firebase/auth';
+import { auth } from '@/firebase';
+import OtpForUpdate from './OtpForUpdate';
+import LoadingData from '@/components/Loading';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import 'react-phone-input-2/lib/style.css';
+import PhoneInput from 'react-phone-input-2';
 
-function PhoneUpdate() {
+type UserData = {
+  phone: string | null;
+};
+type PhoneUpdateProps = {
+  setIsEditing: (isEditing: boolean) => void; // Add this prop to update isEditing in Profile
+
+}
+
+function PhoneUpdate({setIsEditing}:PhoneUpdateProps) {
   let [isOpen, setIsOpen] = useState(false)
+   const recaptchaVerifierRef = useRef<any>(null);
+    let [showComponent, setShowComponent] = useState(false);
+    const [isOtpOpen, setIsOtpOpen] = useState(false);
+    const [userData, setUserData] = useState<UserData | null>(null);
+    const [loading, setLoading] = useState(true);
+    const [isLoading, setIsLoading] = useState(false); // Loading state
+    const [error, setError] = useState(false);
+    const [user, setUser] = useState<User | null>(null);
+    const db = getFirestore();
+    const [newPhone, setNewPhone] = useState(''); // State for the new email input
+    const [isFormValid, setIsFormValid] = useState(true);
+    
+     useEffect(() => {
+        const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+          if (currentUser) {
+            setUser(currentUser);
+          } else {
+            console.error('No user is logged in');
+            setError(true);
+          }
+        });
+    
+        return () => unsubscribe();
+      }, []);
+    
+      useEffect(() => {
+        const fetchUserData = async () => {
+          try {
+            if (user) {
+              const uniqueId = user.uid;
+              const userDoc = doc(db, `users/${uniqueId}`);
+              const userSnapshot = await getDoc(userDoc);
+    
+              if (userSnapshot.exists()) {
+                const data = userSnapshot.data() as UserData;
+                setUserData(data);
+              } else {
+                console.error('No user data found!');
+                setError(true);
+              }
+            }
+          } catch (error) {
+            console.error('Error fetching user data:', error);
+            setError(true);
+          } finally {
+            setLoading(false);
+          }
+        };
+    
+        if (user) {
+          fetchUserData();
+        }
+      }, [user, db]);
+      useEffect(() => {
+        // Enable the button only if the newEmail is valid and not empty
+        if (newPhone.trim() !== '' ) {
+          setIsFormValid(false);
+        } else {
+          setIsFormValid(true);
+        }
+      }, [newPhone]);
+   if (loading || error) {
+      return <LoadingData />;
+    }
+
+    const setUpRecaptcha = () => {
+      if (!recaptchaVerifierRef.current) {
+        recaptchaVerifierRef.current = new RecaptchaVerifier(auth, 'recaptcha-container', {
+          size: 'invisible',
+          callback: (response: any) => {
+            console.log('Recaptcha verified', response);
+          },
+        });
+      } else {
+        console.log('Recaptcha already rendered');
+      }
+    };
+  
+    const handleButtonClick = () => {
+      toast.warning('Currently this feature is disabled due to data cost.')
+      // setUpRecaptcha();
+      // const appVerifier = recaptchaVerifierRef.current;
+      // setIsLoading(true);
+      // if (userData?.phone) {
+      //   toast.promise(
+      //     new Promise((resolve, reject) => {
+      //       signInWithPhoneNumber(auth, `${userData.phone}`, appVerifier)
+      //         .then((confirmationResult) => {
+      //           window.confirmationResult = confirmationResult;
+      //           setIsOpen(false);
+      //           setShowComponent(true);
+      //           setIsOtpOpen(true);
+      //           resolve('Otp Sent!');
+      //           setIsLoading(false);
+      //           setIsFormValid(true);
+      //         })
+      //         .catch((error: any) => {
+      //           console.error('Error sending OTP', error);
+      //           reject(new Error('Failed to send OTP'));
+      //           setIsLoading(false);
+      //           setIsFormValid(false);
+      //         });
+      //     }),
+      //     {
+      //       pending: 'Sending OTP...',
+      //       success: 'OTP sent successfully!',
+      //       error: 'Failed to send OTP',
+      //     }
+      //   );
+      // } else {
+      //   console.error('No valid Phone Number');
+      //   setIsLoading(false);
+      //   setIsFormValid(false);
+      // }
+    };
+
+  function handleInputChange(phone: string, value: any): void {
+    throw new Error('Function not implemented.');
+  }
 
   return (
     <div className={styles.updateMob}>
@@ -29,7 +163,8 @@ function PhoneUpdate() {
                 <div>
                   <PhoneInput
                     country={'in'}
-                    //  value={phone}
+                     value={userData?.phone}
+                     disabled
                     //  onChange={(value: any) => handleInputChange('phone', value)}
                     placeholder="+91 000000000"
                     inputProps={{
@@ -48,8 +183,9 @@ function PhoneUpdate() {
                 <div>
                   <PhoneInput
                     country={'in'}
-                    //  value={phone}
-                    //  onChange={(value: any) => handleInputChange('phone', value)}
+                     value={newPhone}
+                     
+                     onChange={(phone) => setNewPhone(phone)}
                     placeholder="+91 000000000"
                     inputProps={{
                       name: 'phone',
@@ -66,12 +202,23 @@ function PhoneUpdate() {
             <div className={styles.commonDivider} />
 
             <div className={styles.commonButtons}>
-              <button className={styles.emailCancelBtn}>Cancel</button>
-              <button className={styles.emailVerifyBtn}>Verify</button>
+              <button onClick={() => setIsOpen(false)} className={styles.emailCancelBtn}>Cancel</button>
+              <button 
+                className={`min-w-[100px] flex justify-center items-center px-6 py-[10px] rounded-[8px] text-white font-medium shadow-inner-button ${isFormValid ? 'bg-[#d8acff]' : 'bg-[#8501FF]'}`}
+                onClick={handleButtonClick}
+                disabled={isFormValid}>
+                   {isLoading ? (
+                  <div className='w-5 h-5 animate-spin-loading rounded-[50%] border-4 border-[#ffffff4d] border-solid border-t-4 border-t-customWhite '></div> // Show spinner
+                ) : (
+                  'Verify'
+                )}
+                </button>
             </div>
           </DialogPanel>
         </div>
       </Dialog>
+      {showComponent && <OtpForUpdate newEmail='' newPhone={newPhone} isOpen={isOtpOpen} setIsOpen={setIsOtpOpen} targetYear='' setIsEditing={setIsEditing} targetExams={[]} />}
+      <div id="recaptcha-container"></div>
     </div>
   );
 }

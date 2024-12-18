@@ -25,8 +25,8 @@ function NotficationDropDown() {
           <div className="w-full h-[1px] bg-[#F2F4F7] my-[10px]"></div>
           <div className="flex flex-col items-center mt-[40px] mb-[40px] mx-[15px]">
             <Image src="/icons/empty-notification.svg" width={100} height={100} alt="Empty Notification" />
-            <h3 className="font-semibold text-[15px] mt-[12px] mb-[8px]">You're all caught up</h3>
-            <p className="text-sm text-center text-gray-500">We’ll keep you updated on any future notifications</p>
+            <h3 className="font-semibold text-[15px] mt-[12px] mb-[8px]">You&apos;re all caught up</h3>
+            <p className="text-sm text-center text-gray-500">We&apos;ll keep you updated on any future notifications</p>
           </div>
 
         </PopoverContent>

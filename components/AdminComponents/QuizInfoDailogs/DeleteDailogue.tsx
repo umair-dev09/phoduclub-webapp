@@ -20,7 +20,7 @@ function DeleteQuiz({ open, onClose }: DeleteQuizProps) {
                     <div className="flex flex-col p-6 gap-3 border-solid border-[#EAECF0] border-b rounded-t-2xl">
                         <div className="flex flex-row justify-between items-center">
                             <h1 className="text-[#1D2939] font-bold text-lg">
-                                Delete quiz "Physics"?
+                                {/* Delete quiz "Physics"? */}
                             </h1>
                             <button
                                 className="w-[32px] h-[32px] rounded-full flex items-center justify-center transition-all duration-300 ease-in-out hover:bg-[#F2F4F7]"

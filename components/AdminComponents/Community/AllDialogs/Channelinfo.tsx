@@ -25,7 +25,7 @@ const membersData = [
     { name: "John Doe", username: "john#1234", role: "Teacher" },
     { name: "Alice Brown", username: "alice#9876", role: "Editor" },
 ];
-function channelinfo({ open, onClose, channelDescription, channelEmoji, channelId, channelName, categoryId, communityId }: channelinfoProps) {
+function ChannelInfo({ open, onClose, channelDescription, channelEmoji, channelId, channelName, categoryId, communityId }: channelinfoProps) {
     const [edigroupdetails, setEditgroupdetails] = useState(false);
     const [uniqueID, setUniqueID] = useState('');
     const [isOpen, setIsOpen] = useState(false); // Control popover visibility
@@ -238,5 +238,5 @@ function channelinfo({ open, onClose, channelDescription, channelEmoji, channelI
         </Dialog >
     )
 }
-export default channelinfo;
+export default ChannelInfo;
 

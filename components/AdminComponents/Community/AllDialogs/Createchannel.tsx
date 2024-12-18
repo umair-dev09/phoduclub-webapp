@@ -39,7 +39,7 @@ const membersData = [
     { name: "John Doe", username: "john#1234" },
     { name: "Alice Brown", username: "alice#9876" },
 ];
-function createchannel({ open, onClose, channelName, headingId, openAddMembers, setChannelId, setChannelName, channelEmoji, setChannelEmoji, channelDescription, setChannelDescription, communityId, channelId, isEditing }: createchannelProps) {
+function CreateChannel({ open, onClose, channelName, headingId, openAddMembers, setChannelId, setChannelName, channelEmoji, setChannelEmoji, channelDescription, setChannelDescription, communityId, channelId, isEditing }: createchannelProps) {
     const [isEmojiPopupOpen, setIsEmojiPopupOpen] = useState(false);
 
     const isFormValid = channelName && channelDescription && channelEmoji;
@@ -214,5 +214,5 @@ function createchannel({ open, onClose, channelName, headingId, openAddMembers, 
         </div>
     )
 }
-export default createchannel;
+export default CreateChannel;
 

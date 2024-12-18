@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import { Popover, PopoverContent, PopoverTrigger } from "@nextui-org/popover";
 import { Checkbox } from "@nextui-org/react";
 
-function customerinfo() {
+function CustomerInfo() {
     const [isChecked, setIsChecked] = useState(false);
     const [height, setHeight] = useState("32px");
     const [text, setText] = useState("");
@@ -484,4 +484,4 @@ function customerinfo() {
         </div>
     )
 }
-export default customerinfo;
+export default CustomerInfo;

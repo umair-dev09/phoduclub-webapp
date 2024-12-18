@@ -103,7 +103,7 @@
     "tailwindcss-react-native": "^1.7.10",
     "typescript": "5.3.3",
     "url": "^0.11.4",
-    "video.js": "^8.20.0",
+    "video.js": "^8.21.0",
     "videojs-http-source-selector": "^1.1.6"
   },
   "devDependencies": {
@@ -117,7 +117,8 @@
     "@types/react-scroll": "^1.8.10",
     "@types/video.js": "^7.3.58",
     "encoding": "^0.1.13",
-    "eslint": "^9.9.1",
+    "eslint": "^9.17.0",
+    "eslint-config-next": "^15.1.0",
     "svg-inline-loader": "^0.8.2"
   }
 }

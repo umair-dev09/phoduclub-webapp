@@ -122,7 +122,7 @@ function CoursesList() {
 
 
   return (
-    <div className="flex flex-1 flex-row mx-4 gap-7 flex-wrap">
+    <div className="flex flex-1 flex-row mx-4 gap-7 flex-wrap pr-2">
       {courses.map((course, index) => (
         <div key={index} className="flex items-center justify-center flex-col rounded-lg relative overflow-hidden transition-transform duration-300 w-[300px] h-auto">
           {/* Container for the suggestion badge and course image */}

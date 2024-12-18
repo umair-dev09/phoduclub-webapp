@@ -630,8 +630,8 @@ function CustomerCare() {
                     </div>
                 )}
 
-                {selectedStatuses.map((status) => (
-                    <div className="flex flex-row items-center justify-between w-full">
+                {selectedStatuses.map((status, index) => (
+                    <div key={index} className="flex flex-row items-center justify-between w-full">
                         <div className="flex flex-row gap-2">
                             {selectedStatuses.map((status) => (
                                 <div key={status} className="flex flex-row items-center w-fit px-3 py-2 gap-1 text-xs font-medium bg-[#EDE4FF] rounded-[0.375rem]" style={{ color: statusColors[status] }}>

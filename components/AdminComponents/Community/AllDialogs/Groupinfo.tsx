@@ -17,7 +17,7 @@ interface groupinfoProps {
     members: { id: string, isAdmin: boolean }[] | null;
 
 }
-function groupinfo({ open, onClose, communityId, communityName, communityDescription, members, communityImage }: groupinfoProps) {
+function GroupInfo({ open, onClose, communityId, communityName, communityDescription, members, communityImage }: groupinfoProps) {
     const [editGroup, setEditGroup] = useState(false);
     const [name, setName] = useState('');
     const [img, setImg] = useState('');
@@ -86,4 +86,4 @@ function groupinfo({ open, onClose, communityId, communityName, communityDescrip
         </Dialog >
     )
 }
-export default groupinfo;
+export default GroupInfo;
