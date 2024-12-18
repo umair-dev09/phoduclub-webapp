@@ -543,48 +543,49 @@ function CourseContent({ courseId }: CourseContentProps) {
                             </div>
                             <div className="flex flex-col w-full gap-2 px-6 mb-2">
                                 <p className="text-start text-lg text-[#1D2939] font-semibold">Schedule Section</p>
-
-
-                                {isSectionEditing ? (
-                                    <>
-
-                                        <div className="flex flex-row justify-between items-center">
-                                            <p className="text-[#1D2939] text-sm font-medium">Selected Date</p>
-                                            <button
-                                                className="w-[150px] h-[30px] rounded-full flex items-center justify-center transition-all duration-300 ease-in-out hover:bg-[#F2F4F7]"
-                                                onClick={() => setShowDatepicker(true)}
-                                            >
-                                                <p className="text-sm">
-                                                    {formatScheduleDate(sectionScheduleDate) || " "}
-                                                </p>
-                                            </button>
-                                        </div>
-                                        {(showDatepicker &&
-                                            <DatePicker
-                                                granularity="minute"
-                                                minValue={today(getLocalTimeZone())}
-                                                hideTimeZone
-                                                onChange={(date) => {
-                                                    const dateString = date ? date.toString() : "";
-                                                    setSectionScheduleDate(dateString);
-                                                    setShowDatepicker(true); // Return to button view after selecting date
-                                                }}
-                                            />
-                                        )}
-                                    </>
-                                ) : (
-                                    // If creating, show the date picker directly
-                                    <DatePicker
-                                        granularity="minute"
-                                        minValue={today(getLocalTimeZone())}
-                                        hideTimeZone
-                                        onChange={(date) => {
-                                            const dateString = date ? date.toString() : "";
-                                            setSectionScheduleDate(dateString);
-                                        }}
-                                    />
-                                )}
-
+                                <div className="flex flex-row justify-between items-center">
+                                    <p className="text-[#1D2939] text-sm font-medium">Selected Date</p>
+                                    {isSectionEditing ? (
+                                        <>
+                                            {/* If editing, show the button */}
+                                            {!showDatepicker && (
+                                                <button
+                                                    className="w-[150px] h-[30px] rounded-full flex items-center justify-center transition-all duration-300 ease-in-out hover:bg-[#F2F4F7]"
+                                                    onClick={() => setShowDatepicker(true)}
+                                                >
+                                                    <p className="text-sm">
+                                                        {formatScheduleDate(sectionScheduleDate) || " "}
+                                                    </p>
+                                                </button>
+                                            )}
+                                            {/* If showDatepicker is true, show the date picker */}
+                                            {showDatepicker && (
+                                                <DatePicker
+                                                    granularity="minute"
+                                                    minValue={today(getLocalTimeZone())}
+                                                    // value={dateForPicker} // Uncomment and use if you have a value for the date
+                                                    hideTimeZone
+                                                    onChange={(date) => {
+                                                        const dateString = date ? date.toString() : ""; // Customize format if needed
+                                                        setSectionScheduleDate(dateString);
+                                                    }}
+                                                />
+                                            )}
+                                        </>
+                                    ) : (
+                                        // If creating, show the date picker directly
+                                        <DatePicker
+                                            granularity="minute"
+                                            minValue={today(getLocalTimeZone())}
+                                            // value={dateForPicker} // Uncomment and use if you have a value for the date
+                                            hideTimeZone
+                                            onChange={(date) => {
+                                                const dateString = date ? date.toString() : ""; // Customize format if needed
+                                                setSectionScheduleDate(dateString);
+                                            }}
+                                        />
+                                    )}
+                                </div>
 
 
                             </div>

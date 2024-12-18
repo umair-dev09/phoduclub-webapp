@@ -14,6 +14,8 @@ import { toast } from 'react-toastify';
 import { useEffect } from 'react';
 import LoadingData from "@/components/Loading";
 import { DateTime } from 'luxon';  // Import luxon
+import { Calendar } from "@nextui-org/calendar";
+import { TimeInput } from "@nextui-org/date-input";
 
 type Sections = {
     sectionName: string;
@@ -44,40 +46,28 @@ type CourseContentProps = {
     courseId: string;
 }
 
-const formatScheduleDate = (dateString: string | null): string => {
-    if (!dateString) return "-"; // Return "-" if the date is null or undefined
+const [selectedDateTime, setSelectedDateTime] = useState<{
+    date: CalendarDate | null;
+    timestamp: number | null;
+    time: string | null;
+}>({
+    date: null,
+    timestamp: null,
+    time: null
+});
+
+// Changed from using new Date(dateString)
+const formatScheduleDate = (date: CalendarDate | null): string => {
+    if (!date) return "-";
 
     try {
-        const dateObj = new Date(dateString);
-
-        if (isNaN(dateObj.getTime())) {
-            // If date is invalid
-            return "-";
-        }
-
-        // Format the date as per your required format
-        let formattedDate = dateObj.toLocaleString("en-GB", {
-            day: "2-digit",
-            month: "2-digit",
-            year: "numeric",
-            hour: "2-digit",
-            minute: "2-digit",
-            hour12: true,
-        });
-
-        // Adjust the formatting to match "2024-12-24,12:00 AM"
-        formattedDate = formattedDate.replace(
-            /(\d{2})\/(\d{2})\/(\d{4}), (\d{2}):(\d{2}) (am|pm)/i,
-            "$3-$2-$1,$4:$5 $6"
-        );
-        formattedDate = formattedDate.replace(/(am|pm)/i, (match) => match.toUpperCase());
-        return formattedDate;
+        // Now directly using CalendarDate properties
+        return `${date.year}-${String(date.month).padStart(2, "0")}-${String(date.day).padStart(2, "0")}`;
     } catch (error) {
         console.error("Error formatting date:", error);
         return "-";
     }
 };
-
 
 function CourseContent({ courseId }: CourseContentProps) {
     const [openSectionDialog, setOpenSectionDialog] = useState(false);
@@ -95,7 +85,6 @@ function CourseContent({ courseId }: CourseContentProps) {
     const [isContentEditing, setIsContentEditing] = useState(false);
     const [contentId, setContentId] = useState('');
     const [dateForPicker, setDateForPicker] = useState<DateValue | null>(null);
-    const [showDatepicker, setShowDatepicker] = useState(false);
 
     useEffect(() => {
         const sectionsRef = collection(db, 'course', courseId, 'sections');
@@ -279,6 +268,7 @@ function CourseContent({ courseId }: CourseContentProps) {
 
 
 
+
     return (
         <div className="flex flex-col gap-4 ">
             <div className="flex flex-row justify-between h-16">
@@ -380,15 +370,18 @@ function CourseContent({ courseId }: CourseContentProps) {
                                                     className="w-10 p-[10px] h-[40px] gap-1 flex-row flex  bg-[#FFFFFF] rounded-md 
                                                                             shadow-none"
                                                     style={{ outline: "none" }}
+                                                    onClick={(event) => event.stopPropagation()}
                                                 >
                                                     <Image src="/icons/three-dots.svg" width={18} height={18} alt="three-dots" />
                                                 </button>
                                             </PopoverTrigger>
                                             <PopoverContent className="flex flex-col px-0 text-sm font-normal bg-white border border-lightGrey rounded-md w-[167px] shadow-md"
+                                                onClick={(event) => event.stopPropagation()}
                                             >
                                                 <button className=" p-3 gap-2 flex-row flex h-[40px] hover:bg-[#F2F4F7] w-full"
                                                     onClick={() => editCreateSection(section.sectionName, section.sectionScheduleDate, section.sectionId)
-                                                    }>
+                                                    }
+                                                >
                                                     <Image src="/icons/edit-icon.svg" width={18} height={18} alt="Edit-quiz" />
                                                     <span className="text-sm text-[#0C111D] font-normal">Edit Section</span>
                                                 </button>
@@ -543,50 +536,71 @@ function CourseContent({ courseId }: CourseContentProps) {
                             </div>
                             <div className="flex flex-col w-full gap-2 px-6 mb-2">
                                 <p className="text-start text-lg text-[#1D2939] font-semibold">Schedule Section</p>
-
-
-                                {isSectionEditing ? (
-                                    <>
-
-                                        <div className="flex flex-row justify-between items-center">
-                                            <p className="text-[#1D2939] text-sm font-medium">Selected Date</p>
-                                            <button
-                                                className="w-[150px] h-[30px] rounded-full flex items-center justify-center transition-all duration-300 ease-in-out hover:bg-[#F2F4F7]"
-                                                onClick={() => setShowDatepicker(true)}
-                                            >
-                                                <p className="text-sm">
-                                                    {formatScheduleDate(sectionScheduleDate) || " "}
-                                                </p>
-                                            </button>
-                                        </div>
-                                        {(showDatepicker &&
-                                            <DatePicker
-                                                granularity="minute"
-                                                minValue={today(getLocalTimeZone())}
-                                                hideTimeZone
-                                                onChange={(date) => {
-                                                    const dateString = date ? date.toString() : "";
-                                                    setSectionScheduleDate(dateString);
-                                                    setShowDatepicker(true); // Return to button view after selecting date
-                                                }}
+                                <p className="text-sm">Selected Date: {formatScheduleDate(sectionScheduleDate) || 'Date not set'}</p>
+                                {/* <DatePicker
+                                    granularity="minute"
+                                    minValue={today(getLocalTimeZone())}
+                                    // value={dateForPicker}
+                                    hideTimeZone
+                                    onChange={(date) => {
+                                        const dateString = date ? date.toString() : ""; // Customize format if needed
+                                        setSectionScheduleDate(dateString);
+                                    }}
+                                /> */}
+                            </div>
+                            <div className="flex flex-row items-center justify-between h-10 mx-6 rounded-md gap-2 mb-2 bg-[#f4f4f5]">
+                                <p className="text-sm "> {formatScheduleDate(sectionScheduleDate) || 'Date not set'}</p>
+                                <Popover placement="right">
+                                    <PopoverTrigger>
+                                        <button
+                                            className="flex flex-row gap-1 items-center px-5 rounded-md border-[2px] border-solid border-[#9012FF] h-[44px] w-auto justify-center"
+                                        >
+                                            <Image
+                                                src="/icons/plus-sign.svg"
+                                                height={18}
+                                                width={18}
+                                                alt="Plus Sign"
                                             />
-                                        )}
-                                    </>
-                                ) : (
-                                    // If creating, show the date picker directly
-                                    <DatePicker
-                                        granularity="minute"
-                                        minValue={today(getLocalTimeZone())}
-                                        hideTimeZone
-                                        onChange={(date) => {
-                                            const dateString = date ? date.toString() : "";
-                                            setSectionScheduleDate(dateString);
-                                        }}
-                                    />
-                                )}
+                                            <span className="text-[#9012FF] font-semibold text-sm">
+                                                Add Content
+                                            </span>
+                                        </button>
+                                    </PopoverTrigger>
+                                    <PopoverContent className="flex flex-col bg-white border border-lightGrey rounded-xl w-auto shadow-md">
+                                        <div className="flex flex-col gap-4 p-4">
+                                            {/* Calendar Component */}
+                                            <div className="rounded-lg">
+                                                <Calendar
+                                                    onChange={(date: CalendarDate) => {
+                                                        const timestamp = date.toDate(getLocalTimeZone()).getTime();
 
+                                                        setSelectedDateTime(prev => ({
+                                                            ...prev,
+                                                            date: date,  // Store the full CalendarDate object
+                                                            timestamp: timestamp
+                                                        }));
 
-
+                                                        // Convert CalendarDate to string explicitly
+                                                        setSectionScheduleDate(formatScheduleDate(date));
+                                                    }}
+                                                // ... rest remains the same
+                                                />
+                                            </div>
+                                            {/* Time Input Component */}
+                                            <div className="rounded-lg">
+                                                <TimeInput
+                                                    label="Event Time"
+                                                    onChange={(time) => {
+                                                        setSelectedDateTime(prev => ({
+                                                            ...prev,
+                                                            time: time.toString()
+                                                        }));
+                                                    }}
+                                                />
+                                            </div>
+                                        </div>
+                                    </PopoverContent>
+                                </Popover>
                             </div>
                             <hr />
                             <div className="flex flex-row justify-end mx-6 my-2 items-center gap-4 pb-2">

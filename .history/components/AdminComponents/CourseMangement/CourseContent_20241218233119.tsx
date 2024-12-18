@@ -14,6 +14,9 @@ import { toast } from 'react-toastify';
 import { useEffect } from 'react';
 import LoadingData from "@/components/Loading";
 import { DateTime } from 'luxon';  // Import luxon
+import { I18nProvider } from "@react-aria/i18n";
+import React from "react";
+
 
 type Sections = {
     sectionName: string;
@@ -77,7 +80,7 @@ const formatScheduleDate = (dateString: string | null): string => {
         return "-";
     }
 };
-
+let [date, setDate] = React.useState(parseAbsoluteToLocal("2021-04-07T18:45:22Z"));
 
 function CourseContent({ courseId }: CourseContentProps) {
     const [openSectionDialog, setOpenSectionDialog] = useState(false);
@@ -95,7 +98,7 @@ function CourseContent({ courseId }: CourseContentProps) {
     const [isContentEditing, setIsContentEditing] = useState(false);
     const [contentId, setContentId] = useState('');
     const [dateForPicker, setDateForPicker] = useState<DateValue | null>(null);
-    const [showDatepicker, setShowDatepicker] = useState(false);
+    const [showdatepicker, setShowDatepicker] = useState(false);
 
     useEffect(() => {
         const sectionsRef = collection(db, 'course', courseId, 'sections');
@@ -543,50 +546,36 @@ function CourseContent({ courseId }: CourseContentProps) {
                             </div>
                             <div className="flex flex-col w-full gap-2 px-6 mb-2">
                                 <p className="text-start text-lg text-[#1D2939] font-semibold">Schedule Section</p>
+                                <div className="flex flex-row justify-between items-center">
+                                    <p className="text-[#1D2939] text-sm font-medium">Selected Date</p>
+                                    <button onClick={() => setShowDatepicker(true)}>
+                                        <p className="text-sm">{formatScheduleDate(sectionScheduleDate) || 'Date not set'}</p>
+                                    </button>
 
 
-                                {isSectionEditing ? (
-                                    <>
-
-                                        <div className="flex flex-row justify-between items-center">
-                                            <p className="text-[#1D2939] text-sm font-medium">Selected Date</p>
-                                            <button
-                                                className="w-[150px] h-[30px] rounded-full flex items-center justify-center transition-all duration-300 ease-in-out hover:bg-[#F2F4F7]"
-                                                onClick={() => setShowDatepicker(true)}
-                                            >
-                                                <p className="text-sm">
-                                                    {formatScheduleDate(sectionScheduleDate) || " "}
-                                                </p>
-                                            </button>
-                                        </div>
-                                        {(showDatepicker &&
-                                            <DatePicker
-                                                granularity="minute"
-                                                minValue={today(getLocalTimeZone())}
-                                                hideTimeZone
-                                                onChange={(date) => {
-                                                    const dateString = date ? date.toString() : "";
-                                                    setSectionScheduleDate(dateString);
-                                                    setShowDatepicker(true); // Return to button view after selecting date
-                                                }}
-                                            />
-                                        )}
-                                    </>
-                                ) : (
-                                    // If creating, show the date picker directly
-                                    <DatePicker
-                                        granularity="minute"
-                                        minValue={today(getLocalTimeZone())}
-                                        hideTimeZone
-                                        onChange={(date) => {
-                                            const dateString = date ? date.toString() : "";
-                                            setSectionScheduleDate(dateString);
-                                        }}
-                                    />
+                                </div>
+                                {showdatepicker && (
+                                    // <DatePicker
+                                    //     granularity="minute"
+                                    //     minValue={today(getLocalTimeZone())}
+                                    //     // value={dateForPicker} // Uncomment and use if you have a value for the date
+                                    //     hideTimeZone
+                                    //     onChange={(date) => {
+                                    //         const dateString = date ? date.toString() : ""; // Customize format if needed
+                                    //         setSectionScheduleDate(dateString);
+                                    //     }}
+                                    // />
+                                    <I18nProvider locale="hi-IN-u-ca-indian">
+                                        <DatePicker
+                                            showMonthAndYearPickers
+                                            className="max-w-md"
+                                            label="Appointment date"
+                                            value={date}
+                                            variant="bordered"
+                                            onChange={setDate}
+                                        />
+                                    </I18nProvider>
                                 )}
-
-
-
                             </div>
                             <hr />
                             <div className="flex flex-row justify-end mx-6 my-2 items-center gap-4 pb-2">

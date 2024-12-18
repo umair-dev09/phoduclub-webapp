@@ -152,19 +152,19 @@ function Courses() {
 
     return (
         <div className="px-[32px] pt-[25px] w-full h-auto overflow-y-auto pb-24 flex flex-col gap-5 ">
-            <div className="flex items-center">
-                <button className="flex items-center ml-1" onClick={() => router.back()}>
-                    <div className="text-[#1D2939] h-[24px] w-auto text-[16px] font-semibold">
-                        Courses
-                    </div>
-                    <div className="ml-3 w-[24px]">
-                        <Image src="/icons/course-left.svg" width={6} height={12} alt="left-arrow" />
-                    </div>
-                </button>
-                <div className="text-[#667085] h-full w-auto -ml-1 text-[16px] font-semibold">
-                    {courseData?.courseName}
-                </div>
-            </div>
+             <div className="flex items-center">
+                            <button className="flex items-center ml-1" onClick={() => router.back()}>
+                                <div className="text-[#1D2939] h-[24px] w-auto text-[16px] font-semibold">
+                                    Courses
+                                </div>
+                                <div className="ml-3 w-[24px]">
+                                    <Image src="/icons/course-left.svg" width={6} height={12} alt="left-arrow" />
+                                </div>
+                            </button>
+                            <div className="text-[#667085] h-full w-auto -ml-1 text-[16px] font-semibold">
+                                {courseData?.courseName}
+                            </div>
+                        </div>
             {/* Course content */}
             <div className="bg-[#FFFFFF] p-6 border border-solid border-[#EAECF0] rounded-[16px] flex flex-row  gap-6 h-auto items-center justify-center">
                 <Image

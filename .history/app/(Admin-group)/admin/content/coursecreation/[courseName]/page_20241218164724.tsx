@@ -358,7 +358,9 @@ function Courses() {
             </div>
             {activeTab === 'CourseContent' && (
                 <div>
-                    <CourseContent courseId={courseId || ''} />
+                    {/* <CourseContent courseId={courseId || ''} /> */}
+                    <CourseContent />
+
                 </div>
             )}
             {activeTab === 'StudentsPurchased ' && (

@@ -14,7 +14,8 @@ import { toast } from 'react-toastify';
 import { useEffect } from 'react';
 import LoadingData from "@/components/Loading";
 import { DateTime } from 'luxon';  // Import luxon
-
+import { Calendar } from "@nextui-org/calendar";
+import { TimeInput } from "@nextui-org/date-input";
 type Sections = {
     sectionName: string;
     sectionId: string;
@@ -58,26 +59,23 @@ const formatScheduleDate = (dateString: string | null): string => {
         // Format the date as per your required format
         let formattedDate = dateObj.toLocaleString("en-GB", {
             day: "2-digit",
-            month: "2-digit",
+            month: "short",
             year: "numeric",
             hour: "2-digit",
             minute: "2-digit",
             hour12: true,
         });
 
-        // Adjust the formatting to match "2024-12-24,12:00 AM"
-        formattedDate = formattedDate.replace(
-            /(\d{2})\/(\d{2})\/(\d{4}), (\d{2}):(\d{2}) (am|pm)/i,
-            "$3-$2-$1,$4:$5 $6"
-        );
-        formattedDate = formattedDate.replace(/(am|pm)/i, (match) => match.toUpperCase());
+        // Adjust the comma placement manually
+        formattedDate = formattedDate.replace(" ", ", "); // Add a comma between the day and the month
+        formattedDate = formattedDate.replace(", ", " "); // Remove the unwanted comma between year and time
+
         return formattedDate;
     } catch (error) {
         console.error("Error formatting date:", error);
         return "-";
     }
 };
-
 
 function CourseContent({ courseId }: CourseContentProps) {
     const [openSectionDialog, setOpenSectionDialog] = useState(false);
@@ -95,7 +93,6 @@ function CourseContent({ courseId }: CourseContentProps) {
     const [isContentEditing, setIsContentEditing] = useState(false);
     const [contentId, setContentId] = useState('');
     const [dateForPicker, setDateForPicker] = useState<DateValue | null>(null);
-    const [showDatepicker, setShowDatepicker] = useState(false);
 
     useEffect(() => {
         const sectionsRef = collection(db, 'course', courseId, 'sections');
@@ -543,49 +540,46 @@ function CourseContent({ courseId }: CourseContentProps) {
                             </div>
                             <div className="flex flex-col w-full gap-2 px-6 mb-2">
                                 <p className="text-start text-lg text-[#1D2939] font-semibold">Schedule Section</p>
+                                <p className="text-sm">Selected Date: {formatScheduleDate(sectionScheduleDate) || 'Date not set'}</p>
+                                <DatePicker
+                                    granularity="minute"
+                                    minValue={today(getLocalTimeZone())}
+                                    // value={dateForPicker}
+                                    hideTimeZone
+                                    onChange={(date) => {
+                                        const dateString = date ? date.toString() : ""; // Customize format if needed
+                                        setSectionScheduleDate(dateString);
+                                    }}
+                                />
+                            </div>
+                            <div className="flex flex-row items-center justify-between h-10 mx-6 rounded-md gap-2 mb-2 bg-[#f4f4f5]">
+                                <p className="text-sm">{formatScheduleDate(sectionScheduleDate) || 'Date not set'}</p>
+                                <Popover
+                                    placement="top-start">
+                                    <PopoverTrigger>
 
+                                        <button
+                                            className="flex flex-row gap-1 items-center px-5 rounded-md border-[2px] border-solid border-[#9012FF] h-[44px] w-auto justify-center "
+                                        >
+                                            <Image src="/icons/plus-sign.svg" height={18} width={18} alt="Plus Sign" />
+                                            <span className="text-[#9012FF] font-semibold text-sm">Add Content</span>
+                                        </button>
 
-                                {isSectionEditing ? (
-                                    <>
+                                    </PopoverTrigger>
+                                    <PopoverContent className="flex flex-col px-0 text-sm font-normal bg-white border border-lightGrey rounded-md w-auto shadow-md">
 
-                                        <div className="flex flex-row justify-between items-center">
-                                            <p className="text-[#1D2939] text-sm font-medium">Selected Date</p>
-                                            <button
-                                                className="w-[150px] h-[30px] rounded-full flex items-center justify-center transition-all duration-300 ease-in-out hover:bg-[#F2F4F7]"
-                                                onClick={() => setShowDatepicker(true)}
-                                            >
-                                                <p className="text-sm">
-                                                    {formatScheduleDate(sectionScheduleDate) || " "}
-                                                </p>
-                                            </button>
-                                        </div>
-                                        {(showDatepicker &&
-                                            <DatePicker
-                                                granularity="minute"
-                                                minValue={today(getLocalTimeZone())}
-                                                hideTimeZone
-                                                onChange={(date) => {
-                                                    const dateString = date ? date.toString() : "";
-                                                    setSectionScheduleDate(dateString);
-                                                    setShowDatepicker(true); // Return to button view after selecting date
-                                                }}
-                                            />
-                                        )}
-                                    </>
-                                ) : (
-                                    // If creating, show the date picker directly
-                                    <DatePicker
-                                        granularity="minute"
-                                        minValue={today(getLocalTimeZone())}
-                                        hideTimeZone
-                                        onChange={(date) => {
-                                            const dateString = date ? date.toString() : "";
-                                            setSectionScheduleDate(dateString);
-                                        }}
-                                    />
-                                )}
-
-
+                                        <Calendar
+                                            defaultValue={today(getLocalTimeZone())}
+                                            showMonthAndYearPickers
+                                            onChange={(date) => {
+                                                const dateString = date ? date.toString() : ""; // Customize format if needed
+                                                setSectionScheduleDate(dateString);
+                                            }}
+                                            className=" w-full"
+                                        />
+                                        <TimeInput label="Event Time" />
+                                    </PopoverContent>
+                                </Popover>
 
                             </div>
                             <hr />

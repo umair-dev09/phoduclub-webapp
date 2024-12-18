@@ -547,27 +547,31 @@ function CourseContent({ courseId }: CourseContentProps) {
 
                                 {isSectionEditing ? (
                                     <>
+                                        {/* If editing, show the button */}
+                                        {showDatepicker && (
+                                            <div className="flex flex-row justify-between items-center">
+                                                <p className="text-[#1D2939] text-sm font-medium">Selected Date</p>
+                                                <button
+                                                    className="w-[150px] h-[30px] rounded-full flex items-center justify-center transition-all duration-300 ease-in-out hover:bg-[#F2F4F7]"
+                                                    onClick={() => setShowDatepicker(true)}
+                                                >
+                                                    <p className="text-sm">
+                                                        {formatScheduleDate(sectionScheduleDate) || " "}
+                                                    </p>
+                                                </button>
+                                            </div>
 
-                                        <div className="flex flex-row justify-between items-center">
-                                            <p className="text-[#1D2939] text-sm font-medium">Selected Date</p>
-                                            <button
-                                                className="w-[150px] h-[30px] rounded-full flex items-center justify-center transition-all duration-300 ease-in-out hover:bg-[#F2F4F7]"
-                                                onClick={() => setShowDatepicker(true)}
-                                            >
-                                                <p className="text-sm">
-                                                    {formatScheduleDate(sectionScheduleDate) || " "}
-                                                </p>
-                                            </button>
-                                        </div>
-                                        {(showDatepicker &&
+                                        )}
+                                        {/* If showDatepicker is true, show the date picker */}
+                                        {!showDatepicker && (
                                             <DatePicker
                                                 granularity="minute"
                                                 minValue={today(getLocalTimeZone())}
+                                                // value={dateForPicker} // Uncomment and use if you have a value for the date
                                                 hideTimeZone
                                                 onChange={(date) => {
-                                                    const dateString = date ? date.toString() : "";
+                                                    const dateString = date ? date.toString() : ""; // Customize format if needed
                                                     setSectionScheduleDate(dateString);
-                                                    setShowDatepicker(true); // Return to button view after selecting date
                                                 }}
                                             />
                                         )}
@@ -577,9 +581,10 @@ function CourseContent({ courseId }: CourseContentProps) {
                                     <DatePicker
                                         granularity="minute"
                                         minValue={today(getLocalTimeZone())}
+                                        // value={dateForPicker} // Uncomment and use if you have a value for the date
                                         hideTimeZone
                                         onChange={(date) => {
-                                            const dateString = date ? date.toString() : "";
+                                            const dateString = date ? date.toString() : ""; // Customize format if needed
                                             setSectionScheduleDate(dateString);
                                         }}
                                     />

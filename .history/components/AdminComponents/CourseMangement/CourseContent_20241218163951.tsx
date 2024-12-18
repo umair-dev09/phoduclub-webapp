@@ -7,7 +7,7 @@ import Text from "./Text";
 import Quiz from "./QuizBottomSheets/Quiz";
 import Video from "./Video";
 import { DatePicker, DateValue } from "@nextui-org/react";
-import { now, today, CalendarDate, getLocalTimeZone, parseAbsoluteToLocal, ZonedDateTime } from "@internationalized/date";
+import { now, parseDate, today, CalendarDate, getLocalTimeZone, parseAbsoluteToLocal, ZonedDateTime } from "@internationalized/date";
 import { addDoc, collection, doc, getDoc, getDocs, onSnapshot, setDoc, query, deleteDoc, updateDoc } from "firebase/firestore";
 import { auth, db, storage } from "@/firebase";
 import { toast } from 'react-toastify';
@@ -58,26 +58,23 @@ const formatScheduleDate = (dateString: string | null): string => {
         // Format the date as per your required format
         let formattedDate = dateObj.toLocaleString("en-GB", {
             day: "2-digit",
-            month: "2-digit",
+            month: "short",
             year: "numeric",
             hour: "2-digit",
             minute: "2-digit",
             hour12: true,
         });
 
-        // Adjust the formatting to match "2024-12-24,12:00 AM"
-        formattedDate = formattedDate.replace(
-            /(\d{2})\/(\d{2})\/(\d{4}), (\d{2}):(\d{2}) (am|pm)/i,
-            "$3-$2-$1,$4:$5 $6"
-        );
-        formattedDate = formattedDate.replace(/(am|pm)/i, (match) => match.toUpperCase());
+        // Adjust the comma placement manually
+        formattedDate = formattedDate.replace(" ", ", "); // Add a comma between the day and the month
+        formattedDate = formattedDate.replace(", ", " "); // Remove the unwanted comma between year and time
+
         return formattedDate;
     } catch (error) {
         console.error("Error formatting date:", error);
         return "-";
     }
 };
-
 
 function CourseContent({ courseId }: CourseContentProps) {
     const [openSectionDialog, setOpenSectionDialog] = useState(false);
@@ -95,7 +92,6 @@ function CourseContent({ courseId }: CourseContentProps) {
     const [isContentEditing, setIsContentEditing] = useState(false);
     const [contentId, setContentId] = useState('');
     const [dateForPicker, setDateForPicker] = useState<DateValue | null>(null);
-    const [showDatepicker, setShowDatepicker] = useState(false);
 
     useEffect(() => {
         const sectionsRef = collection(db, 'course', courseId, 'sections');
@@ -278,7 +274,25 @@ function CourseContent({ courseId }: CourseContentProps) {
     }
 
 
+    // Use a state that can properly store and represent the date
+    const [sectionScheduleDate1, setSectionScheduleDate1] = useState<string | null>(null);
 
+    // Create a controlled value for the DatePicker
+    const [dateValue, setDateValue] = useState<any | null>(
+        // If you have a previously stored date, parse it
+        sectionScheduleDate
+            ? parseDate(new Date(sectionScheduleDate).toISOString().split('T')[0])
+            : null
+    );
+
+    const handleDateChange = (date: any) => {
+        // Store the full date object
+        setDateValue(date);
+
+        // Convert to a storable string format
+        const dateString = date ? date.toString() : null;
+        setSectionScheduleDate1(dateString);
+    };
     return (
         <div className="flex flex-col gap-4 ">
             <div className="flex flex-row justify-between h-16">
@@ -543,51 +557,26 @@ function CourseContent({ courseId }: CourseContentProps) {
                             </div>
                             <div className="flex flex-col w-full gap-2 px-6 mb-2">
                                 <p className="text-start text-lg text-[#1D2939] font-semibold">Schedule Section</p>
-
-
-                                {isSectionEditing ? (
-                                    <>
-
-                                        <div className="flex flex-row justify-between items-center">
-                                            <p className="text-[#1D2939] text-sm font-medium">Selected Date</p>
-                                            <button
-                                                className="w-[150px] h-[30px] rounded-full flex items-center justify-center transition-all duration-300 ease-in-out hover:bg-[#F2F4F7]"
-                                                onClick={() => setShowDatepicker(true)}
-                                            >
-                                                <p className="text-sm">
-                                                    {formatScheduleDate(sectionScheduleDate) || " "}
-                                                </p>
-                                            </button>
-                                        </div>
-                                        {(showDatepicker &&
-                                            <DatePicker
-                                                granularity="minute"
-                                                minValue={today(getLocalTimeZone())}
-                                                hideTimeZone
-                                                onChange={(date) => {
-                                                    const dateString = date ? date.toString() : "";
-                                                    setSectionScheduleDate(dateString);
-                                                    setShowDatepicker(true); // Return to button view after selecting date
-                                                }}
-                                            />
-                                        )}
-                                    </>
-                                ) : (
-                                    // If creating, show the date picker directly
-                                    <DatePicker
-                                        granularity="minute"
-                                        minValue={today(getLocalTimeZone())}
-                                        hideTimeZone
-                                        onChange={(date) => {
-                                            const dateString = date ? date.toString() : "";
-                                            setSectionScheduleDate(dateString);
-                                        }}
-                                    />
-                                )}
-
-
+                                <p className="text-sm">Selected Date: {formatScheduleDate(sectionScheduleDate) || 'Date not set'}</p>
+                                <DatePicker
+                                    granularity="minute"
+                                    minValue={today(getLocalTimeZone())}
+                                    // value={dateForPicker}
+                                    hideTimeZone
+                                    onChange={(date) => {
+                                        const dateString = date ? date.toString() : ""; // Customize format if needed
+                                        setSectionScheduleDate(dateString);
+                                    }}
+                                />
 
                             </div>
+                            <DatePicker
+                                granularity="minute"
+                                minValue={today(getLocalTimeZone())}
+                                value={dateValue}
+                                onChange={handleDateChange}
+                                hideTimeZone
+                            />
                             <hr />
                             <div className="flex flex-row justify-end mx-6 my-2 items-center gap-4 pb-2">
                                 <button onClick={closeCreateSection} className="py-[0.625rem] px-6 border-[1.5px] border-lightGrey rounded-md text-[#1D2939] font-semibold text-sm hover:bg-[#F2F4F7]">Cancel</button>

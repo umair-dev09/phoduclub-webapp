@@ -547,19 +547,19 @@ function CourseContent({ courseId }: CourseContentProps) {
 
                                 {isSectionEditing ? (
                                     <>
-
-                                        <div className="flex flex-row justify-between items-center">
-                                            <p className="text-[#1D2939] text-sm font-medium">Selected Date</p>
-                                            <button
-                                                className="w-[150px] h-[30px] rounded-full flex items-center justify-center transition-all duration-300 ease-in-out hover:bg-[#F2F4F7]"
-                                                onClick={() => setShowDatepicker(true)}
-                                            >
-                                                <p className="text-sm">
-                                                    {formatScheduleDate(sectionScheduleDate) || " "}
-                                                </p>
-                                            </button>
-                                        </div>
-                                        {(showDatepicker &&
+                                        {showDatepicker ? (
+                                            <div className="flex flex-row justify-between items-center">
+                                                <p className="text-[#1D2939] text-sm font-medium">Selected Date</p>
+                                                <button
+                                                    className="w-[150px] h-[30px] rounded-full flex items-center justify-center transition-all duration-300 ease-in-out hover:bg-[#F2F4F7]"
+                                                    onClick={() => setShowDatepicker(false)}
+                                                >
+                                                    <p className="text-sm">
+                                                        {formatScheduleDate(sectionScheduleDate) || " "}
+                                                    </p>
+                                                </button>
+                                            </div>
+                                        ) : (
                                             <DatePicker
                                                 granularity="minute"
                                                 minValue={today(getLocalTimeZone())}

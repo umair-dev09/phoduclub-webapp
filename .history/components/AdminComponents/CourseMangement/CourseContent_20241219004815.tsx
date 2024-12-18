@@ -552,7 +552,7 @@ function CourseContent({ courseId }: CourseContentProps) {
                                             <p className="text-[#1D2939] text-sm font-medium">Selected Date</p>
                                             <button
                                                 className="w-[150px] h-[30px] rounded-full flex items-center justify-center transition-all duration-300 ease-in-out hover:bg-[#F2F4F7]"
-                                                onClick={() => setShowDatepicker(true)}
+                                                onClick={() => setShowDatepicker(false)}
                                             >
                                                 <p className="text-sm">
                                                     {formatScheduleDate(sectionScheduleDate) || " "}
