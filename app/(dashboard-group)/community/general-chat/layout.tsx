@@ -37,7 +37,6 @@ function GeneralChatLayout({ children }: GeneralChatLayoutProps) {
                     </div>
                 </div>
                 <div className="flex flex-col justify-start items-center mx-4 mt-4 gap-2">
-
                     <div className="flex flex-row items-center justify-between w-full h-auto my-1 px-2 py-[6px] bg-white rounded-[7px] group hover:bg-[#F8F0FF]">
                         <div className="flex flex-row items-center gap-2">
                             <div className="relative w-9 h-9">
@@ -48,7 +47,6 @@ function GeneralChatLayout({ children }: GeneralChatLayoutProps) {
                         </div>
                         <div className="w-2 h-2 rounded-full bg-white transition-colors group-hover:bg-[#DE3024]"></div>
                     </div>
-
                     <div className="flex flex-row items-center justify-between w-full h-auto my-1 px-2 py-[6px] bg-white rounded-[7px] group hover:bg-[#F8F0FF]">
                         <div className="flex flex-row items-center gap-2">
                             <div className="relative w-9 h-9">
@@ -59,7 +57,6 @@ function GeneralChatLayout({ children }: GeneralChatLayoutProps) {
                         </div>
                         <div className="w-2 h-2 rounded-full bg-white transition-colors group-hover:bg-[#DE3024]"></div>
                     </div>
-
                 </div>
             </div>
             <div className="flex flex-1 flex-col border-t border-lightGrey">
@@ -80,7 +77,6 @@ function GeneralChatLayout({ children }: GeneralChatLayoutProps) {
                             </button>
                         </PopoverTrigger>
                         <PopoverContent className='flex flex-col bg-white w-auto h-auto py-1 px-0 border border-lightGrey rounded-md shadow-md'>
-
                             <button
                                 className='flex flex-row items-center gap-2 w-[183px] px-4 py-[10px] transition-colors  hover:bg-neutral-100'
                                 onClick={closePopover}
@@ -88,7 +84,6 @@ function GeneralChatLayout({ children }: GeneralChatLayoutProps) {
                                 <Image src='/icons/user-sharing.svg' alt='mark as read' width={18} height={18} />
                                 <p className='text-sm'>View profile</p>
                             </button>
-
                             <Popover
                                 placement='right-start'
                                 isOpen={isMutePopoverOpen}
@@ -111,7 +106,6 @@ function GeneralChatLayout({ children }: GeneralChatLayoutProps) {
                                             <button onClick={() => { toggleMute(); closeBothPopovers(); }} className='text-sm text-[#0C111D] text-start w-full px-4 py-[10px] hover:bg-[#F2F4F7]'>Always</button>
                                         </div>
                                     )}
-
                                     {isMuted && (
                                         <div className="flex flex-col w-[182px] h-auto bg-white border border-lightGrey rounded-md py-1">
                                             <p className="text-sm font-normal text-[#667085] px-4 py-[10px]">Muted until 05:57 pm</p>
@@ -120,7 +114,6 @@ function GeneralChatLayout({ children }: GeneralChatLayoutProps) {
                                     )}
                                 </PopoverContent>
                             </Popover>
-
                             <button
                                 className='flex flex-row items-center gap-2 w-[183px] px-4 py-[10px] transition-colors  hover:bg-neutral-100'
                                 onClick={closePopover}
@@ -135,7 +128,6 @@ function GeneralChatLayout({ children }: GeneralChatLayoutProps) {
                                 <Image src='/icons/user-block-red-01.svg' alt='exit group' width={18} height={18} />
                                 <p className='text-sm text-red-600'>Block user</p>
                             </button>
-
                         </PopoverContent>
                     </Popover>
                 </div>

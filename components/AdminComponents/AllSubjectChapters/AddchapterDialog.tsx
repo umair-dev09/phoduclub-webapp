@@ -65,25 +65,29 @@ function Allsubject({ onClose, open }: DialogProps) {
                                 <PopoverTrigger>
                                     <div
                                         className={`flex flex-row py-2 px-4 w-full gap-2 border h-10 rounded-md items-center justify-between cursor-pointer
-                                           ${isFocused
+                                            ${isFocused
                                                 ? "outline-none ring-0 border-[#D6BBFB] shadow-[0px_0px_0px_4px_rgba(158,119,237,0.25),0px_1px_2px_0px_rgba(16,24,40,0.05)]"
                                                 : "border-gray-300"
                                             }`}
-
                                         onClick={() => {
                                             setIsOpen(isOpen);
                                             setIsFocused(true)
                                         }}
-
                                     >
                                         <div className="flex flex-row gap-2 items-center justify-center">
-                                            <div
-                                                className="w-2 h-2 rounded-full"
-                                                style={{ backgroundColor: priorityColor }}
-                                            ></div>
-                                            <span className="font-normal text-sm text-[#182230]">
-                                                {priority || <span className="text-sm font-normal text-[#667085]">Select Priority</span>}
-                                            </span>
+                                            {!priority ? (
+                                                <span className="text-sm font-normal text-[#667085]">Select Priority</span>
+                                            ) : (
+                                                <>
+                                                    <div
+                                                        className="w-2 h-2 rounded-full"
+                                                        style={{ backgroundColor: priorityColor }}
+                                                    ></div>
+                                                    <span className="font-normal text-sm text-[#182230]">
+                                                        {priority}
+                                                    </span>
+                                                </>
+                                            )}
                                         </div>
                                         <Image
                                             src="/icons/by-role-arrow-down.svg"
@@ -128,9 +132,9 @@ function Allsubject({ onClose, open }: DialogProps) {
                             Cancel
                         </button>
                         <button
-                            className={`py-[0.625rem] px-6 rounded-md text-white text-sm shadow-inner-button font-semibold ${isFormValid
-                                ? "border border-solid border-[#9012FF] bg-[#9012FF]"
-                                : "bg-[#CDA0FC]"
+                            className={`py-[0.625rem] px-6 rounded-md text-white text-sm shadow-inner-button font-semibold bg-[#9012FF] border border-[#9012FF] transition-opacity duration-150 ${isFormValid
+                                ? "opacity-100"
+                                : "opacity-35"
                                 }`}
                             disabled={!isFormValid}
                         >
