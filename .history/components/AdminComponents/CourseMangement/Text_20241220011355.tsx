@@ -299,7 +299,6 @@ function Text({ isOpen, toggleDrawer, sectionId, courseId, isEditing, contentId 
                     pdfLink: pdfLink ? pdfLink : null,
                     lessonScheduleDate: contentScheduleDate,
                     isDisscusionOpen: disscusionOpen,
-
                 });
                 toast.success('Test Content added!');
                 toggleDrawer();
@@ -527,7 +526,7 @@ function Text({ isOpen, toggleDrawer, sectionId, courseId, isEditing, contentId 
                             </div>
                             <div className="flex flex-col gap-2 mb-3 mt-1">
                                 <span className="text-[#1D2939] font-semibold text-sm">Schedule Lesson</span>
-                                {isEditing ? (
+                                {isSectionEditing ? (
                                     <>
 
                                         <div className="flex flex-row justify-between items-center">

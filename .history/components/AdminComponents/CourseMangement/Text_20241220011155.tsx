@@ -44,37 +44,8 @@ function Text({ isOpen, toggleDrawer, sectionId, courseId, isEditing, contentId 
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
     const [uploadTaskRef, setUploadTaskRef] = useState<any>(null); // State to hold the upload task reference
     const [showDatepicker, setShowDatepicker] = useState(false);
-    const [sectionScheduleDate, setSectionScheduleDate] = useState("");
 
     const isFormValid = lessonHeading && lessonOverView && lessonContent && contentScheduleDate;
-
-
-
-    const formatScheduleDate = (dateString: string | null): string => {
-        if (!dateString) return "-"; // Return "-" if the date is null or undefined
-
-        try {
-            const dateObj = new Date(dateString);
-
-            if (isNaN(dateObj.getTime())) {
-                // If date is invalid
-                return "-";
-            }
-
-            // Format the date manually to match "MM/DD/YYYY,HH:mm"
-            const year = dateObj.getFullYear();
-            const month = String(dateObj.getMonth() + 1).padStart(2, "0");
-            const day = String(dateObj.getDate()).padStart(2, "0");
-            const hours = String(dateObj.getHours()).padStart(2, "0");
-            const minutes = String(dateObj.getMinutes()).padStart(2, "0");
-
-            return `${month}/${day}/${year},${hours}:${minutes}`;
-        } catch (error) {
-            console.error("Error formatting date:", error);
-            return "-";
-        }
-    };
-
 
     useEffect(() => {
         if (isEditing) {
@@ -299,7 +270,6 @@ function Text({ isOpen, toggleDrawer, sectionId, courseId, isEditing, contentId 
                     pdfLink: pdfLink ? pdfLink : null,
                     lessonScheduleDate: contentScheduleDate,
                     isDisscusionOpen: disscusionOpen,
-
                 });
                 toast.success('Test Content added!');
                 toggleDrawer();
@@ -527,7 +497,7 @@ function Text({ isOpen, toggleDrawer, sectionId, courseId, isEditing, contentId 
                             </div>
                             <div className="flex flex-col gap-2 mb-3 mt-1">
                                 <span className="text-[#1D2939] font-semibold text-sm">Schedule Lesson</span>
-                                {isEditing ? (
+                                {isSectionEditing ? (
                                     <>
 
                                         <div className="flex flex-row justify-between items-center">
