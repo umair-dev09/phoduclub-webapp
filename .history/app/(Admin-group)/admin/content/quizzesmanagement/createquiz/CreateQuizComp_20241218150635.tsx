@@ -6,7 +6,7 @@ import Questions from "@/components/AdminComponents/createQuiz/Questions";
 import Review from "@/components/AdminComponents/createQuiz/Review";
 import Publish from "@/components/AdminComponents/createQuiz/Publish";
 import { toast, ToastContainer } from 'react-toastify';
-import { now, today, CalendarDate, getLocalTimeZone, parseDateTime } from "@internationalized/date";
+import {now, today, CalendarDate, getLocalTimeZone,parseDateTime} from "@internationalized/date";
 import { auth, db, storage } from "@/firebase";
 import { addDoc, collection, doc, getDoc, getDocs, updateDoc, setDoc } from "firebase/firestore";
 import 'react-toastify/dist/ReactToastify.css';
@@ -16,7 +16,7 @@ interface Options {
     B: string;
     C: string;
     D: string;
-}
+} 
 export interface Question {
     question: string;
     isChecked: boolean;
@@ -48,8 +48,8 @@ function CreateQuiz() {
     const [endDate, setEndDate] = useState("");
     let [liveQuizNow, setLiveQuizNow] = useState<boolean>(false);
     const searchParams = useSearchParams();
-    const status = searchParams.get("s");
-    const quizId = searchParams.get("qId");
+    const status = searchParams.get("s"); 
+    const quizId = searchParams.get("qId"); 
     const router = useRouter();
     const [quizName, setQuizName] = useState<string>('');
     const [quizDescription, setQuizDescription] = useState<string>('');
@@ -58,13 +58,13 @@ function CreateQuiz() {
             fetchQuizData(quizId);
         }
     }, [status, quizId]);
-
+   
 
     const fetchQuizData = async (quizId: string) => {
         try {
             const quizDocRef = doc(db, "quiz", quizId);
             const quizDocSnap = await getDoc(quizDocRef);
-
+    
             if (quizDocSnap.exists()) {
                 const quizData = quizDocSnap.data();
                 setQuizName(quizData.quizName || "");
@@ -79,7 +79,7 @@ function CreateQuiz() {
 
                 // Use regex to extract the number and the text (Minute(s)/Hour(s))
                 const timeMatch = quizTime.match(/(\d+)\s*(Minute\(s\)|Hour\(s\))/);
-
+                
                 if (timeMatch) {
                     setTimeNumber(timeMatch[1]);  // The first capturing group will give the number
                     setTimeText(timeMatch[2]);    // The second capturing group will give 'Minute(s)' or 'Hour(s)'
@@ -87,7 +87,7 @@ function CreateQuiz() {
                     setTimeNumber("");  // Default if no match found
                     setTimeText("Minute(s)");    // Default if no match found
                 }
-
+    
                 // Fetch Questions subcollection
                 const questionsCollectionRef = collection(quizDocRef, "Questions");
                 const questionsSnapshot = await getDocs(questionsCollectionRef);
@@ -132,14 +132,14 @@ function CreateQuiz() {
         questionId: ''
     }]);
 
-
+    
     // Validation function to check if all fields are filled for the Questions step
     const isFormValid = () => {
         if (currentStep === Step.QuizInfo) {
-            return quizName.trim() !== '' && quizDescription.trim() !== '';
+            return quizName.trim() !== '' && quizDescription.trim() !== ''  ;
         }
-        else if (currentStep === Step.Publish) {
-            return marksPerQ.trim() !== '' && endDate.trim() !== '' && nMarksPerQ.trim() !== '' && forYear.trim() !== 'Select Year' && forExam.trim() !== 'Select Exam' && timeNumber.trim() !== '' && timeText.trim() !== '';
+        else if(currentStep === Step.Publish){
+            return marksPerQ.trim() !== '' && endDate.trim() !== '' && nMarksPerQ.trim() !== '' && forYear.trim() !== 'Select Year' && forExam.trim() !== 'Select Exam' && timeNumber.trim() !== '' && timeText.trim() !== '' ;
         }
         return questionsList.every(question =>
             question.question.trim() !== '' &&
@@ -156,7 +156,7 @@ function CreateQuiz() {
         if (currentStep === Step.QuizInfo) {
             return '';
         }
-
+        
         return questionsList.every(question =>
             question.question.trim() !== '' &&
             question.options.A.trim() !== '' &&
@@ -183,12 +183,12 @@ function CreateQuiz() {
                     try {
                         // Simulate delay
                         await new Promise(resolve => setTimeout(resolve, 100));
-
+    
                         // If the quiz is saved, update the existing quiz data, otherwise create a new quiz
                         if (status === "saved" && quizId) {
                             // Reference the existing quiz
                             const quizRef = doc(db, "quiz", quizId);
-
+        
                             // Prepare updated quiz data
                             const quizData = {
                                 quizName,
@@ -200,18 +200,18 @@ function CreateQuiz() {
                                 nMarksPerQuestion: nMarksPerQ,
                                 forYear,
                                 forExam,
-                                quizStatus: liveQuizNow ? "live" : "scheduled", // You can change this as needed
+                                quizStatus: liveQuizNow? "live" : "scheduled", // You can change this as needed
                                 quizPublishedDate: new Date().toISOString(),
                                 createdBy: userId,
                             };
-
+        
                             // Update the existing quiz data
                             await updateDoc(quizRef, quizData);
-
+        
                             // Update the questions
                             for (let question of questionsList) {
                                 const questionRef = doc(collection(quizRef, "Questions"), question.questionId || '');
-
+                                
                                 // Map options to an options object
                                 const options = {
                                     A: question.options.A,
@@ -219,7 +219,7 @@ function CreateQuiz() {
                                     C: question.options.C,
                                     D: question.options.D,
                                 };
-
+        
                                 // Determine the correct answer based on the letter provided
                                 let correctAnswer;
                                 switch (question.correctAnswer) {
@@ -238,7 +238,7 @@ function CreateQuiz() {
                                     default:
                                         correctAnswer = null;
                                 }
-
+        
                                 const questionData = {
                                     questionId: question.questionId,
                                     question: question.question,
@@ -246,24 +246,24 @@ function CreateQuiz() {
                                     correctAnswer,
                                     answerExplanation: question.explanation,
                                 };
-
+        
                                 // Update each question in Firestore
                                 await updateDoc(questionRef, questionData);
                             }
-
+        
                             resolve('Quiz Updated Successfully!');
                             setTimeout(() => {
                                 router.back();
                             }, 500);
-
+        
                         } else {
                             // If the status is not 'saved', create a new quiz
                             const quizRef = doc(collection(db, "quiz"));
-
+        
                             const quizData = {
                                 quizId: quizRef.id, // Use the generated ID as the quizId
                                 quizName,
-                                quizDescription,
+                                quizDescription, 
                                 startDate: liveQuizNow ? formattedDate : startDate,
                                 endDate,
                                 quizTime: timeNumber + " " + timeText,
@@ -271,24 +271,24 @@ function CreateQuiz() {
                                 nMarksPerQuestion: nMarksPerQ,
                                 forYear,
                                 forExam,
-                                quizStatus: liveQuizNow ? "live" : "scheduled", // You can change this as needed
+                                quizStatus: liveQuizNow? "live" : "scheduled", // You can change this as needed
                                 quizPublishedDate: new Date().toISOString(),
                                 createdBy: userId,
                             };
-
+        
                             await setDoc(quizRef, quizData);
-
+        
                             for (let question of questionsList) {
                                 const questionRef = doc(collection(quizRef, "Questions"));
                                 const questionId = questionRef.id;
-
+        
                                 const options = {
                                     A: question.options.A,
                                     B: question.options.B,
                                     C: question.options.C,
                                     D: question.options.D,
                                 };
-
+        
                                 let correctAnswer;
                                 switch (question.correctAnswer) {
                                     case "A":
@@ -306,7 +306,7 @@ function CreateQuiz() {
                                     default:
                                         correctAnswer = null;
                                 }
-
+        
                                 const questionData = {
                                     questionId,
                                     question: question.question,
@@ -314,16 +314,15 @@ function CreateQuiz() {
                                     correctAnswer,
                                     answerExplanation: question.explanation,
                                 };
-
+        
                                 await setDoc(questionRef, questionData);
                             }
-
+        
                             resolve('Quiz Saved Successfully!');
                             setTimeout(() => {
                                 router.back();
                             }, 500);
-                        }
-                    } catch (error) {
+                        }} catch (error) {
                         reject('Error in publishing/updating quiz');
                     }
                 }),
@@ -337,19 +336,19 @@ function CreateQuiz() {
             setCurrentStep(currentStep + 1);
         }
     };
-
+    
     const handleSaveClick = async () => {
         toast.promise(
             new Promise(async (resolve, reject) => {
                 try {
                     // Simulate delay
                     await new Promise(resolve => setTimeout(resolve, 100));
-
+    
                     // If status is 'saved' and quizId exists, update the quiz
                     if (status === "saved" && quizId) {
                         // Reference the existing quiz
                         const quizRef = doc(db, "quiz", quizId);
-
+    
                         // Prepare updated quiz data
                         const quizData = {
                             quizName,
@@ -365,14 +364,14 @@ function CreateQuiz() {
                             quizPublishedDate: new Date().toISOString(),
                             createdBy: userId,
                         };
-
+    
                         // Update the existing quiz data
                         await updateDoc(quizRef, quizData);
-
+    
                         // Update the questions
                         for (let question of questionsList) {
                             const questionRef = doc(collection(quizRef, "Questions"), question.questionId || '');
-
+                            
                             // Map options to an options object
                             const options = {
                                 A: question.options.A,
@@ -380,7 +379,7 @@ function CreateQuiz() {
                                 C: question.options.C,
                                 D: question.options.D,
                             };
-
+    
                             // Determine the correct answer based on the letter provided
                             let correctAnswer;
                             switch (question.correctAnswer) {
@@ -399,7 +398,7 @@ function CreateQuiz() {
                                 default:
                                     correctAnswer = null;
                             }
-
+    
                             const questionData = {
                                 questionId: question.questionId,
                                 question: question.question,
@@ -407,20 +406,20 @@ function CreateQuiz() {
                                 correctAnswer,
                                 answerExplanation: question.explanation,
                             };
-
+    
                             // Update each question in Firestore
                             await updateDoc(questionRef, questionData);
                         }
-
+    
                         resolve('Quiz Updated Successfully!');
                         setTimeout(() => {
                             router.back();
                         }, 500);
-
+    
                     } else {
                         // If the status is not 'saved', create a new quiz
                         const quizRef = doc(collection(db, "quiz"));
-
+    
                         const quizData = {
                             quizId: quizRef.id, // Use the generated ID as the quizId
                             quizName,
@@ -436,20 +435,20 @@ function CreateQuiz() {
                             quizPublishedDate: new Date().toISOString(),
                             createdBy: userId,
                         };
-
+    
                         await setDoc(quizRef, quizData);
-
+    
                         for (let question of questionsList) {
                             const questionRef = doc(collection(quizRef, "Questions"));
                             const questionId = questionRef.id;
-
+    
                             const options = {
                                 A: question.options.A,
                                 B: question.options.B,
                                 C: question.options.C,
                                 D: question.options.D,
                             };
-
+    
                             let correctAnswer;
                             switch (question.correctAnswer) {
                                 case "A":
@@ -467,7 +466,7 @@ function CreateQuiz() {
                                 default:
                                     correctAnswer = null;
                             }
-
+    
                             const questionData = {
                                 questionId,
                                 question: question.question,
@@ -475,16 +474,16 @@ function CreateQuiz() {
                                 correctAnswer,
                                 answerExplanation: question.explanation,
                             };
-
+    
                             await setDoc(questionRef, questionData);
                         }
-
+    
                         resolve('Quiz Saved Successfully!');
                         setTimeout(() => {
                             router.back();
                         }, 500);
                     }
-
+    
                 } catch (error) {
                     reject('Error in saving/updating quiz');
                 }
@@ -496,7 +495,7 @@ function CreateQuiz() {
             }
         );
     };
-
+    
 
     const handlePreviousClick = () => {
         if (currentStep > Step.QuizInfo) {
@@ -525,8 +524,8 @@ function CreateQuiz() {
             case Step.Review:
                 return <Review questionsList={questionsList} />;
             case Step.Publish:
-                return <Publish forYear={forYear} setForYear={setForYear} forExam={forExam} setForExam={setForExam} forProduct={forProduct} setForProduct={setForProduct} marksPerQ={marksPerQ} setMarksPerQ={setMarksPerQ} nMarksPerQ={nMarksPerQ} setnMarksPerQ={setnMarksPerQ} timeNumber={timeNumber} setTimeNumber={setTimeNumber} timeText={timeText} setTimeText={setTimeText} startDate={startDate} setStartDate={setStartDate} endDate={endDate} setEndDate={setEndDate} liveQuizNow={liveQuizNow} setLiveQuizNow={setLiveQuizNow} />;
-
+                return <Publish forYear={forYear} setForYear={setForYear} forExam={forExam} setForExam={setForExam} forProduct={forProduct} setForProduct={setForProduct} marksPerQ={marksPerQ} setMarksPerQ={setMarksPerQ} nMarksPerQ={nMarksPerQ} setnMarksPerQ={setnMarksPerQ} timeNumber={timeNumber} setTimeNumber={setTimeNumber} timeText={timeText} setTimeText={setTimeText} startDate={startDate} setStartDate={setStartDate} endDate={endDate} setEndDate={setEndDate} liveQuizNow={liveQuizNow} setLiveQuizNow={setLiveQuizNow}/>;
+            
             default:
                 return <Quizinfo
                     quizName={quizName}
@@ -548,7 +547,7 @@ function CreateQuiz() {
 
 
     return (
-        <>
+        <> 
             <div className="ml-[32px] w-[250px] my-[32px] bg-[#FFFFFF] border border-solid border-[#EAECF0] rounded-md">
                 <div className="flex flex-row items-center justify-between m-4">
                     <span className="text-[#1D2939] text-base font-semibold">Create Quiz</span>
@@ -583,15 +582,15 @@ function CreateQuiz() {
                             {["Quiz info", "Questions", "Review", "Publish"][currentStep]}
                         </span>
                         <div className="flex flex-row gap-3 mb-3">
-                            {isSaveButtonDisabled === false && (
+                            {isSaveButtonDisabled === false &&(
                                 <button className="mr-1" onClick={handleSaveClick}>
-                                    <span className="text-[#8501FF] font-semibold text-sm">Save quiz</span>
-                                </button>
+                          <span className="text-[#8501FF] font-semibold text-sm">Save quiz</span>
+                          </button>
                             )}
-
+                          
                             {currentStep > Step.QuizInfo && (
                                 <button
-                                    className="h-[44px] w-[135px] bg-[#FFFFFF] hover:bg-[#F2F4F7] rounded-md shadow-inner-button border border-solid border-[#EAECF0] flex items-center justify-center"
+                                    className="h-[44px] w-[135px] bg-[#FFFFFF] rounded-md shadow-inner-button border border-solid border-[#EAECF0] flex items-center justify-center"
                                     onClick={handlePreviousClick}
                                 >
                                     <span className="text-[#1D2939] font-semibold text-sm">Previous</span>

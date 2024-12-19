@@ -339,7 +339,7 @@ function CourseContent({ courseId }: CourseContentProps) {
                                             <PopoverTrigger
                                             >
                                                 <button
-                                                    className="flex flex-row gap-1 items-center rounded-md hover:bg-[#F5F0FF] hover:rounded-full px-3 py-1 transition duration-200 ease-in-out h-[44px] w-auto justify-center"
+                                                    className="flex flex-row gap-1 items-center rounded-md  h-[44px] w-auto justify-center"
                                                 >
                                                     <Image src="/icons/plus-sign.svg" height={18} width={18} alt="Plus Sign" />
                                                     <span className="text-[#9012FF] font-semibold text-sm">Add Content</span>
@@ -370,10 +370,12 @@ function CourseContent({ courseId }: CourseContentProps) {
                                             placement="bottom-end">
                                             <PopoverTrigger
                                                 onClick={(event) => event.stopPropagation()}>
-                                                <button className="w-[32px] h-[32px]  rounded-full flex items-center justify-center transition-all duration-300 ease-in-out hover:bg-[#F2F4F7]">
-
-                                                    <Image src="/icons/three-dots.svg" width={18} height={18} alt="three-dots" className="outline-none" />
-
+                                                <button
+                                                    className="w-10 p-[10px] h-[40px] gap-1 flex-row flex  bg-[#FFFFFF] rounded-md 
+                                                                            shadow-none"
+                                                    style={{ outline: "none" }}
+                                                >
+                                                    <Image src="/icons/three-dots.svg" width={18} height={18} alt="three-dots" />
                                                 </button>
                                             </PopoverTrigger>
                                             <PopoverContent className="flex flex-col px-0 text-sm font-normal bg-white border border-lightGrey rounded-md w-[167px] shadow-md"

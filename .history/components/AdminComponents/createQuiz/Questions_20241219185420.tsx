@@ -30,6 +30,12 @@ interface QuestionsProps {
     setQuestionsList: React.Dispatch<React.SetStateAction<Question[]>>;
 }
 
+interface QuestionsProps {
+    value: string;
+    onChange: (value: string) => void;
+    placeholder?: string;
+}
+
 function Questions({ questionsList, setQuestionsList }: QuestionsProps) {
 
     // Handler for input change
@@ -45,14 +51,6 @@ function Questions({ questionsList, setQuestionsList }: QuestionsProps) {
 
         setQuestionsList(newQuestionsList);
     };
-    // -----------------------------------------------------------------------------------------------------------
-    // Handler for checkbox change
-    const handleCheckboxChange = (index: number) => {
-        const newQuestionsList = [...questionsList];
-        newQuestionsList[index].isChecked = !newQuestionsList[index].isChecked;
-        setQuestionsList(newQuestionsList);
-    };
-    // -----------------------------------------------------------------------------------------------------------
     // Handler for adding new question
     const handleAddQuestion = () => {
         setQuestionsList([
@@ -149,175 +147,78 @@ function Questions({ questionsList, setQuestionsList }: QuestionsProps) {
     const isActive = (questionIndex: number) =>
         popoverOpenStates[questionIndex];
     // -----------------------------------------------------------------------------------------------------------
-    // state for ReactQuill 1 FOR QUESTIONS
-    const [value1, setValue1] = useState('');
-    const quillRef1 = useRef<ReactQuill | null>(null); // Ref to hold ReactQuill instance
-    const [quill1, setQuill1] = useState<Quill | null>(null);
-    const [alignment1, setAlignment1] = useState<string | null>(null); // State to hold alignment
-    const [isWriting1, setIsWriting1] = useState(false); // Track if text is being written
-
-    const handleChange1 = (content: string) => {
-        setValue1(content);
-        checkTextContent1(content);
-    };
-
-    const checkTextContent1 = (content: string) => {
-        const plainText = content.replace(/<[^>]+>/g, '').trim();
-        setIsWriting1(plainText.length > 0);
-    };
-
-    const handleIconClick1 = (format: string) => {
-        if (quill1) {
-            const range = quill1.getSelection();
-            if (range) {
-                const currentFormats = quill1.getFormat(range);
-                if (format === 'ordered') {
-                    quill1.format('list', currentFormats.list === 'ordered' ? false : 'ordered');
-                } else if (format === 'image') {
-                    const fileInput = document.createElement('input');
-                    fileInput.type = 'file';
-                    fileInput.accept = 'image/*';
-                    fileInput.onchange = () => {
-                        const file = fileInput.files?.[0];
-                        if (file) {
-                            const reader = new FileReader();
-                            reader.onload = (e) => {
-                                if (e.target && e.target.result) {
-                                    const imageUrl = e.target.result as string;
-                                    quill1.insertEmbed(range.index, 'image', imageUrl);
-                                }
-                            };
-                            reader.readAsDataURL(file);
-                        }
-                    };
-                    fileInput.click();
-                } else if (format === 'bullet') {
-                    quill1.format('list', currentFormats.list === 'bullet' ? false : 'bullet');
-                } else if (format.startsWith('align')) {
-                    if (format === 'align-left') {
-                        quill1.format('align', false);
-                        setAlignment1('left');
-                    } else {
-                        quill1.format('align', format.split('-')[1]);
-                        setAlignment1(format.split('-')[1]);
-                    }
-                } else {
-                    const isActive = currentFormats[format];
-                    quill1.format(format, !isActive);
-                }
-            }
-        }
-    };
+    const quillRef = useRef<ReactQuill>(null);
+    const [quill, setQuill] = useState<Quill | null>(null);
+    const [alignment, setAlignment] = useState<string>('left');
+    const [isWriting, setIsWriting] = useState(false);
 
     useEffect(() => {
-        if (quillRef1.current) {
-            setQuill1(quillRef1.current.getEditor());
+        if (quillRef.current) {
+            setQuill(quillRef.current.getEditor());
         }
     }, []);
 
-    const handleKeyDown1 = () => {
-        if (quill1) {
-            const range = quill1.getSelection();
-            if (range) {
-                const currentFormats = quill1.getFormat(range);
-                if (currentFormats.bold) {
-                    quill1.format('bold', false);
-                }
-                if (currentFormats.italic) {
-                    quill1.format('italic', false);
-                }
-                if (currentFormats.underline) {
-                    quill1.format('underline', false);
-                }
-            }
-        }
-    };
-
-    // ------------------------------------------------------------------------------------------------------------------------------------
-    // state for ReactQuill 1 FOR EXPLAINTION
-    const [value2, setValue2] = useState('');
-    const quillRef2 = useRef<ReactQuill | null>(null); // Ref to hold ReactQuill instance
-    const [quill2, setQuill2] = useState<Quill | null>(null);
-    const [alignment2, setAlignment2] = useState<string | null>(null); // State to hold alignment
-    const [isWriting2, setIsWriting2] = useState(false); // Track if text is being written
-
-    const handleChange2 = (content: string) => {
-        setValue2(content);
-        checkTextContent2(content);
-    };
-
-    const checkTextContent2 = (content: string) => {
+    const handleChange = (content: string) => {
+        onchange(content);
         const plainText = content.replace(/<[^>]+>/g, '').trim();
-        setIsWriting2(plainText.length > 0);
+        setIsWriting(plainText.length > 0);
     };
 
-    const handleIconClick2 = (format: string) => {
-        if (quill2) {
-            const range = quill2.getSelection();
-            if (range) {
-                const currentFormats = quill2.getFormat(range);
-                if (format === 'ordered') {
-                    quill2.format('list', currentFormats.list === 'ordered' ? false : 'ordered');
-                } else if (format === 'image') {
-                    const fileInput = document.createElement('input');
-                    fileInput.type = 'file';
-                    fileInput.accept = 'image/*';
-                    fileInput.onchange = () => {
-                        const file = fileInput.files?.[0];
-                        if (file) {
-                            const reader = new FileReader();
-                            reader.onload = (e) => {
-                                if (e.target && e.target.result) {
-                                    const imageUrl = e.target.result as string;
-                                    quill2.insertEmbed(range.index, 'image', imageUrl);
-                                }
-                            };
-                            reader.readAsDataURL(file);
+    const handleIconClick = (format: string) => {
+        if (!quill) return;
+
+        const range = quill.getSelection();
+        if (!range) return;
+
+        const currentFormats = quill.getFormat(range);
+
+        if (format === 'ordered') {
+            quill.format('list', currentFormats.list === 'ordered' ? false : 'ordered');
+        } else if (format === 'image') {
+            const fileInput = document.createElement('input');
+            fileInput.type = 'file';
+            fileInput.accept = 'image/*';
+            fileInput.onchange = () => {
+                const file = fileInput.files?.[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        const imageUrl = e.target?.result as string;
+                        if (imageUrl) {
+                            quill.insertEmbed(range.index, 'image', imageUrl);
                         }
                     };
-                    fileInput.click();
-                } else if (format === 'bullet') {
-                    quill2.format('list', currentFormats.list === 'bullet' ? false : 'bullet');
-                } else if (format.startsWith('align')) {
-                    if (format === 'align-left') {
-                        quill2.format('align', false);
-                        setAlignment2('left');
-                    } else {
-                        quill2.format('align', format.split('-')[1]);
-                        setAlignment2(format.split('-')[1]);
-                    }
-                } else {
-                    const isActive = currentFormats[format];
-                    quill2.format(format, !isActive);
+                    reader.readAsDataURL(file);
                 }
+            };
+            fileInput.click();
+        } else if (format.startsWith('align')) {
+            if (format === 'align-left') {
+                quill.format('align', false);
+                setAlignment('left');
+            } else {
+                const align = format.split('-')[1];
+                quill.format('align', align);
+                setAlignment(align);
             }
+        } else {
+            quill.format(format, !currentFormats[format]);
         }
     };
 
-    useEffect(() => {
-        if (quillRef2.current) {
-            setQuill2(quillRef2.current.getEditor());
-        }
-    }, []);
+    const handleKeyDown = () => {
+        if (!quill) return;
 
-    const handleKeyDown2 = () => {
-        if (quill2) {
-            const range = quill2.getSelection();
-            if (range) {
-                const currentFormats = quill2.getFormat(range);
-                if (currentFormats.bold) {
-                    quill2.format('bold', false);
-                }
-                if (currentFormats.italic) {
-                    quill2.format('italic', false);
-                }
-                if (currentFormats.underline) {
-                    quill2.format('underline', false);
-                }
+        const range = quill.getSelection();
+        if (!range) return;
+
+        const formats = ['bold', 'italic', 'underline'];
+        formats.forEach(format => {
+            if (quill.getFormat(range)[format]) {
+                quill.format(format, false);
             }
-        }
+        });
     };
-
     return (
         <div className="pb-4 h-auto">
             {questionsList.map((question, index) => (
@@ -333,7 +234,8 @@ function Questions({ questionsList, setQuestionsList }: QuestionsProps) {
                                         <div className="font-semibold text-base break-all text-[#1D2939] ml-1" dangerouslySetInnerHTML={{ __html: question.question || "Question" }}></div>
                                     </div>
                                     <Popover placement="bottom-end">
-                                        <PopoverTrigger>
+                                        <PopoverTrigger
+                                            onClick={(event) => event.stopPropagation()}>
                                             <button className="min-w-[20px] min-h-[20px] mt-[2px]">
                                                 <Image
                                                     src="/icons/three-dots.svg"
@@ -343,8 +245,8 @@ function Questions({ questionsList, setQuestionsList }: QuestionsProps) {
                                                 />
                                             </button>
                                         </PopoverTrigger>
-                                        <PopoverContent className="h-[88px] w-[167px] px-0 border border-solid border-[#EAECF0] bg-[#FFFFFF] rounded-md flex flex-col py-[4px] shadow-lg">
-
+                                        <PopoverContent className="h-[88px] w-[167px] px-0 border border-solid border-[#EAECF0] bg-[#FFFFFF] rounded-md flex flex-col py-[4px] shadow-lg"
+                                            onClick={(event) => event.stopPropagation()}>
                                             <button
 
                                                 className="flex flex-row h-[40px] w-full px-3 gap-2 hover:bg-[#F2F4F7] items-center"
@@ -446,6 +348,9 @@ function Questions({ questionsList, setQuestionsList }: QuestionsProps) {
                                     </div>
                                 </div>
                             </div>
+
+
+
                             <span className="font-semibold text-base text-[#1D2939]">Options</span>
                             <div className="flex flex-col gap-3">
                                 {(Object.keys(question.options) as Array<keyof Options>).map((optionKey) => (
