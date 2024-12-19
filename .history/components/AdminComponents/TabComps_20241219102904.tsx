@@ -421,7 +421,7 @@ function TabComps() {
                         {renderButtonWith('Role Management', '/icons/Role Management-2.svg', '/icons/Role Management.svg', activeTab === 'rolemanagement', () => handleTabClick('rolemanagement', '/admin/rolemanagement'))}
                         {renderButtonWith('User Database', '/icons/community-2.svg', '/icons/community.svg', activeTab === 'userdatabase', () => handleTabClick('userdatabase', '/admin/userdatabase'))}
                         {renderButtonWith('Marketing Integration', '/icons/Marketing Integration-2.svg', '/icons/Marketing Integration.svg', activeTab === 'marketingintegration', () => handleTabClick('marketingintegration', '/admin/marketingintegration'))}
-                        {renderButtonWith('All Subject Chapters', '/icons/Subject Chapters-2.svg', '/icons/Subject Chapters-1.svg', activeTab === 'allsubjectchapters', () => handleTabClick('allsubjectchapters', '/admin/allsubjectchapters'))}
+                        {renderButtonWith('All Subject Chapters', '/icons/Subject Chapters-1.svg', '/icons/Subject Chapters-2.svg', activeTab === 'allsubjectchapters', () => handleTabClick('allsubjectchapters', '/admin/allsubjectchapters'))}
                     </>
                 )}
                 {(currentUserData?.role === 'Admin' || currentUserData?.role === 'Customer Care') && (

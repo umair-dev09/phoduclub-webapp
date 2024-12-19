@@ -7,7 +7,7 @@ import Text from "./Text";
 import Quiz from "./QuizBottomSheets/Quiz";
 import Video from "./Video";
 import { DatePicker, DateValue } from "@nextui-org/react";
-import { now, today, CalendarDate, getLocalTimeZone, parseZonedDateTime, parseAbsoluteToLocal, ZonedDateTime } from "@internationalized/date";
+import { now, today, CalendarDate, getLocalTimeZone, parseAbsoluteToLocal, ZonedDateTime } from "@internationalized/date";
 import { addDoc, collection, doc, getDoc, getDocs, onSnapshot, setDoc, query, deleteDoc, updateDoc } from "firebase/firestore";
 import { auth, db, storage } from "@/firebase";
 import { toast } from 'react-toastify';
@@ -345,7 +345,7 @@ function CourseContent({ courseId }: CourseContentProps) {
                                         <Popover
                                             placement="bottom" >
                                             <PopoverTrigger
-                                            >
+                                                onClick={(event) => event.stopPropagation()}>
                                                 <button
                                                     className="flex flex-row gap-1 items-center rounded-md  h-[44px] w-auto justify-center"
                                                 >
@@ -353,7 +353,8 @@ function CourseContent({ courseId }: CourseContentProps) {
                                                     <span className="text-[#9012FF] font-semibold text-sm">Add Content</span>
                                                 </button>
                                             </PopoverTrigger>
-                                            <PopoverContent className="flex flex-col px-0 text-sm font-normal bg-white border border-lightGrey rounded-md w-[167px] shadow-md">
+                                            <PopoverContent className="flex flex-col px-0 text-sm font-normal bg-white border border-lightGrey rounded-md w-[167px] shadow-md"
+                                                onClick={(event) => event.stopPropagation()}>
                                                 <button className=" p-3 gap-2 flex-row flex h-[40px] hover:bg-[#F2F4F7] w-full"
                                                     onClick={() => { openDrawerfortest(); setPassedSectionId(section.sectionId); setIsContentEditing(false) }}>
                                                     <Image src="/icons/read.svg" alt="learn-icon" width={20} height={20} />
@@ -376,8 +377,7 @@ function CourseContent({ courseId }: CourseContentProps) {
 
                                         <Popover
                                             placement="bottom-end">
-                                            <PopoverTrigger
-                                                onClick={(event) => event.stopPropagation()}>
+                                            <PopoverTrigger>
                                                 <button
                                                     className="w-10 p-[10px] h-[40px] gap-1 flex-row flex  bg-[#FFFFFF] rounded-md 
                                                                             shadow-none"
@@ -387,7 +387,7 @@ function CourseContent({ courseId }: CourseContentProps) {
                                                 </button>
                                             </PopoverTrigger>
                                             <PopoverContent className="flex flex-col px-0 text-sm font-normal bg-white border border-lightGrey rounded-md w-[167px] shadow-md"
-                                                onClick={(event) => event.stopPropagation()}  >
+                                            >
                                                 <button className=" p-3 gap-2 flex-row flex h-[40px] hover:bg-[#F2F4F7] w-full"
                                                     onClick={() => editCreateSection(section.sectionName, section.sectionScheduleDate, section.sectionId)
                                                     }>
@@ -532,7 +532,7 @@ function CourseContent({ courseId }: CourseContentProps) {
                             </div>
                             <div className="flex flex-col w-full gap-1 px-6">
                                 <p className="text-start text-sm text-[#1D2939] font-medium">Name</p>
-                                <div className="flex flex-row w-full h-10 px-3 outline-none border border-lightGrey  focus-within:border-[#D7BBFC] focus-within:ring-4 focus-within:ring-[#E8DEFB] focus-within:outline-none transition-colors rounded-md">
+                                <div className="flex flex-row w-full h-10 px-3 outline-none border border-[#D0D5DD] rounded-md">
                                     <input
                                         type="text"
                                         className="w-full  text-sm text-[#182230] font-normal outline-none rounded-md"
@@ -571,7 +571,6 @@ function CourseContent({ courseId }: CourseContentProps) {
                                                     setSectionScheduleDate(dateString);
                                                     setShowDatepicker(true); // Return to button view after selecting date
                                                 }}
-
                                             />
                                         )}
                                     </>
@@ -585,7 +584,6 @@ function CourseContent({ courseId }: CourseContentProps) {
                                             const dateString = date ? date.toString() : "";
                                             setSectionScheduleDate(dateString);
                                         }}
-
                                     />
                                 )}
 

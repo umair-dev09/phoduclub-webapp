@@ -56,21 +56,21 @@ const formatScheduleDate = (dateString: string | null): string => {
         }
 
         // Format the date as per your required format
-        let formattedDate = dateObj.toLocaleString("en-GB", {
-            day: "2-digit",
-            month: "2-digit",
+        let formattedDate = dateObj.toLocaleString("en-US", {
             year: "numeric",
+            month: "2-digit",
+            day: "2-digit",
             hour: "2-digit",
             minute: "2-digit",
             hour12: true,
         });
 
-        // Adjust the formatting to match "2024-12-24,12:00 AM"
+        // Adjust the formatting to match "2020-12-02,12:12Am"
         formattedDate = formattedDate.replace(
-            /(\d{2})\/(\d{2})\/(\d{4}), (\d{2}):(\d{2}) (am|pm)/i,
-            "$3-$2-$1,$4:$5 $6"
+            /(\d{2})\/(\d{2})\/(\d{4}), (\d{2}):(\d{2}) (AM|PM)/i,
+            "$3-$1-$2,$4:$5$6"
         );
-        formattedDate = formattedDate.replace(/(am|pm)/i, (match) => match.toUpperCase());
+
         return formattedDate;
     } catch (error) {
         console.error("Error formatting date:", error);
@@ -532,7 +532,7 @@ function CourseContent({ courseId }: CourseContentProps) {
                             </div>
                             <div className="flex flex-col w-full gap-1 px-6">
                                 <p className="text-start text-sm text-[#1D2939] font-medium">Name</p>
-                                <div className="flex flex-row w-full h-10 px-3 outline-none border border-lightGrey  focus-within:border-[#D7BBFC] focus-within:ring-4 focus-within:ring-[#E8DEFB] focus-within:outline-none transition-colors rounded-md">
+                                <div className="flex flex-row w-full h-10 px-3 outline-none border border-[#D0D5DD] rounded-md">
                                     <input
                                         type="text"
                                         className="w-full  text-sm text-[#182230] font-normal outline-none rounded-md"
@@ -568,9 +568,11 @@ function CourseContent({ courseId }: CourseContentProps) {
                                                 hideTimeZone
                                                 onChange={(date) => {
                                                     const dateString = date ? date.toString() : "";
-                                                    setSectionScheduleDate(dateString);
-                                                    setShowDatepicker(true); // Return to button view after selecting date
+                                                    const formattedDate = formatScheduleDate(dateString); // Format the selected date
+                                                    setSectionScheduleDate(formattedDate); // Set the formatted date
+                                                    setShowDatepicker(true); // Return to button view after selecting the date
                                                 }}
+
 
                                             />
                                         )}
@@ -583,8 +585,11 @@ function CourseContent({ courseId }: CourseContentProps) {
                                         hideTimeZone
                                         onChange={(date) => {
                                             const dateString = date ? date.toString() : "";
-                                            setSectionScheduleDate(dateString);
+                                            const formattedDate = formatScheduleDate(dateString); // Format the selected date
+                                            setSectionScheduleDate(formattedDate); // Set the formatted date
+                                            setShowDatepicker(true); // Return to button view after selecting the date
                                         }}
+
 
                                     />
                                 )}

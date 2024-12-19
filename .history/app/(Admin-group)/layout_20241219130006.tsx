@@ -91,12 +91,6 @@ export default function DashboardGroup({ children }: DashboardGroupProps) {
                 case 'allsubjectchapters':
                     pageName = 'All Subject Chapters';
                     break;
-                case 'rolemanagementguide':
-                    pageName = 'Rolemanagement Guide';
-                    break;
-                case "discussionform":
-                    pageName = "Discussion form";
-                    break;
                 default:
                     pageName = '';
             }

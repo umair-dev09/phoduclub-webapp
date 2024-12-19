@@ -532,7 +532,7 @@ function CourseContent({ courseId }: CourseContentProps) {
                             </div>
                             <div className="flex flex-col w-full gap-1 px-6">
                                 <p className="text-start text-sm text-[#1D2939] font-medium">Name</p>
-                                <div className="flex flex-row w-full h-10 px-3 outline-none border border-lightGrey  focus-within:border-[#D7BBFC] focus-within:ring-4 focus-within:ring-[#E8DEFB] focus-within:outline-none transition-colors rounded-md">
+                                <div className="flex flex-row w-full h-10 px-3 outline-none border border-lightGrey hover:outline hover:outline-[1.5px] hover:outline-[#D6BBFB]  focus-within:border-[#D7BBFC] focus-within:ring-4 focus-within:ring-[#E8DEFB] focus-within:outline-none transition-colors rounded-md">
                                     <input
                                         type="text"
                                         className="w-full  text-sm text-[#182230] font-normal outline-none rounded-md"

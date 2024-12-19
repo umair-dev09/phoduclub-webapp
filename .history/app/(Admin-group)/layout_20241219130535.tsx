@@ -95,7 +95,7 @@ export default function DashboardGroup({ children }: DashboardGroupProps) {
                     pageName = 'Rolemanagement Guide';
                     break;
                 case "discussionform":
-                    pageName = "Discussion form";
+                    pageName = "discussionform";
                     break;
                 default:
                     pageName = '';

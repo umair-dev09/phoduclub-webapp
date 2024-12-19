@@ -532,7 +532,7 @@ function CourseContent({ courseId }: CourseContentProps) {
                             </div>
                             <div className="flex flex-col w-full gap-1 px-6">
                                 <p className="text-start text-sm text-[#1D2939] font-medium">Name</p>
-                                <div className="flex flex-row w-full h-10 px-3 outline-none border border-lightGrey  focus-within:border-[#D7BBFC] focus-within:ring-4 focus-within:ring-[#E8DEFB] focus-within:outline-none transition-colors rounded-md">
+                                <div className="flex flex-row w-full h-10 px-3 outline-none border border-[#D0D5DD] rounded-md">
                                     <input
                                         type="text"
                                         className="w-full  text-sm text-[#182230] font-normal outline-none rounded-md"
@@ -571,7 +571,9 @@ function CourseContent({ courseId }: CourseContentProps) {
                                                     setSectionScheduleDate(dateString);
                                                     setShowDatepicker(true); // Return to button view after selecting date
                                                 }}
-
+                                                defaultValue={parseZonedDateTime("2004-12-03T00:20:00-05:00[India]")}
+                                                hourCycle={12}
+                                                shouldForceLeadingZeros
                                             />
                                         )}
                                     </>
@@ -585,7 +587,9 @@ function CourseContent({ courseId }: CourseContentProps) {
                                             const dateString = date ? date.toString() : "";
                                             setSectionScheduleDate(dateString);
                                         }}
-
+                                        defaultValue={parseZonedDateTime("2004-12-03T05:50:00+05:30[Asia/Kolkata]")}
+                                        hourCycle={12}
+                                        shouldForceLeadingZeros
                                     />
                                 )}
 

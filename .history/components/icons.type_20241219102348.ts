@@ -172,8 +172,7 @@ export type IconsType =
   | "community-pink-color"
   | "collaspeDetails-2"
   | "Subject Chapters-1"
-  | "Subject Chapters-2"
-  | "plus-white-sign";
+  | "Subject Chapters-2";
 
 
 
