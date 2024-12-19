@@ -16,7 +16,6 @@ import StatusDisplay from "@/components/AdminComponents/StatusDisplay";
 import { Popover, PopoverContent, PopoverTrigger } from "@nextui-org/popover";
 import StudentsAttemptedCourseInfo from '@/components/AdminComponents/Courseinfo/StudentsPurchasedCourseInfo';
 import DeleteCourse from "@/components/AdminComponents/Courseinfo/DeleteCourse";
-import { Tabs, Tab } from "@nextui-org/react";
 
 type priceprops = {
     Price: number;
@@ -51,7 +50,7 @@ const RatingStars: React.FC<{ rating: string | null }> = ({ rating }) => {
     const wholeStars = Math.floor(parsedRating); // Count of full stars
     const hasHalfStar = parsedRating % 1 >= 0.1 && parsedRating % 1 < 0.9; // Half star condition
     const emptyStars = totalStars - wholeStars - (hasHalfStar ? 1 : 0); // Remaining empty stars
-    const [activeTab, setActiveTab] = useState('CourseContent');
+
     return (
         <div className="flex items-center">
             {/* Render full stars */}
@@ -90,8 +89,6 @@ function Courses() {
         : today(getLocalTimeZone()); // Fallback to today's date if format is incorrect or empty
 
     const [activeTab, setActiveTab] = useState('CourseContent');
-    const CourseContentCount = 78;
-    const StudentspurchasedCount = 10;
 
     const handleTabClick = (tabName: React.SetStateAction<string>) => {
         setActiveTab(tabName);
@@ -325,59 +322,50 @@ function Courses() {
                     </div>
                 </div>
             </div>
-            <div className="pt-3 w-full flex flex-col">
-                <Tabs
-                    aria-label="Test series Info Tabs"
-                    color="primary"
-                    variant="underlined"
-                    selectedKey={activeTab}
-                    onSelectionChange={(key) => setActiveTab(key as string)}
-                    classNames={{
-                        tabList: "gap-6 w-full relative rounded-none p-0 border-b border-solid border-[#EAECF0]",
-                        cursor: "w-full bg-[#7400E0]",
-                        tab: "max-w-fit px-0 h-12",
-                        tabContent: "group-data-[selected=true]:text-[#7400E0] hover:text-[#7400E0] ",
-                    }}
-                >
-                    <Tab
-                        key="Course Content"
-                        title={
-                            <div className="flex items-center space-x-2">
-                                <span className="font-medium text-base">
-                                    Course Content
-                                </span>
-                                {CourseContentCount > 0 && (
-                                    <div className="inline-flex items-center justify-center px-3 py-1 rounded-full text-sm bg-[#EDE4FF] border border-[#EDE4FF] font-medium text-[#7400E0]">
-                                        {CourseContentCount}
-                                    </div>
-                                )}
-                            </div>
-                        }
-                    >
-                        <CourseContent courseId={courseId || ''} />
-                    </Tab>
-
-                    <Tab
-                        key="Students purchased"
-                        title={
-                            <div className="flex items-center space-x-2">
-                                <span className="font-medium text-base">
-                                    Students purchased
-                                </span>
-                                {StudentspurchasedCount > 0 && (
-                                    <div className="inline-flex items-center justify-center px-3 py-1 rounded-full text-sm bg-[#EDE4FF] border border-[#EDE4FF] font-medium text-[#7400E0]">
-                                        {StudentspurchasedCount}
-                                    </div>
-                                )}
-                            </div>
-                        }
-                    >
-                        <StudentsAttemptedCourseInfo />
-                    </Tab>
-                </Tabs>
+            {/* <div className="flex flex-col">
+                <div className="relative flex">
+                    <div className="pt-[10px]">
+                        <button
+                            onClick={() => handleTabClick('CourseContent')}
+                            className={`relative py-2 pr-4 text-base transition  text-[16px] font-semibold duration-200 ${activeTab === 'CourseContent' ? 'text-[#7400E0]' : 'text-[#667085] hover:text-[#7400E0]'
+                                } focus:outline-none`}>
+                            Course Content
+                        </button>
+                    </div>
+                    <div className="pt-[10px]">
+                        <button
+                            onClick={() => handleTabClick('StudentsPurchased ')}
+                            className={`relative py-2 px-4 text-base transition text-[16px] font-semibold duration-200 ${activeTab === 'StudentsPurchased ' ? 'text-[#7400E0]' : 'text-[#667085] hover:text-[#7400E0]'
+                                } focus:outline-none`}>
+                            Students Purchased
+                            <span
+                                className="ml-2 px-2 py-[0px] text-[#9012FF] bg-[#EDE4FF] rounded-full relative"
+                                style={{ fontSize: '14px', fontWeight: '500', minWidth: '24px', textAlign: 'center', top: '-1px' }}
+                            >10</span>
+                        </button>
+                    </div>
+                    <div
+                        className="absolute bg-[#7400E0] transition-all duration-300"
+                        style={{
+                            height: '1.8px',
+                            width: activeTab === 'CourseContent' ? '123px' : '195px', // Adjusted width to match the text
+                            left: activeTab === 'CourseContent' ? '0px' : '157px', // Adjust left position to match each button
+                            bottom: '-8px',
+                        }}
+                    />
+                </div>
+                <hr className="h-px bg-[#EAECF0] mt-2" />
             </div>
-
-
+            {activeTab === 'CourseContent' && (
+                <div>
+                    <CourseContent courseId={courseId || ''} />
+                </div>
+            )}
+            {activeTab === 'StudentsPurchased ' && (
+                <div>
+                    <StudentsAttemptedCourseInfo />
+                </div>
+            )} */}
 
             <Dialog open={publishDialogOpen} onClose={() => setPublishDialogOpen(false)} className="relative z-50">
                 <DialogBackdrop className="fixed inset-0 bg-black/30" />

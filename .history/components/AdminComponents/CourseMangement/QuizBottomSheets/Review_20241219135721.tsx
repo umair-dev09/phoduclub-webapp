@@ -85,11 +85,7 @@ function Review({ questionsList }: ReviewProps) {
                     </div>
                     {question.explanation && (
                         <p className='w-full h-auto text-left text-sm text[#1D2939] leading-[25px] font-normal italic mt-4 p-4 bg-[#F9FAFB] border border-[#F2F4F7] rounded-md'>
-                            <h3 className='text-base font-semibold'
-                                dangerouslySetInnerHTML={{
-                                    __html: (question?.explanation || ''),
-                                }}>
-                            </h3>
+                            {question.explanation}
                         </p>
                     )}
                 </div>

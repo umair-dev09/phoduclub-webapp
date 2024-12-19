@@ -406,7 +406,7 @@ function Video({ isOpen, toggleDrawer, sectionId, courseId, isEditing, contentId
                                 <span className='text-[#1D2939] text-sm font-semibold '> Lesson Overview</span>
                                 <div
                                     className={`pt-2 bg-[#FFFFFF] border ${isWriting ? 'border-[#D6BBFB]  shadow-[0px_0px_0px_4px_rgba(158,119,237,0.25),0px_1px_2px_0px_rgba(16,24,40,0.05)]' : 'border-[#EAECF0]'
-                                        } rounded-[12px] h-auto  hover:outline hover:outline-[1.5px] hover:outline-[#D6BBFB]`}>
+                                        } rounded-[12px] h-auto`}>
                                     <div className="bg-[#FFFFFF] ">
                                         <ReactQuill
                                             ref={quillRef}
@@ -431,7 +431,7 @@ function Video({ isOpen, toggleDrawer, sectionId, courseId, isEditing, contentId
                                                 <button onClick={() => handleIconClick('underline')}>
                                                     <Image src="/icons/underline-icon.svg" width={24} height={24} alt="underline-icon" />
                                                 </button>
-                                                <Popover placement="bottom-start" className="flex flex-row justify-end">
+                                                <Popover backdrop="blur" placement="bottom-start" className="flex flex-row justify-end">
                                                     <PopoverTrigger className="">
                                                         <button className="flex items-center justify-center p-1">
                                                             {alignment === 'center' ? (
@@ -445,13 +445,13 @@ function Video({ isOpen, toggleDrawer, sectionId, courseId, isEditing, contentId
                                                     </PopoverTrigger>
                                                     <PopoverContent className="flex flex-row bg-white rounded-[8px] border-[1px] border-solid border-[#EAECF0] p-2 w-[120px] shadow-[0_2px_4px_#EAECF0] gap-2 ">
 
-                                                        <button onClick={() => handleIconClick("align-left")} className="flex items-center justify-center hover:bg-[#F2F4F7]">
+                                                        <button onClick={() => handleIconClick("align-left")} className="flex items-center justify-center">
                                                             <Image src="/icons/align-left.svg" width={30} height={30} alt="align-left" />
                                                         </button>
-                                                        <button onClick={() => handleIconClick("align-center")} className="flex items-center justify-center hover:bg-[#F2F4F7]">
+                                                        <button onClick={() => handleIconClick("align-center")} className="flex items-center justify-center">
                                                             <Image src="/icons/align-middle.svg" width={30} height={30} alt="align-center" />
                                                         </button>
-                                                        <button onClick={() => handleIconClick("align-right")} className="flex items-center justify-center hover:bg-[#F2F4F7]">
+                                                        <button onClick={() => handleIconClick("align-right")} className="flex items-center justify-center">
                                                             <Image src="/icons/align-right.svg" width={30} height={30} alt="align-right" />
                                                         </button>
 

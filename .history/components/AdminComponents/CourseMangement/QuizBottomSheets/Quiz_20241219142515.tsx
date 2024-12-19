@@ -376,7 +376,7 @@ function Quiz({ isOpen, toggleDrawer, courseId, sectionId, isEditing, contentId 
                         <div className={`w-auto h-[44px]  rounded-[8px] flex items-center justify-center flex-row gap-3  `}>
                             <button
                                 onClick={toggleDrawer}
-                                className="w-[103px] h-[40px]  hover:bg-[#F2F4F7] flex items-center justify-center text-sm  border border-solid border-[#EAECF0] font-semibold text-[#1D2939] rounded-[8px] p-4 ">
+                                className="w-[103px] h-[40px] flex items-center justify-center text-sm  border border-solid border-[#EAECF0] font-semibold text-[#1D2939] hover:bg-[#F2F4F7] rounded-[8px] p-4 ">
                                 Cancel
                             </button>
                             <button
@@ -424,7 +424,7 @@ function Quiz({ isOpen, toggleDrawer, courseId, sectionId, isEditing, contentId 
                                     <div className="flex flex-row gap-3 mb-3">
                                         {currentStep > Step.QuizInfo && (
                                             <button
-                                                className="h-[44px] w-[135px] bg-[#FFFFFF] rounded-md hover:bg-[#F2F4F7] shadow-inner-button border border-solid border-[#EAECF0] flex items-center justify-center"
+                                                className="h-[44px] w-[135px] bg-[#FFFFFF] rounded-md shadow-inner-button border border-solid border-[#EAECF0] flex items-center justify-center hover:bg-[#F2F4F7]"
                                                 onClick={handlePreviousClick}
                                             >
                                                 <span className="text-[#1D2939] font-semibold text-sm">Previous</span>

@@ -948,15 +948,13 @@ function Questions({ questionsList, setQuestionsList, anyQuestionAdded, setAnyQu
                                     </div>
                                     <Popover placement="bottom-end">
                                         <PopoverTrigger onClick={(event) => event.stopPropagation()}>
-                                            <button className="w-[32px] h-[32px]  rounded-full flex items-center justify-center transition-all duration-300 ease-in-out hover:bg-[#F2F4F7]">
-                                                <button className="min-w-[20px] min-h-[20px] mt-[2px]">
-                                                    <Image
-                                                        src="/icons/three-dots.svg"
-                                                        width={20}
-                                                        height={20}
-                                                        alt="Three-dots"
-                                                    />
-                                                </button>
+                                            <button className="min-w-[20px] min-h-[20px] mt-[2px]">
+                                                <Image
+                                                    src="/icons/three-dots.svg"
+                                                    width={20}
+                                                    height={20}
+                                                    alt="Three-dots"
+                                                />
                                             </button>
                                         </PopoverTrigger>
                                         <PopoverContent className="h-[88px] w-[167px] px-0 border border-solid border-[#EAECF0] bg-[#FFFFFF] rounded-md flex flex-col py-[4px] shadow-lg"

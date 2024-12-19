@@ -90,8 +90,6 @@ function Courses() {
         : today(getLocalTimeZone()); // Fallback to today's date if format is incorrect or empty
 
     const [activeTab, setActiveTab] = useState('CourseContent');
-    const CourseContentCount = 78;
-    const StudentspurchasedCount = 10;
 
     const handleTabClick = (tabName: React.SetStateAction<string>) => {
         setActiveTab(tabName);
@@ -344,7 +342,7 @@ function Courses() {
                         title={
                             <div className="flex items-center space-x-2">
                                 <span className="font-medium text-base">
-                                    Course Content
+                                    Course Con
                                 </span>
                                 {CourseContentCount > 0 && (
                                     <div className="inline-flex items-center justify-center px-3 py-1 rounded-full text-sm bg-[#EDE4FF] border border-[#EDE4FF] font-medium text-[#7400E0]">
@@ -354,7 +352,7 @@ function Courses() {
                             </div>
                         }
                     >
-                        <CourseContent courseId={courseId || ''} />
+                        <CourseContent />
                     </Tab>
 
                     <Tab
@@ -376,8 +374,6 @@ function Courses() {
                     </Tab>
                 </Tabs>
             </div>
-
-
 
             <Dialog open={publishDialogOpen} onClose={() => setPublishDialogOpen(false)} className="relative z-50">
                 <DialogBackdrop className="fixed inset-0 bg-black/30" />

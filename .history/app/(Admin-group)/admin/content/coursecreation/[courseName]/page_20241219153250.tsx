@@ -344,7 +344,7 @@ function Courses() {
                         title={
                             <div className="flex items-center space-x-2">
                                 <span className="font-medium text-base">
-                                    Course Content
+                                    Course Con
                                 </span>
                                 {CourseContentCount > 0 && (
                                     <div className="inline-flex items-center justify-center px-3 py-1 rounded-full text-sm bg-[#EDE4FF] border border-[#EDE4FF] font-medium text-[#7400E0]">

@@ -406,7 +406,7 @@ function Video({ isOpen, toggleDrawer, sectionId, courseId, isEditing, contentId
                                 <span className='text-[#1D2939] text-sm font-semibold '> Lesson Overview</span>
                                 <div
                                     className={`pt-2 bg-[#FFFFFF] border ${isWriting ? 'border-[#D6BBFB]  shadow-[0px_0px_0px_4px_rgba(158,119,237,0.25),0px_1px_2px_0px_rgba(16,24,40,0.05)]' : 'border-[#EAECF0]'
-                                        } rounded-[12px] h-auto  hover:outline hover:outline-[1.5px] hover:outline-[#D6BBFB]`}>
+                                        } rounded-[12px] h-auto`}>
                                     <div className="bg-[#FFFFFF] ">
                                         <ReactQuill
                                             ref={quillRef}
