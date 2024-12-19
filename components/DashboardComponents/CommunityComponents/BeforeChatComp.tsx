@@ -85,8 +85,8 @@ import Image from "next/image";
 
 function BeforeChatComp() {
     return (
-        <div className="flex flex-col justify-between h-fit ">
-            <div className="flex  items-center justify-center mt-36 mb-[120px]">
+        <div className="flex flex-1 flex-col">
+            <div className="flex flex-1 items-center justify-center">
                 <div className="flex flex-col w-[20.75rem] p-6 border border-neutral-300 rounded-2xl bg-white gap-4">
                     <div className="flex flex-row justify-start w-full gap-1">
                         <Image src='/icons/alert-circle.svg' alt="alert" width={20} height={20} />
