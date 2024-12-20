@@ -9,15 +9,14 @@ import Drawer from "react-modern-drawer";
 import "react-modern-drawer/dist/index.css";
 import { Switch } from "antd";
 import { DatePicker } from "@nextui-org/react";
-import { today, getLocalTimeZone } from "@internationalized/date";
+import { today, getLocalTimeZone, DateValue, parseDate, } from "@internationalized/date";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { auth, db, storage } from "@/firebase";
 import { collection, doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
 import { toast } from 'react-toastify';
-import LoadingData from "@/components/Loading";
 
 // Define the props interface
-interface TestProps {
+interface VideoProps {
     isOpen: boolean;           // isOpen should be a boolean
     toggleDrawer: () => void;  // toggleDrawer is a function that returns void
     courseId: string;
@@ -25,7 +24,7 @@ interface TestProps {
     isEditing: boolean;
     contentId: string;
 }
-function Text({ isOpen, toggleDrawer, sectionId, courseId, isEditing, contentId }: TestProps) {
+function Video({ isOpen, toggleDrawer, sectionId, courseId, isEditing, contentId }: VideoProps) {
     // state for ReactQuill
     const quillRef = useRef<ReactQuill | null>(null); // Ref to hold ReactQuill instance
     const [quill, setQuill] = useState<Quill | null>(null);
@@ -33,22 +32,26 @@ function Text({ isOpen, toggleDrawer, sectionId, courseId, isEditing, contentId 
     const [isWriting, setIsWriting] = useState(false); // Track if text is being written
     const [lessonHeading, setLessonHeading] = useState('');
     const [lessonOverView, setLessonOverView] = useState('');
-    const [lessonContent, setLessonContent] = useState('');
-    const [pdfLink, setPdfLink] = useState<string | null>(null);
+    const [videoId, setVideoId] = useState('');
+    const [videoDuration, setVideoDuration] = useState<number | null>(null);
+    const [videoLink, setVideoLink] = useState<string | null>(null);
     const [contentScheduleDate, setContentScheduleDate] = useState('');
     const [disscusionOpen, setDisscusionOpen] = useState(false);
-    const [loading, setLoading] = useState(false);
-    const [value, setValue] = useState(lessonContent);
     const [fileName, setFileName] = useState<string | null>(null); // State to hold the file name
     const [progress, setProgress] = useState<number | null>(null);
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
     const [uploadTaskRef, setUploadTaskRef] = useState<any>(null); // State to hold the upload task reference
+    const [loading, setLoading] = useState(false);
     const [showDatepicker, setShowDatepicker] = useState(false);
     const [sectionScheduleDate, setSectionScheduleDate] = useState("");
 
-    const isFormValid = lessonHeading && lessonOverView && lessonContent && contentScheduleDate;
+    const openVideoUploadTab = () => {
+        // navigator.clipboard.writeText(pId || '');
+        // alert('Video Id is copied you can close this tab now.');
+        window.open("http://localhost:3000/admin/uploadVideo", "_blank", "noopener,noreferrer");
+    };
 
-
+    const isFormValid = lessonHeading && lessonOverView && contentScheduleDate && videoLink;
 
     const formatScheduleDate = (dateString: string | null): string => {
         if (!dateString) return "-"; // Return "-" if the date is null or undefined
@@ -75,7 +78,6 @@ function Text({ isOpen, toggleDrawer, sectionId, courseId, isEditing, contentId 
         }
     };
 
-
     useEffect(() => {
         if (isEditing) {
             setLoading(true);
@@ -84,13 +86,13 @@ function Text({ isOpen, toggleDrawer, sectionId, courseId, isEditing, contentId 
         else {
             setLessonHeading('');
             setLessonOverView('');
-            setLessonContent('');
-            setPdfLink(null);
+            setVideoLink(null);
             setProgress(null); // Reset progress
             setFileName(null);
             setContentScheduleDate('');
             setDisscusionOpen(false);
-            setValue('');
+            setVideoId('');
+            setSelectedFile(null);
             formatScheduleDate
         }
     }, [isEditing, contentId]);
@@ -104,10 +106,11 @@ function Text({ isOpen, toggleDrawer, sectionId, courseId, isEditing, contentId 
                 const content = contentDocSnap.data();
                 setLessonHeading(content.lessonHeading || '');
                 setLessonOverView(content.lessonOverView || '');
-                setLessonContent(content.lessonContent || '');
-                setPdfLink(content.pdfLink || '');
+                setVideoLink(content.videoLink || '');
                 setContentScheduleDate(content.lessonScheduleDate || '');
                 setDisscusionOpen(content.isDisscusionOpen || '');
+                setFileName(content.videoFileName);
+                setVideoId(content.videoId);
                 setLoading(false);
             } else {
                 toast.error("Content not found!");
@@ -119,8 +122,8 @@ function Text({ isOpen, toggleDrawer, sectionId, courseId, isEditing, contentId 
     };
 
     const handleChange = (content: string) => {
+        setLessonOverView(content);
         checkTextContent(content);
-        setLessonContent(content);
     };
 
     const checkTextContent = (content: string) => {
@@ -181,9 +184,15 @@ function Text({ isOpen, toggleDrawer, sectionId, courseId, isEditing, contentId 
         }
     };
     // -----------------------------------------------------------------------------------------------------------------------------------------------------
-
     const togglebutton = (checked: boolean | ((prevState: boolean) => boolean)) => {
         setDisscusionOpen(checked);
+    };
+
+    const [checkedState, setCheckedState] = useState(false);
+
+    // Toggle function to change the checked state
+    const handleToggle = () => {
+        setCheckedState((prevState) => !prevState);
     };
 
     const handleDragOver = (event: React.DragEvent<HTMLDivElement>) => {
@@ -197,132 +206,186 @@ function Text({ isOpen, toggleDrawer, sectionId, courseId, isEditing, contentId 
 
         const file = event.dataTransfer.files?.[0]; // Get the first dropped file
         if (file) {
-            if (file.type === "application/pdf") { // Check if the file is a PDF
+            if (file.type.startsWith("video/")) { // Check if the file is a video
                 setFileName(file.name); // Set file name when a file is selected
-                setPdfLink(null); // Reset file URL until the upload is complete
+                setVideoLink(null); // Reset file URL until the upload is complete
+
+                // Create a video element to extract duration
+                const videoElement = document.createElement("video");
+                videoElement.src = URL.createObjectURL(file);
+                videoElement.onloadedmetadata = () => {
+                    setVideoDuration(videoElement.duration); // Set the duration in seconds
+                    URL.revokeObjectURL(videoElement.src); // Clean up the object URL
+                };
+
                 try {
                     const storageRef = ref(storage, `CourseContentFiles/${courseId}/${sectionId}/${file.name}`);
                     const uploadTask = uploadBytesResumable(storageRef, file);
                     setUploadTaskRef(uploadTask); // Set the upload task reference
-
                     setSelectedFile(file); // Store the selected file to access its size
 
-                    uploadTask.on(
-                        "state_changed",
-                        (snapshot) => {
-                            const progressPercentage = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-                            setProgress(progressPercentage);
-                        },
-                        (error) => {
-                            console.error("Upload error:", error);
-                            setProgress(null);
-                        },
-                        async () => {
-                            const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
-                            setPdfLink(downloadURL);
-                            setProgress(null);
+                    // Wrap the upload process with toast.promise
+                    toast.promise(
+                        new Promise((resolve, reject) => {
+                            uploadTask.on(
+                                "state_changed",
+                                (snapshot) => {
+                                    const progressPercentage = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                                    setProgress(progressPercentage);
+                                },
+                                (error) => {
+                                    console.error("Upload error:", error);
+                                    setProgress(null);
+                                    reject("Failed to upload video. Please try again.");
+                                },
+                                async () => {
+                                    try {
+                                        const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
+                                        setVideoLink(downloadURL);
+                                        setProgress(null);
+                                        resolve("Video uploaded successfully!");
+                                    } catch (error) {
+                                        console.error("Error fetching download URL:", error);
+                                        reject("Failed to fetch video URL. Please try again.");
+                                    }
+                                }
+                            );
+                        }),
+                        {
+                            pending: "Uploading video...",
+                            success: "Video uploaded successfully! 🎉",
+                            error: "Failed to upload video. Please try again.",
                         }
                     );
                 } catch (error) {
                     console.error("Error uploading file:", error);
+                    toast.error("An unexpected error occurred during upload.");
                 }
             } else {
-                console.error("Invalid file type. Only PDFs are allowed.");
-                alert("Please upload a valid PDF file.");
+                console.error("Invalid file type. Only Videos are allowed.");
+                alert("Only videos are allowed!");
             }
         }
     };
 
-
-    const handlePdfUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
-
+    const handleVideoUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0];
         if (file) {
             setFileName(file.name); // Set file name when a file is selected
-            setPdfLink(null); // Reset file URL until the upload is complete
+            setVideoLink(null); // Reset file URL until the upload is complete
+
+            // Create a video element to extract duration
+            const videoElement = document.createElement("video");
+            videoElement.src = URL.createObjectURL(file);
+            videoElement.onloadedmetadata = () => {
+                setVideoDuration(videoElement.duration); // Set the duration in seconds
+                URL.revokeObjectURL(videoElement.src); // Clean up the object URL
+            };
+
             try {
                 const storageRef = ref(storage, `CourseContentFiles/${courseId}/${sectionId}/${file.name}`);
                 const uploadTask = uploadBytesResumable(storageRef, file);
                 setUploadTaskRef(uploadTask); // Set the upload task reference
-
                 setSelectedFile(file); // Store the selected file to access its size
 
-                uploadTask.on(
-                    "state_changed",
-                    (snapshot) => {
-                        const progressPercentage = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-                        setProgress(progressPercentage);
-                    },
-                    (error) => {
-                        console.error("Upload error:", error);
-                        setProgress(null);
-                    },
-                    async () => {
-                        const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
-                        setPdfLink(downloadURL);
-                        // setFileType(type);
-                        setProgress(null);
+                // Wrap the upload process with toast.promise
+                toast.promise(
+                    new Promise((resolve, reject) => {
+                        uploadTask.on(
+                            "state_changed",
+                            (snapshot) => {
+                                const progressPercentage = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                                setProgress(progressPercentage);
+                            },
+                            (error) => {
+                                console.error("Upload error:", error);
+                                setProgress(null);
+                                reject("Failed to upload video. Please try again.");
+                            },
+                            async () => {
+                                try {
+                                    const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
+                                    setVideoLink(downloadURL);
+                                    setProgress(null);
+                                    resolve("Video uploaded successfully!");
+                                } catch (error) {
+                                    console.error("Error fetching download URL:", error);
+                                    reject("Failed to fetch video URL. Please try again.");
+                                }
+                            }
+                        );
+                    }),
+                    {
+                        pending: "Uploading video...",
+                        success: "Video uploaded successfully!",
+                        error: "Failed to upload video. Please try again.",
                     }
                 );
             } catch (error) {
                 console.error("Error uploading file:", error);
+                toast.error("An unexpected error occurred during upload.");
             }
         }
-
     };
 
-    const handleSaveText = async () => {
+    const handleSaveVideo = async () => {
         try {
+
             if (isEditing) {
                 const contentRef = doc(db, "course", courseId, 'sections', sectionId, 'content', contentId);
                 const courseData = {
                     lessonHeading: lessonHeading,
                     lessonOverView: lessonOverView,
-                    lessonContent: lessonContent,
-                    pdfLink: pdfLink ? pdfLink : null,
+                    videoLink: videoLink ? videoLink : null,
                     lessonScheduleDate: contentScheduleDate,
                     isDisscusionOpen: disscusionOpen,
+                    videoFileName: fileName,
+                    videoDuration,
+                    // videoId,
                 };
                 await updateDoc(contentRef, courseData);
                 toast.success('Changes saved!');
                 toggleDrawer();
-
+                setLessonHeading('');
+                setLessonOverView('');
+                setVideoLink(null);
+                setProgress(null); // Reset progress
+                setFileName(null);
+                setContentScheduleDate('');
+                setDisscusionOpen(false);
+                setSelectedFile(null);
             }
             else {
                 // Generate a unique section ID (Firestore will auto-generate if you use addDoc)
                 const newContentRef = doc(collection(db, 'course', courseId, 'sections', sectionId, 'content')); // No need for custom sectionId generation if using Firestore auto-ID
                 await setDoc(newContentRef, {
                     contentId: newContentRef.id,
-                    type: 'Text',
+                    type: 'Video',
                     lessonHeading: lessonHeading,
                     lessonOverView: lessonOverView,
-                    lessonContent: lessonContent,
-                    pdfLink: pdfLink ? pdfLink : null,
+                    videoLink: videoLink ? videoLink : null,
                     lessonScheduleDate: contentScheduleDate,
                     isDisscusionOpen: disscusionOpen,
-
+                    videoFileName: fileName,
+                    videoDuration,
+                    //   videoId,
                 });
-                toast.success('Test Content added!');
+                toast.success('Video Content added!');
                 toggleDrawer();
                 setLessonHeading('');
                 setLessonOverView('');
-                setLessonContent('');
-                setPdfLink(null);
+                setVideoLink(null);
                 setProgress(null); // Reset progress
                 setFileName(null);
                 setContentScheduleDate('');
                 setDisscusionOpen(false);
-                setValue('');
+                setSelectedFile(null);
             }
         } catch (error) {
             console.error('Error adding content: ', error);
         }
 
     };
-
-    if (loading) {
-        return <LoadingData />
-    }
 
     return (
         <div>
@@ -334,7 +397,7 @@ function Text({ isOpen, toggleDrawer, sectionId, courseId, isEditing, contentId 
                 style={{ height: "98vh" }}
             >
                 {/* Drawer content goes here */}
-                <div className="flex flex-col h-full "> {/* Change 1: Wrap everything in a flex column container */}
+                <div className="flex flex-col h-full pb-6"> {/* Change 1: Wrap everything in a flex column container */}
                     {/* Top Section - Fixed */}
                     <div className="p-5 flex justify-between items-center h-[69px] w-auto border-b-[1.5px] border-t-[1.5px] border-[#EAECF0] rounded-tl-[18px] rounded-tr-[16px]">
                         <span className="text-lg font-semibold text-[#1D2939]">Lesson</span>
@@ -345,7 +408,7 @@ function Text({ isOpen, toggleDrawer, sectionId, courseId, isEditing, contentId 
                                 Cancel
                             </button>
                             <button
-                                onClick={handleSaveText}
+                                onClick={handleSaveVideo}
                                 disabled={!isFormValid}
                                 className={`w-[90px] h-[40px] flex items-center justify-center text-sm shadow-inner-button ${!isFormValid ? 'bg-[#CDA0FC]' : 'bg-[#9012FF]'} border border-solid border-white font-semibold text-[#FFFFFF] rounded-md p-4 `}>
                                 Save
@@ -365,33 +428,23 @@ function Text({ isOpen, toggleDrawer, sectionId, courseId, isEditing, contentId 
                                     onChange={(e) => setLessonHeading(e.target.value)}
                                 />
                             </div>
-                            <div className="flex flex-col gap-2">
-                                <span className='text-[#1D2939] text-sm font-semibold '>Lesson Overview</span>
-                                <textarea
-                                    className="w-full h-auto py-2 px-3 min-h-[100px] text-sm text-[#1D2939] placeholder:text-[#A1A1A1]  rounded-md focus:outline-none focus:ring-0 resize-none break-all max-h-[120px] 
-                                    border border-gray-300 focus:outline focus:outline-[1.5px] focus:outline-[#D6BBFB] hover:outline hover:outline-[1.5px] hover:outline-[#D6BBFB] focus-within:border-[#D7BBFC] focus-within:ring-4 focus-within:ring-[#E8DEFB] focus-within:outline-none transition-colors
-                                    focus:shadow-[0px_0px_0px_4px_rgba(158,119,237,0.25),0px_1px_2px_0px_rgba(16,24,40,0.05)]"
-                                    placeholder="Overview"
-                                    value={lessonOverView}
-                                    onChange={(e) => setLessonOverView(e.target.value)}
-                                />
-                            </div>
+
                             {/* Description of Courses */}
                             <div className="flex flex-col gap-2">
-                                <span className='text-[#1D2939] text-sm font-semibold '>Content</span>
+                                <span className='text-[#1D2939] text-sm font-semibold '> Lesson Overview</span>
                                 <div
                                     className={`pt-2 bg-[#FFFFFF] border ${isWriting ? 'border-[#D6BBFB]  shadow-[0px_0px_0px_4px_rgba(158,119,237,0.25),0px_1px_2px_0px_rgba(16,24,40,0.05)]' : 'border-[#EAECF0]'
-                                        } rounded-[12px] h-auto`}>
+                                        } rounded-[12px] h-auto  hover:outline hover:outline-[1.5px] hover:outline-[#D6BBFB]`}>
                                     <div className="bg-[#FFFFFF] ">
                                         <ReactQuill
                                             ref={quillRef}
                                             onBlur={handleBlur}
-                                            value={lessonContent}
+                                            value={lessonOverView}
                                             onChange={handleChange}
                                             onKeyDown={handleKeyDown}
                                             modules={{ toolbar: false }}
-                                            placeholder="Content"
-                                            className="text-[#1D2939] focus:outline-none rounded-b-[12px] custom-quill placeholder:not-italic min-h-[10px] max-h-[150px] overflow-y-auto border-none font-normal"
+                                            placeholder="Overview"
+                                            className="text-[#1D2939] focus:outline-none rounded-b-[12px] custom-quill placeholder:not-italic min-h-[10px] max-h-[150px] overflow-y-auto border-none font-normal text-sm"
                                         />
                                     </div>
                                     <div className="h-[66px] bg-[#FFFFFF] rounded-bl-[12px] rounded-br-[12px] flex justify-center items-center">
@@ -442,8 +495,8 @@ function Text({ isOpen, toggleDrawer, sectionId, courseId, isEditing, contentId 
                             </div>
                             {/* Upload the Image */}
                             <div className=" flex flex-col gap-2">
-                                <span className="text-[#1D2939] font-semibold text-sm">Upload PDF</span>
-                                {!fileName && (
+                                <span className="text-[#1D2939] font-semibold text-sm">Upload Video</span>
+                                {(!selectedFile) && (
                                     <div className="h-[148px] rounded-xl bg-[#F9FAFB] border-2 border-dashed border-[#D0D5DD]"
                                         onDragOver={handleDragOver}
                                         onDrop={handleDrop}>
@@ -464,8 +517,8 @@ function Text({ isOpen, toggleDrawer, sectionId, courseId, isEditing, contentId 
                                                         type="file"
                                                         id="upload"
                                                         className="hidden"
-                                                        accept=".pdf"
-                                                        onChange={handlePdfUpload}
+                                                        accept="video/*"
+                                                        onChange={handleVideoUpload}
                                                     />
                                                     Click to upload
                                                 </label>
@@ -475,44 +528,43 @@ function Text({ isOpen, toggleDrawer, sectionId, courseId, isEditing, contentId 
                                     </div>
                                 )}
 
-                                {fileName && (
+                                {(selectedFile || videoLink) && (
                                     <div className="border border-solid border-[#EAECF0] rounded-md h-[58px] flex flex-row justify-between items-center px-4">
-                                        <div className="flex flex-row  items-center">
-                                            <Image className="w-[40px] h-[32px]" src='/icons/pdf-icon.svg' alt="PDF" width={42} height={20} />
+                                        <div className="flex flex-row gap-1 items-center">
+                                            <Image className="w-[30px] h-[20px]" src='/icons/play.svg' alt="Video" width={32} height={15} />
                                             <span className="text-[#1D2939] font-normal text-sm ">{fileName}</span>
                                         </div>
                                         <div className="flex flex-row gap-3 items-center">
-                                            {progress === 100 && (
-                                                <div className="flex relative w-6 h-6 items-center justify-center">
-                                                    <svg className="absolute top-0 left-0 w-full h-full transform -rotate-90" viewBox="0 0 36 36">
-                                                        <path
-                                                            className="text-gray-300"
-                                                            strokeLinecap="round"
-                                                            fill="none"
-                                                            strokeWidth="3"
-                                                            stroke="currentColor"
-                                                            d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
-                                                        />
-                                                        <path
-                                                            className="text-[#9012FF]" // Change color to purple
-                                                            strokeLinecap="round"
-                                                            fill="none"
-                                                            strokeWidth="3"
-                                                            strokeDasharray={`${progress}, 100`}
-                                                            stroke="currentColor"
-                                                            d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
-                                                        />
-                                                    </svg>
-                                                </div>
-                                            )}
+                                            <div className="flex relative w-6 h-6 items-center justify-center">
+                                                <svg className="absolute top-0 left-0 w-full h-full transform -rotate-90" viewBox="0 0 36 36">
+                                                    <path
+                                                        className="text-gray-300"
+                                                        strokeLinecap="round"
+                                                        fill="none"
+                                                        strokeWidth="3"
+                                                        stroke="currentColor"
+                                                        d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                                                    />
+                                                    <path
+                                                        className="text-[#9012FF]" // Change color to purple
+                                                        strokeLinecap="round"
+                                                        fill="none"
+                                                        strokeWidth="3"
+                                                        strokeDasharray={`${progress}, 100`}
+                                                        stroke="currentColor"
+                                                        d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                                                    />
+                                                </svg>
+                                            </div>
 
                                             <button onClick={() => {
                                                 if (uploadTaskRef) {
                                                     uploadTaskRef.cancel(); // Cancel the upload if it is ongoing
                                                     setProgress(null); // Reset progress
                                                 }
-                                                setPdfLink(null);
+                                                setVideoLink(null);
                                                 setFileName(null); // Reset file name on cancel
+                                                setSelectedFile(null);
                                             }}>
                                                 <Image
                                                     src="/icons/delete.svg"
@@ -526,6 +578,37 @@ function Text({ isOpen, toggleDrawer, sectionId, courseId, isEditing, contentId 
                                 )}
 
                             </div>
+
+                            {/* <div className='flex flex-col gap-2'>
+                                <div className="flex flex-row justify-between items-center">
+                                    <div className="flex flex-col">
+                                    <span className='text-[#1D2939] text-sm font-semibold'>Video Id</span>
+                                    <span className='text-[#1D2939] text-[12px] font-normal'>To get the video id click on the upload video button.</span>
+                                    </div>
+                                <button
+                                className="text-white text-sm font-semibold rounded-md shadow-inner-button"
+                                style={{
+                                width: "150px",
+                                height: "38px",
+                                backgroundColor: "#9012FF",
+                                borderWidth: "1px 0 0 0",
+                                borderColor: "#9012FF",
+                                }} onClick={openVideoUploadTab}>Upload Video</button>
+                                </div>
+                                <input
+                                    className="font-normal pl-3 text-[#1D2939] text-sm placeholder:text-[#A1A1A1] rounded-md placeholder:font-normal min-h-[10px] max-h-[150px] overflow-y-auto 
+                                    focus:outline-none focus:ring-0 
+                                       border border-solid border-[#D0D5DD] h-[40px] 
+                                       shadow-[0px_1px_2px_0px_rgba(16,24,40,0.05)] 
+                                         transition duration-200 ease-in-out "
+                                    placeholder="Enter the video Id here"
+                                    type="text"
+                                    value={videoId}
+                                    onChange={(e) => setVideoId(e.target.value)}
+                                />
+                            </div> */}
+
+
                             <div className="flex flex-col gap-2 mb-3 mt-1">
                                 <span className="text-[#1D2939] font-semibold text-sm">Schedule Lesson</span>
                                 {isEditing ? (
@@ -559,6 +642,7 @@ function Text({ isOpen, toggleDrawer, sectionId, courseId, isEditing, contentId 
                                             <button
                                                 className="flex flex-row gap-1 rounded-md border-[2px] border-solid border-[#9012FF]  bg-[#FFFFFF] p-2 hover:bg-[#F5F0FF] "
                                                 onClick={() => setShowDatepicker(true)}>
+                                                <Image src="/icons/plus-sign.svg" height={18} width={18} alt="Plus Sign" />
                                                 <span className="text-[#9012FF] font-semibold text-sm">Select Date</span>
                                             </button>
                                         </div>
@@ -606,4 +690,4 @@ function Text({ isOpen, toggleDrawer, sectionId, courseId, isEditing, contentId 
         </div>
     )
 }
-export default Text;
+export default Video;

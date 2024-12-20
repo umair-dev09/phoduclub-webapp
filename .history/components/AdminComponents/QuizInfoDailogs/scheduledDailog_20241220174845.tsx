@@ -57,33 +57,56 @@ function ScheduledDialog({ onClose }: ScheduledDialogProps) { // Use the interfa
                             <Checkbox size="md" color="primary" />
                             <p className="text-start text-[#182230] font-medium">Make the quiz live now</p>
                         </div>
-                        <div className="flex flex-col justify-between w-full  gap-4">
-                            <div className="flex flex-row justify-between items-center">
-                                <p className="text-[#1D2939] text-sm font-medium">{formatScheduleDate(sectionScheduleDate) || " "}</p>
+                        <div className="flex flex-row justify-between w-full  gap-4">
+                            {isSectionEditing ? (
+                                <>
 
-                                <button
-                                    className="flex flex-row gap-1 rounded-md border-[2px] border-solid border-[#9012FF] hover:bg-[#F5F0FF] bg-[#FFFFFF] p-2"
-                                    onClick={() => setShowDatepicker(true)}
-                                >
-                                    <span className="text-[#9012FF] font-semibold text-sm">
-                                        {sectionScheduleDate ? "Change Date" : "Select Date"}
-                                    </span>
-                                </button>
-                            </div>
+                                    <div className="flex flex-row justify-between items-center">
+                                        <p className="text-[#1D2939] text-sm font-medium">  {formatScheduleDate(sectionScheduleDate) || " "}</p>
+                                        <button
+                                            className="flex flex-row gap-1 rounded-md border-[2px] border-solid border-[#9012FF] hover:bg-[#F5F0FF] bg-[#FFFFFF] p-2 "
+                                            onClick={() => setShowDatepicker(true)}>
+                                            <span className="text-[#9012FF] font-semibold text-sm">Change Date</span>
+                                        </button>
+                                    </div>
+                                    {(showDatepicker &&
+                                        <DatePicker
+                                            granularity="minute"
+                                            minValue={today(getLocalTimeZone())}
+                                            hideTimeZone
+                                            onChange={(date) => {
+                                                const dateString = date ? date.toString() : "";
+                                                setSectionScheduleDate(dateString);
+                                                setShowDatepicker(true); // Return to button view after selecting date
+                                            }}
 
-                            {showDatepicker && (
-                                <DatePicker
-                                    granularity="minute"
-                                    minValue={today(getLocalTimeZone())}
-                                    hideTimeZone
-                                    onChange={(date) => {
-                                        const dateString = date ? date.toString() : "";
-                                        setSectionScheduleDate(dateString);
-                                        setShowDatepicker(false); // Close datepicker after selecting date
-                                    }}
-                                />
+                                        />
+                                    )}
+                                </>
+                            ) : (
+                                <>
+                                    <div className="flex flex-row justify-end">
+                                        <button
+                                            className="flex flex-row gap-1 rounded-md border-[2px] border-solid border-[#9012FF]  bg-[#FFFFFF] p-2 hover:bg-[#F5F0FF] "
+                                            onClick={() => setShowDatepicker(true)}>
+                                            <span className="text-[#9012FF] font-semibold text-sm">Select Date</span>
+                                        </button>
+                                    </div>
+
+                                    {showDatepicker && (
+                                        <DatePicker
+                                            granularity="minute"
+                                            minValue={today(getLocalTimeZone())}
+                                            hideTimeZone
+                                            onChange={(date) => {
+                                                const dateString = date ? date.toString() : "";
+                                                setSectionScheduleDate(dateString);
+
+                                            }}
+                                        />
+                                    )}
+                                </>
                             )}
-
                         </div>
                         <p className=" text-sm text-[#475467] font-normal">Quiz will be live for 2 hours.</p>
 

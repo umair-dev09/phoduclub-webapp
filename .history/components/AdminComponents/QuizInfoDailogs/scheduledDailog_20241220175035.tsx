@@ -57,7 +57,7 @@ function ScheduledDialog({ onClose }: ScheduledDialogProps) { // Use the interfa
                             <Checkbox size="md" color="primary" />
                             <p className="text-start text-[#182230] font-medium">Make the quiz live now</p>
                         </div>
-                        <div className="flex flex-col justify-between w-full  gap-4">
+                        <div className="flex flex-row justify-between w-full  gap-4">
                             <div className="flex flex-row justify-between items-center">
                                 <p className="text-[#1D2939] text-sm font-medium">{formatScheduleDate(sectionScheduleDate) || " "}</p>
 

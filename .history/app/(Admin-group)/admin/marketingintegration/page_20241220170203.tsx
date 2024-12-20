@@ -102,8 +102,7 @@ function Messenger() {
     const [endDate, setEndDate] = useState("");
     const [timerIcon, setTimerIcon] = useState("");
     const [isEditing, setIsEditing] = useState(false)
-    const [datapickerforEnd, setDatapickerforEnd] = useState(false);
-    const [datapickerforStart, setDatapickerforStart] = useState(false);
+    const [showDatepicker, setShowDatepicker] = useState(false);
     const [sectionScheduleDate, setSectionScheduleDate] = useState("");
 
     const isFormValid = name && description && cta && hyperLink && startDate && endDate;
@@ -555,6 +554,7 @@ function Messenger() {
                             <div className="flex flex-col gap-4">
                                 <div className='flex flex-col w-full gap-1'>
                                     <span className='font-medium text-[#1D2939] text-sm'>Start Date & Time</span>
+
                                     {isEditing ? (
                                         <>
 
@@ -562,11 +562,11 @@ function Messenger() {
                                                 <p className="text-[#1D2939] text-sm font-medium">  {formatScheduleDate(sectionScheduleDate) || " "}</p>
                                                 <button
                                                     className="flex flex-row gap-1 rounded-md border-[2px] border-solid border-[#9012FF] hover:bg-[#F5F0FF] bg-[#FFFFFF] p-2 "
-                                                    onClick={() => setDatapickerforStart(true)}>
+                                                    onClick={() => setShowDatepicker(true)}>
                                                     <span className="text-[#9012FF] font-semibold text-sm">Change Date</span>
                                                 </button>
                                             </div>
-                                            {(datapickerforStart &&
+                                            {(showDatepicker &&
                                                 <DatePicker
                                                     granularity="minute"
                                                     minValue={today(getLocalTimeZone())}
@@ -574,7 +574,7 @@ function Messenger() {
                                                     onChange={(date) => {
                                                         const dateString = date ? date.toString() : "";
                                                         setSectionScheduleDate(dateString);
-                                                        setDatapickerforStart(true); // Return to button view after selecting date
+                                                        setShowDatepicker(true); // Return to button view after selecting date
                                                     }}
 
                                                 />
@@ -585,12 +585,12 @@ function Messenger() {
                                             <div className="flex flex-row justify-end mb-3">
                                                 <button
                                                     className="flex flex-row gap-1 rounded-md border-[2px] border-solid border-[#9012FF]  bg-[#FFFFFF] p-2 hover:bg-[#F5F0FF] "
-                                                    onClick={() => setDatapickerforStart(true)}>
+                                                    onClick={() => setShowDatepicker(true)}>
                                                     <span className="text-[#9012FF] font-semibold text-sm">Select Date</span>
                                                 </button>
                                             </div>
 
-                                            {datapickerforStart && (
+                                            {showDatepicker && (
                                                 <DatePicker
                                                     granularity="minute"
                                                     minValue={today(getLocalTimeZone())}
@@ -604,7 +604,6 @@ function Messenger() {
                                             )}
                                         </>
                                     )}
-
                                 </div>
                                 <div className='flex flex-col w-full gap-1'>
                                     <span className='font-medium text-[#1D2939] text-sm'>End Date & Time</span>
@@ -615,11 +614,11 @@ function Messenger() {
                                                 <p className="text-[#1D2939] text-sm font-medium">  {formatScheduleDate(sectionScheduleDate) || " "}</p>
                                                 <button
                                                     className="flex flex-row gap-1 rounded-md border-[2px] border-solid border-[#9012FF] hover:bg-[#F5F0FF] bg-[#FFFFFF] p-2 "
-                                                    onClick={() => setDatapickerforEnd(true)}>
+                                                    onClick={() => setShowDatepicker(true)}>
                                                     <span className="text-[#9012FF] font-semibold text-sm">Change Date</span>
                                                 </button>
                                             </div>
-                                            {(datapickerforEnd &&
+                                            {(showDatepicker &&
                                                 <DatePicker
                                                     granularity="minute"
                                                     minValue={today(getLocalTimeZone())}
@@ -627,7 +626,7 @@ function Messenger() {
                                                     onChange={(date) => {
                                                         const dateString = date ? date.toString() : "";
                                                         setSectionScheduleDate(dateString);
-                                                        setDatapickerforEnd(true); // Return to button view after selecting date
+                                                        setShowDatepicker(true); // Return to button view after selecting date
                                                     }}
 
                                                 />
@@ -638,12 +637,12 @@ function Messenger() {
                                             <div className="flex flex-row justify-end mb-3">
                                                 <button
                                                     className="flex flex-row gap-1 rounded-md border-[2px] border-solid border-[#9012FF]  bg-[#FFFFFF] p-2 hover:bg-[#F5F0FF] "
-                                                    onClick={() => setDatapickerforEnd(true)}>
+                                                    onClick={() => setShowDatepicker(true)}>
                                                     <span className="text-[#9012FF] font-semibold text-sm">Select Date</span>
                                                 </button>
                                             </div>
 
-                                            {datapickerforEnd && (
+                                            {showDatepicker && (
                                                 <DatePicker
                                                     granularity="minute"
                                                     minValue={today(getLocalTimeZone())}
@@ -657,7 +656,6 @@ function Messenger() {
                                             )}
                                         </>
                                     )}
-
                                 </div>
                             </div>
                         </div>
