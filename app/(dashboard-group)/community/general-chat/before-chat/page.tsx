@@ -3,7 +3,7 @@ import BeforeChatComp from "@/components/DashboardComponents/CommunityComponents
 
 function BeforeChat() {
     return (
-        <div className="flex flex-1">
+        <div className="flex h-full">
             <BeforeChatComp />
         </div>
     );

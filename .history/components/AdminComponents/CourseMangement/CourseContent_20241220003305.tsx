@@ -14,7 +14,6 @@ import { toast } from 'react-toastify';
 import { useEffect } from 'react';
 import LoadingData from "@/components/Loading";
 import { DateTime } from 'luxon';  // Import luxon
-import React from "react";
 
 type Sections = {
     sectionName: string;
@@ -148,10 +147,7 @@ function CourseContent({ courseId }: CourseContentProps) {
     }, [courseId]);
 
 
-    // let [date, setDate] = React.useState<DateValue | null>(
-    //     parseAbsoluteToLocal("2021-04-07T18:45:22Z"),
-    //   );
-      
+
     const openCreateSection = () => {
         setOpenSectionDialog(true);
         setName('');
@@ -375,9 +371,13 @@ function CourseContent({ courseId }: CourseContentProps) {
                                             <PopoverTrigger
                                                 onClick={(event) => event.stopPropagation()}>
                                                 <button className="w-[32px] h-[32px]  rounded-full flex items-center justify-center transition-all duration-300 ease-in-out hover:bg-[#F2F4F7]">
+                                                    <button
 
-                                                    <Image src="/icons/three-dots.svg" width={18} height={18} alt="three-dots" className="outline-none" />
 
+                                                        style={{ outline: "none" }}
+                                                    >
+                                                        <Image src="/icons/three-dots.svg" width={18} height={18} alt="three-dots" />
+                                                    </button>
                                                 </button>
                                             </PopoverTrigger>
                                             <PopoverContent className="flex flex-col px-0 text-sm font-normal bg-white border border-lightGrey rounded-md w-[167px] shadow-md"
@@ -571,7 +571,7 @@ function CourseContent({ courseId }: CourseContentProps) {
                                     <>
                                         <div className="flex flex-row justify-end">
                                             <button
-                                                className="flex flex-row gap-1 rounded-md border-[2px] border-solid border-[#9012FF]  bg-[#FFFFFF] p-2 hover:bg-[#F5F0FF] "
+                                                className="flex flex-row gap-1 rounded-md border-[2px] border-solid border-[#9012FF]  bg-[#FFFFFF] p-2 "
                                                 onClick={() => setShowDatepicker(true)}>
                                                 <Image src="/icons/plus-sign.svg" height={18} width={18} alt="Plus Sign" />
                                                 <span className="text-[#9012FF] font-semibold text-sm">Select Date</span>

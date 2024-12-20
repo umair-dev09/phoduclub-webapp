@@ -333,7 +333,8 @@ function Questions({ questionsList, setQuestionsList }: QuestionsProps) {
                                         <div className="font-semibold text-base break-all text-[#1D2939] ml-1" dangerouslySetInnerHTML={{ __html: question.question || "Question" }}></div>
                                     </div>
                                     <Popover placement="bottom-end">
-                                        <PopoverTrigger>
+                                        <PopoverTrigger
+                                            onClick={(event) => event.stopPropagation()}>
                                             <button className="min-w-[20px] min-h-[20px] mt-[2px]">
                                                 <Image
                                                     src="/icons/three-dots.svg"
@@ -343,8 +344,8 @@ function Questions({ questionsList, setQuestionsList }: QuestionsProps) {
                                                 />
                                             </button>
                                         </PopoverTrigger>
-                                        <PopoverContent className="h-[88px] w-[167px] px-0 border border-solid border-[#EAECF0] bg-[#FFFFFF] rounded-md flex flex-col py-[4px] shadow-lg">
-
+                                        <PopoverContent className="h-[88px] w-[167px] px-0 border border-solid border-[#EAECF0] bg-[#FFFFFF] rounded-md flex flex-col py-[4px] shadow-lg"
+                                            onClick={(event) => event.stopPropagation()}>
                                             <button
 
                                                 className="flex flex-row h-[40px] w-full px-3 gap-2 hover:bg-[#F2F4F7] items-center"
@@ -446,6 +447,9 @@ function Questions({ questionsList, setQuestionsList }: QuestionsProps) {
                                     </div>
                                 </div>
                             </div>
+
+
+
                             <span className="font-semibold text-base text-[#1D2939]">Options</span>
                             <div className="flex flex-col gap-3">
                                 {(Object.keys(question.options) as Array<keyof Options>).map((optionKey) => (

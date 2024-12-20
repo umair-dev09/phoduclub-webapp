@@ -14,7 +14,6 @@ import { toast } from 'react-toastify';
 import { useEffect } from 'react';
 import LoadingData from "@/components/Loading";
 import { DateTime } from 'luxon';  // Import luxon
-import React from "react";
 
 type Sections = {
     sectionName: string;
@@ -148,10 +147,7 @@ function CourseContent({ courseId }: CourseContentProps) {
     }, [courseId]);
 
 
-    // let [date, setDate] = React.useState<DateValue | null>(
-    //     parseAbsoluteToLocal("2021-04-07T18:45:22Z"),
-    //   );
-      
+
     const openCreateSection = () => {
         setOpenSectionDialog(true);
         setName('');
@@ -571,7 +567,7 @@ function CourseContent({ courseId }: CourseContentProps) {
                                     <>
                                         <div className="flex flex-row justify-end">
                                             <button
-                                                className="flex flex-row gap-1 rounded-md border-[2px] border-solid border-[#9012FF]  bg-[#FFFFFF] p-2 hover:bg-[#F5F0FF] "
+                                                className="flex flex-row gap-1 rounded-md border-[2px] border-solid border-[#9012FF]  bg-[#FFFFFF] p-2 "
                                                 onClick={() => setShowDatepicker(true)}>
                                                 <Image src="/icons/plus-sign.svg" height={18} width={18} alt="Plus Sign" />
                                                 <span className="text-[#9012FF] font-semibold text-sm">Select Date</span>

@@ -14,7 +14,6 @@ import { toast } from 'react-toastify';
 import { useEffect } from 'react';
 import LoadingData from "@/components/Loading";
 import { DateTime } from 'luxon';  // Import luxon
-import React from "react";
 
 type Sections = {
     sectionName: string;
@@ -56,20 +55,28 @@ const formatScheduleDate = (dateString: string | null): string => {
             return "-";
         }
 
-        // Format the date manually to match "MM/DD/YYYY,HH:mm"
-        const year = dateObj.getFullYear();
-        const month = String(dateObj.getMonth() + 1).padStart(2, "0");
-        const day = String(dateObj.getDate()).padStart(2, "0");
-        const hours = String(dateObj.getHours()).padStart(2, "0");
-        const minutes = String(dateObj.getMinutes()).padStart(2, "0");
+        // Format the date as per your required format
+        let formattedDate = dateObj.toLocaleString("en-GB", {
+            day: "2-digit",
+            month: "2-digit",
+            year: "numeric",
+            hour: "2-digit",
+            minute: "2-digit",
+            hour12: true,
+        });
 
-        return `${month}/${day}/${year},${hours}:${minutes}`;
+        // Adjust the formatting to match "2024-12-24,12:00 AM"
+        formattedDate = formattedDate.replace(
+            /(\d{4})\/(\d{2})\/(\d{2}), (\d{2}):(\d{2}) (am|pm)/i,
+            "$3/$2/$1,$4:$5 $6"
+        );
+        formattedDate = formattedDate.replace(/(am|pm)/i, (match) => match.toUpperCase());
+        return formattedDate;
     } catch (error) {
         console.error("Error formatting date:", error);
         return "-";
     }
 };
-
 
 
 function CourseContent({ courseId }: CourseContentProps) {
@@ -148,10 +155,7 @@ function CourseContent({ courseId }: CourseContentProps) {
     }, [courseId]);
 
 
-    // let [date, setDate] = React.useState<DateValue | null>(
-    //     parseAbsoluteToLocal("2021-04-07T18:45:22Z"),
-    //   );
-      
+
     const openCreateSection = () => {
         setOpenSectionDialog(true);
         setName('');
@@ -311,7 +315,7 @@ function CourseContent({ courseId }: CourseContentProps) {
                 </div>
                 {/* Add section Button - Only show after clicking Create Section in dialog */}
                 <button
-                    className="flex flex-row gap-1 items-center rounded-md border-[2px] border-solid border-[#9012FF] hover:bg-[#F5F0FF] bg-[#FFFFFF] h-[44px] w-[162px] justify-center"
+                    className="flex flex-row gap-1 items-center rounded-md border-[2px] border-solid border-[#9012FF]  bg-[#FFFFFF] h-[44px] w-[162px] justify-center"
                     onClick={openCreateSection}>
                     <Image src="/icons/plus-sign.svg" height={18} width={18} alt="Plus Sign" />
                     <span className="text-[#9012FF] font-semibold text-sm">Add Section</span>
@@ -343,7 +347,7 @@ function CourseContent({ courseId }: CourseContentProps) {
                                             <PopoverTrigger
                                             >
                                                 <button
-                                                    className="flex flex-row gap-1 items-center rounded-md hover:bg-[#F5F0FF] hover:rounded-full px-3 py-1 transition duration-200 ease-in-out h-[44px] w-auto justify-center"
+                                                    className="flex flex-row gap-1 items-center rounded-md  h-[44px] w-auto justify-center"
                                                 >
                                                     <Image src="/icons/plus-sign.svg" height={18} width={18} alt="Plus Sign" />
                                                     <span className="text-[#9012FF] font-semibold text-sm">Add Content</span>
@@ -374,10 +378,12 @@ function CourseContent({ courseId }: CourseContentProps) {
                                             placement="bottom-end">
                                             <PopoverTrigger
                                                 onClick={(event) => event.stopPropagation()}>
-                                                <button className="w-[32px] h-[32px]  rounded-full flex items-center justify-center transition-all duration-300 ease-in-out hover:bg-[#F2F4F7]">
-
-                                                    <Image src="/icons/three-dots.svg" width={18} height={18} alt="three-dots" className="outline-none" />
-
+                                                <button
+                                                    className="w-10 p-[10px] h-[40px] gap-1 flex-row flex  bg-[#FFFFFF] rounded-md 
+                                                                            shadow-none"
+                                                    style={{ outline: "none" }}
+                                                >
+                                                    <Image src="/icons/three-dots.svg" width={18} height={18} alt="three-dots" />
                                                 </button>
                                             </PopoverTrigger>
                                             <PopoverContent className="flex flex-col px-0 text-sm font-normal bg-white border border-lightGrey rounded-md w-[167px] shadow-md"
@@ -545,12 +551,14 @@ function CourseContent({ courseId }: CourseContentProps) {
                                     <>
 
                                         <div className="flex flex-row justify-between items-center">
-                                            <p className="text-[#1D2939] text-sm font-medium">  {formatScheduleDate(sectionScheduleDate) || " "}</p>
+                                            <p className="text-[#1D2939] text-sm font-medium">Selected Date</p>
                                             <button
-                                                className="flex flex-row gap-1 rounded-md border-[2px] border-solid border-[#9012FF] hover:bg-[#F5F0FF] bg-[#FFFFFF] p-2 "
-                                                onClick={() => setShowDatepicker(true)}>
-                                                <Image src="/icons/plus-sign.svg" height={18} width={18} alt="Plus Sign" />
-                                                <span className="text-[#9012FF] font-semibold text-sm">Edit Date</span>
+                                                className="w-[150px] h-[30px] rounded-full flex items-center justify-center transition-all duration-300 ease-in-out hover:bg-[#F2F4F7]"
+                                                onClick={() => setShowDatepicker(true)}
+                                            >
+                                                <p className="text-sm">
+                                                    {formatScheduleDate(sectionScheduleDate) || " "}
+                                                </p>
                                             </button>
                                         </div>
                                         {(showDatepicker &&
@@ -568,29 +576,17 @@ function CourseContent({ courseId }: CourseContentProps) {
                                         )}
                                     </>
                                 ) : (
-                                    <>
-                                        <div className="flex flex-row justify-end">
-                                            <button
-                                                className="flex flex-row gap-1 rounded-md border-[2px] border-solid border-[#9012FF]  bg-[#FFFFFF] p-2 hover:bg-[#F5F0FF] "
-                                                onClick={() => setShowDatepicker(true)}>
-                                                <Image src="/icons/plus-sign.svg" height={18} width={18} alt="Plus Sign" />
-                                                <span className="text-[#9012FF] font-semibold text-sm">Select Date</span>
-                                            </button>
-                                        </div>
+                                    // If creating, show the date picker directly
+                                    <DatePicker
+                                        granularity="minute"
+                                        minValue={today(getLocalTimeZone())}
+                                        hideTimeZone
+                                        onChange={(date) => {
+                                            const dateString = date ? date.toString() : "";
+                                            setSectionScheduleDate(dateString);
+                                        }}
 
-                                        {showDatepicker && (
-                                            <DatePicker
-                                                granularity="minute"
-                                                minValue={today(getLocalTimeZone())}
-                                                hideTimeZone
-                                                onChange={(date) => {
-                                                    const dateString = date ? date.toString() : "";
-                                                    setSectionScheduleDate(dateString);
-
-                                                }}
-                                            />
-                                        )}
-                                    </>
+                                    />
                                 )}
 
 

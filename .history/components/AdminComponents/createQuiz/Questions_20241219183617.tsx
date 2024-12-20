@@ -333,7 +333,8 @@ function Questions({ questionsList, setQuestionsList }: QuestionsProps) {
                                         <div className="font-semibold text-base break-all text-[#1D2939] ml-1" dangerouslySetInnerHTML={{ __html: question.question || "Question" }}></div>
                                     </div>
                                     <Popover placement="bottom-end">
-                                        <PopoverTrigger>
+                                        <PopoverTrigger
+                                            onClick={(event) => event.stopPropagation()}>
                                             <button className="min-w-[20px] min-h-[20px] mt-[2px]">
                                                 <Image
                                                     src="/icons/three-dots.svg"
@@ -344,7 +345,7 @@ function Questions({ questionsList, setQuestionsList }: QuestionsProps) {
                                             </button>
                                         </PopoverTrigger>
                                         <PopoverContent className="h-[88px] w-[167px] px-0 border border-solid border-[#EAECF0] bg-[#FFFFFF] rounded-md flex flex-col py-[4px] shadow-lg">
-
+                                            onClick={(event) => event.stopPropagation()}
                                             <button
 
                                                 className="flex flex-row h-[40px] w-full px-3 gap-2 hover:bg-[#F2F4F7] items-center"
@@ -446,6 +447,35 @@ function Questions({ questionsList, setQuestionsList }: QuestionsProps) {
                                     </div>
                                 </div>
                             </div>
+
+                            <div className="flex flex-row gap-2">
+                                <Checkbox
+                                    size="sm"
+                                    color="primary"
+                                    onChange={() => handleCheckboxChange(index)} />
+                                <span className="font-medium text-sm text-[#182230]">Upload image (optional)</span>
+                            </div>
+
+                            {question.isChecked && (
+                                <div className="h-36 rounded-xl bg-[#F9FAFB] border-2 border-dashed border-[#D0D5DD]">
+                                    <div className="flex flex-col items-center justify-center gap-4 h-full w-full">
+                                        <div className="flex flex-col items-center">
+                                            <div className="h-10 w-10 rounded-md border border-solid border-[#EAECF0] bg-[#FFFFFF] p-[10px]">
+                                                <Image
+                                                    src="/icons/upload-cloud.svg"
+                                                    width={20}
+                                                    height={20}
+                                                    alt="upload icon"
+                                                />
+                                            </div>
+                                        </div>
+                                        <span className="text-sm font-semibold text-[#9012FF]">
+                                            Click to upload <span className="text-[#182230] text-sm font-medium">or drag and drop</span>
+                                        </span>
+                                    </div>
+                                </div>
+                            )}
+
                             <span className="font-semibold text-base text-[#1D2939]">Options</span>
                             <div className="flex flex-col gap-3">
                                 {(Object.keys(question.options) as Array<keyof Options>).map((optionKey) => (

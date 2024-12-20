@@ -299,7 +299,6 @@ function Text({ isOpen, toggleDrawer, sectionId, courseId, isEditing, contentId 
                     pdfLink: pdfLink ? pdfLink : null,
                     lessonScheduleDate: contentScheduleDate,
                     isDisscusionOpen: disscusionOpen,
-
                 });
                 toast.success('Test Content added!');
                 toggleDrawer();

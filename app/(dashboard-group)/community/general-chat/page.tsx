@@ -3,8 +3,8 @@ import React from "react";
 
 function GeneralChat() {
     return (
-        <div>
-            <BeforeChatComp/>
+        <div className="flex flex-1">
+            <BeforeChatComp />
         </div>
     );
 }
