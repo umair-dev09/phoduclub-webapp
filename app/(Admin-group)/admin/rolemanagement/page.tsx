@@ -343,12 +343,12 @@ function RoleMangement() {
                                 {currentItems.map((users, index) => (
                                     <tr key={index} className="border-t border-solid border-[#EAECF0]">
                                         <td className="py-[12px]">
-                                            <div className="flex flex-row ml-8 gap-[10px] min-w-[260px]">
+                                            <button onClick={() => handleTabClick(`/admin/rolemanagement/${users.name.toLowerCase().replace(/\s+/g, '-')}?rId=${users.adminId}`)} className="flex flex-row items-center ml-8 gap-[10px] min-w-[260px]">
                                                 <Image className='rounded-full object-cover' src={users.profilePic || '/defaultAdminDP.jpg'} alt="DP" width={38} height={38} />
                                                 <div className="flex items-start justify-center flex-col mb-[2px]">
-                                                    <button onClick={() => handleTabClick(`/admin/rolemanagement/${users.name.toLowerCase().replace(/\s+/g, '-')}?rId=${users.adminId}`)} className="font-semibold text-sm text-[#9012FF] underline whitespace-nowrap">{users.name}</button>
+                                                    <div className="font-semibold text-sm text-[#9012FF] underline whitespace-nowrap">{users.name}</div>
                                                 </div>
-                                            </div>
+                                            </button>
                                         </td>
                                         <td className="px-8 py-4 text-start text-[#101828] text-sm "><span className="flex min-w-fit">{users.userId}</span></td>
                                         <td className="px-8 py-4 text-start text-[#101828] text-sm "><span className="flex min-w-fit">{users.phone}</span></td>

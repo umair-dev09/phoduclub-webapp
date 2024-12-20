@@ -181,9 +181,7 @@ function RoleManagementInfo() {
                             </table>
                         </div>
                     </div>
-
                 </div>
-
             </div>
         </div>
     );
