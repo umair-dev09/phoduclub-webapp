@@ -143,34 +143,31 @@ function Header({ currentPage }: HeaderProps) {
             </div>
 
             <div className="flex flex-row items-center gap-4">
-
-                {(currentPage === 'Role Management' || currentPage === 'User Database' || currentPage === 'Marketing Integration' || currentPage === 'Quizzes Management' || currentPage === 'Test Series Management' || currentPage === 'Course Creation' || currentPage === "") && (
-                    <Popover placement="bottom-end">
-                        <PopoverTrigger>
-                            <button className='flex flex-row gap-3 items-center justify-center'>
-                                <Image className='rounded-full' src={userData?.profilePic || "/defaultDP.svg"} alt="DP" width={40} height={40} />
-                                <div className='flex flex-col items-center justify-center'>
-                                    <span className='text-[#1D2939] font-semibold text-sm mt-[4px] mb-[-5px]'>{userData?.name}</span>
-                                    <span className='text-[#667085] text-[13px] font-medium self-start'>{userData?.role}</span>
-                                </div>
-                                <Image src="/icons/by-role-arrow-down.svg" width={20} height={20} alt="Select-date Button" />
-                            </button>
-                        </PopoverTrigger>
-                        <PopoverContent className="flex flex-col bg-white border border-lightGrey rounded-md w-[167px] px-0 shadow-md">
-                            <button
-                                className="flex items-center p-3 hover:bg-[#F2F4F7] w-full"
-                                onClick={() => handleTabClick('/admin/profile')}
-                            >
-                                <Image src="/icons/profile.svg" width={18} height={18} alt="Edit-profile" />
-                                <p className="text-sm text-[#0C111D] ml-2">My profile</p>
-                            </button>
-                            <button className="flex items-center p-3 hover:bg-[#F2F4F7] w-full" onClick={openlogout}>
-                                <Image src="/icons/logout-03.svg" width={18} height={18} alt="Log out" />
-                                <p className="text-sm text-[#DE3024] ml-2">Log out</p>
-                            </button>
-                        </PopoverContent>
-                    </Popover>
-                )}
+                <Popover placement="bottom-end">
+                    <PopoverTrigger>
+                        <button className='flex flex-row gap-3 items-center justify-center'>
+                            <Image className='rounded-full' src={userData?.profilePic || "/defaultDP.svg"} alt="DP" width={40} height={40} />
+                            <div className='flex flex-col items-center justify-center'>
+                                <span className='text-[#1D2939] font-semibold text-sm mt-[4px] mb-[-5px]'>{userData?.name}</span>
+                                <span className='text-[#667085] text-[13px] font-medium self-start'>{userData?.role}</span>
+                            </div>
+                            <Image src="/icons/by-role-arrow-down.svg" width={20} height={20} alt="Select-date Button" />
+                        </button>
+                    </PopoverTrigger>
+                    <PopoverContent className="flex flex-col bg-white border border-lightGrey rounded-md w-[167px] px-0 shadow-md">
+                        <button
+                            className="flex items-center p-3 hover:bg-[#F2F4F7] w-full"
+                            onClick={() => handleTabClick('/admin/profile')}
+                        >
+                            <Image src="/icons/profile.svg" width={18} height={18} alt="Edit-profile" />
+                            <p className="text-sm text-[#0C111D] ml-2">My profile</p>
+                        </button>
+                        <button className="flex items-center p-3 hover:bg-[#F2F4F7] w-full" onClick={openlogout}>
+                            <Image src="/icons/logout-03.svg" width={18} height={18} alt="Log out" />
+                            <p className="text-sm text-[#DE3024] ml-2">Log out</p>
+                        </button>
+                    </PopoverContent>
+                </Popover>
             </div>
             {islogout && <Logout onclose={closelogout} open={true} />}
         </div>

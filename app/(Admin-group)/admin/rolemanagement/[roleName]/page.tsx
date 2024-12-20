@@ -286,8 +286,6 @@ function UsersRoleName() {
                 </button>
               </PopoverTrigger>
               <PopoverContent className="w-[167px]   rounded-md shadow-md  border border-solid border-[#EAECF0] px-0 flex flex-col h-auto">
-
-
                 <button className=" p-3 gap-2 flex-row flex h-[40px] hover:bg-[#F2F4F7] w-full"
                   onClick={handleEditDetails}>
                   <Image src="/icons/edit-icon.svg" width={18} height={18} alt="Edit-quiz" />

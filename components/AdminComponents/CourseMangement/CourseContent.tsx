@@ -14,6 +14,7 @@ import { toast } from 'react-toastify';
 import { useEffect } from 'react';
 import LoadingData from "@/components/Loading";
 import { DateTime } from 'luxon';  // Import luxon
+import React from "react";
 
 type Sections = {
     sectionName: string;
@@ -147,7 +148,10 @@ function CourseContent({ courseId }: CourseContentProps) {
     }, [courseId]);
 
 
-
+    // let [date, setDate] = React.useState<DateValue | null>(
+    //     parseAbsoluteToLocal("2021-04-07T18:45:22Z"),
+    //   );
+      
     const openCreateSection = () => {
         setOpenSectionDialog(true);
         setName('');
