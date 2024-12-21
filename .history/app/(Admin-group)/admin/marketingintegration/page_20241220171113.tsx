@@ -555,59 +555,7 @@ function Messenger() {
                             <div className="flex flex-col gap-4">
                                 <div className='flex flex-col w-full gap-1'>
                                     <span className='font-medium text-[#1D2939] text-sm'>Start Date & Time</span>
-                                    {isEditing ? (
-                                        <>
 
-                                            <div className="flex flex-row justify-between items-center mb-3">
-                                                <p className="text-[#1D2939] text-sm font-medium">  {formatScheduleDate(sectionScheduleDate) || " "}</p>
-                                                <button
-                                                    className="flex flex-row gap-1 rounded-md border-[2px] border-solid border-[#9012FF] hover:bg-[#F5F0FF] bg-[#FFFFFF] p-2 "
-                                                    onClick={() => setDatapickerforStart(true)}>
-                                                    <span className="text-[#9012FF] font-semibold text-sm">Change Date</span>
-                                                </button>
-                                            </div>
-                                            {(datapickerforStart &&
-                                                <DatePicker
-                                                    granularity="minute"
-                                                    minValue={today(getLocalTimeZone())}
-                                                    hideTimeZone
-                                                    onChange={(date) => {
-                                                        const dateString = date ? date.toString() : "";
-                                                        setSectionScheduleDate(dateString);
-                                                        setDatapickerforStart(true); // Return to button view after selecting date
-                                                    }}
-
-                                                />
-                                            )}
-                                        </>
-                                    ) : (
-                                        <>
-                                            <div className="flex flex-row justify-end mb-3">
-                                                <button
-                                                    className="flex flex-row gap-1 rounded-md border-[2px] border-solid border-[#9012FF]  bg-[#FFFFFF] p-2 hover:bg-[#F5F0FF] "
-                                                    onClick={() => setDatapickerforStart(true)}>
-                                                    <span className="text-[#9012FF] font-semibold text-sm">Select Date</span>
-                                                </button>
-                                            </div>
-
-                                            {datapickerforStart && (
-                                                <DatePicker
-                                                    granularity="minute"
-                                                    minValue={today(getLocalTimeZone())}
-                                                    hideTimeZone
-                                                    onChange={(date) => {
-                                                        const dateString = date ? date.toString() : "";
-                                                        setSectionScheduleDate(dateString);
-
-                                                    }}
-                                                />
-                                            )}
-                                        </>
-                                    )}
-
-                                </div>
-                                <div className='flex flex-col w-full gap-1'>
-                                    <span className='font-medium text-[#1D2939] text-sm'>End Date & Time</span>
                                     {isEditing ? (
                                         <>
 
@@ -657,7 +605,58 @@ function Messenger() {
                                             )}
                                         </>
                                     )}
+                                </div>
+                                <div className='flex flex-col w-full gap-1'>
+                                    <span className='font-medium text-[#1D2939] text-sm'>End Date & Time</span>
+                                    {isEditing ? (
+                                        <>
 
+                                            <div className="flex flex-row justify-between items-center mb-3">
+                                                <p className="text-[#1D2939] text-sm font-medium">  {formatScheduleDate(sectionScheduleDate) || " "}</p>
+                                                <button
+                                                    className="flex flex-row gap-1 rounded-md border-[2px] border-solid border-[#9012FF] hover:bg-[#F5F0FF] bg-[#FFFFFF] p-2 "
+                                                    onClick={() => setDatapickerforStart(true)}>
+                                                    <span className="text-[#9012FF] font-semibold text-sm">Change Date</span>
+                                                </button>
+                                            </div>
+                                            {(datapickerforStart &&
+                                                <DatePicker
+                                                    granularity="minute"
+                                                    minValue={today(getLocalTimeZone())}
+                                                    hideTimeZone
+                                                    onChange={(date) => {
+                                                        const dateString = date ? date.toString() : "";
+                                                        setSectionScheduleDate(dateString);
+                                                        setDatapickerforStart(true); // Return to button view after selecting date
+                                                    }}
+
+                                                />
+                                            )}
+                                        </>
+                                    ) : (
+                                        <>
+                                            <div className="flex flex-row justify-end mb-3">
+                                                <button
+                                                    className="flex flex-row gap-1 rounded-md border-[2px] border-solid border-[#9012FF]  bg-[#FFFFFF] p-2 hover:bg-[#F5F0FF] "
+                                                    onClick={() => setDatapickerforStart(true)}>
+                                                    <span className="text-[#9012FF] font-semibold text-sm">Select Date</span>
+                                                </button>
+                                            </div>
+
+                                            {datapickerforStart && (
+                                                <DatePicker
+                                                    granularity="minute"
+                                                    minValue={today(getLocalTimeZone())}
+                                                    hideTimeZone
+                                                    onChange={(date) => {
+                                                        const dateString = date ? date.toString() : "";
+                                                        setSectionScheduleDate(dateString);
+
+                                                    }}
+                                                />
+                                            )}
+                                        </>
+                                    )}
                                 </div>
                             </div>
                         </div>

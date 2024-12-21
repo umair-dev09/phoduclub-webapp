@@ -83,7 +83,7 @@ function Schedule({ marksPerQ, setMarksPerQ, nMarksPerQ, setnMarksPerQ, timeNumb
                     {quizScheduleDate ? (
                         <>
 
-                            <div className="flex flex-row justify-between items-center mb-3">
+                            <div className="flex flex-row justify-between items-center mb-2 ">
                                 <p className="text-[#1D2939] text-sm font-medium">  {formatScheduleDate(sectionScheduleDate) || " "}</p>
                                 <button
                                     className="flex flex-row gap-1 rounded-md border-[2px] border-solid border-[#9012FF] hover:bg-[#F5F0FF] bg-[#FFFFFF] p-2 "
@@ -107,7 +107,7 @@ function Schedule({ marksPerQ, setMarksPerQ, nMarksPerQ, setnMarksPerQ, timeNumb
                         </>
                     ) : (
                         <>
-                            <div className="flex flex-row justify-end mb-3">
+                            <div className="flex flex-row justify-end pb-4">
                                 <button
                                     className="flex flex-row gap-1 rounded-md border-[2px] border-solid border-[#9012FF]  bg-[#FFFFFF] p-2 hover:bg-[#F5F0FF] "
                                     onClick={() => setShowDatepicker(true)}>

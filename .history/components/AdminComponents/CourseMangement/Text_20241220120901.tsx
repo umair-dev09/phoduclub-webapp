@@ -313,6 +313,7 @@ function Text({ isOpen, toggleDrawer, sectionId, courseId, isEditing, contentId 
                 setContentScheduleDate('');
                 setDisscusionOpen(false);
                 setValue('');
+                setShowDatepicker(true);
             }
         } catch (error) {
             console.error('Error adding content: ', error);
@@ -536,7 +537,8 @@ function Text({ isOpen, toggleDrawer, sectionId, courseId, isEditing, contentId 
                                             <button
                                                 className="flex flex-row gap-1 rounded-md border-[2px] border-solid border-[#9012FF] hover:bg-[#F5F0FF] bg-[#FFFFFF] p-2 "
                                                 onClick={() => setShowDatepicker(true)}>
-                                                <span className="text-[#9012FF] font-semibold text-sm">Change Date</span>
+                                                <Image src="/icons/plus-sign.svg" height={18} width={18} alt="Plus Sign" />
+                                                <span className="text-[#9012FF] font-semibold text-sm">Edit Date</span>
                                             </button>
                                         </div>
                                         {(showDatepicker &&
@@ -559,6 +561,7 @@ function Text({ isOpen, toggleDrawer, sectionId, courseId, isEditing, contentId 
                                             <button
                                                 className="flex flex-row gap-1 rounded-md border-[2px] border-solid border-[#9012FF]  bg-[#FFFFFF] p-2 hover:bg-[#F5F0FF] "
                                                 onClick={() => setShowDatepicker(true)}>
+                                                <Image src="/icons/plus-sign.svg" height={18} width={18} alt="Plus Sign" />
                                                 <span className="text-[#9012FF] font-semibold text-sm">Select Date</span>
                                             </button>
                                         </div>
@@ -603,6 +606,7 @@ function Text({ isOpen, toggleDrawer, sectionId, courseId, isEditing, contentId 
                     </div>
                 </div>
             </Drawer>
+
         </div>
     )
 }
