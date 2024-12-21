@@ -43,27 +43,27 @@ const Sections: React.FC<SectionsProps> = ({
   const isCreateSectionFilled = sectionName && sectionScheduleDate;
 
   // Fetch sections from Firestore
-  useEffect(() => {
-    const fetchSections = () => {
-      const path = currentPath.reduce(
-        (acc, id) => `${acc}/sections/${id}`,
-        `testseries/${testId}`
-      );
-      const sectionCollection = collection(db, path, "sections");
+  // useEffect(() => {
+  //   const fetchSections = () => {
+  //     const path = currentPath.reduce(
+  //       (acc, id) => `${acc}/sections/${id}`,
+  //       `testseries/${testId}`
+  //     );
+  //     const sectionCollection = collection(db, path, "sections");
 
-      const unsubscribe = onSnapshot(sectionCollection, (snapshot) => {
-        const fetchedSections = snapshot.docs.map((doc) => ({
-          id: doc.id,
-          ...doc.data(),
-        })) as Section[];
-        setSections(fetchedSections);
-      });
+  //     const unsubscribe = onSnapshot(sectionCollection, (snapshot) => {
+  //       const fetchedSections = snapshot.docs.map((doc) => ({
+  //         id: doc.id,
+  //         ...doc.data(),
+  //       })) as Section[];
+  //       setSections(fetchedSections);
+  //     });
 
-      return unsubscribe; // Cleanup on unmount
-    };
+  //     return unsubscribe; // Cleanup on unmount
+  //   };
 
-    fetchSections();
-  }, [currentPath, testId]);
+  //   fetchSections();
+  // }, [currentPath, testId]);
 
   // Add a new section
   const handleAddSection = async () => {

@@ -38,57 +38,58 @@ const CreateTestSeries = () => {
     const router = useRouter();
 
     const handleNextClick = () => {
-        if (currentStep < Step.Sections) {
-            if (testId) {
-                setCurrentStep(currentStep + 1);
-            }
-            else {
-                toast.promise(
-                    new Promise(async (resolve, reject) => {
-                        try {
-                            const docRef = await addDoc(collection(db, 'testseries'), {
-                                testName: name,
-                                testDescription: description,
-                                testImage: image,
-                                price: price,
-                                discountPrice: discountPrice,
-                                rating: rating,
-                                noOfRating: noOfRating,
-                                publishDate: new Date().toISOString(),
-                                status: 'saved',
-                                isInCourse: false,
-                                inCourseId: '',
-                                createdBy: userId,
-                            });
+                        setCurrentStep(currentStep + 1);
+        // if (currentStep < Step.Sections) {
+        //     if (testId) {
+        //         setCurrentStep(currentStep + 1);
+        //     }
+        //     else {
+        //         toast.promise(
+        //             new Promise(async (resolve, reject) => {
+        //                 try {
+        //                     const docRef = await addDoc(collection(db, 'testseries'), {
+        //                         testName: name,
+        //                         testDescription: description,
+        //                         testImage: image,
+        //                         price: price,
+        //                         discountPrice: discountPrice,
+        //                         rating: rating,
+        //                         noOfRating: noOfRating,
+        //                         publishDate: new Date().toISOString(),
+        //                         status: 'saved',
+        //                         isInCourse: false,
+        //                         inCourseId: '',
+        //                         createdBy: userId,
+        //                     });
 
-                            await updateDoc(doc(db, 'testseries', docRef.id), {
-                                testId: docRef.id,
-                            });
-                            resolve("Test Series Created!");
-                            setCurrentStep(currentStep + 1);
-                            router.replace(`/admin/content/testseriesmanagement/createtestseries/?tId=${docRef.id}`)
-                        } catch (error) {
-                            reject("Failed to Create Test Series!")
-                            // Handle errors in both image upload and Firestore update
-                            // toast.error("Failed to upload image or update profile.");
-                            console.error("Error:", error);
-                        }
+        //                     await updateDoc(doc(db, 'testseries', docRef.id), {
+        //                         testId: docRef.id,
+        //                     });
+        //                     resolve("Test Series Created!");
+        //                     setCurrentStep(currentStep + 1);
+        //                     router.replace(`/admin/content/testseriesmanagement/createtestseries/?tId=${docRef.id}`)
+        //                 } catch (error) {
+        //                     reject("Failed to Create Test Series!")
+        //                     // Handle errors in both image upload and Firestore update
+        //                     // toast.error("Failed to upload image or update profile.");
+        //                     console.error("Error:", error);
+        //                 }
 
-                    }),
-                    {
-                        pending: 'Creating Test Series...',
-                        success: 'Test Series Created!',
-                        error: 'Error Creating Test Series'
-                    }
-                );
-            }
-        }
-        else if (currentStep === Step.Perference) {
-            setIsPublished(true); // Set quiz as published
-        }
-        //  else if (currentStep < Step.Perference) {
-        //     setCurrentStep(currentStep + 1);
+        //             }),
+        //             {
+        //                 pending: 'Creating Test Series...',
+        //                 success: 'Test Series Created!',
+        //                 error: 'Error Creating Test Series'
+        //             }
+        //         );
+        //     }
         // }
+        // else if (currentStep === Step.Perference) {
+        //     setIsPublished(true); // Set quiz as published
+        // }
+        // //  else if (currentStep < Step.Perference) {
+        // //     setCurrentStep(currentStep + 1);
+        // // }
     };
 
     const handlePreviousClick = () => {
@@ -103,7 +104,7 @@ const CreateTestSeries = () => {
         }
     };
 
-    const isNextButtonDisabled = !isFormValid();
+    const isNextButtonDisabled = isFormValid();
 
     const handleBackClick = () => {
         router.back(); // Navigate to the previous page in the browser history
