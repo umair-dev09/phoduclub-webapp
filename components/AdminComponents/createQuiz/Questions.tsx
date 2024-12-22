@@ -8,7 +8,7 @@ import 'react-quill/dist/quill.snow.css';
 import ReactQuill from 'react-quill-new'; // Ensure correct import
 import Quill from 'quill'; // Import Quill to use it for types
 import QuillResizeImage from 'quill-resize-image';
-Quill.register("modules/resize",QuillResizeImage);
+Quill.register("modules/resize", QuillResizeImage);
 
 // Define interfaces outside the component
 interface Question {
@@ -153,11 +153,11 @@ function Questions({ questionsList, setQuestionsList }: QuestionsProps) {
         popoverOpenStates[questionIndex];
     // -----------------------------------------------------------------------------------------------------------
     // state for ReactQuill 1 FOR QUESTIONS
-    
+
     // Create refs for each question's quill instances
     const [alignments, setAlignments] = useState<{ [key: number]: { question: string | null, explanation: string | null } }>({});
     const [writing, setWriting] = useState<{ [key: number]: { question: boolean, explanation: boolean } }>({});
-    
+
     // Use a ref for quill instances to prevent re-renders
     const quillInstancesRef = useRef<{
         [key: number]: {
@@ -170,15 +170,15 @@ function Questions({ questionsList, setQuestionsList }: QuestionsProps) {
         toolbar: false, // We're using custom toolbar
         resize: {
             locale: {},
-          },
-         
+        },
+
     };
 
     const formats = [
         'image',
-      ];
-      
-      const handleQuillMount = (index: number, type: 'question' | 'explanation', quill: ReactQuill | null) => {
+    ];
+
+    const handleQuillMount = (index: number, type: 'question' | 'explanation', quill: ReactQuill | null) => {
         if (quill) {
             if (!quillInstancesRef.current[index]) {
                 quillInstancesRef.current[index] = {
@@ -405,13 +405,13 @@ function Questions({ questionsList, setQuestionsList }: QuestionsProps) {
                                     className={`pt-2 bg-[#FFFFFF] border ${writing[index]?.question ? 'border-[#D6BBFB]  shadow-[0px_0px_0px_4px_rgba(158,119,237,0.25),0px_1px_2px_0px_rgba(16,24,40,0.05)]' : 'border-[#EAECF0]'
                                         } rounded-[12px] h-auto`}>
                                     <div className="bg-[#FFFFFF] ">
-                                    <ReactQuill
-                                       ref={(el) => handleQuillMount(index, 'question', el)}
-                                        value={question.question}
-                                        onChange={(content) => handleQuillChange(index, 'question', content)}
-                                        modules={modules}
-                                        placeholder="Question"
-                                        className="text-[#1D2939] focus:outline-none rounded-b-[12px] custom-quill placeholder:not-italic min-h-[10px] max-h-[350px] overflow-y-auto border-none font-normal break-all"
+                                        <ReactQuill
+                                            ref={(el) => handleQuillMount(index, 'question', el)}
+                                            value={question.question}
+                                            onChange={(content) => handleQuillChange(index, 'question', content)}
+                                            modules={modules}
+                                            placeholder="Question"
+                                            className="text-[#1D2939] focus:outline-none rounded-b-[12px] custom-quill placeholder:not-italic min-h-[10px] max-h-[350px] overflow-y-auto border-none font-normal break-all"
                                         />
                                         {/* <ReactQuill
                                             ref={quillRef1}
@@ -437,7 +437,7 @@ function Questions({ questionsList, setQuestionsList }: QuestionsProps) {
                                                 </button>
                                                 <Popover placement="bottom-start" className="flex flex-row justify-end">
                                                     <PopoverTrigger className="">
-                                                    <button className="flex items-center justify-center p-1">
+                                                        <button className="flex items-center justify-center p-1">
                                                             {alignments[index]?.question === 'center' ? (
                                                                 <Image src="/icons/align-middle.svg" width={24} height={26} alt="align-center" />
                                                             ) : alignments[index]?.question === 'right' ? (
@@ -449,22 +449,22 @@ function Questions({ questionsList, setQuestionsList }: QuestionsProps) {
                                                     </PopoverTrigger>
                                                     <PopoverContent className="flex flex-row bg-white rounded-[8px] border-[1px] border-solid border-[#EAECF0] p-2 w-[120px] shadow-[0_2px_4px_#EAECF0] gap-2 ">
 
-                                                        <button onClick={() => handleIconClick(index, 'question','align-left')} className="flex items-center justify-center">
+                                                        <button onClick={() => handleIconClick(index, 'question', 'align-left')} className="flex items-center justify-center">
                                                             <Image src="/icons/align-left.svg" width={30} height={30} alt="align-left" />
                                                         </button>
-                                                        <button onClick={() => handleIconClick(index, 'question','align-center')} className="flex items-center justify-center">
+                                                        <button onClick={() => handleIconClick(index, 'question', 'align-center')} className="flex items-center justify-center">
                                                             <Image src="/icons/align-middle.svg" width={30} height={30} alt="align-center" />
                                                         </button>
-                                                        <button onClick={() => handleIconClick(index, 'question','align-right')} className="flex items-center justify-center">
+                                                        <button onClick={() => handleIconClick(index, 'question', 'align-right')} className="flex items-center justify-center">
                                                             <Image src="/icons/align-right.svg" width={30} height={30} alt="align-right" />
                                                         </button>
 
                                                     </PopoverContent>
                                                 </Popover>
-                                                <button onClick={() => handleIconClick(index, 'question','ordered')}>
+                                                <button onClick={() => handleIconClick(index, 'question', 'ordered')}>
                                                     <Image src="/icons/dropdown-icon-2.svg" width={27} height={27} alt="ordered-list" />
                                                 </button>
-                                                <button onClick={() => handleIconClick(index, 'question','image')}
+                                                <button onClick={() => handleIconClick(index, 'question', 'image')}
                                                     className="hover:bg-[#EAECF0]">
                                                     <Image src="/icons/upload-image-icon.svg" width={24} height={24} alt="upload-image-icon" />
                                                 </button>
@@ -542,17 +542,17 @@ function Questions({ questionsList, setQuestionsList }: QuestionsProps) {
                                 </PopoverContent>
                             </Popover>
                             <div
-                                className={`pt-2 bg-[#FFFFFF] border ${writing[index]?.explanation  ? 'border-[#D6BBFB]  shadow-[0px_0px_0px_4px_rgba(158,119,237,0.25),0px_1px_2px_0px_rgba(16,24,40,0.05)]' : 'border-[#EAECF0]'
+                                className={`pt-2 bg-[#FFFFFF] border ${writing[index]?.explanation ? 'border-[#D6BBFB]  shadow-[0px_0px_0px_4px_rgba(158,119,237,0.25),0px_1px_2px_0px_rgba(16,24,40,0.05)]' : 'border-[#EAECF0]'
                                     } rounded-[12px] h-auto`}>
                                 {/* Textarea for writing the description */}
                                 <div className="bg-[#FFFFFF] ">
-                                <ReactQuill
-                                 ref={(el) => handleQuillMount(index, 'explanation', el)}
-                                    value={question.explanation}
-                                    onChange={(content) => handleQuillChange(index, 'explanation', content)}
-                                    modules={modules}
-                                    placeholder="Explanation"
-                                    className="text-[#1D2939] focus:outline-none rounded-b-[12px] custom-quill placeholder:not-italic min-h-[10px] max-h-[350px] overflow-y-auto border-none font-normal break-all"
+                                    <ReactQuill
+                                        ref={(el) => handleQuillMount(index, 'explanation', el)}
+                                        value={question.explanation}
+                                        onChange={(content) => handleQuillChange(index, 'explanation', content)}
+                                        modules={modules}
+                                        placeholder="Explanation"
+                                        className="text-[#1D2939] focus:outline-none rounded-b-[12px] custom-quill placeholder:not-italic min-h-[10px] max-h-[350px] overflow-y-auto border-none font-normal break-all"
                                     />
                                     {/* <ReactQuill
                                         ref={quillRef2}
@@ -571,49 +571,456 @@ function Questions({ questionsList, setQuestionsList }: QuestionsProps) {
                                         <div className="h-[24px] w-[288px] gap-[24px] flex flex-row">
                                             {/* Icons for formatting */}
                                             <button onClick={() => handleIconClick(index, 'explanation', 'bold')}>
-                                                    <Image src="/icons/Bold.svg" width={24} height={24} alt="bold" />
-                                                </button>
-                                                <button onClick={() => handleIconClick(index, 'explanation', 'italic')}>
-                                                    <Image src="/icons/italic-icon.svg" width={24} height={24} alt="italic-icon" />
-                                                </button>
-                                                <button onClick={() => handleIconClick(index, 'explanation', 'underline')}>
-                                                    <Image src="/icons/underline-icon.svg" width={24} height={24} alt="underline-icon" />
-                                                </button>
+                                                <Image src="/icons/Bold.svg" width={24} height={24} alt="bold" />
+                                            </button>
+                                            <button onClick={() => handleIconClick(index, 'explanation', 'italic')}>
+                                                <Image src="/icons/italic-icon.svg" width={24} height={24} alt="italic-icon" />
+                                            </button>
+                                            <button onClick={() => handleIconClick(index, 'explanation', 'underline')}>
+                                                <Image src="/icons/underline-icon.svg" width={24} height={24} alt="underline-icon" />
+                                            </button>
                                             {/* Alignment options in a popover */}
                                             <Popover placement="bottom-start" className="flex flex-row justify-end">
                                                 <PopoverTrigger className="">
-                                                <button className="flex items-center justify-center p-1">
-                                                    {alignments[index]?.explanation === 'center' ? (
-                                                        <Image src="/icons/align-middle.svg" width={24} height={26} alt="align-center" />
-                                                    ) : alignments[index]?.explanation === 'right' ? (
-                                                        <Image src="/icons/align-right.svg" width={24} height={26} alt="align-right" />
-                                                    ) : (
-                                                        <Image src="/icons/dropdown-icon-1.svg" width={32} height={32} alt="align-left" />
-                                                    )}
-                                                </button>
+                                                    <button className="flex items-center justify-center p-1">
+                                                        {alignments[index]?.explanation === 'center' ? (
+                                                            <Image src="/icons/align-middle.svg" width={24} height={26} alt="align-center" />
+                                                        ) : alignments[index]?.explanation === 'right' ? (
+                                                            <Image src="/icons/align-right.svg" width={24} height={26} alt="align-right" />
+                                                        ) : (
+                                                            <Image src="/icons/dropdown-icon-1.svg" width={32} height={32} alt="align-left" />
+                                                        )}
+                                                    </button>
                                                 </PopoverTrigger>
                                                 <PopoverContent className="flex flex-row bg-white rounded-[8px] border-[1px] border-solid border-[#EAECF0] p-2 w-[120px] shadow-[0_2px_4px_#EAECF0] gap-2 ">
                                                     {/* Alignment options inside the popover */}
-                                                   
-                                                    <button onClick={() => handleIconClick(index, 'explanation','align-left')} className="flex items-center justify-center">
-                                                            <Image src="/icons/align-left.svg" width={30} height={30} alt="align-left" />
-                                                        </button>
-                                                        <button onClick={() => handleIconClick(index, 'explanation','align-center')} className="flex items-center justify-center">
-                                                            <Image src="/icons/align-middle.svg" width={30} height={30} alt="align-center" />
-                                                        </button>
-                                                        <button onClick={() => handleIconClick(index, 'explanation','align-right')} className="flex items-center justify-center">
-                                                            <Image src="/icons/align-right.svg" width={30} height={30} alt="align-right" />
-                                                        </button>
+
+                                                    <button onClick={() => handleIconClick(index, 'explanation', 'align-left')} className="flex items-center justify-center">
+                                                        <Image src="/icons/align-left.svg" width={30} height={30} alt="align-left" />
+                                                    </button>
+                                                    <button onClick={() => handleIconClick(index, 'explanation', 'align-center')} className="flex items-center justify-center">
+                                                        <Image src="/icons/align-middle.svg" width={30} height={30} alt="align-center" />
+                                                    </button>
+                                                    <button onClick={() => handleIconClick(index, 'explanation', 'align-right')} className="flex items-center justify-center">
+                                                        <Image src="/icons/align-right.svg" width={30} height={30} alt="align-right" />
+                                                    </button>
 
                                                 </PopoverContent>
                                             </Popover>
-                                            <button onClick={() => handleIconClick(index, 'explanation','ordered')}>
+                                            <button onClick={() => handleIconClick(index, 'explanation', 'ordered')}>
+                                                <Image src="/icons/dropdown-icon-2.svg" width={27} height={27} alt="ordered-list" />
+                                            </button>
+                                            <button onClick={() => handleIconClick(index, 'explanation', 'image')}
+                                                className="hover:bg-[#EAECF0]">
+                                                <Image src="/icons/upload-image-icon.svg" width={24} height={24} alt="upload-image-icon" />
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </Collapsible>
+                </div>
+            ))}
+
+            {questionsList.map((question, index) => (
+                <div key={index} className="rounded-md border border-solid border-[#EAECF0] mt-4 h-auto bg-[#FFFFFF]">
+                    <Collapsible
+                        trigger={
+                            <div className='h-auto bg-[#FFFFFF] flex flex-col p-5 gap-2 rounded-md'>
+                                <div className="h-auto flex flex-row justify-between gap-4 items-start">
+                                    <div className="flex gap-2 ">
+                                        <div className="h-6 min-w-[24px] rounded-[4px] mt-[2px] bg-[#EAECF0] flex justify-center ">
+                                            <span className="text-[#1D2939] font-semibold text-base">{index + 1}</span>
+                                        </div>
+                                        <div className="font-semibold text-base break-all text-[#1D2939] ml-1" dangerouslySetInnerHTML={{ __html: question.question || "Question" }}></div>
+                                    </div>
+                                    <Popover placement="bottom-end">
+                                        <PopoverTrigger>
+                                            <button className="min-w-[20px] min-h-[20px] mt-[2px]">
+                                                <Image
+                                                    src="/icons/three-dots.svg"
+                                                    width={20}
+                                                    height={20}
+                                                    alt="Three-dots"
+                                                />
+                                            </button>
+                                        </PopoverTrigger>
+                                        <PopoverContent className="h-[88px] w-[167px] px-0 border border-solid border-[#EAECF0] bg-[#FFFFFF] rounded-md flex flex-col py-[4px] shadow-lg">
+                                            <button
+                                                className="flex flex-row h-[40px] w-full px-3 gap-2 hover:bg-[#F2F4F7] items-center"
+                                                onClick={() => handleAddQuestionduplicate(question)}
+                                            >
+                                                <Image
+                                                    src="/icons/duplicate.svg"
+                                                    width={18}
+                                                    height={18}
+                                                    alt="Duplicate"
+                                                />
+                                                <span className="text-[#0C111D] text-sm font-medium">Duplicate</span>
+                                            </button>
+                                            <button
+                                                className="flex flex-row h-[40px] w-full px-3 gap-2 hover:bg-[#F2F4F7] items-center"
+                                                onClick={() => handleDeleteQuestion(index)}
+                                            >
+                                                <Image
+                                                    src="/icons/delete.svg"
+                                                    width={18}
+                                                    height={18}
+                                                    alt="Delete"
+                                                />
+                                                <span className="text-[#DE3024] text-sm font-medium">Delete</span>
+                                            </button>
+                                        </PopoverContent>
+                                    </Popover>
+                                </div>
+                            </div>
+                        }
+                    >
+                        <div className='h-auto bg-[#FFFFFF] flex flex-col pb-5 gap-2 rounded-br-md rounded-bl-md border-t-2 border-lightGrey'>
+                            <div className="w-full">
+                                <table className="w-full">
+                                    <thead className="bg-[#F2F4F7]">
+                                        <tr>
+                                            <td className="pl-4 py-3">
+                                                <Checkbox size="sm" />
+                                            </td>
+                                            <td className="py-3">
+                                                <p className="text-sm text-[#667085] font-medium leading-6">
+                                                    Questions
+                                                </p>
+                                            </td>
+                                            <td className="py-3">
+                                                <p className="text-sm text-[#667085] font-medium leading-6">
+                                                    Difficulty
+                                                </p>
+                                            </td>
+                                            <td className="mr-4 py-3">
+                                                <p className="text-sm text-[#667085] font-medium leading-6">
+                                                    Action
+                                                </p>
+                                            </td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr className="border-t border-lightGrey">
+                                            <td className="pl-4">
+                                                <div className="flex items-center">
+                                                    <Checkbox size="sm" />
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div className="flex flex-row items-center py-3 gap-2">
+                                                    <div className="w-[18px] h-[18px] text-center text-xs text-[#1D2939] font-medium leading-5 rounded-sm bg-[#EAECF0]">
+                                                        1
+                                                    </div>
+                                                    <p className="flex flex-nowrap text-sm text-[#1D2939] font-normal leading-6">
+                                                        What is the result of the bitwise AND operation between 1010 and 1100?
+                                                    </p>
+                                                </div>
+                                            </td>
+                                            <td className="py-3">
+                                                <div className="flex flex-row justify-between w-[92px] px-2 py-1 rounded-[6px] bg-[#D3F8E0]">
+                                                    <p className="text-xs text-[#182230] font-medium leading-5">Easy</p>
+                                                    <Image src='/icons/arrow-down-01-round.svg' alt="open" width={18} height={18} />
+                                                </div>
+                                            </td>
+                                            <td className="pr-4 py-3">
+                                                <div className="flex justify-end w-full">
+                                                    <Image
+                                                        src="/icons/three-dots.svg"
+                                                        width={20}
+                                                        height={20}
+                                                        alt="Three-dots"
+                                                    />
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr className="border-t border-lightGrey">
+                                            <td className="pl-4">
+                                                <div className="flex items-center">
+                                                    <Checkbox size="sm" />
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div className="flex flex-row items-center py-3 gap-2">
+                                                    <div className="w-[18px] h-[18px] text-center text-xs text-[#1D2939] font-medium leading-5 rounded-sm bg-[#EAECF0]">
+                                                        1
+                                                    </div>
+                                                    <p className="flex flex-nowrap text-sm text-[#1D2939] font-normal leading-6">
+                                                        What is the result of the bitwise AND operation between 1010 and 1100?
+                                                    </p>
+                                                </div>
+                                            </td>
+                                            <td className="py-3">
+                                                <div className="flex flex-row justify-between w-[92px] px-2 py-1 rounded-[6px] bg-[#D3F8E0]">
+                                                    <p className="text-xs text-[#182230] font-medium leading-5">Easy</p>
+                                                    <Image src='/icons/arrow-down-01-round.svg' alt="open" width={18} height={18} />
+                                                </div>
+                                            </td>
+                                            <td className="pr-4 py-3">
+                                                <div className="flex justify-end w-full">
+                                                    <Image
+                                                        src="/icons/three-dots.svg"
+                                                        width={20}
+                                                        height={20}
+                                                        alt="Three-dots"
+                                                    />
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr className="border-t border-lightGrey">
+                                            <td className="pl-4">
+                                                <div className="flex items-center">
+                                                    <Checkbox size="sm" />
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div className="flex flex-row items-center py-3 gap-2">
+                                                    <div className="w-[18px] h-[18px] text-center text-xs text-[#1D2939] font-medium leading-5 rounded-sm bg-[#EAECF0]">
+                                                        1
+                                                    </div>
+                                                    <p className="flex flex-nowrap text-sm text-[#1D2939] font-normal leading-6">
+                                                        What is the result of the bitwise AND operation between 1010 and 1100?
+                                                    </p>
+                                                </div>
+                                            </td>
+                                            <td className="py-3">
+                                                <div className="flex flex-row justify-between w-[92px] px-2 py-1 rounded-[6px] bg-[#D3F8E0]">
+                                                    <p className="text-xs text-[#182230] font-medium leading-5">Easy</p>
+                                                    <Image src='/icons/arrow-down-01-round.svg' alt="open" width={18} height={18} />
+                                                </div>
+                                            </td>
+                                            <td className="pr-4 py-3">
+                                                <div className="flex justify-end w-full">
+                                                    <Image
+                                                        src="/icons/three-dots.svg"
+                                                        width={20}
+                                                        height={20}
+                                                        alt="Three-dots"
+                                                    />
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div className="flex flex-col px-5 gap-2">
+                                <span className="font-semibold text-base text-[#1D2939]">Question</span>
+                                {/*  QUILL 1 for QUESTIONS*/}
+                                <div
+                                    className={`pt-2 bg-[#FFFFFF] border ${writing[index]?.question ? 'border-[#D6BBFB]  shadow-[0px_0px_0px_4px_rgba(158,119,237,0.25),0px_1px_2px_0px_rgba(16,24,40,0.05)]' : 'border-[#EAECF0]'
+                                        } rounded-[12px] h-auto`}>
+                                    <div className="bg-[#FFFFFF] ">
+                                        <ReactQuill
+                                            ref={(el) => handleQuillMount(index, 'question', el)}
+                                            value={question.question}
+                                            onChange={(content) => handleQuillChange(index, 'question', content)}
+                                            modules={modules}
+                                            placeholder="Question"
+                                            className="text-[#1D2939] focus:outline-none rounded-b-[12px] custom-quill placeholder:not-italic min-h-[10px] max-h-[350px] overflow-y-auto border-none font-normal break-all"
+                                        />
+                                        {/* <ReactQuill
+                                            ref={quillRef1}
+                                            value={question.question}
+                                            onChange={(value) => handleInputChange(index, value)}
+                                            onKeyDown={handleKeyDown1}
+                                            modules={{ toolbar: false }}
+                                            placeholder="Description"
+                                            className="text-[#1D2939] focus:outline-none rounded-b-[12px] custom-quill placeholder:not-italic min-h-[10px] max-h-[150px] overflow-y-auto border-none font-normal break-all"
+                                        /> */}
+                                    </div>
+                                    <div className="h-[66px] bg-[#FFFFFF] rounded-bl-[12px] rounded-br-[12px] flex justify-center items-center">
+                                        <div className="flex flex-row w-full justify-between items-center mx-5">
+                                            <div className="h-[24px] w-[288px] gap-[24px] flex flex-row">
+                                                <button onClick={() => handleIconClick(index, 'question', 'bold')}>
+                                                    <Image src="/icons/Bold.svg" width={24} height={24} alt="bold" />
+                                                </button>
+                                                <button onClick={() => handleIconClick(index, 'question', 'italic')}>
+                                                    <Image src="/icons/italic-icon.svg" width={24} height={24} alt="italic-icon" />
+                                                </button>
+                                                <button onClick={() => handleIconClick(index, 'question', 'underline')}>
+                                                    <Image src="/icons/underline-icon.svg" width={24} height={24} alt="underline-icon" />
+                                                </button>
+                                                <Popover placement="bottom-start" className="flex flex-row justify-end">
+                                                    <PopoverTrigger className="">
+                                                        <button className="flex items-center justify-center p-1">
+                                                            {alignments[index]?.question === 'center' ? (
+                                                                <Image src="/icons/align-middle.svg" width={24} height={26} alt="align-center" />
+                                                            ) : alignments[index]?.question === 'right' ? (
+                                                                <Image src="/icons/align-right.svg" width={24} height={26} alt="align-right" />
+                                                            ) : (
+                                                                <Image src="/icons/dropdown-icon-1.svg" width={32} height={32} alt="align-left" />
+                                                            )}
+                                                        </button>
+                                                    </PopoverTrigger>
+                                                    <PopoverContent className="flex flex-row bg-white rounded-[8px] border-[1px] border-solid border-[#EAECF0] p-2 w-[120px] shadow-[0_2px_4px_#EAECF0] gap-2 ">
+
+                                                        <button onClick={() => handleIconClick(index, 'question', 'align-left')} className="flex items-center justify-center">
+                                                            <Image src="/icons/align-left.svg" width={30} height={30} alt="align-left" />
+                                                        </button>
+                                                        <button onClick={() => handleIconClick(index, 'question', 'align-center')} className="flex items-center justify-center">
+                                                            <Image src="/icons/align-middle.svg" width={30} height={30} alt="align-center" />
+                                                        </button>
+                                                        <button onClick={() => handleIconClick(index, 'question', 'align-right')} className="flex items-center justify-center">
+                                                            <Image src="/icons/align-right.svg" width={30} height={30} alt="align-right" />
+                                                        </button>
+
+                                                    </PopoverContent>
+                                                </Popover>
+                                                <button onClick={() => handleIconClick(index, 'question', 'ordered')}>
                                                     <Image src="/icons/dropdown-icon-2.svg" width={27} height={27} alt="ordered-list" />
                                                 </button>
-                                                <button onClick={() => handleIconClick(index, 'explanation','image')}
+                                                <button onClick={() => handleIconClick(index, 'question', 'image')}
                                                     className="hover:bg-[#EAECF0]">
                                                     <Image src="/icons/upload-image-icon.svg" width={24} height={24} alt="upload-image-icon" />
                                                 </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <span className="px-5 font-semibold text-base text-[#1D2939]">Options</span>
+                            <div className="flex flex-col px-5 gap-3">
+                                {(Object.keys(question.options) as Array<keyof Options>).map((optionKey) => (
+                                    <div key={optionKey} className="flex flex-row items-center gap-2">
+                                        <div className="h-8 w-8 bg-[#F9FAFB] border border-solid border-[#D0D5DD] rounded-[6px]">
+                                            <span className="text-[#475467] text-sm font-medium flex justify-center items-center h-full w-full">
+                                                {optionKey}
+                                            </span>
+                                        </div>
+                                        <input
+                                            className="font-medium pl-3 text-[#101828] text-sm placeholder:text-[#A1A1A1] rounded-md w-full placeholder:font-normal
+                                                focus:outline-none focus:ring-0 border border-solid border-[#D0D5DD] h-[40px] focus:border-[#D6BBFB]
+                                              focus:shadow-[0px_0px_0px_4px_rgba(158,119,237,0.25),0px_1px_2px_0px_rgba(16,24,40,0.05)]"
+                                            placeholder={`Option ${optionKey}`}
+                                            value={question.options[optionKey]}
+                                            onChange={(e) => handleOptionChange(index, optionKey, e.target.value)}
+                                        />
+                                    </div>
+                                ))}
+                            </div>
+
+                            <span className="px-5 font-semibold text-base text-[#1D2939]">Correct answer</span>
+                            <Popover
+                                key={index}
+                                placement="bottom"
+                                isOpen={popoverOpenStates[index]} // Check the specific state for this question
+                                onClose={() => handlePopoverClose(index)}
+                            >
+                                <PopoverTrigger>
+                                    <button
+                                        className={`h-[40px] mx-5 px-3 items-center w-full justify-between flex flex-row rounded-md border border-solid ${isActive(index)
+                                            ? 'border-[#D6BBFB] shadow-[0px_0px_0px_4px_rgba(158,119,237,0.25),0px_1px_2px_0px_rgba(16,24,40,0.05)]'
+                                            : 'border-[#D0D5DD]'
+                                            } bg-[#FFFFFF] focus:outline-none`}
+                                        onClick={() => handleclickonselectbutton(index)} // Pass the index
+                                    >
+                                        <span
+                                            className={`font-normal text-sm ${questionsList[index].correctAnswer ? 'text-[#101828]' : 'text-[#667085]'
+                                                }`}
+                                        >
+                                            {getSelectedAnswerDisplay(question)}
+                                        </span>
+                                    </button>
+                                </PopoverTrigger>
+                                <PopoverContent className="px-0 w-[60.813rem] rounded-md border border-solid border-[#EAECF0] bg-[#FFFFFF] flex flex-col pt-[8px] shadow-lg">
+
+                                    {(Object.keys(question.options) as Array<keyof Options>).map((optionKey) => (
+                                        <div
+                                            key={optionKey}
+                                            className="flex flex-row justify-between w-full h-[40px] items-center hover:bg-[#F2F4F7] px-2 cursor-pointer"
+                                            onClick={() => handleCorrectAnswerSelect(index, optionKey)} // Pass the index
+                                        >
+                                            <span className="font-normal text-[#0C111D] text-sm">
+                                                {optionKey}. {question.options[optionKey] || `Option ${optionKey}`}
+                                            </span>
+                                            {questionsList[index].correctAnswer === optionKey && (
+                                                <Image
+                                                    src="/icons/tick-02.svg"
+                                                    width={18}
+                                                    height={18}
+                                                    alt="right mark"
+                                                />
+                                            )}
+                                        </div>
+                                    ))}
+
+                                </PopoverContent>
+                            </Popover>
+                            <div
+                                className={`mx-5 pt-2 px-5 bg-[#FFFFFF] border ${writing[index]?.explanation ? 'border-[#D6BBFB]  shadow-[0px_0px_0px_4px_rgba(158,119,237,0.25),0px_1px_2px_0px_rgba(16,24,40,0.05)]' : 'border-[#EAECF0]'
+                                    } rounded-[12px] h-auto`}>
+                                {/* Textarea for writing the description */}
+                                <div className="bg-[#FFFFFF] ">
+                                    <ReactQuill
+                                        ref={(el) => handleQuillMount(index, 'explanation', el)}
+                                        value={question.explanation}
+                                        onChange={(content) => handleQuillChange(index, 'explanation', content)}
+                                        modules={modules}
+                                        placeholder="Explanation"
+                                        className="text-[#1D2939] focus:outline-none rounded-b-[12px] custom-quill placeholder:not-italic min-h-[10px] max-h-[350px] overflow-y-auto border-none font-normal break-all"
+                                    />
+                                    {/* <ReactQuill
+                                        ref={quillRef2}
+                                        value={question.explanation}
+                                        onChange={(value) => handleExplanationChange(index, value)} // Use `value` directly
+                                        onKeyDown={handleKeyDown2}
+                                        modules={{ toolbar: false }}
+                                        placeholder="Description"
+                                    /> */}
+
+                                </div>
+
+                                <div className="h-[66px] bg-[#FFFFFF] rounded-bl-[12px] rounded-br-[12px] flex justify-center items-center">
+                                    <div className="flex flex-row w-full justify-between items-center mx-5">
+                                        {/* Formatting options */}
+                                        <div className="h-[24px] w-[288px] gap-[24px] flex flex-row">
+                                            {/* Icons for formatting */}
+                                            <button onClick={() => handleIconClick(index, 'explanation', 'bold')}>
+                                                <Image src="/icons/Bold.svg" width={24} height={24} alt="bold" />
+                                            </button>
+                                            <button onClick={() => handleIconClick(index, 'explanation', 'italic')}>
+                                                <Image src="/icons/italic-icon.svg" width={24} height={24} alt="italic-icon" />
+                                            </button>
+                                            <button onClick={() => handleIconClick(index, 'explanation', 'underline')}>
+                                                <Image src="/icons/underline-icon.svg" width={24} height={24} alt="underline-icon" />
+                                            </button>
+                                            {/* Alignment options in a popover */}
+                                            <Popover placement="bottom-start" className="flex flex-row justify-end">
+                                                <PopoverTrigger className="">
+                                                    <button className="flex items-center justify-center p-1">
+                                                        {alignments[index]?.explanation === 'center' ? (
+                                                            <Image src="/icons/align-middle.svg" width={24} height={26} alt="align-center" />
+                                                        ) : alignments[index]?.explanation === 'right' ? (
+                                                            <Image src="/icons/align-right.svg" width={24} height={26} alt="align-right" />
+                                                        ) : (
+                                                            <Image src="/icons/dropdown-icon-1.svg" width={32} height={32} alt="align-left" />
+                                                        )}
+                                                    </button>
+                                                </PopoverTrigger>
+                                                <PopoverContent className="flex flex-row bg-white rounded-[8px] border-[1px] border-solid border-[#EAECF0] p-2 w-[120px] shadow-[0_2px_4px_#EAECF0] gap-2 ">
+                                                    {/* Alignment options inside the popover */}
+
+                                                    <button onClick={() => handleIconClick(index, 'explanation', 'align-left')} className="flex items-center justify-center">
+                                                        <Image src="/icons/align-left.svg" width={30} height={30} alt="align-left" />
+                                                    </button>
+                                                    <button onClick={() => handleIconClick(index, 'explanation', 'align-center')} className="flex items-center justify-center">
+                                                        <Image src="/icons/align-middle.svg" width={30} height={30} alt="align-center" />
+                                                    </button>
+                                                    <button onClick={() => handleIconClick(index, 'explanation', 'align-right')} className="flex items-center justify-center">
+                                                        <Image src="/icons/align-right.svg" width={30} height={30} alt="align-right" />
+                                                    </button>
+
+                                                </PopoverContent>
+                                            </Popover>
+                                            <button onClick={() => handleIconClick(index, 'explanation', 'ordered')}>
+                                                <Image src="/icons/dropdown-icon-2.svg" width={27} height={27} alt="ordered-list" />
+                                            </button>
+                                            <button onClick={() => handleIconClick(index, 'explanation', 'image')}
+                                                className="hover:bg-[#EAECF0]">
+                                                <Image src="/icons/upload-image-icon.svg" width={24} height={24} alt="upload-image-icon" />
+                                            </button>
                                         </div>
                                     </div>
                                 </div>
