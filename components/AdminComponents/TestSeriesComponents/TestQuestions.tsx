@@ -33,22 +33,8 @@ interface QuestionsProps {
     setQuestionsList: React.Dispatch<React.SetStateAction<Question[]>>;
 }
 
-function Questions({ questionsList, setQuestionsList }: QuestionsProps) {
+function TestQuestions({ questionsList, setQuestionsList }: QuestionsProps) {
 
-    // Handler for input change
-    // const handleInputChange = (index: number, value: string | React.ChangeEvent<HTMLInputElement>) => {
-    //     const newQuestionsList = [...questionsList];
-
-    //     // Check if value is a string (from ReactQuill) or a ChangeEvent (from input)
-    //     if (typeof value === 'string') {
-    //         newQuestionsList[index].question = value;
-    //     } else {
-    //         newQuestionsList[index].question = value.target.value;
-    //     }
-
-    //     setQuestionsList(newQuestionsList);
-    // };
-    // // -----------------------------------------------------------------------------------------------------------
     // Handler for checkbox change
     const handleCheckboxChange = (index: number) => {
         const newQuestionsList = [...questionsList];
@@ -151,9 +137,7 @@ function Questions({ questionsList, setQuestionsList }: QuestionsProps) {
 
     const isActive = (questionIndex: number) =>
         popoverOpenStates[questionIndex];
-    // -----------------------------------------------------------------------------------------------------------
-    // state for ReactQuill 1 FOR QUESTIONS
-    
+    // -----------------------------------------------------------------------------------------------------------    
     // Create refs for each question's quill instances
     const [alignments, setAlignments] = useState<{ [key: number]: { question: string | null, explanation: string | null } }>({});
     const [writing, setWriting] = useState<{ [key: number]: { question: boolean, explanation: boolean } }>({});
@@ -252,93 +236,9 @@ function Questions({ questionsList, setQuestionsList }: QuestionsProps) {
         }
     };
 
-    // ------------------------------------------------------------------------------------------------------------------------------------
-    // state for ReactQuill 1 FOR EXPLAINTION
-    // const [value2, setValue2] = useState('');
-    // const quillRef2 = useRef<ReactQuill | null>(null); // Ref to hold ReactQuill instance
-    // const [quill2, setQuill2] = useState<Quill | null>(null);
-    // const [alignment2, setAlignment2] = useState<string | null>(null); // State to hold alignment
-    // const [isWriting2, setIsWriting2] = useState(false); // Track if text is being written
-
-    // const handleChange2 = (content: string) => {
-    //     setValue2(content);
-    //     checkTextContent2(content);
-    // };
-
-    // const checkTextContent2 = (content: string) => {
-    //     const plainText = content.replace(/<[^>]+>/g, '').trim();
-    //     setIsWriting2(plainText.length > 0);
-    // };
-
-    // const handleIconClick2 = (format: string) => {
-    //     if (quill2) {
-    //         const range = quill2.getSelection();
-    //         if (range) {
-    //             const currentFormats = quill2.getFormat(range);
-    //             if (format === 'ordered') {
-    //                 quill2.format('list', currentFormats.list === 'ordered' ? false : 'ordered');
-    //             } else if (format === 'image') {
-    //                 const fileInput = document.createElement('input');
-    //                 fileInput.type = 'file';
-    //                 fileInput.accept = 'image/*';
-    //                 fileInput.onchange = () => {
-    //                     const file = fileInput.files?.[0];
-    //                     if (file) {
-    //                         const reader = new FileReader();
-    //                         reader.onload = (e) => {
-    //                             if (e.target && e.target.result) {
-    //                                 const imageUrl = e.target.result as string;
-    //                                 quill2.insertEmbed(range.index, 'image', imageUrl);
-    //                             }
-    //                         };
-    //                         reader.readAsDataURL(file);
-    //                     }
-    //                 };
-    //                 fileInput.click();
-    //             } else if (format === 'bullet') {
-    //                 quill2.format('list', currentFormats.list === 'bullet' ? false : 'bullet');
-    //             } else if (format.startsWith('align')) {
-    //                 if (format === 'align-left') {
-    //                     quill2.format('align', false);
-    //                     setAlignment2('left');
-    //                 } else {
-    //                     quill2.format('align', format.split('-')[1]);
-    //                     setAlignment2(format.split('-')[1]);
-    //                 }
-    //             } else {
-    //                 const isActive = currentFormats[format];
-    //                 quill2.format(format, !isActive);
-    //             }
-    //         }
-    //     }
-    // };
-
-    // useEffect(() => {
-    //     if (quillRef2.current) {
-    //         setQuill2(quillRef2.current.getEditor());
-    //     }
-    // }, []);
-
-    // const handleKeyDown2 = () => {
-    //     if (quill2) {
-    //         const range = quill2.getSelection();
-    //         if (range) {
-    //             const currentFormats = quill2.getFormat(range);
-    //             if (currentFormats.bold) {
-    //                 quill2.format('bold', false);
-    //             }
-    //             if (currentFormats.italic) {
-    //                 quill2.format('italic', false);
-    //             }
-    //             if (currentFormats.underline) {
-    //                 quill2.format('underline', false);
-    //             }
-    //         }
-    //     }
-    // };
-
     return (
-        <div className="pb-4 h-auto">
+        <div className="pb-4 h-auto ">
+            
             {questionsList.map((question, index) => (
                 <div key={index} className="rounded-md border border-solid border-[#EAECF0] mt-4 h-auto bg-[#FFFFFF]">
                     <Collapsible
@@ -413,15 +313,7 @@ function Questions({ questionsList, setQuestionsList }: QuestionsProps) {
                                         placeholder="Question"
                                         className="text-[#1D2939] focus:outline-none rounded-b-[12px] custom-quill placeholder:not-italic min-h-[10px] max-h-[350px] overflow-y-auto border-none font-normal break-all"
                                         />
-                                        {/* <ReactQuill
-                                            ref={quillRef1}
-                                            value={question.question}
-                                            onChange={(value) => handleInputChange(index, value)}
-                                            onKeyDown={handleKeyDown1}
-                                            modules={{ toolbar: false }}
-                                            placeholder="Description"
-                                            className="text-[#1D2939] focus:outline-none rounded-b-[12px] custom-quill placeholder:not-italic min-h-[10px] max-h-[150px] overflow-y-auto border-none font-normal break-all"
-                                        /> */}
+                                     
                                     </div>
                                     <div className="h-[66px] bg-[#FFFFFF] rounded-bl-[12px] rounded-br-[12px] flex justify-center items-center">
                                         <div className="flex flex-row w-full justify-between items-center mx-5">
@@ -554,14 +446,7 @@ function Questions({ questionsList, setQuestionsList }: QuestionsProps) {
                                     placeholder="Explanation"
                                     className="text-[#1D2939] focus:outline-none rounded-b-[12px] custom-quill placeholder:not-italic min-h-[10px] max-h-[350px] overflow-y-auto border-none font-normal break-all"
                                     />
-                                    {/* <ReactQuill
-                                        ref={quillRef2}
-                                        value={question.explanation}
-                                        onChange={(value) => handleExplanationChange(index, value)} // Use `value` directly
-                                        onKeyDown={handleKeyDown2}
-                                        modules={{ toolbar: false }}
-                                        placeholder="Description"
-                                    /> */}
+                              
 
                                 </div>
 
@@ -635,5 +520,5 @@ function Questions({ questionsList, setQuestionsList }: QuestionsProps) {
     );
 }
 
-export default Questions;
+export default TestQuestions;
 

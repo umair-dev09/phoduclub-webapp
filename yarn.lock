@@ -12927,6 +12927,32 @@ quill-delta@^5.1.0:
     lodash.clonedeep "^4.5.0"
     lodash.isequal "^4.5.0"
 
+quill-image-resize-module-react@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.npmjs.org/quill-image-resize-module-react/-/quill-image-resize-module-react-3.0.0.tgz"
+  integrity sha512-3jVChLoXh+fwEELx3OswOEEuF+1KU3r/B9RAqZ//s+d+UMduVZzUepU1g/XoxjKoBJvWD2lJwBIFBRUNb8ebCw==
+  dependencies:
+    lodash "^4.17.4"
+    quill "^1.2.2"
+    raw-loader "^0.5.1"
+
+quill-resize-image@^1.0.5:
+  version "1.0.5"
+  resolved "https://registry.npmjs.org/quill-resize-image/-/quill-resize-image-1.0.5.tgz"
+  integrity sha512-s6yinBoRXy9jsVXdK9J8WMfv4DUO6yE0uzzBWTjOu4JwcSqzlsgYivB5KCWoPAOrdxmV1mYpvvALCWa36r5Mnw==
+
+quill@^1.2.2:
+  version "1.3.7"
+  resolved "https://registry.npmjs.org/quill/-/quill-1.3.7.tgz"
+  integrity sha512-hG/DVzh/TiknWtE6QmWAF/pxoZKYxfe3J/d/+ShUWkDvvkZQVTPeVmUJVu1uE6DDooC4fWTiCLh84ul89oNz5g==
+  dependencies:
+    clone "^2.1.1"
+    deep-equal "^1.0.1"
+    eventemitter3 "^2.0.3"
+    extend "^3.0.2"
+    parchment "^1.1.4"
+    quill-delta "^3.6.2"
+
 quill@^1.3.7:
   version "1.3.7"
   resolved "https://registry.npmjs.org/quill/-/quill-1.3.7.tgz"
@@ -12953,6 +12979,11 @@ range-parser@~1.2.1:
   version "1.2.1"
   resolved "https://registry.npmjs.org/range-parser/-/range-parser-1.2.1.tgz"
   integrity sha512-Hrgsx+orqoygnmhFbKaHE6c296J+HTAQXoxEF6gNupROmmGJRoyzfG3ccAveqCBrwr/2yxQ5BVd/GTl5agOwSg==
+
+raw-loader@^0.5.1:
+  version "0.5.1"
+  resolved "https://registry.npmjs.org/raw-loader/-/raw-loader-0.5.1.tgz"
+  integrity sha512-sf7oGoLuaYAScB4VGr0tzetsYlS8EJH6qnTCfQ/WVEa89hALQ4RQfCKt5xCyPQKPDUbVUAIP1QsxAwfAjlDp7Q==
 
 rc-cascader@~3.28.2:
   version "3.28.2"

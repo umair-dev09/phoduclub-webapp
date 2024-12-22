@@ -74,7 +74,7 @@ const SelectionBar: React.FC<SelectionBarProps> = ({
                         onClick={() => handleSelectAll(false)}
                         className="px-4 py-[0.625rem] text-sm text-[#1D2939] font-medium border border-lightGrey rounded-md"
                     >
-                        Unselect all
+                        Unselect all 
                     </button>
                 </div>
                 <div className="w-0 h-9 border-[0.5px] border-lightGrey rounded-full"></div>

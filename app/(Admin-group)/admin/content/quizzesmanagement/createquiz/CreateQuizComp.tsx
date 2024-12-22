@@ -11,7 +11,7 @@ import { auth, db, storage } from "@/firebase";
 import { addDoc, collection, doc, getDoc, getDocs, updateDoc, setDoc } from "firebase/firestore";
 import 'react-toastify/dist/ReactToastify.css';
 // Define interfaces for question options and structure
-interface Options {
+interface Options { 
     A: string;
     B: string;
     C: string;
