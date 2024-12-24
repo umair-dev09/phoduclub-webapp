@@ -594,18 +594,18 @@ function Course() {
                                 totalItems={data.length}
                                 itemsPerPage={itemsPerPage}
                                 currentPage={currentPage}
-                                setCurrentPage={setCurrentPage}
+                                setCurrentPage={setCurrentPage} 
                             />
                         </div>
                     </div>
                 </div>
             )}
             {/* Dialog components with conditional rendering */}
-            {isScheduledDialogOpen && <ScheduledDialog onClose={closeScheduledDialog} />}
+            {/* {isScheduledDialogOpen && <ScheduledDialog onClose={closeScheduledDialog} />}
             {isDeleteDialogOpen && <Delete onClose={closeDeleteDialog} open={true} />}
             {isEndDialogOpen && <End onClose={closeEnd} />}
-            {isPausedDialogOpen && <Paused onClose={closePaused} />}
-            {isResumeOpen && < Resume onClose={closeResume} open={true} />}
+            {isPausedDialogOpen && <Paused onClose={closePaused} />} */}
+            {/* {isResumeOpen && < Resume onClose={closeResume} open={true} />} */}
             {isViewAnalyticsOpen && < ViewAnalytics onClose={closeViewAnalytics} open={true} />}
         </div>
     );

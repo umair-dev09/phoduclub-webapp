@@ -54,7 +54,7 @@ function CreateQuiz() {
     const [quizName, setQuizName] = useState<string>('');
     const [quizDescription, setQuizDescription] = useState<string>('');
     useEffect(() => {
-        if (status === "saved" && quizId) {
+        if (quizId) {
             fetchQuizData(quizId);
         }
     }, [status, quizId]);
@@ -87,7 +87,6 @@ function CreateQuiz() {
                     setTimeNumber("");  // Default if no match found
                     setTimeText("Minute(s)");    // Default if no match found
                 }
-
                 // Fetch Questions subcollection
                 const questionsCollectionRef = collection(quizDocRef, "Questions");
                 const questionsSnapshot = await getDocs(questionsCollectionRef);
@@ -200,7 +199,7 @@ function CreateQuiz() {
                                 nMarksPerQuestion: nMarksPerQ,
                                 forYear,
                                 forExam,
-                                quizStatus: liveQuizNow ? "live" : "scheduled", // You can change this as needed
+                                status: liveQuizNow ? "live" : "scheduled", 
                                 quizPublishedDate: new Date().toISOString(),
                                 createdBy: userId,
                             };
@@ -271,7 +270,7 @@ function CreateQuiz() {
                                 nMarksPerQuestion: nMarksPerQ,
                                 forYear,
                                 forExam,
-                                quizStatus: liveQuizNow ? "live" : "scheduled", // You can change this as needed
+                                status: liveQuizNow ? "live" : "scheduled", // You can change this as needed
                                 quizPublishedDate: new Date().toISOString(),
                                 createdBy: userId,
                             };

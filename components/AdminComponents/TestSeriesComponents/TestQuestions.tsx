@@ -8,6 +8,8 @@ import 'react-quill/dist/quill.snow.css';
 import ReactQuill from 'react-quill-new'; // Ensure correct import
 import Quill from 'quill'; // Import Quill to use it for types
 import QuillResizeImage from 'quill-resize-image';
+import { collection, doc } from "firebase/firestore";
+import { db } from "@/firebase";
 Quill.register("modules/resize",QuillResizeImage);
 
 // Define interfaces outside the component
@@ -19,6 +21,7 @@ interface Question {
     correctAnswer: string | null;
     explanation: string;
     questionId: string;
+    difficulty: string;
 }
 
 interface Options {
@@ -34,7 +37,7 @@ interface QuestionsProps {
 }
 
 function TestQuestions({ questionsList, setQuestionsList }: QuestionsProps) {
-
+      const [difficultyPopupOpen, setDifficultyPopupOpen] = useState(false);
     // Handler for checkbox change
     const handleCheckboxChange = (index: number) => {
         const newQuestionsList = [...questionsList];
@@ -54,6 +57,7 @@ function TestQuestions({ questionsList, setQuestionsList }: QuestionsProps) {
                 correctAnswer: null,
                 explanation: '',
                 questionId: '',
+                difficulty: 'Easy',
             }
         ]);
     };
@@ -61,19 +65,23 @@ function TestQuestions({ questionsList, setQuestionsList }: QuestionsProps) {
     // Handler for adding the Questions
     const handleAddQuestionduplicate = (duplicateQuestion?: Question) => {
         const newQuestion = duplicateQuestion
-            ? { ...duplicateQuestion } // Duplicate all properties of the question
+            ? {
+                ...duplicateQuestion,
+                questionId: doc(collection(db, 'questions')).id // Generate Firestore-style ID
+              }
             : {
                 question: '',
-                isChecked: false,
+                isChecked: false, 
                 isActive: false,
                 options: { A: '', B: '', C: '', D: '' },
                 correctAnswer: null,
                 explanation: '',
-                questionId: '',
+                difficulty: 'Easy',
+                questionId: doc(collection(db, 'questions')).id,
             };
-
+     
         setQuestionsList([...questionsList, newQuestion]);
-    };
+     };
     // -----------------------------------------------------------------------------------------------------------
     // Handler for deleting question
     const handleDeleteQuestion = (index: number) => {
@@ -107,6 +115,13 @@ function TestQuestions({ questionsList, setQuestionsList }: QuestionsProps) {
     const handleCorrectAnswerSelect = (questionIndex: number, optionKey: keyof Options) => {
         const newQuestionsList = [...questionsList];
         newQuestionsList[questionIndex].correctAnswer = optionKey;
+        setQuestionsList(newQuestionsList);
+        handlePopoverClose(questionIndex);
+    };
+
+    const handleDifficultySelect = (questionIndex: number, value: string) => {
+        const newQuestionsList = [...questionsList];
+        newQuestionsList[questionIndex].difficulty = value;
         setQuestionsList(newQuestionsList);
         handlePopoverClose(questionIndex);
     };
@@ -236,68 +251,179 @@ function TestQuestions({ questionsList, setQuestionsList }: QuestionsProps) {
         }
     };
 
+    const [openPopovers, setOpenPopovers] = React.useState<{ [key: number]: boolean }>({});
+    const [openPopoversA, setOpenPopoversA] = React.useState<{ [key: number]: boolean }>({});
+
+const togglePopover = (index: number) => {
+  setOpenPopovers((prev) => ({
+    ...prev,
+    [index]: !prev[index],
+  }));
+};
+
+const closePopover = (index: number) => {
+  setOpenPopovers((prev) => ({
+    ...prev,
+    [index]: false,
+  }));
+};
+
+const togglePopoverA = (index: number) => {
+    setOpenPopoversA((prev) => ({
+      ...prev,
+      [index]: !prev[index],
+    }));
+  };
+  
+  const closePopoverA = (index: number) => {
+    setOpenPopoversA((prev) => ({
+      ...prev,
+      [index]: false,
+    }));
+  };
+
     return (
-        <div className="pb-4 h-auto ">
-            
-            {questionsList.map((question, index) => (
-                <div key={index} className="rounded-md border border-solid border-[#EAECF0] mt-4 h-auto bg-[#FFFFFF]">
-                    <Collapsible
-                        trigger={
-                            <div className='h-auto bg-[#FFFFFF] flex flex-col p-5 gap-2 rounded-md'>
-                                <div className="h-auto flex flex-row justify-between gap-4 items-start">
-                                    <div className="flex gap-2 ">
-                                        <div className="h-6 min-w-[24px] rounded-[4px] mt-[2px] bg-[#EAECF0] flex justify-center ">
-                                            <span className="text-[#1D2939] font-semibold text-base">{index + 1}</span>
-                                        </div>
-                                        <div className="font-semibold text-base break-all text-[#1D2939] ml-1" dangerouslySetInnerHTML={{ __html: question.question || "Question" }}></div>
-                                    </div>
-                                    <Popover placement="bottom-end">
-                                        <PopoverTrigger>
-                                            <button className="min-w-[20px] min-h-[20px] mt-[2px]">
-                                                <Image
-                                                    src="/icons/three-dots.svg"
-                                                    width={20}
-                                                    height={20}
-                                                    alt="Three-dots"
-                                                />
-                                            </button>
-                                        </PopoverTrigger>
-                                        <PopoverContent className="h-[88px] w-[167px] px-0 border border-solid border-[#EAECF0] bg-[#FFFFFF] rounded-md flex flex-col py-[4px] shadow-lg">
-
-                                            <button
-
-                                                className="flex flex-row h-[40px] w-full px-3 gap-2 hover:bg-[#F2F4F7] items-center"
-                                                onClick={() => handleAddQuestionduplicate(question)}
-                                            >
-                                                <Image
-                                                    src="/icons/duplicate.svg"
-                                                    width={18}
-                                                    height={18}
-                                                    alt="Duplicate"
-                                                />
-                                                <span className="text-[#0C111D] text-sm font-medium">Duplicate</span>
-                                            </button>
-                                            <button
-                                                className="flex flex-row h-[40px] w-full px-3 gap-2 hover:bg-[#F2F4F7] items-center"
-                                                onClick={() => handleDeleteQuestion(index)}
-                                            >
-                                                <Image
-                                                    src="/icons/delete.svg"
-                                                    width={18}
-                                                    height={18}
-                                                    alt="Delete"
-                                                />
-                                                <span className="text-[#DE3024] text-sm font-medium">Delete</span>
-                                            </button>
-
-                                        </PopoverContent>
-                                    </Popover>
-                                </div>
+        <div className=" h-auto ">
+             
+             <div className=" bg-white rounded-xl ">
+                <div className="w-full border-t-2 border-lightGrey">
+                    <div className="flex flex-col w-full">
+                        <div className="flex flex-row items-center bg-[#F2F4F7] border-b">
+                            <div className="w-[5%] pl-4 py-3">
+                                <Checkbox
+                                    size="md"
+                                    color="primary"
+                                // isSelected={isAllSelected}
+                                // isIndeterminate={isIndeterminate}
+                                // onChange={toggleAllRowsSelection}
+                                />
                             </div>
-                        }
-
-                    >
-                        <div className='h-auto bg-[#FFFFFF] flex flex-col pb-5 px-5 gap-2 rounded-br-md rounded-bl-md'>
+                            <div className="w-[65%] py-3">
+                                <p className="text-sm text-[#667085] font-medium leading-6">
+                                    Questions
+                                </p>
+                            </div>
+                            <div className="w-[20%] py-3">
+                                <p className="text-sm text-[#667085] font-medium leading-6">
+                                    Difficulty
+                                </p>
+                            </div>
+                            <div className="w-[10%] pr-4 py-3 text-right">
+                                <p className="text-sm text-[#667085] font-medium leading-6">
+                                    Action
+                                </p>
+                            </div>
+                        </div>
+                        {questionsList.map((question, index) => (
+                        <Collapsible key={index} className="border-b "
+                            trigger={
+                                <div className="flex flex-row items-start w-full  border-lightGrey py-2 ">
+                                    <div className="w-[5%] pl-4 pt-1">
+                                        <div className="flex items-center">
+                                            <Checkbox
+                                                size="md"
+                                                color="primary"
+                                            // isSelected={selectedRows.has(customer.uniqueId)}
+                                            // onChange={() => toggleRowSelection(customer.uniqueId)}
+                                            />
+                                        </div>
+                                    </div>
+                                    <div className="w-[65%] flex ">
+                                    <div className="flex gap-2 pr-4 items-start">
+                                        <div className="h-auto w-auto rounded-[4px] mt-1 bg-[#EAECF0] flex justify-center py-[2px] px-2 ">
+                                            <span className="text-[#1D2939] font-semibold text-[12px] ">{index + 1}</span>
+                                        </div>
+                                        <div className="font-normal text-sm break-all text-[#1D2939] ml-1 mt-1" dangerouslySetInnerHTML={{ __html: question.question || "Question" }}></div>
+                                    </div>
+                                    </div>
+                                    <div className="w-[20%] py-1">
+                                        <Popover placement="bottom" isOpen={!!openPopovers[index]}
+                                         onOpenChange={() => closePopover(index)}>
+                                            <PopoverTrigger>
+                                                <button  className={`flex flex-row justify-between w-[92px] px-2 py-1 rounded-[6px] ${
+                                                                    question.difficulty === 'Easy'
+                                                                    ? 'bg-[#D3F8E0]'
+                                                                    : question.difficulty === 'Medium'
+                                                                    ? 'bg-[#FFFAEB]'
+                                                                    : 'bg-[#FEE4E2]'
+                                                                }`}
+                                                               onClick={() => togglePopover(index)}
+>
+                                                    <p className="text-xs text-[#182230] font-medium leading-5">{question.difficulty}</p>
+                                                    <Image src='/icons/arrow-down-01-round.svg' alt="open" width={18} height={18} />
+                                                </button>
+                                            </PopoverTrigger>
+                                            <PopoverContent className="w-[141px] px-0 py-0 rounded-md border border-lightGrey">
+                                                <div className="flex flex-col w-full ">
+                                                    <button className="w-full px-2 py-[10px] transition-colors duration-150 hover:bg-[#F2F4F7]"
+                                                       onClick={(e) => {
+                                                        e.stopPropagation(); // Prevents Collapsible from expanding
+                                                        closePopover(index);
+                                                        handleDifficultySelect(index, "Easy");
+                                                      }}>
+                                                        <p className="w-[90px] py-1 text-sm text-center text-[#0C111D] font-normal leading-5 rounded-sm bg-[#D3F8E0]">Easy</p>
+                                                    </button>
+                                                    <button className="w-full px-2 py-[10px] transition-colors duration-150 hover:bg-[#F2F4F7]"
+                                                     onClick={(e) => { e.stopPropagation(); closePopover(index); handleDifficultySelect(index, 'Medium')}}>
+                                                        <p className="w-[90px] py-1 text-sm text-center text-[#0C111D] font-normal leading-5 rounded-sm bg-[#FFFAEB]">Medium</p>
+                                                    </button>
+                                                    <button className="w-full px-2 py-[10px] transition-colors duration-150 hover:bg-[#F2F4F7]"
+                                                     onClick={(e) => { e.stopPropagation(); closePopover(index); handleDifficultySelect(index, 'Hard')}}>
+                                                        <p className="w-[90px] py-1 text-sm text-center text-[#0C111D] font-normal leading-5 rounded-sm bg-[#FEE4E2]">Hard</p>
+                                                    </button>
+                                                </div>
+                                            </PopoverContent>
+                                        </Popover>
+                                    </div>
+                                    <div className="w-[10%] pr-4 py-1">
+                                        <div className="flex justify-end w-full">
+                                            <Popover placement="bottom-end"
+                                            isOpen={!!openPopoversA[index]}
+                                            onOpenChange={() => closePopoverA(index)}>
+                                             <PopoverTrigger>
+                                                 <button className="min-w-[20px] min-h-[20px] mt-[2px]"
+                                                  onClick={() => togglePopoverA(index)}>
+                                                     <Image
+                                                         src="/icons/three-dots.svg"
+                                                         width={20}
+                                                         height={20}
+                                                         alt="Three-dots"
+                                                     />
+                                                 </button>
+                                             </PopoverTrigger>
+                                             <PopoverContent className="h-[88px] w-[167px] px-0 border border-solid border-[#EAECF0] bg-[#FFFFFF] rounded-md flex flex-col py-[4px] shadow-lg">
+                                                 <button
+                                                     className="flex flex-row h-[40px] w-full px-3 gap-2 hover:bg-[#F2F4F7] items-center"
+                                                     onClick={(e) => {handleAddQuestionduplicate(question); e.stopPropagation(); closePopoverA(index);}}
+                                                 >
+                                                     <Image
+                                                         src="/icons/duplicate.svg"
+                                                         width={18}
+                                                         height={18}
+                                                         alt="Duplicate"
+                                                     />
+                                                     <span className="text-[#0C111D] text-sm font-medium">Duplicate</span>
+                                                 </button>
+                                                 <button
+                                                     className="flex flex-row h-[40px] w-full px-3 gap-2 hover:bg-[#F2F4F7] items-center"
+                                                     onClick={(e) => {handleDeleteQuestion(index); e.stopPropagation(); closePopoverA(index);}}
+                                                 >
+                                                     <Image
+                                                         src="/icons/delete.svg"
+                                                         width={18}
+                                                         height={18}
+                                                         alt="Delete"
+                                                     />
+                                                     <span className="text-[#DE3024] text-sm font-medium">Delete</span>
+                                                 </button>
+                                             </PopoverContent>
+                                         </Popover>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        >
+                        <div className='h-auto bg-[#FFFFFF] flex flex-col pb-5 px-5 gap-2 mt-1 border-b'>
                             <div className="flex flex-col gap-2">
                                 <span className="font-semibold text-base text-[#1D2939]">Question</span>
                                 {/*  QUILL 1 for QUESTIONS*/}
@@ -395,7 +521,7 @@ function TestQuestions({ questionsList, setQuestionsList }: QuestionsProps) {
                             >
                                 <PopoverTrigger>
                                     <button
-                                        className={`h-[40px] px-3 items-center w-full justify-between flex flex-row rounded-md border border-solid ${isActive(index)
+                                        className={`h-[40px] px-3 z-0 items-center w-full justify-between flex flex-row rounded-md border border-solid ${isActive(index)
                                             ? 'border-[#D6BBFB] shadow-[0px_0px_0px_4px_rgba(158,119,237,0.25),0px_1px_2px_0px_rgba(16,24,40,0.05)]'
                                             : 'border-[#D0D5DD]'
                                             } bg-[#FFFFFF] focus:outline-none`}
@@ -504,18 +630,51 @@ function TestQuestions({ questionsList, setQuestionsList }: QuestionsProps) {
                                 </div>
                             </div>
                         </div>
-                    </Collapsible>
-                </div>
-            ))}
+                        </Collapsible>
+                                ))}
 
-            <div className="flex justify-center items-center mt-4">
+                        {/* <tr className="border-t border-lightGrey">
+                                <td className="pl-4">
+                                    <Checkbox size="sm" />
+                                </td>
+                                <td>
+                                    <div className="flex flex-row items-center py-3 gap-2">
+                                        <div className="w-[18px] h-[18px] text-center text-xs text-[#1D2939] font-medium leading-5 rounded-sm bg-[#EAECF0]">
+                                            1
+                                        </div>
+                                        <p className="flex flex-nowrap text-sm text-[#1D2939] font-normal leading-6">
+                                            What is the result of the bitwise AND operation between 1010 and 1100?
+                                        </p>
+                                    </div>
+                                </td>
+                                <td className="py-3">
+                                    <div className="flex flex-row justify-between w-[92px] px-2 py-1 rounded-[6px] bg-[#D3F8E0]">
+                                        <p className="text-xs text-[#182230] font-medium leading-5">Easy</p>
+                                        <Image src='/icons/arrow-down-01-round.svg' alt="open" width={18} height={18} />
+                                    </div>
+                                </td>
+                                <td className="pr-4 py-3">
+                                    <div className="flex justify-end w-full">
+                                        <Image
+                                            src="/icons/three-dots.svg"
+                                            width={20}
+                                            height={20}
+                                            alt="Three-dots"
+                                        />
+                                    </div>
+                                </td>
+                            </tr> */}
+                    </div>
+                </div>
+            </div >
+            {/* <div className="flex justify-center items-center mt-4">
                 <button
                     className="h-[36px] w-[127px] rounded-[8px] bg-[#FFFFFF] border border-solid border-[#8501FF] flex justify-center items-center"
                     onClick={handleAddQuestion}
                 >
                     <span className="text-[#8501FF] text-sm font-semibold">Add Question</span>
                 </button>
-            </div>
+            </div> */}
         </div>
     );
 }

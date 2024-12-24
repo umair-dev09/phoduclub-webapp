@@ -96,68 +96,39 @@ const Publish = ({ liveQuizNow, setLiveQuizNow, forYear, setForYear, setForExam,
                 <div className='flex flex-row w-full gap-4'>
                     <div className='flex flex-col w-1/2 gap-1'>
                         <span className='font-medium text-[#1D2939] text-sm'>Start Date & Time</span>
-                        {startDate ? (
-                            <>
-
+                        
                                 <div className="flex flex-row justify-between items-center mb-3">
-                                    <p className="text-[#1D2939] text-sm font-medium">  {formatScheduleDate(sectionScheduleDate) || " "}</p>
+                                    <p className="text-[#1D2939] text-sm font-medium">  {formatScheduleDate(startDate) || ""}</p>
                                     <button
                                         className="flex flex-row gap-1 rounded-md border-[2px] border-solid border-[#9012FF] hover:bg-[#F5F0FF] bg-[#FFFFFF] p-2 "
                                         onClick={() => setDatapickerforStart(true)}>
-                                        <span className="text-[#9012FF] font-semibold text-sm">Change Date</span>
+                                        <span className="text-[#9012FF] font-semibold text-sm">{startDate ? 'Change Date' : 'Select Date'}</span>
                                     </button>
                                 </div>
                                 {(datapickerforStart &&
                                     <DatePicker
                                         granularity="minute"
                                         minValue={today(getLocalTimeZone())}
+                                        isDisabled={liveQuizNow}
                                         hideTimeZone
                                         onChange={(date) => {
                                             const dateString = date ? date.toString() : "";
-                                            setSectionScheduleDate(dateString);
+                                            setStartDate(dateString);
                                             setDatapickerforStart(true); // Return to button view after selecting date
                                         }}
 
                                     />
                                 )}
-                            </>
-                        ) : (
-                            <>
-                                <div className="flex flex-row justify-end mb-3">
-                                    <button
-                                        className="flex flex-row gap-1 rounded-md border-[2px] border-solid border-[#9012FF]  bg-[#FFFFFF] p-2 hover:bg-[#F5F0FF] "
-                                        onClick={() => setDatapickerforStart(true)}>
-                                        <span className="text-[#9012FF] font-semibold text-sm">Select Date</span>
-                                    </button>
-                                </div>
-
-                                {datapickerforStart && (
-                                    <DatePicker
-                                        granularity="minute"
-                                        minValue={today(getLocalTimeZone())}
-                                        hideTimeZone
-                                        onChange={(date) => {
-                                            const dateString = date ? date.toString() : "";
-                                            setSectionScheduleDate(dateString);
-
-                                        }}
-                                    />
-                                )}
-                            </>
-                        )}
-
+                        
                     </div>
                     <div className='flex flex-col w-1/2 gap-1'>
                         <span className='font-medium text-[#1D2939] text-sm'>End Date & Time</span>
-                        {endDate ? (
-                            <>
-
-                                <div className="flex flex-row justify-between items-center mb-3">
-                                    <p className="text-[#1D2939] text-sm font-medium">  {formatScheduleDate(sectionScheduleDate) || " "}</p>
+                        <div className="flex flex-row justify-between items-center mb-3">
+                                    <p className="text-[#1D2939] text-sm font-medium">  {formatScheduleDate(endDate) || ""}</p>
                                     <button
                                         className="flex flex-row gap-1 rounded-md border-[2px] border-solid border-[#9012FF] hover:bg-[#F5F0FF] bg-[#FFFFFF] p-2 "
                                         onClick={() => setDatapickerforEnd(true)}>
-                                        <span className="text-[#9012FF] font-semibold text-sm">Change Date</span>
+                                        <span className="text-[#9012FF] font-semibold text-sm">{endDate ? 'Change Date' : 'Select Date'}</span>
                                     </button>
                                 </div>
                                 {(datapickerforEnd &&
@@ -167,38 +138,12 @@ const Publish = ({ liveQuizNow, setLiveQuizNow, forYear, setForYear, setForExam,
                                         hideTimeZone
                                         onChange={(date) => {
                                             const dateString = date ? date.toString() : "";
-                                            setSectionScheduleDate(dateString);
+                                            setEndDate(dateString);
                                             setDatapickerforEnd(true); // Return to button view after selecting date
                                         }}
 
                                     />
                                 )}
-                            </>
-                        ) : (
-                            <>
-                                <div className="flex flex-row justify-end mb-3">
-                                    <button
-                                        className="flex flex-row gap-1 rounded-md border-[2px] border-solid border-[#9012FF]  bg-[#FFFFFF] p-2 hover:bg-[#F5F0FF] "
-                                        onClick={() => setDatapickerforEnd(true)}>
-                                        <span className="text-[#9012FF] font-semibold text-sm">Select Date</span>
-                                    </button>
-                                </div>
-
-                                {datapickerforEnd && (
-                                    <DatePicker
-                                        granularity="minute"
-                                        minValue={today(getLocalTimeZone())}
-                                        hideTimeZone
-                                        onChange={(date) => {
-                                            const dateString = date ? date.toString() : "";
-                                            setSectionScheduleDate(dateString);
-
-                                        }}
-                                    />
-                                )}
-                            </>
-                        )}
-
                     </div>
                 </div>
 

@@ -1,12 +1,51 @@
+import { db } from "@/firebase";
 import { Dialog, DialogBackdrop, DialogPanel } from "@headlessui/react";
+import { doc, updateDoc } from "firebase/firestore";
 import Image from "next/image";
 import React from "react";
+import { toast, ToastContainer } from 'react-toastify';
+
 // Define the props interface
 interface PausedDialogProps {
     onClose: () => void; // Define onClose as a function
+    fromContent: string;
+    contentId: string;
 }
 
-function PausedDDialog({ onClose }: PausedDialogProps) { // Use the interface
+function PausedDDialog({ onClose, fromContent, contentId }: PausedDialogProps) { // Use the interface
+
+    const onPause = async () => {
+    
+        // Determine the Firestore collection based on `fromContent`
+        const collectionPath =
+          fromContent === "testseries"
+            ? "testseries"
+            : fromContent === "quiz"
+            ? "quiz"
+            : fromContent === "course"
+            ? "course"
+            : null;
+    
+        if (!collectionPath) {
+          console.error("Invalid `fromContent` value.");
+          return;
+        }
+    
+        try {
+          // Reference to the Firestore document
+          const docRef = doc(db, collectionPath, contentId);
+
+          // Update Firestore document with startDate and endDate
+          await updateDoc(docRef, {
+            status: 'paused', 
+        });
+          toast.success('Success!');
+          console.log("Schedule updated successfully!");
+          onClose(); // Close the dialog after a successful update
+        } catch (error) {
+          console.error("Error updating Firestore document:", error);
+        }
+      };
     return (
 
         <Dialog open={true} onClose={onClose} className="relative z-50">
@@ -16,7 +55,13 @@ function PausedDDialog({ onClose }: PausedDialogProps) { // Use the interface
                     <div className="flex flex-col gap-2 p-6">
                         <div className="flex flex-row justify-between items-center ">
                             <h3 className=" font-bold task-[#1D2939]">
-                                {/* Pause quiz "Physics"? */}
+                                Pause {fromContent === "testseries"
+                                                                        ? "Testseries"
+                                                                        : fromContent === "quiz"
+                                                                        ? "Quiz"
+                                                                        : fromContent === "course"
+                                                                        ? "Course"
+                                                                        : ""}?
 
                             </h3>
                             <button className="w-[32px] h-[32px]  rounded-full flex items-center justify-center transition-all duration-300 ease-in-out hover:bg-[#F2F4F7] ">
@@ -30,7 +75,13 @@ function PausedDDialog({ onClose }: PausedDialogProps) { // Use the interface
                     <hr />
                     <div className="flex flex-row justify-end mx-6 my-4 gap-4">
                         <button className="py-[0.625rem] px-6 border-[1.5px] border-lightGrey rounded-md font-semibold text-sm hover:bg-[#F2F4F7] " onClick={onClose}>Cancel</button>
-                        <button className="py-[0.625rem] px-6 text-white shadow-inner-button bg-[#BB241A] font-semibold text-sm border border-[#DE3024] rounded-md">Pause Quiz</button>
+                        <button onClick={onPause} className="py-[0.625rem] px-6 text-white shadow-inner-button bg-[#BB241A] font-semibold text-sm border border-[#DE3024] rounded-md">Pause {fromContent === "testseries"
+                                                                        ? "Testseries"
+                                                                        : fromContent === "quiz"
+                                                                        ? "Quiz"
+                                                                        : fromContent === "course"
+                                                                        ? "Course"
+                                                                        : ""}</button>
                     </div>
 
                 </DialogPanel>
