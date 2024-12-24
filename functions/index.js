@@ -21,8 +21,8 @@ exports.courseScheduleFunction = onSchedule("* * * * *", async (event) => {
         logger.info(`Checking courses at IST: ${currentTime}`);
         
         // Query for courses that are upcoming
-        const snapshot = await db.collection('quiz')
-            .where('status', '==', 'upcoming')
+        const snapshot = await db.collection('course')
+            .where('status', '==', 'scheduled')
             .get();
         
         if (!snapshot.empty) {
@@ -32,12 +32,12 @@ exports.courseScheduleFunction = onSchedule("* * * * *", async (event) => {
             snapshot.forEach(doc => {
                 const courseData = doc.data();
                 // Only update if scheduledDate is past current time
-                if (courseData.scheduledDate && courseData.scheduledDate <= currentTime) {
+                if (courseData.startDate && courseData.startDate <= currentTime) {
                     batch.update(doc.ref, { 
                         status: 'live'
                     });
                     updateCount++;
-                    logger.info(`Marking course ${doc.id} as live. scheduledDate: ${courseData.scheduledDate}`);
+                    logger.info(`Marking course ${doc.id} as live. scheduledDate: ${courseData.startDate}`);
                 }
             });
             
