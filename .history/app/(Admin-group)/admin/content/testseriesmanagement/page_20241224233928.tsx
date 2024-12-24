@@ -3,6 +3,8 @@
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import React, { useState, useEffect } from "react";
+import { Calendar } from "@nextui-org/calendar";
+import { today, getLocalTimeZone } from "@internationalized/date";
 import {
     Pagination,
     PaginationContent,
@@ -15,81 +17,92 @@ import {
 import { Popover, PopoverContent, PopoverTrigger } from "@nextui-org/popover";
 import { Pause } from "lucide-react";
 import ScheduledDialog from "@/components/AdminComponents/QuizInfoDailogs/scheduledDailog";
-import DeleteQuiz from "@/components/AdminComponents/QuizInfoDailogs/DeleteQuiz";
-import EndQuiz from "@/components/AdminComponents/QuizInfoDailogs/EndQuiz";
-import PausedQuiz from "@/components/AdminComponents/QuizInfoDailogs/PausedQuiz";
-import MakeLiveNow from "@/components/AdminComponents/QuizInfoDailogs/MakeLiveNow";
-import ResumeQuiz from "@/components/AdminComponents/QuizInfoDailogs/ResumeQuiz";
+import Delete from "@/components/AdminComponents/QuizInfoDailogs/DeleteDailogue";
+import End from "@/components/AdminComponents/QuizInfoDailogs/EndDailogue";
+import Paused from "@/components/AdminComponents/QuizInfoDailogs/PauseDailogue";
+import Resume from "@/components/AdminComponents/QuizInfoDailogs/ResumeDailogue";
 import ViewAnalytics from "@/components/AdminComponents/QuizInfoDailogs/ViewAnalytics";
-import QuizStatus from '@/components/AdminComponents/QuizzesManagement/quizStatus';
+import Status from '@/components/AdminComponents/StatusDisplay';
+import test from "node:test";
+import { collection, getDocs } from "firebase/firestore";
+import { db } from "@/firebase";
+import LoadingData from "@/components/Loading";
 
-// Define types for quiz data
-type Quiz = {
-    questions: number;
+interface Test {
+    testName: string;
+    price: number;
+    discountPrice: string;
+    testId: string;
     date: string; // Can be Date type if desired
-    students: number;
-    status: 'live' | 'paused' | 'finished' | 'scheduled' | 'ended' | 'saved';
+    testImage: string;
+    status: string;
+    publishDate: string;
 }
 
-// Mock fetchQuizzes function with types
-const fetchQuizzes = async (): Promise<Quiz[]> => {
-    const allQuizzes: Quiz[] = [
-        { questions: 10, date: 'Jan 6, 2024', students: 2147, status: 'live' },
-        { questions: 10, date: 'Mar 15, 2024', students: 900, status: 'saved' },
-        { questions: 8, date: 'Jan 8, 2024', students: 1875, status: 'paused' },
-        { questions: 7, date: 'Mar 17, 2024', students: 1250, status: 'saved' },
-        { questions: 12, date: 'Jan 10, 2024', students: 1290, status: 'finished' },
-        { questions: 6, date: 'Jan 12, 2024', students: 950, status: 'ended' },
-        { questions: 15, date: 'Feb 1, 2024', students: 1800, status: 'scheduled' },
-        { questions: 9, date: 'Feb 3, 2024', students: 1600, status: 'live' },
-        { questions: 12, date: 'Mar 22, 2024', students: 1400, status: 'saved' },
-        { questions: 12, date: 'Feb 5, 2024', students: 1950, status: 'paused' },
-        { questions: 9, date: 'Mar 20, 2024', students: 1150, status: 'saved' },
-        { questions: 10, date: 'Feb 8, 2024', students: 2100, status: 'finished' },
-        { questions: 8, date: 'Feb 10, 2024', students: 2200, status: 'ended' },
-        { questions: 6, date: 'Mar 28, 2024', students: 1100, status: 'saved' },
-        { questions: 7, date: 'Feb 12, 2024', students: 1700, status: 'live' },
-        { questions: 10, date: 'Feb 15, 2024', students: 1300, status: 'scheduled' },
-        { questions: 11, date: 'Feb 18, 2024', students: 1450, status: 'finished' },
-        { questions: 10, date: 'Apr 2, 2024', students: 1450, status: 'saved' },
-        { questions: 9, date: 'Feb 20, 2024', students: 1900, status: 'paused' },
-        { questions: 10, date: 'Apr 6, 2024', students: 1250, status: 'saved' },
-        { questions: 12, date: 'Feb 25, 2024', students: 1750, status: 'live' },
-        { questions: 8, date: 'Mar 1, 2024', students: 2000, status: 'ended' },
-        { questions: 7, date: 'Mar 3, 2024', students: 1500, status: 'scheduled' },
-        { questions: 10, date: 'Mar 5, 2024', students: 1850, status: 'finished' },
-        { questions: 11, date: 'Mar 30, 2024', students: 1000, status: 'saved' },
-        { questions: 9, date: 'Mar 8, 2024', students: 1700, status: 'live' },
-        { questions: 8, date: 'Apr 4, 2024', students: 1350, status: 'saved' },
-        { questions: 8, date: 'Mar 10, 2024', students: 1400, status: 'paused' },
-        { questions: 6, date: 'Mar 12, 2024', students: 1200, status: 'ended' },
-        { questions: 8, date: 'Mar 25, 2024', students: 1300, status: 'saved' },
-        { questions: 7, date: 'Apr 10, 2024', students: 1050, status: 'saved' }
-    ];
-    return allQuizzes;
-};
+function formatDate(dateString: string): string {
+    const date = new Date(dateString);
+    return date.toLocaleDateString("en-US", {
+        month: "short",
+        day: "numeric",
+        year: "numeric",
+    });
+}
+
 
 type Option = 'Saved' | 'Live' | 'Scheduled' | 'Pause' | 'Finished' | 'Canceled';
 
+const fetchTests = async (): Promise<Test[]> => {
+    const coursesCollection = collection(db, 'testseries');
+    const coursesSnapshot = await getDocs(coursesCollection);
+
+    const coursesData = await Promise.all(
+        coursesSnapshot.docs.map(async (courseDoc) => {
+            const courseData = courseDoc.data();
+            const courseId = courseDoc.id;
+
+            // Get subcollection counts
+            // const questionsCollection = collection(db, 'course', quizId, 'Questions');
+            // const questionsSnapshot = await getDocs(questionsCollection);
+            // const questionsCount = questionsSnapshot.size;
+
+            // const studentsAttemptedCollection = collection(db, 'quiz', quizId, 'studentsAttempted');
+            // const studentsAttemptedSnapshot = await getDocs(studentsAttemptedCollection);
+            // const studentsCount = studentsAttemptedSnapshot.size;
+
+            return {
+                testName: courseData.testName,
+                testId: courseData.testId,
+                date: formatDate(courseData.publishDate),
+                status: courseData.status,
+                testImage: courseData.testImage,
+                price: courseData.price,
+                discountPrice: courseData.discountPrice,
+            } as Test;
+        })
+    );
+
+    return coursesData;
+};
+
 function TesstseriesInfo() {
-    const [data, setData] = useState<Quiz[]>([]);
-    const [quizzes, setQuizzes] = useState<Quiz[]>([]);
+    const [data, setData] = useState<Test[]>([]);
+    const [tests, setTests] = useState<Test[]>([]);
     const [currentPage, setCurrentPage] = useState(1);
-    const [itemsPerPage] = useState(5);
+    const [itemsPerPage] = useState(10);
     const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState('');
     const router = useRouter();
 
-    // Fetch quizzes when component mounts
+    // Fetch tests when component mounts
     useEffect(() => {
-        const loadQuizzes = async () => {
+        const loadTests = async () => {
             setLoading(true);
-            const quizzes = await fetchQuizzes();
-            setQuizzes(quizzes);
-            setData(quizzes);
+            const tests = await fetchTests();
+            setTests(tests);
+            setData(tests);
             setLoading(false);
         };
-        loadQuizzes();
+        loadTests();
     }, []);
 
     const lastItemIndex = currentPage * itemsPerPage;
@@ -113,32 +126,33 @@ function TesstseriesInfo() {
     const [isEndDialogOpen, setIsEndDialogOpen] = useState(false);
     const [isPausedDialogOpen, setIsPausedDialogOpen] = useState(false);
     const [isMakeLiveNowDialogOpen, setIsMakeLiveNowDialogOpen] = useState(false);
-    const [isResumeQuizOpen, setIsResumeQuizOpen] = useState(false);
+    const [isResumeOpen, setIsResumeOpen] = useState(false);
     const [isViewAnalyticsOpen, setIsViewAnalyticsOpen] = useState(false);
+    const [isSelcetDateOpen, setIsSelectDateOpen] = useState(false);
 
     // Handlers for ScheduledDialog
     const openScheduledDialog = () => setIsScheduledDialogOpen(true);
     const closeScheduledDialog = () => setIsScheduledDialogOpen(false);
 
-    // Handlers for DeleteQuiz dialog
+    // Handlers for Delete dialog
     const openDeleteDialog = () => setIsDeleteDialogOpen(true);
     const closeDeleteDialog = () => setIsDeleteDialogOpen(false);
 
-    // Handlers for EndQuiz dialog
-    const openEndQuiz = () => setIsEndDialogOpen(true);
-    const closeEndQuiz = () => setIsEndDialogOpen(false);
+    // Handlers for End dialog
+    const openEnd = () => setIsEndDialogOpen(true);
+    const closeEnd = () => setIsEndDialogOpen(false);
 
-    // Handlers for  PausedQuiz dialog
-    const openPausedQuiz = () => setIsPausedDialogOpen(true);
-    const closePausedQuiz = () => setIsPausedDialogOpen(false);
+    // Handlers for  Paused dialog
+    const openPaused = () => setIsPausedDialogOpen(true);
+    const closePaused = () => setIsPausedDialogOpen(false);
 
     // Handlers for  MakeLiveNow dialog
-    const openMakeLiveNowQuiz = () => setIsMakeLiveNowDialogOpen(true);
-    const closeMakeLiveNowQuiz = () => setIsMakeLiveNowDialogOpen(false);
+    const openMakeLiveNow = () => setIsMakeLiveNowDialogOpen(true);
+    const closeMakeLiveNow = () => setIsMakeLiveNowDialogOpen(false);
 
-    // Handlers for ResumeQuiz dialog
-    const openResumeQuiz = () => setIsResumeQuizOpen(true);
-    const closeResumeQuiz = () => setIsResumeQuizOpen(false);
+    // Handlers for Resume dialog
+    const openResume = () => setIsResumeOpen(true);
+    const closeResume = () => setIsResumeOpen(false);
 
     // Handlers for ViewAnalytics dialog
     const openViewAnalytics = () => setIsViewAnalyticsOpen(true);
@@ -172,36 +186,71 @@ function TesstseriesInfo() {
     const options: Option[] = ["Saved", "Live", "Scheduled", "Pause", "Finished", "Canceled"];
 
     const selectedCount = Object.values(checkedState).filter(Boolean).length;
+    const [selectedDate, setSelectedDate] = useState<Date | null>(null); // Store selected date as Date object
 
     useEffect(() => {
-        // Start with all quizzes
-        let filteredQuizzes = quizzes;
+        let filteredTests = tests;
 
-        // First, filter by search term if there is one
+        // Filter by search term
         if (searchTerm) {
-            filteredQuizzes = filteredQuizzes.filter(quiz =>
-                "Phodu JEE Mains Test Series 2025".toLowerCase().includes(searchTerm.toLowerCase())
+            filteredTests = filteredTests.filter(test =>
+                test.testName.toLowerCase().includes(searchTerm.toLowerCase())
             );
         }
 
-        // Get list of selected statuses
+        // Filter by selected statuses
         const selectedStatuses = Object.entries(checkedState)
-            .filter(([_, isChecked]) => isChecked)  // Get only checked statuses
-            .map(([status]) => statusMapping[status as Option])  // Convert to actual status names
+            .filter(([_, isChecked]) => isChecked)
+            .map(([status]) => statusMapping[status as Option])
             .flat();
 
-        // If any statuses are selected, filter by those statuses
         if (selectedStatuses.length > 0) {
-            filteredQuizzes = filteredQuizzes.filter(quiz =>
-                selectedStatuses.includes(quiz.status)
+            filteredTests = filteredTests.filter(test =>
+                selectedStatuses.includes(test.status)
             );
         }
 
-        // Update the displayed data
-        setData(filteredQuizzes);
-        // Go back to first page whenever filters change
-        setCurrentPage(1);
-    }, [searchTerm, checkedState, quizzes]);
+        // Filter by selected date
+        if (selectedDate) {
+            const selectedDateString = selectedDate instanceof Date && !isNaN(selectedDate.getTime())
+                ? selectedDate.toISOString().split('T')[0] // Convert to YYYY-MM-DD
+                : null;
+
+            if (selectedDateString) {
+                filteredTests = filteredTests.filter(test => {
+                    const testDate = new Date(test.date); // Convert quiz.date string to Date object
+                    const testDateString = testDate instanceof Date && !isNaN(testDate.getTime())
+                        ? testDate.toISOString().split('T')[0]
+                        : null;
+
+                    return testDateString === selectedDateString; // Compare only the date part (not time)
+                });
+            }
+        }
+
+        // Sort by quizPublishedDate in ascending order (earliest date first)
+        filteredTests = filteredTests.sort((a, b) => {
+            const dateA = new Date(a.date).getTime();
+            const dateB = new Date(b.date).getTime();
+
+            // Handle invalid date values (e.g., when date cannot be parsed)
+            if (isNaN(dateA) || isNaN(dateB)) {
+                console.error("Invalid date value", a.date, b.date);
+                return 0; // If dates are invalid, no sorting will occur
+            }
+
+            return dateA - dateB; // Sort by time in ascending order (earliest first)
+        });
+
+        // Update state with filtered and sorted quizzes
+        setData(filteredTests);
+        setCurrentPage(1); // Reset to first page when filters change
+    }, [searchTerm, checkedState, tests, selectedDate]);
+
+    // Format selected date as 'Nov 9, 2024'
+    const formattedDate = selectedDate
+        ? selectedDate.toLocaleDateString("en-US", { year: 'numeric', month: 'short', day: 'numeric' })
+        : "Select dates";
 
     const statusColors: Record<Option, string> = {
         Saved: '#7400E0',
@@ -240,20 +289,48 @@ function TesstseriesInfo() {
                     </button>
 
                     {/* Select Date Button */}
-                    <button className="h-[44px] w-[143px] rounded-md bg-[#FFFFFF] border border-solid border-[#D0D5DD] flex items-center p-3">
-                        <Image
-                            src="/icons/select-date.svg"
-                            width={20}
-                            height={20}
-                            alt="Select-date Button"
-                        />
-                        <span className="font-medium text-sm text-[#667085] ml-2">Select dates</span>
-                    </button>
+                    <Popover placement="bottom" isOpen={isSelcetDateOpen} onOpenChange={(open) => setIsSelectDateOpen(open)}>
+                        <PopoverTrigger>
+                            <button className="h-[44px] w-[143px]  hover:bg-[#F2F4F7] rounded-md bg-[#FFFFFF] border border-solid border-[#D0D5DD] flex items-center p-3" onClick={() => setIsSelectDateOpen(true)}>
+                                <Image
+                                    src="/icons/select-Date.svg"
+                                    width={20}
+                                    height={20}
+                                    alt="Select-date Button"
+                                />
+                                <span className="font-medium text-sm text-[#667085] ml-2">{formattedDate}</span>
+                            </button>
+                        </PopoverTrigger>
+                        <PopoverContent className="flex flex-col gap-2 p-0 h-auto">
+                            <Calendar
+                                defaultValue={today(getLocalTimeZone())}
+                                showMonthAndYearPickers
+                                onChange={(value) => {
+                                    const date = new Date(value.year, value.month - 1, value.day); // Adjust for zero-based month index
+                                    setSelectedDate(date); // Update state with the new Date object
+                                    setIsSelectDateOpen(false);
+                                }}
+                            />
+
+                            {/* Conditionally render the "Clear" button */}
+                            {selectedDate && (
+                                <button
+                                    className="min-w-[84px] min-h-[30px] rounded-md bg-[#9012FF] text-[14px] font-medium text-white mb-2"
+                                    onClick={() => {
+                                        setSelectedDate(null); // Clear the selected date
+                                        setIsSelectDateOpen(false);
+                                    }}
+                                >
+                                    Clear
+                                </button>
+                            )}
+                        </PopoverContent>
+                    </Popover>
 
                     {/* By Status Button */}
                     <Popover placement="bottom-start">
                         <PopoverTrigger>
-                            <button className="h-[44px] w-[126px] rounded-md bg-[#FFFFFF] outline-none border border-solid border-[#D0D5DD] flex items-center justify-between p-3 cursor-pointer">
+                            <button className="h-[44px]  hover:bg-[#F2F4F7] w-[126px] rounded-md bg-[#FFFFFF] outline-none border border-solid border-[#D0D5DD] flex items-center justify-between p-3 cursor-pointer">
                                 <p className={`flex flex-row font-medium text-sm ${selectedCount > 0 ? 'text-[#182230]' : 'text-[#667085]'}`}>
                                     {selectedCount > 0 ? `${selectedCount} selected` : 'By status'}
                                 </p>
@@ -287,7 +364,7 @@ function TesstseriesInfo() {
                         </PopoverContent>
                     </Popover>
 
-                    {/* Create Quiz Button */}
+                    {/* Create TestSeries Button */}
                     <button
                         className="h-[44px] w-auto px-6 py-2 bg-[#8501FF] rounded-md shadow-inner-button border border-solid border-[#800EE2] flex items-center justify-center"
                         onClick={() => handleTabClick('/admin/content/testseriesmanagement/createtestseries')}
@@ -298,9 +375,7 @@ function TesstseriesInfo() {
             </div>
 
             {loading ? (
-                <div className="flex justify-center items-center h-48">
-                    <span className="text-lg">Loading test series...</span>
-                </div>
+                <LoadingData />
             ) : (
                 <div className="flex flex-1 flex-col">
                     <div className="flex flex-row items-center justify-between w-full">
@@ -321,7 +396,7 @@ function TesstseriesInfo() {
                         )}
                     </div>
                     <div className="h-full">
-                        <div className="border border-[#EAECF0] rounded-xl">
+                        <div className="border border-[#EAECF0] rounded-xl overflow-x-auto">
                             <table className="w-full bg-white rounded-xl">
                                 <thead>
                                     <tr>
@@ -343,19 +418,19 @@ function TesstseriesInfo() {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {currentItems.map((quiz, index) => (
+                                    {currentItems.map((test, index) => (
                                         <tr key={index} className="border-t border-solid border-[#EAECF0]">
-                                            <td onClick={() => handleTabClick('/admin/content/testseriesmanagement/testseriesinfo')}>
+                                            <td onClick={() => handleTabClick(`/admin/content/testseriesmanagement/${test.testName.toLowerCase().replace(/\s+/g, '-')}/?tId=${test.testId}`)}>
                                                 <button className="flex flex-row items-center px-8 py-3 gap-2 text-[#9012FF] underline text-sm font-medium">
-                                                    <Image src='/images/TSM-DP.png' alt="DP" width={40} height={40} />
-                                                    <p className="text-start">Phodu JEE Mains Test Series 2025</p>
+                                                    <Image className="w-10 h-10 rounded-full object-cover" src={test.testImage || '/images/TSM-DP.png'} alt="DP" width={40} height={40} />
+                                                    <p className="text-start whitespace-nowrap">{test.testName}</p>
                                                 </button>
                                             </td>
-                                            <td className="px-8 py-4 text-center text-[#101828] text-sm"><span className="mr-1">&#8377;</span>{quiz.students}</td>
-                                            <td className="px-8 py-4 text-center text-[#101828] text-sm">{quiz.date}</td>
+                                            <td className="px-8 py-4 text-center text-[#101828] text-sm"><span className="mr-1">&#8377;</span>{test.discountPrice}</td>
+                                            <td className="px-8 py-4 text-center text-[#101828] text-sm whitespace-nowrap">{test.date}</td>
                                             <td className="px-8 py-4 text-center text-[#101828] text-sm">
                                                 <span className='flex items-center justify-start ml-[20%] rounded-full'>
-                                                    <QuizStatus status={quiz.status} />
+                                                    <Status status={test.status} />
                                                 </span>
                                             </td>
                                             <td className="text-center px-8 py-4 text-[#101828] text-sm">
@@ -370,9 +445,8 @@ function TesstseriesInfo() {
                                                             />
                                                         </button>
                                                     </PopoverTrigger>
-                                                    <PopoverContent className={`flex flex-col items-start text-sm font-normal py-1 px-0 bg-white border border-lightGrey rounded-md ${quiz.status === 'paused' ? 'w-[11.563rem]' : 'w-[10.438rem]'}`}>
-
-                                                        {(quiz.status === 'saved' || quiz.status === 'scheduled') && (
+                                                    <PopoverContent className={`flex flex-col items-start text-sm font-normal py-1 px-0 bg-white border border-lightGrey rounded-md ${test.status === 'paused' ? 'w-[11.563rem]' : 'w-[10.438rem]'}`}>
+                                                        {(test.status === 'saved' || test.status === 'scheduled') && (
                                                             <Popover placement="left-start">
                                                                 <PopoverTrigger>
                                                                     <div className="flex flex-row justify-between w-full px-4 py-[0.625rem] hover:bg-[#F2F4F7] transition-colors">
@@ -384,112 +458,106 @@ function TesstseriesInfo() {
                                                                     </div>
                                                                 </PopoverTrigger>
                                                                 <PopoverContent className="flex flex-col items-start text-sm font-normal py-1 px-0 bg-white border border-lightGrey rounded-md w-[11.25rem]">
-
                                                                     <button className="w-full px-4 py-[0.625rem] gap-2 text-left hover:bg-[#F2F4F7] transition-colors">Publish Now</button>
                                                                     <button className="w-full px-4 py-[0.625rem] gap-2 text-left hover:bg-[#F2F4F7] transition-colors">Schedule</button>
-
                                                                 </PopoverContent>
                                                             </Popover>
                                                         )}
-
-                                                        {quiz.status === 'paused' && (
+                                                        {test.status === 'paused' && (
                                                             <Popover placement="left-start">
                                                                 <PopoverTrigger>
                                                                     <div className="flex flex-row justify-between w-[11.563rem] px-4 py-[0.625rem] hover:bg-[#F2F4F7] transition-colors">
                                                                         <div className="flex flex-row gap-2">
-                                                                            <Image src='/icons/play-dark.svg' alt="resume quiz" width={20} height={20} />
+                                                                            <Image src='/icons/play-dark.svg' alt="resume" width={20} height={20} />
                                                                             <p>Resume</p>
                                                                         </div>
                                                                         <Image src='/icons/collapse-right-02.svg' alt="schedule popup" width={18} height={18} />
                                                                     </div>
                                                                 </PopoverTrigger>
                                                                 <PopoverContent className="flex flex-col items-start text-sm font-normal py-1 px-0 bg-white border border-lightGrey rounded-md w-[11.25rem]">
-
-                                                                    <button className="w-full px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors" onClick={openScheduledDialog}>Schedule Quiz</button>
-                                                                    <button className="w-full px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors">Make Live Now</button>
-
+                                                                    <button className="w-full px-4 py-[0.625rem] gap-2 text-left hover:bg-[#F2F4F7] transition-colors" onClick={openScheduledDialog}>Schedule</button>
+                                                                    <button className="w-full px-4 py-[0.625rem] gap-2 text-left hover:bg-[#F2F4F7] transition-colors">Make Live Now</button>
                                                                 </PopoverContent>
                                                             </Popover>
                                                         )}
 
                                                         {/* Option 1 */}
                                                         <div>
-                                                            {quiz.status === 'paused' && (
+                                                            {test.status === 'paused' && (
                                                                 <button className="flex flex-row w-[11.563rem] px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors"
                                                                     onClick={() => handleTabClick('/admin/content/quizzesmanagement/createquiz')}>
                                                                     <Image src='/icons/edit-icon.svg' alt="edit" width={18} height={18} />
-                                                                    <p>Edit Quiz</p>
+                                                                    <p>Edit</p>
                                                                 </button>
                                                             )}
-                                                            {quiz.status === 'scheduled' && (
+                                                            {test.status === 'scheduled' && (
                                                                 <button className="flex flex-row w-[10.438rem] px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors"
                                                                     onClick={() => handleTabClick('/admin/content/quizzesmanagement/createquiz')}>
                                                                     <Image src='/icons/edit-icon.svg' alt="edit" width={18} height={18} />
-                                                                    <p>Edit Quiz</p>
+                                                                    <p>Edit</p>
                                                                 </button>
                                                             )}
-                                                            {quiz.status === 'saved' && (
+                                                            {test.status === 'saved' && (
                                                                 <button className="flex flex-row w-[10.438rem] px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors"
                                                                     onClick={() => handleTabClick('/admin/content/quizzesmanagement/createquiz')}>
                                                                     <Image src='/icons/edit-icon.svg' alt="edit" width={18} height={18} />
-                                                                    <p>Edit Quiz</p>
+                                                                    <p>Edit</p>
                                                                 </button>
                                                             )}
-                                                            {quiz.status === 'live' && (
+                                                            {test.status === 'live' && (
                                                                 <button className="flex flex-row w-[10.438rem] px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors"
-                                                                    onClick={openPausedQuiz}>
-                                                                    <Image src='/icons/pause-dark.svg' alt="pause quiz" width={18} height={18} />
-                                                                    <p>Paused Quiz</p>
+                                                                    onClick={openPaused}>
+                                                                    <Image src='/icons/pause-dark.svg' alt="pause" width={18} height={18} />
+                                                                    <p>Pause</p>
                                                                 </button>
                                                             )}
                                                         </div>
-                                                        {/* Option 3: Resume Quiz (only if status is Paused) */}
-                                                        {/* {quiz.status === 'Paused' && (
+                                                        {/* Option 3: Resume test (only if status is Paused) */}
+                                                        {/* {test.status === 'Paused' && (
                                                                 <div className="flex flex-row w-full px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors"
-                                                                    onClick={openResumeQuiz}>
-                                                                    <Image src='/icons/play-dark.svg' alt="resume quiz" width={20} height={20} />
-                                                                    <p>Resume Quiz</p>
+                                                                    onClick={openResume}>
+                                                                    <Image src='/icons/play-dark.svg' alt="resume" width={20} height={20} />
+                                                                    <p>Resume</p>
                                                                 </div>
                                                             )} */}
-                                                        {/* Option 4: Delete Quiz */}
+                                                        {/* Option 4: Delete test */}
                                                         <div>
-                                                            {quiz.status === 'paused' && (
+                                                            {test.status === 'paused' && (
                                                                 <div className="flex flex-row w-[11.563rem] px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors"
                                                                     onClick={openDeleteDialog}>
                                                                     <Image src='/icons/delete.svg' alt="delete" width={18} height={18} />
-                                                                    <p className="text-[#DE3024]">Delete Quiz</p>
+                                                                    <p className="text-[#DE3024]">Delete</p>
                                                                 </div>
                                                             )}
-                                                            {quiz.status === 'scheduled' && (
+                                                            {test.status === 'scheduled' && (
                                                                 <div className="flex flex-row w-[10.438rem] px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors"
                                                                     onClick={openDeleteDialog}>
                                                                     <Image src='/icons/delete.svg' alt="delete" width={18} height={18} />
-                                                                    <p className="text-[#DE3024]">Delete Quiz</p>
+                                                                    <p className="text-[#DE3024]">Delete</p>
                                                                 </div>
                                                             )}
-                                                            {quiz.status === 'finished' && (
+                                                            {test.status === 'finished' && (
                                                                 <div className="flex flex-row w-[10.438rem] px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors"
                                                                     onClick={openDeleteDialog}>
                                                                     <Image src='/icons/delete.svg' alt="delete" width={18} height={18} />
-                                                                    <p className="text-[#DE3024]">Delete Quiz</p>
+                                                                    <p className="text-[#DE3024]">Delete</p>
                                                                 </div>
                                                             )}
-                                                            {quiz.status === 'saved' && (
+                                                            {test.status === 'saved' && (
                                                                 <div className="flex flex-row w-[10.438rem] px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors"
                                                                     onClick={openDeleteDialog}>
                                                                     <Image src='/icons/delete.svg' alt="delete" width={18} height={18} />
-                                                                    <p className="text-[#DE3024]">Delete Quiz</p>
+                                                                    <p className="text-[#DE3024]">Delete</p>
                                                                 </div>
                                                             )}
-                                                            {quiz.status === 'live' && (
+                                                            {test.status === 'live' && (
                                                                 <div className="flex flex-row w-[10.438rem] px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors"
-                                                                    onClick={openEndQuiz}>
-                                                                    <Image src='/icons/license-no.svg' alt="end quiz" width={18} height={18} />
-                                                                    <p className="text-[#DE3024]">End Quiz</p>
+                                                                    onClick={openEnd}>
+                                                                    <Image src='/icons/license-no.svg' alt="end" width={18} height={18} />
+                                                                    <p className="text-[#DE3024]">End</p>
                                                                 </div>
                                                             )}
                                                         </div>
-
                                                     </PopoverContent>
                                                 </Popover>
                                             </td>
@@ -514,12 +582,11 @@ function TesstseriesInfo() {
                 </div>
             )}
             {/* Dialog components with conditional rendering */}
-            {isScheduledDialogOpen && <ScheduledDialog onClose={closeScheduledDialog} />}
-            {isDeleteDialogOpen && <DeleteQuiz onClose={closeDeleteDialog} open={true} />}
-            {isEndDialogOpen && <EndQuiz onClose={closeEndQuiz} />}
-            {isPausedDialogOpen && <PausedQuiz onClose={closePausedQuiz} />}
-            {isMakeLiveNowDialogOpen && < MakeLiveNow onClose={closeMakeLiveNowQuiz} open={true} />}
-            {isResumeQuizOpen && < ResumeQuiz onClose={closeResumeQuiz} open={true} />}
+            {/* {isScheduledDialogOpen && <ScheduledDialog onClose={closeScheduledDialog} />}
+            {isDeleteDialogOpen && <Delete onClose={closeDeleteDialog} open={true} />}
+            {isEndDialogOpen && <End onClose={closeEnd} />}
+            {isPausedDialogOpen && <Paused onClose={closePaused} />}
+            {isResumeOpen && < Resume onClose={closeResume} open={true} />} */}
             {isViewAnalyticsOpen && < ViewAnalytics onClose={closeViewAnalytics} open={true} />}
         </div>
     );

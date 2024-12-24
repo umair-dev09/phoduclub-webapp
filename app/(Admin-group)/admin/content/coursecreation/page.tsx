@@ -107,7 +107,7 @@ function Course() {
     // Filter courses based on search term
     useEffect(() => {
         const filteredCourses = Courses.filter(course =>
-            course.courseName.toLowerCase().includes(searchTerm.toLowerCase()) 
+            course.courseName.toLowerCase().includes(searchTerm.toLowerCase())
         );
         setData(filteredCourses);
         setCurrentPage(1); // Reset to first page on new search
@@ -301,7 +301,7 @@ function Course() {
                         <PopoverTrigger>
                             <button className="h-[44px] w-[143px]  hover:bg-[#F2F4F7] rounded-md bg-[#FFFFFF] border border-solid border-[#D0D5DD] flex items-center p-3" onClick={() => setIsSelectDateOpen(true)}>
                                 <Image
-                                    src="/icons/select-date.svg"
+                                    src="/icons/select-Date.svg"
                                     width={20}
                                     height={20}
                                     alt="Select-date Button"
@@ -594,7 +594,7 @@ function Course() {
                                 totalItems={data.length}
                                 itemsPerPage={itemsPerPage}
                                 currentPage={currentPage}
-                                setCurrentPage={setCurrentPage} 
+                                setCurrentPage={setCurrentPage}
                             />
                         </div>
                     </div>

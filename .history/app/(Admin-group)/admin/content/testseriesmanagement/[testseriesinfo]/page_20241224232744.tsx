@@ -64,15 +64,15 @@ const RatingStars: React.FC<{ rating: string | null }> = ({ rating }) => {
 function TestSeriesInfo() {
 
     const ContentCount = 78;
-    const StudentsattemptedCount = 10;
+    const StudentsattemptedCount = 10; 
     const [activeTab, setActiveTab] = useState('Content');
     const searchParams = useSearchParams();
     const testId = searchParams.get('tId');
-    const [testData, setTestData] = useState<testData | null>(null);
-    const [loading, setLoading] = useState(true); // Track loading state
+        const [testData, setTestData] = useState<testData | null>(null);
+        const [loading, setLoading] = useState(true); // Track loading state
 
     // State to manage each dialog's visibility
-
+    
     const [isScheduledDialogOpen, setIsScheduledDialogOpen] = useState(false);
     const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
     const [isEndDialogOpen, setIsEndDialogOpen] = useState(false);
@@ -117,8 +117,8 @@ function TestSeriesInfo() {
     );
     const rating = 1.5; // The rating value
     const totalStars = 5;
-
-    if (loading) {
+ 
+    if(loading){
         return <LoadingData />
     }
     return (
@@ -135,96 +135,96 @@ function TestSeriesInfo() {
                         </div> */}
                     </div>
                     <div className="flex flex-row gap-2">
-                        {/* FOR SAVED--> */}
-                        {testData?.status === 'saved' && (
-                            <>
-                                <button onClick={() => { setIsScheduledDialogOpen(true) }}
-                                    className="w-auto p-3 gap-2  hover:bg-[#F2F4F7] flex-row flex bg-[#FFFFFF] border border-solid border-[#EAECF0] rounded-[8px] h-[40px] items-center">
-                                    <Image src="/icons/publish-quiz.svg" width={18} height={18} alt="publish-quiz" />
-                                    <span className="text-sm text-[#0C111D] font-normal">Publish</span>
-                                </button>
-                            </>
-                        )}
-                        {testData?.status === 'live' && (
-                            <>
-                                {/* Button for Pause  */}
-                                <button className="w-auto p-3 gap-2 flex-row flex  hover:bg-[#F2F4F7] bg-[#FFFFFF] border border-solid border-[#EAECF0] rounded-[8px] h-[40px] items-center"
-                                    onClick={() => setIsPausedDialogOpen(true)}
-                                >
-                                    <Image src="/icons/pausequiz.svg" width={18} height={18} alt="Paused-icon" />
-                                    <span className="text-sm text-[#0C111D] font-normal">Pause</span>
-                                </button>
-                                {/* Button for End */}
-                                <button className="w-auto p-3 gap-2 flex-row flex hover:bg-[#F2F4F7] bg-[#FFFFFF] border border-solid border-[#EAECF0] rounded-[8px] h-[40px] items-center"
-                                    onClick={() => setIsEndDialogOpen(true)}
-                                >
-                                    <Image src="/icons/endquiz.svg" width={18} height={18} alt="End-icon" />
-                                    <span className="text-sm text-[#DE3024]  font-normal">End</span>
-                                </button>
-                            </>
-                        )}
-
-
-                        {testData?.status === 'paused' && (
-                            <>
-                                {/* Button for Resume  */}
-                                <button
-                                    className="w-auto p-3 gap-2 flex-row flex  hover:bg-[#F2F4F7] rounded-[8px] h-[40px] items-center"
-                                    onClick={() => setIsResumeOpen(true)}
-                                >
-                                    <Image src="/icons/resume.svg" width={18} height={18} alt="Resume -icon" />
-                                    <span className="text-sm text-[#9012FF]  font-medium">Resume</span>
-                                </button>
-                                {/* Button for Scheduled  */}
-                                <button
-                                    className="w-auto p-3 gap-2 flex-row flex hover:bg-[#F2F4F7] bg-[#FFFFFF] border border-solid border-[#EAECF0] rounded-[8px] h-[40px] items-center"
-                                    onClick={() => { setIsScheduledDialogOpen(true) }}                                    >
-                                    <Image src="/icons/select-Date.svg" width={18} height={18} alt="Calendar" />
-                                    <span className="text-sm text-[#0C111D]  font-medium">Schedule</span>
-                                </button>
-                            </>
-                        )}
-
-                        {testData?.status === 'finished' && (
-                            <>
-                                {/* Button for Delete */}
-                                <button
-                                    className="w-auto p-3 gap-2 flex-row flex bg-[#FFFFFF] hover:bg-[#F2F4F7] border border-solid border-[#EAECF0] rounded-[8px] h-[40px] items-center"
-                                //   onClick={() => setDeleteCourseDialog(true)}
-                                >
-                                    <Image src="/icons/delete.svg" width={18} height={18} alt="Delete" />
-                                    <span className="text-sm text-[#DE3024]  font-medium">Delete</span>
-                                </button>
-                            </>
-                        )}
-
-                        {(testData?.status === 'scheduled' || testData?.status === 'saved' || testData?.status === 'paused') && (
-                            <>
-                                <Popover placement="bottom-end">
-                                    <PopoverTrigger>
-                                        <button
-                                            className="w-10 p-[10px] h-[40px] gap-1 flex-row  hover:bg-[#F2F4F7] flex  bg-[#FFFFFF] rounded-md  focus:outline-none
+                                          {/* FOR SAVED--> */}
+                                          {testData?.status === 'saved' && (
+                                              <>
+                                                  <button onClick={() => {setIsScheduledDialogOpen(true)}}
+                                                  className="w-auto p-3 gap-2  hover:bg-[#F2F4F7] flex-row flex bg-[#FFFFFF] border border-solid border-[#EAECF0] rounded-[8px] h-[40px] items-center">
+                                                      <Image src="/icons/publish-quiz.svg" width={18} height={18} alt="publish-quiz" />
+                                                      <span className="text-sm text-[#0C111D] font-normal">Publish</span>
+                                                  </button>
+                                              </>
+                                          )}
+                                          {testData?.status === 'live' && (
+                                              <>
+                                                  {/* Button for Pause  */}
+                                                  <button className="w-auto p-3 gap-2 flex-row flex  hover:bg-[#F2F4F7] bg-[#FFFFFF] border border-solid border-[#EAECF0] rounded-[8px] h-[40px] items-center"
+                                                  onClick={() => setIsPausedDialogOpen(true)}
+                                                  >
+                                                      <Image src="/icons/pausequiz.svg" width={18} height={18} alt="Paused-icon" />
+                                                      <span className="text-sm text-[#0C111D] font-normal">Pause</span>
+                                                  </button>
+                                                  {/* Button for End */}
+                                                  <button className="w-auto p-3 gap-2 flex-row flex hover:bg-[#F2F4F7] bg-[#FFFFFF] border border-solid border-[#EAECF0] rounded-[8px] h-[40px] items-center"
+                                                  onClick={() => setIsEndDialogOpen(true)}
+                                                  >
+                                                      <Image src="/icons/endquiz.svg" width={18} height={18} alt="End-icon" />
+                                                      <span className="text-sm text-[#DE3024]  font-normal">End</span>
+                                                  </button>
+                                              </>
+                                          )}
+              
+              
+                                          {testData?.status === 'paused' && (
+                                              <>
+                                                  {/* Button for Resume  */}
+                                                  <button
+                                                      className="w-auto p-3 gap-2 flex-row flex  hover:bg-[#F2F4F7] rounded-[8px] h-[40px] items-center"
+                                                  onClick={() => setIsResumeOpen(true)}
+                                                  >
+                                                      <Image src="/icons/resume.svg" width={18} height={18} alt="Resume -icon" />
+                                                      <span className="text-sm text-[#9012FF]  font-medium">Resume</span>
+                                                  </button>
+                                                  {/* Button for Scheduled  */}
+                                                  <button
+                                                      className="w-auto p-3 gap-2 flex-row flex hover:bg-[#F2F4F7] bg-[#FFFFFF] border border-solid border-[#EAECF0] rounded-[8px] h-[40px] items-center"
+                                                      onClick={() => {setIsScheduledDialogOpen(true)}}                                    >
+                                                      <Image src="/icons/select-date.svg" width={18} height={18} alt="Calendar" />
+                                                      <span className="text-sm text-[#0C111D]  font-medium">Schedule</span>
+                                                  </button>
+                                              </>
+                                          )}
+              
+                                          {testData?.status === 'finished' && (
+                                              <>
+                                                  {/* Button for Delete */}
+                                                  <button
+                                                      className="w-auto p-3 gap-2 flex-row flex bg-[#FFFFFF] hover:bg-[#F2F4F7] border border-solid border-[#EAECF0] rounded-[8px] h-[40px] items-center"
+                                                //   onClick={() => setDeleteCourseDialog(true)}
+                                                  >
+                                                      <Image src="/icons/delete.svg" width={18} height={18} alt="Delete" />
+                                                      <span className="text-sm text-[#DE3024]  font-medium">Delete</span>
+                                                  </button>
+                                              </>
+                                          )}
+              
+                                          {(testData?.status === 'scheduled' || testData?.status === 'saved' || testData?.status === 'paused') && (
+                                              <>
+                                                  <Popover placement="bottom-end">
+                                                      <PopoverTrigger>
+                                                          <button
+                                                              className="w-10 p-[10px] h-[40px] gap-1 flex-row  hover:bg-[#F2F4F7] flex  bg-[#FFFFFF] rounded-md  focus:outline-none
                                                       border border-solid border-[#EAECF0] shadow-none">
-                                            <Image src="/icons/three-dots.svg" width={18} height={18} alt="three-dots" />
-                                        </button>
-                                    </PopoverTrigger>
-                                    <PopoverContent className="w-[10.438rem] py-1 px-0 bg-white border border-lightGrey rounded-md">
-                                        <button className="flex flex-row items-center justify-start w-full py-[0.625rem] px-4 gap-2 hover:bg-[#F2F4F7]"
-                                            onClick={() => router.push(`/admin/content/testseriesmanagement/createtestseries/?s=${testData.status}&tId=${testId}`)}>
-                                            <Image src="/icons/edit-icon.svg" width={18} height={18} alt="Edit-icon" />
-                                            <p className="text-sm text-[#0C111D] font-normal">Edit</p>
-                                        </button>
-                                        <button className=" flex flex-row items-center justify-start w-full py-[0.625rem] px-4 gap-2 hover:bg-[#F2F4F7]"
-                                        //   onClick={() => setDeleteCourseDialog(true)}
-                                        >
-                                            <Image src='/icons/delete.svg' alt="Delete-icon" width={18} height={18} />
-                                            <p className="text-sm text-[#DE3024] font-normal">Delete</p>
-                                        </button>
-                                    </PopoverContent>
-                                </Popover>
-                            </>
-                        )}
-                    </div>
+                                                              <Image src="/icons/three-dots.svg" width={18} height={18} alt="three-dots" />
+                                                          </button>
+                                                      </PopoverTrigger>
+                                                      <PopoverContent className="w-[10.438rem] py-1 px-0 bg-white border border-lightGrey rounded-md">
+                                                          <button className="flex flex-row items-center justify-start w-full py-[0.625rem] px-4 gap-2 hover:bg-[#F2F4F7]"
+                                                              onClick={() => router.push(`/admin/content/testseriesmanagement/createtestseries/?s=${testData.status}&tId=${testId}`)}>
+                                                              <Image src="/icons/edit-icon.svg" width={18} height={18} alt="Edit-icon" />
+                                                              <p className="text-sm text-[#0C111D] font-normal">Edit</p>
+                                                          </button>
+                                                          <button className=" flex flex-row items-center justify-start w-full py-[0.625rem] px-4 gap-2 hover:bg-[#F2F4F7]"
+                                                            //   onClick={() => setDeleteCourseDialog(true)}
+                                                          >
+                                                              <Image src='/icons/delete.svg' alt="Delete-icon" width={18} height={18} />
+                                                              <p className="text-sm text-[#DE3024] font-normal">Delete</p>
+                                                          </button>
+                                                      </PopoverContent>
+                                                  </Popover>
+                                              </>
+                                          )}
+                                      </div>
                 </div>
             </div>
             {/* <div className="flex flex-row gap-2">
@@ -259,35 +259,35 @@ function TestSeriesInfo() {
                         __html: testData?.testDescription || '',
                     }} />
                     <div className="flex flex-col gap-2">
-                        <div className="flex items-center gap-2 flex-row h-[24px] ">
-                            <RatingStars rating={testData?.rating || ''} />
-                            <div className="text-[#1D2939] text-sm font-bold flex items-center flex-row">
-                                {testData?.rating || 0}
-                                <span className="text-[#1D2939] font-normal text-sm ml-1">
-                                    <span className="flex items-center">
-                                        <span className="inline-block">({testData?.noOfRating + '+'}</span>
-                                        <span className="inline-block">Ratings)</span>
-                                    </span>
+                    <div className="flex items-center gap-2 flex-row h-[24px] ">
+                        <RatingStars rating={testData?.rating || ''} />
+                        <div className="text-[#1D2939] text-sm font-bold flex items-center flex-row">
+                            {testData?.rating || 0}
+                            <span className="text-[#1D2939] font-normal text-sm ml-1">
+                                <span className="flex items-center">
+                                    <span className="inline-block">({testData?.noOfRating + '+'}</span>
+                                    <span className="inline-block">Ratings)</span>
                                 </span>
-                            </div>
+                            </span>
                         </div>
-                        <div className="flex flex-row gap-3 items-center">
-                            <div className="text-[#1D2939] text-2xl font-bold">
-                                ₹{testData?.discountPrice && new Intl.NumberFormat('en-IN').format(parseFloat(testData.discountPrice))}
-                            </div>
-                            <div className="text-[#667085] text-base font-normal line-through">
-                                ₹{testData?.price && new Intl.NumberFormat('en-IN').format(parseFloat(testData.price))}
-                            </div>
-                            {testData?.price && testData?.discountPrice && (
-                                <div className="bg-[#DB6704] w-[76px] h-[25px] flex items-center justify-center rounded-full text-white text-xs font-semibold">
-                                    {`${Math.round(
-                                        ((parseFloat(testData.price) - parseFloat(testData.discountPrice)) /
-                                            parseFloat(testData.price)) *
-                                        100
-                                    )}% off`}
-                                </div>
-                            )}
+                    </div>
+                    <div className="flex flex-row gap-3 items-center">
+                        <div className="text-[#1D2939] text-2xl font-bold">
+                            ₹{testData?.discountPrice && new Intl.NumberFormat('en-IN').format(parseFloat(testData.discountPrice))}
                         </div>
+                        <div className="text-[#667085] text-base font-normal line-through">
+                            ₹{testData?.price && new Intl.NumberFormat('en-IN').format(parseFloat(testData.price))}
+                        </div>
+                        {testData?.price && testData?.discountPrice && (
+                            <div className="bg-[#DB6704] w-[76px] h-[25px] flex items-center justify-center rounded-full text-white text-xs font-semibold">
+                                {`${Math.round(
+                                    ((parseFloat(testData.price) - parseFloat(testData.discountPrice)) /
+                                        parseFloat(testData.price)) *
+                                    100
+                                )}% off`}
+                            </div>
+                        )}
+                    </div>
                     </div>
                 </div>
             </div>
@@ -335,7 +335,7 @@ function TestSeriesInfo() {
                         }
                     >
                         <Content />
-                    </Tab>
+                    </Tab> 
 
                     <Tab
                         key="Students attempted"
