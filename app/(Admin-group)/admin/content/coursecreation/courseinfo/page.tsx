@@ -236,11 +236,11 @@ function CourseInfo() {
             </div>
 
             {/* Dialog components with conditional rendering */}
-            {isScheduledDialogOpen && <ScheduledDialog onClose={() => setIsScheduledDialogOpen(false)} />}
+            {/* {isScheduledDialogOpen && <ScheduledDialog onClose={() => setIsScheduledDialogOpen(false)} />}
             {isDeleteDialogOpen && <DeleteQuiz onClose={() => setIsDeleteDialogOpen(false)} open={isDeleteDialogOpen} />}
             {isEndDialogOpen && <EndQuiz onClose={() => setIsEndDialogOpen(false)} />}
             {isPausedDialogOpen && <PausedQuiz onClose={() => setIsPausedDialogOpen(false)} />}
-            {isResumeOpen && < ResumeQuiz open={isResumeOpen} onClose={() => setIsResumeOpen(false)} />}
+            {isResumeOpen && < ResumeQuiz open={isResumeOpen} onClose={() => setIsResumeOpen(false)} />} */}
 
         </div>
     );

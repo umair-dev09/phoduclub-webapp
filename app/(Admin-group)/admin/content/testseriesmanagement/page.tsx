@@ -574,7 +574,7 @@ function TesstseriesInfo() {
                             <PaginationSection
                                 totalItems={data.length}
                                 itemsPerPage={itemsPerPage}
-                                currentPage={currentPage}
+                                 currentPage={currentPage}
                                 setCurrentPage={setCurrentPage}
                             />
                         </div>
