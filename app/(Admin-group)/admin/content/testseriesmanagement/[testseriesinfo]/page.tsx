@@ -15,6 +15,9 @@ import { doc, getDoc } from "firebase/firestore";
 import { db } from "@/firebase";
 import LoadingData from "@/components/Loading";
 import StatusDisplay from "@/components/AdminComponents/StatusDisplay";
+import EndDialog from "@/components/AdminComponents/QuizInfoDailogs/EndDailogue";
+import PausedDDialog from "@/components/AdminComponents/QuizInfoDailogs/PauseDailogue";
+import ResumeQuiz from "@/components/AdminComponents/QuizInfoDailogs/ResumeDailogue";
 
 type testData = {
     testName: string | null;
@@ -62,7 +65,9 @@ const RatingStars: React.FC<{ rating: string | null }> = ({ rating }) => {
     );
 };
 function TestSeriesInfo() {
-
+    const [startDate, setStartDate] = useState('');
+    const [endDate, setEndDate] = useState('');
+    const [liveCourseNow, setLiveCourseNow] = useState(false);
     const ContentCount = 78;
     const StudentsattemptedCount = 10; 
     const [activeTab, setActiveTab] = useState('Content');
@@ -88,10 +93,10 @@ function TestSeriesInfo() {
                     if (courseSnapshot.exists()) {
                         setTestData(courseSnapshot.data() as testData);
                     } else {
-                        console.error("No course found with the given ID.");
+                        console.error("No testseries found with the given ID.");
                     }
                 } catch (error) {
-                    console.error("Error fetching course data:", error);
+                    console.error("Error fetching testseries data:", error);
                 } finally {
                     setLoading(false);
                 }
@@ -240,10 +245,10 @@ function TestSeriesInfo() {
                 <button
                     onClick={() => setIsScheduledDialogOpen(true)}>
                     <Image src="/icons/edit-icon.svg" width={18} height={18} alt="Edit-icon" />
-                </button>
+                 </button>
             </div> */}
             <div className="flex flex-row mt-4 gap-4">
-                <Image className='w-[19.375rem] h-[12.25rem]' src='/images/Frame.png' alt='course img' width={310} height={196} />
+                <Image className='w-[19.375rem] h-[12.25rem]' src='/images/Frame.png' alt='testseries img' width={310} height={196} />
                 <div className="flex-col flex justify-between py-3">
                     <div className="flex flex-row items-center mt-1 gap-1">
                         <p className="text-[#667085] font-normal text-sm">Created by</p>
@@ -357,11 +362,11 @@ function TestSeriesInfo() {
                 </Tabs>
             </div>
             {/* Dialog components with conditional rendering */}
-            {/* {isScheduledDialogOpen && <ScheduledDialog onClose={() => setIsScheduledDialogOpen(false)} fromContent="testseries" contentId={''} startDate="" endDate="" setEndDate={} setLiveNow={} liveNow={} setStartDate={}/>} */}
-            {isDeleteDialogOpen && <Delete onClose={() => setIsDeleteDialogOpen(false)} open={isDeleteDialogOpen} />}
-            {/* {isEndDialogOpen && <End onClose={() => setIsEndDialogOpen(false)} />}
-            {isPausedDialogOpen && <Paused onClose={() => setIsPausedDialogOpen(false)} />} */}
-            {/* {isResumeOpen && < Resume open={isResumeOpen} onClose={() => setIsResumeOpen(false)} />} */}
+            {/* {isDeleteDialogOpen && <Delete onClose={() => setIsDeleteDialogOpen(false)} open={isDeleteDialogOpen} />} */}
+            {isScheduledDialogOpen && <ScheduledDialog onClose={() => setIsScheduledDialogOpen(false)} fromContent="testseries" contentId={testId || ''} startDate={startDate} endDate={endDate} setEndDate={setEndDate} setLiveNow={setLiveCourseNow} liveNow={liveCourseNow} setStartDate={setStartDate}/>}
+            {isEndDialogOpen && <EndDialog onClose={() => setIsEndDialogOpen(false)} fromContent="testseries" contentId={testId || ''}/>}
+            {isPausedDialogOpen && <PausedDDialog onClose={() => setIsPausedDialogOpen(false)} fromContent="testseries" contentId={testId || ''}/>}
+            {isResumeOpen && < ResumeQuiz open={isResumeOpen} onClose={() => setIsResumeOpen(false)} fromContent="testseries" contentId={testId || ''}/>}
         </div>
     );
 }
