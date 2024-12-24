@@ -36,7 +36,7 @@ function EndDialog({fromContent, contentId, onClose }: EndDialogProps) { // Use 
 
           // Update Firestore document with startDate and endDate
           await updateDoc(docRef, {
-            status: 'paused', 
+            status: 'finished', 
         });
           toast.success('Success!');
           console.log("Schedule updated successfully!");

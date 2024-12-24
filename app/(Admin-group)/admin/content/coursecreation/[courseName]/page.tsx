@@ -77,7 +77,7 @@ const RatingStars: React.FC<{ rating: string | null }> = ({ rating }) => {
 
 
 function Courses() {
-    const [publishDialogOpen, setPublishDialogOpen] = useState(false);
+    const [publishDialogOpen, setPublishDialogOpen] = useState(false); 
     const searchParams = useSearchParams();
     const courseId = searchParams.get('cId');
     const router = useRouter();
@@ -244,7 +244,7 @@ function Courses() {
                                     {/* Button for Delete */}
                                     <button
                                         className="w-auto p-3 gap-2 flex-row flex bg-[#FFFFFF] hover:bg-[#F2F4F7] border border-solid border-[#EAECF0] rounded-[8px] h-[40px] items-center"
-                                    // onClick={() => setIsDeleteDialogOpen(true)}
+                                    onClick={() => setDeleteCourseDialog(true)}
                                     >
                                         <Image src="/icons/delete.svg" width={18} height={18} alt="Delete" />
                                         <span className="text-sm text-[#DE3024]  font-medium">Delete</span>

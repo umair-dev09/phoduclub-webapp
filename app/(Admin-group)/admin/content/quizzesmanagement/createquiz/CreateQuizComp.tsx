@@ -360,7 +360,7 @@ function CreateQuiz() {
                             nMarksPerQuestion: nMarksPerQ,
                             forYear,
                             forExam,
-                            quizStatus: "saved",
+                            status: "saved",
                             quizPublishedDate: new Date().toISOString(),
                             createdBy: userId,
                         };
@@ -431,7 +431,7 @@ function CreateQuiz() {
                             nMarksPerQuestion: nMarksPerQ,
                             forYear,
                             forExam,
-                            quizStatus: "saved",
+                            status: "saved",
                             quizPublishedDate: new Date().toISOString(),
                             createdBy: userId,
                         };

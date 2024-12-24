@@ -16,11 +16,13 @@ import { db } from "@/firebase";
 import LoadingData from "@/components/Loading";
 import DOMPurify from 'dompurify';
 import { Tabs, Tab } from "@nextui-org/react";
+import EndDialog from "@/components/AdminComponents/QuizInfoDailogs/EndDailogue";
+import PausedDDialog from "@/components/AdminComponents/QuizInfoDailogs/PauseDailogue";
 
 type QuizData = {
     quizName: string;
     quizDescription: string;
-    quizStatus: string;
+    status: string;
     startDate: string;
     endDate: string;
     marksPerQuestion: string;
@@ -64,14 +66,16 @@ function Quizinfo() {
     const [quizData, setQuizData] = useState<QuizData | null>(null);
     const [questions, setQuestions] = useState<QuestionData[]>([]);
     const [loading, setLoading] = useState(true);
-
+    const [startDate, setStartDate] = useState('');
+    const [endDate, setEndDate] = useState('');
+    const [liveCourseNow, setLiveCourseNow] = useState(false);
+    const [isResumeOpen, setIsResumeOpen] = useState(false);
     // State to manage each dialog's visibility
     const [isScheduledDialogOpen, setIsScheduledDialogOpen] = useState(false);
     const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
     const [isEndDialogOpen, setIsEndDialogOpen] = useState(false);
     const [isPausedDialogOpen, setIsPausedDialogOpen] = useState(false);
     const [isMakeLiveNowDialogOpen, setIsMakeLiveNowDialogOpen] = useState(false);
-    const [isResumeQuizOpen, setIsResumeQuizOpen] = useState(false);
 
     // Handlers for ScheduledDialog
     const openScheduledDialog = () => setIsScheduledDialogOpen(true);
@@ -94,8 +98,7 @@ function Quizinfo() {
     const closeMakeLiveNowQuiz = () => setIsMakeLiveNowDialogOpen(false);
 
     // Handlers for ResumeQuiz dialog
-    const openResumeQuiz = () => setIsResumeQuizOpen(true);
-    const closeResumeQuiz = () => setIsResumeQuizOpen(false);
+    const openResumeQuiz = () => setIsResumeOpen(true);
 
     useEffect(() => {
         const fetchQuizData = async () => {
@@ -198,9 +201,9 @@ function Quizinfo() {
 
                         {/* <div className="bg-[#F2F4F7] py-2 px-3 gap-1 flex flex-row rounded-[6px] items-center h-6">
                             <span className="w-[6px] h-[6px] bg-[#182230] rounded-full "></span>
-                            <span className="font-medium text-[#182230] text-xs">{quizData?.quizStatus}</span>
+                            <span className="font-medium text-[#182230] text-xs">{quizData?.status}</span>
                         </div> */}
-                        <QuizStatus status={quizData?.quizStatus ?? ''} />
+                        <QuizStatus status={quizData?.status ?? ''} />
                     </div>
                     <div className="flex flex-row gap-1">
                         {/* BUTTON FOR EDIT AND DELETE QUIZ */}
@@ -213,15 +216,15 @@ function Quizinfo() {
                             <span className="text-sm text-[#DE3024] font-normal">Delete Quiz</span>
                         </button> */}
                         {/* Button for Resume Quiz */}
-                        {quizData?.quizStatus === 'saved' && (
+                        {quizData?.status === 'saved' && (
                             <button className="w-auto p-3 gap-2 flex-row flex bg-[#FFFFFF] border border-solid border-[#EAECF0] rounded-[8px] h-[40px] items-center  hover:bg-[#F2F4F7]"
-                                onClick={() => handlePublishQuiz(`/admin/content/quizzesmanagement/createquiz/?s=${quizData?.quizStatus}&qId=${quizData?.quizId}`)}>
+                                onClick={() => handlePublishQuiz(`/admin/content/quizzesmanagement/createquiz/?s=${quizData?.status}&qId=${quizData?.quizId}`)}>
                                 <Image src="/icons/publish-quiz.svg" width={18} height={18} alt="publish-quiz" />
                                 <span className="text-sm text-[#0C111D] font-normal">Publish Quiz</span>
                             </button>
                         )}
 
-                        {quizData?.quizStatus === 'live' && (
+                        {quizData?.status === 'live' && (
                             <div className="flex flex-row gap-[8px]">
                                 <button className="w-auto p-3 gap-2 flex-row flex bg-[#FFFFFF] border border-solid border-[#EAECF0] rounded-[8px] h-[40px] items-center  hover:bg-[#F2F4F7]">
                                     <Image src="/icons/duplicate.svg" width={18} height={18} alt="duplicate" />
@@ -243,7 +246,7 @@ function Quizinfo() {
                             </div>
                         )}
 
-                        {quizData?.quizStatus === 'paused' && (
+                        {quizData?.status === 'paused' && (
                             <div className="flex flex-row gap-[8px]">
 
                                 <button
@@ -263,7 +266,7 @@ function Quizinfo() {
                             </div>
                         )}
 
-                        {quizData?.quizStatus !== 'live' && (
+                        {quizData?.status !== 'live' && (
                             <Popover
                                 placement="bottom-end"
                             >
@@ -278,7 +281,7 @@ function Quizinfo() {
                                 </PopoverTrigger>
                                 <PopoverContent className="flex flex-col px-0 text-sm font-normal bg-white border border-lightGrey rounded-md w-[167px] shadow-md"
                                 >
-                                    {quizData?.quizStatus !== 'finished' && (
+                                    {quizData?.status !== 'finished' && (
                                         <button className=" p-3 gap-2 flex-row flex h-[40px] hover:bg-[#F2F4F7] w-full">
                                             <Image src="/icons/edit-icon.svg" width={18} height={18} alt="Edit-quiz" />
                                             <span className="text-sm text-[#0C111D] font-normal">Edit Quiz</span>
@@ -301,7 +304,7 @@ function Quizinfo() {
 
                     </div>
                 </div>
-                {quizData?.quizStatus === 'scheduled' && (
+                {quizData?.status === 'scheduled' && (
                     <div className="flex flex-row gap-2 mt-2 mb-2">
                         <div className="bg-[#EAECF0] rounded-[8px] p-2 flex flex-row gap-1">
                             <Image
@@ -410,13 +413,11 @@ function Quizinfo() {
             </div>
 
             {/* Dialog components with conditional rendering */}
-            {isScheduledDialogOpen && <ScheduledDialog onClose={closeScheduledDialog} />}
+            {isScheduledDialogOpen && <ScheduledDialog onClose={() => setIsScheduledDialogOpen(false)} fromContent="quiz" contentId={quizId || ''} startDate={startDate} endDate={endDate} setEndDate={setEndDate} setLiveNow={setLiveCourseNow} liveNow={liveCourseNow} setStartDate={setStartDate}/>}
+            {isEndDialogOpen && <EndDialog onClose={() => setIsEndDialogOpen(false)} fromContent="quiz" contentId={quizId || ''}/>}
+            {isPausedDialogOpen && <PausedDDialog onClose={() => setIsPausedDialogOpen(false)} fromContent="quiz" contentId={quizId || ''}/>}
+            {isResumeOpen && < ResumeQuiz open={isResumeOpen} onClose={() => setIsResumeOpen(false)} fromContent="quiz" contentId={quizId || ''}/>}
             {isDeleteDialogOpen && <DeleteQuiz onClose={closeDeleteDialog} open={true} />}
-            {isEndDialogOpen && <EndQuiz onClose={closeEndQuiz} />}
-            {isPausedDialogOpen && <PausedQuiz onClose={closePausedQuiz} />}
-
-            {isResumeQuizOpen && < ResumeQuiz onClose={closeResumeQuiz} open={true} />}
-
         </div>
     );
 }
