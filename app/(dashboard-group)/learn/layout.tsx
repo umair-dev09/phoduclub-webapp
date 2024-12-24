@@ -20,21 +20,21 @@ export default function LearnLayout({ children }: LearnLayoutProps) {
     // Check if current path is specifically for quizzes
     const isQuiz = pathname === '/learn/quiz';
 
-    if (isRootLearnPath) {
-        return (
-            <div className="flex flex-col flex-1">
-                <div
-                    className={`h-auto  border-b border-solid border-[#EAECF0]  ${isQuiz ? 'bg-[#FFFFFF] ' : 'bg-[#F7F8FB]  '
-                        }`}
-                >
-                    <Learned />
-                </div>
-                <div className="flex flex-1 flex-col overflow-x-hidden overflow-y-auto pb-8">
-                    {children}
-                </div>
-            </div>
-        );
-    } else {
+    // if (isRootLearnPath) {
+    //     return (
+    //         <div className="flex flex-col flex-1">
+    //             <div
+    //                 className={`h-auto  border-b border-solid border-[#EAECF0]  ${isQuiz ? 'bg-[#FFFFFF] ' : 'bg-[#F7F8FB]  '
+    //                     }`}
+    //             >
+    //                 <Learned />
+    //             </div>
+    //             <div className="flex flex-1 flex-col overflow-x-hidden overflow-y-auto pb-8">
+    //                 {children}
+    //             </div>
+    //         </div>
+    //     );
+    // } else {
         return <>{children}</>;
-    }
+    // 
 }

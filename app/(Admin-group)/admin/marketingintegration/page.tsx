@@ -669,7 +669,7 @@ function Messenger() {
                             </button>
                             <button
                                 onClick={handleSendNotification}
-                                disabled={!isFormValid}
+                                // disabled={!isFormValid}
                                 className={`py-2 px-6 ${!isFormValid ? 'bg-[#CDA0FC]' : 'bg-[#9012FF]'} text-white rounded-md font-semibold text-sm`}>
                                 Send Notification
                             </button>
