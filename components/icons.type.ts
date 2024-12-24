@@ -57,7 +57,7 @@ export type IconsType =
   | "align-right"
   | "align-middle"
   | "edit-02"
-  | "QuestionMark"
+  | "questionmark"
   | "right-arrow"
   | "full-star"
   | "half-star"
