@@ -194,7 +194,7 @@ export default function TestSubject() {
                                         <div className="tooltip relative inline-block">
                                             <button>
                                                 <Image
-                                                    src="/icons/questionmark.svg"
+                                                    src="/icons/QuestionMark.svg"
                                                     width={16}
                                                     height={16}
                                                     alt="Question-mark"
