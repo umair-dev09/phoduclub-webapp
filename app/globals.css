@@ -170,7 +170,47 @@ div {
   border-color: #9012FF;
 }
 
+/* Add this to your global CSS file */
+.ql-container .ql-editor img {
+  cursor: pointer;
+}
 
+.image-resizer {
+  border: 1px dashed #999;
+  position: absolute;
+}
+
+.image-resizer .resize-handle {
+  background-color: #fff;
+  border: 1px solid #999;
+  height: 8px;
+  width: 8px;
+  position: absolute;
+}
+
+.image-resizer .resize-handle.se {
+  bottom: -5px;
+  right: -5px;
+  cursor: se-resize;
+}
+
+.image-resizer .resize-handle.sw {
+  bottom: -5px;
+  left: -5px;
+  cursor: sw-resize;
+}
+
+.image-resizer .resize-handle.ne {
+  top: -5px;
+  right: -5px;
+  cursor: ne-resize;
+}
+
+.image-resizer .resize-handle.nw {
+  top: -5px;
+  left: -5px;
+  cursor: nw-resize;
+}
 
 
 @layer base {

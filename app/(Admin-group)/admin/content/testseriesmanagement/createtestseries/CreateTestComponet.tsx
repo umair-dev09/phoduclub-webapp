@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from 'next/navigation';
 import Image from "next/image";
 import TestSeriesInfo from "@/components/AdminComponents/TestSeriesComponents/TestSeriesInfo";
@@ -7,8 +7,9 @@ import Review from "@/components/AdminComponents/TestSeriesComponents/Review";
 import Perference from "@/components/AdminComponents/TestSeriesComponents/Perference";
 import { toast, ToastContainer } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
-import { collection, addDoc, updateDoc, doc } from 'firebase/firestore';
+import { collection, addDoc, updateDoc, doc, getDoc } from 'firebase/firestore';
 import { auth, storage, db } from '@/firebase'; // Adjust path if needed
+import LoadingData from "@/components/Loading";
 
 // Define an enum for the steps with updated names
 enum Step {
@@ -34,11 +35,75 @@ const CreateTestSeries = () => {
     const [isCreateSection, setIsCreateSection] = useState(false);
     const searchParams = useSearchParams();
     const testId = searchParams.get('tId');
+    const [startDate, setStartDate] = useState("");
+    const [endDate, setEndDate] = useState("");
+    let [liveQuizNow, setLiveQuizNow] = useState<boolean>(false);
+  const [loading, setLoading] = useState(false);
 
     const router = useRouter();
 
-    const handleNextClick = () => {
-        if (currentStep < Step.Sections) {
+    useEffect(() => {
+            if (testId) {
+                fetchTestData(testId);
+            }
+        }, [testId]);
+
+         const fetchTestData = async (testId: string) => {
+                setLoading(true);
+                try {
+                    const testDocRef = doc(db, "testseries", testId);
+                    const testDocSnap = await getDoc(testDocRef);
+        
+                    if (testDocSnap.exists()) {
+                        const testData = testDocSnap.data();
+                        setName(testData.testName || "");
+                        setDescription(testData.testDescription || "");
+                        setImage(testData.testImage || "");
+                        // setStartDate(testData.startDate || "");
+                        // setEndDate(testData.endDate || "");
+                        setPrice(testData.price || "");
+                        setDiscountPrice(testData.discountPrice || "");
+                        setRating(testData.rating || "");
+                        setNoOfRating(testData.noOfRating || "");
+                        setLoading(false);
+                    } else {
+                        toast.error("Test series not found!");
+                        setLoading(false);
+                    }
+                } catch (error) {
+                    console.error("Error fetching test data:", error);
+                    toast.error("Error loading test data.");
+                }
+            };
+            const currentDate = new Date();
+            const formattedDate = currentDate.toISOString().slice(0, 19); // Converts to the format "YYYY-MM-DDTHH:MM:SS"
+    const handleNextClick = async () => {
+        
+                if (currentStep === Step.Perference) {
+                    if(testId){
+                     try{
+                        const testRef = doc(db, "testseries", testId);
+
+                        // Prepare updated quiz data
+                        const testData = {
+                            startDate: liveQuizNow ? formattedDate : startDate,
+                            endDate,
+                            status: liveQuizNow ? "live" : "scheduled", // You can change this as needed
+                        };
+
+                        // Update the existing quiz data
+                        await updateDoc(testRef, testData);
+                        toast.success('Test Series updated succesfully!');
+                        setTimeout(() => {
+                            router.back();
+                        }, 500);
+                                         }
+                     catch(error){
+                        console.log(error);
+                     }
+                    }
+                }
+             else if (currentStep < Step.Sections) {
             if (testId) {
                 setCurrentStep(currentStep + 1);
             }
@@ -83,12 +148,10 @@ const CreateTestSeries = () => {
                 );
             }
         }
-        else if (currentStep === Step.Perference) {
-            setIsPublished(true); // Set quiz as published
+     
+         else if (currentStep < Step.Perference) {
+            setCurrentStep(currentStep + 1);
         }
-        //  else if (currentStep < Step.Perference) {
-        //     setCurrentStep(currentStep + 1);
-        // }
     };
 
     const handlePreviousClick = () => {
@@ -100,6 +163,12 @@ const CreateTestSeries = () => {
     const isFormValid = () => {
         if (currentStep === Step.TestSeriesInfo) {
             return name.trim() !== '' && description.trim() !== '' && image.trim() !== '' && price.trim() !== '' && discountPrice.trim() !== '' && rating.trim() !== '' && noOfRating.trim() !== '';
+        }
+         else if (currentStep === Step.Perference) {
+                    return  endDate.trim() !== '';
+                }
+        else{
+            return true;
         }
     };
 
@@ -118,9 +187,9 @@ const CreateTestSeries = () => {
             case Step.Sections:
                 return <Sections isCreateSection={isCreateSection} setIsCreateSection={setIsCreateSection} testId={testId || ''} />;
             case Step.Review:
-                return <Review />;
+                return <Review testId={testId || ''} name={name} description={description}  testImage={image}  price={price} discountPrice={discountPrice}  rating={rating} noOfRating={noOfRating} />;
             case Step.Perference:
-                return <Perference />;
+                return <Perference startDate={startDate} endDate={endDate} setEndDate={setEndDate} setLiveQuizNow={setLiveQuizNow} liveQuizNow={liveQuizNow} setStartDate={setStartDate}/>;
             default:
                 return <TestSeriesInfo name={name} setName={setName} description={description} setDescription={setDescription} imageUrl={image} setImageUrl={setImage} price={price} setPrice={setPrice} discountPrice={discountPrice} setDiscountPrice={setDiscountPrice} rating={rating} setRating={setRating} noOfRating={noOfRating} setNoOfRating={setNoOfRating} />;
         }
@@ -136,8 +205,12 @@ const CreateTestSeries = () => {
         }
     };
 
+    if(loading){
+        return <LoadingData />
+    }
+
     return (
-        <div className="flex flex-row flex-1">
+        <div className="flex flex-row flex-1 ">
             <div className="ml-8 w-[17.125rem] my-8 bg-[#FFFFFF] border border-solid border-[#EAECF0] rounded-md overflow-y-auto">
                 <div className="flex flex-row items-center justify-between m-4">
                     <span className="text-[#1D2939] text-base font-semibold">Create Test Series</span>
@@ -165,8 +238,8 @@ const CreateTestSeries = () => {
                     ))}
                 </div>
             </div>
-            <div className="flex flex-col w-full ml-[20px] mr-8 mt-8 ">
-                <div className="h-15 ml-1 w-full border-b border-solid border-[#D0D5DD]">
+            <div className="flex flex-col w-full ml-[20px]  mt-8 ">
+                <div className="h-15 ml-1 w-full border-b border-solid border-[#D0D5DD] pr-8">
                     <div className="flex flex-row justify-between ">
                         <span className="text-lg font-semibold text-[#1D2939] flex items-center">
                             {["Test Series Info", "Sections", "Review", "Perference"][currentStep]}
@@ -191,7 +264,7 @@ const CreateTestSeries = () => {
                             )}
                             <button
                                 className={`h-[44px] w-[135px] rounded-md shadow-inner-button border text-white ${isNextButtonDisabled ? 'bg-[#CDA0FC]' : 'bg-[#8501FF]'}  border-white `}
-                                onClick={currentStep === Step.Perference ? handleBackClick : handleNextClick}
+                                onClick={handleNextClick}
                                 disabled={isNextButtonDisabled}
                             >
                                 <span className="font-semibold text-sm text-[#FFFFFF]">
@@ -201,7 +274,7 @@ const CreateTestSeries = () => {
                         </div>
                     </div>
                 </div>
-                <div className="overflow-y-auto ">
+                <div className="overflow-y-auto pr-8">
                     {renderStepContent()}
                 </div>
             </div>

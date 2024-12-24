@@ -24,14 +24,19 @@ import Resume from "@/components/AdminComponents/QuizInfoDailogs/ResumeDailogue"
 import ViewAnalytics from "@/components/AdminComponents/QuizInfoDailogs/ViewAnalytics";
 import Status from '@/components/AdminComponents/StatusDisplay';
 import test from "node:test";
+import { collection, getDocs } from "firebase/firestore";
+import { db } from "@/firebase";
+import LoadingData from "@/components/Loading";
 
-// Define types for test data
-type Test = {
-    title: string;
-    questions: number;
+interface Test {
+    testName: string;
+    price: number;
+    discountPrice: string;
+    testId: string;
     date: string; // Can be Date type if desired
-    students: number;
-    status: 'live' | 'paused' | 'finished' | 'scheduled' | 'ended' | 'saved';
+    testImage: string;
+    status: string;
+    publishDate: string;
 }
 
 function formatDate(dateString: string): string {
@@ -43,22 +48,41 @@ function formatDate(dateString: string): string {
     });
 }
 
-// Mock fetchTests function with types
-const fetchTests = async (): Promise<Test[]> => {
-    const allTests: Test[] = [
-        { title: 'Phodu JEE Mains Test Series 2025', questions: 10, date: 'Jan 6, 2024', students: 2147, status: 'live' },
-        { title: 'Advanced Physics Practice Test', questions: 10, date: 'Mar 15, 2024', students: 900, status: 'saved' },
-        { title: 'Ultimate Physics Test Series', questions: 8, date: 'Jan 8, 2024', students: 1875, status: 'paused' },
-        { title: 'Math Genius Practice Exam', questions: 7, date: 'Mar 17, 2024', students: 1250, status: 'saved' },
-        { title: 'Concept Mastery Challenge', questions: 12, date: 'Jan 10, 2024', students: 1290, status: 'finished' },
-        { title: 'Quick Revision Test', questions: 6, date: 'Jan 12, 2024', students: 950, status: 'ended' },
-        { title: 'February Marathon Quiz', questions: 15, date: 'Feb 1, 2024', students: 1800, status: 'scheduled' },
-
-    ];
-    return allTests;
-};
 
 type Option = 'Saved' | 'Live' | 'Scheduled' | 'Pause' | 'Finished' | 'Canceled';
+
+const fetchTests = async (): Promise<Test[]> => {
+    const coursesCollection = collection(db, 'testseries');
+    const coursesSnapshot = await getDocs(coursesCollection);
+
+    const coursesData = await Promise.all(
+        coursesSnapshot.docs.map(async (courseDoc) => {
+            const courseData = courseDoc.data();
+            const courseId = courseDoc.id;
+
+            // Get subcollection counts
+            // const questionsCollection = collection(db, 'course', quizId, 'Questions');
+            // const questionsSnapshot = await getDocs(questionsCollection);
+            // const questionsCount = questionsSnapshot.size;
+
+            // const studentsAttemptedCollection = collection(db, 'quiz', quizId, 'studentsAttempted');
+            // const studentsAttemptedSnapshot = await getDocs(studentsAttemptedCollection);
+            // const studentsCount = studentsAttemptedSnapshot.size;
+
+            return {
+                testName: courseData.testName,
+                testId: courseData.testId,
+                date: formatDate(courseData.publishDate),
+                status: courseData.status,
+                testImage: courseData.testImage,
+                price: courseData.price,
+                discountPrice: courseData.discountPrice,
+            } as Test;
+        })
+    );
+
+    return coursesData;
+};
 
 function TesstseriesInfo() {
     const [data, setData] = useState<Test[]>([]);
@@ -170,7 +194,7 @@ function TesstseriesInfo() {
         // Filter by search term
         if (searchTerm) {
             filteredTests = filteredTests.filter(test =>
-                test.title.toLowerCase().includes(searchTerm.toLowerCase())
+                test.testName.toLowerCase().includes(searchTerm.toLowerCase())
             );
         }
 
@@ -351,9 +375,7 @@ function TesstseriesInfo() {
             </div>
 
             {loading ? (
-                <div className="flex justify-center items-center h-48">
-                    <span className="text-lg">Loading test series...</span>
-                </div>
+                <LoadingData/>
             ) : (
                 <div className="flex flex-1 flex-col">
                     <div className="flex flex-row items-center justify-between w-full">
@@ -400,11 +422,11 @@ function TesstseriesInfo() {
                                         <tr key={index} className="border-t border-solid border-[#EAECF0]">
                                             <td onClick={() => handleTabClick('/admin/content/testseriesmanagement/testseriesinfo')}>
                                                 <button className="flex flex-row items-center px-8 py-3 gap-2 text-[#9012FF] underline text-sm font-medium">
-                                                    <Image src='/images/TSM-DP.png' alt="DP" width={40} height={40} />
-                                                    <p className="text-start whitespace-nowrap">{test.title}</p>
+                                                    <Image className="w-10 h-10 rounded-full object-cover" src={test.testImage || '/images/TSM-DP.png'} alt="DP" width={40} height={40} />
+                                                    <p className="text-start whitespace-nowrap">{test.testName}</p>
                                                 </button>
                                             </td>
-                                            <td className="px-8 py-4 text-center text-[#101828] text-sm"><span className="mr-1">&#8377;</span>{test.students}</td>
+                                            <td className="px-8 py-4 text-center text-[#101828] text-sm"><span className="mr-1">&#8377;</span>{test.discountPrice}</td>
                                             <td className="px-8 py-4 text-center text-[#101828] text-sm whitespace-nowrap">{test.date}</td>
                                             <td className="px-8 py-4 text-center text-[#101828] text-sm">
                                                 <span className='flex items-center justify-start ml-[20%] rounded-full'>
@@ -560,11 +582,11 @@ function TesstseriesInfo() {
                 </div>
             )}
             {/* Dialog components with conditional rendering */}
-            {isScheduledDialogOpen && <ScheduledDialog onClose={closeScheduledDialog} />}
+            {/* {isScheduledDialogOpen && <ScheduledDialog onClose={closeScheduledDialog} />}
             {isDeleteDialogOpen && <Delete onClose={closeDeleteDialog} open={true} />}
             {isEndDialogOpen && <End onClose={closeEnd} />}
             {isPausedDialogOpen && <Paused onClose={closePaused} />}
-            {isResumeOpen && < Resume onClose={closeResume} open={true} />}
+            {isResumeOpen && < Resume onClose={closeResume} open={true} />} */}
             {isViewAnalyticsOpen && < ViewAnalytics onClose={closeViewAnalytics} open={true} />}
         </div>
     );

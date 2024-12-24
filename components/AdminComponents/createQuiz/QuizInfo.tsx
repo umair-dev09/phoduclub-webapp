@@ -6,7 +6,7 @@ import Quill from 'quill'; // Import Quill to use it for types
 import { Popover, PopoverTrigger, PopoverContent } from '@nextui-org/popover';
 
 // Sending Data the to Createquiz
-interface QuizInfoProps {
+interface QuizInfoProps { 
     quizName: string;
     setQuizName: Dispatch<SetStateAction<string>>;
     quizDescription: string;

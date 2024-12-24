@@ -238,7 +238,7 @@ function TestSeriesInfo() {
                         }
                     >
                         <Content />
-                    </Tab>
+                    </Tab> 
 
                     <Tab
                         key="Students attempted"
@@ -260,11 +260,11 @@ function TestSeriesInfo() {
                 </Tabs>
             </div>
             {/* Dialog components with conditional rendering */}
-            {isScheduledDialogOpen && <ScheduledDialog onClose={() => setIsScheduledDialogOpen(false)} />}
+            {/* {isScheduledDialogOpen && <ScheduledDialog onClose={() => setIsScheduledDialogOpen(false)} fromContent="testseries" contentId={''} startDate="" endDate="" setEndDate={} setLiveNow={} liveNow={} setStartDate={}/>} */}
             {isDeleteDialogOpen && <Delete onClose={() => setIsDeleteDialogOpen(false)} open={isDeleteDialogOpen} />}
-            {isEndDialogOpen && <End onClose={() => setIsEndDialogOpen(false)} />}
-            {isPausedDialogOpen && <Paused onClose={() => setIsPausedDialogOpen(false)} />}
-            {isResumeOpen && < Resume open={isResumeOpen} onClose={() => setIsResumeOpen(false)} />}
+            {/* {isEndDialogOpen && <End onClose={() => setIsEndDialogOpen(false)} />}
+            {isPausedDialogOpen && <Paused onClose={() => setIsPausedDialogOpen(false)} />} */}
+            {/* {isResumeOpen && < Resume open={isResumeOpen} onClose={() => setIsResumeOpen(false)} />} */}
         </div>
     );
 }

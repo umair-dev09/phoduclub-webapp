@@ -5,6 +5,8 @@ import { ReactNode, useEffect, useState } from 'react';
 import TabComps from '@/components/AdminComponents/TabComps';
 import Header from '@/components/AdminHeaderComponents/AdminHeader';
 import { usePathname } from 'next/navigation';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 interface DashboardGroupProps {
     children: ReactNode;

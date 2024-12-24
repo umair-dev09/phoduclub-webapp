@@ -17,6 +17,10 @@ import { Popover, PopoverContent, PopoverTrigger } from "@nextui-org/popover";
 import StudentsAttemptedCourseInfo from '@/components/AdminComponents/Courseinfo/StudentsPurchasedCourseInfo';
 import DeleteCourse from "@/components/AdminComponents/Courseinfo/DeleteCourse";
 import { Tabs, Tab } from "@nextui-org/react";
+import ScheduledDialog from "@/components/AdminComponents/QuizInfoDailogs/scheduledDailog";
+import EndDialog from "@/components/AdminComponents/QuizInfoDailogs/EndDailogue";
+import PausedDDialog from "@/components/AdminComponents/QuizInfoDailogs/PauseDailogue";
+import ResumeQuiz from "@/components/AdminComponents/QuizInfoDailogs/ResumeDailogue";
 
 type priceprops = {
     Price: number;
@@ -32,6 +36,7 @@ type CourseData = {
     rating: string | null;
     noOfRating: string | null;
     status: string | null;
+    startDate: string | null;
 };
 
 const StarIcon: React.FC<{ filled: boolean; isHalf: boolean }> = ({ filled, isHalf }) => (
@@ -82,7 +87,11 @@ function Courses() {
     const [endDate, setEndDate] = useState('');
     const [liveCourseNow, setLiveCourseNow] = useState(false);
     const [deleteCourseDialog, setDeleteCourseDialog] = useState(false);
-
+   const [isScheduledDialogOpen, setIsScheduledDialogOpen] = useState(false);
+   const [isResumeOpen, setIsResumeOpen] = useState(false);
+    const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+    const [isEndDialogOpen, setIsEndDialogOpen] = useState(false);
+    const [isPausedDialogOpen, setIsPausedDialogOpen] = useState(false);
     const isFormValid = endDate;
     // Check if dateString is not empty and in the correct format (YYYY-MM-DD)
     const dateValue = startDate && /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}$/.test(startDate)
@@ -183,7 +192,8 @@ function Courses() {
                             {/* FOR SAVED--> */}
                             {courseData?.status === 'saved' && (
                                 <>
-                                    <button className="w-auto p-3 gap-2  hover:bg-[#F2F4F7] flex-row flex bg-[#FFFFFF] border border-solid border-[#EAECF0] rounded-[8px] h-[40px] items-center">
+                                    <button onClick={() => {setIsScheduledDialogOpen(true)}}
+                                    className="w-auto p-3 gap-2  hover:bg-[#F2F4F7] flex-row flex bg-[#FFFFFF] border border-solid border-[#EAECF0] rounded-[8px] h-[40px] items-center">
                                         <Image src="/icons/publish-quiz.svg" width={18} height={18} alt="publish-quiz" />
                                         <span className="text-sm text-[#0C111D] font-normal">Publish</span>
                                     </button>
@@ -193,14 +203,14 @@ function Courses() {
                                 <>
                                     {/* Button for Pause  */}
                                     <button className="w-auto p-3 gap-2 flex-row flex  hover:bg-[#F2F4F7] bg-[#FFFFFF] border border-solid border-[#EAECF0] rounded-[8px] h-[40px] items-center"
-                                    // onClick={() => setIsPausedDialogOpen(true)}
+                                    onClick={() => setIsPausedDialogOpen(true)}
                                     >
                                         <Image src="/icons/pausequiz.svg" width={18} height={18} alt="Paused-icon" />
                                         <span className="text-sm text-[#0C111D] font-normal">Pause</span>
                                     </button>
                                     {/* Button for End */}
                                     <button className="w-auto p-3 gap-2 flex-row flex hover:bg-[#F2F4F7] bg-[#FFFFFF] border border-solid border-[#EAECF0] rounded-[8px] h-[40px] items-center"
-                                    // onClick={() => setIsEndDialogOpen(true)}
+                                    onClick={() => setIsEndDialogOpen(true)}
                                     >
                                         <Image src="/icons/endquiz.svg" width={18} height={18} alt="End-icon" />
                                         <span className="text-sm text-[#DE3024]  font-normal">End</span>
@@ -214,7 +224,7 @@ function Courses() {
                                     {/* Button for Resume  */}
                                     <button
                                         className="w-auto p-3 gap-2 flex-row flex  hover:bg-[#F2F4F7] rounded-[8px] h-[40px] items-center"
-                                    // onClick={() => setIsResumeOpen(true)}
+                                    onClick={() => setIsResumeOpen(true)}
                                     >
                                         <Image src="/icons/resume.svg" width={18} height={18} alt="Resume -icon" />
                                         <span className="text-sm text-[#9012FF]  font-medium">Resume</span>
@@ -222,8 +232,7 @@ function Courses() {
                                     {/* Button for Scheduled  */}
                                     <button
                                         className="w-auto p-3 gap-2 flex-row flex hover:bg-[#F2F4F7] bg-[#FFFFFF] border border-solid border-[#EAECF0] rounded-[8px] h-[40px] items-center"
-                                    // onClick={() => setIsScheduledDialogOpen(true)}
-                                    >
+                                        onClick={() => {setIsScheduledDialogOpen(true)}}                                    >
                                         <Image src="/icons/select-date.svg" width={18} height={18} alt="Calendar" />
                                         <span className="text-sm text-[#0C111D]  font-medium">Schedule</span>
                                     </button>
@@ -280,7 +289,7 @@ function Courses() {
                                     height={20}
                                     alt="information-icon"
                                 />
-                                <span className="text-[#475467] font-normal text-[13px]">Course will be live on 12 Jan, 2024   05:30 PM</span>
+                                <span className="text-[#475467] font-normal text-[13px]">Course will be live on {courseData.startDate}</span>
                             </div>
                             <button
                             >
@@ -379,7 +388,7 @@ function Courses() {
 
 
 
-            <Dialog open={publishDialogOpen} onClose={() => setPublishDialogOpen(false)} className="relative z-50">
+            {/* <Dialog open={publishDialogOpen} onClose={() => setPublishDialogOpen(false)} className="relative z-50">
                 <DialogBackdrop className="fixed inset-0 bg-black/30" />
                 <div className="fixed inset-0 flex items-center justify-center">
                     <DialogPanel className="bg-white rounded-2xl w-auto h-auto">
@@ -441,7 +450,7 @@ function Courses() {
                             <hr />
                             <div className="flex flex-row justify-end mx-6 my-2 items-center gap-4 pb-2">
                                 <button onClick={() => setPublishDialogOpen(false)} className="py-[0.625rem] px-6 border-[1.5px] border-lightGrey rounded-md text-[#1D2939] font-semibold text-sm hover:bg-[#F2F4F7]">Cancel</button>
-                                <button
+                                 <button
                                     onClick={() => handlePublishCourse()}
                                     disabled={!isFormValid}
                                     className={`py-[0.625rem] px-6 text-white shadow-inner-button border border-white ${!isFormValid ? 'bg-[#CDA0FC]' : 'bg-[#9012FF]'} rounded-md font-semibold text-sm`}>
@@ -451,9 +460,13 @@ function Courses() {
                         </div>
                     </DialogPanel>
                 </div>
-            </Dialog>
+            </Dialog> */}
 
             <ToastContainer />
+            {isScheduledDialogOpen && <ScheduledDialog onClose={() => setIsScheduledDialogOpen(false)} fromContent="course" contentId={courseId || ''} startDate={startDate} endDate={endDate} setEndDate={setEndDate} setLiveNow={setLiveCourseNow} liveNow={liveCourseNow} setStartDate={setStartDate}/>}
+            {isEndDialogOpen && <EndDialog onClose={() => setIsEndDialogOpen(false)} fromContent="course" contentId={courseId || ''}/>}
+            {isPausedDialogOpen && <PausedDDialog onClose={() => setIsPausedDialogOpen(false)} fromContent="course" contentId={courseId || ''}/>}
+            {isResumeOpen && < ResumeQuiz open={isResumeOpen} onClose={() => setIsResumeOpen(false)} fromContent="course" contentId={courseId || ''}/>}
             {deleteCourseDialog && <DeleteCourse open={deleteCourseDialog} onClose={() => setDeleteCourseDialog(false)} courseId={courseId || ''} courseName={courseData?.courseName || ''} />}
         </div>
     )
