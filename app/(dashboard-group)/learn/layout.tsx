@@ -13,12 +13,12 @@ export default function LearnLayout({ children }: LearnLayoutProps) {
 
     // Check if the pathname matches root-level paths (quiz, test, or courses)
     const isRootLearnPath =
-        pathname === '/learn/quiz' ||
+        pathname === '/learn/quizzes' ||
         pathname === '/learn/test' ||
         pathname === '/learn/courses';
 
     // Check if current path is specifically for quizzes
-    const isQuiz = pathname === '/learn/quiz';
+    const isQuiz = pathname === '/learn/quizzes';
 
     if (isRootLearnPath) {
         return (
@@ -36,6 +36,5 @@ export default function LearnLayout({ children }: LearnLayoutProps) {
         );
     } else {
         return <>{children}</>;
-
     }
 }

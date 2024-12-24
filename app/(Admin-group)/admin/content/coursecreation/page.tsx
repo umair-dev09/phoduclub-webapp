@@ -107,7 +107,7 @@ function Course() {
     // Filter courses based on search term
     useEffect(() => {
         const filteredCourses = Courses.filter(course =>
-            course.courseName.toLowerCase().includes(searchTerm.toLowerCase())
+            course.courseName.toLowerCase().includes(searchTerm.toLowerCase()) 
         );
         setData(filteredCourses);
         setCurrentPage(1); // Reset to first page on new search

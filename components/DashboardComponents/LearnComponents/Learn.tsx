@@ -17,8 +17,8 @@ function Learned() {
             const currentPath = pathname.split("/")[2];
             if (currentPath === "test") {
                 setActiveTab("test");
-            } else if (currentPath === "quiz") {
-                setActiveTab("quiz");
+            } else if (currentPath === "quizzes") {
+                setActiveTab("quizzes");
             } else {
                 setActiveTab("courses"); // Default to 'courses'
             }
@@ -33,8 +33,8 @@ function Learned() {
             router.push("/learn/courses");
         } else if (selectedTab === "test") {
             router.push("/learn/test");
-        } else if (selectedTab === "quiz") {
-            router.push("/learn/quiz");
+        } else if (selectedTab === "quizzes") {
+            router.push("/learn/quizzes");
         }
     };
 
@@ -85,7 +85,7 @@ function Learned() {
                 ></Tab>
 
                 <Tab
-                    key="quiz"
+                    key="quizzes"
                     title={
                         <div className="flex items-center space-x-2">
                             <span className="font-medium text-base">Quizzes</span>

@@ -75,7 +75,7 @@ const fetchQuizzes = async (): Promise<Quiz[]> => {
                 quizId: quizData.quizId,
                 date: formatDate(quizData.quizPublishedDate),
                 students: studentsCount,
-                status: quizData.quizStatus,
+                status: quizData.status,
             } as Quiz;
         })
     );
@@ -582,11 +582,11 @@ function Quizz() {
                 </div>
             )}
             {/* Dialog components with conditional rendering */}
-            {isScheduledDialogOpen && <ScheduledDialog onClose={closeScheduledDialog} />}
+            {/* {isScheduledDialogOpen && <ScheduledDialog onClose={closeScheduledDialog} />}
             {isDeleteDialogOpen && <DeleteQuiz onClose={closeDeleteDialog} open={true} />}
             {isEndDialogOpen && <EndQuiz onClose={closeEndQuiz} />}
             {isPausedDialogOpen && <PausedQuiz onClose={closePausedQuiz} />}
-            {isResumeQuizOpen && < ResumeQuiz onClose={closeResumeQuiz} open={true} />}
+            {isResumeQuizOpen && < ResumeQuiz onClose={closeResumeQuiz} open={true} />} */}
             {isViewAnalyticsOpen && < ViewAnalytics onClose={closeViewAnalytics} open={true} />}
         </div>
     );
