@@ -2,6 +2,8 @@
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
+import { Calendar } from "@nextui-org/calendar";
+import { today, getLocalTimeZone } from "@internationalized/date";
 import {
     Pagination,
     PaginationContent,
@@ -14,121 +16,54 @@ import {
 import { Popover, PopoverContent, PopoverTrigger } from "@nextui-org/popover";
 import Remove from "@/components/AdminComponents/QuizInfoDailogs/Remove";
 
-// Define types for quiz data
-interface Quiz {
-    enrollmentType: string;
-    progress: string;
-    enrolledDate: string;
-    expiryDate: string;
-    status: 'Live' | 'Paused' | 'Finished' | 'Scheduled' | 'Cancelled' | 'Saved';
+// Define types for students attempted data
+interface StudentsAttempts {
+    title: string;
+    uniqueId: string;
+    dateTime: string;
+    score: string;
+    timeTaken: string;
+    ranking: string;
 }
 
-// Mock fetchQuizzes function with types
-const fetchQuizzes = async (): Promise<Quiz[]> => {
-    const allQuizzes: Quiz[] = [
-        {
-            enrollmentType: "Free",
-            progress: "50%",
-            enrolledDate: "Dec 1, 2023",
-            expiryDate: "Jun 1, 2024",
-            status: "Live"
-        },
-        {
-            enrollmentType: "Paid",
-            progress: "30%",
-            enrolledDate: "Nov 15, 2023",
-            expiryDate: "May 15, 2024",
-            status: "Saved"
-        },
-        {
-            enrollmentType: "Free",
-            progress: "75%",
-            enrolledDate: "Oct 1, 2023",
-            expiryDate: "Apr 1, 2024",
-            status: "Paused"
-        },
-        {
-            enrollmentType: "Paid",
-            progress: "100%",
-            enrolledDate: "Sep 1, 2023",
-            expiryDate: "Mar 1, 2024",
-            status: "Finished"
-        },
-        {
-            enrollmentType: "Free",
-            progress: "10%",
-            enrolledDate: "Jan 1, 2024",
-            expiryDate: "Jul 1, 2024",
-            status: "Scheduled"
-        },
-        {
-            enrollmentType: "Paid",
-            progress: "0%",
-            enrolledDate: "Feb 1, 2024",
-            expiryDate: "Aug 1, 2024",
-            status: "Cancelled"
-        },
-        {
-            enrollmentType: "Free",
-            progress: "85%",
-            enrolledDate: "Jul 15, 2023",
-            expiryDate: "Jan 15, 2024",
-            status: "Live"
-        },
-        {
-            enrollmentType: "Paid",
-            progress: "20%",
-            enrolledDate: "Dec 10, 2023",
-            expiryDate: "Jun 10, 2024",
-            status: "Saved"
-        },
-        {
-            enrollmentType: "Free",
-            progress: "45%",
-            enrolledDate: "Nov 25, 2023",
-            expiryDate: "May 25, 2024",
-            status: "Paused"
-        },
-        {
-            enrollmentType: "Paid",
-            progress: "100%",
-            enrolledDate: "Aug 20, 2023",
-            expiryDate: "Feb 20, 2024",
-            status: "Finished"
-        }
+// Mock fetchStudentAttempts function with types
+const fetchStudentsAttempts = async (): Promise<StudentsAttempts[]> => {
+    const allStudentsAttempts: StudentsAttempts[] = [
+        { title: "Jenny", uniqueId: "jenny#8547", dateTime: "06 Jan, 2024 07:30 PM", score: "78", timeTaken: "1 hr 15 mins", ranking: "15" },
+        { title: "Tom", uniqueId: "tom#7453", dateTime: "08 Jan, 2024 06:00 PM", score: "65", timeTaken: "50 mins", ranking: "45" },
+        { title: "Alice", uniqueId: "alice#1234", dateTime: "10 Jan, 2024 09:15 AM", score: "85", timeTaken: "1 hr", ranking: "8" },
+        { title: "Harry", uniqueId: "harry#5678", dateTime: "12 Jan, 2024 11:45 AM", score: "92", timeTaken: "1 hr 20 mins", ranking: "3" },
+        { title: "Sophia", uniqueId: "sophia#9801", dateTime: "14 Jan, 2024 04:00 PM", score: "54", timeTaken: "35 mins", ranking: "80" },
+        { title: "Mia", uniqueId: "mia#3210", dateTime: "16 Jan, 2024 08:20 PM", score: "47", timeTaken: "40 mins", ranking: "120" },
+        { title: "Oliver", uniqueId: "oliver#1112", dateTime: "18 Jan, 2024 01:10 PM", score: "88", timeTaken: "1 hr 10 mins", ranking: "12" },
+        { title: "Emma", uniqueId: "emma#3345", dateTime: "20 Jan, 2024 03:25 PM", score: "73", timeTaken: "55 mins", ranking: "25" },
+        { title: "Liam", uniqueId: "liam#7689", dateTime: "22 Jan, 2024 07:00 AM", score: "67", timeTaken: "50 mins", ranking: "40" },
+        { title: "Ava", uniqueId: "ava#5567", dateTime: "24 Jan, 2024 02:30 PM", score: "95", timeTaken: "1 hr 25 mins", ranking: "1" }
     ];
-    return allQuizzes;
+    return allStudentsAttempts;
 };
 
 function StudentsAttemptedTestseries() {
-    const [data, setData] = useState<Quiz[]>([]);
-    const [quizzes, setQuizzes] = useState<Quiz[]>([]);
+    const [data, setData] = useState<StudentsAttempts[]>([]);
+    const [StudentsAttempts, setStudentAttempts] = useState<StudentsAttempts[]>([]);
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage] = useState(5);
     const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState('');
     const router = useRouter();
+    const [isSelcetDateOpen, setIsSelectDateOpen] = useState(false);
 
-    // Fetch quizzes when component mounts
+    // Fetch StudentAttempts when component mounts
     useEffect(() => {
-        const loadQuizzes = async () => {
+        const loadStudentsAttempts = async () => {
             setLoading(true);
-            const quizzes = await fetchQuizzes();
-            setQuizzes(quizzes);
-            setData(quizzes);
+            const studentsAttempts = await fetchStudentsAttempts();
+            setStudentAttempts(studentsAttempts);
+            setData(studentsAttempts);
             setLoading(false);
         };
-        loadQuizzes();
+        loadStudentsAttempts();
     }, []);
-
-    // Filter quizzes based on search term
-    // useEffect(() => {
-    //     const filteredQuizzes = quizzes.filter(quiz =>
-    //         quiz.title.toLowerCase().includes(searchTerm.toLowerCase())
-    //     );
-    //     setData(filteredQuizzes);
-    //     setCurrentPage(1); // Reset to first page on new search
-    // }, [searchTerm, quizzes]);
 
     const lastItemIndex = currentPage * itemsPerPage;
     const firstItemIndex = lastItemIndex - itemsPerPage;
@@ -151,6 +86,60 @@ function StudentsAttemptedTestseries() {
     // Check if all fields are filled
     const isAddButtonDisabled = !uniqueId || !startDate || !endDate;
 
+    const [selectedDate, setSelectedDate] = useState<Date | null>(null); // Store selected date as Date object
+
+    useEffect(() => {
+        let filterStudentsAttempts = StudentsAttempts;
+
+        // Filter by search term
+        if (searchTerm) {
+            filterStudentsAttempts = filterStudentsAttempts.filter(student =>
+                student.title.toLowerCase().includes(searchTerm.toLowerCase())
+            );
+        }
+
+        // Filter by selected date
+        if (selectedDate) {
+            const selectedDateString = selectedDate instanceof Date && !isNaN(selectedDate.getTime())
+                ? selectedDate.toISOString().split('T')[0] // Convert to YYYY-MM-DD
+                : null;
+
+            if (selectedDateString) {
+                filterStudentsAttempts = filterStudentsAttempts.filter(student => {
+                    const studentAttemptsDate = new Date(student.dateTime); // Convert StudentAttempts.date string to Date object
+                    const studentAttemptsDateString = studentAttemptsDate instanceof Date && !isNaN(studentAttemptsDate.getTime())
+                        ? studentAttemptsDate.toISOString().split('T')[0]
+                        : null;
+
+                    return studentAttemptsDateString === selectedDateString; // Compare only the date part (not time)
+                });
+            }
+        }
+
+        // Sort by StudentAttemptsPublishedDate in ascending order (earliest date first)
+        filterStudentsAttempts = filterStudentsAttempts.sort((a, b) => {
+            const dateA = new Date(a.dateTime).getTime();
+            const dateB = new Date(b.dateTime).getTime();
+
+            // Handle invalid date values (e.g., when date cannot be parsed)
+            if (isNaN(dateA) || isNaN(dateB)) {
+                console.error("Invalid date value", a.dateTime, b.dateTime);
+                return 0; // If dates are invalid, no sorting will occur
+            }
+
+            return dateA - dateB; // Sort by time in ascending order (earliest first)
+        });
+
+        // Update state with filtered and sorted StudentAttempts
+        setData(filterStudentsAttempts);
+        setCurrentPage(1); // Reset to first page when filters change
+    }, [searchTerm, StudentsAttempts, selectedDate]);
+
+    // Format selected date as 'Nov 9, 2024'
+    const formattedDate = selectedDate
+        ? selectedDate.toLocaleDateString("en-US", { year: 'numeric', month: 'short', day: 'numeric' })
+        : "Select dates";
+
     return (
         <div className="flex flex-col w-full mt-4 gap-4">
             <div className="flex flex-row justify-between items-center">
@@ -158,7 +147,7 @@ function StudentsAttemptedTestseries() {
                 <div className="flex flex-row gap-3">
                     {/* Search Button */}
                     <button className="h-[44px] w-[250px] rounded-md bg-[#FFFFFF] border border-solid border-[#D0D5DD] flex items-center">
-                        <div className="flex flex-row items-center gap-2 pl-2">
+                        <div className="flex flex-row items-center w-full gap-2 pl-2">
                             <Image
                                 src="/icons/search-button.svg"
                                 width={20}
@@ -166,7 +155,7 @@ function StudentsAttemptedTestseries() {
                                 alt="Search Button"
                             />
                             <input
-                                className="font-normal text-[#667085] text-sm placeholder:text-[#A1A1A1] rounded-md px-1 py-1 focus:outline-none focus:ring-0 border-none"
+                                className="font-normal text-[#667085] text-sm placeholder:text-[#A1A1A1] rounded-md w-full px-1 py-1 focus:outline-none focus:ring-0 border-none"
                                 placeholder="Search"
                                 type="text"
                                 value={searchTerm}
@@ -176,15 +165,44 @@ function StudentsAttemptedTestseries() {
                     </button>
 
                     {/* Select Date Button */}
-                    <button className="h-[44px] w-[143px] rounded-md bg-[#FFFFFF] border border-solid border-[#D0D5DD] flex items-center p-3">
-                        <Image
-                            src="/icons/select-date.svg"
-                            width={20}
-                            height={20}
-                            alt="Select-date Button"
-                        />
-                        <span className="font-medium text-sm text-[#667085] ml-2">Select dates</span>
-                    </button>
+                    <Popover placement="bottom" isOpen={isSelcetDateOpen}>
+                        <PopoverTrigger>
+                            <button className="h-[44px] w-[143px] rounded-md bg-[#FFFFFF] border border-solid border-[#D0D5DD] flex items-center p-3" onClick={() => setIsSelectDateOpen(true)}>
+                                <Image
+                                    src="/icons/select-Date.svg"
+                                    width={20}
+                                    height={20}
+                                    alt="Select-date Button"
+                                />
+                                <span className="font-medium text-sm text-[#667085] ml-2">{formattedDate}</span>
+                            </button>
+                        </PopoverTrigger>
+                        <PopoverContent className="flex flex-col gap-2 p-0 h-auto">
+                            <Calendar
+                                defaultValue={today(getLocalTimeZone())}
+                                showMonthAndYearPickers
+                                color="secondary"
+                                onChange={(value) => {
+                                    const date = new Date(value.year, value.month - 1, value.day); // Adjust for zero-based month index
+                                    setSelectedDate(date); // Update state with the new Date object
+                                    setIsSelectDateOpen(false);
+                                }}
+                            />
+
+                            {/* Conditionally render the "Clear" button */}
+                            {selectedDate && (
+                                <button
+                                    className="min-w-[84px] min-h-[30px] rounded-md bg-[#9012FF] text-[14px] font-medium text-white mb-2"
+                                    onClick={() => {
+                                        setSelectedDate(null); // Clear the selected date
+                                        setIsSelectDateOpen(false);
+                                    }}
+                                >
+                                    Clear
+                                </button>
+                            )}
+                        </PopoverContent>
+                    </Popover>
 
 
                 </div>
@@ -195,31 +213,30 @@ function StudentsAttemptedTestseries() {
                     <table className="w-full bg-white rounded-xl">
                         <thead>
                             <tr>
-                                <th className="w-1/4 text-left px-8 py-4 pl-8 rounded-tl-xl flex flex-row ">
+                                <th className="text-left px-8 py-4 pl-8 rounded-tl-xl flex flex-row ">
                                     <span className="text-[#667085] font-medium text-sm">Name</span>
-                                    <Image src="/icons/expandall.svg" width={28} height={18} alt="Expand all icon" />
                                 </th>
-                                <th className=" w-[17%] text-center px-8 py-4 text-[#667085] font-medium text-sm">
+                                <th className="text-center px-8 py-4 text-[#667085] font-medium text-sm">
                                     <div className="flex flex-row justify-center gap-1">
-                                        <p>Enrollment Type</p>
+                                        <p>Date & Time</p>
                                         <Image src='/icons/unfold-more-round.svg' alt="" width={16} height={16} />
                                     </div>
                                 </th>
-                                <th className=" w-[17%] text-center px-8 py-4 text-[#667085] font-medium text-sm">
+                                <th className="text-center px-8 py-4 text-[#667085] font-medium text-sm">
                                     <div className="flex flex-row justify-center gap-1">
-                                        <p>Progress</p>
+                                        <p>Score</p>
                                         <Image src='/icons/unfold-more-round.svg' alt="" width={16} height={16} />
                                     </div>
                                 </th>
-                                <th className=" w-[17%] text-center px-8 py-4 text-[#667085] font-medium text-sm">
+                                <th className="text-center px-8 py-4 text-[#667085] font-medium text-sm">
                                     <div className="flex flex-row justify-center gap-1">
-                                        <p>Enrollment Date</p>
+                                        <p>Time Taken</p>
                                         <Image src='/icons/unfold-more-round.svg' alt="" width={16} height={16} />
                                     </div>
                                 </th>
-                                <th className=" w-[17%] text-center px-8 py-4 rounded-tr-xl text-[#667085] font-medium text-sm">
+                                <th className="text-center px-8 py-4 rounded-tr-xl text-[#667085] font-medium text-sm">
                                     <div className="flex flex-row justify-center gap-1">
-                                        <p>Expiry Date</p>
+                                        <p>Ranking</p>
                                         <Image src='/icons/unfold-more-round.svg' alt="" width={16} height={16} />
                                     </div>
                                 </th>
@@ -227,7 +244,7 @@ function StudentsAttemptedTestseries() {
                             </tr>
                         </thead>
                         <tbody>
-                            {currentItems.map((quiz, index) => (
+                            {currentItems.map((students, index) => (
                                 <tr key={index} className="border-t border-solid border-[#EAECF0]">
                                     <td className="py-2">
                                         <div className="flex flex-row ml-8 gap-2">
@@ -238,15 +255,15 @@ function StudentsAttemptedTestseries() {
                                                 </div>
                                             </div>
                                             <div className="flex items-start justify-start flex-col">
-                                                <div className="font-semibold">Jenny Wilson</div>
-                                                <div className="flex justify-start items-start text-[13px] text-[#667085]">jenny#8547</div>
+                                                <div className="font-semibold">{students.title}</div>
+                                                <div className="flex justify-start items-start text-[13px] text-[#667085]">{students.uniqueId}</div>
                                             </div>
                                         </div>
                                     </td>
-                                    <td className="px-8 py-4 text-center text-[#101828] text-sm">{quiz.enrollmentType}</td>
-                                    <td className="px-8 py-4 text-center text-[#101828] text-sm">{quiz.progress}</td>
-                                    <td className="px-8 py-4 text-center text-[#101828] text-sm">{quiz.enrolledDate}</td>
-                                    <td className="px-8 py-4 text-center text-[#101828] text-sm">{quiz.expiryDate}</td>
+                                    <td className="px-8 py-4 text-center text-[#101828] text-sm">{students.dateTime}</td>
+                                    <td className="px-8 py-4 text-center text-[#101828] text-sm">{students.score}</td>
+                                    <td className="px-8 py-4 text-center text-[#101828] text-sm">{students.timeTaken}</td>
+                                    <td className="px-8 py-4 text-center text-[#101828] text-sm">{students.ranking}</td>
                                     <td className="flex items-center justify-center px-8 py-4 text-[#101828] text-sm">
                                         <Popover placement="bottom-end">
                                             <PopoverTrigger>

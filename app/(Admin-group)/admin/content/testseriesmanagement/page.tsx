@@ -293,7 +293,7 @@ function TesstseriesInfo() {
                         <PopoverTrigger>
                             <button className="h-[44px] w-[143px]  hover:bg-[#F2F4F7] rounded-md bg-[#FFFFFF] border border-solid border-[#D0D5DD] flex items-center p-3" onClick={() => setIsSelectDateOpen(true)}>
                                 <Image
-                                    src="/icons/select-date.svg"
+                                    src="/icons/select-Date.svg"
                                     width={20}
                                     height={20}
                                     alt="Select-date Button"
@@ -375,7 +375,7 @@ function TesstseriesInfo() {
             </div>
 
             {loading ? (
-                <LoadingData/>
+                <LoadingData />
             ) : (
                 <div className="flex flex-1 flex-col">
                     <div className="flex flex-row items-center justify-between w-full">

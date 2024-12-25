@@ -169,7 +169,7 @@ function StudentsAttemptedTestseries() {
                         <PopoverTrigger>
                             <button className="h-[44px] w-[143px] rounded-md bg-[#FFFFFF] border border-solid border-[#D0D5DD] flex items-center p-3" onClick={() => setIsSelectDateOpen(true)}>
                                 <Image
-                                    src="/icons/select-date.svg"
+                                    src="/icons/select-Date.svg"
                                     width={20}
                                     height={20}
                                     alt="Select-date Button"
