@@ -38,10 +38,10 @@ function TabComps() {
     const handleTabClick = (tabName: string, path: string) => {
         setActiveTab(tabName);
         router.push(path);
-        if (tabName === 'dashboard') {
+        if (tabName === '/dashboard') {
             setShowQuizDialog(true); // Open dialog when 'dashboard' tab is clicked
         }
-        else if (tabName === "analytics") {
+        else if (tabName === "/analytics/test-series") {
             setShowQuizDialog(true);
         }
     };

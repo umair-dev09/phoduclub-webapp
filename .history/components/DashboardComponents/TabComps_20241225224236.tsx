@@ -3,7 +3,6 @@ import Image from 'next/image';
 import { useRouter, usePathname } from 'next/navigation';
 import { useState, useEffect } from 'react';
 import { Tooltip } from "@nextui-org/react";
-import { Dialog, DialogBackdrop, DialogPanel } from "@headlessui/react";
 import {
     Modal,
     ModalContent,
@@ -22,7 +21,9 @@ function TabComps() {
     const [activeTab, setActiveTab] = useState('');
 
     const [showQuizDialog, setShowQuizDialog] = useState(false);
-
+    const onStartQuiz = () => {
+        setShowQuizDialog(true);
+    };
 
     useEffect(() => {
         const savedState = localStorage.getItem('isSidebarCollapsed');
@@ -38,12 +39,6 @@ function TabComps() {
     const handleTabClick = (tabName: string, path: string) => {
         setActiveTab(tabName);
         router.push(path);
-        if (tabName === 'dashboard') {
-            setShowQuizDialog(true); // Open dialog when 'dashboard' tab is clicked
-        }
-        else if (tabName === "analytics") {
-            setShowQuizDialog(true);
-        }
     };
     useEffect(() => {
         if (pathname) {
@@ -132,18 +127,24 @@ function TabComps() {
             <hr className="border-t border-gray-700 mb-4" />
             {/* Additional Tabs */}
             {renderButtonWith('Dashboard', '/icons/dashboard-2.svg', '/icons/dashboard.svg', activeTab === 'dashboard', () => {
-                handleTabClick('dashboard', '/dashboard');
+                handleTabClick('dashboard', '/dashboard',); // Handles tab click logic
+                setShowQuizDialog(true);
             })}
             {renderButtonWith('Learn', '/icons/learn-2.svg', '/icons/learn.svg', activeTab === 'learn', () => handleTabClick('learn', '/learn/courses'))}
             {renderButtonWith('Community', '/icons/community-2.svg', '/icons/community.svg', activeTab === 'community', () => handleTabClick('community', '/community'))}
             {renderButtonWith('Analytics', '/icons/Analytics-2.svg', '/icons/Analytics.svg', activeTab === 'analytics', () => handleTabClick('analytics', '/analytics/test-series'))}
             {renderButtonWith('Settings', '/icons/settings-2.svg', '/icons/settings.svg', activeTab === 'settings', () => handleTabClick('settings', '/settings/profile'))}
 
-            <Dialog open={showQuizDialog} onClose={() => setShowQuizDialog(false)} className="relative z-50">
+            {/* <Dialog open={showQuizDialog}  isDismissable={false} className="relative z-50">
                 <DialogBackdrop className="fixed inset-0 bg-black/30 " />
                 <div className="fixed inset-0 flex items-center justify-center ">
                     <DialogPanel transition className="bg-[#FFFFFF] rounded-2xl w-[37.5rem]">
-                        <div className="flex flex-1 relative w-full flex-col rounded-xl">
+                        <div className="flex flex-1 relative w-full  flex-col rounded-xl">
+                            <div className="absolute right-6 top-6">
+                                <button className="w-[32px] h-[32px]  rounded-full flex items-center justify-center transition-all duration-300 ease-in-out hover:bg-[#F2F4F7]">
+
+                                </button>
+                            </div>
                             <div className="flex flex-col w-full mt-8">
                                 <div className="flex justify-center">
                                     <Image src='/images/physicDailogImg.svg' alt="cool image" width={120} height={120} />
@@ -154,43 +155,24 @@ function TabComps() {
                             </div>
                             <div className="flex flex-col mt-9 mb-6 font-medium text-base text-[#1D2939]">
                                 <div className="flex flex-row w-full pl-8 mb-6">
-                                    <div className="flex flex-row w-1/2">
-                                        <div>
-                                            <Image className="mr-2" src='/icons/checkmark-circle-02.svg' alt="tick circle" width={24} height={24} />
-                                        </div>
-                                        <p>Unlock the premium <br /> Analytics</p>
-                                    </div>
-                                    <div className="flex flex-row w-1/2 ml-6">
-                                        <div>
-                                            <Image className="mr-2" src='/icons/checkmark-circle-02.svg' alt="tick circle" width={24} height={24} />
-                                        </div>
-                                        <p>Special badge for <br /> premium users</p>
-                                    </div>
+                                    <div className="flex flex-row w-1/2"><div><Image className="mr-2" src='/icons/checkmark-circle-02.svg' alt="tick circle" width={24} height={24} /></div><p>Unlock the premiun <br /> Analytics</p></div>
+                                    <div className="flex flex-row w-1/2 ml-6"><div><Image className="mr-2" src='/icons/checkmark-circle-02.svg' alt="tick circle" width={24} height={24} /></div><p>Special badge for  <br /> premiun users</p></div>
                                 </div>
                                 <div className="flex flex-row w-full pl-8">
-                                    <div className="flex flex-row w-1/2">
-                                        <div>
-                                            <Image className="mr-2" src='/icons/checkmark-circle-02.svg' alt="tick circle" width={24} height={24} />
-                                        </div>
-                                        <p>Be part of the premium <br /> groups</p>
-                                    </div>
-                                    <div className="flex flex-row w-1/2 ml-6">
-                                        <div>
-                                            <Image className="mr-2" src='/icons/checkmark-circle-02.svg' alt="tick circle" width={24} height={24} />
-                                        </div>
-                                        <p>Get dedicated <br /> mentorship by IIT/NITians</p>
-                                    </div>
+                                    <div className="flex flex-row w-1/2"><div><Image className="mr-2" src='/icons/checkmark-circle-02.svg' alt="tick circle" width={24} height={24} /></div><p>Be part of the premium  <br /> groups</p></div>
+                                    <div className="flex flex-row w-1/2 ml-6"><div><Image className="mr-2" src='/icons/checkmark-circle-02.svg' alt="tick circle" width={24} height={24} /></div><p>Get dedicated  <br /> mentorship by IIT/NITians</p></div>
                                 </div>
                             </div>
                         </div>
+
                     </DialogPanel>
                 </div>
-            </Dialog>
-            {/* <Modal
+            </Dialog> */}
+            <Modal
                 isDismissable={false}
                 isKeyboardDismissDisabled={true}
                 isOpen={showQuizDialog}}
-        
+            onClose={() => setShowQuizDialog(false)}
       >
             <ModalContent>
                 {(onClose) => (
@@ -226,7 +208,7 @@ function TabComps() {
                     </>
                 )}
             </ModalContent>
-        </Modal> */}
+        </Modal>
         </div >
     );
 }

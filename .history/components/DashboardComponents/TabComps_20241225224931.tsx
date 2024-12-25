@@ -41,9 +41,6 @@ function TabComps() {
         if (tabName === 'dashboard') {
             setShowQuizDialog(true); // Open dialog when 'dashboard' tab is clicked
         }
-        else if (tabName === "analytics") {
-            setShowQuizDialog(true);
-        }
     };
     useEffect(() => {
         if (pathname) {
@@ -139,7 +136,7 @@ function TabComps() {
             {renderButtonWith('Analytics', '/icons/Analytics-2.svg', '/icons/Analytics.svg', activeTab === 'analytics', () => handleTabClick('analytics', '/analytics/test-series'))}
             {renderButtonWith('Settings', '/icons/settings-2.svg', '/icons/settings.svg', activeTab === 'settings', () => handleTabClick('settings', '/settings/profile'))}
 
-            <Dialog open={showQuizDialog} onClose={() => setShowQuizDialog(false)} className="relative z-50">
+            <Dialog open={showQuizDialog} isDismissable={false} className="relative z-50">
                 <DialogBackdrop className="fixed inset-0 bg-black/30 " />
                 <div className="fixed inset-0 flex items-center justify-center ">
                     <DialogPanel transition className="bg-[#FFFFFF] rounded-2xl w-[37.5rem]">

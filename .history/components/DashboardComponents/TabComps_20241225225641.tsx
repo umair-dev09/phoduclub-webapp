@@ -140,7 +140,7 @@ function TabComps() {
             {renderButtonWith('Settings', '/icons/settings-2.svg', '/icons/settings.svg', activeTab === 'settings', () => handleTabClick('settings', '/settings/profile'))}
 
             <Dialog open={showQuizDialog} onClose={() => setShowQuizDialog(false)} className="relative z-50">
-                <DialogBackdrop className="fixed inset-0 bg-black/30 " />
+                <DialogBackdrop className="fixed inset-0 bg-black/30 ml-40" />
                 <div className="fixed inset-0 flex items-center justify-center ">
                     <DialogPanel transition className="bg-[#FFFFFF] rounded-2xl w-[37.5rem]">
                         <div className="flex flex-1 relative w-full flex-col rounded-xl">
