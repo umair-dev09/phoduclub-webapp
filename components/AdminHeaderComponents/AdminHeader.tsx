@@ -11,16 +11,17 @@ import { toast } from 'react-toastify';
 import AdminHeaderLoading from './AdminHeaderLoading';
 import Logout from '../AdminComponents/RoleMangement/Logout';
 
-interface HeaderProps {
-    currentPage: string;
-}
+// interface HeaderProps {
+//     currentPage: string;
+// }
 type UserData = {
     name: string | null;
     adminId: string | null;
     profilePic: string | null;
     role: string | null;
 };
-function Header({ currentPage }: HeaderProps) {
+// function Header({ currentPage }: HeaderProps) {
+function Header() {
     const router = useRouter();
     const [userData, setUserData] = useState<UserData | null>(null);
     const [loading, setLoading] = useState(true); // Track loading state
@@ -30,10 +31,6 @@ function Header({ currentPage }: HeaderProps) {
     const openlogout = () => setIslogout(true);
     const closelogout = () => setIslogout(false);
     const db = getFirestore();
-
-    const handleBackClick = () => {
-        router.back();
-    };
 
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
@@ -117,16 +114,11 @@ function Header({ currentPage }: HeaderProps) {
         return <AdminHeaderLoading />;
     }
 
-    const isBackPage = currentPage === 'Back to Quizzes Management' || currentPage === 'Back to Test Series Management' || currentPage === 'Back to Customer Care' || currentPage === 'Back to Messenger' || currentPage === 'Back to Course Management' || currentPage === 'Back to User Database' || currentPage === 'Back to Role Management';
-
-    // Function to handle tab click and navigate to a new route
-    const handleTabClick = (path: string) => {
-        router.push(path);
-    };
+    // const isBackPage = currentPage === 'Back to Quizzes Management' || currentPage === 'Back to Test Series Management' || currentPage === 'Back to Customer Care' || currentPage === 'Back to Messenger' || currentPage === 'Back to Course Management' || currentPage === 'Back to User Database' || currentPage === 'Back to Role Management';
 
     return (
         <div className="flex w-full flex-row items-center justify-between px-6 bg-white h-[65px] rounded-t border border-b-[#e9ebf0]">
-            <div className="flex flex-row items-center gap-2 text-lg">
+            {/* <div className="flex flex-row items-center gap-2 text-lg">
                 {isBackPage && (
                     <button onClick={handleBackClick}>
                         <Image src='/icons/arrow-left-02-round.svg' alt='back' width={24} height={24} />
@@ -140,7 +132,7 @@ function Header({ currentPage }: HeaderProps) {
                 {currentPage === 'My Profile' && (
                     <h2 className='text-lg text-[#1D2939] font-bold'>My Profile</h2>
                 )}
-            </div>
+            </div> */}
 
             <div className="flex flex-row items-center gap-4">
                 <Popover placement="bottom-end">
@@ -157,7 +149,7 @@ function Header({ currentPage }: HeaderProps) {
                     <PopoverContent className="flex flex-col bg-white border border-lightGrey rounded-md w-[167px] px-0 shadow-md">
                         <button
                             className="flex items-center p-3 hover:bg-[#F2F4F7] w-full"
-                            onClick={() => handleTabClick('/admin/profile')}
+                            onClick={() => router.push('/admin/profile')}
                         >
                             <Image src="/icons/profile.svg" width={18} height={18} alt="Edit-profile" />
                             <p className="text-sm text-[#0C111D] ml-2">My profile</p>
