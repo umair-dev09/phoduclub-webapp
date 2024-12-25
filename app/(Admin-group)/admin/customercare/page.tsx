@@ -309,7 +309,7 @@ function CustomerCare() {
                     {/* Select Date Button */}
                     <Popover placement="bottom" isOpen={isSelcetDateOpen} onOpenChange={(open) => setIsSelectDateOpen(open)}>
                         <PopoverTrigger>
-                            <button className="h-[44px] w-[143px] hover:bg-[#F2F4F7] rounded-md bg-[#FFFFFF] border border-solid border-[#D0D5DD] flex items-center p-3" onClick={() => setIsSelectDateOpen(true)}>
+                            <button className="h-[44px] w-[143px] hover:bg-[#F2F4F7] rounded-md bg-[#FFFFFF] border border-solid border-[#D0D5DD] outline-none flex items-center p-3">
                                 <Image
                                     src="/icons/select-date.svg"
                                     width={20}

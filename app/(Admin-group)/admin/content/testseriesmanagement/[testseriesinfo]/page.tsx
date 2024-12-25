@@ -331,11 +331,11 @@ function TestSeriesInfo() {
                                 <span className="font-medium text-base">
                                     Content
                                 </span>
-                                {ContentCount > 0 && (
+                                {/* {ContentCount > 0 && (
                                     <div className="inline-flex items-center justify-center px-3 py-1 rounded-full text-sm bg-[#EDE4FF] border border-[#EDE4FF] font-medium text-[#7400E0]">
                                         {ContentCount}
                                     </div>
-                                )}
+                                )} */}
                             </div>
                         }
                     >
@@ -349,11 +349,11 @@ function TestSeriesInfo() {
                                 <span className="font-medium text-base">
                                     Students attempted
                                 </span>
-                                {StudentsattemptedCount > 0 && (
+                                {/* {StudentsattemptedCount > 0 && (
                                     <div className="inline-flex items-center justify-center px-3 py-1 rounded-full text-sm bg-[#EDE4FF] border border-[#EDE4FF] font-medium text-[#7400E0]">
                                         {StudentsattemptedCount}
                                     </div>
-                                )}
+                                )} */}
                             </div>
                         }
                     >
@@ -363,10 +363,10 @@ function TestSeriesInfo() {
             </div>
             {/* Dialog components with conditional rendering */}
             {/* {isDeleteDialogOpen && <Delete onClose={() => setIsDeleteDialogOpen(false)} open={isDeleteDialogOpen} />} */}
-            {isScheduledDialogOpen && <ScheduledDialog onClose={() => setIsScheduledDialogOpen(false)} fromContent="testseries" contentId={testId || ''} startDate={startDate} endDate={endDate} setEndDate={setEndDate} setLiveNow={setLiveCourseNow} liveNow={liveCourseNow} setStartDate={setStartDate}/>}
-            {isEndDialogOpen && <EndDialog onClose={() => setIsEndDialogOpen(false)} fromContent="testseries" contentId={testId || ''}/>}
-            {isPausedDialogOpen && <PausedDDialog onClose={() => setIsPausedDialogOpen(false)} fromContent="testseries" contentId={testId || ''}/>}
-            {isResumeOpen && < ResumeQuiz open={isResumeOpen} onClose={() => setIsResumeOpen(false)} fromContent="testseries" contentId={testId || ''}/>}
+            {isScheduledDialogOpen && <ScheduledDialog onClose={() => setIsScheduledDialogOpen(false)} fromContent="testseries" contentId={testId || ''} startDate={startDate} endDate={endDate} setEndDate={setEndDate} setLiveNow={setLiveCourseNow} liveNow={liveCourseNow} setStartDate={setStartDate} />}
+            {isEndDialogOpen && <EndDialog onClose={() => setIsEndDialogOpen(false)} fromContent="testseries" contentId={testId || ''} />}
+            {isPausedDialogOpen && <PausedDDialog onClose={() => setIsPausedDialogOpen(false)} fromContent="testseries" contentId={testId || ''} />}
+            {isResumeOpen && < ResumeQuiz open={isResumeOpen} onClose={() => setIsResumeOpen(false)} fromContent="testseries" contentId={testId || ''} />}
         </div>
     );
 }
