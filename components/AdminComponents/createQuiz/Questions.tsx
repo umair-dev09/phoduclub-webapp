@@ -174,9 +174,7 @@ function Questions({ questionsList, setQuestionsList }: QuestionsProps) {
 
     };
 
-    const formats = [
-        'image',
-    ];
+
 
     const handleQuillMount = (index: number, type: 'question' | 'explanation', quill: ReactQuill | null) => {
         if (quill) {

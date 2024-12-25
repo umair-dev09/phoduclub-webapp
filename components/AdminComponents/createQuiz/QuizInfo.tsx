@@ -4,8 +4,9 @@ import 'react-quill/dist/quill.snow.css';
 import ReactQuill from 'react-quill-new'; // Ensure correct import
 import Quill from 'quill'; // Import Quill to use it for types
 import { Popover, PopoverTrigger, PopoverContent } from '@nextui-org/popover';
-
-// Sending Data the to Createquiz
+import QuillResizeImage from 'quill-resize-image';
+Quill.register("modules/resize", QuillResizeImage);
+// Sending Data the to Createquiz 
 interface QuizInfoProps { 
     quizName: string;
     setQuizName: Dispatch<SetStateAction<string>>;
@@ -19,6 +20,13 @@ function Quizinfo({ quizName, setQuizName, quizDescription, setQuizDescription }
     const [quill, setQuill] = useState<Quill | null>(null);
     const [alignment, setAlignment] = useState<string | null>(null); // State to hold alignment
     const [isWriting, setIsWriting] = useState(false); // Track if text is being written
+    const modules = {
+        toolbar: false, // We're using custom toolbar
+        resize: {
+            locale: {},
+        },
+
+    };
 
     const handleChange = (content: string) => {
         setValue(content);
@@ -143,9 +151,9 @@ function Quizinfo({ quizName, setQuizName, quizDescription, setQuizDescription }
                             value={value}
                             onChange={handleChange}
                             onKeyDown={handleKeyDown}
-                            modules={{ toolbar: false }}
+                            modules={modules}
                             placeholder="Description"
-                            className="text-[#1D2939] focus:outline-none rounded-b-[12px] custom-quill placeholder:not-italic min-h-[10px] max-h-[150px] overflow-y-auto border-none font-normal"
+                            className="text-[#1D2939] focus:outline-none rounded-b-[12px] custom-quill placeholder:not-italic min-h-[10px] max-h-[350px] overflow-y-auto border-none font-normal"
                         />
                     </div>
 

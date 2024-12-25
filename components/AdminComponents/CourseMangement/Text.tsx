@@ -44,7 +44,6 @@ function Text({ isOpen, toggleDrawer, sectionId, courseId, isEditing, contentId 
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
     const [uploadTaskRef, setUploadTaskRef] = useState<any>(null); // State to hold the upload task reference
     const [showDatepicker, setShowDatepicker] = useState(false);
-    const [sectionScheduleDate, setSectionScheduleDate] = useState("");
 
     const isFormValid = lessonHeading && lessonOverView && lessonContent && contentScheduleDate;
 
@@ -528,15 +527,13 @@ function Text({ isOpen, toggleDrawer, sectionId, courseId, isEditing, contentId 
                             </div>
                             <div className="flex flex-col gap-2 mb-3 mt-1">
                                 <span className="text-[#1D2939] font-semibold text-sm">Schedule Lesson</span>
-                                {isEditing ? (
-                                    <>
-
+               
                                         <div className="flex flex-row justify-between items-center">
-                                            <p className="text-[#1D2939] text-sm font-medium">  {formatScheduleDate(sectionScheduleDate) || " "}</p>
+                                            <p className="text-[#1D2939] text-sm font-medium">  {formatScheduleDate(contentScheduleDate) || " "}</p>
                                             <button
                                                 className="flex flex-row gap-1 rounded-md border-[2px] border-solid border-[#9012FF] hover:bg-[#F5F0FF] bg-[#FFFFFF] p-2 "
                                                 onClick={() => setShowDatepicker(true)}>
-                                                <span className="text-[#9012FF] font-semibold text-sm">Change Date</span>
+                                                <span className="text-[#9012FF] font-semibold text-sm">{contentScheduleDate ? 'Change Date' : 'Select Date'}</span>
                                             </button>
                                         </div>
                                         {(showDatepicker &&
@@ -546,37 +543,13 @@ function Text({ isOpen, toggleDrawer, sectionId, courseId, isEditing, contentId 
                                                 hideTimeZone
                                                 onChange={(date) => {
                                                     const dateString = date ? date.toString() : "";
-                                                    setSectionScheduleDate(dateString);
+                                                    setContentScheduleDate(dateString);
                                                     setShowDatepicker(true); // Return to button view after selecting date
                                                 }}
 
                                             />
                                         )}
-                                    </>
-                                ) : (
-                                    <>
-                                        <div className="flex flex-row justify-end">
-                                            <button
-                                                className="flex flex-row gap-1 rounded-md border-[2px] border-solid border-[#9012FF]  bg-[#FFFFFF] p-2 hover:bg-[#F5F0FF] "
-                                                onClick={() => setShowDatepicker(true)}>
-                                                <span className="text-[#9012FF] font-semibold text-sm">Select Date</span>
-                                            </button>
-                                        </div>
-
-                                        {showDatepicker && (
-                                            <DatePicker
-                                                granularity="minute"
-                                                minValue={today(getLocalTimeZone())}
-                                                hideTimeZone
-                                                onChange={(date) => {
-                                                    const dateString = date ? date.toString() : "";
-                                                    setSectionScheduleDate(dateString);
-
-                                                }}
-                                            />
-                                        )}
-                                    </>
-                                )}
+                               
                             </div>
 
                             <div className="flex flex-row justify-between border border-solid border-[#EAECF0] h-12 p-3 bg-[#F9FAFB] rounded-md">

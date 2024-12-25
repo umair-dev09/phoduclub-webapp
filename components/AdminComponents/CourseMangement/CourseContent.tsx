@@ -158,6 +158,8 @@ function CourseContent({ courseId }: CourseContentProps) {
         setSectionScheduleDate('');
         setPassedSectionId('');
         setDateForPicker(null);
+        setShowDatepicker(false);
+        setIsSectionEditing(false);
     };
     const editCreateSection = async (secName: string, secDate: string, secId: string) => {
         setIsSectionEditing(true);

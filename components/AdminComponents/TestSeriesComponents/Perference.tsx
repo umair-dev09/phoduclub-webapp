@@ -137,7 +137,7 @@ function Preference({ liveQuizNow, setLiveQuizNow, startDate, setStartDate, endD
             {/* Test Series available for Section */}
             <div className='flex flex-col w-full p-6 bg-white border border-lightGrey rounded-xl'>
                 <h3>Test Series available for</h3>
-                {/* <div className='flex flex-row w-full mt-4 gap-4'>
+                <div className='flex flex-row w-full mt-4 gap-4'>
                     <div className='flex flex-col w-full gap-1'>
                         <p className='text-sm text-[#1D2939] font-medium'>Year</p>
                        
@@ -209,7 +209,7 @@ function Preference({ liveQuizNow, setLiveQuizNow, startDate, setStartDate, endD
                             </Popover>
                        
                     </div>
-                </div> */}
+                </div>
             </div>
         </div>
     );
