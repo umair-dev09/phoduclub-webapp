@@ -165,9 +165,9 @@ function StudentsAttemptedTestseries() {
                 </button>
                 <div className="flex flex-row gap-3">
                     {/* Select Date Button */}
-                    <Popover placement="bottom" isOpen={isSelcetDateOpen}>
+                    <Popover placement="bottom" isOpen={isSelcetDateOpen} onOpenChange={(open) => setIsSelectDateOpen(open)}>
                         <PopoverTrigger>
-                            <button className="h-[44px] w-[143px] rounded-md bg-[#FFFFFF] border border-solid border-[#D0D5DD] flex items-center p-3" onClick={() => setIsSelectDateOpen(true)}>
+                            <button className="h-[44px] w-[143px] rounded-md bg-[#FFFFFF] border border-solid border-[#D0D5DD] outline-none flex items-center p-3">
                                 <Image
                                     src="/icons/select-Date.svg"
                                     width={20}
@@ -181,7 +181,6 @@ function StudentsAttemptedTestseries() {
                             <Calendar
                                 defaultValue={today(getLocalTimeZone())}
                                 showMonthAndYearPickers
-                                color="secondary"
                                 onChange={(value) => {
                                     const date = new Date(value.year, value.month - 1, value.day); // Adjust for zero-based month index
                                     setSelectedDate(date); // Update state with the new Date object

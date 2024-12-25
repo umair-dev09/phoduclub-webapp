@@ -381,11 +381,11 @@ function Quizinfo() {
                                 <span className="font-medium text-base">
                                     Questions
                                 </span>
-                                {questionsCount > 0 && (
+                                {/* {questionsCount > 0 && (
                                     <div className="inline-flex items-center justify-center px-3 py-1 rounded-full text-sm bg-[#EDE4FF] border border-[#EDE4FF] font-medium text-[#7400E0]">
                                         {questionsCount}
                                     </div>
-                                )}
+                                )} */}
                             </div>
                         }
                     >
@@ -399,11 +399,11 @@ function Quizinfo() {
                                 <span className="font-medium text-base">
                                     Students attempted
                                 </span>
-                                {studentsattemptsCount > 0 && (
+                                {/* {studentsattemptsCount > 0 && (
                                     <div className="inline-flex items-center justify-center px-3 py-1 rounded-full text-sm bg-[#EDE4FF] border border-[#EDE4FF] font-medium text-[#7400E0]">
                                         {studentsattemptsCount}
                                     </div>
-                                )}
+                                )} */}
                             </div>
                         }
                     >
@@ -413,10 +413,10 @@ function Quizinfo() {
             </div>
 
             {/* Dialog components with conditional rendering */}
-            {isScheduledDialogOpen && <ScheduledDialog onClose={() => setIsScheduledDialogOpen(false)} fromContent="quiz" contentId={quizId || ''} startDate={startDate} endDate={endDate} setEndDate={setEndDate} setLiveNow={setLiveCourseNow} liveNow={liveCourseNow} setStartDate={setStartDate}/>}
-            {isEndDialogOpen && <EndDialog onClose={() => setIsEndDialogOpen(false)} fromContent="quiz" contentId={quizId || ''}/>}
-            {isPausedDialogOpen && <PausedDDialog onClose={() => setIsPausedDialogOpen(false)} fromContent="quiz" contentId={quizId || ''}/>}
-            {isResumeOpen && < ResumeQuiz open={isResumeOpen} onClose={() => setIsResumeOpen(false)} fromContent="quiz" contentId={quizId || ''}/>}
+            {isScheduledDialogOpen && <ScheduledDialog onClose={() => setIsScheduledDialogOpen(false)} fromContent="quiz" contentId={quizId || ''} startDate={startDate} endDate={endDate} setEndDate={setEndDate} setLiveNow={setLiveCourseNow} liveNow={liveCourseNow} setStartDate={setStartDate} />}
+            {isEndDialogOpen && <EndDialog onClose={() => setIsEndDialogOpen(false)} fromContent="quiz" contentId={quizId || ''} />}
+            {isPausedDialogOpen && <PausedDDialog onClose={() => setIsPausedDialogOpen(false)} fromContent="quiz" contentId={quizId || ''} />}
+            {isResumeOpen && < ResumeQuiz open={isResumeOpen} onClose={() => setIsResumeOpen(false)} fromContent="quiz" contentId={quizId || ''} />}
             {isDeleteDialogOpen && <DeleteQuiz onClose={closeDeleteDialog} open={true} />}
         </div>
     );

@@ -77,7 +77,7 @@ const RatingStars: React.FC<{ rating: string | null }> = ({ rating }) => {
 
 
 function Courses() {
-    const [publishDialogOpen, setPublishDialogOpen] = useState(false); 
+    const [publishDialogOpen, setPublishDialogOpen] = useState(false);
     const searchParams = useSearchParams();
     const courseId = searchParams.get('cId');
     const router = useRouter();
@@ -87,8 +87,8 @@ function Courses() {
     const [endDate, setEndDate] = useState('');
     const [liveCourseNow, setLiveCourseNow] = useState(false);
     const [deleteCourseDialog, setDeleteCourseDialog] = useState(false);
-   const [isScheduledDialogOpen, setIsScheduledDialogOpen] = useState(false);
-   const [isResumeOpen, setIsResumeOpen] = useState(false);
+    const [isScheduledDialogOpen, setIsScheduledDialogOpen] = useState(false);
+    const [isResumeOpen, setIsResumeOpen] = useState(false);
     const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
     const [isEndDialogOpen, setIsEndDialogOpen] = useState(false);
     const [isPausedDialogOpen, setIsPausedDialogOpen] = useState(false);
@@ -192,8 +192,8 @@ function Courses() {
                             {/* FOR SAVED--> */}
                             {courseData?.status === 'saved' && (
                                 <>
-                                    <button onClick={() => {setIsScheduledDialogOpen(true)}}
-                                    className="w-auto p-3 gap-2  hover:bg-[#F2F4F7] flex-row flex bg-[#FFFFFF] border border-solid border-[#EAECF0] rounded-[8px] h-[40px] items-center">
+                                    <button onClick={() => { setIsScheduledDialogOpen(true) }}
+                                        className="w-auto p-3 gap-2  hover:bg-[#F2F4F7] flex-row flex bg-[#FFFFFF] border border-solid border-[#EAECF0] rounded-[8px] h-[40px] items-center">
                                         <Image src="/icons/publish-quiz.svg" width={18} height={18} alt="publish-quiz" />
                                         <span className="text-sm text-[#0C111D] font-normal">Publish</span>
                                     </button>
@@ -203,14 +203,14 @@ function Courses() {
                                 <>
                                     {/* Button for Pause  */}
                                     <button className="w-auto p-3 gap-2 flex-row flex  hover:bg-[#F2F4F7] bg-[#FFFFFF] border border-solid border-[#EAECF0] rounded-[8px] h-[40px] items-center"
-                                    onClick={() => setIsPausedDialogOpen(true)}
+                                        onClick={() => setIsPausedDialogOpen(true)}
                                     >
                                         <Image src="/icons/pausequiz.svg" width={18} height={18} alt="Paused-icon" />
                                         <span className="text-sm text-[#0C111D] font-normal">Pause</span>
                                     </button>
                                     {/* Button for End */}
                                     <button className="w-auto p-3 gap-2 flex-row flex hover:bg-[#F2F4F7] bg-[#FFFFFF] border border-solid border-[#EAECF0] rounded-[8px] h-[40px] items-center"
-                                    onClick={() => setIsEndDialogOpen(true)}
+                                        onClick={() => setIsEndDialogOpen(true)}
                                     >
                                         <Image src="/icons/endquiz.svg" width={18} height={18} alt="End-icon" />
                                         <span className="text-sm text-[#DE3024]  font-normal">End</span>
@@ -224,7 +224,7 @@ function Courses() {
                                     {/* Button for Resume  */}
                                     <button
                                         className="w-auto p-3 gap-2 flex-row flex  hover:bg-[#F2F4F7] rounded-[8px] h-[40px] items-center"
-                                    onClick={() => setIsResumeOpen(true)}
+                                        onClick={() => setIsResumeOpen(true)}
                                     >
                                         <Image src="/icons/resume.svg" width={18} height={18} alt="Resume -icon" />
                                         <span className="text-sm text-[#9012FF]  font-medium">Resume</span>
@@ -232,7 +232,7 @@ function Courses() {
                                     {/* Button for Scheduled  */}
                                     <button
                                         className="w-auto p-3 gap-2 flex-row flex hover:bg-[#F2F4F7] bg-[#FFFFFF] border border-solid border-[#EAECF0] rounded-[8px] h-[40px] items-center"
-                                        onClick={() => {setIsScheduledDialogOpen(true)}}                                    >
+                                        onClick={() => { setIsScheduledDialogOpen(true) }}                                    >
                                         <Image src="/icons/select-date.svg" width={18} height={18} alt="Calendar" />
                                         <span className="text-sm text-[#0C111D]  font-medium">Schedule</span>
                                     </button>
@@ -244,7 +244,7 @@ function Courses() {
                                     {/* Button for Delete */}
                                     <button
                                         className="w-auto p-3 gap-2 flex-row flex bg-[#FFFFFF] hover:bg-[#F2F4F7] border border-solid border-[#EAECF0] rounded-[8px] h-[40px] items-center"
-                                    onClick={() => setDeleteCourseDialog(true)}
+                                        onClick={() => setDeleteCourseDialog(true)}
                                     >
                                         <Image src="/icons/delete.svg" width={18} height={18} alt="Delete" />
                                         <span className="text-sm text-[#DE3024]  font-medium">Delete</span>
@@ -355,11 +355,11 @@ function Courses() {
                                 <span className="font-medium text-base">
                                     Course Content
                                 </span>
-                                {CourseContentCount > 0 && (
+                                {/* {CourseContentCount > 0 && (
                                     <div className="inline-flex items-center justify-center px-3 py-1 rounded-full text-sm bg-[#EDE4FF] border border-[#EDE4FF] font-medium text-[#7400E0]">
                                         {CourseContentCount}
                                     </div>
-                                )}
+                                )} */}
                             </div>
                         }
                     >
@@ -373,11 +373,11 @@ function Courses() {
                                 <span className="font-medium text-base">
                                     Students purchased
                                 </span>
-                                {StudentspurchasedCount > 0 && (
+                                {/* {StudentspurchasedCount > 0 && (
                                     <div className="inline-flex items-center justify-center px-3 py-1 rounded-full text-sm bg-[#EDE4FF] border border-[#EDE4FF] font-medium text-[#7400E0]">
                                         {StudentspurchasedCount}
                                     </div>
-                                )}
+                                )} */}
                             </div>
                         }
                     >
@@ -463,10 +463,10 @@ function Courses() {
             </Dialog> */}
 
             <ToastContainer />
-            {isScheduledDialogOpen && <ScheduledDialog onClose={() => setIsScheduledDialogOpen(false)} fromContent="course" contentId={courseId || ''} startDate={startDate} endDate={endDate} setEndDate={setEndDate} setLiveNow={setLiveCourseNow} liveNow={liveCourseNow} setStartDate={setStartDate}/>}
-            {isEndDialogOpen && <EndDialog onClose={() => setIsEndDialogOpen(false)} fromContent="course" contentId={courseId || ''}/>}
-            {isPausedDialogOpen && <PausedDDialog onClose={() => setIsPausedDialogOpen(false)} fromContent="course" contentId={courseId || ''}/>}
-            {isResumeOpen && < ResumeQuiz open={isResumeOpen} onClose={() => setIsResumeOpen(false)} fromContent="course" contentId={courseId || ''}/>}
+            {isScheduledDialogOpen && <ScheduledDialog onClose={() => setIsScheduledDialogOpen(false)} fromContent="course" contentId={courseId || ''} startDate={startDate} endDate={endDate} setEndDate={setEndDate} setLiveNow={setLiveCourseNow} liveNow={liveCourseNow} setStartDate={setStartDate} />}
+            {isEndDialogOpen && <EndDialog onClose={() => setIsEndDialogOpen(false)} fromContent="course" contentId={courseId || ''} />}
+            {isPausedDialogOpen && <PausedDDialog onClose={() => setIsPausedDialogOpen(false)} fromContent="course" contentId={courseId || ''} />}
+            {isResumeOpen && < ResumeQuiz open={isResumeOpen} onClose={() => setIsResumeOpen(false)} fromContent="course" contentId={courseId || ''} />}
             {deleteCourseDialog && <DeleteCourse open={deleteCourseDialog} onClose={() => setDeleteCourseDialog(false)} courseId={courseId || ''} courseName={courseData?.courseName || ''} />}
         </div>
     )
