@@ -120,7 +120,14 @@ function Quizinfo({ quizName, setQuizName, quizDescription, setQuizDescription }
                 <span className='text-[#1D2939] text-sm font-medium'>Quiz Name</span>
                 <input
                     className="font-medium pl-3 text-[#1D2939] text-sm placeholder:text-[#A1A1A1] rounded-md placeholder:font-normal
-                         border border-gray-300 focus:outline focus:outline-[1.5px] focus:outline-[#D6BBFB] hover:outline hover:outline-[1.5px] hover:outline-[#D6BBFB] focus-within:border-[#D7BBFC] focus-within:ring-4 focus-within:ring-[#E8DEFB] focus-within:outline-none transition-colors h-[40px]  "
+                        focus:outline-none focus:ring-0 
+                        border border-solid border-[#D0D5DD] h-[40px] 
+                        shadow-[0px_1px_2px_0px_rgba(16,24,40,0.05)] 
+                        transition duration-200 ease-in-out 
+                        focus:border-[#D6BBFB] 
+                        focus:shadow-[0px_0px_0px_4px_rgba(158,119,237,0.25),0px_1px_2px_0px_rgba(16,24,40,0.05)]
+                        focus:text-[#1D2939]
+                        focus:font-medium"
                     placeholder="Quiz Name"
                     type="text"
                     value={quizName}

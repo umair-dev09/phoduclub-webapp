@@ -42,6 +42,7 @@ function Video({ isOpen, toggleDrawer, sectionId, courseId, isEditing, contentId
     const [uploadTaskRef, setUploadTaskRef] = useState<any>(null); // State to hold the upload task reference
     const [loading, setLoading] = useState(false);
     const [showDatepicker, setShowDatepicker] = useState(false);
+    const [sectionScheduleDate, setSectionScheduleDate] = useState("");
     const [value, setValue] = useState(lessonOverView);
     const openVideoUploadTab = () => {
         // navigator.clipboard.writeText(pId || '');
@@ -122,7 +123,7 @@ function Video({ isOpen, toggleDrawer, sectionId, courseId, isEditing, contentId
     const handleChange = (content: string) => {
         setLessonOverView(content);
         checkTextContent(content);
-        setValue(content);
+        setValue(lessonOverView);
     };
 
     const checkTextContent = (content: string) => {
@@ -636,29 +637,55 @@ function Video({ isOpen, toggleDrawer, sectionId, courseId, isEditing, contentId
 
                             <div className="flex flex-col gap-2 mb-3 mt-1">
                                 <span className="text-[#1D2939] font-semibold text-sm">Schedule Lesson</span>
-                                <div className="flex flex-row justify-between items-center">
-                                    <p className="text-[#1D2939] text-sm font-medium">  {formatScheduleDate(contentScheduleDate) || " "}</p>
-                                    <button
-                                        className="flex flex-row gap-1 rounded-md border-[2px] border-solid border-[#9012FF] hover:bg-[#F5F0FF] bg-[#FFFFFF] p-2 "
-                                        onClick={() => setShowDatepicker(!showDatepicker)}>
-                                        <span className="text-[#9012FF] font-semibold text-sm">{contentScheduleDate ? 'Change Date' : 'Select Date'}</span>
-                                    </button>
-                                </div>
-                                {(showDatepicker &&
-                                    <DatePicker
-                                        granularity="minute"
-                                        minValue={today(getLocalTimeZone())}
-                                        hideTimeZone
-                                        onChange={(date) => {
-                                            const dateString = date ? date.toString() : "";
-                                            setContentScheduleDate(dateString);
-                                            setShowDatepicker(false); // Return to button view after selecting date
-                                        }}
+                                {isEditing ? (
+                                    <>
 
-                                    />
+                                        <div className="flex flex-row justify-between items-center">
+                                            <p className="text-[#1D2939] text-sm font-medium">  {formatScheduleDate(sectionScheduleDate) || " "}</p>
+                                            <button
+                                                className="flex flex-row gap-1 rounded-md border-[2px] border-solid border-[#9012FF] hover:bg-[#F5F0FF] bg-[#FFFFFF] p-2 "
+                                                onClick={() => setShowDatepicker(true)}>
+                                                <span className="text-[#9012FF] font-semibold text-sm">Change Date</span>
+                                            </button>
+                                        </div>
+                                        {(showDatepicker &&
+                                            <DatePicker
+                                                granularity="minute"
+                                                minValue={today(getLocalTimeZone())}
+                                                hideTimeZone
+                                                onChange={(date) => {
+                                                    const dateString = date ? date.toString() : "";
+                                                    setSectionScheduleDate(dateString);
+                                                    setShowDatepicker(true); // Return to button view after selecting date
+                                                }}
+
+                                            />
+                                        )}
+                                    </>
+                                ) : (
+                                    <>
+                                        <div className="flex flex-row justify-end">
+                                            <button
+                                                className="flex flex-row gap-1 rounded-md border-[2px] border-solid border-[#9012FF]  bg-[#FFFFFF] p-2 hover:bg-[#F5F0FF] "
+                                                onClick={() => setShowDatepicker(true)}>
+                                                <span className="text-[#9012FF] font-semibold text-sm">Select Date</span>
+                                            </button>
+                                        </div>
+
+                                        {showDatepicker && (
+                                            <DatePicker
+                                                granularity="minute"
+                                                minValue={today(getLocalTimeZone())}
+                                                hideTimeZone
+                                                onChange={(date) => {
+                                                    const dateString = date ? date.toString() : "";
+                                                    setSectionScheduleDate(dateString);
+
+                                                }}
+                                            />
+                                        )}
+                                    </>
                                 )}
-
-
                             </div>
 
                             <div className="flex flex-row justify-between border border-solid border-[#EAECF0] h-12 p-3 bg-[#F9FAFB] rounded-md">

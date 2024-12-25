@@ -394,20 +394,7 @@ function Questions({ questionsList, setQuestionsList }: QuestionsProps) {
     //         return newSelectedRows;
     //     });
     // };
-    const [openPopovers, setOpenPopovers] = React.useState<{ [key: number]: boolean }>({});
-    const togglePopover = (index: number) => {
-        setOpenPopovers((prev) => ({
-            ...prev,
-            [index]: !prev[index],
-        }));
-    };
 
-    const closePopover = (index: number) => {
-        setOpenPopovers((prev) => ({
-            ...prev,
-            [index]: false,
-        }));
-    };
     return (
         <div className="pb-4 h-auto">
             {questionsList.map((question, index) => (
@@ -422,26 +409,23 @@ function Questions({ questionsList, setQuestionsList }: QuestionsProps) {
                                         </div>
                                         <div className="font-semibold text-base break-all text-[#1D2939] ml-1" dangerouslySetInnerHTML={{ __html: question.question || "Question" }}></div>
                                     </div>
-                                    <Popover placement="bottom-end" isOpen={!!openPopovers[index]}
-                                        onOpenChange={() => closePopover(index)}>
+                                    <Popover placement="bottom-end">
                                         <PopoverTrigger>
-                                            <button className="w-[32px] h-[32px]  rounded-full flex items-center justify-center transition-all duration-300 ease-in-out hover:bg-[#F2F4F7]">
-                                                <button className="min-w-[20px] min-h-[20px] mt-[2px]"
-                                                    onClick={() => togglePopover(index)}>
-                                                    <Image
-                                                        src="/icons/three-dots.svg"
-                                                        width={20}
-                                                        height={20}
-                                                        alt="Three-dots"
-                                                    />
-                                                </button>
+                                            <button className="min-w-[20px] min-h-[20px] mt-[2px]">
+                                                <Image
+                                                    src="/icons/three-dots.svg"
+                                                    width={20}
+                                                    height={20}
+                                                    alt="Three-dots"
+                                                />
                                             </button>
                                         </PopoverTrigger>
-                                        <PopoverContent className="h-[88px] w-[167px] px-0 border border-solid border-[#EAECF0] bg-[#FFFFFF] rounded-md flex flex-col py-[4px] shadow-lg">
+                                        <PopoverContent className="h-[88px] w-[167px] px-0 border border-solid border-[#EAECF0] bg-[#FFFFFF] rounded-md flex flex-col py-[4px] shadow-lg"
+                                            onClick={(event) => event.stopPropagation()}>
                                             <button
                                                 className="flex flex-row h-[40px] w-full px-3 gap-2 hover:bg-[#F2F4F7] items-center"
-
-                                                onClick={(e) => { e.stopPropagation(); closePopover(index); handleAddQuestionduplicate(question) }}>
+                                                onClick={() => handleAddQuestionduplicate(question)}
+                                            >
                                                 <Image
                                                     src="/icons/duplicate.svg"
                                                     width={18}
@@ -452,7 +436,7 @@ function Questions({ questionsList, setQuestionsList }: QuestionsProps) {
                                             </button>
                                             <button
                                                 className="flex flex-row h-[40px] w-full px-3 gap-2 hover:bg-[#F2F4F7] items-center"
-                                                onClick={(e) => { e.stopPropagation(); closePopover(index); handleDeleteQuestion(index) }}
+                                                onClick={() => handleDeleteQuestion(index)}
                                             >
                                                 <Image
                                                     src="/icons/delete.svg"

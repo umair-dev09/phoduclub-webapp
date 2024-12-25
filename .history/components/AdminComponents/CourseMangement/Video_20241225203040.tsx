@@ -42,7 +42,8 @@ function Video({ isOpen, toggleDrawer, sectionId, courseId, isEditing, contentId
     const [uploadTaskRef, setUploadTaskRef] = useState<any>(null); // State to hold the upload task reference
     const [loading, setLoading] = useState(false);
     const [showDatepicker, setShowDatepicker] = useState(false);
-    const [value, setValue] = useState(lessonOverView);
+    const [sectionScheduleDate, setSectionScheduleDate] = useState("");
+
     const openVideoUploadTab = () => {
         // navigator.clipboard.writeText(pId || '');
         // alert('Video Id is copied you can close this tab now.');
@@ -122,14 +123,16 @@ function Video({ isOpen, toggleDrawer, sectionId, courseId, isEditing, contentId
     const handleChange = (content: string) => {
         setLessonOverView(content);
         checkTextContent(content);
-        setValue(content);
     };
 
     const checkTextContent = (content: string) => {
         // Trim the content and check if there's actual text (excluding HTML tags like <p></p>)
         const plainText = content.replace(/<[^>]+>/g, '').trim();
+        setIsWriting(plainText.length > 0);
     };
-
+    const handleBlur = () => {
+        setIsWriting(false); // Reset isWriting when user clicks outside
+    };
 
     const modules = {
         toolbar: false, // We're using custom toolbar
@@ -138,9 +141,6 @@ function Video({ isOpen, toggleDrawer, sectionId, courseId, isEditing, contentId
         },
 
     };
-    useEffect(() => {
-        setValue(lessonOverView);
-    }, [lessonOverView]);
 
     const handleIconClick = (format: string) => {
         if (quill) {
@@ -461,10 +461,11 @@ function Video({ isOpen, toggleDrawer, sectionId, courseId, isEditing, contentId
                                     <div className="bg-[#FFFFFF] ">
                                         <ReactQuill
                                             ref={quillRef}
-                                            value={value}
+                                            onBlur={handleBlur}
+                                            value={lessonOverView}
                                             onChange={handleChange}
                                             onKeyDown={handleKeyDown}
-                                            modules={modules}
+                                            modules={{ toolbar: false }}
                                             placeholder="Overview"
                                             className="text-[#1D2939] focus:outline-none rounded-b-[12px] custom-quill placeholder:not-italic min-h-[10px] max-h-[350px] overflow-y-auto border-none font-normal text-sm"
                                         />
@@ -636,29 +637,55 @@ function Video({ isOpen, toggleDrawer, sectionId, courseId, isEditing, contentId
 
                             <div className="flex flex-col gap-2 mb-3 mt-1">
                                 <span className="text-[#1D2939] font-semibold text-sm">Schedule Lesson</span>
-                                <div className="flex flex-row justify-between items-center">
-                                    <p className="text-[#1D2939] text-sm font-medium">  {formatScheduleDate(contentScheduleDate) || " "}</p>
-                                    <button
-                                        className="flex flex-row gap-1 rounded-md border-[2px] border-solid border-[#9012FF] hover:bg-[#F5F0FF] bg-[#FFFFFF] p-2 "
-                                        onClick={() => setShowDatepicker(!showDatepicker)}>
-                                        <span className="text-[#9012FF] font-semibold text-sm">{contentScheduleDate ? 'Change Date' : 'Select Date'}</span>
-                                    </button>
-                                </div>
-                                {(showDatepicker &&
-                                    <DatePicker
-                                        granularity="minute"
-                                        minValue={today(getLocalTimeZone())}
-                                        hideTimeZone
-                                        onChange={(date) => {
-                                            const dateString = date ? date.toString() : "";
-                                            setContentScheduleDate(dateString);
-                                            setShowDatepicker(false); // Return to button view after selecting date
-                                        }}
+                                {isEditing ? (
+                                    <>
 
-                                    />
+                                        <div className="flex flex-row justify-between items-center">
+                                            <p className="text-[#1D2939] text-sm font-medium">  {formatScheduleDate(sectionScheduleDate) || " "}</p>
+                                            <button
+                                                className="flex flex-row gap-1 rounded-md border-[2px] border-solid border-[#9012FF] hover:bg-[#F5F0FF] bg-[#FFFFFF] p-2 "
+                                                onClick={() => setShowDatepicker(true)}>
+                                                <span className="text-[#9012FF] font-semibold text-sm">Change Date</span>
+                                            </button>
+                                        </div>
+                                        {(showDatepicker &&
+                                            <DatePicker
+                                                granularity="minute"
+                                                minValue={today(getLocalTimeZone())}
+                                                hideTimeZone
+                                                onChange={(date) => {
+                                                    const dateString = date ? date.toString() : "";
+                                                    setSectionScheduleDate(dateString);
+                                                    setShowDatepicker(true); // Return to button view after selecting date
+                                                }}
+
+                                            />
+                                        )}
+                                    </>
+                                ) : (
+                                    <>
+                                        <div className="flex flex-row justify-end">
+                                            <button
+                                                className="flex flex-row gap-1 rounded-md border-[2px] border-solid border-[#9012FF]  bg-[#FFFFFF] p-2 hover:bg-[#F5F0FF] "
+                                                onClick={() => setShowDatepicker(true)}>
+                                                <span className="text-[#9012FF] font-semibold text-sm">Select Date</span>
+                                            </button>
+                                        </div>
+
+                                        {showDatepicker && (
+                                            <DatePicker
+                                                granularity="minute"
+                                                minValue={today(getLocalTimeZone())}
+                                                hideTimeZone
+                                                onChange={(date) => {
+                                                    const dateString = date ? date.toString() : "";
+                                                    setSectionScheduleDate(dateString);
+
+                                                }}
+                                            />
+                                        )}
+                                    </>
                                 )}
-
-
                             </div>
 
                             <div className="flex flex-row justify-between border border-solid border-[#EAECF0] h-12 p-3 bg-[#F9FAFB] rounded-md">

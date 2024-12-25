@@ -95,7 +95,6 @@ function Quizinfo({ quizName, setQuizName, quizDescription, setQuizDescription }
         // Whenever quizDescription changes, update the value of the Quill editor
         setValue(quizDescription);
     }, [quizDescription]);
-
     const handleKeyDown = () => {
         if (quill) {
             const range = quill.getSelection();
@@ -120,7 +119,14 @@ function Quizinfo({ quizName, setQuizName, quizDescription, setQuizDescription }
                 <span className='text-[#1D2939] text-sm font-medium'>Quiz Name</span>
                 <input
                     className="font-medium pl-3 text-[#1D2939] text-sm placeholder:text-[#A1A1A1] rounded-md placeholder:font-normal
-                         border border-gray-300 focus:outline focus:outline-[1.5px] focus:outline-[#D6BBFB] hover:outline hover:outline-[1.5px] hover:outline-[#D6BBFB] focus-within:border-[#D7BBFC] focus-within:ring-4 focus-within:ring-[#E8DEFB] focus-within:outline-none transition-colors h-[40px]  "
+                        focus:outline-none focus:ring-0 
+                        border border-solid border-[#D0D5DD] h-[40px] 
+                        shadow-[0px_1px_2px_0px_rgba(16,24,40,0.05)] 
+                        transition duration-200 ease-in-out 
+                        focus:border-[#D6BBFB] 
+                        focus:shadow-[0px_0px_0px_4px_rgba(158,119,237,0.25),0px_1px_2px_0px_rgba(16,24,40,0.05)]
+                        focus:text-[#1D2939]
+                        focus:font-medium"
                     placeholder="Quiz Name"
                     type="text"
                     value={quizName}
@@ -136,7 +142,7 @@ function Quizinfo({ quizName, setQuizName, quizDescription, setQuizDescription }
                     <div className="bg-[#FFFFFF] ">
                         <ReactQuill
                             ref={quillRef}
-                            value={value}
+                            value={quizDescription}
                             onChange={handleChange}
                             onKeyDown={handleKeyDown}
                             modules={modules}
@@ -173,19 +179,19 @@ function Quizinfo({ quizName, setQuizName, quizDescription, setQuizDescription }
                                             )}
                                         </button>
                                     </PopoverTrigger>
-                                    <PopoverContent className="flex flex-row bg-white rounded-[8px] border-[1px] border-solid border-[#EAECF0] p-2 w-[120px] shadow-[0_2px_4px_#EAECF0] gap-2 ">
+                                    <PopoverContent className="ml-1 gap-4">
                                         {/* Alignment options inside the popover */}
-
-                                        <button onClick={() => handleIconClick("align-left")} className="flex items-center justify-center hover:bg-[#EAECF0]">
-                                            <Image src="/icons/align-left.svg" width={30} height={30} alt="align-left" />
-                                        </button>
-                                        <button onClick={() => handleIconClick("align-center")} className="flex items-center justify-center hover:bg-[#EAECF0]">
-                                            <Image src="/icons/align-middle.svg" width={30} height={30} alt="align-center" />
-                                        </button>
-                                        <button onClick={() => handleIconClick("align-right")} className="flex items-center justify-center hover:bg-[#EAECF0]">
-                                            <Image src="/icons/align-right.svg" width={30} height={30} alt="align-right" />
-                                        </button>
-
+                                        <div className="flex flex-row bg-white rounded-[8px] border-[1px] border-solid border-[#EAECF0] p-2 w-[120px] shadow-[0_2px_4px_#EAECF0] gap-2 ">
+                                            <button onClick={() => handleIconClick("align-left")} className="flex items-center justify-center hover:bg-[#EAECF0]">
+                                                <Image src="/icons/align-left.svg" width={30} height={30} alt="align-left" />
+                                            </button>
+                                            <button onClick={() => handleIconClick("align-center")} className="flex items-center justify-center hover:bg-[#EAECF0]">
+                                                <Image src="/icons/align-middle.svg" width={30} height={30} alt="align-center" />
+                                            </button>
+                                            <button onClick={() => handleIconClick("align-right")} className="flex items-center justify-center hover:bg-[#EAECF0]">
+                                                <Image src="/icons/align-right.svg" width={30} height={30} alt="align-right" />
+                                            </button>
+                                        </div>
                                     </PopoverContent>
                                 </Popover>
 

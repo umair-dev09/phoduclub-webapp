@@ -278,7 +278,20 @@ function CourseContent({ courseId }: CourseContentProps) {
     }
 
 
+    const [openPopovers, setOpenPopovers] = React.useState<{ [key: number]: boolean }>({});
+    const togglePopover = (index: number) => {
+        setOpenPopovers((prev) => ({
+            ...prev,
+            [index]: !prev[index],
+        }));
+    };
 
+    const closePopover = (index: number) => {
+        setOpenPopovers((prev) => ({
+            ...prev,
+            [index]: false,
+        }));
+    };
     return (
         <div className="flex flex-col gap-4 ">
             <div className="flex flex-row justify-between h-16">
@@ -343,29 +356,30 @@ function CourseContent({ courseId }: CourseContentProps) {
 
 
                                         <Popover
-                                            placement="bottom" >
+                                            placement="bottom" isOpen={!!openPopovers[index]}
+                                            onOpenChange={() => closePopover(index)}>
                                             <PopoverTrigger
                                             >
                                                 <button
                                                     className="flex flex-row gap-1 items-center rounded-md hover:bg-[#F5F0FF] hover:rounded-full px-3 py-1 transition duration-200 ease-in-out h-[44px] w-auto justify-center"
-                                                >
+                                                    onClick={() => togglePopover(index)} >
                                                     <Image src="/icons/plus-sign.svg" height={18} width={18} alt="Plus Sign" />
                                                     <span className="text-[#9012FF] font-semibold text-sm">Add Content</span>
                                                 </button>
                                             </PopoverTrigger>
                                             <PopoverContent className="flex flex-col px-0 text-sm font-normal bg-white border border-lightGrey rounded-md w-[167px] shadow-md">
                                                 <button className=" p-3 gap-2 flex-row flex h-[40px] hover:bg-[#F2F4F7] w-full"
-                                                    onClick={() => { openDrawerfortest(); setPassedSectionId(section.sectionId); setIsContentEditing(false) }}>
+                                                    onClick={() => { openDrawerfortest(); setPassedSectionId(section.sectionId); closePopover(index); setIsContentEditing(false) }}>
                                                     <Image src="/icons/read.svg" alt="learn-icon" width={20} height={20} />
                                                     <span className="text-sm text-[#0C111D] font-normal">Text</span>
                                                 </button>
                                                 <button className=" p-3 gap-2 flex-row flex h-[40px] hover:bg-[#F2F4F7] w-full"
-                                                    onClick={() => { openDrawerforVideo(); setPassedSectionId(section.sectionId); setIsContentEditing(false) }}>
+                                                    onClick={() => { openDrawerforVideo(); setPassedSectionId(section.sectionId); closePopover(index); setIsContentEditing(false) }}>
                                                     <Image src="/icons/vedio.svg" alt="video-icon" width={20} height={20} />
                                                     <span className="text-sm text-[#0C111D] font-normal">Video</span>
                                                 </button>
                                                 <button className=" p-3 gap-2 flex-row flex h-[40px] hover:bg-[#F2F4F7] w-full"
-                                                    onClick={() => { openDrawerforQuiz(); setPassedSectionId(section.sectionId); setIsContentEditing(false) }}>
+                                                    onClick={() => { openDrawerforQuiz(); setPassedSectionId(section.sectionId); closePopover(index); setIsContentEditing(false) }}>
                                                     <Image src="/icons/test.svg" alt="test-icon" width={20} height={20} />
                                                     <span className="text-sm text-[#0C111D] font-normal">Quiz</span>
                                                 </button>
@@ -547,7 +561,7 @@ function CourseContent({ courseId }: CourseContentProps) {
                                     <p className="text-[#1D2939] text-sm font-medium">  {formatScheduleDate(sectionScheduleDate) || " "}</p>
                                     <button
                                         className="flex flex-row gap-1 rounded-md border-[2px] border-solid border-[#9012FF] hover:bg-[#F5F0FF] bg-[#FFFFFF] p-2 "
-                                        onClick={() => setShowDatepicker(!showDatepicker)}>
+                                        onClick={() => setShowDatepicker(true)}>
                                         <span className="text-[#9012FF] font-semibold text-sm">{sectionScheduleDate ? 'Change Date' : 'Select Date'}</span>
                                     </button>
                                 </div>
@@ -559,7 +573,7 @@ function CourseContent({ courseId }: CourseContentProps) {
                                         onChange={(date) => {
                                             const dateString = date ? date.toString() : "";
                                             setSectionScheduleDate(dateString);
-                                            setShowDatepicker(false); // Return to button view after selecting date
+                                            setShowDatepicker(true); // Return to button view after selecting date
                                         }}
 
                                     />

@@ -160,7 +160,6 @@ function CourseContent({ courseId }: CourseContentProps) {
         setDateForPicker(null);
         setShowDatepicker(false);
         setIsSectionEditing(false);
-
     };
     const editCreateSection = async (secName: string, secDate: string, secId: string) => {
         setIsSectionEditing(true);
@@ -168,7 +167,6 @@ function CourseContent({ courseId }: CourseContentProps) {
         setName(secName);
         setSectionScheduleDate(secDate);
         setPassedSectionId(secId);
-        setShowDatepicker(false);
     };
     const closeCreateSection = () => {
         setOpenSectionDialog(false);
@@ -547,7 +545,7 @@ function CourseContent({ courseId }: CourseContentProps) {
                                     <p className="text-[#1D2939] text-sm font-medium">  {formatScheduleDate(sectionScheduleDate) || " "}</p>
                                     <button
                                         className="flex flex-row gap-1 rounded-md border-[2px] border-solid border-[#9012FF] hover:bg-[#F5F0FF] bg-[#FFFFFF] p-2 "
-                                        onClick={() => setShowDatepicker(!showDatepicker)}>
+                                        onClick={() => setShowDatepicker(true)}>
                                         <span className="text-[#9012FF] font-semibold text-sm">{sectionScheduleDate ? 'Change Date' : 'Select Date'}</span>
                                     </button>
                                 </div>
@@ -559,7 +557,7 @@ function CourseContent({ courseId }: CourseContentProps) {
                                         onChange={(date) => {
                                             const dateString = date ? date.toString() : "";
                                             setSectionScheduleDate(dateString);
-                                            setShowDatepicker(false); // Return to button view after selecting date
+                                            setShowDatepicker(true); // Return to button view after selecting date
                                         }}
 
                                     />

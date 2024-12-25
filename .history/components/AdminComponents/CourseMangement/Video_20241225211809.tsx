@@ -42,6 +42,7 @@ function Video({ isOpen, toggleDrawer, sectionId, courseId, isEditing, contentId
     const [uploadTaskRef, setUploadTaskRef] = useState<any>(null); // State to hold the upload task reference
     const [loading, setLoading] = useState(false);
     const [showDatepicker, setShowDatepicker] = useState(false);
+    const [sectionScheduleDate, setSectionScheduleDate] = useState("");
     const [value, setValue] = useState(lessonOverView);
     const openVideoUploadTab = () => {
         // navigator.clipboard.writeText(pId || '');
@@ -640,7 +641,7 @@ function Video({ isOpen, toggleDrawer, sectionId, courseId, isEditing, contentId
                                     <p className="text-[#1D2939] text-sm font-medium">  {formatScheduleDate(contentScheduleDate) || " "}</p>
                                     <button
                                         className="flex flex-row gap-1 rounded-md border-[2px] border-solid border-[#9012FF] hover:bg-[#F5F0FF] bg-[#FFFFFF] p-2 "
-                                        onClick={() => setShowDatepicker(!showDatepicker)}>
+                                        onClick={() => setShowDatepicker(true)}>
                                         <span className="text-[#9012FF] font-semibold text-sm">{contentScheduleDate ? 'Change Date' : 'Select Date'}</span>
                                     </button>
                                 </div>
@@ -652,7 +653,7 @@ function Video({ isOpen, toggleDrawer, sectionId, courseId, isEditing, contentId
                                         onChange={(date) => {
                                             const dateString = date ? date.toString() : "";
                                             setContentScheduleDate(dateString);
-                                            setShowDatepicker(false); // Return to button view after selecting date
+                                            setShowDatepicker(true); // Return to button view after selecting date
                                         }}
 
                                     />

@@ -277,7 +277,20 @@ function CourseContent({ courseId }: CourseContentProps) {
         return <LoadingData />
     }
 
+    const [openPopovers, setOpenPopovers] = React.useState<{ [key: number]: boolean }>({});
+    const togglePopover = (index: number) => {
+        setOpenPopovers((prev) => ({
+            ...prev,
+            [index]: !prev[index],
+        }));
+    };
 
+    const closePopover = (index: number) => {
+        setOpenPopovers((prev) => ({
+            ...prev,
+            [index]: false,
+        }));
+    };
 
     return (
         <div className="flex flex-col gap-4 ">
@@ -375,9 +388,12 @@ function CourseContent({ courseId }: CourseContentProps) {
 
 
                                         <Popover
-                                            placement="bottom-end">
+                                            placement="bottom-end"
+                                            isOpen={!!openPopovers[index]}
+                                            onOpenChange={() => closePopover(index)}>
                                             <PopoverTrigger
-                                                onClick={(event) => event.stopPropagation()}>
+
+                                                onClick={(e) => { e.stopPropagation(); togglePopover(index) }}>
                                                 <button className="w-[32px] h-[32px]  rounded-full flex items-center justify-center transition-all duration-300 ease-in-out hover:bg-[#F2F4F7]">
 
                                                     <Image src="/icons/three-dots.svg" width={18} height={18} alt="three-dots" className="outline-none" />
@@ -547,7 +563,7 @@ function CourseContent({ courseId }: CourseContentProps) {
                                     <p className="text-[#1D2939] text-sm font-medium">  {formatScheduleDate(sectionScheduleDate) || " "}</p>
                                     <button
                                         className="flex flex-row gap-1 rounded-md border-[2px] border-solid border-[#9012FF] hover:bg-[#F5F0FF] bg-[#FFFFFF] p-2 "
-                                        onClick={() => setShowDatepicker(!showDatepicker)}>
+                                        onClick={() => setShowDatepicker(true)}>
                                         <span className="text-[#9012FF] font-semibold text-sm">{sectionScheduleDate ? 'Change Date' : 'Select Date'}</span>
                                     </button>
                                 </div>
@@ -559,7 +575,7 @@ function CourseContent({ courseId }: CourseContentProps) {
                                         onChange={(date) => {
                                             const dateString = date ? date.toString() : "";
                                             setSectionScheduleDate(dateString);
-                                            setShowDatepicker(false); // Return to button view after selecting date
+                                            setShowDatepicker(true); // Return to button view after selecting date
                                         }}
 
                                     />
