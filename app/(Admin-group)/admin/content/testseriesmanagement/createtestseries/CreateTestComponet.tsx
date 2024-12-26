@@ -275,7 +275,7 @@ const CreateTestSeries = () => {
                         </div>
                     </div>
                 </div>
-                <div className="overflow-y-auto pr-8">
+                <div className="overflow-y-auto h-full pr-8">
                     {renderStepContent()}
                 </div>
             </div>
