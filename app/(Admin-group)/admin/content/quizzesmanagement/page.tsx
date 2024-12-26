@@ -104,7 +104,7 @@ function Quizz() {
     const [quizId, setQuizId] = useState('');
     const [quizName, setQuizName] = useState('');
     const router = useRouter();
- const [startDate, setStartDate] = useState('');
+    const [startDate, setStartDate] = useState('');
     const [endDate, setEndDate] = useState('');
     const [liveCourseNow, setLiveCourseNow] = useState(false);
     const [isScheduledDialogOpen, setIsScheduledDialogOpen] = useState(false);
@@ -129,72 +129,72 @@ function Quizz() {
     useEffect(() => {
         const loadQuizzes = () => {
             setLoading(true);
-    
+
             // Fetch quizzes and update state
             const unsubscribe = fetchQuizzes((quizzes) => {
                 setQuizzes(quizzes);
                 setLoading(false); // Set loading to false only after fetching is complete
             });
-    
+
             return () => unsubscribe(); // Clean up the listener on unmount
         };
-    
+
         loadQuizzes();
     }, []);
-    
+
     // Separate derived state logic
     useEffect(() => {
         if (quizzes.length === 0) return; // Avoid unnecessary updates before data is fetched
-    
+
         let filteredQuizzes = quizzes;
-    
+
         // Filter by search term
         if (searchTerm) {
             filteredQuizzes = filteredQuizzes.filter((quiz) =>
                 quiz.title.toLowerCase().includes(searchTerm.toLowerCase())
             );
         }
-    
+
         // Filter by selected statuses
         const selectedStatuses = Object.entries(checkedState)
             .filter(([_, isChecked]) => isChecked)
             .map(([status]) => statusMapping[status as Option])
             .flat();
-    
+
         if (selectedStatuses.length > 0) {
             filteredQuizzes = filteredQuizzes.filter((quiz) =>
                 selectedStatuses.includes(quiz.status)
             );
         }
-    
+
         // Filter by selected date
         if (selectedDate) {
             const selectedDateString = selectedDate instanceof Date && !isNaN(selectedDate.getTime())
                 ? selectedDate.toISOString().split('T')[0]
                 : null;
-    
+
             if (selectedDateString) {
                 filteredQuizzes = filteredQuizzes.filter((quiz) => {
                     const quizDate = new Date(quiz.date);
                     const quizDateString = quizDate instanceof Date && !isNaN(quizDate.getTime())
                         ? quizDate.toISOString().split('T')[0]
                         : null;
-    
+
                     return quizDateString === selectedDateString;
                 });
             }
         }
-    
+
         // Sort by quizPublishedDate in ascending order
         filteredQuizzes = filteredQuizzes.sort((a, b) => {
             const dateA = new Date(a.date).getTime();
             const dateB = new Date(b.date).getTime();
-    
+
             if (isNaN(dateA) || isNaN(dateB)) return 0; // Handle invalid dates gracefully
-    
+
             return dateA - dateB;
         });
-    
+
         // Update state with filtered and sorted quizzes
         setData(filteredQuizzes);
         setCurrentPage(1); // Reset to the first page when filters change
@@ -204,8 +204,8 @@ function Quizz() {
 
     // Ensure `data` is correctly sliced for the current page
     const currentItems = data.slice(firstItemIndex, lastItemIndex);
-    
-  const [openPopovers, setOpenPopovers] = React.useState<{ [key: number]: boolean }>({});
+
+    const [openPopovers, setOpenPopovers] = React.useState<{ [key: number]: boolean }>({});
     const togglePopover = (index: number) => {
         setOpenPopovers((prev) => ({
             ...prev,
@@ -232,20 +232,20 @@ function Quizz() {
     const handlePopoverClose = () => setIsPopoverOpen(false);
 
     // State to manage each dialog's visibility
-   
+
 
     // Handlers for ScheduledDialog
-    const openScheduledDialog = (quizId: string,startDate: string, endDate: string) => {    
+    const openScheduledDialog = (quizId: string, startDate: string, endDate: string) => {
         setQuizId(quizId);
         setStartDate(startDate);
-        setEndDate(endDate);    
-    setIsScheduledDialogOpen(true);
+        setEndDate(endDate);
+        setIsScheduledDialogOpen(true);
 
-}
+    }
     const closeScheduledDialog = () => setIsScheduledDialogOpen(false);
 
     // Handlers for DeleteQuiz dialog
-    const openDeleteDialog = (quizId: string, quizName: string) => {    
+    const openDeleteDialog = (quizId: string, quizName: string) => {
         setIsDeleteDialogOpen(true);
         setQuizId(quizId);
         setQuizName(quizName);
@@ -262,13 +262,15 @@ function Quizz() {
     // Handlers for  PausedQuiz dialog
     const openPausedQuiz = (quizId: string) => {
         setQuizId(quizId);
-        setIsPausedDialogOpen(true);}
+        setIsPausedDialogOpen(true);
+    }
     const closePausedQuiz = () => setIsPausedDialogOpen(false);
 
     // Handlers for ResumeQuiz dialog
     const openResumeQuiz = (quizId: string) => {
         setQuizId(quizId);
-        setIsResumeOpen(true);}
+        setIsResumeOpen(true);
+    }
     const closeResumeQuiz = () => setIsResumeOpen(false);
 
     // Handlers for ViewAnalytics dialog
@@ -294,7 +296,7 @@ function Quizz() {
 
 
 
-  
+
 
     // Format selected date as 'Nov 9, 2024'
     const formattedDate = selectedDate
@@ -488,9 +490,9 @@ function Quizz() {
                                             </td>
                                             <td className="flex items-center justify-center px-8 py-4 text-[#101828] text-sm">
                                                 <Popover placement="bottom-end" isOpen={!!openPopovers[index]}
-                                        onOpenChange={() => closePopover(index)}>
-                                                     <PopoverTrigger className="ml-[50%] outline-none">
-                                                        <button onClick={(e) => {e.stopPropagation(); togglePopover(index)}}>
+                                                    onOpenChange={() => closePopover(index)}>
+                                                    <PopoverTrigger className="ml-[50%] outline-none">
+                                                        <button onClick={(e) => { e.stopPropagation(); togglePopover(index) }}>
                                                             <Image
                                                                 src="/icons/three-dots.svg"
                                                                 width={20}
@@ -504,28 +506,28 @@ function Quizz() {
                                                         <div>
                                                             {quiz.status === 'paused' && (
                                                                 <button className="flex flex-row w-[11.563rem] px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors"
-                                                                    onClick={() => {closePopover(index); handleTabClick(`/admin/content/quizzesmanagement/createquiz/?s=${quiz.status}&qId=${quiz.quizId}`)}}>
+                                                                    onClick={() => { closePopover(index); handleTabClick(`/admin/content/quizzesmanagement/createquiz/?s=${quiz.status}&qId=${quiz.quizId}`) }}>
                                                                     <Image src='/icons/edit-icon.svg' alt="edit" width={18} height={18} />
                                                                     <p>Edit</p>
                                                                 </button>
                                                             )}
                                                             {quiz.status === 'scheduled' && (
                                                                 <button className="flex flex-row w-[10.438rem] px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors"
-                                                                onClick={() => {closePopover(index); handleTabClick(`/admin/content/quizzesmanagement/createquiz/?s=${quiz.status}&qId=${quiz.quizId}`)}}>
+                                                                    onClick={() => { closePopover(index); handleTabClick(`/admin/content/quizzesmanagement/createquiz/?s=${quiz.status}&qId=${quiz.quizId}`) }}>
                                                                     <Image src='/icons/edit-icon.svg' alt="edit" width={18} height={18} />
                                                                     <p>Edit</p>
                                                                 </button>
                                                             )}
                                                             {quiz.status === 'saved' && (
                                                                 <button className="flex flex-row w-[10.438rem] px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors"
-                                                                onClick={() => {closePopover(index); handleTabClick(`/admin/content/quizzesmanagement/createquiz/?s=${quiz.status}&qId=${quiz.quizId}`)}}>
+                                                                    onClick={() => { closePopover(index); handleTabClick(`/admin/content/quizzesmanagement/createquiz/?s=${quiz.status}&qId=${quiz.quizId}`) }}>
                                                                     <Image src='/icons/edit-icon.svg' alt="edit" width={18} height={18} />
                                                                     <p>Edit</p>
                                                                 </button>
                                                             )}
                                                             {quiz.status === 'live' && (
                                                                 <button className="flex flex-row w-[10.438rem] px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors"
-                                                                    onClick={() => {closePopover(index); openPausedQuiz(quiz.quizId)}}>
+                                                                    onClick={() => { closePopover(index); openPausedQuiz(quiz.quizId) }}>
                                                                     <Image src='/icons/pause-dark.svg' alt="pause quiz" width={18} height={18} />
                                                                     <p>Pause</p>
                                                                 </button>
@@ -542,7 +544,7 @@ function Quizz() {
                                                         {/* Option 3: Resume Quiz (only if status is Paused) */}
                                                         {quiz.status === 'paused' && (
                                                             <button className="flex flex-row w-full px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors"
-                                                                onClick={() =>{closePopover(index);  openResumeQuiz(quiz.quizId)}}>
+                                                                onClick={() => { closePopover(index); openResumeQuiz(quiz.quizId) }}>
                                                                 <Image src='/icons/play-dark.svg' alt="resume quiz" width={20} height={20} />
                                                                 <p>Resume</p>
                                                             </button>
@@ -556,45 +558,45 @@ function Quizz() {
 
                                                         {/* Option 3: Schedule Quiz (only if status is Paused) */}
                                                         {quiz.status === 'paused' && (
-                                                               <button className="flex flex-row w-full px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors" onClick={() => { closePopover(index); openScheduledDialog(quiz.quizId, quiz.startDate, quiz.endDate)}}>
-                                                                            <Image src='/icons/calendar-03.svg' alt="schedule" width={18} height={18} />
-                                                                            <p>Schedule</p>
-                                                          </button>
+                                                            <button className="flex flex-row w-full px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors" onClick={() => { closePopover(index); openScheduledDialog(quiz.quizId, quiz.startDate, quiz.endDate) }}>
+                                                                <Image src='/icons/calendar-03.svg' alt="schedule" width={18} height={18} />
+                                                                <p>Schedule</p>
+                                                            </button>
                                                         )}
 
                                                         {/* Option 4: Delete Quiz */}
                                                         <div>
                                                             {quiz.status === 'paused' && (
                                                                 <button className="flex flex-row w-[11.563rem] px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors"
-                                                                    onClick={() => {closePopover(index); openDeleteDialog(quiz.quizId, quiz.title)}}>
+                                                                    onClick={() => { closePopover(index); openDeleteDialog(quiz.quizId, quiz.title) }}>
                                                                     <Image src='/icons/delete.svg' alt="delete" width={18} height={18} />
                                                                     <p className="text-[#DE3024]">Delete</p>
                                                                 </button>
                                                             )}
                                                             {quiz.status === 'scheduled' && (
                                                                 <button className="flex flex-row w-[10.438rem] px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors"
-                                                                onClick={() => {closePopover(index); openDeleteDialog(quiz.quizId, quiz.title)}}>
+                                                                    onClick={() => { closePopover(index); openDeleteDialog(quiz.quizId, quiz.title) }}>
                                                                     <Image src='/icons/delete.svg' alt="delete" width={18} height={18} />
                                                                     <p className="text-[#DE3024]">Delete</p>
                                                                 </button>
                                                             )}
                                                             {quiz.status === 'finished' && (
                                                                 <button className="flex flex-row w-[10.438rem] px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors"
-                                                                onClick={() => {closePopover(index); openDeleteDialog(quiz.quizId, quiz.title)}}>
+                                                                    onClick={() => { closePopover(index); openDeleteDialog(quiz.quizId, quiz.title) }}>
                                                                     <Image src='/icons/delete.svg' alt="delete" width={18} height={18} />
                                                                     <p className="text-[#DE3024]">Delete</p>
                                                                 </button>
                                                             )}
                                                             {quiz.status === 'saved' && (
                                                                 <button className="flex flex-row w-[10.438rem] px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors"
-                                                                onClick={() => {closePopover(index); openDeleteDialog(quiz.quizId, quiz.title)}}>
+                                                                    onClick={() => { closePopover(index); openDeleteDialog(quiz.quizId, quiz.title) }}>
                                                                     <Image src='/icons/delete.svg' alt="delete" width={18} height={18} />
                                                                     <p className="text-[#DE3024]">Delete</p>
                                                                 </button>
                                                             )}
                                                             {quiz.status === 'live' && (
                                                                 <button className="flex flex-row w-[10.438rem] px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors"
-                                                                    onClick={() =>{closePopover(index); openEndQuiz(quiz.quizId)}}>
+                                                                    onClick={() => { closePopover(index); openEndQuiz(quiz.quizId) }}>
                                                                     <Image src='/icons/license-no.svg' alt="end quiz" width={18} height={18} />
                                                                     <p className="text-[#DE3024]">End</p>
                                                                 </button>
@@ -624,7 +626,7 @@ function Quizz() {
                 </div>
             )}
             {/* Dialog components with conditional rendering */}
-            {isDeleteDialogOpen && <DeleteDialog onClose={closeDeleteDialog} open={true} fromContent="quiz" contentId={quizId} contentName={quizName}/>}
+            {isDeleteDialogOpen && <DeleteDialog onClose={closeDeleteDialog} open={true} fromContent="quiz" contentId={quizId} contentName={quizName} />}
             {isScheduledDialogOpen && <ScheduledDialog onClose={() => setIsScheduledDialogOpen(false)} fromContent="quiz" contentId={quizId || ''} startDate={startDate} endDate={endDate} setEndDate={setEndDate} setLiveNow={setLiveCourseNow} liveNow={liveCourseNow} setStartDate={setStartDate} />}
             {isEndDialogOpen && <EndDialog onClose={() => setIsEndDialogOpen(false)} fromContent="quiz" contentId={quizId || ''} />}
             {isPausedDialogOpen && <PausedDialog onClose={() => setIsPausedDialogOpen(false)} fromContent="quiz" contentId={quizId || ''} />}

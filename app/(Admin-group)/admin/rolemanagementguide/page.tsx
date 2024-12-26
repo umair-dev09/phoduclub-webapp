@@ -1,4 +1,5 @@
 "use client";
+
 import React from 'react';
 import Image from 'next/image';
 import { Popover, PopoverContent, PopoverTrigger } from "@nextui-org/popover";
@@ -9,6 +10,7 @@ import LoadingData from "@/components/Loading";
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { db } from '@/firebase';
+
 interface UserData {
     userId: string;
     name: string;
@@ -29,7 +31,7 @@ function RoleManagementGuide() {
     const [data, setData] = useState<UserData[]>([]);
     const [users, setUsers] = useState<UserData[]>([]);
     const [loading, setLoading] = useState(true);
-
+    const [searchTerm, setSearchTerm] = useState('');
 
     useEffect(() => {
         const usersCollection = collection(db, 'users');
@@ -117,6 +119,19 @@ function RoleManagementGuide() {
         return <LoadingData />
     }
 
+    // useEffect(() => {
+    //     // if (users.length === 0) return;
+
+    //     let filteredQuizzes = users;
+
+    //     // Filter by search term
+    //     if (searchTerm) {
+    //         filteredQuizzes = filteredQuizzes.filter((user) =>
+    //             user.name.toLowerCase().includes(searchTerm.toLowerCase())
+    //         );
+    //     }
+    // }, [searchTerm, users]);
+
     return (
         <div className="flex flex-col w-full  gap-4 p-8">
             <div className="flex flex-row justify-between items-center">
@@ -135,6 +150,8 @@ function RoleManagementGuide() {
                                 className="font-normal text-[#667085] text-sm placeholder:text-[#A1A1A1] rounded-md w-full px-1 py-1 focus:outline-none focus:ring-0 border-none"
                                 placeholder="Search"
                                 type="text"
+                                value={searchTerm}
+                                onChange={(e) => setSearchTerm(e.target.value)}
                             />
                         </div>
                     </button>
