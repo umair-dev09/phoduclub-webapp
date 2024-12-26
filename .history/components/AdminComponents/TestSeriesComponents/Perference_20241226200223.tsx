@@ -122,7 +122,7 @@ function Preference({ liveQuizNow, setLiveQuizNow, startDate, setStartDate, endD
                             <p className="text-[#1D2939] text-sm font-medium">  {formatScheduleDate(endDate) || ""}</p>
                             <button
                                 className="flex flex-row gap-1 rounded-md border-[2px] border-solid border-[#9012FF] hover:bg-[#F5F0FF] bg-[#FFFFFF] p-2 "
-                                onClick={() => setDatapickerforEnd(!datapickerforEnd)}>
+                                onClick={() => setDatapickerforEnd(true)}>
                                 <span className="text-[#9012FF] font-semibold text-sm">{endDate ? 'Change Date' : 'Select Date'}</span>
                             </button>
                         </div>
@@ -134,7 +134,7 @@ function Preference({ liveQuizNow, setLiveQuizNow, startDate, setStartDate, endD
                                 onChange={(date) => {
                                     const dateString = date ? date.toString() : "";
                                     setEndDate(dateString);
-
+                                    setDatapickerforEnd(true); // Return to button view after selecting date
                                 }}
                             />
                         )}
