@@ -11,7 +11,7 @@ import StudentsAttemptedTestseries from '@/components/AdminComponents/Testseries
 import Content from '@/components/AdminComponents/TestseriesInfo/Content';
 import { Popover, PopoverContent, PopoverTrigger } from "@nextui-org/popover";
 import { Tabs, Tab } from "@nextui-org/react";
-import { doc, getDoc, onSnapshot } from "firebase/firestore";
+import { collection, doc, getDoc, getDocs, onSnapshot } from "firebase/firestore";
 import { db } from "@/firebase";
 import LoadingData from "@/components/Loading";
 import StatusDisplay from "@/components/AdminComponents/StatusDisplay";
@@ -22,7 +22,24 @@ import DeleteDialog from "@/components/AdminComponents/QuizInfoDailogs/DeleteDai
 import { ToastContainer } from "react-toastify";
 import DeleteTest from "@/components/AdminComponents/TestseriesDialogs/DeleteTest";
 import { format } from 'date-fns';
+interface Section {
+    id: string;
+    sectionName: string;
+    sectionScheduleDate: string;
+    parentSectionId?: string | null;
+    order?: number;
+    hasQuestions: boolean;
+    sections?: Section[];
+    description: string;
+    marksPerQ: string;
+    nMarksPerQ: string;
+    testTime: string;
+    Questions?: Question[];
 
+  }
+  interface Question {
+    id: string;
+}
 type testData = {
     testName: string | null;
     testDescription: string | null;
@@ -80,8 +97,9 @@ function TestSeriesInfo() {
     const searchParams = useSearchParams();
     const testId = searchParams.get('tId');
     const [testData, setTestData] = useState<testData | null>(null);
-    const [loading, setLoading] = useState(true); // Track loading state
     const [testName, setTestName] = useState('');
+    const [loading, setLoading] = useState(true);
+    const [sectionLoading, setSectionLoading] = useState(false);
 
     // State to manage each dialog's visibility
 
@@ -89,16 +107,15 @@ function TestSeriesInfo() {
     const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
     const [isEndDialogOpen, setIsEndDialogOpen] = useState(false);
     const [isPausedDialogOpen, setIsPausedDialogOpen] = useState(false);
-    const [isMakeLiveNowDialogOpen, setIsMakeLiveNowDialogOpen] = useState(false);
     const [isResumeOpen, setIsResumeOpen] = useState(false);
     const [adminDetails, setAdminDetails] = useState<{ name: string, profilePic: string } | null>(null);
     
     useEffect(() => {
         if (testId) {
             const courseDocRef = doc(db, "testseries", testId); // Replace "testseries" with your Firestore collection name
-            const unsubscribe = onSnapshot(courseDocRef, (courseSnapshot) => {
-                if (courseSnapshot.exists()) {
-                    setTestData(courseSnapshot.data() as testData);
+            const unsubscribe = onSnapshot(courseDocRef, (testSnapshot) => {
+                if (testSnapshot.exists()) {
+                    setTestData(testSnapshot.data() as testData);
                 } else {
                     console.error("No testseries found with the given ID.");
                 }
@@ -113,6 +130,140 @@ function TestSeriesInfo() {
             setLoading(false);
         }
     }, [testId]);
+
+      const [sectionss, setSections] = useState<Section[]>([]);
+          const [currentPath, setCurrentPath] = useState<string[]>([]);
+          const [currentSectionIds, setCurrentSectionIds] = useState<string[]>([]);
+          const [breadcrumbs, setBreadcrumbs] = useState<{ id: string; name: string }[]>([]);
+        // ----------------------------------------------------------------------------------------
+        useEffect(() => {
+            if (!testId) return;
+          
+            // Fetch sections and subsections in real-time
+            const fetchSections = async (): Promise<() => void> => {
+              try {
+                setSectionLoading(true); // Start loading
+          
+                const path = currentPath.reduce(
+                  (acc, id) => `${acc}/sections/${id}`,
+                  `testseries/${testId}`
+                );
+          
+                const sectionCollection = collection(db, `${path}/sections`);
+          
+                const unsubscribe = onSnapshot(sectionCollection, async (snapshot) => {
+                  const fetchedSections = await Promise.all(
+                    snapshot.docs.map(async (doc) => {
+                      const sectionData = doc.data();
+          
+                      // Fetching subsections (nested subcollection)
+                      const subsectionsCollection = collection(doc.ref, 'sections');
+                      const subsectionsSnapshot = await getDocs(subsectionsCollection);
+                      const subsections = await Promise.all(
+                        subsectionsSnapshot.docs.map(async (subsectionDoc) => {
+                          const subsectionData = subsectionDoc.data();
+                          return {
+                            id: subsectionDoc.id,
+                            sectionName: subsectionData.sectionName,
+                            sectionScheduleDate: subsectionData.sectionScheduleDate,
+                            parentSectionId: subsectionData.parentSectionId || null,
+                            order: subsectionData.order || 0,
+                            hasQuestions: subsectionData.hasQuestions || false,
+                            sections: [],
+                            description: sectionData.description,
+                            marksPerQ: sectionData.marksPerQ,
+                            nMarksPerQ: sectionData.nMarksPerQ,
+                            testTime: sectionData.testTime,
+                            Questions: [],
+                          };
+                        })
+                      );
+          
+                      // Check if section has questions
+                      const questionsCollection = collection(doc.ref, 'Questions');
+                      const questionsSnapshot = await getDocs(questionsCollection);
+                      const questionsss = await Promise.all(
+                        questionsSnapshot.docs.map(async (qDoc) => {
+                          const qData = qDoc.data();
+                          return {
+                            id: qDoc.id,
+                          };
+                        })
+                      );
+                      return {
+                        id: doc.id,
+                        sectionName: sectionData.sectionName,
+                        sectionScheduleDate: sectionData.sectionScheduleDate,
+                        parentSectionId: sectionData.parentSectionId || null,
+                        order: sectionData.order || 0,
+                        hasQuestions: sectionData.hasQuestions,
+                        sections: subsections,
+                        description: sectionData.description,
+                        marksPerQ: sectionData.marksPerQ,
+                        nMarksPerQ: sectionData.nMarksPerQ,
+                        testTime: sectionData.testTime,
+                        Questions: questionsss,
+                      };
+                    })
+                  );
+          
+                  // Sort sections and update state
+                  setSections(fetchedSections.sort((a, b) => (a.order || 0) - (b.order || 0)));
+                  setSectionLoading(false); // End loading when data is fetched
+                });
+          
+                return unsubscribe; // Return unsubscribe function
+              } catch (error) {
+                console.error('Error fetching sections: ', error);
+                setSectionLoading(false); // Ensure loading stops in case of error
+                return () => {}; // Return a no-op unsubscribe in case of error
+              }
+            };
+          
+            // Async wrapper for fetchSections
+            const getUnsubscribe = async (): Promise<() => void> => {
+              const unsubscribe = await fetchSections();
+              return unsubscribe;
+            };
+          
+            let unsubscribeFn: () => void; // Explicitly typed as a function that returns void
+          
+            getUnsubscribe()
+              .then((unsubscribe) => {
+                unsubscribeFn = unsubscribe; // Store the unsubscribe function
+              })
+              .catch((err) => {
+                console.error('Error initializing sections listener:', err);
+              });
+          
+            return () => {
+              if (unsubscribeFn) unsubscribeFn(); // Cleanup on unmount or dependency change
+            };
+          }, [currentPath, testId]);
+          const handleNavigationClick = (index: number) => {
+            setCurrentPath(prev => prev.slice(0, index + 1));
+            setBreadcrumbs(prev => prev.slice(0, index + 1));
+            // Update section IDs when navigating
+            setCurrentSectionIds(prev => prev.slice(0, index + 1));
+        };
+    
+        const navigateToSection = (sectionId: string, sectionName: string) => {
+            setCurrentPath((prev) => [...prev, sectionId]);
+            setBreadcrumbs((prev) => [...prev, { id: sectionId, name: sectionName }]);
+            // Add the new section ID to the list
+            setCurrentSectionIds((prev) => [...prev, sectionId]);
+        };
+    
+        const resetNavigation = () => {
+            setCurrentPath([]);
+            setBreadcrumbs([]);
+            // Reset section IDs
+            setCurrentSectionIds([]);
+        };
+        const getSectionPath = (currentSectionId: string): string[] => {
+          return [...currentSectionIds, currentSectionId];
+      }; 
+
      useEffect(() => {
             const fetchAdminDetails = async (adminId: string) => {
                 const adminDoc = await getDoc(doc(db, 'admin', adminId));
@@ -366,7 +517,92 @@ function TestSeriesInfo() {
                             </div>
                         }
                     >
-                        <Content />
+                        {/* <Content /> */}
+                        <div>
+                             <div className="flex flex-row items-center gap-2 mb-4">
+                                                         <button
+                                                         onClick={resetNavigation}
+                                                           className="font-medium text-[#667085] hover:underline ml-1"
+                                                         >
+                                                           {testData?.testName}
+                                                         </button>
+                                                         {breadcrumbs.map((breadcrumb, index) => (
+                                                           <div key={breadcrumb.id} className="flex flex-row items-center gap-2">
+                                                             <Image src="/icons/course-left.svg" width={6} height={6} alt="arrow" className="w-[10px] h-[10px]" />
+                                                             <button
+                                                               onClick={() => handleNavigationClick(index)}
+                                                               className={
+                                                                 index === breadcrumbs.length - 1
+                                                                   ? "text-black font-medium"
+                                                                   : "font-medium text-[#667085] hover:underline"
+                                                               }
+                                                             >
+                                                               {breadcrumb.name}
+                                                             </button>
+                                                           </div>
+                                                         ))}
+                                                         {/* {questionsBreadcrumb && (
+                                                           <div className="flex flex-row items-center gap-2">
+                                                             <Image src="/icons/course-left.svg" width={6} height={6} alt="arrow" className="w-[10px] h-[10px]" />
+                                                             <span className="text-black font-medium">
+                                                               {questionsBreadcrumb.name}
+                                                             </span>
+                                                           </div>
+                                                         )} */}
+                                                       </div>
+                                                       {sectionLoading ? (
+                                                         <LoadingData />
+                                                       ):(
+                                                        <>
+                                                          {sectionss.length <= 0 ? (
+                                                                <>
+                                                            <div className="w-full h-auto flex flex-col gap-2 border border-solid border-[#EAECF0] bg-[#FFFFFF] rounded-md mb-16 items-center justify-center px-6 py-12">
+                                                            <h3 className="text-base">Nothing is here</h3>
+                                                            </div>   
+                                                            </> 
+                                                        ) : (
+                                                        <div className='flex flex-col gap-4 pb-12'>
+                                                        {sectionss.map((section,index) => (
+                                                            <div key={index} className={`${section.hasQuestions ? '' : 'cursor-pointer'} flex flex-row items-center justify-between px-6 py-4 bg-white border border-lightGrey rounded-xl`}
+                                                            onClick={() => {
+                                                                if (section.hasQuestions) {
+                                                                  // Do nothing if section.hasQuestion is true
+                                                                  return;
+                                                                }
+                                                                // Perform the action if section.hasQuestion is false
+                                                                navigateToSection(section.id, section.sectionName);
+                                                              }} >
+                                                                <div className='flex flex-col gap-1'>
+                                                                    <p className='text-left text-base text-[#1D2939] font-semibold'>{section.sectionName}</p>
+                                                                    {section.hasQuestions ? (
+                                                                     <p className='text-left text-sm text-[#667085] font-normal'>{section.Questions?.length} Questions</p>
+                                                                    ) : (
+                                                                        <p className='text-left text-sm text-[#667085] font-normal'>{section.sections?.length} Tests</p>
+                                                                    )}
+                                                                </div>
+                                                                <div>
+                                                                {section.hasQuestions ? (
+                                                                    <button className='w-[7.25rem] h-9 px-[0.875rem] py-[0.625rem] text-white text-xs font-semibold bg-[#9012FF] border border-[#800EE2] rounded-[6px] shadow-inner-button'
+                                                                    onClick={() => {
+                                                                      const sectionIds = getSectionPath(section.id);
+                                                                      const url = `/testview?tId=${testId}&sectionIds=${encodeURIComponent(
+                                                                        JSON.stringify(sectionIds)
+                                                                      )}`; 
+                                                                      window.open(url, "_blank"); // Opens in a new tab
+                                                                      }}>Start Test</button>
+                                                                    ) : (
+                                                                        <Image src='/icons/collapse-right-02.svg' alt='open this test series' width={24} height={24} />
+                                                                    )}
+                            
+                                                                </div>
+                                                            </div>
+                                                         ))}
+                                                        </div>
+                                                         )}
+                                                        </>
+                                                        
+                                                       )}
+                        </div>
                     </Tab>
 
                     <Tab
