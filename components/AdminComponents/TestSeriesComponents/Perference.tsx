@@ -143,7 +143,7 @@ function Preference({ liveQuizNow, setLiveQuizNow, startDate, setStartDate, endD
                         <Select
                             id="target-exam"
                             value={selectedYears}
-                            onChange={(newValue) => setSelectedExams(newValue as Option[])}
+                            onChange={(newValue) => setSelectedYears(newValue as Option[])}
                             options={years}
                             isMulti
                             placeholder="Select exams..."
