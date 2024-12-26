@@ -213,7 +213,7 @@ function Review({ name, testId, description, testImage, price, rating, discountP
             
                 <div className='flex flex-1 flex-col overflow-y-auto w-full '>
                     <div className='flex flex-row gap-3 mt-6 mb-4'>
-                        <h2 className='text-base font-bold text-[#1D2939]'>About Test Series</h2>
+                        <h2 className='text-base font-bold text-[#1D2939]'>About  dTest Series</h2>
                         
                     </div>
                     {/* Test content */}
