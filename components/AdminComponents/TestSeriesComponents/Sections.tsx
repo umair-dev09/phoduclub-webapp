@@ -429,9 +429,9 @@ const Sections: React.FC<SectionsProps> = ({
       // Commit all changes
       await batch.commit();
       toast.success("Questions saved successfully");
-      
+
       // Refresh the questions list with updated IDs
-      await fetchQuestions(sectionId, selectedSection?.sectionName || '');
+      fetchQuestions(sectionId, selectedSection?.sectionName || '');
       
     } catch (error) {
       console.error("Error saving questions: ", error);
@@ -492,6 +492,7 @@ const Sections: React.FC<SectionsProps> = ({
   
       // Commit all changes
       await batch.commit();
+      await fetchQuestions(sectionId, selectedSection?.sectionName || '');
       toast.success("Questions and details added successfully");
       setMarksPerQ('');
       setnMarksPerQ('');
@@ -500,8 +501,9 @@ const Sections: React.FC<SectionsProps> = ({
       setTimeText('Minute(s)');
       setSaveQuestionSectionId('');
       setSaveQuestionDialog(false);
-      // Refresh the questions list with updated IDs
-      await fetchQuestions(sectionId, selectedSection?.sectionName || '');
+      
+      // Navigate back to the previous section
+      handleNavigationClick(currentPath.length - 1);
       
     } catch (error) {
       console.error("Error saving questions: ", error);
@@ -536,38 +538,96 @@ const Sections: React.FC<SectionsProps> = ({
     setQuestionsList(prevList => [...prevList, newQuestion]);
   };
 
-  const handleCSV_QuestionUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleCSV_QuestionUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (!file) return;
-  
-    parse(file, {
-      header: true,
-      complete: (results) => {
-        const newQuestions = results.data.map((row: any) => ({
-          question: row.question || '',
-          isChecked: false,
-          isActive: false,
-          options: {
-            A: row.optionA || '',
-            B: row.optionB || '',
-            C: row.optionC || '',
-            D: row.optionD || '',
-          },
-          correctAnswer: row.correctAnswer || null,
-          explanation: row.explanation || '',
-          difficulty: row.difficulty || 'Easy',
-          questionId: doc(collection(db, 'questions')).id,
-        }));
-  
+
+    const validExtensions = ['csv', 'xlsx'];
+    const fileExtension = file.name.split('.').pop()?.toLowerCase();
+
+    if (!validExtensions.includes(fileExtension || '')) {
+      toast.error("Invalid file type. Please upload a CSV or XLSX file.");
+      return;
+    }
+
+    if (fileExtension === 'csv') {
+      parse(file, {
+        header: true,
+        complete: (results) => {
+          const newQuestions = results.data
+            .filter((row: any) => row.question && row.optionA && row.optionB && row.optionC && row.optionD && row.correctAnswer && row.explanation)
+            .map((row: any) => ({
+              question: row.question || '',
+              isChecked: false,
+              isActive: false,
+              options: {
+                A: row.optionA || '',
+                B: row.optionB || '',
+                C: row.optionC || '',
+                D: row.optionD || '',
+              },
+              correctAnswer: row.correctAnswer || null,
+              explanation: row.explanation || '',
+              difficulty: row.difficulty || 'Easy',
+              questionId: doc(collection(db, 'questions')).id,
+            }));
+
+          if (newQuestions.length === 0) {
+            toast.error("No valid questions found in the file.");
+            return;
+          }
+
+          setQuestionsList(prev => [...prev, ...newQuestions]);
+          setCsvUploadDialog(false);
+          toast.success("Questions Added!");
+        },
+        error: (error) => {
+          console.error('Error parsing CSV:', error);
+          toast.error("Failed to add questions, Please check your file formatting!");
+        }
+      });
+    } else if (fileExtension === 'xlsx') {
+      const XLSX = await import('xlsx');
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const data = new Uint8Array(e.target?.result as ArrayBuffer);
+        const workbook = XLSX.read(data, { type: 'array' });
+        const sheetName = workbook.SheetNames[0];
+        const worksheet = workbook.Sheets[sheetName];
+        const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 }) as any[][];
+        
+        const headers = jsonData[0] as string[];
+        const rows = jsonData.slice(1);
+        
+        const newQuestions = rows
+          .filter((row: any[]) => row[headers.indexOf('question')] && row[headers.indexOf('optionA')] && row[headers.indexOf('optionB')] && row[headers.indexOf('optionC')] && row[headers.indexOf('optionD')] && row[headers.indexOf('correctAnswer')] && row[headers.indexOf('explanation')])
+          .map((row: any[]) => ({
+            question: row[headers.indexOf('question')] || '',
+            isChecked: false,
+            isActive: false,
+            options: {
+              A: row[headers.indexOf('optionA')] || '',
+              B: row[headers.indexOf('optionB')] || '',
+              C: row[headers.indexOf('optionC')] || '',
+              D: row[headers.indexOf('optionD')] || '',
+            },
+            correctAnswer: row[headers.indexOf('correctAnswer')] || null,
+            explanation: row[headers.indexOf('explanation')] || '',
+            difficulty: row[headers.indexOf('difficulty')] || 'Easy',
+            questionId: doc(collection(db, 'questions')).id,
+          }));
+
+        if (newQuestions.length === 0) {
+          toast.error("No valid questions found in the file.");
+          return;
+        }
+
         setQuestionsList(prev => [...prev, ...newQuestions]);
         setCsvUploadDialog(false);
         toast.success("Questions Added!");
-      },
-      error: (error) => {
-        console.error('Error parsing CSV:', error);
-        toast.error("Failed to add questions, Please check your file formatting!");
-      }
-    });
+      };
+      reader.readAsArrayBuffer(file);
+    }
   };
   const renderQuestionsView = () => {
     if (!showQuestions || !selectedSection) return null;
@@ -640,7 +700,7 @@ const Sections: React.FC<SectionsProps> = ({
                           <p className="text-sm">Add manually</p>  
                         </button>
                         <button className="flex flex-row gap-1 items-center px-4 py-2 rounded-none w-full h-auto hover:bg-[#F2F4F7]"
-                          >
+                         onClick={() => setCsvUploadDialog(true)} >
                           <p className="text-sm">Upload CSV File</p>  
                         </button>
                         </div>
@@ -1223,9 +1283,19 @@ const Sections: React.FC<SectionsProps> = ({
               </div>
               <hr />
               <div className="flex flex-row justify-start my-2 items-center  pb-2">
-                <button className="flex flex-row gap-2 items-centers">
-                <Image src="/icons/download-csv.svg" alt="Cancel" width={18} height={18} />
-                <p className="text-[#344054] text-sm">Download Sample file</p>
+                <button 
+                  className="flex flex-row gap-2 items-center"
+                  onClick={() => {
+                  const link = document.createElement('a');
+                  link.href = '/sample-file.csv'; // Replace with the actual path to your sample file
+                  link.download = 'sample-file.csv';
+                  document.body.appendChild(link);
+                  link.click();
+                  document.body.removeChild(link);
+                  }}
+                >
+                  <Image src="/icons/download-csv.svg" alt="Download CSV" width={18} height={18} />
+                  <p className="text-[#344054] text-sm">Download Sample file</p>
                 </button>
             
               </div>
