@@ -84,7 +84,7 @@ const Publish = ({ liveQuizNow, setLiveQuizNow, forYear, setForYear, setForExam,
 
     const [datapickerforEnd, setDatapickerforEnd] = useState(false);
     const [datapickerforStart, setDatapickerforStart] = useState(false);
-
+    const [sectionScheduleDate, setSectionScheduleDate] = useState("");
 
     return (
         <div className='flex flex-col pt-4 pb-8 gap-4'>
@@ -148,7 +148,7 @@ const Publish = ({ liveQuizNow, setLiveQuizNow, forYear, setForYear, setForExam,
                                 onChange={(date) => {
                                     const dateString = date ? date.toString() : "";
                                     setEndDate(dateString);
-
+                                    setDatapickerforEnd(false); // Return to button view after selecting date
                                 }}
 
                             />

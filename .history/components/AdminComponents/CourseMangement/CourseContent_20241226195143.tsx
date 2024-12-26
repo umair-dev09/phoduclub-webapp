@@ -56,28 +56,19 @@ const formatScheduleDate = (dateString: string | null): string => {
             return "-";
         }
 
-        // Extract date components
+        // Format the date manually to match "MM/DD/YYYY,HH:mm"
         const year = dateObj.getFullYear();
         const month = String(dateObj.getMonth() + 1).padStart(2, "0");
         const day = String(dateObj.getDate()).padStart(2, "0");
-
-        // Extract time components
-        let hours = dateObj.getHours();
+        const hours = String(dateObj.getHours()).padStart(2, "0");
         const minutes = String(dateObj.getMinutes()).padStart(2, "0");
-        const ampm = hours >= 12 ? "PM" : "AM";
 
-        // Convert hours to 12-hour format
-        hours = hours % 12 || 12; // Convert 0 to 12 for midnight
-        const formattedHours = String(hours).padStart(2, "0");
-
-        // Combine formatted components
-        return `${month}/${day}/${year},${formattedHours}:${minutes} ${ampm}`;
+        return `${month}/${day}/${year},${hours}:${minutes}`;
     } catch (error) {
         console.error("Error formatting date:", error);
         return "-";
     }
 };
-
 
 
 

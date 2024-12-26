@@ -104,7 +104,7 @@ function ScheduledDialog({ startDate, endDate, setEndDate, setStartDate, fromCon
         <Dialog open={true} onClose={onClose} className="relative z-50">
             <DialogBackdrop className="fixed inset-0 bg-black/30 " />
             <div className="fixed inset-0 flex items-center justify-center ">
-                <DialogPanel transition className="bg-white rounded-2xl w-[620px] h-auto">
+                <DialogPanel transition className="bg-white rounded-2xl w-[559px] h-auto">
                     <div className="flex flex-col  p-6 gap-4">
                         <div className="flex flex-row  justify-between ">
                             <h3 className="text-2xl font-semibold text-[#1D2939]">
@@ -142,7 +142,7 @@ function ScheduledDialog({ startDate, endDate, setEndDate, setStartDate, fromCon
                             <div className='flex flex-col w-1/2 gap-1'>
                                 <span className='font-medium text-[#1D2939] text-sm'>Start Date & Time</span>
 
-                                <div className="flex flex-row justify-between items-center mb-3">
+                                <div className="flex flex-row gap-4 items-center mb-3">
                                     <p className="text-[#1D2939] text-sm font-medium">  {formatScheduleDate(startDate) || ""}</p>
                                     <button
                                         className="flex flex-row gap-1 rounded-md border-[2px] border-solid border-[#9012FF] hover:bg-[#F5F0FF] bg-[#FFFFFF] p-2 "
@@ -167,7 +167,7 @@ function ScheduledDialog({ startDate, endDate, setEndDate, setStartDate, fromCon
                             </div>
                             <div className='flex flex-col w-1/2 gap-1'>
                                 <span className='font-medium text-[#1D2939] text-sm'>End Date & Time</span>
-                                <div className="flex flex-row justify-between items-center mb-3">
+                                <div className="flex flex-row gap-4 items-center mb-3">
                                     <p className="text-[#1D2939] text-sm font-medium">  {formatScheduleDate(endDate) || ""}</p>
                                     <button
                                         className="flex flex-row gap-1 rounded-md border-[2px] border-solid border-[#9012FF] hover:bg-[#F5F0FF] bg-[#FFFFFF] p-2 "

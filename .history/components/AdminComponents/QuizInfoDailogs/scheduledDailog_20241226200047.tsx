@@ -56,7 +56,8 @@ const formatScheduleDate = (dateString: string | null): string => {
 
 
 function ScheduledDialog({ startDate, endDate, setEndDate, setStartDate, fromContent, contentId, onClose, liveNow, setLiveNow }: ScheduledDialogProps) { // Use the interface
-
+    const [showDatepicker, setShowDatepicker] = useState(false);
+    const [sectionScheduleDate, setSectionScheduleDate] = useState("");
     const [datapickerforEnd, setDatapickerforEnd] = useState(false);
     const [datapickerforStart, setDatapickerforStart] = useState(false);
 
@@ -104,7 +105,7 @@ function ScheduledDialog({ startDate, endDate, setEndDate, setStartDate, fromCon
         <Dialog open={true} onClose={onClose} className="relative z-50">
             <DialogBackdrop className="fixed inset-0 bg-black/30 " />
             <div className="fixed inset-0 flex items-center justify-center ">
-                <DialogPanel transition className="bg-white rounded-2xl w-[620px] h-auto">
+                <DialogPanel transition className="bg-white rounded-2xl w-[559px] h-auto">
                     <div className="flex flex-col  p-6 gap-4">
                         <div className="flex flex-row  justify-between ">
                             <h3 className="text-2xl font-semibold text-[#1D2939]">

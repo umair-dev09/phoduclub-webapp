@@ -148,7 +148,7 @@ const Publish = ({ liveQuizNow, setLiveQuizNow, forYear, setForYear, setForExam,
                                 onChange={(date) => {
                                     const dateString = date ? date.toString() : "";
                                     setEndDate(dateString);
-
+                                    setDatapickerforEnd(false); // Return to button view after selecting date
                                 }}
 
                             />

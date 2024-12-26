@@ -19,28 +19,28 @@ type ScheduleProps = {
 
 }
 
-// const convertToTimeFormat = (timeStr: string): string => {
-//     const regex = /(\d+)\s*(Minute|Hour)\(s\)/i;
-//     const match = timeStr.match(regex);
+const convertToTimeFormat = (timeStr: string): string => {
+    const regex = /(\d+)\s*(Minute|Hour)\(s\)/i;
+    const match = timeStr.match(regex);
 
-//     if (!match) return "00:00"; // Return default value if the format doesn't match
+    if (!match) return "00:00"; // Return default value if the format doesn't match
 
-//     const value = parseInt(match[1], 10); // Get the numeric value
-//     const unit = match[2].toLowerCase(); // Get the unit (either minute or hour)
+    const value = parseInt(match[1], 10); // Get the numeric value
+    const unit = match[2].toLowerCase(); // Get the unit (either minute or hour)
 
-//     let totalMinutes = 0;
+    let totalMinutes = 0;
 
-//     if (unit === "minute") {
-//         totalMinutes = value;
-//     } else if (unit === "hour") {
-//         totalMinutes = value * 60; // Convert hours to minutes
-//     }
+    if (unit === "minute") {
+        totalMinutes = value;
+    } else if (unit === "hour") {
+        totalMinutes = value * 60; // Convert hours to minutes
+    }
 
-//     const hours = Math.floor(totalMinutes / 60).toString().padStart(2, "0"); // Calculate hours and format
-//     const minutes = (totalMinutes % 60).toString().padStart(2, "0"); // Calculate minutes and format
+    const hours = Math.floor(totalMinutes / 60).toString().padStart(2, "0"); // Calculate hours and format
+    const minutes = (totalMinutes % 60).toString().padStart(2, "0"); // Calculate minutes and format
 
-//     return `${hours}:${minutes}`;
-// };
+    return `${hours}:${minutes}`;
+};
 
 
 const formatScheduleDate = (dateString: string | null): string => {
@@ -79,7 +79,7 @@ const formatScheduleDate = (dateString: string | null): string => {
 
 function Schedule({ marksPerQ, setMarksPerQ, nMarksPerQ, setnMarksPerQ, timeNumber, setTimeNumber, timeText, setTimeText, quizScheduleDate, setQuizScheduleDate }: ScheduleProps) {
 
-    const [showDatepicker, setShowDatepicker] = useState(false);
+
     let [isOpenT, setIsOpenT] = useState(false);
     return (
         <div className='flex flex-col pt-4 pb-8 gap-4'>
@@ -90,11 +90,11 @@ function Schedule({ marksPerQ, setMarksPerQ, nMarksPerQ, setnMarksPerQ, timeNumb
                 <div className="flex flex-col gap-2 mb-3 mt-1">
                     <span className="text-[#1D2939] font-semibold text-sm">Schedule Lesson</span>
                     <div className="flex flex-row justify-between items-center">
-                        <p className="text-[#1D2939] text-sm font-medium">  {formatScheduleDate(quizScheduleDate) || " "}</p>
+                        <p className="text-[#1D2939] text-sm font-medium">  {formatScheduleDate(contentScheduleDate) || " "}</p>
                         <button
                             className="flex flex-row gap-1 rounded-md border-[2px] border-solid border-[#9012FF] hover:bg-[#F5F0FF] bg-[#FFFFFF] p-2 "
                             onClick={() => setShowDatepicker(!showDatepicker)}>
-                            <span className="text-[#9012FF] font-semibold text-sm">{quizScheduleDate ? 'Change Date' : 'Select Date'}</span>
+                            <span className="text-[#9012FF] font-semibold text-sm">{contentScheduleDate ? 'Change Date' : 'Select Date'}</span>
                         </button>
                     </div>
                     {(showDatepicker &&
@@ -104,7 +104,7 @@ function Schedule({ marksPerQ, setMarksPerQ, nMarksPerQ, setnMarksPerQ, timeNumb
                             hideTimeZone
                             onChange={(date) => {
                                 const dateString = date ? date.toString() : "";
-                                setQuizScheduleDate(dateString);
+                                setContentScheduleDate(dateString);
 
                             }}
 
