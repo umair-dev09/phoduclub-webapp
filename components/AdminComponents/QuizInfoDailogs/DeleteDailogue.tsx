@@ -1,15 +1,53 @@
 import { Dialog, DialogBackdrop, DialogPanel } from "@headlessui/react";
 import Image from "next/image";
 import React, { useState } from "react";
+import { toast, ToastContainer } from 'react-toastify';
+import { deleteDoc, doc, updateDoc } from "firebase/firestore";
+import { db } from "@/firebase";
 
 // Define the props interface
-interface DeleteQuizProps {
+interface DeleteDialogProps {
     open: boolean; // Prop to control dialog visibility
     onClose: () => void; // Function to close the dialog
+    fromContent: string;
+    contentId: string;
+    contentName: string;
 }
 
-function DeleteQuiz({ open, onClose }: DeleteQuizProps) {
-    const [uniqueID, setUniqueID] = useState(""); // Changed to an empty string for input handling
+function DeleteDialog({ open, onClose, fromContent, contentId, contentName }: DeleteDialogProps) {
+    const [confirmedName, setConfirmedName] = useState('');
+    const isFormValid = contentName === confirmedName;
+
+    const handleDeleteQuiz = async () => {
+        const collectionPath =
+          fromContent === "testseries"
+            ? "testseries"
+            : fromContent === "quiz"
+            ? "quiz"
+            : fromContent === "course"
+            ? "course"
+            : null;
+    
+        if (!collectionPath) {
+          console.error("Invalid `fromContent` value.");
+          return;
+        }
+    
+        try {
+            await deleteDoc(doc(db, collectionPath, contentId));
+            toast.success(`${fromContent === "testseries"
+                                                                        ? "Testseries"
+                                                                        : fromContent === "quiz"
+                                                                        ? "Quiz"
+                                                                        : fromContent === "course"
+                                                                        ? "Course"
+                                                                        : ""} Deleted Successfully!`);
+            onClose();
+        } catch (error) {
+            console.error('Error removing user from Firestore:', error);
+            toast.error('Failed to delete category. Please try again.');
+        }
+    };
 
     return (
         <Dialog open={open} onClose={onClose} className="relative z-50">
@@ -20,7 +58,13 @@ function DeleteQuiz({ open, onClose }: DeleteQuizProps) {
                     <div className="flex flex-col p-6 gap-3 border-solid border-[#EAECF0] border-b rounded-t-2xl">
                         <div className="flex flex-row justify-between items-center">
                             <h1 className="text-[#1D2939] font-bold text-lg">
-                                {/* Delete quiz "Physics"? */}
+                                Delete {fromContent === "testseries"
+                                                                        ? "Testseries"
+                                                                        : fromContent === "quiz"
+                                                                        ? "Quiz"
+                                                                        : fromContent === "course"
+                                                                        ? "Course"
+                                                                        : ""} "{contentName}"?
                             </h1>
                             <button
                                 className="w-[32px] h-[32px] rounded-full flex items-center justify-center transition-all duration-300 ease-in-out hover:bg-[#F2F4F7]"
@@ -35,20 +79,26 @@ function DeleteQuiz({ open, onClose }: DeleteQuizProps) {
                             </button>
                         </div>
                         <span className="font-normal text-sm text-[#667085]">
-                            All category, channels & chats inside this group will be gone.
+                            All data of this {fromContent} will be gone.
                         </span>
                         {/* Input Section */}
                         <div className="flex flex-col gap-1">
                             <span className="font-semibold text-sm text-[#1D2939]">
-                                To confirm, please enter the name of the category.
+                                To confirm, please enter the name of the {fromContent === "testseries"
+                                                                        ? "Testseries"
+                                                                        : fromContent === "quiz"
+                                                                        ? "Quiz"
+                                                                        : fromContent === "course"
+                                                                        ? "Course"
+                                                                        : ""}.
                             </span>
                             <div className="flex px-2 items-center h-[40px] border border-solid border-[#D0D5DD] shadow-sm rounded-md">
                                 <input
-                                    className="font-normal text-[#667085] w-full text-sm placeholder:text-[#A1A1A1] rounded-md px-1 py-1 focus:outline-none focus:ring-0 border-none"
+                                    className="font-normal w-full text-sm placeholder:text-[#A1A1A1] rounded-md px-1 py-1 focus:outline-none focus:ring-0 border-none"
                                     type="text"
-                                    placeholder="Enter category name"
-                                    value={uniqueID}
-                                    onChange={(e) => setUniqueID(e.target.value)} // Handle input change
+                                    placeholder={contentName}
+                                    value={confirmedName}
+                                    onChange={(e) => setConfirmedName(e.target.value)} // Handle input change
                                 />
                             </div>
                         </div>
@@ -61,14 +111,20 @@ function DeleteQuiz({ open, onClose }: DeleteQuizProps) {
                         >
                             Cancel
                         </button>
-                        <button
-                            className={`py-[0.625rem] px-6 text-white text-sm shadow-inner-button font-semibold border border-solid border-white rounded-md ${uniqueID.trim() === ""
+                        <button onClick={handleDeleteQuiz}
+                            className={`py-[0.625rem] px-6 text-white text-sm shadow-inner-button font-semibold border border-solid border-white rounded-md ${!isFormValid
                                     ? "bg-[#f3b7b3] cursor-not-allowed"
                                     : "bg-[#BB241A]"
                                 }`}
-                            disabled={uniqueID.trim() === ""} // Disable button when input is empty
+                            disabled={!isFormValid} // Disable button when input is empty
                         >
-                            Delete quiz
+                            Delete {fromContent === "testseries"
+                                                                        ? "Testseries"
+                                                                        : fromContent === "quiz"
+                                                                        ? "Quiz"
+                                                                        : fromContent === "course"
+                                                                        ? "Course"
+                                                                        : ""}
                         </button>
                     </div>
                 </DialogPanel>
@@ -77,4 +133,4 @@ function DeleteQuiz({ open, onClose }: DeleteQuizProps) {
     );
 }
 
-export default DeleteQuiz;
+export default DeleteDialog;

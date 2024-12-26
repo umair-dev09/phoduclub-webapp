@@ -4,7 +4,7 @@ import Image from "next/image";
 import { useState, useEffect } from "react"
 import CourseContent from "@/components/AdminComponents/CourseMangement/CourseContent";
 import StudentsPurchased from "@/components/AdminComponents/CourseMangement/StudentsPurchased";
-import { getDoc, doc, updateDoc } from "firebase/firestore";
+import { getDoc, doc, updateDoc, onSnapshot } from "firebase/firestore";
 import { db } from "@/firebase"; // Adjust the path based on your project setup
 import LoadingData from "@/components/Loading";
 import { toast, ToastContainer } from "react-toastify";
@@ -37,6 +37,7 @@ type CourseData = {
     noOfRating: string | null;
     status: string | null;
     startDate: string | null;
+    createdBy: string | null;   
 };
 
 const StarIcon: React.FC<{ filled: boolean; isHalf: boolean }> = ({ filled, isHalf }) => (
@@ -92,6 +93,8 @@ function Courses() {
     const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
     const [isEndDialogOpen, setIsEndDialogOpen] = useState(false);
     const [isPausedDialogOpen, setIsPausedDialogOpen] = useState(false);
+    const [adminDetails, setAdminDetails] = useState<{ name: string, profilePic: string } | null>(null);
+
     const isFormValid = endDate;
     // Check if dateString is not empty and in the correct format (YYYY-MM-DD)
     const dateValue = startDate && /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}$/.test(startDate)
@@ -109,27 +112,39 @@ function Courses() {
     // Fetch course data from Firestore
     useEffect(() => {
         if (courseId) {
-            const fetchCourseData = async () => {
-                try {
-                    const courseDocRef = doc(db, "course", courseId); // Replace "courses" with your Firestore collection name
-                    const courseSnapshot = await getDoc(courseDocRef);
-                    if (courseSnapshot.exists()) {
-                        setCourseData(courseSnapshot.data() as CourseData);
-                    } else {
-                        console.error("No course found with the given ID.");
-                    }
-                } catch (error) {
-                    console.error("Error fetching course data:", error);
-                } finally {
-                    setLoading(false);
+            const courseDocRef = doc(db, "course", courseId); // Replace "courses" with your Firestore collection name
+            const unsubscribe = onSnapshot(courseDocRef, (courseSnapshot) => {
+                if (courseSnapshot.exists()) {
+                    setCourseData(courseSnapshot.data() as CourseData);
+                } else {
+                    console.error("No course found with the given ID.");
                 }
-            };
-            fetchCourseData();
+                setLoading(false);
+            }, (error) => {
+                console.error("Error fetching course data:", error);
+                setLoading(false);
+            });
+
+            // Cleanup subscription on unmount
+            return () => unsubscribe();
         } else {
             setLoading(false);
         }
     }, [courseId]);
-
+    useEffect(() => {
+            const fetchAdminDetails = async (adminId: string) => {
+                const adminDoc = await getDoc(doc(db, 'admin', adminId));
+                if (adminDoc.exists()) {
+                    setAdminDetails(adminDoc.data() as { name: string, profilePic: string });
+                } else {
+                    console.error('No such admin!');
+                }
+            };
+    
+            if (courseData?.createdBy) {
+                fetchAdminDetails(courseData.createdBy);
+            }
+        }, [courseData]);
 
 
     const currentDate = new Date();

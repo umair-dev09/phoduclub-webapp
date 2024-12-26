@@ -33,12 +33,12 @@ function EndDialog({fromContent, contentId, onClose }: EndDialogProps) { // Use 
         try {
           // Reference to the Firestore document
           const docRef = doc(db, collectionPath, contentId);
-
+ 
           // Update Firestore document with startDate and endDate
           await updateDoc(docRef, {
             status: 'finished', 
         });
-          toast.success('Success!');
+          toast.success('Success!'); 
           console.log("Schedule updated successfully!");
           onClose(); // Close the dialog after a successful update
         } catch (error) {

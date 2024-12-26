@@ -12,7 +12,7 @@ interface PausedDialogProps {
     contentId: string;
 }
 
-function PausedDDialog({ onClose, fromContent, contentId }: PausedDialogProps) { // Use the interface
+function PausedDialog({ onClose, fromContent, contentId }: PausedDialogProps) { // Use the interface
 
     const onPause = async () => {
     
@@ -90,4 +90,4 @@ function PausedDDialog({ onClose, fromContent, contentId }: PausedDialogProps) {
     );
 }
 
-export default PausedDDialog;
+export default PausedDialog;

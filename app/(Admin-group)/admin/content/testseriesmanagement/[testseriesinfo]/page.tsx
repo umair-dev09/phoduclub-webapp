@@ -11,13 +11,16 @@ import StudentsAttemptedTestseries from '@/components/AdminComponents/Testseries
 import Content from '@/components/AdminComponents/TestseriesInfo/Content';
 import { Popover, PopoverContent, PopoverTrigger } from "@nextui-org/popover";
 import { Tabs, Tab } from "@nextui-org/react";
-import { doc, getDoc } from "firebase/firestore";
+import { doc, getDoc, onSnapshot } from "firebase/firestore";
 import { db } from "@/firebase";
 import LoadingData from "@/components/Loading";
 import StatusDisplay from "@/components/AdminComponents/StatusDisplay";
 import EndDialog from "@/components/AdminComponents/QuizInfoDailogs/EndDailogue";
 import PausedDDialog from "@/components/AdminComponents/QuizInfoDailogs/PauseDailogue";
 import ResumeQuiz from "@/components/AdminComponents/QuizInfoDailogs/ResumeDailogue";
+import DeleteDialog from "@/components/AdminComponents/QuizInfoDailogs/DeleteDailogue";
+import { ToastContainer } from "react-toastify";
+import DeleteTest from "@/components/AdminComponents/TestseriesDialogs/DeleteTest";
 
 type testData = {
     testName: string | null;
@@ -29,6 +32,8 @@ type testData = {
     noOfRating: string | null;
     status: string | null;
     startDate: string | null;
+    endDate: string | null;
+    createdBy: string | null;
 };
 const totalStars = 5;
 const StarIcon: React.FC<{ filled: boolean; isHalf: boolean }> = ({ filled, isHalf }) => (
@@ -75,6 +80,7 @@ function TestSeriesInfo() {
     const testId = searchParams.get('tId');
     const [testData, setTestData] = useState<testData | null>(null);
     const [loading, setLoading] = useState(true); // Track loading state
+    const [testName, setTestName] = useState('');
 
     // State to manage each dialog's visibility
 
@@ -84,28 +90,42 @@ function TestSeriesInfo() {
     const [isPausedDialogOpen, setIsPausedDialogOpen] = useState(false);
     const [isMakeLiveNowDialogOpen, setIsMakeLiveNowDialogOpen] = useState(false);
     const [isResumeOpen, setIsResumeOpen] = useState(false);
+    const [adminDetails, setAdminDetails] = useState<{ name: string, profilePic: string } | null>(null);
+    
     useEffect(() => {
         if (testId) {
-            const fetchCourseData = async () => {
-                try {
-                    const courseDocRef = doc(db, "testseries", testId); // Replace "courses" with your Firestore collection name
-                    const courseSnapshot = await getDoc(courseDocRef);
-                    if (courseSnapshot.exists()) {
-                        setTestData(courseSnapshot.data() as testData);
-                    } else {
-                        console.error("No testseries found with the given ID.");
-                    }
-                } catch (error) {
-                    console.error("Error fetching testseries data:", error);
-                } finally {
-                    setLoading(false);
+            const courseDocRef = doc(db, "testseries", testId); // Replace "testseries" with your Firestore collection name
+            const unsubscribe = onSnapshot(courseDocRef, (courseSnapshot) => {
+                if (courseSnapshot.exists()) {
+                    setTestData(courseSnapshot.data() as testData);
+                } else {
+                    console.error("No testseries found with the given ID.");
                 }
-            };
-            fetchCourseData();
+                setLoading(false);
+            }, (error) => {
+                console.error("Error fetching testseries data:", error);
+                setLoading(false);
+            });
+
+            return () => unsubscribe();
         } else {
             setLoading(false);
         }
     }, [testId]);
+     useEffect(() => {
+            const fetchAdminDetails = async (adminId: string) => {
+                const adminDoc = await getDoc(doc(db, 'admin', adminId));
+                if (adminDoc.exists()) {
+                    setAdminDetails(adminDoc.data() as { name: string, profilePic: string });
+                } else {
+                    console.error('No such admin!');
+                }
+            };
+    
+            if (testData?.createdBy) {
+                fetchAdminDetails(testData.createdBy);
+            }
+        }, [testData]);
     const router = useRouter();
     // this logic is for rating 
     interface StarIconProps {
@@ -143,7 +163,7 @@ function TestSeriesInfo() {
                         {/* FOR SAVED--> */}
                         {testData?.status === 'saved' && (
                             <>
-                                <button onClick={() => { setIsScheduledDialogOpen(true) }}
+                                <button onClick={() => router.push(`/admin/content/testseriesmanagement/createtestseries/?s=${testData.status}&tId=${testId}`)}
                                     className="w-auto p-3 gap-2  hover:bg-[#F2F4F7] flex-row flex bg-[#FFFFFF] border border-solid border-[#EAECF0] rounded-[8px] h-[40px] items-center">
                                     <Image src="/icons/publish-quiz.svg" width={18} height={18} alt="publish-quiz" />
                                     <span className="text-sm text-[#0C111D] font-normal">Publish</span>
@@ -161,7 +181,7 @@ function TestSeriesInfo() {
                                 </button>
                                 {/* Button for End */}
                                 <button className="w-auto p-3 gap-2 flex-row flex hover:bg-[#F2F4F7] bg-[#FFFFFF] border border-solid border-[#EAECF0] rounded-[8px] h-[40px] items-center"
-                                    onClick={() => setIsEndDialogOpen(true)}
+                                    onClick={() => { setIsEndDialogOpen(true)}}
                                 >
                                     <Image src="/icons/endquiz.svg" width={18} height={18} alt="End-icon" />
                                     <span className="text-sm text-[#DE3024]  font-normal">End</span>
@@ -183,7 +203,7 @@ function TestSeriesInfo() {
                                 {/* Button for Scheduled  */}
                                 <button
                                     className="w-auto p-3 gap-2 flex-row flex hover:bg-[#F2F4F7] bg-[#FFFFFF] border border-solid border-[#EAECF0] rounded-[8px] h-[40px] items-center"
-                                    onClick={() => { setIsScheduledDialogOpen(true) }}                                    >
+                                    onClick={() => {setStartDate(testData.startDate || ''); setEndDate(testData.endDate || ''); setIsScheduledDialogOpen(true) }}                                    >
                                     <Image src="/icons/select-Date.svg" width={18} height={18} alt="Calendar" />
                                     <span className="text-sm text-[#0C111D]  font-medium">Schedule</span>
                                 </button>
@@ -195,7 +215,7 @@ function TestSeriesInfo() {
                                 {/* Button for Delete */}
                                 <button
                                     className="w-auto p-3 gap-2 flex-row flex bg-[#FFFFFF] hover:bg-[#F2F4F7] border border-solid border-[#EAECF0] rounded-[8px] h-[40px] items-center"
-                                //   onClick={() => setDeleteCourseDialog(true)}
+                                  onClick={() => {setTestName(testData?.testName || ''); setIsDeleteDialogOpen(true)}}
                                 >
                                     <Image src="/icons/delete.svg" width={18} height={18} alt="Delete" />
                                     <span className="text-sm text-[#DE3024]  font-medium">Delete</span>
@@ -220,7 +240,7 @@ function TestSeriesInfo() {
                                             <p className="text-sm text-[#0C111D] font-normal">Edit</p>
                                         </button>
                                         <button className=" flex flex-row items-center justify-start w-full py-[0.625rem] px-4 gap-2 hover:bg-[#F2F4F7]"
-                                        //   onClick={() => setDeleteCourseDialog(true)}
+                                        onClick={() => {setTestName(testData?.testName || ''); setIsDeleteDialogOpen(true)}}
                                         >
                                             <Image src='/icons/delete.svg' alt="Delete-icon" width={18} height={18} />
                                             <p className="text-sm text-[#DE3024] font-normal">Delete</p>
@@ -234,7 +254,7 @@ function TestSeriesInfo() {
             </div>
             {/* <div className="flex flex-row gap-2">
                 <div className="bg-[#EAECF0] rounded-[8px] p-2 flex flex-row gap-1">
-                    <Image
+                    <Image 
                         src="/icons/information-circle.svg"
                         width={20}
                         height={20}
@@ -248,18 +268,18 @@ function TestSeriesInfo() {
                  </button>
             </div> */}
             <div className="flex flex-row mt-4 gap-4">
-                <Image className='w-[19.375rem] h-[12.25rem]' src='/images/Frame.png' alt='testseries img' width={310} height={196} />
+                <Image className='w-[19.375rem] h-[12.25rem] rounded-[16px] object-cover' src={testData?.testImage || '/images/Frame.png'} alt='testseries img' width={310} height={196} />
                 <div className="flex-col flex justify-between py-3">
-                    <div className="flex flex-row items-center mt-1 gap-1">
-                        <p className="text-[#667085] font-normal text-sm">Created by</p>
-                        <Image
-                            src="/icons/profile-pic2.svg"
-                            width={24}
-                            height={24}
-                            alt="profile-icons"
-                        />
-                        <p className="text-[#1D2939] font-medium text-sm">Jenny Wilson</p>
-                    </div>
+                   <div className="flex flex-row mt-1 gap-1 items-center">
+                                   <p className="text-[#667085] font-normal text-sm">Created by</p>
+                                   <Image className="rounded-full w-6 h-6 ml-[2px]" 
+                                       src={adminDetails?.profilePic || "/icons/profile-pic2.svg"}
+                                       width={24}
+                                       height={24}
+                                       alt="profile-icons"
+                                   />
+                                   <p className="text-[#1D2939] font-medium text-sm">{adminDetails?.name}</p>
+                               </div>
                     <div className=' text-[#667085] text-sm font-normal break-all' dangerouslySetInnerHTML={{
                         __html: testData?.testDescription || '',
                     }} />
@@ -362,11 +382,12 @@ function TestSeriesInfo() {
                 </Tabs>
             </div>
             {/* Dialog components with conditional rendering */}
-            {/* {isDeleteDialogOpen && <Delete onClose={() => setIsDeleteDialogOpen(false)} open={isDeleteDialogOpen} />} */}
+            {isDeleteDialogOpen && <DeleteTest onClose={() => setIsDeleteDialogOpen(false)} open={true} testId={testId || ''} testName={testName} />}
             {isScheduledDialogOpen && <ScheduledDialog onClose={() => setIsScheduledDialogOpen(false)} fromContent="testseries" contentId={testId || ''} startDate={startDate} endDate={endDate} setEndDate={setEndDate} setLiveNow={setLiveCourseNow} liveNow={liveCourseNow} setStartDate={setStartDate} />}
             {isEndDialogOpen && <EndDialog onClose={() => setIsEndDialogOpen(false)} fromContent="testseries" contentId={testId || ''} />}
             {isPausedDialogOpen && <PausedDDialog onClose={() => setIsPausedDialogOpen(false)} fromContent="testseries" contentId={testId || ''} />}
             {isResumeOpen && < ResumeQuiz open={isResumeOpen} onClose={() => setIsResumeOpen(false)} fromContent="testseries" contentId={testId || ''} />}
+            <ToastContainer />
         </div>
     );
 }

@@ -2,15 +2,12 @@
 import Image from "next/image";
 import React, { useState, useEffect } from "react";
 import ScheduledDialog from "@/components/AdminComponents/QuizInfoDailogs/scheduledDailog";
-import DeleteQuiz from "@/components/AdminComponents/QuizInfoDailogs/DeleteDailogue";
-import EndQuiz from "@/components/AdminComponents/QuizInfoDailogs/EndDailogue";
-import PausedQuiz from "@/components/AdminComponents/QuizInfoDailogs/PauseDailogue";
 import ResumeQuiz from "@/components/AdminComponents/QuizInfoDailogs/ResumeDailogue";
 import Questions from "@/components/AdminComponents/QuizInfo/Questions";
 import StudentsAttempts from "@/components/AdminComponents/QuizInfo/StudentsAttempts";
 import { Popover, PopoverContent, PopoverTrigger } from "@nextui-org/popover";
 import { useRouter, useSearchParams } from 'next/navigation';
-import { doc, getDoc, collection, getDocs } from 'firebase/firestore';
+import { doc, getDoc, collection, getDocs, onSnapshot } from 'firebase/firestore';
 import QuizStatus from '@/components/AdminComponents/StatusDisplay';
 import { db } from "@/firebase";
 import LoadingData from "@/components/Loading";
@@ -18,6 +15,8 @@ import DOMPurify from 'dompurify';
 import { Tabs, Tab } from "@nextui-org/react";
 import EndDialog from "@/components/AdminComponents/QuizInfoDailogs/EndDailogue";
 import PausedDDialog from "@/components/AdminComponents/QuizInfoDailogs/PauseDailogue";
+import { ToastContainer } from "react-toastify";
+import DeleteQuiz from "@/components/AdminComponents/QuizInfoDailogs/DeleteQuiz";
 
 type QuizData = {
     quizName: string;
@@ -29,6 +28,7 @@ type QuizData = {
     nMarksPerQuestion: string;
     quizTime: string;
     quizId: string;
+    createdBy: string;
 };
 
 // Define the type for individual questions within the quiz
@@ -66,6 +66,7 @@ function Quizinfo() {
     const [quizData, setQuizData] = useState<QuizData | null>(null);
     const [questions, setQuestions] = useState<QuestionData[]>([]);
     const [loading, setLoading] = useState(true);
+    const [quizName, setQuizName] = useState('');
     const [startDate, setStartDate] = useState('');
     const [endDate, setEndDate] = useState('');
     const [liveCourseNow, setLiveCourseNow] = useState(false);
@@ -76,13 +77,21 @@ function Quizinfo() {
     const [isEndDialogOpen, setIsEndDialogOpen] = useState(false);
     const [isPausedDialogOpen, setIsPausedDialogOpen] = useState(false);
     const [isMakeLiveNowDialogOpen, setIsMakeLiveNowDialogOpen] = useState(false);
+    const [adminDetails, setAdminDetails] = useState<{ name: string, profilePic: string } | null>(null);
 
     // Handlers for ScheduledDialog
-    const openScheduledDialog = () => setIsScheduledDialogOpen(true);
+    const openScheduledDialog = (startDate: string, endDate: string) => {
+        setIsScheduledDialogOpen(true);
+        setStartDate(startDate);
+        setEndDate(endDate);      
+    }
     const closeScheduledDialog = () => setIsScheduledDialogOpen(false);
 
     // Handlers for DeleteQuiz dialog
-    const openDeleteDialog = () => setIsDeleteDialogOpen(true);
+    const openDeleteDialog = (quizName: string) => {
+        setQuizName(quizName);
+        setIsDeleteDialogOpen(true);
+    }
     const closeDeleteDialog = () => setIsDeleteDialogOpen(false);
 
     // Handlers for EndQuiz dialog
@@ -101,39 +110,50 @@ function Quizinfo() {
     const openResumeQuiz = () => setIsResumeOpen(true);
 
     useEffect(() => {
-        const fetchQuizData = async () => {
-            if (!quizId) return;
+        if (!quizId) return;
 
-            try {
-                const quizDocRef = doc(db, 'quiz', quizId);
-                const quizDocSnap = await getDoc(quizDocRef);
+        const quizDocRef = doc(db, 'quiz', quizId);
+        const questionsCollectionRef = collection(db, `quiz/${quizId}/Questions`);
 
-                if (quizDocSnap.exists()) {
-                    setQuizData(quizDocSnap.data() as QuizData);
-                    setLoading(false);
-                } else {
-                    console.error('Quiz data not found');
-                    setLoading(false);
-
-                }
-
-                const questionsCollectionRef = collection(db, `quiz/${quizId}/Questions`);
-                const questionsSnapshot = await getDocs(questionsCollectionRef);
-
-                const questionsData = questionsSnapshot.docs.map(doc => ({
-                    id: doc.id,
-                    ...doc.data()
-                })) as unknown as QuestionData[];
-
-                setQuestions(questionsData);
-            } catch (error) {
-                console.error('Error fetching quiz data:', error);
+        const unsubscribeQuiz = onSnapshot(quizDocRef, (quizDocSnap) => {
+            if (quizDocSnap.exists()) {
+                setQuizData(quizDocSnap.data() as QuizData);
                 setLoading(false);
+            } else {
+                console.error('Quiz data not found');
+                setLoading(false);
+            }
+        });
+
+        const unsubscribeQuestions = onSnapshot(questionsCollectionRef, (questionsSnapshot) => {
+            const questionsData = questionsSnapshot.docs.map(doc => ({
+                id: doc.id,
+                ...doc.data()
+            })) as unknown as QuestionData[];
+
+            setQuestions(questionsData);
+        });
+
+        return () => {
+            unsubscribeQuiz();
+            unsubscribeQuestions();
+        };
+    }, [quizId]);
+
+    useEffect(() => {
+        const fetchAdminDetails = async (adminId: string) => {
+            const adminDoc = await getDoc(doc(db, 'admin', adminId));
+            if (adminDoc.exists()) {
+                setAdminDetails(adminDoc.data() as { name: string, profilePic: string });
+            } else {
+                console.error('No such admin!');
             }
         };
 
-        fetchQuizData();
-    }, [quizId]);
+        if (quizData?.createdBy) {
+            fetchAdminDetails(quizData.createdBy);
+        }
+    }, [quizData]);
 
     let formattedStartDate: string | undefined; // Declare the variable outside the block
     if (quizData?.startDate) {
@@ -258,7 +278,7 @@ function Quizinfo() {
 
                                 <button
                                     className="w-auto p-3 gap-2 flex-row flex bg-[#FFFFFF] border border-solid border-[#EAECF0] rounded-[8px] h-[40px] items-center  hover:bg-[#F2F4F7]"
-                                    onClick={openScheduledDialog}>
+                                    onClick={() => openScheduledDialog(quizData.startDate, quizData.endDate)}>
                                     <Image src="/icons/select-date.svg" width={18} height={18} alt="Calendar" />
                                     <span className="text-sm text-[#0C111D]  font-medium">Schedule Quiz</span>
                                 </button>
@@ -282,18 +302,19 @@ function Quizinfo() {
                                 <PopoverContent className="flex flex-col px-0 text-sm font-normal bg-white border border-lightGrey rounded-md w-[167px] shadow-md"
                                 >
                                     {quizData?.status !== 'finished' && (
-                                        <button className=" p-3 gap-2 flex-row flex h-[40px] hover:bg-[#F2F4F7] w-full">
+                                        <button className=" p-3 gap-2 flex-row flex h-[40px] hover:bg-[#F2F4F7] w-full"
+                                        onClick={() => {router.push(`/admin/content/quizzesmanagement/createquiz/?s=${quizData?.status}&qId=${quizData?.quizId}`)}}>
                                             <Image src="/icons/edit-icon.svg" width={18} height={18} alt="Edit-quiz" />
                                             <span className="text-sm text-[#0C111D] font-normal">Edit Quiz</span>
                                         </button>
                                     )}
 
-                                    <button className=" p-3 gap-2 flex-row flex h-[40px] hover:bg-[#F2F4F7] w-full">
+                                     <button className=" p-3 gap-2 flex-row flex h-[40px] hover:bg-[#F2F4F7] w-full">
                                         <Image src="/icons/duplicate.svg" width={18} height={18} alt="Edit-quiz" />
                                         <span className="text-sm text-[#0C111D] font-normal">Duplicate</span>
                                     </button>
                                     <button className=" p-3 gap-2 flex-row flex h-[40px] hover:bg-[#F2F4F7] w-full"
-                                        onClick={openDeleteDialog}
+                                        onClick={() => openDeleteDialog(quizData?.quizName || '')}  
                                     >
                                         <Image src="/icons/delete.svg" width={18} height={18} alt="delete-quiz" />
                                         <span className="text-sm text-[#DE3024] font-normal">Delete Quiz</span>
@@ -316,7 +337,7 @@ function Quizinfo() {
                             <span className="text-[#475467] font-normal text-[13px]">Quiz will be live on 12 Jan, 2024  05:30 PM</span>
                         </div>
                         <button
-                            onClick={openScheduledDialog}               >
+                                    onClick={() => openScheduledDialog(quizData.startDate, quizData.endDate)}>
                             <Image src="/icons/edit-icon.svg" width={18} height={18} alt="Edit-quiz" />
                         </button>
                     </div>
@@ -329,15 +350,15 @@ function Quizinfo() {
                     }}
                 />
             </div>
-            <div className="flex flex-row gap-1">
+            <div className="flex flex-row gap-1 items-center">
                 <p className="text-[#667085] font-normal text-sm">Created by</p>
-                <Image
-                    src="/icons/profile-pic2.svg"
+                <Image className="rounded-full w-6 h-6 ml-[2px]" 
+                    src={adminDetails?.profilePic || "/icons/profile-pic2.svg"}
                     width={24}
                     height={24}
                     alt="profile-icons"
                 />
-                <p className="text-[#1D2939] font-medium text-sm">Jenny Wilson</p>
+                <p className="text-[#1D2939] font-medium text-sm">{adminDetails?.name}</p>
             </div>
             <div className="w-full h-auto mt-4 flex flex-row gap-4 ">
                 <div className="w-full flex flex-col p-4 border border-solid border-[#EAECF0] bg-[#FFFFFF] rounded-xl">
@@ -417,7 +438,8 @@ function Quizinfo() {
             {isEndDialogOpen && <EndDialog onClose={() => setIsEndDialogOpen(false)} fromContent="quiz" contentId={quizId || ''} />}
             {isPausedDialogOpen && <PausedDDialog onClose={() => setIsPausedDialogOpen(false)} fromContent="quiz" contentId={quizId || ''} />}
             {isResumeOpen && < ResumeQuiz open={isResumeOpen} onClose={() => setIsResumeOpen(false)} fromContent="quiz" contentId={quizId || ''} />}
-            {isDeleteDialogOpen && <DeleteQuiz onClose={closeDeleteDialog} open={true} />}
+            {isDeleteDialogOpen && <DeleteQuiz onClose={closeDeleteDialog} open={true} quizId={quizId || ''} quizName={quizName}/>}
+                        <ToastContainer />
         </div>
     );
 }

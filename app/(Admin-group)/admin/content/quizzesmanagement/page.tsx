@@ -18,15 +18,17 @@ import { Calendar } from "@nextui-org/calendar";
 import { Pause } from "lucide-react";
 import { today, getLocalTimeZone } from "@internationalized/date";
 import ScheduledDialog from "@/components/AdminComponents/QuizInfoDailogs/scheduledDailog";
-import DeleteQuiz from "@/components/AdminComponents/QuizInfoDailogs/DeleteDailogue";
-import EndQuiz from "@/components/AdminComponents/QuizInfoDailogs/EndDailogue";
-import PausedQuiz from "@/components/AdminComponents/QuizInfoDailogs/PauseDailogue";
 import ResumeQuiz from "@/components/AdminComponents/QuizInfoDailogs/ResumeDailogue";
 import ViewAnalytics from "@/components/AdminComponents/QuizInfoDailogs/ViewAnalytics";
-import { collection, getDocs, query, where, doc, getDoc } from 'firebase/firestore';
+import { collection, getDocs, query, where, doc, getDoc, onSnapshot } from 'firebase/firestore';
 import { db } from "@/firebase";
 import type { DateValue } from "@react-types/calendar"; // Correct import for DateValue from React Spectrum
 import StatusDisplay from "@/components/AdminComponents/StatusDisplay";
+import DeleteDialog from "@/components/AdminComponents/QuizInfoDailogs/DeleteDailogue";
+import { ToastContainer } from "react-toastify";
+import EndDialog from "@/components/AdminComponents/QuizInfoDailogs/EndDailogue";
+import PausedDialog from "@/components/AdminComponents/QuizInfoDailogs/PauseDailogue";
+import React from "react";
 
 // Define types for quiz data
 interface Quiz {
@@ -37,6 +39,8 @@ interface Quiz {
     students: number;
     status: string;
     quizPublishedDate: string;
+    startDate: string;
+    endDate: string;
 }
 
 function formatDate(dateString: string): string {
@@ -51,37 +55,44 @@ function formatDate(dateString: string): string {
 type Option = 'Saved' | 'Live' | 'Scheduled' | 'Pause' | 'Finished' | 'Canceled';
 
 // Mock fetchQuizzes function with types
-const fetchQuizzes = async (): Promise<Quiz[]> => {
+const fetchQuizzes = (callback: (quizzes: Quiz[]) => void) => {
     const quizzesCollection = collection(db, 'quiz');
-    const quizzesSnapshot = await getDocs(quizzesCollection);
 
-    const quizzesData = await Promise.all(
-        quizzesSnapshot.docs.map(async (quizDoc) => {
-            const quizData = quizDoc.data();
-            const quizId = quizDoc.id;
+    const unsubscribe = onSnapshot(quizzesCollection, async (quizzesSnapshot) => {
+        const quizzesData = await Promise.all(
+            quizzesSnapshot.docs.map(async (quizDoc) => {
+                const quizData = quizDoc.data();
+                const quizId = quizDoc.id;
 
-            // Get subcollection counts
-            const questionsCollection = collection(db, 'quiz', quizId, 'Questions');
-            const questionsSnapshot = await getDocs(questionsCollection);
-            const questionsCount = questionsSnapshot.size;
+                const questionsCollection = collection(db, 'quiz', quizId, 'Questions');
+                const questionsSnapshot = await getDocs(questionsCollection);
+                const questionsCount = questionsSnapshot.size;
 
-            const studentsAttemptedCollection = collection(db, 'quiz', quizId, 'studentsAttempted');
-            const studentsAttemptedSnapshot = await getDocs(studentsAttemptedCollection);
-            const studentsCount = studentsAttemptedSnapshot.size;
+                const studentsAttemptedCollection = collection(db, 'quiz', quizId, 'studentsAttempted');
+                const studentsAttemptedSnapshot = await getDocs(studentsAttemptedCollection);
+                const studentsCount = studentsAttemptedSnapshot.size;
 
-            return {
-                title: quizData.quizName,
-                questions: questionsCount,
-                quizId: quizData.quizId,
-                date: formatDate(quizData.quizPublishedDate),
-                students: studentsCount,
-                status: quizData.status,
-            } as Quiz;
-        })
-    );
+                return {
+                    title: quizData.quizName,
+                    questions: questionsCount,
+                    quizId: quizData.quizId,
+                    date: formatDate(quizData.quizPublishedDate),
+                    students: studentsCount,
+                    status: quizData.status,
+                    startDate: quizData.startDate,
+                    endDate: quizData.endDate,
+                } as Quiz;
+            })
+        );
 
-    return quizzesData;
+        // Sort by date (or any stable key) before passing data
+        quizzesData.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+        callback(quizzesData);
+    });
+
+    return unsubscribe;
 };
+
 
 function Quizz() {
     const [data, setData] = useState<Quiz[]>([]);
@@ -90,26 +101,124 @@ function Quizz() {
     const [itemsPerPage] = useState(10);
     const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState('');
+    const [quizId, setQuizId] = useState('');
+    const [quizName, setQuizName] = useState('');
     const router = useRouter();
-
+ const [startDate, setStartDate] = useState('');
+    const [endDate, setEndDate] = useState('');
+    const [liveCourseNow, setLiveCourseNow] = useState(false);
+    const [isScheduledDialogOpen, setIsScheduledDialogOpen] = useState(false);
+    const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+    const [isEndDialogOpen, setIsEndDialogOpen] = useState(false);
+    const [isPausedDialogOpen, setIsPausedDialogOpen] = useState(false);
+    const [isResumeOpen, setIsResumeOpen] = useState(false);
+    const [isViewAnalyticsOpen, setIsViewAnalyticsOpen] = useState(false);
+    const [isSelcetDateOpen, setIsSelectDateOpen] = useState(false);
+    const options: Option[] = ["Saved", "Live", "Scheduled", "Pause", "Finished", "Canceled"];
+    const [checkedState, setCheckedState] = useState<Record<Option, boolean>>({
+        Saved: false,
+        Live: false,
+        Scheduled: false,
+        Pause: false,
+        Finished: false,
+        Canceled: false,
+    });
+    const selectedCount = Object.values(checkedState).filter(Boolean).length;
+    const [selectedDate, setSelectedDate] = useState<Date | null>(null); // Store selected date as Date object
     // Fetch quizzes when component mounts
     useEffect(() => {
-        const loadQuizzes = async () => {
+        const loadQuizzes = () => {
             setLoading(true);
-            const quizzes = await fetchQuizzes();
-            setQuizzes(quizzes);
-            setData(quizzes);
-            setLoading(false);
+    
+            // Fetch quizzes and update state
+            const unsubscribe = fetchQuizzes((quizzes) => {
+                setQuizzes(quizzes);
+                setLoading(false); // Set loading to false only after fetching is complete
+            });
+    
+            return () => unsubscribe(); // Clean up the listener on unmount
         };
+    
         loadQuizzes();
     }, []);
-
+    
+    // Separate derived state logic
+    useEffect(() => {
+        if (quizzes.length === 0) return; // Avoid unnecessary updates before data is fetched
+    
+        let filteredQuizzes = quizzes;
+    
+        // Filter by search term
+        if (searchTerm) {
+            filteredQuizzes = filteredQuizzes.filter((quiz) =>
+                quiz.title.toLowerCase().includes(searchTerm.toLowerCase())
+            );
+        }
+    
+        // Filter by selected statuses
+        const selectedStatuses = Object.entries(checkedState)
+            .filter(([_, isChecked]) => isChecked)
+            .map(([status]) => statusMapping[status as Option])
+            .flat();
+    
+        if (selectedStatuses.length > 0) {
+            filteredQuizzes = filteredQuizzes.filter((quiz) =>
+                selectedStatuses.includes(quiz.status)
+            );
+        }
+    
+        // Filter by selected date
+        if (selectedDate) {
+            const selectedDateString = selectedDate instanceof Date && !isNaN(selectedDate.getTime())
+                ? selectedDate.toISOString().split('T')[0]
+                : null;
+    
+            if (selectedDateString) {
+                filteredQuizzes = filteredQuizzes.filter((quiz) => {
+                    const quizDate = new Date(quiz.date);
+                    const quizDateString = quizDate instanceof Date && !isNaN(quizDate.getTime())
+                        ? quizDate.toISOString().split('T')[0]
+                        : null;
+    
+                    return quizDateString === selectedDateString;
+                });
+            }
+        }
+    
+        // Sort by quizPublishedDate in ascending order
+        filteredQuizzes = filteredQuizzes.sort((a, b) => {
+            const dateA = new Date(a.date).getTime();
+            const dateB = new Date(b.date).getTime();
+    
+            if (isNaN(dateA) || isNaN(dateB)) return 0; // Handle invalid dates gracefully
+    
+            return dateA - dateB;
+        });
+    
+        // Update state with filtered and sorted quizzes
+        setData(filteredQuizzes);
+        setCurrentPage(1); // Reset to the first page when filters change
+    }, [searchTerm, checkedState, quizzes, selectedDate]);
     const lastItemIndex = currentPage * itemsPerPage;
     const firstItemIndex = lastItemIndex - itemsPerPage;
 
     // Ensure `data` is correctly sliced for the current page
     const currentItems = data.slice(firstItemIndex, lastItemIndex);
+    
+  const [openPopovers, setOpenPopovers] = React.useState<{ [key: number]: boolean }>({});
+    const togglePopover = (index: number) => {
+        setOpenPopovers((prev) => ({
+            ...prev,
+            [index]: !prev[index],
+        }));
+    };
 
+    const closePopover = (index: number) => {
+        setOpenPopovers((prev) => ({
+            ...prev,
+            [index]: false,
+        }));
+    };
 
     // Function to handle tab click and navigate to a new route
     const handleTabClick = (path: string) => {
@@ -123,33 +232,44 @@ function Quizz() {
     const handlePopoverClose = () => setIsPopoverOpen(false);
 
     // State to manage each dialog's visibility
-    const [isScheduledDialogOpen, setIsScheduledDialogOpen] = useState(false);
-    const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
-    const [isEndDialogOpen, setIsEndDialogOpen] = useState(false);
-    const [isPausedDialogOpen, setIsPausedDialogOpen] = useState(false);
-    const [isResumeQuizOpen, setIsResumeQuizOpen] = useState(false);
-    const [isViewAnalyticsOpen, setIsViewAnalyticsOpen] = useState(false);
-    const [isSelcetDateOpen, setIsSelectDateOpen] = useState(false);
+   
 
     // Handlers for ScheduledDialog
-    const openScheduledDialog = () => setIsScheduledDialogOpen(true);
+    const openScheduledDialog = (quizId: string,startDate: string, endDate: string) => {    
+        setQuizId(quizId);
+        setStartDate(startDate);
+        setEndDate(endDate);    
+    setIsScheduledDialogOpen(true);
+
+}
     const closeScheduledDialog = () => setIsScheduledDialogOpen(false);
 
     // Handlers for DeleteQuiz dialog
-    const openDeleteDialog = () => setIsDeleteDialogOpen(true);
+    const openDeleteDialog = (quizId: string, quizName: string) => {    
+        setIsDeleteDialogOpen(true);
+        setQuizId(quizId);
+        setQuizName(quizName);
+    }
     const closeDeleteDialog = () => setIsDeleteDialogOpen(false);
 
     // Handlers for EndQuiz dialog
-    const openEndQuiz = () => setIsEndDialogOpen(true);
+    const openEndQuiz = (quizId: string) => {
+        setQuizId(quizId);
+        setIsEndDialogOpen(true);
+    }
     const closeEndQuiz = () => setIsEndDialogOpen(false);
 
     // Handlers for  PausedQuiz dialog
-    const openPausedQuiz = () => setIsPausedDialogOpen(true);
+    const openPausedQuiz = (quizId: string) => {
+        setQuizId(quizId);
+        setIsPausedDialogOpen(true);}
     const closePausedQuiz = () => setIsPausedDialogOpen(false);
 
     // Handlers for ResumeQuiz dialog
-    const openResumeQuiz = () => setIsResumeQuizOpen(true);
-    const closeResumeQuiz = () => setIsResumeQuizOpen(false);
+    const openResumeQuiz = (quizId: string) => {
+        setQuizId(quizId);
+        setIsResumeOpen(true);}
+    const closeResumeQuiz = () => setIsResumeOpen(false);
 
     // Handlers for ViewAnalytics dialog
     const openViewAnalytics = () => setIsViewAnalyticsOpen(true);
@@ -164,14 +284,6 @@ function Quizz() {
         Canceled: ['ended']   // Maps to 'ended' status in lowercase
     };
 
-    const [checkedState, setCheckedState] = useState<Record<Option, boolean>>({
-        Saved: false,
-        Live: false,
-        Scheduled: false,
-        Pause: false,
-        Finished: false,
-        Canceled: false,
-    });
 
     const toggleCheckbox = (option: Option) => {
         setCheckedState((prevState) => ({
@@ -180,69 +292,9 @@ function Quizz() {
         }));
     };
 
-    const options: Option[] = ["Saved", "Live", "Scheduled", "Pause", "Finished", "Canceled"];
 
-    const selectedCount = Object.values(checkedState).filter(Boolean).length;
-    const [selectedDate, setSelectedDate] = useState<Date | null>(null); // Store selected date as Date object
 
-    useEffect(() => {
-        let filteredQuizzes = quizzes;
-
-        // Filter by search term
-        if (searchTerm) {
-            filteredQuizzes = filteredQuizzes.filter(quiz =>
-                quiz.title.toLowerCase().includes(searchTerm.toLowerCase())
-            );
-        }
-
-        // Filter by selected statuses
-        const selectedStatuses = Object.entries(checkedState)
-            .filter(([_, isChecked]) => isChecked)
-            .map(([status]) => statusMapping[status as Option])
-            .flat();
-
-        if (selectedStatuses.length > 0) {
-            filteredQuizzes = filteredQuizzes.filter(quiz =>
-                selectedStatuses.includes(quiz.status)
-            );
-        }
-
-        // Filter by selected date
-        if (selectedDate) {
-            const selectedDateString = selectedDate instanceof Date && !isNaN(selectedDate.getTime())
-                ? selectedDate.toISOString().split('T')[0] // Convert to YYYY-MM-DD
-                : null;
-
-            if (selectedDateString) {
-                filteredQuizzes = filteredQuizzes.filter(quiz => {
-                    const quizDate = new Date(quiz.date); // Convert quiz.date string to Date object
-                    const quizDateString = quizDate instanceof Date && !isNaN(quizDate.getTime())
-                        ? quizDate.toISOString().split('T')[0]
-                        : null;
-
-                    return quizDateString === selectedDateString; // Compare only the date part (not time)
-                });
-            }
-        }
-
-        // Sort by quizPublishedDate in ascending order (earliest date first)
-        filteredQuizzes = filteredQuizzes.sort((a, b) => {
-            const dateA = new Date(a.date).getTime();
-            const dateB = new Date(b.date).getTime();
-
-            // Handle invalid date values (e.g., when date cannot be parsed)
-            if (isNaN(dateA) || isNaN(dateB)) {
-                console.error("Invalid date value", a.date, b.date);
-                return 0; // If dates are invalid, no sorting will occur
-            }
-
-            return dateA - dateB; // Sort by time in ascending order (earliest first)
-        });
-
-        // Update state with filtered and sorted quizzes
-        setData(filteredQuizzes);
-        setCurrentPage(1); // Reset to first page when filters change
-    }, [searchTerm, checkedState, quizzes, selectedDate]);
+  
 
     // Format selected date as 'Nov 9, 2024'
     const formattedDate = selectedDate
@@ -426,7 +478,7 @@ function Quizz() {
                                     {currentItems.map((quiz, index) => (
                                         <tr key={index} className="border-t border-solid border-[#EAECF0]">
                                             <td onClick={() => handleTabClick(`/admin/content/quizzesmanagement/${quiz.title.toLowerCase().replace(/\s+/g, '-')}/?qId=${quiz.quizId}`)}><button className="px-8 py-4 text-[#9012FF] text-left underline text-sm font-medium whitespace-nowrap">{quiz.title}</button></td>
-                                            <td className="px-8 py-4 text-center text-[#101828] text-sm">{quiz.questions}</td>
+                                            <td className="px-8 py-4 text-center text-[#101828] text-sm"><button>{quiz.questions}</button></td>
                                             <td className="px-8 py-4 text-center text-[#101828] text-sm whitespace-nowrap">{quiz.date}</td>
                                             <td className="px-8 py-4 text-center text-[#101828] text-sm">{quiz.students}</td>
                                             <td className="px-8 py-4 text-center text-[#101828] text-sm">
@@ -435,9 +487,10 @@ function Quizz() {
                                                 </span>
                                             </td>
                                             <td className="flex items-center justify-center px-8 py-4 text-[#101828] text-sm">
-                                                <Popover placement="bottom-end">
-                                                    <PopoverTrigger className="ml-[50%] outline-none">
-                                                        <button>
+                                                <Popover placement="bottom-end" isOpen={!!openPopovers[index]}
+                                        onOpenChange={() => closePopover(index)}>
+                                                     <PopoverTrigger className="ml-[50%] outline-none">
+                                                        <button onClick={(e) => {e.stopPropagation(); togglePopover(index)}}>
                                                             <Image
                                                                 src="/icons/three-dots.svg"
                                                                 width={20}
@@ -451,28 +504,28 @@ function Quizz() {
                                                         <div>
                                                             {quiz.status === 'paused' && (
                                                                 <button className="flex flex-row w-[11.563rem] px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors"
-                                                                    onClick={() => handleTabClick('/admin/content/quizzesmanagement/createquiz')}>
+                                                                    onClick={() => {closePopover(index); handleTabClick(`/admin/content/quizzesmanagement/createquiz/?s=${quiz.status}&qId=${quiz.quizId}`)}}>
                                                                     <Image src='/icons/edit-icon.svg' alt="edit" width={18} height={18} />
                                                                     <p>Edit</p>
                                                                 </button>
                                                             )}
                                                             {quiz.status === 'scheduled' && (
                                                                 <button className="flex flex-row w-[10.438rem] px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors"
-                                                                    onClick={() => handleTabClick('/admin/content/quizzesmanagement/createquiz')}>
+                                                                onClick={() => {closePopover(index); handleTabClick(`/admin/content/quizzesmanagement/createquiz/?s=${quiz.status}&qId=${quiz.quizId}`)}}>
                                                                     <Image src='/icons/edit-icon.svg' alt="edit" width={18} height={18} />
                                                                     <p>Edit</p>
                                                                 </button>
                                                             )}
                                                             {quiz.status === 'saved' && (
                                                                 <button className="flex flex-row w-[10.438rem] px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors"
-                                                                    onClick={() => handleTabClick('/admin/content/quizzesmanagement/createquiz')}>
+                                                                onClick={() => {closePopover(index); handleTabClick(`/admin/content/quizzesmanagement/createquiz/?s=${quiz.status}&qId=${quiz.quizId}`)}}>
                                                                     <Image src='/icons/edit-icon.svg' alt="edit" width={18} height={18} />
                                                                     <p>Edit</p>
                                                                 </button>
                                                             )}
                                                             {quiz.status === 'live' && (
                                                                 <button className="flex flex-row w-[10.438rem] px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors"
-                                                                    onClick={openPausedQuiz}>
+                                                                    onClick={() => {closePopover(index); openPausedQuiz(quiz.quizId)}}>
                                                                     <Image src='/icons/pause-dark.svg' alt="pause quiz" width={18} height={18} />
                                                                     <p>Pause</p>
                                                                 </button>
@@ -489,7 +542,7 @@ function Quizz() {
                                                         {/* Option 3: Resume Quiz (only if status is Paused) */}
                                                         {quiz.status === 'paused' && (
                                                             <button className="flex flex-row w-full px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors"
-                                                                onClick={openResumeQuiz}>
+                                                                onClick={() =>{closePopover(index);  openResumeQuiz(quiz.quizId)}}>
                                                                 <Image src='/icons/play-dark.svg' alt="resume quiz" width={20} height={20} />
                                                                 <p>Resume</p>
                                                             </button>
@@ -503,56 +556,45 @@ function Quizz() {
 
                                                         {/* Option 3: Schedule Quiz (only if status is Paused) */}
                                                         {quiz.status === 'paused' && (
-                                                            <Popover placement="left-start">
-                                                                <PopoverTrigger>
-                                                                    <button className="flex flex-row justify-between w-[11.563rem] px-4 py-[0.625rem] hover:bg-[#F2F4F7] transition-colors">
-                                                                        <div className="flex flex-row gap-2">
+                                                               <button className="flex flex-row w-full px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors" onClick={() => { closePopover(index); openScheduledDialog(quiz.quizId, quiz.startDate, quiz.endDate)}}>
                                                                             <Image src='/icons/calendar-03.svg' alt="schedule" width={18} height={18} />
                                                                             <p>Schedule</p>
-                                                                        </div>
-                                                                        <Image src='/icons/collapse-right-02.svg' alt="schedule popup" width={18} height={18} />
-                                                                    </button>
-                                                                </PopoverTrigger>
-                                                                <PopoverContent className="flex flex-col items-start text-sm font-normal py-1 px-0 bg-white border border-lightGrey rounded-md w-[11.25rem]">
-                                                                    <button className="w-full px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors" onClick={openScheduledDialog}>Schedule</button>
-                                                                    <button className="w-full px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors">Make Live Now</button>
-                                                                </PopoverContent>
-                                                            </Popover>
+                                                          </button>
                                                         )}
 
                                                         {/* Option 4: Delete Quiz */}
                                                         <div>
                                                             {quiz.status === 'paused' && (
                                                                 <button className="flex flex-row w-[11.563rem] px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors"
-                                                                    onClick={openDeleteDialog}>
+                                                                    onClick={() => {closePopover(index); openDeleteDialog(quiz.quizId, quiz.title)}}>
                                                                     <Image src='/icons/delete.svg' alt="delete" width={18} height={18} />
                                                                     <p className="text-[#DE3024]">Delete</p>
                                                                 </button>
                                                             )}
                                                             {quiz.status === 'scheduled' && (
                                                                 <button className="flex flex-row w-[10.438rem] px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors"
-                                                                    onClick={openDeleteDialog}>
+                                                                onClick={() => {closePopover(index); openDeleteDialog(quiz.quizId, quiz.title)}}>
                                                                     <Image src='/icons/delete.svg' alt="delete" width={18} height={18} />
                                                                     <p className="text-[#DE3024]">Delete</p>
                                                                 </button>
                                                             )}
                                                             {quiz.status === 'finished' && (
                                                                 <button className="flex flex-row w-[10.438rem] px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors"
-                                                                    onClick={openDeleteDialog}>
+                                                                onClick={() => {closePopover(index); openDeleteDialog(quiz.quizId, quiz.title)}}>
                                                                     <Image src='/icons/delete.svg' alt="delete" width={18} height={18} />
                                                                     <p className="text-[#DE3024]">Delete</p>
                                                                 </button>
                                                             )}
                                                             {quiz.status === 'saved' && (
                                                                 <button className="flex flex-row w-[10.438rem] px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors"
-                                                                    onClick={openDeleteDialog}>
+                                                                onClick={() => {closePopover(index); openDeleteDialog(quiz.quizId, quiz.title)}}>
                                                                     <Image src='/icons/delete.svg' alt="delete" width={18} height={18} />
                                                                     <p className="text-[#DE3024]">Delete</p>
                                                                 </button>
                                                             )}
                                                             {quiz.status === 'live' && (
                                                                 <button className="flex flex-row w-[10.438rem] px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors"
-                                                                    onClick={openEndQuiz}>
+                                                                    onClick={() =>{closePopover(index); openEndQuiz(quiz.quizId)}}>
                                                                     <Image src='/icons/license-no.svg' alt="end quiz" width={18} height={18} />
                                                                     <p className="text-[#DE3024]">End</p>
                                                                 </button>
@@ -582,12 +624,13 @@ function Quizz() {
                 </div>
             )}
             {/* Dialog components with conditional rendering */}
-            {/* {isScheduledDialogOpen && <ScheduledDialog onClose={closeScheduledDialog} />}
-            {isDeleteDialogOpen && <DeleteQuiz onClose={closeDeleteDialog} open={true} />}
-            {isEndDialogOpen && <EndQuiz onClose={closeEndQuiz} />}
-            {isPausedDialogOpen && <PausedQuiz onClose={closePausedQuiz} />}
-            {isResumeQuizOpen && < ResumeQuiz onClose={closeResumeQuiz} open={true} />} */}
+            {isDeleteDialogOpen && <DeleteDialog onClose={closeDeleteDialog} open={true} fromContent="quiz" contentId={quizId} contentName={quizName}/>}
+            {isScheduledDialogOpen && <ScheduledDialog onClose={() => setIsScheduledDialogOpen(false)} fromContent="quiz" contentId={quizId || ''} startDate={startDate} endDate={endDate} setEndDate={setEndDate} setLiveNow={setLiveCourseNow} liveNow={liveCourseNow} setStartDate={setStartDate} />}
+            {isEndDialogOpen && <EndDialog onClose={() => setIsEndDialogOpen(false)} fromContent="quiz" contentId={quizId || ''} />}
+            {isPausedDialogOpen && <PausedDialog onClose={() => setIsPausedDialogOpen(false)} fromContent="quiz" contentId={quizId || ''} />}
+            {isResumeOpen && < ResumeQuiz open={isResumeOpen} onClose={() => setIsResumeOpen(false)} fromContent="quiz" contentId={quizId || ''} />}
             {isViewAnalyticsOpen && < ViewAnalytics onClose={closeViewAnalytics} open={true} />}
+            <ToastContainer />
         </div>
     );
 }

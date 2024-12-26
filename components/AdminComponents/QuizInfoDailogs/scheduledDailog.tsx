@@ -52,15 +52,11 @@ function ScheduledDialog({ startDate, endDate, setEndDate, setStartDate, fromCon
     const [datapickerforEnd, setDatapickerforEnd] = useState(false);
     const [datapickerforStart, setDatapickerforStart] = useState(false);
 
-    const isFormValid = endDate;
+    const isFormValid = !!endDate;
     const currentDate = new Date();
     const formattedDate = currentDate.toISOString().slice(0, 19); // Converts to the format "YYYY-MM-DDTHH:MM:SS"
     const onSchedule = async () => {
-        if (!startDate || !endDate || !fromContent || !contentId) {
-            console.error("Missing required fields for Firestore update.");
-            return;
-        }
-
+  
         // Determine the Firestore collection based on `fromContent`
         const collectionPath =
             fromContent === "testseries"
@@ -91,6 +87,7 @@ function ScheduledDialog({ startDate, endDate, setEndDate, setStartDate, fromCon
             console.log("Schedule updated successfully!");
             onClose(); // Close the dialog after a successful update
         } catch (error) {
+            toast.error('Failed to update!');
             console.error("Error updating Firestore document:", error);
         }
     };
@@ -154,7 +151,6 @@ function ScheduledDialog({ startDate, endDate, setEndDate, setStartDate, fromCon
                                         onChange={(date) => {
                                             const dateString = date ? date.toString() : "";
                                             setStartDate(dateString);
-                                            setDatapickerforStart(false); // Return to button view after selecting date
                                         }}
 
                                     />
@@ -179,7 +175,6 @@ function ScheduledDialog({ startDate, endDate, setEndDate, setStartDate, fromCon
                                         onChange={(date) => {
                                             const dateString = date ? date.toString() : "";
                                             setEndDate(dateString);
-                                            setDatapickerforEnd(false); // Return to button view after selecting date
                                         }}
 
                                     />

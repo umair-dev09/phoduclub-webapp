@@ -22,8 +22,8 @@ exports.courseStartFunction = onSchedule("* * * * *", async (event) => {
         
         // Query for courses that are upcoming
         const snapshot = await db.collection('course')
-            .where('status', '==', 'scheduled')
-            .get();
+        .where('status', '==', 'scheduled')
+        .get();
         
         if (!snapshot.empty) {
             const batch = db.batch();
@@ -73,7 +73,7 @@ exports.courseEndFunction = onSchedule("* * * * *", async (event) => {
         
         // Query for courses that are upcoming
         const snapshot = await db.collection('course')
-            .where('status', '==', 'live')
+            .where('status', 'in', ['live','paused'])
             .get();
         
         if (!snapshot.empty) {
@@ -125,7 +125,7 @@ exports.quizStartFunction = onSchedule("* * * * *", async (event) => {
         
         // Query for courses that are upcoming
         const snapshot = await db.collection('quiz')
-            .where('status', '==', 'scheduled')
+        .where('status', '==', 'scheduled')
             .get();
         
         if (!snapshot.empty) {
@@ -176,8 +176,8 @@ exports.quizEndFunction = onSchedule("* * * * *", async (event) => {
         
         // Query for courses that are upcoming
         const snapshot = await db.collection('quiz')
-            .where('status', '==', 'live')
-            .get();
+        .where('status', 'in', ['live','paused'])
+        .get();
         
         if (!snapshot.empty) {
             const batch = db.batch();
@@ -228,7 +228,7 @@ exports.testStartFunction = onSchedule("* * * * *", async (event) => {
         
         // Query for courses that are upcoming
         const snapshot = await db.collection('testseries')
-            .where('status', '==', 'scheduled')
+        .where('status', '==', 'scheduled')
             .get();
         
         if (!snapshot.empty) {
@@ -279,8 +279,8 @@ exports.testEndFunction = onSchedule("* * * * *", async (event) => {
         
         // Query for courses that are upcoming
         const snapshot = await db.collection('testseries')
-            .where('status', '==', 'live')
-            .get();
+        .where('status', 'in', ['live','paused'])
+        .get();
         
         if (!snapshot.empty) {
             const batch = db.batch();
@@ -330,7 +330,7 @@ exports.notificationStartFunction = onSchedule("* * * * *", async (event) => {
         logger.info(`Checking notifications at IST: ${currentTime}`);
         
         const snapshot = await db.collection('notifications')
-            .where('status', '==', 'scheduled')
+        .where('status', '==', 'scheduled')
             .get();
         
         if (!snapshot.empty) {
@@ -381,8 +381,8 @@ exports.notificationEndFunction = onSchedule("* * * * *", async (event) => {
         logger.info(`Checking notifications at IST: ${currentTime}`);
         
         const snapshot = await db.collection('notifications')
-            .where('status', '==', 'live')
-            .get();
+        .where('status', 'in', ['live','paused'])
+        .get();
         
         if (!snapshot.empty) {
             const batch = db.batch();
