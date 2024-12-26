@@ -21,6 +21,7 @@ import ResumeQuiz from "@/components/AdminComponents/QuizInfoDailogs/ResumeDailo
 import DeleteDialog from "@/components/AdminComponents/QuizInfoDailogs/DeleteDailogue";
 import { ToastContainer } from "react-toastify";
 import DeleteTest from "@/components/AdminComponents/TestseriesDialogs/DeleteTest";
+import { format } from 'date-fns';
 
 type testData = {
     testName: string | null;
@@ -142,7 +143,10 @@ function TestSeriesInfo() {
     );
     const rating = 1.5; // The rating value
     const totalStars = 5;
-
+    const formatStartDate = (dateString: string): string => {
+        const date = new Date(dateString);
+        return format(date, 'dd MMM, yyyy  hh:mm a');
+    };
     if (loading) {
         return <LoadingData />
     }
@@ -252,24 +256,27 @@ function TestSeriesInfo() {
                     </div>
                 </div>
             </div>
-            {/* <div className="flex flex-row gap-2">
-                <div className="bg-[#EAECF0] rounded-[8px] p-2 flex flex-row gap-1">
-                    <Image 
-                        src="/icons/information-circle.svg"
-                        width={20}
-                        height={20}
-                        alt="information-icon"
-                    />
-                    <span className="text-[#475467] font-normal text-[13px]">Test Series will be live on 12 Jan, 2024   05:30 PM</span>
-                </div>
-                <button
-                    onClick={() => setIsScheduledDialogOpen(true)}>
-                    <Image src="/icons/edit-icon.svg" width={18} height={18} alt="Edit-icon" />
-                 </button>
-            </div> */}
-            <div className="flex flex-row mt-4 gap-4">
+            {testData?.status === 'scheduled' && (
+            <div className="flex flex-row gap-2">
+            <div className="bg-[#EAECF0] rounded-[8px] p-2 flex flex-row gap-1">
+                <Image 
+                    src="/icons/information-circle.svg"
+                    width={20}
+                    height={20}
+                    alt="information-icon"
+                />
+                <span className="text-[#475467] font-normal text-[13px]">Test Series will be live on {formatStartDate(testData.startDate || '')}</span>
+            </div>
+            <button
+                onClick={() => {setIsScheduledDialogOpen(true); setStartDate(testData.startDate || ''); setEndDate(testData.endDate || '');}}>
+                <Image src="/icons/edit-icon.svg" width={18} height={18} alt="Edit-icon" />
+            </button>
+            </div>
+            )}
+          
+            <div className="flex flex-row mt-4 gap-4 items-center">
                 <Image className='w-[19.375rem] h-[12.25rem] rounded-[16px] object-cover' src={testData?.testImage || '/images/Frame.png'} alt='testseries img' width={310} height={196} />
-                <div className="flex-col flex justify-between py-3">
+                <div className="flex-col flex justify-center gap-2">
                    <div className="flex flex-row mt-1 gap-1 items-center">
                                    <p className="text-[#667085] font-normal text-sm">Created by</p>
                                    <Image className="rounded-full w-6 h-6 ml-[2px]" 

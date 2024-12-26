@@ -469,12 +469,6 @@ useEffect(() => {
                                                         </button>
                                                     </PopoverTrigger>
                                                     <PopoverContent className={`flex flex-col items-start text-sm font-normal py-1 px-0 bg-white border border-lightGrey rounded-md ${test.status === 'paused' ? 'w-[11.563rem]' : 'w-[10.438rem]'}`}>
-                                                        {(test.status === 'saved' || test.status === 'scheduled') && (
-                                                             <button className="flex flex-row w-full px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors" onClick={() => { closePopover(index); openScheduledDialog(test.testId, test.startDate, test.endDate)}}>
-                                                             <Image src='/icons/calendar-03.svg' alt="schedule" width={18} height={18} />
-                                                             <p>Schedule</p>
-                                                             </button>
-                                                        )}
                                                         {test.status === 'paused' && (
                                                              <button className="flex flex-row w-full px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors" onClick={() => { closePopover(index); openScheduledDialog(test.testId, test.startDate, test.endDate)}}>
                                                              <Image src='/icons/calendar-03.svg' alt="schedule" width={18} height={18} />

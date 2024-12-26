@@ -12,6 +12,7 @@ import Collapsible from 'react-collapsible';
 import LoadingData from "@/components/Loading";
 import TestQuestions from "./TestQuestions";
 import { parse } from 'papaparse'; // For CSV parsing
+import { format } from "date-fns";
 
 interface Section {
   id: string;
@@ -46,17 +47,28 @@ interface Options {
 interface SectionsProps {
   isCreateSection: boolean;
   setIsCreateSection: (value: boolean) => void;
+  isSectionEditing: boolean;
+  setIsSectionEditing: (value: boolean) => void;
   testId: string;
+  sectionName: string;
+  sectionScheduleDate: string;
+  setSectionName: (value: string) => void;
+  setSectionScheduleDate: (value: string) => void;
 }
 
 const Sections: React.FC<SectionsProps> = ({
   isCreateSection,
   setIsCreateSection,
   testId,
+  sectionName,
+  sectionScheduleDate,
+  setSectionName,
+  setSectionScheduleDate,
+  isSectionEditing,
+  setIsSectionEditing,
 }) => {
   const [dateForPicker, setDateForPicker] = useState<DateValue | null>(null);
-  const [sectionScheduleDate, setSectionScheduleDate] = useState<string>("");
-  const [sectionName, setSectionName] = useState<string>("");
+ 
   const [sectionss, setSections] = useState<Section[]>([]);
   const [currentPath, setCurrentPath] = useState<string[]>([]);
   const [breadcrumbs, setBreadcrumbs] = useState<{ id: string; name: string }[]>([]);
@@ -65,6 +77,7 @@ const Sections: React.FC<SectionsProps> = ({
   const [timeText, setTimeText] = useState("Minute(s)");
   const [marksPerQ, setMarksPerQ] = useState("");
   const [description, setDescription] = useState("");
+  const [editSectionId, setEditSectionId] = useState("");
   const [nMarksPerQ, setnMarksPerQ] = useState("");
   const [saveQuestionSectionId, setSaveQuestionSectionId] = useState("");
   const [selectedSectionId, setSelectedSectionId] = useState<string | null>(null);
@@ -74,6 +87,11 @@ const Sections: React.FC<SectionsProps> = ({
   const [saveQuestionDialog, setSaveQuestionDialog] = useState(false);
   const [csvUploadDialog, setCsvUploadDialog] = useState(false);
   const [selectedSection, setSelectedSection] = useState<Section | null>(null);
+  const isSectionButtonDisabled = !sectionName || !sectionScheduleDate;
+  const formatScheduleDate = (dateString: string): string => {
+          const date = new Date(dateString);
+          return format(date, 'dd MMM, yyyy  hh:mm a');
+      };
   const [showQuestions, setShowQuestions] = useState(false);
  const [questionsList, setQuestionsList] = useState<Question[]>([{
         question: '',
@@ -234,7 +252,7 @@ const Sections: React.FC<SectionsProps> = ({
               correctAnswer: null,
               explanation: '',
               questionId: '',
-              difficulty: 'easy',
+              difficulty: 'Easy',
             },
           ]);
         } else {
@@ -256,31 +274,52 @@ const Sections: React.FC<SectionsProps> = ({
 
   const handleAddSection = async () => {
     if (!testId || !sectionName || !sectionScheduleDate) return;
-
-    try {
-      const path = currentPath.reduce(
-        (acc, id) => `${acc}/sections/${id}`,
-        `testseries/${testId}`
-      );
-      const sectionCollection = collection(db, `${path}/sections`);
-      const newSectionRef = doc(sectionCollection);
-
-      await setDoc(newSectionRef, {
-        sectionName,
-        sectionScheduleDate,
-        sectionId: newSectionRef.id,
-        parentSectionId: currentPath[currentPath.length - 1] || null,
-        order: sectionss.length + 1,
-        hasQuestions: false,
-        createdAt: new Date().toISOString()
-      });
-
-      toast.success("Section added successfully");
-      resetForm();
-    } catch (error) {
-      console.error("Error adding section: ", error);
-      toast.error("Failed to add section");
+    if(isSectionEditing){
+      try {
+        const path = currentPath.reduce(
+          (acc, id) => `${acc}/sections/${id}`,
+          `testseries/${testId}`
+        );
+        const newSectionRef = doc(db, `${path}/sections/${editSectionId}`);
+        await updateDoc(newSectionRef, {
+          sectionName,
+          sectionScheduleDate,
+        });
+  
+        toast.success("Section update successfully");
+        resetForm();
+      } catch (error) {
+        console.error("Error adding section: ", error);
+        toast.error("Failed to update section");
+      }
     }
+    else{
+      try {
+        const path = currentPath.reduce(
+          (acc, id) => `${acc}/sections/${id}`,
+          `testseries/${testId}`
+        );
+        const sectionCollection = collection(db, `${path}/sections`);
+        const newSectionRef = doc(sectionCollection);
+  
+        await setDoc(newSectionRef, {
+          sectionName,
+          sectionScheduleDate,
+          sectionId: newSectionRef.id,
+          parentSectionId: currentPath[currentPath.length - 1] || null,
+          order: sectionss.length + 1,
+          hasQuestions: false,
+          createdAt: new Date().toISOString()
+        });
+  
+        toast.success("Section added successfully");
+        resetForm();
+      } catch (error) {
+        console.error("Error adding section: ", error);
+        toast.error("Failed to add section");
+      }
+    }
+   
   };
 
   interface FirestoreQuestion {
@@ -658,9 +697,18 @@ const Sections: React.FC<SectionsProps> = ({
     }
   };
 
+
   const navigateToSection = (sectionId: string, sectionName: string) => {
     setCurrentPath((prev) => [...prev, sectionId]);
     setBreadcrumbs((prev) => [...prev, { id: sectionId, name: sectionName }]);
+  };
+  
+  const handleEditSection = (sectionId: string, sectionName: string, sectionScheduleDate: string) => {
+    setIsCreateSection(true);
+    setEditSectionId(sectionId);
+    setIsSectionEditing(true);
+    setSectionName(sectionName);
+    setSectionScheduleDate(sectionScheduleDate);
   };
 
   const handleDeleteSection = async (sectionId: string) => {
@@ -779,7 +827,7 @@ const Sections: React.FC<SectionsProps> = ({
                     <div className="flex flex-row gap-1 items-center">
                       <Image src="/icons/schedule.svg" width={12} height={12} alt="schedule" />
                       <p className="text-sm">
-                        Schedule: <span className="font-medium ml-[2px]">{section.sectionScheduleDate}</span>
+                        Schedule: <span className="font-medium ml-[2px]">{formatScheduleDate(section.sectionScheduleDate)}</span>
                       </p>
                     </div>
                       {section.hasQuestions && (
@@ -803,40 +851,6 @@ const Sections: React.FC<SectionsProps> = ({
                      
                    
                     
-                  </div>
-                  <div className="flex flex-row items-center gap-2">
-                    {/* {!section.hasQuestions && (
-                      <button
-                        className="flex flex-row gap-1 items-center"
-                        onClick={() => setShowAddOptions(section.id)}
-                      >
-                        <Image src="/icons/plus-sign.svg" height={18} width={18} alt="Plus Sign" />
-                        <span className="text-[#9012FF] font-semibold text-sm">Add</span>
-                      </button>
-                    )} */}
-                    {/* {showAddOptions === section.id && !section.hasQuestions && (
-                      <div className="absolute mt-8 bg-white shadow-lg rounded-md">
-                        <button
-                          className="w-full px-4 py-2 text-left hover:bg-gray-100"
-                          onClick={() => {
-                            navigateToSection(section.id, section.sectionName);
-                            setShowAddOptions(null);
-                          }}
-                        >
-                          Add Subsection
-                        </button>
-                        <button
-                          className="w-full px-4 py-2 text-left hover:bg-gray-100"
-                          onClick={() => {
-                            setSelectedSectionId(section.id);
-                            setShowQuestionInput(true);
-                            setShowAddOptions(null);
-                          }}
-                        >
-                          Add Questions
-                        </button>
-                      </div>
-                    )} */}
                   </div>
                   <div className="flex flex-row gap-3 mt-2 items-center">
                   {section.hasQuestions ? (
@@ -870,6 +884,16 @@ const Sections: React.FC<SectionsProps> = ({
                     </PopoverTrigger>
                     <PopoverContent className="p-0 rounded-md">
                         <div>
+                        <button className="flex flex-row gap-1 items-center px-4 py-2 rounded-none w-auto h-auto"
+                         onClick={(e) => {{handleEditSection(section.id, section.sectionName, section.sectionScheduleDate)}; e.stopPropagation();}}>
+                        <Image
+                                src="/icons/edit-icon.svg"
+                                width={14}
+                                height={14}
+                                alt="Edit Actions"
+                            />
+                          <p className="text-sm ">Edit Section</p>  
+                        </button>
                         <button className="flex flex-row gap-1 items-center px-4 py-2 rounded-none w-auto h-auto"
                          onClick={() => handleDeleteSection(section.id)}>
                         <Image
@@ -924,7 +948,7 @@ const Sections: React.FC<SectionsProps> = ({
               <h3 className="font-medium">{subsection.sectionName}</h3>
               <div className="flex flex-row gap-[6px] items-center">
               <Image src="/icons/schedule.svg" width={14} height={14} alt="schedule" />   
-              <p className="text-sm text-[#475467]">Schedule: <span className="font-medium ml-1 text-black">{subsection.sectionScheduleDate}</span></p>
+              <p className="text-sm text-[#475467]">Schedule: <span className="font-medium ml-1 text-black">{formatScheduleDate(subsection.sectionScheduleDate)}</span></p>
               <Popover placement="bottom-end">
                     <PopoverTrigger>
                         <button className="ml-[6px]">
@@ -1006,7 +1030,7 @@ const Sections: React.FC<SectionsProps> = ({
           <DialogPanel className="bg-white rounded-2xl w-[559px] h-auto">
             <div className="flex flex-col gap-6">
               <div className="flex flex-row justify-between items-center px-6 pt-4">
-                <h3 className="text-2xl font-semibold text-[#1D2939]">Create Section</h3>
+                <h3 className="text-2xl font-semibold text-[#1D2939]">{isSectionEditing ? 'Edit Section' : 'Create Section'}</h3>
                 <button onClick={() => setIsCreateSection(false)}>
                   <Image src="/icons/cancel.svg" alt="Cancel" width={20} height={20} />
                 </button>
@@ -1043,12 +1067,12 @@ const Sections: React.FC<SectionsProps> = ({
                 </button>
                 <button
                   onClick={handleAddSection}
-                  disabled={!isCreateSection}
+                  disabled={isSectionButtonDisabled}
                   className={`py-[0.625rem] px-6 text-white shadow-inner-button border border-white ${
-                    !isCreateSection ? 'bg-[#CDA0FC]' : 'bg-[#9012FF]'
+                    isSectionButtonDisabled ? 'bg-[#CDA0FC]' : 'bg-[#9012FF]'
                   } rounded-md font-semibold text-sm`}
                 >
-                  Create Section
+                  {isSectionEditing ? 'Save Changes' : 'Create Section'}
                 </button>
               </div>
             </div>
