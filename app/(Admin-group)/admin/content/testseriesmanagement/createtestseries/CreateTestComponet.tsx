@@ -21,7 +21,8 @@ enum Step {
 
 
 const CreateTestSeries = () => {
-
+ const [sectionScheduleDate, setSectionScheduleDate] = useState<string>("");
+  const [sectionName, setSectionName] = useState<string>("");
     const [isPublished, setIsPublished] = useState(false);
     const [currentStep, setCurrentStep] = useState<Step>(Step.TestSeriesInfo);
     const [name, setName] = useState('');
@@ -39,6 +40,7 @@ const CreateTestSeries = () => {
     const [endDate, setEndDate] = useState("");
     let [liveQuizNow, setLiveQuizNow] = useState<boolean>(false);
   const [loading, setLoading] = useState(false);
+  const [isSectionEditing, setIsSectionEditing] = useState(false);
 
     const router = useRouter();
 
@@ -185,7 +187,7 @@ const CreateTestSeries = () => {
             case Step.TestSeriesInfo:
                 return <TestSeriesInfo name={name} setName={setName} description={description} setDescription={setDescription} imageUrl={image} setImageUrl={setImage} price={price} setPrice={setPrice} discountPrice={discountPrice} setDiscountPrice={setDiscountPrice} rating={rating} setRating={setRating} noOfRating={noOfRating} setNoOfRating={setNoOfRating} />;
             case Step.Sections:
-                return <Sections isCreateSection={isCreateSection} setIsCreateSection={setIsCreateSection} testId={testId || ''} />;
+                return <Sections isCreateSection={isCreateSection} setIsCreateSection={setIsCreateSection} testId={testId || ''} sectionName={sectionName} sectionScheduleDate={sectionScheduleDate} setSectionName={setSectionName} setSectionScheduleDate={setSectionScheduleDate} isSectionEditing={isSectionEditing} setIsSectionEditing={setIsSectionEditing}/>;
             case Step.Review:
                 return <Review testId={testId || ''} name={name} description={description}  testImage={image}  price={price} discountPrice={discountPrice}  rating={rating} noOfRating={noOfRating} />;
             case Step.Perference:
@@ -239,15 +241,15 @@ const CreateTestSeries = () => {
                 </div>
             </div>
             <div className="flex flex-col w-full ml-[20px]  mt-8 ">
-                <div className="h-15 ml-1 w-full border-b border-solid border-[#D0D5DD] pr-8">
-                    <div className="flex flex-row justify-between ">
+                <div className="h-15 ml-1 w-full border-b border-solid border-[#D0D5DD] ">
+                    <div className="flex flex-row justify-between pr-6">
                         <span className="text-lg font-semibold text-[#1D2939] flex items-center">
                             {["Test Series Info", "Sections", "Review", "Perference"][currentStep]}
                         </span>
-                        <div className="flex flex-row gap-3 mb-3">
+                        <div className="flex flex-row gap-3 mb-3 ">
                             {currentStep === Step.Sections && (
                                 <button
-                                    onClick={() => setIsCreateSection(true)}
+                                    onClick={() => {setIsCreateSection(true); setSectionName(''); setSectionScheduleDate(''); setIsSectionEditing(false)}}
                                     className="flex flex-row gap-1 items-center h-[44px] w-[162px] justify-center"
                                 >
                                     <Image src="/icons/plus-sign.svg" height={18} width={18} alt="Plus Sign" />
@@ -263,7 +265,7 @@ const CreateTestSeries = () => {
                                 </button>
                             )}
                             <button
-                                className={`h-[44px] w-[135px] rounded-md shadow-inner-button border text-white ${isNextButtonDisabled ? 'bg-[#CDA0FC]' : 'bg-[#8501FF]'}  border-white `}
+                                className={`h-[44px] w-[135px] rounded-md shadow-inner-button border text-white ${currentStep === Step.Review ? 'mr-7' : ''} ${isNextButtonDisabled ? 'bg-[#CDA0FC]' : 'bg-[#8501FF]'}  border-white `}
                                 onClick={handleNextClick}
                                 disabled={isNextButtonDisabled}
                             >

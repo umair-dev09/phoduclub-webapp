@@ -17,6 +17,7 @@ import EndDialog from "@/components/AdminComponents/QuizInfoDailogs/EndDailogue"
 import PausedDDialog from "@/components/AdminComponents/QuizInfoDailogs/PauseDailogue";
 import { ToastContainer } from "react-toastify";
 import DeleteQuiz from "@/components/AdminComponents/QuizInfoDailogs/DeleteQuiz";
+import { format } from 'date-fns';
 
 type QuizData = {
     quizName: string;
@@ -78,7 +79,10 @@ function Quizinfo() {
     const [isPausedDialogOpen, setIsPausedDialogOpen] = useState(false);
     const [isMakeLiveNowDialogOpen, setIsMakeLiveNowDialogOpen] = useState(false);
     const [adminDetails, setAdminDetails] = useState<{ name: string, profilePic: string } | null>(null);
-
+const formatStartDate = (dateString: string): string => {
+        const date = new Date(dateString);
+        return format(date, 'dd MMM, yyyy  hh:mm a');
+    };
     // Handlers for ScheduledDialog
     const openScheduledDialog = (startDate: string, endDate: string) => {
         setIsScheduledDialogOpen(true);
@@ -334,7 +338,7 @@ function Quizinfo() {
                                 height={20}
                                 alt="information-icon"
                             />
-                            <span className="text-[#475467] font-normal text-[13px]">Quiz will be live on 12 Jan, 2024  05:30 PM</span>
+                            <span className="text-[#475467] font-normal text-[13px]">Quiz will be live on {formatStartDate(quizData.startDate)}</span>
                         </div>
                         <button
                             onClick={() => openScheduledDialog(quizData.startDate, quizData.endDate)}>

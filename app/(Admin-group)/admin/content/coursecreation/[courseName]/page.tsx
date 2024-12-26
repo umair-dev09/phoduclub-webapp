@@ -21,6 +21,7 @@ import ScheduledDialog from "@/components/AdminComponents/QuizInfoDailogs/schedu
 import EndDialog from "@/components/AdminComponents/QuizInfoDailogs/EndDailogue";
 import PausedDDialog from "@/components/AdminComponents/QuizInfoDailogs/PauseDailogue";
 import ResumeQuiz from "@/components/AdminComponents/QuizInfoDailogs/ResumeDailogue";
+import { format } from 'date-fns';
 
 type priceprops = {
     Price: number;
@@ -37,6 +38,7 @@ type CourseData = {
     noOfRating: string | null;
     status: string | null;
     startDate: string | null;
+    endDate: string | null;
     createdBy: string | null;   
 };
 
@@ -94,7 +96,10 @@ function Courses() {
     const [isEndDialogOpen, setIsEndDialogOpen] = useState(false);
     const [isPausedDialogOpen, setIsPausedDialogOpen] = useState(false);
     const [adminDetails, setAdminDetails] = useState<{ name: string, profilePic: string } | null>(null);
-
+const formatStartDate = (dateString: string): string => {
+        const date = new Date(dateString);
+        return format(date, 'dd MMM, yyyy  hh:mm a');
+    };
     const isFormValid = endDate;
     // Check if dateString is not empty and in the correct format (YYYY-MM-DD)
     const dateValue = startDate && /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}$/.test(startDate)
@@ -304,10 +309,9 @@ function Courses() {
                                     height={20}
                                     alt="information-icon"
                                 />
-                                <span className="text-[#475467] font-normal text-[13px]">Course will be live on {courseData.startDate}</span>
+                                <span className="text-[#475467] font-normal text-[13px]">Course will be live on {formatStartDate(courseData.startDate || '')}</span>
                             </div>
-                            <button
-                            >
+                            <button onClick={() => {setIsScheduledDialogOpen(true); setStartDate(courseData.startDate || ''); setEndDate(courseData.endDate || '');}}>
                                 <Image src="/icons/edit-icon.svg" width={18} height={18} alt="Edit-icon" />
                             </button>
                         </div>

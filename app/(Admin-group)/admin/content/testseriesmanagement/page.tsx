@@ -442,149 +442,133 @@ function TesstseriesInfo() {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {data.length > 0 ? (
-                                        currentItems.map((test, index) => (
-                                            <tr key={index} className="border-t border-solid border-[#EAECF0]">
-                                                <td onClick={() => handleTabClick(`/admin/content/testseriesmanagement/${test.testName.toLowerCase().replace(/\s+/g, '-')}/?tId=${test.testId}`)}>
-                                                    <button className="flex flex-row items-center px-8 py-3 gap-2 text-[#9012FF] underline text-sm font-medium">
-                                                        <Image className="w-10 h-10 rounded-full object-cover" src={test.testImage || '/images/TSM-DP.png'} alt="DP" width={40} height={40} />
-                                                        <p className="text-start whitespace-nowrap">{test.testName}</p>
-                                                    </button>
-                                                </td>
-                                                <td className="px-8 py-4 text-center text-[#101828] text-sm"><span className="mr-1">&#8377;</span>{test.discountPrice}</td>
-                                                <td className="px-8 py-4 text-center text-[#101828] text-sm whitespace-nowrap">{test.date}</td>
-                                                <td className="px-8 py-4 text-center text-[#101828] text-sm">
-                                                    <span className='flex items-center justify-start ml-[20%] rounded-full'>
-                                                        <Status status={test.status} />
-                                                    </span>
-                                                </td>
-                                                <td className="text-center px-8 py-4 text-[#101828] text-sm">
-                                                    <Popover placement="bottom-end" isOpen={!!openPopovers[index]}
-                                                        onOpenChange={() => closePopover(index)}>
-                                                        <PopoverTrigger>
-                                                            <button onClick={(e) => { e.stopPropagation(); togglePopover(index) }} type='button' className="ml-[60%] outline-none cursor-pointer">
-                                                                <Image
-                                                                    src="/icons/three-dots.svg"
-                                                                    width={20}
-                                                                    height={20}
-                                                                    alt="More Actions"
-                                                                />
+                                    {currentItems.map((test, index) => (
+                                        <tr key={index} className="border-t border-solid border-[#EAECF0]">
+                                            <td onClick={() => handleTabClick(`/admin/content/testseriesmanagement/${test.testName.toLowerCase().replace(/\s+/g, '-')}/?tId=${test.testId}`)}>
+                                                <button className="flex flex-row items-center px-8 py-3 gap-2 text-[#9012FF] underline text-sm font-medium">
+                                                    <Image className="w-10 h-10 rounded-full object-cover" src={test.testImage || '/images/TSM-DP.png'} alt="DP" width={40} height={40} />
+                                                    <p className="text-start whitespace-nowrap">{test.testName}</p>
+                                                </button>
+                                            </td>
+                                            <td className="px-8 py-4 text-center text-[#101828] text-sm"><span className="mr-1">&#8377;</span>{test.discountPrice}</td>
+                                            <td className="px-8 py-4 text-center text-[#101828] text-sm whitespace-nowrap">{test.date}</td>
+                                            <td className="px-8 py-4 text-center text-[#101828] text-sm">
+                                                <span className='flex items-center justify-start ml-[20%] rounded-full'>
+                                                    <Status status={test.status} />
+                                                </span>
+                                            </td>
+                                            <td className="text-center px-8 py-4 text-[#101828] text-sm">
+                                                <Popover placement="bottom-end" isOpen={!!openPopovers[index]}
+                                                    onOpenChange={() => closePopover(index)}>
+                                                    <PopoverTrigger>
+                                                        <button onClick={(e) => { e.stopPropagation(); togglePopover(index) }} type='button' className="ml-[60%] outline-none cursor-pointer">
+                                                            <Image
+                                                                src="/icons/three-dots.svg"
+                                                                width={20}
+                                                                height={20}
+                                                                alt="More Actions"
+                                                            />
+                                                        </button>
+                                                    </PopoverTrigger>
+                                                    <PopoverContent className={`flex flex-col items-start text-sm font-normal py-1 px-0 bg-white border border-lightGrey rounded-md ${test.status === 'paused' ? 'w-[11.563rem]' : 'w-[10.438rem]'}`}>
+                                                        {test.status === 'paused' && (
+                                                            <button className="flex flex-row w-full px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors" onClick={() => { closePopover(index); openScheduledDialog(test.testId, test.startDate, test.endDate) }}>
+                                                                <Image src='/icons/calendar-03.svg' alt="schedule" width={18} height={18} />
+                                                                <p>Schedule</p>
                                                             </button>
-                                                        </PopoverTrigger>
-                                                        <PopoverContent className={`flex flex-col items-start text-sm font-normal py-1 px-0 bg-white border border-lightGrey rounded-md ${test.status === 'paused' ? 'w-[11.563rem]' : 'w-[10.438rem]'}`}>
-                                                            {(test.status === 'saved' || test.status === 'scheduled') && (
-                                                                <button className="flex flex-row w-full px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors" onClick={() => { closePopover(index); openScheduledDialog(test.testId, test.startDate, test.endDate) }}>
-                                                                    <Image src='/icons/calendar-03.svg' alt="schedule" width={18} height={18} />
-                                                                    <p>Schedule</p>
-                                                                </button>
-                                                            )}
+
+                                                        )}
+                                                        {test.status === 'paused' && (
+                                                            <button className="flex flex-row w-full px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors"
+                                                                onClick={() => { closePopover(index); openResumeQuiz(test.testId) }}>
+                                                                <Image src='/icons/play-dark.svg' alt="resume quiz" width={20} height={20} />
+                                                                <p>Resume</p>
+                                                            </button>
+
+                                                        )}
+
+                                                        {/* Option 1 */}
+                                                        <div>
                                                             {test.status === 'paused' && (
-                                                                <button className="flex flex-row w-full px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors" onClick={() => { closePopover(index); openScheduledDialog(test.testId, test.startDate, test.endDate) }}>
-                                                                    <Image src='/icons/calendar-03.svg' alt="schedule" width={18} height={18} />
-                                                                    <p>Schedule</p>
+                                                                <button className="flex flex-row w-[11.563rem] px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors"
+                                                                    onClick={() => router.push(`/admin/content/testseriesmanagement/createtestseries/?s=${test.status}&tId=${test.testId}`)}>
+                                                                    <Image src='/icons/edit-icon.svg' alt="edit" width={18} height={18} />
+                                                                    <p>Edit</p>
                                                                 </button>
-
                                                             )}
-                                                            {test.status === 'paused' && (
-                                                                <button className="flex flex-row w-full px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors"
-                                                                    onClick={() => { closePopover(index); openResumeQuiz(test.testId) }}>
-                                                                    <Image src='/icons/play-dark.svg' alt="resume quiz" width={20} height={20} />
-                                                                    <p>Resume</p>
+                                                            {test.status === 'scheduled' && (
+                                                                <button className="flex flex-row w-[10.438rem] px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors"
+                                                                    onClick={() => router.push(`/admin/content/testseriesmanagement/createtestseries/?s=${test.status}&tId=${test.testId}`)}>
+                                                                    <Image src='/icons/edit-icon.svg' alt="edit" width={18} height={18} />
+                                                                    <p>Edit</p>
                                                                 </button>
-
                                                             )}
-
-                                                            {/* Option 1 */}
-                                                            <div>
-                                                                {test.status === 'paused' && (
-                                                                    <button className="flex flex-row w-[11.563rem] px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors"
-                                                                        onClick={() => router.push(`/admin/content/testseriesmanagement/createtestseries/?s=${test.status}&tId=${test.testId}`)}>
-                                                                        <Image src='/icons/edit-icon.svg' alt="edit" width={18} height={18} />
-                                                                        <p>Edit</p>
-                                                                    </button>
-                                                                )}
-                                                                {test.status === 'scheduled' && (
-                                                                    <button className="flex flex-row w-[10.438rem] px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors"
-                                                                        onClick={() => router.push(`/admin/content/testseriesmanagement/createtestseries/?s=${test.status}&tId=${test.testId}`)}>
-                                                                        <Image src='/icons/edit-icon.svg' alt="edit" width={18} height={18} />
-                                                                        <p>Edit</p>
-                                                                    </button>
-                                                                )}
-                                                                {test.status === 'saved' && (
-                                                                    <button className="flex flex-row w-[10.438rem] px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors"
-                                                                        onClick={() => router.push(`/admin/content/testseriesmanagement/createtestseries/?s=${test.status}&tId=${test.testId}`)}>
-                                                                        <Image src='/icons/edit-icon.svg' alt="edit" width={18} height={18} />
-                                                                        <p>Edit</p>
-                                                                    </button>
-                                                                )}
-                                                                {test.status === 'live' && (
-                                                                    <button className="flex flex-row w-[10.438rem] px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors"
-                                                                        onClick={() => { closePopover(index); openPausedQuiz(test.testId) }}>
-                                                                        <Image src='/icons/pause-dark.svg' alt="pause" width={18} height={18} />
-                                                                        <p>Pause</p>
-                                                                    </button>
-                                                                )}
-                                                            </div>
-                                                            {/* Option 3: Resume test (only if status is Paused) */}
-                                                            {/* {test.status === 'Paused' && (
+                                                            {test.status === 'saved' && (
+                                                                <button className="flex flex-row w-[10.438rem] px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors"
+                                                                    onClick={() => router.push(`/admin/content/testseriesmanagement/createtestseries/?s=${test.status}&tId=${test.testId}`)}>
+                                                                    <Image src='/icons/edit-icon.svg' alt="edit" width={18} height={18} />
+                                                                    <p>Edit</p>
+                                                                </button>
+                                                            )}
+                                                            {test.status === 'live' && (
+                                                                <button className="flex flex-row w-[10.438rem] px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors"
+                                                                    onClick={() => { closePopover(index); openPausedQuiz(test.testId) }}>
+                                                                    <Image src='/icons/pause-dark.svg' alt="pause" width={18} height={18} />
+                                                                    <p>Pause</p>
+                                                                </button>
+                                                            )}
+                                                        </div>
+                                                        {/* Option 3: Resume test (only if status is Paused) */}
+                                                        {/* {test.status === 'Paused' && (
                                                                 <div className="flex flex-row w-full px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors"
                                                                     onClick={openResume}>
                                                                     <Image src='/icons/play-dark.svg' alt="resume" width={20} height={20} />
                                                                     <p>Resume</p>
                                                                 </div>
                                                             )} */}
-                                                            {/* Option 4: Delete test */}
-                                                            <div>
-                                                                {test.status === 'paused' && (
-                                                                    <div className="flex flex-row w-[11.563rem] px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors"
-                                                                        onClick={() => { closePopover(index); openDeleteDialog(test.testId, test.testName) }}>
-                                                                        <Image src='/icons/delete.svg' alt="delete" width={18} height={18} />
-                                                                        <p className="text-[#DE3024]">Delete</p>
-                                                                    </div>
-                                                                )}
-                                                                {test.status === 'scheduled' && (
-                                                                    <div className="flex flex-row w-[10.438rem] px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors"
-                                                                        onClick={() => { closePopover(index); openDeleteDialog(test.testId, test.testName) }}>
-                                                                        <Image src='/icons/delete.svg' alt="delete" width={18} height={18} />
-                                                                        <p className="text-[#DE3024]">Delete</p>
-                                                                    </div>
-                                                                )}
-                                                                {test.status === 'finished' && (
-                                                                    <div className="flex flex-row w-[10.438rem] px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors"
-                                                                        onClick={() => { closePopover(index); openDeleteDialog(test.testId, test.testName) }}>
-                                                                        <Image src='/icons/delete.svg' alt="delete" width={18} height={18} />
-                                                                        <p className="text-[#DE3024]">Delete</p>
-                                                                    </div>
-                                                                )}
-                                                                {test.status === 'saved' && (
-                                                                    <div className="flex flex-row w-[10.438rem] px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors"
-                                                                        onClick={() => { closePopover(index); openDeleteDialog(test.testId, test.testName) }}>
-                                                                        <Image src='/icons/delete.svg' alt="delete" width={18} height={18} />
-                                                                        <p className="text-[#DE3024]">Delete</p>
-                                                                    </div>
-                                                                )}
-                                                                {test.status === 'live' && (
-                                                                    <div className="flex flex-row w-[10.438rem] px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors"
-                                                                        onClick={() => { closePopover(index); openEndQuiz(test.testId) }}>
-                                                                        <Image src='/icons/license-no.svg' alt="end" width={18} height={18} />
-                                                                        <p className="text-[#DE3024]">End</p>
-                                                                    </div>
-                                                                )}
-                                                            </div>
-                                                        </PopoverContent>
-                                                    </Popover>
-                                                </td>
-                                            </tr>
-                                        ))
-                                    ) : (
-                                        <tr className='border-t border-lightGrey'>
-                                            <td colSpan={5} className="text-center py-8">
-                                                <div className="flex flex-col items-center justify-center gap-2">
-                                                    <p className="text-[#667085] text-sm">No chapters found for "{searchTerm}"</p>
-                                                </div>
+                                                        {/* Option 4: Delete test */}
+                                                        <div>
+                                                            {test.status === 'paused' && (
+                                                                <div className="flex flex-row w-[11.563rem] px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors"
+                                                                    onClick={() => { closePopover(index); openDeleteDialog(test.testId, test.testName) }}>
+                                                                    <Image src='/icons/delete.svg' alt="delete" width={18} height={18} />
+                                                                    <p className="text-[#DE3024]">Delete</p>
+                                                                </div>
+                                                            )}
+                                                            {test.status === 'scheduled' && (
+                                                                <div className="flex flex-row w-[10.438rem] px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors"
+                                                                    onClick={() => { closePopover(index); openDeleteDialog(test.testId, test.testName) }}>
+                                                                    <Image src='/icons/delete.svg' alt="delete" width={18} height={18} />
+                                                                    <p className="text-[#DE3024]">Delete</p>
+                                                                </div>
+                                                            )}
+                                                            {test.status === 'finished' && (
+                                                                <div className="flex flex-row w-[10.438rem] px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors"
+                                                                    onClick={() => { closePopover(index); openDeleteDialog(test.testId, test.testName) }}>
+                                                                    <Image src='/icons/delete.svg' alt="delete" width={18} height={18} />
+                                                                    <p className="text-[#DE3024]">Delete</p>
+                                                                </div>
+                                                            )}
+                                                            {test.status === 'saved' && (
+                                                                <div className="flex flex-row w-[10.438rem] px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors"
+                                                                    onClick={() => { closePopover(index); openDeleteDialog(test.testId, test.testName) }}>
+                                                                    <Image src='/icons/delete.svg' alt="delete" width={18} height={18} />
+                                                                    <p className="text-[#DE3024]">Delete</p>
+                                                                </div>
+                                                            )}
+                                                            {test.status === 'live' && (
+                                                                <div className="flex flex-row w-[10.438rem] px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors"
+                                                                    onClick={() => { closePopover(index); openEndQuiz(test.testId) }}>
+                                                                    <Image src='/icons/license-no.svg' alt="end" width={18} height={18} />
+                                                                    <p className="text-[#DE3024]">End</p>
+                                                                </div>
+                                                            )}
+                                                        </div>
+                                                    </PopoverContent>
+                                                </Popover>
                                             </td>
                                         </tr>
-                                    )}
+                                    ))}
                                 </tbody>
                             </table>
                         </div>
