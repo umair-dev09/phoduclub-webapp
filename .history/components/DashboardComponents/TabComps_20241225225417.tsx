@@ -41,7 +41,7 @@ function TabComps() {
         if (tabName === 'dashboard') {
             setShowQuizDialog(true); // Open dialog when 'dashboard' tab is clicked
         }
-        else if (tabName === "analytics") {
+        else if (tabName === "analytics/test-series") {
             setShowQuizDialog(true);
         }
     };

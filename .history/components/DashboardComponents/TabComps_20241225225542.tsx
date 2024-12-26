@@ -141,7 +141,7 @@ function TabComps() {
 
             <Dialog open={showQuizDialog} onClose={() => setShowQuizDialog(false)} className="relative z-50">
                 <DialogBackdrop className="fixed inset-0 bg-black/30 " />
-                <div className="fixed inset-0 flex items-center justify-center ">
+                <div className="fixed inset-0 flex items-center justify-center ml-10 ">
                     <DialogPanel transition className="bg-[#FFFFFF] rounded-2xl w-[37.5rem]">
                         <div className="flex flex-1 relative w-full flex-col rounded-xl">
                             <div className="flex flex-col w-full mt-8">

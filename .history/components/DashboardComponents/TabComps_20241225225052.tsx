@@ -41,9 +41,6 @@ function TabComps() {
         if (tabName === 'dashboard') {
             setShowQuizDialog(true); // Open dialog when 'dashboard' tab is clicked
         }
-        else if (tabName === "analytics") {
-            setShowQuizDialog(true);
-        }
     };
     useEffect(() => {
         if (pathname) {
