@@ -19,10 +19,9 @@ enum Step {
     Perference = 3,
 }
 
-
 const CreateTestSeries = () => {
- const [sectionScheduleDate, setSectionScheduleDate] = useState<string>("");
-  const [sectionName, setSectionName] = useState<string>("");
+    const [sectionScheduleDate, setSectionScheduleDate] = useState<string>("");
+    const [sectionName, setSectionName] = useState<string>("");
     const [isPublished, setIsPublished] = useState(false);
     const [currentStep, setCurrentStep] = useState<Step>(Step.TestSeriesInfo);
     const [name, setName] = useState('');
@@ -39,73 +38,73 @@ const CreateTestSeries = () => {
     const [startDate, setStartDate] = useState("");
     const [endDate, setEndDate] = useState("");
     let [liveQuizNow, setLiveQuizNow] = useState<boolean>(false);
-  const [loading, setLoading] = useState(false);
-  const [isSectionEditing, setIsSectionEditing] = useState(false);
+    const [loading, setLoading] = useState(false);
+    const [isSectionEditing, setIsSectionEditing] = useState(false);
 
     const router = useRouter();
 
     useEffect(() => {
-            if (testId) {
-                fetchTestData(testId);
+        if (testId) {
+            fetchTestData(testId);
+        }
+    }, [testId]);
+
+    const fetchTestData = async (testId: string) => {
+        setLoading(true);
+        try {
+            const testDocRef = doc(db, "testseries", testId);
+            const testDocSnap = await getDoc(testDocRef);
+
+            if (testDocSnap.exists()) {
+                const testData = testDocSnap.data();
+                setName(testData.testName || "");
+                setDescription(testData.testDescription || "");
+                setImage(testData.testImage || "");
+                // setStartDate(testData.startDate || "");
+                // setEndDate(testData.endDate || "");
+                setPrice(testData.price || "");
+                setDiscountPrice(testData.discountPrice || "");
+                setRating(testData.rating || "");
+                setNoOfRating(testData.noOfRating || "");
+                setLoading(false);
+            } else {
+                toast.error("Test series not found!");
+                setLoading(false);
             }
-        }, [testId]);
-
-         const fetchTestData = async (testId: string) => {
-                setLoading(true);
-                try {
-                    const testDocRef = doc(db, "testseries", testId);
-                    const testDocSnap = await getDoc(testDocRef);
-        
-                    if (testDocSnap.exists()) {
-                        const testData = testDocSnap.data();
-                        setName(testData.testName || "");
-                        setDescription(testData.testDescription || "");
-                        setImage(testData.testImage || "");
-                        // setStartDate(testData.startDate || "");
-                        // setEndDate(testData.endDate || "");
-                        setPrice(testData.price || "");
-                        setDiscountPrice(testData.discountPrice || "");
-                        setRating(testData.rating || "");
-                        setNoOfRating(testData.noOfRating || "");
-                        setLoading(false);
-                    } else {
-                        toast.error("Test series not found!");
-                        setLoading(false);
-                    }
-                } catch (error) {
-                    console.error("Error fetching test data:", error);
-                    toast.error("Error loading test data.");
-                }
-            };
-            const currentDate = new Date();
-            const formattedDate = currentDate.toISOString().slice(0, 19); // Converts to the format "YYYY-MM-DDTHH:MM:SS"
+        } catch (error) {
+            console.error("Error fetching test data:", error);
+            toast.error("Error loading test data.");
+        }
+    };
+    const currentDate = new Date();
+    const formattedDate = currentDate.toISOString().slice(0, 19); // Converts to the format "YYYY-MM-DDTHH:MM:SS"
     const handleNextClick = async () => {
-        
-                if (currentStep === Step.Perference) {
-                    if(testId){
-                     try{
-                        const testRef = doc(db, "testseries", testId);
 
-                        // Prepare updated quiz data
-                        const testData = {
-                            startDate: liveQuizNow ? formattedDate : startDate,
-                            endDate,
-                            status: liveQuizNow ? "live" : "scheduled", // You can change this as needed
-                        };
+        if (currentStep === Step.Perference) {
+            if (testId) {
+                try {
+                    const testRef = doc(db, "testseries", testId);
 
-                        // Update the existing quiz data
-                        await updateDoc(testRef, testData);
-                        toast.success('Test Series updated succesfully!');
-                        setTimeout(() => {
-                            router.back();
-                        }, 500);
-                                         }
-                     catch(error){
-                        console.log(error);
-                     }
-                    }
+                    // Prepare updated quiz data
+                    const testData = {
+                        startDate: liveQuizNow ? formattedDate : startDate,
+                        endDate,
+                        status: liveQuizNow ? "live" : "scheduled", // You can change this as needed
+                    };
+
+                    // Update the existing quiz data
+                    await updateDoc(testRef, testData);
+                    toast.success('Test Series updated succesfully!');
+                    setTimeout(() => {
+                        router.back();
+                    }, 500);
                 }
-             else if (currentStep < Step.Sections) {
+                catch (error) {
+                    console.log(error);
+                }
+            }
+        }
+        else if (currentStep < Step.Sections) {
             if (testId) {
                 setCurrentStep(currentStep + 1);
             }
@@ -150,8 +149,8 @@ const CreateTestSeries = () => {
                 );
             }
         }
-     
-         else if (currentStep < Step.Perference) {
+
+        else if (currentStep < Step.Perference) {
             setCurrentStep(currentStep + 1);
         }
     };
@@ -166,10 +165,10 @@ const CreateTestSeries = () => {
         if (currentStep === Step.TestSeriesInfo) {
             return name.trim() !== '' && description.trim() !== '' && image.trim() !== '' && price.trim() !== '' && discountPrice.trim() !== '' && rating.trim() !== '' && noOfRating.trim() !== '';
         }
-         else if (currentStep === Step.Perference) {
-                    return  endDate.trim() !== '';
-                }
-        else{
+        else if (currentStep === Step.Perference) {
+            return endDate.trim() !== '';
+        }
+        else {
             return true;
         }
     };
@@ -187,11 +186,11 @@ const CreateTestSeries = () => {
             case Step.TestSeriesInfo:
                 return <TestSeriesInfo name={name} setName={setName} description={description} setDescription={setDescription} imageUrl={image} setImageUrl={setImage} price={price} setPrice={setPrice} discountPrice={discountPrice} setDiscountPrice={setDiscountPrice} rating={rating} setRating={setRating} noOfRating={noOfRating} setNoOfRating={setNoOfRating} />;
             case Step.Sections:
-                return <Sections isCreateSection={isCreateSection} setIsCreateSection={setIsCreateSection} testId={testId || ''} sectionName={sectionName} sectionScheduleDate={sectionScheduleDate} setSectionName={setSectionName} setSectionScheduleDate={setSectionScheduleDate} isSectionEditing={isSectionEditing} setIsSectionEditing={setIsSectionEditing}/>;
+                return <Sections isCreateSection={isCreateSection} setIsCreateSection={setIsCreateSection} testId={testId || ''} sectionName={sectionName} sectionScheduleDate={sectionScheduleDate} setSectionName={setSectionName} setSectionScheduleDate={setSectionScheduleDate} isSectionEditing={isSectionEditing} setIsSectionEditing={setIsSectionEditing} />;
             case Step.Review:
-                return <Review testId={testId || ''} name={name} description={description}  testImage={image}  price={price} discountPrice={discountPrice}  rating={rating} noOfRating={noOfRating} />;
+                return <Review testId={testId || ''} name={name} description={description} testImage={image} price={price} discountPrice={discountPrice} rating={rating} noOfRating={noOfRating} />;
             case Step.Perference:
-                return <Perference startDate={startDate} endDate={endDate} setEndDate={setEndDate} setLiveQuizNow={setLiveQuizNow} liveQuizNow={liveQuizNow} setStartDate={setStartDate}/>;
+                return <Perference startDate={startDate} endDate={endDate} setEndDate={setEndDate} setLiveQuizNow={setLiveQuizNow} liveQuizNow={liveQuizNow} setStartDate={setStartDate} />;
             default:
                 return <TestSeriesInfo name={name} setName={setName} description={description} setDescription={setDescription} imageUrl={image} setImageUrl={setImage} price={price} setPrice={setPrice} discountPrice={discountPrice} setDiscountPrice={setDiscountPrice} rating={rating} setRating={setRating} noOfRating={noOfRating} setNoOfRating={setNoOfRating} />;
         }
@@ -207,7 +206,7 @@ const CreateTestSeries = () => {
         }
     };
 
-    if(loading){
+    if (loading) {
         return <LoadingData />
     }
 
@@ -249,7 +248,7 @@ const CreateTestSeries = () => {
                         <div className="flex flex-row gap-3 mb-3 ">
                             {currentStep === Step.Sections && (
                                 <button
-                                    onClick={() => {setIsCreateSection(true); setSectionName(''); setSectionScheduleDate(''); setIsSectionEditing(false)}}
+                                    onClick={() => { setIsCreateSection(true); setSectionName(''); setSectionScheduleDate(''); setIsSectionEditing(false) }}
                                     className="flex flex-row gap-1 items-center h-[44px] w-[162px] justify-center"
                                 >
                                     <Image src="/icons/plus-sign.svg" height={18} width={18} alt="Plus Sign" />
@@ -286,6 +285,3 @@ const CreateTestSeries = () => {
 }
 
 export default CreateTestSeries;
-
-
-
