@@ -10,6 +10,8 @@ import { db } from '@/firebase';
 import { collection, addDoc, setDoc, doc, deleteDoc } from "firebase/firestore";
 import { toast } from "react-toastify";
 import { Checkbox } from "@nextui-org/react";
+import Select, { SingleValue } from 'react-select';
+
 
 type AddNewUserProps = {
     open: boolean;
@@ -33,6 +35,11 @@ type AddNewUserProps = {
 
 const courses: string[] = ["Physics - 101", "BITSET Full Course", "JEE - 2024", "Physics - 201"]
 
+type Option = {
+    value: string;
+    label: string;
+};
+
 function AddNewUser({
     open,
     close,
@@ -49,8 +56,8 @@ function AddNewUser({
     setProfilePic,
     phone,
     setPhone,
-    selectedRole,
-    setSelectedRole
+    // selectedRole,
+    // setSelectedRole
 }: AddNewUserProps) {
     const [loading, setLoading] = useState(false); // Loading state
     const [roleDialogOpen, setRoleDialogOpen] = useState(false); // Loading state
@@ -63,15 +70,16 @@ function AddNewUser({
         );
     }
 
-    const ROLE_OPTIONS = ["Admin", "Teacher", "Customer Care", "Editor", "Chief Moderator"];
+    // const ROLE_OPTIONS = ["Admin", "Teacher", "Customer Care", "Editor", "Chief Moderator"];
 
-    const handleRoleSelect = (role: string) => {
-        setSelectedRole(role);
-        setRoleDialogOpen(false);
-    };
+    // const handleRoleSelect = (role: string) => {
+    //     setSelectedRole(role);
+    //     setRoleDialogOpen(false);
+    // };
 
-    // Check if all required fields are filled
-    const isFormValid = firstName && lastName && userId && phone && selectedRole;
+    // // Check if all required fields are filled
+    // const isFormValid = firstName && lastName && userId && phone && selectedRole;
+    const isFormValid = firstName && lastName && userId && phone;
 
     const handleAddUser = async () => {
         if (!isFormValid || loading) return; // Prevent submission if fields are empty or loading
@@ -113,6 +121,20 @@ function AddNewUser({
             setLoading(false); // End loading
         }
     };
+
+    type CustomState = {
+        isSelected: boolean;
+        isFocused: boolean;
+    };
+
+    const roles: Option[] = [
+        { value: 'Admin', label: 'Admin' },
+        { value: 'Teacher', label: 'Teacher' },
+        { value: 'Customer Care', label: 'Customer Care' },
+        { value: 'Editor', label: 'Editor' },
+        { value: 'Chief Moderator', label: 'Chief Moderator' },
+    ];
+    const [selectedRole, setSelectedRole] = useState<SingleValue<Option>>(null);
 
     return (
         <Dialog open={open} onClose={close} className="relative z-50">
@@ -190,7 +212,7 @@ function AddNewUser({
                             />
                         </div>
 
-                        <div className="flex flex-col gap-1 w-full">
+                        {/* <div className="flex flex-col gap-1 w-full">
                             <label className="text-[#1D2939] text-sm font-medium">Role</label>
                             <div className="flex flex-row py-2 px-4 w-full gap-2 border border-gray-300  h-10 focus:outline focus:outline-[1.5px] focus:outline-[#D6BBFB] hover:outline hover:outline-[1.5px] hover:outline-[#D6BBFB] rounded-md transition duration-200 ease-in-out justify-between" onClick={() => setRoleDialogOpen(true)}>
                                 <span className="font-normal text-sm text-[#182230]">{selectedRole || "Select Role"}</span>
@@ -215,7 +237,42 @@ function AddNewUser({
                                     </PopoverContent>
                                 </Popover>
                             </div>
+                        </div> */}
+
+                        <div className='w-full'>
+                            <label htmlFor="role" className='mb-2 font-medium text-sm'>Role</label>
+                            <Select
+                                id="role"
+                                value={selectedRole}
+                                onChange={setSelectedRole}
+                                options={roles}
+                                placeholder="Select role..."
+                                styles={{
+                                    option: (provided, state: CustomState) => ({
+                                        ...provided,
+                                        color: 'black',
+                                        backgroundColor: state.isFocused ? '#E39FF6' : 'white', // Purple color when focused
+                                    }),
+                                    singleValue: (provided) => ({
+                                        ...provided,
+                                        color: '#182230',
+                                        fontWeight: '400',
+                                        fontSize: '14px'
+                                    }),
+                                    control: (provided) => ({
+                                        ...provided,
+                                        border: '1px solid #e6e6e6',
+                                        borderRadius: '8px',
+                                        padding: '4px',
+                                        boxShadow: 'none',
+                                        '&:hover': {
+                                            outline: '1px solid #e5a1f5',
+                                        },
+                                    }),
+                                }}
+                            />
                         </div>
+
                         <div className="flex flex-row justify-end my-2 items-center gap-4 border-t border-solid border-[#EAECF0] pt-4">
                             <button onClick={close} className="py-[0.625rem] px-6 border-[1.5px] border-lightGrey rounded-md text-[#1D2939] font-semibold hover:bg-[#F2F4F7] text-sm">Cancel</button>
                             <button

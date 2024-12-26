@@ -20,7 +20,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={inter.className}>
         <Providers>
-            {children}
+          <div className="flex flex-1 overflow-hidden">{children}</div>
         </Providers>
       </body>
     </html>

@@ -67,7 +67,6 @@ type Option = {
     label: string;
 };
 
-
 function User() {
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage] = useState(10);
@@ -657,11 +656,9 @@ function User() {
                                                     outline: '1px solid #e5a1f5',
                                                 },
                                             }),
-
                                         }}
                                     />
                                 </div>
-
                             </div>
                             <div className="flex justify-end gap-4 border-t p-4">
                                 <button onClick={closeDialog} className="px-6 py-2 border rounded-md text-sm font-semibold hover:bg-[#F2F4F7]">
@@ -676,7 +673,6 @@ function User() {
                 </div>
             </Dialog>
             <ToastContainer />
-
         </div>
     );
 }

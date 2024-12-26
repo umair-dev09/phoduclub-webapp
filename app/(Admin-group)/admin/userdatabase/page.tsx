@@ -32,11 +32,11 @@ function UserDatabase() {
                             <span className="font-medium text-base">
                                 Users
                             </span>
-                            {userCount > 0 && (
+                            {/* {userCount > 0 && (
                                 <div className="inline-flex items-center justify-center px-3 py-1 rounded-full text-sm bg-[#EDE4FF] border border-[#EDE4FF] font-medium text-[#7400E0]">
                                     {userCount}
                                 </div>
-                            )}
+                            )} */}
                         </div>
                     }
                 >
@@ -50,11 +50,11 @@ function UserDatabase() {
                             <span className="font-medium text-base">
                                 Banned
                             </span>
-                            {bannedCount > 0 && (
+                            {/* {bannedCount > 0 && (
                                 <div className="inline-flex items-center justify-center px-3 py-1 rounded-full text-sm bg-[#EDE4FF] border border-[#EDE4FF] font-medium text-[#7400E0]">
                                     {bannedCount}
                                 </div>
-                            )}
+                            )} */}
                         </div>
                     }
                 >

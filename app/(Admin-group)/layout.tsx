@@ -117,7 +117,7 @@ export default function DashboardGroup({ children }: DashboardGroupProps) {
                         {/* <Header currentPage={currentPage} /> */}
                         <Header />
                     </div>
-                    <div className="variable-contents">
+                    <div className="variable-contents overflow-hidden">
                         {children}
                     </div>
                 </div>

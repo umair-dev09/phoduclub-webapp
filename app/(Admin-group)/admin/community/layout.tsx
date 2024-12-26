@@ -26,17 +26,14 @@ function Community({ children }: CommunityProps) {
 
     return (
         <div className="flex flex-1 flex-row">
-
-                <div className="flex flex-col w-[90px] bg-white  border-r border-b border-lightGrey">
+            <div className="flex flex-col w-[90px] bg-white  border-r border-b border-lightGrey">
                 <GroupIcons />
-               
+            </div>
+            <div className='  flex-1 '>
+                {children}
+            </div>
+            <ToastContainer />
         </div>
-        <div className='  flex-1 '>
-            {children}
-
-        </div>
-        <ToastContainer />
-    </div>
     );
 }
 
