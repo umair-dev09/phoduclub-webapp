@@ -243,55 +243,65 @@ function StudentsAttemptedTestseries() {
                             </tr>
                         </thead>
                         <tbody>
-                            {currentItems.map((students, index) => (
-                                <tr key={index} className="border-t border-solid border-[#EAECF0]">
-                                    <td className="py-2">
-                                        <div className="flex flex-row ml-8 gap-2">
-                                            <div className="flex items-center">
-                                                <div className="relative">
-                                                    <Image src='/images/DP_Lion.svg' alt="DP" width={40} height={40} />
-                                                    <Image className="absolute right-0 bottom-0" src='/icons/winnerBatch.svg' alt="Batch" width={18} height={18} />
+                            {data.length > 0 ? (
+                                currentItems.map((students, index) => (
+                                    <tr key={index} className="border-t border-solid border-[#EAECF0]">
+                                        <td className="py-2">
+                                            <div className="flex flex-row ml-8 gap-2">
+                                                <div className="flex items-center">
+                                                    <div className="relative">
+                                                        <Image src='/images/DP_Lion.svg' alt="DP" width={40} height={40} />
+                                                        <Image className="absolute right-0 bottom-0" src='/icons/winnerBatch.svg' alt="Batch" width={18} height={18} />
+                                                    </div>
+                                                </div>
+                                                <div className="flex items-start justify-start flex-col">
+                                                    <div className="font-semibold">{students.title}</div>
+                                                    <div className="flex justify-start items-start text-[13px] text-[#667085]">{students.uniqueId}</div>
                                                 </div>
                                             </div>
-                                            <div className="flex items-start justify-start flex-col">
-                                                <div className="font-semibold">{students.title}</div>
-                                                <div className="flex justify-start items-start text-[13px] text-[#667085]">{students.uniqueId}</div>
-                                            </div>
+                                        </td>
+                                        <td className="px-8 py-4 text-center text-[#101828] text-sm">{students.dateTime}</td>
+                                        <td className="px-8 py-4 text-center text-[#101828] text-sm">{students.score}</td>
+                                        <td className="px-8 py-4 text-center text-[#101828] text-sm">{students.timeTaken}</td>
+                                        <td className="px-8 py-4 text-center text-[#101828] text-sm">{students.ranking}</td>
+                                        <td className="flex items-center justify-center px-8 py-4 text-[#101828] text-sm">
+                                            <Popover placement="bottom-end">
+                                                <PopoverTrigger>
+                                                    <button>
+                                                        <Image
+                                                            src="/icons/three-dots.svg"
+                                                            width={20}
+                                                            height={20}
+                                                            alt="More Actions"
+                                                        />
+                                                    </button>
+                                                </PopoverTrigger>
+                                                <PopoverContent>
+                                                    <div className="w-[10.438rem] py-1 bg-white border border-lightGrey rounded-md">
+                                                        <button className="flex flex-row items-center justify-start w-full py-[0.625rem] px-4 gap-2 hover:bg-[#F2F4F7]">
+                                                            <Image src='/icons/user-account.svg' alt="user profile" width={18} height={18} />
+                                                            <p className="text-sm text-[#0C111D] font-normal">Go to Profile</p>
+                                                        </button>
+                                                        <button className=" flex flex-row items-center justify-start w-full py-[0.625rem] px-4 gap-2 hover:bg-[#F2F4F7]"
+                                                            onClick={openRemove}>
+                                                            <Image src='/icons/delete.svg' alt="user profile" width={18} height={18} />
+                                                            <p className="text-sm text-[#DE3024] font-normal">Remove</p>
+                                                        </button>
+                                                    </div>
+                                                </PopoverContent>
+                                            </Popover>
+                                        </td>
+                                    </tr>
+                                ))
+                            ) : (
+                                <tr className='border-t border-lightGrey'>
+                                    <td colSpan={6} className="text-center py-8">
+                                        <div className="flex flex-col items-center justify-center gap-2">
+                                            <p className="text-[#667085] text-sm">No chapters found for "{searchTerm}"</p>
                                         </div>
                                     </td>
-                                    <td className="px-8 py-4 text-center text-[#101828] text-sm">{students.dateTime}</td>
-                                    <td className="px-8 py-4 text-center text-[#101828] text-sm">{students.score}</td>
-                                    <td className="px-8 py-4 text-center text-[#101828] text-sm">{students.timeTaken}</td>
-                                    <td className="px-8 py-4 text-center text-[#101828] text-sm">{students.ranking}</td>
-                                    <td className="flex items-center justify-center px-8 py-4 text-[#101828] text-sm">
-                                        <Popover placement="bottom-end">
-                                            <PopoverTrigger>
-                                                <button>
-                                                    <Image
-                                                        src="/icons/three-dots.svg"
-                                                        width={20}
-                                                        height={20}
-                                                        alt="More Actions"
-                                                    />
-                                                </button>
-                                            </PopoverTrigger>
-                                            <PopoverContent>
-                                                <div className="w-[10.438rem] py-1 bg-white border border-lightGrey rounded-md">
-                                                    <button className="flex flex-row items-center justify-start w-full py-[0.625rem] px-4 gap-2 hover:bg-[#F2F4F7]">
-                                                        <Image src='/icons/user-account.svg' alt="user profile" width={18} height={18} />
-                                                        <p className="text-sm text-[#0C111D] font-normal">Go to Profile</p>
-                                                    </button>
-                                                    <button className=" flex flex-row items-center justify-start w-full py-[0.625rem] px-4 gap-2 hover:bg-[#F2F4F7]"
-                                                        onClick={openRemove}>
-                                                        <Image src='/icons/delete.svg' alt="user profile" width={18} height={18} />
-                                                        <p className="text-sm text-[#DE3024] font-normal">Remove</p>
-                                                    </button>
-                                                </div>
-                                            </PopoverContent>
-                                        </Popover>
-                                    </td>
                                 </tr>
-                            ))}
+                            )}
                         </tbody>
                     </table>
                 </div>

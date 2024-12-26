@@ -83,7 +83,7 @@ function Quizinfo() {
     const openScheduledDialog = (startDate: string, endDate: string) => {
         setIsScheduledDialogOpen(true);
         setStartDate(startDate);
-        setEndDate(endDate);      
+        setEndDate(endDate);
     }
     const closeScheduledDialog = () => setIsScheduledDialogOpen(false);
 
@@ -303,18 +303,18 @@ function Quizinfo() {
                                 >
                                     {quizData?.status !== 'finished' && (
                                         <button className=" p-3 gap-2 flex-row flex h-[40px] hover:bg-[#F2F4F7] w-full"
-                                        onClick={() => {router.push(`/admin/content/quizzesmanagement/createquiz/?s=${quizData?.status}&qId=${quizData?.quizId}`)}}>
+                                            onClick={() => { router.push(`/admin/content/quizzesmanagement/createquiz/?s=${quizData?.status}&qId=${quizData?.quizId}`) }}>
                                             <Image src="/icons/edit-icon.svg" width={18} height={18} alt="Edit-quiz" />
                                             <span className="text-sm text-[#0C111D] font-normal">Edit Quiz</span>
                                         </button>
                                     )}
 
-                                     <button className=" p-3 gap-2 flex-row flex h-[40px] hover:bg-[#F2F4F7] w-full">
+                                    <button className=" p-3 gap-2 flex-row flex h-[40px] hover:bg-[#F2F4F7] w-full">
                                         <Image src="/icons/duplicate.svg" width={18} height={18} alt="Edit-quiz" />
                                         <span className="text-sm text-[#0C111D] font-normal">Duplicate</span>
                                     </button>
                                     <button className=" p-3 gap-2 flex-row flex h-[40px] hover:bg-[#F2F4F7] w-full"
-                                        onClick={() => openDeleteDialog(quizData?.quizName || '')}  
+                                        onClick={() => openDeleteDialog(quizData?.quizName || '')}
                                     >
                                         <Image src="/icons/delete.svg" width={18} height={18} alt="delete-quiz" />
                                         <span className="text-sm text-[#DE3024] font-normal">Delete Quiz</span>
@@ -337,7 +337,7 @@ function Quizinfo() {
                             <span className="text-[#475467] font-normal text-[13px]">Quiz will be live on 12 Jan, 2024  05:30 PM</span>
                         </div>
                         <button
-                                    onClick={() => openScheduledDialog(quizData.startDate, quizData.endDate)}>
+                            onClick={() => openScheduledDialog(quizData.startDate, quizData.endDate)}>
                             <Image src="/icons/edit-icon.svg" width={18} height={18} alt="Edit-quiz" />
                         </button>
                     </div>
@@ -352,7 +352,7 @@ function Quizinfo() {
             </div>
             <div className="flex flex-row gap-1 items-center">
                 <p className="text-[#667085] font-normal text-sm">Created by</p>
-                <Image className="rounded-full w-6 h-6 ml-[2px]" 
+                <Image className="rounded-full w-6 h-6 ml-[2px]"
                     src={adminDetails?.profilePic || "/icons/profile-pic2.svg"}
                     width={24}
                     height={24}
@@ -438,8 +438,8 @@ function Quizinfo() {
             {isEndDialogOpen && <EndDialog onClose={() => setIsEndDialogOpen(false)} fromContent="quiz" contentId={quizId || ''} />}
             {isPausedDialogOpen && <PausedDDialog onClose={() => setIsPausedDialogOpen(false)} fromContent="quiz" contentId={quizId || ''} />}
             {isResumeOpen && < ResumeQuiz open={isResumeOpen} onClose={() => setIsResumeOpen(false)} fromContent="quiz" contentId={quizId || ''} />}
-            {isDeleteDialogOpen && <DeleteQuiz onClose={closeDeleteDialog} open={true} quizId={quizId || ''} quizName={quizName}/>}
-                        <ToastContainer />
+            {isDeleteDialogOpen && <DeleteQuiz onClose={closeDeleteDialog} open={true} quizId={quizId || ''} quizName={quizName} />}
+            <ToastContainer />
         </div>
     );
 }

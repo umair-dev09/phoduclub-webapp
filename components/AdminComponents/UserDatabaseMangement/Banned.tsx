@@ -317,69 +317,79 @@ function Banned() {
                         </tr>
                     </thead>
                     <tbody>
-                        {currentItems.map((banned, index) => (
-                            <tr key={index} className="h-auto border-t border-solid border-[#EAECF0]">
-                                <td className="text-center pl-8">
-                                    <Checkbox
-                                        size="md"
-                                        color="primary"
-                                        isSelected={selectedRows.has(banned.name)}
-                                        onChange={() => handleRowSelect(banned.name)}
-                                        onClick={(e) => e.stopPropagation()} // Prevent row click when checking checkbox
-                                    />
-                                </td>
-                                <td className="py-2">
-                                    <div className="flex flex-row ml-8 gap-2">
-                                        <div className="flex items-center">
-                                            <div className="relative">
-                                                <Image className="rounded-full min-w-[36px] min-h-[36px]" src={banned.profilePic} alt="DP" width={36} height={36} />
-                                                {banned.isPremium && (
-                                                    <Image className="absolute right-0 bottom-0" src='/icons/winnerBatch.svg' alt="Batch" width={18} height={18} />
-                                                )}
+                        {data.length > 0 ? (
+                            currentItems.map((banned, index) => (
+                                <tr key={index} className="h-auto border-t border-solid border-[#EAECF0]">
+                                    <td className="text-center pl-8">
+                                        <Checkbox
+                                            size="md"
+                                            color="primary"
+                                            isSelected={selectedRows.has(banned.name)}
+                                            onChange={() => handleRowSelect(banned.name)}
+                                            onClick={(e) => e.stopPropagation()} // Prevent row click when checking checkbox
+                                        />
+                                    </td>
+                                    <td className="py-2">
+                                        <div className="flex flex-row ml-8 gap-2">
+                                            <div className="flex items-center">
+                                                <div className="relative">
+                                                    <Image className="rounded-full min-w-[36px] min-h-[36px]" src={banned.profilePic} alt="DP" width={36} height={36} />
+                                                    {banned.isPremium && (
+                                                        <Image className="absolute right-0 bottom-0" src='/icons/winnerBatch.svg' alt="Batch" width={18} height={18} />
+                                                    )}
+                                                </div>
+                                            </div>
+                                            <div className="flex items-start justify-start flex-col">
+                                                <div
+                                                    className="font-semibold cursor-pointer whitespace-nowrap"
+                                                    onClick={() => handleTabClick('/admin/userdatabase/userdatabaseinfo')}
+                                                >
+                                                    {banned.name}
+                                                </div>
+                                                <div className="flex justify-start items-start text-[13px] text-[#667085]">{banned.userId}</div>
                                             </div>
                                         </div>
-                                        <div className="flex items-start justify-start flex-col">
-                                            <div
-                                                className="font-semibold cursor-pointer whitespace-nowrap"
-                                                onClick={() => handleTabClick('/admin/userdatabase/userdatabaseinfo')}
-                                            >
-                                                {banned.name}
-                                            </div>
-                                            <div className="flex justify-start items-start text-[13px] text-[#667085]">{banned.userId}</div>
-                                        </div>
+                                    </td>
+                                    <td className="px-8 py-4 text-center text-[#101828] text-sm">{banned.email}</td>
+                                    <td className="px-8 py-4 text-center text-[#101828] text-sm">{banned.phone}</td>
+                                    <td className="px-8 py-4 text-center text-[#101828] text-sm whitespace-nowrap">{formatFirestoreTimestamp(banned.createdAt)}</td>
+                                    <td className="flex items-center justify-center px-8 py-4 text-[#101828] text-sm">
+                                        <Popover placement="bottom-end">
+                                            <PopoverTrigger>
+                                                <button className="ml-[25%] outline-none">
+                                                    <Image
+                                                        src="/icons/three-dots.svg"
+                                                        width={20}
+                                                        height={20}
+                                                        alt="More Actions"
+                                                    />
+                                                </button>
+                                            </PopoverTrigger>
+                                            <PopoverContent className=" w-[167px] px-0 border border-solid border-[#EAECF0] bg-[#FFFFFF] rounded-md  shadow-lg">
+                                                <button className=" flex flex-row items-center justify-start w-full py-[0.625rem] px-4 gap-2 hover:bg-[#F2F4F7]"
+                                                    onClick={() => { setIsBanOpen(true); setUserId(banned.uniqueId) }}>
+                                                    <Image src='/icons/user-block-green-01.svg' alt="Revoke Ban" width={18} height={18} />
+                                                    <p className="text-sm text-[#0B9055] font-normal">Revoke Ban</p>
+                                                </button>
+                                                <button className=" flex flex-row items-center justify-start w-full py-[0.625rem] px-4 gap-2 hover:bg-[#F2F4F7]"
+                                                    onClick={() => { setIsDeleteOpen(true); setName(banned.name); setUserId(banned.uniqueId); }}>
+                                                    <Image src='/icons/delete.svg' alt="Delete" width={18} height={18} />
+                                                    <p className="text-sm text-[#DE3024] font-normal">Delete</p>
+                                                </button>
+                                            </PopoverContent>
+                                        </Popover>
+                                    </td>
+                                </tr>
+                            ))
+                        ) : (
+                            <tr className='border-t border-lightGrey'>
+                                <td colSpan={6} className="text-center py-8">
+                                    <div className="flex flex-col items-center justify-center gap-2">
+                                        <p className="text-[#667085] text-sm">No chapters found for "{searchTerm}"</p>
                                     </div>
                                 </td>
-                                <td className="px-8 py-4 text-center text-[#101828] text-sm">{banned.email}</td>
-                                <td className="px-8 py-4 text-center text-[#101828] text-sm">{banned.phone}</td>
-                                <td className="px-8 py-4 text-center text-[#101828] text-sm whitespace-nowrap">{formatFirestoreTimestamp(banned.createdAt)}</td>
-                                <td className="flex items-center justify-center px-8 py-4 text-[#101828] text-sm">
-                                    <Popover placement="bottom-end">
-                                        <PopoverTrigger>
-                                            <button className="ml-[25%] outline-none">
-                                                <Image
-                                                    src="/icons/three-dots.svg"
-                                                    width={20}
-                                                    height={20}
-                                                    alt="More Actions"
-                                                />
-                                            </button>
-                                        </PopoverTrigger>
-                                        <PopoverContent className=" w-[167px] px-0 border border-solid border-[#EAECF0] bg-[#FFFFFF] rounded-md  shadow-lg">
-                                            <button className=" flex flex-row items-center justify-start w-full py-[0.625rem] px-4 gap-2 hover:bg-[#F2F4F7]"
-                                                onClick={() => { setIsBanOpen(true); setUserId(banned.uniqueId) }}>
-                                                <Image src='/icons/user-block-green-01.svg' alt="Revoke Ban" width={18} height={18} />
-                                                <p className="text-sm text-[#0B9055] font-normal">Revoke Ban</p>
-                                            </button>
-                                            <button className=" flex flex-row items-center justify-start w-full py-[0.625rem] px-4 gap-2 hover:bg-[#F2F4F7]"
-                                                onClick={() => { setIsDeleteOpen(true); setName(banned.name); setUserId(banned.uniqueId); }}>
-                                                <Image src='/icons/delete.svg' alt="Delete" width={18} height={18} />
-                                                <p className="text-sm text-[#DE3024] font-normal">Delete</p>
-                                            </button>
-                                        </PopoverContent>
-                                    </Popover>
-                                </td>
                             </tr>
-                        ))}
+                        )}
                     </tbody>
                 </table>
             </div>

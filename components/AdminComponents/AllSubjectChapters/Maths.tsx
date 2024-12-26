@@ -129,46 +129,56 @@ function Maths() {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {currentItems.map((subject, index) => (
-                                        <tr key={index} className="border-t border-solid border-[#EAECF0]">
-                                            <td>
-                                                <p className="px-8 text-start text-sm text-[#1D2939] font-normal leading-6 whitespace-nowrap">{subject.title}</p>
-                                            </td>
-                                            <td className="px-8 py-4 text-center text-[#101828] text-sm">
-                                                <span className='flex justify-start rounded-full'>
-                                                    <SubjectPriority Priority={subject.priority} />
-                                                </span>
-                                            </td>
-                                            <td className="text-right px-8 py-4 text-[#101828] text-sm">
-                                                <Popover placement="bottom-end">
-                                                    <PopoverTrigger>
-                                                        <button type='button' className="ml-[60%] p-1 rounded-full outline-none transition-colors duration-150 hover:bg-[#F2F4F7]">
-                                                            <Image
-                                                                src="/icons/three-dots.svg"
-                                                                width={20}
-                                                                height={20}
-                                                                alt="More Actions"
-                                                            />
-                                                        </button>
-                                                    </PopoverTrigger>
-                                                    <PopoverContent className="w-[118px] px-0 py-1 rounded-md border- border-lightGrey">
-                                                        <div className='w-full'>
-                                                            <button className='flex flex-row items-center w-full px-4 py-[10px] gap-1 transition-colors duration-150 hover:bg-[#F2F4F7]'
-                                                                onClick={() => { setAddchapterdialog(true) }}
-                                                            >
-                                                                <Image src='/icons/edit-02.svg' alt='edit' width={18} height={18} />
-                                                                <p className='text-sm text-[#0C111D] font-normal leading-5'>Edit</p>
+                                    {data.length > 0 ? (
+                                        currentItems.map((subject, index) => (
+                                            <tr key={index} className="border-t border-solid border-[#EAECF0]">
+                                                <td>
+                                                    <p className="px-8 text-start text-sm text-[#1D2939] font-normal leading-6 whitespace-nowrap">{subject.title}</p>
+                                                </td>
+                                                <td className="px-8 py-4 text-center text-[#101828] text-sm">
+                                                    <span className='flex justify-start rounded-full'>
+                                                        <SubjectPriority Priority={subject.priority} />
+                                                    </span>
+                                                </td>
+                                                <td className="text-right px-8 py-4 text-[#101828] text-sm">
+                                                    <Popover placement="bottom-end">
+                                                        <PopoverTrigger>
+                                                            <button type='button' className="ml-[60%] p-1 rounded-full outline-none transition-colors duration-150 hover:bg-[#F2F4F7]">
+                                                                <Image
+                                                                    src="/icons/three-dots.svg"
+                                                                    width={20}
+                                                                    height={20}
+                                                                    alt="More Actions"
+                                                                />
                                                             </button>
-                                                            <button className='flex flex-row items-center w-full px-4 py-[10px] gap-1 transition-colors duration-150 hover:bg-[#F2F4F7]'>
-                                                                <Image src='/icons/delete.svg' alt='edit' width={18} height={18} />
-                                                                <p className='text-sm text-[#DE3024] font-normal leading-5'>Delete</p>
-                                                            </button>
-                                                        </div>
-                                                    </PopoverContent>
-                                                </Popover>
+                                                        </PopoverTrigger>
+                                                        <PopoverContent className="w-[118px] px-0 py-1 rounded-md border- border-lightGrey">
+                                                            <div className='w-full'>
+                                                                <button className='flex flex-row items-center w-full px-4 py-[10px] gap-1 transition-colors duration-150 hover:bg-[#F2F4F7]'
+                                                                    onClick={() => { setAddchapterdialog(true) }}
+                                                                >
+                                                                    <Image src='/icons/edit-02.svg' alt='edit' width={18} height={18} />
+                                                                    <p className='text-sm text-[#0C111D] font-normal leading-5'>Edit</p>
+                                                                </button>
+                                                                <button className='flex flex-row items-center w-full px-4 py-[10px] gap-1 transition-colors duration-150 hover:bg-[#F2F4F7]'>
+                                                                    <Image src='/icons/delete.svg' alt='edit' width={18} height={18} />
+                                                                    <p className='text-sm text-[#DE3024] font-normal leading-5'>Delete</p>
+                                                                </button>
+                                                            </div>
+                                                        </PopoverContent>
+                                                    </Popover>
+                                                </td>
+                                            </tr>
+                                        ))
+                                    ) : (
+                                        <tr className='border-t border-lightGrey'>
+                                            <td colSpan={3} className="text-center py-8">
+                                                <div className="flex flex-col items-center justify-center gap-2">
+                                                    <p className="text-[#667085] text-sm">No chapters found for "{searchTerm}"</p>
+                                                </div>
                                             </td>
                                         </tr>
-                                    ))}
+                                    )}
                                 </tbody>
                             </table>
                         </div>
