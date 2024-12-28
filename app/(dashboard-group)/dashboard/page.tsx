@@ -142,7 +142,7 @@ export default function DashboardPage() {
                </div>
 
                {/* Contained Modal */}
-               <div className="absolute inset-0 flex items-center justify-center bg-black/30 backdrop-blur-xl">
+               <div className="absolute inset-0 flex items-center justify-center bg-black/30">
                     <div className="bg-white rounded-2xl w-[37.5rem] p-6">
                          <div className="flex flex-col">
                               <div className="flex justify-center mb-4">
