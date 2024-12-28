@@ -3,19 +3,8 @@ import Image from 'next/image';
 import { useRouter, usePathname } from 'next/navigation';
 import { useState, useEffect } from 'react';
 import { Tooltip } from "@nextui-org/react";
-import { Dialog, DialogBackdrop, DialogPanel } from "@headlessui/react";
-import {
-    Modal,
-    ModalContent,
-    ModalHeader,
-    ModalBody,
-    ModalFooter,
-    Button,
-    useDisclosure,
-} from "@nextui-org/react";
 
 function TabComps() {
-
     const router = useRouter();
     const pathname = usePathname();
     const [isCollapsed, setIsCollapsed] = useState(false);
@@ -41,6 +30,7 @@ function TabComps() {
             setShowQuizDialog(true);
         }
     };
+
     useEffect(() => {
         if (pathname) {
             const currentPath = pathname.split('/')[1];
