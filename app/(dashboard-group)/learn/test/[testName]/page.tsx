@@ -2,7 +2,7 @@
 import { useRouter, usePathname } from "next/navigation"
 import Image from "next/image";
 import { useState, useEffect } from "react";
-export default function PhoduTestSeries() {
+function PhoduTestSeries() {
 
 
     const [activeTab, setActiveTab] = useState<string>('');
@@ -239,5 +239,6 @@ export default function PhoduTestSeries() {
         </div>
     )
 }
+export default PhoduTestSeries;
 
 

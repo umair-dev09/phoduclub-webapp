@@ -149,7 +149,7 @@ const [tests, setTests] = useState<TestData[]>([]);
                             <div className="flex flex-1 text-xs font-normal leading-4 gap-1 items-center w-full justify-between">
                                 <div className="flex flex-col gap-2">
                                     <div className="flex items-center justify-center text-[#667085]">Attempted</div>
-                                    <div className="flex items-center justify-center font-semibold">5/10</div>
+                                    <div className="flex items-center justify-start font-semibold pl-[2px]">5/10</div>
                                 </div>
                                 <div className="flex flex-col gap-2">
                                     <div className="flex items-center justify-center text-[#667085]">Expire on</div>
