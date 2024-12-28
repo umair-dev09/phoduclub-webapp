@@ -30,34 +30,33 @@ function Header() {
     const db = getFirestore();
 
     useEffect(() => {
-        const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
+        const unsubscribeAuth = onAuthStateChanged(auth, (currentUser) => {
             if (currentUser) {
                 setUser(currentUser);
                 const userDocRef = doc(db, `users/${currentUser.uid}`);
 
-                try {
-                    const docSnapshot = await getDoc(userDocRef);
+                const unsubscribeSnapshot = onSnapshot(userDocRef, (docSnapshot) => {
                     if (docSnapshot.exists()) {
                         setUserData(docSnapshot.data() as UserData);
                         setLoading(false);
                     } else {
-                        // console.error("User ID not found in Firestore!");
                         setError(true);
                         router.push("/login");
                     }
-                } catch (err) {
+                }, (err) => {
                     console.error("Error fetching user data:", err);
                     setError(true);
-                }
+                });
+
+                return () => unsubscribeSnapshot();
             } else {
-                // console.error('No user is logged in');
                 setError(true);
                 router.push("/login");
             }
             setLoading(false);
-        }); 
+        });
 
-        return () => unsubscribe();
+        return () => unsubscribeAuth();
     }, [db, router]);
 
     const handleLogout = async () => {
@@ -102,7 +101,7 @@ function Header() {
                             )}
                             </div>
                                 <div className='flex flex-col ml-1 mr-1'>
-                                    <p className='font-semibold text-[14px] mb-[-2px]'>{userData?.name}</p>
+                                    <p className='font-semibold text-[14px] mb-[-2px] text-start'>{userData?.name}</p>
                                     <p className='text-[13px] text-[#667085]'>{userData?.userId}</p>
                                 </div>
                                 <button className="w-[22px] h-[22px] flex items-center justify-center ml-[12px] mb-[2px]">

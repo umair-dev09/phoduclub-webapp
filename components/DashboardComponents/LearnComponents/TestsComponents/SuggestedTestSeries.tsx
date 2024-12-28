@@ -16,6 +16,7 @@ interface TestData {
   discountPrice: string;
   status: string;
   testId: string;
+  totalNoOfTests: number;
 }
 
 
@@ -23,7 +24,7 @@ function SuggestedTestSeries() {
 const [tests, setTests] = useState<TestData[]>([]);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
-      const [totalNoOfTests, setTotalNoOfTests] = useState(0);
+      // const [totalNoOfTests, setTotalNoOfTests] = useState(0);
 
   useEffect(() => {
     const fetchTests = async (currentUserId: string) => {
@@ -63,7 +64,7 @@ const [tests, setTests] = useState<TestData[]>([]);
   
               await fetchSectionsCount(`testseries/${testData.testId}`);
               console.log(`Total Sections with Questions: ${totalSectionsWithQuestions}`);
-              setTotalNoOfTests(totalSectionsWithQuestions);
+              // setTotalNoOfTests(totalSectionsWithQuestions);
 
               allTests.push({
                 testName: testData.testName,
@@ -73,6 +74,8 @@ const [tests, setTests] = useState<TestData[]>([]);
                 testImage: testData.testImage,
                 status: testData.status,
                 testDescription: testData.testDescription,
+                totalNoOfTests: totalSectionsWithQuestions,
+
               });
             }
           }
@@ -141,7 +144,7 @@ const [tests, setTests] = useState<TestData[]>([]);
                   </div>
                   {/* Test details: lessons, duration */}
                   <div className="text-xs mx-4 font-normal leading-4 text-[#667085] flex items-center gap-1">
-                    <p>{totalNoOfTests} Tests</p>
+                    <p>{test.totalNoOfTests} Tests</p>
                     {/* <span>&#x2022;</span> 
                     <p>3hr 14m</p> */}
                   </div>
