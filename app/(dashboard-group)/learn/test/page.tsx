@@ -4,8 +4,7 @@ import SuggestedTestSeries from "@/components/DashboardComponents/LearnComponent
 export default function MyTests() {
     return (
         <div className="flex flex-col ">
-          <div className='flex flex-col w-full flex-1 mt-4 ml-6'>
-                
+            <div className='flex flex-col w-full flex-1 mt-4 ml-6'>
                 <div className='flex flex-1'>
                     <MyTestSeries />
                 </div>
