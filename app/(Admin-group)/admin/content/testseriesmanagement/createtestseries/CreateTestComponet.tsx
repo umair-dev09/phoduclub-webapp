@@ -40,6 +40,7 @@ const CreateTestSeries = () => {
     let [liveQuizNow, setLiveQuizNow] = useState<boolean>(false);
     const [loading, setLoading] = useState(false);
     const [isSectionEditing, setIsSectionEditing] = useState(false);
+    const [isInCourse, setIsInCourse] = useState<boolean>(false);
 
     const router = useRouter();
 
@@ -184,7 +185,7 @@ const CreateTestSeries = () => {
     const renderStepContent = () => {
         switch (currentStep) {
             case Step.TestSeriesInfo:
-                return <TestSeriesInfo name={name} setName={setName} description={description} setDescription={setDescription} imageUrl={image} setImageUrl={setImage} price={price} setPrice={setPrice} discountPrice={discountPrice} setDiscountPrice={setDiscountPrice} rating={rating} setRating={setRating} noOfRating={noOfRating} setNoOfRating={setNoOfRating} />;
+                return <TestSeriesInfo isInCourse={isInCourse} setIsInCourse={setIsInCourse} name={name} setName={setName} description={description} setDescription={setDescription} imageUrl={image} setImageUrl={setImage} price={price} setPrice={setPrice} discountPrice={discountPrice} setDiscountPrice={setDiscountPrice} rating={rating} setRating={setRating} noOfRating={noOfRating} setNoOfRating={setNoOfRating} />;
             case Step.Sections:
                 return <Sections isCreateSection={isCreateSection} setIsCreateSection={setIsCreateSection} testId={testId || ''} sectionName={sectionName} sectionScheduleDate={sectionScheduleDate} setSectionName={setSectionName} setSectionScheduleDate={setSectionScheduleDate} isSectionEditing={isSectionEditing} setIsSectionEditing={setIsSectionEditing} />;
             case Step.Review:
@@ -192,7 +193,7 @@ const CreateTestSeries = () => {
             case Step.Perference:
                 return <Perference startDate={startDate} endDate={endDate} setEndDate={setEndDate} setLiveQuizNow={setLiveQuizNow} liveQuizNow={liveQuizNow} setStartDate={setStartDate} />;
             default:
-                return <TestSeriesInfo name={name} setName={setName} description={description} setDescription={setDescription} imageUrl={image} setImageUrl={setImage} price={price} setPrice={setPrice} discountPrice={discountPrice} setDiscountPrice={setDiscountPrice} rating={rating} setRating={setRating} noOfRating={noOfRating} setNoOfRating={setNoOfRating} />;
+                return <TestSeriesInfo isInCourse={isInCourse} setIsInCourse={setIsInCourse}  name={name} setName={setName} description={description} setDescription={setDescription} imageUrl={image} setImageUrl={setImage} price={price} setPrice={setPrice} discountPrice={discountPrice} setDiscountPrice={setDiscountPrice} rating={rating} setRating={setRating} noOfRating={noOfRating} setNoOfRating={setNoOfRating} />;
         }
     };
 

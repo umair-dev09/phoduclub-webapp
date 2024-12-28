@@ -19,7 +19,6 @@ interface CourseData {
   publishDate: string;
   sections: SectionData[];
   totalContentCount: number; // Total number of content across all sections
-  StudentsPurchased: string[];
 }
 
 interface SectionData {
@@ -44,42 +43,46 @@ function CoursesList() {
         for (const doc of snapshot.docs) {
           const courseData = doc.data();
 
-          // Only add courses where the currentUserId is NOT in StudentsPurchased
-          if (!courseData.StudentsPurchased?.includes(currentUserId)) {
-            const sectionsCollection = collection(doc.ref, 'sections');
-            const sectionsSnapshot = await getDocs(sectionsCollection);
+          // Only add courses where the currentUserId is NOT in StudentsPurchased and status is 'live'
+          if (courseData.status === 'live') {
+            const studentsPurchasedCollection = collection(doc.ref, 'StudentsPurchased');
+            const studentDoc = await getDocs(studentsPurchasedCollection);
+            const studentPurchased = studentDoc.docs.some(student => student.id === currentUserId);
+            if (!studentPurchased) {
+              const sectionsCollection = collection(doc.ref, 'sections');
+              const sectionsSnapshot = await getDocs(sectionsCollection);
 
-            let totalContentCount = 0;
+              let totalContentCount = 0;
 
-            const sectionsData: SectionData[] = await Promise.all(
-              sectionsSnapshot.docs.map(async (sectionDoc) => {
-                const sectionData = sectionDoc.data();
-                const contentCollection = collection(sectionDoc.ref, 'content');
-                const contentSnapshot = await getDocs(contentCollection);
+              const sectionsData: SectionData[] = await Promise.all(
+                sectionsSnapshot.docs.map(async (sectionDoc) => {
+                  const sectionData = sectionDoc.data();
+                  const contentCollection = collection(sectionDoc.ref, 'content');
+                  const contentSnapshot = await getDocs(contentCollection);
 
-                const contentCount = contentSnapshot.size;
-                totalContentCount += contentCount;
+                  const contentCount = contentSnapshot.size;
+                  totalContentCount += contentCount;
 
-                return {
-                  sectionName: sectionData.sectionName || 'Untitled Section',
-                  contentCount,
-                };
-              })
-            );
+                  return {
+                    sectionName: sectionData.sectionName || 'Untitled Section',
+                    contentCount,
+                  };
+                })
+              );
 
-            allCourses.push({
-              courseName: courseData.courseName,
-              price: courseData.price,
-              discountPrice: courseData.discountPrice,
-              courseId: courseData.courseId,
-              courseImage: courseData.courseImage,
-              StudentsPurchased: courseData.StudentsPurchased,
-              status: courseData.status,
-              date: courseData.date || '',
-              publishDate: courseData.publishDate || '',
-              sections: sectionsData,
-              totalContentCount,
-            });
+              allCourses.push({
+                courseName: courseData.courseName,
+                price: courseData.price,
+                discountPrice: courseData.discountPrice,
+                courseId: courseData.courseId,
+                courseImage: courseData.courseImage,
+                status: courseData.status,
+                date: courseData.date || '',
+                publishDate: courseData.publishDate || '',
+                sections: sectionsData,
+                totalContentCount,
+              });
+            }
           }
         }
 

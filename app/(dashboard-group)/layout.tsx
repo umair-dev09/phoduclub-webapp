@@ -10,7 +10,7 @@ interface DashboardGroupProps {
 
 export default function DashboardGroup({ children }: DashboardGroupProps) {
     return (
-        <div className=" bg-[#131313] flex flex-row h-screen ">
+        <div className=" bg-[#131313] flex flex-row w-screen h-screen ">
             <div>
                 <TabComps />
             </div>

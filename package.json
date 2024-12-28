@@ -37,6 +37,7 @@
     "@videojs/themes": "^1.0.1",
     "antd": "^5.21.1",
     "autoprefixer": "^10.4.20",
+    "axios": "^1.7.9",
     "buffer": "^6.0.3",
     "chart.js": "^4.4.4",
     "class-variance-authority": "^0.7.0",

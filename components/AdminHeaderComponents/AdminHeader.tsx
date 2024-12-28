@@ -11,17 +11,16 @@ import { toast } from 'react-toastify';
 import AdminHeaderLoading from './AdminHeaderLoading';
 import Logout from '../AdminComponents/RoleMangement/Logout';
 
-// interface HeaderProps {
-//     currentPage: string;
-// }
+interface HeaderProps {
+    currentPage: string;
+}
 type UserData = {
     name: string | null;
     adminId: string | null;
     profilePic: string | null;
     role: string | null;
 };
-// function Header({ currentPage }: HeaderProps) {
-function Header() {
+function Header({ currentPage }: HeaderProps) {
     const router = useRouter();
     const [userData, setUserData] = useState<UserData | null>(null);
     const [loading, setLoading] = useState(true); // Track loading state
@@ -114,13 +113,13 @@ function Header() {
         return <AdminHeaderLoading />;
     }
 
-    // const isBackPage = currentPage === 'Back to Quizzes Management' || currentPage === 'Back to Test Series Management' || currentPage === 'Back to Customer Care' || currentPage === 'Back to Messenger' || currentPage === 'Back to Course Management' || currentPage === 'Back to User Database' || currentPage === 'Back to Role Management';
+    const isBackPage = currentPage === 'Back to Quizzes Management' || currentPage === 'Back to Test Series Management' || currentPage === 'Back to Customer Care' || currentPage === 'Back to Messenger' || currentPage === 'Back to Course Management' || currentPage === 'Back to User Database' || currentPage === 'Back to Role Management';
 
     return (
         <div className="flex w-full flex-row items-center justify-between px-6 bg-white h-[65px] rounded-t border border-b-[#e9ebf0]">
-            {/* <div className="flex flex-row items-center gap-2 text-lg">
+            <div className="flex flex-row items-center gap-2 text-lg">
                 {isBackPage && (
-                    <button onClick={handleBackClick}>
+                    <button onClick={() => router.back()}>
                         <Image src='/icons/arrow-left-02-round.svg' alt='back' width={24} height={24} />
                     </button>
                 )}
@@ -132,7 +131,7 @@ function Header() {
                 {currentPage === 'My Profile' && (
                     <h2 className='text-lg text-[#1D2939] font-bold'>My Profile</h2>
                 )}
-            </div> */}
+            </div>
 
             <div className="flex flex-row items-center gap-4">
                 <Popover placement="bottom-end">

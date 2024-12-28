@@ -29,7 +29,6 @@ interface CourseData {
 
 function MyCourses() {
     const [activeTab, setActiveTab] = useState<string>('');
-    const [contentCount, setContentCount] = useState<number>(0);
     const router = useRouter();
     const pathname = usePathname();
 
@@ -46,8 +45,12 @@ function MyCourses() {
           for (const doc of snapshot.docs) {
             const courseData = doc.data();
     
-            // Only add courses where the currentUserId is NOT in StudentsPurchased
-            if (courseData.StudentsPurchased?.includes(currentUserId)) {
+         // Only add courses where the currentUserId is in StudentsPurchased and status is 'live'
+         if (courseData.status === 'live') {
+          const studentsPurchasedCollection = collection(doc.ref, 'StudentsPurchased');
+          const studentDoc = await getDocs(studentsPurchasedCollection);
+          const studentPurchased = studentDoc.docs.some(student => student.id === currentUserId);
+          if (studentPurchased) {
               const sectionsCollection = collection(doc.ref, 'sections');
               const sectionsSnapshot = await getDocs(sectionsCollection);
     
@@ -61,7 +64,6 @@ function MyCourses() {
     
                   const contentCount = contentSnapshot.size;
                   totalContentCount += contentCount;
-                  setContentCount(contentCount);
                   return {
                     sectionName: sectionData.sectionName || 'Untitled Section',
                     contentCount,
@@ -84,6 +86,7 @@ function MyCourses() {
                 totalContentCount,
               });
             }
+          }
           }
     
           setCourses(allCourses);
@@ -129,7 +132,7 @@ function MyCourses() {
 
     return (
       <>
-      {contentCount < 1 &&(
+      {courses.length >= 1 &&(
       <div className="flex flex-col">
           <div className='ml-6 mb-4 mt-2'>
                     <h3>My Courses</h3>

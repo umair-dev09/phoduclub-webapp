@@ -76,6 +76,8 @@ function Review({ name, testId, description, testImage, price, rating, discountP
     const closeResumeQuiz = () => setIsResumeQuizOpen(false);
       const [sectionss, setSections] = useState<Section[]>([]);
       const [loading, setLoading] = useState(false);
+      const [totalNoOfQuestions, setTotalNoOfQuestions] = useState(0);
+      const [totalNoOfTests, setTotalNoOfTests] = useState(0);
       const [currentPath, setCurrentPath] = useState<string[]>([]);
       const [currentSectionIds, setCurrentSectionIds] = useState<string[]>([]);
       const [breadcrumbs, setBreadcrumbs] = useState<{ id: string; name: string }[]>([]);
@@ -184,6 +186,76 @@ function Review({ name, testId, description, testImage, price, rating, discountP
           if (unsubscribeFn) unsubscribeFn(); // Cleanup on unmount or dependency change
         };
       }, [currentPath, testId]);
+
+      useEffect(() => {
+        if (!testId) return;
+
+        const fetchTotalQuestions = async () => {
+          try {
+            let totalQuestions = 0;
+
+            const fetchQuestionsCount = async (path: string) => {
+              const sectionCollection = collection(db, `${path}/sections`);
+              const sectionSnapshot = await getDocs(sectionCollection);
+
+              for (const sectionDoc of sectionSnapshot.docs) {
+                const sectionPath = `${path}/sections/${sectionDoc.id}`;
+                const questionsCollection = collection(db, `${sectionPath}/Questions`);
+                const questionsSnapshot = await getDocs(questionsCollection);
+                totalQuestions += questionsSnapshot.size;
+
+                // Recursively fetch questions count for subsections
+                await fetchQuestionsCount(sectionPath);
+              }
+            };
+
+            await fetchQuestionsCount(`testseries/${testId}`);
+            console.log(`Total Questions: ${totalQuestions}`);
+            setTotalNoOfQuestions(totalQuestions);
+          } catch (error) {
+            console.error('Error fetching total questions: ', error);
+          }
+        };
+
+        fetchTotalQuestions();
+      }, [testId]);
+
+      useEffect(() => {
+        if (!testId) return;
+
+        const fetchTotalSectionsWithQuestions = async () => {
+          try {
+            let totalSectionsWithQuestions = 0;
+
+            const fetchSectionsCount = async (path: string) => {
+              const sectionCollection = collection(db, `${path}/sections`);
+              const sectionSnapshot = await getDocs(sectionCollection);
+
+              for (const sectionDoc of sectionSnapshot.docs) {
+                const sectionPath = `${path}/sections/${sectionDoc.id}`;
+                const questionsCollection = collection(db, `${sectionPath}/Questions`);
+                const questionsSnapshot = await getDocs(questionsCollection);
+
+                if (!questionsSnapshot.empty) {
+                  totalSectionsWithQuestions += 1;
+                }
+
+                // Recursively fetch sections count for subsections
+                await fetchSectionsCount(sectionPath);
+              }
+            };
+
+            await fetchSectionsCount(`testseries/${testId}`);
+            console.log(`Total Sections with Questions: ${totalSectionsWithQuestions}`);
+            setTotalNoOfTests(totalSectionsWithQuestions);
+          } catch (error) {
+            console.error('Error fetching total sections with questions: ', error);
+          }
+        };
+
+        fetchTotalSectionsWithQuestions();
+      }, [testId]);
+
       const handleNavigationClick = (index: number) => {
         setCurrentPath(prev => prev.slice(0, index + 1));
         setBreadcrumbs(prev => prev.slice(0, index + 1));
@@ -282,8 +354,8 @@ function Review({ name, testId, description, testImage, price, rating, discountP
                             <p className='text-base text-[#1D2939] font-medium'>-</p>
                         </div>
                         <div className='flex flex-col items-start w-full p-4 gap-1 bg-white border border-lightGrey rounded-xl'>
-                            <p className='text-sm text-[#667085] font-normal'>Test Series starts</p>
-                            <p className='text-base text-[#1D2939] font-medium'>95</p>
+                            <p className='text-sm text-[#667085] font-normal'>Total Questions</p>
+                            <p className='text-base text-[#1D2939] font-medium'>{totalNoOfQuestions}</p>
                         </div>
                     </div>
                     <div className='flex flex-col mb-4 gap-2'>
@@ -293,7 +365,7 @@ function Review({ name, testId, description, testImage, price, rating, discountP
                         </div>
                         <div className='flex flex-row gap-2'>
                             <Image src='/icons/idea-01.svg' alt='tests' width={20} height={20} />
-                            <p className='text-base text-[#1D2939] font-normal'>18 Tests</p>
+                            <p className='text-base text-[#1D2939] font-normal'>{totalNoOfTests} Tests</p>
                         </div>
                     </div>
                      {/* Sections or Tests Display */}

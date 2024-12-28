@@ -100,7 +100,8 @@ function TestSeriesInfo() {
     const [testName, setTestName] = useState('');
     const [loading, setLoading] = useState(true);
     const [sectionLoading, setSectionLoading] = useState(false);
-
+      const [totalNoOfQuestions, setTotalNoOfQuestions] = useState(0);
+      const [totalNoOfTests, setTotalNoOfTests] = useState(0);
     // State to manage each dialog's visibility
 
     const [isScheduledDialogOpen, setIsScheduledDialogOpen] = useState(false);
@@ -130,7 +131,74 @@ function TestSeriesInfo() {
             setLoading(false);
         }
     }, [testId]);
+  useEffect(() => {
+        if (!testId) return;
 
+        const fetchTotalQuestions = async () => {
+          try {
+            let totalQuestions = 0;
+
+            const fetchQuestionsCount = async (path: string) => {
+              const sectionCollection = collection(db, `${path}/sections`);
+              const sectionSnapshot = await getDocs(sectionCollection);
+
+              for (const sectionDoc of sectionSnapshot.docs) {
+                const sectionPath = `${path}/sections/${sectionDoc.id}`;
+                const questionsCollection = collection(db, `${sectionPath}/Questions`);
+                const questionsSnapshot = await getDocs(questionsCollection);
+                totalQuestions += questionsSnapshot.size;
+
+                // Recursively fetch questions count for subsections
+                await fetchQuestionsCount(sectionPath);
+              }
+            };
+
+            await fetchQuestionsCount(`testseries/${testId}`);
+            console.log(`Total Questions: ${totalQuestions}`);
+            setTotalNoOfQuestions(totalQuestions);
+          } catch (error) {
+            console.error('Error fetching total questions: ', error);
+          }
+        };
+
+        fetchTotalQuestions();
+      }, [testId]);
+
+      useEffect(() => {
+        if (!testId) return;
+
+        const fetchTotalSectionsWithQuestions = async () => {
+          try {
+            let totalSectionsWithQuestions = 0;
+
+            const fetchSectionsCount = async (path: string) => {
+              const sectionCollection = collection(db, `${path}/sections`);
+              const sectionSnapshot = await getDocs(sectionCollection);
+
+              for (const sectionDoc of sectionSnapshot.docs) {
+                const sectionPath = `${path}/sections/${sectionDoc.id}`;
+                const questionsCollection = collection(db, `${sectionPath}/Questions`);
+                const questionsSnapshot = await getDocs(questionsCollection);
+
+                if (!questionsSnapshot.empty) {
+                  totalSectionsWithQuestions += 1;
+                }
+
+                // Recursively fetch sections count for subsections
+                await fetchSectionsCount(sectionPath);
+              }
+            };
+
+            await fetchSectionsCount(`testseries/${testId}`);
+            console.log(`Total Sections with Questions: ${totalSectionsWithQuestions}`);
+            setTotalNoOfTests(totalSectionsWithQuestions);
+          } catch (error) {
+            console.error('Error fetching total sections with questions: ', error);
+          }
+        };
+
+        fetchTotalSectionsWithQuestions();
+      }, [testId]);
       const [sectionss, setSections] = useState<Section[]>([]);
           const [currentPath, setCurrentPath] = useState<string[]>([]);
           const [currentSectionIds, setCurrentSectionIds] = useState<string[]>([]);
@@ -295,9 +363,24 @@ function TestSeriesInfo() {
     const rating = 1.5; // The rating value
     const totalStars = 5;
     const formatStartDate = (dateString: string): string => {
-        const date = new Date(dateString);
-        return format(date, 'dd MMM, yyyy  hh:mm a');
+        if (dateString) {
+            const date = new Date(dateString);
+            if (!isNaN(date.getTime())) {
+                return format(date, 'dd MMM, yyyy  hh:mm a');
+            }
+        }
+        return '-';
     };
+    const formatEndDate = (dateString: string): string => {
+        if (dateString) {
+            const date = new Date(dateString);
+            if (!isNaN(date.getTime())) {
+                return format(date, 'dd MMM, yyyy  hh:mm a');
+            }
+        }
+        return '-';
+    };
+
     if (loading) {
         return <LoadingData />
     }
@@ -477,15 +560,15 @@ function TestSeriesInfo() {
             <div className="w-full h-auto mt-4 flex flex-row gap-4 ">
                 <div className="w-full flex flex-col p-4 border border-solid border-[#EAECF0] bg-[#FFFFFF] rounded-xl">
                     <span className="text-[#667085] font-normal text-sm">Test Series starts</span>
-                    <span className="font-medium text-[#1D2939] text-base">-</span>
+                    <span className="font-medium text-[#1D2939] text-base">{formatStartDate(testData?.startDate || '-')}</span>
                 </div>
                 <div className="w-full flex flex-col p-4 border border-solid border-[#EAECF0] bg-[#FFFFFF] rounded-xl">
                     <span className="text-[#667085] font-normal text-sm">Test Series ends</span>
-                    <span className="font-medium text-[#1D2939] text-base">-</span>
+                    <span className="font-medium text-[#1D2939] text-base">{formatEndDate(testData?.endDate || '-')}</span>
                 </div>
                 <div className="w-full flex flex-col p-4 border border-solid border-[#EAECF0] bg-[#FFFFFF] rounded-xl">
                     <span className="text-[#667085] font-normal text-sm">Total Questions</span>
-                    <span className="font-medium text-[#1D2939] text-base">95</span>
+                    <span className="font-medium text-[#1D2939] text-base">{totalNoOfQuestions}</span>
                 </div>
             </div>
             <div className="pt-3 w-full flex flex-col">
