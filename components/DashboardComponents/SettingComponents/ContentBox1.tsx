@@ -30,13 +30,13 @@ function ContentBox1() {
 
 
     return (
-        <div className="space-y-2">
+        <div className="space-y-2 overflow-hidden">
             <div>
                 <button
                     onClick={() => handleTabClick('profile', '/settings/profile')}
                     className={`flex items-center justify-start w-full px-4 py-2 rounded-lg border-2 font-medium 
                                 ${activeTab === 'profile' ? 'text-[#7400e0] bg-[#F5F0FF] border border-solid border-[#DDCDFF]' : 'text-gray-800 bg-white border-white'} 
-                          hover:bg-[#F5F0FF]  transition duration-150`}>
+                                hover:bg-[#F5F0FF]  transition duration-150`}>
                     <Image
                         className={`mr-2 w-6 h-6 transition-colors ${pathname === '/profile' ? 'text-purple-700' : 'text-gray-800'}`}
                         src={activeTab === "profile" ? "/icons/profile-voilet.svg" : "/icons/profile.svg"}
@@ -52,8 +52,8 @@ function ContentBox1() {
                 <button
                     onClick={() => handleTabClick('purchase', '/settings/purchase')}
                     className={`flex items-center justify-start w-full px-4 py-2 rounded-lg border-2 font-medium 
-                      ${activeTab === 'purchase' ? 'text-[#7400e0] bg-[#F5F0FF] border border-solid border-[#DDCDFF]' : 'text-gray-800 bg-white border-white'} 
-                     hover:bg-[#F5F0FF]  transition duration-150`}>
+                                ${activeTab === 'purchase' ? 'text-[#7400e0] bg-[#F5F0FF] border border-solid border-[#DDCDFF]' : 'text-gray-800 bg-white border-white'} 
+                                hover:bg-[#F5F0FF]  transition duration-150`}>
                     <Image
                         className={`mr-2 w-6 h-6 transition-colors ${pathname === '/purchase' ? 'text-purple-700' : 'text-gray-800'}`}
                         src={activeTab === "purchase" ? "/icons/purchase-voilet.svg" : "/icons/purchase.svg"}
