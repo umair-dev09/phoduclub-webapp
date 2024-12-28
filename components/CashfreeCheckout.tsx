@@ -13,6 +13,7 @@ interface CheckoutProps {
   customerId: string;
   productType: string;
   productId: string;
+  userId: string;
 }
 
 declare const Cashfree: any;
@@ -25,6 +26,7 @@ export default function CashfreeCheckout({
   customerId,
   productType,
   productId,
+  userId,
 }: CheckoutProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -67,7 +69,7 @@ export default function CashfreeCheckout({
 
       cashfree.checkout({
         paymentSessionId: data.payment_session_id,
-        returnUrl: `${window.location.origin}/payment-status?order_id=${data.order_id}&product_type=${productType}&product_id=${productId}`,
+        returnUrl: `${window.location.origin}/payment-status?order_id=${data.order_id}&product_type=${productType}&product_id=${productId}&uid=${userId}`,
       });
       
 

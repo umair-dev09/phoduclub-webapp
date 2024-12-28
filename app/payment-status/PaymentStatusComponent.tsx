@@ -7,8 +7,6 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { doc, setDoc, collection, getDoc } from 'firebase/firestore';
 import { db, auth } from '@/firebase'; // Ensure you have initialized Firebase in this file
 import LoadingData from '@/components/Loading';
-import { onAuthStateChanged, User } from '@firebase/auth';
-
 interface PaymentStatus {
   order_status: string;
   order_amount: number;
@@ -41,36 +39,8 @@ export default function PaymentStatusPage() {
   const [isStoring, setIsStoring] = useState<boolean>(false);
   const productType = searchParams.get('product_type');
   const productId = searchParams.get('product_id');
-    const [user, setUser] = useState<User | null>(null);
+  const uid = searchParams.get('uid');
   const router = useRouter();
-
-useEffect(() => {
-      const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
-          if (currentUser) {
-              setUser(currentUser);
-              const userDocRef = doc(db, `users/${currentUser.uid}`);
-
-              try {
-                  const docSnapshot = await getDoc(userDocRef);
-                  if (docSnapshot.exists()) {
-                    // router.push("/dashboard");
-                  } else {
-                      // console.error("User ID not found in Firestore!");
-                      setError('User not authenticated');
-                      router.push("/login");
-                  }
-              } catch (err) {
-                  console.error("Error fetching user data:", err);
-                  setError('Error fetching user data');
-              }
-          } else {
-              // console.error('No user is logged in');
-              setError('No user is logged in');
-              router.push("/login");
-          }
-      });
-      return () => unsubscribe();
-  }, [db, router]);
 
   useEffect(() => {
     const orderId = searchParams.get('order_id');
@@ -100,12 +70,11 @@ useEffect(() => {
       if (!status || !productType || !productId) return;
 
       setIsStoring(true);
-      if (user){
-      const userId = user.uid;
+      if (uid){
       const enrollmentData = {
         enrollmentType: status.amount_paid > 0 ? 'paid' : 'free',
         enrollmentDate: status.payment_time || new Date().toISOString(),
-        userId: userId,
+        userId: uid,
       };
 
       const transactionData = {
@@ -119,12 +88,12 @@ useEffect(() => {
 
       try {
         if (productType === 'course') {
-          await setDoc(doc(collection(db, `course/${productId}/StudentsPurchased`), userId), enrollmentData);
+          await setDoc(doc(collection(db, `course/${productId}/StudentsPurchased`), uid), enrollmentData);
         } else if (productType === 'testseries') {
-          await setDoc(doc(collection(db, `testseries/${productId}/StudentsPurchased`), userId), enrollmentData);
+          await setDoc(doc(collection(db, `testseries/${productId}/StudentsPurchased`), uid), enrollmentData);
         }
 
-        await setDoc(doc(collection(db, `users/${userId}/transactions`), productId), transactionData);
+        await setDoc(doc(collection(db, `users/${uid}/transactions`), productId), transactionData);
 
         console.log('Transaction data stored in Firestore');
         if (productType === 'course') {

@@ -408,6 +408,7 @@ export default function CoursePurchasePage() {
                       customerPhone={userData?.phone || ''}
                       productType='course'
                       productId={courseId || ''}
+                      userId={userData?.uniqueId || ''}
                       />
                   )}
               
