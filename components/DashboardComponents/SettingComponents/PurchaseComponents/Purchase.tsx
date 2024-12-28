@@ -38,7 +38,7 @@ interface PurchaseData {
     contentName?: string;
 }
 
-function Purchase() { 
+function Purchase() {
     const [transactions, setTransactions] = useState<PurchaseData[]>([]);
     const [loading, setLoading] = useState(true);
     const userId = auth.currentUser?.uid;
@@ -104,7 +104,7 @@ function Purchase() {
 
     return (
         <div
-            className="mx-6 border border-solid border-[#EAECF0] rounded-lg h-[calc(100vh-200px)] overflow-y-auto 
+            className="mx-6 border border-solid border-[#EAECF0] rounded-lg h-fit overflow-y-auto 
             scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100"
         >
             <div className="overflow-x-auto">
@@ -119,44 +119,54 @@ function Purchase() {
                         </tr>
                     </thead>
                     <tbody className="divide-y divide-gray-200">
-                        {transactions.map((transaction, index) => (
-                            <tr key={index} className="hover:bg-gray-50 text-sm">
-                                <td className="px-6 py-4">
-                                    <div className="flex flex-col">
-                                        <span className="text-[#1D2939] font-semibold leading-6">{transaction.contentName || transaction.contentType}</span>
+                        {transactions.length > 0 ? (
+                            transactions.map((transaction, index) => (
+                                <tr key={index} className="hover:bg-gray-50 text-sm">
+                                    <td className="px-6 py-4">
+                                        <div className="flex flex-col">
+                                            <span className="text-[#1D2939] font-semibold leading-6">{transaction.contentName || transaction.contentType}</span>
+                                        </div>
+                                    </td>
+                                    <td className="px-6 py-4 text-center text-[#667085] font-normal leading-6 whitespace-nowrap">{formatDate(transaction.dateOfPurchase)}</td>
+                                    <td className="px-6 py-4 text-center text-[#667085] font-normal leading-6">₹ {transaction.purchasedPrice}</td>
+                                    <td className="px-6 py-4 text-center text-[#667085] font-normal leading-6 whitespace-nowrap">{transaction.transactionId}</td>
+                                    <td className="px-6 py-4  text-center">
+                                        <Popover placement="bottom-end">
+                                            <PopoverTrigger>
+                                                <button className="focus:outline-none">
+                                                    <Image
+                                                        src="/icons/three-dots.svg"
+                                                        width={24}
+                                                        height={24}
+                                                        alt="Actions Menu"
+                                                    />
+                                                </button>
+                                            </PopoverTrigger>
+                                            <PopoverContent className="flex flex-col bg-white border border-lightGrey rounded-md w-[195px] px-0 shadow-md">
+                                                <ActionButton
+                                                    src="/icons/download-reciepts.svg"
+                                                    alt="Download Receipt"
+                                                    label="Download Receipt"
+                                                />
+                                                <ActionButton
+                                                    src="/icons/Download Invoice.svg"
+                                                    alt="Download Invoice"
+                                                    label="Download Invoice"
+                                                />
+                                            </PopoverContent>
+                                        </Popover>
+                                    </td>
+                                </tr>
+                            ))
+                        ) : (
+                            <tr className='border-t border-lightGrey'>
+                                <td colSpan={5} className="text-center py-8">
+                                    <div className="flex flex-col items-center justify-center gap-2">
+                                        <p className="text-[#667085] text-sm">No purchases found</p>
                                     </div>
                                 </td>
-                                <td className="px-6 py-4 text-center text-[#667085] font-normal leading-6 whitespace-nowrap">{formatDate(transaction.dateOfPurchase)}</td>
-                                <td className="px-6 py-4 text-center text-[#667085] font-normal leading-6">₹ {transaction.purchasedPrice}</td>
-                                <td className="px-6 py-4 text-center text-[#667085] font-normal leading-6 whitespace-nowrap">{transaction.transactionId}</td>
-                                <td className="px-6 py-4  text-center">
-                                    <Popover placement="bottom-end">
-                                        <PopoverTrigger>
-                                            <button className="focus:outline-none">
-                                                <Image
-                                                    src="/icons/three-dots.svg"
-                                                    width={24}
-                                                    height={24}
-                                                    alt="Actions Menu"
-                                                />
-                                            </button>
-                                        </PopoverTrigger>
-                                        <PopoverContent className="flex flex-col bg-white border border-lightGrey rounded-md w-[195px] px-0 shadow-md">
-                                            <ActionButton
-                                                src="/icons/download-reciepts.svg"
-                                                alt="Download Receipt"
-                                                label="Download Receipt"
-                                            />
-                                            <ActionButton
-                                                src="/icons/Download Invoice.svg"
-                                                alt="Download Invoice"
-                                                label="Download Invoice"
-                                            />
-                                        </PopoverContent>
-                                    </Popover>
-                                </td>
                             </tr>
-                        ))}
+                        )}
                     </tbody>
                 </table>
             </div>
