@@ -4,9 +4,9 @@ import { useRouter, usePathname } from "next/navigation";
 import { useState, useEffect } from "react";
 
 function Learned() {
-    const coursesCount = 78;
+    const coursesCount = 0;
     const testCount = 0;
-    const quizCount = 7;
+    const quizCount = 0;
 
     const [activeTab, setActiveTab] = useState<string>("courses");
     const router = useRouter();
@@ -39,7 +39,7 @@ function Learned() {
     };
 
     return (
-        <div className="flex flex-col h-full px-8">
+        <div className="flex flex-col h-full px-8 bg-[#fdfdfd]">
             <Tabs
                 aria-label="Learn Tabs"
                 color="primary"

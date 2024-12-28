@@ -28,7 +28,7 @@ type Content = {
     lessonScheduleDate: string;
     pdfLink: string;
     videoLink: string;
-    marksPerQuestion: string;
+    marksPerQuestion: string; 
     nMarksPerQuestion: string;
     quizTime: string;
     videoDuration: number;
@@ -147,19 +147,26 @@ export default function CoursePurchasePage() {
     }, [courseId]);
 
     useEffect(() => {
-        if (courseData?.StudentsPurchased && auth.currentUser?.uid) {
-          const currentUserId = auth.currentUser.uid;
-      
-          // Check if currentUserId exists in StudentsPurchased array
-          const isPurchased = courseData.StudentsPurchased.includes(currentUserId);
-      
-          if (isPurchased) {
-            setCourseAlreadyPurchased(true);
-          } else {
-            setCourseAlreadyPurchased(false);
+      if (courseId && auth.currentUser?.uid) {
+        const currentUserId = auth.currentUser.uid;
+        const purchasedRef = doc(db, "course", courseId, "StudentsPurchased", currentUserId);
+
+        const checkIfPurchased = async () => {
+          try {
+            const purchasedSnapshot = await getDoc(purchasedRef);
+            if (purchasedSnapshot.exists()) {
+              setCourseAlreadyPurchased(true);
+            } else {
+              setCourseAlreadyPurchased(false);
+            }
+          } catch (error) {
+            console.error("Error checking purchase status:", error);
           }
-        }
-      }, [courseData, auth.currentUser]);
+        };
+
+        checkIfPurchased();
+      }
+    }, [courseId, auth.currentUser]);
 
     // Fetch content data from Firestore
     useEffect(() => {
@@ -253,53 +260,8 @@ export default function CoursePurchasePage() {
         }
     };
     
-    // const handlePurchaseCourse = async () => {
-    //     if (courseId && auth.currentUser?.uid) {
-    //       try {
-    //         const currentUserId = auth.currentUser.uid;
-      
-    //         // Reference to the main course document
-    //         const courseRef = doc(db, 'course', courseId);
-      
-    //         // Reference to the StudentsPurchased subcollection
-    //         const studentsPurchasedRef = doc(
-    //           db,
-    //           'course',
-    //           courseId,
-    //           'StudentsPurchased',
-    //           currentUserId
-    //         );
-      
-    //         // Add userId to StudentsPurchased array in the course document
-    //         await updateDoc(courseRef, {
-    //           StudentsPurchased: arrayUnion(currentUserId), // Add currentUserId to the array
-    //         });
-      
-    //         // Add document to the StudentsPurchased subcollection
-    //         const enrollmentData = {
-    //           userId: currentUserId,
-    //           enrollmentType: 'paid',
-    //           enrollmentDate: new Date().toISOString(), // Current date and time
-    //         };
-    //         await setDoc(studentsPurchasedRef, enrollmentData);
-      
-    //         toast.success('Course purchased successfully!');
-    //         router.replace('/learn/courses')
-    //       } catch (error) {
-    //         console.error('Error updating course document:', error);
-    //         toast.error('Failed to purchase course');
-    //       }
-    //     } else {
-    //       toast.error('Invalid course or user');
-    //     }
-    //   };
-    
-      const openPaymentGateway= () => {
-         router.push(`/payment`);
-      };
-    
       const handleGoToCourse = () => {
-          alert('Yes');
+          alert('.');
       };
       
 

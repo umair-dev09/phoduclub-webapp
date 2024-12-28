@@ -176,7 +176,6 @@ function MyCourses() {
 
                     {/* Progress bar and additional course info (completion, time left) */}
                     <div className="flex h-[40%] flex-col">
-
                         {/* Progress bar */}
                         <div className="flex relative w-full h-2 rounded-full bg-gray-200 mb-1">
                             <div
@@ -184,7 +183,6 @@ function MyCourses() {
                                 style={{ width: "43%" }}  // 43% progress is shown
                             ></div>
                         </div>
-
                         {/* Course status - completed percentage and time left */}
                         <div className="flex flex-1 flex-row justify-between mt-2 text-xs pb-3">
                             <div className="flex flex-row gap-1">Completed: <span className="font-semibold">43%</span></div>
