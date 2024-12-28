@@ -140,7 +140,7 @@ useEffect(() => {
       }
     }
     else{
-      setError('User not authenticated');
+      setError('User not authenticated!');
     }
   }
     storeDataInFirestore();
@@ -160,4 +160,4 @@ useEffect(() => {
      <p className='italic'>Redirecting you to the product page.If not redirected please close this tab.</p>
     </div>
   );
-}
+} 
