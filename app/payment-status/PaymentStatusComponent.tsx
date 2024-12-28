@@ -140,7 +140,7 @@ useEffect(() => {
       }
     }
     else{
-      setError('User not authenticated!');
+      setError('User not authenticated');
     }
   }
     storeDataInFirestore();
