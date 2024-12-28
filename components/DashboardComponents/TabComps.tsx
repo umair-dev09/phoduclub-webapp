@@ -111,7 +111,7 @@ function TabComps() {
     return (
         <div className={`flex flex-col relative transition-all duration-[500ms] ease-in-out ${isCollapsed ? 'w-[3.5rem]' : 'w-[16rem]'} pl-2 py-[0.625rem] bg-[#131313]`}>
             {/* Sidebar Toggle Button */}
-            <button className={`flex items-center justify-center absolute top-[3.6rem] left-[97.5%] w-8 h-8 bg-white border-[0.106rem] border-lightGrey rounded-full transition-all ${isCollapsed ? ' -translate-x-1' : ''}`} onClick={handleCollapseClick}>
+            <button className={`flex items-center justify-center absolute top-[3.6rem] left-[97.5%] w-8 h-8 z-10 bg-white border-[0.106rem] border-lightGrey rounded-full transition-all ${isCollapsed ? ' -translate-x-1' : ''}`} onClick={handleCollapseClick}>
                 {isCollapsed ? (
                     <Image className='flex flex-row items-center justify-center mr-[2px]' alt='Collapse Icon Right' src="/icons/collapse-right.svg" width={8} height={8} />
                 ) : (
@@ -139,7 +139,7 @@ function TabComps() {
             {renderButtonWith('Analytics', '/icons/Analytics-2.svg', '/icons/Analytics.svg', activeTab === 'analytics', () => handleTabClick('analytics', '/analytics/test-series'))}
             {renderButtonWith('Settings', '/icons/settings-2.svg', '/icons/settings.svg', activeTab === 'settings', () => handleTabClick('settings', '/settings/profile'))}
 
-            <Dialog open={showQuizDialog} onClose={() => setShowQuizDialog(false)} className="relative z-50">
+            {/* <Dialog open={showQuizDialog} onClose={() => setShowQuizDialog(false)} className="relative z-50">
                 <DialogBackdrop className="fixed inset-0 bg-black/30 " />
                 <div className="fixed inset-0 flex items-center justify-center ">
                     <DialogPanel transition className="bg-[#FFFFFF] rounded-2xl w-[37.5rem]">
@@ -185,13 +185,12 @@ function TabComps() {
                         </div>
                     </DialogPanel>
                 </div>
-            </Dialog>
+            </Dialog> */}
             {/* <Modal
                 isDismissable={false}
                 isKeyboardDismissDisabled={true}
                 isOpen={showQuizDialog}}
-        
-      >
+                >
             <ModalContent>
                 {(onClose) => (
                     <>
