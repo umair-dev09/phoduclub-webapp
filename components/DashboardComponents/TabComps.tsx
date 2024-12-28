@@ -39,13 +39,10 @@ function TabComps() {
     }, [pathname]);
 
     useEffect(() => {
-        // Check if the current path is /learn
         if (pathname === '/learn') {
-            // Redirect to /learn/courses
             router.push('/learn/courses');
         }
         if (pathname === '/settings') {
-            // Redirect to /learn/courses
             router.push('/settings/profile');
         }
     }, [pathname, router]);
