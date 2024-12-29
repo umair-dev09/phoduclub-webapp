@@ -148,19 +148,19 @@ export default function DashboardPage() {
                               <div className="grid grid-cols-2 gap-6 text-base font-medium text-[#1D2939]">
                                    <div className="flex items-start gap-2">
                                         <Image src="/icons/checkmark-circle-02.svg" alt="tick circle" width={24} height={24} />
-                                        <p>Unlock the premium Analytics</p>
+                                        <p>Detailed Analytics</p>
                                    </div>
                                    <div className="flex items-start gap-2">
                                         <Image src="/icons/checkmark-circle-02.svg" alt="tick circle" width={24} height={24} />
-                                        <p>Special badge for premium users</p>
+                                        <p>Private Messages</p>
                                    </div>
                                    <div className="flex items-start gap-2">
                                         <Image src="/icons/checkmark-circle-02.svg" alt="tick circle" width={24} height={24} />
-                                        <p>Be part of the premium groups</p>
+                                        <p>Personalised Dashboard</p>
                                    </div>
                                    <div className="flex items-start gap-2">
                                         <Image src="/icons/checkmark-circle-02.svg" alt="tick circle" width={24} height={24} />
-                                        <p>Get dedicated mentorship by IIT/NITians</p>
+                                        <p>Many More</p>
                                    </div>
                               </div>
                          </div>
