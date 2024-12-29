@@ -14,19 +14,19 @@ export default function SettingsPage() {
     const [loading, setLoading] = useState(true);
 
     onAuthStateChanged(auth, (user) => {
-         if (!user) {
+        if (!user) {
             router.push("/login");
-         } 
-         else{
-        setLoading(false);
-         }
-       });
-            
-       if (loading) {
-         return (
-             <LoadingData/>
-         );
-     } 
+        }
+        else {
+            setLoading(false);
+        }
+    });
+
+    if (loading) {
+        return (
+            <LoadingData />
+        );
+    }
     return (
         <div></div>
     );

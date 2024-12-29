@@ -47,7 +47,6 @@ function ReviewTestView() {
   const sections = sectionIds ? JSON.parse(decodeURIComponent(sectionIds)) : [];
 
   const [isInitialLoading, setIsInitialLoading] = useState(true);
-  const [loading, setLoading] = useState(true);
   const [questions, setQuestions] = useState<Question[]>([]);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [currentSection, setCurrentSection] = useState<Section | null>(null);
@@ -68,12 +67,17 @@ function ReviewTestView() {
         }
 
         try {
+            // Build the complete path by iterating through all section IDs
             let currentPath = `testseries/${tId}`;
             const allQuestions: Question[] = [];
 
             // Get the last section ID since that's where the questions are
             const lastSectionId = sections[sections.length - 1];
-            currentPath += `/sections/${lastSectionId}`;
+            
+            // Build the complete path for nested sections
+            for (const sectionId of sections) {
+                currentPath += `/sections/${sectionId}`;
+            }
 
             const sectionRef = doc(db, currentPath);
             const sectionSnap = await getDoc(sectionRef);

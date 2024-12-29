@@ -118,7 +118,7 @@ function CoursesList() {
   const handleTabClick = (path: string) => {
     router.push(path);
   };
-
+ 
   if (loading) {
     return <LoadingData />
   }

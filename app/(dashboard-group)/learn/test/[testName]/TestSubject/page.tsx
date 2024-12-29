@@ -84,7 +84,7 @@ export default function TestSubject() {
                             <span className="font-semibold text-[#1D2939] text-base mt-2">1h 30m of 2h</span>
 
                         </div>
-
+ 
 
                     </div>
                 </div>

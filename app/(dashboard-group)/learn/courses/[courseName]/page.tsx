@@ -79,7 +79,8 @@ type CourseData = {
 function Course() {
  const router = useRouter();
       const searchParams = useSearchParams();
-      const courseId = searchParams.get('cId');     const [active, setActive] = useState<string>("overview");
+      const courseId = searchParams.get('cId');   
+      const [active, setActive] = useState<string>("overview");
      const [courseData, setCourseData] = useState<CourseData | null>(null); 
       const [loading, setLoading] = useState(true); // Track loading state 
       const [sections, setSections] = useState<Sections[]>([]);
@@ -130,19 +131,22 @@ function Course() {
     }, [courseId]);
 
     useEffect(() => {
-        if (courseData?.StudentsPurchased && auth.currentUser?.uid) {
-          const currentUserId = auth.currentUser.uid;
-      
-          // Check if currentUserId exists in StudentsPurchased array
-          const isPurchased = courseData.StudentsPurchased.includes(currentUserId);
-      
-          if (isPurchased) {
-            setCourseAlreadyPurchased(true);
-          } else {
-            setCourseAlreadyPurchased(false);
-          }
-        }
-      }, [courseData, auth.currentUser]);
+        const checkCoursePurchased = async () => {
+            if (courseId && auth.currentUser?.uid) {
+                const currentUserId = auth.currentUser.uid;
+                const userDocRef = doc(db, 'course', courseId, 'StudentsPurchased', currentUserId);
+                const userDocSnapshot = await getDoc(userDocRef);
+                
+                if (userDocSnapshot.exists()) {
+                    setCourseAlreadyPurchased(true);
+                } else {
+                    setCourseAlreadyPurchased(false);
+                }
+            }
+        };
+
+        checkCoursePurchased();
+    }, [courseId, auth.currentUser]);
 
     // Fetch content data from Firestore
     useEffect(() => {
