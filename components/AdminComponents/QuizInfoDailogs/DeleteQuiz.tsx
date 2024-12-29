@@ -55,7 +55,6 @@ function DeleteQuiz({ open, onClose, quizId, quizName }: DeleteTestProps) {
                                 />
                             </div>
                         </div>
-
                     </div>
                     <div className="flex flex-row justify-end mx-6 my-4 gap-4">
                         <button className="py-[0.625rem] px-6 border-2  border-solid border-[#EAECF0] font-semibold text-sm text-[#1D2939] rounded-m hover:bg-[#F2F4F7]" onClick={onClose} >Cancel</button>

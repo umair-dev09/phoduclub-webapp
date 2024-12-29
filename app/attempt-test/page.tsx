@@ -8,7 +8,7 @@ import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Timer from "@/components/TestTimer";
-import PreventPageClose from "@/components/PreventPageClose";
+import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, useDisclosure } from "@nextui-org/modal";
 
 
 interface Section {
@@ -137,7 +137,8 @@ function ReviewTestView() {
 
   // Ensure sectionIds is properly parsed
   const sections = sectionIds ? JSON.parse(decodeURIComponent(sectionIds)) : [];
-
+  const { isOpen: isOpenFirst, onOpen: onOpenFirst, onClose: onCloseFirst } = useDisclosure();
+  const { isOpen: isOpenSecond, onOpen: onOpenSecond, onClose: onCloseSecond } = useDisclosure();
   const [isInitialLoading, setIsInitialLoading] = useState(true);
   const [questions, setQuestions] = useState<Question[]>([]);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
@@ -582,6 +583,80 @@ const currentQuestionState = questionStates[currentQuestionIndex];
         </button>
         </div>
         </div>
+        <Modal isOpen={isOpenFirst} onOpenChange={(isOpen) => !isOpen && onCloseFirst()}>
+                <ModalContent>
+                    {(onClose) => (
+                        <ModalBody className="px-0">
+                            <div className="flex flex-col gap-2 px-6 py-3">
+                                <div className="flex flex-row justify-between items-center mb-1">
+                                    <h3 className=" font-bold task-[#1D2939]">Submit Test</h3>
+                                    {/* <button onClick={() => { setIsSubmitTestOpen(false) }} className="w-[32px] h-[32px]  rounded-full flex items-center justify-center transition-color duration-300 ease-in-out hover:bg-[#F2F4F7] ">
+                                        <Image src="/icons/cancel.svg" alt="Cancel" width={20} height={20} />
+                                    </button> */}
+                                </div>
+                                <p className=" text-sm font-normal text-[#667085]">
+                                    Lorem ipsum is a dummy text widely used in digital industry will be used here in as a preview
+                                    Lorem ipsum is a dummy text widely used in digital industry will be used here in as a preview
+                                </p>
+                            </div>
+                            <hr />
+                            <div className="flex flex-row justify-end mx-6 mb-2 gap-4">
+                                <button className="py-[0.625rem] px-6 border-[1.5px] border-lightGrey rounded-md font-semibold text-sm hover:bg-[#F2F4F7] " onClick={onCloseFirst}>Cancel</button>
+                                <button className="py-[0.625rem] px-6 text-white shadow-inner-button bg-[#8501FF] font-semibold text-sm border border-[#800EE2] rounded-md">Submit</button>
+                            </div>
+                        </ModalBody>
+                    )}
+                </ModalContent>
+            </Modal>
+            <Modal isOpen={isOpenSecond} size="2xl" onOpenChange={(isOpen) => !isOpen && onCloseSecond()}>
+                <ModalContent>
+                    {(onClose) => (
+                        <ModalBody className="px-0">
+                            <div className="flex flex-col items-center gap-2 mt-6 px-6 py-3">
+                                <div className="flex justify-center items-center w-[86px] h-[86px] rounded-full bg-[#F8E8FF] border border-[#F0D3FB]">
+                                    <Image src='icons/tick-01.svg' alt="completed" width={36} height={36} />
+                                </div>
+                                <h2 className="text-[#000000] text-xl font-bold">Test Completed!</h2>
+                            </div>
+                            <div className="flex flex-col gap-6 mt-6 mb-6">
+                                <div className="flex flex-row">
+                                    <div className="w-full text-center border-r border-lightGrey">
+                                        <p className="text-sm text-[#667085] font-normal leading-5 mb-2">Attempted Questions</p>
+                                        <p className="text-lg text-[1D2939] font-semibold leading-5">6/10</p>
+                                    </div>
+                                    <div className="w-full text-center border-r border-lightGrey">
+                                        <p className="text-sm text-[#667085] font-normal leading-5 mb-2">Answered Correct</p>
+                                        <p className="text-lg text-[1D2939] font-semibold leading-5">6/10</p>
+                                    </div>
+                                    <div className="w-full text-center border-r border-lightGrey">
+                                        <p className="text-sm text-[#667085] font-normal leading-5 mb-2">Answered Incorrect</p>
+                                        <p className="text-lg text-[1D2939] font-semibold leading-5">6/10</p>
+                                    </div>
+                                </div>
+                                <div className="flex flex-row">
+                                    <div className="w-full text-center border-r border-lightGrey">
+                                        <p className="text-sm text-[#667085] font-normal leading-5 mb-2">Score</p>
+                                        <p className="text-lg text-[1D2939] font-semibold leading-5">6</p>
+                                    </div>
+                                    <div className="w-full text-center border-r border-lightGrey">
+                                        <p className="text-sm text-[#667085] font-normal leading-5 mb-2">Accuracy</p>
+                                        <p className="text-lg text-[1D2939] font-semibold leading-5">10%</p>
+                                    </div>
+                                    <div className="w-full text-center border-r border-lightGrey">
+                                        <p className="text-sm text-[#667085] font-normal leading-5 mb-2">Time Taken</p>
+                                        <p className="text-lg text-[1D2939] font-semibold leading-5">6h 10m of 8h</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <hr />
+                            <div className="flex flex-row justify-end mx-6 mb-2 mt-1 gap-4">
+                                <button className="py-[0.625rem] px-6 border-[1.5px] border-lightGrey rounded-md font-semibold text-sm hover:bg-[#F2F4F7] " onClick={onCloseSecond}>Cancel</button>
+                                <button className="py-[0.625rem] px-6 text-white shadow-inner-button bg-[#8501FF] font-semibold text-sm border border-[#800EE2] rounded-md">Review Answers</button>
+                            </div>
+                        </ModalBody>
+                    )}
+                </ModalContent>
+            </Modal>
        </div>
     );
 }
