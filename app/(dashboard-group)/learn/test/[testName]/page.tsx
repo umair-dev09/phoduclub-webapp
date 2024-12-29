@@ -3,7 +3,7 @@ import { useRouter, usePathname, useSearchParams } from "next/navigation"
 import Image from "next/image";
 import { useState, useEffect } from "react";
 import { auth, db } from "@/firebase";
-import { collection, doc, getDoc, getDocs, onSnapshot } from "firebase/firestore";
+import { collection, doc, getCountFromServer, getDoc, getDocs, onSnapshot, query } from "firebase/firestore";
 import LoadingData from "@/components/Loading";
 import Collapsible from "react-collapsible";
 import { Dialog, DialogBackdrop, DialogPanel } from "@headlessui/react";
@@ -20,8 +20,9 @@ interface Section {
     marksPerQ: string;
     nMarksPerQ: string;
     testTime: string;
-    Questions?: Question[];
-
+    // Questions?: Question[];
+    QuestionsCount: number;
+    SubsectionsCount?: number;
 }
 interface Question {
     id: string;
@@ -47,7 +48,7 @@ interface AttemptedDetails {
 interface SectionAttemptState {
     [sectionId: string]: {
         attemptedDetails: AttemptedDetails | null;
-        answeredQuestions: AnsweredQuestion[];
+        // answeredQuestions: AnsweredQuestion[];
     };
 }
 
@@ -140,153 +141,110 @@ const [answeredQuestions, setAnsweredQuestions] = useState<AnsweredQuestion[]>([
     }, [testId, auth.currentUser]);
 
     // ----------------------------------------------------------------------------------------
-    const [sectionAttempts, setSectionAttempts] = useState<SectionAttemptState>({});
+    const [sectionAttempts, setSectionAttempts] = useState<{ [key: string]: { attemptedDetails: AttemptedDetails | null } }>({})
 
     const fetchSectionAttemptData = async (sectionId: string, fullPath: string) => {
         try {
             const userId = auth.currentUser?.uid;
-            if (!userId || !testId) return null;
-
-            // Construct the correct path using the fullPath
+            if (!userId) return null;
+    
+            // Fetch the student attempt document
             const studentAttemptRef = doc(db, `${fullPath}/sections/${sectionId}/StudentsAttempted/${userId}`);
             const studentAttemptSnapshot = await getDoc(studentAttemptRef);
-
-            if (!studentAttemptSnapshot.exists()) {
-                return null;
-            }
-
-            // Get the main attempt details
-            const attemptData = studentAttemptSnapshot.data() as AttemptedDetails;
-
-            // Fetch AttemptedQuestions subcollection
-            const attemptedQuestionsCollection = collection(studentAttemptRef, 'AttemptedQuestions');
-            const attemptedQuestionsSnapshot = await getDocs(attemptedQuestionsCollection);
-            
-            const answeredQuestions = attemptedQuestionsSnapshot.docs.map(doc => ({
-                questionId: doc.id,
-                ...doc.data()
-            })) as AnsweredQuestion[];
-
-            return {
-                attemptedDetails: attemptData,
-                answeredQuestions
-            };
+    
+            if (!studentAttemptSnapshot.exists()) return null;
+    
+            const attemptData = studentAttemptSnapshot.data();
+            return { attemptedDetails: attemptData };
         } catch (error) {
             console.error('Error fetching attempt data:', error);
             return null;
         }
     };
-
-    // Modify the sections fetching useEffect
+    
     useEffect(() => {
         if (!testId) return;
-
-        const fetchSections = async (): Promise<() => void> => {
+    
+        const fetchSections = async () => {
+            setSectionLoading(true);
+    
             try {
-                setSectionLoading(true);
-
-                // Construct the path using currentPath
-                const path = currentPath.reduce(
-                    (acc, id) => `${acc}/sections/${id}`,
-                    `testseries/${testId}`
-                );
-
+                const path = currentPath.reduce((acc, id) => `${acc}/sections/${id}`, `testseries/${testId}`);
                 const sectionCollection = collection(db, `${path}/sections`);
-
-                const unsubscribe = onSnapshot(sectionCollection, async (snapshot) => {
-                    const fetchedSections = await Promise.all(
-                        snapshot.docs.map(async (doc) => {
-                            const sectionData = doc.data();
-
-                            // Fetch subsections
-                            const subsectionsCollection = collection(doc.ref, 'sections');
-                            const subsectionsSnapshot = await getDocs(subsectionsCollection);
-                            const subsections = await Promise.all(
-                                subsectionsSnapshot.docs.map(async (subsectionDoc) => {
-                                    const subsectionData = subsectionDoc.data();
-                                    return {
-                                        id: subsectionDoc.id,
-                                        sectionName: subsectionData.sectionName,
-                                        sectionScheduleDate: subsectionData.sectionScheduleDate,
-                                        parentSectionId: subsectionData.parentSectionId || null,
-                                        order: subsectionData.order || 0,
-                                        hasQuestions: subsectionData.hasQuestions || false,
-                                        sections: [],
-                                        description: sectionData.description,
-                                        marksPerQ: sectionData.marksPerQ,
-                                        nMarksPerQ: sectionData.nMarksPerQ,
-                                        testTime: sectionData.testTime,
-                                        Questions: [],
-                                    };
-                                })
-                            );
-
-                            // If section has questions, fetch attempt data
-                            if (sectionData.hasQuestions) {
-                                const attemptData = await fetchSectionAttemptData(doc.id, path);
-                                if (attemptData) {
-                                    setSectionAttempts(prev => ({
-                                        ...prev,
-                                        [doc.id]: attemptData
-                                    }));
-                                }
+    
+                // Fetch all sections in one query
+                const sectionSnapshot = await getDocs(sectionCollection);
+    
+                const sections = await Promise.all(
+                    sectionSnapshot.docs.map(async (doc) => {
+                        const sectionData = doc.data();
+                        const sectionId = doc.id;
+    
+                        // Fetch attempt data only if necessary
+                        let attemptData: { attemptedDetails: AttemptedDetails | null } = { attemptedDetails: null };
+    
+                        if (sectionData.hasQuestions) {
+                            const fetchedData = await fetchSectionAttemptData(sectionId, path) as { attemptedDetails: AttemptedDetails };
+                            if (fetchedData) {
+                                attemptData = fetchedData;
                             }
-
-                            // Fetch questions
-                            const questionsCollection = collection(doc.ref, 'Questions');
-                            const questionsSnapshot = await getDocs(questionsCollection);
-                            const questions = questionsSnapshot.docs.map(qDoc => ({
-                                id: qDoc.id,
+    
+                            setSectionAttempts((prev) => ({
+                                ...prev,
+                                [sectionId]: attemptData,
                             }));
-
-                            return {
-                                id: doc.id,
-                                sectionName: sectionData.sectionName,
-                                sectionScheduleDate: sectionData.sectionScheduleDate,
-                                parentSectionId: sectionData.parentSectionId || null,
-                                order: sectionData.order || 0,
-                                hasQuestions: sectionData.hasQuestions,
-                                sections: subsections,
-                                description: sectionData.description,
-                                marksPerQ: sectionData.marksPerQ,
-                                nMarksPerQ: sectionData.nMarksPerQ,
-                                testTime: sectionData.testTime,
-                                Questions: questions,
-                            };
-                        })
-                    );
-
-                    setSections(fetchedSections.sort((a, b) => (a.order || 0) - (b.order || 0)));
-                    setSectionLoading(false);
-                });
-
-                return unsubscribe;
+                        }
+    
+                        // Fetch the number of questions in the "Questions" subcollection
+                        let questionsCount = 0;
+                        if (sectionData.hasQuestions) {
+                            const questionsCollection = collection(doc.ref, "Questions");
+                            const questionsSnapshot = await getCountFromServer(questionsCollection);
+                            questionsCount = questionsSnapshot.data().count;
+                        }
+    
+                        // Fetch the number of subsections (sections within this section)
+                        let subsectionCount = 0;
+                        const subsectionsCollection = collection(doc.ref, "sections");
+                        const subsectionsSnapshot = await getCountFromServer(subsectionsCollection);
+                        subsectionCount = subsectionsSnapshot.data().count;
+    
+                        return {
+                            id: sectionId,
+                            sectionName: sectionData.sectionName,
+                            sectionScheduleDate: sectionData.sectionScheduleDate,
+                            parentSectionId: sectionData.parentSectionId || null,
+                            order: sectionData.order || 0,
+                            hasQuestions: sectionData.hasQuestions,
+                            sections: [], // Load subsections lazily
+                            description: sectionData.description,
+                            marksPerQ: sectionData.marksPerQ,
+                            nMarksPerQ: sectionData.nMarksPerQ,
+                            testTime: sectionData.testTime,
+                            QuestionsCount: questionsCount,
+                            SubsectionsCount: subsectionCount, // Number of subsections
+                        };
+                    })
+                );
+    
+                setSections(sections.sort((a, b) => (a.order || 0) - (b.order || 0)));
             } catch (error) {
-                console.error('Error fetching sections: ', error);
+                console.error('Error fetching sections:', error);
+            } finally {
                 setSectionLoading(false);
-                return () => { };
             }
         };
-
-        let unsubscribeFn: () => void;
-
-        const getUnsubscribe = async () => {
-            const unsubscribe = await fetchSections();
-            return unsubscribe;
-        };
-
-        getUnsubscribe()
-            .then((unsubscribe) => {
-                unsubscribeFn = unsubscribe;
-            })
-            .catch((err) => {
-                console.error('Error initializing sections listener:', err);
-            });
-
+    
+        fetchSections();
+    
+        // Clean up
         return () => {
-            if (unsubscribeFn) unsubscribeFn();
+            setSections([]);
         };
     }, [currentPath, testId]);
+    
+    
+    
     const handleNavigationClick = (index: number) => {
         setCurrentPath(prev => prev.slice(0, index + 1));
         setBreadcrumbs(prev => prev.slice(0, index + 1));
@@ -478,7 +436,7 @@ const [answeredQuestions, setAnsweredQuestions] = useState<AnsweredQuestion[]>([
                                                                             {section.sectionName}
                                                                         </span>
                                                                         <span className="text-[#667085] font-normal text-[12px]">
-                                                                            {section.Questions?.length} Questions
+                                                                            {section.QuestionsCount} Questions
                                                                         </span>
                                                                     </div>
 
@@ -499,7 +457,7 @@ const [answeredQuestions, setAnsweredQuestions] = useState<AnsweredQuestion[]>([
                                                                                 <div>
                                                                                     <button className="h-[36px] flex flex-row items-center justify-center rounded-md  gap-2 px-3"
                                                                                         style={{ border: "1.5px solid #EAECF0" }}
-                                                                                        onClick={(e) => { e.stopPropagation(); handleStartTest(section.description, section.testTime, section.marksPerQ, section.Questions?.length || 0, section.id); }}
+                                                                                        onClick={(e) => { e.stopPropagation(); handleStartTest(section.description, section.testTime, section.marksPerQ, section.QuestionsCount || 0, section.id); }}
                                                                                     >
                                                                                         <Image
                                                                                             src="/icons/Re-attempt.svg"
@@ -519,7 +477,7 @@ const [answeredQuestions, setAnsweredQuestions] = useState<AnsweredQuestion[]>([
                                                                             </div>
 
                                                                         ) : (
-                                                                            <button onClick={(e) => { e.stopPropagation(); handleStartTest(section.description, section.testTime, section.marksPerQ, section.Questions?.length || 0, section.id); }}>
+                                                                            <button onClick={(e) => { e.stopPropagation(); handleStartTest(section.description, section.testTime, section.marksPerQ, section.QuestionsCount || 0, section.id); }}>
                                                                                 <div className="mt-3 flex items-center justify-center w-[116px] h-[36px] rounded-[6px] bg-[#9012FF] border border-solid border-[#800EE2] shadow-inner-button">
                                                                                     <span className="font-medium text-[14px] text-[#FCFCFD]">
                                                                                         Start test
@@ -675,7 +633,7 @@ const [answeredQuestions, setAnsweredQuestions] = useState<AnsweredQuestion[]>([
                                                                         </button>
                                                                     </div>
                                                                     <span className="font-normal text-[12px] text-[#667085] mt-1  flex flex-row
-                        justify-start">{section.sections?.length} Tests</span>
+                        justify-start">{section.SubsectionsCount} Tests</span>
                                                                 </div>
 
                                                                 <div className="h-[44px] flex flex-col ">
