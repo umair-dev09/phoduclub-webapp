@@ -12,8 +12,6 @@ import { auth, db } from "@/firebase";
 import router from "next/router";
 import Image from "next/image";
 import { collection, onSnapshot, orderBy, query } from 'firebase/firestore';
-import { Dialog, DialogBackdrop, DialogPanel } from "@headlessui/react";
-import { Modal, ModalContent, ModalBody } from "@nextui-org/modal";
 
 interface NotificationData {
      name: string;
@@ -84,11 +82,9 @@ export default function DashboardPage() {
                               </div>
                          )}
                          <button onClick={() => setShowNoti(false)}><Image className='w-5 h-5 mr-[6px] ' src='/icons/cancel.svg' width={24} height={24} alt='icon' /></button>
-
                     </div>
                )} */}
                <div className=" flex flex-col  flex-1 h-auto overflow-y-auto  px-6 py-6">
-
                     <div className="flex flex-row w-full gap-4">
                          <div className="flex flex-col flex-1 bg-white  rounded-lg h-[327px] w-1/2 ">
                               <div className="flex flex-row justify-between pt-6 px-6 w-full text-[#1D2939] text-lg font-bold">
@@ -152,19 +148,19 @@ export default function DashboardPage() {
                               <div className="grid grid-cols-2 gap-6 text-base font-medium text-[#1D2939]">
                                    <div className="flex items-start gap-2">
                                         <Image src="/icons/checkmark-circle-02.svg" alt="tick circle" width={24} height={24} />
-                                        <p>Track progress, scores, and deadlines for test series.</p>
+                                        <p>Unlock the premium Analytics</p>
                                    </div>
                                    <div className="flex items-start gap-2">
                                         <Image src="/icons/checkmark-circle-02.svg" alt="tick circle" width={24} height={24} />
-                                        <p>Get tailored test series suggestions for exams.</p>
+                                        <p>Special badge for premium users</p>
                                    </div>
                                    <div className="flex items-start gap-2">
                                         <Image src="/icons/checkmark-circle-02.svg" alt="tick circle" width={24} height={24} />
-                                        <p>View subject-wise progress with visual stats.</p>
+                                        <p>Be part of the premium groups</p>
                                    </div>
                                    <div className="flex items-start gap-2">
                                         <Image src="/icons/checkmark-circle-02.svg" alt="tick circle" width={24} height={24} />
-                                        <p>Summarized course performance with progress bars.</p>
+                                        <p>Get dedicated mentorship by IIT/NITians</p>
                                    </div>
                               </div>
                          </div>
