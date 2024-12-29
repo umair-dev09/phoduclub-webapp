@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 
 // Function to convert time string to total seconds
 const convertTimeToSeconds = (timeString: string): number => {
@@ -23,27 +23,31 @@ const formatTime = (totalSeconds: number): string => {
 interface TimerProps {
     initialTime: string;
     onTimeEnd: () => void;
+    onTimeUpdate: (timeLeftInMinutes: number) => void; // New callback for time updates
 }
 
-const Timer: React.FC<TimerProps> = ({ initialTime, onTimeEnd }) => {
+const Timer: React.FC<TimerProps> = ({ initialTime, onTimeEnd, onTimeUpdate }) => {
     const [timeLeft, setTimeLeft] = useState<number>(convertTimeToSeconds(initialTime));
+    const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
     useEffect(() => {
         // Start timer
-        const timer = setInterval(() => {
+        intervalRef.current = setInterval(() => {
             setTimeLeft((prevTime) => {
                 if (prevTime <= 1) {
-                    clearInterval(timer);
+                    clearInterval(intervalRef.current!);
                     onTimeEnd(); // Trigger handleSubmit when timer ends
                     return 0;
                 }
+                const timeLeftInMinutes = (prevTime - 1) / 60;
+                onTimeUpdate(timeLeftInMinutes); // Update parent with the current time in minutes
                 return prevTime - 1;
             });
         }, 1000);
 
         // Cleanup
-        return () => clearInterval(timer);
-    }, [onTimeEnd]);
+        return () => clearInterval(intervalRef.current!);
+    }, [onTimeEnd, onTimeUpdate]);
 
     return (
         <p className="font-[Inter] font-semibold text-[12px]">

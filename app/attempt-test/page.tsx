@@ -8,6 +8,7 @@ import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Timer from "@/components/TestTimer";
+import PreventPageClose from "@/components/PreventPageClose";
 
 
 interface Section {
@@ -146,6 +147,19 @@ function ReviewTestView() {
   const [userData, setUserData] = useState<UserData | null>(null);
   const [questionStates, setQuestionStates] = useState<QuestionState[]>([]);
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
+  const [currentTime, setCurrentTime] = useState<number>(0);
+  const [isTimeOver, setIsTimeOver] = useState(false);
+
+  const handleTimeUpdate = (timeLeft: number) => {
+      setCurrentTime(timeLeft);
+  };
+
+  const handleTimeOver = () => {
+    setIsTimeOver(true);
+    setError("Time's up! Please submit your test.");
+    console.log("Time's up!");
+};
+
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -327,7 +341,40 @@ const handleSaveAndNext = () => {
 };
 
 const handleSubmit = () => {
-    console.log('Test Submission Data:', questionStates);
+    // Get total questions
+    const totalQuestions = questions.length;
+
+    // Calculate attempted questions
+    const attemptedQuestions = questionStates.filter(q => q.answered).length;
+    const attemptedRatio = `${attemptedQuestions}/${totalQuestions}`;
+
+    // Calculate correct and incorrect answers among attempted questions
+    const answeredQuestions = questionStates.filter(q => q.answered);
+    const correctAnswers = answeredQuestions.filter(q => q.answeredCorrect).length;
+    const incorrectAnswers = answeredQuestions.filter(q => q.answeredCorrect === false).length;
+    
+    const correctRatio = `${correctAnswers}/${attemptedQuestions}`;
+    const incorrectRatio = `${incorrectAnswers}/${attemptedQuestions}`;
+
+    // Calculate score
+    const marksPerCorrect = parseFloat(currentSection?.marksPerQ || "0");
+    const marksPerIncorrect = parseFloat(currentSection?.nMarksPerQ || "0");
+    
+    const totalScore = (correctAnswers * marksPerCorrect) - (incorrectAnswers * marksPerIncorrect);
+    const maxPossibleScore = totalQuestions * marksPerCorrect;
+    
+    // Calculate accuracy
+    const accuracy = (totalScore / maxPossibleScore) * 100;
+
+    console.log('Test Submission Data:', {
+        attemptedQuestions: attemptedRatio,
+        answeredCorrect: correctRatio,
+        answeredIncorrect: incorrectRatio,
+        score: `${totalScore}/${maxPossibleScore}`,
+        accuracy: `${accuracy.toFixed(2)}%`,
+        timeLeft: `${currentTime} seconds`,
+        detailedState: questionStates
+    });
 };
 
 const handleClearResponse = () => {
@@ -339,7 +386,6 @@ const handleClearResponse = () => {
         status: 'not-answered'
     });
 };
-
 const getQuestionButtonStatus = (index: number) => {
     return questionStates[index]?.status || 'not-visited';
 };
@@ -365,12 +411,13 @@ const currentQuestionState = questionStates[currentQuestionIndex];
               <Image src="/icons/instructions.svg" alt="Instructions Icon" width={12} height={12}/> 
               <p className="font-[Inter] font-medium text-[12px] ">Instructions</p> 
             </button>
-            {/* {currentSection?.testTime && (
+            {currentSection?.testTime && (
                     <Timer 
                         initialTime={currentSection.testTime} 
-                        onTimeEnd={handleSubmit}
-                    />
-                )}    */}
+                        onTimeEnd={handleTimeOver}
+                        onTimeUpdate={handleTimeUpdate}
+                        />
+                )}   
             </div>
         </div> 
 
@@ -465,29 +512,34 @@ const currentQuestionState = questionStates[currentQuestionIndex];
         <div className="flex flex-col flex-1 bg-[#DEF7FE] overflow-y-auto px-4 py-2">
         <p className=" text-[14px] font-medium font-[Inter]">Choose a Question</p>
         <div className="flex flex-row flex-wrap mt-2 gap-3">
-         {/*button for selecting question*/}   
-         {questions.map((_, index) => (
-    <button 
-        key={index}
-        onClick={() => handleQuestionSelect(index)}
-    >
-        <div className="relative w-[28px] h-[28px]">
-            <Image
-                src={`/icons/${getQuestionButtonStatus(index)}.svg`}
-                alt={`Question ${index + 1}`}
-                width={28}
-                height={28}
-            />
-            <span className={`absolute inset-0 text-xs font-medium ${
-                getQuestionButtonStatus(index) === 'not-visited' 
-                    ? 'text-[#242424]' 
-                    : 'text-white'
-            } flex items-center justify-center`}>
-                {index + 1}
-            </span>
-        </div>
-    </button>
-))}
+         {/*button for selecting question*/}
+         {!isTimeOver && (
+            <>
+            {questions.map((_, index) => (
+                <button 
+                    key={index}
+                    onClick={() => handleQuestionSelect(index)}
+                >
+                    <div className="relative w-[28px] h-[28px]">
+                        <Image
+                            src={`/icons/${getQuestionButtonStatus(index)}.svg`}
+                            alt={`Question ${index + 1}`}
+                            width={28}
+                            height={28}
+                        />
+                        <span className={`absolute inset-0 text-xs font-medium ${
+                            getQuestionButtonStatus(index) === 'not-visited' 
+                                ? 'text-[#242424]' 
+                                : 'text-white'
+                        } flex items-center justify-center`}>
+                            {index + 1}
+                        </span>
+                    </div>
+                </button>
+            ))}
+            </>
+         )}   
+        
           </div>
         </div>       
         </div>
@@ -495,7 +547,12 @@ const currentQuestionState = questionStates[currentQuestionIndex];
 
         <div className="flex flex-row sticky bottom-0 h-16 border-t border-b border-[#A1A1A199] ">
         
+        {isTimeOver ? (
         <div className="flex flex-row py-2 flex-1 px-2 justify-between items-center">
+        </div>
+    ) : (
+        <div className="flex flex-row py-2 flex-1 px-2 justify-between items-center">
+        
         <div className="flex flex-row gap-2">
         <button className="flex border border-[#A1A1A199] items-center justify-center h-[28px] px-4" onClick={handleMarkForReview}>
         <span className="font-bold font-['Inter'] text-[12px] text-[#717171]">Mark for Review and Next</span>
@@ -504,6 +561,7 @@ const currentQuestionState = questionStates[currentQuestionIndex];
         <span className="font-bold font-['Inter'] text-[12px] text-[#717171]">Clear Response</span>
         </button>   
         </div> 
+       
         <button 
                         className={`flex items-center justify-center h-[36px] rounded-[3px] ${
                             selectedOption ? 'bg-[#4871CB]' : 'bg-gray-400'
@@ -516,16 +574,14 @@ const currentQuestionState = questionStates[currentQuestionIndex];
                         </span>
                     </button>
         </div>
-
+    )}
 
         <div className="flex flex-col w-[365px] h-full border-l border-r border-[#A1A1A199] bg-[#def7fe] items-center justify-center py-[4px]">
         <button className=" flex items-center justify-center w-[74px] h-[36px] rounded-[3px] bg-[#4298EB] border border-[#A1A1A199]" onClick={handleSubmit}>
          <span className="font-bold font-['Inter'] text-[12px] text-[#F5F5F5]">Submit</span>
         </button>
         </div>
-
         </div>
-
        </div>
     );
 }
