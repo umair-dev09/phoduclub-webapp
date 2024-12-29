@@ -28,11 +28,9 @@ export default function DashboardPage() {
      const router = useRouter();
      const [loading, setLoading] = useState(true);
      const [showNoti, setShowNoti] = useState(true);
-
-
      const [notification, setNotification] = useState<NotificationData[]>([]);
-     useEffect(() => {
 
+     useEffect(() => {
           const fetchNotification = async () => {
                try {
                     const discussionRef = collection(
@@ -75,7 +73,7 @@ export default function DashboardPage() {
 
      return (
           <div className='relative flex flex-col w-full h-auto'>
-               {showNoti && (
+               {/* {showNoti && (
                     <div className='flex flex-row bg-[#FEDAAA] h-auto w-full py-3 px-4 items-center justify-between'>
                          {notification.length > 0 && (
                               <div key={notification[0].notificationId} className='flex flex-row flex-1 items-center justify-center'>
@@ -88,7 +86,7 @@ export default function DashboardPage() {
                          <button onClick={() => setShowNoti(false)}><Image className='w-5 h-5 mr-[6px] ' src='/icons/cancel.svg' width={24} height={24} alt='icon' /></button>
 
                     </div>
-               )}
+               )} */}
                <div className=" flex flex-col  flex-1 h-auto overflow-y-auto  px-6 py-6">
 
                     <div className="flex flex-row w-full gap-4">
@@ -142,7 +140,7 @@ export default function DashboardPage() {
                </div>
 
                {/* Contained Modal */}
-               <div className="absolute inset-0 flex items-center justify-center bg-black/30">
+               <div className="absolute inset-0 flex items-center justify-center bg-black/30 backdrop-blur-xl">
                     <div className="bg-white rounded-2xl w-[37.5rem] p-6">
                          <div className="flex flex-col">
                               <div className="flex justify-center mb-4">
@@ -172,107 +170,6 @@ export default function DashboardPage() {
                          </div>
                     </div>
                </div>
-
-               {/* <Modal
-                    size='xl'
-                    backdrop="blur"
-                    isDismissable={false}
-                    isKeyboardDismissDisabled={true}
-                    isOpen={true}
-               >
-                    <ModalContent>
-                         <ModalBody className="bg-[#FFFFFF] rounded-2xl">
-                              <div className="flex flex-1 relative w-full flex-col rounded-xl">
-                                   <div className="flex flex-col w-full mt-8">
-                                        <div className="flex justify-center">
-                                             <Image src="/images/physicDailogImg.svg" alt="cool image" width={120} height={120} />
-                                        </div>
-                                        <div className="flex justify-center text-xl font-bold">
-                                             <h2>Launching Soon!!!!!!!!</h2>
-                                        </div>
-                                   </div>
-                                   <div className="flex flex-col mt-9 mb-6 font-medium text-base text-[#1D2939]">
-                                        <div className="flex flex-row w-full pl-8 mb-6">
-                                             <div className="flex flex-row w-1/2">
-                                                  <div>
-                                                       <Image className="mr-2" src="/icons/checkmark-circle-02.svg" alt="tick circle" width={24} height={24} />
-                                                  </div>
-                                                  <p>Unlock the premium <br /> Analytics</p>
-                                             </div>
-                                             <div className="flex flex-row w-1/2 ml-6">
-                                                  <div>
-                                                       <Image className="mr-2" src="/icons/checkmark-circle-02.svg" alt="tick circle" width={24} height={24} />
-                                                  </div>
-                                                  <p>Special badge for <br /> premium users</p>
-                                             </div>
-                                        </div>
-                                        <div className="flex flex-row w-full pl-8">
-                                             <div className="flex flex-row w-1/2">
-                                                  <div>
-                                                       <Image className="mr-2" src="/icons/checkmark-circle-02.svg" alt="tick circle" width={24} height={24} />
-                                                  </div>
-                                                  <p>Be part of the premium <br /> groups</p>
-                                             </div>
-                                             <div className="flex flex-row w-1/2 ml-6">
-                                                  <div>
-                                                       <Image className="mr-2" src="/icons/checkmark-circle-02.svg" alt="tick circle" width={24} height={24} />
-                                                  </div>
-                                                  <p>Get dedicated <br /> mentorship by IIT/NITians</p>
-                                             </div>
-                                        </div>
-                                   </div>
-                              </div>
-                         </ModalBody>
-                    </ModalContent>
-               </Modal> */}
-
-               {/* <Dialog className="relative z-50" open={true} onClose={() => { }}>
-                    <DialogBackdrop className="fixed inset-0 bg-black/30 " />
-                    <div className="fixed inset-0 flex items-center justify-center ">
-                         <DialogPanel transition className="bg-[#FFFFFF] rounded-2xl w-[37.5rem]">
-                              <div className="flex flex-1 relative w-full flex-col rounded-xl">
-                                   <div className="flex flex-col w-full mt-8">
-                                        <div className="flex justify-center">
-                                             <Image src='/images/physicDailogImg.svg' alt="cool image" width={120} height={120} />
-                                        </div>
-                                        <div className="flex justify-center text-xl font-bold">
-                                             <h2>Lauching Soon!!!!!!!!</h2>
-                                        </div>
-                                   </div>
-                                   <div className="flex flex-col mt-9 mb-6 font-medium text-base text-[#1D2939]">
-                                        <div className="flex flex-row w-full pl-8 mb-6">
-                                             <div className="flex flex-row w-1/2">
-                                                  <div>
-                                                       <Image className="mr-2" src='/icons/checkmark-circle-02.svg' alt="tick circle" width={24} height={24} />
-                                                  </div>
-                                                  <p>Unlock the premium <br /> Analytics</p>
-                                             </div>
-                                             <div className="flex flex-row w-1/2 ml-6">
-                                                  <div>
-                                                       <Image className="mr-2" src='/icons/checkmark-circle-02.svg' alt="tick circle" width={24} height={24} />
-                                                  </div>
-                                                  <p>Special badge for <br /> premium users</p>
-                                             </div>
-                                        </div>
-                                        <div className="flex flex-row w-full pl-8">
-                                             <div className="flex flex-row w-1/2">
-                                                  <div>
-                                                       <Image className="mr-2" src='/icons/checkmark-circle-02.svg' alt="tick circle" width={24} height={24} />
-                                                  </div>
-                                                  <p>Be part of the premium <br /> groups</p>
-                                             </div>
-                                             <div className="flex flex-row w-1/2 ml-6">
-                                                  <div>
-                                                       <Image className="mr-2" src='/icons/checkmark-circle-02.svg' alt="tick circle" width={24} height={24} />
-                                                  </div>
-                                                  <p>Get dedicated <br /> mentorship by IIT/NITians</p>
-                                             </div>
-                                        </div>
-                                   </div>
-                              </div>
-                         </DialogPanel>
-                    </div>
-               </Dialog> */}
           </div>
      );
 }

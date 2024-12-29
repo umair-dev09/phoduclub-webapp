@@ -599,13 +599,8 @@ function Test() {
             <Dialog open={showTestDialog} onClose={() => setShowTestDialog(false)} className="relative z-50">
                 <DialogBackdrop className="fixed inset-0 bg-black/30 " />
                 <div className="fixed inset-0 flex items-center justify-center ">
-                    <DialogPanel transition className="bg-[#FFFFFF] rounded-2xl  w-[520px] h-[306px] ">
-                        <div className="flex flex-1 h-[230px] w-full border-b-2 border-solid border-[#EAECF0] flex-col" style={{
-                            borderTopLeftRadius: '12px',
-                            borderTopRightRadius: '12px',
-                            borderBottomLeftRadius: '0px',
-                            borderBottomRightRadius: '0px',
-                        }}>
+                    <DialogPanel transition className="bg-[#FFFFFF] rounded-2xl  w-[520px] h-auto">
+                        <div className="flex flex-1 w-full border-b-2 border-[#EAECF0] flex-col">
                             <div className="h-[23px]  mt-[23px] mr-[24px] ml-[24px] justify-between flex">
                                 <span className="text-[#1D2939] font-semibold text-lg">Start Test</span>
                                 <button className="w-[32px] h-[32px]  rounded-full flex items-center justify-center transition-all duration-300 ease-in-out hover:bg-[#F2F4F7]">
@@ -617,58 +612,41 @@ function Test() {
                             <div className=" h-auto mr-[24px] ml-[24px] mt-[13px] ">
                                 <span className="text-sm text-[#667085] font-normal">{description}</span>
                             </div>
-                            <div className="h-[48px] w-auto mx-6 mt-[33px] flex-row flex gap-6">
-                                <div className="gap-1 flex-col flex  items-center ">
+                            <div className="mt-[33px] flex-row flex">
+                                <div className="gap-1 flex-col flex items-center w-full border-r border-lightGrey">
                                     <span className="font-normal text-sm text-[#667085]">Time Duration</span>
-                                    <span className="text-[#1D2939] text-lg font-semibold">{time}
-                                    </span>
+                                    <span className="text-[#1D2939] text-lg font-semibold">{time}</span>
                                 </div>
-                                <div className="w-[0.5px] h-[48px] bg-[#EAECF0]"></div>
-                                <div className="gap-1 flex-col flex  items-center">
+                                <div className="gap-1 flex-col flex items-center w-full border-r border-lightGrey">
                                     <span className="font-normal text-sm text-[#667085]">No. of Questions</span>
-                                    <span className="text-[#1D2939] text-lg font-semibold">{noOfQuestions}
-                                    </span>
+                                    <span className="text-[#1D2939] text-lg font-semibold">{noOfQuestions}</span>
                                 </div>
-                                <div className="w-[0.5px] h-[48px] bg-[#EAECF0]"></div>
-                                <div className="gap-1 flex-col flex  items-center">
+                                <div className="gap-1 flex-col flex items-center w-full">
                                     <span className="font-normal text-sm text-[#667085]">Marks Per Question</span>
-                                    <span className="text-[#1D2939] text-lg font-semibold">{marksPerQ}
-                                    </span>
+                                    <span className="text-[#1D2939] text-lg font-semibold">{marksPerQ}</span>
                                 </div>
                             </div>
                         </div>
-                        <div className="w-[480px] h-[76px] "
-                            style={{
-                                borderTopLeftRadius: '0px',
-                                borderTopRightRadius: '0px',
-                                borderBottomLeftRadius: '12px',
-                                borderBottomRightRadius: '12px',
-                            }}>
-                            <div className="ml-[213px] gap-[16px] flex-row flex mt-[16px] h-[44px] ">
-                                <button
-                                    className="bg-[#FFFFFF] text-[#1D2939] text-sm font-semibold py-2 px-5 rounded-md w-[118px] h-[44px] shadow-inner-button hover:bg-[#F2F4F7]"
-                                    style={{ border: "1.5px solid #EAECF0" }}
-                                    onClick={() => setShowTestDialog(false)}>
-                                    Cancel
-                                </button>
-                                <button
-                                    className="bg-[#8501FF] text-[#FFFFFF] text-sm font-semibold py-2 px-5 rounded-md w-[118px] h-[44px] shadow-inner-button"
-                                    style={{
-                                        border: "1px solid #800EE2",
-
-                                    }}
-                                    onClick={() => {
-                                        const sectionIds = getSectionPath(passedSectionId);
-                                        const url = `/attempt-test?tId=${testId}&sectionIds=${encodeURIComponent(
-                                            JSON.stringify(sectionIds)
-                                        )}&uid=${auth.currentUser?.uid}`;
-                                        window.open(url, "_blank"); // Opens in a new tab
-                                        setShowTestDialog(false);
-                                    }}
-                                >
-                                    Start Now
-                                </button>
-                            </div>
+                        <div className="flex flex-row justify-end my-4 mr-6 gap-4">
+                            <button
+                                className="bg-[#FFFFFF] text-[#1D2939] text-sm font-semibold py-2 px-5 rounded-md w-[118px] h-[44px] shadow-inner-button hover:bg-[#F2F4F7]"
+                                style={{ border: "1.5px solid #EAECF0" }}
+                                onClick={() => setShowTestDialog(false)}>
+                                Cancel
+                            </button>
+                            <button
+                                className="bg-[#8501FF] text-[#FFFFFF] text-sm font-semibold py-2 px-5 rounded-md w-[118px] h-[44px] shadow-inner-button border border-[#800EE2]"
+                                onClick={() => {
+                                    const sectionIds = getSectionPath(passedSectionId);
+                                    const url = `/attempt-test?tId=${testId}&sectionIds=${encodeURIComponent(
+                                        JSON.stringify(sectionIds)
+                                    )}&uid=${auth.currentUser?.uid}`;
+                                    window.open(url, "_blank"); // Opens in a new tab
+                                    setShowTestDialog(false);
+                                }}
+                            >
+                                Start Now
+                            </button>
                         </div>
                     </DialogPanel>
                 </div>

@@ -20,9 +20,9 @@ export default function DashboardGroup({ children }: DashboardGroupProps) {
                         <Header />
                     </div>
                     <div className="variable-contents">
-                    <ClientWrapper>
-                        {children}
-                    </ClientWrapper>
+                        <ClientWrapper>
+                            {children}
+                        </ClientWrapper>
                     </div>
                 </div>
             </div>
