@@ -26,6 +26,75 @@ interface Section {
 interface Question {
     id: string;
 }
+
+interface AnsweredQuestion {
+    questionId: string;
+    status: string;
+    answered: boolean;
+    selectedOption: string | null;
+    answeredCorrect: boolean | null;
+}
+
+interface AttemptedDetails {
+    attemptedQuestions: string;
+    score: string;
+    accuracy: string;
+    answeredCorrect: string;
+    answeredIncorrect: string;
+    timeTaken: string;
+    answeredQuestions: AnsweredQuestion[];
+}
+interface SectionAttemptState {
+    [sectionId: string]: {
+        attemptedDetails: AttemptedDetails | null;
+        answeredQuestions: AnsweredQuestion[];
+    };
+}
+
+function formatTimeTaken(seconds: string) {
+    const totalSeconds = Number(seconds);
+    const hours = Math.floor(totalSeconds / 3600); // Calculate hours
+    const minutes = Math.floor((totalSeconds % 3600) / 60); // Calculate remaining minutes
+    let formattedTime = '';
+
+    if (hours > 0) {
+        formattedTime += `${hours}h`; // Add hours if present
+    }
+    if (minutes > 0 || hours === 0) {
+        formattedTime += (formattedTime ? ' ' : '') + `${minutes}m`; // Add minutes
+    }
+
+    return formattedTime;
+}
+
+function formatTimeLeft(input: string) {
+    let totalMinutes = 0;
+
+    // Extract hours and minutes from the input string
+    const hourMatch = input.match(/(\d+)\s*Hour\(s\)/i);
+    const minuteMatch = input.match(/(\d+)\s*Minute\(s\)/i);
+
+    if (hourMatch) {
+        totalMinutes += parseInt(hourMatch[1], 10) * 60; // Convert hours to minutes
+    }
+    if (minuteMatch) {
+        totalMinutes += parseInt(minuteMatch[1], 10); // Add remaining minutes
+    }
+
+    const hours = Math.floor(totalMinutes / 60); // Calculate hours
+    const minutes = totalMinutes % 60; // Calculate remaining minutes
+    let formattedTime = '';
+
+    if (hours > 0) {
+        formattedTime += `${hours}h`; // Add hours if present
+    }
+    if (minutes > 0 || hours === 0) {
+        formattedTime += (formattedTime ? ' ' : '') + `${minutes}m`; // Add minutes
+    }
+
+    return formattedTime;
+}
+
 function Test() {
     const router = useRouter();
     const searchParams = useSearchParams();
@@ -33,6 +102,9 @@ function Test() {
     const [testAlreadyPurchased, setTestAlreadyPurchased] = useState(false);
     const [activeTab, setActiveTab] = useState<string>('');
     const [description, setDescription] = useState('');
+    const [questions, setQuestions] = useState<Question[]>([]);
+    const [attemptedDetails, setAttemptedDetails] = useState<AttemptedDetails | null>(null);
+const [answeredQuestions, setAnsweredQuestions] = useState<AnsweredQuestion[]>([]);
     const [time, setTime] = useState('');
     const [marksPerQ, setMarksPerQ] = useState('');
     const [passedSectionId, setPassedSectionId] = useState('');
@@ -40,6 +112,7 @@ function Test() {
     const [loading, setLoading] = useState(true); // Track loading state 
     const pathname = usePathname();
     const [accordionOpen, setAccordionOpen] = useState(false);
+    const userId = auth.currentUser?.uid;
     const [testCompleted, setTestCompleted] = useState(false); // New state for test completion
     let [showTestDialog, setShowTestDialog] = useState(false);
     const [sectionLoading, setSectionLoading] = useState(false);
@@ -67,14 +140,52 @@ function Test() {
     }, [testId, auth.currentUser]);
 
     // ----------------------------------------------------------------------------------------
+    const [sectionAttempts, setSectionAttempts] = useState<SectionAttemptState>({});
+
+    const fetchSectionAttemptData = async (sectionId: string, fullPath: string) => {
+        try {
+            const userId = auth.currentUser?.uid;
+            if (!userId || !testId) return null;
+
+            // Construct the correct path using the fullPath
+            const studentAttemptRef = doc(db, `${fullPath}/sections/${sectionId}/StudentsAttempted/${userId}`);
+            const studentAttemptSnapshot = await getDoc(studentAttemptRef);
+
+            if (!studentAttemptSnapshot.exists()) {
+                return null;
+            }
+
+            // Get the main attempt details
+            const attemptData = studentAttemptSnapshot.data() as AttemptedDetails;
+
+            // Fetch AttemptedQuestions subcollection
+            const attemptedQuestionsCollection = collection(studentAttemptRef, 'AttemptedQuestions');
+            const attemptedQuestionsSnapshot = await getDocs(attemptedQuestionsCollection);
+            
+            const answeredQuestions = attemptedQuestionsSnapshot.docs.map(doc => ({
+                questionId: doc.id,
+                ...doc.data()
+            })) as AnsweredQuestion[];
+
+            return {
+                attemptedDetails: attemptData,
+                answeredQuestions
+            };
+        } catch (error) {
+            console.error('Error fetching attempt data:', error);
+            return null;
+        }
+    };
+
+    // Modify the sections fetching useEffect
     useEffect(() => {
         if (!testId) return;
 
-        // Fetch sections and subsections in real-time
         const fetchSections = async (): Promise<() => void> => {
             try {
-                setSectionLoading(true); // Start loading
+                setSectionLoading(true);
 
+                // Construct the path using currentPath
                 const path = currentPath.reduce(
                     (acc, id) => `${acc}/sections/${id}`,
                     `testseries/${testId}`
@@ -87,7 +198,7 @@ function Test() {
                         snapshot.docs.map(async (doc) => {
                             const sectionData = doc.data();
 
-                            // Fetching subsections (nested subcollection)
+                            // Fetch subsections
                             const subsectionsCollection = collection(doc.ref, 'sections');
                             const subsectionsSnapshot = await getDocs(subsectionsCollection);
                             const subsections = await Promise.all(
@@ -110,17 +221,24 @@ function Test() {
                                 })
                             );
 
-                            // Check if section has questions
+                            // If section has questions, fetch attempt data
+                            if (sectionData.hasQuestions) {
+                                const attemptData = await fetchSectionAttemptData(doc.id, path);
+                                if (attemptData) {
+                                    setSectionAttempts(prev => ({
+                                        ...prev,
+                                        [doc.id]: attemptData
+                                    }));
+                                }
+                            }
+
+                            // Fetch questions
                             const questionsCollection = collection(doc.ref, 'Questions');
                             const questionsSnapshot = await getDocs(questionsCollection);
-                            const questionsss = await Promise.all(
-                                questionsSnapshot.docs.map(async (qDoc) => {
-                                    const qData = qDoc.data();
-                                    return {
-                                        id: qDoc.id,
-                                    };
-                                })
-                            );
+                            const questions = questionsSnapshot.docs.map(qDoc => ({
+                                id: qDoc.id,
+                            }));
+
                             return {
                                 id: doc.id,
                                 sectionName: sectionData.sectionName,
@@ -133,42 +251,40 @@ function Test() {
                                 marksPerQ: sectionData.marksPerQ,
                                 nMarksPerQ: sectionData.nMarksPerQ,
                                 testTime: sectionData.testTime,
-                                Questions: questionsss,
+                                Questions: questions,
                             };
                         })
                     );
 
-                    // Sort sections and update state
                     setSections(fetchedSections.sort((a, b) => (a.order || 0) - (b.order || 0)));
-                    setSectionLoading(false); // End loading when data is fetched
+                    setSectionLoading(false);
                 });
 
-                return unsubscribe; // Return unsubscribe function
+                return unsubscribe;
             } catch (error) {
                 console.error('Error fetching sections: ', error);
-                setSectionLoading(false); // Ensure loading stops in case of error
-                return () => { }; // Return a no-op unsubscribe in case of error
+                setSectionLoading(false);
+                return () => { };
             }
         };
 
-        // Async wrapper for fetchSections
-        const getUnsubscribe = async (): Promise<() => void> => {
+        let unsubscribeFn: () => void;
+
+        const getUnsubscribe = async () => {
             const unsubscribe = await fetchSections();
             return unsubscribe;
         };
 
-        let unsubscribeFn: () => void; // Explicitly typed as a function that returns void
-
         getUnsubscribe()
             .then((unsubscribe) => {
-                unsubscribeFn = unsubscribe; // Store the unsubscribe function
+                unsubscribeFn = unsubscribe;
             })
             .catch((err) => {
                 console.error('Error initializing sections listener:', err);
             });
 
         return () => {
-            if (unsubscribeFn) unsubscribeFn(); // Cleanup on unmount or dependency change
+            if (unsubscribeFn) unsubscribeFn();
         };
     }, [currentPath, testId]);
     const handleNavigationClick = (index: number) => {
@@ -370,7 +486,7 @@ function Test() {
 
 
                                                                         {/* Conditional rendering for Test Completed and Re-attempt */}
-                                                                        {testCompleted ? (
+                                                                        {sectionAttempts[section.id]?.attemptedDetails ? (
                                                                             <div className="gap-6 flex flex-row items-center justify-center mt-3">
                                                                                 <div className="flex flex-row items-center justify-center">
                                                                                     <Image
@@ -381,8 +497,9 @@ function Test() {
                                                                                     <span className="font-semibold text-xs text-[#0B9055] ml-2">Test Completed</span>
                                                                                 </div>
                                                                                 <div>
-                                                                                    <button className="h-[36px] flex flex-row items-center justify-center rounded-md  gap-2"
+                                                                                    <button className="h-[36px] flex flex-row items-center justify-center rounded-md  gap-2 px-3"
                                                                                         style={{ border: "1.5px solid #EAECF0" }}
+                                                                                        onClick={(e) => { e.stopPropagation(); handleStartTest(section.description, section.testTime, section.marksPerQ, section.Questions?.length || 0, section.id); }}
                                                                                     >
                                                                                         <Image
                                                                                             src="/icons/Re-attempt.svg"
@@ -420,6 +537,8 @@ function Test() {
                                                             onClosing={() => toggleCollapsible(0)} // Set the state to closed when collapsing
 
                                                         >
+                                                        {sectionAttempts[section.id]?.attemptedDetails && (
+                                                        
                                                             <div
                                                                 className={`overflow-hidden 
                       }`}
@@ -432,7 +551,7 @@ function Test() {
                                                                                     Attempted Questions
                                                                                 </span>
                                                                                 <span className="font-semibold text-[15px] text-[#1D2939]">
-                                                                                    8/50
+                                                                          {sectionAttempts[section.id]?.attemptedDetails?.attemptedQuestions || "0/0"}
                                                                                 </span>
                                                                             </div>
 
@@ -444,7 +563,7 @@ function Test() {
                                                                                         Score
                                                                                     </span>
                                                                                     <span className="font-semibold text-[15px] text-[#1D2939]">
-                                                                                        32
+                                                                                    {sectionAttempts[section.id]?.attemptedDetails?.score || "0"}
                                                                                     </span>
                                                                                 </div>
                                                                             </div>
@@ -456,7 +575,7 @@ function Test() {
                                                                                         Accuracy
                                                                                     </span>
                                                                                     <span className="font-semibold text-[15px] text-[#1D2939]">
-                                                                                        80%
+                                                                                    {sectionAttempts[section.id]?.attemptedDetails?.accuracy || "0%"}
                                                                                     </span>
                                                                                 </div>
                                                                             </div>
@@ -468,7 +587,8 @@ function Test() {
                                                                                     Answered Correct
                                                                                 </span>
                                                                                 <span className="font-semibold text-[15px] text-[#1D2939]">
-                                                                                    8/80
+                                                                                {sectionAttempts[section.id]?.attemptedDetails?.answeredCorrect || "0/0"}
+
                                                                                 </span>
                                                                             </div>
 
@@ -480,7 +600,7 @@ function Test() {
                                                                                         Answered Incorrect
                                                                                     </span>
                                                                                     <span className="font-semibold text-[15px] text-[#1D2939]">
-                                                                                        0/8
+                                                                                {sectionAttempts[section.id]?.attemptedDetails?.answeredIncorrect || "0/0"}
                                                                                     </span>
                                                                                 </div>
                                                                             </div>
@@ -492,7 +612,7 @@ function Test() {
                                                                                         Time taken
                                                                                     </span>
                                                                                     <span className="font-semibold text-[15px] text-[#1D2939]">
-                                                                                        1h 30m out of 2h
+                                                                                    {formatTimeTaken(sectionAttempts[section.id]?.attemptedDetails?.timeTaken || "0")} out of {formatTimeLeft(section.testTime)}
                                                                                     </span>
                                                                                 </div>
                                                                             </div>
@@ -537,6 +657,7 @@ function Test() {
                                                                     </div>
                                                                 </div>
                                                             </div>
+                                                            )}
                                                         </Collapsible>
                                                     </div>
                                                 ) : (
