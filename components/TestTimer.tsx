@@ -23,7 +23,7 @@ const formatTime = (totalSeconds: number): string => {
 interface TimerProps {
     initialTime: string;
     onTimeEnd: () => void;
-    onTimeUpdate: (timeLeftInMinutes: number) => void; // New callback for time updates
+    onTimeUpdate: (timeLeftInSeconds: number) => void; // New callback for time updates
 }
 
 const Timer: React.FC<TimerProps> = ({ initialTime, onTimeEnd, onTimeUpdate }) => {
@@ -39,8 +39,8 @@ const Timer: React.FC<TimerProps> = ({ initialTime, onTimeEnd, onTimeUpdate }) =
                     onTimeEnd(); // Trigger handleSubmit when timer ends
                     return 0;
                 }
-                const timeLeftInMinutes = (prevTime - 1) / 60;
-                onTimeUpdate(timeLeftInMinutes); // Update parent with the current time in minutes
+                const totalTime = convertTimeToSeconds(initialTime);
+                onTimeUpdate(totalTime - (prevTime - 1)); // Update parent with completed time
                 return prevTime - 1;
             });
         }, 1000);
