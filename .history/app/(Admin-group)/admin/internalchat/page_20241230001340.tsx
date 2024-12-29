@@ -308,7 +308,7 @@ function InternalChat() {
                   }}                    >
                   <div className="flex flex-row items-center gap-2 p-[6px]">
                     <p className='text-medium'>{channel.channelEmoji}</p>
-                    <p className="text-[14px] text-left font-semibold text-[#4B5563]">{channel.channelName}</p>
+                    <p className="text-[14px] font-semibold text-[#4B5563]">{channel.channelName}</p>
                   </div>
                 </button>
               ))}
