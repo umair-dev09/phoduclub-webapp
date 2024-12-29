@@ -308,7 +308,7 @@ function InternalChat() {
                   }}                    >
                   <div className="flex flex-row items-center gap-2 p-[6px]">
                     <p className='text-medium'>{channel.channelEmoji}</p>
-                    <p className="text-[14px] text-left font-semibold text-[#4B5563]">{channel.channelName}</p>
+                    <p className="text-[14px] font-semibold text-[#4B5563]">{channel.channelName}</p>
                   </div>
                 </button>
               ))}
@@ -333,7 +333,7 @@ function InternalChat() {
               {/* Pass the selected channel info to ChatHead */}
               <div className="flex flex-row items-center gap-2 p-[6px] ml-3">
                 <p className='text-medium'>{selectedChannel.channelEmoji}</p>
-                <p className="text-[15px]  font-semibold text-[#4B5563]">{selectedChannel.channelName}</p>
+                <p className="text-[15px] text-left font-semibold text-[#4B5563]">{selectedChannel.channelName}</p>
               </div>
               <div className="flex flex-row mr-4 gap-4">
                 <Popover placement="bottom" isOpen={searchOpen} onClose={() => { setSearchOpen(false); setSearchQuery('') }}>

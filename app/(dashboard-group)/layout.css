@@ -1,113 +1,105 @@
 .body {
-    height: 100vh;
-    background-color: #131313;
-    display: flex;
-    flex-direction: row;
-    flex: 1;
-    overflow-y: auto;
+  height: 100vh;
+  background-color: #131313;
+  display: flex;
+  flex-direction: row;
+  flex: 1;
+  overflow-y: auto;
 }
 
 .contents {
-    padding: 10px;
+  padding: 10px;
 }
 
 .content-box {
-    display: flex;
-    flex-direction: column;
-    background: #f5f6fa;
-    border-radius: 5px;
-    color: #131313;
-    min-width: 480px;
-    min-height: 336px;
-    width: 100%;
-    margin: 10px;
+  display: flex;
+  flex-direction: column;
+  background: #f5f6fa;
+  border-radius: 5px;
+  color: #131313;
+  min-width: 480px;
+  min-height: 336px;
+  width: 100%;
+  margin: 10px;
 }
-
-
 
 #hi {
-    font-weight: bold;
+  font-weight: bold;
 }
-
-
 
 .dp {
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-
 .actual-dp:hover {
-    opacity: 0.5;
+  opacity: 0.5;
 }
 
 .name {
-    font-size: small;
-    font-weight: bold;
-    margin-bottom: -1px;
-    user-select: none;
+  font-size: small;
+  font-weight: bold;
+  margin-bottom: -1px;
+  user-select: none;
 }
 
 .email {
-    font-size: x-small;
-    color: #667085;
-    user-select: none;
-
+  font-size: x-small;
+  color: #667085;
+  user-select: none;
 }
 
-
-
 [data-collapse="true"] {
-    width: 60px;
-    transition: width 0.5s ease-in-out;
-    /* Smoother transition */
+  width: 60px;
+  transition: width 0.5s ease-in-out;
+  /* Smoother transition */
 }
 
 [data-collapse="false"] {
-    width: 220px;
-    transition: width 0.5s ease-in-out;
-    /* Smoother transition */
+  width: 220px;
+  transition: width 0.5s ease-in-out;
+  /* Smoother transition */
 }
 
 [data-collapse="true"] .phodu-logo {
-    display: none;
+  display: none;
 }
 
 [data-collapse="true"] .text-label {
-    opacity: 0;
-    pointer-events: none;
+  opacity: 0;
+  pointer-events: none;
 }
 
 [data-collapse="true"] .sidebar-icon {
-    transform: rotate(180deg);
-    margin-right: -15px;
-    padding-left: -1px;
-    padding-right: 1px;
-    padding-top: -3px;
-    padding-bottom: 3px;
+  transform: rotate(180deg);
+  margin-right: -15px;
+  padding-left: -1px;
+  padding-right: 1px;
+  padding-top: -3px;
+  padding-bottom: 3px;
 }
 
 [data-collapse="false"] .phodu-logo {
-    display: block;
+  display: block;
 }
 
 [data-collapse="true"] .phodu-icon {
-    display: block;
-    margin-left: 5px;
+  display: block;
+  margin-left: 5px;
 }
 
 [data-collapse="true"] .divider {
-    margin-top: -4px;
+  margin-top: -4px;
 }
 
 [data-collapse="false"] .phodu-icon {
-    display: none;
+  display: none;
 }
 
 .variable-contents {
-    display: flex;
-    flex: 1;
-    border-radius: 0px 0px 5px 5px;
-    overflow: hidden;
+  display: flex;
+  flex: 1;
+  border-radius: 0px 0px 5px 5px;
+  overflow: hidden;
 }

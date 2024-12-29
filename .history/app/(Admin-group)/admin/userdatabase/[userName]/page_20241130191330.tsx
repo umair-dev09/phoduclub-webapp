@@ -4,7 +4,7 @@ import UserDetails from "@/components/AdminComponents/UserDatabaseMangement/User
 import Products from "@/components/AdminComponents/UserDatabaseMangement/Products";
 import Community from "@/components/AdminComponents/UserDatabaseMangement/Community";
 import SupportAndFeedBack from "@/components/AdminComponents/UserDatabaseMangement/Support&FeedBack";
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useRouter,useSearchParams } from 'next/navigation';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -18,7 +18,7 @@ function UserInfo() {
     const renderComponent = () => {
         switch (activeComponent) {
             case "PersonalDetails":
-                return <UserDetails userId={userId || ''} />;
+                return <UserDetails userId={userId || ''}/>;
             case "Products":
                 return <Products />;
             case "Community":
@@ -26,7 +26,7 @@ function UserInfo() {
             case "Support":
                 return <SupportAndFeedBack />;
             default:
-                return <UserDetails userId={userId || ''} />;
+                return <UserDetails userId={userId || ''}/>;
         }
     };
 
@@ -59,7 +59,7 @@ function UserInfo() {
                         } text-base`}>Community</span>
                 </button>
                 <button
-                    className={`h-auto hover:bg-[#F5F0FF] text-left ${activeComponent === "Support" ? "bg-[#F5F0FF] border border-solid border-[#DDCDFF]" : ""
+                    className={`h-12 hover:bg-[#F5F0FF] text-left ${activeComponent === "Support" ? "bg-[#F5F0FF] border border-solid border-[#DDCDFF]" : ""
                         } rounded-md px-4 py-2`}
                     onClick={() => setActiveComponent("Support")}
                 >
