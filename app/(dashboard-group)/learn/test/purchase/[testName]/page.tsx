@@ -212,7 +212,7 @@ useEffect(() => {
           const [breadcrumbs, setBreadcrumbs] = useState<{ id: string; name: string }[]>([]);
         // ----------------------------------------------------------------------------------------
         useEffect(() => {
-            if (!testId) return;
+            if (!testId) return; 
           
             // Fetch sections and subsections in real-time
             const fetchSections = async (): Promise<() => void> => {
