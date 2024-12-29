@@ -56,8 +56,8 @@ function AddNewUser({
     setProfilePic,
     phone,
     setPhone,
-    // selectedRole,
-    // setSelectedRole
+    selectedRole,
+    setSelectedRole,
 }: AddNewUserProps) {
     const [loading, setLoading] = useState(false); // Loading state
     const [roleDialogOpen, setRoleDialogOpen] = useState(false); // Loading state
@@ -70,16 +70,16 @@ function AddNewUser({
         );
     }
 
-    // const ROLE_OPTIONS = ["Admin", "Teacher", "Customer Care", "Editor", "Chief Moderator"];
+    const ROLE_OPTIONS = ["Admin", "Teacher", "Customer Care", "Editor", "Chief Moderator"];
 
-    // const handleRoleSelect = (role: string) => {
-    //     setSelectedRole(role);
-    //     setRoleDialogOpen(false);
-    // };
+    const handleRoleSelect = (role: string) => {
+        setSelectedRole(role);
+        setRoleDialogOpen(false);
+    };
 
-    // // Check if all required fields are filled
-    // const isFormValid = firstName && lastName && userId && phone && selectedRole;
-    const isFormValid = firstName && lastName && userId && phone;
+    // Check if all required fields are filled
+    const isFormValid = firstName && lastName && userId && phone && selectedRole;
+    // const isFormValid = firstName && lastName && userId && phone;
 
     const handleAddUser = async () => {
         if (!isFormValid || loading) return; // Prevent submission if fields are empty or loading
@@ -134,7 +134,6 @@ function AddNewUser({
         { value: 'Editor', label: 'Editor' },
         { value: 'Chief Moderator', label: 'Chief Moderator' },
     ];
-    const [selectedRole, setSelectedRole] = useState<SingleValue<Option>>(null);
 
     return (
         <Dialog open={open} onClose={close} className="relative z-50">
@@ -212,7 +211,7 @@ function AddNewUser({
                             />
                         </div>
 
-                        {/* <div className="flex flex-col gap-1 w-full">
+                        <div className="flex flex-col gap-1 w-full">
                             <label className="text-[#1D2939] text-sm font-medium">Role</label>
                             <div className="flex flex-row py-2 px-4 w-full gap-2 border border-gray-300  h-10 focus:outline focus:outline-[1.5px] focus:outline-[#D6BBFB] hover:outline hover:outline-[1.5px] hover:outline-[#D6BBFB] rounded-md transition duration-200 ease-in-out justify-between" onClick={() => setRoleDialogOpen(true)}>
                                 <span className="font-normal text-sm text-[#182230]">{selectedRole || "Select Role"}</span>
@@ -237,9 +236,9 @@ function AddNewUser({
                                     </PopoverContent>
                                 </Popover>
                             </div>
-                        </div> */}
+                        </div>
 
-                        <div className='w-full'>
+                        {/* <div className='w-full'>
                             <label htmlFor="role" className='mb-2 font-medium text-sm'>Role</label>
                             <Select
                                 id="role"
@@ -271,7 +270,7 @@ function AddNewUser({
                                     }),
                                 }}
                             />
-                        </div>
+                        </div> */}
 
                         <div className="flex flex-row justify-end my-2 items-center gap-4 border-t border-solid border-[#EAECF0] pt-4">
                             <button onClick={close} className="py-[0.625rem] px-6 border-[1.5px] border-lightGrey rounded-md text-[#1D2939] font-semibold hover:bg-[#F2F4F7] text-sm">Cancel</button>

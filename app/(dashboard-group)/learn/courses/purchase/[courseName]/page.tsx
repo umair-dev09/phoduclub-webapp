@@ -8,6 +8,8 @@ import { db, auth } from "@/firebase"; // Adjust the path based on your project 
 import LoadingData from '@/components/Loading';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import CashfreeCheckout from '@/components/CashfreeCheckout';
+
  type Sections = {
     sectionName: string;
     sectionId: string;
@@ -26,7 +28,7 @@ type Content = {
     lessonScheduleDate: string;
     pdfLink: string;
     videoLink: string;
-    marksPerQuestion: string;
+    marksPerQuestion: string; 
     nMarksPerQuestion: string;
     quizTime: string;
     videoDuration: number;
@@ -38,12 +40,19 @@ type CourseData = {
     courseDescription: string | null;
     courseImage: string | null;
     price: string | null;
-    discountPrice: string | null;
+    discountPrice: number;
     rating: string | null;
     noOfRating: string | null;
     status: string | null;
     StudentsPurchased: string[];
 }; 
+type UserData = {
+    uniqueId: string;
+    name: string;
+    email: string;
+    phone: string;
+
+}
 
 const StarIcon: React.FC<{ filled: boolean; isHalf: boolean }> = ({ filled, isHalf }) => (
     <Image
@@ -90,7 +99,29 @@ export default function CoursePurchasePage() {
       const [loading, setLoading] = useState(true); // Track loading state 
       const [sections, setSections] = useState<Sections[]>([]);
       const [courseAlreadyPurchased, setCourseAlreadyPurchased] = useState(false);
+      const [userData, setUserData] = useState<UserData | null>(null);
 
+      useEffect(() => {
+        const fetchUserData = async () => {
+          if (auth.currentUser?.uid) {
+        const userId = auth.currentUser.uid;
+        try {
+          const userDocRef = doc(db, "users", userId);
+          const userSnapshot = await getDoc(userDocRef);
+          if (userSnapshot.exists()) {
+            const userData = userSnapshot.data() as UserData;
+            setUserData(userData);
+          } else {
+            console.error("No user found with the given ID.");
+          }
+        } catch (error) {
+          console.error("Error fetching user data:", error);
+        }
+          }
+        };
+      
+        fetchUserData();
+      }, []);
     // Fetch course data from Firestore
     useEffect(() => {
         if (courseId) {
@@ -116,19 +147,26 @@ export default function CoursePurchasePage() {
     }, [courseId]);
 
     useEffect(() => {
-        if (courseData?.StudentsPurchased && auth.currentUser?.uid) {
-          const currentUserId = auth.currentUser.uid;
-      
-          // Check if currentUserId exists in StudentsPurchased array
-          const isPurchased = courseData.StudentsPurchased.includes(currentUserId);
-      
-          if (isPurchased) {
-            setCourseAlreadyPurchased(true);
-          } else {
-            setCourseAlreadyPurchased(false);
+      if (courseId && auth.currentUser?.uid) {
+        const currentUserId = auth.currentUser.uid;
+        const purchasedRef = doc(db, "course", courseId, "StudentsPurchased", currentUserId);
+
+        const checkIfPurchased = async () => {
+          try {
+            const purchasedSnapshot = await getDoc(purchasedRef);
+            if (purchasedSnapshot.exists()) {
+              setCourseAlreadyPurchased(true);
+            } else {
+              setCourseAlreadyPurchased(false);
+            }
+          } catch (error) {
+            console.error("Error checking purchase status:", error);
           }
-        }
-      }, [courseData, auth.currentUser]);
+        };
+
+        checkIfPurchased();
+      }
+    }, [courseId, auth.currentUser]);
 
     // Fetch content data from Firestore
     useEffect(() => {
@@ -222,49 +260,8 @@ export default function CoursePurchasePage() {
         }
     };
     
-    const handlePurchaseCourse = async () => {
-        if (courseId && auth.currentUser?.uid) {
-          try {
-            const currentUserId = auth.currentUser.uid;
-      
-            // Reference to the main course document
-            const courseRef = doc(db, 'course', courseId);
-      
-            // Reference to the StudentsPurchased subcollection
-            const studentsPurchasedRef = doc(
-              db,
-              'course',
-              courseId,
-              'StudentsPurchased',
-              currentUserId
-            );
-      
-            // Add userId to StudentsPurchased array in the course document
-            await updateDoc(courseRef, {
-              StudentsPurchased: arrayUnion(currentUserId), // Add currentUserId to the array
-            });
-      
-            // Add document to the StudentsPurchased subcollection
-            const enrollmentData = {
-              userId: currentUserId,
-              enrollmentType: 'paid',
-              enrollmentDate: new Date().toISOString(), // Current date and time
-            };
-            await setDoc(studentsPurchasedRef, enrollmentData);
-      
-            toast.success('Course purchased successfully!');
-            router.replace('/learn/courses')
-          } catch (error) {
-            console.error('Error updating course document:', error);
-            toast.error('Failed to purchase course');
-          }
-        } else {
-          toast.error('Invalid course or user');
-        }
-      };
-      
       const handleGoToCourse = () => {
-          alert('Yes');
+          alert('.');
       };
       
 
@@ -330,7 +327,7 @@ export default function CoursePurchasePage() {
               <div className="flex items-center justify-between h-full">
                 <div className="flex items-center ml-7 mb-7 mt-7 space-x-3">
                 <div className="text-[#1D2939] text-2xl font-bold">
-                        ₹{courseData?.discountPrice && new Intl.NumberFormat('en-IN').format(parseFloat(courseData.discountPrice))}
+                        ₹{courseData?.discountPrice && new Intl.NumberFormat('en-IN').format(parseFloat(courseData.discountPrice.toString()))}
                         </div>
                         <div className="text-[#667085] text-base font-normal line-through">
                         ₹{courseData?.price && new Intl.NumberFormat('en-IN').format(parseFloat(courseData.price))}
@@ -338,7 +335,7 @@ export default function CoursePurchasePage() {
                         {courseData?.price && courseData?.discountPrice && (
                             <div className="bg-[#DB6704] w-[76px] h-[25px] flex items-center justify-center rounded-full text-white text-xs font-semibold">
                                 {`${Math.round(
-                                    ((parseFloat(courseData.price) - parseFloat(courseData.discountPrice)) /
+                                    ((parseFloat(courseData.price) - parseFloat(courseData.discountPrice.toString())) /
                                         parseFloat(courseData.price)) *
                                         100
                                 )}% off`}
@@ -348,7 +345,8 @@ export default function CoursePurchasePage() {
   
   
                 <div className="m-7">
-                  <button
+                  {courseAlreadyPurchased ? (
+                    <button
                     className="text-white text-sm font-semibold py-3 px-6 rounded-md shadow-inner-button"
                     style={{
                       width: "182px",
@@ -357,11 +355,25 @@ export default function CoursePurchasePage() {
                       borderWidth: "1px 0 0 0",
                       borderColor: "#9012FF",
                     }}
-                    onClick={ courseAlreadyPurchased ? 
-                        handleGoToCourse  : handlePurchaseCourse}
+                    // onClick={ courseAlreadyPurchased ? 
+                    //     handleGoToCourse  : handlePurchaseCourse}
+                    onClick={handleGoToCourse}
                   >
                     {courseAlreadyPurchased ? 'Go to Course' : 'Buy Course'}
                   </button>
+                  ) : (
+                     <CashfreeCheckout 
+                      amount={courseData?.discountPrice || 0}
+                      customerName={userData?.name || ''}
+                      customerEmail={userData?.email || ''}
+                      customerId={userData?.uniqueId || ''}
+                      customerPhone={userData?.phone || ''}
+                      productType='course'
+                      productId={courseId || ''}
+                      userId={userData?.uniqueId || ''}
+                      />
+                  )}
+              
                 </div>
               </div>
             </div>

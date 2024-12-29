@@ -10,7 +10,7 @@ interface DashboardGroupProps {
 
 export default function DashboardGroup({ children }: DashboardGroupProps) {
     return (
-        <div className=" bg-[#131313] flex flex-row h-screen ">
+        <div className=" bg-[#131313] flex flex-row w-screen h-screen ">
             <div>
                 <TabComps />
             </div>
@@ -20,9 +20,9 @@ export default function DashboardGroup({ children }: DashboardGroupProps) {
                         <Header />
                     </div>
                     <div className="variable-contents">
-                    <ClientWrapper>
-                        {children}
-                    </ClientWrapper>
+                        <ClientWrapper>
+                            {children}
+                        </ClientWrapper>
                     </div>
                 </div>
             </div>

@@ -10,51 +10,51 @@ import { onAuthStateChanged } from "firebase/auth";
 import LoadingData from "@/components/Loading";
 import { auth, db } from "@/firebase";
 import router from "next/router";
-import Image from "next/image"
+import Image from "next/image";
 import { collection, onSnapshot, orderBy, query } from 'firebase/firestore';
+import { Dialog, DialogBackdrop, DialogPanel } from "@headlessui/react";
+import { Modal, ModalContent, ModalBody } from "@nextui-org/modal";
 
 interface NotificationData {
-    name:string;
-    cta: string;
-    notificationIcon: string;
-    notificationId: string;
-    description: string;
-   }
+     name: string;
+     cta: string;
+     notificationIcon: string;
+     notificationId: string;
+     description: string;
+}
 
 export default function DashboardPage() {
 
      const router = useRouter();
      const [loading, setLoading] = useState(true);
      const [showNoti, setShowNoti] = useState(true);
+     const [notification, setNotification] = useState<NotificationData[]>([]);
 
-     
-    const [notification, setNotification] = useState<NotificationData[]>([]);
-    useEffect(() => {
-        
+     useEffect(() => {
           const fetchNotification = async () => {
-            try {
-              const discussionRef = collection(
-                db,
-                `notifications`
-              );
-              const discussionQuery = query(discussionRef, orderBy("createdAt", "desc")); // Order by timestamp
-      
-              const unsubscribe = onSnapshot(discussionQuery, (snapshot) => {
-                const discussionData: NotificationData[] = snapshot.docs.map((doc) => ({
-                  ...doc.data(),
-                })) as NotificationData[];
-                setNotification(discussionData); // Update state with the retrieved data
-                setLoading(false);
-              });
-      
-              return () => unsubscribe();
-            } catch (error) {
-              console.error("Error fetching chats: ", error);
-            }
+               try {
+                    const discussionRef = collection(
+                         db,
+                         `notifications`
+                    );
+                    const discussionQuery = query(discussionRef, orderBy("createdAt", "desc")); // Order by timestamp
+
+                    const unsubscribe = onSnapshot(discussionQuery, (snapshot) => {
+                         const discussionData: NotificationData[] = snapshot.docs.map((doc) => ({
+                              ...doc.data(),
+                         })) as NotificationData[];
+                         setNotification(discussionData); // Update state with the retrieved data
+                         setLoading(false);
+                    });
+
+                    return () => unsubscribe();
+               } catch (error) {
+                    console.error("Error fetching chats: ", error);
+               }
           };
-      
+
           fetchNotification();
-      }, []);
+     }, []);
 
      onAuthStateChanged(auth, (user) => {
           if (!user) {
@@ -72,72 +72,104 @@ export default function DashboardPage() {
      }
 
      return (
-          <div className='flex flex-col mb-6 w-full h-auto'>
-          {showNoti &&(
-         <div className='flex flex-row bg-[#FEDAAA] h-auto w-full py-3 px-4 items-center justify-between'>
-          {notification.length > 0 && (
-         <div key={notification[0].notificationId} className='flex flex-row flex-1 items-center justify-center'>
-         <Image className='w-5 h-5 mr-[6px]' src={notification[0]?.notificationIcon} width={24} height={24} alt='icon'/>
-         <h3 className='text-sm font-bold'>{notification[0]?.name}: </h3>
-         <h3 className='text-sm font-normal ml-1'>{notification[0]?.description}</h3>
-         <button className='ml-3 h-[36px] w-auto px-3 text-[13px] font-semibold border bg-white border-[#cccccc] rounded-md'>{notification[0]?.cta}</button>
-         </div>
-         )}
-         <button onClick={() => setShowNoti(false)}><Image className='w-5 h-5 mr-[6px] ' src='/icons/cancel.svg' width={24} height={24} alt='icon'/></button>
-    
-         </div>
-          )}
-          <div className=" flex flex-col  flex-1 h-auto overflow-y-auto  px-6 py-6">
-              
-               <div className="flex flex-row w-full gap-4">
-                    <div className="flex flex-col flex-1 bg-white  rounded-lg h-[327px] w-1/2 ">
-                         <div className="flex flex-row justify-between pt-6 px-6 w-full text-[#1D2939] text-lg font-bold">
-                              <h3 className='text-[#1D2939] font-bold text-lg'>Subject Progress Tracker</h3>
+          <div className='relative flex flex-col w-full h-auto'>
+               {/* {showNoti && (
+                    <div className='flex flex-row bg-[#FEDAAA] h-auto w-full py-3 px-4 items-center justify-between'>
+                         {notification.length > 0 && (
+                              <div key={notification[0].notificationId} className='flex flex-row flex-1 items-center justify-center'>
+                                   <Image className='w-5 h-5 mr-[6px]' src={notification[0]?.notificationIcon} width={24} height={24} alt='icon' />
+                                   <h3 className='text-sm font-bold'>{notification[0]?.name}: </h3>
+                                   <h3 className='text-sm font-normal ml-1'>{notification[0]?.description}</h3>
+                                   <button className='ml-3 h-[36px] w-auto px-3 text-[13px] font-semibold border bg-white border-[#cccccc] rounded-md'>{notification[0]?.cta}</button>
+                              </div>
+                         )}
+                         <button onClick={() => setShowNoti(false)}><Image className='w-5 h-5 mr-[6px] ' src='/icons/cancel.svg' width={24} height={24} alt='icon' /></button>
+
+                    </div>
+               )} */}
+               <div className=" flex flex-col  flex-1 h-auto overflow-y-auto  px-6 py-6">
+
+                    <div className="flex flex-row w-full gap-4">
+                         <div className="flex flex-col flex-1 bg-white  rounded-lg h-[327px] w-1/2 ">
+                              <div className="flex flex-row justify-between pt-6 px-6 w-full text-[#1D2939] text-lg font-bold">
+                                   <h3 className='text-[#1D2939] font-bold text-lg'>Subject Progress Tracker</h3>
+                              </div>
+                              <div className="flex flex-1">
+                                   <Subject />
+                              </div>
                          </div>
-                         <div className="flex flex-1">
-                              <Subject />
+                         <div className="flex flex-col flex-1 bg-white pb-4 rounded-lg  h-[327px] w-1/2 ">
+                              <div className="flex flex-row justify-between pt-6 px-6 w-full text-[#1D2939] text-lg font-bold">
+                                   <h3 className='text-[#1D2939] font-bold text-lg'>Announcements</h3>
+                              </div>
+                              <div className='h-full overflow-y-auto'>
+                                   <Announcement />
+                              </div>
                          </div>
                     </div>
-                    <div className="flex flex-col flex-1 bg-white pb-4 rounded-lg  h-[327px] w-1/2 ">
-                         <div className="flex flex-row justify-between pt-6 px-6 w-full text-[#1D2939] text-lg font-bold">
-                              <h3 className='text-[#1D2939] font-bold text-lg'>Announcements</h3>
+                    <div className="flex flex-row   w-full mt-4 gap-4  ">
+                         <div className="flex flex-col flex-1 bg-white  rounded-lg  h-[737px] w-1/2 ">
+                              <div className="flex justify-between items-center pt-6 px-6 w-full text-[#1D2939] text-lg font-bold">
+                                   <h3 className="font-bold text-lg">Test Series</h3>
+                                   <button
+                                        className="text-sm font-semibold text-[#7400E0] hover:bg-[#F5F0FF] hover:rounded-full px-3 py-1 transition duration-200 ease-in-out"
+                                        onClick={() => router.replace('learn/test')}>
+                                        View all
+                                   </button>
+                              </div>
+
+                              <div className="flex justify-center flex-1 overflow-y-auto rounded-b-lg">
+                                   <TestSeries />
+                              </div>
                          </div>
-                         <div className='h-full overflow-y-auto'>
-                              <Announcement />
+                         <div className="flex flex-col flex-1 bg-white rounded-lg  h-[737px] w-1/2">
+                              <div className="flex justify-between items-center pt-6 px-6 w-full text-[#1D2939] text-lg font-bold">
+                                   <h3 className="font-bold text-lg">Courses</h3>
+                                   <button
+                                        className="text-sm font-semibold text-[#7400E0] hover:bg-[#F5F0FF] hover:rounded-full px-3 py-1 transition duration-200 ease-in-out"
+                                        onClick={() => router.replace('learn/courses')}>
+                                        View all
+                                   </button>
+                              </div>
+
+                              <div className="flex justify-center flex-1 overflow-y-auto rounded-b-lg">
+                                   <Course />
+                              </div>
                          </div>
                     </div>
                </div>
-               <div className="flex flex-row   w-full mt-4 gap-4  ">
-                    <div className="flex flex-col flex-1 bg-white  rounded-lg  h-[737px] w-1/2 ">
-                         <div className="flex justify-between items-center pt-6 px-6 w-full text-[#1D2939] text-lg font-bold">
-                              <h3 className="font-bold text-lg">Test Series</h3>
-                              <button
-                                   className="text-sm font-semibold text-[#7400E0] hover:bg-[#F5F0FF] hover:rounded-full px-3 py-1 transition duration-200 ease-in-out"
-                                   onClick={() => router.replace('learn/test')}>
-                                   View all
-                              </button>
-                         </div>
 
-                         <div className="flex justify-center flex-1 overflow-y-auto rounded-b-lg">
-                              <TestSeries />
-                         </div>
-                    </div>
-                    <div className="flex flex-col flex-1 bg-white rounded-lg  h-[737px] w-1/2">
-                         <div className="flex justify-between items-center pt-6 px-6 w-full text-[#1D2939] text-lg font-bold">
-                              <h3 className="font-bold text-lg">Courses</h3>
-                              <button
-                                   className="text-sm font-semibold text-[#7400E0] hover:bg-[#F5F0FF] hover:rounded-full px-3 py-1 transition duration-200 ease-in-out"
-                                   onClick={() => router.replace('learn/courses')}>
-                                   View all
-                              </button>
-                         </div>
-
-                         <div className="flex justify-center flex-1 overflow-y-auto rounded-b-lg">
-                              <Course />
+               {/* Contained Modal */}
+               <div className="absolute inset-0 flex items-center justify-center bg-black/30 backdrop-blur-xl">
+                    <div className="bg-white rounded-2xl w-[37.5rem] p-6">
+                         <div className="flex flex-col">
+                              <div className="flex justify-center mb-4">
+                                   <Image src="/images/physicDailogImg.svg" alt="cool image" width={120} height={120} />
+                              </div>
+                              <div className="text-center mb-6">
+                                   <h2 className="text-xl font-bold">Launching Soon!!!!!!!!</h2>
+                              </div>
+                              <div className="grid grid-cols-2 gap-6 text-base font-medium text-[#1D2939]">
+                                   <div className="flex items-start gap-2">
+                                        <Image src="/icons/checkmark-circle-02.svg" alt="tick circle" width={24} height={24} />
+                                        <p>Track progress, scores, and deadlines for test series.</p>
+                                   </div>
+                                   <div className="flex items-start gap-2">
+                                        <Image src="/icons/checkmark-circle-02.svg" alt="tick circle" width={24} height={24} />
+                                        <p>Get tailored test series suggestions for exams.</p>
+                                   </div>
+                                   <div className="flex items-start gap-2">
+                                        <Image src="/icons/checkmark-circle-02.svg" alt="tick circle" width={24} height={24} />
+                                        <p>View subject-wise progress with visual stats.</p>
+                                   </div>
+                                   <div className="flex items-start gap-2">
+                                        <Image src="/icons/checkmark-circle-02.svg" alt="tick circle" width={24} height={24} />
+                                        <p>Summarized course performance with progress bars.</p>
+                                   </div>
+                              </div>
                          </div>
                     </div>
                </div>
-          </div>
           </div>
      );
 }

@@ -37,6 +37,7 @@
     "@videojs/themes": "^1.0.1",
     "antd": "^5.21.1",
     "autoprefixer": "^10.4.20",
+    "axios": "^1.7.9",
     "buffer": "^6.0.3",
     "chart.js": "^4.4.4",
     "class-variance-authority": "^0.7.0",
@@ -110,7 +111,8 @@
     "typescript": "5.3.3",
     "url": "^0.11.4",
     "video.js": "^8.21.0",
-    "videojs-http-source-selector": "^1.1.6"
+    "videojs-http-source-selector": "^1.1.6",
+    "xlsx": "^0.18.5"
   },
   "devDependencies": {
     "@types/dompurify": "^3.0.5",
@@ -122,6 +124,7 @@
     "@types/react-mentions": "^4.4.1",
     "@types/react-scroll": "^1.8.10",
     "@types/video.js": "^7.3.58",
+    "@types/xlsx": "^0.0.35",
     "encoding": "^0.1.13",
     "eslint": "^9.17.0",
     "eslint-config-next": "^15.1.0",

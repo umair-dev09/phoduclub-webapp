@@ -25,9 +25,11 @@ type TestSeriesInfoProps = {
     setRating: (rating: string) => void;
     noOfRating: string;
     setNoOfRating: (noOfRating: string) => void;
+    isInCourse: boolean;
+    setIsInCourse: (isInCourse: boolean) => void;
 }
 
-function TestSeriesInfo({ name, setName, description, setDescription, imageUrl, setImageUrl, price, setPrice, discountPrice, setDiscountPrice, rating, setRating, noOfRating, setNoOfRating }: TestSeriesInfoProps) {
+function TestSeriesInfo({ name, setName, isInCourse, setIsInCourse, description, setDescription, imageUrl, setImageUrl, price, setPrice, discountPrice, setDiscountPrice, rating, setRating, noOfRating, setNoOfRating }: TestSeriesInfoProps) {
 
     // State to manage each dialog's for Upload Image
     // -------------------------------------------------------------------------------------------------------------------------------
@@ -40,7 +42,6 @@ function TestSeriesInfo({ name, setName, description, setDescription, imageUrl, 
     const handleChange = (content: string) => {
         setDescription(content);
         checkTextContent(content);
-
     };
 
     const checkTextContent = (content: string) => {
@@ -365,14 +366,20 @@ function TestSeriesInfo({ name, setName, description, setDescription, imageUrl, 
                 </div>
             </div>
 
-            <Checkbox className="mt-3 ml-1 font-medium text-sm" defaultSelected>Include with course</Checkbox>
-
+            <Checkbox 
+                className="mt-3 ml-1 font-medium text-sm" 
+                isSelected={isInCourse} 
+                onChange={(e) => setIsInCourse(e.target.checked)}
+            >
+                Include with course
+            </Checkbox>
+            {isInCourse ? (
             <div className="mt-4 h-auto rounded-xl border border-solid border-[#EAECF0] bg-[#FFFFFF] flex flex-col p-5 gap-3">
-                <h3>Select product (Optional)</h3>
+            <h3>Select product (Optional)</h3>
 
             </div>
-
-            <div className="mt-4 h-auto rounded-xl border border-solid border-[#EAECF0] bg-[#FFFFFF] flex flex-col p-5 gap-3">
+            ) : (
+                <div className="mt-4 h-auto rounded-xl border border-solid border-[#EAECF0] bg-[#FFFFFF] flex flex-col p-5 gap-3">
                 <h3>Price</h3>
 
                 <div className="flex flex-row w-full gap-4 mb-1">
@@ -409,6 +416,8 @@ function TestSeriesInfo({ name, setName, description, setDescription, imageUrl, 
                 </div>
             </div>
 
+            )}           
+            
             <div className="mt-4 h-auto rounded-xl border border-solid border-[#EAECF0] bg-[#FFFFFF] flex flex-col p-5 gap-3 mb-4">
                 <h3>Ratings</h3>
                 {/* Ratings of Courses */}

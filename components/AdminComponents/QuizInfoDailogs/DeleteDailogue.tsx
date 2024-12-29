@@ -64,7 +64,7 @@ function DeleteDialog({ open, onClose, fromContent, contentId, contentName }: De
                                                                         ? "Quiz"
                                                                         : fromContent === "course"
                                                                         ? "Course"
-                                                                        : ""} "{contentName}"?
+                                                                        : ""} &quot;{contentName}&quot;?
                             </h1>
                             <button
                                 className="w-[32px] h-[32px] rounded-full flex items-center justify-center transition-all duration-300 ease-in-out hover:bg-[#F2F4F7]"

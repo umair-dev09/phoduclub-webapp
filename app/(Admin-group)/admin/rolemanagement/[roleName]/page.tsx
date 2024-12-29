@@ -265,7 +265,7 @@ function UsersRoleName() {
           <div className='h-[72px] flex flex-row justify-between'>
             <div className='flex flex-row gap-2'>
               <Image className='rounded-full'
-                src={data?.profilePic || ''}
+                src={data?.profilePic ||  '/defaultAdminDP.jpg'} 
                 width={72}
                 height={72}
                 alt="profile-pic" />

@@ -17,10 +17,8 @@ export default function MyPurchase() {
                 </div>
             </div>
             {/* Divider */}
-            <div className="mx-[25px] ">
-                <hr className="border-[1px] border-solid border-[#EAECF0]" />
-            </div>
-            <div className="h-full  py-8">
+            <hr className="border-[1px] mx-[25px] border-solid border-[#EAECF0]" />
+            <div className="h-full py-8 overflow-auto">
                 <Purchase />
             </div>
         </div>

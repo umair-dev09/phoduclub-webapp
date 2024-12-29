@@ -10,41 +10,41 @@ interface EndDialogProps {
     onClose: () => void; // Define onClose as a function
     fromContent: string;
     contentId: string;
-} 
+}
 
-function EndDialog({fromContent, contentId, onClose }: EndDialogProps) { // Use the interface
+function EndDialog({ fromContent, contentId, onClose }: EndDialogProps) { // Use the interface
     const onEnd = async () => {
-    
+
         // Determine the Firestore collection based on `fromContent`
         const collectionPath =
-          fromContent === "testseries"
-            ? "testseries"
-            : fromContent === "quiz"
-            ? "quiz"
-            : fromContent === "course"
-            ? "course"
-            : null;
-    
+            fromContent === "testseries"
+                ? "testseries"
+                : fromContent === "quiz"
+                    ? "quiz"
+                    : fromContent === "course"
+                        ? "course"
+                        : null;
+
         if (!collectionPath) {
-          console.error("Invalid `fromContent` value.");
-          return;
+            console.error("Invalid `fromContent` value.");
+            return;
         }
-    
+
         try {
-          // Reference to the Firestore document
-          const docRef = doc(db, collectionPath, contentId);
- 
-          // Update Firestore document with startDate and endDate
-          await updateDoc(docRef, {
-            status: 'finished', 
-        });
-          toast.success('Success!'); 
-          console.log("Schedule updated successfully!");
-          onClose(); // Close the dialog after a successful update
+            // Reference to the Firestore document
+            const docRef = doc(db, collectionPath, contentId);
+
+            // Update Firestore document with startDate and endDate
+            await updateDoc(docRef, {
+                status: 'finished',
+            });
+            toast.success('Success!');
+            console.log("Schedule updated successfully!");
+            onClose(); // Close the dialog after a successful update
         } catch (error) {
-          console.error("Error updating Firestore document:", error);
+            console.error("Error updating Firestore document:", error);
         }
-      };
+    };
     return (
         <Dialog open={true} onClose={onClose} className="relative z-50">
             <DialogBackdrop className="fixed inset-0 bg-black/30 " />
@@ -53,12 +53,12 @@ function EndDialog({fromContent, contentId, onClose }: EndDialogProps) { // Use 
                     <div className="flex flex-col gap-2 p-6">
                         <div className="flex flex-row justify-between items-center ">
                             <h3 className=" font-bold task-[#1D2939]">End {fromContent === "testseries"
-                                                                        ? "Testseries"
-                                                                        : fromContent === "quiz"
-                                                                        ? "Quiz"
-                                                                        : fromContent === "course"
-                                                                        ? "Course"
-                                                                        : ""}?</h3>
+                                ? "Testseries"
+                                : fromContent === "quiz"
+                                    ? "Quiz"
+                                    : fromContent === "course"
+                                        ? "Course"
+                                        : ""}?</h3>
                             <button className="w-[32px] h-[32px]  rounded-full flex items-center justify-center transition-all duration-300 ease-in-out hover:bg-[#F2F4F7] ">
                                 <button className="" onClick={onClose}>
                                     <Image src="/icons/cancel.svg" alt="Cancel" width={20} height={20} />
@@ -72,7 +72,6 @@ function EndDialog({fromContent, contentId, onClose }: EndDialogProps) { // Use 
                         <button className="py-[0.625rem] px-6 border-[1.5px] border-lightGrey rounded-md font-semibold text-sm hover:bg-[#F2F4F7] " onClick={onClose}>Cancel</button>
                         <button onClick={onEnd} className="py-[0.625rem] px-6 text-white shadow-inner-button bg-[#BB241A] font-semibold text-sm border border-[#DE3024] rounded-md">End</button>
                     </div>
-
                 </DialogPanel>
             </div>
         </Dialog>
