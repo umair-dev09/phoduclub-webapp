@@ -4,7 +4,7 @@ import React from "react";
 function GeneralChat() {
     return (
         <div className="flex flex-1">
-            {/* <BeforeChatComp /> */}
+            <BeforeChatComp />
         </div>
     );
 }

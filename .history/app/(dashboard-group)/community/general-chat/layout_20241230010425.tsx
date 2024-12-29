@@ -30,16 +30,31 @@ function GeneralChatLayout({ children }: GeneralChatLayoutProps) {
         <div className="flex flex-row h-full">
             <div className=" flex flex-row items-center justify-center h-full w-full">
 
-                <div className=" rounded-2xl w-[37.5rem] p-6">
-                    <div className="flex flex-col ">
-                        <div className="flex justify-center ">
+                <div className="bg-white rounded-2xl w-[37.5rem] p-6 border border-solid border-lightgrey">
+                    <div className="flex flex-col">
+                        <div className="flex justify-center mb-4">
                             <Image src="/images/physicDailogImg.svg" alt="cool image" width={120} height={120} />
                         </div>
-                        <div className="text-center mb-4">
+                        <div className="text-center mb-6">
                             <h2 className="text-xl font-bold">Launching Soon!!!!!!!!</h2>
                         </div>
-                        <div className="text-center ">
-                            <h2 className="text-lg font-semibold">Personal Messages</h2>
+                        <div className="grid grid-cols-2 gap-6 text-base font-medium text-[#1D2939]">
+                            <div className="flex items-start gap-2">
+                                <Image src="/icons/checkmark-circle-02.svg" alt="tick circle" width={24} height={24} />
+                                <p>Detailed Analytics</p>
+                            </div>
+                            <div className="flex items-start gap-2">
+                                <Image src="/icons/checkmark-circle-02.svg" alt="tick circle" width={24} height={24} />
+                                <p>Private Messages</p>
+                            </div>
+                            <div className="flex items-start gap-2">
+                                <Image src="/icons/checkmark-circle-02.svg" alt="tick circle" width={24} height={24} />
+                                <p>Personalised Dashboard</p>
+                            </div>
+                            <div className="flex items-start gap-2">
+                                <Image src="/icons/checkmark-circle-02.svg" alt="tick circle" width={24} height={24} />
+                                <p>Many More</p>
+                            </div>
                         </div>
                     </div>
 

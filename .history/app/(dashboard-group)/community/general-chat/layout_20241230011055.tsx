@@ -30,17 +30,15 @@ function GeneralChatLayout({ children }: GeneralChatLayoutProps) {
         <div className="flex flex-row h-full">
             <div className=" flex flex-row items-center justify-center h-full w-full">
 
-                <div className=" rounded-2xl w-[37.5rem] p-6">
-                    <div className="flex flex-col ">
-                        <div className="flex justify-center ">
+                <div className="bg-white rounded-2xl w-[37.5rem] p-6 border border-solid border-lightgrey">
+                    <div className="flex flex-col">
+                        <div className="flex justify-center mb-4">
                             <Image src="/images/physicDailogImg.svg" alt="cool image" width={120} height={120} />
                         </div>
-                        <div className="text-center mb-4">
+                        <div className="text-center mb-6">
                             <h2 className="text-xl font-bold">Launching Soon!!!!!!!!</h2>
                         </div>
-                        <div className="text-center ">
-                            <h2 className="text-lg font-semibold">Personal Messages</h2>
-                        </div>
+
                     </div>
 
                 </div>

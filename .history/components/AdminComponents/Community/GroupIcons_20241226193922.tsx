@@ -100,7 +100,7 @@ function GroupIcons() {
     <div className="flex flex-col h-full">
       <div className="flex items-center justify-center h-[72px] py-3  border-b border-lightGrey">
         <button className={`group flex items-center justify-center relative w-[46px] h-[46px] rounded-full border-[#C74FE6] border-2 ${selectedButton === "message" ? "border-darkPurple" : "hover:border-darkPurple"}`}
-          onClick={onMessageButtonClick}
+        // onClick={onMessageButtonClick}
         >
           <div className={`flex items-center justify-center w-[42px] h-[42px] rounded-full bg-[#C74FE6] border-[#C74FE6] border-2 text-[#624C18] font-bold ${selectedButton === "message" ? "border-white" : "group-hover:border-white"}`}>
             <Image src="/icons/messageIcon.svg" alt="message icon" width={18} height={18} />

@@ -30,7 +30,7 @@ function GeneralChatLayout({ children }: GeneralChatLayoutProps) {
         <div className="flex flex-row h-full">
             <div className=" flex flex-row items-center justify-center h-full w-full">
 
-                <div className=" rounded-2xl w-[37.5rem] p-6">
+                <div className=" rounded-2xl w-[37.5rem] p-6 ">
                     <div className="flex flex-col ">
                         <div className="flex justify-center ">
                             <Image src="/images/physicDailogImg.svg" alt="cool image" width={120} height={120} />
