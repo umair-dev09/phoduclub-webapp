@@ -198,7 +198,7 @@ function QuizAttendingArea({
                                 <div className="mt-5">
                                     <button
                                         onClick={openBottomSheet}
-                                        className="bg-[#8501FF] text-[#FFFFFF] text-sm font-semibold py-2 px-5 rounded-md w-[118px] h-[44px]"
+                                        className="bg-[#8501FF] text-[#FFFFFF] text-sm font-semibold py-2 px-5 rounded-md w-[118px] h-[44px] hover:bg-[#6D0DCC]"
                                         style={{
                                             border: "1px solid #800EE2",
                                             boxShadow: "0px -4px 4px 0px #1018281F inset, 0px 3px 2px 0px #FFFFFF3D inset",

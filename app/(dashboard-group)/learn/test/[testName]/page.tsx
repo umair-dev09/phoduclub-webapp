@@ -7,6 +7,7 @@ import { collection, doc, getCountFromServer, getDoc, getDocs, onSnapshot, query
 import LoadingData from "@/components/Loading";
 import Collapsible from "react-collapsible";
 import { Dialog, DialogBackdrop, DialogPanel } from "@headlessui/react";
+import { Progress } from "@nextui-org/progress";
 
 interface Section {
     id: string;
@@ -105,7 +106,7 @@ function Test() {
     const [description, setDescription] = useState('');
     const [questions, setQuestions] = useState<Question[]>([]);
     const [attemptedDetails, setAttemptedDetails] = useState<AttemptedDetails | null>(null);
-const [answeredQuestions, setAnsweredQuestions] = useState<AnsweredQuestion[]>([]);
+    const [answeredQuestions, setAnsweredQuestions] = useState<AnsweredQuestion[]>([]);
     const [time, setTime] = useState('');
     const [marksPerQ, setMarksPerQ] = useState('');
     const [passedSectionId, setPassedSectionId] = useState('');
@@ -147,13 +148,13 @@ const [answeredQuestions, setAnsweredQuestions] = useState<AnsweredQuestion[]>([
         try {
             const userId = auth.currentUser?.uid;
             if (!userId) return null;
-    
+
             // Fetch the student attempt document
             const studentAttemptRef = doc(db, `${fullPath}/sections/${sectionId}/StudentsAttempted/${userId}`);
             const studentAttemptSnapshot = await getDoc(studentAttemptRef);
-    
+
             if (!studentAttemptSnapshot.exists()) return null;
-    
+
             const attemptData = studentAttemptSnapshot.data();
             return { attemptedDetails: attemptData };
         } catch (error) {
@@ -161,40 +162,40 @@ const [answeredQuestions, setAnsweredQuestions] = useState<AnsweredQuestion[]>([
             return null;
         }
     };
-    
+
     useEffect(() => {
         if (!testId) return;
-    
+
         const fetchSections = async () => {
             setSectionLoading(true);
-    
+
             try {
                 const path = currentPath.reduce((acc, id) => `${acc}/sections/${id}`, `testseries/${testId}`);
                 const sectionCollection = collection(db, `${path}/sections`);
-    
+
                 // Fetch all sections in one query
                 const sectionSnapshot = await getDocs(sectionCollection);
-    
+
                 const sections = await Promise.all(
                     sectionSnapshot.docs.map(async (doc) => {
                         const sectionData = doc.data();
                         const sectionId = doc.id;
-    
+
                         // Fetch attempt data only if necessary
                         let attemptData: { attemptedDetails: AttemptedDetails | null } = { attemptedDetails: null };
-    
+
                         if (sectionData.hasQuestions) {
                             const fetchedData = await fetchSectionAttemptData(sectionId, path) as { attemptedDetails: AttemptedDetails };
                             if (fetchedData) {
                                 attemptData = fetchedData;
                             }
-    
+
                             setSectionAttempts((prev) => ({
                                 ...prev,
                                 [sectionId]: attemptData,
                             }));
                         }
-    
+
                         // Fetch the number of questions in the "Questions" subcollection
                         let questionsCount = 0;
                         if (sectionData.hasQuestions) {
@@ -202,13 +203,13 @@ const [answeredQuestions, setAnsweredQuestions] = useState<AnsweredQuestion[]>([
                             const questionsSnapshot = await getCountFromServer(questionsCollection);
                             questionsCount = questionsSnapshot.data().count;
                         }
-    
+
                         // Fetch the number of subsections (sections within this section)
                         let subsectionCount = 0;
                         const subsectionsCollection = collection(doc.ref, "sections");
                         const subsectionsSnapshot = await getCountFromServer(subsectionsCollection);
                         subsectionCount = subsectionsSnapshot.data().count;
-    
+
                         return {
                             id: sectionId,
                             sectionName: sectionData.sectionName,
@@ -226,7 +227,7 @@ const [answeredQuestions, setAnsweredQuestions] = useState<AnsweredQuestion[]>([
                         };
                     })
                 );
-    
+
                 setSections(sections.sort((a, b) => (a.order || 0) - (b.order || 0)));
             } catch (error) {
                 console.error('Error fetching sections:', error);
@@ -234,17 +235,17 @@ const [answeredQuestions, setAnsweredQuestions] = useState<AnsweredQuestion[]>([
                 setSectionLoading(false);
             }
         };
-    
+
         fetchSections();
-    
+
         // Clean up
         return () => {
             setSections([]);
         };
     }, [currentPath, testId]);
-    
-    
-    
+
+
+
     const handleNavigationClick = (index: number) => {
         setCurrentPath(prev => prev.slice(0, index + 1));
         setBreadcrumbs(prev => prev.slice(0, index + 1));
@@ -372,35 +373,27 @@ const [answeredQuestions, setAnsweredQuestions] = useState<AnsweredQuestion[]>([
                         <div className="w-[178.69px] h-[49px] flex flex-col border-r border-solid border-[#EAECF0]">
                             <span className="font-normal text-[#667085] text-xs">Attempted Questions</span>
                             <span className="font-semibold text-[#1D2939] text-base mt-2">8/150</span>
-
                         </div>
                         <div className="w-[178.69px] h-[49px] flex flex-col  border-r border-solid border-[#EAECF0]">
                             <span className="font-normal text-[#667085] text-xs">Score</span>
                             <span className="font-semibold text-[#1D2939] text-base mt-2">32</span>
-
                         </div>
                         <div className="w-[178.69px] h-[49px] flex flex-col  border-r border-solid border-[#EAECF0]">
                             <span className="font-normal text-[#667085] text-xs">Accuracy</span>
                             <span className="font-semibold text-[#1D2939] text-base mt-2">80%</span>
-
                         </div>
                         <div className="w-[178.69px] h-[49px] flex flex-col  border-r border-solid border-[#EAECF0]">
                             <span className="font-normal text-[#667085] text-xs">Answered Correct</span>
                             <span className="font-semibold text-[#1D2939] text-base mt-2">8/150</span>
-
                         </div>
                         <div className="w-[178.69px] h-[49px] flex flex-col  border-r border-solid border-[#EAECF0]">
                             <span className="font-normal text-[#667085] text-xs">Answered inCorrect</span>
                             <span className="font-semibold text-[#1D2939] text- mt-2">0/150</span>
-
                         </div>
                         <div className="w-[178.69px] h-[49px] flex flex-col">
                             <span className="font-normal text-[#667085] text-xs">Time taken</span>
                             <span className="font-semibold text-[#1D2939] text-base mt-2">1h 30m of 2h</span>
-
                         </div>
-
-
                     </div>
                 </div> */}
                     {sectionLoading ? (
@@ -426,10 +419,10 @@ const [answeredQuestions, setAnsweredQuestions] = useState<AnsweredQuestion[]>([
                                         .map((section, index) => (
                                             <div key={index}>
                                                 {section.hasQuestions ? (
-                                                    <div className="flex w-full h-auto rounded-[12px] border border-solid border-[#EAECF0] bg-[#FFFFFF] mt-1">
+                                                    <div className="flex flex-col w-full h-auto rounded-[12px] border border-solid border-[#EAECF0] bg-[#FFFFFF] mt-1">
                                                         <Collapsible
                                                             trigger={
-                                                                <div className="w-auto h-auto m-2 flex justify-between items-center min-w-[900px]"
+                                                                <div className="w-full h-auto m-2 flex justify-between items-center"
                                                                     onClick={() => toggleCollapsible(0)}>
                                                                     <div className="flex flex-col gap-1 ml-3 ">
                                                                         <span className="text-[#1D2939] font-semibold text-[16px]">
@@ -439,10 +432,7 @@ const [answeredQuestions, setAnsweredQuestions] = useState<AnsweredQuestion[]>([
                                                                             {section.QuestionsCount} Questions
                                                                         </span>
                                                                     </div>
-
                                                                     <div className="flex items-center mr-3 mb-3 gap-4">
-
-
                                                                         {/* Conditional rendering for Test Completed and Re-attempt */}
                                                                         {sectionAttempts[section.id]?.attemptedDetails ? (
                                                                             <div className="gap-6 flex flex-row items-center justify-center mt-3">
@@ -475,16 +465,14 @@ const [answeredQuestions, setAnsweredQuestions] = useState<AnsweredQuestion[]>([
                                                                                     className="cursor-pointer"
                                                                                 />
                                                                             </div>
-
                                                                         ) : (
                                                                             <button onClick={(e) => { e.stopPropagation(); handleStartTest(section.description, section.testTime, section.marksPerQ, section.QuestionsCount || 0, section.id); }}>
-                                                                                <div className="mt-3 flex items-center justify-center w-[116px] h-[36px] rounded-[6px] bg-[#9012FF] border border-solid border-[#800EE2] shadow-inner-button">
+                                                                                <div className="mt-3 flex items-center justify-center w-[116px] h-[36px] rounded-[6px] bg-[#9012FF] border border-solid border-[#800EE2] shadow-inner-button hover:bg-[#6D0DCC]">
                                                                                     <span className="font-medium text-[14px] text-[#FCFCFD]">
                                                                                         Start test
                                                                                     </span>
                                                                                 </div>
                                                                             </button>
-
                                                                         )
                                                                         }
                                                                     </div>
@@ -493,128 +481,117 @@ const [answeredQuestions, setAnsweredQuestions] = useState<AnsweredQuestion[]>([
                                                             transitionTime={350}
                                                             onOpening={() => toggleCollapsible(0)}  // Set the state to open when expanding
                                                             onClosing={() => toggleCollapsible(0)} // Set the state to closed when collapsing
-
                                                         >
-                                                        {sectionAttempts[section.id]?.attemptedDetails && (
-                                                        
-                                                            <div
-                                                                className={`overflow-hidden 
-                      }`}
-                                                            >
-                                                                <div className="h-[200px] ">
-                                                                    <div className="h-[149px] bg-[#FFFFFF] ml-5 mr-5 border-t border-b border-solid border-[#EAECF0] mt-[10px]">
-                                                                        <div className="bg-[#FFFFFF] h-[50px] flex justify-between items-center mt-[10px]">
-                                                                            <div className="flex flex-col w-[280px]">
+                                                            {sectionAttempts[section.id]?.attemptedDetails && (
+                                                                <div className={`overflow-hidden`} >
+                                                                    <div className="h-[200px] ">
+                                                                        <div className="h-[149px] bg-[#FFFFFF] ml-5 mr-5 border-t border-b border-solid border-[#EAECF0] mt-[10px]">
+                                                                            <div className="bg-[#FFFFFF] h-[50px] flex justify-between items-center mt-[10px]">
+                                                                                <div className="flex flex-col w-[280px]">
+                                                                                    <span className="font-normal text-[#667085] text-xs">
+                                                                                        Attempted Questions
+                                                                                    </span>
+                                                                                    <span className="font-semibold text-[15px] text-[#1D2939]">
+                                                                                        {sectionAttempts[section.id]?.attemptedDetails?.attemptedQuestions || "0/0"}
+                                                                                    </span>
+                                                                                </div>
+                                                                                <div className="jabir flex items-center w-[280px] mx-[116px]">
+                                                                                    <div className="h-[30px] w-[1px] bg-[#EAECF0] mr-3"></div>
+                                                                                    <div className="flex flex-col">
+                                                                                        <span className="font-normal text-[#667085] text-xs">
+                                                                                            Score
+                                                                                        </span>
+                                                                                        <span className="font-semibold text-[15px] text-[#1D2939]">
+                                                                                            {sectionAttempts[section.id]?.attemptedDetails?.score || "0"}
+                                                                                        </span>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div className="jabir flex items-center w-[280px] ">
+                                                                                    <div className="h-[30px] w-[1px] bg-[#EAECF0] mr-3"></div>
+                                                                                    <div className="flex flex-col">
+                                                                                        <span className="font-normal text-[#667085] text-xs">
+                                                                                            Accuracy
+                                                                                        </span>
+                                                                                        <span className="font-semibold text-[15px] text-[#1D2939]">
+                                                                                            {sectionAttempts[section.id]?.attemptedDetails?.accuracy || "0%"}
+                                                                                        </span>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+
+                                                                            <div className="bg-[#FFFFFF] h-[50px] flex justify-between items-center mt-[20px]">
+                                                                                <div className="flex flex-col w-[280px]">
+                                                                                    <span className="font-normal text-[#667085] text-xs">
+                                                                                        Answered Correct
+                                                                                    </span>
+                                                                                    <span className="font-semibold text-[15px] text-[#1D2939]">
+                                                                                        {sectionAttempts[section.id]?.attemptedDetails?.answeredCorrect || "0/0"}
+                                                                                    </span>
+                                                                                </div>
+
+                                                                                <div className="jabir flex items-center w-[280px] mx-[116px]">
+                                                                                    <div className="h-[30px] w-[1px] bg-[#EAECF0] mr-3"></div>
+                                                                                    <div className="flex flex-col">
+                                                                                        <span className="font-normal text-[#667085] text-xs">
+                                                                                            Answered Incorrect
+                                                                                        </span>
+                                                                                        <span className="font-semibold text-[15px] text-[#1D2939]">
+                                                                                            {sectionAttempts[section.id]?.attemptedDetails?.answeredIncorrect || "0/0"}
+                                                                                        </span>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div className="jabir flex items-center w-[280px] ">
+                                                                                    <div className="h-[30px] w-[1px] bg-[#EAECF0] mr-3"></div>
+                                                                                    <div className="flex flex-col">
+                                                                                        <span className="font-normal text-[#667085] text-xs">
+                                                                                            Time taken
+                                                                                        </span>
+                                                                                        <span className="font-semibold text-[15px] text-[#1D2939]">
+                                                                                            {formatTimeTaken(sectionAttempts[section.id]?.attemptedDetails?.timeTaken || "0")} out of {formatTimeLeft(section.testTime)}
+                                                                                        </span>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div className="h-[51px] ml-5 mr-5 justify-between flex items-center">
+                                                                            <div className="flex flex-row items-center justify-center">
                                                                                 <span className="font-normal text-[#667085] text-xs">
-                                                                                    Attempted Questions
+                                                                                    5 times attempted
                                                                                 </span>
-                                                                                <span className="font-semibold text-[15px] text-[#1D2939]">
-                                                                          {sectionAttempts[section.id]?.attemptedDetails?.attemptedQuestions || "0/0"}
-                                                                                </span>
-                                                                            </div>
-
-                                                                            <div className="jabir flex items-center w-[280px] mx-[116px]">
-                                                                                <div className="h-[30px] w-[1px] bg-[#EAECF0] mr-3"></div>
-
-                                                                                <div className="flex flex-col">
-                                                                                    <span className="font-normal text-[#667085] text-xs">
-                                                                                        Score
-                                                                                    </span>
-                                                                                    <span className="font-semibold text-[15px] text-[#1D2939]">
-                                                                                    {sectionAttempts[section.id]?.attemptedDetails?.score || "0"}
-                                                                                    </span>
+                                                                                <div className="tooltip relative inline-block">
+                                                                                    <button>
+                                                                                        <Image
+                                                                                            src="/icons/questionmark.svg"
+                                                                                            width={16}
+                                                                                            height={16}
+                                                                                            alt="Question-mark"
+                                                                                            className="ml-1 mt-1"
+                                                                                        />
+                                                                                    </button>
+                                                                                    <div className="tooltipText">
+                                                                                        <span className="font-normal text-xs text-[#FFFFFF]">
+                                                                                            Your metrics related to the previous attempts are in
+                                                                                            the detailed analytics section.
+                                                                                        </span>
+                                                                                    </div>
                                                                                 </div>
                                                                             </div>
-                                                                            <div className="jabir flex items-center w-[280px] ">
-                                                                                <div className="h-[30px] w-[1px] bg-[#EAECF0] mr-3"></div>
-
-                                                                                <div className="flex flex-col">
-                                                                                    <span className="font-normal text-[#667085] text-xs">
-                                                                                        Accuracy
-                                                                                    </span>
-                                                                                    <span className="font-semibold text-[15px] text-[#1D2939]">
-                                                                                    {sectionAttempts[section.id]?.attemptedDetails?.accuracy || "0%"}
-                                                                                    </span>
-                                                                                </div>
-                                                                            </div>
+                                                                            <button className="flex flex-row justify-center items-center"
+                                                                                onClick={() => router.replace('/analytics/test-series')}>
+                                                                                <span className="relative font-semibold text-[#9012FF] text-sm mr-1 inline-block">
+                                                                                    View Detailed Analytics
+                                                                                    <span className="absolute left-0 bottom-[2px] w-full h-[1px] bg-[#9012FF]"></span>
+                                                                                </span>
+                                                                                <Image
+                                                                                    src="/icons/right-arrow.svg"
+                                                                                    width={24}
+                                                                                    height={24}
+                                                                                    alt=" Right-arrow"
+                                                                                />
+                                                                            </button>
                                                                         </div>
-
-                                                                        <div className="bg-[#FFFFFF] h-[50px] flex justify-between items-center mt-[20px]">
-                                                                            <div className="flex flex-col w-[280px]">
-                                                                                <span className="font-normal text-[#667085] text-xs">
-                                                                                    Answered Correct
-                                                                                </span>
-                                                                                <span className="font-semibold text-[15px] text-[#1D2939]">
-                                                                                {sectionAttempts[section.id]?.attemptedDetails?.answeredCorrect || "0/0"}
-
-                                                                                </span>
-                                                                            </div>
-
-                                                                            <div className="jabir flex items-center w-[280px] mx-[116px]">
-                                                                                <div className="h-[30px] w-[1px] bg-[#EAECF0] mr-3"></div>
-
-                                                                                <div className="flex flex-col">
-                                                                                    <span className="font-normal text-[#667085] text-xs">
-                                                                                        Answered Incorrect
-                                                                                    </span>
-                                                                                    <span className="font-semibold text-[15px] text-[#1D2939]">
-                                                                                {sectionAttempts[section.id]?.attemptedDetails?.answeredIncorrect || "0/0"}
-                                                                                    </span>
-                                                                                </div>
-                                                                            </div>
-                                                                            <div className="jabir flex items-center w-[280px] ">
-                                                                                <div className="h-[30px] w-[1px] bg-[#EAECF0] mr-3"></div>
-
-                                                                                <div className="flex flex-col">
-                                                                                    <span className="font-normal text-[#667085] text-xs">
-                                                                                        Time taken
-                                                                                    </span>
-                                                                                    <span className="font-semibold text-[15px] text-[#1D2939]">
-                                                                                    {formatTimeTaken(sectionAttempts[section.id]?.attemptedDetails?.timeTaken || "0")} out of {formatTimeLeft(section.testTime)}
-                                                                                    </span>
-                                                                                </div>
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-                                                                    <div className="h-[51px] ml-5 mr-5 justify-between flex items-center">
-                                                                        <div className="flex flex-row items-center justify-center">
-                                                                            <span className="font-normal text-[#667085] text-xs">
-                                                                                5 times attempted
-                                                                            </span>
-                                                                            <div className="tooltip relative inline-block">
-                                                                                <button>
-                                                                                    <Image
-                                                                                        src="/icons/questionmark.svg"
-                                                                                        width={16}
-                                                                                        height={16}
-                                                                                        alt="Question-mark"
-                                                                                        className="ml-1 mt-1"
-                                                                                    />
-                                                                                </button>
-                                                                                <div className="tooltipText">
-                                                                                    <span className="font-normal text-xs text-[#FFFFFF]">
-                                                                                        Your metrics related to the previous attempts are in
-                                                                                        the detailed analytics section.
-                                                                                    </span>
-                                                                                </div>
-                                                                            </div>
-                                                                        </div>
-                                                                        <button className="flex flex-row justify-center items-center"
-                                                                            onClick={() => router.replace('/analytics/test-series')}>
-                                                                            <span className="relative font-semibold text-[#9012FF] text-sm mr-1 inline-block">
-                                                                                View Detailed Analytics
-                                                                                <span className="absolute left-0 bottom-[2px] w-full h-[1px] bg-[#9012FF]"></span>
-                                                                            </span>
-                                                                            <Image
-                                                                                src="/icons/right-arrow.svg"
-                                                                                width={24}
-                                                                                height={24}
-                                                                                alt=" Right-arrow"
-                                                                            />
-                                                                        </button>
                                                                     </div>
                                                                 </div>
-                                                            </div>
                                                             )}
                                                         </Collapsible>
                                                     </div>
@@ -632,8 +609,9 @@ const [answeredQuestions, setAnsweredQuestions] = useState<AnsweredQuestion[]>([
                                                                             </button>
                                                                         </button>
                                                                     </div>
-                                                                    <span className="font-normal text-[12px] text-[#667085] mt-1  flex flex-row
-                        justify-start">{section.SubsectionsCount} Tests</span>
+                                                                    <span className="font-normal text-[12px] text-[#667085] mt-1  flex flex-rowjustify-start">
+                                                                        {section.SubsectionsCount} Tests
+                                                                    </span>
                                                                 </div>
 
                                                                 <div className="h-[44px] flex flex-col ">
@@ -649,12 +627,7 @@ const [answeredQuestions, setAnsweredQuestions] = useState<AnsweredQuestion[]>([
 
                                                                 {/* No gap applied here */}
                                                                 <div className="flex items-center justify-between flex-row gap-[10px]">
-                                                                    <div className="flex-grow relative h-2 rounded-full bg-gray-200 "> {/* Added `flex-grow` to allow space for text and `mr-4` for margin */}
-                                                                        <div
-                                                                            className="absolute top-0 left-0 h-2 rounded-full bg-progressPurple"
-                                                                            style={{ width: "43%" }}  // 43% progress is shown
-                                                                        ></div>
-                                                                    </div>
+                                                                    <Progress aria-label="Loading..." className="max-w-md h-2" value={43} />
                                                                     <span className="font-normal text-[#667085] text-xs">43%</span>
                                                                 </div>
                                                             </div>
@@ -679,7 +652,7 @@ const [answeredQuestions, setAnsweredQuestions] = useState<AnsweredQuestion[]>([
                 <DialogBackdrop className="fixed inset-0 bg-black/30 " />
                 <div className="fixed inset-0 flex items-center justify-center ">
                     <DialogPanel transition className="bg-[#FFFFFF] rounded-2xl  w-[520px] h-auto">
-                        <div className="flex flex-1 w-full border-b-2 border-[#EAECF0] flex-col">
+                        <div className="flex flex-1 w-full flex-col pb-6">
                             <div className="h-[23px]  mt-[23px] mr-[24px] ml-[24px] justify-between flex">
                                 <span className="text-[#1D2939] font-semibold text-lg">Start Test</span>
                                 <button className="w-[32px] h-[32px]  rounded-full flex items-center justify-center transition-all duration-300 ease-in-out hover:bg-[#F2F4F7]">
@@ -706,7 +679,7 @@ const [answeredQuestions, setAnsweredQuestions] = useState<AnsweredQuestion[]>([
                                 </div>
                             </div>
                         </div>
-                        <div className="flex flex-row justify-end my-4 mr-6 gap-4">
+                        <div className="flex flex-row justify-end py-3 pr-6 gap-4  border-t border-lightGrey border-solid">
                             <button
                                 className="bg-[#FFFFFF] text-[#1D2939] text-sm font-semibold py-2 px-5 rounded-md w-[118px] h-[44px] shadow-inner-button hover:bg-[#F2F4F7]"
                                 style={{ border: "1.5px solid #EAECF0" }}
@@ -714,7 +687,7 @@ const [answeredQuestions, setAnsweredQuestions] = useState<AnsweredQuestion[]>([
                                 Cancel
                             </button>
                             <button
-                                className="bg-[#8501FF] text-[#FFFFFF] text-sm font-semibold py-2 px-5 rounded-md w-[118px] h-[44px] shadow-inner-button border border-[#800EE2]"
+                                className="bg-[#8501FF] text-[#FFFFFF] text-sm font-semibold py-2 px-5 rounded-md w-[118px] h-[44px] shadow-inner-button border border-[#800EE2] hover:bg-[#6D0DCC]"
                                 onClick={() => {
                                     const sectionIds = getSectionPath(passedSectionId);
                                     const url = `/attempt-test?tId=${testId}&sectionIds=${encodeURIComponent(
@@ -731,8 +704,6 @@ const [answeredQuestions, setAnsweredQuestions] = useState<AnsweredQuestion[]>([
                 </div>
             </Dialog>
         </div>
-
-
     );
 }
 export default Test;

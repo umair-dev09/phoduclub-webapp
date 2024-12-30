@@ -31,7 +31,6 @@ import EndDialog from "@/components/AdminComponents/QuizInfoDailogs/EndDailogue"
 import PausedDialog from "@/components/AdminComponents/QuizInfoDailogs/PauseDailogue";
 import ResumeQuiz from "@/components/AdminComponents/QuizInfoDailogs/ResumeDailogue";
 import DeleteDialog from "@/components/AdminComponents/QuizInfoDailogs/DeleteDailogue";
-
 interface Course {
     courseName: string;
     price: number;
@@ -76,6 +75,7 @@ function Course() {
     const [isEndDialogOpen, setIsEndDialogOpen] = useState(false);
     const [isPausedDialogOpen, setIsPausedDialogOpen] = useState(false);
     // const [isMakeLiveNowDialogOpen, setIsMakeLiveNowDialogOpen] = useState(false);
+
     const [isResumeOpen, setIsResumeOpen] = useState(false);
     const [isViewAnalyticsOpen, setIsViewAnalyticsOpen] = useState(false);
     const [isSelcetDateOpen, setIsSelectDateOpen] = useState(false);
@@ -90,6 +90,10 @@ function Course() {
 
     const selectedCount = Object.values(checkedState).filter(Boolean).length;
     const [selectedDate, setSelectedDate] = useState<Date | null>(null); // Store selected date as Date object
+    const [dateFilter, setDateFilter] = useState(null);
+    const [statusFilter, setStatusFilter] = useState(null);
+    const isTextSearch = searchTerm.trim().length > 0 && !dateFilter && !statusFilter;
+
     useEffect(() => {
         const coursesCollection = collection(db, 'course');
         const unsubscribe = onSnapshot(coursesCollection, (snapshot) => {
@@ -183,6 +187,7 @@ function Course() {
     // Function to handle tab click and navigate to a new route
     const handleTabClick = (path: string) => {
         router.push(path);
+
     };
     const [openPopovers, setOpenPopovers] = React.useState<{ [key: number]: boolean }>({});
     const togglePopover = (index: number) => {
@@ -311,7 +316,7 @@ function Course() {
                     {/* Select Date Button */}
                     <Popover placement="bottom" isOpen={isSelcetDateOpen} onOpenChange={(open) => setIsSelectDateOpen(open)}>
                         <PopoverTrigger>
-                            <button className="h-[44px] w-[143px]  hover:bg-[#F2F4F7] rounded-md bg-[#FFFFFF] border border-solid border-[#D0D5DD] flex items-center p-3">
+                            <button className="h-[44px] w-[143px] hover:bg-[#F2F4F7] rounded-md bg-[#FFFFFF] border border-solid border-[#D0D5DD] flex items-center p-3 outline-none">
                                 <Image
                                     src="/icons/select-Date.svg"
                                     width={20}
@@ -588,9 +593,16 @@ function Course() {
                                     ) : (
                                         <tr className='border-t border-lightGrey'>
                                             <td colSpan={7} className="text-center py-8">
-                                                <div className="flex flex-col items-center justify-center gap-2">
-                                                    <p className="text-[#667085] text-sm">No chapters found for &quot;{searchTerm}&quot;</p>
-                                                </div>
+                                                {isTextSearch && (
+                                                    <p className="text-[#667085] text-sm">
+                                                        No chapters found for &quot;{searchTerm}&quot;
+                                                    </p>
+                                                )}
+                                                {!isTextSearch && (
+                                                    <p className="text-[#667085] text-sm">
+                                                        No chapters found
+                                                    </p>
+                                                )}
                                             </td>
                                         </tr>
                                     )}
@@ -619,6 +631,7 @@ function Course() {
             {isResumeOpen && < ResumeQuiz open={isResumeOpen} onClose={() => setIsResumeOpen(false)} fromContent="course" contentId={courseId || ''} />}
             {isDeleteDialogOpen && <DeleteDialog onClose={closeDeleteDialog} open={true} fromContent="course" contentId={courseId || ''} contentName={courseName} />}
             {isViewAnalyticsOpen && < ViewAnalytics onClose={closeViewAnalytics} open={true} />}
+
         </div>
     );
 }
