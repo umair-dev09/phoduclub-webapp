@@ -10,8 +10,9 @@ import 'react-toastify/dist/ReactToastify.css';
 
 interface DashboardGroupProps {
     children: ReactNode;
-
 }
+
+
 
 export default function DashboardGroup({ children }: DashboardGroupProps) {
     const pathname = usePathname();
@@ -22,12 +23,12 @@ export default function DashboardGroup({ children }: DashboardGroupProps) {
         let pageName = pathArray?.[pathArray.length - 1] || '';
 
         if (pathname?.includes('quizzesmanagement')) {
-            if (pathArray?.[pathArray.length - 1] === 'quizzesmanagement') {
-                pageName = 'Quizzes Management';
-            } else if (pathname.includes('quizinfo')) {
-                pageName = 'Quizzes Management '; // Specific header for quiz info   
+            if (pathArray?.[2] === 'createquiz') {
+                pageName = 'Create Quiz';
+            } else if (pathArray?.[2] === 'quizinfo') {
+                pageName = 'Quiz Info';
             } else {
-                pageName = 'Quizzes Management'; // Default fallback
+                pageName = 'Quizzes Management';
             }
         } else {
             switch (pageName) {
@@ -52,7 +53,7 @@ export default function DashboardGroup({ children }: DashboardGroupProps) {
                 case 'coursecreation':
                     pageName = 'Course Creation';
                     break;
-                case "quizmanaegment":
+                case 'createquiz':
                     pageName = 'Back to Quizzes Management';
                     break;
                 case 'quizinfo':
@@ -100,19 +101,12 @@ export default function DashboardGroup({ children }: DashboardGroupProps) {
                 case "discussionform":
                     pageName = "Discussion form";
                     break;
-                case "internalchat":
-                    pageName = "Internal chat";
-                    break;
-                case "community":
-                    pageName = "Community";
-                    break;
                 default:
                     pageName = '';
             }
         }
         setCurrentPage(pageName);
     }, [pathname]);
-
 
     return (
         <div className="body overflow-none">

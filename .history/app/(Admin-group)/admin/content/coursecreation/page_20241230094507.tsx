@@ -31,6 +31,7 @@ import EndDialog from "@/components/AdminComponents/QuizInfoDailogs/EndDailogue"
 import PausedDialog from "@/components/AdminComponents/QuizInfoDailogs/PauseDailogue";
 import ResumeQuiz from "@/components/AdminComponents/QuizInfoDailogs/ResumeDailogue";
 import DeleteDialog from "@/components/AdminComponents/QuizInfoDailogs/DeleteDailogue";
+
 interface Course {
     courseName: string;
     price: number;
@@ -75,7 +76,6 @@ function Course() {
     const [isEndDialogOpen, setIsEndDialogOpen] = useState(false);
     const [isPausedDialogOpen, setIsPausedDialogOpen] = useState(false);
     // const [isMakeLiveNowDialogOpen, setIsMakeLiveNowDialogOpen] = useState(false);
-
     const [isResumeOpen, setIsResumeOpen] = useState(false);
     const [isViewAnalyticsOpen, setIsViewAnalyticsOpen] = useState(false);
     const [isSelcetDateOpen, setIsSelectDateOpen] = useState(false);
@@ -183,7 +183,6 @@ function Course() {
     // Function to handle tab click and navigate to a new route
     const handleTabClick = (path: string) => {
         router.push(path);
-
     };
     const [openPopovers, setOpenPopovers] = React.useState<{ [key: number]: boolean }>({});
     const togglePopover = (index: number) => {
@@ -620,7 +619,6 @@ function Course() {
             {isResumeOpen && < ResumeQuiz open={isResumeOpen} onClose={() => setIsResumeOpen(false)} fromContent="course" contentId={courseId || ''} />}
             {isDeleteDialogOpen && <DeleteDialog onClose={closeDeleteDialog} open={true} fromContent="course" contentId={courseId || ''} contentName={courseName} />}
             {isViewAnalyticsOpen && < ViewAnalytics onClose={closeViewAnalytics} open={true} />}
-
         </div>
     );
 }

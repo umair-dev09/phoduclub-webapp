@@ -10,7 +10,6 @@ import 'react-toastify/dist/ReactToastify.css';
 
 interface DashboardGroupProps {
     children: ReactNode;
-
 }
 
 export default function DashboardGroup({ children }: DashboardGroupProps) {
@@ -25,7 +24,7 @@ export default function DashboardGroup({ children }: DashboardGroupProps) {
             if (pathArray?.[pathArray.length - 1] === 'quizzesmanagement') {
                 pageName = 'Quizzes Management';
             } else if (pathname.includes('quizinfo')) {
-                pageName = 'Quizzes Management '; // Specific header for quiz info   
+                pageName = 'Quizzes Management '; // Specific header for quiz info
             } else {
                 pageName = 'Quizzes Management'; // Default fallback
             }
@@ -52,7 +51,7 @@ export default function DashboardGroup({ children }: DashboardGroupProps) {
                 case 'coursecreation':
                     pageName = 'Course Creation';
                     break;
-                case "quizmanaegment":
+                case 'createquiz':
                     pageName = 'Back to Quizzes Management';
                     break;
                 case 'quizinfo':
@@ -112,7 +111,6 @@ export default function DashboardGroup({ children }: DashboardGroupProps) {
         }
         setCurrentPage(pageName);
     }, [pathname]);
-
 
     return (
         <div className="body overflow-none">
