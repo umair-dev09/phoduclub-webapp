@@ -322,7 +322,7 @@ function Quizz() {
                 <span className="text-lg font-semibold text-[#1D2939]">Quizzes</span>
                 <div className="flex flex-row gap-3">
                     {/* Search Button */}
-                    <button className="h-[44px] w-[250px] rounded-md bg-[#FFFFFF] border border-solid border-[#D0D5DD] flex items-center">
+                    <button className="h-[44px] w-[250px] rounded-md bg-[#FFFFFF] border border-solid border-[#D0D5DD] flex items-center outline-none">
                         <div className="flex flex-row items-center gap-2 pl-2">
                             <Image
                                 src="/icons/search-button.svg"
@@ -343,7 +343,7 @@ function Quizz() {
                     {/* Select Date Button */}
                     <Popover placement="bottom" isOpen={isSelcetDateOpen} onOpenChange={(open) => setIsSelectDateOpen(open)}>
                         <PopoverTrigger>
-                            <button className="h-[44px] w-[143px] rounded-md bg-[#FFFFFF] border border-solid border-[#D0D5DD] flex items-center p-3  hover:bg-[#F2F4F7]">
+                            <button className="h-[44px] w-[143px] rounded-md bg-[#FFFFFF] border border-solid border-[#D0D5DD] flex items-center p-3 outline-none hover:bg-[#F2F4F7]">
                                 <Image
                                     src="/icons/select-Date.svg"
                                     width={20}
@@ -382,7 +382,7 @@ function Quizz() {
                     {/* By Status Button */}
                     <Popover placement="bottom-start">
                         <PopoverTrigger>
-                            <div className="h-[44px] w-[126px] hover:bg-[#F2F4F7] rounded-md bg-[#FFFFFF] border border-solid border-[#D0D5DD] flex items-center justify-between p-3 cursor-pointer">
+                            <div className="h-[44px] w-[126px] hover:bg-[#F2F4F7] rounded-md bg-[#FFFFFF] border border-solid border-[#D0D5DD] flex items-center justify-between p-3 cursor-pointer outline-none">
                                 <p className={`flex flex-row font-medium text-sm ${selectedCount > 0 ? 'text-[#182230]' : 'text-[#667085]'}`}>
                                     {selectedCount > 0 ? `${selectedCount} selected` : 'By status'}
                                 </p>
@@ -418,7 +418,7 @@ function Quizz() {
 
                     {/* Create Quiz Button */}
                     <button
-                        className="h-[44px] w-[135px] bg-[#8501FF] rounded-md shadow-inner-button border border-solid border-[#800EE2] flex items-center justify-center"
+                        className="h-[44px] w-[135px] bg-[#8501FF] rounded-md shadow-inner-button border border-solid border-[#800EE2] flex items-center justify-center outline-none"
                         onClick={() => handleTabClick('/admin/content/quizzesmanagement/createquiz')}
                     >
                         <span className="text-[#FFFFFF] font-semibold text-sm">Create Quiz</span>
