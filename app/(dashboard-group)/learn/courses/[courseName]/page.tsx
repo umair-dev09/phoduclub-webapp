@@ -73,7 +73,7 @@ type CourseData = {
     rating: string | null;
     noOfRating: string | null;
     status: string | null;
-    StudentsPurchased: string[];
+    StudentsPurchased: string[]; 
 }; 
 
 function Course() {
@@ -336,7 +336,7 @@ const handleMarkContentCompleted = async (contentId: string, sectionId: string, 
   };
   
   if(loading){
-        return <LoadingData />
+        return <LoadingData /> 
     } 
 
     return (

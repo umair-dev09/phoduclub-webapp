@@ -8,7 +8,11 @@ import RadioGroup from "@mui/material/RadioGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Drawer from "react-modern-drawer";
 import "react-modern-drawer/dist/index.css"
-
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { auth, db } from "@/firebase";
+import { collection, doc, setDoc } from "firebase/firestore";
+import QuizTimer from "@/components/QuizTImer";
 interface Options {
     A: string;
     B: string;
@@ -23,9 +27,18 @@ interface Question {
     options: Options;
     correctAnswer: string | null;
     explanation: string;
+    questionId: string;
 }
-
-
+interface QuestionState {
+    questionId: string;
+    selectedOption: string | null;
+    answeredCorrect: boolean | null;
+}
+interface QuizAttempt {
+    AnsweredQuestions: QuestionState[];
+    userId: string;
+    timeTaken: string;
+}
 type QuizProps = {
     isOpen: boolean;
     setIsOpen: (isOpen: boolean) => void;
@@ -46,29 +59,101 @@ function QuizAttendingArea({
     setShowBottomSheet,
     onSubmit, contentId, questionsList, courseId, sectionId, quizTime
 }: QuizProps) {
-    const [isDialogOpen, setIsDialogOpen] = useState(false); // New state for "submit" dialog
+    const [isDialogOpen, setIsDialogOpen] = useState(false);
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [questionStates, setQuestionStates] = useState<QuestionState[]>([]);
+    const userId = auth.currentUser?.uid;
+    const [currentTime, setCurrentTime] = useState<number>(0);
+
+    // Initialize questionStates with actual questionIds
+    useEffect(() => {
+        const initialStates: QuestionState[] = questionsList.map((question) => ({
+            questionId: question.questionId,
+            selectedOption: null,
+            answeredCorrect: null
+        }));
+        setQuestionStates(initialStates);
+    }, [questionsList]);
+
+    // Handle option selection for a question
+    const handleOptionSelect = (questionId: string, selectedOption: string) => {
+        setQuestionStates(prevStates => {
+            return prevStates.map(state => {
+                if (state.questionId === questionId) {
+                    // Find the corresponding question to check correct answer
+                    const question = questionsList.find(q => q.questionId === questionId);
+                    return {
+                        ...state,
+                        selectedOption: selectedOption,
+                        answeredCorrect: question ? selectedOption === question.correctAnswer : false
+                    };
+                }
+                return state;
+            });
+        });
+    };
+  // Store quiz attempt in Firestore
+  const storeQuizAttempt = async () => {
+    if (!userId) {
+        console.error("No user found");
+        return;
+    }
+
+    setIsSubmitting(true);
+    try {
+        const quizAttempt: QuizAttempt = {
+            AnsweredQuestions: questionStates,
+            userId: userId,
+            timeTaken: quizTime,
+        };
+
+        // Fixed Firestore path structure
+        const quizPath = `course/${courseId}/sections/${sectionId}/content/${contentId}/StudentsAttempted`;
+        const studentAttemptRef = doc(db, quizPath, userId);
+        await setDoc(studentAttemptRef, quizAttempt);
+        toast.success('Quiz attempt saved successfully');
+    } catch (error) {
+        console.error('Error storing quiz attempt:', error);
+        toast.error('Failed to  store quiz attempt');
+        // You might want to show an error message to the user here
+    } finally {
+        setIsSubmitting(false);
+    }
+};
+    // Check if all questions have been answered
+    const areAllQuestionsAnswered = () => {
+        return questionStates.every(state => state.selectedOption !== null);
+    };
 
     const openBottomSheet = () => {
-        setIsOpen(false); // Close the quiz dialog
-        setShowBottomSheet(true); // Show the bottom sheet
+        setIsOpen(false);
+        setShowBottomSheet(true);
     };
 
     const handleSubmit = () => {
-        // Close the bottom sheet and open submit Dialog
-        setIsDialogOpen(true); // Open submit Dialog
-        setShowBottomSheet(false); // Close Bottom Sheet
+        console.log('Final Question States:', questionStates);
+        setIsDialogOpen(true);
+        setShowBottomSheet(false);
+    };
+
+    const handleOnTimeEnd = () => {
+        console.log('Time ended');
+
     };
 
     const handleSaveExit = () => {
-        // Close the quiz dialog and do not open submit Dialog
-        setIsOpen(false); // Close the quiz dialog
-        setShowBottomSheet(false); // Close Bottom Sheet
+        setIsOpen(false);
+        setShowBottomSheet(false);
     };
 
-    const handleDialogSubmit = () => {
-        setIsDialogOpen(false); // Close submit dialog after submitting
-        setIsOpen(false); // Close Quiz Dialog
-        setShowBottomSheet(false); // Close Bottom Sheet
+    const handleDialogSubmit = async () => {
+        setIsDialogOpen(false);
+        setIsOpen(false);
+        setShowBottomSheet(false);
+        await storeQuizAttempt();    
+    };
+    const handleTimeUpdate = (timeLeft: number) => {
+        setCurrentTime(timeLeft);
     };
     return (
         <>
@@ -140,7 +225,7 @@ function QuizAttendingArea({
                         <span className="text-lg font-semibold text-[#1D2939]">Quiz</span>
                         <span className="text-lg font-semibold text-[#1D2939] flex items-center justify-center gap-2">
                             <Image width={24} height={24} src="/icons/alarm-clock.svg" alt="timer" />
-                            00:05
+                            <QuizTimer initialTime={quizTime} onTimeEnd={handleOnTimeEnd} onTimeUpdate={handleTimeUpdate}/>
                         </span>
 
                         <div
@@ -159,75 +244,60 @@ function QuizAttendingArea({
 
                     {/* Quiz Content */}
                     <div className="overflow-y-auto p-5 h-full">
-                        {/* Your quiz content goes here */}                            
-                            <div className="flex flex-col gap-5 items-center justify-center">
-                            {questionsList.map((q, index)  => ( 
-                                <div key={index} className="w-auto h-auto rounded-[12px] px-4 border-2 border-[#EAECF0]  flex py-4 flex-col items-center justify-center">
-                                    <div className="bg-[#FFFFFF] w-[832px] h-auto flex  flex-col gap-[20px]">
-                                        <div className="w-[832px] h-[24px] ">
-                                            <span className="text-[#1D2939] font-semibold text-base">
-                                                {index + 1}. {q.question}
-                                            </span>
-                                        </div>
-                                            <div className="w-auto h-auto gap-[15px] flex flex-col ">
-                                                <RadioGroup>
-                                                {Object.entries(q.options).map(([key, value]) => (
-                                                    <FormControlLabel
-                                                        key={key}
-                                                        value={key}
-                                                        className="break-all flex flex-row "
-                                                        control={
-                                                            <Radio
-                                                                sx={{
-                                                                    color: '#D0D5DD',
-                                                                    '&.Mui-checked': {
-                                                                        color: '#9012FF',
-                                                                    },
-                                                                }}
-                                                            />
-                                                        }
-                                                        label={value}
-                                                    />
-                                                ))}
+                        <div className="flex flex-col gap-5 items-center justify-center">
+                            {questionsList.map((q, index) => {
+                                // Find the corresponding state for this question
+                                const questionState = questionStates.find(
+                                    state => state.questionId === q.questionId
+                                );
+
+                                return (
+                                    <div key={q.questionId} className="w-auto h-auto rounded-[12px] px-4 border-2 border-[#EAECF0] flex py-4 flex-col items-center justify-center">
+                                        <div className="bg-[#FFFFFF] w-[832px] h-auto flex flex-col gap-[20px]">
+                                            <div className="w-[832px] h-[24px]">
+                                                <span className="flex flex-row gap-1 text-[#1D2939] font-semibold text-base">
+                                                    {index + 1}. <div dangerouslySetInnerHTML={{ __html: q.question || '' }} />
+                                                </span>
+                                            </div>
+                                            <div className="w-auto h-auto gap-[15px] flex flex-col">
+                                                <RadioGroup
+                                                    value={questionState?.selectedOption || ''}
+                                                    onChange={(e) => handleOptionSelect(q.questionId, e.target.value)}
+                                                >
+                                                    {Object.entries(q.options).map(([key, value]) => (
+                                                        <FormControlLabel
+                                                            key={key}
+                                                            value={key}
+                                                            className="break-all flex flex-row"
+                                                            control={
+                                                                <Radio
+                                                                    sx={{
+                                                                        color: '#D0D5DD',
+                                                                        '&.Mui-checked': {
+                                                                            color: '#9012FF',
+                                                                        },
+                                                                    }}
+                                                                />
+                                                            }
+                                                            label={value}
+                                                        />
+                                                    ))}
                                                 </RadioGroup>
                                             </div>
-                                        {/* <hr />
-                                        <div className="w-[121px] h-10 items-center px-2 flex flex-row  bg-[#EDFCF3] border border-solid border-[#AAF0C7] rounded-[6px] gap-1">
-                                            <Image
-                                                src="/icons/green-right-mark.svg"
-                                                width={24}
-                                                height={24}
-                                                alt="right-mark-icon" />
-                                            <span className="text-[#0A5B39] font-medium text-base">Correct</span>
-
                                         </div>
-                                        <div className="w-[121px] h-10 px-2 flex flex-row items-center bg-[#FEF3F2] border border-solid border-[#FFCDC9] rounded-[6px] gap-1">
-                                            <Image
-                                                src="/icons/red-cancel-icon.svg"
-                                                width={24}
-                                                height={24}
-                                                alt="red-cancel-icon" />
-                                            <span className="text-[#9A221A] font-medium text-base">Incorrect</span>
-                                        </div>
-                                        <div className="w-full h-auto bg-[#F9FAFB] border-2 border-solid border-[#F2F4F7] rounded-[8px] flex p-4">
-                                            <span className="text-[#1D2939] font-normal text-sm italic leading-[25px]">The bitwise AND operation compares each corresponding bit of two binary numbers and returns a new binary number where each bit is 1 if both corresponding bits are 1, and 0 otherwise.</span>
-                                        </div> */}
                                     </div>
-
-                                </div>
-                                ))}
-                            </div>
-                            {/* End repeat block */}
+                                );
+                            })}
+                        </div>
                     </div>
-
                     {/* Bottom Button Section */}
-                    <div className="flex flex-row items-center justify-end border-t border-lightGrey p-4">
-                        <button className=" border  rounded-lg py-2.5 px-6 text-sm bg-purple text-white border-darkPurple"
-                            style={{
-                                border: "1px solid #800EE2",
-                                boxShadow: "0px -4px 4px 0px #1018281F inset, 0px 3px 2px 0px #FFFFFF3D inset"
-                            }}
-                            onClick={handleSubmit}>
+                    <div className="flex flex-row items-center justify-end border-t border-lightGrey px-4 py-3">
+                    <button 
+                            className={`border rounded-lg py-2.5 px-6 text-sm text-white ${areAllQuestionsAnswered() ? 'bg-purple ' : 'bg-[#CDA0FC] cursor-not-allowed'}`}
+                          
+                            onClick={handleSubmit}
+                            disabled={!areAllQuestionsAnswered()}
+                        >
                             <p>Submit</p>
                         </button>
                     </div>
@@ -274,8 +344,8 @@ function QuizAttendingArea({
                                     <button
                                         onClick={() => {
                                             handleDialogSubmit();
-                                            onSubmit();
                                         }}
+                                        disabled={isSubmitting}
                                         className="bg-[#8501FF] text-[#FFFFFF] text-sm font-semibold py-2 px-5 rounded-md w-[118px] h-[44px]"
                                         style={{
                                             border: "1px solid #800EE2",
