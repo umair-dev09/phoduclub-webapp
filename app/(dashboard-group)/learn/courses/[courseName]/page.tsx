@@ -32,7 +32,8 @@ interface Question {
     isActive: boolean;
     options: Options;
     correctAnswer: string | null;
-    explanation: string;
+    answerExplanation: string;
+    questionId: string;
 }
 
 
@@ -62,8 +63,19 @@ type Content = {
     videoId: string;
     questionsList: Question[];
     StudentsCompleted: string[];
+    quizAttempt?: QuizAttempt | null;
   }
-
+  interface QuizAttempt {
+    AnsweredQuestions: QuestionState[];
+    userId: string;
+    timeTaken: string;
+  }
+  
+  interface QuestionState {
+    questionId: string;
+    selectedOption: string; // User's answer
+    answeredCorrect: boolean; // Whether the answer is correct
+  }
 type CourseData = {
     courseName: string | null;
     courseDescription: string | null;
@@ -104,6 +116,7 @@ function Course() {
             videoId: string;
             questionsCount: number;
             questionsList: Question[],
+            quizAttempt?: QuizAttempt | null;
         } | null>(null);
       
      // Fetch course data from Firestore
@@ -153,7 +166,7 @@ function Course() {
         if (courseId) {
           const sectionsRef = collection(db, 'course', courseId, 'sections');
           const q = query(sectionsRef);
-      
+    
           const unsubscribe = onSnapshot(
             q,
             (snapshot) => {
@@ -162,61 +175,76 @@ function Course() {
                 sectionScheduleDate: doc.data().sectionScheduleDate,
                 noOfLessons: doc.data().noOfLessons,
                 sectionId: doc.data().sectionId,
-                content: [], // Initialize an empty content array
+                content: [], // Initialize with empty content
               }));
               setSections(sectionsData);
               setLoading(false);
-      
+    
               // Fetch content for each section
               snapshot.docs.forEach((doc) => {
                 const sectionId = doc.id;
                 const contentRef = collection(db, 'course', courseId, 'sections', sectionId, 'content');
                 const contentQuery = query(contentRef);
-      
+    
                 onSnapshot(contentQuery, async (contentSnapshot) => {
-                  const contentData: Content[] = await Promise.all(contentSnapshot.docs.map(async (contentDoc) => {
-                    const questionsCollection = collection(db, 'course', courseId, 'sections', sectionId, 'content', contentDoc.id, 'Questions');
-                    const questionsSnapshot = await getDocs(questionsCollection);
-                     const fetchedQuestions: Question[] = questionsSnapshot.docs.map((doc) => {
-                                        const data = doc.data();
-                                        return {
-                                            question: data.question,
-                                            questionId: data.questionId,
-                                            isChecked: false,
-                                            isActive: false,
-                                            options: {
-                                                A: data.options.A,
-                                                B: data.options.B,
-                                                C: data.options.C,
-                                                D: data.options.D
-                                            },
-                                            correctAnswer: data.correctAnswer?.replace('option', ''),
-                                            explanation: data.answerExplanation || ''
-                                        };
-                                    });
-                    const questionsCount = questionsSnapshot.size;
-      
-                    return {
-                      lessonHeading: contentDoc.data().lessonHeading,
-                      lessonScheduleDate: contentDoc.data().lessonScheduleDate,
-                      type: contentDoc.data().type,
-                      contentId: contentDoc.id,
-                      isDisscusionOpen: contentDoc.data().isDisscusionOpen,
-                      lessonContent: contentDoc.data().lessonContent,
-                      lessonOverView: contentDoc.data().lessonOverView,
-                      pdfLink: contentDoc.data().pdfLink,
-                      videoLink: contentDoc.data().videoLink,
-                      marksPerQuestion: contentDoc.data().marksPerQuestion,
-                      nMarksPerQuestion: contentDoc.data().nMarksPerQuestion,
-                      quizTime: contentDoc.data().quizTime,
-                      videoDuration: contentDoc.data().videoDuration,
-                      questionsCount: questionsCount,
-                      videoId: contentDoc.data().videoId,
-                      questionsList: fetchedQuestions,
-                      StudentsCompleted: contentDoc.data().StudentsCompleted,
-                    };
-                  }));
-      
+                  const contentData: Content[] = await Promise.all(
+                    contentSnapshot.docs.map(async (contentDoc) => {
+                      const contentType = contentDoc.data().type;
+    
+                      // Fetch questions for the content
+                      const questionsCollection = collection(
+                        db,
+                        'course',
+                        courseId,
+                        'sections',
+                        sectionId,
+                        'content',
+                        contentDoc.id,
+                        'Questions'
+                      );
+                      const questionsSnapshot = await getDocs(questionsCollection);
+                      const fetchedQuestions: Question[] = questionsSnapshot.docs.map((doc) => {
+                        const data = doc.data();
+                        return {
+                          question: data.question,
+                          questionId: data.questionId,
+                          isChecked: false,
+                          isActive: false,
+                          options: {
+                            A: data.options.A,
+                            B: data.options.B,
+                            C: data.options.C,
+                            D: data.options.D,
+                          },
+                          correctAnswer: data.correctAnswer?.replace('option', ''),
+                          answerExplanation: data.answerExplanation || '',
+                        };
+                      });
+                      const questionsCount = questionsSnapshot.size;
+    
+                      return {
+                        lessonHeading: contentDoc.data().lessonHeading,
+                        lessonScheduleDate: contentDoc.data().lessonScheduleDate,
+                        type: contentType,
+                        contentId: contentDoc.id,
+                        isDisscusionOpen: contentDoc.data().isDisscusionOpen,
+                        lessonContent: contentDoc.data().lessonContent,
+                        lessonOverView: contentDoc.data().lessonOverView,
+                        pdfLink: contentDoc.data().pdfLink,
+                        videoLink: contentDoc.data().videoLink,
+                        marksPerQuestion: contentDoc.data().marksPerQuestion,
+                        nMarksPerQuestion: contentDoc.data().nMarksPerQuestion,
+                        quizTime: contentDoc.data().quizTime,
+                        videoDuration: contentDoc.data().videoDuration,
+                        questionsCount: questionsCount,
+                        videoId: contentDoc.data().videoId,
+                        questionsList: fetchedQuestions,
+                        StudentsCompleted: contentDoc.data().StudentsCompleted,
+                        quizAttempt: null, // Placeholder for quizAttempt
+                      };
+                    })
+                  );
+    
                   setSections((prevSections) =>
                     prevSections.map((section) =>
                       section.sectionId === sectionId ? { ...section, content: contentData } : section
@@ -230,11 +258,65 @@ function Course() {
               setLoading(false);
             }
           );
-      
+    
           return () => unsubscribe();
         }
       }, [courseId]);
-
+    
+      // Fetch StudentsAttempted separately
+      useEffect(() => {
+        if (courseId && auth.currentUser) {
+          const currentUserId = auth.currentUser.uid;
+      
+          sections.forEach((section) => {
+            const sectionContent = section.content || []; // Ensure content is an array
+            sectionContent.forEach((content) => {
+              if (content.type === 'Quiz') {
+                const studentsAttemptedRef = doc(
+                  db,
+                  'course',
+                  courseId,
+                  'sections',
+                  section.sectionId,
+                  'content',
+                  content.contentId,
+                  'StudentsAttempted',
+                  currentUserId
+                );
+      
+                getDoc(studentsAttemptedRef).then((quizAttemptSnapshot) => {
+                  if (quizAttemptSnapshot.exists()) {
+                    const quizAttemptData = quizAttemptSnapshot.data();
+                    const quizAttempt: QuizAttempt = {
+                      AnsweredQuestions: (quizAttemptData as QuizAttempt).AnsweredQuestions || [],
+                      userId: currentUserId,
+                      timeTaken: (quizAttemptData as QuizAttempt).timeTaken || '',
+                    };
+      
+                    setSections((prevSections) =>
+                      prevSections.map((prevSection) => {
+                        if (prevSection.sectionId === section.sectionId) {
+                          const prevSectionContent = prevSection.content || []; // Ensure content is an array
+                          return {
+                            ...prevSection,
+                            content: prevSectionContent.map((prevContent) =>
+                              prevContent.contentId === content.contentId
+                                ? { ...prevContent, quizAttempt }
+                                : prevContent
+                            ),
+                          };
+                        }
+                        return prevSection;
+                      })
+                    );
+                  }
+                });
+              }
+            });
+          });
+        }
+      }, [courseId, sections]);
+      
 
       const handleSelectionChange = (key: string) => {
         setActive(key);
@@ -370,7 +452,7 @@ const handleMarkContentCompleted = async (contentId: string, sectionId: string, 
                 <div className="mr-8 mt-[24px] rounded-md flex flex-col h-auto">
                     {selectedContent?.type === 'Text' && <TextContent lessonContent={selectedContent.lessonContent} />}
                     {selectedContent?.type === 'Video' && <VideoContent videoLink={selectedContent.videoLink || ''}/>}
-                    {selectedContent?.type === 'Quiz' && <QuizContent isAdmin={false} sectionId={sectionId} courseId={courseId || ''} questionsList={selectedContent.questionsList || []} contentId={selectedContent.contentId} quizTime={selectedContent.quizTime} questionCount={selectedContent.questionsCount} marksPerQ={selectedContent.marksPerQuestion} nMarksPerQ={selectedContent.nMarksPerQuestion} lessonOverview={selectedContent.lessonOverView} lessonHeading={selectedContent.lessonHeading}/>}
+                    {selectedContent?.type === 'Quiz' && <QuizContent isAdmin={false} sectionId={sectionId} courseId={courseId || ''} questionsList={selectedContent.questionsList || []} contentId={selectedContent.contentId} quizTime={selectedContent.quizTime} questionCount={selectedContent.questionsCount} marksPerQ={selectedContent.marksPerQuestion} nMarksPerQ={selectedContent.nMarksPerQuestion} lessonOverview={selectedContent.lessonOverView} lessonHeading={selectedContent.lessonHeading} quizAttempt={selectedContent.quizAttempt}/>}
                 </div>
 
                 {/* THIS IS THE FOOTER PART OF MAIN---COURSE-----LAYOUT */}

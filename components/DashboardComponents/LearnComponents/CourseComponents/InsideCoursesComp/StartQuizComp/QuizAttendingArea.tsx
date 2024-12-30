@@ -26,7 +26,7 @@ interface Question {
     isActive: boolean;
     options: Options;
     correctAnswer: string | null;
-    explanation: string;
+    answerExplanation: string;
     questionId: string;
 }
 interface QuestionState {

@@ -173,7 +173,7 @@ function MyTestSeries() {
                     {/* <div className="flex items-center absolute top-3 left-5 mr-5 bg-[#c74fe6] bg-opacity-80 text-xs font-medium border border-[#c74fe6] text-white rounded-full px-3 py-2 z-10 transition-transform duration-300 ease-in-out">
                             <p>JEE Mains Test</p>
                         </div> */}
-                    <Image className="flex w-full h-[300px]" src={test.testImage || "/images/course_img.svg"} alt="Test" width={300} height={300} />
+                    <Image className="w-[300px] h-[300px]" src={test.testImage || "/images/course_img.svg"} alt="Test" width={300} height={300} />
                   </div>
 
                   {/* Test details container */}
@@ -184,7 +184,7 @@ function MyTestSeries() {
 
                       {/* Test name with a collapse icon */}
                       <div className="flex flex-1 text-base font-semibold leading-6 w-full items-center justify-between mt-3">
-                        <p>{test.testName}</p>
+                        <p>{test.testName || ''}</p>
                         <button className="w-[32px] h-[32px]  rounded-full flex items-center justify-center transition-all duration-300 ease-in-out hover:bg-[#F2F4F7]">
                           <button>
                             <Image alt="Collapse Icon Right" src="/icons/collapse-right.svg" width={8} height={8} />
