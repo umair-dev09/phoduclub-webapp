@@ -113,7 +113,7 @@ function QuizAttendingArea({
                                 <div className="mt-5">
                                     <button
                                         onClick={openBottomSheet}
-                                        className="bg-[#8501FF] text-[#FFFFFF] text-sm font-semibold py-2 px-5 rounded-md w-[118px] h-[44px] hover:bg-[#6D0DCC]"
+                                        className="bg-[#8501FF] text-[#FFFFFF] text-sm font-semibold py-2 px-5 rounded-md w-[118px] h-[44px]"
                                         style={{
                                             border: "1px solid #800EE2",
                                             boxShadow: "0px -4px 4px 0px #1018281F inset, 0px 3px 2px 0px #FFFFFF3D inset",
@@ -159,9 +159,9 @@ function QuizAttendingArea({
 
                     {/* Quiz Content */}
                     <div className="overflow-y-auto p-5 h-full">
-                        {/* Your quiz content goes here */}
-                        <div className="flex flex-col gap-5 items-center justify-center">
-                            {questionsList.map((q, index) => (
+                        {/* Your quiz content goes here */}                            
+                            <div className="flex flex-col gap-5 items-center justify-center">
+                            {questionsList.map((q, index)  => ( 
                                 <div key={index} className="w-auto h-auto rounded-[12px] px-4 border-2 border-[#EAECF0]  flex py-4 flex-col items-center justify-center">
                                     <div className="bg-[#FFFFFF] w-[832px] h-auto flex  flex-col gap-[20px]">
                                         <div className="w-[832px] h-[24px] ">
@@ -169,8 +169,8 @@ function QuizAttendingArea({
                                                 {index + 1}. {q.question}
                                             </span>
                                         </div>
-                                        <div className="w-auto h-auto gap-[15px] flex flex-col ">
-                                            <RadioGroup>
+                                            <div className="w-auto h-auto gap-[15px] flex flex-col ">
+                                                <RadioGroup>
                                                 {Object.entries(q.options).map(([key, value]) => (
                                                     <FormControlLabel
                                                         key={key}
@@ -189,8 +189,8 @@ function QuizAttendingArea({
                                                         label={value}
                                                     />
                                                 ))}
-                                            </RadioGroup>
-                                        </div>
+                                                </RadioGroup>
+                                            </div>
                                         {/* <hr />
                                         <div className="w-[121px] h-10 items-center px-2 flex flex-row  bg-[#EDFCF3] border border-solid border-[#AAF0C7] rounded-[6px] gap-1">
                                             <Image
@@ -215,14 +215,14 @@ function QuizAttendingArea({
                                     </div>
 
                                 </div>
-                            ))}
-                        </div>
-                        {/* End repeat block */}
+                                ))}
+                            </div>
+                            {/* End repeat block */}
                     </div>
 
                     {/* Bottom Button Section */}
                     <div className="flex flex-row items-center justify-end border-t border-lightGrey p-4">
-                        <button className=" border  rounded-lg py-2.5 px-6 text-sm bg-purple text-white border-darkPurple hover:bg-[#6D0DCC]"
+                        <button className=" border  rounded-lg py-2.5 px-6 text-sm bg-purple text-white border-darkPurple"
                             style={{
                                 border: "1px solid #800EE2",
                                 boxShadow: "0px -4px 4px 0px #1018281F inset, 0px 3px 2px 0px #FFFFFF3D inset"
@@ -276,7 +276,7 @@ function QuizAttendingArea({
                                             handleDialogSubmit();
                                             onSubmit();
                                         }}
-                                        className="bg-[#8501FF] text-[#FFFFFF] text-sm font-semibold py-2 px-5 rounded-md w-[118px] h-[44px] hover:bg-[#6D0DCC]"
+                                        className="bg-[#8501FF] text-[#FFFFFF] text-sm font-semibold py-2 px-5 rounded-md w-[118px] h-[44px]"
                                         style={{
                                             border: "1px solid #800EE2",
                                             boxShadow: "0px -4px 4px 0px #1018281F inset, 0px 3px 2px 0px #FFFFFF3D inset",

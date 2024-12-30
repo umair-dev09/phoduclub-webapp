@@ -419,10 +419,10 @@ function Test() {
                                         .map((section, index) => (
                                             <div key={index}>
                                                 {section.hasQuestions ? (
-                                                    <div className="flex flex-col w-full h-auto rounded-[12px] border border-solid border-[#EAECF0] bg-[#FFFFFF] mt-1">
+                                                    <div className="flex w-full h-auto rounded-[12px] border border-solid border-[#EAECF0] bg-[#FFFFFF] mt-1">
                                                         <Collapsible
                                                             trigger={
-                                                                <div className="w-full h-auto m-2 flex justify-between items-center"
+                                                                <div className="w-auto h-auto m-2 flex justify-between items-center min-w-[900px]"
                                                                     onClick={() => toggleCollapsible(0)}>
                                                                     <div className="flex flex-col gap-1 ml-3 ">
                                                                         <span className="text-[#1D2939] font-semibold text-[16px]">
@@ -467,7 +467,7 @@ function Test() {
                                                                             </div>
                                                                         ) : (
                                                                             <button onClick={(e) => { e.stopPropagation(); handleStartTest(section.description, section.testTime, section.marksPerQ, section.QuestionsCount || 0, section.id); }}>
-                                                                                <div className="mt-3 flex items-center justify-center w-[116px] h-[36px] rounded-[6px] bg-[#9012FF] border border-solid border-[#800EE2] shadow-inner-button hover:bg-[#6D0DCC]">
+                                                                                <div className="mt-3 flex items-center justify-center w-[116px] h-[36px] rounded-[6px] bg-[#9012FF] border border-solid border-[#800EE2] shadow-inner-button">
                                                                                     <span className="font-medium text-[14px] text-[#FCFCFD]">
                                                                                         Start test
                                                                                     </span>
@@ -484,7 +484,7 @@ function Test() {
                                                         >
                                                             {sectionAttempts[section.id]?.attemptedDetails && (
                                                                 <div
-                                                                    className={`overflow-hidden`}
+                                                                    className={`overflow-hidden }`}
                                                                 >
                                                                     <div className="h-[200px] ">
                                                                         <div className="h-[149px] bg-[#FFFFFF] ml-5 mr-5 border-t border-b border-solid border-[#EAECF0] mt-[10px]">
@@ -615,9 +615,8 @@ function Test() {
                                                                             </button>
                                                                         </button>
                                                                     </div>
-                                                                    <span className="font-normal text-[12px] text-[#667085] mt-1  flex flex-rowjustify-start">
-                                                                        {section.SubsectionsCount} Tests
-                                                                    </span>
+                                                                    <span className="font-normal text-[12px] text-[#667085] mt-1  flex flex-row
+                        justify-start">{section.SubsectionsCount} Tests</span>
                                                                 </div>
 
                                                                 <div className="h-[44px] flex flex-col ">
@@ -658,7 +657,7 @@ function Test() {
                 <DialogBackdrop className="fixed inset-0 bg-black/30 " />
                 <div className="fixed inset-0 flex items-center justify-center ">
                     <DialogPanel transition className="bg-[#FFFFFF] rounded-2xl  w-[520px] h-auto">
-                        <div className="flex flex-1 w-full flex-col pb-6">
+                        <div className="flex flex-1 w-full border-b-2 border-[#EAECF0] flex-col">
                             <div className="h-[23px]  mt-[23px] mr-[24px] ml-[24px] justify-between flex">
                                 <span className="text-[#1D2939] font-semibold text-lg">Start Test</span>
                                 <button className="w-[32px] h-[32px]  rounded-full flex items-center justify-center transition-all duration-300 ease-in-out hover:bg-[#F2F4F7]">
@@ -685,7 +684,7 @@ function Test() {
                                 </div>
                             </div>
                         </div>
-                        <div className="flex flex-row justify-end py-3 pr-6 gap-4  border-t border-lightGrey border-solid">
+                        <div className="flex flex-row justify-end my-4 mr-6 gap-4">
                             <button
                                 className="bg-[#FFFFFF] text-[#1D2939] text-sm font-semibold py-2 px-5 rounded-md w-[118px] h-[44px] shadow-inner-button hover:bg-[#F2F4F7]"
                                 style={{ border: "1.5px solid #EAECF0" }}
@@ -693,7 +692,7 @@ function Test() {
                                 Cancel
                             </button>
                             <button
-                                className="bg-[#8501FF] text-[#FFFFFF] text-sm font-semibold py-2 px-5 rounded-md w-[118px] h-[44px] shadow-inner-button border border-[#800EE2] hover:bg-[#6D0DCC]"
+                                className="bg-[#8501FF] text-[#FFFFFF] text-sm font-semibold py-2 px-5 rounded-md w-[118px] h-[44px] shadow-inner-button border border-[#800EE2]"
                                 onClick={() => {
                                     const sectionIds = getSectionPath(passedSectionId);
                                     const url = `/attempt-test?tId=${testId}&sectionIds=${encodeURIComponent(

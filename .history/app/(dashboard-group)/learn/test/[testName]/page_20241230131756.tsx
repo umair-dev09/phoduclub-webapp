@@ -419,10 +419,10 @@ function Test() {
                                         .map((section, index) => (
                                             <div key={index}>
                                                 {section.hasQuestions ? (
-                                                    <div className="flex flex-col w-full h-auto rounded-[12px] border border-solid border-[#EAECF0] bg-[#FFFFFF] mt-1">
+                                                    <div className="flex w-full h-auto rounded-[12px] border border-solid border-[#EAECF0] bg-[#FFFFFF] mt-1">
                                                         <Collapsible
                                                             trigger={
-                                                                <div className="w-full h-auto m-2 flex justify-between items-center"
+                                                                <div className="w-auto h-auto m-2 flex justify-between items-center min-w-[900px]"
                                                                     onClick={() => toggleCollapsible(0)}>
                                                                     <div className="flex flex-col gap-1 ml-3 ">
                                                                         <span className="text-[#1D2939] font-semibold text-[16px]">
@@ -484,7 +484,7 @@ function Test() {
                                                         >
                                                             {sectionAttempts[section.id]?.attemptedDetails && (
                                                                 <div
-                                                                    className={`overflow-hidden`}
+                                                                    className={`overflow-hidden }`}
                                                                 >
                                                                     <div className="h-[200px] ">
                                                                         <div className="h-[149px] bg-[#FFFFFF] ml-5 mr-5 border-t border-b border-solid border-[#EAECF0] mt-[10px]">
@@ -615,9 +615,8 @@ function Test() {
                                                                             </button>
                                                                         </button>
                                                                     </div>
-                                                                    <span className="font-normal text-[12px] text-[#667085] mt-1  flex flex-rowjustify-start">
-                                                                        {section.SubsectionsCount} Tests
-                                                                    </span>
+                                                                    <span className="font-normal text-[12px] text-[#667085] mt-1  flex flex-row
+                        justify-start">{section.SubsectionsCount} Tests</span>
                                                                 </div>
 
                                                                 <div className="h-[44px] flex flex-col ">

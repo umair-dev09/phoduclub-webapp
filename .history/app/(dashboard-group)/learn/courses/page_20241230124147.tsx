@@ -3,7 +3,7 @@ import MyCourses from '@/components/DashboardComponents/LearnComponents/CourseCo
 
 export default function MyCourse() {
     return (
-        <div className="flex flex-col  gap-6">
+        <div className="flex flex-col ">
             <div className='flex flex-col w-full flex-1 mt-4 ml-6'>
                 <div className='flex flex-1'>
                     <MyCourses />
@@ -16,4 +16,4 @@ export default function MyCourse() {
             </div>
         </div>
     );
-}   
+} 
