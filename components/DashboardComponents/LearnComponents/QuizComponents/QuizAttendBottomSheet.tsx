@@ -22,13 +22,12 @@ interface Options {
 
 interface Question {
     question: string;
-    isChecked: boolean;
-    isActive: boolean;
     options: Options;
-    correctAnswer: string | null;   
+    correctAnswer: string | null;
     answerExplanation: string;
     questionId: string;
 }
+
 interface QuestionState {
     questionId: string;
     selectedOption: string | null;
@@ -40,24 +39,17 @@ interface QuizAttempt {
     timeTaken: string;
 }
 type QuizProps = {
-    isOpen: boolean;
-    setIsOpen: (isOpen: boolean) => void;
     setShowBottomSheet: (show: boolean) => void;
-    onSubmit: () => void;
     showBottomSheet: boolean;
-    contentId: string;
     questionsList: Question[];
-    courseId: string;
-    sectionId: string;
     quizTime: string;
+    quizId: string;
 };
 
-function QuizAttendingArea({
-    isOpen,
-    setIsOpen,
+function QuizAttendBottomSheet({
     showBottomSheet,
     setShowBottomSheet,
-    onSubmit, contentId, questionsList, courseId, sectionId, quizTime
+     questionsList, quizId, quizTime
 }: QuizProps) {
     const [isDialogOpen, setIsDialogOpen] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -98,7 +90,6 @@ function QuizAttendingArea({
         console.error("No user found");
         return;
     }
-
     setIsSubmitting(true);
     try {
         const quizAttempt: QuizAttempt = {
@@ -108,7 +99,7 @@ function QuizAttendingArea({
         };
 
         // Fixed Firestore path structure
-        const quizPath = `course/${courseId}/sections/${sectionId}/content/${contentId}/StudentsAttempted`;
+        const quizPath = `quiz/${quizId}/StudentsAttempted`;
         const studentAttemptRef = doc(db, quizPath, userId);
         await setDoc(studentAttemptRef, quizAttempt);
         toast.success('Quiz attempt saved successfully');
@@ -126,7 +117,7 @@ function QuizAttendingArea({
     };
 
     const openBottomSheet = () => {
-        setIsOpen(false);
+        // setIsOpen(false);
         setShowBottomSheet(true);
     };
 
@@ -142,13 +133,13 @@ function QuizAttendingArea({
     };
 
     const handleSaveExit = () => {
-        setIsOpen(false);
+        // setIsOpen(false);
         setShowBottomSheet(false);
     };
 
     const handleDialogSubmit = async () => {
         setIsDialogOpen(false);
-        setIsOpen(false);
+        // setIsOpen(false);
         setShowBottomSheet(false);
         await storeQuizAttempt();    
     };
@@ -157,63 +148,6 @@ function QuizAttendingArea({
     };
     return (
         <>
-            {/* Initial Dialog */}
-            <Dialog open={isOpen} onClose={() => setIsOpen(false)} className="relative z-50">
-                {/* Backdrop */}
-                <DialogBackdrop className="fixed inset-0 bg-black/30 " />
-
-                {/* Dialog Wrapper */}
-                <div className="fixed inset-0 flex items-center justify-center p-4">
-                    <DialogPanel transition>
-                        <div className="bg-white rounded-2xl p-5 w-[480px] h-[261px]">
-                            {/* Header Section */}
-                            <div className="flex items-center justify-between mb-4">
-                                <span className="text-lg font-bold text-[#1D2939]">Confirmation</span>
-                                <button className="w-[32px] h-[32px]  rounded-full flex items-center justify-center transition-all duration-300 ease-in-out hover:bg-[#F2F4F7]">
-                                    <button onClick={() => setIsOpen(false)}>
-                                        <Image src="/icons/cancel.svg" alt="cancel" width={18} height={18} />
-                                    </button>
-                                </button>
-                            </div>
-                            {/* Content Section */}
-                            <div className="flex flex-col gap-4 w-[432px] h-[100px]">
-                                <span className="text-sm text-[#667085] font-normal">
-                                    Lorem ipsum is a dummy text widely used in the digital industry and will be used here as a preview.
-                                </span>
-                                <span className="text-sm text-[#667085] font-normal">
-                                    Lorem ipsum is a dummy text widely used in the digital industry and will be used here as a preview.
-                                </span>
-                            </div>
-                            {/* Buttons */}
-                            <div className="border-t border-[#EAECF0] w-full h-[76px] mt-5 flex justify-end gap-2">
-                                <div className="mt-5">
-                                    <button
-                                        className="bg-[#FFFFFF] text-[#1D2939] text-sm font-semibold py-2 px-5 rounded-md w-[118px] h-[44px] hover:bg-[#F2F4F7]"
-                                        style={{ border: "1.5px solid #EAECF0" }}
-                                        onClick={() => setIsOpen(false)}
-                                    >
-                                        Cancel
-                                    </button>
-                                </div>
-                                <div className="mt-5">
-                                    <button
-                                        onClick={openBottomSheet}
-                                        className="bg-[#8501FF] text-[#FFFFFF] text-sm font-semibold py-2 px-5 rounded-md w-[118px] h-[44px] hover:bg-[#6D0DCC]"
-                                        style={{
-                                            border: "1px solid #800EE2",
-                                            boxShadow: "0px -4px 4px 0px #1018281F inset, 0px 3px 2px 0px #FFFFFF3D inset",
-                                        }}
-                                    >
-                                        Start Now
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </DialogPanel>
-                </div >
-            </Dialog >
-
-
             <Drawer
                 open={showBottomSheet}
                 direction="bottom"
@@ -364,7 +298,7 @@ function QuizAttendingArea({
     );
 }
 
-export default QuizAttendingArea;
+export default QuizAttendBottomSheet;
 
 
 

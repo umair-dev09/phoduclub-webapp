@@ -12,7 +12,7 @@ interface CourseData {
   courseName: string;
   price: number;
   discountPrice: string;
-  courseId: string;
+  courseId: string;  
   date: string; // Can be Date type if desired
   courseImage: string;
   status: string;
