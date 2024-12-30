@@ -1,3 +1,5 @@
+'use client';
+
 import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from 'next/navigation';
 import Image from "next/image";
@@ -193,7 +195,7 @@ const CreateTestSeries = () => {
             case Step.Perference:
                 return <Perference startDate={startDate} endDate={endDate} setEndDate={setEndDate} setLiveQuizNow={setLiveQuizNow} liveQuizNow={liveQuizNow} setStartDate={setStartDate} />;
             default:
-                return <TestSeriesInfo isInCourse={isInCourse} setIsInCourse={setIsInCourse}  name={name} setName={setName} description={description} setDescription={setDescription} imageUrl={image} setImageUrl={setImage} price={price} setPrice={setPrice} discountPrice={discountPrice} setDiscountPrice={setDiscountPrice} rating={rating} setRating={setRating} noOfRating={noOfRating} setNoOfRating={setNoOfRating} />;
+                return <TestSeriesInfo isInCourse={isInCourse} setIsInCourse={setIsInCourse} name={name} setName={setName} description={description} setDescription={setDescription} imageUrl={image} setImageUrl={setImage} price={price} setPrice={setPrice} discountPrice={discountPrice} setDiscountPrice={setDiscountPrice} rating={rating} setRating={setRating} noOfRating={noOfRating} setNoOfRating={setNoOfRating} />;
         }
     };
 
