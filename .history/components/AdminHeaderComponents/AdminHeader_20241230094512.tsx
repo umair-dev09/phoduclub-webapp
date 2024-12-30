@@ -13,9 +13,7 @@ import Logout from '../AdminComponents/RoleMangement/Logout';
 
 interface HeaderProps {
     currentPage: string;
-
 }
-
 type UserData = {
     name: string | null;
     adminId: string | null;
@@ -117,7 +115,6 @@ function Header({ currentPage }: HeaderProps) {
 
     const isBackPage = currentPage === 'Back to Quizzes Management' || currentPage === 'Back to Test Series Management' || currentPage === 'Back to Customer Care' || currentPage === 'Back to Messenger' || currentPage === 'Back to Course Management' || currentPage === 'Back to User Database' || currentPage === 'Back to Role Management';
 
-
     return (
         <div className="flex w-full flex-row items-center justify-between px-6 bg-white h-[65px] rounded-t border border-b-[#e9ebf0]">
             <div className="flex flex-row items-center gap-2 text-lg">
@@ -126,7 +123,6 @@ function Header({ currentPage }: HeaderProps) {
                         <Image src='/icons/arrow-left-02-round.svg' alt='back' width={24} height={24} />
                     </button>
                 )}
-                { }
                 {currentPage !== 'My Profile' && (
                     <h2 className={!isBackPage ? "" : "text-[#667085] text-base font-medium"}>
                         {currentPage || ''}
