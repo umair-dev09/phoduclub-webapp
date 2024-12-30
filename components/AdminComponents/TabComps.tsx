@@ -176,11 +176,17 @@ function TabComps() {
 
             {/* Logo Section */}
             <div className='overflow-hidden'>
-                <button className={`items-center justify-center w-10 h-10 mt-3 mb-[0.73rem] ml-[0.2rem] text-white font-bold bg-[#3c2f40] rounded-[0.375rem] transition-all ${isCollapsed ? 'flex' : 'hidden'}`}
+                {/* <button className={`items-center justify-center w-10 h-10 mt-3 mb-[0.73rem] ml-[0.2rem] text-white font-bold bg-[#3c2f40] rounded-[0.375rem] transition-all ${isCollapsed ? 'flex' : 'hidden'}`}
                     onClick={() => { router.push("/admin") }}
                 >
                     P
-                </button>
+                </button> */}
+                <p className={`items-center justify-start mt-3 mb-[0.73rem] ml-[0.2rem] transition-all ${isCollapsed ? 'flex' : 'hidden'}`}
+                    onClick={() => { router.push("/admin") }}
+                >
+                    {/* P */}
+                    <Image src='/icon.jpg' alt='phodu logo' width={40} height={40} />
+                </p>
                 <div className={`flex-col mt-2 mb-[0.475rem] ml-2 transition-all ${!isCollapsed ? 'flex' : 'hidden'}`}>
                     <p className='text-white text-left text-lg font-bold'>
                         <button
