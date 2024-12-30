@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import Quiz from "./QuizAttendingArea";
 import QuizAttendingArea from "./QuizAttendingArea";
+import ReviewQuiz from "./ReviewQuiz";
 
 interface Options {
     A: string;
@@ -18,9 +19,21 @@ interface Question {
     isActive: boolean;
     options: Options;
     correctAnswer: string | null;
-    explanation: string;
+    answerExplanation: string;
+    questionId: string;
 }
 
+interface QuizAttempt {
+    AnsweredQuestions: QuestionState[];
+    userId: string;
+    timeTaken: string;
+  }
+  
+  interface QuestionState {
+    questionId: string;
+    selectedOption: string; // User's answer
+    answeredCorrect: boolean; // Whether the answer is correct
+  }
 
 interface QuizContentProps {
     lessonOverview: string;
@@ -34,59 +47,62 @@ interface QuizContentProps {
     courseId: string;
     sectionId: string;
     isAdmin: boolean;
+    quizAttempt?: QuizAttempt | null;
+
 }
 
 const convertToTimeFormat = (timeStr: string): string => {
     const regex = /(\d+)\s*(Minute|Hour)\(s\)/i;
     const match = timeStr.match(regex);
-  
+
     if (!match) return "00:00"; // Return default value if the format doesn't match
-  
+
     const value = parseInt(match[1], 10); // Get the numeric value
     const unit = match[2].toLowerCase(); // Get the unit (either minute or hour)
-  
+
     let totalMinutes = 0;
-  
+
     if (unit === "minute") {
-      totalMinutes = value;
+        totalMinutes = value;
     } else if (unit === "hour") {
-      totalMinutes = value * 60; // Convert hours to minutes
+        totalMinutes = value * 60; // Convert hours to minutes
     }
-  
+
     const hours = Math.floor(totalMinutes / 60).toString().padStart(2, "0"); // Calculate hours and format
     const minutes = (totalMinutes % 60).toString().padStart(2, "0"); // Calculate minutes and format
-  
-    return `${hours}:${minutes}`;
-  };
 
-  const convertToDisplayTimeFormat = (timeStr: string): string => {
+    return `${hours}:${minutes}`;
+};
+
+const convertToDisplayTimeFormat = (timeStr: string): string => {
     const regex = /(\d+)\s*(Minute|Hour)\(s\)/i;
     const match = timeStr.match(regex);
-  
+
     if (!match) return "00:00"; // Return default value if the format doesn't match
-  
+
     const value = parseInt(match[1], 10); // Get the numeric value
     const unit = match[2].toLowerCase(); // Get the unit (either minute or hour)
-  
+
     let totalMinutes = 0;
     let formattedTime = "";
-  
-    if (unit === "minute") {
-      totalMinutes = value;
-      const hours = Math.floor(totalMinutes / 60).toString().padStart(2, "0"); // Calculate hours and format
-      const minutes = (totalMinutes % 60).toString().padStart(2, "0"); // Calculate minutes and format
-      formattedTime = `${hours}:${minutes} Minutes`;
-    } else if (unit === "hour") {
-      totalMinutes = value * 60; // Convert hours to minutes
-      const hours = Math.floor(totalMinutes / 60).toString().padStart(2, "0"); // Format hours
-      const minutes = (totalMinutes % 60).toString().padStart(2, "0"); // Format minutes
-      formattedTime = `${hours}:${minutes} Hours`;
-    }
-  
-    return formattedTime;
-  };
 
-function QuizContent({lessonHeading, isAdmin, courseId, sectionId, lessonOverview, questionCount, marksPerQ, nMarksPerQ, quizTime, contentId, questionsList}:QuizContentProps) {
+    if (unit === "minute") {
+        totalMinutes = value;
+        const hours = Math.floor(totalMinutes / 60).toString().padStart(2, "0"); // Calculate hours and format
+        const minutes = (totalMinutes % 60).toString().padStart(2, "0"); // Calculate minutes and format
+        formattedTime = `${hours}:${minutes} Minutes`;
+    } else if (unit === "hour") {
+        totalMinutes = value * 60; // Convert hours to minutes
+        const hours = Math.floor(totalMinutes / 60).toString().padStart(2, "0"); // Format hours
+        const minutes = (totalMinutes % 60).toString().padStart(2, "0"); // Format minutes
+        formattedTime = `${hours}:${minutes} Hours`;
+    }
+
+    return formattedTime;
+};
+
+function QuizContent({ lessonHeading, isAdmin, courseId, sectionId, lessonOverview, questionCount, marksPerQ, nMarksPerQ, quizTime, contentId, questionsList, quizAttempt }: QuizContentProps) {
+    const [showReviewSheet, setShowReviewSheet] = useState(false);
 
     const [showQuizDialog, setShowQuizDialog] = useState(false);
     const [isQuizOpen, setIsQuizOpen] = useState(false);
@@ -98,7 +114,7 @@ function QuizContent({lessonHeading, isAdmin, courseId, sectionId, lessonOvervie
         setIsQuizOpen(true);
     };
 
-    const handleQuizSubmit = () => { 
+    const handleQuizSubmit = () => {
         setIsQuizSubmitted(true);
         setShowBottomSheet(false); // Close bottom sheet
     };
@@ -109,15 +125,15 @@ function QuizContent({lessonHeading, isAdmin, courseId, sectionId, lessonOvervie
             {/* ------------------------------------------------------------------------------------------------------------------------------------------------> */}
 
             <div className="flex flex-col ml-8 gap-[20px] ">
-
+            
                 <span className="w-[140px] h-[24px] text-[#1D2939] text-base font-bold">
                     Quiz Information
-
                 </span>
+            
             </div>
-            <div className='text-[#667085] text-base font-normal break-all ml-8 mr-4 mt-2 text-start'  dangerouslySetInnerHTML={{
-                                    __html: lessonOverview || '',
-             }}/>
+            <div className='text-[#667085] text-base font-normal break-all ml-8 mr-4 mt-2 text-start' dangerouslySetInnerHTML={{
+                __html: lessonOverview || '',
+            }} />
 
             <div className="flex flex-col ml-8 mt-10 w-[602px] h-auto space-y-5">
                 {/* Each pair of icon and text */}
@@ -153,30 +169,31 @@ function QuizContent({lessonHeading, isAdmin, courseId, sectionId, lessonOvervie
                     />
                     {marksPerQ} Marks per question
                 </span>
-                
-             </div>
-             {!isAdmin &&(
-       <div className="h-[65px]  " style={{ borderRadius: "5px", position: "relative" }}>
-       <div className="relative flex justify-between items-end h-full ml-8">
-           {!isQuizSubmitted && (
-               <button
-                   onClick={onStartQuiz}
-                   className="bg-[#8501FF] text-[#FFFFFF] text-sm font-semibold py-2 px-5 rounded-md w-[118px] h-[44px] ml-auto border-[1px] border-[#800EE2] shadow-[inset_0px_-4px_4px_0px_#1018281F,inset_0px_3px_2px_0px_#FFFFFF3D]"
 
-               >
-                   Start Quiz
-               </button>
-           )}
-           {isQuizSubmitted && (
-               <div className="absolute flex flex-row justify-between w-full">
-                   <button className="border border-[#9012FF] bg-white text-[#1D2939] text-sm font-semibold px-6 py-[0.625rem] hover:bg-[#F5F0FF]   rounded-md">Review your attempt</button>
-                   <button className="border border-[#800EE2] bg-[#800EE2] text-white text-sm font-semibold px-6 py-[0.625rem] rounded-md">Re-Attempt</button>
-               </div>
-           )}
-       </div>
-   </div>
-             )}
-     
+            </div>
+            {!isAdmin && (
+                <div className="h-[65px]  " style={{ borderRadius: "5px", position: "relative" }}>
+                    <div className="relative flex justify-between items-end h-full ml-8">
+                          {!quizAttempt ? (
+                            <button
+                                onClick={onStartQuiz}
+                                className="bg-[#8501FF] text-[#FFFFFF] text-sm font-semibold py-2 px-5 rounded-md w-[118px] h-[44px] ml-auto border-[1px] border-[#800EE2] shadow-[inset_0px_-4px_4px_0px_#1018281F,inset_0px_3px_2px_0px_#FFFFFF3D] hover:bg-[#6D0DCC]"
+
+                            >
+                                Start Quiz
+                            </button>
+                          ) : (
+                            <div className="absolute flex flex-row justify-between w-full">
+                                <button className="border border-[#9012FF] bg-white text-[#1D2939] text-sm font-semibold px-6 py-[0.625rem] hover:bg-[#F5F0FF]   rounded-md" 
+                                onClick={() => setShowReviewSheet(true)}
+                                >Review your attempt</button>
+                                <button className="border border-[#800EE2] bg-[#800EE2] text-white text-sm font-semibold px-6 py-[0.625rem] rounded-md" onClick={onStartQuiz}>Re-Attempt</button>
+                            </div>
+                          )}
+                    </div>
+                </div>
+            )}
+
 
 
             {showQuizDialog && (
@@ -190,9 +207,10 @@ function QuizContent({lessonHeading, isAdmin, courseId, sectionId, lessonOvervie
                     quizTime={convertToTimeFormat(quizTime)}
                     sectionId={sectionId}
                     courseId={courseId}
-                    questionsList={questionsList || []}                    
+                    questionsList={questionsList || []}
                 />
             )}
+            <ReviewQuiz setShowReviewSheet={setShowReviewSheet} showReviewSheet={showReviewSheet} questionsList={questionsList} answeredQuestions={quizAttempt?.AnsweredQuestions || []} timeTaken={quizAttempt?.timeTaken || ''}/>
 
         </div>
 

@@ -3,6 +3,7 @@ import { ReactNode } from 'react';
 import TabComps from '@/components/DashboardComponents/TabComps';
 import Header from "@/components/HeaderComponents/Header";
 import ClientWrapper from "@/components/ClientWrapper";
+import Notification from '@/components/DashboardComponents/NotificationComponents/Notification';
 
 interface DashboardGroupProps {
     children: ReactNode;
@@ -18,11 +19,12 @@ export default function DashboardGroup({ children }: DashboardGroupProps) {
                 <div className="content-box">
                     <div>
                         <Header />
+                        <Notification />
                     </div>
                     <div className="variable-contents">
-                    <ClientWrapper>
-                        {children}
-                    </ClientWrapper>
+                        <ClientWrapper>
+                            {children}
+                        </ClientWrapper>
                     </div>
                 </div>
             </div>
