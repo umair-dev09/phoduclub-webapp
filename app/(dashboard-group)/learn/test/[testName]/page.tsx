@@ -7,6 +7,7 @@ import { collection, doc, getCountFromServer, getDoc, getDocs, onSnapshot, query
 import LoadingData from "@/components/Loading";
 import Collapsible from "react-collapsible";
 import { Dialog, DialogBackdrop, DialogPanel } from "@headlessui/react";
+import { Progress } from "@nextui-org/progress";
 
 interface Section {
     id: string;
@@ -372,35 +373,27 @@ function Test() {
                         <div className="w-[178.69px] h-[49px] flex flex-col border-r border-solid border-[#EAECF0]">
                             <span className="font-normal text-[#667085] text-xs">Attempted Questions</span>
                             <span className="font-semibold text-[#1D2939] text-base mt-2">8/150</span>
-
                         </div>
                         <div className="w-[178.69px] h-[49px] flex flex-col  border-r border-solid border-[#EAECF0]">
                             <span className="font-normal text-[#667085] text-xs">Score</span>
                             <span className="font-semibold text-[#1D2939] text-base mt-2">32</span>
-
                         </div>
                         <div className="w-[178.69px] h-[49px] flex flex-col  border-r border-solid border-[#EAECF0]">
                             <span className="font-normal text-[#667085] text-xs">Accuracy</span>
                             <span className="font-semibold text-[#1D2939] text-base mt-2">80%</span>
-
                         </div>
                         <div className="w-[178.69px] h-[49px] flex flex-col  border-r border-solid border-[#EAECF0]">
                             <span className="font-normal text-[#667085] text-xs">Answered Correct</span>
                             <span className="font-semibold text-[#1D2939] text-base mt-2">8/150</span>
-
                         </div>
                         <div className="w-[178.69px] h-[49px] flex flex-col  border-r border-solid border-[#EAECF0]">
                             <span className="font-normal text-[#667085] text-xs">Answered inCorrect</span>
                             <span className="font-semibold text-[#1D2939] text- mt-2">0/150</span>
-
                         </div>
                         <div className="w-[178.69px] h-[49px] flex flex-col">
                             <span className="font-normal text-[#667085] text-xs">Time taken</span>
                             <span className="font-semibold text-[#1D2939] text-base mt-2">1h 30m of 2h</span>
-
                         </div>
-
-
                     </div>
                 </div> */}
                     {sectionLoading ? (
@@ -639,12 +632,7 @@ function Test() {
 
                                                                 {/* No gap applied here */}
                                                                 <div className="flex items-center justify-between flex-row gap-[10px]">
-                                                                    <div className="flex-grow relative h-2 rounded-full bg-gray-200 "> {/* Added `flex-grow` to allow space for text and `mr-4` for margin */}
-                                                                        <div
-                                                                            className="absolute top-0 left-0 h-2 rounded-full bg-progressPurple"
-                                                                            style={{ width: "43%" }}  // 43% progress is shown
-                                                                        ></div>
-                                                                    </div>
+                                                                    <Progress aria-label="Loading..." className="max-w-md h-2" value={43} />
                                                                     <span className="font-normal text-[#667085] text-xs">43%</span>
                                                                 </div>
                                                             </div>
@@ -721,8 +709,6 @@ function Test() {
                 </div>
             </Dialog>
         </div>
-
-
     );
 }
 export default Test;

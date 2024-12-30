@@ -72,15 +72,15 @@ function GroupIcons() {
     if (communityName && communityId) {
 
       setSelectedCommunityId(communityId);
-      setSelectedButton(null); // Reset the message button when a community is selected
+      setSelectedButton(null);
       router.push(`/community/${communityName.toLowerCase().replace(/\s+/g, '-')}/?communityId=${communityId}`);
 
     }
   };
 
   const onMessageButtonClick = () => {
-    setSelectedButton("message"); // Mark the message button as selected
-    setSelectedCommunityId(null); // Deselect any selected community
+    setSelectedButton("message");
+    setSelectedCommunityId(null);
     router.push('/community/general-chat')
   };
   return (
@@ -91,9 +91,9 @@ function GroupIcons() {
           <div className={`flex items-center justify-center w-[42px] h-[42px] rounded-full bg-[#C74FE6] border-[#C74FE6] border-2 text-[#624C18] font-bold ${selectedButton === "message" ? "border-white" : "group-hover:border-white"}`}>
             <Image src="/icons/messageIcon.svg" alt="message icon" width={18} height={18} />
           </div>
-          <div className="absolute top-6 left-6 px-2 py-1 bg-red-600 rounded-full text-white text-xs font-medium hidden group-hover:flex">
+          {/* <div className="absolute top-6 left-6 px-2 py-1 bg-red-600 rounded-full text-white text-xs font-medium hidden group-hover:flex">
             6
-          </div>
+          </div> */}
         </button>
       </div>
 
