@@ -483,9 +483,7 @@ function Test() {
                                                             onClosing={() => toggleCollapsible(0)} // Set the state to closed when collapsing
                                                         >
                                                             {sectionAttempts[section.id]?.attemptedDetails && (
-                                                                <div
-                                                                    className={`overflow-hidden`}
-                                                                >
+                                                                <div className={`overflow-hidden`} >
                                                                     <div className="h-[200px] ">
                                                                         <div className="h-[149px] bg-[#FFFFFF] ml-5 mr-5 border-t border-b border-solid border-[#EAECF0] mt-[10px]">
                                                                             <div className="bg-[#FFFFFF] h-[50px] flex justify-between items-center mt-[10px]">
@@ -510,7 +508,6 @@ function Test() {
                                                                                 </div>
                                                                                 <div className="jabir flex items-center w-[280px] ">
                                                                                     <div className="h-[30px] w-[1px] bg-[#EAECF0] mr-3"></div>
-
                                                                                     <div className="flex flex-col">
                                                                                         <span className="font-normal text-[#667085] text-xs">
                                                                                             Accuracy
@@ -529,13 +526,11 @@ function Test() {
                                                                                     </span>
                                                                                     <span className="font-semibold text-[15px] text-[#1D2939]">
                                                                                         {sectionAttempts[section.id]?.attemptedDetails?.answeredCorrect || "0/0"}
-
                                                                                     </span>
                                                                                 </div>
 
                                                                                 <div className="jabir flex items-center w-[280px] mx-[116px]">
                                                                                     <div className="h-[30px] w-[1px] bg-[#EAECF0] mr-3"></div>
-
                                                                                     <div className="flex flex-col">
                                                                                         <span className="font-normal text-[#667085] text-xs">
                                                                                             Answered Incorrect
@@ -547,7 +542,6 @@ function Test() {
                                                                                 </div>
                                                                                 <div className="jabir flex items-center w-[280px] ">
                                                                                     <div className="h-[30px] w-[1px] bg-[#EAECF0] mr-3"></div>
-
                                                                                     <div className="flex flex-col">
                                                                                         <span className="font-normal text-[#667085] text-xs">
                                                                                             Time taken

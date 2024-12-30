@@ -96,7 +96,6 @@ function TesstseriesInfo() {
     const [statusFilter, setStatusFilter] = useState(null);
     const isTextSearch = searchTerm.trim().length > 0 && !dateFilter && !statusFilter;
 
-
     useEffect(() => {
         const testCollection = collection(db, "testseries");
         const unsubscribe = onSnapshot(testCollection, (snapshot) => {
