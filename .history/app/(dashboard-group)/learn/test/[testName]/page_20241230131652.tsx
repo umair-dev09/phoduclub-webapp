@@ -661,7 +661,7 @@ function Test() {
                             <div className="h-[23px]  mt-[23px] mr-[24px] ml-[24px] justify-between flex">
                                 <span className="text-[#1D2939] font-semibold text-lg">Start Test</span>
                                 <button className="w-[32px] h-[32px]  rounded-full flex items-center justify-center transition-all duration-300 ease-in-out hover:bg-[#F2F4F7]">
-                                    <button onClick={() => setShowTestDialog(false)}>
+                                    <button onClick={() => setShowTestDialog(false)} className="flex items-start">
                                         <Image src="/icons/cancel.svg" alt="cancel" width={18} height={18} />
                                     </button>
                                 </button>

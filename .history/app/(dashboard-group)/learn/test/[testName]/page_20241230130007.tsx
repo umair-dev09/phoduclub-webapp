@@ -657,7 +657,7 @@ function Test() {
                 <DialogBackdrop className="fixed inset-0 bg-black/30 " />
                 <div className="fixed inset-0 flex items-center justify-center ">
                     <DialogPanel transition className="bg-[#FFFFFF] rounded-2xl  w-[520px] h-auto">
-                        <div className="flex flex-1 w-full flex-col pb-6">
+                        <div className="flex flex-1 w-full border-b-2 border-[#EAECF0] flex-col">
                             <div className="h-[23px]  mt-[23px] mr-[24px] ml-[24px] justify-between flex">
                                 <span className="text-[#1D2939] font-semibold text-lg">Start Test</span>
                                 <button className="w-[32px] h-[32px]  rounded-full flex items-center justify-center transition-all duration-300 ease-in-out hover:bg-[#F2F4F7]">
@@ -684,7 +684,7 @@ function Test() {
                                 </div>
                             </div>
                         </div>
-                        <div className="flex flex-row justify-end py-3 pr-6 gap-4  border-t border-lightGrey border-solid">
+                        <div className="flex flex-row justify-end my-4 mr-6 gap-4">
                             <button
                                 className="bg-[#FFFFFF] text-[#1D2939] text-sm font-semibold py-2 px-5 rounded-md w-[118px] h-[44px] shadow-inner-button hover:bg-[#F2F4F7]"
                                 style={{ border: "1.5px solid #EAECF0" }}
@@ -692,7 +692,7 @@ function Test() {
                                 Cancel
                             </button>
                             <button
-                                className="bg-[#8501FF] text-[#FFFFFF] text-sm font-semibold py-2 px-5 rounded-md w-[118px] h-[44px] shadow-inner-button border border-[#800EE2] hover:bg-[#6D0DCC]"
+                                className="bg-[#8501FF] text-[#FFFFFF] text-sm font-semibold py-2 px-5 rounded-md w-[118px] h-[44px] shadow-inner-button border border-[#800EE2]"
                                 onClick={() => {
                                     const sectionIds = getSectionPath(passedSectionId);
                                     const url = `/attempt-test?tId=${testId}&sectionIds=${encodeURIComponent(

@@ -657,7 +657,7 @@ function Test() {
                 <DialogBackdrop className="fixed inset-0 bg-black/30 " />
                 <div className="fixed inset-0 flex items-center justify-center ">
                     <DialogPanel transition className="bg-[#FFFFFF] rounded-2xl  w-[520px] h-auto">
-                        <div className="flex flex-1 w-full flex-col pb-6">
+                        <div className="flex flex-1 w-full flex-col pb-3">
                             <div className="h-[23px]  mt-[23px] mr-[24px] ml-[24px] justify-between flex">
                                 <span className="text-[#1D2939] font-semibold text-lg">Start Test</span>
                                 <button className="w-[32px] h-[32px]  rounded-full flex items-center justify-center transition-all duration-300 ease-in-out hover:bg-[#F2F4F7]">

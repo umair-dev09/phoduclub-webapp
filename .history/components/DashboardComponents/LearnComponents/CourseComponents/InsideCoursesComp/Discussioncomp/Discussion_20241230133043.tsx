@@ -264,7 +264,7 @@ function Discussion({ courseId, sectionId, contentId }: DiscussionProps) {
                         </div>
                         {/* Button */}
                         <button
-                            className={` w-[88px] h-[36px] flex justify-center items-center rounded-md shadow-inner-button 
+                            className={` w-[88px] h-[36px] flex justify-center items-center rounded-md shadow-inner-button hover:bg-[#6D0DCC]
                                   ${!isFormValid ? 'bg-[#d8acff]' : 'bg-[#8501FF]'} 
                                      ${!isFormValid ? '' : 'border border-solid border-[#800EE2]'}`}
 

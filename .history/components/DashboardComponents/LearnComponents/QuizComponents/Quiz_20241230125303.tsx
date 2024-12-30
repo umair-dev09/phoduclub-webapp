@@ -118,7 +118,7 @@ function Quiz() {
                         </div>
                     </div>
                     <div>
-                        <button className="flex items-center justify-center w-full px-[14px] py-[10px] text-xs text-white font-semibold shadow-inner-button bg-[#9012FF] rounded-[6px] border border-darkPurple hover:bg-[#6D0DCC]">
+                        <button className="flex items-center justify-center w-full px-[14px] py-[10px] text-xs text-white font-semibold shadow-inner-button bg-[#9012FF] rounded-[6px] border border-darkPurple ">
                             Start Quiz
                         </button>
                     </div>
@@ -203,7 +203,7 @@ function Quiz() {
                                     Cancel
                                 </button>
                                 <button
-                                    className="bg-[#8501FF] text-[#FFFFFF] text-sm font-semibold py-2 px-5 rounded-md w-[118px] h-[44px] shadow-inner-button hover:bg-[#6D0DCC]"
+                                    className="bg-[#8501FF] text-[#FFFFFF] text-sm font-semibold py-2 px-5 rounded-md w-[118px] h-[44px] shadow-inner-button"
                                     style={{
                                         border: "1px solid #800EE2",
 

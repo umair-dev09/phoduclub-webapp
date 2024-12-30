@@ -203,7 +203,7 @@ function Quiz() {
                                     Cancel
                                 </button>
                                 <button
-                                    className="bg-[#8501FF] text-[#FFFFFF] text-sm font-semibold py-2 px-5 rounded-md w-[118px] h-[44px] shadow-inner-button hover:bg-[#6D0DCC]"
+                                    className="bg-[#8501FF] text-[#FFFFFF] text-sm font-semibold py-2 px-5 rounded-md w-[118px] h-[44px] shadow-inner-button"
                                     style={{
                                         border: "1px solid #800EE2",
 
