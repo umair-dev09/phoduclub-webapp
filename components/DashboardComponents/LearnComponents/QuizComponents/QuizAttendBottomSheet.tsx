@@ -49,7 +49,7 @@ type QuizProps = {
 function QuizAttendBottomSheet({
     showBottomSheet,
     setShowBottomSheet,
-     questionsList, quizId, quizTime
+    questionsList, quizId, quizTime
 }: QuizProps) {
     const [isDialogOpen, setIsDialogOpen] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -84,33 +84,33 @@ function QuizAttendBottomSheet({
             });
         });
     };
-  // Store quiz attempt in Firestore
-  const storeQuizAttempt = async () => {
-    if (!userId) {
-        console.error("No user found");
-        return;
-    }
-    setIsSubmitting(true);
-    try {
-        const quizAttempt: QuizAttempt = {
-            AnsweredQuestions: questionStates,
-            userId: userId,
-            timeTaken: quizTime,
-        };
+    // Store quiz attempt in Firestore
+    const storeQuizAttempt = async () => {
+        if (!userId) {
+            console.error("No user found");
+            return;
+        }
+        setIsSubmitting(true);
+        try {
+            const quizAttempt: QuizAttempt = {
+                AnsweredQuestions: questionStates,
+                userId: userId,
+                timeTaken: quizTime,
+            };
 
-        // Fixed Firestore path structure
-        const quizPath = `quiz/${quizId}/StudentsAttempted`;
-        const studentAttemptRef = doc(db, quizPath, userId);
-        await setDoc(studentAttemptRef, quizAttempt);
-        toast.success('Quiz attempt saved successfully');
-    } catch (error) {
-        console.error('Error storing quiz attempt:', error);
-        toast.error('Failed to  store quiz attempt');
-        // You might want to show an error message to the user here
-    } finally {
-        setIsSubmitting(false);
-    }
-};
+            // Fixed Firestore path structure
+            const quizPath = `quiz/${quizId}/StudentsAttempted`;
+            const studentAttemptRef = doc(db, quizPath, userId);
+            await setDoc(studentAttemptRef, quizAttempt);
+            toast.success('Quiz attempt saved successfully');
+        } catch (error) {
+            console.error('Error storing quiz attempt:', error);
+            toast.error('Failed to  store quiz attempt');
+            // You might want to show an error message to the user here
+        } finally {
+            setIsSubmitting(false);
+        }
+    };
     // Check if all questions have been answered
     const areAllQuestionsAnswered = () => {
         return questionStates.every(state => state.selectedOption !== null);
@@ -141,7 +141,7 @@ function QuizAttendBottomSheet({
         setIsDialogOpen(false);
         // setIsOpen(false);
         setShowBottomSheet(false);
-        await storeQuizAttempt();    
+        await storeQuizAttempt();
     };
     const handleTimeUpdate = (timeLeft: number) => {
         setCurrentTime(timeLeft);
@@ -159,7 +159,7 @@ function QuizAttendBottomSheet({
                         <span className="text-lg font-semibold text-[#1D2939]">Quiz</span>
                         <span className="text-lg font-semibold text-[#1D2939] flex items-center justify-center gap-2">
                             <Image width={24} height={24} src="/icons/alarm-clock.svg" alt="timer" />
-                            <QuizTimer initialTime={quizTime} onTimeEnd={handleOnTimeEnd} onTimeUpdate={handleTimeUpdate}/>
+                            <QuizTimer initialTime={quizTime} onTimeEnd={handleOnTimeEnd} onTimeUpdate={handleTimeUpdate} />
                         </span>
 
                         <div
@@ -226,9 +226,9 @@ function QuizAttendBottomSheet({
                     </div>
                     {/* Bottom Button Section */}
                     <div className="flex flex-row items-center justify-end border-t border-lightGrey px-4 py-3">
-                    <button 
+                        <button
                             className={`border rounded-lg py-2.5 px-6 text-sm text-white ${areAllQuestionsAnswered() ? 'bg-purple ' : 'bg-[#CDA0FC] cursor-not-allowed'}`}
-                          
+
                             onClick={handleSubmit}
                             disabled={!areAllQuestionsAnswered()}
                         >
@@ -244,7 +244,7 @@ function QuizAttendBottomSheet({
                 {/* Dialog Wrapper */}
                 <div className="fixed inset-0 flex items-center justify-center p-4">
                     <DialogPanel transition>
-                        <div className="bg-white rounded-2xl p-5 w-[480px] h-[261px]">
+                        <div className="bg-white rounded-2xl p-5 w-[480px]">
                             {/* Header Section */}
                             <div className="flex items-center justify-between mb-4">
                                 <span className="text-lg font-bold text-[#1D2939]">Submit Quiz</span>
@@ -255,13 +255,10 @@ function QuizAttendBottomSheet({
                                 </button>
                             </div>
                             {/* Content Section */}
-                            <div className="flex flex-col gap-4 w-[432px] h-[100px]">
-                                <span className="text-sm text-[#667085] font-normal">
-                                    Lorem ipsum is a dummy text widely used in the digital industry and will be used here as a preview.
-                                </span>
-                                <span className="text-sm text-[#667085] font-normal">
-                                    Lorem ipsum is a dummy text widely used in the digital industry and will be used here as a preview.
-                                </span>
+                            <div className="flex flex-col gap-4 w-[432px]">
+                                <p className="text-sm text-[#667085] font-normal">
+                                    Are you sure you want to submit your quiz now? Please double-check your answers before submitting, as you won't be able to make any changes afterwards.
+                                </p>
                             </div>
                             {/* Buttons */}
                             <div className="border-t border-[#EAECF0] w-full h-[76px] mt-5 flex justify-end gap-2">

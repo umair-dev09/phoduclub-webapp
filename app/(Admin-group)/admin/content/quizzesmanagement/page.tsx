@@ -613,12 +613,12 @@ function Quizz() {
                                             <td colSpan={6} className="text-center py-8">
                                                 {isTextSearch && (
                                                     <p className="text-[#667085] text-sm">
-                                                        No chapters found for &quot;{searchTerm}&quot;
+                                                        No quizzes found for &quot;{searchTerm}&quot;
                                                     </p>
                                                 )}
                                                 {!isTextSearch && (
                                                     <p className="text-[#667085] text-sm">
-                                                        No chapters found
+                                                        No quizzes found
                                                     </p>
                                                 )}
                                             </td>

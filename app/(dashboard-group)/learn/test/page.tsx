@@ -9,10 +9,8 @@ export default function MyTests() {
                     <MyTestSeries />
                 </div>
             </div>
-            <div className='flex w-full ml-6'>
-                <div className='flex '>
-                    <SuggestedTestSeries />
-                </div>
+            <div className='flex flex-1 ml-6'>
+                <SuggestedTestSeries />
             </div>
         </div>
     );
