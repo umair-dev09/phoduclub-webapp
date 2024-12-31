@@ -573,7 +573,7 @@ function Course() {
                             >
                               {!isCompleted ? (
                                 <Tooltip
-                                  content="Mark as Complete"
+                                  content="Launching Soon!!!!!"
                                   placement="right"
                                   offset={15}
                                   closeDelay={100}
