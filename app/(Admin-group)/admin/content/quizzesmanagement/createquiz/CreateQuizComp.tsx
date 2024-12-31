@@ -37,9 +37,6 @@ enum Step {
 
 function CreateQuiz() {
     const [isPublished, setIsPublished] = useState(false); // New state to track if the quiz is published
-    const [forYear, setForYear] = useState("Select Year");
-    const [forExam, setForExam] = useState("Select Exam");
-    const [forProduct, setForProduct] = useState("Select Product");
     const [marksPerQ, setMarksPerQ] = useState("");
     const [nMarksPerQ, setnMarksPerQ] = useState("");
     const [timeNumber, setTimeNumber] = useState("");
@@ -73,8 +70,6 @@ function CreateQuiz() {
                 setEndDate(quizData.endDate || "");
                 setMarksPerQ(quizData.marksPerQuestion || "");
                 setnMarksPerQ(quizData.nMarksPerQuestion || "");
-                setForYear(quizData.forYear || "Select Year");
-                setForExam(quizData.forExam || "Select Exam");
                 const quizTime = quizData.quizTime || "";
 
                 // Use regex to extract the number and the text (Minute(s)/Hour(s))
@@ -138,7 +133,7 @@ function CreateQuiz() {
             return quizName.trim() !== '' && quizDescription.trim() !== '';
         }
         else if (currentStep === Step.Publish) {
-            return marksPerQ.trim() !== '' && endDate.trim() !== '' && nMarksPerQ.trim() !== '' && forYear.trim() !== 'Select Year' && forExam.trim() !== 'Select Exam' && timeNumber.trim() !== '' && timeText.trim() !== '';
+            return marksPerQ.trim() !== '' && endDate.trim() !== '' && nMarksPerQ.trim() !== '' && timeNumber.trim() !== '' && timeText.trim() !== '';
         }
         return questionsList.every(question =>
             question.question.trim() !== '' &&
@@ -197,8 +192,6 @@ function CreateQuiz() {
                                 quizTime: timeNumber + " " + timeText,
                                 marksPerQuestion: marksPerQ,
                                 nMarksPerQuestion: nMarksPerQ,
-                                forYear,
-                                forExam,
                                 status: liveQuizNow ? "live" : "scheduled", 
                                 quizPublishedDate: new Date().toISOString(),
                                 createdBy: userId,
@@ -268,8 +261,6 @@ function CreateQuiz() {
                                 quizTime: timeNumber + " " + timeText,
                                 marksPerQuestion: marksPerQ,
                                 nMarksPerQuestion: nMarksPerQ,
-                                forYear,
-                                forExam,
                                 status: liveQuizNow ? "live" : "scheduled", // You can change this as needed
                                 quizPublishedDate: new Date().toISOString(),
                                 createdBy: userId,
@@ -358,8 +349,6 @@ function CreateQuiz() {
                             quizTime: timeNumber + " " + timeText,
                             marksPerQuestion: marksPerQ,
                             nMarksPerQuestion: nMarksPerQ,
-                            forYear,
-                            forExam,
                             status: "saved",
                             quizPublishedDate: new Date().toISOString(),
                             createdBy: userId,
@@ -429,8 +418,6 @@ function CreateQuiz() {
                             quizTime: timeNumber + " " + timeText,
                             marksPerQuestion: marksPerQ,
                             nMarksPerQuestion: nMarksPerQ,
-                            forYear,
-                            forExam,
                             status: "saved",
                             quizPublishedDate: new Date().toISOString(),
                             createdBy: userId,
@@ -524,7 +511,7 @@ function CreateQuiz() {
             case Step.Review:
                 return <Review questionsList={questionsList} />;
             case Step.Publish:
-                return <Publish forYear={forYear} setForYear={setForYear} forExam={forExam} setForExam={setForExam} forProduct={forProduct} setForProduct={setForProduct} marksPerQ={marksPerQ} setMarksPerQ={setMarksPerQ} nMarksPerQ={nMarksPerQ} setnMarksPerQ={setnMarksPerQ} timeNumber={timeNumber} setTimeNumber={setTimeNumber} timeText={timeText} setTimeText={setTimeText} startDate={startDate} setStartDate={setStartDate} endDate={endDate} setEndDate={setEndDate} liveQuizNow={liveQuizNow} setLiveQuizNow={setLiveQuizNow} />;
+                return <Publish marksPerQ={marksPerQ} setMarksPerQ={setMarksPerQ} nMarksPerQ={nMarksPerQ} setnMarksPerQ={setnMarksPerQ} timeNumber={timeNumber} setTimeNumber={setTimeNumber} timeText={timeText} setTimeText={setTimeText} startDate={startDate} setStartDate={setStartDate} endDate={endDate} setEndDate={setEndDate} liveQuizNow={liveQuizNow} setLiveQuizNow={setLiveQuizNow} />;
 
             default:
                 return <Quizinfo

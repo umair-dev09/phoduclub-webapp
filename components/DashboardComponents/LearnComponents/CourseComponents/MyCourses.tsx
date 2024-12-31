@@ -2,7 +2,7 @@
 import Image from "next/image";
 import { useRouter, usePathname } from "next/navigation";
 import { db, auth } from '@/firebase';
-import { collection, getDocs, onSnapshot } from 'firebase/firestore';
+import { collection, getDocs, onSnapshot, query, where } from 'firebase/firestore';
 import { useState, useEffect } from "react";
 import LoadingData from "@/components/Loading";
 import { onAuthStateChanged } from "firebase/auth";
@@ -21,12 +21,30 @@ interface CourseData {
   sections: SectionData[];
   totalContentCount: number; // Total number of content across all sections
   StudentsPurchased: string[];
+  endDate: string;
+  totalCompletedContentCount: number; // Total number of completed content across all sections
+  studentProgress: number; // Percentage of course completed by student
 }
 
 interface SectionData {
   sectionName: string;
   contentCount: number; // Number of documents in the 'content' subcollection
 }
+
+function timeLeft(dateString: string) {
+  const currentDate = new Date(); // Get current date
+  const targetDate = new Date(dateString); // Convert input string to Date object
+  
+  // Calculate the difference in time (in milliseconds)
+  const differenceInTime = targetDate.getTime() - currentDate.getTime();
+  
+  // Convert the time difference from milliseconds to days
+  const differenceInDays = Math.floor(differenceInTime / (1000 * 3600 * 24));
+
+  // Return the result
+  return differenceInDays > 0 ? `${differenceInDays} days left` : 'Ended';
+}
+
 
 function MyCourses() {
   const [activeTab, setActiveTab] = useState<string>('');
@@ -35,68 +53,90 @@ function MyCourses() {
 
   const [courses, setCourses] = useState<CourseData[]>([]);
   const [loading, setLoading] = useState(true);
-
   useEffect(() => {
     const fetchCourses = async (currentUserId: string) => {
       const coursesCollection = collection(db, 'course');
-
-      const unsubscribe = onSnapshot(coursesCollection, async (snapshot) => {
+  
+      // Filter courses where status is 'live' using Firestore query
+      const coursesQuery = query(coursesCollection, where('status', '==', 'live'));
+      const unsubscribe = onSnapshot(coursesQuery, async (snapshot) => {
         const allCourses: CourseData[] = [];
-
+  
+        // Fetch courses where the currentUserId is in the StudentsPurchased collection
         for (const doc of snapshot.docs) {
           const courseData = doc.data();
-
-          // Only add courses where the currentUserId is in StudentsPurchased and status is 'live'
-          if (courseData.status === 'live') {
-            const studentsPurchasedCollection = collection(doc.ref, 'StudentsPurchased');
-            const studentDoc = await getDocs(studentsPurchasedCollection);
-            const studentPurchased = studentDoc.docs.some(student => student.id === currentUserId);
-            if (studentPurchased) {
-              const sectionsCollection = collection(doc.ref, 'sections');
-              const sectionsSnapshot = await getDocs(sectionsCollection);
-
-              let totalContentCount = 0;
-
-              const sectionsData: SectionData[] = await Promise.all(
-                sectionsSnapshot.docs.map(async (sectionDoc) => {
-                  const sectionData = sectionDoc.data();
-                  const contentCollection = collection(sectionDoc.ref, 'content');
-                  const contentSnapshot = await getDocs(contentCollection);
-
-                  const contentCount = contentSnapshot.size;
-                  totalContentCount += contentCount;
-                  return {
-                    sectionName: sectionData.sectionName || 'Untitled Section',
-                    contentCount,
-
-                  };
-                })
-              );
-
-              allCourses.push({
-                courseName: courseData.courseName,
-                price: courseData.price,
-                discountPrice: courseData.discountPrice,
-                courseId: courseData.courseId,
-                courseImage: courseData.courseImage,
-                StudentsPurchased: courseData.StudentsPurchased,
-                status: courseData.status,
-                date: courseData.date || '',
-                publishDate: courseData.publishDate || '',
-                sections: sectionsData,
-                totalContentCount,
-              });
-            }
+  
+          // Query for the StudentsPurchased collection to check if the current user is enrolled
+          const studentsPurchasedQuery = query(collection(doc.ref, 'StudentsPurchased'), where('userId', '==', currentUserId));
+          const studentPurchasedSnapshot = await getDocs(studentsPurchasedQuery);
+  
+          if (!studentPurchasedSnapshot.empty) {
+            // User is enrolled in this course, proceed to fetch sections
+            const sectionsCollection = collection(doc.ref, 'sections');
+            const sectionsSnapshot = await getDocs(sectionsCollection);
+  
+            let totalContentCount = 0;
+            let totalCompletedContentCount = 0;
+  
+            // Process sections and content within them
+            const sectionsData: SectionData[] = await Promise.all(
+              sectionsSnapshot.docs.map(async (sectionDoc) => {
+                const sectionData = sectionDoc.data();
+                const contentCollection = collection(sectionDoc.ref, 'content');
+                const contentSnapshot = await getDocs(contentCollection);
+  
+                const sectionContentData: { sectionName: string, contentCount: number, completedContentCount: number } = {
+                  sectionName: sectionData.sectionName || 'Untitled Section',
+                  contentCount: contentSnapshot.size,
+                  completedContentCount: 0,
+                };
+  
+                // Check each content for the currentUserId in StudentsCompleted
+                for (const contentDoc of contentSnapshot.docs) {
+                  const contentData = contentDoc.data();
+                  const studentsCompleted = contentData.StudentsCompleted || [];
+  
+                  if (studentsCompleted.includes(currentUserId)) {
+                    sectionContentData.completedContentCount += 1;
+                    totalCompletedContentCount += 1;
+                  }
+                }
+  
+                totalContentCount += sectionContentData.contentCount;
+  
+                return sectionContentData;
+              })
+            );
+            const studentProgress = totalContentCount > 0
+            ? (totalCompletedContentCount / totalContentCount) * 100
+            : 0;
+            const roundedProgress = Math.round(studentProgress);
+            allCourses.push({
+              courseName: courseData.courseName,
+              price: courseData.price,
+              discountPrice: courseData.discountPrice,
+              courseId: courseData.courseId,
+              courseImage: courseData.courseImage,
+              StudentsPurchased: courseData.StudentsPurchased,
+              status: courseData.status,
+              date: courseData.date || '',
+              publishDate: courseData.publishDate || '',
+              sections: sectionsData,
+              totalContentCount,
+              totalCompletedContentCount,
+              endDate: courseData.endDate || '',
+              studentProgress: roundedProgress,
+            });
           }
         }
-
+  
         setCourses(allCourses);
         setLoading(false);
       });
-
+  
       return () => unsubscribe();
     };
-
+  
     const initialize = () => {
       setLoading(true);
       const unsubscribeAuth = onAuthStateChanged(auth, (user) => {
@@ -107,13 +147,13 @@ function MyCourses() {
           setLoading(false);
         }
       });
-
+  
       return () => unsubscribeAuth();
     };
-
+  
     initialize();
-  }, []);
-
+  }, []); // Only trigger once on component mount
+  
   const handleTabClick = (path: string) => {
     router.push(path);
   };
@@ -129,7 +169,6 @@ function MyCourses() {
   if (loading) {
     return <LoadingData />
   }
-
 
   return (
     <>
@@ -176,14 +215,14 @@ function MyCourses() {
                   </div>
 
                   {/* Progress bar and additional course info (completion, time left) */}
-                  <div className="flex h-[40%] flex-col">
+                  <div className="flex h-[40%] flex-col mb-2">
                     {/* Progress bar */}
-                    <Progress aria-label="Loading..." className="max-w-md h-2 mt-3" value={43} />
+                    <Progress aria-label="Loading..." className="max-w-md h-2 mt-3" value={course.studentProgress} />
 
                     {/* Course status - completed percentage and time left */}
                     <div className="flex flex-1 flex-row justify-between mt-2 text-xs pb-3">
-                      <div className="flex flex-row gap-1">Completed: <span className="font-semibold">43%</span></div>
-                      <div className="flex flex-row gap-1">Time Left: <span className="font-semibold">28 days left</span></div>
+                      <div className="flex flex-row gap-1">Completed: <span className="font-semibold">{course.studentProgress}%</span></div>
+                      <div className="flex flex-row gap-1">Time Left: <span className="font-semibold">{timeLeft(course.endDate)}</span></div>
                     </div>
                   </div>
                 </div>

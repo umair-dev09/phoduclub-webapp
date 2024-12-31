@@ -4,7 +4,7 @@ import { PopoverContent, PopoverTrigger, Popover } from '@nextui-org/popover';
 import Collapsible from 'react-collapsible';
 import { Checkbox } from "@nextui-org/react";
 import React, { useState, useEffect, useRef, SetStateAction, Dispatch } from "react";
-import 'react-quill/dist/quill.snow.css';
+import 'quill/dist/quill.snow.css';
 import ReactQuill from 'react-quill-new'; // Ensure correct import
 import Quill from 'quill'; // Import Quill to use it for types
 import QuillResizeImage from 'quill-resize-image';

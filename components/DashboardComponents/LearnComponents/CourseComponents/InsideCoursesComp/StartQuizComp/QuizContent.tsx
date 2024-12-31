@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import Quiz from "./QuizAttendingArea";
 import QuizAttendingArea from "./QuizAttendingArea";
+import ReviewQuiz from "./ReviewQuiz";
 
 interface Options {
     A: string;
@@ -18,9 +19,21 @@ interface Question {
     isActive: boolean;
     options: Options;
     correctAnswer: string | null;
-    explanation: string;
+    answerExplanation: string;
+    questionId: string;
 }
 
+interface QuizAttempt {
+    AnsweredQuestions: QuestionState[];
+    userId: string;
+    timeTaken: string;
+  }
+  
+  interface QuestionState {
+    questionId: string;
+    selectedOption: string; // User's answer
+    answeredCorrect: boolean; // Whether the answer is correct
+  }
 
 interface QuizContentProps {
     lessonOverview: string;
@@ -34,6 +47,8 @@ interface QuizContentProps {
     courseId: string;
     sectionId: string;
     isAdmin: boolean;
+    quizAttempt?: QuizAttempt | null;
+
 }
 
 const convertToTimeFormat = (timeStr: string): string => {
@@ -86,7 +101,8 @@ const convertToDisplayTimeFormat = (timeStr: string): string => {
     return formattedTime;
 };
 
-function QuizContent({ lessonHeading, isAdmin, courseId, sectionId, lessonOverview, questionCount, marksPerQ, nMarksPerQ, quizTime, contentId, questionsList }: QuizContentProps) {
+function QuizContent({ lessonHeading, isAdmin, courseId, sectionId, lessonOverview, questionCount, marksPerQ, nMarksPerQ, quizTime, contentId, questionsList, quizAttempt }: QuizContentProps) {
+    const [showReviewSheet, setShowReviewSheet] = useState(false);
 
     const [showQuizDialog, setShowQuizDialog] = useState(false);
     const [isQuizOpen, setIsQuizOpen] = useState(false);
@@ -109,11 +125,11 @@ function QuizContent({ lessonHeading, isAdmin, courseId, sectionId, lessonOvervi
             {/* ------------------------------------------------------------------------------------------------------------------------------------------------> */}
 
             <div className="flex flex-col ml-8 gap-[20px] ">
-
+            
                 <span className="w-[140px] h-[24px] text-[#1D2939] text-base font-bold">
                     Quiz Information
-
                 </span>
+            
             </div>
             <div className='text-[#667085] text-base font-normal break-all ml-8 mr-4 mt-2 text-start' dangerouslySetInnerHTML={{
                 __html: lessonOverview || '',
@@ -158,7 +174,7 @@ function QuizContent({ lessonHeading, isAdmin, courseId, sectionId, lessonOvervi
             {!isAdmin && (
                 <div className="h-[65px]  " style={{ borderRadius: "5px", position: "relative" }}>
                     <div className="relative flex justify-between items-end h-full ml-8">
-                        {!isQuizSubmitted && (
+                          {!quizAttempt ? (
                             <button
                                 onClick={onStartQuiz}
                                 className="bg-[#8501FF] text-[#FFFFFF] text-sm font-semibold py-2 px-5 rounded-md w-[118px] h-[44px] ml-auto border-[1px] border-[#800EE2] shadow-[inset_0px_-4px_4px_0px_#1018281F,inset_0px_3px_2px_0px_#FFFFFF3D] hover:bg-[#6D0DCC]"
@@ -166,13 +182,14 @@ function QuizContent({ lessonHeading, isAdmin, courseId, sectionId, lessonOvervi
                             >
                                 Start Quiz
                             </button>
-                        )}
-                        {isQuizSubmitted && (
+                          ) : (
                             <div className="absolute flex flex-row justify-between w-full">
-                                <button className="border border-[#9012FF] bg-white text-[#1D2939] text-sm font-semibold px-6 py-[0.625rem] hover:bg-[#F5F0FF]   rounded-md">Review your attempt</button>
-                                <button className="border border-[#800EE2] bg-[#800EE2] text-white text-sm font-semibold px-6 py-[0.625rem] rounded-md">Re-Attempt</button>
+                                <button className="border border-[#9012FF] bg-white text-[#1D2939] text-sm font-semibold px-6 py-[0.625rem] hover:bg-[#F5F0FF]   rounded-md" 
+                                onClick={() => setShowReviewSheet(true)}
+                                >Review your attempt</button>
+                                <button className="border border-[#800EE2] bg-[#800EE2] text-white text-sm font-semibold px-6 py-[0.625rem] rounded-md" onClick={onStartQuiz}>Re-Attempt</button>
                             </div>
-                        )}
+                          )}
                     </div>
                 </div>
             )}
@@ -193,6 +210,7 @@ function QuizContent({ lessonHeading, isAdmin, courseId, sectionId, lessonOvervi
                     questionsList={questionsList || []}
                 />
             )}
+            <ReviewQuiz setShowReviewSheet={setShowReviewSheet} showReviewSheet={showReviewSheet} questionsList={questionsList} answeredQuestions={quizAttempt?.AnsweredQuestions || []} timeTaken={quizAttempt?.timeTaken || ''}/>
 
         </div>
 

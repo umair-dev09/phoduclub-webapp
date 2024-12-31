@@ -1,6 +1,6 @@
 import Image from "next/image";
 import React, { useState, useEffect, useRef, SetStateAction, Dispatch } from "react";
-import 'react-quill/dist/quill.snow.css';
+import 'quill/dist/quill.snow.css';
 import ReactQuill from 'react-quill-new';
 import Quill from 'quill';
 import { Popover, PopoverTrigger, PopoverContent } from '@nextui-org/popover';

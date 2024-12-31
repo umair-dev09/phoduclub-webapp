@@ -90,6 +90,10 @@ function Course() {
 
     const selectedCount = Object.values(checkedState).filter(Boolean).length;
     const [selectedDate, setSelectedDate] = useState<Date | null>(null); // Store selected date as Date object
+    const [dateFilter, setDateFilter] = useState(null);
+    const [statusFilter, setStatusFilter] = useState(null);
+    const isTextSearch = searchTerm.trim().length > 0 && !dateFilter && !statusFilter;
+
     useEffect(() => {
         const coursesCollection = collection(db, 'course');
         const unsubscribe = onSnapshot(coursesCollection, (snapshot) => {
@@ -312,7 +316,7 @@ function Course() {
                     {/* Select Date Button */}
                     <Popover placement="bottom" isOpen={isSelcetDateOpen} onOpenChange={(open) => setIsSelectDateOpen(open)}>
                         <PopoverTrigger>
-                            <button className="h-[44px] w-[143px]  hover:bg-[#F2F4F7] rounded-md bg-[#FFFFFF] border border-solid border-[#D0D5DD] flex items-center p-3">
+                            <button className="h-[44px] w-[143px] hover:bg-[#F2F4F7] rounded-md bg-[#FFFFFF] border border-solid border-[#D0D5DD] flex items-center p-3 outline-none">
                                 <Image
                                     src="/icons/select-Date.svg"
                                     width={20}
@@ -589,9 +593,16 @@ function Course() {
                                     ) : (
                                         <tr className='border-t border-lightGrey'>
                                             <td colSpan={7} className="text-center py-8">
-                                                <div className="flex flex-col items-center justify-center gap-2">
-                                                    <p className="text-[#667085] text-sm">No chapters found for &quot;{searchTerm}&quot;</p>
-                                                </div>
+                                                {isTextSearch && (
+                                                    <p className="text-[#667085] text-sm">
+                                                        No chapters found for &quot;{searchTerm}&quot;
+                                                    </p>
+                                                )}
+                                                {!isTextSearch && (
+                                                    <p className="text-[#667085] text-sm">
+                                                        No chapters found
+                                                    </p>
+                                                )}
                                             </td>
                                         </tr>
                                     )}

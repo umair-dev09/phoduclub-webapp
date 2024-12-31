@@ -119,7 +119,7 @@ export default function MyQuiz() {
                 {/* Today's Quizzes */}
                 <div className="flex flex-1 flex-col">
                     <div className="mb-4">
-                        <h3>Todays Quizzes</h3>
+                        <h3>All Quizzes</h3>
                     </div>
                     <div className="flex flex-1">
                         <Quiz />

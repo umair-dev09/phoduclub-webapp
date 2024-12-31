@@ -127,6 +127,7 @@ function Quizz() {
     const [selectedDate, setSelectedDate] = useState<Date | null>(null); // Store selected date as Date object
     const [dateFilter, setDateFilter] = useState(null);
     const [statusFilter, setStatusFilter] = useState(null);
+    const isTextSearch = searchTerm.trim().length > 0 && !dateFilter && !statusFilter;
 
     // Fetch quizzes when component mounts
     useEffect(() => {
@@ -313,8 +314,6 @@ function Quizz() {
 
     // Get selected statuses to render as indicators.
     const selectedStatuses = options.filter((option) => checkedState[option]);
-
-    const isTextSearch = searchTerm.trim().length > 0 && !dateFilter && !statusFilter;
 
     return (
         <div className="flex flex-col px-[32px] w-full gap-4 h-auto my-5 overflow-y-auto">
@@ -612,9 +611,6 @@ function Quizz() {
                                     ) : (
                                         <tr className='border-t border-lightGrey'>
                                             <td colSpan={6} className="text-center py-8">
-                                                {/* <div className="flex flex-col items-center justify-center gap-2">
-                                                    <p className="text-[#667085] text-sm">No chapters found for &quot;{searchTerm}&quot;</p>
-                                                </div> */}
                                                 {isTextSearch && (
                                                     <p className="text-[#667085] text-sm">
                                                         No chapters found for &quot;{searchTerm}&quot;

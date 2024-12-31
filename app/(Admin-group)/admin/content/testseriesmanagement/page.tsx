@@ -92,6 +92,9 @@ function TesstseriesInfo() {
     const selectedCount = Object.values(checkedState).filter(Boolean).length;
     const [selectedDate, setSelectedDate] = useState<Date | null>(null); // Store selected date as Date object
     const isInitiallySorted = useRef(false); // To track initial sorting
+    const [dateFilter, setDateFilter] = useState(null);
+    const [statusFilter, setStatusFilter] = useState(null);
+    const isTextSearch = searchTerm.trim().length > 0 && !dateFilter && !statusFilter;
 
     useEffect(() => {
         const testCollection = collection(db, "testseries");
@@ -573,9 +576,16 @@ function TesstseriesInfo() {
                                     ) : (
                                         <tr className='border-t border-lightGrey'>
                                             <td colSpan={5} className="text-center py-8">
-                                                <div className="flex flex-col items-center justify-center gap-2">
-                                                    <p className="text-[#667085] text-sm">No chapters found for &quot;{searchTerm}&quot;</p>
-                                                </div>
+                                                {isTextSearch && (
+                                                    <p className="text-[#667085] text-sm">
+                                                        No chapters found for &quot;{searchTerm}&quot;
+                                                    </p>
+                                                )}
+                                                {!isTextSearch && (
+                                                    <p className="text-[#667085] text-sm">
+                                                        No chapters found
+                                                    </p>
+                                                )}
                                             </td>
                                         </tr>
                                     )}
