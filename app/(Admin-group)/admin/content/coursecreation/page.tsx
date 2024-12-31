@@ -595,12 +595,12 @@ function Course() {
                                             <td colSpan={7} className="text-center py-8">
                                                 {isTextSearch && (
                                                     <p className="text-[#667085] text-sm">
-                                                        No chapters found for &quot;{searchTerm}&quot;
+                                                        No courses found for &quot;{searchTerm}&quot;
                                                     </p>
                                                 )}
                                                 {!isTextSearch && (
                                                     <p className="text-[#667085] text-sm">
-                                                        No chapters found
+                                                        No courses found
                                                     </p>
                                                 )}
                                             </td>

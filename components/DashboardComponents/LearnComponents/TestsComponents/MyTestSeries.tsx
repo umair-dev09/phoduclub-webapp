@@ -24,12 +24,12 @@ interface TestData {
 
 function formatExpiryDate(inputDate: string) {
   const date = new Date(inputDate); // Create Date object from input string
-  
+
   // Get the day, month, and year
   const day = date.getDate();
   const month = date.toLocaleString('default', { month: 'short' }); // Get abbreviated month (e.g., "Aug")
   const year = date.getFullYear();
-  
+
   // Format the date as "DD MMM, YYYY"
   return `${day} ${month}, ${year}`;
 }
@@ -42,61 +42,61 @@ function MyTestSeries() {
   useEffect(() => {
     const fetchTests = async (currentUserId: string) => {
       const testsCollection = collection(db, 'testseries');
-  
+
       const unsubscribe = onSnapshot(testsCollection, async (snapshot) => {
         const allTests: TestData[] = [];
-  
+
         // Loop through each test in the snapshot
         for (const doc of snapshot.docs) {
           const testData = doc.data();
-  
+
           // Only process tests that are 'live' and the user has purchased it
           if (testData.status === 'live') {
             const studentsPurchasedCollection = collection(doc.ref, 'StudentsPurchased');
             const studentDoc = await getDocs(studentsPurchasedCollection);
             const studentPurchased = studentDoc.docs.some(student => student.id === currentUserId);
-  
+
             if (studentPurchased) {
               // Initialize the counters for sections with questions and sections with StudentsAttempted
               let sectionsWithQuestionsCount = 0;
               let sectionsWithStudentsAttemptedCount = 0;
-  
+
               // Recursive function to count sections with hasQuestions = true and StudentsAttempted subcollection
               const countSectionsWithQuestionsAndAttempts = async (path: string) => {
                 const sectionCollection = collection(db, path);
                 const sectionSnapshot = await getDocs(sectionCollection);
-  
+
                 // Loop through each section document
                 for (const sectionDoc of sectionSnapshot.docs) {
                   const sectionData = sectionDoc.data();
-  
+
                   // If the section has 'hasQuestions' set to true, increment the questions count
                   if (sectionData.hasQuestions === true) {
                     sectionsWithQuestionsCount += 1;
                   }
-  
+
                   // Check if the StudentsAttempted subcollection contains the current userId
                   const studentsAttemptedCollection = collection(sectionDoc.ref, 'StudentsAttempted');
                   const studentsAttemptedSnapshot = await getDocs(studentsAttemptedCollection);
-  
+
                   if (studentsAttemptedSnapshot.docs.some(student => student.id === currentUserId)) {
                     sectionsWithStudentsAttemptedCount += 1;
                   }
-  
+
                   // Recursively check if the section has sub-sections
                   const subSectionPath = `${path}/${sectionDoc.id}/sections`;
                   await countSectionsWithQuestionsAndAttempts(subSectionPath); // Recurse for sub-collections
                 }
               };
-  
+
               // Start the recursive counting from the root level of sections for this test
               await countSectionsWithQuestionsAndAttempts(`${doc.ref.path}/sections`);
-  
+
               // Calculate student progress as a percentage
               const studentProgress = sectionsWithQuestionsCount > 0
                 ? (sectionsWithStudentsAttemptedCount / sectionsWithQuestionsCount) * 100
                 : 0;
-                const roundedProgress = Math.round(studentProgress);
+              const roundedProgress = Math.round(studentProgress);
 
               // Push the test data along with the counts and student progress
               allTests.push({
@@ -115,14 +115,14 @@ function MyTestSeries() {
             }
           }
         }
-  
+
         setTests(allTests);
         setLoading(false);
       });
-  
+
       return () => unsubscribe();
     };
-  
+
     const initialize = () => {
       setLoading(true);
       const unsubscribeAuth = onAuthStateChanged(auth, (user) => {
@@ -133,17 +133,12 @@ function MyTestSeries() {
           setLoading(false);
         }
       });
-  
+
       return () => unsubscribeAuth();
     };
-  
+
     initialize();
   }, []); // Only trigger once on component mount
-  
-  
-  
-  
-  
 
   const handleTabClick = (path: string) => {
     router.push(path);
@@ -173,7 +168,7 @@ function MyTestSeries() {
                     {/* <div className="flex items-center absolute top-3 left-5 mr-5 bg-[#c74fe6] bg-opacity-80 text-xs font-medium border border-[#c74fe6] text-white rounded-full px-3 py-2 z-10 transition-transform duration-300 ease-in-out">
                             <p>JEE Mains Test</p>
                         </div> */}
-                    <Image className="w-[300px] h-[300px]" src={test.testImage || "/images/course_img.svg"} alt="Test" width={300} height={300} />
+                    <Image className="w-[357px] h-[186px]" src={test.testImage || "/images/course_img.svg"} alt="Test" width={357} height={186} />
                   </div>
 
                   {/* Test details container */}
@@ -216,10 +211,8 @@ function MyTestSeries() {
                       </div>
                     </div>
                   </div>
-
                 </div>
                 {/* End of test component */}
-
               </div>
             ))}
           </div>
