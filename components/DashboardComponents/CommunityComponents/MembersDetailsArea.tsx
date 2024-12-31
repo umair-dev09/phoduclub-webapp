@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { doc, getDoc } from "firebase/firestore";
+import { doc, getDoc, onSnapshot } from "firebase/firestore";
 import { db, auth } from "@/firebase"; // Import your Firestore and Auth instances
 import LoadingData from "@/components/Loading";
 import Image from "next/image";
@@ -12,6 +12,7 @@ type UserData = {
   adminId?: string;
   isPremium: boolean;
   role: string;
+  isOnline: boolean;
 };
 
 type Member = {
@@ -53,57 +54,66 @@ function MembersDetailsArea({ members }: MembersDetailsAreaProps) {
 
   // Fetch members data
   useEffect(() => {
-    const fetchMemberData = async () => {
-      setLoading(true);
-      const adminData: UserData[] = [];
-      const chiefModerators: UserData[] = [];
-      const teachers: UserData[] = [];
-      const premiumMembers: UserData[] = [];
-      const clubMembers: UserData[] = [];
+    setLoading(true);
+    let isActive = true; // To prevent updates after component unmount
 
-      for (const member of members) {
-        try {
-          const collection = member.isAdmin ? "admin" : "users";
-          const docRef = doc(db, collection, member.id);
-          const docSnap = await getDoc(docRef);
-
-          if (docSnap.exists()) {
-            const userData = docSnap.data() as UserData;
-
-            if (member.isAdmin) {
-              if (userData.role === "Admin") {
-                adminData.push(userData);
-              } else if (userData.role === "ChiefModerator") {
-                chiefModerators.push(userData);
-              } else if (userData.role === "Teacher") {
-                teachers.push(userData);
-              }
-            } else {
-              if (userData.isPremium) {
-                premiumMembers.push(userData);
-              } else {
-                clubMembers.push(userData);
-              }
-            }
-          } else {
-            console.error(`No document found for ${collection}/${member.id}`);
-          }
-        } catch (error) {
-          console.error(`Error fetching member ${member.id}:`, error);
-        }
-      }
-
-      setCategorizedMembers({
-        admin: adminData,
-        chiefModerators,
-        teachers,
-        premiumMembers,
-        clubMembers,
-      });
-      setLoading(false);
+    const categorizedData = {
+      admin: [] as UserData[],
+      chiefModerators: [] as UserData[],
+      teachers: [] as UserData[],
+      premiumMembers: [] as UserData[],
+      clubMembers: [] as UserData[],
     };
 
-    fetchMemberData();
+    // Set up real-time listeners for each member
+    const unsubscribeFunctions = members.map((member) => {
+      const collection = member.isAdmin ? "admin" : "users";
+      const docRef = doc(db, collection, member.id);
+
+      return onSnapshot(docRef, (docSnap) => {
+        if (!isActive) return;
+
+        if (docSnap.exists()) {
+          const userData = docSnap.data() as UserData;
+
+          // Clear previous entries for this user
+          const userId = member.isAdmin ? userData.adminId : userData.uniqueId;
+          Object.values(categorizedData).forEach(array => {
+            const index = array.findIndex(u => 
+              (member.isAdmin ? u.adminId : u.uniqueId) === userId
+            );
+            if (index !== -1) array.splice(index, 1);
+          });
+
+          // Add user to appropriate category
+          if (member.isAdmin) {
+            switch (userData.role) {
+              case "Admin": categorizedData.admin.push(userData); break;
+              case "ChiefModerator": categorizedData.chiefModerators.push(userData); break;
+              case "Teacher": categorizedData.teachers.push(userData); break;
+            }
+          } else {
+            if (userData.isPremium) {
+              categorizedData.premiumMembers.push(userData);
+            } else {
+              categorizedData.clubMembers.push(userData);
+            }
+          }
+
+          setCategorizedMembers({ ...categorizedData });
+          setLoading(false);
+        } else {
+          console.error(`No document found for ${collection}/${member.id}`);
+        }
+      }, (error) => {
+        console.error(`Error fetching member ${member.id}:`, error);
+      });
+    });
+
+    return () => {
+      isActive = false;
+      unsubscribeFunctions.forEach(unsubscribe => unsubscribe());
+    };
   }, [members]);
 
   const handleClick = (memberId: string, memberIsAdmin: boolean) => {
@@ -176,15 +186,8 @@ function MembersDetailsArea({ members }: MembersDetailsAreaProps) {
                         width={35}
                         height={35}
                         />
-                      {member.isPremium && (
-                        <Image
-                            className="absolute right-[-2px] bottom-0"
-                            src="/icons/winnerBatch.svg"
-                            alt="Batch"
-                            width={16}
-                            height={16}
-                        />
-                       )}
+                     <div className={`w-[15px] h-[15px]  border-[2.5px] border-white rounded-full ${member.isOnline ? 'bg-[#17B26A]' : 'bg-[#98A2B3]'}  absolute right-[-2px] bottom-[-1px]`} />
+
                       </div>
                       
                         <p className="text-[#4B5563] text-[13px] font-medium">
@@ -246,15 +249,7 @@ function MembersDetailsArea({ members }: MembersDetailsAreaProps) {
                         width={35}
                         height={35}
                         />
-                      {member.isPremium && (
-                        <Image
-                            className="absolute right-[-2px] bottom-0"
-                            src="/icons/winnerBatch.svg"
-                            alt="Batch"
-                            width={16}
-                            height={16}
-                        />
-                       )}
+                         <div className={`w-[15px] h-[15px]  border-[2.5px] border-white rounded-full ${member.isOnline ? 'bg-[#17B26A]' : 'bg-[#98A2B3]'}  absolute right-[-2px] bottom-[-1px]`} />
                       </div>
                         <p className="text-[#4B5563] text-[13px] font-medium">
                         {member.name}

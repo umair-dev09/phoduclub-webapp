@@ -219,12 +219,14 @@ function Quiz() {
 
     return (
         <div className="flex flex-1">
-            {/* <div className="flex flex-1 justify-center items-center flex-col">
+            {quizzes.length <= 1 ? (
+                <div className="flex flex-1 justify-center items-center flex-col">
                 <Image src="/images/noQuizzes.svg" alt="No Quizzes" width={140} height={140} />
                 <h3 className="text-base font-bold">No Quizzes</h3>
                 <p>Your live quizzes will show up here</p>
-            </div> */}
-<div className="grid grid-cols-3 gap-5 w-full">
+                </div>
+            ) : (
+                <div className="grid grid-cols-3 gap-5 w-full">
                 {quizzes.map((quiz, index) => {
                     const quizTime = quizTimes.find(qt => qt.id === quiz.quizId);
                     return (
@@ -274,6 +276,9 @@ function Quiz() {
                     );
                 })}
             </div>
+            )}
+           
+
 
             <Dialog open={showQuizDialog} onClose={() => setShowQuizDialog(false)} className="relative z-50">
 
