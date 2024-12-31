@@ -138,8 +138,8 @@ function ChatHead({ channelName, channelId, channelEmoji, communityId, categoryI
                                     ],
                                 }}
                             >
-                                <button className='flex flex-row gap-2 items-center h-10 w-[206px] px-4 hover:bg-[#EAECF0] cursor-not-allowed'>
-                                    {/* onClick={() => setChannelInfoDialog(true)}> */}
+                                <button className='flex flex-row gap-2 items-center h-10 w-[206px] px-4 hover:bg-[#EAECF0] cursor-not-allowed'
+                                    onClick={() => setChannelInfoDialog(true)}>
                                     <Image
                                         src="/icons/information-circle.svg"
                                         width={18}
@@ -162,8 +162,8 @@ function ChatHead({ channelName, channelId, channelEmoji, communityId, categoryI
                                     ],
                                 }}
                             >
-                                <button className='flex flex-row gap-2 items-center h-10 w-[206px] px-4 hover:bg-[#EAECF0] cursor-not-allowed'>
-                                    {/* onClick={() => setChannelRequestsDialog(true)}> */}
+                                <button className='flex flex-row gap-2 items-center h-10 w-[206px] px-4 hover:bg-[#EAECF0] cursor-not-allowed'
+                                    onClick={() => setChannelRequestsDialog(true)}>
                                     <Image
                                         src="/icons/channel-requests.svg"
                                         width={18}

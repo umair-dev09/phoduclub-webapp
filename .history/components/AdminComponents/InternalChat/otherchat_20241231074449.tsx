@@ -268,7 +268,6 @@ function OtherChat({ message, currentUserId, mentions, isDeleted, internalChatId
           <button onClick={() => { setOpenDialogue(true); setId(senderId || ''); }}><span className="text-[#182230] font-semibold text-sm">{sender?.name}</span></button>
           <span className="font-normal text-sm text-[#475467]">{sender?.role}</span>
           <span className="font-normal text-sm text-[#475467]">{formattedTime}</span>
-          {showBookmark && (<Image src='/icons/bookmark1.svg' alt='Bookmark icon' width={12} height={12} />)}
         </div>
 
         <div className="ml-11 flex flex-row gap-2 items-center relative group">
@@ -422,7 +421,7 @@ function OtherChat({ message, currentUserId, mentions, isDeleted, internalChatId
                     ],
                   }}
                 >
-                  <button className='flex flex-row items-center gap-2 w-30 px-4 pt-[10px] pb-3 transition-colors hover:bg-neutral-100 rounded-br-md rounded-bl-md cursor-not-allowed '>
+                  <button className='flex flex-row items-center gap-2 w-30 px-4 pt-[10px] pb-3 transition-colors hover:bg-neutral-100 rounded-br-md rounded-bl-md '>
                     <Image src='/icons/Report.svg' alt='search icon' width={17} height={17} />
                     <span className='font-normal text-[#0C111D] text-sm'>Report Message</span>
                   </button>

@@ -138,8 +138,8 @@ function ChatHead({ channelName, channelId, channelEmoji, communityId, categoryI
                                     ],
                                 }}
                             >
-                                <button className='flex flex-row gap-2 items-center h-10 w-[206px] px-4 hover:bg-[#EAECF0] cursor-not-allowed'>
-                                    {/* onClick={() => setChannelInfoDialog(true)}> */}
+                                <button className='flex flex-row gap-2 items-center h-10 w-[206px] px-4 hover:bg-[#EAECF0]'
+                                    onClick={() => setChannelInfoDialog(true)}>
                                     <Image
                                         src="/icons/information-circle.svg"
                                         width={18}
@@ -151,28 +151,16 @@ function ChatHead({ channelName, channelId, channelEmoji, communityId, categoryI
                             </Tooltip>
                         )}
                         {isAdmin && (
-                            <Tooltip
-                                content="Launching Soon!!!!!"
-                                placement="right"
-                                offset={15}
-                                closeDelay={100}
-                                classNames={{
-                                    content: [
-                                        "bg-[#222222] text-white text-sm py-2 px-4 rounded-md",
-                                    ],
-                                }}
-                            >
-                                <button className='flex flex-row gap-2 items-center h-10 w-[206px] px-4 hover:bg-[#EAECF0] cursor-not-allowed'>
-                                    {/* onClick={() => setChannelRequestsDialog(true)}> */}
-                                    <Image
-                                        src="/icons/channel-requests.svg"
-                                        width={18}
-                                        height={18}
-                                        alt="channel-requests"
-                                    />
-                                    <span className='font-normal text-[#0C111D] text-sm'>Channel Requests</span>
-                                </button>
-                            </Tooltip>
+                            <button className='flex flex-row gap-2 items-center h-10 w-[206px] px-4 hover:bg-[#EAECF0]'
+                                onClick={() => setChannelRequestsDialog(true)}>
+                                <Image
+                                    src="/icons/channel-requests.svg"
+                                    width={18}
+                                    height={18}
+                                    alt="channel-requests"
+                                />
+                                <span className='font-normal text-[#0C111D] text-sm'>Channel Requests</span>
+                            </button>
                         )}
                         {isAdmin && (
                             <button className='flex flex-row gap-2 items-center h-10 w-[206px] px-4 hover:bg-[#EAECF0]'
