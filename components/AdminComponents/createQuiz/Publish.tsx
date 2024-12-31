@@ -20,12 +20,6 @@ type PublishProps = {
     setTimeNumber: (timeNumber: string) => void;
     timeText: string;
     setTimeText: (timeText: string) => void;
-    forYear: string;
-    setForYear: (forYear: string) => void;
-    forExam: string;
-    setForExam: (forExam: string) => void;
-    forProduct: string;
-    setForProduct: (forProduct: string) => void;
     liveQuizNow: boolean;
     setLiveQuizNow: React.Dispatch<React.SetStateAction<boolean>>;  // Explicit type for setter
 
@@ -64,7 +58,7 @@ const formatScheduleDate = (dateString: string | null): string => {
 };
 
 // startDate, endDate, marksPerQ, nMarksPerQ, timeDuration,forExam, forProduct
-const Publish = ({ liveQuizNow, setLiveQuizNow, forYear, setForYear, setForExam, forExam, forProduct, setForProduct, marksPerQ, setMarksPerQ, nMarksPerQ, setnMarksPerQ, timeNumber, setTimeNumber, timeText, setTimeText, startDate, setStartDate, endDate, setEndDate }: PublishProps) => {
+const Publish = ({ liveQuizNow, setLiveQuizNow, marksPerQ, setMarksPerQ, nMarksPerQ, setnMarksPerQ, timeNumber, setTimeNumber, timeText, setTimeText, startDate, setStartDate, endDate, setEndDate }: PublishProps) => {
 
     let [isOpenY, setIsOpenY] = useState(false);
     let [isOpenE, setIsOpenE] = useState(false);
@@ -235,84 +229,82 @@ const Publish = ({ liveQuizNow, setLiveQuizNow, forYear, setForYear, setForExam,
 
             <div className='flex flex-col w-full h-auto p-5 bg-white border border-lightGrey rounded-xl gap-3'>
                 <span className='font-semibold text-lg text-[#1D2939]'>Quiz available for</span>
-                <div className='flex flex-row w-full gap-4'>
-                    {/* YEAR */}
-                    <div className='flex flex-col w-full gap-1'>
-                        <p className='text-sm font-medium text-[#1D2939]'>Year</p>
-                        <Popover placement='bottom' isOpen={isOpenY} onOpenChange={(open) => setIsOpenY(open)}>
-                            <PopoverTrigger>
-                                <button className='flex flex-row w-full py-2 px-3 border border-lightGrey rounded-md gap-1 focus-within:border-[#D7BBFC] focus-within:ring-2 focus-within:ring-[#E8DEFB] focus-within:outline-none transition-colors'>
-                                    <div className={`w-full text-sm text-start ${forYear !== "Select Year" ? selectedColor : "text-[#667085]"}`}>{forYear}</div>
-                                    <Image src='/icons/arrow-down-01-round.svg' alt='open popup' width={20} height={20} />
-                                </button>
-                            </PopoverTrigger>
-                            <PopoverContent className='flex flex-col justify-start w-[15.625rem] h-auto py-1 px-0 bg-white border border-lightGrey rounded-md'>
-                                {["2025", "2026", "2027", "2028"].map(year => (
-                                    <button
-                                        key={year}
-                                        onClick={() => { setForYear(year); setIsOpenY(false); }}
-                                        className='w-full text-sm text-left text-[#0C111D] px-4 py-[0.625rem] hover:bg-[#F2F4F7]'
-                                    >
-                                        {year}
-                                    </button>
-                                ))}
-                            </PopoverContent>
-                        </Popover>
-                    </div>
-
-                    {/* EXAM */}
-                    <div className='flex flex-col w-full gap-1'>
-                        <p className='text-sm font-medium text-[#1D2939]'>Exam</p>
-                        <Popover placement='bottom' isOpen={isOpenE} onOpenChange={(open) => setIsOpenE(open)}>
-                            <PopoverTrigger>
-                                <button className='flex flex-row w-full py-2 px-3 border border-lightGrey rounded-md gap-1 focus-within:border-[#D7BBFC] focus-within:ring-2 focus-within:ring-[#E8DEFB] focus-within:outline-none transition-colors'>
-                                    <div className={`w-full text-sm text-start ${forExam !== "Select Exam" ? selectedColor : "text-[#667085]"}`}>{forExam}</div>
-                                    <Image src='/icons/arrow-down-01-round.svg' alt='open popup' width={20} height={20} />
-                                </button>
-                            </PopoverTrigger>
-                            <PopoverContent className='flex flex-col justify-start w-[15.625rem] h-auto py-1 px-0 bg-white border border-lightGrey rounded-md'>
-                                {["JEE", "BITSAT", "VITEEE", "WBJEE"].map(exam => (
-                                    <button
-                                        key={exam}
-                                        onClick={() => { setForExam(exam); setIsOpenE(false); }}
-                                        className='w-full text-sm text-left text-[#0C111D] px-4 py-[0.625rem] hover:bg-[#F2F4F7]'
-                                    >
-                                        {exam}
-                                    </button>
-                                ))}
-                            </PopoverContent>
-                        </Popover>
-                    </div>
-
-                    {/* PRODUCT */}
-                    <div className='flex flex-col w-full gap-1'>
-                        <p className='text-sm font-medium text-[#1D2939]'>Product</p>
-                        <Popover placement='bottom' isOpen={isOpenP} onOpenChange={(open) => setIsOpenP(open)}>
-                            <PopoverTrigger>
-                                <button className='flex flex-row w-full py-2 px-3 border border-lightGrey rounded-md gap-1 focus-within:border-[#D7BBFC] focus-within:ring-2 focus-within:ring-[#E8DEFB] focus-within:outline-none transition-colors'
-                                >
-                                    <div className={`w-full text-sm text-start ${forProduct !== "Select Product" ? selectedColor : "text-[#667085]"}`}>{forProduct}</div>
-                                    <Image src='/icons/arrow-down-01-round.svg' alt='open popup' width={20} height={20} />
-                                </button>
-                            </PopoverTrigger>
-                            <PopoverContent className='flex flex-col justify-start w-[17.063rem] h-auto py-1 px-0 bg-white border border-lightGrey rounded-md'>
-                                {["BITSAT Mastery Crash Course 2025", "BITSAT Sprint Crash Course 2025", "Phodu BITSAT Crash Course 2025", "BITSAT Pro Crash Course 2025"].map(product => (
-                                    <button
-                                        key={product}
-                                        onClick={() => { setForProduct(product); setIsOpenP(false); }}
-
-                                        className='w-full text-sm text-left text-[#0C111D] px-4 py-[0.625rem] hover:bg-[#F2F4F7]'
-                                    >
-                                        {product}
-                                    </button>
-                                ))}
-                            </PopoverContent>
-                        </Popover>
-                    </div>
-                </div>
+            
             </div>
         </div>
     );
 };
 
 export default Publish;
+{/* <div className='flex flex-row w-full gap-4'>
+<div className='flex flex-col w-full gap-1'>
+    <p className='text-sm font-medium text-[#1D2939]'>Year</p>
+    <Popover placement='bottom' isOpen={isOpenY} onOpenChange={(open) => setIsOpenY(open)}>
+        <PopoverTrigger>
+            <button className='flex flex-row w-full py-2 px-3 border border-lightGrey rounded-md gap-1 focus-within:border-[#D7BBFC] focus-within:ring-2 focus-within:ring-[#E8DEFB] focus-within:outline-none transition-colors'>
+                <div className={`w-full text-sm text-start ${forYear !== "Select Year" ? selectedColor : "text-[#667085]"}`}>{forYear}</div>
+                <Image src='/icons/arrow-down-01-round.svg' alt='open popup' width={20} height={20} />
+            </button>
+        </PopoverTrigger>
+        <PopoverContent className='flex flex-col justify-start w-[15.625rem] h-auto py-1 px-0 bg-white border border-lightGrey rounded-md'>
+            {["2025", "2026", "2027", "2028"].map(year => (
+                <button
+                    key={year}
+                    onClick={() => { setForYear(year); setIsOpenY(false); }}
+                    className='w-full text-sm text-left text-[#0C111D] px-4 py-[0.625rem] hover:bg-[#F2F4F7]'
+                >
+                    {year}
+                </button>
+            ))}
+        </PopoverContent>
+    </Popover>
+</div>
+
+<div className='flex flex-col w-full gap-1'>
+    <p className='text-sm font-medium text-[#1D2939]'>Exam</p>
+    <Popover placement='bottom' isOpen={isOpenE} onOpenChange={(open) => setIsOpenE(open)}>
+        <PopoverTrigger>
+            <button className='flex flex-row w-full py-2 px-3 border border-lightGrey rounded-md gap-1 focus-within:border-[#D7BBFC] focus-within:ring-2 focus-within:ring-[#E8DEFB] focus-within:outline-none transition-colors'>
+                <div className={`w-full text-sm text-start ${forExam !== "Select Exam" ? selectedColor : "text-[#667085]"}`}>{forExam}</div>
+                <Image src='/icons/arrow-down-01-round.svg' alt='open popup' width={20} height={20} />
+            </button>
+        </PopoverTrigger>
+        <PopoverContent className='flex flex-col justify-start w-[15.625rem] h-auto py-1 px-0 bg-white border border-lightGrey rounded-md'>
+            {["JEE", "BITSAT", "VITEEE", "WBJEE"].map(exam => (
+                <button
+                    key={exam}
+                    onClick={() => { setForExam(exam); setIsOpenE(false); }}
+                    className='w-full text-sm text-left text-[#0C111D] px-4 py-[0.625rem] hover:bg-[#F2F4F7]'
+                >
+                    {exam}
+                </button>
+            ))}
+        </PopoverContent>
+    </Popover>
+</div>
+
+<div className='flex flex-col w-full gap-1'>
+    <p className='text-sm font-medium text-[#1D2939]'>Product</p>
+    <Popover placement='bottom' isOpen={isOpenP} onOpenChange={(open) => setIsOpenP(open)}>
+        <PopoverTrigger>
+            <button className='flex flex-row w-full py-2 px-3 border border-lightGrey rounded-md gap-1 focus-within:border-[#D7BBFC] focus-within:ring-2 focus-within:ring-[#E8DEFB] focus-within:outline-none transition-colors'
+            >
+                <div className={`w-full text-sm text-start ${forProduct !== "Select Product" ? selectedColor : "text-[#667085]"}`}>{forProduct}</div>
+                <Image src='/icons/arrow-down-01-round.svg' alt='open popup' width={20} height={20} />
+            </button>
+        </PopoverTrigger>
+        <PopoverContent className='flex flex-col justify-start w-[17.063rem] h-auto py-1 px-0 bg-white border border-lightGrey rounded-md'>
+            {["BITSAT Mastery Crash Course 2025", "BITSAT Sprint Crash Course 2025", "Phodu BITSAT Crash Course 2025", "BITSAT Pro Crash Course 2025"].map(product => (
+                <button
+                    key={product}
+                    onClick={() => { setForProduct(product); setIsOpenP(false); }}
+
+                    className='w-full text-sm text-left text-[#0C111D] px-4 py-[0.625rem] hover:bg-[#F2F4F7]'
+                >
+                    {product}
+                </button>
+            ))}
+        </PopoverContent>
+    </Popover>
+</div>
+</div> */}

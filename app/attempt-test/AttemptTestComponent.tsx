@@ -147,6 +147,34 @@ function formatTimeTaken(seconds: string) {
     return formattedTime;
 }
 
+function formatTimeLeft(input: string) {
+    let totalMinutes = 0;
+
+    // Extract hours and minutes from the input string
+    const hourMatch = input.match(/(\d+)\s*Hour\(s\)/i);
+    const minuteMatch = input.match(/(\d+)\s*Minute\(s\)/i);
+
+    if (hourMatch) {
+        totalMinutes += parseInt(hourMatch[1], 10) * 60; // Convert hours to minutes
+    }
+    if (minuteMatch) {
+        totalMinutes += parseInt(minuteMatch[1], 10); // Add remaining minutes
+    }
+
+    const hours = Math.floor(totalMinutes / 60); // Calculate hours
+    const minutes = totalMinutes % 60; // Calculate remaining minutes
+    let formattedTime = '';
+
+    if (hours > 0) {
+        formattedTime += `${hours}h`; // Add hours if present
+    }
+    if (minutes > 0 || hours === 0) {
+        formattedTime += (formattedTime ? ' ' : '') + `${minutes}m`; // Add minutes
+    }
+
+    return formattedTime;
+}
+
 function ReviewTestView() {
     const searchParams = useSearchParams();
 
@@ -177,6 +205,7 @@ function ReviewTestView() {
     const [score, setScore] = useState('');
     const [accuracy, setAccuracy] = useState('');
     const [timeTaken, setTimeTaken] = useState('');
+    const [testTime, setTestTime] = useState('');
 
 
   const handleTimeUpdate = (timeLeft: number) => {
@@ -457,6 +486,7 @@ const handleSubmit = async () => {
                     setScore(`${totalScore}/${maxPossibleScore}`);
                     setAccuracy(`${accuracy.toFixed(2)}%`);
                     setTimeTaken(`${currentTime}`);
+                    setTestTime(`${currentSection?.testTime}`);
                     resolve('Test Submitted!');
 
             
@@ -717,7 +747,7 @@ const currentQuestionState = questionStates[currentQuestionIndex];
                             </div>
                         </ModalBody>
                     )}
-                </ModalContent>
+                </ModalContent>   
             </Modal>
             <Modal isOpen={isOpenSecond} size="2xl" onOpenChange={(isOpen) => !isOpen && onCloseSecond()} isDismissable={false}
         isKeyboardDismissDisabled={false} hideCloseButton={true}>
@@ -756,7 +786,7 @@ const currentQuestionState = questionStates[currentQuestionIndex];
                                     </div>
                                     <div className="w-full text-center border-r border-lightGrey">
                                         <p className="text-sm text-[#667085] font-normal leading-5 mb-2">Time Taken</p>
-                                        <p className="text-lg text-[1D2939] font-semibold leading-5">{formatTimeTaken(timeTaken)} of 8h</p>
+                                        <p className="text-lg text-[1D2939] font-semibold leading-5">{formatTimeTaken(timeTaken)} of {formatTimeLeft(testTime)}</p>
                                     </div>
                                 </div>
                             </div>
