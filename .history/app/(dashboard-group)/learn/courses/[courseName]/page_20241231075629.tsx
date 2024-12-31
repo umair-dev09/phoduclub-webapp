@@ -571,27 +571,17 @@ function Course() {
                                 setSectionId(section.sectionId);
                               }}
                             >
-                              {!isCompleted ? (
-                                <Tooltip
-                                  content="Launching Soon!!!!!"
-                                  placement="right"
-                                  offset={15}
-                                  closeDelay={100}
-                                  classNames={{
-                                    content: [
-                                      "bg-[#222222] text-white text-sm py-2 px-4 rounded-md",
-                                    ],
-                                  }}
-                                >
-                                  <Checkbox
-                                    size="md"
-                                    color="secondary"
-                                    radius="full"
-                                    isSelected={isCompleted} // This controls if the checkbox is checked or not
-                                    onClick={() => handleMarkContentCompleted(content.contentId, section.sectionId, content.StudentsCompleted)}
-                                  />
-                                </Tooltip>
-                              ) : (
+                              <Tooltip
+                                content="Launching Soon!!!!!"
+                                placement="right"
+                                offset={15}
+                                closeDelay={100}
+                                classNames={{
+                                  content: [
+                                    "bg-[#222222] text-white text-sm py-2 px-4 rounded-md",
+                                  ],
+                                }}
+                              >
                                 <Checkbox
                                   size="md"
                                   color="secondary"
@@ -599,7 +589,7 @@ function Course() {
                                   isSelected={isCompleted} // This controls if the checkbox is checked or not
                                   onClick={() => handleMarkContentCompleted(content.contentId, section.sectionId, content.StudentsCompleted)}
                                 />
-                              )}
+                              </Tooltip>
                               <div className="flex flex-col gap-1 pt-[-2px] w-full">
                                 <span className="font-semibold text-sm text-[#1D2939] text-left">
                                   {index + 1}. {content.lessonHeading}
