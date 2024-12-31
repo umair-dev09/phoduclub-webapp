@@ -219,12 +219,12 @@ export default ChatArea;
 //     setIsOpen: React.Dispatch<React.SetStateAction<{ report: boolean; media: boolean }>>;
 // }
 
-
 // const ChatArea: React.FC<ChatAreaProps> = ({ isOpen, setIsOpen }) => {
 
 //     const handleCancel = () => {
 //         setIsOpen({ report: false, media: false })
 //     };
+
 //     return (
 //         <>
 //             <Dialog open={isOpen} onClose={() => setIsOpen({ report: false, media: false })} className="relative z-50">
@@ -250,12 +250,12 @@ export default ChatArea;
 //                                     </div>
 //                                 </div>
 //                                 <div className="flex flex-row gap-2">
-//                                     <button onClick={() => setIsOpen({ report: false, media: false })} className="flex flex-row items-center justify-center w-1/2 bg-white rounded-md border-b border-[#D0D5DD] px-6 py-[10px] gap-2">
-//                                         <Image src="/icons/user-block-01.svg" alt="block user" width={18} height={18} />
+//                                     <button onClick={() => setIsOpen({ report: false, media: false })} className="flex flex-row items-center justify-center w-1/2 bg-white rounded-md border border-[#D0D5DD] px-6 py-[10px] gap-2">
+//                                         <Image src="/icons/multiplication-sign.svg" alt="decline user" width={18} height={18} />
 //                                         <div className="text-sm font-semibold text-[#182230]">Decline</div>
 //                                     </button>
-//                                     <button onClick={() => setIsOpen({ report: false, media: false })} className="flex flex-row items-center justify-center w-1/2 bg-white rounded-md border-b border-green-600 px-6 py-[10px] gap-2">
-//                                         <Image src="/icons/user-block-01.svg" alt="block user" width={18} height={18} />
+//                                     <button onClick={() => setIsOpen({ report: false, media: false })} className="flex flex-row items-center justify-center w-1/2 bg-white rounded-md border border-green-600 px-6 py-[10px] gap-2">
+//                                         <Image src="/icons/tick-02.svg" alt="accept user" width={18} height={18} />
 //                                         <div className="text-sm font-semibold text-green-600">Accept</div>
 //                                     </button>
 //                                 </div>

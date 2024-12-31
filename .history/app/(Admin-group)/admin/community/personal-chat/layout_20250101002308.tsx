@@ -16,7 +16,7 @@ function GeneralChatLayout({ children }: GeneralChatLayoutProps) {
     const [isMutePopoverOpen, setIsMutePopoverOpen] = useState(false);
     const [isMuted, setIsMuted] = useState(false); // Tracks mute state
     const [value, setValue] = useState(" ");
-    const [height, setHeight] = useState("32px");
+
     // Function to close both popovers
     const closePopover = () => setIsPopoverOpen(false);
     const closeMutePopover = () => setIsMutePopoverOpen(false);
@@ -27,14 +27,7 @@ function GeneralChatLayout({ children }: GeneralChatLayoutProps) {
 
     // Toggles mute state
     const toggleMute = () => setIsMuted(prev => !prev);
-    const handleInput = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
 
-
-        e.target.style.height = "32px";
-        const newHeight = e.target.scrollHeight <= 120 ? e.target.scrollHeight : 120;
-        e.target.style.height = `${newHeight}px`;
-        setHeight(newHeight < 120 ? "32px" : "120px");
-    };
     return (
         <div className="flex flex-row h-full">
             {/* <div className=" flex flex-row items-center justify-center h-full w-full">
@@ -162,13 +155,7 @@ function GeneralChatLayout({ children }: GeneralChatLayoutProps) {
                                 className="w-full max-h-[120px] bg-[#FCFCFD] overflow-y-auto resize-none px-3 rounded-md outline-none font-normal text-sm leading-tight pt-[5px]"
                                 placeholder="Type your message here..."
                                 value={value}
-                                onChange={(e) => {
-                                    setValue(e.target.value); // Update the value state
-                                    handleInput(e); // Call the handleInput function
-                                }}
-
-                                style={{ height: height }}
-
+                                onChange={(e) => setValue(e.target.value)}
                             />
                             <div className="flex flex-row gap-2 pr-2">
                                 <Popover className='mb-2' placement="bottom-end">

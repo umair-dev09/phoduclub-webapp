@@ -162,13 +162,11 @@ function GeneralChatLayout({ children }: GeneralChatLayoutProps) {
                                 className="w-full max-h-[120px] bg-[#FCFCFD] overflow-y-auto resize-none px-3 rounded-md outline-none font-normal text-sm leading-tight pt-[5px]"
                                 placeholder="Type your message here..."
                                 value={value}
-                                onChange={(e) => {
-                                    setValue(e.target.value); // Update the value state
-                                    handleInput(e); // Call the handleInput function
-                                }}
+                                onChange={(e) => setValue(e.target.value)}
+                                {handleInput}}
 
-                                style={{ height: height }}
-
+                            style={{ height: height }}
+                              
                             />
                             <div className="flex flex-row gap-2 pr-2">
                                 <Popover className='mb-2' placement="bottom-end">

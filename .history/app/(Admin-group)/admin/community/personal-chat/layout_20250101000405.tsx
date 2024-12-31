@@ -1,11 +1,10 @@
 "use client";
-import EmojiPicker, { EmojiClickData } from "emoji-picker-react";
+
 import React, { ReactNode } from "react";
 import Image from "next/image";
 import ChatMembers from "@/components/DashboardComponents/CommunityComponents/chatMembers";
 import { Popover, PopoverContent, PopoverTrigger } from "@nextui-org/popover";
 import { useState } from "react";
-import MessageTypeArea from '@/components/AdminComponents/InternalChat/MessageTypeArea';
 
 interface GeneralChatLayoutProps {
     children: ReactNode;
@@ -16,7 +15,7 @@ function GeneralChatLayout({ children }: GeneralChatLayoutProps) {
     const [isMutePopoverOpen, setIsMutePopoverOpen] = useState(false);
     const [isMuted, setIsMuted] = useState(false); // Tracks mute state
     const [value, setValue] = useState(" ");
-    const [height, setHeight] = useState("32px");
+
     // Function to close both popovers
     const closePopover = () => setIsPopoverOpen(false);
     const closeMutePopover = () => setIsMutePopoverOpen(false);
@@ -27,14 +26,7 @@ function GeneralChatLayout({ children }: GeneralChatLayoutProps) {
 
     // Toggles mute state
     const toggleMute = () => setIsMuted(prev => !prev);
-    const handleInput = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
 
-
-        e.target.style.height = "32px";
-        const newHeight = e.target.scrollHeight <= 120 ? e.target.scrollHeight : 120;
-        e.target.style.height = `${newHeight}px`;
-        setHeight(newHeight < 120 ? "32px" : "120px");
-    };
     return (
         <div className="flex flex-row h-full">
             {/* <div className=" flex flex-row items-center justify-center h-full w-full">
@@ -155,69 +147,18 @@ function GeneralChatLayout({ children }: GeneralChatLayoutProps) {
                         </PopoverContent>
                     </Popover>
                 </div>
-                <div className="flex flex-row bg-white h-auto p-6 gap-3">
-                    <div className='flex flex-row w-full h-auto'>
-                        <div className="flex flex-row rounded-md w-full h-auto bg-[#FCFCFD] py-[6px] border border-gray-300 focus:outline focus:outline-[1.5px] focus:outline-[#D6BBFB] hover:outline hover:outline-[1.5px] hover:outline-[#D6BBFB] focus-within:border-[#D7BBFC] focus-within:ring-4 focus-within:ring-[#E8DEFB] focus-within:outline-none transition-colors">
+                <div className="flex flex-row bg-white h-auto px-4 py-4">
+                    <div className='flex flex-row'>
+                        <div className="flex flex-row rounded-md w-full h-auto bg-[#FCFCFD] py-[6px] border border-[#D0D5DD]">
                             <textarea
                                 className="w-full max-h-[120px] bg-[#FCFCFD] overflow-y-auto resize-none px-3 rounded-md outline-none font-normal text-sm leading-tight pt-[5px]"
                                 placeholder="Type your message here..."
                                 value={value}
-                                onChange={(e) => {
-                                    setValue(e.target.value); // Update the value state
-                                    handleInput(e); // Call the handleInput function
-                                }}
-
-                                style={{ height: height }}
-
+                                onChange={(e) => setValue(e.target.value)}
                             />
-                            <div className="flex flex-row gap-2 pr-2">
-                                <Popover className='mb-2' placement="bottom-end">
-                                    <PopoverTrigger>
-                                        <button className='transition-colors hover:bg-neutral-100 hover:rounded-[100px] focus:outline-none'>
-                                            <Image src='/icons/emojies.svg' alt='emojis icon' width={21} height={21} />
-                                        </button>
-                                    </PopoverTrigger>
-                                    <PopoverContent className="p-0">
-                                        <EmojiPicker hiddenEmojis={['1f595']} />
-                                    </PopoverContent>
-                                </Popover>
-                                <Popover className='mb-2' placement="bottom-end">
-                                    <PopoverTrigger>
-                                        <button className='transition-colors hover:bg-neutral-100 hover:rounded-[100px] focus:outline-none'>
-                                            <Image src='/icons/files.svg' alt='attachment icon' width={21} height={21} />
-                                        </button>
-                                    </PopoverTrigger>
-                                    <PopoverContent className="p-0">
-                                        <div className='flex flex-col bg-[#FFFFFF] w-auto h-auto border border-[#EAECF0] rounded-md shadow-md'>
-                                            <button
-                                                className='flex flex-row items-center gap-2 w-30 px-4 py-[10px] transition-colors hover:bg-neutral-100 rounded-tr-md rounded-tl-md'
-                                                onClick={() => document.getElementById("image-input")?.click()}
-                                            >
-                                                <Image src='/icons/image.svg' alt='image icon' width={20} height={20} />
-                                                <span className='font-normal text-[#0C111D] text-sm'>Image</span>
-                                            </button>
-                                            <button
-                                                className='flex flex-row items-center gap-2 w-30 px-4 py-[10px] transition-colors hover:bg-neutral-100'
-                                                onClick={() => document.getElementById("video-input")?.click()}
-                                            >
-                                                <Image src='/icons/video-icon.svg' alt='video icon' width={20} height={20} />
-                                                <span className='font-normal text-[#0C111D] text-sm'>Video</span>
-                                            </button>
-                                            <button
-                                                className='flex flex-row items-center gap-2 w-30 px-4 py-[10px] transition-colors hover:bg-neutral-100 rounded-br-md rounded-bl-md'
-                                                onClick={() => document.getElementById("document-input")?.click()}
-                                            >
-                                                <Image src='/icons/documents.svg' alt='document icon' width={20} height={20} />
-                                                <span className='font-normal text-[#0C111D] text-sm'>Documents</span>
-                                            </button>
-                                        </div>
-                                    </PopoverContent>
-                                </Popover>
-                            </div>
                         </div>
-
                     </div>
-                    <button className="mb-1">
+                    <button className="ml-3 mr-3 mb-1">
                         <Image
                             src={value ? '/icons/sendCommunity.svg' : '/icons/send.svg'}
                             alt='send icon'
@@ -226,7 +167,6 @@ function GeneralChatLayout({ children }: GeneralChatLayoutProps) {
                         />
                     </button>
                 </div>
-                {/* <MessageTypeArea showReplyLayout={showReplyLayout} setShowReplyLayout={setShowReplyLayout} replyData={replyData} channelId={selectedChannel?.channelId} internalChatId={internalchatId} /> */}
             </div>
         </div>
     );
