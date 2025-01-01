@@ -151,12 +151,12 @@ function Chemisty() {
                                                 </td>
                                                 <td className="text-right px-8 py-4 text-[#101828] text-sm">
                                                     <Popover placement="bottom-end"
-                                                        isOpen={activePopover === index}
-                                                        onOpenChange={(open) => open ? handlePopoverOpen(index) : setActivePopover(null)}
+                                                    // isOpen={popopen}
+                                                    // onOpenChange={() => setPopopen(true)}
                                                     >
                                                         <PopoverTrigger>
                                                             <button type='button' className="ml-[60%] p-1 rounded-full outline-none transition-colors duration-150 hover:bg-[#F2F4F7]"
-
+                                                            // onClick={() => setPopopen(true)}
                                                             >
                                                                 <Image
                                                                     src="/icons/three-dots.svg"

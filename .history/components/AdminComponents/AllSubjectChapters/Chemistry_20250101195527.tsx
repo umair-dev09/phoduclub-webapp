@@ -156,7 +156,7 @@ function Chemisty() {
                                                     >
                                                         <PopoverTrigger>
                                                             <button type='button' className="ml-[60%] p-1 rounded-full outline-none transition-colors duration-150 hover:bg-[#F2F4F7]"
-
+                                                            // onClick={() => setPopopen(true)}
                                                             >
                                                                 <Image
                                                                     src="/icons/three-dots.svg"
