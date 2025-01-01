@@ -40,6 +40,7 @@ type Channel = {
   channelDescription: string;
   members: { id: string, isAdmin: boolean }[] | null;
   channelRequests: { id: string, requestDate: string }[];
+  declinedRequests: string[];
 };
 
 type ChannelHeading = {
@@ -82,6 +83,7 @@ function Chatinfo() {
   const searchParams = useSearchParams();
   const communityId = searchParams.get('communityId');
   // const { communityName } = params;
+  const isAutoScrolling = useRef(false);
   const [groupData, setGroupData] = useState<GroupData | null>(null);
   const [channelHeadings, setChannelHeadings] = useState<ChannelHeading[]>([]);
   const [user, setUser] = useState<User | null>(null);
@@ -112,6 +114,7 @@ function Chatinfo() {
     headingId?: string; // Adding headingId to the selected channel state
     members: { id: string, isAdmin: boolean }[] | null;
     channelRequests: { id: string, requestDate: string }[] | null;
+    declinedRequests: string[];
   } | null>(null);
 
   const [text, setText] = useState("");
@@ -205,6 +208,7 @@ function Chatinfo() {
                 channelDescription: channelDoc.data().channelDescription,
                 members: channelDoc.data().members,
                 channelRequests: channelDoc.data().channelRequests,
+                declinedRequests: channelDoc.data().declinedRequests,
               }));
 
               // Update the headingsData array with the new channels
@@ -305,22 +309,7 @@ function Chatinfo() {
     };
   }, []);
 
-  // Effect to handle scrolling when new messages are added
-  useEffect(() => {
-    if (bottomRef.current && chats.length > 0) {
-      const lastChat = chats[chats.length - 1]; // Get the last chat message
 
-      // Scroll logic based on `showScrollButton` state
-      if (initialLoadRef.current) {
-        // Scroll to the latest message on the first load or channel selection
-        bottomRef.current.scrollIntoView({ behavior: "auto" });
-        initialLoadRef.current = false;
-      } else if (!showScrollButton || lastChat.senderId === user?.uid) {
-        // Scroll if the user is at the bottom (showScrollButton is false) or the last message is from the current user
-        bottomRef.current.scrollIntoView({ behavior: "auto" });
-      }
-    }
-  }, [chats, showScrollButton, user]);
 
   // Reset the flag whenever a new channel is selected
   useEffect(() => {
@@ -329,7 +318,27 @@ function Chatinfo() {
     }
   }, [selectedChannel]);
 
+   // Update the effect that handles scrolling when new messages are added
+   useEffect(() => {
+    if (bottomRef.current && chats.length > 0) {
+      const lastChat = chats[chats.length - 1];
+      const chatContainer = containerRef.current;
 
+      if (!chatContainer) return;
+
+      const { scrollTop, scrollHeight, clientHeight } = chatContainer;
+      const isNearBottom = scrollHeight - scrollTop - clientHeight <= 150;
+
+      if (initialLoadRef.current) {
+        // Initial load - scroll instantly
+        scrollToBottom('auto');
+        initialLoadRef.current = false;
+      } else if (lastChat.senderId === user?.uid || isNearBottom) {
+        // User's own message or already near bottom - scroll smoothly
+        scrollToBottom('smooth');
+      }
+    }
+  }, [chats, user?.uid]);
 
 
   useEffect(() => {
@@ -367,37 +376,107 @@ function Chatinfo() {
       }
     }
   }, [currentResultIndex, chats, searchResults]);
-
   const handleSearchUp = () => {
     if (searchResults.length === 0) return;
+    
+    // For single result, always scroll to it
+    if (searchResults.length === 1) {
+      setCurrentResultIndex(0);
+      const chatId = chats[searchResults[0]]?.chatId;
+      if (chatId && chatRefs.current[chatId]) {
+        chatRefs.current[chatId].scrollIntoView({
+          behavior: "auto",
+          block: "center"
+        });
+      }
+      return;
+    }
+  
+    // For multiple results, cycle through them
     setCurrentResultIndex((prevIndex) =>
-      prevIndex > 0 ? prevIndex - 1 : searchResults.length - 1 // Cycle to the last result if at the first
+      prevIndex > 0 ? prevIndex - 1 : searchResults.length - 1
     );
   };
-
+  
   const handleSearchDown = () => {
     if (searchResults.length === 0) return;
+    
+    // For single result, always scroll to it
+    if (searchResults.length === 1) {
+      setCurrentResultIndex(0);
+      const chatId = chats[searchResults[0]]?.chatId;
+      if (chatId && chatRefs.current[chatId]) {
+        chatRefs.current[chatId].scrollIntoView({
+          behavior: "auto",
+          block: "center"
+        });
+      }
+      return;
+    }
+  
+    // For multiple results, cycle through them
     setCurrentResultIndex((prevIndex) =>
-      prevIndex < searchResults.length - 1 ? prevIndex + 1 : 0 // Cycle to the first result if at the last
+      prevIndex < searchResults.length - 1 ? prevIndex + 1 : 0
     );
   };
+ // Modify the handleScroll function to prevent interference during auto-scroll
+ const handleScroll = () => {
+  if (containerRef.current && !isAutoScrolling.current) {
+    const { scrollTop, scrollHeight, clientHeight } = containerRef.current;
+    const isNearBottom = scrollHeight - scrollTop - clientHeight <= 50;
+    setShowScrollButton(!isNearBottom);
+  }
+};
 
-  const handleScroll = () => {
-    if (containerRef.current) {
-      const { scrollTop, scrollHeight, clientHeight } = containerRef.current;
-      // If the user has scrolled up, show the button
-      if (scrollHeight - scrollTop > clientHeight + 50) {
-        setShowScrollButton(true);
-      } else {
-        setShowScrollButton(false);
-      }
+// Modify the scrollToBottom function
+const scrollToBottom = (behavior: ScrollBehavior = 'auto') => {
+  if (bottomRef.current && containerRef.current) {
+    isAutoScrolling.current = true;
+    
+    const scrollOptions: ScrollIntoViewOptions = {
+      behavior,
+      block: 'end' as ScrollLogicalPosition,
+    };
+
+    bottomRef.current.scrollIntoView(scrollOptions);
+
+    // Reset the auto-scrolling flag after animation completes
+    setTimeout(() => {
+      isAutoScrolling.current = false;
+    }, behavior === 'auto' ? 300 : 0);
+    
+    setShowScrollButton(false);
+  }
+};
+
+
+
+
+  // Update the scrollToReply function with correct types
+  const scrollToReply = (replyingToChatId: string) => {
+    const element = chatRefs.current[replyingToChatId];
+    if (element) {
+      isAutoScrolling.current = true;
+      
+      const scrollOptions: ScrollIntoViewOptions = {
+        behavior: 'auto',
+        block: 'center' as ScrollLogicalPosition
+      };
+
+      element.scrollIntoView(scrollOptions);
+
+      // Highlight the message
+      setHighlightedChatId(replyingToChatId);
+
+      // Reset auto-scrolling flag and remove highlight
+      setTimeout(() => {
+        isAutoScrolling.current = false;
+        setHighlightedChatId(null);
+      }, 700);
     }
   };
 
-  const scrollToBottom = () => {
-    bottomRef.current?.scrollIntoView({ behavior: "auto" });
-    setShowScrollButton(false); // Hide the button after scrolling
-  };
+
 
   useEffect(() => {
     setIsMounted(true);
@@ -437,19 +516,8 @@ function Chatinfo() {
   };
 
 
-  const scrollToReply = (replyingToChatId: string) => {
-    const element = chatRefs.current[replyingToChatId];
-    if (element) {
-      element.scrollIntoView({ behavior: 'instant', block: 'center' });
-
-      // Highlight the message
-      setHighlightedChatId(replyingToChatId);
-
-      // Remove the highlight after 2 seconds
-      setTimeout(() => setHighlightedChatId(null), 700);
-    }
-  };
-
+  
+ 
 
 
   return (
@@ -508,7 +576,7 @@ function Chatinfo() {
                   {heading.channels.map((channel) => (
                     <button
                       key={channel.channelId}
-                      className="ChannelName flex flex-row items-center justify-between pr-3 group rounded-[7px] transition-colors hover:bg-[#F8F0FF]"
+                      className={`ChannelName flex flex-row items-center justify-between pr-3 group rounded-[7px] transition-colors hover:bg-[#F8F0FF] ${selectedChannel?.channelId === channel.channelId ? 'bg-[#F8F0FF]' : 'bg-[#FFFFFF]'} `}
                       onClick={() => {
                         setSelectedChannel({ ...channel, headingId: heading.headingId });
                       }}                    >
@@ -558,7 +626,7 @@ function Chatinfo() {
 
             <div className="flex items-center justify-between h-[72px] bg-white border-b border-lightGrey">
               {/* Pass the selected channel info to ChatHead */}
-              <ChatHead isAdmin={true} channelDescription={selectedChannel.channelDescription || ''} communityId={communityId} categoryId={selectedChannel.headingId || ''} channelId={selectedChannel?.channelId ?? null} channelName={selectedChannel?.channelName ?? null} channelEmoji={selectedChannel?.channelEmoji ?? null} channelRequests={selectedChannel.channelRequests || []}/>
+              <ChatHead isAdmin={true} channelDescription={selectedChannel.channelDescription || ''} communityId={communityId} categoryId={selectedChannel.headingId || ''} channelId={selectedChannel?.channelId ?? null} channelName={selectedChannel?.channelName ?? null} channelEmoji={selectedChannel?.channelEmoji ?? null} channelRequests={selectedChannel.channelRequests || []} setSelectedChannel={setSelectedChannel} members={selectedChannel.members}/>
               <div className="flex flex-row mr-4 gap-4">
                 <Popover placement="bottom" isOpen={searchOpen} onClose={() => { setSearchOpen(false); setSearchQuery('') }}>
                   <PopoverTrigger>
@@ -718,8 +786,8 @@ function Chatinfo() {
               {showScrollButton && (
 
                 <button
-                  onClick={scrollToBottom}
-                  className="flex items-center justify-center absolute bottom-[85px] right-3 bg-white border pt-[2px] text-white rounded-full shadow-md hover:bg-[#f7f7f7] transition-all w-[38px] h-[38px]"
+                  onClick={() => scrollToBottom()}
+                  className="flex items-center justify-center absolute bottom-[85px] right-4 bg-white border pt-[2px] text-white rounded-full shadow-md hover:bg-[#f7f7f7] transition-all w-[38px] h-[38px]"
                 >
                   <Image
                     src="/icons/Arrow-down-1.svg"

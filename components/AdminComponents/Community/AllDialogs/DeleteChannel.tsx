@@ -15,8 +15,24 @@ interface Deleteprops {
     categoryId: string;
     channelId: string;
     channelName: string;
+    setSelectedChannel: React.Dispatch<React.SetStateAction<{
+            channelId: string;
+            channelName: string;
+            channelEmoji: string;
+            channelDescription: string;
+            headingId?: string;
+            members: {
+                id: string;
+                isAdmin: boolean;
+            }[] | null;
+            channelRequests: {
+                id: string;
+                requestDate: string;
+            }[] | null;
+            declinedRequests: string[];
+        } | null>>;
 }
-function DeleteChannel({ open, onClose, communityId, channelId, channelName, categoryId }: Deleteprops) {
+function DeleteChannel({ open, onClose, communityId, channelId, channelName, categoryId, setSelectedChannel }: Deleteprops) {
     const [confirmedName, setConfirmedName] = useState('');
     const isFormValid = channelName === confirmedName;
 
@@ -24,6 +40,7 @@ function DeleteChannel({ open, onClose, communityId, channelId, channelName, cat
         try {
             await deleteDoc(doc(db, `communities/${communityId}/channelsHeading/${categoryId}/channels`, channelId));
             toast.success('Channel Deleted Successfully!');
+            setSelectedChannel(null);
             onClose();
         } catch (error) {
             console.error('Error removing user from Firestore:', error);
