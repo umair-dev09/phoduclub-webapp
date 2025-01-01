@@ -211,7 +211,8 @@ function VerifyOtp() {
                     email: email,
                     uniqueId: authId,
                     userId: userId,
-                    profilePic: profilePic
+                    profilePic: profilePic,
+                    createdAt: new Date(),
                 });
 
                 toast.success("Correct OTP! You are logged in.");

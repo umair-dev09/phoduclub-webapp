@@ -87,19 +87,18 @@ export default function Login_Page() {
                     router.push(`/verifyotp?phone=${formattedPhone}`);
                     setIsLoading(false);
                 })
-                .catch((error) => {console.error("SMS not sent:", error);              
-                       setIsLoading(false);
-                       setErrorMessage("Failed to send verification code. Please try again.");
-                }
-                );
+                .catch((error) => {
+                    console.error("SMS not sent:", error);              
+                    setIsLoading(false);
+                    setErrorMessage("Failed to send verification code. Please try again.");
+                });
 
             } else {
                 setErrorMessage("Your number is not registered. Please Signup first.");
                 setIsLoading(false);
-
             }
 
-         } catch (error) {
+        } catch (error) {
             console.error("Error while login user:", error);
             setIsLoading(false);
         }
