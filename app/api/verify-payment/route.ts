@@ -65,7 +65,7 @@ export async function GET(request: Request) {
         payment_message: paymentDetails?.payment_message,
         payment_time: paymentDetails?.payment_completion_time
       };
-
+   
     return NextResponse.json(status);
 
   } catch (error) {

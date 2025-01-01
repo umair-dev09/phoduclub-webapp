@@ -168,7 +168,7 @@ function MyTestSeries() {
                     {/* <div className="flex items-center absolute top-3 left-5 mr-5 bg-[#c74fe6] bg-opacity-80 text-xs font-medium border border-[#c74fe6] text-white rounded-full px-3 py-2 z-10 transition-transform duration-300 ease-in-out">
                             <p>JEE Mains Test</p>
                         </div> */}
-                    <Image className="w-[357px] h-[186px]" src={test.testImage || "/images/course_img.svg"} alt="Test" width={357} height={186} />
+                    <Image className="w-full h-[300px]" src={test.testImage || "/images/course_img.svg"} alt="Test" width={300} height={300} />
                   </div>
 
                   {/* Test details container */}

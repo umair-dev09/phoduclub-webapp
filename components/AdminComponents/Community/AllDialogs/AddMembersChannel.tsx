@@ -19,7 +19,8 @@ interface AddMembersGroupProps {
     onClose: () => void;
     communityId: string;
     headingId: string;
-    channelId: string;
+    channelId: string; 
+    groupMembers: { id: string, isAdmin: boolean }[]  | null;
 }
 
 interface UserData {
@@ -40,7 +41,7 @@ interface AdminData {
 }
 
 
-function AddMembersChannel({ open, onClose, communityId, headingId, channelId }: AddMembersGroupProps) {
+function AddMembersChannel({ open, onClose, communityId, headingId, channelId, groupMembers }: AddMembersGroupProps) {
     const [activeTab, setActiveTab] = useState("Users");
     const [loading, setLoading] = useState(true);
     const [users, setUsers] = useState<UserData[]>([]);
@@ -65,12 +66,20 @@ function AddMembersChannel({ open, onClose, communityId, headingId, channelId }:
                     isPremium: userData.isPremium,
                 } as UserData;
             });
-            setUsers(updatedUsers);
+            
+            const filteredGroupUsers = updatedUsers.filter(user => {
+                if (!groupMembers) return false;
+                return groupMembers
+                    .filter(member => !member.isAdmin)
+                    .some(member => member.id === user.uniqueId);
+            });
+            
+            setUsers(filteredGroupUsers);
             setLoading(false);
         });
-        // Cleanup listener on component unmount
+        
         return () => unsubscribe();
-    }, []);
+    }, [groupMembers]);
 
     useEffect(() => {
         const usersCollection = collection(db, 'admin');
@@ -84,14 +93,21 @@ function AddMembersChannel({ open, onClose, communityId, headingId, channelId }:
                     profilePic: adminData.profilePic,
                     role: adminData.role,
                 } as AdminData;
-            }).filter((admin) => admin.adminId !== currentUserId); // Exclude current user
+            }).filter((admin) => admin.adminId !== currentUserId);
 
-            setAdmins(updatedAdmins);
+            const filteredGroupAdmins = updatedAdmins.filter(admin => {
+                if (!groupMembers) return false;
+                return groupMembers
+                    .filter(member => member.isAdmin)
+                    .some(member => member.id === admin.adminId);
+            });
+            
+            setAdmins(filteredGroupAdmins);
             setLoading(false);
         });
-        // Cleanup listener on component unmount
+        
         return () => unsubscribe();
-    }, [currentUserId]);
+    }, [currentUserId, groupMembers]);
 
     const filteredUsers = users.filter(user =>
         user.name.toLowerCase().includes(searchTerm.toLowerCase())
@@ -199,7 +215,7 @@ function AddMembersChannel({ open, onClose, communityId, headingId, channelId }:
                 <DialogPanel className="bg-white rounded-2xl w-[568px] h-auto flex flex-col ">
                     <div className=' flex flex-col p-6 gap-1 border-solid border-[#EAECF0] border-b rounded-t-2xl'>
                         <div className='flex flex-row justify-between items-center'>
-                            <h1 className='text-[#1D2939] font-bold text-lg'>Create Group</h1>
+                            <h1 className='text-[#1D2939] font-bold text-lg'>Create Channel</h1>
                             <button className="w-[32px] h-[32px]  rounded-full flex items-center justify-center transition-all duration-300 ease-in-out hover:bg-[#F2F4F7]">
                                 <button><Image src="/icons/cancel.svg" alt="Cancel" width={20} height={20} onClick={onClose} /></button>
                             </button>

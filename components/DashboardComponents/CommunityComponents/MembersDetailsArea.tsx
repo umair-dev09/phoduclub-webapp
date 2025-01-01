@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { doc, getDoc } from "firebase/firestore";
+import { doc, getDoc, onSnapshot } from "firebase/firestore";
 import { db, auth } from "@/firebase"; // Import your Firestore and Auth instances
 import LoadingData from "@/components/Loading";
 import Image from "next/image";
@@ -12,6 +12,7 @@ type UserData = {
   adminId?: string;
   isPremium: boolean;
   role: string;
+  isOnline: boolean;
 };
 
 type Member = {
@@ -53,58 +54,72 @@ function MembersDetailsArea({ members }: MembersDetailsAreaProps) {
 
   // Fetch members data
   useEffect(() => {
-    const fetchMemberData = async () => {
-      setLoading(true);
-      const adminData: UserData[] = [];
-      const chiefModerators: UserData[] = [];
-      const teachers: UserData[] = [];
-      const premiumMembers: UserData[] = [];
-      const clubMembers: UserData[] = [];
+    setLoading(true);
+    let isActive = true;
 
-      for (const member of members) {
-        try {
-          const collection = member.isAdmin ? "admin" : "users";
-          const docRef = doc(db, collection, member.id);
-          const docSnap = await getDoc(docRef);
-
-          if (docSnap.exists()) {
-            const userData = docSnap.data() as UserData;
-
-            if (member.isAdmin) {
-              if (userData.role === "Admin") {
-                adminData.push(userData);
-              } else if (userData.role === "ChiefModerator") {
-                chiefModerators.push(userData);
-              } else if (userData.role === "Teacher") {
-                teachers.push(userData);
-              }
-            } else {
-              if (userData.isPremium) {
-                premiumMembers.push(userData);
-              } else {
-                clubMembers.push(userData);
-              }
-            }
-          } else {
-            console.error(`No document found for ${collection}/${member.id}`);
-          }
-        } catch (error) {
-          console.error(`Error fetching member ${member.id}:`, error);
-        }
-      }
-
-      setCategorizedMembers({
-        admin: adminData,
-        chiefModerators,
-        teachers,
-        premiumMembers,
-        clubMembers,
-      });
-      setLoading(false);
+    const categorizedData = {
+      admin: [] as UserData[],
+      chiefModerators: [] as UserData[],
+      teachers: [] as UserData[],
+      premiumMembers: [] as UserData[],
+      clubMembers: [] as UserData[],
     };
 
-    fetchMemberData();
-  }, [members]);
+    // Set up real-time listeners for each member
+    const unsubscribeFunctions = members.map((member) => {
+      const collection = member.isAdmin ? "admin" : "users";
+      const docRef = doc(db, collection, member.id);
+
+      return onSnapshot(
+      docRef,
+      (docSnap) => {
+        if (!isActive) return;
+
+        if (docSnap.exists()) {
+        const userData = docSnap.data() as UserData;
+        
+        // Remove user from all categories first
+        const userId = member.isAdmin ? userData.adminId : userData.uniqueId;
+        Object.values(categorizedData).forEach(array => {
+          const index = array.findIndex(u => 
+          (member.isAdmin ? u.adminId : u.uniqueId) === userId
+          );
+          if (index !== -1) array.splice(index, 1);
+        });
+
+        // Categorize user based on real-time data
+        if (member.isAdmin) {
+          switch (userData.role.toLowerCase()) {
+          case "admin": categorizedData.admin.push(userData); break;
+          case "chiefmoderator": categorizedData.chiefModerators.push(userData); break;
+          case "teacher": categorizedData.teachers.push(userData); break;
+          }
+        } else {
+          if (userData.isPremium) {
+          categorizedData.premiumMembers.push(userData);
+          } else {
+          categorizedData.clubMembers.push(userData);
+          }
+        }
+
+        // Update state with new categorized data
+        setCategorizedMembers({ ...categorizedData });
+        setLoading(false);
+        }
+      },
+      (error) => {
+        console.error(`Error in real-time listener for ${collection}/${member.id}:`, error);
+        setLoading(false);
+      }
+      );
+    });
+
+    // Cleanup function to unsubscribe all listeners
+    return () => {
+      isActive = false;
+      unsubscribeFunctions.forEach(unsubscribe => unsubscribe());
+    };
+    }, [members]);
 
   const handleClick = (memberId: string, memberIsAdmin: boolean) => {
     setId(memberId);           // Set the id of the clicked member
@@ -176,15 +191,8 @@ function MembersDetailsArea({ members }: MembersDetailsAreaProps) {
                         width={35}
                         height={35}
                         />
-                      {member.isPremium && (
-                        <Image
-                            className="absolute right-[-2px] bottom-0"
-                            src="/icons/winnerBatch.svg"
-                            alt="Batch"
-                            width={16}
-                            height={16}
-                        />
-                       )}
+                     <div className={`w-[15px] h-[15px]  border-[2.5px] border-white rounded-full ${member.isOnline ? 'bg-[#17B26A]' : 'bg-[#98A2B3]'}  absolute right-[-2px] bottom-[-1px]`} />
+
                       </div>
                       
                         <p className="text-[#4B5563] text-[13px] font-medium">
@@ -246,15 +254,7 @@ function MembersDetailsArea({ members }: MembersDetailsAreaProps) {
                         width={35}
                         height={35}
                         />
-                      {member.isPremium && (
-                        <Image
-                            className="absolute right-[-2px] bottom-0"
-                            src="/icons/winnerBatch.svg"
-                            alt="Batch"
-                            width={16}
-                            height={16}
-                        />
-                       )}
+                         <div className={`w-[15px] h-[15px]  border-[2.5px] border-white rounded-full ${member.isOnline ? 'bg-[#17B26A]' : 'bg-[#98A2B3]'}  absolute right-[-2px] bottom-[-1px]`} />
                       </div>
                         <p className="text-[#4B5563] text-[13px] font-medium">
                         {member.name}

@@ -14,9 +14,11 @@ type chatHeadProps = {
     categoryId: string | null;
     channelDescription: string | null;
     isAdmin: boolean;
+    channelRequests: { id: string, requestDate: string }[];
+
 }
 
-function ChatHead({ channelName, channelId, channelEmoji, communityId, categoryId, channelDescription, isAdmin }: chatHeadProps) {
+function ChatHead({ channelName, channelId, channelEmoji, communityId, categoryId, channelDescription, isAdmin, channelRequests }: chatHeadProps) {
 
     const [isPopoverOpen, setIsPopoverOpen] = useState(false);
     const [isMutePopoverOpen, setIsMutePopoverOpen] = useState(false);
@@ -127,19 +129,19 @@ function ChatHead({ channelName, channelId, channelEmoji, communityId, categoryI
                             </button>
                         </Tooltip>
                         {isAdmin && (
-                            <Tooltip
-                                content="Launching Soon!!!!!"
-                                placement="right"
-                                offset={15}
-                                closeDelay={100}
-                                classNames={{
-                                    content: [
-                                        "bg-[#222222] text-white text-sm py-2 px-4 rounded-md",
-                                    ],
-                                }}
-                            >
-                                <button className='flex flex-row gap-2 items-center h-10 w-[206px] px-4 hover:bg-[#EAECF0] cursor-not-allowed'>
-                                    {/* onClick={() => setChannelInfoDialog(true)}> */}
+                            // <Tooltip
+                            //     content="Launching Soon!!!!!"
+                            //     placement="right"
+                            //     offset={15}
+                            //     closeDelay={100}
+                            //     classNames={{
+                            //         content: [
+                            //             "bg-[#222222] text-white text-sm py-2 px-4 rounded-md",
+                            //         ],
+                            //     }}
+                            // >
+                                <button className='flex flex-row gap-2 items-center h-10 w-[206px] px-4 hover:bg-[#EAECF0] cursor-not-allowed'
+                                    onClick={() => setChannelInfoDialog(true)}>
                                     <Image
                                         src="/icons/information-circle.svg"
                                         width={18}
@@ -148,22 +150,22 @@ function ChatHead({ channelName, channelId, channelEmoji, communityId, categoryI
                                     />
                                     <span className='font-normal text-[#0C111D] text-sm'>Channel info</span>
                                 </button>
-                            </Tooltip>
+                            // </Tooltip>
                         )}
-                        {isAdmin && (
-                            <Tooltip
-                                content="Launching Soon!!!!!"
-                                placement="right"
-                                offset={15}
-                                closeDelay={100}
-                                classNames={{
-                                    content: [
-                                        "bg-[#222222] text-white text-sm py-2 px-4 rounded-md",
-                                    ],
-                                }}
-                            >
-                                <button className='flex flex-row gap-2 items-center h-10 w-[206px] px-4 hover:bg-[#EAECF0] cursor-not-allowed'>
-                                    {/* onClick={() => setChannelRequestsDialog(true)}> */}
+                         {isAdmin && (
+                            //  <Tooltip
+                            //     content="Launching Soon!!!!!"
+                            //     placement="right"
+                            //     offset={15}
+                            //     closeDelay={100}
+                            //     classNames={{
+                            //         content: [
+                            //             "bg-[#222222] text-white text-sm py-2 px-4 rounded-md",
+                            //         ],
+                            //     }}
+                            // > 
+                                <button className='flex flex-row gap-2 items-center h-10 w-[206px] px-4 hover:bg-[#EAECF0]'
+                                    onClick={() => setChannelRequestsDialog(true)}>
                                     <Image
                                         src="/icons/channel-requests.svg"
                                         width={18}
@@ -172,8 +174,8 @@ function ChatHead({ channelName, channelId, channelEmoji, communityId, categoryI
                                     />
                                     <span className='font-normal text-[#0C111D] text-sm'>Channel Requests</span>
                                 </button>
-                            </Tooltip>
-                        )}
+                        //    </Tooltip> 
+                        )} 
                         {isAdmin && (
                             <button className='flex flex-row gap-2 items-center h-10 w-[206px] px-4 hover:bg-[#EAECF0]'
                                 onClick={() => setDeleteDialog(true)}>
@@ -193,7 +195,7 @@ function ChatHead({ channelName, channelId, channelEmoji, communityId, categoryI
                 </Popover>
             </div>
             {channelInfoDialog && <Channelinfo open={channelInfoDialog} onClose={() => setChannelInfoDialog(false)} channelName={channelName || ''} channelId={channelId || ''} channelEmoji={channelEmoji || ''} channelDescription={channelDescription || ''} communityId={communityId || ''} categoryId={categoryId || ''} />}
-            {channelRequestsDialog && <ChannelRequests open={channelRequestsDialog} onClose={() => setChannelRequestsDialog(false)} />}
+            {channelRequestsDialog && <ChannelRequests open={channelRequestsDialog} onClose={() => setChannelRequestsDialog(false)} requestedUsers={channelRequests} communityId={communityId || ''} headingId={categoryId || ''} channelId={channelId || ''}/>}
             {deleteDialog && <Delete open={deleteDialog} onClose={() => setDeleteDialog(false)} communityId={communityId || ''} categoryId={categoryId || ''} channelId={channelId || ''} channelName={channelName || ''} />}
         </div>
     );

@@ -26,6 +26,7 @@ type UserData = {
     targetYear: string | null;
     targetExams: string[] | null;
     isAvatar: boolean | null;
+    isPremium: boolean | null;
 };
 
 function getRandomImageUrl(urls: string[]): string {
@@ -177,7 +178,7 @@ function Profile() {
 
     const colors = [styles.red, styles.orange, styles.green, styles.blue];
 
-    return (
+    return (  
         // <div>
 
 
@@ -187,15 +188,24 @@ function Profile() {
                 <div className='Info flex flex-col mr-[5px]'>
                     <div className='NameSection flex flex-row items-center my-[15px] justify-between'>
                         <div className='NameInfo flex flex-row flex-[0.5] items-center mb-[15px]'>
-                            <div className='DP flex justify-center items-center mx-[10px]'>
+                            <div className='DP relative mx-3'>
                                 <Image
                                     className='rounded-[50%]'
                                     src={userData?.profilePic || '/defaultDP.svg'}
                                     alt="profile-image"
                                     width={72}
                                     height={72}
-                                    quality={100}>
-                                </Image>
+                                    quality={100}
+                                />
+                                 {userData?.isPremium === true && (
+                                                        <Image
+                                                            className="absolute right-[-2px] bottom-0"
+                                                            src="/icons/winnerBatch.svg"
+                                                            alt="Batch"
+                                                            width={28}
+                                                            height={28}
+                                                        />
+                                 )}
                             </div>
                             <div>
                                 {/* Name and ID */}
