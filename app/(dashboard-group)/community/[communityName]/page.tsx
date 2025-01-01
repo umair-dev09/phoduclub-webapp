@@ -38,7 +38,7 @@ type ChannelHeading = {
 
 type GroupData = {
   communityName: string | null;
-  members: { id: string, isAdmin: boolean }[]  | null;
+  members: { id: string, isAdmin: boolean }[] | null;
 };
 
 type Chat = {
@@ -257,10 +257,10 @@ export default function CommunityName() {
 
   const handleChannelRequest = async () => {
     if (!selectedChannel || !user?.uid) return;
-    
+
     try {
       const channelRef = doc(db, `communities/${communityId}/channelsHeading/${selectedChannel.headingId}/channels/${selectedChannel.channelId}`);
-      
+
       // Create request object with ID and timestamp
       const requestData = {
         id: user.uid,
@@ -270,7 +270,7 @@ export default function CommunityName() {
       // Get current channel data
       const channelDoc = await getDoc(channelRef);
       const channelData = channelDoc.data();
-      
+
       // Filter out the user's ID from declinedRequests
       const updatedDeclinedRequests = (channelData?.declinedRequests || []).filter(
         (id: string) => id !== user.uid
@@ -281,14 +281,14 @@ export default function CommunityName() {
         channelRequests: arrayUnion(requestData),
         declinedRequests: updatedDeclinedRequests,
       });
-      
+
       toast.success("Request sent successfully!");
     } catch (error) {
       console.error("Error sending request:", error);
       toast.error("Failed to send request");
     }
   };
- 
+
   // Fetch Chats for the selected channel
   useEffect(() => {
     if (selectedChannel) {
@@ -533,7 +533,7 @@ export default function CommunityName() {
 
             <div className="flex items-center justify-between h-[72px] bg-white border-b border-lightGrey">
               {/* Pass the selected channel info to ChatHead */}
-              <ChatHead isAdmin={false} channelId={selectedChannel?.channelId ?? null} channelName={selectedChannel?.channelName ?? null} channelEmoji={selectedChannel?.channelEmoji ?? null} communityId={communityId} categoryId={selectedChannel.headingId || ''} channelDescription={''} channelRequests={selectedChannel.channelRequests || []}/>
+              <ChatHead isAdmin={false} channelId={selectedChannel?.channelId ?? null} channelName={selectedChannel?.channelName ?? null} channelEmoji={selectedChannel?.channelEmoji ?? null} communityId={communityId} categoryId={selectedChannel.headingId || ''} channelDescription={''} channelRequests={selectedChannel.channelRequests || []} />
               <div className="flex flex-row mr-4 gap-4">
                 <Popover placement="bottom" isOpen={searchOpen} onClose={() => { setSearchOpen(false); setSearchQuery('') }}>
                   <PopoverTrigger>
@@ -685,49 +685,49 @@ export default function CommunityName() {
               })}
 
             </div>
-           
+
             <div className='relative'>
               {showScrollButton && (
-              <button
-                onClick={scrollToBottom}
-                className="flex items-center justify-center absolute bottom-[85px] right-3 bg-white border pt-[2px] text-white rounded-full shadow-md hover:bg-[#f7f7f7] transition-all w-[38px] h-[38px]"
-              >
-                <Image
-                src="/icons/Arrow-down-1.svg"
-                alt="Scroll to bottom"
-                width={22}
-                height={22}
-                />
-              </button>
+                <button
+                  onClick={scrollToBottom}
+                  className="flex items-center justify-center absolute bottom-[85px] right-3 bg-white border pt-[2px] text-white rounded-full shadow-md hover:bg-[#f7f7f7] transition-all w-[38px] h-[38px]"
+                >
+                  <Image
+                    src="/icons/Arrow-down-1.svg"
+                    alt="Scroll to bottom"
+                    width={22}
+                    height={22}
+                  />
+                </button>
               )}
               {selectedChannel.members?.some(member => member.id === user?.uid) ? (
-              <BottomText 
-                showReplyLayout={showReplyLayout} 
-                setShowReplyLayout={setShowReplyLayout} 
-                replyData={replyData} 
-                channelId={selectedChannel?.channelId} 
-                communityId={communityId} 
-                headingId={selectedChannel.headingId ?? ''} 
-              />
+                <BottomText
+                  showReplyLayout={showReplyLayout}
+                  setShowReplyLayout={setShowReplyLayout}
+                  replyData={replyData}
+                  channelId={selectedChannel?.channelId}
+                  communityId={communityId}
+                  headingId={selectedChannel.headingId ?? ''}
+                />
               ) : (
-              <div className='flex flex-col items-center justify-center w-full h-auto py-4 bg-white'>
-                {(selectedChannel.channelRequests ?? []).some(request => request.id === (user?.uid ?? '')) ? (
-                  <p className='text-sm text-center px-4'>
-                    Your request to join this channel has been sent successfully. You will be able to view messages and interact with others once the admin approves your request.
-                  </p>
-                ) : (
-                  <>
-                    {(selectedChannel.declinedRequests ?? []).includes(user?.uid ?? '') ? (
-                      <p className='text-sm'>Your request was declined by the admin. Please try again.</p>
-                    ) : (
-                      <p className='text-sm'>You need to be a member of this channel to send messages.</p>
-                    )}
-                    <button onClick={handleChannelRequest}>
-                      <p className='text-purple underline text-sm'>Request to join</p>
-                    </button>
-                  </>
-                )}
-              </div>        
+                <div className='flex flex-col items-center justify-center w-full h-auto py-4 bg-white'>
+                  {(selectedChannel.channelRequests ?? []).some(request => request.id === (user?.uid ?? '')) ? (
+                    <p className='text-sm text-center px-4'>
+                      Your request to join this channel has been sent successfully. You will be able to view messages and interact with others once the admin approves your request.
+                    </p>
+                  ) : (
+                    <>
+                      {(selectedChannel.declinedRequests ?? []).includes(user?.uid ?? '') ? (
+                        <p className='text-sm'>Your request was declined by the admin. Please try again.</p>
+                      ) : (
+                        <p className='text-sm'>You need to be a member of this channel to send messages.</p>
+                      )}
+                      <button onClick={handleChannelRequest}>
+                        <p className='text-purple underline text-sm'>Request to join</p>
+                      </button>
+                    </>
+                  )}
+                </div>
               )}
             </div>
           </>
@@ -757,7 +757,6 @@ export default function CommunityName() {
             </div>
           </div>
           <div className='flex flex-col flex-grow overflow-y-auto'><MembersDetailsArea members={selectedChannel.members || []} /></div>
-
         </div>
       ) : (
         <>

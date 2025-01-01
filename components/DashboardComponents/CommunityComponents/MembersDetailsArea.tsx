@@ -71,46 +71,46 @@ function MembersDetailsArea({ members }: MembersDetailsAreaProps) {
       const docRef = doc(db, collection, member.id);
 
       return onSnapshot(
-      docRef,
-      (docSnap) => {
-        if (!isActive) return;
+        docRef,
+        (docSnap) => {
+          if (!isActive) return;
 
-        if (docSnap.exists()) {
-        const userData = docSnap.data() as UserData;
-        
-        // Remove user from all categories first
-        const userId = member.isAdmin ? userData.adminId : userData.uniqueId;
-        Object.values(categorizedData).forEach(array => {
-          const index = array.findIndex(u => 
-          (member.isAdmin ? u.adminId : u.uniqueId) === userId
-          );
-          if (index !== -1) array.splice(index, 1);
-        });
+          if (docSnap.exists()) {
+            const userData = docSnap.data() as UserData;
 
-        // Categorize user based on real-time data
-        if (member.isAdmin) {
-          switch (userData.role.toLowerCase()) {
-          case "admin": categorizedData.admin.push(userData); break;
-          case "chiefmoderator": categorizedData.chiefModerators.push(userData); break;
-          case "teacher": categorizedData.teachers.push(userData); break;
+            // Remove user from all categories first
+            const userId = member.isAdmin ? userData.adminId : userData.uniqueId;
+            Object.values(categorizedData).forEach(array => {
+              const index = array.findIndex(u =>
+                (member.isAdmin ? u.adminId : u.uniqueId) === userId
+              );
+              if (index !== -1) array.splice(index, 1);
+            });
+
+            // Categorize user based on real-time data
+            if (member.isAdmin) {
+              switch (userData.role.toLowerCase()) {
+                case "admin": categorizedData.admin.push(userData); break;
+                case "chiefmoderator": categorizedData.chiefModerators.push(userData); break;
+                case "teacher": categorizedData.teachers.push(userData); break;
+              }
+            } else {
+              if (userData.isPremium) {
+                categorizedData.premiumMembers.push(userData);
+              } else {
+                categorizedData.clubMembers.push(userData);
+              }
+            }
+
+            // Update state with new categorized data
+            setCategorizedMembers({ ...categorizedData });
+            setLoading(false);
           }
-        } else {
-          if (userData.isPremium) {
-          categorizedData.premiumMembers.push(userData);
-          } else {
-          categorizedData.clubMembers.push(userData);
-          }
+        },
+        (error) => {
+          console.error(`Error in real-time listener for ${collection}/${member.id}:`, error);
+          setLoading(false);
         }
-
-        // Update state with new categorized data
-        setCategorizedMembers({ ...categorizedData });
-        setLoading(false);
-        }
-      },
-      (error) => {
-        console.error(`Error in real-time listener for ${collection}/${member.id}:`, error);
-        setLoading(false);
-      }
       );
     });
 
@@ -119,7 +119,7 @@ function MembersDetailsArea({ members }: MembersDetailsAreaProps) {
       isActive = false;
       unsubscribeFunctions.forEach(unsubscribe => unsubscribe());
     };
-    }, [members]);
+  }, [members]);
 
   const handleClick = (memberId: string, memberIsAdmin: boolean) => {
     setId(memberId);           // Set the id of the clicked member
@@ -159,50 +159,50 @@ function MembersDetailsArea({ members }: MembersDetailsAreaProps) {
 
               {membersList.map((member) => {
                 const isCurrentUser =
-                    (members.find((m) => m.id === (member.uniqueId || member.adminId))?.isAdmin
+                  (members.find((m) => m.id === (member.uniqueId || member.adminId))?.isAdmin
                     ? member.adminId
                     : member.uniqueId) === currentUserId;
 
                 // Find the matching member from `members` to get the `isAdmin` value
                 const matchedMember = members.find(
-                    (m) => m.id === (member.uniqueId || member.adminId)
+                  (m) => m.id === (member.uniqueId || member.adminId)
                 );
 
                 return (
-                    <div
+                  <div
                     key={member.uniqueId || member.adminId || member.name}
                     className={`h-auto transition-all group  pb-[6px] ${isCurrentUser ? 'cursor-not-allowed' : 'cursor-pointer'}`}
                     onClick={
-                        !isCurrentUser
-                          ? () =>
-                              handleClick(
-                                matchedMember?.id || '', // Pass the id of the member
-                                matchedMember?.isAdmin || false   // Pass the isAdmin value of the member
-                              )
-                          : undefined // No action for current user
-                      }
-                    >
+                      !isCurrentUser
+                        ? () =>
+                          handleClick(
+                            matchedMember?.id || '', // Pass the id of the member
+                            matchedMember?.isAdmin || false   // Pass the isAdmin value of the member
+                          )
+                        : undefined // No action for current user
+                    }
+                  >
                     <div className="flex flex-row items-center my-1 gap-2">
                       <div className="relative">
-                      <Image
-                        className="rounded-full w-[35px] h-[35px]"
-                        src={member.profilePic}
-                        alt="Profile Pic"
-                        width={35}
-                        height={35}
+                        <Image
+                          className="rounded-full w-[35px] h-[35px]"
+                          src={member.profilePic}
+                          alt="Profile Pic"
+                          width={35}
+                          height={35}
                         />
-                     <div className={`w-[15px] h-[15px]  border-[2.5px] border-white rounded-full ${member.isOnline ? 'bg-[#17B26A]' : 'bg-[#98A2B3]'}  absolute right-[-2px] bottom-[-1px]`} />
+                        <div className={`w-[15px] h-[15px]  border-[2.5px] border-white rounded-full ${member.isOnline ? 'bg-[#17B26A]' : 'bg-[#98A2B3]'}  absolute right-[-2px] bottom-[-1px]`} />
 
                       </div>
-                      
-                        <p className="text-[#4B5563] text-[13px] font-medium">
+
+                      <p className="text-[#4B5563] text-[13px] font-medium">
                         {member.name}
                         {isCurrentUser && " (You)"}
-                        </p>
+                      </p>
                     </div>
-                    </div>
+                  </div>
                 );
-                })}
+              })}
             </div>
           );
         } else {
@@ -221,48 +221,48 @@ function MembersDetailsArea({ members }: MembersDetailsAreaProps) {
                   </div>
                 </div>
                 {membersList.map((member) => {
-                const isCurrentUser =
+                  const isCurrentUser =
                     (members.find((m) => m.id === (member.uniqueId || member.adminId))?.isAdmin
-                    ? member.adminId
-                    : member.uniqueId) === currentUserId;
+                      ? member.adminId
+                      : member.uniqueId) === currentUserId;
 
-                // Find the matching member from `members` to get the `isAdmin` value
-                const matchedMember = members.find(
+                  // Find the matching member from `members` to get the `isAdmin` value
+                  const matchedMember = members.find(
                     (m) => m.id === (member.uniqueId || member.adminId)
-                );
+                  );
 
-                return (
+                  return (
                     <div
-                    key={member.uniqueId || member.adminId || member.name}
-                    className={`h-auto transition-all group  pb-[6px] ${isCurrentUser ? 'cursor-not-allowed' : 'cursor-pointer'}`}
-                    onClick={
+                      key={member.uniqueId || member.adminId || member.name}
+                      className={`h-auto transition-all group  pb-[6px] ${isCurrentUser ? 'cursor-not-allowed' : 'cursor-pointer'}`}
+                      onClick={
                         !isCurrentUser
                           ? () =>
-                              handleClick(
-                                matchedMember?.id || '', // Pass the id of the member
-                                matchedMember?.isAdmin || false   // Pass the isAdmin value of the member
-                              )
+                            handleClick(
+                              matchedMember?.id || '', // Pass the id of the member
+                              matchedMember?.isAdmin || false   // Pass the isAdmin value of the member
+                            )
                           : undefined // No action for current user
                       }
                     >
-                    <div className="flex flex-row items-center my-1 gap-2">
-                    <div className="relative">
-                      <Image
-                        className="rounded-full w-[35px] h-[35px]"
-                        src={member.profilePic}
-                        alt="Profile Pic"
-                        width={35}
-                        height={35}
-                        />
-                         <div className={`w-[15px] h-[15px]  border-[2.5px] border-white rounded-full ${member.isOnline ? 'bg-[#17B26A]' : 'bg-[#98A2B3]'}  absolute right-[-2px] bottom-[-1px]`} />
-                      </div>
+                      <div className="flex flex-row items-center my-1 gap-2">
+                        <div className="relative">
+                          <Image
+                            className="rounded-full w-[35px] h-[35px]"
+                            src={member.profilePic}
+                            alt="Profile Pic"
+                            width={35}
+                            height={35}
+                          />
+                          <div className={`w-[15px] h-[15px]  border-[2.5px] border-white rounded-full ${member.isOnline ? 'bg-[#17B26A]' : 'bg-[#98A2B3]'}  absolute right-[-2px] bottom-[-1px]`} />
+                        </div>
                         <p className="text-[#4B5563] text-[13px] font-medium">
-                        {member.name}
-                        {isCurrentUser && " (You)"}
+                          {member.name}
+                          {isCurrentUser && " (You)"}
                         </p>
+                      </div>
                     </div>
-                    </div>
-                );
+                  );
                 })}
               </div>
             </div>
