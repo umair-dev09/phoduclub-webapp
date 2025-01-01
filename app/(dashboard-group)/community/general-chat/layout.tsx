@@ -42,9 +42,7 @@ function GeneralChatLayout({ children }: GeneralChatLayoutProps) {
                             <h2 className="text-lg font-semibold">Personal Messages</h2>
                         </div>
                     </div>
-
                 </div>
-
             </div>
             {/* <div className="flex flex-col w-[270px] bg-white border-t border-r border-lightGrey">
                 <div className='flex flex-row items-center justify-between h-[72px] border-b border-lightGrey'>

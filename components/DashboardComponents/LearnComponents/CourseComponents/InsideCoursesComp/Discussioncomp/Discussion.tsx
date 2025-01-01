@@ -75,9 +75,7 @@ function Discussion({ courseId, sectionId, contentId }: DiscussionProps) {
         if (auth.currentUser?.uid) {
             try {
                 const ref = doc(collection(db, 'course', courseId, 'sections', sectionId, 'content', contentId, 'Disscussion'));
-
                 const currentUserId = auth.currentUser.uid;
-
                 const disscusionData = {
                     message: value,
                     userId: currentUserId,
@@ -143,9 +141,6 @@ function Discussion({ courseId, sectionId, contentId }: DiscussionProps) {
                 if (currentFormats.underline) {
                     quill.format('underline', false);
                 }
-
-
-
             }
         }
     };
@@ -174,19 +169,8 @@ function Discussion({ courseId, sectionId, contentId }: DiscussionProps) {
                         onKeyDown={handleKeyDown}
                         modules={{ toolbar: false }}
                         placeholder="Type your response here..."
-                        className=" text-[#1D2939] focus:outline-none rounded-b-[12px] custom-quill placeholder:not-italic"
-                        style={{
-                            minHeight: "10px", // Initial height
-                            maxHeight: "150px", // Maximum height before scrolling
-                            overflowY: "auto",  // Enable scrolling if content exceeds max height
-                            padding: "1rem",   // Padding to create space inside the editor
-                            border: 'none',
-                            fontStyle: 'normal',
-                        }}
+                        className=" text-[#1D2939] focus:outline-none rounded-b-[12px] custom-quill placeholder:not-italic min-h-[10px] max-h-[150px] overflow-y-auto p-4 border-none not-italic"
                     />
-
-
-
                 </div>
 
                 {/* ---------------------------------------------------------------- */}
@@ -201,17 +185,12 @@ function Discussion({ courseId, sectionId, contentId }: DiscussionProps) {
                                 className="hover:bg-[#EAECF0]"
                             >
                                 <Image src="/icons/Bold.svg" width={24} height={24} alt="bold" />
-
-
-
                             </button>
                             <button
                                 className="hover:bg-[#EAECF0]"
                                 onClick={() => handleIconClick('italic')}>
-
                                 <Image src="/icons/italic-icon.svg" width={24} height={24} alt="italic-icon" />
                             </button>
-
                             <button
                                 className="hover:bg-[#EAECF0]"
                                 onClick={() => handleIconClick('underline')}>
@@ -244,12 +223,8 @@ function Discussion({ courseId, sectionId, contentId }: DiscussionProps) {
                                     <button onClick={() => handleIconClick("align-right")} className="flex items-center justify-center hover:bg-[#EAECF0]">
                                         <Image src="/icons/align-right.svg" width={30} height={30} alt="align-right" />
                                     </button>
-
                                 </PopoverContent>
                             </Popover>
-
-
-
 
                             {/* --------------------------------------------------------------------------------------------------------------------------------- */}
 
@@ -258,16 +233,11 @@ function Discussion({ courseId, sectionId, contentId }: DiscussionProps) {
                                 onClick={() => handleIconClick('ordered')}>
                                 <Image src="/icons/dropdown-icon-2.svg" width={27} height={27} alt="dropdown-icon" />
                             </button>
-
-
-
                         </div>
                         {/* Button */}
                         <button
                             className={` w-[88px] h-[36px] flex justify-center items-center rounded-md shadow-inner-button 
-                                  ${!isFormValid ? 'bg-[#d8acff]' : 'bg-[#8501FF]'} 
-                                     ${!isFormValid ? '' : 'border border-solid border-[#800EE2]'}`}
-
+                                        ${!isFormValid ? 'bg-[#d8acff] cursor-not-allowed' : 'border border-[#800EE2] bg-[#8501FF] transition-colors duration-150 hover:bg-[#6D0DCC]'}`}
                             disabled={!isFormValid} // Disable button if needed
                             onClick={handleSendMessage}
                         >

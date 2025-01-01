@@ -111,7 +111,7 @@ function GroupIcons() {
         </button>
       </div>
 
-      <div className="flex flex-col justify-start items-center pt-[15px] overflow-y-auto ">
+      <div className="flex flex-col justify-start items-center py-[15px] overflow-y-auto ">
         {communities.map((community, index) => (
           <button
             key={community.communityId}

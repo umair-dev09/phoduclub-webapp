@@ -13,6 +13,7 @@ import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Drawer from "react-modern-drawer";
 import ReviewTest from "@/components/DashboardComponents/LearnComponents/TestsComponents/ReviewTest";
+import { useRouter } from "next/navigation";
 
 interface Section {
     id: string;
@@ -177,7 +178,7 @@ function formatTimeLeft(input: string) {
 
 function ReviewTestView() {
     const searchParams = useSearchParams();
-
+    const router = useRouter();
     const tId = searchParams.get("tId");
     const currentUserId = searchParams.get("uid");
     const sectionIds = searchParams.get("sectionIds");
@@ -431,7 +432,10 @@ function ReviewTestView() {
                     const maxPossibleScore = totalQuestions * marksPerCorrect;
 
                     // Calculate accuracy
-                    const accuracy = (totalScore / maxPossibleScore) * 100;
+                    let accuracy = (totalScore / maxPossibleScore) * 100;
+                    if (accuracy < 0) {
+                        accuracy = 0;
+                    }
 
                     if (!sections || sections.length === 0) {
                         console.error('No sections available');
@@ -790,7 +794,7 @@ function ReviewTestView() {
                             </div>
                             <hr />
                             <div className="flex flex-row justify-end mx-6 mb-2 mt-1 gap-4">
-                                <button className="py-[0.625rem] px-6 border-[1.5px] border-lightGrey rounded-md font-semibold text-sm hover:bg-[#F2F4F7] " onClick={() => alert('You can close this page now!')}>Close</button>
+                                <button className="py-[0.625rem] px-6 border-[1.5px] border-lightGrey rounded-md font-semibold text-sm hover:bg-[#F2F4F7] " onClick={() => router.replace(`/learn/test`)}>Close</button>
                                 <button className="py-[0.625rem] px-6 text-white shadow-inner-button bg-[#8501FF] font-semibold text-sm border border-[#800EE2] rounded-md" onClick={() => setShowReviewSheet(true)}>Review Answers</button>
                             </div>
                         </ModalBody>
