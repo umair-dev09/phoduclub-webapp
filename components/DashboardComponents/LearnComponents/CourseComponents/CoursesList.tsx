@@ -123,7 +123,7 @@ function CoursesList() {
   }
 
   return (
-    <div className="flex flex-1 flex-col">
+    <div className="flex flex-1 flex-col ">
       <div className='ml-6 mb-4 mt-5'>
         <h3>Suggested</h3>
       </div>

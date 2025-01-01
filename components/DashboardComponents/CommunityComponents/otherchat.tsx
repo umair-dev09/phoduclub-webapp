@@ -61,6 +61,7 @@ type UserData = {
   profilePic: string;
   role: string;
   isPremium: string;
+  userId: string;
 };
 
 function OtherChat({ message, currentUserId, adminThatDeletedId, isDeletedByAdmin, isCurrentUserAdmin, setLoading, mentions, isDeleted, highlightedText, messageType, fileUrl, fileName, isHighlighted, isAdmin, scrollToReply, fileSize, senderId, timestamp, communityId, headingId, channelId, chatId, isReplying, replyingToId, replyingToChatId, replyingToFileName, replyingToFileUrl, replyingToMsg, replyingToMsgType, setShowReplyLayout, handleReply }: OtherChatProps) {
@@ -135,35 +136,62 @@ function OtherChat({ message, currentUserId, adminThatDeletedId, isDeletedByAdmi
   const renderMessageWithMentions = () => {
     if (!highlightedText || !mentions) return highlightedText;
 
-    // If highlightedText is a string, process mentions
+    // Helper function to check if text is a URL
+    const isUrl = (text: string) => {
+      try {
+        new URL(text);
+        return true;
+      } catch {
+        return false;
+      }
+    };
+
+    // Helper function to process text parts
+    const processTextPart = (text: string, key: number | string) => {
+      // Check if the text is a URL
+      if (isUrl(text)) {
+        return (
+          <a
+            key={key}
+            href={text}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-blue-400 hover:underline"
+          >
+            {text}
+          </a>
+        );
+      }
+      return text;
+    };
+
     if (typeof highlightedText === "string") {
-      const parts = highlightedText.split(/(@\w+)/); // Match mentions starting with "@"
+      const parts = highlightedText.split(/(@\w+|\s+)/);
       return parts.map((part, index) => {
         if (part.startsWith("@")) {
-          const mentionName = part.substring(1); // Extract mention name without "@"
+          const mentionName = part.substring(1);
           const mention = mentions.find((m) => m.userId === mentionName);
 
           if (mention) {
-            // If the part is a mention, render it as a clickable span
             return (
               <span
                 key={index}
                 style={{ color: "#C74FE6", cursor: "pointer" }}
-                onClick={() => { setOpenDialogue(true); setId(mention.id); setAdmin(mention.isAdmin) }}>
+                onClick={() => {setOpenDialogue(true); setId(mention.id); setAdmin(mention.isAdmin)}}
+              >
                 {part}
               </span>
             );
           }
         }
-        return part; // Render non-mention parts as normal text
+        return processTextPart(part, index);
       });
     }
 
-    // If highlightedText is an array of ReactNode, iterate through it
     if (Array.isArray(highlightedText)) {
       return highlightedText.map((node, index) => {
         if (typeof node === "string") {
-          const parts = node.split(/(@\w+)/);
+          const parts = node.split(/(@\w+|\s+)/);
           return parts.map((part, innerIndex) => {
             if (part.startsWith("@")) {
               const mentionName = part.substring(1);
@@ -174,21 +202,24 @@ function OtherChat({ message, currentUserId, adminThatDeletedId, isDeletedByAdmi
                   <span
                     key={`${index}-${innerIndex}`}
                     style={{ color: "#C74FE6", cursor: "pointer" }}
-                    onClick={() => { setOpenDialogue(true); setId(mention.id); setAdmin(mention.isAdmin) }}>
+                    onClick={() => {setOpenDialogue(true); setId(mention.id); setAdmin(mention.isAdmin)}}
+                  >
                     {part}
                   </span>
                 );
               }
             }
-            return part;
+            return processTextPart(part, `${index}-${innerIndex}`);
           });
         }
-        return node; // Render non-string nodes as they are
+        return node;
       });
     }
 
-    return null; // Return null if highlightedText is neither string nor ReactNode[]
+    return null;
   };
+  
+  
   const handleReplyMessage = () => {
     setShowReplyLayout(true);
     setIsOpen(false);
@@ -268,7 +299,29 @@ function OtherChat({ message, currentUserId, adminThatDeletedId, isDeletedByAdmi
       console.error("Error adding reaction: ", error);
     }
   };
+  const [adminId, setAdminName] = useState<string | null>(null);
 
+  useEffect(() => {
+    if (isDeletedByAdmin && adminThatDeletedId) {
+      const fetchAdminName = async () => {
+        try {
+          const adminDocRef = doc(db, "admin", adminThatDeletedId);
+          const adminDoc = await getDoc(adminDocRef);
+
+          if (adminDoc.exists()) {
+            const adminData = adminDoc.data() as UserData;
+            setAdminName(adminData.userId);
+          } else {
+            console.log("Admin not found");
+          }
+        } catch (err) {
+          console.log("Failed to fetch admin data");
+        }
+      };
+
+      fetchAdminName();
+    }
+  }, [isDeletedByAdmin, adminThatDeletedId]);
   return (
     <div className="w-full h-auto flex flex-col pr-[10%] ">
 
@@ -365,7 +418,9 @@ function OtherChat({ message, currentUserId, adminThatDeletedId, isDeletedByAdmi
           )}
           <div className="text-sm break-all w-full max-w-full ">
             {isDeleted ? (
-              <div className="italic text-[#475467]">{isDeletedByAdmin ? `This message was deleted by ${adminThatDeletedId}` : 'This message was deleted'}</div>
+              <div className="italic text-[#475467]">{isDeletedByAdmin ?<>
+                This message was deleted by <span className="text-[#C74FE6] cursor-pointer" onClick={() => {setOpenDialogue(true); setId(adminThatDeletedId); setAdmin(true)}}>@{adminId}</span>
+              </> : 'This message was deleted'}</div>
             ) : (
               <div>
                 {renderMessageWithMentions()}

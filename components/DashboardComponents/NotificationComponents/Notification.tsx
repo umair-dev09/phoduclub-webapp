@@ -11,6 +11,8 @@ interface NotificationData {
     notificationIcon: string;
     notificationId: string;
     description: string;
+    hyperLink: string;
+
 }
 
 function Notification() {
@@ -54,7 +56,7 @@ function Notification() {
                             <Image className='w-5 h-5 mr-[6px]' src={notification[0]?.notificationIcon} width={24} height={24} alt='icon' />
                             <h3 className='text-sm font-bold'>{notification[0]?.name}: </h3>
                             <h3 className='text-sm font-normal ml-1'>{notification[0]?.description}</h3>
-                            <button className='ml-3 h-[36px] w-auto px-3 text-[13px] font-semibold border bg-white border-[#cccccc] rounded-md'>{notification[0]?.cta}</button>
+                            <button onClick={() => window.open(notification[0]?.hyperLink, '_blank')} className='ml-3 h-[36px] w-auto px-3 text-[13px] font-semibold border bg-white border-[#cccccc] rounded-md'>{notification[0]?.cta}</button>
                         </div>
                     )}
                     <button onClick={() => setShowNoti(false)}><Image className='w-5 h-5 mr-[6px] ' src='/icons/cancel.svg' width={24} height={24} alt='icon' /></button>

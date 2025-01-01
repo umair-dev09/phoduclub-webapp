@@ -39,6 +39,7 @@ type Channel = {
   channelEmoji: string;
   channelDescription: string;
   members: { id: string, isAdmin: boolean }[] | null;
+  channelRequests: { id: string, requestDate: string }[];
 };
 
 type ChannelHeading = {
@@ -49,7 +50,7 @@ type ChannelHeading = {
 
 type GroupData = {
   communityName: string | null;
-  membersId: string[] | null;
+  members: { id: string, isAdmin: boolean }[]  | null;  
 };
 
 type Chat = {
@@ -110,6 +111,7 @@ function Chatinfo() {
     channelDescription: string;
     headingId?: string; // Adding headingId to the selected channel state
     members: { id: string, isAdmin: boolean }[] | null;
+    channelRequests: { id: string, requestDate: string }[] | null;
   } | null>(null);
 
   const [text, setText] = useState("");
@@ -202,6 +204,7 @@ function Chatinfo() {
                 channelEmoji: channelDoc.data().channelEmoji,
                 channelDescription: channelDoc.data().channelDescription,
                 members: channelDoc.data().members,
+                channelRequests: channelDoc.data().channelRequests,
               }));
 
               // Update the headingsData array with the new channels
@@ -555,7 +558,7 @@ function Chatinfo() {
 
             <div className="flex items-center justify-between h-[72px] bg-white border-b border-lightGrey">
               {/* Pass the selected channel info to ChatHead */}
-              <ChatHead isAdmin={true} channelDescription={selectedChannel.channelDescription || ''} communityId={communityId} categoryId={selectedChannel.headingId || ''} channelId={selectedChannel?.channelId ?? null} channelName={selectedChannel?.channelName ?? null} channelEmoji={selectedChannel?.channelEmoji ?? null} />
+              <ChatHead isAdmin={true} channelDescription={selectedChannel.channelDescription || ''} communityId={communityId} categoryId={selectedChannel.headingId || ''} channelId={selectedChannel?.channelId ?? null} channelName={selectedChannel?.channelName ?? null} channelEmoji={selectedChannel?.channelEmoji ?? null} channelRequests={selectedChannel.channelRequests || []}/>
               <div className="flex flex-row mr-4 gap-4">
                 <Popover placement="bottom" isOpen={searchOpen} onClose={() => { setSearchOpen(false); setSearchQuery('') }}>
                   <PopoverTrigger>
@@ -764,7 +767,7 @@ function Chatinfo() {
       {createChannel && <CreateChannel open={createChannel} openAddMembers={() => setAddMembersChannelDialog(true)} onClose={() => setCreateChannel(false)} headingId={categoryId} channelEmoji={channelEmoji} setChannelEmoji={setChannelEmoji} channelId={channelId} isEditing={isEditingChannel} communityId={communityId || ''} channelName={channelName} setChannelName={setChannelName} channelDescription={channelDescription} setChannelDescription={setChannelDescription} setChannelId={setChannelId} />}
       {createCategoryDialog && <CreateCategory open={createCategoryDialog} onClose={() => setCreateCategoryDialog(false)} communityId={communityId || ''} isEditing={isEditingCategory} categoryName={categoryName} setCategoryName={setCategoryName} categoryId={categoryId} />}
       {deleteCategoryDialog && <DeleteCategory open={deleteCategoryDialog} onClose={() => setDeleteCategoryDialog(false)} communityId={communityId || ''} categoryName={categoryName} categoryId={categoryId} />}
-      {addMembersChannelDialog && <AddMembersChannel communityId={communityId || ''} headingId={categoryId} channelId={channelId} open={addMembersChannelDialog} onClose={() => setAddMembersChannelDialog(false)} />}
+      {addMembersChannelDialog && <AddMembersChannel communityId={communityId || ''} headingId={categoryId} channelId={channelId} open={addMembersChannelDialog} onClose={() => setAddMembersChannelDialog(false)} groupMembers={groupData?.members || []} />}
       <ToastContainer />
     </div>
 
