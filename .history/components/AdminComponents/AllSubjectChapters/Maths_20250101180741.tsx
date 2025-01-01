@@ -48,7 +48,7 @@ function Maths() {
     const lastItemIndex = currentPage * itemsPerPage;
     const firstItemIndex = lastItemIndex - itemsPerPage;
     const currentItems = data.slice(firstItemIndex, lastItemIndex);
-    const [isdelete, setIsdelete] = useState(false);
+
     // Fetch subjects when component mounts
     useEffect(() => {
         const loadSubjects = async () => {
@@ -225,9 +225,6 @@ function Maths() {
                 </div>
             )}
             {addchapterdialog && <Addchapterdialog open={addchapterdialog} iseditopen={iseditopen} onClose={() => setAddchapterdialog(false)} />}
-            {isdelete && (
-                <DeleteDialog open={isdelete} onClose={() => setIsdelete(false)} />
-            )}
         </div>
     )
 }

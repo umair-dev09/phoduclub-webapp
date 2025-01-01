@@ -44,10 +44,10 @@ function Chemisty() {
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage] = useState(10);
     const [searchTerm, setSearchTerm] = useState('');
-    const [popopen, setPopopen] = useState(false)
     const lastItemIndex = currentPage * itemsPerPage;
     const firstItemIndex = lastItemIndex - itemsPerPage;
     const currentItems = data.slice(firstItemIndex, lastItemIndex);
+    const [activePopover, setActivePopover] = useState<number | null>(null);
 
     // Fetch subjects when component mounts
     useEffect(() => {
@@ -75,20 +75,9 @@ function Chemisty() {
         setData(filteredTests);
         setCurrentPage(1); // Reset to first page when filters change
     }, [searchTerm, subjects]);
-    const [openPopovers, setOpenPopovers] = useState<{ [key: number]: boolean }>({});
 
-    const togglePopover = (index: number) => {
-        setOpenPopovers((prev) => ({
-            ...prev,
-            [index]: !prev[index], // Toggle the state of the specific popover
-        }));
-    };
-
-    const closePopover = (index: number) => {
-        setOpenPopovers((prev) => ({
-            ...prev,
-            [index]: false, // Close the specific popover
-        }));
+    const handlePopoverOpen = (index: number) => {
+        setActivePopover(index);
     };
 
     const DeleteButton = ({ onDelete }: { onDelete: () => void }) => {
@@ -227,9 +216,10 @@ function Chemisty() {
                                                                 />
                                                             </button>
                                                         </PopoverTrigger>
-                                                        <PopoverContent className="w-[118px] px-0 py-1 rounded-md border- border-lightGrey">
+                                                        <PopoverContent className="w-[118px] px-0 py-1 rounded-md border border-lightGrey">
                                                             <div className='w-full'>
-                                                                <button className='flex flex-row items-center w-full px-4 py-[10px] gap-1 transition-colors duration-150 hover:bg-[#F2F4F7]'
+                                                                <button
+                                                                    className='flex flex-row items-center w-full px-4 py-[10px] gap-1 transition-colors duration-150 hover:bg-[#F2F4F7]'
                                                                     onClick={() => {
                                                                         setIseditopen(true); // Set to edit mode
                                                                         setAddchapterdialog(true); // Open the dialog

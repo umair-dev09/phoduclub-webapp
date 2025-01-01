@@ -31,15 +31,15 @@ function DeleteChapter({ open, onClose }: Deleteprops) {
                         </p>
                     </ModalBody>
                     <ModalFooter>
-                        <Button variant="light" className=" font-semibold " onPress={onClose}>
+                        <Button variant="light" className=" font-semibold" onPress={onClose}>
                             Cancel
                         </Button>
-                        <Button color="danger" onPress={() => {
+                        <Button color="primary" onPress={() => {
                             // Add delete action logic here
                             onClose(); // Close dialog after delete
                         }}
-                            className=" font-semibold ">
-                            Delete
+                            className="hover:bg-[#6D0DCC] font-semibold ">
+                            Confirm
                         </Button>
                     </ModalFooter>
                 </>

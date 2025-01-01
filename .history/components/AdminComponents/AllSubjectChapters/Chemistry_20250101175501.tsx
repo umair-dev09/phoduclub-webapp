@@ -14,7 +14,6 @@ import { Popover, PopoverContent, PopoverTrigger } from "@nextui-org/popover";
 import SubjectPriority from './SubjectPriority';
 import LoadingData from '@/components/Loading';
 import DeleteDialog from './DeleteDialog';
-
 // Define types for subjects data
 type Subject = {
     title: string;
@@ -24,31 +23,32 @@ type Subject = {
 // Mock fetchSubjects function with types
 const fetchSubjects = async (): Promise<Subject[]> => {
     const allSubjects: Subject[] = [
-        { title: 'Sets, Relations, and Functions', priority: 'High' },
-        { title: 'Quadratic Equations and Expressions', priority: 'Low' },
-        { title: 'Matrices and Determinants', priority: 'Medium' },
-        { title: 'Sequence and Series', priority: 'High' },
-        { title: 'Limits, Continuity, and Differentiability', priority: 'Medium' },
-        { title: 'Application of Derivatives', priority: 'Low' },
-        { title: 'Probability', priority: 'Medium' },
+        { title: 'Atomic Structure', priority: 'Low' },
+        { title: 'Chemical Bonding and Molecular Structure', priority: 'Medium' },
+        { title: 'Thermodynamics and Thermochemistry', priority: 'High' },
+        { title: 'Equilibrium', priority: 'Low' },
+        { title: 'Electrochemistry', priority: 'Medium' },
+        { title: 'Chemical Kinetics', priority: 'High' },
+        { title: 'Surface Chemistry', priority: 'Low' },
     ];
     return allSubjects;
 };
 
-function Maths() {
+function Chemisty() {
     const [addchapterdialog, setAddchapterdialog] = useState(false);
     const [iseditopen, setIseditopen] = useState(false)
+    const [isdelete, setIsdelete] = useState(false);
     const [loading, setLoading] = useState(true);
     const [data, setData] = useState<Subject[]>([]);
     const [subjects, setSubjects] = useState<Subject[]>([]);
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage] = useState(10);
     const [searchTerm, setSearchTerm] = useState('');
-    const [activePopover, setActivePopover] = useState<number | null>(null);
     const lastItemIndex = currentPage * itemsPerPage;
     const firstItemIndex = lastItemIndex - itemsPerPage;
     const currentItems = data.slice(firstItemIndex, lastItemIndex);
-    const [isdelete, setIsdelete] = useState(false);
+    const [activePopover, setActivePopover] = useState<number | null>(null);
+
     // Fetch subjects when component mounts
     useEffect(() => {
         const loadSubjects = async () => {
@@ -76,10 +76,15 @@ function Maths() {
         setCurrentPage(1); // Reset to first page when filters change
     }, [searchTerm, subjects]);
 
-
     const handlePopoverOpen = (index: number) => {
         setActivePopover(index);
     };
+
+
+
+
+
+
 
     return (
         <div className="flex flex-col w-full gap-4 ">
@@ -89,7 +94,7 @@ function Maths() {
                 </h2>
                 <div className="flex flex-row gap-3">
                     {/* Search Button */}
-                    <button className="h-[44px] w-[250px] rounded-md bg-[#FFFFFF] border border-gray-300 focus:outline focus:outline-[1.5px] focus:outline-[#D6BBFB] hover:outline hover:outline-[1.5px] hover:outline-[#D6BBFB] focus-within:border-[#D7BBFC] focus-within:ring-4 focus-within:ring-[#E8DEFB] focus-within:outline-none transition-colors flex items-center">
+                    <button className="h-[44px] w-[250px] rounded-md bg-[#FFFFFF] border border-gray-300 focus:outline focus:outline-[1.5px] focus:outline-[#D6BBFB] hover:outline hover:outline-[1.5px] hover:outline-[#D6BBFB] focus-within:border-[#D7BBFC] focus-within:ring-4 focus-within:ring-[#E8DEFB] focus-within:outline-none transition-colorsflex items-center">
                         <div className="flex flex-row items-center gap-2 pl-2">
                             <Image
                                 src="/icons/search-button.svg"
@@ -108,8 +113,8 @@ function Maths() {
                     </button>
                     <button className=' w-[168px] h-11 flex items-center justify-center  rounded-md flex-row gap-2 shadow-inner-button bg-[#9012FF] border border-[#800EE2] border-solid hover:bg-[#6D0DCC] '
                         onClick={() => {
-                            setAddchapterdialog(true);
-                            setIseditopen(false);
+                            setIseditopen(false); // Set to create mode
+                            setAddchapterdialog(true); // Open the dialog
                         }}>
                         <Image
                             src="/icons/plus-white-sign.svg"
@@ -224,7 +229,17 @@ function Maths() {
                     </div>
                 </div>
             )}
-            {addchapterdialog && <Addchapterdialog open={addchapterdialog} iseditopen={iseditopen} onClose={() => setAddchapterdialog(false)} />}
+            {addchapterdialog && (
+                <Addchapterdialog
+                    open={addchapterdialog}
+                    iseditopen={iseditopen}
+                    onClose={() => {
+                        setAddchapterdialog(false);
+                        setIseditopen(false);
+                        setIsdelete(false);
+                    }}
+                />
+            )}
             {isdelete && (
                 <DeleteDialog open={isdelete} onClose={() => setIsdelete(false)} />
             )}
@@ -350,4 +365,4 @@ function PaginationSection({
     );
 }
 
-export default Maths;
+export default Chemisty;
