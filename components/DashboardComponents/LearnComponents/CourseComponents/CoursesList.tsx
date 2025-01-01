@@ -115,7 +115,11 @@ function CoursesList() {
   };
 
   if (loading) {
-    return <LoadingData />
+    return (
+      <div className="w-full">
+        <LoadingData />
+      </div>
+    );
   }
 
   return (
