@@ -11,11 +11,11 @@ interface VideoContentProps {
     videoLink: string;
 }
 
-function VideoContent({videoLink}:VideoContentProps) {
-   
+function VideoContent({ videoLink }: VideoContentProps) {
+
     return (
         <div className='flex w-full pl-8'>
-           <CourseVideoPlayer key={videoLink} videoSrc={videoLink}/> 
+            <CourseVideoPlayer key={videoLink} videoSrc={videoLink} />
         </div>
     );
 }
