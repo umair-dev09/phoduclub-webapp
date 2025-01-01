@@ -672,7 +672,7 @@ function Test() {
                                                                             <Image alt="Collapse Icon Right" src="/icons/collapse-right.svg" width={8} height={8} />
                                                                         </button>
                                                                     </div>
-                                                                    <span className="font-normal text-[12px] text-[#667085] mt-1 text-left">
+                                                                    <span className="font-normal text-[12px] text-[#667085] mt-1">
                                                                         {section.SubsectionsCount} Tests
                                                                     </span>
                                                                 </div>

@@ -654,7 +654,7 @@ function Test() {
                                     {/* Container for all sections */}
                                     <div className="flex flex-col gap-4">
                                         {/* Row container for non-test sections (math, chemistry) */}
-                                        <div className="flex flex-row flex-wrap gap-4 h-auto w-auto">
+                                        <div className="flex flex-row flex-wrap gap-4">
                                             {sectionss
                                                 .filter(section => !section.hasQuestions)
                                                 .map((section, index) => (
@@ -672,7 +672,7 @@ function Test() {
                                                                             <Image alt="Collapse Icon Right" src="/icons/collapse-right.svg" width={8} height={8} />
                                                                         </button>
                                                                     </div>
-                                                                    <span className="font-normal text-[12px] text-[#667085] mt-1 text-left">
+                                                                    <span className="font-normal text-[12px] text-[#667085] mt-1">
                                                                         {section.SubsectionsCount} Tests
                                                                     </span>
                                                                 </div>
@@ -707,7 +707,7 @@ function Test() {
                                                     <div key={index} className="flex flex-col w-full h-auto rounded-[12px] border border-solid border-[#EAECF0] bg-[#FFFFFF]">
                                                         <Collapsible
                                                             trigger={
-                                                                <div className="w-full h-auto p-2 flex justify-between items-center"
+                                                                <div className="w-full h-auto m-2 flex justify-between items-center"
                                                                     onClick={() => toggleCollapsible(0)}>
                                                                     <div className="flex flex-col gap-1 ml-3 ">
                                                                         <span className="text-[#1D2939] font-semibold text-[16px]">
@@ -717,10 +717,10 @@ function Test() {
                                                                             {section.QuestionsCount} Questions
                                                                         </span>
                                                                     </div>
-                                                                    <div className="flex items-center p-3 gap-4">
+                                                                    <div className="flex items-center mr-3 mb-3 gap-4">
                                                                         {/* Conditional rendering for Test Completed and Re-attempt */}
                                                                         {sectionAttempts[section.id]?.attemptedDetails ? (
-                                                                            <div className="gap-6 flex flex-row items-center justify-center ">
+                                                                            <div className="gap-6 flex flex-row items-center justify-center mt-3">
                                                                                 <div className="flex flex-row items-center justify-center">
                                                                                     <Image
                                                                                         src="/icons/Green-tick.svg"
@@ -752,7 +752,7 @@ function Test() {
                                                                             </div>
                                                                         ) : (
                                                                             <button onClick={(e) => { e.stopPropagation(); handleStartTest(section.description, section.testTime, section.marksPerQ, section.QuestionsCount || 0, section.id); }}>
-                                                                                <div className="flex items-center justify-center w-[116px] h-[36px] rounded-[6px] bg-[#9012FF] border border-solid border-[#800EE2] shadow-inner-button hover:bg-[#6D0DCC]">
+                                                                                <div className="m-2 flex items-center justify-center w-[116px] h-[36px] rounded-[6px] bg-[#9012FF] border border-solid border-[#800EE2] shadow-inner-button hover:bg-[#6D0DCC]">
                                                                                     <span className="font-medium text-[14px] text-[#FCFCFD]">
                                                                                         Start test
                                                                                     </span>
@@ -879,7 +879,6 @@ function Test() {
                                                                 </div>
                                                             )}
                                                         </Collapsible>
-
                                                     </div>
                                                 ))}
                                         </div>

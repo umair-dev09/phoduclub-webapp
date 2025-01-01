@@ -654,7 +654,7 @@ function Test() {
                                     {/* Container for all sections */}
                                     <div className="flex flex-col gap-4">
                                         {/* Row container for non-test sections (math, chemistry) */}
-                                        <div className="flex flex-row flex-wrap gap-4 h-auto w-auto">
+                                        <div className="flex flex-row flex-wrap gap-4">
                                             {sectionss
                                                 .filter(section => !section.hasQuestions)
                                                 .map((section, index) => (
@@ -672,7 +672,7 @@ function Test() {
                                                                             <Image alt="Collapse Icon Right" src="/icons/collapse-right.svg" width={8} height={8} />
                                                                         </button>
                                                                     </div>
-                                                                    <span className="font-normal text-[12px] text-[#667085] mt-1 text-left">
+                                                                    <span className="font-normal text-[12px] text-[#667085] mt-1">
                                                                         {section.SubsectionsCount} Tests
                                                                     </span>
                                                                 </div>
@@ -697,7 +697,92 @@ function Test() {
                                                     </button>
                                                 ))}
                                         </div>
+                                        <div className="flex flex-row flex-wrap gap-4">
+                                            {sectionss
+                                                .filter(section => !section.hasQuestions)
+                                                .map((section, index) => (
+                                                    <button
+                                                        key={index}
+                                                        onClick={() => navigateToSection(section.id, section.sectionName)}
+                                                        className="flex-shrink-0"
+                                                    >
+                                                        <div className="w-[264px] h-[204px] rounded-[12px] border border-solid border-[#EAECF0] bg-[#FFFFFF]">
+                                                            <div className="h-[156px] m-5 flex flex-col space-y-6">
+                                                                <div className="h-[46px] flex flex-col">
+                                                                    <div className="flex justify-between h-[24px]">
+                                                                        <span className="font-semibold text-1g text-[#1D2939]">{section.sectionName}</span>
+                                                                        <button className="w-[32px] h-[32px] rounded-full flex items-center justify-center transition-all duration-300 ease-in-out hover:bg-[#F2F4F7]">
+                                                                            <Image alt="Collapse Icon Right" src="/icons/collapse-right.svg" width={8} height={8} />
+                                                                        </button>
+                                                                    </div>
+                                                                    <span className="font-normal text-[12px] text-[#667085] mt-1">
+                                                                        {section.SubsectionsCount} Tests
+                                                                    </span>
+                                                                </div>
 
+                                                                <div className="h-[44px] flex flex-col">
+                                                                    <div className="flex justify-between h-[24px] mb-2">
+                                                                        <span className="font-medium text-xs text-[#667085]">Attempted</span>
+                                                                        <span className="font-medium text-xs text-[#667085]">Total Score</span>
+                                                                    </div>
+                                                                    <div className="flex justify-between h-[24px]">
+                                                                        <span className="ml-4 font-semibold text-[#1D2939] text-xs">1/5</span>
+                                                                        <span className="ml-4 font-semibold text-[#1D2939] text-xs">130</span>
+                                                                    </div>
+                                                                </div>
+
+                                                                <div className="flex items-center justify-between flex-row gap-[10px]">
+                                                                    <Progress aria-label="Loading..." className="max-w-md h-2" value={43} />
+                                                                    <span className="font-normal text-[#667085] text-xs">43%</span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </button>
+                                                ))}
+                                        </div>
+                                        <div className="flex flex-row flex-wrap gap-4">
+                                            {sectionss
+                                                .filter(section => !section.hasQuestions)
+                                                .map((section, index) => (
+                                                    <button
+                                                        key={index}
+                                                        onClick={() => navigateToSection(section.id, section.sectionName)}
+                                                        className="flex-shrink-0"
+                                                    >
+                                                        <div className="w-[264px] h-[204px] rounded-[12px] border border-solid border-[#EAECF0] bg-[#FFFFFF]">
+                                                            <div className="h-[156px] m-5 flex flex-col space-y-6">
+                                                                <div className="h-[46px] flex flex-col">
+                                                                    <div className="flex justify-between h-[24px]">
+                                                                        <span className="font-semibold text-1g text-[#1D2939]">{section.sectionName}</span>
+                                                                        <button className="w-[32px] h-[32px] rounded-full flex items-center justify-center transition-all duration-300 ease-in-out hover:bg-[#F2F4F7]">
+                                                                            <Image alt="Collapse Icon Right" src="/icons/collapse-right.svg" width={8} height={8} />
+                                                                        </button>
+                                                                    </div>
+                                                                    <span className="font-normal text-[12px] text-[#667085] mt-1">
+                                                                        {section.SubsectionsCount} Tests
+                                                                    </span>
+                                                                </div>
+
+                                                                <div className="h-[44px] flex flex-col">
+                                                                    <div className="flex justify-between h-[24px] mb-2">
+                                                                        <span className="font-medium text-xs text-[#667085]">Attempted</span>
+                                                                        <span className="font-medium text-xs text-[#667085]">Total Score</span>
+                                                                    </div>
+                                                                    <div className="flex justify-between h-[24px]">
+                                                                        <span className="ml-4 font-semibold text-[#1D2939] text-xs">1/5</span>
+                                                                        <span className="ml-4 font-semibold text-[#1D2939] text-xs">130</span>
+                                                                    </div>
+                                                                </div>
+
+                                                                <div className="flex items-center justify-between flex-row gap-[10px]">
+                                                                    <Progress aria-label="Loading..." className="max-w-md h-2" value={43} />
+                                                                    <span className="font-normal text-[#667085] text-xs">43%</span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </button>
+                                                ))}
+                                        </div>
                                         {/* Column container for test sections */}
                                         <div className="flex flex-col gap-4">
                                             {sectionss

@@ -654,7 +654,7 @@ function Test() {
                                     {/* Container for all sections */}
                                     <div className="flex flex-col gap-4">
                                         {/* Row container for non-test sections (math, chemistry) */}
-                                        <div className="flex flex-row flex-wrap gap-4 h-auto w-auto">
+                                        <div className="flex flex-row flex-wrap gap-4">
                                             {sectionss
                                                 .filter(section => !section.hasQuestions)
                                                 .map((section, index) => (
@@ -672,7 +672,7 @@ function Test() {
                                                                             <Image alt="Collapse Icon Right" src="/icons/collapse-right.svg" width={8} height={8} />
                                                                         </button>
                                                                     </div>
-                                                                    <span className="font-normal text-[12px] text-[#667085] mt-1 text-left">
+                                                                    <span className="font-normal text-[12px] text-[#667085] mt-1">
                                                                         {section.SubsectionsCount} Tests
                                                                     </span>
                                                                 </div>
@@ -707,7 +707,7 @@ function Test() {
                                                     <div key={index} className="flex flex-col w-full h-auto rounded-[12px] border border-solid border-[#EAECF0] bg-[#FFFFFF]">
                                                         <Collapsible
                                                             trigger={
-                                                                <div className="w-full h-auto p-2 flex justify-between items-center"
+                                                                <div className="w-full h-auto p-4 flex justify-between items-center"
                                                                     onClick={() => toggleCollapsible(0)}>
                                                                     <div className="flex flex-col gap-1 ml-3 ">
                                                                         <span className="text-[#1D2939] font-semibold text-[16px]">
@@ -879,7 +879,6 @@ function Test() {
                                                                 </div>
                                                             )}
                                                         </Collapsible>
-
                                                     </div>
                                                 ))}
                                         </div>

@@ -654,7 +654,7 @@ function Test() {
                                     {/* Container for all sections */}
                                     <div className="flex flex-col gap-4">
                                         {/* Row container for non-test sections (math, chemistry) */}
-                                        <div className="flex flex-row flex-wrap gap-4 h-auto w-auto">
+                                        <div className="flex flex-row flex-wrap gap-4">
                                             {sectionss
                                                 .filter(section => !section.hasQuestions)
                                                 .map((section, index) => (
@@ -672,7 +672,7 @@ function Test() {
                                                                             <Image alt="Collapse Icon Right" src="/icons/collapse-right.svg" width={8} height={8} />
                                                                         </button>
                                                                     </div>
-                                                                    <span className="font-normal text-[12px] text-[#667085] mt-1 text-left">
+                                                                    <span className="font-normal text-[12px] text-[#667085] mt-1">
                                                                         {section.SubsectionsCount} Tests
                                                                     </span>
                                                                 </div>
