@@ -13,7 +13,6 @@ import {
 import { Popover, PopoverContent, PopoverTrigger } from "@nextui-org/popover";
 import SubjectPriority from './SubjectPriority';
 import LoadingData from '@/components/Loading';
-import DeleteDialog from './DeleteDialog';
 
 // Define types for subjects data
 type Subject = {
@@ -24,18 +23,18 @@ type Subject = {
 // Mock fetchSubjects function with types
 const fetchSubjects = async (): Promise<Subject[]> => {
     const allSubjects: Subject[] = [
-        { title: 'Sets, Relations, and Functions', priority: 'High' },
-        { title: 'Quadratic Equations and Expressions', priority: 'Low' },
-        { title: 'Matrices and Determinants', priority: 'Medium' },
-        { title: 'Sequence and Series', priority: 'High' },
-        { title: 'Limits, Continuity, and Differentiability', priority: 'Medium' },
-        { title: 'Application of Derivatives', priority: 'Low' },
-        { title: 'Probability', priority: 'Medium' },
+        { title: 'Kinematics', priority: 'Medium' },
+        { title: 'Laws of Motion', priority: 'High' },
+        { title: 'Work, Energy, and Power', priority: 'Low' },
+        { title: 'Rotational Motion', priority: 'Medium' },
+        { title: 'Gravitation', priority: 'Low' },
+        { title: 'Thermodynamics', priority: 'High' },
+        { title: 'Waves and Oscillations', priority: 'Medium' },
     ];
     return allSubjects;
 };
 
-function Maths() {
+function Physics() {
     const [addchapterdialog, setAddchapterdialog] = useState(false);
     const [iseditopen, setIseditopen] = useState(false)
     const [loading, setLoading] = useState(true);
@@ -44,11 +43,12 @@ function Maths() {
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage] = useState(10);
     const [searchTerm, setSearchTerm] = useState('');
-    const [activePopover, setActivePopover] = useState<number | null>(null);
+    const [isdelete, setIsdelete] = useState(false);
     const lastItemIndex = currentPage * itemsPerPage;
     const firstItemIndex = lastItemIndex - itemsPerPage;
     const currentItems = data.slice(firstItemIndex, lastItemIndex);
-    const [isdelete, setIsdelete] = useState(false);
+    const [activePopover, setActivePopover] = useState<number | null>(null);
+
     // Fetch subjects when component mounts
     useEffect(() => {
         const loadSubjects = async () => {
@@ -76,11 +76,9 @@ function Maths() {
         setCurrentPage(1); // Reset to first page when filters change
     }, [searchTerm, subjects]);
 
-
     const handlePopoverOpen = (index: number) => {
         setActivePopover(index);
     };
-
     return (
         <div className="flex flex-col w-full gap-4 ">
             <div className="flex flex-row justify-between items-center">
@@ -350,4 +348,4 @@ function PaginationSection({
     );
 }
 
-export default Maths;
+export default Physics;

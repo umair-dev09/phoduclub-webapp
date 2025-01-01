@@ -31,7 +31,7 @@ function DeleteChapter({ open, onClose }: Deleteprops) {
                         </p>
                     </ModalBody>
                     <ModalFooter>
-                        <Button variant="light" className=" font-semibold " onPress={onClose}>
+                        <Button variant="light" className=" font-semibold" onPress={onClose}>
                             Cancel
                         </Button>
                         <Button color="primary" onPress={() => {

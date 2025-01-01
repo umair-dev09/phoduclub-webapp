@@ -30,7 +30,7 @@ function DeleteChapter({ open, onClose }: Deleteprops) {
                             Are you sure you want to delete this chapter? This action cannot be undone.
                         </p>
                     </ModalBody>
-                    <ModalFooter>
+                    <ModalFooter className="border-t border-lightGrey">
                         <Button variant="light" className=" font-semibold " onPress={onClose}>
                             Cancel
                         </Button>
