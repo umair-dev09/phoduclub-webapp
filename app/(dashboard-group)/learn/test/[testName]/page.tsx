@@ -337,14 +337,13 @@ function Test() {
                     <div className="flex flex-row items-center gap-2 ml-8 mt-8">
                         <div className="flex flex-row">
                             <button
-                                // onClick={resetNavigation}
-                                onClick={() => { router.back() }}
-                                className="font-semibold text-base text-[#1D2939] leading-6 hover:underline "
+                                onClick={resetNavigation}
+                                // onClick={() => { router.back() }}
+                                className="font-medium text-[#667085] hover:underline "
                             >Tests
                             </button>
-                            <Image src={'/icons/arrow-right-01-round.svg'} alt="to" width={24} height={24} />
                         </div>
-                        {/* {breadcrumbs.map((breadcrumb, index) => (
+                        {breadcrumbs.map((breadcrumb, index) => (
                             <div key={breadcrumb.id} className="flex flex-row items-center gap-2">
                                 <Image src="/icons/course-left.svg" width={6} height={6} alt="arrow" className="w-[10px] h-[10px]" />
                                 <button
@@ -358,7 +357,7 @@ function Test() {
                                     {breadcrumb.name}
                                 </button>
                             </div>
-                        ))} */}
+                        ))}
                         {/* {questionsBreadcrumb && (
         <div className="flex flex-row items-center gap-2">
           <Image src="/icons/course-left.svg" width={6} height={6} alt="arrow" className="w-[10px] h-[10px]" />
