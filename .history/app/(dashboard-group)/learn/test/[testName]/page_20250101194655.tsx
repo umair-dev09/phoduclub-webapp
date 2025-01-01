@@ -323,6 +323,9 @@ function Test() {
              </button>
              <div className="text-[#667085] h-full w-auto -ml-1" style={{ fontSize: "16px", fontWeight: "500" }}>
                  Phodu JEE Mains Test Series 2025
+
+
+
              </div>
          </div>
 
@@ -334,17 +337,13 @@ function Test() {
          </div>
      </div>
  </div> */}
-                    <div className="flex flex-row items-center gap-2 ml-8 mt-8">
-                        <div className="flex flex-row">
-                            <button
-                                // onClick={resetNavigation}
-                                onClick={() => { router.back() }}
-                                className="font-semibold text-base text-[#1D2939] leading-6 hover:underline "
-                            >Tests
-                            </button>
-                            <Image src={'/icons/arrow-right-01-round.svg'} alt="to" width={24} height={24} />
-                        </div>
-                        {/* {breadcrumbs.map((breadcrumb, index) => (
+                    <div className="flex flex-row items-center gap-2 ml-8 mt-6">
+                        <button
+                            onClick={resetNavigation}
+                            className="font-medium text-[#667085] hover:underline "
+                        >Tests
+                        </button>
+                        {breadcrumbs.map((breadcrumb, index) => (
                             <div key={breadcrumb.id} className="flex flex-row items-center gap-2">
                                 <Image src="/icons/course-left.svg" width={6} height={6} alt="arrow" className="w-[10px] h-[10px]" />
                                 <button
@@ -358,7 +357,7 @@ function Test() {
                                     {breadcrumb.name}
                                 </button>
                             </div>
-                        ))} */}
+                        ))}
                         {/* {questionsBreadcrumb && (
         <div className="flex flex-row items-center gap-2">
           <Image src="/icons/course-left.svg" width={6} height={6} alt="arrow" className="w-[10px] h-[10px]" />
@@ -368,7 +367,7 @@ function Test() {
         </div>
       )} */}
                     </div>
-                    <p className="font-semibold ml-9 mt-11 mb-4">{breadcrumbs.length > 0 ? breadcrumbs[breadcrumbs.length - 1].name : "All Tests"}</p>
+                    <p className="font-semibold ml-9 mt-7 mb-4">{breadcrumbs.length > 0 ? breadcrumbs[breadcrumbs.length - 1].name : "All Tests"}</p>
                     {/* <div className=" w-auto h-auto  ml-8 mr-8 rounded-[12px] border border-solid border-[#EAECF0] bg-[#FFFFFF] mb-6">
                     <div className="h-[49px] w-full m-4 flex flex-row gap-4">
                         <div className="w-[178.69px] h-[49px] flex flex-col border-r border-solid border-[#EAECF0]">
@@ -673,7 +672,7 @@ function Test() {
                                                                             <Image alt="Collapse Icon Right" src="/icons/collapse-right.svg" width={8} height={8} />
                                                                         </button>
                                                                     </div>
-                                                                    <span className="font-normal text-[12px] text-[#667085] mt-1 text-left">
+                                                                    <span className="font-normal text-[12px] text-[#667085] mt-1">
                                                                         {section.SubsectionsCount} Tests
                                                                     </span>
                                                                 </div>

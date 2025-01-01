@@ -29,32 +29,33 @@ function DeleteChapter({ open, onClose }: Deleteprops) {
                         </button>
                     </ModalHeader>
                     <ModalBody>
-                        <div className="flex flex-col pb-2 gap-2">
-                            <span className="font-normal text-sm text-[#667085]"> Are you sure you want to delete this chapter? This action cannot be undone.</span>
-                            <div className="flex flex-col  gap-2">
-                                <span className="font-semibold text-sm text-[#1D2939]">To confirm, please enter the name of the Chapter.</span>
-                                <div className='flex px-2 items-bcenter h-[40px] border border-gray-300 focus:outline focus:outline-[1.5px] focus:outline-[#D6BBFB] hover:outline hover:outline-[1.5px] hover:outline-[#D6BBFB] focus-within:border-[#D7BBFC] focus-within:ring-4 focus-within:ring-[#E8DEFB] focus-within:outline-none transition-colors rounded-md'>
-                                    <input
-                                        className="font-normal text-[#667085] w-full text-sm placeholder:text-[#A1A1A1] rounded-md px-1 py-1 focus:outline-none focus:ring-0 border-none"
-                                        type="text"
-                                        placeholder="Chapter Name"
-                                        value={confirmedName}
-                                        onChange={(e) => setConfirmedName(e.target.value)}
-                                    />
-                                </div>
+
+
+                        <span className="font-normal text-sm text-[#667085]">All channels inside this category will be gone.</span>
+                        <div className="flex flex-col gap-1">
+                            <span className="font-semibold text-sm text-[#1D2939]">To confirm, please enter the name of the category.</span>
+                            <div className='flex px-2 items-center h-[40px] border border-gray-300   focus:outline focus:outline-[1.5px] focus:outline-[#D6BBFB] hover:outline hover:outline-[1.5px] hover:outline-[#D6BBFB] shadow-sm rounded-md'>
+                                <input
+                                    className="font-normal text-[#667085] w-full text-sm placeholder:text-[#A1A1A1] rounded-md px-1 py-1 focus:outline-none focus:ring-0 border-none"
+                                    type="text"
+                                    placeholder="Chapter Name"
+                                    value={confirmedName}
+                                    onChange={(e) => setConfirmedName(e.target.value)}
+                                />
                             </div>
                         </div>
 
+
                     </ModalBody>
-                    <ModalFooter className="border-t border-lightGrey">
-                        <Button variant="light" className=" font-semibold  border border-lightGrey" onPress={onClose}>
+                    <ModalFooter>
+                        <Button variant="light" className=" font-semibold " onPress={onClose}>
                             Cancel
                         </Button>
-                        <Button onPress={() => {
+                        <Button color="danger" onPress={() => {
                             // Add delete action logic here
                             onClose(); // Close dialog after delete
                         }}
-                            className={` font-semibold text-[#FFFFFF]  ${!isFormValid ? "bg-[#f3b7b3] cursor-not-allowed" : "bg-[#BB241A]"} rounded-md`}>
+                            className={` font-semibold   ${!isFormValid ? "bg-[#f3b7b3] cursor-not-allowed" : "bg-[#BB241A]"} rounded-md`}>
                             Delete
                         </Button>
                     </ModalFooter>

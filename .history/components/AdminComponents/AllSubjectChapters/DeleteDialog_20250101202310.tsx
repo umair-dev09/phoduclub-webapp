@@ -29,11 +29,11 @@ function DeleteChapter({ open, onClose }: Deleteprops) {
                         </button>
                     </ModalHeader>
                     <ModalBody>
-                        <div className="flex flex-col pb-2 gap-2">
+                        <div className="flex flex-col py-2 gap-3">
                             <span className="font-normal text-sm text-[#667085]"> Are you sure you want to delete this chapter? This action cannot be undone.</span>
-                            <div className="flex flex-col  gap-2">
+                            <div className="flex flex-col ">
                                 <span className="font-semibold text-sm text-[#1D2939]">To confirm, please enter the name of the Chapter.</span>
-                                <div className='flex px-2 items-bcenter h-[40px] border border-gray-300 focus:outline focus:outline-[1.5px] focus:outline-[#D6BBFB] hover:outline hover:outline-[1.5px] hover:outline-[#D6BBFB] focus-within:border-[#D7BBFC] focus-within:ring-4 focus-within:ring-[#E8DEFB] focus-within:outline-none transition-colors rounded-md'>
+                                <div className='flex px-2 items-center h-[40px] border border-gray-300   focus:outline focus:outline-[1.5px] focus:outline-[#D6BBFB] hover:outline hover:outline-[1.5px] hover:outline-[#D6BBFB] shadow-sm rounded-md'>
                                     <input
                                         className="font-normal text-[#667085] w-full text-sm placeholder:text-[#A1A1A1] rounded-md px-1 py-1 focus:outline-none focus:ring-0 border-none"
                                         type="text"

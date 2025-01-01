@@ -323,6 +323,9 @@ function Test() {
              </button>
              <div className="text-[#667085] h-full w-auto -ml-1" style={{ fontSize: "16px", fontWeight: "500" }}>
                  Phodu JEE Mains Test Series 2025
+
+
+
              </div>
          </div>
 
@@ -334,17 +337,13 @@ function Test() {
          </div>
      </div>
  </div> */}
-                    <div className="flex flex-row items-center gap-2 ml-8 mt-8">
-                        <div className="flex flex-row">
-                            <button
-                                // onClick={resetNavigation}
-                                onClick={() => { router.back() }}
-                                className="font-semibold text-base text-[#1D2939] leading-6 hover:underline "
-                            >Tests
-                            </button>
-                            <Image src={'/icons/arrow-right-01-round.svg'} alt="to" width={24} height={24} />
-                        </div>
-                        {/* {breadcrumbs.map((breadcrumb, index) => (
+                    <div className="flex flex-row items-center gap-2 ml-8 mt-6">
+                        <button
+                            onClick={resetNavigation}
+                            className="font-medium text-[#667085] hover:underline "
+                        >Tests
+                        </button>
+                        {breadcrumbs.map((breadcrumb, index) => (
                             <div key={breadcrumb.id} className="flex flex-row items-center gap-2">
                                 <Image src="/icons/course-left.svg" width={6} height={6} alt="arrow" className="w-[10px] h-[10px]" />
                                 <button
@@ -358,7 +357,7 @@ function Test() {
                                     {breadcrumb.name}
                                 </button>
                             </div>
-                        ))} */}
+                        ))}
                         {/* {questionsBreadcrumb && (
         <div className="flex flex-row items-center gap-2">
           <Image src="/icons/course-left.svg" width={6} height={6} alt="arrow" className="w-[10px] h-[10px]" />
@@ -368,7 +367,7 @@ function Test() {
         </div>
       )} */}
                     </div>
-                    <p className="font-semibold ml-9 mt-11 mb-4">{breadcrumbs.length > 0 ? breadcrumbs[breadcrumbs.length - 1].name : "All Tests"}</p>
+                    <p className="font-semibold ml-9 mt-7 mb-4">{breadcrumbs.length > 0 ? breadcrumbs[breadcrumbs.length - 1].name : "All Tests"}</p>
                     {/* <div className=" w-auto h-auto  ml-8 mr-8 rounded-[12px] border border-solid border-[#EAECF0] bg-[#FFFFFF] mb-6">
                     <div className="h-[49px] w-full m-4 flex flex-row gap-4">
                         <div className="w-[178.69px] h-[49px] flex flex-col border-r border-solid border-[#EAECF0]">
@@ -655,7 +654,7 @@ function Test() {
                                     {/* Container for all sections */}
                                     <div className="flex flex-col gap-4">
                                         {/* Row container for non-test sections (math, chemistry) */}
-                                        <div className="flex flex-row flex-wrap gap-4 h-auto w-auto">
+                                        <div className="flex flex-row flex-wrap gap-4">
                                             {sectionss
                                                 .filter(section => !section.hasQuestions)
                                                 .map((section, index) => (
@@ -673,7 +672,7 @@ function Test() {
                                                                             <Image alt="Collapse Icon Right" src="/icons/collapse-right.svg" width={8} height={8} />
                                                                         </button>
                                                                     </div>
-                                                                    <span className="font-normal text-[12px] text-[#667085] mt-1 text-left">
+                                                                    <span className="font-normal text-[12px] text-[#667085] mt-1">
                                                                         {section.SubsectionsCount} Tests
                                                                     </span>
                                                                 </div>
@@ -698,7 +697,92 @@ function Test() {
                                                     </button>
                                                 ))}
                                         </div>
+                                        <div className="flex flex-row flex-wrap gap-4">
+                                            {sectionss
+                                                .filter(section => !section.hasQuestions)
+                                                .map((section, index) => (
+                                                    <button
+                                                        key={index}
+                                                        onClick={() => navigateToSection(section.id, section.sectionName)}
+                                                        className="flex-shrink-0"
+                                                    >
+                                                        <div className="w-[264px] h-[204px] rounded-[12px] border border-solid border-[#EAECF0] bg-[#FFFFFF]">
+                                                            <div className="h-[156px] m-5 flex flex-col space-y-6">
+                                                                <div className="h-[46px] flex flex-col">
+                                                                    <div className="flex justify-between h-[24px]">
+                                                                        <span className="font-semibold text-1g text-[#1D2939]">{section.sectionName}</span>
+                                                                        <button className="w-[32px] h-[32px] rounded-full flex items-center justify-center transition-all duration-300 ease-in-out hover:bg-[#F2F4F7]">
+                                                                            <Image alt="Collapse Icon Right" src="/icons/collapse-right.svg" width={8} height={8} />
+                                                                        </button>
+                                                                    </div>
+                                                                    <span className="font-normal text-[12px] text-[#667085] mt-1">
+                                                                        {section.SubsectionsCount} Tests
+                                                                    </span>
+                                                                </div>
 
+                                                                <div className="h-[44px] flex flex-col">
+                                                                    <div className="flex justify-between h-[24px] mb-2">
+                                                                        <span className="font-medium text-xs text-[#667085]">Attempted</span>
+                                                                        <span className="font-medium text-xs text-[#667085]">Total Score</span>
+                                                                    </div>
+                                                                    <div className="flex justify-between h-[24px]">
+                                                                        <span className="ml-4 font-semibold text-[#1D2939] text-xs">1/5</span>
+                                                                        <span className="ml-4 font-semibold text-[#1D2939] text-xs">130</span>
+                                                                    </div>
+                                                                </div>
+
+                                                                <div className="flex items-center justify-between flex-row gap-[10px]">
+                                                                    <Progress aria-label="Loading..." className="max-w-md h-2" value={43} />
+                                                                    <span className="font-normal text-[#667085] text-xs">43%</span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </button>
+                                                ))}
+                                        </div>
+                                        <div className="flex flex-row flex-wrap gap-4">
+                                            {sectionss
+                                                .filter(section => !section.hasQuestions)
+                                                .map((section, index) => (
+                                                    <button
+                                                        key={index}
+                                                        onClick={() => navigateToSection(section.id, section.sectionName)}
+                                                        className="flex-shrink-0"
+                                                    >
+                                                        <div className="w-[264px] h-[204px] rounded-[12px] border border-solid border-[#EAECF0] bg-[#FFFFFF]">
+                                                            <div className="h-[156px] m-5 flex flex-col space-y-6">
+                                                                <div className="h-[46px] flex flex-col">
+                                                                    <div className="flex justify-between h-[24px]">
+                                                                        <span className="font-semibold text-1g text-[#1D2939]">{section.sectionName}</span>
+                                                                        <button className="w-[32px] h-[32px] rounded-full flex items-center justify-center transition-all duration-300 ease-in-out hover:bg-[#F2F4F7]">
+                                                                            <Image alt="Collapse Icon Right" src="/icons/collapse-right.svg" width={8} height={8} />
+                                                                        </button>
+                                                                    </div>
+                                                                    <span className="font-normal text-[12px] text-[#667085] mt-1">
+                                                                        {section.SubsectionsCount} Tests
+                                                                    </span>
+                                                                </div>
+
+                                                                <div className="h-[44px] flex flex-col">
+                                                                    <div className="flex justify-between h-[24px] mb-2">
+                                                                        <span className="font-medium text-xs text-[#667085]">Attempted</span>
+                                                                        <span className="font-medium text-xs text-[#667085]">Total Score</span>
+                                                                    </div>
+                                                                    <div className="flex justify-between h-[24px]">
+                                                                        <span className="ml-4 font-semibold text-[#1D2939] text-xs">1/5</span>
+                                                                        <span className="ml-4 font-semibold text-[#1D2939] text-xs">130</span>
+                                                                    </div>
+                                                                </div>
+
+                                                                <div className="flex items-center justify-between flex-row gap-[10px]">
+                                                                    <Progress aria-label="Loading..." className="max-w-md h-2" value={43} />
+                                                                    <span className="font-normal text-[#667085] text-xs">43%</span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </button>
+                                                ))}
+                                        </div>
                                         {/* Column container for test sections */}
                                         <div className="flex flex-col gap-4">
                                             {sectionss

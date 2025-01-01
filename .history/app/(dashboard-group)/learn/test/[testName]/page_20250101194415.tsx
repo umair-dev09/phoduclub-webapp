@@ -323,6 +323,9 @@ function Test() {
              </button>
              <div className="text-[#667085] h-full w-auto -ml-1" style={{ fontSize: "16px", fontWeight: "500" }}>
                  Phodu JEE Mains Test Series 2025
+
+
+
              </div>
          </div>
 
@@ -334,17 +337,13 @@ function Test() {
          </div>
      </div>
  </div> */}
-                    <div className="flex flex-row items-center gap-2 ml-8 mt-8">
-                        <div className="flex flex-row">
-                            <button
-                                // onClick={resetNavigation}
-                                onClick={() => { router.back() }}
-                                className="font-semibold text-base text-[#1D2939] leading-6 hover:underline "
-                            >Tests
-                            </button>
-                            <Image src={'/icons/arrow-right-01-round.svg'} alt="to" width={24} height={24} />
-                        </div>
-                        {/* {breadcrumbs.map((breadcrumb, index) => (
+                    <div className="flex flex-row items-center gap-2 ml-8 mt-6">
+                        <button
+                            onClick={resetNavigation}
+                            className="font-medium text-[#667085] hover:underline "
+                        >Tests
+                        </button>
+                        {breadcrumbs.map((breadcrumb, index) => (
                             <div key={breadcrumb.id} className="flex flex-row items-center gap-2">
                                 <Image src="/icons/course-left.svg" width={6} height={6} alt="arrow" className="w-[10px] h-[10px]" />
                                 <button
@@ -358,7 +357,7 @@ function Test() {
                                     {breadcrumb.name}
                                 </button>
                             </div>
-                        ))} */}
+                        ))}
                         {/* {questionsBreadcrumb && (
         <div className="flex flex-row items-center gap-2">
           <Image src="/icons/course-left.svg" width={6} height={6} alt="arrow" className="w-[10px] h-[10px]" />
@@ -368,7 +367,7 @@ function Test() {
         </div>
       )} */}
                     </div>
-                    <p className="font-semibold ml-9 mt-11 mb-4">{breadcrumbs.length > 0 ? breadcrumbs[breadcrumbs.length - 1].name : "All Tests"}</p>
+                    <p className="font-semibold ml-9 mt-7 mb-4">{breadcrumbs.length > 0 ? breadcrumbs[breadcrumbs.length - 1].name : "All Tests"}</p>
                     {/* <div className=" w-auto h-auto  ml-8 mr-8 rounded-[12px] border border-solid border-[#EAECF0] bg-[#FFFFFF] mb-6">
                     <div className="h-[49px] w-full m-4 flex flex-row gap-4">
                         <div className="w-[178.69px] h-[49px] flex flex-col border-r border-solid border-[#EAECF0]">
@@ -655,7 +654,7 @@ function Test() {
                                     {/* Container for all sections */}
                                     <div className="flex flex-col gap-4">
                                         {/* Row container for non-test sections (math, chemistry) */}
-                                        <div className="flex flex-row flex-wrap gap-4 h-auto w-auto">
+                                        <div className="flex flex-row flex-wrap gap-4">
                                             {sectionss
                                                 .filter(section => !section.hasQuestions)
                                                 .map((section, index) => (
@@ -673,7 +672,7 @@ function Test() {
                                                                             <Image alt="Collapse Icon Right" src="/icons/collapse-right.svg" width={8} height={8} />
                                                                         </button>
                                                                     </div>
-                                                                    <span className="font-normal text-[12px] text-[#667085] mt-1 text-left">
+                                                                    <span className="font-normal text-[12px] text-[#667085] mt-1">
                                                                         {section.SubsectionsCount} Tests
                                                                     </span>
                                                                 </div>
@@ -880,7 +879,180 @@ function Test() {
                                                                 </div>
                                                             )}
                                                         </Collapsible>
+                                                        <Collapsible
+                                                            trigger={
+                                                                <div className="w-full h-auto p-2 flex justify-between items-center"
+                                                                    onClick={() => toggleCollapsible(0)}>
+                                                                    <div className="flex flex-col gap-1 ml-3 ">
+                                                                        <span className="text-[#1D2939] font-semibold text-[16px]">
+                                                                            {section.sectionName}
+                                                                        </span>
+                                                                        <span className="text-[#667085] font-normal text-[12px]">
+                                                                            {section.QuestionsCount} Questions
+                                                                        </span>
+                                                                    </div>
+                                                                    <div className="flex items-center p-3 gap-4">
+                                                                        {/* Conditional rendering for Test Completed and Re-attempt */}
+                                                                        {sectionAttempts[section.id]?.attemptedDetails ? (
+                                                                            <div className="gap-6 flex flex-row items-center justify-center ">
+                                                                                <div className="flex flex-row items-center justify-center">
+                                                                                    <Image
+                                                                                        src="/icons/Green-tick.svg"
+                                                                                        width={14}
+                                                                                        height={14}
+                                                                                        alt="small green-tick" />
+                                                                                    <span className="font-semibold text-xs text-[#0B9055] ml-2">Test Completed</span>
+                                                                                </div>
+                                                                                <div>
+                                                                                    <button className="h-[36px] flex flex-row items-center justify-center rounded-md  gap-2 px-3"
+                                                                                        style={{ border: "1.5px solid #EAECF0" }}
+                                                                                        onClick={(e) => { e.stopPropagation(); handleStartTest(section.description, section.testTime, section.marksPerQ, section.QuestionsCount || 0, section.id); }}
+                                                                                    >
+                                                                                        <Image
+                                                                                            src="/icons/Re-attempt.svg"
+                                                                                            width={18}
+                                                                                            height={18}
+                                                                                            alt="Re-attempt" />
+                                                                                        <span className="text-[#1D2939] font-semibold text-xs">Re-attempt</span>
+                                                                                    </button>
+                                                                                </div>
+                                                                                <Image
+                                                                                    src={isOpenArray[0] ? "/icons/arrowdown.svg" : "/icons/arrowup.svg"}
+                                                                                    alt="arrow"
+                                                                                    width={24}
+                                                                                    height={24}
+                                                                                    className="cursor-pointer"
+                                                                                />
+                                                                            </div>
+                                                                        ) : (
+                                                                            <button onClick={(e) => { e.stopPropagation(); handleStartTest(section.description, section.testTime, section.marksPerQ, section.QuestionsCount || 0, section.id); }}>
+                                                                                <div className="flex items-center justify-center w-[116px] h-[36px] rounded-[6px] bg-[#9012FF] border border-solid border-[#800EE2] shadow-inner-button hover:bg-[#6D0DCC]">
+                                                                                    <span className="font-medium text-[14px] text-[#FCFCFD]">
+                                                                                        Start test
+                                                                                    </span>
+                                                                                </div>
+                                                                            </button>
+                                                                        )
+                                                                        }
+                                                                    </div>
+                                                                </div>
+                                                            }
+                                                            transitionTime={350}
+                                                            onOpening={() => toggleCollapsible(0)}  // Set the state to open when expanding
+                                                            onClosing={() => toggleCollapsible(0)} // Set the state to closed when collapsing
+                                                        >
+                                                            {sectionAttempts[section.id]?.attemptedDetails && (
+                                                                <div className={`overflow-hidden`} >
+                                                                    <div className="h-[200px] ">
+                                                                        <div className="h-[149px] bg-[#FFFFFF] ml-5 mr-5 border-t border-b border-solid border-[#EAECF0] mt-[10px]">
+                                                                            <div className="bg-[#FFFFFF] h-[50px] flex justify-between items-center mt-[10px]">
+                                                                                <div className="flex flex-col w-[280px]">
+                                                                                    <span className="font-normal text-[#667085] text-xs">
+                                                                                        Attempted Questions
+                                                                                    </span>
+                                                                                    <span className="font-semibold text-[15px] text-[#1D2939]">
+                                                                                        {sectionAttempts[section.id]?.attemptedDetails?.attemptedQuestions || "0/0"}
+                                                                                    </span>
+                                                                                </div>
+                                                                                <div className="jabir flex items-center w-[280px] mx-[116px]">
+                                                                                    <div className="h-[30px] w-[1px] bg-[#EAECF0] mr-3"></div>
+                                                                                    <div className="flex flex-col">
+                                                                                        <span className="font-normal text-[#667085] text-xs">
+                                                                                            Score
+                                                                                        </span>
+                                                                                        <span className="font-semibold text-[15px] text-[#1D2939]">
+                                                                                            {sectionAttempts[section.id]?.attemptedDetails?.score || "0"}
+                                                                                        </span>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div className="jabir flex items-center w-[280px] ">
+                                                                                    <div className="h-[30px] w-[1px] bg-[#EAECF0] mr-3"></div>
+                                                                                    <div className="flex flex-col">
+                                                                                        <span className="font-normal text-[#667085] text-xs">
+                                                                                            Accuracy
+                                                                                        </span>
+                                                                                        <span className="font-semibold text-[15px] text-[#1D2939]">
+                                                                                            {sectionAttempts[section.id]?.attemptedDetails?.accuracy || "0%"}
+                                                                                        </span>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
 
+                                                                            <div className="bg-[#FFFFFF] h-[50px] flex justify-between items-center mt-[20px]">
+                                                                                <div className="flex flex-col w-[280px]">
+                                                                                    <span className="font-normal text-[#667085] text-xs">
+                                                                                        Answered Correct
+                                                                                    </span>
+                                                                                    <span className="font-semibold text-[15px] text-[#1D2939]">
+                                                                                        {sectionAttempts[section.id]?.attemptedDetails?.answeredCorrect || "0/0"}
+                                                                                    </span>
+                                                                                </div>
+
+                                                                                <div className="jabir flex items-center w-[280px] mx-[116px]">
+                                                                                    <div className="h-[30px] w-[1px] bg-[#EAECF0] mr-3"></div>
+                                                                                    <div className="flex flex-col">
+                                                                                        <span className="font-normal text-[#667085] text-xs">
+                                                                                            Answered Incorrect
+                                                                                        </span>
+                                                                                        <span className="font-semibold text-[15px] text-[#1D2939]">
+                                                                                            {sectionAttempts[section.id]?.attemptedDetails?.answeredIncorrect || "0/0"}
+                                                                                        </span>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div className="jabir flex items-center w-[280px] ">
+                                                                                    <div className="h-[30px] w-[1px] bg-[#EAECF0] mr-3"></div>
+                                                                                    <div className="flex flex-col">
+                                                                                        <span className="font-normal text-[#667085] text-xs">
+                                                                                            Time taken
+                                                                                        </span>
+                                                                                        <span className="font-semibold text-[15px] text-[#1D2939]">
+                                                                                            {formatTimeTaken(sectionAttempts[section.id]?.attemptedDetails?.timeTaken || "0")} out of {formatTimeLeft(section.testTime)}
+                                                                                        </span>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div className="h-[51px] ml-5 mr-5 justify-between flex items-center">
+                                                                            <div className="flex flex-row items-center justify-center">
+                                                                                <span className="font-normal text-[#667085] text-xs">
+                                                                                    5 times attempted
+                                                                                </span>
+                                                                                <div className="tooltip relative inline-block">
+                                                                                    <button>
+                                                                                        <Image
+                                                                                            src="/icons/questionmark.svg"
+                                                                                            width={16}
+                                                                                            height={16}
+                                                                                            alt="Question-mark"
+                                                                                            className="ml-1 mt-1"
+                                                                                        />
+                                                                                    </button>
+                                                                                    <div className="tooltipText">
+                                                                                        <span className="font-normal text-xs text-[#FFFFFF]">
+                                                                                            Your metrics related to the previous attempts are in
+                                                                                            the detailed analytics section.
+                                                                                        </span>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                            <button className="flex flex-row justify-center items-center"
+                                                                                onClick={() => router.replace('/analytics/test-series')}>
+                                                                                <span className="relative font-semibold text-[#9012FF] text-sm mr-1 inline-block">
+                                                                                    View Detailed Analytics
+                                                                                    <span className="absolute left-0 bottom-[2px] w-full h-[1px] bg-[#9012FF]"></span>
+                                                                                </span>
+                                                                                <Image
+                                                                                    src="/icons/right-arrow.svg"
+                                                                                    width={24}
+                                                                                    height={24}
+                                                                                    alt=" Right-arrow"
+                                                                                />
+                                                                            </button>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            )}
+                                                        </Collapsible>
                                                     </div>
                                                 ))}
                                         </div>
