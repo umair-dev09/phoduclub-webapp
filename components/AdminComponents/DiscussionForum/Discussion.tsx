@@ -161,7 +161,7 @@ function Discussion({courseId, sectionId, contentId}:DiscussionProps) {
                 <>
                 {discussions.map((d) => ( 
                     <div key={d.messageId} >
-                    <DiscussionDisplay userId={d.userId} message={d.message} messageId={d.userId} isAdmin={d.isAdmin} timestamp={d.timestamp}/>
+                    <DiscussionDisplay userId={d.userId} message={d.message} messageId={d.userId} isAdmin={d.isAdmin} timestamp={d.timestamp} courseId={""} sectionId={""} contentId={""} upvotes={[]}/>
                     </div>
                 ))}
                 </>

@@ -257,7 +257,7 @@ function QuizAttendBottomSheet({
                             {/* Content Section */}
                             <div className="flex flex-col gap-4 w-[432px]">
                                 <p className="text-sm text-[#667085] font-normal">
-                                    Are you sure you want to submit your quiz now? Please double-check your answers before submitting, as you won't be able to make any changes afterwards.
+                                    Are you sure you want to submit your quiz now? Please double-check your answers before submitting, as you won&apos;t be able to make any changes afterwards.
                                 </p>
                             </div>
                             {/* Buttons */}
