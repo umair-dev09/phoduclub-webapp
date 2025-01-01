@@ -25,6 +25,7 @@ type Channel = {
   channelId: string;
   channelName: string;
   channelEmoji: string;
+  channelDescription: string;
   members: { id: string, isAdmin: boolean }[] | null;
   channelRequests: { id: string, requestDate: string }[];
   declinedRequests: string[];
@@ -39,6 +40,7 @@ type ChannelHeading = {
 type GroupData = {
   communityName: string | null;
   members: { id: string, isAdmin: boolean }[]  | null;
+  groupExitedMembers: string[],
 };
 
 type Chat = {
@@ -89,16 +91,24 @@ export default function CommunityName() {
   const [currentResultIndex, setCurrentResultIndex] = useState(-1); // Tracks which result is currently active
   const [showScrollButton, setShowScrollButton] = useState(false); // New state to control button visibility
   const containerRef = useRef<HTMLDivElement | null>(null); // Ref for the scrollable container
+  const isAutoScrolling = useRef(false);
 
   // State for selected channel info
   const [selectedChannel, setSelectedChannel] = useState<{
     channelId: string;
-    channelName: string;
-    channelEmoji: string;
-    headingId?: string; // Adding headingId to the selected channel state
-    members: { id: string, isAdmin: boolean }[] | null;
-    channelRequests: { id: string, requestDate: string }[] | null;
-    declinedRequests: string[];
+        channelName: string;
+        channelEmoji: string;
+        channelDescription: string;
+        headingId?: string;
+        members: {
+            id: string;
+            isAdmin: boolean;
+        }[] | null;
+        channelRequests: {
+            id: string;
+            requestDate: string;
+        }[] | null;
+        declinedRequests: string[];
   } | null>(null);
 
   useEffect(() => {
@@ -118,33 +128,25 @@ export default function CommunityName() {
   }, [router]);
 
   useEffect(() => {
-    const fetchGroupData = async () => {
-      try {
-        if (user) {
-          const groupDoc = doc(db, `communities/${communityId}`);
-          const groupSnapshot = await getDoc(groupDoc);
+    if (!user || !communityId) return;
 
-          if (groupSnapshot.exists()) {
-            const data = groupSnapshot.data() as GroupData;
-            setGroupData(data);
-            setLoading(false);
-          } else {
-            console.error('No user data found!');
-            setError(true);
-            setLoading(false);
-          }
-        }
-      } catch (error) {
-        console.error('Error fetching user data:', error);
+    const groupDocRef = doc(db, `communities/${communityId}`);
+    const unsubscribe = onSnapshot(groupDocRef, (groupSnapshot) => {
+      if (groupSnapshot.exists()) {
+        const data = groupSnapshot.data() as GroupData;
+        setGroupData(data);
+      } else {
+        console.error('No group data found!');
         setError(true);
-      } finally {
-        setLoading(false);
       }
-    };
+      setLoading(false);
+    }, (error) => {
+      console.error('Error fetching group data:', error);
+      setError(true);
+      setLoading(false);
+    });
 
-    if (user) {
-      fetchGroupData();
-    }
+    return () => unsubscribe();
   }, [user, communityId]);
 
   useEffect(() => {
@@ -180,6 +182,7 @@ export default function CommunityName() {
                     const channels: Channel[] = channelsSnapshot.docs.map(channelDoc => ({
                       channelId: channelDoc.id,
                       channelName: channelDoc.data().channelName,
+                      channelDescription: channelDoc.data().channelDescription,
                       channelEmoji: channelDoc.data().channelEmoji,
                       members: channelDoc.data().members,
                       channelRequests: channelDoc.data().channelRequests,
@@ -340,19 +343,24 @@ export default function CommunityName() {
   // Effect to handle scrolling when new messages are added
   useEffect(() => {
     if (bottomRef.current && chats.length > 0) {
-      const lastChat = chats[chats.length - 1]; // Get the last chat message
+      const lastChat = chats[chats.length - 1];
+      const chatContainer = containerRef.current;
 
-      // Scroll logic based on `showScrollButton` state
+      if (!chatContainer) return;
+
+      const { scrollTop, scrollHeight, clientHeight } = chatContainer;
+      const isNearBottom = scrollHeight - scrollTop - clientHeight <= 150;
+
       if (initialLoadRef.current) {
-        // Scroll to the latest message on the first load or channel selection
-        bottomRef.current.scrollIntoView({ behavior: "auto" });
+        // Initial load - scroll instantly
+        scrollToBottom('auto');
         initialLoadRef.current = false;
-      } else if (!showScrollButton || lastChat.senderId === user?.uid) {
-        // Scroll if the user is at the bottom (showScrollButton is false) or the last message is from the current user
-        bottomRef.current.scrollIntoView({ behavior: "auto" });
+      } else if (lastChat.senderId === user?.uid || isNearBottom) {
+        // User's own message or already near bottom - scroll smoothly
+        scrollToBottom('smooth');
       }
     }
-  }, [chats, showScrollButton, user]);
+  }, [chats, user?.uid]);
 
   // Reset the flag whenever a new channel is selected
   useEffect(() => {
@@ -399,34 +407,77 @@ export default function CommunityName() {
 
   const handleSearchUp = () => {
     if (searchResults.length === 0) return;
+    
+    // For single result, always scroll to it
+    if (searchResults.length === 1) {
+      setCurrentResultIndex(0);
+      const chatId = chats[searchResults[0]]?.chatId;
+      if (chatId && chatRefs.current[chatId]) {
+        chatRefs.current[chatId].scrollIntoView({
+          behavior: "auto",
+          block: "center"
+        });
+      }
+      return;
+    }
+  
+    // For multiple results, cycle through them
     setCurrentResultIndex((prevIndex) =>
-      prevIndex > 0 ? prevIndex - 1 : searchResults.length - 1 // Cycle to the last result if at the first
+      prevIndex > 0 ? prevIndex - 1 : searchResults.length - 1
     );
   };
-
+  
   const handleSearchDown = () => {
     if (searchResults.length === 0) return;
+    
+    // For single result, always scroll to it
+    if (searchResults.length === 1) {
+      setCurrentResultIndex(0);
+      const chatId = chats[searchResults[0]]?.chatId;
+      if (chatId && chatRefs.current[chatId]) {
+        chatRefs.current[chatId].scrollIntoView({
+          behavior: "auto",
+          block: "center"
+        });
+      }
+      return;
+    }
+  
+    // For multiple results, cycle through them
     setCurrentResultIndex((prevIndex) =>
-      prevIndex < searchResults.length - 1 ? prevIndex + 1 : 0 // Cycle to the first result if at the last
+      prevIndex < searchResults.length - 1 ? prevIndex + 1 : 0
     );
   };
 
   const handleScroll = () => {
-    if (containerRef.current) {
+    if (containerRef.current && !isAutoScrolling.current) {
       const { scrollTop, scrollHeight, clientHeight } = containerRef.current;
-      // If the user has scrolled up, show the button
-      if (scrollHeight - scrollTop > clientHeight + 50) {
-        setShowScrollButton(true);
-      } else {
-        setShowScrollButton(false);
-      }
+      const isNearBottom = scrollHeight - scrollTop - clientHeight <= 50;
+      setShowScrollButton(!isNearBottom);
     }
   };
 
-  const scrollToBottom = () => {
-    bottomRef.current?.scrollIntoView({ behavior: "auto" });
-    setShowScrollButton(false); // Hide the button after scrolling
+  const scrollToBottom = (behavior: ScrollBehavior = 'auto') => {
+    if (bottomRef.current && containerRef.current) {
+      isAutoScrolling.current = true;
+      
+      const scrollOptions: ScrollIntoViewOptions = {
+        behavior,
+        block: 'end' as ScrollLogicalPosition,
+      };
+
+      bottomRef.current.scrollIntoView(scrollOptions);
+
+      // Reset the auto-scrolling flag after animation completes
+      setTimeout(() => {
+        isAutoScrolling.current = false;
+      }, behavior === 'auto' ? 300 : 0);
+      
+      setShowScrollButton(false);
+    }
   };
+
+
 
   useEffect(() => {
     setIsMounted(true);
@@ -469,16 +520,25 @@ export default function CommunityName() {
   const scrollToReply = (replyingToChatId: string) => {
     const element = chatRefs.current[replyingToChatId];
     if (element) {
-      element.scrollIntoView({ behavior: 'instant', block: 'center' });
+      isAutoScrolling.current = true;
+      
+      const scrollOptions: ScrollIntoViewOptions = {
+        behavior: 'auto',
+        block: 'center' as ScrollLogicalPosition
+      };
+
+      element.scrollIntoView(scrollOptions);
 
       // Highlight the message
       setHighlightedChatId(replyingToChatId);
 
-      // Remove the highlight after 2 seconds
-      setTimeout(() => setHighlightedChatId(null), 700);
+      // Reset auto-scrolling flag and remove highlight
+      setTimeout(() => {
+        isAutoScrolling.current = false;
+        setHighlightedChatId(null);
+      }, 700);
     }
   };
-
 
   return (
     <div className="flex h-full flex-row">
@@ -533,7 +593,7 @@ export default function CommunityName() {
 
             <div className="flex items-center justify-between h-[72px] bg-white border-b border-lightGrey">
               {/* Pass the selected channel info to ChatHead */}
-              <ChatHead isAdmin={false} channelId={selectedChannel?.channelId ?? null} channelName={selectedChannel?.channelName ?? null} channelEmoji={selectedChannel?.channelEmoji ?? null} communityId={communityId} categoryId={selectedChannel.headingId || ''} channelDescription={''} channelRequests={selectedChannel.channelRequests || []}/>
+              <ChatHead isAdmin={false} channelId={selectedChannel?.channelId ?? null} channelName={selectedChannel?.channelName ?? null} channelEmoji={selectedChannel?.channelEmoji ?? null} communityId={communityId} categoryId={selectedChannel.headingId || ''} channelDescription={''} channelRequests={selectedChannel.channelRequests || []} setSelectedChannel={setSelectedChannel} members={selectedChannel.members}/>
               <div className="flex flex-row mr-4 gap-4">
                 <Popover placement="bottom" isOpen={searchOpen} onClose={() => { setSearchOpen(false); setSearchQuery('') }}>
                   <PopoverTrigger>
@@ -689,8 +749,8 @@ export default function CommunityName() {
             <div className='relative'>
               {showScrollButton && (
               <button
-                onClick={scrollToBottom}
-                className="flex items-center justify-center absolute bottom-[85px] right-3 bg-white border pt-[2px] text-white rounded-full shadow-md hover:bg-[#f7f7f7] transition-all w-[38px] h-[38px]"
+                onClick={() => scrollToBottom()}
+                className="flex items-center justify-center absolute bottom-[85px]  right-4 bg-white border pt-[2px] text-white rounded-full shadow-md hover:bg-[#f7f7f7] transition-all w-[38px] h-[38px]"
               >
                 <Image
                 src="/icons/Arrow-down-1.svg"
@@ -700,17 +760,26 @@ export default function CommunityName() {
                 />
               </button>
               )}
-              {selectedChannel.members?.some(member => member.id === user?.uid) ? (
-              <BottomText 
-                showReplyLayout={showReplyLayout} 
-                setShowReplyLayout={setShowReplyLayout} 
-                replyData={replyData} 
-                channelId={selectedChannel?.channelId} 
-                communityId={communityId} 
-                headingId={selectedChannel.headingId ?? ''} 
-              />
+              {(groupData?.groupExitedMembers ?? []).includes(user?.uid ?? '') ? (
+                              <div className='flex flex-col z-10 items-center justify-center w-full h-auto py-4 bg-white'>
+                     <p className='text-sm text-center px-4'>
+                    You can’t send message to this cannel because you have left the group.
+                   </p>
+                   </div>
               ) : (
-              <div className='flex flex-col items-center justify-center w-full h-auto py-4 bg-white'>
+                      <>
+                       {selectedChannel.members?.some(member => member.id === user?.uid) ? (
+                      
+                  <BottomText 
+                    showReplyLayout={showReplyLayout} 
+                    setShowReplyLayout={setShowReplyLayout} 
+                    replyData={replyData} 
+                    channelId={selectedChannel?.channelId} 
+                    communityId={communityId} 
+                    headingId={selectedChannel.headingId ?? ''} 
+                  />                 
+              ) : (
+              <div className='flex flex-col items-center justify-center z-10 w-full h-auto py-4 bg-white'>
                 {(selectedChannel.channelRequests ?? []).some(request => request.id === (user?.uid ?? '')) ? (
                   <p className='text-sm text-center px-4'>
                     Your request to join this channel has been sent successfully. You will be able to view messages and interact with others once the admin approves your request.
@@ -729,6 +798,9 @@ export default function CommunityName() {
                 )}
               </div>        
               )}
+                      </>
+              )}
+             
             </div>
           </>
         ) : (

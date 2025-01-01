@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { getFirestore, collection, getDocs, query, where } from "firebase/firestore";
+import { getFirestore, collection, getDocs, query, where, onSnapshot } from "firebase/firestore";
 import { onAuthStateChanged, User } from 'firebase/auth'; // Import the User type from Firebase
 import { auth } from "@/firebase";
 import { useRouter } from 'next/navigation';
@@ -36,36 +36,29 @@ function GroupIcons() {
   }, []);
 
   useEffect(() => {
-    const fetchUserCommunities = async () => {
-      if (user) {
-        const userId = user.uid; // Get the current user's ID
-        const communityRef = collection(db, "communities");
-        const communitySnapshot = await getDocs(communityRef);
+    if (user) {
+      const userId = user.uid; // Get the current user's ID
+      const communityRef = collection(db, "communities");
+      const q = query(communityRef, where("members", "array-contains", { id: userId, isAdmin: false }));
 
+      const unsubscribe = onSnapshot(q, (snapshot) => {
         const userCommunities: CommunityData[] = [];
 
-        communitySnapshot.forEach((doc) => {
+        snapshot.forEach((doc) => {
           const community = doc.data();
-          const members = community.members || [];
-
-          // Check if the current user ID exists in the members array
-          const isUserInCommunity = members.some((member: { id: string }) => member.id === userId);
-
-          if (isUserInCommunity) {
-            userCommunities.push({
-              communityName: community.communityName,
-              communityId: community.communityId,
-              members,
-              communityImg: community.communityImg,
-            });
-          }
+          userCommunities.push({
+            communityName: community.communityName,
+            communityId: community.communityId,
+            members: community.members,
+            communityImg: community.communityImg,
+          });
         });
 
         setCommunities(userCommunities);
-      }
-    };
+      });
 
-    fetchUserCommunities();
+      return () => unsubscribe();
+    }
   }, [user, db]);
 
   const onItemClick = (communityName: string | null, communityId: string | null) => {

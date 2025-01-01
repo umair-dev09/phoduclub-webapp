@@ -299,6 +299,29 @@ function OtherChat({ message, currentUserId, adminThatDeletedId, isDeletedByAdmi
       console.error("Error adding reaction: ", error);
     }
   };
+  const handleDeleteReaction = async (emoji: string) => {
+    try {
+      const auth = getAuth();
+      const currentUser = auth.currentUser;
+      if (!currentUser) {
+        console.error("User not authenticated.");
+        return;
+      }
+
+      const userId = currentUser.uid;
+      const reactionDocRef = doc(db, `communities/${communityId}/channelsHeading/${headingId}/channels/${channelId}/chats/${chatId}/reactions`, userId);
+
+      const reactionDoc = await getDoc(reactionDocRef);
+      if (reactionDoc.exists() && reactionDoc.data().emoji === emoji) {
+        await deleteDoc(reactionDocRef);
+        console.log("Reaction deleted successfully!");
+      } else {
+        console.log("Reaction not found or does not match.");
+      }
+    } catch (error) {
+      console.error("Error deleting reaction: ", error);
+    }
+  };
   const [adminId, setAdminName] = useState<string | null>(null);
 
   useEffect(() => {
@@ -530,6 +553,7 @@ function OtherChat({ message, currentUserId, adminThatDeletedId, isDeletedByAdmi
           {reactions.map((reaction) => (
             <button
               key={reaction.emoji}
+              onClick={() => handleDeleteReaction(reaction.emoji)}
               className={`rounded-[54px] border border-solid border-[#D0D5DD] h-[26px] w-auto p-1 flex flex-row justify-center items-center gap-1 transition-colors duration-200 
                                       bg-[#F2F4F7] text-[#475467] hover:bg-[#F8F0FF] hover:border-[#7400E0]`}
             >

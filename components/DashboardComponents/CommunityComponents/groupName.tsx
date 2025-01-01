@@ -12,16 +12,20 @@ import Groupinfo from "@/components/AdminComponents/Community/AllDialogs/Groupin
 import DeleteGroup from "@/components/AdminComponents/Community/AllDialogs/DeleteGroup";
 import { Tooltip } from "@nextui-org/react";
 import ExitGroup from "@/components/DashboardComponents/CommunityComponents/ExitGroup";
+import DeleteGroupForUser from "./DeleteGroupForUser";
 type GroupData = {
   communityName: string | null;
   members: { id: string, isAdmin: boolean }[] | null;
   communityImg: string | null;
   communityDescription: string | null;
+  groupExitedMembers: string[],
+
 };
 
 type groupNameProps = {
   communityId: string | null;
   isAdmin: boolean;
+
 };
 
 function GroupName({ communityId, isAdmin }: groupNameProps) {
@@ -33,6 +37,7 @@ function GroupName({ communityId, isAdmin }: groupNameProps) {
   const [loading, setLoading] = useState(true);
   const [groupInfoDialog, setGroupInfoDialog] = useState(false);
   const [deleteGroupDialog, setDeleteGroupDialog] = useState(false);
+  const [deleteGroupForUserDialog, setDeleteGroupForUserDialog] = useState(false);
   const [exitgroup, setExitgroup] = useState(false);
 
   useEffect(() => {
@@ -184,7 +189,21 @@ function GroupName({ communityId, isAdmin }: groupNameProps) {
                 />
               </button>
             </Tooltip>
-            <button className='flex flex-row gap-2 items-center h-10 w-[206px] px-4 hover:bg-[#FEE4E2]'
+            {!isAdmin && (
+              (groupData?.groupExitedMembers ?? []).includes(user?.uid ?? '') ? (
+            
+              <button className='flex flex-row gap-2 items-center h-10 w-[206px] px-4 hover:bg-[#FEE4E2]'
+              onClick={() => setDeleteGroupForUserDialog(true)}>
+              <Image
+                src="/icons/delete.svg"
+                width={18}
+                height={18}
+                alt="delete"
+              />
+              <span className='font-normal text-[#DE3024] text-sm'>Delete group</span>
+            </button>
+             ) : (
+              <button className='flex flex-row gap-2 items-center h-10 w-[206px] px-4 hover:bg-[#FEE4E2]'
               onClick={() => setExitgroup(true)}>
               <Image
                 src="/icons/exit-channel-red.svg"
@@ -193,7 +212,10 @@ function GroupName({ communityId, isAdmin }: groupNameProps) {
                 alt="media-icon"
               />
               <span className='font-normal text-[#DE3024] text-sm'>Exit group</span>
-            </button>
+              </button>
+             )
+            )}
+           
             {isAdmin && (
               <button className='flex flex-row gap-2 items-center h-10 w-[206px] px-4 hover:bg-[#EAECF0]'
                 onClick={() => setGroupInfoDialog(true)}>
@@ -226,7 +248,8 @@ function GroupName({ communityId, isAdmin }: groupNameProps) {
       </div>
       {groupInfoDialog && <Groupinfo open={groupInfoDialog} onClose={() => setGroupInfoDialog(false)} communityId={communityId || ''} communityName={groupData?.communityName || ''} communityDescription={groupData?.communityDescription || ''} communityImage={groupData?.communityImg || ''} members={groupData?.members || []} />}
       {deleteGroupDialog && <DeleteGroup open={deleteGroupDialog} onClose={() => setDeleteGroupDialog(false)} communityId={communityId || ''} communityName={groupData?.communityName || ''} />}
-      {exitgroup && < ExitGroup open={exitgroup} onClose={() => setExitgroup(false)} />}
+      {exitgroup && < ExitGroup open={exitgroup} onClose={() => setExitgroup(false)} communityId={communityId || ''} communityName={groupData?.communityName || ''}/>}
+      {deleteGroupForUserDialog && < DeleteGroupForUser open={deleteGroupForUserDialog} onClose={() => setDeleteGroupForUserDialog(false)} communityId={communityId || ''} communityName={groupData?.communityName || ''}/>}
     </div>
   );
 }

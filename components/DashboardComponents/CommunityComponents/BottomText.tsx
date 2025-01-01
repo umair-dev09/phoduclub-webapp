@@ -288,11 +288,11 @@ function BottomText({
   };
   
   return (
-    <div className="flex flex-col bg-white h-auto px-4 py-4">
+    <div className="flex flex-col bg-white h-auto px-4 py-4 ">
 
        {/* Media Layout Start */}
        {fileName && (
-        <div className="flex flex-row rounded-md bg-[#F2F4F7] w-full h-auto border border-[#D0D5DD] p-[10px] mb-2 justify-between">
+        <div className="flex flex-row rounded-md bg-[#F2F4F7] z-10 w-full h-auto border border-[#D0D5DD] p-[14px] mb-2 justify-between">
           <div className="flex flex-row gap-[5px]">
             <Image src="/icons/image.svg" alt="media icon" width={18} height={18} />
             <p className="text-[14px] font-normal">{fileName}</p> {/* Show file name */}
@@ -342,7 +342,7 @@ function BottomText({
       {/* Media Layout End */}
       {/* Reply Layout Start */}
       {showReplyLayout && (
-  <div className="flex flex-row rounded-md bg-[#F2F4F7] w-full h-auto border border-[#D0D5DD] p-[12px] mb-2 justify-between items-start">
+  <div className="flex flex-row z-10 rounded-md bg-[#F2F4F7] w-full h-auto border border-[#D0D5DD] p-[12px] mb-2 justify-between items-start">
     <div className="flex flex-col gap-[2px] w-[92%]">
       <h3 className="text-[13px] font-semibold">{replyName}</h3>
       <div className="flex flex-row gap-1">
@@ -377,7 +377,7 @@ function BottomText({
       {/* Reply Layout End */}
 
       {showUserList && (
-        <div className="flex flex-col w-full bg-white max-h-[200px] overflow-y-auto  mb-2 justify-between items-start">
+        <div className="flex flex-col w-full bg-white max-h-[200px] overflow-y-auto z-10 mb-2 justify-between items-start">
           {filteredUsers.length > 0 ? (
             filteredUsers.map((user,index) => (
               <div key={index} className="flex flex-col w-full">
