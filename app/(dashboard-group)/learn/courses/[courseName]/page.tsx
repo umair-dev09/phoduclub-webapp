@@ -263,7 +263,24 @@ function Course() {
       return () => unsubscribe();
     }
   }, [courseId]);
+  // Add this useEffect after your existing useEffects
+useEffect(() => {
+  // Check if sections data exists and has at least one section
+  if (sections && sections.length > 0) {
+      const firstSection = sections[0];
+      
+      // Set the initial sectionId
+      setSectionId(firstSection.sectionId);
 
+      // Check if the first section has content
+      if (firstSection.content && firstSection.content.length > 0) {
+          // Set the initial selected content to the first content item
+          setSelectedContent(firstSection.content[0]);
+      }
+  }
+}, [sections]); // Depend on sections array
+
+// ...existing code...
   // Fetch StudentsAttempted separately
   useEffect(() => {
     if (courseId && auth.currentUser) {
@@ -535,14 +552,15 @@ function Course() {
             {sections.map((section, index) => (
               <div key={index} className=" flex flex-col border-b border-solid border-[#EAECF0] ">
                 <Collapsible
+                   open={index === 0} // Set the open state based on the isOpenArray
                   trigger={
                     <div
                       className="h-[60px] flex flex-row justify-between py-2 px-4 items-center hover:bg-[#EAECF0]"
-                      onClick={() => toggleCollapsible(0)} // Pass section name to toggle function
+                      onClick={() => toggleCollapsible(index)} // Pass section name to toggle function
                     >
                       <span className="font-semibold text-base text-[#1D2939] text-left">{index + 1}. {section.sectionName}</span>
                       <Image
-                        src={isOpenArray[0] ? '/icons/arrow-up-dark.svg' : '/icons/arrow-down-dark.svg'}
+                        src={isOpenArray[index] ? '/icons/arrow-up-dark.svg' : '/icons/arrow-down-dark.svg'}
                         width={20}
                         height={20}
                         alt="Arrow-toggle"
@@ -550,8 +568,8 @@ function Course() {
                     </div>
                   }
                   // transitionTime={350}
-                  onOpening={() => toggleCollapsible(0)}  // Set the state to open when expanding
-                  onClosing={() => toggleCollapsible(0)} // Set the state to closed when collapsing
+                  onOpening={() => toggleCollapsible(index)}  // Set the state to open when expanding
+                  onClosing={() => toggleCollapsible(index)} // Set the state to closed when collapsing
                 >
                   <div className="flex flex-col border-t py-2">
                     {section.content && section.content.length > 0 ? (
