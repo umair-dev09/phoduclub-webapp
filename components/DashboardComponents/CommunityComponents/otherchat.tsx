@@ -61,6 +61,7 @@ type UserData = {
   profilePic: string;
   role: string;
   isPremium: string;
+  userId: string;
 };
 
 function OtherChat({ message, currentUserId, adminThatDeletedId, isDeletedByAdmin, isCurrentUserAdmin, setLoading, mentions, isDeleted, highlightedText, messageType, fileUrl, fileName, isHighlighted, isAdmin, scrollToReply, fileSize, senderId, timestamp, communityId, headingId, channelId, chatId, isReplying, replyingToId, replyingToChatId, replyingToFileName, replyingToFileUrl, replyingToMsg, replyingToMsgType, setShowReplyLayout, handleReply }: OtherChatProps) {
@@ -298,7 +299,29 @@ function OtherChat({ message, currentUserId, adminThatDeletedId, isDeletedByAdmi
       console.error("Error adding reaction: ", error);
     }
   };
+  const [adminId, setAdminName] = useState<string | null>(null);
 
+  useEffect(() => {
+    if (isDeletedByAdmin && adminThatDeletedId) {
+      const fetchAdminName = async () => {
+        try {
+          const adminDocRef = doc(db, "admin", adminThatDeletedId);
+          const adminDoc = await getDoc(adminDocRef);
+
+          if (adminDoc.exists()) {
+            const adminData = adminDoc.data() as UserData;
+            setAdminName(adminData.userId);
+          } else {
+            console.log("Admin not found");
+          }
+        } catch (err) {
+          console.log("Failed to fetch admin data");
+        }
+      };
+
+      fetchAdminName();
+    }
+  }, [isDeletedByAdmin, adminThatDeletedId]);
   return (
     <div className="w-full h-auto flex flex-col pr-[10%] ">
 
@@ -395,7 +418,9 @@ function OtherChat({ message, currentUserId, adminThatDeletedId, isDeletedByAdmi
           )}
           <div className="text-sm break-all w-full max-w-full ">
             {isDeleted ? (
-              <div className="italic text-[#475467]">{isDeletedByAdmin ? `This message was deleted by ${adminThatDeletedId}` : 'This message was deleted'}</div>
+              <div className="italic text-[#475467]">{isDeletedByAdmin ?<>
+                This message was deleted by <span className="text-[#C74FE6] cursor-pointer" onClick={() => {setOpenDialogue(true); setId(adminThatDeletedId); setAdmin(true)}}>@{adminId}</span>
+              </> : 'This message was deleted'}</div>
             ) : (
               <div>
                 {renderMessageWithMentions()}

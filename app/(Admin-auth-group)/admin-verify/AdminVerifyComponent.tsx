@@ -106,6 +106,13 @@ const AdminVerify: React.FC = () => {
 
     return (
         <div className="flex flex-col items-center justify-center gap-10 h-screen w-screen">
+            <div className="w-[500px]">
+                <button className="flex flex-row text-left gap-2"
+                    onClick={() => router.back()}>
+                    <p>&larr;</p>
+                    <span className="font-medium text-base text-[#98a2b3]">Back</span>
+                </button>
+            </div>
             <div className=" flex flex-col justify-center items-center">
                 <Image src="/images/phoduclublogo.png" alt="Description of image" width={134} height={20} />
                 <p className="text-[12px] text-[#667085]">Admin</p>
@@ -134,12 +141,12 @@ const AdminVerify: React.FC = () => {
                             }}
                             onKeyDown={(e) => handleKeyDown(e, index)}
                         />
-                    ))} 
+                    ))}
                 </div>
                 {verificationError && (
-                <p className="text-sm text-[#F04438] text-center font-medium leading-[21px]">
-                   {verificationError}
-                </p>
+                    <p className="text-sm text-[#F04438] text-center font-medium leading-[21px]">
+                        {verificationError}
+                    </p>
                 )}
             </div>
             <button
