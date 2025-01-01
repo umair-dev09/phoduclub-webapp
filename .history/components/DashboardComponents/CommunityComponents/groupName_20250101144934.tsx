@@ -11,7 +11,7 @@ import 'react-loading-skeleton/dist/skeleton.css'
 import Groupinfo from "@/components/AdminComponents/Community/AllDialogs/Groupinfo";
 import DeleteGroup from "@/components/AdminComponents/Community/AllDialogs/DeleteGroup";
 import { Tooltip } from "@nextui-org/react";
-import ExitGroup from "@/components/DashboardComponents/CommunityComponents/ExitGroup";
+
 type GroupData = {
   communityName: string | null;
   members: { id: string, isAdmin: boolean }[] | null;
@@ -185,14 +185,14 @@ function GroupName({ communityId, isAdmin }: groupNameProps) {
               </button>
             </Tooltip>
             <button className='flex flex-row gap-2 items-center h-10 w-[206px] px-4 hover:bg-[#FEE4E2]'
-              onClick={() => setExitgroup(true)}>
+              onClick={() => setExitchannel(true)}>
               <Image
                 src="/icons/exit-channel-red.svg"
                 width={18}
                 height={18}
                 alt="media-icon"
               />
-              <span className='font-normal text-[#DE3024] text-sm'>Exit group</span>
+              <span className='font-normal text-[#DE3024] text-sm'>Exit channel</span>
             </button>
             {isAdmin && (
               <button className='flex flex-row gap-2 items-center h-10 w-[206px] px-4 hover:bg-[#EAECF0]'
@@ -226,7 +226,6 @@ function GroupName({ communityId, isAdmin }: groupNameProps) {
       </div>
       {groupInfoDialog && <Groupinfo open={groupInfoDialog} onClose={() => setGroupInfoDialog(false)} communityId={communityId || ''} communityName={groupData?.communityName || ''} communityDescription={groupData?.communityDescription || ''} communityImage={groupData?.communityImg || ''} members={groupData?.members || []} />}
       {deleteGroupDialog && <DeleteGroup open={deleteGroupDialog} onClose={() => setDeleteGroupDialog(false)} communityId={communityId || ''} communityName={groupData?.communityName || ''} />}
-      {exitgroup && < ExitGroup open={exitgroup} onClose={() => setExitgroup(false)} />}
     </div>
   );
 }

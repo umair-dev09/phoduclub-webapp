@@ -5,7 +5,7 @@ import Channelinfo from '@/components/AdminComponents/Community/AllDialogs/Chann
 import ChannelRequests from '@/components/AdminComponents/Community/AllDialogs/ChannelRequests';
 import Delete from '@/components/AdminComponents/Community/AllDialogs/DeleteChannel';
 import { Tooltip } from "@nextui-org/react";
-import ExitChannel from "@/components/DashboardComponents/CommunityComponents/ExitChannel";
+
 type chatHeadProps = {
     channelName: string | null;
     channelId: string | null;
@@ -128,8 +128,7 @@ function ChatHead({ channelName, channelId, channelEmoji, communityId, categoryI
                                 <span className='font-normal text-[#0C111D] text-sm'>Media</span>
                             </button>
                         </Tooltip>
-                        <button className='flex flex-row gap-2 items-center h-10 w-[206px] px-4 hover:bg-[#FEE4E2]'
-                            onClick={() => setExitchannel(true)}>
+                        <button className='flex flex-row gap-2 items-center h-10 w-[206px] px-4 hover:bg-[#FEE4E2]'>
                             <Image
                                 src="/icons/exit-channel-red.svg"
                                 width={18}
@@ -207,7 +206,6 @@ function ChatHead({ channelName, channelId, channelEmoji, communityId, categoryI
             {channelInfoDialog && <Channelinfo open={channelInfoDialog} onClose={() => setChannelInfoDialog(false)} channelName={channelName || ''} channelId={channelId || ''} channelEmoji={channelEmoji || ''} channelDescription={channelDescription || ''} communityId={communityId || ''} categoryId={categoryId || ''} />}
             {channelRequestsDialog && <ChannelRequests open={channelRequestsDialog} onClose={() => setChannelRequestsDialog(false)} requestedUsers={channelRequests} communityId={communityId || ''} headingId={categoryId || ''} channelId={channelId || ''} />}
             {deleteDialog && <Delete open={deleteDialog} onClose={() => setDeleteDialog(false)} communityId={communityId || ''} categoryId={categoryId || ''} channelId={channelId || ''} channelName={channelName || ''} />}
-            {exitchannel && <ExitChannel open={exitchannel} onClose={() => setExitchannel(false)} />}
         </div>
     );
 }

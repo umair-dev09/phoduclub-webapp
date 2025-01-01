@@ -192,7 +192,7 @@ function GroupName({ communityId, isAdmin }: groupNameProps) {
                 height={18}
                 alt="media-icon"
               />
-              <span className='font-normal text-[#DE3024] text-sm'>Exit group</span>
+              <span className='font-normal text-[#DE3024] text-sm'>Exit channel</span>
             </button>
             {isAdmin && (
               <button className='flex flex-row gap-2 items-center h-10 w-[206px] px-4 hover:bg-[#EAECF0]'

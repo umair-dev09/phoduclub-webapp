@@ -207,7 +207,7 @@ function ChatHead({ channelName, channelId, channelEmoji, communityId, categoryI
             {channelInfoDialog && <Channelinfo open={channelInfoDialog} onClose={() => setChannelInfoDialog(false)} channelName={channelName || ''} channelId={channelId || ''} channelEmoji={channelEmoji || ''} channelDescription={channelDescription || ''} communityId={communityId || ''} categoryId={categoryId || ''} />}
             {channelRequestsDialog && <ChannelRequests open={channelRequestsDialog} onClose={() => setChannelRequestsDialog(false)} requestedUsers={channelRequests} communityId={communityId || ''} headingId={categoryId || ''} channelId={channelId || ''} />}
             {deleteDialog && <Delete open={deleteDialog} onClose={() => setDeleteDialog(false)} communityId={communityId || ''} categoryId={categoryId || ''} channelId={channelId || ''} channelName={channelName || ''} />}
-            {exitchannel && <ExitChannel open={exitchannel} onClose={() => setExitchannel(false)} />}
+            {exitchannel && <ExitChannel open={exitchannel} onClose={() => setExitchannel(false)}}
         </div>
     );
 }
