@@ -178,12 +178,9 @@ function Profile() {
 
     const colors = [styles.red, styles.orange, styles.green, styles.blue];
 
-    return (  
-        // <div>
-
-
+    return (
         <div className="flex flex-col h-full w-full justify-between">
-            <div className="flex flex-col flex-grow overflow-y-auto pb-[260px] mx-[20px]">
+            <div className="flex flex-col flex-grow overflow-y-auto pb-[300px] mx-[20px]">
                 {/* Your profile content */}
                 <div className='Info flex flex-col mr-[5px]'>
                     <div className='NameSection flex flex-row items-center my-[15px] justify-between'>
@@ -197,15 +194,15 @@ function Profile() {
                                     height={72}
                                     quality={100}
                                 />
-                                 {userData?.isPremium === true && (
-                                                        <Image
-                                                            className="absolute right-[-2px] bottom-0"
-                                                            src="/icons/winnerBatch.svg"
-                                                            alt="Batch"
-                                                            width={28}
-                                                            height={28}
-                                                        />
-                                 )}
+                                {userData?.isPremium === true && (
+                                    <Image
+                                        className="absolute right-[-2px] bottom-0"
+                                        src="/icons/winnerBatch.svg"
+                                        alt="Batch"
+                                        width={28}
+                                        height={28}
+                                    />
+                                )}
                             </div>
                             <div>
                                 {/* Name and ID */}
@@ -284,7 +281,6 @@ function Profile() {
                 </div>
 
                 <div className={styles.divider}><hr /></div>
-
 
                 <div className={styles.name}>
                     <div className={styles.label}>
@@ -409,7 +405,6 @@ function Profile() {
                         <TargetYearUpdate setIsEditing={setIsEditing} />
                     )}
                 </div>
-
             </div>
 
             {/* Sticky Footer Div */}

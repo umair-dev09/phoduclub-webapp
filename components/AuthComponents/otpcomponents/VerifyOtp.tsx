@@ -158,7 +158,7 @@ function VerifyOtp() {
     }, [counter]);
 
     const handleSubmit = async (e: any) => {
-        e.preventDefault(); 
+        e.preventDefault();
         setIsLoading(true); // Start loading
 
         const verificationId = window.localStorage.getItem('verificationId'); // Retrieve the verification ID stored during sign-in
@@ -261,18 +261,18 @@ function VerifyOtp() {
                 <div className="w-full pt-4 flex flex-col items-center justify-center">
                     <button
                         className={`w-1/2 h-10 rounded-lg text-white font-medium text-sm 
-                                       ${isLoading || otp.length === 6 ? 'bg-[#7400e0] cursor-pointer' : 'bg-[#d4a9fc] cursor-not-allowed'} 
-                                      transition-colors duration-150 
-                                   active:opacity-50
-                                   flex items-center justify-center`}
+                                    ${isLoading || otp.length === 6 ? 'bg-[#7400e0] cursor-pointer' : 'bg-[#d4a9fc] cursor-not-allowed'} 
+                                    transition-colors duration-150 
+                                    active:opacity-50
+                                    flex items-center justify-center`}
                         onClick={handleSubmit}
                         disabled={isLoading || otp.length !== 6} // Ensure disabled when loading or OTP not filled
                     >
                         {isLoading ? (
-                                <div className='w-5 h-5 animate-spin-loading rounded-[50%] border-4 border-[#ffffff4d] border-solid border-t-4 border-t-customWhite '></div> // Show spinner
-                                ) : (
-                                'Continue'
-                                )}
+                            <div className='w-5 h-5 animate-spin-loading rounded-[50%] border-4 border-[#ffffff4d] border-solid border-t-4 border-t-customWhite '></div> // Show spinner
+                        ) : (
+                            'Continue'
+                        )}
 
                     </button>
                     {verificationError && (
@@ -281,13 +281,13 @@ function VerifyOtp() {
                 </div>
                 <div className="pt-4">
                     <p className="text-gray-700">
-                    Didn&apos;t receive the code?&nbsp;
-                    <a
+                        Didn&apos;t receive the code?&nbsp;
+                        <a
                             href="#"
                             onClick={handleResend}
                             className={`
                                 font-bold transition-colors duration-300 
-                             ${isResendEnabled ? 'text-[#9012FF] cursor-pointer' : 'text-[#AD72FF] cursor-not-allowed'} `}
+                                ${isResendEnabled ? 'text-[#9012FF] cursor-pointer' : 'text-[#AD72FF] cursor-not-allowed'} `}
                         >
                             {isResendEnabled ? 'Resend' : `Resend (${counter})`}
                         </a>

@@ -34,7 +34,7 @@ function DeleteChapter({ open, onClose }: Deleteprops) {
                         <Button variant="light" className=" font-semibold " onPress={onClose}>
                             Cancel
                         </Button>
-                        <Button color="danger" onPress={() => {
+                        <Button color="danger" variant="light" onPress={() => {
                             // Add delete action logic here
                             onClose(); // Close dialog after delete
                         }}

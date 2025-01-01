@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
 import Addchapterdialog from "./AddchapterDialog";
 import {
@@ -44,10 +44,10 @@ function Chemisty() {
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage] = useState(10);
     const [searchTerm, setSearchTerm] = useState('');
-    const [popopen, setPopopen] = useState(false)
     const lastItemIndex = currentPage * itemsPerPage;
     const firstItemIndex = lastItemIndex - itemsPerPage;
     const currentItems = data.slice(firstItemIndex, lastItemIndex);
+    const [activePopover, setActivePopover] = useState<number | null>(null);
 
     // Fetch subjects when component mounts
     useEffect(() => {
@@ -75,24 +75,61 @@ function Chemisty() {
         setData(filteredTests);
         setCurrentPage(1); // Reset to first page when filters change
     }, [searchTerm, subjects]);
-    const [openPopovers, setOpenPopovers] = useState<{ [key: number]: boolean }>({});
 
-    const togglePopover = (index: number) => {
-        setOpenPopovers((prev) => ({
-            ...prev,
-            [index]: !prev[index], // Toggle the state of the specific popover
-        }));
+    const handlePopoverOpen = (index: number) => {
+        setActivePopover(index);
     };
 
-    const closePopover = (index: number) => {
-        setOpenPopovers((prev) => ({
-            ...prev,
-            [index]: false, // Close the specific popover
-        }));
+    const DeleteButton = ({ onDelete }: { onDelete: () => void }) => {
+        const [isOpen, setIsOpen] = useState(false);
+
+        return (
+            <Popover
+                placement="bottom-end"
+                isOpen={isOpen}
+                onOpenChange={setIsOpen}
+            >
+                <PopoverTrigger>
+                    <button
+                        type="button"
+                        className="ml-[60%] p-1 rounded-full outline-none transition-colors duration-150 hover:bg-[#F2F4F7]"
+                        onClick={() => setIsOpen(true)}
+                    >
+                        <Image
+                            src="/icons/three-dots.svg"
+                            width={20}
+                            height={20}
+                            alt="More Actions"
+                        />
+                    </button>
+                </PopoverTrigger>
+                <PopoverContent className="w-[118px] px-0 py-1 rounded-md border border-lightGrey">
+                    <div className="w-full">
+                        <button className='flex flex-row items-center w-full px-4 py-[10px] gap-1 transition-colors duration-150 hover:bg-[#F2F4F7]'
+                            onClick={() => {
+                                setIseditopen(true); // Set to edit mode
+                                setAddchapterdialog(true); // Open the dialog
+                                // setPopopen(false);
+                            }}
+                        >
+                            <Image src='/icons/edit-02.svg' alt='edit' width={18} height={18} />
+                            <p className='text-sm text-[#0C111D] font-normal leading-5'>Edit</p>
+                        </button>
+                        <button
+                            className="flex flex-row items-center w-full px-4 py-[10px] gap-1 transition-colors duration-150 hover:bg-[#F2F4F7]"
+                            onClick={() => {
+                                onDelete(); // Trigger delete logic
+                                setIsOpen(false); // Close the popover
+                            }}
+                        >
+                            <Image src="/icons/delete.svg" alt="delete" width={18} height={18} />
+                            <p className="text-sm text-[#DE3024] font-normal leading-5">Delete</p>
+                        </button>
+                    </div>
+                </PopoverContent>
+            </Popover>
+        );
     };
-
-
-
 
     return (
         <div className="flex flex-col w-full gap-4 ">
@@ -163,11 +200,13 @@ function Chemisty() {
                                                     </span>
                                                 </td>
                                                 <td className="text-right px-8 py-4 text-[#101828] text-sm">
-                                                    <Popover placement="bottom-end" isOpen={popopen}
-                                                        onOpenChange={() => setPopopen(true)}>
+                                                    {/* <Popover placement="bottom-end"
+                                                    // isOpen={popopen}
+                                                    // onOpenChange={() => setPopopen(true)}
+                                                    >
                                                         <PopoverTrigger>
                                                             <button type='button' className="ml-[60%] p-1 rounded-full outline-none transition-colors duration-150 hover:bg-[#F2F4F7]"
-                                                                onClick={() => setPopopen(true)}
+                                                            // onClick={() => setPopopen(true)}
                                                             >
                                                                 <Image
                                                                     src="/icons/three-dots.svg"
@@ -177,32 +216,41 @@ function Chemisty() {
                                                                 />
                                                             </button>
                                                         </PopoverTrigger>
-                                                        <PopoverContent className="w-[118px] px-0 py-1 rounded-md border- border-lightGrey">
+                                                        <PopoverContent className="w-[118px] px-0 py-1 rounded-md border border-lightGrey">
                                                             <div className='w-full'>
-                                                                <button className='flex flex-row items-center w-full px-4 py-[10px] gap-1 transition-colors duration-150 hover:bg-[#F2F4F7]'
+                                                                <button
+                                                                    className='flex flex-row items-center w-full px-4 py-[10px] gap-1 transition-colors duration-150 hover:bg-[#F2F4F7]'
                                                                     onClick={() => {
                                                                         setIseditopen(true); // Set to edit mode
                                                                         setAddchapterdialog(true); // Open the dialog
-                                                                        setPopopen(false);
-
+                                                                        // setPopopen(false);
                                                                     }}
                                                                 >
                                                                     <Image src='/icons/edit-02.svg' alt='edit' width={18} height={18} />
                                                                     <p className='text-sm text-[#0C111D] font-normal leading-5'>Edit</p>
                                                                 </button>
-                                                                <button className='flex flex-row items-center w-full px-4 py-[10px] gap-1 transition-colors duration-150 hover:bg-[#F2F4F7]'
-                                                                    onClick={() => {
-                                                                        setIsdelete(true);
-                                                                        setPopopen(false);
-
+                                                                <button
+                                                                    className="flex flex-row items-center w-full px-4 py-[10px] gap-1 transition-colors duration-150 hover:bg-[#F2F4F7]"
+                                                                    onClick={(e) => {
+                                                                        e.stopPropagation(); // Prevent propagation to other elements
+                                                                        setIsdelete(true); // Trigger delete action
+                                                                        // Close the popover
+                                                                        const closestPopover = e.currentTarget.closest("[data-popover]");
+                                                                        if (closestPopover) {
+                                                                            const popoverController = closestPopover?.__popoverController; // NextUI uses this internally
+                                                                            if (popoverController) {
+                                                                                popoverController.close(); // Close the popover
+                                                                            }
+                                                                        }
                                                                     }}
                                                                 >
-                                                                    <Image src='/icons/delete.svg' alt='edit' width={18} height={18} />
-                                                                    <p className='text-sm text-[#DE3024] font-normal leading-5'>Delete</p>
+                                                                    <Image src="/icons/delete.svg" alt="edit" width={18} height={18} />
+                                                                    <p className="text-sm text-[#DE3024] font-normal leading-5">Delete</p>
                                                                 </button>
                                                             </div>
                                                         </PopoverContent>
-                                                    </Popover>
+                                                    </Popover> */}
+                                                    <DeleteButton onDelete={() => setIsdelete(true)} />
                                                 </td>
                                             </tr>
                                         ))
