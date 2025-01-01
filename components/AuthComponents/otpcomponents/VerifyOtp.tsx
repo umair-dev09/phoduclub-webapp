@@ -3,7 +3,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useState, useEffect, useRef, Suspense } from "react";
 import { auth } from '../../../firebase'; // Adjust path as needed
 import { getAuth, PhoneAuthProvider, signInWithCredential, onAuthStateChanged } from "firebase/auth";
-import { getFirestore, doc, getDoc, setDoc, query, where, getDocs, collection } from "firebase/firestore"; // Import Firestore functions
+import { getFirestore, doc, getDoc, setDoc, query, where, getDocs, collection, Timestamp } from "firebase/firestore"; // Import Firestore functions
 import { toast } from "react-toastify";
 import Image from 'next/image';
 import styles from './VerifyOtp.module.css'; // Ensure you import the CSS module
@@ -212,7 +212,10 @@ function VerifyOtp() {
                     uniqueId: authId,
                     userId: userId,
                     profilePic: profilePic,
-                    createdAt: new Date(),
+                    isAvatar: true,
+                    isPremium: false,
+                    isGuide: false,
+                    createdAt: Timestamp.now(),
                 });
 
                 toast.success("Correct OTP! You are logged in.");

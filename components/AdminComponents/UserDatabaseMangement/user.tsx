@@ -241,7 +241,7 @@ function User() {
             } else {
                 // Add new user data to Firestore
                 const docRef = await addDoc(collection(db, "users"), {
-                    name: fullName,
+                    name: fullName,  
                     userId,
                     phone,
                     email: emailId,
