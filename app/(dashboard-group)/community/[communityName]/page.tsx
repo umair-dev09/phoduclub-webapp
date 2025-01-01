@@ -9,7 +9,7 @@ import LoadingData from '@/components/Loading';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { onAuthStateChanged, User } from 'firebase/auth';
 import { auth, db } from '@/firebase';
-import { doc, getDoc, getDocs, collection, query, orderBy, onSnapshot } from 'firebase/firestore';
+import { doc, getDoc, getDocs, collection, query, orderBy, onSnapshot, updateDoc, arrayUnion } from 'firebase/firestore';
 import DetailsHead from '@/components/DashboardComponents/CommunityComponents/detailsHead';
 import DetailsContent from '@/components/DashboardComponents/CommunityComponents/detailsContent';
 import OtherChat from '@/components/DashboardComponents/CommunityComponents/otherchat';
@@ -26,6 +26,8 @@ type Channel = {
   channelName: string;
   channelEmoji: string;
   members: { id: string, isAdmin: boolean }[] | null;
+  channelRequests: { id: string, requestDate: string }[];
+  declinedRequests: string[];
 };
 
 type ChannelHeading = {
@@ -36,7 +38,7 @@ type ChannelHeading = {
 
 type GroupData = {
   communityName: string | null;
-  membersId: string[] | null;
+  members: { id: string, isAdmin: boolean }[]  | null;
 };
 
 type Chat = {
@@ -95,6 +97,8 @@ export default function CommunityName() {
     channelEmoji: string;
     headingId?: string; // Adding headingId to the selected channel state
     members: { id: string, isAdmin: boolean }[] | null;
+    channelRequests: { id: string, requestDate: string }[] | null;
+    declinedRequests: string[];
   } | null>(null);
 
   useEffect(() => {
@@ -144,44 +148,147 @@ export default function CommunityName() {
   }, [user, communityId]);
 
   useEffect(() => {
-    const fetchChannelHeadings = async () => {
+    const fetchHeadingsAndChannels = async () => {
       try {
-        const headingsRef = collection(db, `communities/${communityId}/channelsHeading`);
-        const headingsSnapshot = await getDocs(headingsRef);
+        // Store channel listeners to clean them up later
+        const channelListeners: { [key: string]: () => void } = {};
 
-        const headingsData: ChannelHeading[] = [];
+        // Listen to headings in real-time
+        const unsubscribeHeadings = onSnapshot(
+          collection(db, `communities/${communityId}/channelsHeading`),
+          async (headingsSnapshot) => {
+            const headingIds = headingsSnapshot.docs.map(doc => doc.id);
 
-        for (const headingDoc of headingsSnapshot.docs) {
-          const headingId = headingDoc.id;
-          const headingData = headingDoc.data();
-          const channelsRef = collection(db, `communities/${communityId}/channelsHeading/${headingId}/channels`);
-          const channelsSnapshot = await getDocs(channelsRef);
+            // Clean up listeners for headings that no longer exist
+            Object.keys(channelListeners).forEach(headingId => {
+              if (!headingIds.includes(headingId)) {
+                channelListeners[headingId]();
+                delete channelListeners[headingId];
+              }
+            });
 
-          const channels: Channel[] = channelsSnapshot.docs.map(channelDoc => ({
-            channelId: channelDoc.id,
-            channelName: channelDoc.data().channelName,
-            channelEmoji: channelDoc.data().channelEmoji,
-            members: channelDoc.data().members,
-          }));
+            // Set up or update listeners for each heading
+            headingsSnapshot.docs.forEach(headingDoc => {
+              const headingId = headingDoc.id;
+              const headingData = headingDoc.data();
 
-          headingsData.push({
-            headingId,
-            headingName: headingData.headingName,
-            channels,
+              // Set up channel listener if it doesn't exist
+              if (!channelListeners[headingId]) {
+                channelListeners[headingId] = onSnapshot(
+                  collection(db, `communities/${communityId}/channelsHeading/${headingId}/channels`),
+                  (channelsSnapshot) => {
+                    const channels: Channel[] = channelsSnapshot.docs.map(channelDoc => ({
+                      channelId: channelDoc.id,
+                      channelName: channelDoc.data().channelName,
+                      channelEmoji: channelDoc.data().channelEmoji,
+                      members: channelDoc.data().members,
+                      channelRequests: channelDoc.data().channelRequests,
+                      declinedRequests: channelDoc.data().declinedRequests,
+                    }));
+
+                    // Update headings data
+                    setChannelHeadings(prev => {
+                      const newHeadings = prev.filter(h => h.headingId !== headingId);
+                      return [...newHeadings, {
+                        headingId,
+                        headingName: headingData.headingName,
+                        channels,
+                      }].sort((a, b) => a.headingName.localeCompare(b.headingName));
+                    });
+
+                    // Update selected channel if it exists and belongs to this heading
+                    if (selectedChannel?.channelId && selectedChannel.headingId === headingId) {
+                      const updatedChannel = channels.find(c => c.channelId === selectedChannel.channelId);
+                      if (updatedChannel) {
+                        setSelectedChannel(currentSelected => {
+                          if (currentSelected?.channelId === updatedChannel.channelId) {
+                            return {
+                              ...updatedChannel,
+                              headingId: headingId
+                            };
+                          }
+                          return currentSelected;
+                        });
+                      }
+                    }
+                  }
+                );
+              }
+            });
+          }
+        );
+
+        // Add specific listener for selected channel if it exists
+        if (selectedChannel?.channelId && selectedChannel.headingId) {
+          const channelRef = doc(db, `communities/${communityId}/channelsHeading/${selectedChannel.headingId}/channels/${selectedChannel.channelId}`);
+          const unsubscribeChannel = onSnapshot(channelRef, (channelDoc) => {
+            if (channelDoc.exists()) {
+              const channelData = channelDoc.data();
+              setSelectedChannel(current => ({
+                ...current!,
+                channelName: channelData.channelName,
+                channelEmoji: channelData.channelEmoji,
+                members: channelData.members,
+                channelRequests: channelData.channelRequests,
+              }));
+            }
           });
+
+          return () => {
+            unsubscribeHeadings();
+            Object.values(channelListeners).forEach(unsubscribe => unsubscribe());
+            unsubscribeChannel();
+          };
         }
 
-        setChannelHeadings(headingsData);
-        setLoading(false);
+        return () => {
+          unsubscribeHeadings();
+          Object.values(channelListeners).forEach(unsubscribe => unsubscribe());
+        };
+
       } catch (error) {
-        console.error("Error fetching channels data: ", error);
+        console.error("Error setting up listeners: ", error);
         setLoading(false);
       }
     };
 
-    fetchChannelHeadings();
-  }, [communityId]);
+    fetchHeadingsAndChannels();
+  }, [communityId, selectedChannel?.channelId, selectedChannel?.headingId]);
 
+  const handleChannelRequest = async () => {
+    if (!selectedChannel || !user?.uid) return;
+    
+    try {
+      const channelRef = doc(db, `communities/${communityId}/channelsHeading/${selectedChannel.headingId}/channels/${selectedChannel.channelId}`);
+      
+      // Create request object with ID and timestamp
+      const requestData = {
+        id: user.uid,
+        requestDate: new Date(),
+      };
+
+      // Get current channel data
+      const channelDoc = await getDoc(channelRef);
+      const channelData = channelDoc.data();
+      
+      // Filter out the user's ID from declinedRequests
+      const updatedDeclinedRequests = (channelData?.declinedRequests || []).filter(
+        (id: string) => id !== user.uid
+      );
+
+      // Update both channelRequests and declinedRequests
+      await updateDoc(channelRef, {
+        channelRequests: arrayUnion(requestData),
+        declinedRequests: updatedDeclinedRequests,
+      });
+      
+      toast.success("Request sent successfully!");
+    } catch (error) {
+      console.error("Error sending request:", error);
+      toast.error("Failed to send request");
+    }
+  };
+ 
   // Fetch Chats for the selected channel
   useEffect(() => {
     if (selectedChannel) {
@@ -390,7 +497,7 @@ export default function CommunityName() {
                   {heading.channels.map((channel) => (
                     <button
                       key={channel.channelId}
-                      className="ChannelName flex flex-row items-center justify-between pr-3 group rounded-[7px] transition-colors hover:bg-[#F8F0FF]"
+                      className={`ChannelName flex flex-row items-center justify-between pr-3 group rounded-[7px] transition-colors hover:bg-[#F8F0FF] ${selectedChannel?.channelId === channel.channelId ? 'bg-[#F8F0FF]' : 'bg-[#FFFFFF]'}`}
                       onClick={() => {
                         setSelectedChannel({ ...channel, headingId: heading.headingId });
                       }}                    >
@@ -426,7 +533,7 @@ export default function CommunityName() {
 
             <div className="flex items-center justify-between h-[72px] bg-white border-b border-lightGrey">
               {/* Pass the selected channel info to ChatHead */}
-              <ChatHead isAdmin={false} channelId={selectedChannel?.channelId ?? null} channelName={selectedChannel?.channelName ?? null} channelEmoji={selectedChannel?.channelEmoji ?? null} communityId={communityId} categoryId={selectedChannel.headingId || ''} channelDescription={''} />
+              <ChatHead isAdmin={false} channelId={selectedChannel?.channelId ?? null} channelName={selectedChannel?.channelName ?? null} channelEmoji={selectedChannel?.channelEmoji ?? null} communityId={communityId} categoryId={selectedChannel.headingId || ''} channelDescription={''} channelRequests={selectedChannel.channelRequests || []}/>
               <div className="flex flex-row mr-4 gap-4">
                 <Popover placement="bottom" isOpen={searchOpen} onClose={() => { setSearchOpen(false); setSearchQuery('') }}>
                   <PopoverTrigger>
@@ -578,23 +685,50 @@ export default function CommunityName() {
               })}
 
             </div>
-
+           
             <div className='relative'>
               {showScrollButton && (
-
-                <button
-                  onClick={scrollToBottom}
-                  className="flex items-center justify-center absolute bottom-[85px] right-3 bg-white border pt-[2px] text-white rounded-full shadow-md hover:bg-[#f7f7f7] transition-all w-[38px] h-[38px]"
-                >
-                  <Image
-                    src="/icons/Arrow-down-1.svg"
-                    alt="Scroll to bottom"
-                    width={22}
-                    height={22}
-                  />
-                </button>
+              <button
+                onClick={scrollToBottom}
+                className="flex items-center justify-center absolute bottom-[85px] right-3 bg-white border pt-[2px] text-white rounded-full shadow-md hover:bg-[#f7f7f7] transition-all w-[38px] h-[38px]"
+              >
+                <Image
+                src="/icons/Arrow-down-1.svg"
+                alt="Scroll to bottom"
+                width={22}
+                height={22}
+                />
+              </button>
               )}
-              <BottomText showReplyLayout={showReplyLayout} setShowReplyLayout={setShowReplyLayout} replyData={replyData} channelId={selectedChannel?.channelId} communityId={communityId} headingId={selectedChannel.headingId ?? ''} />
+              {selectedChannel.members?.some(member => member.id === user?.uid) ? (
+              <BottomText 
+                showReplyLayout={showReplyLayout} 
+                setShowReplyLayout={setShowReplyLayout} 
+                replyData={replyData} 
+                channelId={selectedChannel?.channelId} 
+                communityId={communityId} 
+                headingId={selectedChannel.headingId ?? ''} 
+              />
+              ) : (
+              <div className='flex flex-col items-center justify-center w-full h-auto py-4 bg-white'>
+                {(selectedChannel.channelRequests ?? []).some(request => request.id === (user?.uid ?? '')) ? (
+                  <p className='text-sm text-center px-4'>
+                    Your request to join this channel has been sent successfully. You will be able to view messages and interact with others once the admin approves your request.
+                  </p>
+                ) : (
+                  <>
+                    {(selectedChannel.declinedRequests ?? []).includes(user?.uid ?? '') ? (
+                      <p className='text-sm'>Your request was declined by the admin. Please try again.</p>
+                    ) : (
+                      <p className='text-sm'>You need to be a member of this channel to send messages.</p>
+                    )}
+                    <button onClick={handleChannelRequest}>
+                      <p className='text-purple underline text-sm'>Request to join</p>
+                    </button>
+                  </>
+                )}
+              </div>        
+              )}
             </div>
           </>
         ) : (

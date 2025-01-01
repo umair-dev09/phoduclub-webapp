@@ -69,6 +69,13 @@ export default function PaymentStatusPage() {
     const storeDataInFirestore = async () => {
       if (!status || !productType || !productId) return;
 
+      // Check payment status first
+      if (status.payment_status !== 'SUCCESS') {
+      setError(`Payment ${status.payment_status.toLowerCase()}: Transaction was not successful. Please try again.`);
+      router.replace(`/learn/courses`);
+      return;
+      }
+
       setIsStoring(true);
       if (uid){
       const enrollmentData = {
@@ -88,32 +95,35 @@ export default function PaymentStatusPage() {
 
       try {
         if (productType === 'course') {
-          await setDoc(doc(collection(db, `course/${productId}/StudentsPurchased`), uid), enrollmentData);
+        await setDoc(doc(collection(db, `course/${productId}/StudentsPurchased`), uid), enrollmentData);
         } else if (productType === 'testseries') {
-          await setDoc(doc(collection(db, `testseries/${productId}/StudentsPurchased`), uid), enrollmentData);
+        await setDoc(doc(collection(db, `testseries/${productId}/StudentsPurchased`), uid), enrollmentData);
         }
 
         await setDoc(doc(collection(db, `users/${uid}/transactions`), productId), transactionData);
-
+        await setDoc(doc(db, `users/${uid}`), { isPremium: true }, { merge: true });
         console.log('Transaction data stored in Firestore');
         if (productType === 'course') {
-          router.replace(`/learn/courses`);
+        router.replace(`/learn/courses`);
         } else if (productType === 'testseries') {
-          router.replace(`/learn/test`);
+        router.replace(`/learn/test`);
         }
         
       } catch (error) {
-        setError('Failed to store data in Firestore');
+        setError('Failed to complete transaction. Please try again.');
+        console.log(error);
+        router.replace(`/learn/courses`);
       } finally {
         setIsStoring(false);
       }
-    }
-    else{
+      }
+      else{
       setError('User not authenticated');
+      router.replace(`/learn/courses`);
+      }
     }
-  }
     storeDataInFirestore();
-  }, [status, productType, productId, auth, db]);
+    }, [status, productType, productId, auth, db]);
 
   if (error) {
     return <div className="text-red-600">Error: {error}</div>;

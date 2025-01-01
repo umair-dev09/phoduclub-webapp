@@ -55,7 +55,7 @@ function MembersDetailsArea({ members }: MembersDetailsAreaProps) {
   // Fetch members data
   useEffect(() => {
     setLoading(true);
-    let isActive = true; // To prevent updates after component unmount
+    let isActive = true;
 
     const categorizedData = {
       admin: [] as UserData[],
@@ -70,51 +70,56 @@ function MembersDetailsArea({ members }: MembersDetailsAreaProps) {
       const collection = member.isAdmin ? "admin" : "users";
       const docRef = doc(db, collection, member.id);
 
-      return onSnapshot(docRef, (docSnap) => {
+      return onSnapshot(
+      docRef,
+      (docSnap) => {
         if (!isActive) return;
 
         if (docSnap.exists()) {
-          const userData = docSnap.data() as UserData;
+        const userData = docSnap.data() as UserData;
+        
+        // Remove user from all categories first
+        const userId = member.isAdmin ? userData.adminId : userData.uniqueId;
+        Object.values(categorizedData).forEach(array => {
+          const index = array.findIndex(u => 
+          (member.isAdmin ? u.adminId : u.uniqueId) === userId
+          );
+          if (index !== -1) array.splice(index, 1);
+        });
 
-          // Clear previous entries for this user
-          const userId = member.isAdmin ? userData.adminId : userData.uniqueId;
-          Object.values(categorizedData).forEach(array => {
-            const index = array.findIndex(u => 
-              (member.isAdmin ? u.adminId : u.uniqueId) === userId
-            );
-            if (index !== -1) array.splice(index, 1);
-          });
-
-          // Add user to appropriate category
-          if (member.isAdmin) {
-            switch (userData.role) {
-              case "Admin": categorizedData.admin.push(userData); break;
-              case "ChiefModerator": categorizedData.chiefModerators.push(userData); break;
-              case "Teacher": categorizedData.teachers.push(userData); break;
-            }
-          } else {
-            if (userData.isPremium) {
-              categorizedData.premiumMembers.push(userData);
-            } else {
-              categorizedData.clubMembers.push(userData);
-            }
+        // Categorize user based on real-time data
+        if (member.isAdmin) {
+          switch (userData.role.toLowerCase()) {
+          case "admin": categorizedData.admin.push(userData); break;
+          case "chiefmoderator": categorizedData.chiefModerators.push(userData); break;
+          case "teacher": categorizedData.teachers.push(userData); break;
           }
-
-          setCategorizedMembers({ ...categorizedData });
-          setLoading(false);
         } else {
-          console.error(`No document found for ${collection}/${member.id}`);
+          if (userData.isPremium) {
+          categorizedData.premiumMembers.push(userData);
+          } else {
+          categorizedData.clubMembers.push(userData);
+          }
         }
-      }, (error) => {
-        console.error(`Error fetching member ${member.id}:`, error);
-      });
+
+        // Update state with new categorized data
+        setCategorizedMembers({ ...categorizedData });
+        setLoading(false);
+        }
+      },
+      (error) => {
+        console.error(`Error in real-time listener for ${collection}/${member.id}:`, error);
+        setLoading(false);
+      }
+      );
     });
 
+    // Cleanup function to unsubscribe all listeners
     return () => {
       isActive = false;
       unsubscribeFunctions.forEach(unsubscribe => unsubscribe());
     };
-  }, [members]);
+    }, [members]);
 
   const handleClick = (memberId: string, memberIsAdmin: boolean) => {
     setId(memberId);           // Set the id of the clicked member

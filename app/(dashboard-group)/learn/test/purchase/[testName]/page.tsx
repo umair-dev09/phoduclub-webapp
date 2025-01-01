@@ -369,7 +369,7 @@ function TestPurchasePage() {
   }
 
   return (
-    <div className="contianer flex flex-col pb-5 px-8 w-full h-screen overflow-y-auto">
+    <div className="contianer flex flex-col pb-20 px-8 w-full h-screen overflow-y-auto">
       <div className="my-5 flex items-center">
         <button className="flex items-center ml-1" onClick={() => router.back()}>
           <div className="text-[#1D2939] h-[24px] w-auto" style={{ fontSize: "16px", fontWeight: "600" }}>

@@ -1,19 +1,31 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Dialog, DialogBackdrop, DialogPanel } from "@headlessui/react";
 import Image from "next/image";
 import { Checkbox } from "@nextui-org/react";
+import { arrayUnion, doc, getDoc, setDoc, Timestamp } from "firebase/firestore";
+import { db } from "@/firebase";
+import MessageLoading from "@/components/MessageLoading";
+import LoadingData from "@/components/Loading";
+import { toast } from "react-toastify";
 
 // Type Definitions
 interface Member {
+    id: string;
     name: string;
-    username: string;
-    date: string;
+    userId: string;
+    profilePic: string;
+    isPremium: boolean;
+    requestDate: string;
     checked: boolean;
 }
 
 interface ChannelRequestsProps {
+    requestedUsers: { id: string; requestDate: Timestamp | string; }[];
     open: boolean;
     onClose: () => void;
+    communityId: string;
+    headingId: string;
+    channelId: string;
 }
 
 interface SelectionBarProps {
@@ -21,38 +33,24 @@ interface SelectionBarProps {
     setMembers: React.Dispatch<React.SetStateAction<Member[]>>;
     setSelectAll: React.Dispatch<React.SetStateAction<boolean>>;
     onClose: () => void;
+    handleAcceptSelected: () => Promise<void>;
+    handleDeclineSelected: () => Promise<void>;
 }
 
-// SelectionBar Component
+// SelectionBar Component with updated accept functionality
 const SelectionBar: React.FC<SelectionBarProps> = ({
     members,
     setMembers,
     setSelectAll,
-    onClose
+    onClose,
+    handleAcceptSelected,
+    handleDeclineSelected
 }) => {
     const selectedMembers = members.filter(member => member.checked);
 
     const handleSelectAll = (selectAll: boolean) => {
         setMembers(members.map(member => ({ ...member, checked: selectAll })));
         setSelectAll(selectAll);
-    };
-
-    const handleDecline = () => {
-        const updatedMembers = members.map(member =>
-            member.checked ? { ...member, checked: false } : member
-        );
-        setMembers(updatedMembers);
-        setSelectAll(false);
-        onClose();
-    };
-
-    const handleAccept = () => {
-        const updatedMembers = members.map(member =>
-            member.checked ? { ...member, checked: false } : member
-        );
-        setMembers(updatedMembers);
-        setSelectAll(false);
-        onClose();
     };
 
     if (selectedMembers.length === 0) return null;
@@ -79,14 +77,14 @@ const SelectionBar: React.FC<SelectionBarProps> = ({
                 </div>
                 <div className="w-0 h-9 border-[0.5px] border-lightGrey rounded-full"></div>
                 <button
-                    onClick={handleDecline}
+                    onClick={handleDeclineSelected}
                     className="flex flex-row px-4 py-[0.625rem] gap-2 border border-r-lightGrey rounded-md"
                 >
                     <Image src='/icons/multiplication-sign.svg' alt="deny" width={18} height={18} />
                     <p className="text-sm text-[#1D2939] font-medium leading-[18px]">Decline</p>
                 </button>
                 <button
-                    onClick={handleAccept}
+                    onClick={handleAcceptSelected}
                     className="flex flex-row px-4 py-[0.625rem] gap-2 border border-r-lightGrey rounded-md"
                 >
                     <Image src='/icons/tick-green-02.svg' alt="Accept" width={18} height={18} />
@@ -98,74 +96,206 @@ const SelectionBar: React.FC<SelectionBarProps> = ({
 };
 
 // GroupInfo Component
-const ChannelRequests: React.FC<ChannelRequestsProps> = ({ open, onClose }) => {
-    // Initial members data
-    const initialMembersData: Member[] = [
-        { name: "Jenny Wilson", username: "jenny#8547", date: "Jan 6, 2024", checked: false },
-        { name: "John Doe", username: "john#1234", date: "Jan 6, 2024", checked: false },
-        { name: "Alice Brown", username: "alice#9876", date: "Jan 6, 2024", checked: false },
-        { name: "Jenny Wilson", username: "jenny#8547", date: "Jan 6, 2024", checked: false },
-        { name: "John Doe", username: "john#1234", date: "Jan 6, 2024", checked: false },
-        { name: "Alice Brown", username: "alice#9876", date: "Jan 6, 2024", checked: false },
-        { name: "Jenny Wilson", username: "jenny#8547", date: "Jan 6, 2024", checked: false },
-        { name: "John Doe", username: "john#1234", date: "Jan 6, 2024", checked: false },
-        { name: "Alice Brown", username: "alice#9876", date: "Jan 6, 2024", checked: false },
-        { name: "Jenny Wilson", username: "jenny#8547", date: "Jan 6, 2024", checked: false },
-        { name: "John Doe", username: "john#1234", date: "Jan 6, 2024", checked: false },
-        { name: "Alice Brown", username: "alice#9876", date: "Jan 6, 2024", checked: false },
-        { name: "Jenny Wilson", username: "jenny#8547", date: "Jan 6, 2024", checked: false },
-        { name: "John Doe", username: "john#1234", date: "Jan 6, 2024", checked: false },
-        { name: "Alice Brown", username: "alice#9876", date: "Jan 6, 2024", checked: false },
-        { name: "Jenny Wilson", username: "jenny#8547", date: "Jan 6, 2024", checked: false },
-        { name: "John Doe", username: "john#1234", date: "Jan 6, 2024", checked: false },
-        { name: "Alice Brown", username: "alice#9876", date: "Jan 6, 2024", checked: false },
-        { name: "Jenny Wilson", username: "jenny#8547", date: "Jan 6, 2024", checked: false },
-        { name: "John Doe", username: "john#1234", date: "Jan 6, 2024", checked: false },
-        { name: "Alice Brown", username: "alice#9876", date: "Jan 6, 2024", checked: false },
-        { name: "Jenny Wilson", username: "jenny#8547", date: "Jan 6, 2024", checked: false },
-        { name: "John Doe", username: "john#1234", date: "Jan 6, 2024", checked: false },
-        { name: "Alice Brown", username: "alice#9876", date: "Jan 6, 2024", checked: false },
-    ];
-
-    const [members, setMembers] = useState<Member[]>(initialMembersData);
+const ChannelRequests: React.FC<ChannelRequestsProps> = ({ requestedUsers, open, onClose , communityId, headingId, channelId}) => {
+    const [members, setMembers] = useState<Member[]>([]);
     const [selectAll, setSelectAll] = useState(false);
+    const [loading, setLoading] = useState(true);
+    useEffect(() => {
+        const fetchUserData = async () => {
+            try {
+                const memberPromises = requestedUsers.map(async (request) => {
+                    const userRef = doc(db, 'users', request.id);
+                    const userSnap = await getDoc(userRef);
+                    
+                    if (userSnap.exists()) {
+                        const userData = userSnap.data();
+                        return {
+                            id: request.id,
+                            name: userData.name || 'Unknown User',
+                            userId: userData.userId || '',
+                            profilePic: userData.profilePic || '/images/default-avatar.svg',
+                            isPremium: userData.isPremium || false,
+                            requestDate: request.requestDate instanceof Timestamp ? 
+                            request.requestDate.toDate().toLocaleDateString('en-US', {
+                                month: 'short',
+                                day: 'numeric',
+                                year: 'numeric'
+                            }) : 
+                            new Date(request.requestDate).toLocaleDateString('en-US', {
+                                month: 'short',
+                                day: 'numeric',
+                                year: 'numeric'
+                            }),
+                            checked: false
+                        };
+                    }
+                    return null;
+                });
+
+                const fetchedMembers = (await Promise.all(memberPromises)).filter((member): member is Member => member !== null);
+                setMembers(fetchedMembers);
+                setLoading(false);
+            } catch (error) {
+                console.error('Error fetching user data:', error);
+                setLoading(false);
+            }
+        };
+
+        if (open && requestedUsers.length > 0) {
+            fetchUserData();
+        }
+    }, [requestedUsers, open]);
+    const updateChannelData = async (
+        memberIds: string[], 
+        action: 'accept' | 'decline'
+    ) => {
+        try {
+            const channelRef = doc(db, `communities/${communityId}/channelsHeading/${headingId}/channels`, channelId);
+            const channelDoc = await getDoc(channelRef);
+            const existingData = channelDoc.exists() ? channelDoc.data() : {};
+            
+            if (action === 'accept') {
+                // Add new members and remove from channelRequests
+                const newMembers = memberIds.map(id => ({
+                    id,
+                    isAdmin: false
+                }));
+                
+                const updatedMembers = [
+                    ...(existingData.members || []),
+                    ...newMembers
+                ];
+
+                const updatedChannelRequests = (existingData.channelRequests || [])
+                    .filter((request: { id: string }) => !memberIds.includes(request.id));
+
+                await setDoc(channelRef, {
+                    members: updatedMembers,
+                    channelRequests: updatedChannelRequests
+                }, { merge: true });
+                onClose();
+                toast.success('Requests Accepted');
+            } else if (action === 'decline') {
+                // Remove from channelRequests and add to declinedRequests
+                const updatedChannelRequests = (existingData.channelRequests || [])
+                    .filter((request: { id: string }) => !memberIds.includes(request.id));
+
+                const existingDeclinedRequests = existingData.declinedRequests || [];
+                const updatedDeclinedRequests = [
+                    ...existingDeclinedRequests,
+                    ...memberIds
+                ];
+
+                await setDoc(channelRef, {
+                    channelRequests: updatedChannelRequests,
+                    declinedRequests: updatedDeclinedRequests
+                }, { merge: true });
+                onClose();
+                toast.success('Requests Declined');
+            }
+
+            // Update local state
+            setMembers(prevMembers => 
+                prevMembers.filter(member => !memberIds.includes(member.id))
+            );
+        } catch (error) {
+            console.error('Error updating channel data:', error);
+            throw error;
+        }
+    };
+
+    const handleAcceptSelected = async () => {
+        try {
+            const selectedMemberIds = members
+                .filter(member => member.checked)
+                .map(member => member.id);
+
+            if (selectedMemberIds.length > 0) {
+                await updateChannelData(selectedMemberIds, 'accept');
+                setSelectAll(false);
+            }
+        } catch (error) {
+            console.error('Error accepting selected members:', error);
+        }
+    };
+
+    const handleSingleAccept = async (memberId: string) => {
+        try {
+            await updateChannelData([memberId], 'accept');
+        } catch (error) {
+            console.error('Error accepting single member:', error);
+        }
+    };
+
+    const handleDeclineSelected = async () => {
+        try {
+            const selectedMemberIds = members
+                .filter(member => member.checked)
+                .map(member => member.id);
+
+            if (selectedMemberIds.length > 0) {
+                await updateChannelData(selectedMemberIds, 'decline');
+                setSelectAll(false);
+            }
+        } catch (error) {
+            console.error('Error declining selected members:', error);
+        }
+    };
+
+    const handleSingleDecline = async (memberId: string) => {
+        try {
+            await updateChannelData([memberId], 'decline');
+        } catch (error) {
+            console.error('Error declining single member:', error);
+        }
+    };
 
     const handleHeaderCheckboxToggle = () => {
         const newCheckedState = !selectAll;
         setSelectAll(newCheckedState);
-        setMembers(members.map(member => ({ ...member, checked: newCheckedState })));
+        setMembers(prevMembers => 
+            prevMembers.map(member => ({ ...member, checked: newCheckedState }))
+        );
     };
 
     const handleRowCheckboxToggle = (index: number) => {
-        const updatedMembers = [...members];
-        updatedMembers[index].checked = !updatedMembers[index].checked;
-        setMembers(updatedMembers);
-
-        // Check if all members are checked
-        const allChecked = updatedMembers.every(member => member.checked);
-        setSelectAll(allChecked);
+        setMembers(prevMembers => {
+            const updatedMembers = [...prevMembers];
+            updatedMembers[index].checked = !updatedMembers[index].checked;
+            
+            // Update selectAll state based on whether all checkboxes are checked
+            const allChecked = updatedMembers.every(member => member.checked);
+            setSelectAll(allChecked);
+            
+            return updatedMembers;
+        });
     };
-
     return (
         <>
-            <Dialog open={open} onClose={onClose} className="relative z-50">
-                <DialogBackdrop className="fixed inset-0 bg-black/30" />
-                <div className="fixed inset-0 flex items-center justify-center">
-                    <DialogPanel
-                        transition
-                        className=" max-h-[92%] overflow-y-auto"
-                    >
-                        <div className="flex flex-col p-6 gap-4 bg-white rounded-2xl w-[38.375rem] h-auto overflow-hidden" >
-                            <div className="flex flex-row justify-between items-center">
-                                <h3 className="font-medium text-[#1D2939]">Add Members</h3>
-                                <button className="w-[32px] h-[32px]  rounded-full flex items-center justify-center transition-all duration-300 ease-in-out hover:bg-[#F2F4F7]">
-                                    <button onClick={onClose}>
-                                        <Image src="/icons/cancel.svg" alt="Cancel" width={20} height={20} />
-                                    </button>
-                                </button>
-                            </div>
-                            <div className=" border border-[#EAECF0] rounded-xl overflow-hidden">
-                                <div className="max-h-[30rem] overflow-y-auto">
+              <Dialog open={open} onClose={onClose} className="relative z-50">
+            <DialogBackdrop className="fixed inset-0 bg-black/30" />
+            <div className="fixed inset-0 flex items-center justify-center">
+                <DialogPanel className="max-h-[92%] overflow-y-auto">
+                    <div className="flex flex-col p-6 gap-4 bg-white rounded-2xl w-[38.375rem] h-auto overflow-hidden">
+                        <div className="flex flex-row justify-between items-center">
+                            <h3 className="font-medium text-[#1D2939]">Channel Requests</h3>
+                            <button 
+                                className="w-[32px] h-[32px] rounded-full flex items-center justify-center transition-all duration-300 ease-in-out hover:bg-[#F2F4F7]"
+                                onClick={onClose}
+                            >
+                                <Image src="/icons/cancel.svg" alt="Cancel" width={20} height={20} />
+                            </button>
+                        </div>
+                        {requestedUsers.length < 1 ? (
+                               <>
+                               <p>No requests</p>
+                               </>
+                        ) : (
+                <div className="border border-[#EAECF0] rounded-xl overflow-hidden">
+                            <div className="max-h-[30rem] overflow-y-auto">
+                                {loading ? (
+                                    <LoadingData />
+                                ) : (
                                     <table className="w-full">
                                         <thead className="sticky top-0 z-10 bg-white shadow-sm">
                                             <tr>
@@ -198,7 +328,7 @@ const ChannelRequests: React.FC<ChannelRequestsProps> = ({ open, onClose }) => {
                                         <tbody>
                                             {members.map((member, index) => (
                                                 <tr
-                                                    key={`${member.username}-${index}`}
+                                                    key={member.id}
                                                     className="border-t border-lightGrey"
                                                 >
                                                     <td className="pl-8 pb-1">
@@ -213,41 +343,43 @@ const ChannelRequests: React.FC<ChannelRequestsProps> = ({ open, onClose }) => {
                                                         <div className="flex flex-row gap-2 items-center">
                                                             <div className="relative">
                                                                 <Image
-                                                                    src="/images/DP_Lion.svg"
-                                                                    alt="DP"
+                                                                    src={member.profilePic}
+                                                                    alt="Profile Picture"
                                                                     width={40}
                                                                     height={40}
                                                                 />
-                                                                <Image
-                                                                    className="absolute right-0 bottom-0"
-                                                                    src="/icons/winnerBatch.svg"
-                                                                    alt="Batch"
-                                                                    width={18}
-                                                                    height={18}
-                                                                />
+                                                                {member.isPremium && (
+                                                                    <Image
+                                                                        className="absolute right-0 bottom-0"
+                                                                        src="/icons/winnerBatch.svg"
+                                                                        alt="Premium"
+                                                                        width={18}
+                                                                        height={18}
+                                                                    />
+                                                                )}
                                                             </div>
                                                             <div className="flex flex-col">
                                                                 <span className="text-sm font-semibold whitespace-nowrap">
                                                                     {member.name}
                                                                 </span>
                                                                 <span className="text-[13px] text-[#667085]">
-                                                                    {member.username}
+                                                                    {member.userId}
                                                                 </span>
                                                             </div>
                                                         </div>
                                                     </td>
                                                     <td className="text-center py-3">
                                                         <p className="text-sm text-[#1D2939] font-normal leading-6">
-                                                            {member.date}
+                                                            {member.requestDate}
                                                         </p>
                                                     </td>
                                                     <td>
                                                         <div className="flex flex-row gap-2">
-                                                            <button className="flex items-center justify-center w-[2.375rem] h-[2.375rem] border border-lightGrey rounded-full">
-                                                                <Image src={'/icons/multiplication-sign.svg'} alt="deny" width={18} height={18} />
+                                                            <button className="flex items-center justify-center w-[2.375rem] h-[2.375rem] border border-lightGrey rounded-full" onClick={() => handleSingleDecline(member.id)}>
+                                                                <Image src='/icons/multiplication-sign.svg' alt="deny" width={18} height={18} />
                                                             </button>
-                                                            <button className="flex items-center justify-center w-[2.375rem] h-[2.375rem] border border-[#0B9055] rounded-full">
-                                                                <Image src={'/icons/tick-green-02.svg'} alt="accept" width={18} height={18} />
+                                                            <button className="flex items-center justify-center w-[2.375rem] h-[2.375rem] border border-[#0B9055] rounded-full" onClick={() => handleSingleAccept(member.id)}>
+                                                                <Image src='/icons/tick-green-02.svg' alt="accept" width={18} height={18} />
                                                             </button>
                                                         </div>
                                                     </td>
@@ -255,18 +387,23 @@ const ChannelRequests: React.FC<ChannelRequestsProps> = ({ open, onClose }) => {
                                             ))}
                                         </tbody>
                                     </table>
-                                </div>
+                                )}
                             </div>
                         </div>
-                        <SelectionBar
-                            members={members}
-                            setMembers={setMembers}
-                            setSelectAll={setSelectAll}
-                            onClose={onClose}
-                        />
-                    </DialogPanel>
-                </div>
-            </Dialog>
+                        )}
+                        
+                    </div>
+                    <SelectionBar
+                        members={members}
+                        setMembers={setMembers}
+                        setSelectAll={setSelectAll}
+                        onClose={onClose}
+                        handleAcceptSelected={handleAcceptSelected}
+                        handleDeclineSelected={handleDeclineSelected}
+                    />
+                </DialogPanel>
+            </div>
+        </Dialog>
         </>
     );
 };
