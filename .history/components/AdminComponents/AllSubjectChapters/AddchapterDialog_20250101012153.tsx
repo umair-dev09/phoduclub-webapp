@@ -40,7 +40,7 @@ function Allsubject({ onClose, open, iseditopen }: DialogProps) {
                 <DialogPanel className="bg-white rounded-2xl w-[480px] h-auto flex flex-col">
                     <div className="flex flex-col p-6 gap-3 border-solid border-[#EAECF0] border-b rounded-t-2xl">
                         <div className="flex flex-row justify-between items-center">
-                            <h1 className="text-[#1D2939] font-bold text-lg">{iseditopen ? "Edit Chapter" : "Create Chapter"}</h1>
+                            <h1 className="text-[#1D2939] font-bold text-lg">{iseditopen ? "Create Chapter" : "Edit Chapter"}</h1>
                             <button
                                 className="w-[32px] h-[32px] rounded-full flex items-center justify-center hover:bg-[#F2F4F7]"
                                 onClick={onClose}
@@ -133,7 +133,7 @@ function Allsubject({ onClose, open, iseditopen }: DialogProps) {
                             Cancel
                         </button>
                         <button
-                            className={`py-[0.625rem] px-6 rounded-md text-white text-sm shadow-inner-button font-semibold bg-[#9012FF] border border-[#9012FF] transition-opacity hover:bg-[#6D0DCC]  duration-150 ${isFormValid
+                            className={`py-[0.625rem] px-6 rounded-md text-white text-sm shadow-inner-button font-semibold bg-[#9012FF] border border-[#9012FF] transition-opacity duration-150 ${isFormValid
                                 ? "opacity-100"
                                 : "opacity-35"
                                 }`}

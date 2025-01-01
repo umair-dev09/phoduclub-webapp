@@ -23,18 +23,18 @@ type Subject = {
 // Mock fetchSubjects function with types
 const fetchSubjects = async (): Promise<Subject[]> => {
     const allSubjects: Subject[] = [
-        { title: 'Kinematics', priority: 'Medium' },
-        { title: 'Laws of Motion', priority: 'High' },
-        { title: 'Work, Energy, and Power', priority: 'Low' },
-        { title: 'Rotational Motion', priority: 'Medium' },
-        { title: 'Gravitation', priority: 'Low' },
-        { title: 'Thermodynamics', priority: 'High' },
-        { title: 'Waves and Oscillations', priority: 'Medium' },
+        { title: 'Sets, Relations, and Functions', priority: 'High' },
+        { title: 'Quadratic Equations and Expressions', priority: 'Low' },
+        { title: 'Matrices and Determinants', priority: 'Medium' },
+        { title: 'Sequence and Series', priority: 'High' },
+        { title: 'Limits, Continuity, and Differentiability', priority: 'Medium' },
+        { title: 'Application of Derivatives', priority: 'Low' },
+        { title: 'Probability', priority: 'Medium' },
     ];
     return allSubjects;
 };
 
-function Physics() {
+function Maths() {
     const [addchapterdialog, setAddchapterdialog] = useState(false);
     const [iseditopen, setIseditopen] = useState(false)
     const [loading, setLoading] = useState(true);
@@ -100,7 +100,7 @@ function Physics() {
                             />
                         </div>
                     </button>
-                    <button className=' w-[168px] h-11 flex items-center justify-center  rounded-md flex-row gap-2 shadow-inner-button bg-[#9012FF] border border-[#800EE2] border-solid hover:bg-[#6D0DCC] '
+                    <button className=' w-[168px] h-11 flex items-center justify-center  rounded-md flex-row gap-2 shadow-inner-button bg-[#9012FF] border border-[#800EE2] border-solid'
                         onClick={() => {
                             setAddchapterdialog(true);
                             setIseditopen(false);
@@ -162,6 +162,7 @@ function Physics() {
                                                                         setAddchapterdialog(true);
                                                                         setIseditopen(true);
                                                                     }}
+
                                                                 >
                                                                     <Image src='/icons/edit-02.svg' alt='edit' width={18} height={18} />
                                                                     <p className='text-sm text-[#0C111D] font-normal leading-5'>Edit</p>
@@ -326,4 +327,4 @@ function PaginationSection({
     );
 }
 
-export default Physics;
+export default Maths;

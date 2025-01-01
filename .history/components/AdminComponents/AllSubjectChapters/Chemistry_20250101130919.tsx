@@ -23,20 +23,21 @@ type Subject = {
 // Mock fetchSubjects function with types
 const fetchSubjects = async (): Promise<Subject[]> => {
     const allSubjects: Subject[] = [
-        { title: 'Kinematics', priority: 'Medium' },
-        { title: 'Laws of Motion', priority: 'High' },
-        { title: 'Work, Energy, and Power', priority: 'Low' },
-        { title: 'Rotational Motion', priority: 'Medium' },
-        { title: 'Gravitation', priority: 'Low' },
-        { title: 'Thermodynamics', priority: 'High' },
-        { title: 'Waves and Oscillations', priority: 'Medium' },
+        { title: 'Atomic Structure', priority: 'Low' },
+        { title: 'Chemical Bonding and Molecular Structure', priority: 'Medium' },
+        { title: 'Thermodynamics and Thermochemistry', priority: 'High' },
+        { title: 'Equilibrium', priority: 'Low' },
+        { title: 'Electrochemistry', priority: 'Medium' },
+        { title: 'Chemical Kinetics', priority: 'High' },
+        { title: 'Surface Chemistry', priority: 'Low' },
     ];
     return allSubjects;
 };
 
-function Physics() {
+function Chemisty() {
     const [addchapterdialog, setAddchapterdialog] = useState(false);
     const [iseditopen, setIseditopen] = useState(false)
+    const [isdelete, setIsdelete] = useState(false);
     const [loading, setLoading] = useState(true);
     const [data, setData] = useState<Subject[]>([]);
     const [subjects, setSubjects] = useState<Subject[]>([]);
@@ -83,7 +84,7 @@ function Physics() {
                 </h2>
                 <div className="flex flex-row gap-3">
                     {/* Search Button */}
-                    <button className="h-[44px] w-[250px] rounded-md bg-[#FFFFFF] border border-gray-300 focus:outline focus:outline-[1.5px] focus:outline-[#D6BBFB] hover:outline hover:outline-[1.5px] hover:outline-[#D6BBFB] focus-within:border-[#D7BBFC] focus-within:ring-4 focus-within:ring-[#E8DEFB] focus-within:outline-none transition-colors flex items-center">
+                    <button className="h-[44px] w-[250px] rounded-md bg-[#FFFFFF] border border-gray-300 focus:outline focus:outline-[1.5px] focus:outline-[#D6BBFB] hover:outline hover:outline-[1.5px] hover:outline-[#D6BBFB] focus-within:border-[#D7BBFC] focus-within:ring-4 focus-within:ring-[#E8DEFB] focus-within:outline-none transition-colorsflex items-center">
                         <div className="flex flex-row items-center gap-2 pl-2">
                             <Image
                                 src="/icons/search-button.svg"
@@ -102,8 +103,8 @@ function Physics() {
                     </button>
                     <button className=' w-[168px] h-11 flex items-center justify-center  rounded-md flex-row gap-2 shadow-inner-button bg-[#9012FF] border border-[#800EE2] border-solid hover:bg-[#6D0DCC] '
                         onClick={() => {
-                            setAddchapterdialog(true);
-                            setIseditopen(false);
+                            setIseditopen(false); // Set to create mode
+                            setAddchapterdialog(true); // Open the dialog
                         }}>
                         <Image
                             src="/icons/plus-white-sign.svg"
@@ -159,14 +160,15 @@ function Physics() {
                                                             <div className='w-full'>
                                                                 <button className='flex flex-row items-center w-full px-4 py-[10px] gap-1 transition-colors duration-150 hover:bg-[#F2F4F7]'
                                                                     onClick={() => {
-                                                                        setAddchapterdialog(true);
-                                                                        setIseditopen(true);
+                                                                        setIseditopen(true); // Set to edit mode
+                                                                        setAddchapterdialog(true); // Open the dialog
                                                                     }}
                                                                 >
                                                                     <Image src='/icons/edit-02.svg' alt='edit' width={18} height={18} />
                                                                     <p className='text-sm text-[#0C111D] font-normal leading-5'>Edit</p>
                                                                 </button>
-                                                                <button className='flex flex-row items-center w-full px-4 py-[10px] gap-1 transition-colors duration-150 hover:bg-[#F2F4F7]'>
+                                                                <button className='flex flex-row items-center w-full px-4 py-[10px] gap-1 transition-colors duration-150 hover:bg-[#F2F4F7]'
+                                                                    onClick={() => setIsdelete(true)}>
                                                                     <Image src='/icons/delete.svg' alt='edit' width={18} height={18} />
                                                                     <p className='text-sm text-[#DE3024] font-normal leading-5'>Delete</p>
                                                                 </button>
@@ -203,7 +205,16 @@ function Physics() {
                     </div>
                 </div>
             )}
-            {addchapterdialog && <Addchapterdialog open={addchapterdialog} iseditopen={iseditopen} onClose={() => setAddchapterdialog(false)} />}
+            {addchapterdialog && (
+                <Addchapterdialog
+                    open={addchapterdialog}
+                    iseditopen={iseditopen}
+                    onClose={() => {
+                        setAddchapterdialog(false);
+                        setIseditopen(false);
+                    }}
+                />
+            )}
         </div>
     )
 }
@@ -326,4 +337,4 @@ function PaginationSection({
     );
 }
 
-export default Physics;
+export default Chemisty;

@@ -100,7 +100,7 @@ function Physics() {
                             />
                         </div>
                     </button>
-                    <button className=' w-[168px] h-11 flex items-center justify-center  rounded-md flex-row gap-2 shadow-inner-button bg-[#9012FF] border border-[#800EE2] border-solid hover:bg-[#6D0DCC] '
+                    <button className=' w-[168px] h-11 flex items-center justify-center  rounded-md flex-row gap-2 shadow-inner-button bg-[#9012FF] border border-[#800EE2] border-solid'
                         onClick={() => {
                             setAddchapterdialog(true);
                             setIseditopen(false);

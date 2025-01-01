@@ -100,11 +100,8 @@ function Physics() {
                             />
                         </div>
                     </button>
-                    <button className=' w-[168px] h-11 flex items-center justify-center  rounded-md flex-row gap-2 shadow-inner-button bg-[#9012FF] border border-[#800EE2] border-solid hover:bg-[#6D0DCC] '
-                        onClick={() => {
-                            setAddchapterdialog(true);
-                            setIseditopen(false);
-                        }}>
+                    <button className=' w-[168px] h-11 flex items-center justify-center  rounded-md flex-row gap-2 shadow-inner-button bg-[#9012FF] border border-[#800EE2] border-solid'
+                        onClick={() => setAddchapterdialog(true)}>
                         <Image
                             src="/icons/plus-white-sign.svg"
                             width={18}
@@ -158,10 +155,7 @@ function Physics() {
                                                         <PopoverContent className="w-[118px] px-0 py-1 rounded-md border- border-lightGrey">
                                                             <div className='w-full'>
                                                                 <button className='flex flex-row items-center w-full px-4 py-[10px] gap-1 transition-colors duration-150 hover:bg-[#F2F4F7]'
-                                                                    onClick={() => {
-                                                                        setAddchapterdialog(true);
-                                                                        setIseditopen(true);
-                                                                    }}
+                                                                    onClick={() => { setAddchapterdialog(true) }}
                                                                 >
                                                                     <Image src='/icons/edit-02.svg' alt='edit' width={18} height={18} />
                                                                     <p className='text-sm text-[#0C111D] font-normal leading-5'>Edit</p>

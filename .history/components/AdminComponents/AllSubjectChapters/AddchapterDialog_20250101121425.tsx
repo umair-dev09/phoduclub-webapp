@@ -133,7 +133,7 @@ function Allsubject({ onClose, open, iseditopen }: DialogProps) {
                             Cancel
                         </button>
                         <button
-                            className={`py-[0.625rem] px-6 rounded-md text-white text-sm shadow-inner-button font-semibold bg-[#9012FF] border border-[#9012FF] transition-opacity hover:bg-[#6D0DCC]  duration-150 ${isFormValid
+                            className={`py-[0.625rem] px-6 rounded-md text-white text-sm shadow-inner-button font-semibold bg-[#9012FF] border border-[#9012FF] transition-opacity duration-150 ${isFormValid
                                 ? "opacity-100"
                                 : "opacity-35"
                                 }`}
