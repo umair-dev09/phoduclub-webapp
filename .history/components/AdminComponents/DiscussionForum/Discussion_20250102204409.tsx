@@ -308,7 +308,7 @@ function Discussion({ courseId, sectionId, contentId }: DiscussionProps) {
                             onKeyDown={handleKeyDown}
                             modules={modules}
                             placeholder="Type your response here..."
-                            className="text-[#1D2939] focus:outline-none rounded-b-[12px] custom-quill  placeholder:not-italic min-h-[66px] max-h-[350px] overflow-y-auto border-none font-normal"
+                            className="text-[#1D2939] focus:outline-none rounded-b-[12px] custom-quill placeholder:flex items-center justify-center placeholder:not-italic min-h-[66px] max-h-[350px] overflow-y-auto border-none font-normal"
 
                         />
 
@@ -393,7 +393,7 @@ function Discussion({ courseId, sectionId, contentId }: DiscussionProps) {
                             {/* Button */}
                             <button
                                 className={` w-[88px] h-[36px] flex justify-center items-center rounded-md shadow-inner-button 
-                                                        ${isButtonDisabled ? 'bg-[#d8acff] cursor-not-allowed' : 'bg-[#8501FF] hover:bg-[#6D0DCC]'} 
+                                                        ${isButtonDisabled ? 'bg-[#d8acff]' : 'bg-[#8501FF]'} 
                                                         ${isButtonDisabled ? '' : 'border border-solid border-[#800EE2]'}`}
 
                                 disabled={isButtonDisabled} // Disable button if needed

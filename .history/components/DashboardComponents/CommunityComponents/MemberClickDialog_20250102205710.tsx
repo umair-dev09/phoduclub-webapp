@@ -113,24 +113,12 @@ function MemberClickDialog({ open, onClose, id, isAdmin }: MemberClickDialogProp
                   <Image className="w-[20px] h-[20px] mt-1" src='/icons/cancel-01.svg' alt="close icon" width={20} height={20} />
                 </button>
               </div>
-              <Tooltip
-                content="Launching Soon!!!!!"
-                placement="right"
-                offset={15}
-                closeDelay={100}
-                classNames={{
-                  content: [
-                    "bg-[#222222] text-white text-sm py-2 px-4 rounded-md",
-                  ],
-                }}
-              >
-                <div className="bg-purple p-4">
-                  <button className="flex flex-row gap-2 items-center justify-center w-full h-[44px] shadow-inner-button bg-white rounded-md cursor-not-allowed">
-                    <Image className="w-[17px] h-[17px] " src='/icons/messageicon1.svg' alt="message icon" width={16} height={16} />
-                    <span className="text-base font-semibold text-[#182230]">Message</span>
-                  </button>
-                </div>
-              </Tooltip>
+              <div className="bg-purple p-4">
+                <button className="flex flex-row gap-2 items-center justify-center w-full h-[44px] shadow-inner-button bg-white rounded-md">
+                  <Image className="w-[17px] h-[17px] " src='/icons/messageicon1.svg' alt="message icon" width={16} height={16} />
+                  <span className="text-base font-semibold text-[#182230]">Message</span>
+                </button>
+              </div>
               {!isAdmin && (
                 <div className="flex flex-col gap-2 p-4">
                   <span className="text-[#1D2939] text-sm">Preparing Exams</span>
@@ -154,7 +142,6 @@ function MemberClickDialog({ open, onClose, id, isAdmin }: MemberClickDialogProp
         </DialogPanel>
       </div>
     </Dialog>
-
   );
 }
 export default MemberClickDialog;

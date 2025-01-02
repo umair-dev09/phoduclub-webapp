@@ -571,9 +571,19 @@ function OtherChat({ message, currentUserId, adminThatDeletedId, isDeletedByAdmi
       {showMediaDialog && <MediaViewDialog open={true} onClose={() => setShowMediaDialog(false)} src={fileUrl} mediaType={messageType || ''} />}
 
       {openDialogue && (
-
-        <MemberClickDialog open={true} onClose={() => setOpenDialogue(false)} id={id} isAdmin={admin} />
-
+        <Tooltip
+          content="Launching Soon!!!!"
+          placement="right"
+          offset={15}
+          closeDelay={100}
+          classNames={{
+            content: [
+              "bg-[#222222] text-white text-sm py-2 px-4 rounded-md",
+            ],
+          }}
+        >
+          <MemberClickDialog open={true} onClose={() => setOpenDialogue(false)} id={id} isAdmin={admin} />
+        </Tooltip>
       )}
 
       {deleteDialog && <Delete communityId={communityId} headingId={headingId} channelId={channelId} chatId={chatId} open={true} onClose={() => setDeleteDialog(false)} deletedByAdmin={true} adminThatDeletedId={auth.currentUser?.uid || ''} />}

@@ -125,7 +125,7 @@ function MemberClickDialog({ open, onClose, id, isAdmin }: MemberClickDialogProp
                 }}
               >
                 <div className="bg-purple p-4">
-                  <button className="flex flex-row gap-2 items-center justify-center w-full h-[44px] shadow-inner-button bg-white rounded-md cursor-not-allowed">
+                  <button className="flex flex-row gap-2 items-center justify-center w-full h-[44px] shadow-inner-button bg-white rounded-md">
                     <Image className="w-[17px] h-[17px] " src='/icons/messageicon1.svg' alt="message icon" width={16} height={16} />
                     <span className="text-base font-semibold text-[#182230]">Message</span>
                   </button>

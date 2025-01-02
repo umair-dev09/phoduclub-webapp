@@ -569,13 +569,9 @@ function OtherChat({ message, currentUserId, adminThatDeletedId, isDeletedByAdmi
         </div>
       )}
       {showMediaDialog && <MediaViewDialog open={true} onClose={() => setShowMediaDialog(false)} src={fileUrl} mediaType={messageType || ''} />}
-
-      {openDialogue && (
-
+      {/* {openDialogue && (
         <MemberClickDialog open={true} onClose={() => setOpenDialogue(false)} id={id} isAdmin={admin} />
-
-      )}
-
+      )} */}
       {deleteDialog && <Delete communityId={communityId} headingId={headingId} channelId={channelId} chatId={chatId} open={true} onClose={() => setDeleteDialog(false)} deletedByAdmin={true} adminThatDeletedId={auth.currentUser?.uid || ''} />}
 
     </div>

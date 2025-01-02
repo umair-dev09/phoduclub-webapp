@@ -392,8 +392,8 @@ function Discussion({ courseId, sectionId, contentId }: DiscussionProps) {
                             </div>
                             {/* Button */}
                             <button
-                                className={` w-[88px] h-[36px] flex justify-center items-center rounded-md shadow-inner-button 
-                                                        ${isButtonDisabled ? 'bg-[#d8acff] cursor-not-allowed' : 'bg-[#8501FF] hover:bg-[#6D0DCC]'} 
+                                className={` w-[88px] h-[36px] flex justify-center items-center rounded-md shadow-inner-button hover:bg-[#6D0DCC]
+                                                        ${isButtonDisabled ? 'bg-[#d8acff]' : 'bg-[#8501FF]'} 
                                                         ${isButtonDisabled ? '' : 'border border-solid border-[#800EE2]'}`}
 
                                 disabled={isButtonDisabled} // Disable button if needed

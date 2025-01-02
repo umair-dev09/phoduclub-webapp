@@ -10,9 +10,6 @@ import { collection, doc, onSnapshot, orderBy, query, setDoc } from "firebase/fi
 import { toast } from "react-toastify";
 import LoadingData from "@/components/Loading";
 import DiscussionDisplay from "@/components/DashboardComponents/LearnComponents/CourseComponents/InsideCoursesComp/Discussioncomp/DiscussionDisplay";
-import QuillResizeImage from 'quill-resize-image';
-Quill.register("modules/resize", QuillResizeImage);
-
 interface DiscussionProps {
     courseId: string;
     sectionId: string;
@@ -25,9 +22,9 @@ interface DiscussionData {
     userId: string;
     timestamp: string;
     messageId: string;
-}
+  }
 
-function Discussion({ courseId, sectionId, contentId }: DiscussionProps) {
+function Discussion({courseId, sectionId, contentId}:DiscussionProps) {  
 
     const [value, setValue] = useState('');
     const quillRef = useRef<ReactQuill | null>(null); // Ref to hold ReactQuill instance
@@ -43,54 +40,54 @@ function Discussion({ courseId, sectionId, contentId }: DiscussionProps) {
     const [discussions, setDiscussions] = useState<DiscussionData[]>([]);
     useEffect(() => {
         if (courseId && sectionId && contentId) {
-            const fetchChats = async () => {
-                try {
-                    const discussionRef = collection(
-                        db,
-                        `course/${courseId}/sections/${sectionId}/content/${contentId}/Disscussion`
-                    );
-                    const discussionQuery = query(discussionRef, orderBy('timestamp', 'asc')); // Order by timestamp
-
-                    const unsubscribe = onSnapshot(discussionQuery, (snapshot) => {
-                        const discussionData: DiscussionData[] = snapshot.docs.map((doc) => ({
-                            ...doc.data(),
-                            messageId: doc.id, // Include the document ID
-                        })) as DiscussionData[];
-                        setDiscussions(discussionData); // Update state with the retrieved data
-                        setLoading(false);
-                    });
-
-                    return () => unsubscribe();
-                } catch (error) {
-                    console.error("Error fetching chats: ", error);
-                }
-            };
-
-            fetchChats();
+          const fetchChats = async () => {
+            try {
+              const discussionRef = collection(
+                db,
+                `course/${courseId}/sections/${sectionId}/content/${contentId}/Disscussion`
+              );
+              const discussionQuery = query(discussionRef, orderBy('timestamp', 'asc')); // Order by timestamp
+      
+              const unsubscribe = onSnapshot(discussionQuery, (snapshot) => {
+                const discussionData: DiscussionData[] = snapshot.docs.map((doc) => ({
+                  ...doc.data(),
+                  messageId: doc.id, // Include the document ID
+                })) as DiscussionData[];
+                setDiscussions(discussionData); // Update state with the retrieved data
+                setLoading(false);
+              });
+      
+              return () => unsubscribe();
+            } catch (error) {
+              console.error("Error fetching chats: ", error);
+            }
+          };
+      
+          fetchChats();
         }
-    }, [courseId, sectionId, contentId]);
+      }, [courseId, sectionId, contentId]);
 
     const handleSendMessage = async () => {
-        if (auth.currentUser?.uid) {
-            try {
-                const ref = doc(collection(db, 'course', courseId, 'sections', sectionId, 'content', contentId, 'Disscussion'));
+        if(auth.currentUser?.uid){
+        try {
+            const ref = doc(collection(db, 'course', courseId, 'sections', sectionId, 'content', contentId, 'Disscussion'));
+            
+            const currentUserId = auth.currentUser.uid;
 
-                const currentUserId = auth.currentUser.uid;
-
-                const disscusionData = {
-                    message: value,
-                    userId: currentUserId,
-                    timestamp: new Date().toISOString(),
-                    messageId: ref.id,
-                    isAdmin: true,
-                };
-                await setDoc(ref, disscusionData);
-                setValue('');
-                toast.success('Message sent!');
-            } catch (error) {
-                console.error('Error updating course document:', error);
-                toast.error('Failed to mark lesson completed');
-            }
+            const disscusionData = {
+                 message: value,
+                 userId: currentUserId,
+                 timestamp: new Date().toISOString(),
+                 messageId: ref.id,
+                 isAdmin: true,
+            };
+            await setDoc(ref, disscusionData); 
+             setValue('');
+             toast.success('Message sent!');
+          } catch (error) {
+            console.error('Error updating course document:', error);
+            toast.error('Failed to mark lesson completed');
+          }
         }
     };
 
@@ -103,25 +100,6 @@ function Discussion({ courseId, sectionId, contentId }: DiscussionProps) {
                 if (format === 'ordered') {
                     // Toggle ordered list
                     quill.format('list', currentFormats.list === 'ordered' ? false : 'ordered');
-                }
-                else if (format === 'image') {
-                    const fileInput = document.createElement('input');
-                    fileInput.type = 'file';
-                    fileInput.accept = 'image/*';
-                    fileInput.onchange = () => {
-                        const file = fileInput.files?.[0];  // Safely access file
-                        if (file) {
-                            const reader = new FileReader();
-                            reader.onload = (e) => {
-                                if (e.target && e.target.result) {  // Validate e.target
-                                    const imageUrl = e.target.result as string;  // Type assertion
-                                    quill.insertEmbed(range.index, 'image', imageUrl);
-                                }
-                            };
-                            reader.readAsDataURL(file);
-                        }
-                    };
-                    fileInput.click();
                 }
                 else if (format.startsWith('align')) {
                     if (format === 'align-left') {
@@ -140,19 +118,11 @@ function Discussion({ courseId, sectionId, contentId }: DiscussionProps) {
         }
     };
 
-    const modules = {
-        toolbar: false, // We're using custom toolbar
-        resize: {
-            locale: {},
-        },
-
-    };
     useEffect(() => {
         if (quillRef.current) {
             setQuill(quillRef.current.getEditor());
         }
     }, []);
-
 
     // This will clear formatting when the user types
     const handleKeyDown = () => {
@@ -185,17 +155,17 @@ function Discussion({ courseId, sectionId, contentId }: DiscussionProps) {
     return (
         <div className="flex flex-col h-[calc(100vh-200px)]">
             <div className="flex-1 overflow-y-auto px-6 gap-4 py-4">
-                {loading ? (
-                    <LoadingData />
-                ) : (
-                    <>
-                        {discussions.map((d) => (
-                            <div key={d.messageId} >
-                                <DiscussionDisplay userId={d.userId} message={d.message} messageId={d.userId} isAdmin={d.isAdmin} timestamp={d.timestamp} courseId={""} sectionId={""} contentId={""} upvotes={[]} />
-                            </div>
-                        ))}
-                    </>
-                )}
+            {loading ? (
+                <LoadingData />
+            ) : (
+                <>
+                {discussions.map((d) => ( 
+                    <div key={d.messageId} >
+                    <DiscussionDisplay userId={d.userId} message={d.message} messageId={d.userId} isAdmin={d.isAdmin} timestamp={d.timestamp} courseId={""} sectionId={""} contentId={""} upvotes={[]}/>
+                    </div>
+                ))}
+                </>
+            )}
                 {/* <div className="flex flex-col gap-4 pb-4">
                     <div className="flex flex-row justify-between items-center">
                         <div className="flex flex-row gap-2">
@@ -306,10 +276,17 @@ function Discussion({ courseId, sectionId, contentId }: DiscussionProps) {
                             value={value}
                             onChange={handleChange}
                             onKeyDown={handleKeyDown}
-                            modules={modules}
+                            modules={{ toolbar: false }}
                             placeholder="Type your response here..."
-                            className="text-[#1D2939] focus:outline-none rounded-b-[12px] custom-quill  placeholder:not-italic min-h-[66px] max-h-[350px] overflow-y-auto border-none font-normal"
-
+                            className=" text-[#1D2939] focus:outline-none rounded-b-[12px] custom-quill placeholder:not-italic"
+                            style={{
+                                minHeight: "10px", // Initial height
+                                maxHeight: "150px", // Maximum height before scrolling
+                                overflowY: "auto",  // Enable scrolling if content exceeds max height
+                                padding: "1rem",   // Padding to create space inside the editor
+                                border: 'none',
+                                fontStyle: 'normal',
+                            }}
                         />
 
 
@@ -385,15 +362,11 @@ function Discussion({ courseId, sectionId, contentId }: DiscussionProps) {
                                     onClick={() => handleIconClick('ordered')}>
                                     <Image src="/icons/dropdown-icon-2.svg" width={27} height={27} alt="dropdown-icon" />
                                 </button>
-                                <button onClick={() => handleIconClick('image')}
-                                    className="hover:bg-[#EAECF0]">
-                                    <Image src="/icons/upload-image-icon.svg" width={24} height={24} alt="upload-image-icon" />
-                                </button>
                             </div>
                             {/* Button */}
                             <button
                                 className={` w-[88px] h-[36px] flex justify-center items-center rounded-md shadow-inner-button 
-                                                        ${isButtonDisabled ? 'bg-[#d8acff] cursor-not-allowed' : 'bg-[#8501FF] hover:bg-[#6D0DCC]'} 
+                                                        ${isButtonDisabled ? 'bg-[#d8acff]' : 'bg-[#8501FF]'} 
                                                         ${isButtonDisabled ? '' : 'border border-solid border-[#800EE2]'}`}
 
                                 disabled={isButtonDisabled} // Disable button if needed
