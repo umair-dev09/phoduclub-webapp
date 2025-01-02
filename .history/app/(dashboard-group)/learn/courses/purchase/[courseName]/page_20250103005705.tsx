@@ -236,14 +236,16 @@ export default function CoursePurchasePage() {
   }, [courseId]);
 
 
-  const [isOpenArray, setIsOpenArray] = useState([false, false, false]); // Initialize with false for each collapsible
+  const [isOpenArray, setIsOpenArray] = useState(
+    new Array(sections.length).fill(false) // Initialize all sections as closed
+  );
 
-  // Function to toggle a specific collapsible's state
   const toggleCollapsible = (index: number) => {
-    const newIsOpenArray = [...isOpenArray];
-    newIsOpenArray[index] = !newIsOpenArray[index]; // Toggle the specific index
-    setIsOpenArray(newIsOpenArray);
+    setIsOpenArray((prev) =>
+      prev.map((isOpen, i) => (i === index ? !isOpen : isOpen)) // Toggle only the clicked section
+    );
   };
+
 
   const formatDuration = (duration: number) => {
     if (duration) {
@@ -438,7 +440,8 @@ export default function CoursePurchasePage() {
                 </div>
               }
               transitionTime={350}
-              open={isOpenArray[index]} // Control the open/closed state of each section
+              onOpening={() => toggleCollapsible(0)}  // Set the state to open when expanding
+              onClosing={() => toggleCollapsible(0)} // Set the state to closed when collapsing
             >
               <div className='border-t border-lightGrey'>
                 {section.content && section.content.length > 0 ? (

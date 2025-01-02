@@ -1,6 +1,6 @@
 "use client";
 import Select, { SingleValue } from 'react-select';
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Dialog, DialogBackdrop, DialogPanel } from "@headlessui/react";
 import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button } from "@nextui-org/react";
 import Image from "next/image";
@@ -14,7 +14,7 @@ type Option = {
 function HelpDropDown() {
 
     const [uniqueID, setUniqueID] = useState('');
-    const [reasonText, setReasonText] = useState("");  // State to track textarea value
+
 
 
     const SelectCategory: Option[] = [
@@ -42,7 +42,15 @@ function HelpDropDown() {
         setOpen1(false);
         setOpen2(false);
     };
-    const isFormValid = uniqueID && selectcategory;
+
+    const [isFormValid, setIsFormValid] = useState(false);
+
+    // Monitor changes in the uniqueID value
+    useEffect(() => {
+        // Check if the textarea is not empty (trim removes extra spaces)
+        setIsFormValid(uniqueID.trim().length > 0);
+    }, [uniqueID]);
+
     return (
         <div>
             {/* Trigger Button */}
@@ -246,9 +254,8 @@ function HelpDropDown() {
                                         <textarea
                                             placeholder="Write a message"
                                             className="outline-none placeholder-[#667085] text-sm font-normal w-full h-full p-2 resize-none rounded-md text-[#182230]"
-                                            value={reasonText}
+                                            value={uniqueID}
                                             onChange={(e) => {
-                                                setReasonText(e.target.value);
                                                 setUniqueID(e.target.value);
                                             }}
                                         />

@@ -4,7 +4,6 @@ import { arrayRemove, doc, updateDoc } from "firebase/firestore";
 import Image from "next/image";
 import React, { useState } from "react";
 import { toast } from "react-toastify";
-import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button } from "@nextui-org/react";
 // Define the props interface
 interface exitchannelProps {
     open: boolean; // Prop to control dialog visibility

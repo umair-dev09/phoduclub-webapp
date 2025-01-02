@@ -438,7 +438,8 @@ export default function CoursePurchasePage() {
                 </div>
               }
               transitionTime={350}
-              open={isOpenArray[index]} // Control the open/closed state of each section
+              onOpening={() => toggleCollapsible(0)}  // Set the state to open when expanding
+              onClosing={() => toggleCollapsible(0)} // Set the state to closed when collapsing
             >
               <div className='border-t border-lightGrey'>
                 {section.content && section.content.length > 0 ? (

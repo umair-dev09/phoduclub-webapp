@@ -246,7 +246,7 @@ function HelpDropDown() {
                                         <textarea
                                             placeholder="Write a message"
                                             className="outline-none placeholder-[#667085] text-sm font-normal w-full h-full p-2 resize-none rounded-md text-[#182230]"
-                                            value={reasonText}
+                                            value={uniqueID}
                                             onChange={(e) => {
                                                 setReasonText(e.target.value);
                                                 setUniqueID(e.target.value);

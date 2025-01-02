@@ -42,7 +42,6 @@ function HelpDropDown() {
         setOpen1(false);
         setOpen2(false);
     };
-    const isFormValid = uniqueID && selectcategory;
     return (
         <div>
             {/* Trigger Button */}
@@ -61,7 +60,7 @@ function HelpDropDown() {
             </div>
 
             {/* Dialog Component */}
-            {/* <Dialog open={open1} onClose={handleCloseAll} className="relative z-50">
+            <Dialog open={open1} onClose={handleCloseAll} className="relative z-50">
                 <DialogBackdrop className="fixed inset-0 bg-black/30" />
                 <div className="fixed inset-0 flex items-center justify-center">
                     <DialogPanel className="bg-white rounded-2xl w-[480px] h-auto flex flex-col">
@@ -176,106 +175,7 @@ function HelpDropDown() {
                         </div>
                     </DialogPanel>
                 </div>
-            </Dialog> */}
-            <Modal isOpen={open1} onOpenChange={(isOpen) => !isOpen && handleCloseAll()} hideCloseButton>
-                <ModalContent>
-                    <>
-                        <ModalHeader className="flex flex-row justify-between gap-1">
-                            <h1 className="text-[#1D2939] font-bold text-lg">Support</h1>
-                            <button
-                                className="w-[32px] h-[32px] rounded-full flex items-center justify-center hover:bg-[#F7F8FB]"
-                                onClick={handleCloseAll}
-                                aria-label="Close Modal"
-                            >
-                                <Image src="/icons/cancel.svg" alt="Cancel" width={20} height={20} />
-                            </button>
-                        </ModalHeader>
-                        <ModalBody>
-                            <div className="flex flex-col pb-2 gap-2">
-                                <span className="font-normal text-sm text-[#667085]">
-                                    Lorem ipsum is a dummy text widely used in digital industry will be used here in as a preview
-                                </span>
-                            </div>
-                            <div className="w-full border-solid border-[#EAECF0] border-b flex flex-col  gap-3">
-                                <div className="flex flex-col gap-1">
-                                    <label htmlFor="Select-Category" className="mb-1 font-medium text-[#1D2939] text-sm">
-                                        Select Category
-                                    </label>
-                                    <Select
-                                        id="Select-Category"
-                                        value={selectcategory}
-                                        onChange={(selectedOption) => {
-                                            setselectcategory(selectedOption); // Set the selected category
-                                            setUniqueID(selectedOption?.value || ""); // Set uniqueID to the selected value
-                                        }}
-                                        options={SelectCategory}
-                                        placeholder="Select Category"
-                                        className="placeholder:text-[#667085] placeholder:text-sm placeholder:font-normal"
-                                        styles={{
-                                            option: (provided, state) => ({
-                                                ...provided,
-                                                color: "black",
-                                                backgroundColor: state.isFocused ? "#E39FF6" : "white",
-                                            }),
-                                            singleValue: (provided) => ({
-                                                ...provided,
-                                                color: "#0C111D",
-                                                fontWeight: "500",
-                                            }),
-                                            control: (provided) => ({
-                                                ...provided,
-                                                border: "1px solid #e6e6e6",
-                                                borderRadius: "8px",
-                                                padding: "4px",
-                                                boxShadow: "none",
-                                                "&:hover": {
-                                                    outline: "1px solid #e5a1f5",
-                                                },
-                                            }),
-                                        }}
-                                    />
-                                </div>
-                                <div className="flex flex-col gap-1">
-                                    <label htmlFor="target-year" className="mb-1 font-medium text-sm text-[#1D2939]">
-                                        Reason
-                                    </label>
-                                    <button
-                                        className="rounded-md  border-solid h-[160px]  border border-gray-300 focus:outline focus:outline-[1.5px] focus:outline-[#D6BBFB] hover:outline hover:outline-[1.5px] hover:outline-[#D6BBFB] focus-within:border-[#D7BBFC] focus-within:ring-4 focus-within:ring-[#E8DEFB] focus-within:outline-none transition-colors"
-
-                                    >
-                                        <textarea
-                                            placeholder="Write a message"
-                                            className="outline-none placeholder-[#667085] text-sm font-normal w-full h-full p-2 resize-none rounded-md text-[#182230]"
-                                            value={reasonText}
-                                            onChange={(e) => {
-                                                setReasonText(e.target.value);
-                                                setUniqueID(e.target.value);
-                                            }}
-                                        />
-                                    </button>
-                                </div>
-                            </div>
-                        </ModalBody>
-                        <ModalFooter className="border-t border-lightGrey">
-                            <button
-                                className="py-[0.625rem] px-6 border-2 border-solid border-[#EAECF0] font-semibold text-sm text-[#1D2939] rounded-md hover:bg-[#F7F8FB]"
-                                onClick={handleCloseAll}
-                            >
-                                Cancel
-                            </button>
-                            <button
-                                className={`py-[0.625rem] px-6 text-white text-sm shadow-inner-button  font-semibold ${isFormValid ? "bg-[#9012FF] border border-solid border-[#9012FF] hover:bg-[#6D0DCC]" : "bg-[#CDA0FC] cursor-not-allowed"
-                                    } rounded-md`}
-                                onClick={openanotherdialog}
-                                disabled={!isFormValid}
-                            >
-                                Submit report
-                            </button>
-                        </ModalFooter>
-                    </>
-                </ModalContent>
-            </Modal>
-
+            </Dialog>
             {/* <Dialog open={open2} onClose={handleCloseAll} className="relative z-50">
                 <DialogBackdrop className="fixed inset-0 bg-black/30" />
                 <div className="fixed inset-0 flex items-center justify-center">

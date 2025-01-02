@@ -429,7 +429,7 @@ export default function CoursePurchasePage() {
                   >
                     <p className="text-base font-bold">Lesson {index + 1}: {section.sectionName}</p>
                     <Image
-                      src={isOpenArray[index] ? "/icons/arrowdown.svg" : "/icons/arrowup.svg"} // Arrow based on first accordion state
+                      src={isOpenArray[index + 1] ? "/icons/arrowdown.svg" : "/icons/arrowup.svg"} // Arrow based on first accordion state
                       width={24}
                       height={24}
                       alt="arrow"
@@ -438,7 +438,8 @@ export default function CoursePurchasePage() {
                 </div>
               }
               transitionTime={350}
-              open={isOpenArray[index]} // Control the open/closed state of each section
+              onOpening={() => toggleCollapsible(0)}  // Set the state to open when expanding
+              onClosing={() => toggleCollapsible(0)} // Set the state to closed when collapsing
             >
               <div className='border-t border-lightGrey'>
                 {section.content && section.content.length > 0 ? (

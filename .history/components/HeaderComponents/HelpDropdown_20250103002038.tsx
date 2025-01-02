@@ -42,7 +42,6 @@ function HelpDropDown() {
         setOpen1(false);
         setOpen2(false);
     };
-    const isFormValid = uniqueID && selectcategory;
     return (
         <div>
             {/* Trigger Button */}
@@ -196,7 +195,7 @@ function HelpDropDown() {
                                     Lorem ipsum is a dummy text widely used in digital industry will be used here in as a preview
                                 </span>
                             </div>
-                            <div className="w-full border-solid border-[#EAECF0] border-b flex flex-col  gap-3">
+                            <div className="w-full border-solid border-[#EAECF0] border-b flex flex-col p-6 gap-3">
                                 <div className="flex flex-col gap-1">
                                     <label htmlFor="Select-Category" className="mb-1 font-medium text-[#1D2939] text-sm">
                                         Select Category
@@ -240,8 +239,14 @@ function HelpDropDown() {
                                         Reason
                                     </label>
                                     <button
-                                        className="rounded-md  border-solid h-[160px]  border border-gray-300 focus:outline focus:outline-[1.5px] focus:outline-[#D6BBFB] hover:outline hover:outline-[1.5px] hover:outline-[#D6BBFB] focus-within:border-[#D7BBFC] focus-within:ring-4 focus-within:ring-[#E8DEFB] focus-within:outline-none transition-colors"
-
+                                        className={`rounded-md border hover:border hover:border-hover-custom hover:shadow-text-area hover:border-[#D6BBFB] border-solid ${reasonText.trim() !== "" ? "border-[#D6BBFB]" : "border-[#D0D5DD]"
+                                            } h-[160px]`}
+                                        style={{
+                                            boxShadow:
+                                                reasonText.trim() !== ""
+                                                    ? "0px 1px 2px 0px rgba(16, 24, 40, 0.05), 0px 0px 0px 4px rgba(158, 119, 237, 0.12)"
+                                                    : "none",
+                                        }}
                                     >
                                         <textarea
                                             placeholder="Write a message"
@@ -264,10 +269,10 @@ function HelpDropDown() {
                                 Cancel
                             </button>
                             <button
-                                className={`py-[0.625rem] px-6 text-white text-sm shadow-inner-button  font-semibold ${isFormValid ? "bg-[#9012FF] border border-solid border-[#9012FF] hover:bg-[#6D0DCC]" : "bg-[#CDA0FC] cursor-not-allowed"
+                                className={`py-[0.625rem] px-6 text-white text-sm shadow-inner-button font-semibold ${uniqueID ? "bg-[#9012FF] border border-solid border-[#9012FF]" : "bg-[#CDA0FC] cursor-not-allowed"
                                     } rounded-md`}
                                 onClick={openanotherdialog}
-                                disabled={!isFormValid}
+                                disabled={!selectcategory || reasonText.trim() === ""}
                             >
                                 Submit report
                             </button>

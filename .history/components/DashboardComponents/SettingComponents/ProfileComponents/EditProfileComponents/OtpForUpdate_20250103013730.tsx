@@ -7,6 +7,7 @@ import { auth, db } from '@/firebase';
 import { onAuthStateChanged, User } from 'firebase/auth';
 import LoadingData from '@/components/Loading';
 import { toast, ToastContainer } from 'react-toastify';
+import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button } from "@nextui-org/react";
 
 type OtpForUpdateProps = {
   newEmail: string;
@@ -245,7 +246,7 @@ function OtpForUpdate({ isOpen, setIsOpen, newEmail, targetYear, setIsEditing, t
 
   return (
     <div>
-      <Dialog open={isOpen} onClose={() => setIsOpen(false)} className="relative z-50">
+      {/* <Dialog open={isOpen} onClose={() => setIsOpen(false)} className="relative z-50">
         <DialogBackdrop className="fixed inset-0 bg-black/30" />
         <div className="fixed inset-0 flex w-screen items-center justify-center p-4 ">
           <DialogPanel transition className={styles.commonDialogBox}>
@@ -277,7 +278,60 @@ function OtpForUpdate({ isOpen, setIsOpen, newEmail, targetYear, setIsEditing, t
             </div>
           </DialogPanel>
         </div>
-      </Dialog>
+      </Dialog> */}
+      <Modal
+        isOpen={isOpen}
+        onOpenChange={(isOpen) => !isOpen && setIsOpen(false)}
+        hideCloseButton
+      >
+        <ModalContent>
+          <>
+            <ModalHeader className="flex flex-row justify-between gap-1">
+              <h3 className="font-bold text-[#1D2939] text-lg">OTP Verification</h3>
+              <button
+                className="w-[32px] h-[32px] rounded-full flex items-center justify-center hover:bg-[#F2F4F7]"
+                onClick={() => setIsOpen(false)}
+                aria-label="Close modal"
+              >
+                <Image src="/icons/cancel.svg" alt="Close" width={18} height={18} />
+              </button>
+            </ModalHeader>
+
+            <ModalBody>
+              <p className="text-sm mx-6 text-[#667085] mb-4">
+                Please enter the verification code we sent to your mobile 99*****99
+              </p>
+              <div>
+                <InputHandler onOtpChange={setOtp} setIsButtonDisabled={setIsButtonDisabled} />
+              </div>
+            </ModalBody>
+
+            <ModalFooter className="border-t border-lightGrey">
+              <div className="flex flex-row justify-end w-full gap-4">
+                <button
+                  className={styles.emailCancelBtn}
+                  onClick={() => setIsOpen(false)}
+                >
+                  Cancel
+                </button>
+                <button
+                  className={`min-w-[100px] flex justify-center items-center px-6 py-[10px] rounded-[8px] text-white font-medium shadow-inner-button ${isButtonDisabled ? 'bg-[#d8acff]' : 'bg-[#8501FF]'
+                    }`}
+                  disabled={isButtonDisabled}
+                  onClick={verifyOTP}
+                >
+                  {isLoading ? (
+                    <div className="w-5 h-5 animate-spin-loading rounded-[50%] border-4 border-[#ffffff4d] border-solid border-t-4 border-t-customWhite"></div> // Spinner
+                  ) : (
+                    'Done'
+                  )}
+                </button>
+              </div>
+            </ModalFooter>
+          </>
+        </ModalContent>
+      </Modal>
+
     </div>
 
   );

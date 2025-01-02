@@ -206,10 +206,7 @@ function GroupName({ communityId, isAdmin }: groupNameProps) {
                 </button>
               ) : (
                 <button className='flex flex-row gap-2 items-center h-10 w-[206px] px-4 hover:bg-[#FEE4E2]'
-                  onClick={() => {
-                    setExitgroup(true);
-                    setIsPopoverOpen(false);
-                  }}>
+                  onClick={() => setExitgroup(true)}>
                   <Image
                     src="/icons/exit-channel-red.svg"
                     width={18}

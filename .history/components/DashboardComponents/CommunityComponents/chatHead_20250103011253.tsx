@@ -61,12 +61,7 @@ function ChatHead({ channelName, channelId, channelEmoji, members, communityId, 
 
         <div className='flex items-center justify-between h-[72px] bg-white border-b border-lightGrey gap-2'>
             <div className='flex items-center justify-center mr-6 ml-4'>
-                <Popover
-                    placement="bottom"
-                    isOpen={isPopoverOpen}
-                    onOpenChange={(open) => setIsPopoverOpen(open)}
-                >
-
+                <Popover placement="bottom" isOpen={isPopoverOpen}>
                     <PopoverTrigger>
                         <button className="flex flex-row gap-2 focus:outline-none">
                             <p>{channelEmoji}</p>
