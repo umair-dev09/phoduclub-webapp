@@ -241,7 +241,7 @@ function User() {
             } else {
                 // Add new user data to Firestore
                 const docRef = await addDoc(collection(db, "users"), {
-                    name: fullName,  
+                    name: fullName,
                     userId,
                     phone,
                     email: emailId,
@@ -345,7 +345,7 @@ function User() {
                     </Popover>
                     <button
                         onClick={handleAddDialog}
-                        className={`h-[44px] w-auto px-6 py-2  rounded-md shadow-inner-button border border-solid border-white flex items-center bg-[#9012FF] justify-center`}>
+                        className={`h-[44px] w-auto px-6 py-2  rounded-md shadow-inner-button border border-solid border-white flex items-center bg-[#9012FF] justify-center transition-colors duration-150 hover:bg-[#6D0DCC]`}>
                         <span className="text-[#FFFFFF] font-semibold text-sm">Add New User</span>
                     </button>
                 </div>
@@ -403,7 +403,7 @@ function User() {
                                             <div className="flex flex-row ml-8 gap-2 py-[2px]">
                                                 <div className="flex items-center">
                                                     <div className="relative">
-                                                        <Image className="rounded-full min-w-[36px] min-h-[36px]" src={users.profilePic} alt="DP" width={36} height={36} />
+                                                        <Image className="rounded-full min-w-[36px] min-h-[36px]" src={users.profilePic || '/defaultAdminDP.jpg'} alt="DP" width={36} height={36} />
                                                         {users.isPremium && (
                                                             <Image className="absolute right-0 bottom-0" src='/icons/winnerBatch.svg' alt="Batch" width={18} height={18} />
                                                         )}
@@ -674,7 +674,7 @@ function User() {
                                 <button onClick={closeDialog} className="px-6 py-2 border rounded-md text-sm font-semibold hover:bg-[#F2F4F7]">
                                     Discard
                                 </button>
-                                <button onClick={handleAddUser} disabled={!isFormValid} className={`px-6 py-2  text-white rounded-md text-sm ${!isFormValid ? 'bg-[#CDA0FC]' : 'bg-[#9012FF]'}`}>
+                                <button onClick={handleAddUser} disabled={!isFormValid} className={`px-6 py-2  text-white rounded-md text-sm border border-[#800EE2] shadow-inner-button ${!isFormValid ? 'bg-[#CDA0FC] border-[#CCA6F2]' : 'bg-[#9012FF] transition-colors duration-150 hover:bg-[#6D0DCC]'}`}>
                                     {!authId ? 'Add New User' : 'Save Changes'}
                                 </button>
                             </div>

@@ -237,7 +237,7 @@ function Messenger() {
                 <h1 className="font-semibold text-lg text-[#1D2939]">Messenger</h1>
                 <button
                     onClick={handleCreate}
-                    className="h-[44px] w-auto px-6 py-2 bg-[#8501FF] rounded-md shadow-inner-button border border-solid border-[#800EE2] flex items-center justify-center"
+                    className="h-[44px] w-auto px-6 py-2 bg-[#8501FF] rounded-md shadow-inner-button border border-solid border-[#800EE2] flex items-center justify-center transition-colors duration-150 hover:bg-[#6D0DCC]"
                 >
                     <span className="text-[#FFFFFF] font-semibold text-sm">Create Push Notification</span>
                 </button>
@@ -330,7 +330,7 @@ function Messenger() {
                                                         onClick={() => {
                                                             setIsEditing(true);
                                                             handleCreate();
-                                                            
+
                                                         }}>
 
                                                         <Image src="/icons/edit-02.svg" width={18} height={18} alt="edit" />
@@ -403,7 +403,7 @@ function Messenger() {
 
                                             {/* Idea Button */}
                                             <button
-                                                className="flex flex-row w-full p-1 hover:bg-[#F2F4F7] justify-center items-center"
+                                                className="flex flex-row w-full p-1 hover:bg-[#F2F4F7] justify-center items-center outline-none"
                                                 onClick={() => { handleIconSelect("/icons/idea-2.svg"); setNotiIconPop(false); }}
                                             >
                                                 <Image
@@ -415,7 +415,7 @@ function Messenger() {
                                             </button>
                                             {/* Megaphone Button */}
                                             <button
-                                                className="flex flex-row w-full p-1 hover:bg-[#F2F4F7] justify-center items-center"
+                                                className="flex flex-row w-full p-1 hover:bg-[#F2F4F7] justify-center items-center outline-none"
                                                 onClick={() => { handleIconSelect("/icons/megaphone.svg"); setNotiIconPop(false); }}
                                             >
                                                 <Image
@@ -427,7 +427,7 @@ function Messenger() {
                                             </button>
                                             {/* Read Button */}
                                             <button
-                                                className="flex flex-row w-full p-1 hover:bg-[#F2F4F7] justify-center items-center"
+                                                className="flex flex-row w-full p-1 hover:bg-[#F2F4F7] justify-center items-center outline-none"
                                                 onClick={() => { handleIconSelect("/icons/read-2.svg"); setNotiIconPop(false); }}
                                             >
                                                 <Image
@@ -437,7 +437,6 @@ function Messenger() {
                                                     alt="Read Button"
                                                 />
                                             </button>
-
                                         </PopoverContent>
                                     </Popover>
                                     <input
@@ -560,54 +559,54 @@ function Messenger() {
                             <div className="flex flex-col gap-4">
                                 <div className='flex flex-col w-full gap-1'>
                                     <span className='font-medium text-[#1D2939] text-sm'>Start Date & Time</span>
-                                            <div className="flex flex-row justify-between items-center mb-3">
-                                                <p className="text-[#1D2939] text-sm font-medium">  {formatScheduleDate(startDate) || " "}</p>
-                                                <button
-                                                    className="flex flex-row gap-1 rounded-md border-[2px] border-solid border-[#9012FF] hover:bg-[#F5F0FF] bg-[#FFFFFF] p-2 "
-                                                    onClick={() => setDatapickerforStart(true)}>
-                                                    <span className="text-[#9012FF] font-semibold text-sm">{startDate ? 'Change Date' : 'Select Date'}</span>
-                                                </button>
-                                            </div>
-                                            {(datapickerforStart &&
-                                                <DatePicker
-                                                    granularity="minute"
-                                                    minValue={today(getLocalTimeZone())}
-                                                    hideTimeZone
-                                                    onChange={(date) => {
-                                                        const dateString = date ? date.toString() : "";
-                                                        setStartDate(dateString);
-                                                        setDatapickerforStart(true); // Return to button view after selecting date
-                                                    }}
+                                    <div className="flex flex-row justify-between items-center mb-3">
+                                        <p className="text-[#1D2939] text-sm font-medium">  {formatScheduleDate(startDate) || " "}</p>
+                                        <button
+                                            className="flex flex-row gap-1 rounded-md border-[2px] border-solid border-[#9012FF] hover:bg-[#F5F0FF] bg-[#FFFFFF] p-2 "
+                                            onClick={() => setDatapickerforStart(true)}>
+                                            <span className="text-[#9012FF] font-semibold text-sm">{startDate ? 'Change Date' : 'Select Date'}</span>
+                                        </button>
+                                    </div>
+                                    {(datapickerforStart &&
+                                        <DatePicker
+                                            granularity="minute"
+                                            minValue={today(getLocalTimeZone())}
+                                            hideTimeZone
+                                            onChange={(date) => {
+                                                const dateString = date ? date.toString() : "";
+                                                setStartDate(dateString);
+                                                setDatapickerforStart(true); // Return to button view after selecting date
+                                            }}
 
-                                                />
-                                            )}
+                                        />
+                                    )}
                                 </div>
                                 <div className='flex flex-col w-full gap-1'>
                                     <span className='font-medium text-[#1D2939] text-sm'>End Date & Time</span>
-                               
-                                            <div className="flex flex-row justify-between items-center mb-3">
-                                                <p className="text-[#1D2939] text-sm font-medium">  {formatScheduleDate(endDate) || " "}</p>
-                                                <button
-                                                    className="flex flex-row gap-1 rounded-md border-[2px] border-solid border-[#9012FF] hover:bg-[#F5F0FF] bg-[#FFFFFF] p-2 "
-                                                    onClick={() => setDatapickerforEnd(true)}>
-                                                    <span className="text-[#9012FF] font-semibold text-sm">{startDate ? 'Change Date' : 'Select Date'}</span>
-                                                </button>
-                                            </div>
-                                            {(datapickerforEnd &&
-                                                <DatePicker
-                                                    granularity="minute"
-                                                    minValue={today(getLocalTimeZone())}
-                                                    hideTimeZone
-                                                    onChange={(date) => {
-                                                        const dateString = date ? date.toString() : "";
-                                                        setEndDate(dateString);
-                                                        setDatapickerforEnd(true); // Return to button view after selecting date
-                                                    }}
 
-                                                />
-                                            )}
-                                    
-                                        </div>
+                                    <div className="flex flex-row justify-between items-center mb-3">
+                                        <p className="text-[#1D2939] text-sm font-medium">  {formatScheduleDate(endDate) || " "}</p>
+                                        <button
+                                            className="flex flex-row gap-1 rounded-md border-[2px] border-solid border-[#9012FF] hover:bg-[#F5F0FF] bg-[#FFFFFF] p-2 "
+                                            onClick={() => setDatapickerforEnd(true)}>
+                                            <span className="text-[#9012FF] font-semibold text-sm">{startDate ? 'Change Date' : 'Select Date'}</span>
+                                        </button>
+                                    </div>
+                                    {(datapickerforEnd &&
+                                        <DatePicker
+                                            granularity="minute"
+                                            minValue={today(getLocalTimeZone())}
+                                            hideTimeZone
+                                            onChange={(date) => {
+                                                const dateString = date ? date.toString() : "";
+                                                setEndDate(dateString);
+                                                setDatapickerforEnd(true); // Return to button view after selecting date
+                                            }}
+
+                                        />
+                                    )}
+
+                                </div>
                             </div>
                         </div>
                         <div className="flex flex-row justify-end mt-6 gap-4 border-t border-[#EAECF0] pt-4 p-4 rounded-md">
@@ -619,7 +618,7 @@ function Messenger() {
                             <button
                                 onClick={handleSendNotification}
                                 // disabled={!isFormValid}
-                                className={`py-2 px-6 ${!isFormValid ? 'bg-[#CDA0FC]' : 'bg-[#9012FF]'} text-white rounded-md font-semibold text-sm`}>
+                                className={`py-2 px-6 ${!isFormValid ? 'bg-[#CDA0FC] border-[#CCA6F2]' : 'bg-[#9012FF] border-[#800EE2] transition-colors duration-150 hover:bg-[#6D0DCC]'} text-white shadow-inner-button border rounded-md font-semibold text-sm`}>
                                 Send Notification
                             </button>
                         </div>

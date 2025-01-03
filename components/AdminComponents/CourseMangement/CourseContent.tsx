@@ -582,7 +582,7 @@ function CourseContent({ courseId }: CourseContentProps) {
                                 <button
                                     onClick={() => handleAddSection()}
                                     disabled={!isCreateSectionFilled}
-                                    className={`py-[0.625rem] px-6 text-white shadow-inner-button border border-white ${!isCreateSectionFilled ? 'bg-[#CDA0FC]' : 'bg-[#9012FF]'} rounded-md font-semibold text-sm`}>
+                                    className={`py-[0.625rem] px-6 text-white shadow-inner-button border border-white ${!isCreateSectionFilled ? 'bg-[#CDA0FC]' : 'bg-[#9012FF] transition-colors duration-150 hover:bg-[#6D0DCC]'} rounded-md font-semibold text-sm`}>
                                     {isSectionEditing ? 'Save Changes' : 'Create Section'}
                                 </button>
                             </div>

@@ -342,7 +342,7 @@ function TesstseriesInfo() {
                             {/* Conditionally render the "Clear" button */}
                             {selectedDate && (
                                 <button
-                                    className="min-w-[84px] min-h-[30px] rounded-md bg-[#9012FF] text-[14px] font-medium text-white mb-2"
+                                    className="min-w-[84px] min-h-[30px] rounded-md bg-[#9012FF] text-[14px] font-medium text-white mb-2 border border-[#800EE2] shadow-inner-button transition-colors duration-150 hover:bg-[#6D0DCC]"
                                     onClick={() => {
                                         setSelectedDate(null); // Clear the selected date
                                         setIsSelectDateOpen(false);
@@ -393,7 +393,7 @@ function TesstseriesInfo() {
 
                     {/* Create TestSeries Button */}
                     <button
-                        className="h-[44px] w-auto px-6 py-2 bg-[#8501FF] rounded-md shadow-inner-button border border-solid border-[#800EE2] flex items-center justify-center"
+                        className="h-[44px] w-auto px-6 py-2 bg-[#8501FF] rounded-md shadow-inner-button border border-solid border-[#800EE2] flex items-center justify-center transition-colors duration-150 hover:bg-[#6D0DCC]"
                         onClick={() => handleTabClick('/admin/content/testseriesmanagement/createtestseries')}
                     >
                         <span className="text-[#FFFFFF] font-semibold text-sm">Create Test Series</span>
@@ -450,7 +450,7 @@ function TesstseriesInfo() {
                                             <tr key={index} className="border-t border-solid border-[#EAECF0]">
                                                 <td onClick={() => handleTabClick(`/admin/content/testseriesmanagement/${test.testName.toLowerCase().replace(/\s+/g, '-')}/?tId=${test.testId}`)}>
                                                     <button className="flex flex-row items-center px-8 py-3 gap-2 text-[#9012FF] underline text-sm font-medium">
-                                                        <Image className="w-10 h-10 rounded-full object-cover" src={test.testImage || '/images/TSM-DP.png'} alt="DP" width={40} height={40} />
+                                                        <Image className="w-10 h-10 rounded-full object-cover" src={test.testImage || '/icons/Default_DP.svg'} alt="DP" width={40} height={40} />
                                                         <p className="text-start whitespace-nowrap">{test.testName}</p>
                                                     </button>
                                                 </td>

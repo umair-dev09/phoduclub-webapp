@@ -277,7 +277,7 @@ function AddNewUser({
                             <button
                                 onClick={handleAddUser}
                                 disabled={!isFormValid || loading} // Disable if form is invalid or loading
-                                className={`py-[0.625rem] px-6 text-white shadow-inner-button  border border-white rounded-md font-semibold text-sm ${!isFormValid || loading ? 'bg-[#CDA0FC]' : 'bg-[#9012FF]'}`}>
+                                className={`py-[0.625rem] px-6 text-white shadow-inner-button  border border-white rounded-md font-semibold text-sm ${!isFormValid || loading ? 'bg-[#CDA0FC]' : 'bg-[#9012FF] transition-colors duration-150 hover:bg-[#6D0DCC]'}`}>
                                 {isEditing ? "Save Changes" : "Add New User"}
                             </button>
                         </div>

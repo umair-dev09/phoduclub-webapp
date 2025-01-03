@@ -674,7 +674,7 @@ function TestSeriesInfo() {
                                                     </div>
                                                     <div>
                                                         {section.hasQuestions ? (
-                                                            <button className='w-[7.25rem] h-9 px-[0.875rem] py-[0.625rem] text-white text-xs font-semibold bg-[#9012FF] border border-[#800EE2] rounded-[6px] shadow-inner-button'
+                                                            <button className='w-[7.25rem] h-9 px-[0.875rem] py-[0.625rem] text-white text-xs font-semibold bg-[#9012FF] border border-[#800EE2] rounded-[6px] shadow-inner-button transition-colors duration-150 hover:bg-[#6D0DCC]'
                                                                 onClick={() => {
                                                                     const sectionIds = getSectionPath(section.id);
                                                                     const url = `/testview?tId=${testId}&sectionIds=${encodeURIComponent(
@@ -692,7 +692,6 @@ function TestSeriesInfo() {
                                         </div>
                                     )}
                                 </>
-
                             )}
                         </div>
                     </Tab>

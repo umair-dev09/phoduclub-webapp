@@ -267,7 +267,7 @@ const CreateTestSeries = () => {
                                 </button>
                             )}
                             <button
-                                className={`h-[44px] w-[135px] rounded-md shadow-inner-button border text-white ${currentStep === Step.Review ? 'mr-7' : ''} ${isNextButtonDisabled ? 'bg-[#CDA0FC]' : 'bg-[#8501FF]'}  border-white `}
+                                className={`h-[44px] w-[135px] rounded-md shadow-inner-button border text-white ${currentStep === Step.Review ? 'mr-7' : ''} ${isNextButtonDisabled ? 'opacity-35' : 'opacity-100 hover:bg-[#6D0DCC]'} transition-all duration-150 border-[#800EE2] bg-[#8501FF] `}
                                 onClick={handleNextClick}
                                 disabled={isNextButtonDisabled}
                             >

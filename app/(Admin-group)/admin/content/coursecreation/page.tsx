@@ -391,7 +391,7 @@ function Course() {
 
                     {/* Create Course Button */}
                     <button
-                        className="h-[44px] w-[135px] bg-[#8501FF] rounded-md shadow-inner-button border border-solid border-[#800EE2] flex items-center justify-center"
+                        className="h-[44px] w-[135px] bg-[#8501FF] rounded-md shadow-inner-button border border-[#800EE2] flex items-center justify-center transition-colors duration-150 hover:bg-[#6D0DCC]"
                         onClick={() => handleTabClick('/admin/content/coursecreation/createcourse')}
                     >
                         <span className="text-[#FFFFFF] font-semibold text-sm">Create Course</span>
@@ -466,7 +466,7 @@ function Course() {
                                             <tr key={index} className="border-t border-solid border-[#EAECF0]">
                                                 <td onClick={() => handleTabClick(`/admin/content/coursecreation/${course.courseName.toLowerCase().replace(/\s+/g, '-')}/?cId=${course.courseId}`)}>
                                                     <button className="flex flex-row items-center px-8 py-3 gap-2 text-[#9012FF] underline text-sm font-medium">
-                                                        <Image className="w-10 h-10 rounded-full object-cover" src={course.courseImage || '/images/TSM-DP.png'} alt="DP" width={40} height={40} />
+                                                        <Image className="w-10 h-10 rounded-full object-cover" src={course.courseImage || '/icons/Default_DP.svg'} alt="DP" width={40} height={40} />
                                                         <p className="text-start whitespace-nowrap">{course.courseName || '-'}</p>
                                                     </button>
                                                 </td>
