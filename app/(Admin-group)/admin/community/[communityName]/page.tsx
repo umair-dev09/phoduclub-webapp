@@ -383,8 +383,9 @@ function Chatinfo() {
     if (searchResults.length === 1) {
       setCurrentResultIndex(0);
       const chatId = chats[searchResults[0]]?.chatId;
-      if (chatId && chatRefs.current[chatId]) {
-        chatRefs.current[chatId].scrollIntoView({
+      const chatElement = chatId && chatRefs.current ? chatRefs.current[chatId] : null;
+      if (chatElement) {
+        chatElement.scrollIntoView({
           behavior: "auto",
           block: "center"
         });
@@ -405,8 +406,9 @@ function Chatinfo() {
     if (searchResults.length === 1) {
       setCurrentResultIndex(0);
       const chatId = chats[searchResults[0]]?.chatId;
-      if (chatId && chatRefs.current[chatId]) {
-        chatRefs.current[chatId].scrollIntoView({
+      const element = chatId && chatRefs.current ? chatRefs.current[chatId] : null;
+      if (element) {
+        element.scrollIntoView({
           behavior: "auto",
           block: "center"
         });

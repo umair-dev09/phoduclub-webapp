@@ -413,7 +413,7 @@ export default function CommunityName() {
       setCurrentResultIndex(0);
       const chatId = chats[searchResults[0]]?.chatId;
       if (chatId && chatRefs.current[chatId]) {
-        chatRefs.current[chatId].scrollIntoView({
+        chatRefs.current[chatId]?.scrollIntoView({
           behavior: "auto",
           block: "center"
         });
@@ -435,7 +435,7 @@ export default function CommunityName() {
       setCurrentResultIndex(0);
       const chatId = chats[searchResults[0]]?.chatId;
       if (chatId && chatRefs.current[chatId]) {
-        chatRefs.current[chatId].scrollIntoView({
+        chatRefs.current[chatId]?.scrollIntoView({
           behavior: "auto",
           block: "center"
         });

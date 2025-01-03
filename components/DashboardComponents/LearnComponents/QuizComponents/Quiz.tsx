@@ -295,7 +295,7 @@ function Quiz() {
                             </div>
                             <div className=" h-auto mr-[24px] ml-[24px] mt-[13px] ">
                                 <span className="text-sm text-[#667085] font-normal">
-                                    Ready to begin? Click 'Start' to attempt this quiz
+                                    Ready to begin? Click &apos;Start&apos; to attempt this quiz
                                 </span>
                             </div>
                             <div className="mt-[33px] mb-8 flex-row flex items-center">

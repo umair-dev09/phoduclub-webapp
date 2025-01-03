@@ -24,6 +24,7 @@ interface DiscussionData {
     userId: string;
     timestamp: string;
     messageId: string;
+    upvotes: string[];
 }
 
 
@@ -38,7 +39,11 @@ function Discussion({ courseId, sectionId, contentId }: DiscussionProps) {
     const isFormValid = value.trim();
 
     const handleChange = (content: string) => {
-        setValue(content);
+        if (quill && quill.getText().trim() === '') {
+            setValue('');
+        } else {
+            setValue(content);
+        }
     };
 
     const [discussions, setDiscussions] = useState<DiscussionData[]>([]);
@@ -72,6 +77,7 @@ function Discussion({ courseId, sectionId, contentId }: DiscussionProps) {
     }, [courseId, sectionId, contentId]);
 
     const handleSendMessage = async () => {
+        if(value === '') { return ;}
         if (auth.currentUser?.uid) {
             try {
                 const ref = doc(collection(db, 'course', courseId, 'sections', sectionId, 'content', contentId, 'Disscussion'));
@@ -169,7 +175,7 @@ function Discussion({ courseId, sectionId, contentId }: DiscussionProps) {
                         onKeyDown={handleKeyDown}
                         modules={{ toolbar: false }}
                         placeholder="Type your response here..."
-                        className=" text-[#1D2939] focus:outline-none rounded-b-[12px] custom-quill placeholder:not-italic min-h-[10px] max-h-[150px] overflow-y-auto p-4 border-none not-italic"
+                        className=" text-[#1D2939] focus:outline-none rounded-b-[12px] break-all custom-quill placeholder:not-italic min-h-[10px] max-h-[150px] overflow-y-auto p-4 border-none not-italic"
                     />
                 </div>
 
@@ -257,7 +263,7 @@ function Discussion({ courseId, sectionId, contentId }: DiscussionProps) {
                 <>
                     {discussions.map((d) => (
                         <div key={d.messageId} >
-                            <DiscussionDisplay userId={d.userId} message={d.message} messageId={d.userId} isAdmin={d.isAdmin} timestamp={d.timestamp} />
+                            <DiscussionDisplay userId={d.userId} message={d.message} messageId={d.messageId} isAdmin={d.isAdmin} timestamp={d.timestamp} contentId={contentId} courseId={courseId} sectionId={sectionId} upvotes={d.upvotes || []}/>
                         </div>
                     ))}
                 </>

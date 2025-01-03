@@ -1,5 +1,5 @@
-import { db } from "@/firebase";
-import { doc, getDoc } from "firebase/firestore";
+import { auth, db } from "@/firebase";
+import { doc, getDoc, updateDoc } from "firebase/firestore";
 import Image from "next/image";
 import React, { useState, useEffect, useRef } from "react";
 
@@ -9,6 +9,10 @@ interface DisscusionDisplayProps {
     timestamp: string;
     messageId: string;
     isAdmin: boolean;
+    courseId: string;
+    sectionId: string;
+    contentId: string;
+    upvotes: string[];
 }
 type UserData = {
     name: string;
@@ -45,10 +49,10 @@ type UserData = {
     return `${yearsDiff} year${yearsDiff > 1 ? "s" : ""} ago`;
   }
 
-function DiscussionDisplay({message, userId, timestamp, messageId, isAdmin}:DisscusionDisplayProps) {
+function DiscussionDisplay({message, userId, timestamp, messageId, isAdmin, courseId, sectionId, contentId, upvotes}:DisscusionDisplayProps) {
     const [sender, setSenderData] = useState<UserData | null>(null);
     const [userLoading, setUserLoading] = useState(true);
-
+    const currentUserId = auth.currentUser?.uid;
     useEffect(() => {
         if (!userId) return;
         const fetchUserData = async () => {
@@ -107,18 +111,39 @@ function DiscussionDisplay({message, userId, timestamp, messageId, isAdmin}:Diss
             );
         };
 
+ const handleAddUpvote = async () => {
+    {
+        if (!currentUserId) return;
+        const discussionRef = doc(db, 'course', courseId, 'sections', sectionId, 'content', contentId, 'Disscussion', messageId);
+        try {
+            const discussionDoc = await getDoc(discussionRef);
+            if (discussionDoc.exists()) {
+                const discussionData = discussionDoc.data();
+                const upvotes = discussionData.upvotes || [];
+                const updatedUpvotes = upvotes.includes(currentUserId)
+                    ? upvotes.filter((id: string) => id !== currentUserId)
+                    : [...upvotes, currentUserId];
+                await updateDoc(discussionRef, { upvotes: updatedUpvotes });
+                console.log("Upvotes updated successfully");
+            }
+        } catch (error) {
+            console.error("Error updating upvotes: ", error);
+        }
+    }
+ };       
+
   return(
     <div className=" flex flex-col gap-4 px-6 py-4 h-auto w-full border-t">
                 {/* first comment */}
                 <div className="flex flex-col  gap-3 ">
                     <div className="flex flex-row w-full justify-between items-center">
-                        <div className=" flex flex-row gap-3 items-center justify-center">
+                        <div className=" flex flex-row gap-[10px] items-center justify-center">
                             <Image className="w-11 h-11 rounded-full"
                                 src={sender?.profilePic || "/icons/profile-pic.png"}
                                 width={46}
                                 height={46}
                                 alt=" Proflie -Image" />
-                            <div className="flex flex-col gap-1">
+                            <div className="flex flex-col items-start">
                                 <div className="flex flex-row gap-2 items-center justify-center">
                                 <span className="font-medium text-sm text-[#1D2939]">{sender?.name}</span>
                                 {isAdmin && (
@@ -132,26 +157,50 @@ function DiscussionDisplay({message, userId, timestamp, messageId, isAdmin}:Diss
                           {getTimeAgo(timestamp)}
                          </span>
                     </div>
-                    <div className='text-[#3b3b3b] text-sm font-normal break-all ml-2 mt-2 mr-8' dangerouslySetInnerHTML={{
+                    <div className='text-[#3b3b3b] text-sm font-normal break-all ml-2 mt-1 mr-8' dangerouslySetInnerHTML={{
                                     __html: message || '',
                                 }}/>
                         {/* <ExpandableText content={message} /> */}
                     
-                    <div className="flex flex-row gap-6 items-center">
-                        <button className="flex flex-row gap-1">
-                            <Image
+                    <div className="flex flex-row gap-6 items-center justify-start ">
+                        <button 
+                            className="flex flex-row gap-[6px] items-center justify-center"
+                            onClick={handleAddUpvote}
+                        >
+                            {(upvotes ?? []).includes(currentUserId ?? '') ? (
+                                <>
+                                <Image
+                                src="/icons/circle-arrow-up-02.svg"
+                                width={20}
+                                height={20}
+                                alt="upvote_button"
+                                />
+                                <div className="flex flex-row gap-[2px] items-center justify-center">
+                                <span className="font-normal text-[#7400E0] text-sm">{upvotes.length || 0}</span>
+                                <span className=" font-normal text-[#7400E0] text-sm">Upvote</span>
+                                </div>
+                               
+                            </>
+                            ) : (
+                                <>
+                                <Image
                                 src="/icons/upvote.svg"
                                 width={20}
                                 height={20}
                                 alt="upvote_button"
-                                className=""
-
-                            />
-                            <span className="font-normal text-[#141B34] text-sm">24</span>
-                            <span className=" font-normal text-[#141B34] text-sm">upvote</span>
+                                />
+                                 <div className="flex flex-row gap-[2px] items-center justify-center">
+                                <span className="font-normal text-[#141B34] text-sm">{upvotes.length || 0}</span>
+                                <span className=" font-normal text-[#141B34] text-sm">Upvote</span>
+                                 </div>
+                                </>
+                            )}
+                          
+                             
+                            
                         </button>
-                        <button>
-                            <span className="view-replies font-semibold text-sm text-[#9012FF]">View all Replies</span>
+                        <button className="pb-[3px]">
+                            <span className="view-replies font-semibold text-sm text-[#9012FF] ">View all Replies</span>
                         </button>
                     </div>
                 </div>
