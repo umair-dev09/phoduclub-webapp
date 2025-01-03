@@ -147,7 +147,6 @@ function TargetExamUpdate({ setIsEditing }: TargetExamsUpdateProps) {
   // Map the selected exams to an array of strings
   const selectedExamValues = selectedExams.map((exam) => exam.value);
 
-
   return (
     <div className={styles.updateIcon}>
       <button className={styles.updateIconButton} onClick={() => setIsOpen(true)}>Update</button>
@@ -243,7 +242,7 @@ function TargetExamUpdate({ setIsEditing }: TargetExamsUpdateProps) {
         <ModalContent>
           <>
             <ModalHeader className="flex flex-row justify-between gap-1">
-              <h3 className='flex items-center justify-center'>Update Exam</h3>
+              <h3>Update Exam</h3>
               <button className="w-[32px] h-[32px]  rounded-full flex items-center justify-center transition-all duration-300 ease-in-out hover:bg-[#F2F4F7]">
                 <button onClick={() => setIsOpen(false)}>
                   <Image src='/icons/cancel.svg' alt="profile-image" width={18} height={18} />
@@ -251,10 +250,10 @@ function TargetExamUpdate({ setIsEditing }: TargetExamsUpdateProps) {
               </button>
             </ModalHeader>
 
-            <ModalBody className='flex gap-4 pb-4'>
-              <p className='text-sm  text-[#667085]'>
+            <ModalBody>
+              {/* <p className='text-sm  text-[#667085]'>
                 Lorem ipsum is a dummy text widely used in digital industry will be used here in as a preview
-              </p>
+              </p> */}
 
 
               <div>
@@ -319,10 +318,8 @@ function TargetExamUpdate({ setIsEditing }: TargetExamsUpdateProps) {
             </ModalBody>
 
             <ModalFooter className="border-t border-lightGrey">
-              <Button onClick={() => setIsOpen(false)} variant="light" className=" border border-lightGrey font-semibold text-[#1D2939]">Cancel</Button>
-              <Button className={` text-sm font-semibold bg-[#8501FF] text-white  ${selectedExams.length > 0 ? "bg-[#9012FF] border border-solid border-[#9012FF] hover:bg-[#6D0DCC]" : "bg-[#CDA0FC] cursor-not-allowed"
-                }`} onClick={onContinueClick}
-                disabled={selectedExams.length === 0} >Continue</Button>
+              <button onClick={() => setIsOpen(false)} className={styles.tExamCancelBtn}>Cancel</button>
+              <button className={styles.tExamContinueBtn} onClick={onContinueClick}>Continue</button>
             </ModalFooter>
           </>
         </ModalContent>

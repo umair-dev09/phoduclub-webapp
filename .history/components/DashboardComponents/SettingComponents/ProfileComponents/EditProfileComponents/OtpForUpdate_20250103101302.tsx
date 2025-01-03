@@ -288,7 +288,7 @@ function OtpForUpdate({ isOpen, setIsOpen, newEmail, targetYear, setIsEditing, t
       <ModalContent className="flex w-auto max-w-full mx-auto">
         <>
           <ModalHeader className="flex flex-row justify-between items-center gap-1">
-            <h3 className='flex items-center justify-center'>OTP Verification</h3>
+            <h3>OTP Verification</h3>
             <button
               className="w-[32px] h-[32px] rounded-full flex items-center justify-center transition-all duration-300 ease-in-out hover:bg-[#F2F4F7]"
               onClick={() => setIsOpen(false)}
@@ -302,7 +302,7 @@ function OtpForUpdate({ isOpen, setIsOpen, newEmail, targetYear, setIsEditing, t
             </button>
           </ModalHeader>
 
-          <ModalBody className="w-auto p-6 gap-6">
+          <ModalBody className="w-auto p-4 gap-4">
             <p className="text-sm text-[#667085]">
               Please enter the verification code we sent to your mobile 99*****99
             </p>
@@ -315,10 +315,14 @@ function OtpForUpdate({ isOpen, setIsOpen, newEmail, targetYear, setIsEditing, t
           </ModalBody>
 
           <ModalFooter className="border-t border-lightGrey flex justify-end gap-2 p-4">
-
-            <Button onClick={() => setIsOpen(false)} variant="light" className=" border border-lightGrey font-semibold text-[#1D2939]">Cancel</Button>
-            <Button
-              className={`min-w-[100px] flex justify-center items-center px-6 py-[10px] rounded-[8px] text-white font-semibold shadow-inner-button ${isButtonDisabled ? 'bg-[#d8acff]' : ' hover:bg-[#6D0DCC] bg-[#8501FF]'
+            <button
+              className={styles.emailCancelBtn}
+              onClick={() => setIsOpen(false)}
+            >
+              Cancel
+            </button>
+            <button
+              className={`min-w-[100px] flex justify-center items-center px-6 py-[10px] rounded-[8px] text-white font-medium shadow-inner-button ${isButtonDisabled ? 'bg-[#d8acff]' : 'bg-[#8501FF]'
                 }`}
               disabled={isButtonDisabled}
               onClick={verifyOTP}
@@ -328,7 +332,7 @@ function OtpForUpdate({ isOpen, setIsOpen, newEmail, targetYear, setIsEditing, t
               ) : (
                 'Done'
               )}
-            </Button>
+            </button>
           </ModalFooter>
         </>
       </ModalContent>

@@ -146,7 +146,7 @@ function TargetExamUpdate({ setIsEditing }: TargetExamsUpdateProps) {
 
   // Map the selected exams to an array of strings
   const selectedExamValues = selectedExams.map((exam) => exam.value);
-
+  const isFormValid = selectedExamValues;
 
   return (
     <div className={styles.updateIcon}>
@@ -243,7 +243,7 @@ function TargetExamUpdate({ setIsEditing }: TargetExamsUpdateProps) {
         <ModalContent>
           <>
             <ModalHeader className="flex flex-row justify-between gap-1">
-              <h3 className='flex items-center justify-center'>Update Exam</h3>
+              <h3>Update Exam</h3>
               <button className="w-[32px] h-[32px]  rounded-full flex items-center justify-center transition-all duration-300 ease-in-out hover:bg-[#F2F4F7]">
                 <button onClick={() => setIsOpen(false)}>
                   <Image src='/icons/cancel.svg' alt="profile-image" width={18} height={18} />
@@ -320,9 +320,9 @@ function TargetExamUpdate({ setIsEditing }: TargetExamsUpdateProps) {
 
             <ModalFooter className="border-t border-lightGrey">
               <Button onClick={() => setIsOpen(false)} variant="light" className=" border border-lightGrey font-semibold text-[#1D2939]">Cancel</Button>
-              <Button className={` text-sm font-semibold bg-[#8501FF] text-white  ${selectedExams.length > 0 ? "bg-[#9012FF] border border-solid border-[#9012FF] hover:bg-[#6D0DCC]" : "bg-[#CDA0FC] cursor-not-allowed"
+              <Button className={` text-sm font-semibold bg-[#8501FF] text-white  ${isFormValid ? "bg-[#9012FF] border border-solid border-[#9012FF] hover:bg-[#6D0DCC]" : "bg-[#CDA0FC] cursor-not-allowed"
                 }`} onClick={onContinueClick}
-                disabled={selectedExams.length === 0} >Continue</Button>
+                disabled={!isFormValid} >Continue</Button>
             </ModalFooter>
           </>
         </ModalContent>

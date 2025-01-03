@@ -226,7 +226,7 @@ function TargetYearUpdate({ setIsEditing }: TargetYearUpdateProps) {
               </p>
 
 
-              <div className='flex  flex-col gap-1'>
+              <div>
                 <label htmlFor="target-year" className={styles.label}>Target Year</label>
                 <Select
                   id="target-year"
@@ -265,8 +265,9 @@ function TargetYearUpdate({ setIsEditing }: TargetYearUpdateProps) {
 
             <ModalFooter className="border-t border-lightGrey">
               <Button onClick={() => setIsOpen(false)} variant="light" className=" border border-lightGrey font-semibold text-[#1D2939]">Cancel</Button>
-              <Button className="text-sm font-semibold bg-[#8501FF] text-white   border border-solid border-[#9012FF] hover:bg-[#6D0DCC]" onClick={onContinueClick}
-              >Continue</Button>
+              <Button className={` text-sm font-semibold bg-[#8501FF] text-white  ${selectedYear ? "bg-[#9012FF] border border-solid border-[#9012FF] hover:bg-[#6D0DCC]" : "bg-[#CDA0FC] cursor-not-allowed"
+                }`} onClick={onContinueClick}
+                disabled={!selectedYear} >Continue</Button>
             </ModalFooter>
           </>
         </ModalContent>

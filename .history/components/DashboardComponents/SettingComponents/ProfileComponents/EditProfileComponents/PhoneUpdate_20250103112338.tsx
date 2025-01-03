@@ -11,7 +11,6 @@ import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import 'react-phone-input-2/lib/style.css';
 import PhoneInput from 'react-phone-input-2';
-import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button } from "@nextui-org/react";
 
 type UserData = {
   phone: string | null;
@@ -146,7 +145,7 @@ function PhoneUpdate({ setIsEditing }: PhoneUpdateProps) {
   return (
     <div className={styles.updateMob}>
       <button className={styles.updateMobButton} onClick={() => setIsOpen(true)}>Update</button>
-      {/* <Dialog open={isOpen} onClose={() => setIsOpen(false)} className="relative z-50">
+      <Dialog open={isOpen} onClose={() => setIsOpen(false)} className="relative z-50">
         <DialogBackdrop className="fixed inset-0 bg-black/30" />
         <div className="fixed inset-0 flex w-screen items-center justify-center p-4 ">
           <DialogPanel transition className={styles.commonDialogBox}>
@@ -176,7 +175,7 @@ function PhoneUpdate({ setIsEditing }: PhoneUpdateProps) {
                     containerClass={styles.phoneinputcontainer}
                     inputClass={styles.forminput}
                   />
-                  {/* {isSubmitted && errors.phone && <div id="phone_error" className={styles.error}>{errors.phone}</div>} 
+                  {/* {isSubmitted && errors.phone && <div id="phone_error" className={styles.error}>{errors.phone}</div>} */}
                 </div>
               </div>
               <div>
@@ -196,7 +195,7 @@ function PhoneUpdate({ setIsEditing }: PhoneUpdateProps) {
                     containerClass={styles.phoneinputcontainer}
                     inputClass={styles.forminput}
                   />
-                  {/* {isSubmitted && errors.phone && <div id="phone_error" className={styles.error}>{errors.phone}</div>} 
+                  {/* {isSubmitted && errors.phone && <div id="phone_error" className={styles.error}>{errors.phone}</div>} */}
                 </div>
               </div>
             </div>
@@ -217,8 +216,16 @@ function PhoneUpdate({ setIsEditing }: PhoneUpdateProps) {
             </div>
           </DialogPanel>
         </div>
-      </Dialog> */}
-      <Modal
+      </Dialog>
+      {showComponent && <OtpForUpdate newEmail='' newPhone={newPhone} isOpen={isOtpOpen} setIsOpen={setIsOtpOpen} targetYear='' setIsEditing={setIsEditing} targetExams={[]} />}
+      <div id="recaptcha-container"></div>
+    </div>
+  );
+}
+export default PhoneUpdate;
+
+
+{/* <Modal
         isOpen={isOpen}
         onOpenChange={(isOpen) => !isOpen && setIsOpen(false)}
         hideCloseButton
@@ -240,55 +247,55 @@ function PhoneUpdate({ setIsEditing }: PhoneUpdateProps) {
               </p>
 
               <div className=" border-t border-lightGrey " />
-              <div className='mt-4 mb-6  gap-4 flex flex-col'>
+ <div className='mt-4 mb-6  gap-4 flex flex-col'>
+              <div>
+                <label htmlFor="Number">Enter Old Number</label>
                 <div>
-                  <label htmlFor="Number">Enter Old Number</label>
+                  <PhoneInput
+                    country={'in'}
+                     value={userData?.phone}
+                     disabled
+                    //  onChange={(value: any) => handleInputChange('phone', value)}
+                    placeholder="+91 000000000"
+                    inputProps={{
+                      name: 'phone',
+                      required: true,
+                      autoFocus: true
+                    }}
+                    containerClass={styles.phoneinputcontainer}
+                    inputClass={styles.forminput}
+                  />
+                 
+                  </div>
+                  </div>
                   <div>
-                    <PhoneInput
-                      country={'in'}
-                      value={userData?.phone}
-                      disabled
-                      //  onChange={(value: any) => handleInputChange('phone', value)}
-                      placeholder="+91 000000000"
-                      inputProps={{
-                        name: 'phone',
-                        required: true,
-                        autoFocus: true
-                      }}
-                      containerClass={styles.phoneinputcontainer}
-                      inputClass={styles.forminput}
-                    />
-
+                    <label htmlFor="Number">Enter New Number</label>
+                    <div>
+                      <PhoneInput
+                        country={'in'}
+                         value={newPhone}
+                         
+                         onChange={(phone) => setNewPhone(phone)}
+                        placeholder="+91 000000000"
+                        inputProps={{
+                          name: 'phone',
+                          required: true,
+                          autoFocus: true
+                        }}
+                        containerClass={styles.phoneinputcontainer}
+                        inputClass={styles.forminput}
+                      />
+                    
+                    </div>
                   </div>
                 </div>
-                <div>
-                  <label htmlFor="Number">Enter New Number</label>
-                  <div>
-                    <PhoneInput
-                      country={'in'}
-                      value={newPhone}
-
-                      onChange={(phone) => setNewPhone(phone)}
-                      placeholder="+91 000000000"
-                      inputProps={{
-                        name: 'phone',
-                        required: true,
-                        autoFocus: true
-                      }}
-                      containerClass={styles.phoneinputcontainer}
-                      inputClass={styles.forminput}
-                    />
-
-                  </div>
-                </div>
-              </div>
-
+              
             </ModalBody>
 
             <ModalFooter className="border-t border-lightGrey">
               <Button onClick={() => setIsOpen(false)} variant="light" className=" border border-lightGrey font-semibold text-[#1D2939]">Cancel</Button>
               <Button
-                className={`min-w-[100px] flex justify-center items-center px-6 py-[10px] rounded-[8px] text-white font-medium shadow-inner-button ${isFormValid ? 'bg-[#d8acff]' : ' hover:bg-[#6D0DCC] bg-[#8501FF]'}`}
+                className={`min-w-[100px] flex justify-center items-center px-6 py-[10px] rounded-[8px] text-white font-medium shadow-inner-button ${isFormValid ? 'bg-[#d8acff]' : 'bg-[#8501FF]'}`}
                 onClick={handleButtonClick}
                 disabled={isFormValid}>
                 {isLoading ? (
@@ -300,14 +307,4 @@ function PhoneUpdate({ setIsEditing }: PhoneUpdateProps) {
             </ModalFooter>
           </>
         </ModalContent>
-      </Modal>
-
-
-      {showComponent && <OtpForUpdate newEmail='' newPhone={newPhone} isOpen={isOtpOpen} setIsOpen={setIsOtpOpen} targetYear='' setIsEditing={setIsEditing} targetExams={[]} />}
-      <div id="recaptcha-container"></div>
-    </div>
-  );
-}
-export default PhoneUpdate;
-
-
+      </Modal> */}

@@ -226,7 +226,7 @@ function TargetYearUpdate({ setIsEditing }: TargetYearUpdateProps) {
               </p>
 
 
-              <div className='flex  flex-col gap-1'>
+              <div>
                 <label htmlFor="target-year" className={styles.label}>Target Year</label>
                 <Select
                   id="target-year"

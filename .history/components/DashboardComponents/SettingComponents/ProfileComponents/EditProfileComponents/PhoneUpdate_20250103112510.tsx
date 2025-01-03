@@ -288,7 +288,7 @@ function PhoneUpdate({ setIsEditing }: PhoneUpdateProps) {
             <ModalFooter className="border-t border-lightGrey">
               <Button onClick={() => setIsOpen(false)} variant="light" className=" border border-lightGrey font-semibold text-[#1D2939]">Cancel</Button>
               <Button
-                className={`min-w-[100px] flex justify-center items-center px-6 py-[10px] rounded-[8px] text-white font-medium shadow-inner-button ${isFormValid ? 'bg-[#d8acff]' : ' hover:bg-[#6D0DCC] bg-[#8501FF]'}`}
+                className={`min-w-[100px] flex justify-center items-center px-6 py-[10px] rounded-[8px] text-white font-medium shadow-inner-button ${isFormValid ? 'bg-[#d8acff]' : 'bg-[#8501FF]'}`}
                 onClick={handleButtonClick}
                 disabled={isFormValid}>
                 {isLoading ? (

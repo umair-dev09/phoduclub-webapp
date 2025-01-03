@@ -150,7 +150,7 @@ function TargetYearUpdate({ setIsEditing }: TargetYearUpdateProps) {
 
     <div className={styles.updateYear}>
       <button className={styles.updateYearButton} onClick={() => setIsOpen(true)}>Update</button>
-      {/* <Dialog open={isOpen} onClose={() => setIsOpen(false)} className="relative z-50">
+      <Dialog open={isOpen} onClose={() => setIsOpen(false)} className="relative z-50">
         <DialogBackdrop className="fixed inset-0 bg-black/30" />
         <div className="fixed inset-0 flex w-screen items-center justify-center p-4 ">
           <DialogPanel transition className={styles.commonDialogBox}>
@@ -205,74 +205,101 @@ function TargetYearUpdate({ setIsEditing }: TargetYearUpdateProps) {
             </div>
           </DialogPanel>
         </div>
-      </Dialog> */}
-      <Modal
-        isOpen={isOpen}
-        onOpenChange={(isOpen) => !isOpen && setIsOpen(false)}
-        hideCloseButton
-      >
-        <ModalContent>
-          <>
-            <ModalHeader className="flex flex-row justify-between gap-1">
-              <h3 className='flex items-center justify-center'>Update Target Year</h3>
-              <button className="w-[32px] h-[32px] rounded-full flex items-center justify-center transition-all duration-300 ease-in-out hover:bg-[#F2F4F7] ">
-                <button onClick={() => setIsOpen(false)}><Image src='/icons/cancel.svg' alt="profile-image" width={18} height={18} /></button>
-              </button>
-            </ModalHeader>
-
-            <ModalBody className='flex gap-4 pb-4'>
-              <p className='text-sm  text-[#667085]'>
-                Lorem ipsum is a dummy text widely used in digital industry will be used here in as a preview
-              </p>
-
-
-              <div className='flex  flex-col gap-1'>
-                <label htmlFor="target-year" className={styles.label}>Target Year</label>
-                <Select
-                  id="target-year"
-                  value={selectedYear}
-                  onChange={setSelectedYear}
-                  options={years}
-                  placeholder="Select year..."
-                  className={styles.yearSelect}
-                  styles={{
-                    option: (provided, state: CustomState) => ({
-                      ...provided,
-                      color: 'black',
-                      backgroundColor: state.isFocused ? '#E39FF6' : 'white', // Purple color when focused
-                    }),
-                    singleValue: (provided) => ({
-                      ...provided,
-                      color: 'black',
-                      fontWeight: '500'
-                    }),
-                    control: (provided) => ({
-                      ...provided,
-                      border: '1px solid #e6e6e6',
-                      borderRadius: '8px',
-                      padding: '4px',
-                      boxShadow: 'none',
-                      '&:hover': {
-                        outline: '1px solid #e5a1f5',
-                      },
-                    }),
-
-                  }}
-                />
-              </div>
-
-            </ModalBody>
-
-            <ModalFooter className="border-t border-lightGrey">
-              <Button onClick={() => setIsOpen(false)} variant="light" className=" border border-lightGrey font-semibold text-[#1D2939]">Cancel</Button>
-              <Button className="text-sm font-semibold bg-[#8501FF] text-white   border border-solid border-[#9012FF] hover:bg-[#6D0DCC]" onClick={onContinueClick}
-              >Continue</Button>
-            </ModalFooter>
-          </>
-        </ModalContent>
-      </Modal>
+      </Dialog>
       {showComponent && <OtpForUpdate newEmail={''} newPhone='' isOpen={isOtpOpen} setIsOpen={setIsOtpOpen} targetYear={selectedYear?.value || ''} setIsEditing={setIsEditing} targetExams={[]} />}
     </div>
   );
 }
 export default TargetYearUpdate;
+{/* <Modal
+isOpen={isOpen}
+onOpenChange={(isOpen) => !isOpen && setIsOpen(false)}
+hideCloseButton
+>
+<ModalContent>
+  <>
+    <ModalHeader className="flex flex-row justify-between gap-1">
+      <h3>Update Exam</h3>
+      <button className="w-[32px] h-[32px]  rounded-full flex items-center justify-center transition-all duration-300 ease-in-out hover:bg-[#F2F4F7]">
+        <button onClick={() => setIsOpen(false)}>
+          <Image src='/icons/cancel.svg' alt="profile-image" width={18} height={18} />
+        </button>
+      </button>
+    </ModalHeader>
+
+    <ModalBody className='flex gap-4 pb-4'>
+      <p className='text-sm  text-[#667085]'>
+        Lorem ipsum is a dummy text widely used in digital industry will be used here in as a preview
+      </p>
+
+
+      <div>
+        <p className={styles.labelTargetExam}>Target Exam</p>
+        <Select
+          id="target-exam"
+          value={selectedExams}
+          onChange={(newValue) => setSelectedExams(newValue as Option[])}  // Explicit type casting
+          options={exams}
+          isMulti
+          placeholder="Select exams..."
+          // className={styles.examSelect}
+          styles={{
+            option: (provided, state) => ({
+              ...provided,
+              color: 'black',
+              backgroundColor: state.isFocused ? '#E39FF6' : 'white',
+            }),
+            multiValue: (provided) => ({
+              ...provided,
+              backgroundColor: 'white',
+              border: '1.2px solid #D0D5DD',
+              borderRadius: '8px',
+              fontWeight: '500',
+              marginRight: '7px',
+            }),
+            multiValueLabel: (provided) => ({
+              ...provided,
+              color: 'black',
+            }),
+            multiValueRemove: (provided) => ({
+              ...provided,
+              color: 'gray',
+              cursor: 'pointer',
+              ':hover': {
+                backgroundColor: '#ffffff',
+                borderRadius: '8px',
+              },
+            }),
+            menu: (provided) => ({
+              ...provided,
+              backgroundColor: 'white',
+            }),
+            menuList: (provided) => ({
+              ...provided,
+              padding: '0',
+            }),
+            control: (provided) => ({
+              ...provided,
+              border: '1px solid #e6e6e6',
+              borderRadius: '8px',
+              padding: '4px',
+              boxShadow: 'none',
+              '&:hover': {
+                outline: '1px solid #e5a1f5',
+              },
+            }),
+          }}
+        />
+      </div>
+
+    </ModalBody>
+
+    <ModalFooter className="border-t border-lightGrey">
+      <Button onClick={() => setIsOpen(false)} variant="light" className=" border border-lightGrey font-semibold text-[#1D2939]">Cancel</Button>
+      <Button className={` text-sm font-semibold bg-[#8501FF] text-white  ${selectedExams.length > 0 ? "bg-[#9012FF] border border-solid border-[#9012FF] hover:bg-[#6D0DCC]" : "bg-[#CDA0FC] cursor-not-allowed"
+        }`} onClick={onContinueClick}
+        disabled={selectedExams.length === 0} >Continue</Button>
+    </ModalFooter>
+  </>
+</ModalContent>
+</Modal> */}

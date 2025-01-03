@@ -248,7 +248,7 @@ const ImageCropper = ({ imageFile, setShowCropper, isOpen, setIsOpen, setIsEditi
                   />
                 </ReactCrop>
                 <button
-                  className={`min-w-[100px] mt-4 px-4 py-2 rounded-md text-white font-medium shadow-inner-button ${isButtonDisabled ? 'bg-[#d8acff]' : ' hover:bg-[#6D0DCC] bg-[#8501FF]'}`}
+                  className={`min-w-[100px] mt-4 px-4 py-2 rounded-md text-white font-medium shadow-inner-button ${isButtonDisabled ? 'bg-[#d8acff]' : 'bg-[#8501FF]'}`}
                   onClick={handleCropImage}
                   disabled={isButtonDisabled} // Disable the button if the state is true
                 >
@@ -267,8 +267,8 @@ const ImageCropper = ({ imageFile, setShowCropper, isOpen, setIsOpen, setIsEditi
                   }}
                 />
               </div>
-            )}
-          </ModalBody>
+
+    </ModalBody>
 
 
         </>
@@ -279,3 +279,67 @@ const ImageCropper = ({ imageFile, setShowCropper, isOpen, setIsOpen, setIsEditi
 };
 
 export default ImageCropper;
+{/* <Modal
+isOpen={isOpen}
+onOpenChange={(isOpen) => !isOpen && setIsOpen(false)}
+hideCloseButton
+>
+<ModalContent>
+  <>
+    <ModalHeader className="flex flex-row justify-between gap-1 border border-lightGrey">
+      <h3 className='flex items-center justify-center'>Crop Image</h3>
+      <button className="w-[32px] h-[32px]  rounded-full flex items-center justify-center transition-all duration-300 ease-in-out hover:bg-[#F2F4F7]">
+        <button onClick={() => setIsOpen(false)}>
+          <Image src='/icons/cancel.svg' alt="profile-image" width={18} height={18} />
+        </button>
+      </button>
+    </ModalHeader>
+
+    <ModalBody className='flex gap-4 pb-4'>
+
+     {error && <p className="text-red-400 text-xs">{error}</p>}
+            {imgSrc && (
+              <div className="flex flex-col items-center my-5">
+                <ReactCrop
+                  crop={crop}
+                  onChange={handleCropChange}
+                  circularCrop
+                  keepSelection
+                  aspect={ASPECT_RATIO}
+                  minWidth={MIN_DIMENSION}
+                >
+                  <img
+                    ref={imgRef}
+                    src={imgSrc}
+                    alt="Upload"
+                    style={{ maxHeight: '350px' }}
+                    onLoad={onImageLoad}
+                  />
+                </ReactCrop>
+                <button
+                  className={`min-w-[100px] mt-4 px-4 py-2 rounded-md text-white font-medium shadow-inner-button ${isButtonDisabled ? 'bg-[#d8acff]' : 'bg-[#8501FF]'}`}
+                  onClick={handleCropImage}
+                  disabled={isButtonDisabled} // Disable the button if the state is true
+                >
+                  Save Image
+                </button>
+
+                <canvas
+                  ref={previewCanvasRef}
+                  className="mt-4"
+                  style={{
+                    display: 'none',
+                    border: '1px solid black',
+                    objectFit: 'contain',
+                    width: 150,
+                    height: 150,
+                  }}
+                />
+              </div>
+
+    </ModalBody>
+
+    
+  </>
+</ModalContent>
+</Modal> */}

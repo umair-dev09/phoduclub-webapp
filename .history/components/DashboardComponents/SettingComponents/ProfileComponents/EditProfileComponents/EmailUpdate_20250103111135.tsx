@@ -233,10 +233,10 @@ function EmailUpdate({ setIsEditing }: EmailUpdateProps) {
                 Lorem ipsum is a dummy text widely used in digital industry will be used here in as a preview
               </p>
 
-              <div className=" border-t border-lightGrey " />
+              <div className={styles.commonDivider} />
 
               <div className="mt-4 mb-4 gap-4 flex flex-col">
-                <div className="flex flex-col gap-1">
+                <div className={styles.emailInputDiv}>
                   <label className="text-sm font-medium" htmlFor="Email">Enter Old Email Id</label>
                   <div>
                     <input
@@ -249,7 +249,7 @@ function EmailUpdate({ setIsEditing }: EmailUpdateProps) {
                     />
                   </div>
                 </div>
-                <div className=" flex flex-col gap-1">
+                <div className={styles.emailInputDiv}>
                   <label className="text-sm font-medium" htmlFor="newEmail">Enter New Email Id</label>
                   <div>
                     <input
@@ -268,12 +268,12 @@ function EmailUpdate({ setIsEditing }: EmailUpdateProps) {
             <ModalFooter className="border-t border-lightGrey">
               <Button onClick={() => setIsOpen(false)} variant="light" className=" border border-lightGrey font-semibold text-[#1D2939]">Cancel</Button>
               <Button
-                className={`min-w-[100px] flex justify-center items-center px-6 py-[10px] rounded-[8px] text-white font-medium shadow-inner-button ${isButtonDisabled ? 'bg-[#d8acff]' : ' hover:bg-[#6D0DCC] bg-[#8501FF]'}`}
+                className={`min-w-[100px] flex justify-center items-center px-6 py-[10px] rounded-[8px] text-white font-medium shadow-inner-button ${isButtonDisabled ? 'bg-[#d8acff]' : 'bg-[#8501FF]'}`}
                 onClick={handleButtonClick}
                 disabled={isButtonDisabled} // Disable the button if the state is true
               >
                 {isLoading ? (
-                  <div className='w-5 h-5 animate-spin-loading rounded-[50%] border-4 border-[#ffffff4d] border-solid border-t-4 border-t-customWhite '></div> // Show spinner 
+                  <div className='w-5 h-5 animate-spin-loading rounded-[50%] border-4 border-[#ffffff4d] border-solid border-t-4 border-t-customWhite '></div> // Show spinner
                 ) : (
                   'Verify'
                 )}

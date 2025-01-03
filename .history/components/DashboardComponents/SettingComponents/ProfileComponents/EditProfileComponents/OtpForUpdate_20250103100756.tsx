@@ -94,7 +94,7 @@ const InputHandler = ({
     <div
       id="inputs"
       ref={inputsRef}
-      className="flex flex-row gap-[6px] items-center justify-center"
+      className="flex flex-row gap-[6px] items-center justify-center mt-6"
     >
       {Array.from({ length: 6 }).map((_, index) => (
         <input
@@ -285,50 +285,40 @@ function OtpForUpdate({ isOpen, setIsOpen, newEmail, targetYear, setIsEditing, t
       onOpenChange={(isOpen) => !isOpen && setIsOpen(false)}
       hideCloseButton
     >
-      <ModalContent className="flex w-auto max-w-full mx-auto">
+      <ModalContent className='flex w-auto'>
         <>
-          <ModalHeader className="flex flex-row justify-between items-center gap-1">
-            <h3 className='flex items-center justify-center'>OTP Verification</h3>
-            <button
-              className="w-[32px] h-[32px] rounded-full flex items-center justify-center transition-all duration-300 ease-in-out hover:bg-[#F2F4F7]"
-              onClick={() => setIsOpen(false)}
-            >
-              <Image
-                src="/icons/cancel.svg"
-                alt="Close"
-                width={18}
-                height={18}
-              />
+          <ModalHeader className="flex flex-row justify-between gap-1">
+
+            <h3>OTP Verification</h3>
+            <button className="w-[32px] h-[32px]  rounded-full flex items-center justify-center transition-all duration-300 ease-in-out hover:bg-[#F2F4F7]">
+              <button onClick={() => setIsOpen(false)}><Image src='/icons/cancel.svg' alt="profile-image" width={18} height={18} /></button>
             </button>
+
           </ModalHeader>
 
-          <ModalBody className="w-auto p-6 gap-6">
-            <p className="text-sm text-[#667085]">
-              Please enter the verification code we sent to your mobile 99*****99
-            </p>
+          <ModalBody className='w-[100px'>
+            <p className='text-sm  text-[#667085] mb-4'>Please enter the verification code we sent to your mobile 99*****99</p>
+            {/* <div className={styles.commonDivider} /> */}
+
             <div>
-              <InputHandler
-                onOtpChange={setOtp}
-                setIsButtonDisabled={setIsButtonDisabled}
-              />
+              <InputHandler onOtpChange={setOtp} setIsButtonDisabled={setIsButtonDisabled} />
             </div>
+            {/* <div className={styles.commonDivider} /> */}
           </ModalBody>
 
-          <ModalFooter className="border-t border-lightGrey flex justify-end gap-2 p-4">
+          <ModalFooter className="border-t border-lightGrey">
 
-            <Button onClick={() => setIsOpen(false)} variant="light" className=" border border-lightGrey font-semibold text-[#1D2939]">Cancel</Button>
-            <Button
-              className={`min-w-[100px] flex justify-center items-center px-6 py-[10px] rounded-[8px] text-white font-semibold shadow-inner-button ${isButtonDisabled ? 'bg-[#d8acff]' : ' hover:bg-[#6D0DCC] bg-[#8501FF]'
-                }`}
+            <button className={styles.emailCancelBtn}>Cancel</button>
+            <button className={`min-w-[100px] flex justify-center items-center px-6 py-[10px] rounded-[8px] text-white font-medium shadow-inner-button ${isButtonDisabled ? 'bg-[#d8acff]' : 'bg-[#8501FF]'}`}
               disabled={isButtonDisabled}
-              onClick={verifyOTP}
-            >
+              onClick={verifyOTP} >
               {isLoading ? (
-                <div className="w-5 h-5 animate-spin-loading rounded-[50%] border-4 border-[#ffffff4d] border-solid border-t-4 border-t-customWhite"></div>
+                <div className='w-5 h-5 animate-spin-loading rounded-[50%] border-4 border-[#ffffff4d] border-solid border-t-4 border-t-customWhite '></div> // Show spinner
               ) : (
                 'Done'
               )}
-            </Button>
+            </button>
+
           </ModalFooter>
         </>
       </ModalContent>

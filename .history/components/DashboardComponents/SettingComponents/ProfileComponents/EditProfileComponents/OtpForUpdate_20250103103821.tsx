@@ -288,7 +288,7 @@ function OtpForUpdate({ isOpen, setIsOpen, newEmail, targetYear, setIsEditing, t
       <ModalContent className="flex w-auto max-w-full mx-auto">
         <>
           <ModalHeader className="flex flex-row justify-between items-center gap-1">
-            <h3 className='flex items-center justify-center'>OTP Verification</h3>
+            <h3>OTP Verification</h3>
             <button
               className="w-[32px] h-[32px] rounded-full flex items-center justify-center transition-all duration-300 ease-in-out hover:bg-[#F2F4F7]"
               onClick={() => setIsOpen(false)}
