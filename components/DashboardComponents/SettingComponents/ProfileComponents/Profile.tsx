@@ -418,7 +418,7 @@ function Profile() {
                             setIsEditing(false);
                         }}>Cancel</button>
 
-                        <button className={`text-sm rounded-[8px] px-[24px] py-[11px] font-semibold ml-4 mr-2 shadow-inner-button  text-white ${hasChanges ? 'bg-[#7400E0]' : 'bg-[#d8acff] '}`}
+                        <button className={`text-sm rounded-[8px] px-[24px] py-[11px] font-semibold ml-4 mr-2 shadow-inner-button  text-white ${hasChanges ? 'bg-[#7400E0] transition-colors duration-150 hover:bg-[#6D0DCC]' : 'bg-[#d8acff] '}`}
                             disabled={!hasChanges}
                             onClick={updateNameInFirestore} // Call update function on click
                         >Save Changes</button>

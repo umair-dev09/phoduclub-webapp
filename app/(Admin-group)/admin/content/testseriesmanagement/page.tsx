@@ -450,7 +450,7 @@ function TesstseriesInfo() {
                                             <tr key={index} className="border-t border-solid border-[#EAECF0]">
                                                 <td onClick={() => handleTabClick(`/admin/content/testseriesmanagement/${test.testName.toLowerCase().replace(/\s+/g, '-')}/?tId=${test.testId}`)}>
                                                     <button className="flex flex-row items-center px-8 py-3 gap-2 text-[#9012FF] underline text-sm font-medium">
-                                                        <Image className="w-10 h-10 rounded-full object-cover" src={test.testImage || '/images/TSM-DP.png'} alt="DP" width={40} height={40} />
+                                                        <Image className="w-10 h-10 rounded-full object-cover" src={test.testImage || '/icons/Default_DP.svg'} alt="DP" width={40} height={40} />
                                                         <p className="text-start whitespace-nowrap">{test.testName}</p>
                                                     </button>
                                                 </td>

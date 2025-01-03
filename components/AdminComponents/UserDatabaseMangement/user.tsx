@@ -403,7 +403,7 @@ function User() {
                                             <div className="flex flex-row ml-8 gap-2 py-[2px]">
                                                 <div className="flex items-center">
                                                     <div className="relative">
-                                                        <Image className="rounded-full min-w-[36px] min-h-[36px]" src={users.profilePic} alt="DP" width={36} height={36} />
+                                                        <Image className="rounded-full min-w-[36px] min-h-[36px]" src={users.profilePic || '/defaultAdminDP.jpg'} alt="DP" width={36} height={36} />
                                                         {users.isPremium && (
                                                             <Image className="absolute right-0 bottom-0" src='/icons/winnerBatch.svg' alt="Batch" width={18} height={18} />
                                                         )}
