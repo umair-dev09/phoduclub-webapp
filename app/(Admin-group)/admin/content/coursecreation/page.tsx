@@ -391,7 +391,7 @@ function Course() {
 
                     {/* Create Course Button */}
                     <button
-                        className="h-[44px] w-[135px] bg-[#8501FF] rounded-md shadow-inner-button border border-solid border-[#800EE2] flex items-center justify-center"
+                        className="h-[44px] w-[135px] bg-[#8501FF] rounded-md shadow-inner-button border border-[#800EE2] flex items-center justify-center transition-colors duration-150 hover:bg-[#6D0DCC]"
                         onClick={() => handleTabClick('/admin/content/coursecreation/createcourse')}
                     >
                         <span className="text-[#FFFFFF] font-semibold text-sm">Create Course</span>

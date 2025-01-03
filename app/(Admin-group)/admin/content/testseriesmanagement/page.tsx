@@ -342,7 +342,7 @@ function TesstseriesInfo() {
                             {/* Conditionally render the "Clear" button */}
                             {selectedDate && (
                                 <button
-                                    className="min-w-[84px] min-h-[30px] rounded-md bg-[#9012FF] text-[14px] font-medium text-white mb-2"
+                                    className="min-w-[84px] min-h-[30px] rounded-md bg-[#9012FF] text-[14px] font-medium text-white mb-2 border border-[#800EE2] shadow-inner-button transition-colors duration-150 hover:bg-[#6D0DCC]"
                                     onClick={() => {
                                         setSelectedDate(null); // Clear the selected date
                                         setIsSelectDateOpen(false);
@@ -393,7 +393,7 @@ function TesstseriesInfo() {
 
                     {/* Create TestSeries Button */}
                     <button
-                        className="h-[44px] w-auto px-6 py-2 bg-[#8501FF] rounded-md shadow-inner-button border border-solid border-[#800EE2] flex items-center justify-center"
+                        className="h-[44px] w-auto px-6 py-2 bg-[#8501FF] rounded-md shadow-inner-button border border-solid border-[#800EE2] flex items-center justify-center transition-colors duration-150 hover:bg-[#6D0DCC]"
                         onClick={() => handleTabClick('/admin/content/testseriesmanagement/createtestseries')}
                     >
                         <span className="text-[#FFFFFF] font-semibold text-sm">Create Test Series</span>

@@ -193,7 +193,7 @@ function StudentsPurchasedCourseInfo() {
                             {/* Conditionally render the "Clear" button */}
                             {selectedDate && (
                                 <button
-                                    className="min-w-[84px] min-h-[30px] rounded-md bg-[#9012FF] text-[14px] font-medium text-white mb-2"
+                                    className="min-w-[84px] min-h-[30px] rounded-md bg-[#9012FF] text-[14px] font-medium text-white mb-2 shadow-inner-button transition-colors duration-150 hover:bg-[#6D0DCC]"
                                     onClick={() => {
                                         setSelectedDate(null); // Clear the selected date
                                         setIsSelectDateOpen(false);
@@ -220,7 +220,7 @@ function StudentsPurchasedCourseInfo() {
                         isOpen={popoveropen}
                         onOpenChange={() => setPopoveropen(!popoveropen)} >
                         <PopoverTrigger>
-                            <button className="flex flex-row items-center py-[0.625rem] px-6 gap-1 bg-purple border border-[#800EE2] rounded-md shadow-inner-button">
+                            <button className="flex flex-row items-center py-[0.625rem] px-6 gap-1 bg-purple border border-[#800EE2] rounded-md shadow-inner-button transition-colors duration-150 hover:bg-[#6D0DCC]">
                                 <Image src='/icons/plus-sign-white.svg' alt="add" width={18} height={18} />
                                 <p className="text-sm text-white font-semibold">Add User</p>
                             </button>
@@ -271,9 +271,9 @@ function StudentsPurchasedCourseInfo() {
                                     Cancel
                                 </button>
                                 <button
-                                    className={`w-[120px] px-6 py-[0.625rem] h-11 text-sm font-semibold border shadow-inner-button rounded-md transition-opacity ease-in-out duration-150 
+                                    className={`w-[120px] px-6 py-[0.625rem] h-11 text-sm font-semibold border shadow-inner-button rounded-md transition-all ease-in-out duration-150 
                                                     bg-[#9012FF] border-[#800EE2] text-white 
-                                                    ${isAddButtonDisabled ? 'opacity-35 cursor-not-allowed' : 'opacity-100'}`}
+                                                    ${isAddButtonDisabled ? 'opacity-35 cursor-not-allowed' : 'opacity-100 hover:bg-[#6D0DCC]'}`}
                                     disabled={isAddButtonDisabled}
                                     onClick={() => { setPopoveropen(false); }}>
                                     Add

@@ -241,7 +241,7 @@ function User() {
             } else {
                 // Add new user data to Firestore
                 const docRef = await addDoc(collection(db, "users"), {
-                    name: fullName,  
+                    name: fullName,
                     userId,
                     phone,
                     email: emailId,
@@ -345,7 +345,7 @@ function User() {
                     </Popover>
                     <button
                         onClick={handleAddDialog}
-                        className={`h-[44px] w-auto px-6 py-2  rounded-md shadow-inner-button border border-solid border-white flex items-center bg-[#9012FF] justify-center`}>
+                        className={`h-[44px] w-auto px-6 py-2  rounded-md shadow-inner-button border border-solid border-white flex items-center bg-[#9012FF] justify-center transition-colors duration-150 hover:bg-[#6D0DCC]`}>
                         <span className="text-[#FFFFFF] font-semibold text-sm">Add New User</span>
                     </button>
                 </div>
@@ -674,7 +674,7 @@ function User() {
                                 <button onClick={closeDialog} className="px-6 py-2 border rounded-md text-sm font-semibold hover:bg-[#F2F4F7]">
                                     Discard
                                 </button>
-                                <button onClick={handleAddUser} disabled={!isFormValid} className={`px-6 py-2  text-white rounded-md text-sm ${!isFormValid ? 'bg-[#CDA0FC]' : 'bg-[#9012FF]'}`}>
+                                <button onClick={handleAddUser} disabled={!isFormValid} className={`px-6 py-2  text-white rounded-md text-sm border border-[#800EE2] shadow-inner-button ${!isFormValid ? 'bg-[#CDA0FC] border-[#CCA6F2]' : 'bg-[#9012FF] transition-colors duration-150 hover:bg-[#6D0DCC]'}`}>
                                     {!authId ? 'Add New User' : 'Save Changes'}
                                 </button>
                             </div>
