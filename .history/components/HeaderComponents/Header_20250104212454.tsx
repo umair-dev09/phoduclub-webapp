@@ -17,6 +17,7 @@ type UserData = {
     name: string | null;
     userId: string | null;
     profilePic: string | null;
+    isPremium: boolean | null;
 };
 
 function Header() {
@@ -24,38 +25,38 @@ function Header() {
     const [userData, setUserData] = useState<UserData | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(false);
+    const [open, setOpen] = useState(false);
     const [user, setUser] = useState<User | null>(null);
     const db = getFirestore();
 
     useEffect(() => {
-        const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
+        const unsubscribeAuth = onAuthStateChanged(auth, (currentUser) => {
             if (currentUser) {
                 setUser(currentUser);
                 const userDocRef = doc(db, `users/${currentUser.uid}`);
 
-                try {
-                    const docSnapshot = await getDoc(userDocRef);
+                const unsubscribeSnapshot = onSnapshot(userDocRef, (docSnapshot) => {
                     if (docSnapshot.exists()) {
                         setUserData(docSnapshot.data() as UserData);
                         setLoading(false);
                     } else {
-                        // console.error("User ID not found in Firestore!");
                         setError(true);
                         router.push("/login");
                     }
-                } catch (err) {
+                }, (err) => {
                     console.error("Error fetching user data:", err);
                     setError(true);
-                }
+                });
+
+                return () => unsubscribeSnapshot();
             } else {
-                // console.error('No user is logged in');
                 setError(true);
                 router.push("/login");
             }
             setLoading(false);
         });
 
-        return () => unsubscribe();
+        return () => unsubscribeAuth();
     }, [db, router]);
 
     const handleLogout = async () => {
@@ -84,12 +85,23 @@ function Header() {
                     <HelpDropDown />
                     <NotficationDropDown />
                     <div className="w-[1.5px] h-[14px] bg-[#eaecf0] border-none ml-[14px] mr-[14px]" />
-                    <Popover placement="bottom">
+                    <Popover placement="bottom" isOpen={open} onOpenChange={(open) => setOpen(open)}>
                         <PopoverTrigger>
-                            <button className='flex flex-row items-center focus:outline-none  '>
-                                <Image className="rounded-[50%] ml-[8px]" src={userData?.profilePic || "/defaultDP.svg"} width={38} height={38} quality={100} alt="Profile Picture" />
+                            <button className='flex flex-row items-center focus:outline-none'>
+                                <div className="relative">
+                                    <Image className="rounded-[50%] ml-[8px]" src={userData?.profilePic || "/defaultDP.svg"} width={38} height={38} quality={100} alt="Profile Picture" />
+                                    {userData?.isPremium && (
+                                        <Image
+                                            className="absolute right-[-2px] bottom-0"
+                                            src="/icons/winnerBatch.svg"
+                                            alt="Batch"
+                                            width={18}
+                                            height={18}
+                                        />
+                                    )}
+                                </div>
                                 <div className='flex flex-col ml-1 mr-1'>
-                                    <p className='font-semibold text-[14px] mb-[-2px]'>{userData?.name}</p>
+                                    <p className='font-semibold text-[14px] mb-[-2px] text-start'>{userData?.name}</p>
                                     <p className='text-[13px] text-[#667085]'>{userData?.userId}</p>
                                 </div>
                                 <button className="w-[22px] h-[22px] flex items-center justify-center ml-[12px] mb-[2px]">
@@ -99,11 +111,14 @@ function Header() {
                         </PopoverTrigger>
                         <PopoverContent className="flex flex-col bg-white border border-lightGrey rounded-md w-[167px] px-0 shadow-md">
                             <button
-                                className="flex items-center p-3 hover:bg-[#F2F4F7] w-full ">
+                                className="flex items-center p-3 hover:bg-[#F2F4F7] w-full" onClick={() => { router.push('/settings/profile'); setOpen(false) }}>
                                 <Image src="/icons/profile.svg" width={18} height={18} alt="Edit-profile" />
                                 <p className="text-sm text-[#0C111D] ml-2">My profile</p>
                             </button>
-                            <button className="flex items-center p-3 hover:bg-[#F2F4F7] w-full" onClick={handleLogout}>
+                            <button className="flex items-center p-3 hover:bg-[#F2F4F7] w-full" onClick={() => {
+                                { handleLogout };
+                                setOpen(false)
+                            }}>
                                 <Image src="/icons/logout-03.svg" width={18} height={18} alt="Log out" />
                                 <p className="text-sm text-[#DE3024] ml-2">Log out</p>
                             </button>

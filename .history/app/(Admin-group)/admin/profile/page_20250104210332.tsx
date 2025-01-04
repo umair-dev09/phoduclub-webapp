@@ -109,7 +109,7 @@ function Profile() {
                             <Image src="/icons/edit-02.svg" width={18} height={18} alt="edit" />
                             <span className="text-sm text-[#0C111D] font-normal">Edit</span>
                         </button>
-                        <button className="py-2 px-4 bg-[#FFFFFF] hover:bg-[#FEE4E2] gap-2 h-[40px] w-auto items-center border border-solid border-[#EAECF0] rounded-[8px] flex flex-row justify-between"
+                        <button className="py-2 px-4 bg-[#FFFFFF] hover:bg-[#B0201A] gap-2 h-[40px] w-auto items-center border border-solid border-[#EAECF0] rounded-[8px] flex flex-row justify-between"
                             onClick={openlogout}>
                             <Image src="/icons/logout-03.svg" width={18} height={18} alt="logout" />
                             <span className="text-sm text-[#DE3024] font-normal">Log out</span>

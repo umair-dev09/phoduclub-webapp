@@ -414,10 +414,10 @@ function Editprofile({ open, close, adminId }: EditProfileProps) {
                             </div>
                         </ModalBody>
                         <ModalFooter className="border-t border-lightGrey">
-                            <Button onClick={close} variant="light" className="py-[0.625rem] px-6 border-[1.5px] border-lightGrey rounded-md text-[#1D2939] font-semibold text-sm hover:bg-[#F2F4F7]">Discard</Button>
+                            <Button onClick={close} className="py-[0.625rem] px-6 border-[1.5px] border-lightGrey rounded-md text-[#1D2939] font-semibold text-sm hover:bg-[#F2F4F7]">Discard</Button>
                             <Button
                                 onClick={() => { handleSaveChanges(); }}
-                                className={`py-[0.625rem] px-6 text-white shadow-inner-button  border border-white rounded-md font-semibold text-sm ${!isFormValid || loading ? 'bg-[#CDA0FC]' : ' hover:bg-[#6D0DCC] bg-[#9012FF]'}`}
+                                className={`py-[0.625rem] px-6 text-white shadow-inner-button  border border-white rounded-md font-semibold text-sm ${!isFormValid || loading ? 'bg-[#CDA0FC]' : 'bg-[#9012FF]'}`}
                                 disabled={!isFormValid || loading}
                             >
                                 Save Changes

@@ -69,11 +69,11 @@ function Logout({ open, onclose }: LogoutProps) {
                         </button>
                     </ModalHeader>
                     <ModalBody >
-                        <p className="text-sm pb-2 font-normal text-[#667085]">Lorem ipsum is placeholder text commonly used in the grap</p>
+                        <p className="text-sm font-normal text-[#667085]">Lorem ipsum is placeholder text commonly used in the grap</p>
                     </ModalBody>
                     <ModalFooter className="border-t border-lightGrey">
                         <Button variant="light" className="py-[0.625rem] px-6 border-[1.5px] border-lightGrey rounded-md hover:bg-[#F2F4F7]" onClick={onclose}>Cancel</Button>
-                        <Button className="py-[0.625rem] px-6 text-white shadow-inner-button bg-[#BB241A] border border-[#DE3024] hover:bg-[#B0201A] rounded-md" onClick={handleLogout}>Log out</Button>
+                        <Button className="py-[0.625rem] px-6 text-white shadow-inner-button bg-[#BB241A] border border-[#DE3024] rounded-md" onClick={handleLogout}>Log out</Button>
                     </ModalFooter>
                 </>
             </ModalContent>

@@ -124,7 +124,7 @@ function Editprofile({ open, close, adminId }: EditProfileProps) {
 
     return (
         <div>
-            {/* <Dialog open={open} onClose={close} className="relative z-50" >
+            <Dialog open={open} onClose={close} className="relative z-50" >
                 <DialogBackdrop className="fixed inset-0 bg-black/30" />
                 <div className="fixed inset-0 flex items-center justify-center">
                     <DialogPanel className="bg-white rounded-2xl w-[500px] h-auto ">
@@ -276,156 +276,7 @@ function Editprofile({ open, close, adminId }: EditProfileProps) {
 
                     </DialogPanel>
                 </div>
-            </Dialog> */}
-            <Modal isOpen={open} onOpenChange={(isOpen) => !isOpen && close()} hideCloseButton >
-
-                <ModalContent>
-                    <>
-                        <ModalHeader className="flex flex-row justify-between items-center gap-1">
-                            <h3 className=" text-lg font-bold text-[#1D2939]">Edit Info</h3>
-                            <button className="w-[32px] h-[32px]  rounded-full flex items-center justify-center transition-all duration-300 ease-in-out hover:bg-[#F2F4F7]">
-                                <button onClick={close}>
-                                    <Image src="/icons/cancel.svg" alt="Cancel" width={20} height={20} />
-                                </button>
-                            </button>
-                        </ModalHeader>
-                        <ModalBody className="px-6">
-                            <div className="flex flex-col gap-2 items-center">
-                                <Image className="rounded-full"
-                                    src={profilePic || "/defaultAdminDP.jpg"}
-                                    width={120}
-                                    height={120}
-                                    alt="big-profile-pic" />
-
-                                <label className="font-semibold text-sm text-[#9012FF] hover:text-black cursor-pointer">
-                                    <input
-                                        type="file"
-                                        id="upload"
-                                        className="hidden"
-                                        accept="image/*"
-                                        onChange={handleImageUpload}
-                                    />
-                                    Change
-                                </label>
-
-                            </div>
-                            <div className="flex flex-row w-full gap-4 ">
-                                <div className="flex flex-col gap-1 w-1/2 flex-grow">
-                                    <label htmlFor="rating" className="text-[#1D2939] text-sm font-medium">
-                                        First Name
-                                    </label>
-                                    <div className="flex flex-row py-2 px-4 w-full gap-2 border border-gray-300  h-10 focus:outline focus:outline-[1.5px] focus:outline-[#D6BBFB] hover:outline hover:outline-[1.5px] hover:outline-[#D6BBFB] rounded-md transition duration-200 ease-in-out ">
-                                        <input
-
-                                            className="w-full text-sm font-medium text-[#1D2939] placeholder:font-normal placeholder:text-[#A1A1A1] rounded-md outline-none"
-                                            type="text"
-                                            placeholder="First Name"
-                                            value={firstName}
-                                            onChange={(e) => setFirstName(e.target.value)}
-                                        />
-                                    </div>
-                                </div>
-                                <div className="flex flex-col gap-1 w-1/2 flex-grow">
-                                    <label htmlFor="num-ratings" className="text-[#1D2939] text-sm font-medium">
-                                        Last Name
-                                    </label>
-                                    <div className="flex flex-row py-2 px-4 w-full gap-2 border border-gray-300  h-10 focus:outline focus:outline-[1.5px] focus:outline-[#D6BBFB] hover:outline hover:outline-[1.5px] hover:outline-[#D6BBFB] rounded-md transition duration-200 ease-in-out ">
-                                        <input
-
-                                            className="w-full text-sm font-medium text-[#1D2939] placeholder:font-normal placeholder:text-[#A1A1A1] rounded-md outline-none"
-                                            type="text"
-                                            placeholder="Last Name"
-                                            value={lastName}
-                                            onChange={(e) => setLastName(e.target.value)}
-                                        />
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="flex flex-col gap-1 w-full ">
-                                <label htmlFor="num-ratings" className="text-[#1D2939] text-sm font-medium">
-                                    User ID
-                                </label>
-                                <div className="flex flex-row  w-full gap-2  border border-gray-300  h-10 focus:outline focus:outline-[1.5px] focus:outline-[#D6BBFB] hover:outline hover:outline-[1.5px] hover:outline-[#D6BBFB]  rounded-md transition duration-200 ease-in-out ">
-                                    <input
-
-                                        className="w-full text-sm font-medium py-2 px-4 text-[#1D2939] placeholder:font-normal placeholder:text-[#A1A1A1] rounded-md outline-none"
-                                        type="text"
-                                        placeholder="User Id"
-                                        value={userId}
-                                        disabled={true}
-                                    />
-                                </div>
-                            </div>
-                            <div className="flex flex-col gap-1 ">
-                                <label className='text-[14px] text-[#344054] font-medium'>Moblie No.</label>
-                                <div className="mt-1 pr-6">
-                                    <PhoneInput
-                                        country={'in'}
-                                        value={phone}
-                                        onChange={(phone) => setPhone(phone)}
-                                        inputProps={{
-                                            required: true,
-                                            autoFocus: true,
-                                            placeholder: "+91 00000-00000"
-                                        }}
-                                        containerClass="phone-input-container "
-                                        inputClass="forminput "
-                                        inputStyle={{
-                                            width: '450px',
-                                            height: '42px',
-                                            borderRadius: "4px",
-                                            border: "1px solid #D0D5DD",
-                                            boxShadow: "0px 1px 2px 0px #1018280D ",
-
-                                        }}
-                                        onFocus={(e) => e.target.style.boxShadow = "0 0 0 2px #D6BBFB"}
-                                        onBlur={(e) => e.target.style.boxShadow = "0px 1px 2px 0px rgba(16, 24, 40, 0.05)"}
-
-                                    />
-                                </div>
-                            </div>
-                            <div className="flex flex-col gap-1 w-full ">
-                                <label htmlFor="num-ratings" className="text-[#1D2939] text-sm font-medium">
-                                    Role
-                                </label>
-                                <Popover placement="bottom" isOpen={roleDialogOpen} onOpenChange={(open) => setRoleDialogOpen(open)} >
-                                    <PopoverTrigger>
-                                        <button className="flex flex-row py-2 px-4 w-full gap-2 border border-solid border-[#D0D5DD] rounded-md transition duration-200 ease-in-out justify-between bg-[#fafafa]"
-                                            onClick={() => setRoleDialogOpen(false)}
-                                        >
-                                            <span className="font-normal text-sm text-[#182230]">{selectedRole}</span>
-                                            <Image src="/icons/by-role-arrow-down.svg" width={20} height={20} alt="Select-role Button" />
-                                        </button>
-                                    </PopoverTrigger>
-                                    <PopoverContent className="p-0">
-                                        <div className="w-[450px] bg-white border border-lightGrey rounded-md">
-                                            {["Admin", "Teacher", "Customer Care", "Guide", "Editor", "Chief Moderator"].map((role) => (
-                                                <button
-                                                    key={role}
-                                                    onClick={() => { handleRoleSelect(role); setRoleDialogOpen(false); }}
-                                                    className="flex flex-row items-center justify-start w-full py-[0.625rem] px-4 gap-2 hover:bg-[#F2F4F7]"
-                                                >
-                                                    <span className="text-sm text-[#0C111D] font-normal">{role}</span>
-                                                </button>
-                                            ))}
-                                        </div>
-                                    </PopoverContent>
-                                </Popover>
-                            </div>
-                        </ModalBody>
-                        <ModalFooter className="border-t border-lightGrey">
-                            <Button onClick={close} variant="light" className="py-[0.625rem] px-6 border-[1.5px] border-lightGrey rounded-md text-[#1D2939] font-semibold text-sm hover:bg-[#F2F4F7]">Discard</Button>
-                            <Button
-                                onClick={() => { handleSaveChanges(); }}
-                                className={`py-[0.625rem] px-6 text-white shadow-inner-button  border border-white rounded-md font-semibold text-sm ${!isFormValid || loading ? 'bg-[#CDA0FC]' : ' hover:bg-[#6D0DCC] bg-[#9012FF]'}`}
-                                disabled={!isFormValid || loading}
-                            >
-                                Save Changes
-                            </Button>
-                        </ModalFooter>
-                    </>
-                </ModalContent>
-            </Modal >
+            </Dialog>
             {showCropper && uploadedImage && (
                 <AdminImageCropper imageFile={uploadedImage} setShowCropper={setShowCropper} isOpen={showImageCropper} setIsOpen={setShowImageCropper} />
             )}
@@ -435,3 +286,25 @@ function Editprofile({ open, close, adminId }: EditProfileProps) {
 }
 
 export default Editprofile;
+//    <Modal isOpen={open} onOpenChange={(isOpen) => !isOpen && onclose()} hideCloseButton >
+
+//             <ModalContent>
+//                 <>
+//                     <ModalHeader className="flex flex-row justify-between items-center gap-1">
+{/* <h3 className=" text-lg font-bold text-[#1D2939]">Edit Info</h3>
+                                <button className="w-[32px] h-[32px]  rounded-full flex items-center justify-center transition-all duration-300 ease-in-out hover:bg-[#F2F4F7]">
+                                    <button onClick={close}>
+                                        <Image src="/icons/cancel.svg" alt="Cancel" width={20} height={20} />
+                                    </button>
+                                </button> */}
+//                     </ModalHeader>
+//                     <ModalBody >
+//                         <p className="text-sm pb-2 font-normal text-[#667085]">Lorem ipsum is placeholder text commonly used in the grap</p>
+//                     </ModalBody>
+//                     <ModalFooter className="border-t border-lightGrey">
+//                         <Button variant="light" className="py-[0.625rem] px-6 border-[1.5px] border-lightGrey rounded-md hover:bg-[#F2F4F7]" onClick={onclose}>Cancel</Button>
+//                         <Button className="py-[0.625rem] px-6 text-white shadow-inner-button bg-[#BB241A] border border-[#DE3024] hover:bg-[#B0201A] rounded-md" onClick={handleLogout}>Log out</Button>
+//                     </ModalFooter>
+//                 </>
+//             </ModalContent>
+//         </Modal >
