@@ -99,7 +99,6 @@ function CourseContent({ courseId }: CourseContentProps) {
     const [contentId, setContentId] = useState('');
     const [dateForPicker, setDateForPicker] = useState<DateValue | null>(null);
     const [showDatepicker, setShowDatepicker] = useState(false);
-    const [popoveropen2, setPopoveropen2] = useState<number | null>(null);
 
     useEffect(() => {
         const sectionsRef = collection(db, 'course', courseId, 'sections');
@@ -288,9 +287,7 @@ function CourseContent({ courseId }: CourseContentProps) {
         return <LoadingData />
     }
 
-    const handlePopoverOpen = (index: number) => {
-        setPopoveropen2(index);
-    };
+
 
     return (
         <div className="flex flex-col gap-4 ">
@@ -388,12 +385,10 @@ function CourseContent({ courseId }: CourseContentProps) {
 
 
                                         <Popover
-                                            placement="bottom-end"
-                                            isOpen={popoveropen2 === index}
-                                            onOpenChange={(open) => open ? handlePopoverOpen(index) : setPopoveropen2(null)}>
+                                            placement="bottom-end">
                                             <PopoverTrigger
                                                 onClick={(event) => event.stopPropagation()}>
-                                                <button className="w-[32px] h-[32px]  rounded-full flex items-center justify-center transition-all duration-300 ease-in-out hover:bg-[#F2F4F7] outline-none">
+                                                <button className="w-[32px] h-[32px]  rounded-full flex items-center justify-center transition-all duration-300 ease-in-out hover:bg-[#F2F4F7]">
 
                                                     <Image src="/icons/three-dots.svg" width={18} height={18} alt="three-dots" className="outline-none" />
 
@@ -402,15 +397,12 @@ function CourseContent({ courseId }: CourseContentProps) {
                                             <PopoverContent className="flex flex-col px-0 text-sm font-normal bg-white border border-lightGrey rounded-md w-[167px] shadow-md"
                                                 onClick={(event) => event.stopPropagation()}  >
                                                 <button className=" p-3 gap-2 flex-row flex h-[40px] hover:bg-[#F2F4F7] w-full"
-                                                    onClick={() => {
-                                                        editCreateSection(section.sectionName, section.sectionScheduleDate, section.sectionId);
-                                                        setPopoveropen2(null);
-                                                    }
+                                                    onClick={() => editCreateSection(section.sectionName, section.sectionScheduleDate, section.sectionId)
                                                     }>
                                                     <Image src="/icons/edit-icon.svg" width={18} height={18} alt="Edit-quiz" />
                                                     <span className="text-sm text-[#0C111D] font-normal">Edit Section</span>
                                                 </button>
-                                                <button className=" p-3 gap-2 flex-row flex h-[40px] hover:bg-[#FEE4E2] w-full" onClick={() => handleDeleteSection(section.sectionId)}>
+                                                <button className=" p-3 gap-2 flex-row flex h-[40px] hover:bg-[#F2F4F7] w-full" onClick={() => handleDeleteSection(section.sectionId)}>
                                                     <Image src="/icons/delete.svg" width={18} height={18} alt="delete-quiz" />
                                                     <span className="text-sm text-[#DE3024] font-normal">Delete Section</span>
                                                 </button>
@@ -617,7 +609,7 @@ function CourseContent({ courseId }: CourseContentProps) {
                         </ModalHeader>
 
                         <ModalBody>
-                            <div className="flex flex-col w-full gap-1 ">
+                            <div className="flex flex-col w-full gap-1 px-6">
                                 <p className="text-start text-sm text-[#1D2939] font-medium">Name</p>
                                 <div className="flex flex-row w-full h-10 px-3 outline-none border border-lightGrey  focus-within:border-[#D7BBFC] focus-within:ring-4 focus-within:ring-[#E8DEFB] focus-within:outline-none transition-colors rounded-md">
                                     <input
@@ -630,7 +622,7 @@ function CourseContent({ courseId }: CourseContentProps) {
                                     />
                                 </div>
                             </div>
-                            <div className="flex flex-col w-full gap-2  mb-2">
+                            <div className="flex flex-col w-full gap-2 px-6 mb-2">
                                 <p className="text-start text-lg text-[#1D2939] font-semibold">Schedule Section</p>
                                 <div className="flex flex-row justify-between items-center">
                                     <p className="text-[#1D2939] text-sm font-medium">  {formatScheduleDate(sectionScheduleDate) || " "}</p>

@@ -16,56 +16,58 @@ import {
 import { Popover, PopoverContent, PopoverTrigger } from "@nextui-org/popover";
 import Remove from "@/components/AdminComponents/QuizInfoDailogs/Remove";
 
-// Define types for students attempted data
-interface StudentsAttempts {
+// Define types for StudentAttempts data
+interface StudentAttempts {
     title: string;
     uniqueId: string;
-    dateTime: string;
-    score: string;
-    timeTaken: string;
-    ranking: string;
+    enrollmentType: string;
+    progress: string;
+    enrolledDate: string;
+    expiryDate: string;
 }
 
 // Mock fetchStudentAttempts function with types
-const fetchStudentsAttempts = async (): Promise<StudentsAttempts[]> => {
-    const allStudentsAttempts: StudentsAttempts[] = [
-        { title: "Jenny", uniqueId: "jenny#8547", dateTime: "06 Jan, 2024 07:30 PM", score: "78", timeTaken: "1 hr 15 mins", ranking: "15" },
-        { title: "Tom", uniqueId: "tom#7453", dateTime: "08 Jan, 2024 06:00 PM", score: "65", timeTaken: "50 mins", ranking: "45" },
-        { title: "Alice", uniqueId: "alice#1234", dateTime: "10 Jan, 2024 09:15 AM", score: "85", timeTaken: "1 hr", ranking: "8" },
-        { title: "Harry", uniqueId: "harry#5678", dateTime: "12 Jan, 2024 11:45 AM", score: "92", timeTaken: "1 hr 20 mins", ranking: "3" },
-        { title: "Sophia", uniqueId: "sophia#9801", dateTime: "14 Jan, 2024 04:00 PM", score: "54", timeTaken: "35 mins", ranking: "80" },
-        { title: "Mia", uniqueId: "mia#3210", dateTime: "16 Jan, 2024 08:20 PM", score: "47", timeTaken: "40 mins", ranking: "120" },
-        { title: "Oliver", uniqueId: "oliver#1112", dateTime: "18 Jan, 2024 01:10 PM", score: "88", timeTaken: "1 hr 10 mins", ranking: "12" },
-        { title: "Emma", uniqueId: "emma#3345", dateTime: "20 Jan, 2024 03:25 PM", score: "73", timeTaken: "55 mins", ranking: "25" },
-        { title: "Liam", uniqueId: "liam#7689", dateTime: "22 Jan, 2024 07:00 AM", score: "67", timeTaken: "50 mins", ranking: "40" },
-        { title: "Ava", uniqueId: "ava#5567", dateTime: "24 Jan, 2024 02:30 PM", score: "95", timeTaken: "1 hr 25 mins", ranking: "1" }
+const fetchStudentAttempts = async (): Promise<StudentAttempts[]> => {
+    const allStudentAttempts: StudentAttempts[] = [
+        { title: "Alice", uniqueId: "alice#1234", enrollmentType: "Free", progress: "50%", enrolledDate: "Dec 1, 2023", expiryDate: "Jun 1, 2024" },
+        { title: "Bob", uniqueId: "bob#5678", enrollmentType: "Paid", progress: "30%", enrolledDate: "Nov 15, 2023", expiryDate: "May 15, 2024" },
+        { title: "Charlie", uniqueId: "charlie#9101", enrollmentType: "Free", progress: "75%", enrolledDate: "Oct 1, 2023", expiryDate: "Apr 1, 2024" },
+        { title: "Diana", uniqueId: "diana#1121", enrollmentType: "Paid", progress: "100%", enrolledDate: "Sep 1, 2023", expiryDate: "Mar 1, 2024" },
+        { title: "Eve", uniqueId: "eve#3141", enrollmentType: "Free", progress: "10%", enrolledDate: "Jan 1, 2024", expiryDate: "Jul 1, 2024" },
+        { title: "Frank", uniqueId: "frank#5161", enrollmentType: "Paid", progress: "0%", enrolledDate: "Feb 1, 2024", expiryDate: "Aug 1, 2024" },
+        { title: "Grace", uniqueId: "grace#7181", enrollmentType: "Free", progress: "85%", enrolledDate: "Jul 15, 2023", expiryDate: "Jan 15, 2024" },
+        { title: "Hank", uniqueId: "hank#9202", enrollmentType: "Paid", progress: "20%", enrolledDate: "Dec 10, 2023", expiryDate: "Jun 10, 2024" },
+        { title: "Ivy", uniqueId: "ivy#1233", enrollmentType: "Free", progress: "45%", enrolledDate: "Nov 25, 2023", expiryDate: "May 25, 2024" },
+        { title: "Jack", uniqueId: "jack#4567", enrollmentType: "Paid", progress: "100%", enrolledDate: "Aug 20, 2023", expiryDate: "Feb 20, 2024" }
     ];
-    return allStudentsAttempts;
+    return allStudentAttempts;
 };
 
 function StudentsAttemptedTestseries() {
-    const [data, setData] = useState<StudentsAttempts[]>([]);
-    const [StudentsAttempts, setStudentAttempts] = useState<StudentsAttempts[]>([]);
+    const [data, setData] = useState<StudentAttempts[]>([]);
+    const [studentAttempts, setStudentAttempts] = useState<StudentAttempts[]>([]);
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage] = useState(5);
     const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState('');
     const router = useRouter();
+    const [popoveropen, setPopoveropen] = useState(false);
     const [isSelcetDateOpen, setIsSelectDateOpen] = useState(false);
     const [dateFilter, setDateFilter] = useState(null);
-    const [popoveropen, setPopoveropen] = useState<number | null>(null);
-    const isTextSearch = searchTerm.trim().length > 0 && !dateFilter;
+    const [statusFilter, setStatusFilter] = useState(null);
+    const isTextSearch = searchTerm.trim().length > 0 && !dateFilter && !statusFilter;
+    const [popoveropen2, setPopoveropen2] = useState<number | null>(null);
 
     // Fetch StudentAttempts when component mounts
     useEffect(() => {
-        const loadStudentsAttempts = async () => {
+        const loadStudentAttempts = async () => {
             setLoading(true);
-            const studentsAttempts = await fetchStudentsAttempts();
-            setStudentAttempts(studentsAttempts);
-            setData(studentsAttempts);
+            const studentAttempts = await fetchStudentAttempts();
+            setStudentAttempts(studentAttempts);
+            setData(studentAttempts);
             setLoading(false);
         };
-        loadStudentsAttempts();
+        loadStudentAttempts();
     }, []);
 
     const lastItemIndex = currentPage * itemsPerPage;
@@ -86,13 +88,10 @@ function StudentsAttemptedTestseries() {
     const [startDate, setStartDate] = useState('');
     const [endDate, setEndDate] = useState('');
 
-    // Check if all fields are filled
-    const isAddButtonDisabled = !uniqueId || !startDate || !endDate;
-
     const [selectedDate, setSelectedDate] = useState<Date | null>(null); // Store selected date as Date object
 
     useEffect(() => {
-        let filterStudentsAttempts = StudentsAttempts;
+        let filterStudentsAttempts = studentAttempts;
 
         // Filter by search term
         if (searchTerm) {
@@ -104,72 +103,75 @@ function StudentsAttemptedTestseries() {
         // Filter by selected date
         if (selectedDate) {
             const selectedDateString = selectedDate instanceof Date && !isNaN(selectedDate.getTime())
-                ? selectedDate.toISOString().split('T')[0] // Convert to YYYY-MM-DD
+                ? selectedDate.toLocaleDateString("en-US", { month: 'short', day: 'numeric', year: 'numeric' })
                 : null;
 
             if (selectedDateString) {
-                filterStudentsAttempts = filterStudentsAttempts.filter(student => {
-                    const studentAttemptsDate = new Date(student.dateTime); // Convert StudentAttempts.date string to Date object
-                    const studentAttemptsDateString = studentAttemptsDate instanceof Date && !isNaN(studentAttemptsDate.getTime())
-                        ? studentAttemptsDate.toISOString().split('T')[0]
-                        : null;
-
-                    return studentAttemptsDateString === selectedDateString; // Compare only the date part (not time)
-                });
+                filterStudentsAttempts = filterStudentsAttempts.filter(student =>
+                    student.enrolledDate === selectedDateString ||
+                    student.expiryDate === selectedDateString
+                );
             }
         }
 
-        // Sort by StudentAttemptsPublishedDate in ascending order (earliest date first)
+        // Sort by studentsAttemptsPublishedDate in ascending order (earliest date first)
         filterStudentsAttempts = filterStudentsAttempts.sort((a, b) => {
-            const dateA = new Date(a.dateTime).getTime();
-            const dateB = new Date(b.dateTime).getTime();
+            // Parse dates for both enrolled and expiry dates
+            const dateA = new Date(a.enrolledDate).getTime();
+            const dateB = new Date(b.enrolledDate).getTime();
 
-            // Handle invalid date values (e.g., when date cannot be parsed)
+            // Optionally, you can add a secondary sort by expiry date if enrolled dates are the same
+            const expiryDateA = new Date(a.expiryDate).getTime();
+            const expiryDateB = new Date(b.expiryDate).getTime();
+
+            // Handle invalid date values
             if (isNaN(dateA) || isNaN(dateB)) {
-                console.error("Invalid date value", a.dateTime, b.dateTime);
-                return 0; // If dates are invalid, no sorting will occur
+                console.error("Invalid date value", a.enrolledDate, b.enrolledDate);
+                return 0;
             }
 
-            return dateA - dateB; // Sort by time in ascending order (earliest first)
+            // Primary sort by enrolled date
+            return dateA - dateB;
         });
 
-        // Update state with filtered and sorted StudentAttempts
+        // Update state with filtered and sorted StudentsAttempts
         setData(filterStudentsAttempts);
         setCurrentPage(1); // Reset to first page when filters change
-    }, [searchTerm, StudentsAttempts, selectedDate]);
+    }, [searchTerm, studentAttempts, selectedDate]);
 
     // Format selected date as 'Nov 9, 2024'
     const formattedDate = selectedDate
         ? selectedDate.toLocaleDateString("en-US", { year: 'numeric', month: 'short', day: 'numeric' })
         : "Select dates";
 
-    const handlePopoverOpen = (index: number) => {
-        setPopoveropen(index);
-    };
-    return (
-        <div className="flex flex-col w-full mt-4 gap-4">
-            <div className="flex flex-row justify-between items-center">
-                <span className="text-lg font-semibold text-[#1D2939]">Students attempted (2547)</span>
-                <div className="flex flex-row gap-3">
-                    {/* Search Button */}
-                    <button className="h-[44px] w-[250px] rounded-md bg-[#FFFFFF] border border-solid border-[#D0D5DD] flex items-center">
-                        <div className="flex flex-row items-center w-full gap-2 pl-2">
-                            <Image
-                                src="/icons/search-button.svg"
-                                width={20}
-                                height={20}
-                                alt="Search Button"
-                            />
-                            <input
-                                className="font-normal text-[#667085] text-sm placeholder:text-[#A1A1A1] rounded-md w-full px-1 py-1 focus:outline-none focus:ring-0 border-none"
-                                placeholder="Search"
-                                type="text"
-                                value={searchTerm}
-                                onChange={(e) => setSearchTerm(e.target.value)}
-                            />
-                        </div>
-                    </button>
+    // Check if all fields are filled
+    const isAddButtonDisabled = !uniqueId || !startDate || !endDate;
 
+    const handlePopoverOpen = (index: number) => {
+        setPopoveropen2(index);
+    };
+
+    return (
+        <div className="flex flex-col w-full pt-4 gap-4">
+            <div className="flex flex-row justify-between items-center">
+                <button className="h-[44px] w-[250px] rounded-md bg-[#FFFFFF] shadow-sm border border-solid border-[#D0D5DD] flex items-center">
+                    <div className="flex flex-row items-center w-full gap-2 pl-2">
+                        <Image
+                            src="/icons/search-button.svg"
+                            width={20}
+                            height={20}
+                            alt="Search Button"
+                        />
+                        <input
+                            className="font-normal text-[#667085] text-sm placeholder:text-[#A1A1A1] rounded-md w-full px-1 py-1 focus:outline-none focus:ring-0 border-none"
+                            placeholder="Search"
+                            type="text"
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                        />
+                    </div>
+                </button>
+                <div className="flex flex-row gap-3">
                     {/* Select Date Button */}
                     <Popover placement="bottom" isOpen={isSelcetDateOpen} onOpenChange={(open) => setIsSelectDateOpen(open)}>
                         <PopoverTrigger>
@@ -197,7 +199,7 @@ function StudentsAttemptedTestseries() {
                             {/* Conditionally render the "Clear" button */}
                             {selectedDate && (
                                 <button
-                                    className="min-w-[84px] min-h-[30px] rounded-md bg-[#9012FF] border border-[#800EE2] shadow-inner-button transition-colors duration-150 hover:bg-[#6D0DCC] text-[14px] font-medium text-white mb-2"
+                                    className="min-w-[84px] min-h-[30px] rounded-md bg-[#9012FF] border border-[#800EE2] shadow-inner-button text-[14px] font-medium text-white mb-2 transition-colors duration-150 hover:bg-[#6D0DCC]"
                                     onClick={() => {
                                         setSelectedDate(null); // Clear the selected date
                                         setIsSelectDateOpen(false);
@@ -209,7 +211,81 @@ function StudentsAttemptedTestseries() {
                         </PopoverContent>
                     </Popover>
 
+                    <button className="h-[44px] w-[105px] rounded-md bg-[#FFFFFF] border border-solid border-[#D0D5DD] flex items-center justify-center gap-2">
+                        <span className="font-medium text-sm text-[#667085] ml-2">Sort By</span>
+                        <Image
+                            src="/icons/chevron-down-dark-1.svg"
+                            width={20}
+                            height={20}
+                            alt="arrow-down-dark-1"
+                        />
+                    </button>
 
+                    <Popover placement="bottom-end"
+                        isOpen={popoveropen}
+                        onOpenChange={() => setPopoveropen(!popoveropen)} >
+                        <PopoverTrigger>
+                            <button className="flex flex-row items-center py-[0.625rem] px-6 gap-1 bg-purple border border-[#800EE2] rounded-md shadow-inner-button outline-none">
+                                <Image src='/icons/plus-sign-white.svg' alt="add" width={18} height={18} />
+                                <p className="text-sm text-white font-semibold">Add User</p>
+                            </button>
+                        </PopoverTrigger>
+                        <PopoverContent className="flex flex-col w-[304px] h-auto p-6 gap-4 bg-white border border-lightGrey rounded-xl">
+                            <div className="flex flex-col gap-2 w-full">
+                                <div className="flex flex-col items-start gap-2">
+                                    <p>Unique ID</p>
+                                    <input
+                                        type="text"
+                                        placeholder="Enter Unique ID"
+                                        className="w-full px-4 py-2 border border-[#D0D5DD] rounded-md outline-none placeholder:text-sm placeholder:text-[#667085]"
+                                        value={uniqueId}
+                                        onChange={(e) => setUniqueId(e.target.value)}
+                                    />
+                                </div>
+                                <div className="flex flex-col items-start gap-2">
+                                    <p>Start Date</p>
+                                    <div className="flex flex-row w-full px-3 py-2 gap-2 border border-[#D0D5DD] rounded-md">
+                                        <Image src='/icons/calendar-03.svg' alt="date" width={24} height={24} />
+                                        <input
+                                            type="text"
+                                            placeholder="Enter Start Date"
+                                            className="w-full outline-none placeholder:text-sm placeholder:text-[#667085]"
+                                            value={startDate}
+                                            onChange={(e) => setStartDate(e.target.value)}
+                                        />
+                                    </div>
+                                </div>
+                                <div className="flex flex-col items-start gap-2">
+                                    <p>End Date</p>
+                                    <div className="flex flex-row w-full px-3 py-2 gap-2 border border-[#D0D5DD] rounded-md">
+                                        <Image src='/icons/calendar-03.svg' alt="date" width={24} height={24} />
+                                        <input
+                                            type="text"
+                                            placeholder="Enter End Date"
+                                            className="w-full outline-none placeholder:text-sm placeholder:text-[#667085]"
+                                            value={endDate}
+                                            onChange={(e) => setEndDate(e.target.value)}
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="flex flex-row justify-between gap-4">
+                                <button className="w-[120px] px-6 py-[0.625rem] h-11 text-sm text-[#1D2939] font-semibold border border-lightGrey rounded-md hover:bg-[#F2F4F7]"
+                                    onClick={() => setPopoveropen(false)}>
+                                    Cancel
+                                </button>
+                                <button
+                                    className={`w-[120px] px-6 py-[0.625rem] h-11 text-sm font-semibold border shadow-inner-button rounded-md transition-opacity ease-in-out duration-150 
+                                                    bg-[#9012FF] border-[#800EE2] text-white 
+                                                    ${isAddButtonDisabled ? 'opacity-35 cursor-not-allowed' : 'opacity-100'}`}
+                                    disabled={isAddButtonDisabled}
+                                    onClick={() => { setPopoveropen(false); }}>
+                                    Add
+                                </button>
+                            </div>
+
+                        </PopoverContent>
+                    </Popover>
                 </div>
             </div>
 
@@ -218,30 +294,31 @@ function StudentsAttemptedTestseries() {
                     <table className="w-full bg-white rounded-xl">
                         <thead>
                             <tr>
-                                <th className="text-left px-8 py-4 pl-8 rounded-tl-xl flex flex-row ">
+                                <th className="w-1/4 text-left px-8 py-4 pl-8 rounded-tl-xl flex flex-row ">
                                     <span className="text-[#667085] font-medium text-sm">Name</span>
+                                    <Image src="/icons/expandall.svg" width={28} height={18} alt="Expand all icon" />
                                 </th>
-                                <th className="text-center px-8 py-4 text-[#667085] font-medium text-sm">
+                                <th className=" w-[17%] text-center px-8 py-4 text-[#667085] font-medium text-sm">
                                     <div className="flex flex-row justify-center gap-1">
-                                        <p>Date & Time</p>
+                                        <p>Enrollment Type</p>
                                         <Image src='/icons/unfold-more-round.svg' alt="" width={16} height={16} />
                                     </div>
                                 </th>
-                                <th className="text-center px-8 py-4 text-[#667085] font-medium text-sm">
+                                <th className=" w-[17%] text-center px-8 py-4 text-[#667085] font-medium text-sm">
                                     <div className="flex flex-row justify-center gap-1">
-                                        <p>Score</p>
+                                        <p>Progress</p>
                                         <Image src='/icons/unfold-more-round.svg' alt="" width={16} height={16} />
                                     </div>
                                 </th>
-                                <th className="text-center px-8 py-4 text-[#667085] font-medium text-sm">
+                                <th className=" w-[17%] text-center px-8 py-4 text-[#667085] font-medium text-sm">
                                     <div className="flex flex-row justify-center gap-1">
-                                        <p>Time Taken</p>
+                                        <p>Enrollment Date</p>
                                         <Image src='/icons/unfold-more-round.svg' alt="" width={16} height={16} />
                                     </div>
                                 </th>
-                                <th className="text-center px-8 py-4 rounded-tr-xl text-[#667085] font-medium text-sm">
+                                <th className=" w-[17%] text-center px-8 py-4 rounded-tr-xl text-[#667085] font-medium text-sm">
                                     <div className="flex flex-row justify-center gap-1">
-                                        <p>Ranking</p>
+                                        <p>Expiry Date</p>
                                         <Image src='/icons/unfold-more-round.svg' alt="" width={16} height={16} />
                                     </div>
                                 </th>
@@ -266,44 +343,37 @@ function StudentsAttemptedTestseries() {
                                                 </div>
                                             </div>
                                         </td>
-                                        <td className="px-8 py-4 text-center text-[#101828] text-sm">{students.dateTime}</td>
-                                        <td className="px-8 py-4 text-center text-[#101828] text-sm">{students.score}</td>
-                                        <td className="px-8 py-4 text-center text-[#101828] text-sm">{students.timeTaken}</td>
-                                        <td className="px-8 py-4 text-center text-[#101828] text-sm">{students.ranking}</td>
+                                        <td className="px-8 py-4 text-center text-[#101828] text-sm">{students.enrollmentType}</td>
+                                        <td className="px-8 py-4 text-center text-[#101828] text-sm">{students.progress}</td>
+                                        <td className="px-8 py-4 text-center text-[#101828] text-sm">{students.enrolledDate}</td>
+                                        <td className="px-8 py-4 text-center text-[#101828] text-sm">{students.expiryDate}</td>
                                         <td className="flex items-center justify-center px-8 py-4 text-[#101828] text-sm">
                                             <Popover placement="bottom-end"
-                                                isOpen={popoveropen === index}
-                                                onOpenChange={(open) => open ? handlePopoverOpen(index) : setPopoveropen(null)}>
+                                                isOpen={popoveropen2 === index}
+                                                onOpenChange={(open) => open ? handlePopoverOpen(index) : setPopoveropen2(null)}>
                                                 <PopoverTrigger>
-                                                    <button
-                                                        className="w-[32px] h-[32px] rounded-full flex items-center justify-center transition-all duration-300 ease-in-out hover:bg-[#F2F4F7]"
-
-                                                    >
-                                                        <button>
-                                                            <Image
-                                                                src="/icons/three-dots.svg"
-                                                                width={20}
-                                                                height={20}
-                                                                alt="More Actions"
-                                                            />
-                                                        </button>
+                                                    <button className="outline-none">
+                                                        <Image
+                                                            src="/icons/three-dots.svg"
+                                                            width={20}
+                                                            height={20}
+                                                            alt="More Actions"
+                                                        />
                                                     </button>
                                                 </PopoverTrigger>
-                                                <PopoverContent className="w-[10.438rem]  px-0 py-1 bg-white border border-lightGrey rounded-md">
-
-                                                    <button className="flex flex-row items-center justify-start w-full py-[0.625rem] px-4 gap-2 hover:bg-[#F2F4F7]">
+                                                <PopoverContent className="w-[10.438rem] py-1 px-0 bg-white border border-lightGrey rounded-md">
+                                                    <button className="flex flex-row items-center justify-start w-full py-[0.625rem] px-4 gap-2 hover:bg-[#F2F4F7] outline-none">
                                                         <Image src='/icons/user-account.svg' alt="user profile" width={18} height={18} />
                                                         <p className="text-sm text-[#0C111D] font-normal">Go to Profile</p>
                                                     </button>
-                                                    <button className=" flex flex-row items-center justify-start w-full py-[0.625rem] px-4 gap-2 hover:bg-[#FEE4E2]"
+                                                    <button className=" flex flex-row items-center justify-start w-full py-[0.625rem] px-4 gap-2 hover:bg-[#F2F4F7] outline-none"
                                                         onClick={() => {
                                                             { setIsRemoveOpen(true) };
-                                                            setPopoveropen(null);
+                                                            setPopoveropen2(null);
                                                         }}>
                                                         <Image src='/icons/delete.svg' alt="user profile" width={18} height={18} />
                                                         <p className="text-sm text-[#DE3024] font-normal">Remove</p>
                                                     </button>
-
                                                 </PopoverContent>
                                             </Popover>
                                         </td>

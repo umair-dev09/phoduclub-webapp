@@ -53,7 +53,7 @@ function StudentsAttemptedTestseries() {
     const router = useRouter();
     const [isSelcetDateOpen, setIsSelectDateOpen] = useState(false);
     const [dateFilter, setDateFilter] = useState(null);
-    const [popoveropen, setPopoveropen] = useState<number | null>(null);
+    const [popoveropen, setPopoveropen] = useState<boolean>(false);
     const isTextSearch = searchTerm.trim().length > 0 && !dateFilter;
 
     // Fetch StudentAttempts when component mounts
@@ -143,7 +143,7 @@ function StudentsAttemptedTestseries() {
         ? selectedDate.toLocaleDateString("en-US", { year: 'numeric', month: 'short', day: 'numeric' })
         : "Select dates";
 
-    const handlePopoverOpen = (index: number) => {
+    const handlePopoverOpen = (index: any) => {
         setPopoveropen(index);
     };
     return (
@@ -273,37 +273,32 @@ function StudentsAttemptedTestseries() {
                                         <td className="flex items-center justify-center px-8 py-4 text-[#101828] text-sm">
                                             <Popover placement="bottom-end"
                                                 isOpen={popoveropen === index}
-                                                onOpenChange={(open) => open ? handlePopoverOpen(index) : setPopoveropen(null)}>
+                                                onOpenChange={(open) => open ? handlePopoverOpen(index) : setPopoveropen(false)}>
                                                 <PopoverTrigger>
-                                                    <button
-                                                        className="w-[32px] h-[32px] rounded-full flex items-center justify-center transition-all duration-300 ease-in-out hover:bg-[#F2F4F7]"
-
-                                                    >
-                                                        <button>
-                                                            <Image
-                                                                src="/icons/three-dots.svg"
-                                                                width={20}
-                                                                height={20}
-                                                                alt="More Actions"
-                                                            />
-                                                        </button>
+                                                    <button>
+                                                        <Image
+                                                            src="/icons/three-dots.svg"
+                                                            width={20}
+                                                            height={20}
+                                                            alt="More Actions"
+                                                        />
                                                     </button>
                                                 </PopoverTrigger>
-                                                <PopoverContent className="w-[10.438rem]  px-0 py-1 bg-white border border-lightGrey rounded-md">
-
-                                                    <button className="flex flex-row items-center justify-start w-full py-[0.625rem] px-4 gap-2 hover:bg-[#F2F4F7]">
-                                                        <Image src='/icons/user-account.svg' alt="user profile" width={18} height={18} />
-                                                        <p className="text-sm text-[#0C111D] font-normal">Go to Profile</p>
-                                                    </button>
-                                                    <button className=" flex flex-row items-center justify-start w-full py-[0.625rem] px-4 gap-2 hover:bg-[#FEE4E2]"
-                                                        onClick={() => {
-                                                            { setIsRemoveOpen(true) };
-                                                            setPopoveropen(null);
-                                                        }}>
-                                                        <Image src='/icons/delete.svg' alt="user profile" width={18} height={18} />
-                                                        <p className="text-sm text-[#DE3024] font-normal">Remove</p>
-                                                    </button>
-
+                                                <PopoverContent>
+                                                    <div className="w-[10.438rem] py-1 bg-white border border-lightGrey rounded-md">
+                                                        <button className="flex flex-row items-center justify-start w-full py-[0.625rem] px-4 gap-2 hover:bg-[#F2F4F7]">
+                                                            <Image src='/icons/user-account.svg' alt="user profile" width={18} height={18} />
+                                                            <p className="text-sm text-[#0C111D] font-normal">Go to Profile</p>
+                                                        </button>
+                                                        <button className=" flex flex-row items-center justify-start w-full py-[0.625rem] px-4 gap-2 hover:bg-[#F2F4F7]"
+                                                            onClick={() => {
+                                                                { openRemove };
+                                                                setPopoveropen(false);
+                                                            }}>
+                                                            <Image src='/icons/delete.svg' alt="user profile" width={18} height={18} />
+                                                            <p className="text-sm text-[#DE3024] font-normal">Remove</p>
+                                                        </button>
+                                                    </div>
                                                 </PopoverContent>
                                             </Popover>
                                         </td>
@@ -341,7 +336,7 @@ function StudentsAttemptedTestseries() {
                     </div>
                 </div>
             </div>
-            {isRemoveOpen && < Remove onClose={() => setIsRemoveOpen(false)} open={isRemoveOpen} />}
+            {isRemoveOpen && < Remove onClose={closeRemove} open={true} />}
         </div>
     );
 }

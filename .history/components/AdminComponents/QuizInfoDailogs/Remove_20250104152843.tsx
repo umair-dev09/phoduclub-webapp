@@ -57,7 +57,7 @@ function Remove({ open, onClose }: RemoveProps) { // Use the interface
                     </ModalBody>
                     <ModalFooter className="border-t border-lightGrey">
                         <Button
-                            className="py-[0.625rem] px-6 border border-solid border-[#EAECF0] bg-white font-semibold text-sm text-[#1D2939] rounded-md hover:bg-[#F2F4F7]"
+                            className="py-[0.625rem] px-6 border-2 border-solid border-[#EAECF0] bg-white font-semibold text-sm text-[#1D2939] rounded-md hover:bg-[#F2F4F7]"
                             onClick={onClose}
                         >
                             Cancel

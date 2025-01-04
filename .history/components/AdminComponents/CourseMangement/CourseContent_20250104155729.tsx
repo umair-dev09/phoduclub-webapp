@@ -402,10 +402,7 @@ function CourseContent({ courseId }: CourseContentProps) {
                                             <PopoverContent className="flex flex-col px-0 text-sm font-normal bg-white border border-lightGrey rounded-md w-[167px] shadow-md"
                                                 onClick={(event) => event.stopPropagation()}  >
                                                 <button className=" p-3 gap-2 flex-row flex h-[40px] hover:bg-[#F2F4F7] w-full"
-                                                    onClick={() => {
-                                                        editCreateSection(section.sectionName, section.sectionScheduleDate, section.sectionId);
-                                                        setPopoveropen2(null);
-                                                    }
+                                                    onClick={() => editCreateSection(section.sectionName, section.sectionScheduleDate, section.sectionId)
                                                     }>
                                                     <Image src="/icons/edit-icon.svg" width={18} height={18} alt="Edit-quiz" />
                                                     <span className="text-sm text-[#0C111D] font-normal">Edit Section</span>

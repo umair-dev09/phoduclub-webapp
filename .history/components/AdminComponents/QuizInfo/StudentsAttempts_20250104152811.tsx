@@ -275,18 +275,13 @@ function StudentsAttemptedTestseries() {
                                                 isOpen={popoveropen === index}
                                                 onOpenChange={(open) => open ? handlePopoverOpen(index) : setPopoveropen(null)}>
                                                 <PopoverTrigger>
-                                                    <button
-                                                        className="w-[32px] h-[32px] rounded-full flex items-center justify-center transition-all duration-300 ease-in-out hover:bg-[#F2F4F7]"
-
-                                                    >
-                                                        <button>
-                                                            <Image
-                                                                src="/icons/three-dots.svg"
-                                                                width={20}
-                                                                height={20}
-                                                                alt="More Actions"
-                                                            />
-                                                        </button>
+                                                    <button>
+                                                        <Image
+                                                            src="/icons/three-dots.svg"
+                                                            width={20}
+                                                            height={20}
+                                                            alt="More Actions"
+                                                        />
                                                     </button>
                                                 </PopoverTrigger>
                                                 <PopoverContent className="w-[10.438rem]  px-0 py-1 bg-white border border-lightGrey rounded-md">
@@ -295,7 +290,7 @@ function StudentsAttemptedTestseries() {
                                                         <Image src='/icons/user-account.svg' alt="user profile" width={18} height={18} />
                                                         <p className="text-sm text-[#0C111D] font-normal">Go to Profile</p>
                                                     </button>
-                                                    <button className=" flex flex-row items-center justify-start w-full py-[0.625rem] px-4 gap-2 hover:bg-[#FEE4E2]"
+                                                    <button className=" flex flex-row items-center justify-start w-full py-[0.625rem] px-4 gap-2 hover:bg-[#F2F4F7]"
                                                         onClick={() => {
                                                             { setIsRemoveOpen(true) };
                                                             setPopoveropen(null);
