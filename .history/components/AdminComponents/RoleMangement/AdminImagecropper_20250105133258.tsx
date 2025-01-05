@@ -241,7 +241,7 @@ const AdminImageCropper = ({ imageFile, setShowCropper, isOpen, setIsOpen }: Ima
                   />
                 </ReactCrop>
                 <button
-                  className={`min-w-[100px] mt-4 px-4 py-2 rounded-md text-white font-medium shadow-inner-button ${isButtonDisabled ? 'bg-[#d8acff]' : ' hover:bg-[#6D0DCC] bg-[#8501FF]'}`}
+                  className={`min-w-[100px] mt-4 px-4 py-2 rounded-md text-white font-medium shadow-inner-button ${isButtonDisabled ? 'bg-[#d8acff]' : 'bg-[#8501FF]'}`}
                   onClick={handleCropImage}
                   disabled={isButtonDisabled} // Disable the button if the state is true
                 >

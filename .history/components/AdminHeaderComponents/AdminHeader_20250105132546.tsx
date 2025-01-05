@@ -11,7 +11,6 @@ import { toast } from 'react-toastify';
 import AdminHeaderLoading from './AdminHeaderLoading';
 import Logout from '../AdminComponents/RoleMangement/Logout';
 
-
 interface HeaderProps {
     currentPage: string;
 

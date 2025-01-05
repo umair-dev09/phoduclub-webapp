@@ -11,7 +11,6 @@ import { toast } from 'react-toastify';
 import AdminHeaderLoading from './AdminHeaderLoading';
 import Logout from '../AdminComponents/RoleMangement/Logout';
 
-
 interface HeaderProps {
     currentPage: string;
 
@@ -155,7 +154,7 @@ function Header({ currentPage }: HeaderProps) {
                     </PopoverTrigger>
                     <PopoverContent className="flex flex-col bg-white border border-lightGrey rounded-md w-[167px] px-0 shadow-md">
                         <button
-                            className="flex items-center p-3 hover:bg-[#F2F4F7] w-full outline-none"
+                            className="flex items-center p-3 hover:bg-[#F2F4F7] w-full"
                             onClick={() => {
                                 router.push('/admin/profile');
                                 setPopoveropen(false);
@@ -164,7 +163,7 @@ function Header({ currentPage }: HeaderProps) {
                             <Image src="/icons/profile.svg" width={18} height={18} alt="Edit-profile" />
                             <p className="text-sm text-[#0C111D] ml-2">My profile</p>
                         </button>
-                        <button className="flex items-center p-3 hover:bg-[#FEE4E2] w-full outline-none" onClick={() => {
+                        <button className="flex items-center p-3 hover:bg-[#FEE4E2] w-full" onClick={() => {
                             openlogout();
                             setPopoveropen(false);
                         }}>

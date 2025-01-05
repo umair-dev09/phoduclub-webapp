@@ -50,7 +50,7 @@ function Allsubject({ onClose, open, iseditopen }: DialogProps) {
                 <ModalBody>
                     <div className="flex flex-col gap-2">
                         <span className="font-semibold text-sm text-[#1D2939]">Chapter Name</span>
-                        <div className="flex px-2 items-center h-[40px] border border-gray-300 focus:outline focus:outline-[1.5px] focus:outline-[#D6BBFB] hover:outline hover:outline-[1.5px] hover:outline-[#D6BBFB] focus-within:border-[#D7BBFC] focus-within:ring-4 focus-within:ring-[#E8DEFB] focus-within:outline-none transition-colors rounded-md">
+                        <div className="flex px-2 items-center h-[40px] border border-gray-300 focus-within:ring-4 focus-within:ring-[#E8DEFB] rounded-md">
                             <input
                                 className="font-normal text-[#101828] w-full text-sm placeholder:text-[#667085] rounded-md px-1 py-1 focus:outline-none"
                                 type="text"
@@ -132,7 +132,7 @@ function Allsubject({ onClose, open, iseditopen }: DialogProps) {
                         Cancel
                     </Button>
                     <Button
-                        className={`py-[0.625rem] px-6 rounded-md text-white text-sm shadow-inner-button font-semibold bg-[#9012FF]  transition-opacity  duration-150 ${!isFormValid
+                        className={`py-[0.625rem] px-6 rounded-md text-white text-sm shadow-inner-button font-semibold bg-[#9012FF] border border-[#9012FF] transition-opacity  duration-150 ${isFormValid
                             ? "bg-[#CDA0FC]"
                             : "hover:bg-[#6D0DCC] bg-[#9012FF]"
                             }`}
