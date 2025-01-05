@@ -35,11 +35,9 @@ type NotificationData = {
     notificationId: string;
     startDate: string;
     status: string;
-
 }
 
-
-function NotificationName () { 
+function NotificationName() {
     const searchParams = useSearchParams();
     const notiId = searchParams.get('nId');
     const [data, setData] = useState<NotificationData | null>(null);
@@ -49,35 +47,35 @@ function NotificationName () {
 
     useEffect(() => {
         const fetchNotiData = async () => {
-          if (!notiId) return;
-    
-          try {
-            const notiDocRef = doc(db, 'notifications', notiId);
-            const notiDocSnap = await getDoc(notiDocRef);
-    
-            if (notiDocSnap.exists()) {
-              setData(notiDocSnap.data() as NotificationData);
-              setLoading(false);
-            } else {
-              console.error('Notification data not found');
-              setLoading(false);
+            if (!notiId) return;
 
+            try {
+                const notiDocRef = doc(db, 'notifications', notiId);
+                const notiDocSnap = await getDoc(notiDocRef);
+
+                if (notiDocSnap.exists()) {
+                    setData(notiDocSnap.data() as NotificationData);
+                    setLoading(false);
+                } else {
+                    console.error('Notification data not found');
+                    setLoading(false);
+
+                }
+
+            } catch (error) {
+                console.error('Error fetching noti data:', error);
+                setLoading(false);
             }
-    
-          } catch (error) {
-            console.error('Error fetching noti data:', error);
-            setLoading(false);
-          }
         };
-    
+
         fetchNotiData();
-      }, [notiId]);
+    }, [notiId]);
 
     const lastItemIndex = currentPage * itemsPerPage;
     const firstItemIndex = lastItemIndex - itemsPerPage;
-    // const currentItems = data.slice(firstItemIndex, lastItemIndex);
-   
-    if(loading){
+    // const currentItems = data.slice(firstItemIndex, lastItemIndex) || [];
+
+    if (loading) {
         return <LoadingData />
     }
     return (
@@ -91,8 +89,8 @@ function NotificationName () {
                             height={24}
                             alt="idea-icon" />
                         <h1 className="text-[#1D2939] font-semibold text-2xl">{data?.name}</h1>
-                            <div>{<QuizStatus status={data?.status || ''}/>}</div>
-                        
+                        <div>{<QuizStatus status={data?.status || ''} />}</div>
+
                     </div>
                     <div className="flex flex-row gap-2">
                         {/* Button for Pause Quiz */}
@@ -117,8 +115,8 @@ function NotificationName () {
                             <span className="text-sm text-[#DE3024] font-normal">Delete Quiz</span>
                         </button> */}
                         <button className=" p-3 gap-2 flex-row flex h-[40px] hover:bg-[#F2F4F7] bg-[#FFFFFF] border border-solid border-[#EAECF0] rounded-[8px] items-center">
-                            <Image src="/icons/edit-icon.svg" width={18} height={18} alt="Edit-quiz" />
-                            <span className="text-sm text-[#0C111D] font-normal">Edit Quiz</span>
+                            <Image src="/icons/edit-icon.svg" width={18} height={18} alt="Edit" />
+                            <span className="text-sm text-[#0C111D] font-normal">Edit</span>
                         </button>
                     </div>
                 </div>
@@ -152,31 +150,41 @@ function NotificationName () {
                             </tr>
                         </thead>
                         <tbody>
-                            {/* {currentItems.map((quiz, index) => (
-                                <tr key={index} className="h-auto border-t border-solid border-[#EAECF0]">
-                                    <td className="py-2">
-                                        <div className="flex flex-row ml-8 gap-2">
-                                            <div className="flex items-center">
-                                                <div className="relative">
-                                                    <Image src='/images/DP_Lion.svg' alt="DP" width={40} height={40} />
-                                                    <Image className="absolute right-0 bottom-0" src='/icons/winnerBatch.svg' alt="Batch" width={18} height={18} />
+                            {/* {currentItems.length > 0 ? (
+                                currentItems.map((quiz, index) => (
+                                    <tr key={index} className="h-auto border-t border-solid border-[#EAECF0]">
+                                        <td className="py-2">
+                                            <div className="flex flex-row ml-8 gap-2">
+                                                <div className="flex items-center">
+                                                    <div className="relative">
+                                                        <Image src='/images/DP_Lion.svg' alt="DP" width={40} height={40} />
+                                                        <Image className="absolute right-0 bottom-0" src='/icons/winnerBatch.svg' alt="Batch" width={18} height={18} />
+                                                    </div>
+                                                </div>
+                                                <div className="flex items-start justify-start flex-col">
+                                                    <div
+                                                        className="font-semibold cursor-pointer"
+                                                    >
+                                                        Jenny Wilson
+                                                    </div>
+                                                    <div className="flex justify-start items-start text-[13px] text-[#667085]">jenny#8547</div>
                                                 </div>
                                             </div>
-                                            <div className="flex items-start justify-start flex-col">
-                                                <div
-                                                    className="font-semibold cursor-pointer"
-                                                >
-                                                    Jenny Wilson
-                                                </div>
-                                                <div className="flex justify-start items-start text-[13px] text-[#667085]">jenny#8547</div>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td className="px-8 py-4 text-center text-[#101828] text-sm">{quiz.userId}</td>
-                                    <td className="px-8 py-4 text-center text-[#101828] text-sm">{quiz.date}</td>
-                                    <td className="px-8 py-4 text-center text-[#101828] text-sm">{quiz.time}</td>
-                                </tr>
-                            ))} */}
+                                        </td>
+                                        <td className="px-8 py-4 text-center text-[#101828] text-sm">{quiz.userId}</td>
+                                        <td className="px-8 py-4 text-center text-[#101828] text-sm">{quiz.date}</td>
+                                        <td className="px-8 py-4 text-center text-[#101828] text-sm">{quiz.time}</td>
+                                    </tr>
+                                ))
+                            ) : (
+                            <tr className='border-t border-lightGrey'>
+                                <td colSpan={4} className="text-center py-8">
+                                    <p className="text-[#667085] text-sm">
+                                        No notification click activity found
+                                    </p>
+                                </td>
+                            </tr>
+                            )} */}
                         </tbody>
                     </table>
                 </div>
