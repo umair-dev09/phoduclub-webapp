@@ -97,7 +97,7 @@ function Allsubject({ onClose, open, iseditopen }: DialogProps) {
                                     />
                                 </div>
                             </PopoverTrigger>
-                            <PopoverContent className=" bg-white border border-lightGrey rounded-md shadow-md px-0 w-[432px]">
+                            <PopoverContent className=" bg-white border border-lightGrey rounded-md shadow-md px-0 w-[395px]">
                                 {priorities.map((item) => (
                                     <button
                                         key={item.label}
