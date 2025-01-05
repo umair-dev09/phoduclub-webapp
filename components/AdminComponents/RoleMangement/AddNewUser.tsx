@@ -56,8 +56,8 @@ function AddNewUser({
     setProfilePic,
     phone,
     setPhone,
-    selectedRole,
-    setSelectedRole,
+    // selectedRole,
+    // setSelectedRole,
 }: AddNewUserProps) {
     const [loading, setLoading] = useState(false); // Loading state
     const [roleDialogOpen, setRoleDialogOpen] = useState(false); // Loading state
@@ -72,13 +72,14 @@ function AddNewUser({
 
     const ROLE_OPTIONS = ["Admin", "Teacher", "Customer Care", "Editor", "Chief Moderator"];
 
-    const handleRoleSelect = (role: string) => {
-        setSelectedRole(role);
-        setRoleDialogOpen(false);
-    };
+    // const handleRoleSelect = (role: string) => {
+    //     setSelectedRole(role);
+    //     setRoleDialogOpen(false);
+    // };
 
     // Check if all required fields are filled
-    const isFormValid = firstName && lastName && userId && phone && selectedRole;
+    // const isFormValid = firstName && lastName && userId && phone && selectedRole;
+    const isFormValid = firstName && lastName && userId && phone;
     // const isFormValid = firstName && lastName && userId && phone;
 
     const handleAddUser = async () => {
@@ -134,6 +135,8 @@ function AddNewUser({
         { value: 'Editor', label: 'Editor' },
         { value: 'Chief Moderator', label: 'Chief Moderator' },
     ];
+
+    const [selectedRole, setSelectedRole] = useState<SingleValue<Option>>(null);
 
     return (
         <Dialog open={open} onClose={close} className="relative z-50">
@@ -211,7 +214,7 @@ function AddNewUser({
                             />
                         </div>
 
-                        <div className="flex flex-col gap-1 w-full">
+                        {/* <div className="flex flex-col gap-1 w-full">
                             <label className="text-[#1D2939] text-sm font-medium">Role</label>
                             <div className="flex flex-row py-2 px-4 w-full gap-2 border border-gray-300  h-10 focus:outline focus:outline-[1.5px] focus:outline-[#D6BBFB] hover:outline hover:outline-[1.5px] hover:outline-[#D6BBFB] rounded-md transition duration-200 ease-in-out justify-between" onClick={() => setRoleDialogOpen(true)}>
                                 <span className="font-normal text-sm text-[#182230]">{selectedRole || "Select Role"}</span>
@@ -236,16 +239,16 @@ function AddNewUser({
                                     </PopoverContent>
                                 </Popover>
                             </div>
-                        </div>
+                        </div> */}
 
-                        {/* <div className='w-full'>
-                            <label htmlFor="role" className='mb-2 font-medium text-sm'>Role</label>
+                        <div className='w-full'>
+                            <label htmlFor="target-year" className='mb-1 font-medium text-sm'>Target Year</label>
                             <Select
-                                id="role"
+                                id="target-year"
                                 value={selectedRole}
                                 onChange={setSelectedRole}
                                 options={roles}
-                                placeholder="Select role..."
+                                placeholder="Select year..."
                                 styles={{
                                     option: (provided, state: CustomState) => ({
                                         ...provided,
@@ -254,9 +257,8 @@ function AddNewUser({
                                     }),
                                     singleValue: (provided) => ({
                                         ...provided,
-                                        color: '#182230',
-                                        fontWeight: '400',
-                                        fontSize: '14px'
+                                        color: 'black',
+                                        fontWeight: '500'
                                     }),
                                     control: (provided) => ({
                                         ...provided,
@@ -270,14 +272,14 @@ function AddNewUser({
                                     }),
                                 }}
                             />
-                        </div> */}
+                        </div>
 
                         <div className="flex flex-row justify-end my-2 items-center gap-4 border-t border-solid border-[#EAECF0] pt-4">
                             <button onClick={close} className="py-[0.625rem] px-6 border-[1.5px] border-lightGrey rounded-md text-[#1D2939] font-semibold hover:bg-[#F2F4F7] text-sm">Cancel</button>
                             <button
                                 onClick={handleAddUser}
                                 disabled={!isFormValid || loading} // Disable if form is invalid or loading
-                                className={`py-[0.625rem] px-6 text-white shadow-inner-button  border border-white rounded-md font-semibold text-sm ${!isFormValid || loading ? 'bg-[#CDA0FC]' : 'bg-[#9012FF] transition-colors duration-150 hover:bg-[#6D0DCC]'}`}>
+                                className={`py-[0.625rem] px-6 text-white shadow-inner-button  border border-white rounded-md font-semibold text-sm ${!isFormValid || loading ? 'bg-[#CDA0FC]' : 'bg-[#9012FF]'}`}>
                                 {isEditing ? "Save Changes" : "Add New User"}
                             </button>
                         </div>
