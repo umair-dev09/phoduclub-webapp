@@ -383,12 +383,12 @@ function StudentsPurchasedCourseInfo() {
                                     <td colSpan={5} className="text-center py-8">
                                         {isTextSearch && (
                                             <p className="text-[#667085] text-sm">
-                                                No students found for &quot;{searchTerm}&quot;
+                                                No users found for &quot;{searchTerm}&quot;
                                             </p>
                                         )}
                                         {!isTextSearch && (
                                             <p className="text-[#667085] text-sm">
-                                                No students found
+                                                No users found
                                             </p>
                                         )}
                                     </td>

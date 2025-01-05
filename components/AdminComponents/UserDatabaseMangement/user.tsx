@@ -109,6 +109,7 @@ function User() {
         { value: '2026', label: '2026' },
     ];
     const [selectedYear, setSelectedYear] = useState<SingleValue<Option>>(null);
+
     useEffect(() => {
         let filteredUsers = users;
 
@@ -285,10 +286,14 @@ function User() {
             setUserId(userId);
         }
     });
+
+    const [dateFilter, setDateFilter] = useState(null);
+    const [statusFilter, setStatusFilter] = useState(null);
+    const isTextSearch = searchTerm.trim().length > 0 && !dateFilter && !statusFilter;
+
     if (loading) {
         return <LoadingData />
     }
-
     return (
         <div className="flex flex-col w-full h-full gap-4 ">
             <div className="flex flex-row justify-between items-center">
@@ -297,22 +302,20 @@ function User() {
                 </h2>
                 <div className="flex flex-row gap-3">
                     {/* Search Button */}
-                    <button className="h-[44px] w-[250px] rounded-md bg-[#FFFFFF] border border-solid border-[#D0D5DD] flex items-center">
-                        <div className="flex flex-row items-center gap-2 pl-2">
-                            <Image
-                                src="/icons/search-button.svg"
-                                width={20}
-                                height={20}
-                                alt="Search Button"
-                            />
-                            <input
-                                className="font-normal text-[#667085] text-sm placeholder:text-[#A1A1A1] rounded-md px-1 py-1 focus:outline-none focus:ring-0 border-none"
-                                placeholder="Search"
-                                type="text"
-                                value={searchTerm}
-                                onChange={(e) => setSearchTerm(e.target.value)}
-                            />
-                        </div>
+                    <button className="h-[44px] w-[250px] rounded-md bg-[#FFFFFF] border border-solid border-[#D0D5DD] flex flex-row items-center pl-2 gap-2">
+                        <Image
+                            src="/icons/search-button.svg"
+                            width={20}
+                            height={20}
+                            alt="Search Button"
+                        />
+                        <input
+                            className="w-full font-normal text-[#667085] text-sm placeholder:text-[#A1A1A1] rounded-md px-1 py-1 focus:outline-none focus:ring-0 border-none"
+                            placeholder="Search"
+                            type="text"
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                        />
                     </button>
 
                     {/* Select Students Button */}
@@ -459,9 +462,16 @@ function User() {
                             ) : (
                                 <tr className='border-t border-lightGrey'>
                                     <td colSpan={6} className="text-center py-8">
-                                        <div className="flex flex-col items-center justify-center gap-2">
-                                            <p className="text-[#667085] text-sm">No chapters found for &quot;{searchTerm}&quot;</p>
-                                        </div>
+                                        {isTextSearch && (
+                                            <p className="text-[#667085] text-sm">
+                                                No users found for &quot;{searchTerm}&quot;
+                                            </p>
+                                        )}
+                                        {!isTextSearch && (
+                                            <p className="text-[#667085] text-sm">
+                                                No users found
+                                            </p>
+                                        )}
                                     </td>
                                 </tr>
                             )}

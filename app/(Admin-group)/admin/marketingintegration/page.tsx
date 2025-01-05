@@ -382,10 +382,12 @@ function Messenger() {
                             <div className="flex flex-col w-full gap-1 ">
                                 <label className="text-[#1D2939] text-sm font-medium">Name</label>
                                 <div className="flex flex-row p-2 w-full gap-2 border border-gray-300  h-10 focus:outline focus:outline-[1.5px] focus:outline-[#D6BBFB] hover:outline hover:outline-[1.5px] hover:outline-[#D6BBFB] rounded-md ">
-                                    <Popover placement="bottom" isOpen={notiIconPop}>
+                                    {/* <Popover placement="bottom" isOpen={notiIconPop}> */}
+                                    <Popover placement="bottom" onOpenChange={(open) => setNotiIconPop(open)} isOpen={notiIconPop}>
                                         <PopoverTrigger>
                                             <button className="flex flex-row w-[44px] items-center rounded-md transition duration-200 ease-in-out justify-between focus:outline-none"
-                                                onClick={() => setNotiIconPop(true)}>
+                                            // onClick={() => setNotiIconPop(true)}>
+                                            >
                                                 <Image
                                                     src={notificationIcon}
                                                     width={24}
@@ -400,12 +402,12 @@ function Messenger() {
                                                 />
                                             </button>
                                         </PopoverTrigger>
-                                        <PopoverContent className="flex flex-col gap-1 px-0 w-10">
-
+                                        <PopoverContent className="flex flex-col gap-1 px-0 w-12 rounded-md">
                                             {/* Idea Button */}
                                             <button
                                                 className="flex flex-row w-full p-1 hover:bg-[#F2F4F7] justify-center items-center outline-none"
                                                 onClick={() => { handleIconSelect("/icons/idea-2.svg"); setNotiIconPop(false); }}
+                                            // onClick={() => { handleIconSelect("/icons/idea-2.svg") }}
                                             >
                                                 <Image
                                                     src="/icons/idea-2.svg"

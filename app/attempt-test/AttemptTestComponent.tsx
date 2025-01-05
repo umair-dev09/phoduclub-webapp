@@ -674,8 +674,8 @@ function ReviewTestView() {
                                                     height={28}
                                                 />
                                                 <span className={`absolute inset-0 text-xs font-medium ${getQuestionButtonStatus(index) === 'not-visited'
-                                                        ? 'text-[#242424]'
-                                                        : 'text-white'
+                                                    ? 'text-[#242424]'
+                                                    : 'text-white'
                                                     } flex items-center justify-center`}>
                                                     {index + 1}
                                                 </span>
@@ -738,8 +738,7 @@ function ReviewTestView() {
                                     </button> */}
                                 </div>
                                 <p className=" text-sm font-normal text-[#667085]">
-                                    Lorem ipsum is a dummy text widely used in digital industry will be used here in as a preview
-                                    Lorem ipsum is a dummy text widely used in digital industry will be used here in as a preview
+                                    Are you sure you want to submit your quiz now?<br />Please double-check your answers before submitting, as you won't be able to make any changes afterwards.
                                 </p>
                             </div>
                             <hr />
