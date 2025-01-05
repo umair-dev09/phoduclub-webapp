@@ -161,7 +161,7 @@ function RoleManagementGuide() {
                         onOpenChange={() => setIsOpen(!isOpen)} >
                         <PopoverTrigger>
                             <button
-                                className="h-[44px] w-auto px-6 py-2 bg-[#8501FF] hover:bg-[#6D0DCC] focus:outline-none rounded-md shadow-inner-button border border-solid border-[#800EE2] flex items-center justify-center">
+                                className="h-[44px] w-auto px-6 py-2 bg-[#8501FF] focus:outline-none rounded-md shadow-inner-button border border-solid border-[#800EE2] flex items-center justify-center">
                                 <span className="text-[#FFFFFF] font-semibold text-sm">Add New User</span>
                             </button>
                         </PopoverTrigger>
@@ -256,7 +256,7 @@ function RoleManagementGuide() {
                     </tbody>
                 </table>
             </div>
-            {/* <Dialog open={isDialogOpen} onClose={close} className="relative z-50">
+            <Dialog open={isDialogOpen} onClose={close} className="relative z-50">
                 <DialogBackdrop className="fixed inset-0 bg-black/30" />
                 <div className="fixed inset-0 flex items-center justify-center">
                     <DialogPanel className="bg-white rounded-2xl w-[480px] h-auto flex flex-col ">
@@ -275,7 +275,7 @@ function RoleManagementGuide() {
                         </div>
                     </DialogPanel>
                 </div >
-            </Dialog > */}
+            </Dialog >
             <Modal
                 isOpen={isDialogOpen}
                 onOpenChange={(isOpen) => !isOpen && close()}
@@ -285,18 +285,18 @@ function RoleManagementGuide() {
                     <>
                         <ModalHeader className="flex flex-row justify-between items-center gap-1">
                             <h1 className='text-[#1D2939] font-bold text-lg'>Remove user from Guide Role?</h1>
-                            <button className="w-[32px] h-[32px]  rounded-full flex items-center justify-center transition-all duration-300 ease-in-out hover:bg-[#F2F4F7]">
-                                <Image src="/icons/cancel.svg" alt="Cancel" width={20} height={20} onClick={() => setIsDialogOpen(false)} />
-                            </button>
+
+                            <Image src="/icons/cancel.svg" alt="Cancel" width={20} height={20} onClick={() => setIsDialogOpen(false)} />
+
                         </ModalHeader>
 
                         <ModalBody>
-                            <span className='text-[#667085] font-normal pb-2 text-sm'>Lorem ipsum is placeholder text commonly used</span>
+                            <span className='text-[#667085] font-normal text-sm'>Lorem ipsum is placeholder text commonly used</span>
                         </ModalBody>
 
-                        <ModalFooter className='border-t border-lightGrey'>
-                            <Button variant="light" className="py-[0.625rem] px-6 border border-solid border-[#EAECF0] font-semibold text-sm text-[#1D2939] rounded-md hover:bg-[#F2F4F7]" onClick={() => setIsDialogOpen(false)} >Cancel</Button>
-                            <Button className="py-[0.625rem] px-6 text-white shadow-inner-button font-semibold bg-[#BB241A] hover:bg-[#B0201A] border border-[#DE3024] rounded-md" onClick={handleDeleteGuide} >Remove</Button>
+                        <ModalFooter>
+                            <Button variant="light" className="py-[0.625rem] px-6 border-2  border-solid border-[#EAECF0] font-semibold text-sm text-[#1D2939] rounded-md hover:bg-[#F2F4F7]" onClick={() => setIsDialogOpen(false)} >Cancel</Button>
+                            <Button className="py-[0.625rem] px-6 text-white shadow-inner-button bg-[#BB241A] border border-[#DE3024] rounded-md" onClick={handleDeleteGuide} >Remove</Button>
                         </ModalFooter>
                     </>
                 </ModalContent>

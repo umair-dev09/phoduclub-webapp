@@ -10,7 +10,6 @@ import LoadingData from "@/components/Loading";
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { db } from '@/firebase';
-import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button } from "@nextui-org/react";
 
 interface UserData {
     userId: string;
@@ -161,14 +160,14 @@ function RoleManagementGuide() {
                         onOpenChange={() => setIsOpen(!isOpen)} >
                         <PopoverTrigger>
                             <button
-                                className="h-[44px] w-auto px-6 py-2 bg-[#8501FF] hover:bg-[#6D0DCC] focus:outline-none rounded-md shadow-inner-button border border-solid border-[#800EE2] flex items-center justify-center">
+                                className="h-[44px] w-auto px-6 py-2 bg-[#8501FF] focus:outline-none rounded-md shadow-inner-button border border-solid border-[#800EE2] flex items-center justify-center">
                                 <span className="text-[#FFFFFF] font-semibold text-sm">Add New User</span>
                             </button>
                         </PopoverTrigger>
                         <PopoverContent className="w-[304px] p-6 bg-[#FFFFFF] border-solid border-[#EAECF0] rounded-md gap-4">
                             <div className='flex flex-col gap-2'>
                                 <span className='font-medium text-[#1D2939] text-sm'>Unique ID</span>
-                                <div className='flex px-2 items-center h-[40px] border border-gray-300 focus:outline focus:outline-[1.5px] focus:outline-[#D6BBFB] hover:outline hover:outline-[1.5px] hover:outline-[#D6BBFB] focus-within:border-[#D7BBFC] focus-within:ring-4 focus-within:ring-[#E8DEFB] focus-within:outline-none transition-colors rounded-md'>
+                                <div className='flex px-2 items-center h-[40px] border border-gray-300 focus:outline focus:outline-[1.5px] focus:outline-[#D6BBFB] hover:outline hover:outline-[1.5px] hover:outline-[#D6BBFB] focus-within:border-[#D7BBFC] focus-within:ring-4 focus-within:ring-[#E8DEFB] focus-within:outline-none transition-colors'>
                                     <input
                                         className="font-normal text-[#667085] w-full text-sm placeholder:text-[#A1A1A1] rounded-md px-1 py-1 focus:outline-none focus:ring-0 border-none"
                                         placeholder="Enter Unique ID"
@@ -177,7 +176,7 @@ function RoleManagementGuide() {
                                         onChange={(e) => setUniqueID(e.target.value)}
                                     />
                                 </div>
-                                <span className='text-[#667085] font-normal  text-sm'>You are allowed to add only Mentor/Guide role</span>
+                                <span className='text-[#667085] font-normal text-sm'>You are allowed to add only Mentor/Guide role</span>
                             </div>
                             <div className='w-auto h-auto gap-4 flex flex-row'>
                                 <button className='h-11 w-[120px] border border-solid border-[#EAECF0] rounded-md bg-[#FFFFFF] flex items-center justify-center hover:bg-[#F2F4F7]'
@@ -256,7 +255,7 @@ function RoleManagementGuide() {
                     </tbody>
                 </table>
             </div>
-            {/* <Dialog open={isDialogOpen} onClose={close} className="relative z-50">
+            <Dialog open={isDialogOpen} onClose={close} className="relative z-50">
                 <DialogBackdrop className="fixed inset-0 bg-black/30" />
                 <div className="fixed inset-0 flex items-center justify-center">
                     <DialogPanel className="bg-white rounded-2xl w-[480px] h-auto flex flex-col ">
@@ -275,32 +274,7 @@ function RoleManagementGuide() {
                         </div>
                     </DialogPanel>
                 </div >
-            </Dialog > */}
-            <Modal
-                isOpen={isDialogOpen}
-                onOpenChange={(isOpen) => !isOpen && close()}
-                hideCloseButton
-            >
-                <ModalContent>
-                    <>
-                        <ModalHeader className="flex flex-row justify-between items-center gap-1">
-                            <h1 className='text-[#1D2939] font-bold text-lg'>Remove user from Guide Role?</h1>
-                            <button className="w-[32px] h-[32px]  rounded-full flex items-center justify-center transition-all duration-300 ease-in-out hover:bg-[#F2F4F7]">
-                                <Image src="/icons/cancel.svg" alt="Cancel" width={20} height={20} onClick={() => setIsDialogOpen(false)} />
-                            </button>
-                        </ModalHeader>
-
-                        <ModalBody>
-                            <span className='text-[#667085] font-normal pb-2 text-sm'>Lorem ipsum is placeholder text commonly used</span>
-                        </ModalBody>
-
-                        <ModalFooter className='border-t border-lightGrey'>
-                            <Button variant="light" className="py-[0.625rem] px-6 border border-solid border-[#EAECF0] font-semibold text-sm text-[#1D2939] rounded-md hover:bg-[#F2F4F7]" onClick={() => setIsDialogOpen(false)} >Cancel</Button>
-                            <Button className="py-[0.625rem] px-6 text-white shadow-inner-button font-semibold bg-[#BB241A] hover:bg-[#B0201A] border border-[#DE3024] rounded-md" onClick={handleDeleteGuide} >Remove</Button>
-                        </ModalFooter>
-                    </>
-                </ModalContent>
-            </Modal>
+            </Dialog >
             <ToastContainer />
         </div>
     )

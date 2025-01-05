@@ -161,7 +161,7 @@ function RoleManagementGuide() {
                         onOpenChange={() => setIsOpen(!isOpen)} >
                         <PopoverTrigger>
                             <button
-                                className="h-[44px] w-auto px-6 py-2 bg-[#8501FF] hover:bg-[#6D0DCC] focus:outline-none rounded-md shadow-inner-button border border-solid border-[#800EE2] flex items-center justify-center">
+                                className="h-[44px] w-auto px-6 py-2 bg-[#8501FF] focus:outline-none rounded-md shadow-inner-button border border-solid border-[#800EE2] flex items-center justify-center">
                                 <span className="text-[#FFFFFF] font-semibold text-sm">Add New User</span>
                             </button>
                         </PopoverTrigger>
@@ -295,8 +295,8 @@ function RoleManagementGuide() {
                         </ModalBody>
 
                         <ModalFooter className='border-t border-lightGrey'>
-                            <Button variant="light" className="py-[0.625rem] px-6 border border-solid border-[#EAECF0] font-semibold text-sm text-[#1D2939] rounded-md hover:bg-[#F2F4F7]" onClick={() => setIsDialogOpen(false)} >Cancel</Button>
-                            <Button className="py-[0.625rem] px-6 text-white shadow-inner-button font-semibold bg-[#BB241A] hover:bg-[#B0201A] border border-[#DE3024] rounded-md" onClick={handleDeleteGuide} >Remove</Button>
+                            <Button variant="light" className="py-[0.625rem] px-6 border-2  border-solid border-[#EAECF0] font-semibold text-sm text-[#1D2939] rounded-md hover:bg-[#F2F4F7]" onClick={() => setIsDialogOpen(false)} >Cancel</Button>
+                            <Button className="py-[0.625rem] px-6 text-white shadow-inner-button bg-[#BB241A] hover:bg-[#B0201A] border border-[#DE3024] rounded-md" onClick={handleDeleteGuide} >Remove</Button>
                         </ModalFooter>
                     </>
                 </ModalContent>

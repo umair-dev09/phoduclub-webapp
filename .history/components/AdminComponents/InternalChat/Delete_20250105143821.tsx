@@ -84,7 +84,7 @@ function Delete({ open, onClose, internalChatId, channelId, chatId }: DeleteProp
 
                     <ModalFooter className='border-t border-lightGrey'>
                         <Button variant="light" className="py-[0.625rem] px-6 border-[1.5px] border-lightGrey font-semibold text-sm text-[#1D2939] rounded-md hover:bg-[#F2F4F7]" onClick={onClose}>Cancel</Button>
-                        <Button className={`py-[0.625rem] px-6 text-white shadow-inner-button hover:bg-[#B0201A] font-semibold bg-[#BB241A] border border-white rounded-md`} onClick={handleDeleteMessage}>Delete</Button>
+                        <Button className={`py-[0.625rem] px-6 text-white shadow-inner-button hover:bg-[#B0201A] bg-[#BB241A] border border-white rounded-md`} onClick={handleDeleteMessage}>Delete</Button>
                     </ModalFooter>
                 </>
             </ModalContent>

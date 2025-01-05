@@ -159,13 +159,13 @@ function CreateChannelDialogue({ open, onClose, internalChatId }: CreateChannelD
                             </button>
                         </ModalHeader>
 
-                        <ModalBody className="pb-4">
-                            <p className="text-sm font-semibold text-[#1D2939]">Channel name</p>
-                            <div className="flex flex-row w-full  gap-1 border border-gray-300  h-10 focus:outline focus:outline-[1.5px] focus:outline-[#D6BBFB] hover:outline hover:outline-[1.5px] hover:outline-[#D6BBFB] rounded-md">
+                        <ModalBody>
+                            <p className="text-sm font-medium text-[#1D2939]">Channel name</p>
+                            <div className="flex flex-row w-full pb-2  gap-1 border border-gray-300  h-10 focus:outline focus:outline-[1.5px] focus:outline-[#D6BBFB] hover:outline hover:outline-[1.5px] hover:outline-[#D6BBFB] rounded-md">
 
                                 <Popover className='mb-2' placement="top-end" isOpen={isEmojiPopupOpen} onOpenChange={(open) => setIsEmojiPopupOpen(open)} onClose={() => setIsEmojiPopupOpen(false)}>
                                     <PopoverTrigger>
-                                        <button className="flex flex-row pr-[14px] pl-[10px] py-2 gap-1 items-center border-r border-lightGrey   transition-colors hover:bg-neutral-100 hover:rounded-[100px] focus:outline-none"
+                                        <button className="flex flex-row pr-[14px] pl-[10px] py-2 gap-1 items-center border-r border-lightGrey  transition-colors hover:bg-neutral-100 hover:rounded-[100px] focus:outline-none"
                                         >
                                             {channelEmoji === '' ? (
                                                 <Image className='w-[18px] h-[18px]' src='/icons/emojies.svg' alt='emojis icon' width={21} height={21} />
@@ -205,12 +205,11 @@ function CreateChannelDialogue({ open, onClose, internalChatId }: CreateChannelD
                                 Cancel
                             </Button>
                             <Button
-                                className={`py-[0.625rem] px-6 text-white font-semibold shadow-inner-button rounded-md transition-all duration-200 
+                                className={`py-[0.625rem] px-6 text-white font-semibold shadow-inner-button rounded-md transition-all duration-200 bg-[#8501FF] border border-[#9012FF] hover:bg-[#7001CF]
                                         ${!isCreateButtonDisabled
                                         ? 'bg-[#CDA0FC] cursor-not-allowed'
                                         : ' bg-[#9012FF]  hover:bg-[#6D0DCC]'
                                     }`}
-
                                 onClick={handleCreateChannel}
                                 disabled={!isCreateButtonDisabled}
                             >

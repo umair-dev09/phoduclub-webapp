@@ -161,7 +161,7 @@ function RoleManagementGuide() {
                         onOpenChange={() => setIsOpen(!isOpen)} >
                         <PopoverTrigger>
                             <button
-                                className="h-[44px] w-auto px-6 py-2 bg-[#8501FF] hover:bg-[#6D0DCC] focus:outline-none rounded-md shadow-inner-button border border-solid border-[#800EE2] flex items-center justify-center">
+                                className="h-[44px] w-auto px-6 py-2 bg-[#8501FF] focus:outline-none rounded-md shadow-inner-button border border-solid border-[#800EE2] flex items-center justify-center">
                                 <span className="text-[#FFFFFF] font-semibold text-sm">Add New User</span>
                             </button>
                         </PopoverTrigger>
