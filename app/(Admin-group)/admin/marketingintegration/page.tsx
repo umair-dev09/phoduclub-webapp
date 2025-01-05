@@ -4,6 +4,7 @@ import React from 'react';
 import Image from "next/image";
 import { Dialog, DialogBackdrop, DialogPanel } from "@headlessui/react";
 import { Popover, PopoverContent, PopoverTrigger } from "@nextui-org/popover";
+import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button } from "@nextui-org/react";
 import { useRouter } from 'next/navigation';
 import {
     Pagination,
@@ -364,7 +365,7 @@ function Messenger() {
                 </div>
             </div>
 
-            {/* Dialog Component */}
+            {/* Dialog Component  */}
             <Dialog open={isOpen} onClose={() => setIsOpen(false)} className="relative z-50">
                 <DialogBackdrop className="fixed inset-0 bg-black/30" />
                 <div className="fixed inset-0 flex items-center justify-center">

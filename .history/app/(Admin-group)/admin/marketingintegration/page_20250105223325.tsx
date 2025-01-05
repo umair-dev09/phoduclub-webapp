@@ -4,6 +4,7 @@ import React from 'react';
 import Image from "next/image";
 import { Dialog, DialogBackdrop, DialogPanel } from "@headlessui/react";
 import { Popover, PopoverContent, PopoverTrigger } from "@nextui-org/popover";
+import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button } from "@nextui-org/react";
 import { useRouter } from 'next/navigation';
 import {
     Pagination,
@@ -14,52 +15,29 @@ import {
     PaginationNext,
     PaginationPrevious,
 } from "@/components/ui/pagination";
-import QuizStatus from '@/components/AdminComponents/QuizzesManagement/quizStatus';
-
+import QuizStatus from '@/components/AdminComponents/StatusDisplay';
+import { DatePicker } from "@nextui-org/react";
+import { now, today, CalendarDate, getLocalTimeZone, parseDateTime } from "@internationalized/date";
+import { db } from '@/firebase';
+import { collection, getDocs, query, where, doc, getDoc, onSnapshot, deleteDoc, addDoc, setDoc } from 'firebase/firestore';
+import { toast, ToastContainer } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
+import LoadingData from "@/components/Loading";
 // Define types for quiz data
-interface Quiz {
-    userid: string;
-    moblieid: string;
-    role: string;
-    status: 'live' | 'paused' | 'finished' | 'scheduled' | 'saved' | 'ended';
-}
 
-// Mock fetchQuizzes function with types
-const fetchQuizzes = async (): Promise<Quiz[]> => {
-    const allQuizzes: Quiz[] = [
-        { userid: "1,324", moblieid: "Jan 6, 2024", role: "Admin", status: "live" },
-        { userid: "1,324", moblieid: "Jan 6, 2024", role: "Customer Care", status: "saved" },
-        { userid: "1,324", moblieid: "Jan 6, 2024", role: "Teacher", status: "paused" },
-        { userid: "1,324", moblieid: "Jan 6, 2024", role: "Chief Moderator", status: "saved" },
-        { userid: "1,324", moblieid: "Jan 6, 2024", role: "Guide", status: "finished" },
-        { userid: "1,324", moblieid: "Jan 6, 2024", role: "Editor", status: "ended" },
-        { userid: "1,324", moblieid: "Jan 6, 2024", role: "Admin", status: "scheduled" },
-        { userid: "1,324", moblieid: "Jan 6, 2024", role: "Customer Care", status: "live" },
-        { userid: "1,324", moblieid: "Jan 6, 2024", role: "Teacher", status: "saved" },
-        { userid: "1,324", moblieid: "Jan 6, 2024", role: "Chief Moderator", status: "paused" },
-        { userid: "1,324", moblieid: "Jan 6, 2024", role: "Guide", status: "saved" },
-        { userid: "1,324", moblieid: "Jan 6, 2024", role: "Editor", status: "finished" },
-        { userid: "1,324", moblieid: "Jan 6, 2024", role: "Admin", status: "ended" },
-        { userid: "1,324", moblieid: "Jan 6, 2024", role: "Customer Care", status: "live" },
-        { userid: "1,324", moblieid: "Jan 6, 2024", role: "Teacher", status: "scheduled" },
-        { userid: "1,324", moblieid: "Jan 6, 2024", role: "Chief Moderator", status: "finished" },
-        { userid: "1,324", moblieid: "Jan 6, 2024", role: "Guide", status: "saved" },
-        { userid: "1,324", moblieid: "Jan 6, 2024", role: "Editor", status: "paused" },
-        { userid: "1,324", moblieid: "Jan 6, 2024", role: "Admin", status: "saved" },
-        { userid: "1,324", moblieid: "Jan 6, 2024", role: "Customer Care", status: "live" },
-        { userid: "1,324", moblieid: "Jan 6, 2024", role: "Teacher", status: "ended" },
-        { userid: "1,324", moblieid: "Jan 6, 2024", role: "Chief Moderator", status: "scheduled" },
-        { userid: "1,324", moblieid: "Jan 6, 2024", role: "Guide", status: "finished" },
-        { userid: "1,324", moblieid: "Jan 6, 2024", role: "Editor", status: "saved" },
-        { userid: "1,324", moblieid: "Jan 6, 2024", role: "Admin", status: "live" },
-        { userid: "1,324", moblieid: "Jan 6, 2024", role: "Customer Care", status: "saved" },
-        { userid: "1,324", moblieid: "Jan 6, 2024", role: "Teacher", status: "paused" },
-        { userid: "1,324", moblieid: "Jan 6, 2024", role: "Chief Moderator", status: "ended" },
-        { userid: "1,324", moblieid: "Jan 6, 2024", role: "Guide", status: "saved" },
-        { userid: "1,324", moblieid: "Jan 6, 2024", role: "Editor", status: "saved" }
-    ];
-    return allQuizzes;
-};
+interface NotificationData {
+    name: string;
+    description: string;
+    createdAt: string;
+    cta: string;
+    endDate: string;
+    hyperLink: string;
+    notificationIcon: string;
+    notificationId: string;
+    startDate: string;
+    status: string;
+
+}
 
 type TruncatedTextProps = {
     text: string;
@@ -72,27 +50,80 @@ const TruncatedText: React.FC<TruncatedTextProps> = ({ text, maxLength }) => {
 
     return <span>{truncatedText}</span>;
 };
+function formatDate(dateString: string): string {
+    const date = new Date(dateString);
+    return date.toLocaleDateString("en-US", {
+        month: "short",
+        day: "numeric",
+        year: "numeric",
+    });
+}
+
+
+const formatScheduleDate = (dateString: string | null): string => {
+    if (!dateString) return "-"; // Return "-" if the date is null or undefined
+
+    try {
+        const dateObj = new Date(dateString);
+
+        if (isNaN(dateObj.getTime())) {
+            // If date is invalid
+            return "-";
+        }
+
+        // Format the date manually to match "MM/DD/YYYY,HH:mm"
+        const year = dateObj.getFullYear();
+        const month = String(dateObj.getMonth() + 1).padStart(2, "0");
+        const day = String(dateObj.getDate()).padStart(2, "0");
+        const hours = String(dateObj.getHours()).padStart(2, "0");
+        const minutes = String(dateObj.getMinutes()).padStart(2, "0");
+
+        return `${month}/${day}/${year},${hours}:${minutes}`;
+    } catch (error) {
+        console.error("Error formatting date:", error);
+        return "-";
+    }
+};
 
 function Messenger() {
     const router = useRouter();
-    const [data, setData] = useState<Quiz[]>([]);
-    const [quizzes, setQuizzes] = useState<Quiz[]>([]);
+    const [data, setData] = useState<NotificationData[]>([]);
+    const [notification, setNotification] = useState<NotificationData[]>([]);
     const [currentPage, setCurrentPage] = useState(1);
-    const [itemsPerPage] = useState(5);
+    const [itemsPerPage] = useState(10);
     const [loading, setLoading] = useState(true);
+    const [notiIconPop, setNotiIconPop] = useState(false);
     const [searchTerm, setSearchTerm] = useState('');
+    const [name, setName] = useState('');
+    const [description, setDescription] = useState("");
+    const [cta, setCta] = useState("");
+    const [hyperLink, setHyperLink] = useState("");
+    const [timer, setTimer] = useState("");
+    const [startDate, setStartDate] = useState("");
+    const [endDate, setEndDate] = useState("");
+    const [timerIcon, setTimerIcon] = useState("");
+    const [isEditing, setIsEditing] = useState(false)
+    const [datapickerforEnd, setDatapickerforEnd] = useState(false);
+    const [datapickerforStart, setDatapickerforStart] = useState(false);
+    const [sectionScheduleDate, setSectionScheduleDate] = useState("");
+
+    const isFormValid = name && description && cta && hyperLink && startDate && endDate;
 
     const [isOpen, setIsOpen] = useState(false);
     // Handler to open the dialog
-    const handleCreate = () => setIsOpen(true);
+    const handleCreate = () => {
+        setIsOpen(true);
+        setDatapickerforStart(false);
+        setDatapickerforEnd(false);
+    };
 
     // -------------------------------------------------------------------------------
     // State to track the selected icon
-    const [selectedIcon, setSelectedIcon] = useState("/icons/idea-2.svg");
+    const [notificationIcon, setNotificationIcon] = useState("/icons/idea-2.svg");
 
     // Function to handle icon selection
     const handleIconSelect = (iconPath: React.SetStateAction<string>) => {
-        setSelectedIcon(iconPath); // Update the selected icon state
+        setNotificationIcon(iconPath); // Update the selected icon state
     };
 
     // -------------------------------------------------------------------------------
@@ -104,7 +135,6 @@ function Messenger() {
     };
     // -------------------------------------------------------------------------------
     // State for Description words(0/100)
-    const [description, setDescription] = useState("");
     const handleInputChange = (e: any) => {
         const inputText = e.target.value;
         if (inputText.length <= 100) {
@@ -113,7 +143,6 @@ function Messenger() {
     };
     // -------------------------------------------------------------------------------
     // State for Name words(0/100)
-    const [name, setName] = useState("");
     const handleInputChangeforName = (e: any) => {
         const inputText = e.target.value;
         if (inputText.length <= 50) {
@@ -122,7 +151,6 @@ function Messenger() {
     };
     // -------------------------------------------------------------------------------
     // State for  words(0/100)
-    const [cta, setCta] = useState("");
     const handleInputChangeforCta = (e: any) => {
         const inputText = e.target.value;
         if (inputText.length <= 30) {
@@ -138,25 +166,79 @@ function Messenger() {
     const firstItemIndex = lastItemIndex - itemsPerPage;
     const currentItems = data.slice(firstItemIndex, lastItemIndex);
 
-    // Fetch quizzes when component mounts
     useEffect(() => {
-        const loadQuizzes = async () => {
-            setLoading(true);
-            const quizzes = await fetchQuizzes();
-            setQuizzes(quizzes);
-            setData(quizzes);
+        const usersCollection = collection(db, 'notifications');
+        const unsubscribe = onSnapshot(usersCollection, (snapshot) => {
+            const updatedNoti: NotificationData[] = snapshot.docs.map((doc) => {
+                const userData = doc.data();
+                return {
+                    name: userData.name,
+                    description: userData.description,
+                    cta: userData.cta,
+                    createdAt: userData.createdAt,
+                    endDate: userData.endDate,
+                    hyperLink: userData.hyperLink,
+                    notificationIcon: userData.notificationIcon,
+                    notificationId: userData.notificationId,
+                    startDate: userData.startDate,
+                    status: userData.status,
+                } as NotificationData;
+            });
+
+            setNotification(updatedNoti);
+            setData(updatedNoti); // Update data for pagination and search
             setLoading(false);
-        };
-        loadQuizzes();
+        });
+
+        // Cleanup listener on component unmount
+        return () => unsubscribe();
     }, []);
+
+    const handleSendNotification = async () => {
+
+        try {
+            // Add new user data to Firestore
+            const docRef = await addDoc(collection(db, "notifications"), {
+                name,
+                description,
+                cta,
+                hyperLink,
+                startDate,
+                endDate,
+                notificationIcon,
+                status: 'live',
+                createdAt: new Date().toISOString(),
+            });
+
+            // Update the document with the generated adminId
+            await setDoc(docRef, { notificationId: docRef.id }, { merge: true });
+            toast.success("Notification Added Successfully!");
+            setIsOpen(false);
+            setName('');
+            setDescription('');
+            setCta('');
+            setHyperLink('');
+            setStartDate('');
+            setEndDate('');
+            setNotificationIcon('/icons/idea-2.svg');
+
+        } catch (error) {
+            console.error("Error adding notification in Firestore:", error);
+            toast.error("Failed to add notification. Please try again.");
+        }
+    };
+
+    if (loading) {
+        return <LoadingData />
+    }
 
     return (
         <div className="flex flex-col h-full gap-3 w-full p-8 overflow-y-auto">
-            <div className="flex flex-row justify-between h-[44px] items-center mt-4">
+            <div className="flex flex-row justify-between h-[44px] items-center ">
                 <h1 className="font-semibold text-lg text-[#1D2939]">Messenger</h1>
                 <button
                     onClick={handleCreate}
-                    className="h-[44px] w-auto px-6 py-2 bg-[#8501FF] rounded-md shadow-inner-button border border-solid border-[#800EE2] flex items-center justify-center"
+                    className="h-[44px] w-auto px-6 py-2 bg-[#8501FF] rounded-md shadow-inner-button border border-solid border-[#800EE2] flex items-center justify-center transition-colors duration-150 hover:bg-[#6D0DCC]"
                 >
                     <span className="text-[#FFFFFF] font-semibold text-sm">Create Push Notification</span>
                 </button>
@@ -178,7 +260,7 @@ function Messenger() {
             </div>
 
             <div className="flex flex-col justify-between h-full">
-                <div className="flex border border-[#EAECF0] rounded-xl">
+                <div className="flex border border-[#EAECF0] rounded-xl overflow-x-auto">
                     <table className="w-full bg-white rounded-xl">
                         <thead>
                             <tr>
@@ -203,32 +285,32 @@ function Messenger() {
                             </tr>
                         </thead>
                         <tbody>
-                            {currentItems.map((quiz, index) => (
-                                <tr key={index} className="border-t border-solid border-[#EAECF0]">
+                            {currentItems.map((noti, index) => (
+                                <tr key={index} className="border-t border-solid border-[#EAECF0] ">
                                     <td className="text-[#667085] text-center font-medium text-sm">
                                         {index + 1}
                                     </td>
                                     <td className="py-2">
                                         <div className="flex flex-row items-start ml-8 gap-2">
-                                            <Image src='/icons/idea-01 (1).svg' alt="idea" width={24} height={24} />
-                                            <div className="flex items-start justify-start flex-col">
+                                            <Image className='w-5 h-5' src={noti.notificationIcon} alt="idea" width={24} height={24} />
+                                            <div className="flex items-start justify-start flex-col whitespace-nowrap">
                                                 <button
                                                     className="text-sm text-[#9012FF] font-semibold underline"
-                                                    onClick={() => handleButtonClick('/admin/marketingintegration/marketinfo')}
+                                                    onClick={() => handleButtonClick(`/admin/marketingintegration/${noti.name.toLowerCase().replace(/\s+/g, '-')}?nId=${noti.notificationId}`)}
                                                 >
-                                                    Quiz Competition
+                                                    {noti.name}
                                                 </button>
-                                                <p className="text-[0.813rem] text-[#667085] font-medium">
-                                                    <TruncatedText text={'Ready to test your knowledge? Join our quiz competition and compete for exciting prizes!'} maxLength={50} />
+                                                <p className="text-[0.813rem] text-[#667085] font-medium truncate">
+                                                    <TruncatedText text={noti.description} maxLength={50} />
                                                 </p>
                                             </div>
                                         </div>
                                     </td>
-                                    <td className="px-8 py-4 text-center text-[#101828] text-sm">{quiz.moblieid}</td>
-                                    <td className="px-8 py-4 text-center text-[#101828] text-sm">{quiz.userid}</td>
+                                    <td className="px-8 py-4 text-center text-[#101828] text-sm whitespace-nowrap">{formatDate(noti.createdAt)}</td>
+                                    <td className="px-8 py-4 text-center text-[#101828] text-sm">1,321</td>
                                     <td className="px-8 py-4 text-[#101828] text-sm">
                                         <span className='flex items-start justify-start ml-[25%] rounded-full'>
-                                            <QuizStatus status={quiz.status} />
+                                            <QuizStatus status={noti.status} />
                                         </span>
                                     </td>
                                     <td className="flex items-center justify-center px-8 py-4 text-[#101828] text-sm">
@@ -245,7 +327,13 @@ function Messenger() {
                                             </PopoverTrigger>
                                             <PopoverContent className="w-[10.438rem] py-1 px-0 bg-white border border-lightGrey rounded-md">
                                                 <div className="w-full">
-                                                    <button className="flex flex-row items-center justify-start w-full px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7]">
+                                                    <button className="flex flex-row items-center justify-start w-full px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7]"
+                                                        onClick={() => {
+                                                            setIsEditing(true);
+                                                            handleCreate();
+
+                                                        }}>
+
                                                         <Image src="/icons/edit-02.svg" width={18} height={18} alt="edit" />
                                                         <span className="text-sm text-[#0C111D] font-normal">Edit details</span>
                                                     </button>
@@ -277,26 +365,29 @@ function Messenger() {
                 </div>
             </div>
 
-            {/* Dialog Component */}
+            {/* Dialog Component  */}
             <Dialog open={isOpen} onClose={() => setIsOpen(false)} className="relative z-50">
                 <DialogBackdrop className="fixed inset-0 bg-black/30" />
                 <div className="fixed inset-0 flex items-center justify-center">
-                    <DialogPanel className="bg-white rounded-2xl w-[500px] h-auto ">
+                    <DialogPanel className="bg-white rounded-2xl w-[500px] max-h-[92%]  overflow-y-auto">
                         <div className="flex flex-col relative px-6 ">
                             <div className="flex flex-row justify-between my-6">
                                 <h3 className="text-lg font-bold text-[#1D2939]">Create Push Notification</h3>
-                                <button onClick={() => setIsOpen(false)}>
-                                    <Image src="/icons/cancel.svg" alt="Cancel" width={20} height={20} />
+                                <button className="w-[32px] h-[32px]  rounded-full flex items-center justify-center transition-all duration-300 ease-in-out hover:bg-[#F2F4F7]">
+                                    <button onClick={() => setIsOpen(false)}>
+                                        <Image src="/icons/cancel.svg" alt="Cancel" width={20} height={20} />
+                                    </button>
                                 </button>
                             </div>
                             <div className="flex flex-col w-full gap-1 ">
                                 <label className="text-[#1D2939] text-sm font-medium">Name</label>
-                                <div className="flex flex-row p-2 w-full gap-2 border border-solid border-[#D0D5DD] rounded-md ">
-                                    <Popover placement="bottom">
+                                <div className="flex flex-row p-2 w-full gap-2 border border-gray-300  h-10 focus:outline focus:outline-[1.5px] focus:outline-[#D6BBFB] hover:outline hover:outline-[1.5px] hover:outline-[#D6BBFB] rounded-md ">
+                                    <Popover placement="bottom" isOpen={notiIconPop}>
                                         <PopoverTrigger>
-                                            <button className="flex flex-row w-[44px] items-center rounded-md transition duration-200 ease-in-out justify-between">
+                                            <button className="flex flex-row w-[44px] items-center rounded-md transition duration-200 ease-in-out justify-between focus:outline-none"
+                                                onClick={() => setNotiIconPop(true)}>
                                                 <Image
-                                                    src={selectedIcon}
+                                                    src={notificationIcon}
                                                     width={24}
                                                     height={24}
                                                     alt="Selected Icon"
@@ -309,45 +400,44 @@ function Messenger() {
                                                 />
                                             </button>
                                         </PopoverTrigger>
-                                        <PopoverContent>
-                                            <div className="py-1 w-[56px] border border-solid border-[#EAECF0] bg-[#FFFFFF] rounded-md flex flex-col shadow-lg">
-                                                {/* Idea Button */}
-                                                <button
-                                                    className="flex flex-row w-full p-1 hover:bg-[#F2F4F7] justify-center items-center"
-                                                    onClick={() => handleIconSelect("/icons/idea-2.svg")}
-                                                >
-                                                    <Image
-                                                        src="/icons/idea-2.svg"
-                                                        width={24}
-                                                        height={24}
-                                                        alt="Idea Button"
-                                                    />
-                                                </button>
-                                                {/* Megaphone Button */}
-                                                <button
-                                                    className="flex flex-row w-full p-1 hover:bg-[#F2F4F7] justify-center items-center"
-                                                    onClick={() => handleIconSelect("/icons/megaphone.svg")}
-                                                >
-                                                    <Image
-                                                        src="/icons/megaphone.svg"
-                                                        width={24}
-                                                        height={24}
-                                                        alt="Megaphone Button"
-                                                    />
-                                                </button>
-                                                {/* Read Button */}
-                                                <button
-                                                    className="flex flex-row w-full p-1 hover:bg-[#F2F4F7] justify-center items-center"
-                                                    onClick={() => handleIconSelect("/icons/read-2.svg")}
-                                                >
-                                                    <Image
-                                                        src="/icons/read-2.svg"
-                                                        width={24}
-                                                        height={24}
-                                                        alt="Read Button"
-                                                    />
-                                                </button>
-                                            </div>
+                                        <PopoverContent className="flex flex-col gap-1 px-0 w-10">
+
+                                            {/* Idea Button */}
+                                            <button
+                                                className="flex flex-row w-full p-1 hover:bg-[#F2F4F7] justify-center items-center outline-none"
+                                                onClick={() => { handleIconSelect("/icons/idea-2.svg"); setNotiIconPop(false); }}
+                                            >
+                                                <Image
+                                                    src="/icons/idea-2.svg"
+                                                    width={24}
+                                                    height={24}
+                                                    alt="Idea Button"
+                                                />
+                                            </button>
+                                            {/* Megaphone Button */}
+                                            <button
+                                                className="flex flex-row w-full p-1 hover:bg-[#F2F4F7] justify-center items-center outline-none"
+                                                onClick={() => { handleIconSelect("/icons/megaphone.svg"); setNotiIconPop(false); }}
+                                            >
+                                                <Image
+                                                    src="/icons/megaphone.svg"
+                                                    width={24}
+                                                    height={24}
+                                                    alt="Megaphone Button"
+                                                />
+                                            </button>
+                                            {/* Read Button */}
+                                            <button
+                                                className="flex flex-row w-full p-1 hover:bg-[#F2F4F7] justify-center items-center outline-none"
+                                                onClick={() => { handleIconSelect("/icons/read-2.svg"); setNotiIconPop(false); }}
+                                            >
+                                                <Image
+                                                    src="/icons/read-2.svg"
+                                                    width={24}
+                                                    height={24}
+                                                    alt="Read Button"
+                                                />
+                                            </button>
                                         </PopoverContent>
                                     </Popover>
                                     <input
@@ -363,9 +453,9 @@ function Messenger() {
                             <div className="flex flex-col gap-1 w-full">
                                 <label className="text-[#1D2939] text-sm font-medium">Description</label>
                                 <input
-                                    className="w-full py-2 px-4 text-sm font-medium text-[#1D2939] border border-[#D0D5DD] rounded-md"
+                                    className="w-full py-2 px-4 text-sm font-medium text-[#1D2939] border border-gray-300  h-10 focus:outline focus:outline-[1.5px] focus:outline-[#D6BBFB] hover:outline hover:outline-[1.5px] hover:outline-[#D6BBFB] rounded-md"
                                     type="text"
-                                    placeholder="Button Name"
+                                    placeholder="Notification Content"
                                     value={description}
                                     onChange={handleInputChange}
                                 />
@@ -374,9 +464,9 @@ function Messenger() {
                             <div className="flex flex-col gap-1 w-full">
                                 <label className="text-[#1D2939] text-sm font-medium">CTA</label>
                                 <input
-                                    className="w-full py-2 px-4 text-sm font-medium text-[#1D2939] border border-[#D0D5DD] rounded-md"
+                                    className="w-full py-2 px-4 text-sm font-medium text-[#1D2939] border border-gray-300  h-10 focus:outline focus:outline-[1.5px] focus:outline-[#D6BBFB] hover:outline hover:outline-[1.5px] hover:outline-[#D6BBFB] rounded-md"
                                     type="text"
-                                    placeholder="Notification Content"
+                                    placeholder="Button Name"
                                     value={cta}
                                     onChange={handleInputChangeforCta}
                                 />
@@ -385,14 +475,15 @@ function Messenger() {
                             <div className="flex flex-col gap-1 w-full ">
                                 <label className="text-[#1D2939] text-sm font-medium">Hyperlink</label>
                                 <input
-                                    className="w-full py-2 px-4 text-sm font-medium text-[#1D2939] border border-[#D0D5DD] rounded-md"
+                                    className="w-full py-2 px-4 text-sm font-medium text-[#1D2939] border border-gray-300  h-10 focus:outline focus:outline-[1.5px] focus:outline-[#D6BBFB] hover:outline hover:outline-[1.5px] hover:outline-[#D6BBFB] rounded-md"
                                     type="text"
                                     placeholder="Add hyperlink"
+                                    onChange={(e) => setHyperLink(e.target.value)} // Controlled input for quiz name
                                 />
                             </div>
-                            <div className="flex flex-col gap-1 w-full mt-4">
+                            {/* <div className="flex flex-col gap-1 w-full mt-4">
                                 <label className="text-[#1D2939] text-sm font-medium">Countdown Timer</label>
-                                <div className="flex flex-row p-2 w-full justify-between border border-solid border-[#D0D5DD] rounded-md ">
+                                <div className="flex flex-row p-2 w-full justify-between border border-gray-300  h-10 focus:outline focus:outline-[1.5px] focus:outline-[#D6BBFB] hover:outline hover:outline-[1.5px] hover:outline-[#D6BBFB] rounded-md ">
                                     <div className="flex flex-row gap-2">
                                         <Image
                                             src="/icons/clock-01.svg"
@@ -424,8 +515,7 @@ function Messenger() {
                                                 </button>
                                             </PopoverTrigger>
                                             <PopoverContent>
-                                                <div className="py-1 w-[56px] border border-solid border-[#EAECF0] bg-[#FFFFFF] rounded-md flex flex-col shadow-lg">
-                                                    {/* Idea Button */}
+                                                <div className="flex flex-col gap-1">
                                                     <button
                                                         className="flex flex-row w-full p-1 hover:bg-[#F2F4F7] justify-center items-center"
                                                         onClick={() => handleIconSelectforimage("/icons/annocement.png")}
@@ -437,7 +527,6 @@ function Messenger() {
                                                             alt="Idea Button"
                                                         />
                                                     </button>
-                                                    {/* Megaphone Button */}
                                                     <button
                                                         className="flex flex-row w-full p-1 hover:bg-[#F2F4F7] justify-center items-center"
                                                         onClick={() => handleIconSelectforimage("/icons/megaphone.svg")}
@@ -449,7 +538,6 @@ function Messenger() {
                                                             alt="Megaphone Button"
                                                         />
                                                     </button>
-                                                    {/* Read Button */}
                                                     <button
                                                         className="flex flex-row w-full p-1 hover:bg-[#F2F4F7] justify-center items-center"
                                                         onClick={() => handleIconSelectforimage("/icons/read-2.svg")}
@@ -466,61 +554,79 @@ function Messenger() {
                                         </Popover>
                                     </div>
                                 </div>
-                            </div>
+                            </div> */}
                             <hr className="my-5" />
-                            <h1 className="text-[#1D2939] font-semibold text-lg ">Schedule notification</h1>
-                            <div className="flex flex-row w-full gap-4  mt-1">
-                                <div className="flex flex-col gap-1 w-1/2 flex-grow">
-                                    <label htmlFor="rating" className="text-[#1D2939] text-sm font-medium">
-                                        Date
-                                    </label>
-                                    <div className="flex flex-row p-2 w-full gap-2 border border-solid border-[#D0D5DD] rounded-md  ">
-                                        <Image
-                                            src="/icons/calendar-03.svg"
-                                            width={24}
-                                            height={24}
-                                            alt="calender" />
-                                        <input
-                                            className="w-full text-sm font-medium text-[#1D2939] placeholder:font-normal placeholder:text-[#A1A1A1] rounded-md outline-none"
-                                            type="text"
-                                            placeholder="Select Date"
-                                        />
+                            <h1 className="text-[#1D2939] font-semibold text-lg mb-2">Schedule notification</h1>
+                            <div className="flex flex-col gap-4">
+                                <div className='flex flex-col w-full gap-1'>
+                                    <span className='font-medium text-[#1D2939] text-sm'>Start Date & Time</span>
+                                    <div className="flex flex-row justify-between items-center mb-3">
+                                        <p className="text-[#1D2939] text-sm font-medium">  {formatScheduleDate(startDate) || " "}</p>
+                                        <button
+                                            className="flex flex-row gap-1 rounded-md border-[2px] border-solid border-[#9012FF] hover:bg-[#F5F0FF] bg-[#FFFFFF] p-2 "
+                                            onClick={() => setDatapickerforStart(true)}>
+                                            <span className="text-[#9012FF] font-semibold text-sm">{startDate ? 'Change Date' : 'Select Date'}</span>
+                                        </button>
                                     </div>
+                                    {(datapickerforStart &&
+                                        <DatePicker
+                                            granularity="minute"
+                                            minValue={today(getLocalTimeZone())}
+                                            hideTimeZone
+                                            onChange={(date) => {
+                                                const dateString = date ? date.toString() : "";
+                                                setStartDate(dateString);
+                                                setDatapickerforStart(true); // Return to button view after selecting date
+                                            }}
+
+                                        />
+                                    )}
                                 </div>
-                                <div className="flex flex-col gap-1 w-1/2 flex-grow">
-                                    <label htmlFor="num-ratings" className="text-[#1D2939] text-sm font-medium">
-                                        Time
-                                    </label>
-                                    <div className="flex flex-row p-2 w-full gap-2 border border-solid border-[#D0D5DD] rounded-md ">
-                                        <Image
-                                            src="/icons/clock-01.svg"
-                                            width={24}
-                                            height={24}
-                                            alt="calender" />
-                                        <input
-                                            className="w-full text-sm font-medium text-[#1D2939] placeholder:font-normal placeholder:text-[#A1A1A1] rounded-md outline-none"
-                                            type="text"
-                                            placeholder="Select Time"
-                                        />
+                                <div className='flex flex-col w-full gap-1'>
+                                    <span className='font-medium text-[#1D2939] text-sm'>End Date & Time</span>
+
+                                    <div className="flex flex-row justify-between items-center mb-3">
+                                        <p className="text-[#1D2939] text-sm font-medium">  {formatScheduleDate(endDate) || " "}</p>
+                                        <button
+                                            className="flex flex-row gap-1 rounded-md border-[2px] border-solid border-[#9012FF] hover:bg-[#F5F0FF] bg-[#FFFFFF] p-2 "
+                                            onClick={() => setDatapickerforEnd(true)}>
+                                            <span className="text-[#9012FF] font-semibold text-sm">{startDate ? 'Change Date' : 'Select Date'}</span>
+                                        </button>
                                     </div>
+                                    {(datapickerforEnd &&
+                                        <DatePicker
+                                            granularity="minute"
+                                            minValue={today(getLocalTimeZone())}
+                                            hideTimeZone
+                                            onChange={(date) => {
+                                                const dateString = date ? date.toString() : "";
+                                                setEndDate(dateString);
+                                                setDatapickerforEnd(true); // Return to button view after selecting date
+                                            }}
+
+                                        />
+                                    )}
+
                                 </div>
                             </div>
                         </div>
                         <div className="flex flex-row justify-end mt-6 gap-4 border-t border-[#EAECF0] pt-4 p-4 rounded-md">
                             <button
                                 onClick={() => setIsOpen(false)}
-                                className="py-2 px-6 border rounded-md text-[#1D2939] font-semibold text-sm">
+                                className="py-2 px-6 border rounded-md text-[#1D2939] font-semibold text-sm hover:bg-[#F2F4F7]">
                                 Cancel
                             </button>
                             <button
-                                onClick={() => setIsOpen(false)}
-                                className="py-2 px-6 bg-[#9012FF] text-white rounded-md font-semibold text-sm">
+                                onClick={handleSendNotification}
+                                // disabled={!isFormValid}
+                                className={`py-2 px-6 ${!isFormValid ? 'bg-[#CDA0FC] border-[#CCA6F2]' : 'bg-[#9012FF] border-[#800EE2] transition-colors duration-150 hover:bg-[#6D0DCC]'} text-white shadow-inner-button border rounded-md font-semibold text-sm`}>
                                 Send Notification
                             </button>
                         </div>
                     </DialogPanel>
                 </div>
             </Dialog>
+            <ToastContainer />
         </div>
     );
 }
