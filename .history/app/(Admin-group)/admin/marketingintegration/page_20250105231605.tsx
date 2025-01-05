@@ -349,11 +349,7 @@ function Messenger() {
                                                         <Image src="/icons/edit-02.svg" width={18} height={18} alt="edit" />
                                                         <span className="text-sm text-[#0C111D] font-normal">Edit details</span>
                                                     </button>
-                                                    <button className=" flex flex-row items-center justify-start w-full px-4 py-[0.625rem] gap-2 hover:bg-[#FEE4E2]"
-                                                        onClick={() => {
-                                                            setRemove(true);
-                                                            setActivePopover(null);
-                                                        }}
+                                                    <button className=" flex flex-row items-center justify-start w-full px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7]"
                                                     >
                                                         <Image src='/icons/delete.svg' alt="user profile" width={18} height={18} />
                                                         <p className="text-sm text-[#DE3024] font-normal">Remove</p>
@@ -843,16 +839,16 @@ function Messenger() {
             </Modal>
             {/* Dialog for Remove */}
             <Modal
-                isOpen={remove}
-                onOpenChange={(isOpen) => !isOpen && setRemove(false)}
+                isOpen={true}
+                onOpenChange={(isOpen) => !isOpen && onClose()}
                 hideCloseButton
             >
                 <ModalContent>
                     <>
                         <ModalHeader className="flex flex-row justify-between items-center gap-1">
-                            <h3 className=" font-bold task-[#1D2939]">Delete</h3>
+                            <h3 className=" font-bold task-[#1D2939]">Delete Message?</h3>
                             <button className="w-[32px] h-[32px]  rounded-full flex items-center justify-center transition-all duration-300 ease-in-out hover:bg-[#F2F4F7] ">
-                                <button className="" onClick={() => setRemove(false)}>
+                                <button className="" onClick={onClose}>
                                     <Image src="/icons/cancel.svg" alt="Cancel" width={20} height={20} />
                                 </button>
                             </button>
@@ -863,8 +859,8 @@ function Messenger() {
                         </ModalBody>
 
                         <ModalFooter className='border-t border-lightGrey'>
-                            <Button variant="light" className="py-[0.625rem] px-6 border-[1.5px] border-lightGrey font-semibold text-sm text-[#1D2939] rounded-md hover:bg-[#F2F4F7]" onClick={() => setRemove(false)}>Cancel</Button>
-                            <Button className={`py-[0.625rem] px-6 text-white shadow-inner-button hover:bg-[#B0201A] font-semibold bg-[#BB241A] border border-white rounded-md`} onClick={() => setRemove(false)}>Delete</Button>
+                            <Button variant="light" className="py-[0.625rem] px-6 border-[1.5px] border-lightGrey font-semibold text-sm text-[#1D2939] rounded-md hover:bg-[#F2F4F7]" onClick={onClose}>Cancel</Button>
+                            <Button className={`py-[0.625rem] px-6 text-white shadow-inner-button hover:bg-[#B0201A] font-semibold bg-[#BB241A] border border-white rounded-md`} onClick={handleDeleteMessage}>Delete</Button>
                         </ModalFooter>
                     </>
                 </ModalContent>

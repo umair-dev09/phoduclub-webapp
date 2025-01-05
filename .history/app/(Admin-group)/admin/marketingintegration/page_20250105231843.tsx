@@ -349,11 +349,7 @@ function Messenger() {
                                                         <Image src="/icons/edit-02.svg" width={18} height={18} alt="edit" />
                                                         <span className="text-sm text-[#0C111D] font-normal">Edit details</span>
                                                     </button>
-                                                    <button className=" flex flex-row items-center justify-start w-full px-4 py-[0.625rem] gap-2 hover:bg-[#FEE4E2]"
-                                                        onClick={() => {
-                                                            setRemove(true);
-                                                            setActivePopover(null);
-                                                        }}
+                                                    <button className=" flex flex-row items-center justify-start w-full px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7]"
                                                     >
                                                         <Image src='/icons/delete.svg' alt="user profile" width={18} height={18} />
                                                         <p className="text-sm text-[#DE3024] font-normal">Remove</p>

@@ -109,7 +109,7 @@ function Messenger() {
     const [scrollBehavior, setScrollBehavior] = useState<"inside" | "outside">("outside");
     const isFormValid = name && description && cta && hyperLink && startDate && endDate;
     const [activePopover, setActivePopover] = useState<number | null>(null);
-    const [remove, setRemove] = useState(false);
+
     const [isOpen, setIsOpen] = useState(false);
     // Handler to open the dialog
     const handleCreate = () => {
@@ -241,10 +241,7 @@ function Messenger() {
             <div className="flex flex-row justify-between h-[44px] items-center ">
                 <h1 className="font-semibold text-lg text-[#1D2939]">Messenger</h1>
                 <button
-                    onClick={() => {
-                        handleCreate();
-                        setIsEditing(false);
-                    }}
+                    onClick={handleCreate}
                     className="h-[44px] w-auto px-6 py-2 bg-[#8501FF] rounded-md shadow-inner-button border border-solid border-[#800EE2] flex items-center justify-center transition-colors duration-150 hover:bg-[#6D0DCC]"
                 >
                     <span className="text-[#FFFFFF] font-semibold text-sm">Create Push Notification</span>
@@ -321,19 +318,15 @@ function Messenger() {
                                         </span>
                                     </td>
                                     <td className="flex items-center justify-center px-8 py-4 text-[#101828] text-sm">
-                                        <Popover placement="bottom-end"
-                                            isOpen={activePopover === index}
-                                            onOpenChange={(open) => open ? handlePopoverOpen(index) : setActivePopover(null)}>
+                                        <Popover placement="bottom-end">
                                             <PopoverTrigger>
-                                                <button className="w-[32px] h-[32px] outline-none  rounded-full flex items-center justify-center transition-all duration-300 ease-in-out hover:bg-[#F2F4F7]">
-
+                                                <button className="ml-[50%] outline-none">
                                                     <Image
                                                         src="/icons/three-dots.svg"
                                                         width={20}
                                                         height={20}
                                                         alt="More Actions"
                                                     />
-
                                                 </button>
                                             </PopoverTrigger>
                                             <PopoverContent className="w-[10.438rem] py-1 px-0 bg-white border border-lightGrey rounded-md">
@@ -342,18 +335,13 @@ function Messenger() {
                                                         onClick={() => {
                                                             setIsEditing(true);
                                                             handleCreate();
-                                                            setActivePopover(null);
 
                                                         }}>
 
                                                         <Image src="/icons/edit-02.svg" width={18} height={18} alt="edit" />
                                                         <span className="text-sm text-[#0C111D] font-normal">Edit details</span>
                                                     </button>
-                                                    <button className=" flex flex-row items-center justify-start w-full px-4 py-[0.625rem] gap-2 hover:bg-[#FEE4E2]"
-                                                        onClick={() => {
-                                                            setRemove(true);
-                                                            setActivePopover(null);
-                                                        }}
+                                                    <button className=" flex flex-row items-center justify-start w-full px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7]"
                                                     >
                                                         <Image src='/icons/delete.svg' alt="user profile" width={18} height={18} />
                                                         <p className="text-sm text-[#DE3024] font-normal">Remove</p>
@@ -381,7 +369,7 @@ function Messenger() {
                 </div>
             </div>
 
-            {/* Dialog for Create push Notification */}
+            {/* Dialog Component  for Create push Notification */}
 
             {/* <Dialog open={isOpen} onClose={() => setIsOpen(false)} className="relative z-50">
                 <DialogBackdrop className="fixed inset-0 bg-black/30" />
@@ -645,7 +633,6 @@ function Messenger() {
                     </DialogPanel>
                 </div>
             </Dialog> */}
-            {/* Dialog for Create push Notification */}
             <Modal
                 isOpen={isOpen}
                 onOpenChange={(isOpen) => !isOpen && setIsOpen(false)}
@@ -777,8 +764,8 @@ function Messenger() {
                                         <p className="text-[#1D2939] text-sm font-medium">  {formatScheduleDate(startDate) || " "}</p>
                                         <button
                                             className="flex flex-row gap-1 rounded-md border-[2px] border-solid border-[#9012FF] hover:bg-[#F5F0FF] bg-[#FFFFFF] p-2 "
-                                            onClick={() => setDatapickerforStart(!datapickerforStart)}>
-                                            <span className="text-[#9012FF] font-semibold text-sm">{isEditing ? 'Change Date' : 'Select Date'}</span>
+                                            onClick={() => setDatapickerforStart(true)}>
+                                            <span className="text-[#9012FF] font-semibold text-sm">{startDate ? 'Change Date' : 'Select Date'}</span>
                                         </button>
                                     </div>
                                     {(datapickerforStart &&
@@ -789,7 +776,7 @@ function Messenger() {
                                             onChange={(date) => {
                                                 const dateString = date ? date.toString() : "";
                                                 setStartDate(dateString);
-
+                                                setDatapickerforStart(true); // Return to button view after selecting date
                                             }}
 
                                         />
@@ -802,8 +789,8 @@ function Messenger() {
                                         <p className="text-[#1D2939] text-sm font-medium">  {formatScheduleDate(endDate) || " "}</p>
                                         <button
                                             className="flex flex-row gap-1 rounded-md border-[2px] border-solid border-[#9012FF] hover:bg-[#F5F0FF] bg-[#FFFFFF] p-2 "
-                                            onClick={() => setDatapickerforEnd(!datapickerforEnd)}>
-                                            <span className="text-[#9012FF] font-semibold text-sm">{isEditing ? 'Change Date' : 'Select Date'}</span>
+                                            onClick={() => setDatapickerforEnd(true)}>
+                                            <span className="text-[#9012FF] font-semibold text-sm">{startDate ? 'Change Date' : 'Select Date'}</span>
                                         </button>
                                     </div>
                                     {(datapickerforEnd &&
@@ -814,7 +801,7 @@ function Messenger() {
                                             onChange={(date) => {
                                                 const dateString = date ? date.toString() : "";
                                                 setEndDate(dateString);
-
+                                                setDatapickerforEnd(true); // Return to button view after selecting date
                                             }}
 
                                         />
@@ -837,34 +824,6 @@ function Messenger() {
                                 className={`py-2 px-6 ${!isFormValid ? 'bg-[#CDA0FC] border-[#CCA6F2]' : 'bg-[#9012FF] border-[#800EE2] transition-colors duration-150 hover:bg-[#6D0DCC]'} text-white shadow-inner-button border rounded-md font-semibold text-sm`}>
                                 Send Notification
                             </Button>
-                        </ModalFooter>
-                    </>
-                </ModalContent>
-            </Modal>
-            {/* Dialog for Remove */}
-            <Modal
-                isOpen={remove}
-                onOpenChange={(isOpen) => !isOpen && setRemove(false)}
-                hideCloseButton
-            >
-                <ModalContent>
-                    <>
-                        <ModalHeader className="flex flex-row justify-between items-center gap-1">
-                            <h3 className=" font-bold task-[#1D2939]">Delete</h3>
-                            <button className="w-[32px] h-[32px]  rounded-full flex items-center justify-center transition-all duration-300 ease-in-out hover:bg-[#F2F4F7] ">
-                                <button className="" onClick={() => setRemove(false)}>
-                                    <Image src="/icons/cancel.svg" alt="Cancel" width={20} height={20} />
-                                </button>
-                            </button>
-                        </ModalHeader>
-
-                        <ModalBody>
-                            <p className=" text-sm font-normal pb-2 text-[#667085]">Once the message is deleted you cannot restore it again.</p>
-                        </ModalBody>
-
-                        <ModalFooter className='border-t border-lightGrey'>
-                            <Button variant="light" className="py-[0.625rem] px-6 border-[1.5px] border-lightGrey font-semibold text-sm text-[#1D2939] rounded-md hover:bg-[#F2F4F7]" onClick={() => setRemove(false)}>Cancel</Button>
-                            <Button className={`py-[0.625rem] px-6 text-white shadow-inner-button hover:bg-[#B0201A] font-semibold bg-[#BB241A] border border-white rounded-md`} onClick={() => setRemove(false)}>Delete</Button>
                         </ModalFooter>
                     </>
                 </ModalContent>

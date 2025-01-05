@@ -106,10 +106,9 @@ function Messenger() {
     const [datapickerforEnd, setDatapickerforEnd] = useState(false);
     const [datapickerforStart, setDatapickerforStart] = useState(false);
     const [sectionScheduleDate, setSectionScheduleDate] = useState("");
-    const [scrollBehavior, setScrollBehavior] = useState<"inside" | "outside">("outside");
+
     const isFormValid = name && description && cta && hyperLink && startDate && endDate;
-    const [activePopover, setActivePopover] = useState<number | null>(null);
-    const [remove, setRemove] = useState(false);
+
     const [isOpen, setIsOpen] = useState(false);
     // Handler to open the dialog
     const handleCreate = () => {
@@ -232,19 +231,13 @@ function Messenger() {
     if (loading) {
         return <LoadingData />
     }
-    const handlePopoverOpen = (index: number) => {
-        setActivePopover(index);
-    };
 
     return (
         <div className="flex flex-col h-full gap-3 w-full p-8 overflow-y-auto">
             <div className="flex flex-row justify-between h-[44px] items-center ">
                 <h1 className="font-semibold text-lg text-[#1D2939]">Messenger</h1>
                 <button
-                    onClick={() => {
-                        handleCreate();
-                        setIsEditing(false);
-                    }}
+                    onClick={handleCreate}
                     className="h-[44px] w-auto px-6 py-2 bg-[#8501FF] rounded-md shadow-inner-button border border-solid border-[#800EE2] flex items-center justify-center transition-colors duration-150 hover:bg-[#6D0DCC]"
                 >
                     <span className="text-[#FFFFFF] font-semibold text-sm">Create Push Notification</span>
@@ -321,19 +314,15 @@ function Messenger() {
                                         </span>
                                     </td>
                                     <td className="flex items-center justify-center px-8 py-4 text-[#101828] text-sm">
-                                        <Popover placement="bottom-end"
-                                            isOpen={activePopover === index}
-                                            onOpenChange={(open) => open ? handlePopoverOpen(index) : setActivePopover(null)}>
+                                        <Popover placement="bottom-end">
                                             <PopoverTrigger>
-                                                <button className="w-[32px] h-[32px] outline-none  rounded-full flex items-center justify-center transition-all duration-300 ease-in-out hover:bg-[#F2F4F7]">
-
+                                                <button className="ml-[50%] outline-none">
                                                     <Image
                                                         src="/icons/three-dots.svg"
                                                         width={20}
                                                         height={20}
                                                         alt="More Actions"
                                                     />
-
                                                 </button>
                                             </PopoverTrigger>
                                             <PopoverContent className="w-[10.438rem] py-1 px-0 bg-white border border-lightGrey rounded-md">
@@ -342,18 +331,13 @@ function Messenger() {
                                                         onClick={() => {
                                                             setIsEditing(true);
                                                             handleCreate();
-                                                            setActivePopover(null);
 
                                                         }}>
 
                                                         <Image src="/icons/edit-02.svg" width={18} height={18} alt="edit" />
                                                         <span className="text-sm text-[#0C111D] font-normal">Edit details</span>
                                                     </button>
-                                                    <button className=" flex flex-row items-center justify-start w-full px-4 py-[0.625rem] gap-2 hover:bg-[#FEE4E2]"
-                                                        onClick={() => {
-                                                            setRemove(true);
-                                                            setActivePopover(null);
-                                                        }}
+                                                    <button className=" flex flex-row items-center justify-start w-full px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7]"
                                                     >
                                                         <Image src='/icons/delete.svg' alt="user profile" width={18} height={18} />
                                                         <p className="text-sm text-[#DE3024] font-normal">Remove</p>
@@ -381,9 +365,8 @@ function Messenger() {
                 </div>
             </div>
 
-            {/* Dialog for Create push Notification */}
-
-            {/* <Dialog open={isOpen} onClose={() => setIsOpen(false)} className="relative z-50">
+            {/* Dialog Component  for Create push Notification */}
+            <Dialog open={isOpen} onClose={() => setIsOpen(false)} className="relative z-50">
                 <DialogBackdrop className="fixed inset-0 bg-black/30" />
                 <div className="fixed inset-0 flex items-center justify-center">
                     <DialogPanel className="bg-white rounded-2xl w-[500px] max-h-[92%]  overflow-y-auto">
@@ -396,274 +379,6 @@ function Messenger() {
                                     </button>
                                 </button>
                             </div>
-                            <div className="flex flex-col w-full gap-1 ">
-                                <label className="text-[#1D2939] text-sm font-medium">Name</label>
-                                <div className="flex flex-row p-2 w-full gap-2 border border-gray-300  h-10 focus:outline focus:outline-[1.5px] focus:outline-[#D6BBFB] hover:outline hover:outline-[1.5px] hover:outline-[#D6BBFB] rounded-md ">
-                                  
-                                    <Popover placement="bottom" onOpenChange={(open) => setNotiIconPop(open)} isOpen={notiIconPop}>
-                                        <PopoverTrigger>
-                                            <button className="flex flex-row w-[44px] items-center rounded-md transition duration-200 ease-in-out justify-between focus:outline-none"
-                                            // onClick={() => setNotiIconPop(true)}>
-                                            >
-                                                <Image
-                                                    src={notificationIcon}
-                                                    width={24}
-                                                    height={24}
-                                                    alt="Selected Icon"
-                                                />
-                                                <Image
-                                                    src="/icons/chevron-down.svg"
-                                                    width={20}
-                                                    height={20}
-                                                    alt="Dropdown Arrow"
-                                                />
-                                            </button>
-                                        </PopoverTrigger>
-                                        <PopoverContent className="flex flex-col gap-1 px-0 w-12 rounded-md">
-                                        
-                                            <button
-                                                className="flex flex-row w-full p-1 hover:bg-[#F2F4F7] justify-center items-center outline-none"
-                                                onClick={() => { handleIconSelect("/icons/idea-2.svg"); setNotiIconPop(false); }}
-                                            // onClick={() => { handleIconSelect("/icons/idea-2.svg") }}
-                                            >
-                                                <Image
-                                                    src="/icons/idea-2.svg"
-                                                    width={24}
-                                                    height={24}
-                                                    alt="Idea Button"
-                                                />
-                                            </button>
-                                          
-                                            <button
-                                                className="flex flex-row w-full p-1 hover:bg-[#F2F4F7] justify-center items-center outline-none"
-                                                onClick={() => { handleIconSelect("/icons/megaphone.svg"); setNotiIconPop(false); }}
-                                            >
-                                                <Image
-                                                    src="/icons/megaphone.svg"
-                                                    width={24}
-                                                    height={24}
-                                                    alt="Megaphone Button"
-                                                />
-                                            </button>
-                                         
-                                            <button
-                                                className="flex flex-row w-full p-1 hover:bg-[#F2F4F7] justify-center items-center outline-none"
-                                                onClick={() => { handleIconSelect("/icons/read-2.svg"); setNotiIconPop(false); }}
-                                            >
-                                                <Image
-                                                    src="/icons/read-2.svg"
-                                                    width={24}
-                                                    height={24}
-                                                    alt="Read Button"
-                                                />
-                                            </button>
-                                        </PopoverContent>
-                                    </Popover>
-                                    <input
-                                        className="w-full text-sm font-medium text-[#1D2939] placeholder:font-normal placeholder:text-[#A1A1A1] rounded-md outline-none"
-                                        type="text"
-                                        placeholder="Notification Heading"
-                                        value={name}
-                                        onChange={handleInputChangeforName}
-                                    />
-                                </div>
-                                <span className="text-[#475467] font-normal text-right text-sm">{name.length}/50</span>
-                            </div>
-                            <div className="flex flex-col gap-1 w-full">
-                                <label className="text-[#1D2939] text-sm font-medium">Description</label>
-                                <input
-                                    className="w-full py-2 px-4 text-sm font-medium text-[#1D2939] border border-gray-300  h-10 focus:outline focus:outline-[1.5px] focus:outline-[#D6BBFB] hover:outline hover:outline-[1.5px] hover:outline-[#D6BBFB] rounded-md"
-                                    type="text"
-                                    placeholder="Notification Content"
-                                    value={description}
-                                    onChange={handleInputChange}
-                                />
-                                <span className="text-[#475467] font-normal text-right text-sm">{description.length}/100</span>
-                            </div>
-                            <div className="flex flex-col gap-1 w-full">
-                                <label className="text-[#1D2939] text-sm font-medium">CTA</label>
-                                <input
-                                    className="w-full py-2 px-4 text-sm font-medium text-[#1D2939] border border-gray-300  h-10 focus:outline focus:outline-[1.5px] focus:outline-[#D6BBFB] hover:outline hover:outline-[1.5px] hover:outline-[#D6BBFB] rounded-md"
-                                    type="text"
-                                    placeholder="Button Name"
-                                    value={cta}
-                                    onChange={handleInputChangeforCta}
-                                />
-                                <span className="text-[#475467] font-normal text-right text-sm">{cta.length}/30</span>
-                            </div>
-                            <div className="flex flex-col gap-1 w-full ">
-                                <label className="text-[#1D2939] text-sm font-medium">Hyperlink</label>
-                                <input
-                                    className="w-full py-2 px-4 text-sm font-medium text-[#1D2939] border border-gray-300  h-10 focus:outline focus:outline-[1.5px] focus:outline-[#D6BBFB] hover:outline hover:outline-[1.5px] hover:outline-[#D6BBFB] rounded-md"
-                                    type="text"
-                                    placeholder="Add hyperlink"
-                                    onChange={(e) => setHyperLink(e.target.value)} // Controlled input for quiz name
-                                />
-                            </div>
-                            <div className="flex flex-col gap-1 w-full mt-4">
-                                <label className="text-[#1D2939] text-sm font-medium">Countdown Timer</label>
-                                <div className="flex flex-row p-2 w-full justify-between border border-gray-300  h-10 focus:outline focus:outline-[1.5px] focus:outline-[#D6BBFB] hover:outline hover:outline-[1.5px] hover:outline-[#D6BBFB] rounded-md ">
-                                    <div className="flex flex-row gap-2">
-                                        <Image
-                                            src="/icons/clock-01.svg"
-                                            width={24}
-                                            height={24}
-                                            alt="calender" />
-                                        <input
-                                            className="w-full text-sm font-medium text-[#1D2939] placeholder:font-normal placeholder:text-[#A1A1A1] rounded-md outline-none"
-                                            type="text"
-                                            placeholder="Select Time"
-                                        />
-                                    </div>
-                                    <div>
-                                        <Popover placement="bottom">
-                                            <PopoverTrigger>
-                                                <button className="flex flex-row w-[44px] items-center rounded-md transition duration-200 ease-in-out justify-between">
-                                                    <Image
-                                                        src={selectedIconforimage}
-                                                        width={24}
-                                                        height={24}
-                                                        alt="Selected Icon"
-                                                    />
-                                                    <Image
-                                                        src="/icons/chevron-down.svg"
-                                                        width={20}
-                                                        height={20}
-                                                        alt="Dropdown Arrow"
-                                                    />
-                                                </button>
-                                            </PopoverTrigger>
-                                            <PopoverContent>
-                                                <div className="flex flex-col gap-1">
-                                                    <button
-                                                        className="flex flex-row w-full p-1 hover:bg-[#F2F4F7] justify-center items-center"
-                                                        onClick={() => handleIconSelectforimage("/icons/annocement.png")}
-                                                    >
-                                                        <Image
-                                                            src="/icons/annocement.png"
-                                                            width={24}
-                                                            height={24}
-                                                            alt="Idea Button"
-                                                        />
-                                                    </button>
-                                                    <button
-                                                        className="flex flex-row w-full p-1 hover:bg-[#F2F4F7] justify-center items-center"
-                                                        onClick={() => handleIconSelectforimage("/icons/megaphone.svg")}
-                                                    >
-                                                        <Image
-                                                            src="/icons/megaphone.svg"
-                                                            width={24}
-                                                            height={24}
-                                                            alt="Megaphone Button"
-                                                        />
-                                                    </button>
-                                                    <button
-                                                        className="flex flex-row w-full p-1 hover:bg-[#F2F4F7] justify-center items-center"
-                                                        onClick={() => handleIconSelectforimage("/icons/read-2.svg")}
-                                                    >
-                                                        <Image
-                                                            src="/icons/read-2.svg"
-                                                            width={24}
-                                                            height={24}
-                                                            alt="Read Button"
-                                                        />
-                                                    </button>
-                                                </div>
-                                            </PopoverContent>
-                                        </Popover>
-                                    </div>
-                                </div>
-                            </div>
-                            <hr className="my-5" />
-                            <h1 className="text-[#1D2939] font-semibold text-lg mb-2">Schedule notification</h1>
-                            <div className="flex flex-col gap-4">
-                                <div className='flex flex-col w-full gap-1'>
-                                    <span className='font-medium text-[#1D2939] text-sm'>Start Date & Time</span>
-                                    <div className="flex flex-row justify-between items-center mb-3">
-                                        <p className="text-[#1D2939] text-sm font-medium">  {formatScheduleDate(startDate) || " "}</p>
-                                        <button
-                                            className="flex flex-row gap-1 rounded-md border-[2px] border-solid border-[#9012FF] hover:bg-[#F5F0FF] bg-[#FFFFFF] p-2 "
-                                            onClick={() => setDatapickerforStart(true)}>
-                                            <span className="text-[#9012FF] font-semibold text-sm">{startDate ? 'Change Date' : 'Select Date'}</span>
-                                        </button>
-                                    </div>
-                                    {(datapickerforStart &&
-                                        <DatePicker
-                                            granularity="minute"
-                                            minValue={today(getLocalTimeZone())}
-                                            hideTimeZone
-                                            onChange={(date) => {
-                                                const dateString = date ? date.toString() : "";
-                                                setStartDate(dateString);
-                                                setDatapickerforStart(true); // Return to button view after selecting date
-                                            }}
-
-                                        />
-                                    )}
-                                </div>
-                                <div className='flex flex-col w-full gap-1'>
-                                    <span className='font-medium text-[#1D2939] text-sm'>End Date & Time</span>
-
-                                    <div className="flex flex-row justify-between items-center mb-3">
-                                        <p className="text-[#1D2939] text-sm font-medium">  {formatScheduleDate(endDate) || " "}</p>
-                                        <button
-                                            className="flex flex-row gap-1 rounded-md border-[2px] border-solid border-[#9012FF] hover:bg-[#F5F0FF] bg-[#FFFFFF] p-2 "
-                                            onClick={() => setDatapickerforEnd(true)}>
-                                            <span className="text-[#9012FF] font-semibold text-sm">{startDate ? 'Change Date' : 'Select Date'}</span>
-                                        </button>
-                                    </div>
-                                    {(datapickerforEnd &&
-                                        <DatePicker
-                                            granularity="minute"
-                                            minValue={today(getLocalTimeZone())}
-                                            hideTimeZone
-                                            onChange={(date) => {
-                                                const dateString = date ? date.toString() : "";
-                                                setEndDate(dateString);
-                                                setDatapickerforEnd(true); // Return to button view after selecting date
-                                            }}
-
-                                        />
-                                    )}
-
-                                </div>
-                            </div>
-                        </div>
-                        <div className="flex flex-row justify-end mt-6 gap-4 border-t border-[#EAECF0] pt-4 p-4 rounded-md">
-                            <button
-                                onClick={() => setIsOpen(false)}
-                                className="py-2 px-6 border rounded-md text-[#1D2939] font-semibold text-sm hover:bg-[#F2F4F7]">
-                                Cancel
-                            </button>
-                            <button
-                                onClick={handleSendNotification}
-                                // disabled={!isFormValid}
-                                className={`py-2 px-6 ${!isFormValid ? 'bg-[#CDA0FC] border-[#CCA6F2]' : 'bg-[#9012FF] border-[#800EE2] transition-colors duration-150 hover:bg-[#6D0DCC]'} text-white shadow-inner-button border rounded-md font-semibold text-sm`}>
-                                Send Notification
-                            </button>
-                        </div>
-                    </DialogPanel>
-                </div>
-            </Dialog> */}
-            {/* Dialog for Create push Notification */}
-            <Modal
-                isOpen={isOpen}
-                onOpenChange={(isOpen) => !isOpen && setIsOpen(false)}
-                hideCloseButton
-                scrollBehavior={scrollBehavior}
-            >
-                <ModalContent>
-                    <>
-                        <ModalHeader className="flex flex-row justify-between items-center gap-1">
-                            <h3 className="text-lg font-bold text-[#1D2939]">{isEditing ? " Edit Push Notification" : "Create Push Notification"}</h3>
-                            <button className="w-[32px] h-[32px]  rounded-full flex items-center justify-center transition-all duration-300 ease-in-out hover:bg-[#F2F4F7]">
-                                <button onClick={() => setIsOpen(false)}>
-                                    <Image src="/icons/cancel.svg" alt="Cancel" width={20} height={20} />
-                                </button>
-                            </button>
-                        </ModalHeader>
-
-                        <ModalBody>
                             <div className="flex flex-col w-full gap-1 ">
                                 <label className="text-[#1D2939] text-sm font-medium">Name</label>
                                 <div className="flex flex-row p-2 w-full gap-2 border border-gray-300  h-10 focus:outline focus:outline-[1.5px] focus:outline-[#D6BBFB] hover:outline hover:outline-[1.5px] hover:outline-[#D6BBFB] rounded-md ">
@@ -768,7 +483,81 @@ function Messenger() {
                                     onChange={(e) => setHyperLink(e.target.value)} // Controlled input for quiz name
                                 />
                             </div>
-                            <hr className="my-3" />
+                            {/* <div className="flex flex-col gap-1 w-full mt-4">
+                                <label className="text-[#1D2939] text-sm font-medium">Countdown Timer</label>
+                                <div className="flex flex-row p-2 w-full justify-between border border-gray-300  h-10 focus:outline focus:outline-[1.5px] focus:outline-[#D6BBFB] hover:outline hover:outline-[1.5px] hover:outline-[#D6BBFB] rounded-md ">
+                                    <div className="flex flex-row gap-2">
+                                        <Image
+                                            src="/icons/clock-01.svg"
+                                            width={24}
+                                            height={24}
+                                            alt="calender" />
+                                        <input
+                                            className="w-full text-sm font-medium text-[#1D2939] placeholder:font-normal placeholder:text-[#A1A1A1] rounded-md outline-none"
+                                            type="text"
+                                            placeholder="Select Time"
+                                        />
+                                    </div>
+                                    <div>
+                                        <Popover placement="bottom">
+                                            <PopoverTrigger>
+                                                <button className="flex flex-row w-[44px] items-center rounded-md transition duration-200 ease-in-out justify-between">
+                                                    <Image
+                                                        src={selectedIconforimage}
+                                                        width={24}
+                                                        height={24}
+                                                        alt="Selected Icon"
+                                                    />
+                                                    <Image
+                                                        src="/icons/chevron-down.svg"
+                                                        width={20}
+                                                        height={20}
+                                                        alt="Dropdown Arrow"
+                                                    />
+                                                </button>
+                                            </PopoverTrigger>
+                                            <PopoverContent>
+                                                <div className="flex flex-col gap-1">
+                                                    <button
+                                                        className="flex flex-row w-full p-1 hover:bg-[#F2F4F7] justify-center items-center"
+                                                        onClick={() => handleIconSelectforimage("/icons/annocement.png")}
+                                                    >
+                                                        <Image
+                                                            src="/icons/annocement.png"
+                                                            width={24}
+                                                            height={24}
+                                                            alt="Idea Button"
+                                                        />
+                                                    </button>
+                                                    <button
+                                                        className="flex flex-row w-full p-1 hover:bg-[#F2F4F7] justify-center items-center"
+                                                        onClick={() => handleIconSelectforimage("/icons/megaphone.svg")}
+                                                    >
+                                                        <Image
+                                                            src="/icons/megaphone.svg"
+                                                            width={24}
+                                                            height={24}
+                                                            alt="Megaphone Button"
+                                                        />
+                                                    </button>
+                                                    <button
+                                                        className="flex flex-row w-full p-1 hover:bg-[#F2F4F7] justify-center items-center"
+                                                        onClick={() => handleIconSelectforimage("/icons/read-2.svg")}
+                                                    >
+                                                        <Image
+                                                            src="/icons/read-2.svg"
+                                                            width={24}
+                                                            height={24}
+                                                            alt="Read Button"
+                                                        />
+                                                    </button>
+                                                </div>
+                                            </PopoverContent>
+                                        </Popover>
+                                    </div>
+                                </div>
+                            </div> */}
+                            <hr className="my-5" />
                             <h1 className="text-[#1D2939] font-semibold text-lg mb-2">Schedule notification</h1>
                             <div className="flex flex-col gap-4">
                                 <div className='flex flex-col w-full gap-1'>
@@ -777,8 +566,8 @@ function Messenger() {
                                         <p className="text-[#1D2939] text-sm font-medium">  {formatScheduleDate(startDate) || " "}</p>
                                         <button
                                             className="flex flex-row gap-1 rounded-md border-[2px] border-solid border-[#9012FF] hover:bg-[#F5F0FF] bg-[#FFFFFF] p-2 "
-                                            onClick={() => setDatapickerforStart(!datapickerforStart)}>
-                                            <span className="text-[#9012FF] font-semibold text-sm">{isEditing ? 'Change Date' : 'Select Date'}</span>
+                                            onClick={() => setDatapickerforStart(true)}>
+                                            <span className="text-[#9012FF] font-semibold text-sm">{startDate ? 'Change Date' : 'Select Date'}</span>
                                         </button>
                                     </div>
                                     {(datapickerforStart &&
@@ -789,7 +578,7 @@ function Messenger() {
                                             onChange={(date) => {
                                                 const dateString = date ? date.toString() : "";
                                                 setStartDate(dateString);
-
+                                                setDatapickerforStart(true); // Return to button view after selecting date
                                             }}
 
                                         />
@@ -802,8 +591,8 @@ function Messenger() {
                                         <p className="text-[#1D2939] text-sm font-medium">  {formatScheduleDate(endDate) || " "}</p>
                                         <button
                                             className="flex flex-row gap-1 rounded-md border-[2px] border-solid border-[#9012FF] hover:bg-[#F5F0FF] bg-[#FFFFFF] p-2 "
-                                            onClick={() => setDatapickerforEnd(!datapickerforEnd)}>
-                                            <span className="text-[#9012FF] font-semibold text-sm">{isEditing ? 'Change Date' : 'Select Date'}</span>
+                                            onClick={() => setDatapickerforEnd(true)}>
+                                            <span className="text-[#9012FF] font-semibold text-sm">{startDate ? 'Change Date' : 'Select Date'}</span>
                                         </button>
                                     </div>
                                     {(datapickerforEnd &&
@@ -814,7 +603,7 @@ function Messenger() {
                                             onChange={(date) => {
                                                 const dateString = date ? date.toString() : "";
                                                 setEndDate(dateString);
-
+                                                setDatapickerforEnd(true); // Return to button view after selecting date
                                             }}
 
                                         />
@@ -822,53 +611,23 @@ function Messenger() {
 
                                 </div>
                             </div>
-                        </ModalBody>
-
-                        <ModalFooter className='border-t border-lightGrey'>
-                            <Button
-                                variant="light"
+                        </div>
+                        <div className="flex flex-row justify-end mt-6 gap-4 border-t border-[#EAECF0] pt-4 p-4 rounded-md">
+                            <button
                                 onClick={() => setIsOpen(false)}
                                 className="py-2 px-6 border rounded-md text-[#1D2939] font-semibold text-sm hover:bg-[#F2F4F7]">
                                 Cancel
-                            </Button>
-                            <Button
+                            </button>
+                            <button
                                 onClick={handleSendNotification}
                                 // disabled={!isFormValid}
                                 className={`py-2 px-6 ${!isFormValid ? 'bg-[#CDA0FC] border-[#CCA6F2]' : 'bg-[#9012FF] border-[#800EE2] transition-colors duration-150 hover:bg-[#6D0DCC]'} text-white shadow-inner-button border rounded-md font-semibold text-sm`}>
                                 Send Notification
-                            </Button>
-                        </ModalFooter>
-                    </>
-                </ModalContent>
-            </Modal>
-            {/* Dialog for Remove */}
-            <Modal
-                isOpen={remove}
-                onOpenChange={(isOpen) => !isOpen && setRemove(false)}
-                hideCloseButton
-            >
-                <ModalContent>
-                    <>
-                        <ModalHeader className="flex flex-row justify-between items-center gap-1">
-                            <h3 className=" font-bold task-[#1D2939]">Delete</h3>
-                            <button className="w-[32px] h-[32px]  rounded-full flex items-center justify-center transition-all duration-300 ease-in-out hover:bg-[#F2F4F7] ">
-                                <button className="" onClick={() => setRemove(false)}>
-                                    <Image src="/icons/cancel.svg" alt="Cancel" width={20} height={20} />
-                                </button>
                             </button>
-                        </ModalHeader>
-
-                        <ModalBody>
-                            <p className=" text-sm font-normal pb-2 text-[#667085]">Once the message is deleted you cannot restore it again.</p>
-                        </ModalBody>
-
-                        <ModalFooter className='border-t border-lightGrey'>
-                            <Button variant="light" className="py-[0.625rem] px-6 border-[1.5px] border-lightGrey font-semibold text-sm text-[#1D2939] rounded-md hover:bg-[#F2F4F7]" onClick={() => setRemove(false)}>Cancel</Button>
-                            <Button className={`py-[0.625rem] px-6 text-white shadow-inner-button hover:bg-[#B0201A] font-semibold bg-[#BB241A] border border-white rounded-md`} onClick={() => setRemove(false)}>Delete</Button>
-                        </ModalFooter>
-                    </>
-                </ModalContent>
-            </Modal>
+                        </div>
+                    </DialogPanel>
+                </div>
+            </Dialog>
             <ToastContainer />
         </div>
     );
@@ -993,3 +752,44 @@ function PaginationSection({
 }
 
 export default Messenger;
+<Modal
+    isOpen={isOpen}
+    onOpenChange={(isOpen) => !isOpen && setIsOpen(false)}
+    hideCloseButton
+>
+    <ModalContent>
+        <>
+            <ModalHeader className="flex flex-row justify-between items-center gap-1">
+                <h3 className="text-lg font-bold text-[#1D2939]">Create Push Notification</h3>
+                <button className="w-[32px] h-[32px]  rounded-full flex items-center justify-center transition-all duration-300 ease-in-out hover:bg-[#F2F4F7]">
+                    <button onClick={() => setIsOpen(false)}>
+                        <Image src="/icons/cancel.svg" alt="Cancel" width={20} height={20} />
+                    </button>
+                </button>
+            </ModalHeader>
+
+            <ModalBody>
+                <div className="flex flex-col  gap-2">
+                    <span className="font-normal text-sm text-[#667085]">
+                        Lorem ipsum is a dummy text widely used in digital industry will be used here in as a preview
+                    </span>
+                </div>
+            </ModalBody>
+
+            <ModalFooter className='border-t border-lightGrey'>
+                <Button
+                    variant="light"
+                    onClick={() => setIsOpen(false)}
+                    className="py-2 px-6 border rounded-md text-[#1D2939] font-semibold text-sm hover:bg-[#F2F4F7]">
+                    Cancel
+                </Button>
+                <Button
+                    onClick={handleSendNotification}
+                    // disabled={!isFormValid}
+                    className={`py-2 px-6 ${!isFormValid ? 'bg-[#CDA0FC] border-[#CCA6F2]' : 'bg-[#9012FF] border-[#800EE2] transition-colors duration-150 hover:bg-[#6D0DCC]'} text-white shadow-inner-button border rounded-md font-semibold text-sm`}>
+                    Send Notification
+                </Button>
+            </ModalFooter>
+        </>
+    </ModalContent>
+</Modal>
