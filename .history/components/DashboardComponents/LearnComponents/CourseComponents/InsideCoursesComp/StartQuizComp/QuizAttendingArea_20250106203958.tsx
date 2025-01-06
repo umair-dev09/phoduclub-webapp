@@ -354,14 +354,15 @@ function QuizAttendingArea({
                     </div>
                 </div>
             </Drawer >
-            {/* <Dialog open={isDialogOpen} onClose={() => setIsDialogOpen(false)} className="relative z-50">
-              
+            <Dialog open={isDialogOpen} onClose={() => setIsDialogOpen(false)} className="relative z-50">
+                {/* Backdrop */}
                 <DialogBackdrop className="fixed inset-0 bg-black/30 " />
 
+                {/* Dialog Wrapper */}
                 <div className="fixed inset-0 flex items-center justify-center p-4">
                     <DialogPanel transition>
                         <div className="bg-white rounded-2xl p-5 w-[480px] h-[261px]">
-                         
+                            {/* Header Section */}
                             <div className="flex items-center justify-between mb-4">
                                 <span className="text-lg font-bold text-[#1D2939]">Submit Quiz</span>
                                 <button className="w-[32px] h-[32px]  rounded-full flex items-center justify-center transition-all duration-300 ease-in-out hover:bg-[#F2F4F7]">
@@ -370,7 +371,7 @@ function QuizAttendingArea({
                                     </button>
                                 </button>
                             </div>
-                           
+                            {/* Content Section */}
                             <div className="flex flex-col gap-4 w-[432px] h-[100px]">
                                 <span className="text-sm text-[#667085] font-normal">
                                     Lorem ipsum is a dummy text widely used in the digital industry and will be used here as a preview.
@@ -379,7 +380,7 @@ function QuizAttendingArea({
                                     Lorem ipsum is a dummy text widely used in the digital industry and will be used here as a preview.
                                 </span>
                             </div>
-                         
+                            {/* Buttons */}
                             <div className="border-t border-[#EAECF0] w-full h-[76px] mt-5 flex justify-end gap-2">
                                 <div className="mt-5">
                                     <button
@@ -409,7 +410,7 @@ function QuizAttendingArea({
                         </div>
                     </DialogPanel>
                 </div >
-            </Dialog > */}
+            </Dialog >
             <Modal
                 isOpen={isDialogOpen}
                 onOpenChange={(isOpen) => !isOpen && setIsDialogOpen(false)}

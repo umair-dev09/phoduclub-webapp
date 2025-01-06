@@ -159,15 +159,15 @@ function QuizAttendingArea({
     return (
         <>
             {/* Initial Dialog */}
-            {/* <Dialog open={isOpen} onClose={() => setIsOpen(false)} className="relative z-50">
-                
+            <Dialog open={isOpen} onClose={() => setIsOpen(false)} className="relative z-50">
+                {/* Backdrop */}
                 <DialogBackdrop className="fixed inset-0 bg-black/30 " />
 
-                
+                {/* Dialog Wrapper */}
                 <div className="fixed inset-0 flex items-center justify-center p-4">
                     <DialogPanel transition>
                         <div className="bg-white rounded-2xl p-5 w-[480px] h-[261px]">
-                            
+                            {/* Header Section */}
                             <div className="flex items-center justify-between mb-4">
                                 <span className="text-lg font-bold text-[#1D2939]">Confirmation</span>
                                 <button className="w-[32px] h-[32px]  rounded-full flex items-center justify-center transition-all duration-300 ease-in-out hover:bg-[#F2F4F7]">
@@ -176,7 +176,7 @@ function QuizAttendingArea({
                                     </button>
                                 </button>
                             </div>
-                          
+                            {/* Content Section */}
                             <div className="flex flex-col gap-4 w-[432px] h-[100px]">
                                 <span className="text-sm text-[#667085] font-normal">
                                     Lorem ipsum is a dummy text widely used in the digital industry and will be used here as a preview.
@@ -185,7 +185,7 @@ function QuizAttendingArea({
                                     Lorem ipsum is a dummy text widely used in the digital industry and will be used here as a preview.
                                 </span>
                             </div>
-                           
+                            {/* Buttons */}
                             <div className="border-t border-[#EAECF0] w-full h-[76px] mt-5 flex justify-end gap-2">
                                 <div className="mt-5">
                                     <button
@@ -212,7 +212,7 @@ function QuizAttendingArea({
                         </div>
                     </DialogPanel>
                 </div >
-            </Dialog > */}
+            </Dialog >
             <Modal
                 isOpen={true}
                 onOpenChange={(isOpen) => !isOpen && setIsOpen(false)}
@@ -240,16 +240,16 @@ function QuizAttendingArea({
 
                         <ModalFooter className='border-t border-lightGrey'>
 
-                            <Button
+                            <button
                                 className="bg-[#FFFFFF] text-[#1D2939] text-sm font-semibold py-2 px-5 rounded-md w-[118px] h-[44px] hover:bg-[#F2F4F7]"
                                 style={{ border: "1.5px solid #EAECF0" }}
                                 onClick={() => setIsOpen(false)}
                             >
                                 Cancel
-                            </Button>
+                            </button>
 
 
-                            <Button
+                            <button
                                 onClick={openBottomSheet}
                                 className="bg-[#8501FF] text-[#FFFFFF] text-sm font-semibold py-2 px-5 rounded-md w-[118px] h-[44px] hover:bg-[#6D0DCC]"
                                 style={{
@@ -258,7 +258,7 @@ function QuizAttendingArea({
                                 }}
                             >
                                 Start Now
-                            </Button>
+                            </button>
                         </ModalFooter>
                     </>
                 </ModalContent>
@@ -344,7 +344,7 @@ function QuizAttendingArea({
                     {/* Bottom Button Section */}
                     <div className="flex flex-row items-center justify-end border-t border-lightGrey px-4 py-3">
                         <button
-                            className={`border rounded-lg py-2.5 px-6 text-sm text-white ${areAllQuestionsAnswered() ? 'bg-purple hover:bg-[#6D0DCC] ' : 'bg-[#CDA0FC] cursor-not-allowed'}`}
+                            className={`border rounded-lg py-2.5 px-6 text-sm text-white ${areAllQuestionsAnswered() ? 'bg-purple ' : 'bg-[#CDA0FC] cursor-not-allowed'}`}
 
                             onClick={handleSubmit}
                             disabled={!areAllQuestionsAnswered()}
@@ -354,14 +354,15 @@ function QuizAttendingArea({
                     </div>
                 </div>
             </Drawer >
-            {/* <Dialog open={isDialogOpen} onClose={() => setIsDialogOpen(false)} className="relative z-50">
-              
+            <Dialog open={isDialogOpen} onClose={() => setIsDialogOpen(false)} className="relative z-50">
+                {/* Backdrop */}
                 <DialogBackdrop className="fixed inset-0 bg-black/30 " />
 
+                {/* Dialog Wrapper */}
                 <div className="fixed inset-0 flex items-center justify-center p-4">
                     <DialogPanel transition>
                         <div className="bg-white rounded-2xl p-5 w-[480px] h-[261px]">
-                         
+                            {/* Header Section */}
                             <div className="flex items-center justify-between mb-4">
                                 <span className="text-lg font-bold text-[#1D2939]">Submit Quiz</span>
                                 <button className="w-[32px] h-[32px]  rounded-full flex items-center justify-center transition-all duration-300 ease-in-out hover:bg-[#F2F4F7]">
@@ -370,7 +371,7 @@ function QuizAttendingArea({
                                     </button>
                                 </button>
                             </div>
-                           
+                            {/* Content Section */}
                             <div className="flex flex-col gap-4 w-[432px] h-[100px]">
                                 <span className="text-sm text-[#667085] font-normal">
                                     Lorem ipsum is a dummy text widely used in the digital industry and will be used here as a preview.
@@ -379,7 +380,7 @@ function QuizAttendingArea({
                                     Lorem ipsum is a dummy text widely used in the digital industry and will be used here as a preview.
                                 </span>
                             </div>
-                         
+                            {/* Buttons */}
                             <div className="border-t border-[#EAECF0] w-full h-[76px] mt-5 flex justify-end gap-2">
                                 <div className="mt-5">
                                     <button
@@ -409,63 +410,7 @@ function QuizAttendingArea({
                         </div>
                     </DialogPanel>
                 </div >
-            </Dialog > */}
-            <Modal
-                isOpen={isDialogOpen}
-                onOpenChange={(isOpen) => !isOpen && setIsDialogOpen(false)}
-                hideCloseButton
-            >
-                <ModalContent>
-                    <>
-                        <ModalHeader className="flex flex-row justify-between items-center gap-1">
-                            <h1 className="text-lg font-bold text-[#1D2939]">Submit Quiz</h1>
-                            <button className="w-[32px] h-[32px]  rounded-full flex items-center justify-center transition-all duration-300 ease-in-out hover:bg-[#F2F4F7]">
-                                <button onClick={() => setIsDialogOpen(false)}>
-                                    <Image src="/icons/cancel.svg" alt="cancel" width={18} height={18} />
-                                </button>
-                            </button>
-                        </ModalHeader>
-
-                        <ModalBody>
-                            <span className="text-sm text-[#667085] font-normal">
-                                Lorem ipsum is a dummy text widely used in the digital industry and will be used here as a preview.
-                            </span>
-                            <span className="text-sm text-[#667085] font-normal">
-                                Lorem ipsum is a dummy text widely used in the digital industry and will be used here as a preview.
-                            </span>
-                        </ModalBody>
-
-                        <ModalFooter className='border-t border-lightGrey'>
-
-
-                            <Button
-                                className="bg-[#FFFFFF] text-[#1D2939] text-sm font-semibold py-2 px-5 rounded-md w-[118px] h-[44px] hover:bg-[#F2F4F7]"
-                                style={{ border: "1.5px solid #EAECF0" }}
-                                onClick={() => setIsDialogOpen(false)}
-                            >
-                                Cancel
-                            </Button>
-
-                            <Button
-                                onClick={() => {
-                                    handleDialogSubmit();
-                                }}
-                                disabled={isSubmitting}
-                                className="bg-[#8501FF] text-[#FFFFFF] text-sm font-semibold py-2 px-5 rounded-md w-[118px] h-[44px]"
-                                style={{
-                                    border: "1px solid #800EE2",
-                                    boxShadow: "0px -4px 4px 0px #1018281F inset, 0px 3px 2px 0px #FFFFFF3D inset",
-                                }}
-                            >
-                                Submit
-                            </Button>
-
-                        </ModalFooter>
-                    </>
-                </ModalContent>
-            </Modal>
-
-
+            </Dialog >
         </>
     );
 }
