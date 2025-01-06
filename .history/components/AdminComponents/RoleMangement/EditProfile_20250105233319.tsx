@@ -277,7 +277,176 @@ function Editprofile({ open, close, adminId }: EditProfileProps) {
                     </DialogPanel>
                 </div>
             </Dialog> */}
-            <Modal isOpen={open} onOpenChange={(isOpen) => !isOpen && close()} hideCloseButton >
+            <Modal
+                isOpen={open}
+                onOpenChange={(isOpen) => !isOpen && close()}
+                hideCloseButton
+            >
+                <ModalContent>
+                    <>
+                        <ModalHeader className="flex flex-row justify-between gap-1">
+                            <h1 className="font-bold text-[#1D2939] text-lg">Edit Info</h1>
+                            <button
+                                className="w-[32px] h-[32px] rounded-full flex items-center justify-center hover:bg-[#F2F4F7]"
+                                onClick={close}
+                                aria-label="Close modal"
+                            >
+                                <Image src="/icons/cancel.svg" alt="Cancel" width={20} height={20} />
+                            </button>
+                        </ModalHeader>
+                        <ModalBody>
+                            <div className="flex flex-col p-6 gap-4">
+                                {/* Profile Section */}
+                                <div className="flex flex-col gap-2 items-center">
+                                    <Image
+                                        className="rounded-full"
+                                        src={profilePic || "/defaultAdminDP.jpg"}
+                                        width={120}
+                                        height={120}
+                                        alt="big-profile-pic"
+                                    />
+                                    <label className="font-semibold text-sm text-[#9012FF] hover:text-black cursor-pointer">
+                                        <input
+                                            type="file"
+                                            id="upload"
+                                            className="hidden"
+                                            accept="image/*"
+                                            onChange={handleImageUpload}
+                                        />
+                                        Change
+                                    </label>
+                                </div>
+
+                                {/* First Name and Last Name */}
+                                <div className="flex flex-row w-full gap-4">
+                                    <div className="flex flex-col gap-1 w-1/2 flex-grow">
+                                        <label className="text-[#1D2939] text-sm font-medium">
+                                            First Name
+                                        </label>
+                                        <div className="flex flex-row py-2 px-4 w-full gap-2 border border-gray-300 h-10 rounded-md">
+                                            <input
+                                                className="w-full text-sm font-medium text-[#1D2939] placeholder:text-[#A1A1A1] rounded-md outline-none"
+                                                type="text"
+                                                placeholder="First Name"
+                                                value={firstName}
+                                                onChange={(e) => setFirstName(e.target.value)}
+                                            />
+                                        </div>
+                                    </div>
+                                    <div className="flex flex-col gap-1 w-1/2 flex-grow">
+                                        <label className="text-[#1D2939] text-sm font-medium">
+                                            Last Name
+                                        </label>
+                                        <div className="flex flex-row py-2 px-4 w-full gap-2 border border-gray-300 h-10 rounded-md">
+                                            <input
+                                                className="w-full text-sm font-medium text-[#1D2939] placeholder:text-[#A1A1A1] rounded-md outline-none"
+                                                type="text"
+                                                placeholder="Last Name"
+                                                value={lastName}
+                                                onChange={(e) => setLastName(e.target.value)}
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* User ID */}
+                                <div className="flex flex-col gap-1 w-full">
+                                    <label className="text-[#1D2939] text-sm font-medium">
+                                        User ID
+                                    </label>
+                                    <div className="flex flex-row py-2 px-4 w-full border border-gray-300 h-10 rounded-md">
+                                        <input
+                                            className="w-full text-sm font-medium text-[#1D2939] placeholder:text-[#A1A1A1] rounded-md outline-none"
+                                            type="text"
+                                            placeholder="User ID"
+                                            value={userId}
+                                            disabled
+                                        />
+                                    </div>
+                                </div>
+
+                                {/* Phone Input */}
+                                <div className="flex flex-col gap-1">
+                                    <label className="text-sm text-[#344054] font-medium">Mobile No.</label>
+                                    <div className="mt-1 pr-6">
+                                        <PhoneInput
+                                            country="in"
+                                            value={phone}
+                                            onChange={(phone) => setPhone(phone)}
+                                            inputProps={{
+                                                required: true,
+                                                placeholder: "+91 00000-00000",
+                                            }}
+                                            containerClass="phone-input-container"
+                                            inputClass="forminput"
+                                            inputStyle={{
+                                                width: "450px",
+                                                height: "42px",
+                                                borderRadius: "4px",
+                                                border: "1px solid #D0D5DD",
+                                                boxShadow: "0px 1px 2px 0px #1018280D",
+                                            }}
+                                        />
+                                    </div>
+                                </div>
+
+                                {/* Role Selection */}
+                                <div className="flex flex-col gap-1 w-full">
+                                    <label className="text-[#1D2939] text-sm font-medium">Role</label>
+                                    <Popover
+                                        placement="bottom"
+                                        isOpen={roleDialogOpen}
+                                        onOpenChange={(open) => setRoleDialogOpen(open)}
+                                    >
+                                        <PopoverTrigger>
+                                            <button className="flex flex-row py-2 px-4 w-full gap-2 border border-[#D0D5DD] rounded-md bg-[#fafafa] justify-between">
+                                                <span className="text-sm text-[#182230]">{selectedRole}</span>
+                                                <Image src="/icons/by-role-arrow-down.svg" width={20} height={20} alt="Select-role Button" />
+                                            </button>
+                                        </PopoverTrigger>
+                                        <PopoverContent>
+                                            <div className="w-[450px] bg-white border border-lightGrey rounded-md">
+                                                {["Admin", "Teacher", "Customer Care", "Guide", "Editor", "Chief Moderator"].map((role) => (
+                                                    <button
+                                                        key={role}
+                                                        onClick={() => {
+                                                            handleRoleSelect(role);
+                                                            setRoleDialogOpen(false);
+                                                        }}
+                                                        className="flex flex-row items-center w-full py-2 px-4 hover:bg-[#F2F4F7]"
+                                                    >
+                                                        <span className="text-sm text-[#0C111D]">{role}</span>
+                                                    </button>
+                                                ))}
+                                            </div>
+                                        </PopoverContent>
+                                    </Popover>
+                                </div>
+                            </div>
+                        </ModalBody>
+                        <ModalFooter>
+                            <div className="flex flex-row justify-end gap-4">
+                                <button
+                                    onClick={close}
+                                    className="py-2 px-6 border border-lightGrey rounded-md text-[#1D2939] font-semibold text-sm hover:bg-[#F2F4F7]"
+                                >
+                                    Discard
+                                </button>
+                                <button
+                                    onClick={handleSaveChanges}
+                                    className={`py-2 px-6 text-white rounded-md font-semibold text-sm ${!isFormValid || loading ? "bg-[#CDA0FC]" : "bg-[#9012FF]"
+                                        }`}
+                                    disabled={!isFormValid || loading}
+                                >
+                                    Save Changes
+                                </button>
+                            </div>
+                        </ModalFooter>
+                    </>
+                </ModalContent>
+            </Modal>
+
+            {/* <Modal isOpen={open} onOpenChange={(isOpen) => !isOpen && close()} hideCloseButton >
 
                 <ModalContent>
                     <>
@@ -427,7 +596,7 @@ function Editprofile({ open, close, adminId }: EditProfileProps) {
                         </ModalFooter>
                     </>
                 </ModalContent>
-            </Modal >
+            </Modal > */}
             {showCropper && uploadedImage && (
                 <AdminImageCropper imageFile={uploadedImage} setShowCropper={setShowCropper} isOpen={showImageCropper} setIsOpen={setShowImageCropper} />
             )}
