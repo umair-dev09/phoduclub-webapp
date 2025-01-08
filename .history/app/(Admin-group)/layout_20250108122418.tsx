@@ -69,9 +69,6 @@ export default function DashboardGroup({ children }: DashboardGroupProps) {
                 case 'coursecreation':
                     pageName = 'Course Management';
                     break;
-                case 'createquiz':
-                    pageName = 'Back to Quizzes Management';
-                    break;
                 case 'createtestseries':
                     pageName = 'Back to Test Series Management';
                     break;

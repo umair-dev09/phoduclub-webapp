@@ -60,7 +60,7 @@ export default function DashboardGroup({ children }: DashboardGroupProps) {
                 case 'marketingintegration':
                     pageName = 'Marketing Integration';
                     break;
-                case 'quizzesmanagement':
+                case 'quizmanagement':
                     pageName = 'Quizzes Management';
                     break;
                 case 'testseriesmanagement':
@@ -68,9 +68,6 @@ export default function DashboardGroup({ children }: DashboardGroupProps) {
                     break;
                 case 'coursecreation':
                     pageName = 'Course Management';
-                    break;
-                case 'createquiz':
-                    pageName = 'Back to Quizzes Management';
                     break;
                 case 'createtestseries':
                     pageName = 'Back to Test Series Management';
