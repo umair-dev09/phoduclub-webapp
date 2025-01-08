@@ -8,15 +8,21 @@ import { Tooltip } from "@nextui-org/react";
 import { onAuthStateChanged, User } from 'firebase/auth'; // Import the User type from Firebase
 import { auth } from '@/firebase';
 import { getFirestore, doc, getDoc, updateDoc, onSnapshot } from 'firebase/firestore';
+
 type CurrentUserData = {
     role: string;
     adminId: string;
 }
 
-function TabComps() {
+interface TabCompsProps {
+    isCollapsed: boolean;
+    setIsCollapsed: (value: boolean) => void;
+}
+
+function TabComps({ isCollapsed, setIsCollapsed }: TabCompsProps) {
     const router = useRouter();
     const pathname = usePathname();
-    const [isCollapsed, setIsCollapsed] = useState(false);
+    // const [isCollapsed, setIsCollapsed] = useState(false);
     const [isOpenArray, setIsOpenArray] = useState([false, false, false]);
     const [currentUserData, setCurrentUserData] = useState<CurrentUserData | null>(null);
     const [loading, setLoading] = useState(true); // Track loading state
@@ -165,15 +171,6 @@ function TabComps() {
 
     return (
         <div className={`flex flex-col relative transition-all duration-[500ms] ease-in-out ${isCollapsed ? 'w-[3.5rem]' : 'w-[16rem]'} pl-2 py-[0.625rem] bg-[#131313]`}>
-            {/* Sidebar Toggle Button */}
-            <button className={`flex items-center justify-center absolute top-[3.6rem] left-[97.5%] w-8 h-8 bg-white border-[0.106rem] border-lightGrey rounded-full transition-all ${isCollapsed ? ' -translate-x-1' : ''}`} onClick={handleCollapseClick}>
-                {isCollapsed ? (
-                    <Image className='flex flex-row items-center justify-center mr-[2px]' alt='Collapse Icon Right' src="/icons/collapse-right.svg" width={8} height={8} />
-                ) : (
-                    <Image className='flex flex-row items-center justify-center mr-[2px]' alt="Collapse Icon Left" src="/icons/collapse-left.svg" width={8} height={8} />
-                )}
-            </button>
-
             {/* Logo Section */}
             <div className='overflow-hidden'>
                 {/* <button className={`items-center justify-center w-10 h-10 mt-3 mb-[0.73rem] ml-[0.2rem] text-white font-bold bg-[#3c2f40] rounded-[0.375rem] transition-all ${isCollapsed ? 'flex' : 'hidden'}`}
