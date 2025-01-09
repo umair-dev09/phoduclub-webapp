@@ -54,9 +54,9 @@ function MemberClickDialog({ open, onClose, id, isAdmin }: MemberClickDialogProp
 
   const colors = ['bg-red-500', 'bg-orange-500', 'bg-green-500', 'bg-blue-500']
 
-  // if(loading){
-  //   return <LoadingData />
-  // }
+  if(loading){
+    return <LoadingData />
+  }
 
   return (
 
@@ -215,19 +215,9 @@ function MemberClickDialog({ open, onClose, id, isAdmin }: MemberClickDialogProp
                 <Image src="/icons/cancel.svg" alt="Cancel" width={20} height={20} />
               </button>
             </div>
-            <Tooltip
-              content="Launching Soon!!!!!"
-              placement="right"
-              offset={15}
-              closeDelay={100}
-              classNames={{
-                content: [
-                  "bg-[#222222] text-white text-sm py-2 px-4 rounded-md",
-                ],
-              }}
-            >
+    
               <div className="bg-purple p-4">
-                <button className="flex flex-row gap-2 items-center justify-center w-full h-[44px] shadow-inner-button bg-white rounded-md cursor-not-allowed">
+                <button className="flex flex-row gap-2 items-center justify-center w-full h-[44px] shadow-inner-button bg-white rounded-md">
                   <Image
                     className="w-[17px] h-[17px]"
                     src="/icons/messageicon1.svg"
@@ -238,7 +228,6 @@ function MemberClickDialog({ open, onClose, id, isAdmin }: MemberClickDialogProp
                   <span className="text-base font-semibold text-[#182230]">Message</span>
                 </button>
               </div>
-            </Tooltip>
           </ModalHeader>
 
           <ModalBody>

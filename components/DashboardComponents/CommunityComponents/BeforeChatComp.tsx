@@ -125,30 +125,3 @@ function BeforeChatComp() {
 
 export default BeforeChatComp;
 
-// ---------------------------------------------------------------------------------------------------
-
-// import React from "react";
-
-// function BeforeChatComp() {
-//     return (
-//         <div className="flex flex-1 items-center justify-center">
-//             hi
-//         </div>
-//     );
-// }
-
-// export default BeforeChatComp;
-
-// ---------------------------------------------------------------------------------------------------
-
-// import React from "react";
-
-// function BeforeChatComp() {
-//     return (
-//         <div className="flex flex-1 items-center justify-center">
-//             hi
-//         </div>
-//     );
-// }
-
-// export default BeforeChatComp;
