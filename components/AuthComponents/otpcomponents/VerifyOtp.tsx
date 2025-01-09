@@ -4,10 +4,11 @@ import { useState, useEffect, useRef, Suspense } from "react";
 import { auth } from '../../../firebase'; // Adjust path as needed
 import { getAuth, PhoneAuthProvider, signInWithCredential, onAuthStateChanged } from "firebase/auth";
 import { getFirestore, doc, getDoc, setDoc, query, where, getDocs, collection, Timestamp } from "firebase/firestore"; // Import Firestore functions
-import { toast } from "react-toastify";
 import Image from 'next/image';
 import styles from './VerifyOtp.module.css'; // Ensure you import the CSS module
 import LoadingData from "@/components/Loading";
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const InputHandler = ({ onOtpChange }: { onOtpChange: (otp: string) => void }) => {
     const inputsRef = useRef<HTMLDivElement>(null);
@@ -298,6 +299,7 @@ function VerifyOtp() {
                     </p>
                 </div>
             </div>
+            <ToastContainer />
         </div>
     );
 }
