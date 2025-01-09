@@ -30,7 +30,6 @@ type UserData = {
 function MemberClickDialog({ open, onClose, id, isAdmin }: MemberClickDialogProps) {
   const [user, setUser] = useState<UserData | null>(null);
   const [loading, setLoading] = useState(true);
-  // const currentUserId = 
   const [sendrequest, setSendrequest] = useState(false);
 
   useEffect(() => {
@@ -56,14 +55,6 @@ function MemberClickDialog({ open, onClose, id, isAdmin }: MemberClickDialogProp
   }, [id]); // Re-run this effect when userId changes
 
   const colors = ['bg-red-500', 'bg-orange-500', 'bg-green-500', 'bg-blue-500']
-
-  const handleSendRequest = () => {
-     if(user?.userId){
-
-     }
-  };
-
-
 
   if (loading) {
     return <LoadingData />
@@ -229,8 +220,7 @@ function MemberClickDialog({ open, onClose, id, isAdmin }: MemberClickDialogProp
               </div>
 
               <div className="bg-purple p-4">
-                <button className="flex flex-row gap-2 items-center justify-center w-full h-[44px] shadow-inner-button bg-white rounded-md"
-                  onClick={() => setSendrequest(true)}>
+                <button className="flex flex-row gap-2 items-center justify-center w-full h-[44px] shadow-inner-button bg-white rounded-md">
                   <Image
                     className="w-[17px] h-[17px]"
                     src="/icons/messageicon1.svg"
@@ -278,34 +268,12 @@ function MemberClickDialog({ open, onClose, id, isAdmin }: MemberClickDialogProp
           </>
         </ModalContent>
       </Modal>
-      {/* Send Request Dialog */}
-      <Modal isOpen={sendrequest} onOpenChange={(isOpen) => !isOpen && setSendrequest(false)} hideCloseButton
-      >
 
-        <ModalContent>
-          <>
-            <ModalHeader className="flex flex-row justify-between items-center gap-1">
-              <h1 className='text-[#1D2939] font-bold text-lg'>Send Request</h1>
-              <button className="w-[32px] h-[32px]  rounded-full flex items-center justify-center transition-all duration-300 ease-in-out hover:bg-[#F2F4F7]">
-                <button><Image src="/icons/cancel.svg" alt="Cancel" width={20} height={20} onClick={() => setSendrequest(false)} /></button>
-              </button>
-            </ModalHeader>
-            <ModalBody>
-              <span className="font-normal pb-2 text-sm text-[#667085]"> You are about to send a personal message. Once sent, it cannot be edited or retracted.</span>
+      <div>
 
-            </ModalBody>
-            <ModalFooter className="border-t border-lightGrey">
-              <Button variant="light" className="py-[0.625rem] px-6 border-2  border-solid border-[#EAECF0] font-semibold text-sm text-[#1D2939] rounded-md hover:bg-[#F2F4F7]" onClick={() => setSendrequest(false)}>Cancel</Button>
-              <Button className="py-[0.625rem] px-6 text-white text-sm shadow-inner-button font-semibold border border-solid  border-white bg-[#9012FF] hover:bg-[#6D0DCC]  rounded-md" onClick={() => setSendrequest(false)} >Send</Button>
-            </ModalFooter>
-          </>
-        </ModalContent>
-      </Modal >
-    </div>
-
-  );
+        );
 }
-export default MemberClickDialog;
+        export default MemberClickDialog;
 
 
 

@@ -30,7 +30,6 @@ type UserData = {
 function MemberClickDialog({ open, onClose, id, isAdmin }: MemberClickDialogProps) {
   const [user, setUser] = useState<UserData | null>(null);
   const [loading, setLoading] = useState(true);
-  // const currentUserId = 
   const [sendrequest, setSendrequest] = useState(false);
 
   useEffect(() => {
@@ -56,14 +55,6 @@ function MemberClickDialog({ open, onClose, id, isAdmin }: MemberClickDialogProp
   }, [id]); // Re-run this effect when userId changes
 
   const colors = ['bg-red-500', 'bg-orange-500', 'bg-green-500', 'bg-blue-500']
-
-  const handleSendRequest = () => {
-     if(user?.userId){
-
-     }
-  };
-
-
 
   if (loading) {
     return <LoadingData />
@@ -291,12 +282,12 @@ function MemberClickDialog({ open, onClose, id, isAdmin }: MemberClickDialogProp
               </button>
             </ModalHeader>
             <ModalBody>
-              <span className="font-normal pb-2 text-sm text-[#667085]"> You are about to send a personal message. Once sent, it cannot be edited or retracted.</span>
+              <span className="font-normal text-sm text-[#667085]">All category, channels & chats inside this group will be gone.</span>
 
             </ModalBody>
             <ModalFooter className="border-t border-lightGrey">
               <Button variant="light" className="py-[0.625rem] px-6 border-2  border-solid border-[#EAECF0] font-semibold text-sm text-[#1D2939] rounded-md hover:bg-[#F2F4F7]" onClick={() => setSendrequest(false)}>Cancel</Button>
-              <Button className="py-[0.625rem] px-6 text-white text-sm shadow-inner-button font-semibold border border-solid  border-white bg-[#9012FF] hover:bg-[#6D0DCC]  rounded-md" onClick={() => setSendrequest(false)} >Send</Button>
+              <Button className="py-[0.625rem] px-6 text-white text-sm shadow-inner-button font-semibold border border-solid  border-white bg-[#9012FF] hover:bg-[#6D0DCC]  rounded-md" onClick={() => setSendrequest(false)} >Delete Group</Button>
             </ModalFooter>
           </>
         </ModalContent>
