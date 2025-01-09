@@ -30,6 +30,7 @@ type UserData = {
 function MemberClickDialog({ open, onClose, id, isAdmin }: MemberClickDialogProps) {
   const [user, setUser] = useState<UserData | null>(null);
   const [loading, setLoading] = useState(true);
+  // const currentUserId = 
   useEffect(() => {
     if (!id) return;
 
@@ -53,6 +54,14 @@ function MemberClickDialog({ open, onClose, id, isAdmin }: MemberClickDialogProp
   }, [id]); // Re-run this effect when userId changes
 
   const colors = ['bg-red-500', 'bg-orange-500', 'bg-green-500', 'bg-blue-500']
+
+  const handleSendRequest = () => {
+     if(user?.userId){
+
+     }
+  };
+
+
 
   if(loading){
     return <LoadingData />
@@ -185,7 +194,7 @@ function MemberClickDialog({ open, onClose, id, isAdmin }: MemberClickDialogProp
                 </div>
 
                 <div className="flex flex-col justify-center">
-                  <h3 className="text-white text-[20px]">{user?.name}</h3>
+                  <h3 className="text-white text-[20px]" onClick={handleSendRequest()}>{user?.name}</h3>
                   <span className="text-white">{user?.userId}</span>
 
                   <div className="flex flex-row gap-1 bg-white bg-opacity-20 rounded-[30px] py-[2px] px-2 w-fit items-center ml-[-2px] mt-[4px]">
