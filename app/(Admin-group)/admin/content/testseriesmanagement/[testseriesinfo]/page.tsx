@@ -104,7 +104,7 @@ function TestSeriesInfo() {
     const [totalNoOfQuestions, setTotalNoOfQuestions] = useState(0);
     const [totalNoOfTests, setTotalNoOfTests] = useState(0);
     // State to manage each dialog's visibility
-
+    const [popoveropen, setPopoveropen] = useState(false);
     const [isScheduledDialogOpen, setIsScheduledDialogOpen] = useState(false);
     const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
     const [isEndDialogOpen, setIsEndDialogOpen] = useState(false);
@@ -385,6 +385,7 @@ function TestSeriesInfo() {
     if (loading) {
         return <LoadingData />
     }
+
     return (
         <div className="flex w-full h-auto overflow-y-auto flex-col  p-8">
             <div className="w-full h-auto flex flex-col pb-2">
@@ -464,7 +465,10 @@ function TestSeriesInfo() {
 
                         {(testData?.status === 'scheduled' || testData?.status === 'saved' || testData?.status === 'paused') && (
                             <>
-                                <Popover placement="bottom-end">
+                                <Popover placement="bottom-end"
+                                    isOpen={popoveropen}
+                                    onOpenChange={(isOpen) => setPopoveropen(isOpen)}>
+
                                     <PopoverTrigger>
                                         <button
                                             className="w-10 p-[10px] h-[40px] gap-1 flex-row  hover:bg-[#F2F4F7] flex  bg-[#FFFFFF] rounded-md  focus:outline-none
@@ -479,7 +483,11 @@ function TestSeriesInfo() {
                                             <p className="text-sm text-[#0C111D] font-normal">Edit</p>
                                         </button>
                                         <button className=" flex flex-row items-center justify-start w-full py-[0.625rem] px-4 gap-2 hover:bg-[#F2F4F7]"
-                                            onClick={() => { setTestName(testData?.testName || ''); setIsDeleteDialogOpen(true) }}
+                                            onClick={() => {
+                                                setTestName(testData?.testName || '');
+                                                setIsDeleteDialogOpen(true);
+                                                setPopoveropen(false); // Close the popover
+                                            }}
                                         >
                                             <Image src='/icons/delete.svg' alt="Delete-icon" width={18} height={18} />
                                             <p className="text-sm text-[#DE3024] font-normal">Delete</p>
@@ -666,7 +674,7 @@ function TestSeriesInfo() {
                                                     </div>
                                                     <div>
                                                         {section.hasQuestions ? (
-                                                            <button className='w-[7.25rem] h-9 px-[0.875rem] py-[0.625rem] text-white text-xs font-semibold bg-[#9012FF] border border-[#800EE2] rounded-[6px] shadow-inner-button'
+                                                            <button className='w-[7.25rem] h-9 px-[0.875rem] py-[0.625rem] text-white text-xs font-semibold bg-[#9012FF] border border-[#800EE2] rounded-[6px] shadow-inner-button transition-colors duration-150 hover:bg-[#6D0DCC]'
                                                                 onClick={() => {
                                                                     const sectionIds = getSectionPath(section.id);
                                                                     const url = `/testview?tId=${testId}&sectionIds=${encodeURIComponent(
@@ -684,7 +692,6 @@ function TestSeriesInfo() {
                                         </div>
                                     )}
                                 </>
-
                             )}
                         </div>
                     </Tab>

@@ -4,8 +4,9 @@ import "./layout.css";
 import { ReactNode, useEffect, useState } from 'react';
 import TabComps from '@/components/AdminComponents/TabComps';
 import Header from '@/components/AdminHeaderComponents/AdminHeader';
-import { usePathname } from 'next/navigation';
+import { usePathname, useSearchParams } from 'next/navigation';
 import { toast, ToastContainer } from 'react-toastify';
+import Image from 'next/image';
 import 'react-toastify/dist/ReactToastify.css';
 
 interface DashboardGroupProps {
@@ -16,26 +17,43 @@ interface DashboardGroupProps {
 export default function DashboardGroup({ children }: DashboardGroupProps) {
     const pathname = usePathname();
     const [currentPage, setCurrentPage] = useState<string>('');
-
+    const searchParams = useSearchParams(); // Get query params, e.g., "?qId=B8yw93YJcBaGL3x0KRvN"
     useEffect(() => {
-        const pathArray = pathname?.split('/');
-        let pageName = pathArray?.[pathArray.length - 1] || '';
+        const qId = searchParams?.get('qId');
+        const tId = searchParams?.get('tId');
+        const cId = searchParams?.get('cId');
+        const rId = searchParams?.get('rId');
+        const uId = searchParams?.get('uId');
+        const nId = searchParams?.get('nId');
+        let pageName = '';
 
-        if (pathname?.includes('quizzesmanagement')) {
-            if (pathArray?.[pathArray.length - 1] === 'quizzesmanagement') {
-                pageName = 'Quizzes Management';
-            } else if (pathname.includes('quizinfo')) {
-                pageName = 'Quizzes Management '; // Specific header for quiz info   
-            } else {
-                pageName = 'Quizzes Management'; // Default fallback
-            }
-        } else {
-            switch (pageName) {
+        if (qId) {
+            pageName = 'Back to Quizzes Management';
+        }
+        else if (tId) {
+            pageName = 'Back to Test Series Management';
+        }
+        else if (cId) {
+            pageName = 'Back to Course Management';
+        }
+        else if (rId) {
+            pageName = 'Back to Role Management';
+        }
+        else if (uId) {
+            pageName = 'Back to User Database';
+        }
+        else if (nId) {
+            pageName = 'Back to Messenger';
+        }
+        // Remove the else if (pageName) condition and directly use the switch
+        else {
+            // Extract the page name from pathname if needed
+            // Assuming pathname is something like '/rolemanagement' or '/profile'
+            const currentPath = pathname.split('/').pop();
+
+            switch (currentPath) {
                 case 'rolemanagement':
                     pageName = 'Role Management';
-                    break;
-                case 'rolemanagementinfo':
-                    pageName = 'Back to Role Management';
                     break;
                 case 'customerdatamanagement':
                     pageName = 'Customer Data Management';
@@ -50,28 +68,16 @@ export default function DashboardGroup({ children }: DashboardGroupProps) {
                     pageName = 'Test Series Management';
                     break;
                 case 'coursecreation':
-                    pageName = 'Course Creation';
+                    pageName = 'Course Management';
                     break;
-                case "quizmanaegment":
-                    pageName = 'Back to Quizzes Management';
-                    break;
-                case 'quizinfo':
+                case 'createquiz':
                     pageName = 'Back to Quizzes Management';
                     break;
                 case 'createtestseries':
                     pageName = 'Back to Test Series Management';
                     break;
-                case 'testseriesinfo':
-                    pageName = 'Back to Test Series Management';
-                    break;
                 case 'createcourse':
                     pageName = 'Back to Course Management';
-                    break;
-                case 'courseinfo':
-                    pageName = 'Back to Course Management';
-                    break;
-                case 'courses':
-                    pageName = 'Back to Quizzes Management';
                     break;
                 case 'profile':
                     pageName = 'My Profile';
@@ -79,15 +85,11 @@ export default function DashboardGroup({ children }: DashboardGroupProps) {
                 case 'customerinfo':
                     pageName = 'Back to Customer Care';
                     break;
-                case 'marketinfo':
-                    pageName = 'Back to Messenger';
-                    break;
+
                 case 'userdatabase':
                     pageName = 'User Database';
                     break;
-                case 'userdatabaseinfo':
-                    pageName = 'Back to User Database';
-                    break;
+
                 case 'customercare':
                     pageName = 'Customer Care';
                     break;
@@ -97,27 +99,72 @@ export default function DashboardGroup({ children }: DashboardGroupProps) {
                 case 'rolemanagementguide':
                     pageName = 'Rolemanagement Guide';
                     break;
-                case "discussionform":
-                    pageName = "Discussion form";
+                case 'discussionform':
+                    pageName = 'Discussion form';
                     break;
-                case "internalchat":
-                    pageName = "Internal chat";
+                case 'internalchat':
+                    pageName = 'Internal chat';
                     break;
-                case "community":
-                    pageName = "Community";
+                case 'community':
+                    pageName = 'Community';
                     break;
                 default:
-                    pageName = '';
+                    pageName = 'Dashboard';
             }
         }
-        setCurrentPage(pageName);
-    }, [pathname]);
 
+        setCurrentPage(pageName);
+    }, [pathname, searchParams]);
+
+    // const [isCollapsed, setIsCollapsed] = useState(false);
+
+    const [isCollapsed, setIsCollapsed] = useState(() => {
+        // Initialize from localStorage if available
+        if (typeof window !== 'undefined') {
+            const saved = localStorage.getItem('isSidebarCollapsed');
+            return saved ? JSON.parse(saved) : false;
+        }
+        return false;
+    });
+
+    useEffect(() => {
+        localStorage.setItem('isSidebarCollapsed', JSON.stringify(isCollapsed));
+    }, [isCollapsed]);
+
+    const handleCollapseClick = () => {
+        setIsCollapsed(!isCollapsed);
+    };
 
     return (
         <div className="body overflow-none">
-            <div>
-                <TabComps />
+            {/* Sidebar Toggle Button */}
+            <div className="flex flex-col h-full">
+                <div className="overflow-y-auto overflow-x-hidden flex-1 min-w-[3.5rem] scrollbar-hide">
+                    <TabComps isCollapsed={isCollapsed} setIsCollapsed={setIsCollapsed} />
+                </div>
+                <button
+                    className={`flex items-center justify-center absolute left-[250px] top-[58px] w-8 h-8 bg-white border-[0.106rem] border-lightGrey rounded-full transition-all duration-[500ms] ease-in-out
+                                ${isCollapsed ? 'left-[50px]' : ''}`}
+                    onClick={handleCollapseClick}
+                >
+                    {isCollapsed ? (
+                        <Image
+                            className="flex flex-row items-center justify-center mr-[2px]"
+                            alt="Collapse Icon Right"
+                            src="/icons/collapse-right.svg"
+                            width={8}
+                            height={8}
+                        />
+                    ) : (
+                        <Image
+                            className="flex flex-row items-center justify-center mr-[2px]"
+                            alt="Collapse Icon Left"
+                            src="/icons/collapse-left.svg"
+                            width={8}
+                            height={8}
+                        />
+                    )}
+                </button>
             </div>
             <div className="contents">
                 <div className="content-box">

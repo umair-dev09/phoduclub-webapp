@@ -56,6 +56,7 @@ function StudentsAttemptedTestseries() {
     const [dateFilter, setDateFilter] = useState(null);
     const [statusFilter, setStatusFilter] = useState(null);
     const isTextSearch = searchTerm.trim().length > 0 && !dateFilter && !statusFilter;
+    const [popoveropen2, setPopoveropen2] = useState<number | null>(null);
 
     // Fetch StudentAttempts when component mounts
     useEffect(() => {
@@ -146,6 +147,10 @@ function StudentsAttemptedTestseries() {
     // Check if all fields are filled
     const isAddButtonDisabled = !uniqueId || !startDate || !endDate;
 
+    const handlePopoverOpen = (index: number) => {
+        setPopoveropen2(index);
+    };
+
     return (
         <div className="flex flex-col w-full pt-4 gap-4">
             <div className="flex flex-row justify-between items-center">
@@ -194,7 +199,7 @@ function StudentsAttemptedTestseries() {
                             {/* Conditionally render the "Clear" button */}
                             {selectedDate && (
                                 <button
-                                    className="min-w-[84px] min-h-[30px] rounded-md bg-[#9012FF] text-[14px] font-medium text-white mb-2"
+                                    className="min-w-[84px] min-h-[30px] rounded-md bg-[#9012FF] border border-[#800EE2] shadow-inner-button text-[14px] font-medium text-white mb-2 transition-colors duration-150 hover:bg-[#6D0DCC]"
                                     onClick={() => {
                                         setSelectedDate(null); // Clear the selected date
                                         setIsSelectDateOpen(false);
@@ -343,15 +348,22 @@ function StudentsAttemptedTestseries() {
                                         <td className="px-8 py-4 text-center text-[#101828] text-sm">{students.enrolledDate}</td>
                                         <td className="px-8 py-4 text-center text-[#101828] text-sm">{students.expiryDate}</td>
                                         <td className="flex items-center justify-center px-8 py-4 text-[#101828] text-sm">
-                                            <Popover placement="bottom-end">
+                                            <Popover placement="bottom-end"
+                                                isOpen={popoveropen2 === index}
+                                                onOpenChange={(open) => open ? handlePopoverOpen(index) : setPopoveropen2(null)}>
                                                 <PopoverTrigger>
-                                                    <button className="outline-none">
-                                                        <Image
-                                                            src="/icons/three-dots.svg"
-                                                            width={20}
-                                                            height={20}
-                                                            alt="More Actions"
-                                                        />
+                                                    <button
+                                                        className="w-[32px] h-[32px] rounded-full flex items-center justify-center transition-all duration-300 ease-in-out hover:bg-[#F2F4F7]"
+
+                                                    >
+                                                        <button className="outline-none">
+                                                            <Image
+                                                                src="/icons/three-dots.svg"
+                                                                width={20}
+                                                                height={20}
+                                                                alt="More Actions"
+                                                            />
+                                                        </button>
                                                     </button>
                                                 </PopoverTrigger>
                                                 <PopoverContent className="w-[10.438rem] py-1 px-0 bg-white border border-lightGrey rounded-md">
@@ -359,8 +371,11 @@ function StudentsAttemptedTestseries() {
                                                         <Image src='/icons/user-account.svg' alt="user profile" width={18} height={18} />
                                                         <p className="text-sm text-[#0C111D] font-normal">Go to Profile</p>
                                                     </button>
-                                                    <button className=" flex flex-row items-center justify-start w-full py-[0.625rem] px-4 gap-2 hover:bg-[#F2F4F7] outline-none"
-                                                        onClick={openRemove}>
+                                                    <button className=" flex flex-row items-center justify-start w-full py-[0.625rem] px-4 gap-2 hover:bg-[#FEE4E2] outline-none"
+                                                        onClick={() => {
+                                                            { setIsRemoveOpen(true) };
+                                                            setPopoveropen2(null);
+                                                        }}>
                                                         <Image src='/icons/delete.svg' alt="user profile" width={18} height={18} />
                                                         <p className="text-sm text-[#DE3024] font-normal">Remove</p>
                                                     </button>
@@ -374,12 +389,12 @@ function StudentsAttemptedTestseries() {
                                     <td colSpan={6} className="text-center py-8">
                                         {isTextSearch && (
                                             <p className="text-[#667085] text-sm">
-                                                No students found for &quot;{searchTerm}&quot;
+                                                No users found for &quot;{searchTerm}&quot;
                                             </p>
                                         )}
                                         {!isTextSearch && (
                                             <p className="text-[#667085] text-sm">
-                                                No students found
+                                                No users found
                                             </p>
                                         )}
                                     </td>
@@ -401,7 +416,7 @@ function StudentsAttemptedTestseries() {
                     </div>
                 </div>
             </div>
-            {isRemoveOpen && < Remove onClose={closeRemove} open={true} />}
+            {isRemoveOpen && < Remove onClose={() => setIsRemoveOpen(false)} open={isRemoveOpen} />}
         </div>
     );
 }

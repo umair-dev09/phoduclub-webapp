@@ -7,6 +7,7 @@ import { now, today, CalendarDate, getLocalTimeZone, parseZonedDateTime, parseAb
 import { doc, updateDoc } from "firebase/firestore";
 import { db } from "@/firebase";
 import { toast, ToastContainer } from 'react-toastify';
+import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button } from "@nextui-org/react";
 
 // Define the props interface
 interface ScheduledDialogProps {
@@ -63,6 +64,16 @@ function ScheduledDialog({ startDate, endDate, setEndDate, setStartDate, fromCon
     const isFormValid = !!endDate;
     const currentDate = new Date();
     const formattedDate = currentDate.toISOString().slice(0, 19); // Converts to the format "YYYY-MM-DDTHH:MM:SS"
+
+    const getContentType = () => {
+        switch (fromContent) {
+            case "testseries": return "Testseries";
+            case "quiz": return "Quiz";
+            case "course": return "Course";
+            default: return "";
+        }
+    };
+
     const onSchedule = async () => {
 
         // Determine the Firestore collection based on `fromContent`
@@ -101,112 +112,128 @@ function ScheduledDialog({ startDate, endDate, setEndDate, setStartDate, fromCon
     };
 
     return (
-        <Dialog open={true} onClose={onClose} className="relative z-50">
-            <DialogBackdrop className="fixed inset-0 bg-black/30 " />
-            <div className="fixed inset-0 flex items-center justify-center ">
-                <DialogPanel transition className="bg-white rounded-2xl w-[620px] h-auto">
-                    <div className="flex flex-col  p-6 gap-4">
-                        <div className="flex flex-row  justify-between ">
-                            <h3 className="text-2xl font-semibold text-[#1D2939]">
-                                Schedule {fromContent === "testseries"
-                                    ? "Testseries"
-                                    : fromContent === "quiz"
-                                        ? "Quiz"
-                                        : fromContent === "course"
-                                            ? "Course"
-                                            : ""}
-                            </h3>
-                            <button className="w-[32px] h-[32px]  rounded-full flex items-center justify-center transition-all duration-300 ease-in-out hover:bg-[#F2F4F7] ">
-                                <button className="" onClick={onClose}>
-                                    <Image src="/icons/cancel.svg" alt="Cancel" width={20} height={20} />
-                                </button>
-                            </button>
-                        </div>
-                        <div className="flex flex-row items-center  gap-1">
-                            <Checkbox
-                                size="md"
-                                color="primary"
-                                checked={liveNow}          // Bind the state to the checkbox
-                                onChange={() => setLiveNow((prev) => !prev)}  // Toggle state on change
-                            />                            <p className="text-start text-[#182230] font-medium">
-                                Make the {fromContent === "testseries"
-                                    ? "Testseries"
-                                    : fromContent === "quiz"
-                                        ? "Quiz"
-                                        : fromContent === "course"
-                                            ? "Course"
-                                            : ""} live now
-                            </p>
-                        </div>
-                        <div className='flex flex-row w-full gap-4'>
-                            <div className='flex flex-col w-1/2 gap-1'>
-                                <span className='font-medium text-[#1D2939] text-sm'>Start Date & Time</span>
 
-                                <div className="flex flex-row justify-between items-center mb-3">
-                                    <p className="text-[#1D2939] text-sm font-medium">  {formatScheduleDate(startDate) || ""}</p>
-                                    <button
-                                        className="flex flex-row gap-1 rounded-md border-[2px] border-solid border-[#9012FF] hover:bg-[#F5F0FF] bg-[#FFFFFF] p-2 "
-                                        onClick={() => setDatapickerforStart(!datapickerforStart)}>
-                                        <span className="text-[#9012FF] font-semibold text-sm">{startDate ? 'Change Date' : 'Select Date'}</span>
-                                    </button>
-                                </div>
-                                {(datapickerforStart &&
-                                    <DatePicker
-                                        granularity="minute"
-                                        minValue={today(getLocalTimeZone())}
-                                        isDisabled={liveNow}
-                                        hideTimeZone
-                                        onChange={(date) => {
-                                            const dateString = date ? date.toString() : "";
-                                            setStartDate(dateString);
-                                        }}
+        <Modal
+            isOpen={true}
+            onClose={onClose}
+            size="2xl"
+            hideCloseButton
+            classNames={{
+                base: "max-w-2xl mx-auto",
+                header: "border-b border-[#E5E7EB] pb-4",
+                body: "py-6",
+                footer: "border-t border-[#E5E7EB] pt-4"
+            }}
+        >
+            <ModalContent>
+                <>
+                    <ModalHeader className="flex justify-between items-center">
+                        <h3 className="text-xl font-semibold text-[#1D2939]">
+                            Schedule {getContentType()}
+                        </h3>
+                        <button
+                            className="w-8 h-8 rounded-full flex items-center justify-center hover:bg-[#F2F4F7] transition-all duration-300"
+                            onClick={onClose}
+                        >
+                            <Image src="/icons/cancel.svg" alt="Cancel" width={20} height={20} />
+                        </button>
+                    </ModalHeader>
 
-                                    />
-                                )}
-
+                    <ModalBody>
+                        <div className="space-y-6">
+                            <div className="flex items-center gap-2">
+                                <Checkbox
+                                    size="md"
+                                    color="primary"
+                                    checked={liveNow}
+                                    onChange={() => setLiveNow((prev) => !prev)}
+                                />
+                                <p className="text-[#182230] font-medium">
+                                    Make the {getContentType()} live now
+                                </p>
                             </div>
-                            <div className='flex flex-col w-1/2 gap-1'>
-                                <span className='font-medium text-[#1D2939] text-sm'>End Date & Time</span>
-                                <div className="flex flex-row justify-between items-center mb-3">
-                                    <p className="text-[#1D2939] text-sm font-medium">  {formatScheduleDate(endDate) || ""}</p>
-                                    <button
-                                        className="flex flex-row gap-1 rounded-md border-[2px] border-solid border-[#9012FF] hover:bg-[#F5F0FF] bg-[#FFFFFF] p-2 "
-                                        onClick={() => setDatapickerforEnd(!datapickerforEnd)}>
-                                        <span className="text-[#9012FF] font-semibold text-sm">{endDate ? 'Change Date' : 'Select Date'}</span>
-                                    </button>
-                                </div>
-                                {(datapickerforEnd &&
-                                    <DatePicker
-                                        granularity="minute"
-                                        minValue={today(getLocalTimeZone())}
-                                        hideTimeZone
-                                        onChange={(date) => {
-                                            const dateString = date ? date.toString() : "";
-                                            setEndDate(dateString);
-                                        }}
 
-                                    />
-                                )}
+                            <div className="grid grid-cols-2 gap-6">
+                                <div className="space-y-2">
+                                    <span className="font-medium text-[#1D2939] text-sm">Start Date & Time</span>
+                                    <div className="flex justify-between items-center">
+                                        <p className="text-[#1D2939] text-sm font-medium">
+                                            {formatScheduleDate(startDate)}
+                                        </p>
+                                        <button
+                                            className="px-3 py-2 rounded-md border-2 border-[#9012FF] hover:bg-[#F5F0FF] transition-colors"
+                                            onClick={() => setDatapickerforStart(!datapickerforStart)}
+                                        >
+                                            <span className="text-[#9012FF] font-semibold text-sm">
+                                                {startDate ? 'Change Date' : 'Select Date'}
+                                            </span>
+                                        </button>
+                                    </div>
+                                    {datapickerforStart && (
+                                        <DatePicker
+                                            granularity="minute"
+                                            minValue={today(getLocalTimeZone())}
+                                            isDisabled={liveNow}
+                                            hideTimeZone
+                                            onChange={(date) => {
+                                                setStartDate(date ? date.toString() : "");
+                                                setDatapickerforStart(false);
+                                            }}
+                                        />
+                                    )}
+                                </div>
+
+                                <div className="space-y-2">
+                                    <span className="font-medium text-[#1D2939] text-sm">End Date & Time</span>
+                                    <div className="flex justify-between items-center">
+                                        <p className="text-[#1D2939] text-sm font-medium">
+                                            {formatScheduleDate(endDate)}
+                                        </p>
+                                        <button
+                                            className="px-3 py-2 rounded-md border-2 border-[#9012FF] hover:bg-[#F5F0FF] transition-colors"
+                                            onClick={() => setDatapickerforEnd(!datapickerforEnd)}
+                                        >
+                                            <span className="text-[#9012FF] font-semibold text-sm">
+                                                {endDate ? 'Change Date' : 'Select Date'}
+                                            </span>
+                                        </button>
+                                    </div>
+                                    {datapickerforEnd && (
+                                        <DatePicker
+                                            granularity="minute"
+                                            minValue={today(getLocalTimeZone())}
+                                            hideTimeZone
+                                            onChange={(date) => {
+                                                setEndDate(date ? date.toString() : "");
+                                                setDatapickerforEnd(false);
+                                            }}
+                                        />
+                                    )}
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <hr />
-                    <div className="flex flex-row justify-end gap-2 items-center pr-6 h-[76px]">
-                        <button className="py-[0.625rem] px-6 border-[1.5px] border-lightGrey text-[#1D2939] hover:bg-[#F2F4F7] font-semibold text-sm rounded-md" onClick={onClose}>Cancel</button>
-                        <button onClick={onSchedule}
-                            className={`h-[44px] w-auto px-3 ml-4 rounded-md text-white font-medium items-center flex border border-solid border-white  ${!isFormValid ? 'bg-[#CDA0FC]' : 'bg-[#9012FF]'} justify-center shadow-inner-button`}
-                            disabled={!isFormValid}>Schedule {fromContent === "testseries"
-                                ? "Testseries"
-                                : fromContent === "quiz"
-                                    ? "Quiz"
-                                    : fromContent === "course"
-                                        ? "Course"
-                                        : ""}</button>
-                    </div>
+                    </ModalBody>
 
-                </DialogPanel>
-            </div>
-        </Dialog>
+                    <ModalFooter>
+                        <Button
+                            variant="light"
+                            className="px-6 py-2.5 border border-[#E5E7EB] text-[#1D2939] hover:bg-[#F2F4F7] font-semibold text-sm rounded-md"
+                            onClick={onClose}
+                        >
+                            Cancel
+                        </Button>
+                        <Button
+                            className={`px-6 py-2.5 rounded-md text-white font-medium ${!isFormValid ? 'bg-[#CDA0FC]' : 'bg-[#9012FF] hover:bg-[#6D0DCC]'
+                                } transition-colors`}
+                            onClick={onSchedule}
+                            disabled={!isFormValid}
+                        >
+                            Schedule {getContentType()}
+                        </Button>
+                    </ModalFooter>
+                </>
+            </ModalContent>
+        </Modal>
     );
 }
 

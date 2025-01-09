@@ -53,6 +53,7 @@ function StudentsAttemptedTestseries() {
     const router = useRouter();
     const [isSelcetDateOpen, setIsSelectDateOpen] = useState(false);
     const [dateFilter, setDateFilter] = useState(null);
+    const [popoveropen, setPopoveropen] = useState<number | null>(null);
     const isTextSearch = searchTerm.trim().length > 0 && !dateFilter;
 
     // Fetch StudentAttempts when component mounts
@@ -142,6 +143,9 @@ function StudentsAttemptedTestseries() {
         ? selectedDate.toLocaleDateString("en-US", { year: 'numeric', month: 'short', day: 'numeric' })
         : "Select dates";
 
+    const handlePopoverOpen = (index: number) => {
+        setPopoveropen(index);
+    };
     return (
         <div className="flex flex-col w-full mt-4 gap-4">
             <div className="flex flex-row justify-between items-center">
@@ -193,7 +197,7 @@ function StudentsAttemptedTestseries() {
                             {/* Conditionally render the "Clear" button */}
                             {selectedDate && (
                                 <button
-                                    className="min-w-[84px] min-h-[30px] rounded-md bg-[#9012FF] text-[14px] font-medium text-white mb-2"
+                                    className="min-w-[84px] min-h-[30px] rounded-md bg-[#9012FF] border border-[#800EE2] shadow-inner-button transition-colors duration-150 hover:bg-[#6D0DCC] text-[14px] font-medium text-white mb-2"
                                     onClick={() => {
                                         setSelectedDate(null); // Clear the selected date
                                         setIsSelectDateOpen(false);
@@ -267,29 +271,39 @@ function StudentsAttemptedTestseries() {
                                         <td className="px-8 py-4 text-center text-[#101828] text-sm">{students.timeTaken}</td>
                                         <td className="px-8 py-4 text-center text-[#101828] text-sm">{students.ranking}</td>
                                         <td className="flex items-center justify-center px-8 py-4 text-[#101828] text-sm">
-                                            <Popover placement="bottom-end">
+                                            <Popover placement="bottom-end"
+                                                isOpen={popoveropen === index}
+                                                onOpenChange={(open) => open ? handlePopoverOpen(index) : setPopoveropen(null)}>
                                                 <PopoverTrigger>
-                                                    <button>
-                                                        <Image
-                                                            src="/icons/three-dots.svg"
-                                                            width={20}
-                                                            height={20}
-                                                            alt="More Actions"
-                                                        />
+                                                    <button
+                                                        className="w-[32px] h-[32px] rounded-full flex items-center justify-center transition-all duration-300 ease-in-out hover:bg-[#F2F4F7]"
+
+                                                    >
+                                                        <button>
+                                                            <Image
+                                                                src="/icons/three-dots.svg"
+                                                                width={20}
+                                                                height={20}
+                                                                alt="More Actions"
+                                                            />
+                                                        </button>
                                                     </button>
                                                 </PopoverTrigger>
-                                                <PopoverContent>
-                                                    <div className="w-[10.438rem] py-1 bg-white border border-lightGrey rounded-md">
-                                                        <button className="flex flex-row items-center justify-start w-full py-[0.625rem] px-4 gap-2 hover:bg-[#F2F4F7]">
-                                                            <Image src='/icons/user-account.svg' alt="user profile" width={18} height={18} />
-                                                            <p className="text-sm text-[#0C111D] font-normal">Go to Profile</p>
-                                                        </button>
-                                                        <button className=" flex flex-row items-center justify-start w-full py-[0.625rem] px-4 gap-2 hover:bg-[#F2F4F7]"
-                                                            onClick={openRemove}>
-                                                            <Image src='/icons/delete.svg' alt="user profile" width={18} height={18} />
-                                                            <p className="text-sm text-[#DE3024] font-normal">Remove</p>
-                                                        </button>
-                                                    </div>
+                                                <PopoverContent className="w-[10.438rem]  px-0 py-1 bg-white border border-lightGrey rounded-md">
+
+                                                    <button className="flex flex-row items-center justify-start w-full py-[0.625rem] px-4 gap-2 hover:bg-[#F2F4F7]">
+                                                        <Image src='/icons/user-account.svg' alt="user profile" width={18} height={18} />
+                                                        <p className="text-sm text-[#0C111D] font-normal">Go to Profile</p>
+                                                    </button>
+                                                    <button className=" flex flex-row items-center justify-start w-full py-[0.625rem] px-4 gap-2 hover:bg-[#FEE4E2]"
+                                                        onClick={() => {
+                                                            { setIsRemoveOpen(true) };
+                                                            setPopoveropen(null);
+                                                        }}>
+                                                        <Image src='/icons/delete.svg' alt="user profile" width={18} height={18} />
+                                                        <p className="text-sm text-[#DE3024] font-normal">Remove</p>
+                                                    </button>
+
                                                 </PopoverContent>
                                             </Popover>
                                         </td>
@@ -300,12 +314,12 @@ function StudentsAttemptedTestseries() {
                                     <td colSpan={6} className="text-center py-8">
                                         {isTextSearch && (
                                             <p className="text-[#667085] text-sm">
-                                                No students found for &quot;{searchTerm}&quot;
+                                                No users found for &quot;{searchTerm}&quot;
                                             </p>
                                         )}
                                         {!isTextSearch && (
                                             <p className="text-[#667085] text-sm">
-                                                No students found
+                                                No users found
                                             </p>
                                         )}
                                     </td>
@@ -327,7 +341,7 @@ function StudentsAttemptedTestseries() {
                     </div>
                 </div>
             </div>
-            {isRemoveOpen && < Remove onClose={closeRemove} open={true} />}
+            {isRemoveOpen && < Remove onClose={() => setIsRemoveOpen(false)} open={isRemoveOpen} />}
         </div>
     );
 }

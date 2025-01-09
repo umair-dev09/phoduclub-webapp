@@ -366,7 +366,7 @@ function Quizz() {
                             {/* Conditionally render the "Clear" button */}
                             {selectedDate && (
                                 <button
-                                    className="min-w-[84px] min-h-[30px] rounded-md bg-[#9012FF] text-[14px] font-medium text-white mb-2"
+                                    className="min-w-[84px] min-h-[30px] rounded-md bg-[#9012FF] border border-[#800EE2] shadow-inner-button transition-colors duration-150 hover:bg-[#6D0DCC] text-[14px] font-medium text-white mb-2"
                                     onClick={() => {
                                         setSelectedDate(null); // Clear the selected date
                                         setIsSelectDateOpen(false);
@@ -417,7 +417,7 @@ function Quizz() {
 
                     {/* Create Quiz Button */}
                     <button
-                        className="h-[44px] w-[135px] bg-[#8501FF] rounded-md shadow-inner-button border border-solid border-[#800EE2] flex items-center justify-center outline-none"
+                        className="h-[44px] w-[135px] bg-[#9012FF] rounded-md shadow-inner-button border border-solid border-[#800EE2] flex items-center justify-center outline-none transition-colors duration-150 hover:bg-[#6D0DCC]"
                         onClick={() => handleTabClick('/admin/content/quizzesmanagement/createquiz')}
                     >
                         <span className="text-[#FFFFFF] font-semibold text-sm">Create Quiz</span>

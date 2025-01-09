@@ -17,7 +17,7 @@ interface priceprops {
 }
 
 const CreateCourse = () => {
-  
+
     const quillRef = useRef<ReactQuill | null>(null); // Ref to hold ReactQuill instance
     const [quill, setQuill] = useState<Quill | null>(null);
     const [alignment, setAlignment] = useState<string | null>(null); // State to hold alignment
@@ -345,7 +345,7 @@ const CreateCourse = () => {
                     <button className="h-[44px] w-[120px] rounded-md items-center flex border border-solid border-[#EAECF0] bg-[#FFFFFF] justify-center hover:bg-[#F2F4F7]" onClick={() => router.back()}>
                         <span className="text-[#1D2939] font-semibold text-sm">Cancel</span>
                     </button>
-                    <button className={`h-[44px] w-[120px] ml-4 rounded-md items-center flex border border-solid border-white  ${!isFormValid ? 'bg-[#CDA0FC]' : 'bg-[#9012FF]'} justify-center shadow-inner-button`}
+                    <button className={`h-[44px] w-[120px] ml-4 rounded-md items-center flex border border-solid border-white  ${!isFormValid ? 'bg-[#CDA0FC]' : 'bg-[#9012FF] transition-colors duration-150 hover:bg-[#6D0DCC]'} justify-center shadow-inner-button`}
                         onClick={handleCreateClick}
                         disabled={!isFormValid}>
                         <span className="text-[#FFFFFF] font-semibold text-sm">{courseId ? 'Save' : 'Create'}</span>

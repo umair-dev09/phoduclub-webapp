@@ -187,6 +187,10 @@ function Banned() {
         setSelectedRows(newSelectedRows);
     };
 
+    const [dateFilter, setDateFilter] = useState(null);
+    const [statusFilter, setStatusFilter] = useState(null);
+    const isTextSearch = searchTerm.trim().length > 0 && !dateFilter && !statusFilter;
+
     if (loading) {
         return <LoadingData />
     }
@@ -198,22 +202,20 @@ function Banned() {
                 </h2>
                 <div className="flex flex-row gap-3">
                     {/* Search Button */}
-                    <button className="h-[44px] w-[250px] rounded-md bg-[#FFFFFF] border border-solid border-[#D0D5DD] flex items-center">
-                        <div className="flex flex-row items-center gap-2 pl-2">
-                            <Image
-                                src="/icons/search-button.svg"
-                                width={20}
-                                height={20}
-                                alt="Search Button"
-                            />
-                            <input
-                                className="font-normal text-[#667085] text-sm placeholder:text-[#A1A1A1] rounded-md px-1 py-1 focus:outline-none focus:ring-0 border-none"
-                                placeholder="Search"
-                                type="text"
-                                value={searchTerm}
-                                onChange={(e) => setSearchTerm(e.target.value)}
-                            />
-                        </div>
+                    <button className="h-[44px] w-[250px] rounded-md bg-[#FFFFFF] border border-solid border-[#D0D5DD] flex flex-row pl-2 gap-2 items-center">
+                        <Image
+                            src="/icons/search-button.svg"
+                            width={20}
+                            height={20}
+                            alt="Search Button"
+                        />
+                        <input
+                            className="w-full font-normal text-[#667085] text-sm placeholder:text-[#A1A1A1] rounded-md px-1 py-1 focus:outline-none focus:ring-0 border-none"
+                            placeholder="Search"
+                            type="text"
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                        />
                     </button>
 
                     {/* Select Students Button */}
@@ -333,7 +335,7 @@ function Banned() {
                                         <div className="flex flex-row ml-8 gap-2">
                                             <div className="flex items-center">
                                                 <div className="relative">
-                                                    <Image className="rounded-full min-w-[36px] min-h-[36px]" src={banned.profilePic} alt="DP" width={36} height={36} />
+                                                    <Image className="rounded-full min-w-[36px] min-h-[36px]" src={banned.profilePic || '/defaultAdminDP.jpg'} alt="DP" width={36} height={36} />
                                                     {banned.isPremium && (
                                                         <Image className="absolute right-0 bottom-0" src='/icons/winnerBatch.svg' alt="Batch" width={18} height={18} />
                                                     )}
@@ -384,9 +386,16 @@ function Banned() {
                         ) : (
                             <tr className='border-t border-lightGrey'>
                                 <td colSpan={6} className="text-center py-8">
-                                    <div className="flex flex-col items-center justify-center gap-2">
-                                        <p className="text-[#667085] text-sm">No chapters found for &quot;{searchTerm}&quot;</p>
-                                    </div>
+                                    {isTextSearch && (
+                                        <p className="text-[#667085] text-sm">
+                                            No users found for &quot;{searchTerm}&quot;
+                                        </p>
+                                    )}
+                                    {!isTextSearch && (
+                                        <p className="text-[#667085] text-sm">
+                                            No users found
+                                        </p>
+                                    )}
                                 </td>
                             </tr>
                         )}

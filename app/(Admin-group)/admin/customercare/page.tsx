@@ -693,7 +693,7 @@ function CustomerCare() {
                         </thead>
                         <tbody>
                             {currentItems.map((customer, index) => (
-                                <tr key={customer.uniqueId} onClick={() => handleTabClick('/admin/customercare/customerinfo')} className="h-auto border-t border-solid border-[#EAECF0] cursor-pointer">
+                                <tr key={customer.uniqueId} onClick={() => handleTabClick('/admin/customercare/customerinfo')} className="h-auto border-t border-[#EAECF0] cursor-pointer">
                                     <td className="pl-8 py-4 text-center text-[#101828] text-sm">
                                         <Checkbox
                                             size="md"
