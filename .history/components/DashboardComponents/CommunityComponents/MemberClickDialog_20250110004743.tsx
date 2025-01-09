@@ -282,7 +282,7 @@ function MemberClickDialog({ open, onClose, id, isAdmin }: MemberClickDialogProp
               </button>
             </ModalHeader>
             <ModalBody>
-              <span className="font-normal pb-2 text-sm text-[#667085]"> You are about to send a personal message. Once sent, it cannot be edited or retracted.</span>
+              <span className="font-normal text-sm text-[#667085]">All category, channels & chats inside this group will be gone.</span>
 
             </ModalBody>
             <ModalFooter className="border-t border-lightGrey">
