@@ -28,8 +28,7 @@ function GeneralChatLayout({ children }: GeneralChatLayoutProps) {
 
     return (
         <div className="flex flex-row h-full">
-            <div className=" flex flex-row items-center justify-center h-full w-full">
-                {/* bg-white border-solid border-lightGrey border  */}
+            {/* <div className=" flex flex-row items-center justify-center h-full w-full">
                 <div className=" rounded-2xl w-[37.5rem] p-6  ">
                     <div className="flex flex-col ">
                         <div className="flex justify-center ">
@@ -43,8 +42,8 @@ function GeneralChatLayout({ children }: GeneralChatLayoutProps) {
                         </div>
                     </div>
                 </div>
-            </div>
-            {/* <div className="flex flex-col w-[270px] bg-white border-t border-r border-lightGrey">
+            </div> */}
+            <div className="flex flex-col w-[270px] bg-white border-t border-r border-lightGrey">
                 <div className='flex flex-row items-center justify-between h-[72px] border-b border-lightGrey'>
                     <h2 className="ml-6 font-semibold text-[#182230]">General</h2>
                     <div className="flex flex-row items-center mr-6 gap-2">
@@ -148,7 +147,7 @@ function GeneralChatLayout({ children }: GeneralChatLayoutProps) {
                     </Popover>
                 </div>
                 {children}
-            </div> */}
+            </div>
         </div>
     );
 }
