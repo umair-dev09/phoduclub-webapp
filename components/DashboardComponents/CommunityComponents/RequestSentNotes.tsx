@@ -83,7 +83,7 @@ import Image from "next/image";
 // import React from "react";
 // import Image from "next/image";
 
-function BeforeChatComp() {
+function RequestSentNotes() {
     return (
         <div className="flex flex-1 flex-col">
             <div className="flex flex-1 items-center justify-center">
@@ -108,20 +108,20 @@ function BeforeChatComp() {
                         <div className="flex flex-row w-full gap-2">
                             <p className="-mt-[1px]">&#183;</p>
                             <p className="flex justify-center text-sm text-neutral-500 leading-6">
-                                User respectful language to coordinate with other students.
+                                User respectful language to coordinate with other users.
                             </p>
                         </div>
                     </div>
                 </div>
             </div>
-            <div className="flex items-center justify-center h-[100px] px-6 bg-white">
+            <div className="flex items-center justify-center h-[70px] px-6 bg-white">
                 <p className="text-center text-sm text-[#667085] font-normal">
-                    Request has been sent to this student. Will notify you once request is accepted by student. After that you can start your conversation.
+                    Request has been sent to this user. Will notify you once request is accepted by user. After that you can start your conversation.
                 </p>
             </div>
         </div>
     );
 }
 
-export default BeforeChatComp;
+export default RequestSentNotes;
 

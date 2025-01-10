@@ -11,9 +11,8 @@ import 'react-toastify/dist/ReactToastify.css';
 import LoadingData from "@/components/Loading";
 import MessageLoading from "@/components/MessageLoading";
 import CommunityVideoPlayer from "@/components/CommunityVideoPlayer";
-import MediaViewDialog from "./MediaViewDialog";
-import Delete from "./Delete";
-import MemberClickDialog from "./MemberClickDialog";
+// import MediaViewDialog from "./MediaViewDialog";
+// import Delete from "./Delete";
 type OwnChatProps = {
     currentUserId: string;
     message: string | null;
@@ -31,16 +30,9 @@ type OwnChatProps = {
     senderId: string | null;
     timestamp: Timestamp | null;
     chatId: string ;
-    communityId: string ;
-    headingId: string ;
-    isCurrentUserAdmin: boolean;
-    channelId: string ;
     isDeleted: boolean;
-    adminThatDeletedId: string;
-    isDeletedByAdmin: boolean;
-    mentions: { userId: string; id: string, isAdmin: boolean, }[];
+    pChatId: string;
     highlightedText: string | React.ReactNode[]; 
-    isAdmin: boolean;
     isHighlighted: boolean; // New prop
     scrollToReply: (replyingToChatId: string) => void;
     setShowReplyLayout: (value: boolean) => void;
@@ -54,22 +46,19 @@ type ReactionCount = {
 
 
 
-function OwnChat({message, isDeleted, mentions, adminThatDeletedId, isDeletedByAdmin, isCurrentUserAdmin, currentUserId, highlightedText, messageType, fileUrl, fileName, isHighlighted, isAdmin, scrollToReply, fileSize, senderId, timestamp, communityId, headingId, channelId, chatId, isReplying, replyingToId,replyingToChatId, replyingToFileName, replyingToFileUrl, replyingToMsg, replyingToMsgType, setShowReplyLayout, handleReply}:OwnChatProps) {
+function OwnChatP({message, isDeleted, pChatId, currentUserId, highlightedText, messageType, fileUrl, fileName, isHighlighted,scrollToReply, fileSize, senderId, timestamp, chatId, isReplying, replyingToId,replyingToChatId, replyingToFileName, replyingToFileUrl, replyingToMsg, replyingToMsgType, setShowReplyLayout, handleReply}:OwnChatProps) {
     const [reactions, setReactions] = useState<ReactionCount[]>([]);
     const [isOpen, setIsOpen] = useState(false);
     const [showBookmark, setShowBookmark] = useState(false); // Use a single index to track the active button
     const [showMediaDialog, setShowMediaDialog] = useState(false); // Use a single index to track the active button
     const [deleteDialog, setDeleteDialog] = useState(false); 
-    const [id, setId] = useState<string>('');
-    const [admin, setAdmin] = useState<boolean>(false);
-    const [openDialogue, setOpenDialogue] = useState(false);
 
     const reactionsRef = useMemo(() => {
         return collection(
           db,
-          `communities/${communityId}/channelsHeading/${headingId}/channels/${channelId}/chats/${chatId}/reactions`
+          `privatechats/${pChatId}/chats/${chatId}/reactions`
         );
-      }, [communityId, headingId, channelId, chatId]);
+      }, [pChatId, chatId]);
     
       // Firestore listener for reactions
       useEffect(() => {
@@ -93,95 +82,6 @@ function OwnChat({message, isDeleted, mentions, adminThatDeletedId, isDeletedByA
     
         return () => unsubscribe();
       }, [reactionsRef]);
-
-     
-      const renderMessageWithMentions = () => {
-        if (!highlightedText || !mentions) return highlightedText;
-
-        // Helper function to check if text is a URL
-        const isUrl = (text: string) => {
-          try {
-            new URL(text);
-            return true;
-          } catch {
-            return false;
-          }
-        };
-
-        // Helper function to process text parts
-        const processTextPart = (text: string, key: number | string) => {
-          // Check if the text is a URL
-          if (isUrl(text)) {
-            return (
-              <a
-                key={key}
-                href={text}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-blue-200 hover:underline"
-              >
-                {text}
-              </a>
-            );
-          }
-          return text;
-        };
-
-        if (typeof highlightedText === "string") {
-          const parts = highlightedText.split(/(@\w+|\s+)/);
-          return parts.map((part, index) => {
-            if (part.startsWith("@")) {
-              const mentionName = part.substring(1);
-              const mention = mentions.find((m) => m.userId === mentionName);
-
-              if (mention) {
-                return (
-                  <span
-                    key={index}
-                    style={{ color: "yellow", cursor: "pointer" }}
-                    onClick={() => {setOpenDialogue(true); setId(mention.id); setAdmin(mention.isAdmin)}}
-                  >
-                    {part}
-                  </span>
-                );
-              }
-            }
-            return processTextPart(part, index);
-          });
-        }
-
-        if (Array.isArray(highlightedText)) {
-          return highlightedText.map((node, index) => {
-            if (typeof node === "string") {
-              const parts = node.split(/(@\w+|\s+)/);
-              return parts.map((part, innerIndex) => {
-                if (part.startsWith("@")) {
-                  const mentionName = part.substring(1);
-                  const mention = mentions.find((m) => m.userId === mentionName);
-
-                  if (mention) {
-                    return (
-                      <span
-                        key={`${index}-${innerIndex}`}
-                        style={{ color: "yellow", cursor: "pointer" }}
-                        onClick={() => {setOpenDialogue(true); setId(mention.id); setAdmin(mention.isAdmin)}}
-                      >
-                        {part}
-                      </span>
-                    );
-                  }
-                }
-                return processTextPart(part, `${index}-${innerIndex}`);
-              });
-            }
-            return node;
-          });
-        }
-
-        return null;
-      };
-      
-      
 
     const handleReplyMessage = () =>{
        setShowReplyLayout(true);
@@ -252,7 +152,7 @@ const handleCopy = async () => {
 
             const userId = currentUser.uid;
 
-            const reactionsRef = doc(db, `communities/${communityId}/channelsHeading/${headingId}/channels/${channelId}/chats/${chatId}/reactions`,userId);
+            const reactionsRef = doc(db,`privatechats/${pChatId}/chats/${chatId}/reactions`,userId);
         
            await setDoc(reactionsRef, { emoji: emoji.emoji, userId });
 
@@ -263,29 +163,29 @@ const handleCopy = async () => {
             console.error("Error adding reaction: ", error);
           }
         };
-    const handleDeleteReaction = async (emoji: string) => {
-       try {
-         const auth = getAuth();
-         const currentUser = auth.currentUser;
-         if (!currentUser) {
-           console.error("User not authenticated.");
-           return;
-         }
-   
-         const userId = currentUser.uid;
-         const reactionDocRef = doc(db, `communities/${communityId}/channelsHeading/${headingId}/channels/${channelId}/chats/${chatId}/reactions`, userId);
-   
-         const reactionDoc = await getDoc(reactionDocRef);
-         if (reactionDoc.exists() && reactionDoc.data().emoji === emoji) {
-           await deleteDoc(reactionDocRef);
-           console.log("Reaction deleted successfully!");
-         } else {
-           console.log("Reaction not found or does not match.");
-         }
-       } catch (error) {
-         console.error("Error deleting reaction: ", error);
-       }
-     };    
+        const handleDeleteReaction = async (emoji: string) => {
+           try {
+             const auth = getAuth();
+             const currentUser = auth.currentUser;
+             if (!currentUser) {
+               console.error("User not authenticated.");
+               return;
+             }
+       
+             const userId = currentUser.uid;
+             const reactionDocRef = doc(db, `privatechats/${pChatId}/chats/${chatId}/reactions`,userId);
+       
+             const reactionDoc = await getDoc(reactionDocRef);
+             if (reactionDoc.exists() && reactionDoc.data().emoji === emoji) {
+               await deleteDoc(reactionDocRef);
+               console.log("Reaction deleted successfully!");
+             } else {
+               console.log("Reaction not found or does not match.");
+             }
+           } catch (error) {
+             console.error("Error deleting reaction: ", error);
+           }
+         };
           
     return (
         <div className="flex mr-3 justify-end pl-[15%] ">
@@ -351,10 +251,10 @@ const handleCopy = async () => {
                                 <span className='font-normal text-[#0C111D] text-sm'>Copy</span>
                                 </button>
                                 )}
-                                <button className='flex flex-row items-center gap-2 w-30 px-4 py-[10px] transition-colors hover:bg-neutral-100' onClick={() => {setShowBookmark(true); setIsOpen(false); }}>
+                                {/* <button className='flex flex-row items-center gap-2 w-30 px-4 py-[10px] transition-colors hover:bg-neutral-100' onClick={() => {setShowBookmark(true); setIsOpen(false); }}>
                                     <Image src='/icons/Bookmark.svg' alt='search icon' width={18} height={18} />
                                     <span className='font-normal text-[#0C111D] text-sm'>Bookmark</span>
-                                </button>
+                                </button> */}
                                 {/* Delete Message Button */}
                                 <button onClick={() => setDeleteDialog(true)}  className='flex flex-row items-center gap-2 w-30 px-4 pt-[10px] pb-3 transition-colors hover:bg-[#FEE4E2] rounded-br-md rounded-bl-md'>
                                     <Image src='/icons/delete.svg' alt='search icon' width={17} height={17} />
@@ -439,7 +339,7 @@ const handleCopy = async () => {
                                 <div className="italic text-[#475467]">You deleted this message</div>
                             ) : (
                             <div>
-                                {renderMessageWithMentions()}
+                                {highlightedText}
                             </div>
                             )}
                             
@@ -464,14 +364,12 @@ const handleCopy = async () => {
       )}
          
             </div>
-            {openDialogue && (
-        <MemberClickDialog open={true} onClose={() => setOpenDialogue(false)} id={id} isAdmin={admin} />
-      )}
-            {showMediaDialog && <MediaViewDialog open={true} onClose={() => setShowMediaDialog(false)} src={fileUrl} mediaType={messageType || ''}/> }
-            {deleteDialog && <Delete communityId={communityId} headingId={headingId} channelId={channelId} chatId={chatId} open={true} onClose={() => setDeleteDialog(false)} deletedByAdmin={false} adminThatDeletedId=""/>}
+        
+            {/* {showMediaDialog && <MediaViewDialog open={true} onClose={() => setShowMediaDialog(false)} src={fileUrl} mediaType={messageType || ''}/> } */}
+            {/* {deleteDialog && <Delete communityId={communityId} headingId={headingId} channelId={channelId} chatId={chatId} open={true} onClose={() => setDeleteDialog(false)} deletedByAdmin={false} adminThatDeletedId=""/>} */}
            
         </div>
     );
 }
 
-export default OwnChat;
+export default OwnChatP;
