@@ -30,6 +30,7 @@ type UserData = {
 function MemberClickDialog({ open, onClose, id, isAdmin }: MemberClickDialogProps) {
   const [user, setUser] = useState<UserData | null>(null);
   const [loading, setLoading] = useState(true);
+  // const currentUserId = 
   const [sendrequest, setSendrequest] = useState(false);
 
   useEffect(() => {
@@ -55,6 +56,14 @@ function MemberClickDialog({ open, onClose, id, isAdmin }: MemberClickDialogProp
   }, [id]); // Re-run this effect when userId changes
 
   const colors = ['bg-red-500', 'bg-orange-500', 'bg-green-500', 'bg-blue-500']
+
+  const handleSendRequest = () => {
+     if(user?.userId){
+
+     }
+  };
+
+
 
   if (loading) {
     return <LoadingData />
