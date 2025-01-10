@@ -12,6 +12,7 @@ import OwnChatP from "@/components/DashboardComponents/CommunityComponents/Priva
 import OtherChatP from "@/components/DashboardComponents/CommunityComponents/PrivateChatComponents/OtherChatP";
 import BottomTextP from "@/components/DashboardComponents/CommunityComponents/PrivateChatComponents/BottomTextP";
 import { ToastContainer } from "react-toastify";
+import BlockUser from "@/components/DashboardComponents/CommunityComponents/BlockUser";
 
 interface UserData {
   name: string;
@@ -61,6 +62,8 @@ function privateChatArea() {
   const [showReplyLayout, setShowReplyLayout] = useState(false); // State lifted to parent
   const [replyData, setReplyData] = useState<{ message: string | null; senderId: string | null; messageType: string | null; fileUrl: string | null; fileName: string | null; chatId: string | null; } | null>(null); // Holds reply message data
   const [highlightedChatId, setHighlightedChatId] = useState<string | null>(null);
+  const [blockUserDialog, setBlockUserDilaog] = useState(false);
+  const [isPopoverOpen, setIsPopoverOpen] = useState(false);
 
   useEffect(() => {
     if (pChatId) {
@@ -279,7 +282,6 @@ function privateChatArea() {
   //     );
   //   };
 
-
   useEffect(() => {
     setIsMounted(true);
   }, []);
@@ -333,6 +335,11 @@ function privateChatArea() {
     }
   };
 
+  const handleBlockUserClick = () => {
+    setIsPopoverOpen(false); // Close the popover
+    setBlockUserDilaog(true); // Open the dialog
+  };
+
   if (!isMounted) {
     return <LoadingData />;
   }
@@ -352,7 +359,11 @@ function privateChatArea() {
           </div>
           <p className="text-[#4B5563] text-[16px] font-semibold">{userData?.name}</p>
         </div>
-        <Popover placement="bottom-end">
+        <Popover
+          isOpen={isPopoverOpen}
+          onOpenChange={setIsPopoverOpen}
+          placement="bottom-end"
+        >
           <PopoverTrigger>
             <button className="w-[32px] h-[32px]  rounded-full flex items-center justify-center transition-all duration-300 ease-in-out hover:bg-[#F2F4F7]">
               <button className="border-none outline-none p-0 bg-transparent ">
@@ -377,7 +388,8 @@ function privateChatArea() {
             </button>
             <button
               className='flex flex-row items-center gap-2 w-[183px] px-4 py-[10px] transition-colors  hover:bg-neutral-100'
-            // onClick={closePopover}
+              // onClick={closePopover}
+              onClick={handleBlockUserClick}
             >
               <Image src='/icons/user-block-red-01.svg' alt='exit group' width={18} height={18} />
               <p className='text-sm text-red-600'>Block user</p>
@@ -519,6 +531,7 @@ function privateChatArea() {
         )}
       </div>
       <ToastContainer />
+      {blockUserDialog && < BlockUser open={blockUserDialog} onClose={() => setBlockUserDilaog(false)} userId={chatUserId || ''} userName={userData?.name || ''} />}
     </div>
   );
 
