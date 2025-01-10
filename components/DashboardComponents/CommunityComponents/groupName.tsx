@@ -100,25 +100,25 @@ function GroupName({ communityId, isAdmin }: groupNameProps) {
 
 
   return (
-    <div className='flex flex-row items-center justify-between h-[72px] border-b border-lightGrey py-[12px]'>
-
-      <div className='flex items-center justify-center mr-6 gap-2'>
+    <div className='flex flex-row items-center justify-between min-h-[72px] border-b border-lightGrey py-[12px]'>
+      <div className='flex items-center justify-center w-full'>
         {isMuted && (
           <Image className={`{isMuted ? 'flex : 'none'}`} src='/icons/notification-off-02.svg' alt="Muted" width={16} height={16} />
         )}
         <Popover placement="bottom-end"
           isOpen={isPopoverOpen}
-          onOpenChange={(open) => setIsPopoverOpen(open)}>
-          <PopoverTrigger>
-            <button className='flex flex-row gap-2 ml-6'>
-              <div className="flex items-center justify-center w-[46px] h-[46px] rounded-full">
+          onOpenChange={(open) => setIsPopoverOpen(open)}
+        >
+          <PopoverTrigger className="w-full">
+            <div className='flex flex-row w-full'>
+              <div className="flex items-center justify-center rounded-full">
                 {loading ? (
                   <Skeleton width={40} height={40} borderRadius={1000} />
                 ) : (
                   <Image className="rounded-full w-10 h-10 object-cover" src={groupData?.communityImg || '/icons/membersIcon.svg'} alt='group icon' quality={100} width={42} height={42} />
                 )}
               </div>
-              <div className='flex flex-row text-sm '>
+              <div className='flex flex-row text-sm'>
                 <div className="flex flex-col">
                   <div className='font-semibold'><h4>{groupData?.communityName || <Skeleton width={80} height={20} />}</h4></div>
                   {loading ? (
@@ -138,9 +138,8 @@ function GroupName({ communityId, isAdmin }: groupNameProps) {
                     alt="Arrow-Down Button"
                   />
                 </div>
-
               </div>
-            </button>
+            </div>
           </PopoverTrigger>
           <PopoverContent className="w-auto py-1 px-0 bg-white border border-lightGrey rounded-md flex flex-col">
             <Tooltip
@@ -196,7 +195,6 @@ function GroupName({ communityId, isAdmin }: groupNameProps) {
             </Tooltip>
             {!isAdmin && (
               (groupData?.groupExitedMembers ?? []).includes(user?.uid ?? '') ? (
-
                 <button className='flex flex-row gap-2 items-center h-10 w-[206px] px-4 hover:bg-[#FEE4E2]'
                   onClick={() => setDeleteGroupForUserDialog(true)}>
                   <Image
@@ -255,8 +253,6 @@ function GroupName({ communityId, isAdmin }: groupNameProps) {
                 <span className='font-normal text-[#DE3024] text-sm'>Delete group</span>
               </button>
             )}
-
-
           </PopoverContent>
         </Popover>
       </div>
