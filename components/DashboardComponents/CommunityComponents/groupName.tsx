@@ -108,29 +108,43 @@ function GroupName({ communityId, isAdmin }: groupNameProps) {
         <Popover placement="bottom-end"
           isOpen={isPopoverOpen}
           onOpenChange={(open) => setIsPopoverOpen(open)}
+          classNames={{
+            trigger: "w-full", // Add class to the trigger wrapper
+          }}
         >
-          <PopoverTrigger className="w-full">
-            <div className='flex flex-row w-full'>
-              <div className="flex items-center justify-center rounded-full">
+          <PopoverTrigger className="w-full block">
+            <div className='w-full flex flex-row items-center px-4 cursor-pointer hover:bg-gray-50'>
+              <div className="flex-shrink-0 mr-3">
                 {loading ? (
                   <Skeleton width={40} height={40} borderRadius={1000} />
                 ) : (
-                  <Image className="rounded-full w-10 h-10 object-cover" src={groupData?.communityImg || '/icons/membersIcon.svg'} alt='group icon' quality={100} width={42} height={42} />
+                  <Image
+                    className="rounded-full w-10 h-10 object-cover"
+                    src={groupData?.communityImg || '/icons/membersIcon.svg'}
+                    alt='group icon'
+                    quality={100}
+                    width={42}
+                    height={42}
+                  />
                 )}
               </div>
-              <div className='flex flex-row text-sm'>
+
+              <div className='flex-1 flex items-center justify-between'>
                 <div className="flex flex-col">
-                  <div className='font-semibold'><h4>{groupData?.communityName || <Skeleton width={80} height={20} />}</h4></div>
+                  <div className='font-semibold'>
+                    <h4>{groupData?.communityName || <Skeleton width={80} height={20} />}</h4>
+                  </div>
                   {loading ? (
                     <Skeleton width={60} height={18} />
                   ) : (
                     <div className='flex flex-row gap-2 text-[#4B5563]'>
                       <Image src='/icons/membersIcon.svg' alt='members icon' width={18} height={18} />
-                      <p>{groupData?.members ? groupData.members.length : 0}</p> {/* Display the number of members */}
+                      <p>{groupData?.members ? groupData.members.length : 0}</p>
                     </div>
                   )}
                 </div>
-                <div className='focus:outline-none ml-6'>
+
+                <div className='flex-shrink-0'>
                   <Image
                     src="/icons/selectdate-Arrowdown.svg"
                     width={20}
