@@ -1,4 +1,4 @@
-import BeforeChatComp from "@/components/DashboardComponents/CommunityComponents/BeforeChatComp";
+import BeforeChatComp from "@/components/DashboardComponents/CommunityComponents/RequestSentNotes";
 import React from "react";
 
 function GeneralChat() {

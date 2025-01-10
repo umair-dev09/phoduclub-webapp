@@ -1,5 +1,5 @@
 import React from "react";
-import BeforeChatComp from "@/components/DashboardComponents/CommunityComponents/BeforeChatComp";
+import BeforeChatComp from "@/components/DashboardComponents/CommunityComponents/RequestSentNotes";
 
 function BeforeChat() {
     return (

@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { getFirestore, collection, getDocs, query, where, onSnapshot } from "firebase/firestore";
 import { onAuthStateChanged, User } from 'firebase/auth'; // Import the User type from Firebase
 import { auth } from "@/firebase";
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams, usePathname } from 'next/navigation';
 import Image from "next/image";
 
 
@@ -14,13 +14,36 @@ type CommunityData = {
   members: { id: string, isAdmin: boolean }[] | null;
 };
 
+
 function GroupIcons() {
+   const searchParams = useSearchParams(); // Get query params, e.g., "?qId=B8yw93YJcBaGL3x0KRvN"
+      
   const [communities, setCommunities] = useState<CommunityData[]>([]);
   const [user, setUser] = useState<User | null>(null);
   const [selectedCommunityId, setSelectedCommunityId] = useState<string | null>(null); // State to track selected item
   const [selectedButton, setSelectedButton] = useState<string | null>(null); // State to track selected button
   const db = getFirestore();
   const router = useRouter();
+  const cId = searchParams?.get('communityId');
+  const pathname = usePathname();
+  const pCheck = pathname === '/community/private-chat';
+  const pId = searchParams?.get('pId');
+
+  useEffect(() => {
+    if (pCheck || pId) {
+      setSelectedCommunityId(null);
+      setSelectedButton('message');
+    }
+  
+  }, [pCheck, pId]);
+
+  useEffect(() => {
+    if(cId){
+      setSelectedCommunityId(cId);
+      setSelectedButton(null);
+    }
+  },[cId]);
+
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
@@ -74,7 +97,7 @@ function GroupIcons() {
   const onMessageButtonClick = () => {
     setSelectedButton("message");
     setSelectedCommunityId(null);
-    router.push('/community/general-chat')
+    router.push('/community/private-chat');
   };
   return (
     <div>

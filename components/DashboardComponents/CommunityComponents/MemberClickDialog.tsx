@@ -3,12 +3,14 @@ import Image from "next/image";
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
 import { useState, useEffect } from "react";
-import { doc, onSnapshot, Timestamp } from 'firebase/firestore';
+import { arrayUnion, doc, getDoc, onSnapshot, setDoc, Timestamp, updateDoc } from 'firebase/firestore';
 import { db, auth } from "@/firebase";
 import LoadingData from "@/components/Loading";
 import MessageLoading from "@/components/MessageLoading";
 import { Tooltip } from "@nextui-org/react";
 import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button } from "@nextui-org/react";
+import { useRouter } from "next/navigation";
+import { toast } from "react-toastify";
 
 interface MemberClickDialogProps {
   open: boolean;
@@ -20,6 +22,7 @@ interface MemberClickDialogProps {
 type UserData = {
   name: string;
   userId: string;
+  uniqueId: string;
   profilePic: string;
   targetYear: string;
   targetExams: string[];
@@ -27,11 +30,21 @@ type UserData = {
   isPremium: boolean | false;
 }
 
+function generateChatId(userId1:string, userId2:string) {
+  // Sort user IDs alphabetically
+  const sortedIds = [userId1, userId2].sort();
+  // Join them with an underscore to create the chat ID
+  return sortedIds.join("_");
+}
+
+
 function MemberClickDialog({ open, onClose, id, isAdmin }: MemberClickDialogProps) {
   const [user, setUser] = useState<UserData | null>(null);
   const [loading, setLoading] = useState(true);
-  // const currentUserId = 
-  const [sendrequest, setSendrequest] = useState(false);
+  const [messageButtonLoading, setMessageButtonLoading] = useState(false);
+  const currentUserId = auth.currentUser?.uid;
+  const [sendrequestDialog, setSendrequestDialog] = useState(false);
+  const router = useRouter();
 
   useEffect(() => {
     if (!id) return;
@@ -57,12 +70,57 @@ function MemberClickDialog({ open, onClose, id, isAdmin }: MemberClickDialogProp
 
   const colors = ['bg-red-500', 'bg-orange-500', 'bg-green-500', 'bg-blue-500']
 
-  const handleSendRequest = () => {
-     if(user?.userId){
 
-     }
+  const handleSendRequest = async () => {
+    if (user?.uniqueId && currentUserId) {
+      const chatId = generateChatId(currentUserId, user.uniqueId);
+      const chatDocRef = doc(db, 'privatechats', chatId);
+      const chatDocSnap = await getDoc(chatDocRef);
+
+      if (chatDocSnap.exists()) {
+        router.push(`/community/private-chat/${user.name.toLowerCase().replace(/\s+/g, '-')}/?pId=${generateChatId(currentUserId, user.uniqueId)}`);
+      } else {
+        await setDoc(chatDocRef, {
+          participants: [currentUserId, user.uniqueId],
+          chatStatus: 'requested',
+          createdAt: Timestamp.now(),
+        });
+
+        const currentUserDocRef = doc(db, 'users', currentUserId);
+        const recipientUserDocRef = doc(db, 'users', user.uniqueId);
+
+        await updateDoc(currentUserDocRef, {
+          sentRequests: arrayUnion(user.uniqueId),
+          chatList: arrayUnion(user.uniqueId),
+        });
+
+        await updateDoc(recipientUserDocRef, {
+          receivedRequests: arrayUnion(currentUserId),
+        });
+        toast.success('Chat request sent!');
+        setSendrequestDialog(false);
+        onClose();
+        router.push(`/community/private-chat/${user.name.toLowerCase().replace(/\s+/g, '-')}/?pId=${generateChatId(currentUserId, user.uniqueId)}`);
+      }
+    }
   };
 
+  const handleMessageClick = async () => {
+    setMessageButtonLoading(true);
+    if (user?.uniqueId && currentUserId) {
+      const chatId = generateChatId(currentUserId, user.uniqueId);
+      const chatDocRef = doc(db, 'privatechats', chatId);
+      const chatDocSnap = await getDoc(chatDocRef);
+
+      if (chatDocSnap.exists()) {
+        router.push(`/community/private-chat/${user.name.toLowerCase().replace(/\s+/g, '-')}/?pId=${generateChatId(currentUserId, user.uniqueId)}`);
+        setMessageButtonLoading(false);
+      } else {
+       setSendrequestDialog(true);
+       setMessageButtonLoading(false);
+      }
+    }
+  };
 
 
   if (loading) {
@@ -230,7 +288,8 @@ function MemberClickDialog({ open, onClose, id, isAdmin }: MemberClickDialogProp
 
               <div className="bg-purple p-4">
                 <button className="flex flex-row gap-2 items-center justify-center w-full h-[44px] shadow-inner-button bg-white rounded-md"
-                  onClick={() => setSendrequest(true)}>
+                  onClick={handleMessageClick}
+                  disabled={messageButtonLoading}>
                   <Image
                     className="w-[17px] h-[17px]"
                     src="/icons/messageicon1.svg"
@@ -238,7 +297,11 @@ function MemberClickDialog({ open, onClose, id, isAdmin }: MemberClickDialogProp
                     width={16}
                     height={16}
                   />
-                  <span className="text-base font-semibold text-[#182230]">Message</span>
+                  {messageButtonLoading ? (
+                                    <div className="w-5 h-5 animate-spin-loading rounded-[50%] border-4 border-[#8181814d] border-solid border-t-4 border-t-purple"></div>
+                  ) : (  
+                                 <span className="text-base font-semibold text-[#182230]">Message</span>
+                  )}
                 </button>
               </div>
             </ModalHeader>
@@ -279,24 +342,24 @@ function MemberClickDialog({ open, onClose, id, isAdmin }: MemberClickDialogProp
         </ModalContent>
       </Modal>
       {/* Send Request Dialog */}
-      <Modal isOpen={sendrequest} onOpenChange={(isOpen) => !isOpen && setSendrequest(false)} hideCloseButton
+      <Modal isOpen={sendrequestDialog} onOpenChange={(isOpen) => !isOpen && setSendrequestDialog(false)} hideCloseButton
       >
 
         <ModalContent>
           <>
             <ModalHeader className="flex flex-row justify-between items-center gap-1">
-              <h1 className='text-[#1D2939] font-bold text-lg'>Send Request</h1>
+              <h1 className='text-[#1D2939] font-bold text-lg'>Send Chat Request</h1>
               <button className="w-[32px] h-[32px]  rounded-full flex items-center justify-center transition-all duration-300 ease-in-out hover:bg-[#F2F4F7]">
-                <button><Image src="/icons/cancel.svg" alt="Cancel" width={20} height={20} onClick={() => setSendrequest(false)} /></button>
+                <button><Image src="/icons/cancel.svg" alt="Cancel" width={20} height={20} onClick={() => setSendrequestDialog(false)} /></button>
               </button>
             </ModalHeader>
             <ModalBody>
-              <span className="font-normal pb-2 text-sm text-[#667085]"> You are about to send a personal message. Once sent, it cannot be edited or retracted.</span>
+              <span className="font-normal pb-2 text-sm text-[#667085]"> To start a conversation with <span className="font-bold">{user?.name}</span>, you have to send a chat request. Once your request is accepted, you will be able to send messages and communicate privately.</span>
 
             </ModalBody>
             <ModalFooter className="border-t border-lightGrey">
-              <Button variant="light" className="py-[0.625rem] px-6 border-2  border-solid border-[#EAECF0] font-semibold text-sm text-[#1D2939] rounded-md hover:bg-[#F2F4F7]" onClick={() => setSendrequest(false)}>Cancel</Button>
-              <Button className="py-[0.625rem] px-6 text-white text-sm shadow-inner-button font-semibold border border-solid  border-white bg-[#9012FF] hover:bg-[#6D0DCC]  rounded-md" onClick={() => setSendrequest(false)} >Send</Button>
+              <Button variant="light" className="py-[0.625rem] px-6 border-2  border-solid border-[#EAECF0] font-semibold text-sm text-[#1D2939] rounded-md hover:bg-[#F2F4F7]" onClick={() => setSendrequestDialog(false)}>Cancel</Button>
+              <Button className="py-[0.625rem] px-6 text-white text-sm shadow-inner-button font-semibold border border-solid  border-white bg-[#9012FF] hover:bg-[#6D0DCC]  rounded-md" onClick={handleSendRequest} >Send Chat Request</Button>
             </ModalFooter>
           </>
         </ModalContent>
