@@ -14,41 +14,41 @@ import BottomTextP from "@/components/DashboardComponents/CommunityComponents/Pr
 import { ToastContainer } from "react-toastify";
 
 interface UserData {
-    name: string;
-    profilePic: string;
-    isOnline: boolean;
+  name: string;
+  profilePic: string;
+  isOnline: boolean;
 }
 
 type Chat = {
-    message: string;
-    messageType: string;
-    fileUrl: string;
-    senderId: string;
-    timestamp: any; // Firebase Timestamp
-    chatId: string;
-    fileName: string;
-    fileSize: number;
-    isReplying: boolean;
-    replyingToId: string;
-    replyingToChatId: string;
-    replyingToMsg: string;
-    replyingToMsgType: string;
-    replyingToFileUrl: string;
-    replyingToFileName: string;
-    isDeleted: boolean;
-    adminThatDeletedId: string;
-    isDeletedByAdmin: boolean;
-    isAdmin: boolean;
-    mentions: { userId: string; id: string, isAdmin: boolean, }[];
-  };
+  message: string;
+  messageType: string;
+  fileUrl: string;
+  senderId: string;
+  timestamp: any; // Firebase Timestamp
+  chatId: string;
+  fileName: string;
+  fileSize: number;
+  isReplying: boolean;
+  replyingToId: string;
+  replyingToChatId: string;
+  replyingToMsg: string;
+  replyingToMsgType: string;
+  replyingToFileUrl: string;
+  replyingToFileName: string;
+  isDeleted: boolean;
+  adminThatDeletedId: string;
+  isDeletedByAdmin: boolean;
+  isAdmin: boolean;
+  mentions: { userId: string; id: string, isAdmin: boolean, }[];
+};
 
 function privateChatArea() {
   const searchParams = useSearchParams();
   const [loading, setLoading] = useState(true);
   const currentUserId = auth.currentUser?.uid;
-const pChatId = searchParams.get('pId');
-const chatUserId = pChatId ? pChatId.split('_').filter(id => id !== currentUserId)[0] : null;
-const [chatStatus, setChatStatus] = useState<string | null>(null);
+  const pChatId = searchParams.get('pId');
+  const chatUserId = pChatId ? pChatId.split('_').filter(id => id !== currentUserId)[0] : null;
+  const [chatStatus, setChatStatus] = useState<string | null>(null);
   const containerRef = useRef<HTMLDivElement | null>(null); // Ref for the scrollable container
   const [showScrollButton, setShowScrollButton] = useState(false); // New state to control button visibility
   const isAutoScrolling = useRef(false);
@@ -58,40 +58,40 @@ const [chatStatus, setChatStatus] = useState<string | null>(null);
   const [chats, setChats] = useState<Chat[]>([]); // State to hold chat messages
   const [searchQuery, setSearchQuery] = useState(""); // Stores the search text
   const chatRefs = useRef<{ [key: string]: HTMLDivElement | null }>({});
-const [showReplyLayout, setShowReplyLayout] = useState(false); // State lifted to parent
+  const [showReplyLayout, setShowReplyLayout] = useState(false); // State lifted to parent
   const [replyData, setReplyData] = useState<{ message: string | null; senderId: string | null; messageType: string | null; fileUrl: string | null; fileName: string | null; chatId: string | null; } | null>(null); // Holds reply message data
   const [highlightedChatId, setHighlightedChatId] = useState<string | null>(null);
 
   useEffect(() => {
     if (pChatId) {
-        const chatDoc = doc(db, "privatechats", pChatId);
-        const unsubscribeChat = onSnapshot(chatDoc, (chatSnapshot) => {
+      const chatDoc = doc(db, "privatechats", pChatId);
+      const unsubscribeChat = onSnapshot(chatDoc, (chatSnapshot) => {
         if (chatSnapshot.exists()) {
-            setChatStatus(chatSnapshot.data().chatStatus);
-            setLoading(false);
+          setChatStatus(chatSnapshot.data().chatStatus);
+          setLoading(false);
         }
-    });
+      });
 
-    return () => unsubscribeChat();
-}
-}, [pChatId]);
+      return () => unsubscribeChat();
+    }
+  }, [pChatId]);
 
-useEffect(() => {
-    if(chatUserId){
-    const userDoc = doc(db, "users", chatUserId);
+  useEffect(() => {
+    if (chatUserId) {
+      const userDoc = doc(db, "users", chatUserId);
 
-    const unsubscribeUser = onSnapshot(userDoc, (userSnapshot) => {
+      const unsubscribeUser = onSnapshot(userDoc, (userSnapshot) => {
         if (userSnapshot.exists()) {
-            setUserData(userSnapshot.data() as UserData);
-            setLoading(false);
+          setUserData(userSnapshot.data() as UserData);
+          setLoading(false);
         }
-    });
+      });
 
-    return () => unsubscribeUser();
-}
-}, [chatUserId]);
+      return () => unsubscribeUser();
+    }
+  }, [chatUserId]);
 
-useEffect(() => {
+  useEffect(() => {
     if (pChatId) {
       const fetchChats = async () => {
         try {
@@ -101,18 +101,18 @@ useEffect(() => {
             const chatData = snapshot.docs.map((doc) => doc.data()) as Chat[];
             setChats(chatData);
           });
-  
+
           return unsubscribe;
         } catch (error) {
           console.error("Error fetching chats: ", error);
         }
       };
-  
+
       fetchChats();
     }
   }, [pChatId]);
 
- // Scroll to the last message immediately after chats are updated
+  // Scroll to the last message immediately after chats are updated
   const initialLoadRef = useRef(true); // Tracks if the user just selected a channel
 
   useEffect(() => {
@@ -144,14 +144,14 @@ useEffect(() => {
         // Initial load - scroll instantly
         scrollToBottom('auto');
         initialLoadRef.current = false;
-      } else if (lastChat.senderId === currentUserId|| isNearBottom) {
+      } else if (lastChat.senderId === currentUserId || isNearBottom) {
         // User's own message or already near bottom - scroll smoothly
         scrollToBottom('smooth');
       }
     }
   }, [chats, currentUserId]);
 
-const handleScroll = () => {
+  const handleScroll = () => {
     if (containerRef.current && !isAutoScrolling.current) {
       const { scrollTop, scrollHeight, clientHeight } = containerRef.current;
       const isNearBottom = scrollHeight - scrollTop - clientHeight <= 50;
@@ -179,86 +179,86 @@ const handleScroll = () => {
     }
   };
 
-//***********************Codes for search featrue****************************/
-//   useEffect(() => {
-//     if (searchQuery.trim() === "") {
-//       setSearchResults([]);
-//       setCurrentResultIndex(-1);
-//       return;
-//     }
+  //***********************Codes for search featrue****************************/
+  //   useEffect(() => {
+  //     if (searchQuery.trim() === "") {
+  //       setSearchResults([]);
+  //       setCurrentResultIndex(-1);
+  //       return;
+  //     }
 
-//     const results = chats
-//       .map((chat, index) =>
-//         chat.message && typeof chat.message === "string" &&
-//           chat.message.toLowerCase().includes(searchQuery.toLowerCase())
-//           ? index
-//           : -1
-//       )
-//       .filter((index) => index !== -1);
+  //     const results = chats
+  //       .map((chat, index) =>
+  //         chat.message && typeof chat.message === "string" &&
+  //           chat.message.toLowerCase().includes(searchQuery.toLowerCase())
+  //           ? index
+  //           : -1
+  //       )
+  //       .filter((index) => index !== -1);
 
-//     setSearchResults(results);
-//     setCurrentResultIndex(results.length > 0 ? 0 : -1);
-//   }, [searchQuery, chats]);
+  //     setSearchResults(results);
+  //     setCurrentResultIndex(results.length > 0 ? 0 : -1);
+  //   }, [searchQuery, chats]);
 
-//   useEffect(() => {
-//     if (currentResultIndex >= 0) {
-//       const chatId = chats[searchResults[currentResultIndex]]?.chatId;
+  //   useEffect(() => {
+  //     if (currentResultIndex >= 0) {
+  //       const chatId = chats[searchResults[currentResultIndex]]?.chatId;
 
-//       if (chatId && chatRefs.current[chatId]) {
-//         const chatElement = chatRefs.current[chatId];
-//         if (chatElement) {
-//           chatElement.scrollIntoView({
-//             behavior: "auto",
-//             block: "center",
-//           });
-//         }
-//       }
-//     }
-//   }, [currentResultIndex, chats, searchResults]);
+  //       if (chatId && chatRefs.current[chatId]) {
+  //         const chatElement = chatRefs.current[chatId];
+  //         if (chatElement) {
+  //           chatElement.scrollIntoView({
+  //             behavior: "auto",
+  //             block: "center",
+  //           });
+  //         }
+  //       }
+  //     }
+  //   }, [currentResultIndex, chats, searchResults]);
 
-//   const handleSearchUp = () => {
-//     if (searchResults.length === 0) return;
+  //   const handleSearchUp = () => {
+  //     if (searchResults.length === 0) return;
 
-//     // For single result, always scroll to it
-//     if (searchResults.length === 1) {
-//       setCurrentResultIndex(0);
-//       const chatId = chats[searchResults[0]]?.chatId;
-//       if (chatId && chatRefs.current[chatId]) {
-//         chatRefs.current[chatId]?.scrollIntoView({
-//           behavior: "auto",
-//           block: "center"
-//         });
-//       }
-//       return;
-//     }
+  //     // For single result, always scroll to it
+  //     if (searchResults.length === 1) {
+  //       setCurrentResultIndex(0);
+  //       const chatId = chats[searchResults[0]]?.chatId;
+  //       if (chatId && chatRefs.current[chatId]) {
+  //         chatRefs.current[chatId]?.scrollIntoView({
+  //           behavior: "auto",
+  //           block: "center"
+  //         });
+  //       }
+  //       return;
+  //     }
 
-//     // For multiple results, cycle through them
-//     setCurrentResultIndex((prevIndex) =>
-//       prevIndex > 0 ? prevIndex - 1 : searchResults.length - 1
-//     );
-//   };
+  //     // For multiple results, cycle through them
+  //     setCurrentResultIndex((prevIndex) =>
+  //       prevIndex > 0 ? prevIndex - 1 : searchResults.length - 1
+  //     );
+  //   };
 
-//   const handleSearchDown = () => {
-//     if (searchResults.length === 0) return;
+  //   const handleSearchDown = () => {
+  //     if (searchResults.length === 0) return;
 
-//     // For single result, always scroll to it
-//     if (searchResults.length === 1) {
-//       setCurrentResultIndex(0);
-//       const chatId = chats[searchResults[0]]?.chatId;
-//       if (chatId && chatRefs.current[chatId]) {
-//         chatRefs.current[chatId]?.scrollIntoView({
-//           behavior: "auto",
-//           block: "center"
-//         });
-//       }
-//       return;
-//     }
+  //     // For single result, always scroll to it
+  //     if (searchResults.length === 1) {
+  //       setCurrentResultIndex(0);
+  //       const chatId = chats[searchResults[0]]?.chatId;
+  //       if (chatId && chatRefs.current[chatId]) {
+  //         chatRefs.current[chatId]?.scrollIntoView({
+  //           behavior: "auto",
+  //           block: "center"
+  //         });
+  //       }
+  //       return;
+  //     }
 
-//     // For multiple results, cycle through them
-//     setCurrentResultIndex((prevIndex) =>
-//       prevIndex < searchResults.length - 1 ? prevIndex + 1 : 0
-//     );
-//   };
+  //     // For multiple results, cycle through them
+  //     setCurrentResultIndex((prevIndex) =>
+  //       prevIndex < searchResults.length - 1 ? prevIndex + 1 : 0
+  //     );
+  //   };
 
 
   useEffect(() => {
@@ -314,67 +314,63 @@ const handleScroll = () => {
     }
   };
 
-
-
-
-
   if (!isMounted) {
     return <LoadingData />;
   }
 
-    if(loading){
-        return <LoadingData />
-    }
+  if (loading) {
+    return <LoadingData />
+  }
 
-
-    return(
-        <div className="flex flex-col h-full ">
-            {/* Chat Head */}
-            <div className="flex flex-row items-center justify-between px-6 h-[72px] bg-white border-b border-lightGrey">
-            <div className="flex flex-row items-center gap-2">
-                <div className="relative ">
-                <Image className="rounded-full w-10 h-10" src={userData?.profilePic || '/images/DP.png'} alt="DP" width={36} height={36} />
-                <div className={`absolute right-0 bottom-0 w-[14px] h-[14px] ${userData?.isOnline ? 'bg-green-500' : 'bg-neutral-400'} rounded-full border-2 border-white `}></div>
-                </div>
-                <p className="text-[#4B5563] text-[16px] font-semibold">{userData?.name}</p>
-            </div>
-            <Popover placement="bottom-end">
-                <PopoverTrigger>
-                <button className="w-[32px] h-[32px]  rounded-full flex items-center justify-center transition-all duration-300 ease-in-out hover:bg-[#F2F4F7]">
-                    <button className="border-none outline-none p-0 bg-transparent ">
-                    <Image src='/icons/more-vertical.svg' alt="more options" width={24} height={24} />
-                    </button>
-                </button>
-                </PopoverTrigger>
-                <PopoverContent className='flex flex-col bg-white w-auto h-auto py-1 px-0 border border-lightGrey rounded-md shadow-md'>
-                <button
-                    className='flex flex-row items-center gap-2 w-[183px] px-4 py-[10px] transition-colors  hover:bg-neutral-100'
-                    // onClick={closePopover}
-                >
-                    <Image src='/icons/user-sharing.svg' alt='mark as read' width={18} height={18} />
-                    <p className='text-sm'>View profile</p>
-                </button>
-                <button
-                    className='flex flex-row items-center gap-2 w-[183px] px-4 py-[10px] transition-colors  hover:bg-neutral-100'
-                    // onClick={closePopover}
-                >
-                    <Image src='/icons/folder-02.svg' alt='media' width={18} height={18} />
-                    <p className='text-sm'>Media</p>
-                </button>
-                <button
-                    className='flex flex-row items-center gap-2 w-[183px] px-4 py-[10px] transition-colors  hover:bg-neutral-100'
-                    // onClick={closePopover}
-                >
-                    <Image src='/icons/user-block-red-01.svg' alt='exit group' width={18} height={18} />
-                    <p className='text-sm text-red-600'>Block user</p>
-                </button>
-                </PopoverContent>
-            </Popover>
-            </div>
-            {chatStatus === 'requested' && <RequestSentNotes />}
-            {chatStatus === 'accepted' && (
-                <div className="flex flex-col flex-1">
-                 <div
+  return (
+    <div className="flex flex-col h-full ">
+      {/* Chat Head */}
+      <div className="flex flex-row items-center justify-between px-6 h-[72px] bg-white border-b border-lightGrey">
+        <div className="flex flex-row items-center gap-2">
+          <div className="relative">
+            <Image className="rounded-full w-10 h-10" src={userData?.profilePic || '/images/DP.png'} alt="DP" width={36} height={36} />
+            <div className={`absolute right-0 bottom-0 w-[14px] h-[14px] ${userData?.isOnline ? 'bg-green-500' : 'bg-neutral-400'} rounded-full border-2 border-white`}></div>
+          </div>
+          <p className="text-[#4B5563] text-[16px] font-semibold">{userData?.name}</p>
+        </div>
+        <Popover placement="bottom-end">
+          <PopoverTrigger>
+            <button className="w-[32px] h-[32px]  rounded-full flex items-center justify-center transition-all duration-300 ease-in-out hover:bg-[#F2F4F7]">
+              <button className="border-none outline-none p-0 bg-transparent ">
+                <Image src='/icons/more-vertical.svg' alt="more options" width={24} height={24} />
+              </button>
+            </button>
+          </PopoverTrigger>
+          <PopoverContent className='flex flex-col bg-white w-auto h-auto py-1 px-0 border border-lightGrey rounded-md shadow-md'>
+            <button
+              className='flex flex-row items-center gap-2 w-[183px] px-4 py-[10px] transition-colors  hover:bg-neutral-100'
+            // onClick={closePopover}
+            >
+              <Image src='/icons/user-sharing.svg' alt='mark as read' width={18} height={18} />
+              <p className='text-sm'>View profile</p>
+            </button>
+            <button
+              className='flex flex-row items-center gap-2 w-[183px] px-4 py-[10px] transition-colors  hover:bg-neutral-100'
+            // onClick={closePopover}
+            >
+              <Image src='/icons/folder-02.svg' alt='media' width={18} height={18} />
+              <p className='text-sm'>Media</p>
+            </button>
+            <button
+              className='flex flex-row items-center gap-2 w-[183px] px-4 py-[10px] transition-colors  hover:bg-neutral-100'
+            // onClick={closePopover}
+            >
+              <Image src='/icons/user-block-red-01.svg' alt='exit group' width={18} height={18} />
+              <p className='text-sm text-red-600'>Block user</p>
+            </button>
+          </PopoverContent>
+        </Popover>
+      </div>
+      <div className="flex-1 min-h-0">
+        {chatStatus === 'requested' && <RequestSentNotes />}
+        {chatStatus === 'accepted' && (
+          <div className="flex flex-col h-full">
+            <div
               className="overflow-y-auto p-4 flex flex-col flex-1 gap-4 overflow-x-hidden relative"
               ref={containerRef}
               onScroll={handleScroll}
@@ -406,7 +402,6 @@ const handleScroll = () => {
                         if (el) {
                           // Store reference for the current chat message
                           chatRefs.current[chat.chatId] = el;
-
                           // Assign the bottom reference to the last message for initial scrolling
                           if (index === chats.length - 1) {
                             bottomRef.current = el;
@@ -471,13 +466,13 @@ const handleScroll = () => {
                   </React.Fragment>
                 );
               })}
-
             </div>
-            <div className='relative'>
+            {/* Bottom text input area */}
+            <div className="flex-none relative">
               {showScrollButton && (
                 <button
                   onClick={() => scrollToBottom()}
-                  className="flex items-center justify-center absolute bottom-[85px]  right-4 bg-white border pt-[2px] text-white rounded-full shadow-md hover:bg-[#f7f7f7] transition-all w-[38px] h-[38px]"
+                  className="absolute bottom-[85px] right-4 bg-white border pt-[2px] text-white rounded-full shadow-md hover:bg-[#f7f7f7] transition-all w-[38px] h-[38px] flex items-center justify-center"
                 >
                   <Image
                     src="/icons/Arrow-down-1.svg"
@@ -488,23 +483,24 @@ const handleScroll = () => {
                 </button>
               )}
               <BottomTextP
-               showReplyLayout={showReplyLayout}
-               setShowReplyLayout={setShowReplyLayout}
-               replyData={replyData}
-               pChatId={pChatId || ''}
-             />
-                </div>
-                </div>
-            )}
-            {chatStatus === 'declined' && (
-              <div className="flex flex-col flex-1 w-full gap-3 items-center justify-center">
-                 <p className="text-[#667085]  text-center w-[50%]">Your chat request was declined by the user. You can try to send chat request again but its not recommended to send chat request to same user multiple times.</p>
-                 <button className="py-[0.625rem] px-6 text-white text-sm shadow-inner-button font-semibold border border-solid w-[300px]  border-white bg-[#9012FF] hover:bg-[#6D0DCC]  rounded-md">Send Request Again</button>
-              </div>
-             )}
-             <ToastContainer/>
-        </div>
-    );
+                showReplyLayout={showReplyLayout}
+                setShowReplyLayout={setShowReplyLayout}
+                replyData={replyData}
+                pChatId={pChatId || ''}
+              />
+            </div>
+          </div>
+        )}
+        {chatStatus === 'declined' && (
+          <div className="flex flex-col flex-1 w-full gap-3 items-center justify-center">
+            <p className="text-[#667085]  text-center w-[50%]">Your chat request was declined by the user. You can try to send chat request again but its not recommended to send chat request to same user multiple times.</p>
+            <button className="py-[0.625rem] px-6 text-white text-sm shadow-inner-button font-semibold border border-solid w-[300px]  border-white bg-[#9012FF] hover:bg-[#6D0DCC]  rounded-md">Send Request Again</button>
+          </div>
+        )}
+      </div>
+      <ToastContainer />
+    </div>
+  );
 
 }
 export default privateChatArea;
