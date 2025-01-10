@@ -178,6 +178,25 @@ function privateChatArea() {
       setShowScrollButton(false);
     }
   };
+  useEffect(() => {
+    if (chatStatus === 'accepted' && chats.length > 0 && containerRef.current) {
+      const lastChat = chats[chats.length - 1];
+      const chatContainer = containerRef.current;
+      
+      const { scrollTop, scrollHeight, clientHeight } = chatContainer;
+      const isNearBottom = scrollHeight - scrollTop - clientHeight <= 150;
+  
+      // Use setTimeout to ensure DOM is updated
+      setTimeout(() => {
+        if (initialLoadRef.current) {
+          scrollToBottom('auto');
+          initialLoadRef.current = false;
+        } else if (lastChat.senderId === currentUserId || isNearBottom) {
+          scrollToBottom('smooth');
+        }
+      }, 100);
+    }
+  }, [chats, currentUserId, chatStatus]);
 
   //***********************Codes for search featrue****************************/
   //   useEffect(() => {
@@ -487,6 +506,7 @@ function privateChatArea() {
                 setShowReplyLayout={setShowReplyLayout}
                 replyData={replyData}
                 pChatId={pChatId || ''}
+                replyName={userData?.name || ''}
               />
             </div>
           </div>

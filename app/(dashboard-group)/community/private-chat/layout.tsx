@@ -124,7 +124,10 @@ function PrivateChatLayout({ children }: GeneralChatLayoutProps) {
                         <p className="text-sm text-[#4B5563]">{chatUsers.length || 0}</p>
                     </div>
                 </div>
-                <div className="flex flex-col justify-start items-center mx-4 mt-4 gap-2">
+                <div className="flex flex-col mx-4 mt-4 gap-2">
+                 <div className="flex flex-row items-center justify-between w-full h-auto my-1 px-2 py-[6px] rounded-md bg-white">
+                    <h3 className="text-base">New Requests</h3>
+                 </div>   
                 {chatUsers.map((user, index) => (
                     <button key={index} className={`flex flex-row items-center justify-between w-full h-auto my-1 px-2 py-[6px] ${selectedPrivateId === generateChatId(currentUserId ||'', user.uniqueId) ? 'bg-[#F8F0FF]' : 'bg-white'} rounded-[7px]  `} 
                     onClick={() => {router.push(`/community/private-chat/${user.name.toLowerCase().replace(/\s+/g, '-')}/?pId=${generateChatId(currentUserId || '', user.uniqueId)}`);

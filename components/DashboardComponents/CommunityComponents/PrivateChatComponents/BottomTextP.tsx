@@ -11,6 +11,7 @@ type BottomTextProps = {
   setShowReplyLayout: (value: boolean) => void;
   pChatId: string | null;
   replyData: { message: string | null; senderId: string | null; messageType: string | null; fileUrl: string | null; fileName: string | null; chatId: string | null; } | null;
+  replyName: string;
 };
 
 type UserData = {
@@ -30,6 +31,7 @@ function BottomTextP({
   replyData,
   setShowReplyLayout,
   pChatId,
+  replyName,
 }: BottomTextProps) {
   const [text, setText] = useState("");
   const [height, setHeight] = useState("32px");
@@ -47,6 +49,7 @@ function BottomTextP({
   const [showUserList, setShowUserList] = useState(false);
   const [cursorPosition, setCursorPosition] = useState<number | null>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const currentUser = auth.currentUser; // Get the current user from Firebase Auth
 
 //   useEffect(() => {
 //     const fetchReplyName = async () => {
@@ -79,7 +82,6 @@ function BottomTextP({
  useEffect(() => {
   const fetchUsers = async () => {
     try {
-      const currentUser = auth.currentUser; // Get the current user from Firebase Auth
       if (!currentUser) {
         console.error("User is not authenticated");
         return;
@@ -292,7 +294,7 @@ function BottomTextP({
       {showReplyLayout && (
   <div className="flex flex-row z-10 rounded-md bg-[#F2F4F7] w-full h-auto border border-[#D0D5DD] p-[12px] mb-2 justify-between items-start">
     <div className="flex flex-col gap-[2px] w-[92%]">
-      {/* <h3 className="text-[13px] font-semibold">{replyName}</h3> */}
+      <h3 className="text-[13px] font-semibold">{replyData?.senderId === currentUser?.uid ? 'You' : replyName}</h3>
       <div className="flex flex-row gap-1">
         {/* Conditionally render the icon based on messageType */}
         {replyData?.messageType === 'image' && (
