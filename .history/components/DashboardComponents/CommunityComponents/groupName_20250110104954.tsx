@@ -100,51 +100,37 @@ function GroupName({ communityId, isAdmin }: groupNameProps) {
 
 
   return (
-    <div className='flex flex-row items-center justify-between min-h-[72px] border-b border-lightGrey py-[12px]'>
-      <div className='flex items-center justify-center w-full'>
+    <div className='flex flex-row items-center justify-between h-[72px] border-b border-lightGrey py-[12px]'>
+
+      <div className='flex items-center justify-center mr-6 gap-2'>
         {isMuted && (
           <Image className={`{isMuted ? 'flex : 'none'}`} src='/icons/notification-off-02.svg' alt="Muted" width={16} height={16} />
         )}
         <Popover placement="bottom-end"
           isOpen={isPopoverOpen}
-          onOpenChange={(open) => setIsPopoverOpen(open)}
-          classNames={{
-            trigger: "w-full", // Add class to the trigger wrapper
-          }}
-        >
-          <PopoverTrigger className="w-full block">
-            <div className='w-full flex flex-row items-center px-4 cursor-pointer hover:bg-gray-50'>
-              <div className="flex-shrink-0 mr-3">
+          onOpenChange={(open) => setIsPopoverOpen(open)}>
+          <PopoverTrigger>
+            <button className='flex flex-row gap-2 ml-6'>
+              <div className="flex items-center justify-center w-[46px] h-[46px] rounded-full">
                 {loading ? (
                   <Skeleton width={40} height={40} borderRadius={1000} />
                 ) : (
-                  <Image
-                    className="rounded-full w-10 h-10 object-cover"
-                    src={groupData?.communityImg || '/icons/membersIcon.svg'}
-                    alt='group icon'
-                    quality={100}
-                    width={42}
-                    height={42}
-                  />
+                  <Image className="rounded-full w-10 h-10 object-cover" src={groupData?.communityImg || '/icons/membersIcon.svg'} alt='group icon' quality={100} width={42} height={42} />
                 )}
               </div>
-
-              <div className='flex-1 flex items-center justify-between'>
+              <div className='flex flex-row text-sm '>
                 <div className="flex flex-col">
-                  <div className='font-semibold'>
-                    <h4>{groupData?.communityName || <Skeleton width={80} height={20} />}</h4>
-                  </div>
+                  <div className='font-semibold'><h4>{groupData?.communityName || <Skeleton width={80} height={20} />}</h4></div>
                   {loading ? (
                     <Skeleton width={60} height={18} />
                   ) : (
                     <div className='flex flex-row gap-2 text-[#4B5563]'>
                       <Image src='/icons/membersIcon.svg' alt='members icon' width={18} height={18} />
-                      <p>{groupData?.members ? groupData.members.length : 0}</p>
+                      <p>{groupData?.members ? groupData.members.length : 0}ja</p> {/* Display the number of members */}
                     </div>
                   )}
                 </div>
-
-                <div className='flex-shrink-0'>
+                <div className='focus:outline-none ml-6'>
                   <Image
                     src="/icons/selectdate-Arrowdown.svg"
                     width={20}
@@ -152,8 +138,9 @@ function GroupName({ communityId, isAdmin }: groupNameProps) {
                     alt="Arrow-Down Button"
                   />
                 </div>
+
               </div>
-            </div>
+            </button>
           </PopoverTrigger>
           <PopoverContent className="w-auto py-1 px-0 bg-white border border-lightGrey rounded-md flex flex-col">
             <Tooltip
@@ -209,6 +196,7 @@ function GroupName({ communityId, isAdmin }: groupNameProps) {
             </Tooltip>
             {!isAdmin && (
               (groupData?.groupExitedMembers ?? []).includes(user?.uid ?? '') ? (
+
                 <button className='flex flex-row gap-2 items-center h-10 w-[206px] px-4 hover:bg-[#FEE4E2]'
                   onClick={() => setDeleteGroupForUserDialog(true)}>
                   <Image
@@ -267,6 +255,8 @@ function GroupName({ communityId, isAdmin }: groupNameProps) {
                 <span className='font-normal text-[#DE3024] text-sm'>Delete group</span>
               </button>
             )}
+
+
           </PopoverContent>
         </Popover>
       </div>

@@ -92,7 +92,7 @@ function TestDialog({ open, onClose, forallsubject = false }: TestDialogprops) {
                                                 />
                                             </div>
                                         </th>
-                                        <th className="pl-8 py-2  text-[#667085] font-medium text-sm">
+                                        <th className="pl-8 py-2 rounded-tr-md text-[#667085] font-medium text-sm">
                                             Action
                                         </th>
                                     </tr>
