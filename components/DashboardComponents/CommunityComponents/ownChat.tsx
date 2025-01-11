@@ -461,7 +461,7 @@ const handleCopy = async () => {
          
             </div>
             {openDialogue && (
-        <MemberClickDialog open={true} onClose={() => setOpenDialogue(false)} id={id} isAdmin={admin} />
+        <MemberClickDialog open={true} onClose={() => setOpenDialogue(false)} id={id} isAdmin={admin} isCurrentUserAdmin={false}/>
       )}
             {showMediaDialog && <MediaViewDialog open={true} onClose={() => setShowMediaDialog(false)} src={fileUrl} mediaType={messageType || ''}/> }
             {deleteDialog && <Delete communityId={communityId} headingId={headingId} channelId={channelId} chatId={chatId} open={true} onClose={() => setDeleteDialog(false)} deletedByAdmin={false} adminThatDeletedId=""/>}

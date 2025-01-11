@@ -1,7 +1,6 @@
 'use client';
-
 import "./layout.css";
-import { ReactNode, useEffect, useState } from 'react';
+import { ReactNode, Suspense, useEffect, useState } from 'react';
 import TabComps from '@/components/AdminComponents/TabComps';
 import Header from '@/components/AdminHeaderComponents/AdminHeader';
 import { usePathname, useSearchParams } from 'next/navigation';
@@ -11,13 +10,91 @@ import 'react-toastify/dist/ReactToastify.css';
 
 interface DashboardGroupProps {
     children: ReactNode;
-
 }
 
 export default function DashboardGroup({ children }: DashboardGroupProps) {
     const pathname = usePathname();
-    const [currentPage, setCurrentPage] = useState<string>('');
-    const searchParams = useSearchParams(); // Get query params, e.g., "?qId=B8yw93YJcBaGL3x0KRvN"
+    const [currentPage, setCurrentPage] = useState<string>('Dashboard');
+    const [isCollapsed, setIsCollapsed] = useState(() => {
+        if (typeof window !== 'undefined') {
+            const saved = localStorage.getItem('isSidebarCollapsed');
+            return saved ? JSON.parse(saved) : false;
+        }
+        return false;
+    });
+
+    useEffect(() => {
+        localStorage.setItem('isSidebarCollapsed', JSON.stringify(isCollapsed));
+    }, [isCollapsed]);
+
+    const handleCollapseClick = () => {
+        setIsCollapsed(!isCollapsed);
+    };
+
+    return (
+        <Suspense fallback={<div>Loading...</div>}>
+            <div className="body overflow-none">
+                <div className="flex flex-col h-full">
+                    <div className="overflow-y-auto overflow-x-hidden flex-1 min-w-[3.5rem] scrollbar-hide">
+                        <TabComps isCollapsed={isCollapsed} setIsCollapsed={setIsCollapsed} />
+                    </div>
+                    <button
+                        className={`flex items-center justify-center absolute left-[250px] top-[58px] w-8 h-8 bg-white border-[0.106rem] border-lightGrey rounded-full transition-all duration-[500ms] ease-in-out
+                                ${isCollapsed ? 'left-[50px]' : ''}`}
+                        onClick={handleCollapseClick}
+                    >
+                        {isCollapsed ? (
+                            <Image
+                                className="flex flex-row items-center justify-center mr-[2px]"
+                                alt="Collapse Icon Right"
+                                src="/icons/collapse-right.svg"
+                                width={8}
+                                height={8}
+                            />
+                        ) : (
+                            <Image
+                                className="flex flex-row items-center justify-center mr-[2px]"
+                                alt="Collapse Icon Left"
+                                src="/icons/collapse-left.svg"
+                                width={8}
+                                height={8}
+                            />
+                        )}
+                    </button>
+                </div>
+                <div className="contents">
+                    <div className="content-box">
+                        <div className="font-bold text-[#1D2939] text-lg">
+                            <Suspense fallback={<div>Loading Header...</div>}>
+                                {/* Pass both currentPage and setCurrentPage */}
+                                <PageHeader
+                                    pathname={pathname}
+                                    currentPage={currentPage}
+                                    setCurrentPage={setCurrentPage}
+                                />
+                            </Suspense>
+                        </div>
+                        <div className="variable-contents overflow-hidden">
+                            {children}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </Suspense>
+    );
+}
+
+function PageHeader({
+    pathname,
+    currentPage,
+    setCurrentPage,
+}: {
+    pathname: string;
+    currentPage: string;
+    setCurrentPage: (page: string) => void;
+}) {
+    const searchParams = useSearchParams();
+
     useEffect(() => {
         const qId = searchParams?.get('qId');
         const tId = searchParams?.get('tId');
@@ -28,33 +105,15 @@ export default function DashboardGroup({ children }: DashboardGroupProps) {
         const communityId = searchParams?.get('communityId');
         let pageName = '';
 
-        if (qId) {
-            pageName = 'Back to Quizzes Management';
-        }
-        else if (tId) {
-            pageName = 'Back to Test Series Management';
-        }
-        else if (cId) {
-            pageName = 'Back to Course Management';
-        }
-        else if (rId) {
-            pageName = 'Back to Role Management';
-        }
-        else if (uId) {
-            pageName = 'Back to User Database';
-        }
-        else if (nId) {
-            pageName = 'Back to Messenger';
-        }
-        else if (communityId) {
-            pageName = 'Community';
-        }
-        // Remove the else if (pageName) condition and directly use the switch
+        if (qId) pageName = 'Back to Quizzes Management';
+        else if (tId) pageName = 'Back to Test Series Management';
+        else if (cId) pageName = 'Back to Course Management';
+        else if (rId) pageName = 'Back to Role Management';
+        else if (uId) pageName = 'Back to User Database';
+        else if (nId) pageName = 'Back to Messenger';
+        else if (communityId) pageName = 'Community';
         else {
-            // Extract the page name from pathname if needed
-            // Assuming pathname is something like '/rolemanagement' or '/profile'
             const currentPath = pathname.split('/').pop();
-
             switch (currentPath) {
                 case 'rolemanagement':
                     pageName = 'Role Management';
@@ -89,11 +148,9 @@ export default function DashboardGroup({ children }: DashboardGroupProps) {
                 case 'customerinfo':
                     pageName = 'Back to Customer Care';
                     break;
-
                 case 'userdatabase':
                     pageName = 'User Database';
                     break;
-
                 case 'customercare':
                     pageName = 'Customer Care';
                     break;
@@ -101,13 +158,13 @@ export default function DashboardGroup({ children }: DashboardGroupProps) {
                     pageName = 'All Subject Chapters';
                     break;
                 case 'rolemanagementguide':
-                    pageName = 'Rolemanagement Guide';
+                    pageName = 'Role Management Guide';
                     break;
                 case 'discussionform':
-                    pageName = 'Discussion form';
+                    pageName = 'Discussion Form';
                     break;
                 case 'internalchat':
-                    pageName = 'Internal chat';
+                    pageName = 'Internal Chat';
                     break;
                 case 'community':
                     pageName = 'Community';
@@ -116,77 +173,15 @@ export default function DashboardGroup({ children }: DashboardGroupProps) {
                     pageName = 'Community';
                     break;
                 case 'admin':
-                    pageName = ' Admin Panel';
+                    pageName = 'Admin Panel';
                     break;
-
                 default:
                     pageName = 'Dashboard';
             }
         }
 
         setCurrentPage(pageName);
-    }, [pathname, searchParams]);
+    }, [pathname, searchParams, setCurrentPage]);
 
-    // const [isCollapsed, setIsCollapsed] = useState(false);
-
-    const [isCollapsed, setIsCollapsed] = useState(() => {
-        // Initialize from localStorage if available
-        if (typeof window !== 'undefined') {
-            const saved = localStorage.getItem('isSidebarCollapsed');
-            return saved ? JSON.parse(saved) : false;
-        }
-        return false;
-    });
-
-    useEffect(() => {
-        localStorage.setItem('isSidebarCollapsed', JSON.stringify(isCollapsed));
-    }, [isCollapsed]);
-
-    const handleCollapseClick = () => {
-        setIsCollapsed(!isCollapsed);
-    };
-
-    return (
-        <div className="body overflow-none">
-            {/* Sidebar Toggle Button */}
-            <div className="flex flex-col h-full">
-                <div className="overflow-y-auto overflow-x-hidden flex-1 min-w-[3.5rem] scrollbar-hide">
-                    <TabComps isCollapsed={isCollapsed} setIsCollapsed={setIsCollapsed} />
-                </div>
-                <button
-                    className={`flex items-center justify-center absolute left-[250px] top-[58px] w-8 h-8 bg-white border-[0.106rem] border-lightGrey rounded-full transition-all duration-[500ms] ease-in-out
-                                ${isCollapsed ? 'left-[50px]' : ''}`}
-                    onClick={handleCollapseClick}
-                >
-                    {isCollapsed ? (
-                        <Image
-                            className="flex flex-row items-center justify-center mr-[2px]"
-                            alt="Collapse Icon Right"
-                            src="/icons/collapse-right.svg"
-                            width={8}
-                            height={8}
-                        />
-                    ) : (
-                        <Image
-                            className="flex flex-row items-center justify-center mr-[2px]"
-                            alt="Collapse Icon Left"
-                            src="/icons/collapse-left.svg"
-                            width={8}
-                            height={8}
-                        />
-                    )}
-                </button>
-            </div>
-            <div className="contents">
-                <div className="content-box">
-                    <div className="font-bold text-[#1D2939] text-lg">
-                        <Header currentPage={currentPage} />
-                    </div>
-                    <div className="variable-contents overflow-hidden">
-                        {children}
-                    </div>
-                </div>
-            </div>
-        </div>
-    );
+    return <Header currentPage={currentPage} />;
 }

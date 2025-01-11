@@ -448,7 +448,7 @@ function OtherChat({ message, currentUserId, mentions, isDeleted, internalChatId
         )}
         {showMediaDialog && <MediaViewDialog open={true} onClose={() => setShowMediaDialog(false)} src={fileUrl} mediaType={messageType || ''} />}
         {openDialogue && (
-          <MemberClickDialog open={true} onClose={() => setOpenDialogue(false)} id={id} isAdmin={true} />
+          <MemberClickDialog open={true} onClose={() => setOpenDialogue(false)} id={id} isAdmin={true} isCurrentUserAdmin={false}/>
         )}
       </div>
     </>

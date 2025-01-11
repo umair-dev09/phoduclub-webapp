@@ -60,7 +60,7 @@ function AllSubject() {
                 </Tab>
             </Tabs>
         </div>
-    )
+    );
 }
 export default AllSubject;
 

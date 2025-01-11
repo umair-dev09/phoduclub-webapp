@@ -178,7 +178,7 @@ function MembersDetailsArea({ members }: MembersDetailsAreaProps) {
       })}
 
       {openDialogue && (
-        <MemberClickDialog open={true} onClose={() => setOpenDialogue(false)} id={id} isAdmin={true} />
+        <MemberClickDialog open={true} onClose={() => setOpenDialogue(false)} id={id} isAdmin={true} isCurrentUserAdmin={false}/>
       )}
     </div>
   );

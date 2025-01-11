@@ -108,7 +108,7 @@ function BlockUser({ open, onClose, userId, userName, pChatId }: BlockUserProps)
                     {/* Modal Header */}
                     <ModalHeader className="flex flex-row justify-between gap-1">
                         <h1 className="text-[#1D2939] font-bold text-lg">
-                            Block "{userName}"?
+                            Block &quot;{userName}&quot;?
                         </h1>
                         <button
                             className="w-[32px] h-[32px] rounded-full flex items-center justify-center hover:bg-[#F2F4F7]"

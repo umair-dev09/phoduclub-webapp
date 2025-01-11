@@ -568,7 +568,7 @@ function OtherChat({ message, currentUserId, adminThatDeletedId, isDeletedByAdmi
 
       {openDialogue && (
 
-        <MemberClickDialog open={true} onClose={() => setOpenDialogue(false)} id={id} isAdmin={admin} />
+        <MemberClickDialog open={true} onClose={() => setOpenDialogue(false)} id={id} isAdmin={admin} isCurrentUserAdmin={false}/>
 
       )}
 

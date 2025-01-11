@@ -410,7 +410,7 @@ function OwnChat({ message, isDeleted, mentions, currentUserId, highlightedText,
 
       </div>
       {openDialogue && (
-        <MemberClickDialog open={true} onClose={() => setOpenDialogue(false)} id={id} isAdmin={true} />
+        <MemberClickDialog open={true} onClose={() => setOpenDialogue(false)} id={id} isAdmin={true} isCurrentUserAdmin={false}/>
       )}
       {showMediaDialog && <MediaViewDialog open={true} onClose={() => setShowMediaDialog(false)} src={fileUrl} mediaType={messageType || ''} />}
       {deleteDialog && <Delete internalChatId={internalChatId} channelId={channelId} chatId={chatId} open={true} onClose={() => setDeleteDialog(false)} />}

@@ -738,7 +738,7 @@ function ReviewTestView() {
                                     </button> */}
                                 </div>
                                 <p className=" text-sm font-normal text-[#667085]">
-                                    Are you sure you want to submit your quiz now?<br />Please double-check your answers before submitting, as you won't be able to make any changes afterwards.
+                                    Are you sure you want to submit your quiz now?<br />Please double-check your answers before submitting, as you won&apos;t be able to make any changes afterwards.
                                 </p>
                             </div>
                             <hr />
