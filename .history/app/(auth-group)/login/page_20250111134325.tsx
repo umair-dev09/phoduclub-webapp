@@ -151,13 +151,13 @@ export default function Login_Page() {
                             <div className="flex justify-center mt-8">
                                 <button
                                     type="button"
-                                    className={`text-white py-2 px-6 rounded-md w-[375px]  font-medium flex items-center justify-center`}
+                                    className={`text-white py-2 px-6 rounded-md w-[375px] font-medium flex items-center justify-center`}
                                     style={{ backgroundColor: buttonColor }}
                                     onClick={handleSendVerificationCode}
                                     disabled={!isPhoneValid}
                                 >
                                     {isLoading ? (
-                                        <div className='w-5 h-5 animate-spin-loading rounded-[50%]  border-4 border-[#ffffff4d] border-solid border-t-4 border-t-customWhite '></div> // Show spinner
+                                        <div className='w-5 h-5 animate-spin-loading rounded-[50%] hover:bg-[#6D0DCC]  border-4 border-[#ffffff4d] border-solid border-t-4 border-t-customWhite '></div> // Show spinner
                                     ) : (
                                         'Send Verification Code'
                                     )}

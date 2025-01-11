@@ -157,7 +157,7 @@ export default function Login_Page() {
                                     disabled={!isPhoneValid}
                                 >
                                     {isLoading ? (
-                                        <div className='w-5 h-5 animate-spin-loading rounded-[50%]  border-4 border-[#ffffff4d] border-solid border-t-4 border-t-customWhite '></div> // Show spinner
+                                        <div className='w-5 h-5 animate-spin-loading rounded-[50%] hover:bg-[#6D0DCC]  border-4 border-[#ffffff4d] border-solid border-t-4 border-t-customWhite '></div> // Show spinner
                                     ) : (
                                         'Send Verification Code'
                                     )}

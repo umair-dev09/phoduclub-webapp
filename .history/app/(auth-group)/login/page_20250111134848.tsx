@@ -151,7 +151,7 @@ export default function Login_Page() {
                             <div className="flex justify-center mt-8">
                                 <button
                                     type="button"
-                                    className={`text-white py-2 px-6 rounded-md w-[375px]  font-medium flex items-center justify-center`}
+                                    className={`text-white py-2 px-6 rounded-md w-[375px] hover:bg-[#6D0DCC]  font-medium flex items-center justify-center`}
                                     style={{ backgroundColor: buttonColor }}
                                     onClick={handleSendVerificationCode}
                                     disabled={!isPhoneValid}
