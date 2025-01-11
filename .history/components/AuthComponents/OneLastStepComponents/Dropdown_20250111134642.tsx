@@ -180,7 +180,7 @@ const Dropdown = () => {
           className={` w-[375px] h-10 rounded-lg text-white font-medium text-sm 
                              ${isButtonEnabled ? 'bg-[#7400e0] hover:bg-[#6D0DCC]  cursor-pointer' : 'bg-[#d4a9fc] cursor-not-allowed'} 
                        transition-all duration-150 
-                             ${isButtonEnabled ? 'hover:bg-[#6D0DCC] ' : ''}
+                             ${isButtonEnabled ? 'hover:bg-[#7400e0]' : ''}
                                 active:opacity-50`}
           onClick={handleSignUp}
           disabled={!isButtonEnabled}

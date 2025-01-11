@@ -116,7 +116,7 @@ export default function DashboardGroup({ children }: DashboardGroupProps) {
                     pageName = 'Community';
                     break;
                 case 'admin':
-                    pageName = ' Admin Panel';
+                    pageName = 'Welcome ';
                     break;
 
                 default:
