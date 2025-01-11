@@ -13,6 +13,7 @@ type BottomTextProps = {
   replyData: { message: string | null; senderId: string | null; messageType: string | null; fileUrl: string | null; fileName: string | null; chatId: string | null; } | null;
   replyName: string;
   chatWithId: string;
+  isAdmin: boolean;
 };
 
 type UserData = {
@@ -29,6 +30,7 @@ function BottomTextP({
   pChatId,
   replyName,
   chatWithId,
+  isAdmin,
 }: BottomTextProps) {
   const [text, setText] = useState("");
   const [height, setHeight] = useState("32px");
@@ -75,37 +77,6 @@ function BottomTextP({
 //     }
 //   }, [showReplyLayout, replyData]);
 
- // Fetch users from Firestore
- useEffect(() => {
-  const fetchUsers = async () => {
-    try {
-      if (!currentUser) {
-        console.error("User is not authenticated");
-        return;
-      }
-
-      const currentUserId = currentUser.uid; // Use the current user's UID
-
-      const usersCollection = collection(db, "users");
-      const querySnapshot = await getDocs(usersCollection);
-
-      const userList: UserData[] = querySnapshot.docs
-        .map((doc) => ({
-          name: doc.data().name,
-          uniqueId: doc.data().uniqueId,
-          userId: doc.data().userId,
-          profilePic: doc.data().profilePic,
-        }))
-        .filter((user) => user.uniqueId !== currentUserId); // Exclude current user
-
-      setUsers(userList);
-    } catch (error) {
-      console.error("Error fetching users:", error);
-    }
-  };
-
-  fetchUsers();
-}, []);
 
   const highlightMentions = (value: string) => {
     const mentionRegex = /@(\w+)/g; // Match @username
@@ -175,7 +146,7 @@ function BottomTextP({
       // Store the message with mentions in Firestore
       await setDoc(newChatRef, messageData);
       console.log("Message stored successfully");
-      const userDoc = doc(db, "users", chatWithId);
+      const userDoc = doc(db, isAdmin ? "admin" : "users", chatWithId);
       await updateDoc(userDoc, {
          personalChatNotifications: arrayUnion(user.uid),
       });

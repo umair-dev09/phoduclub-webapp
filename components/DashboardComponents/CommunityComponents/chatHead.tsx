@@ -224,7 +224,9 @@ function ChatHead({ channelName, channelId, channelEmoji, members, communityId, 
 
                             </>
                         ) : (
-                            <button className='flex flex-row gap-2 items-center h-10 w-[206px] px-4 hover:bg-[#EAECF0] '
+                           <></>
+                        )}
+                         <button className='flex flex-row gap-2 items-center h-10 w-[206px] px-4 hover:bg-[#EAECF0] '
                                 onClick={() => setMediaDialog(true)}>
                                 <Image
                                     src="/icons/media.svg"
@@ -234,7 +236,6 @@ function ChatHead({ channelName, channelId, channelEmoji, members, communityId, 
                                 />
                                 <span className='font-normal text-[#0C111D] text-sm'>Media</span>
                             </button>
-                        )}
 
 
 

@@ -160,7 +160,7 @@ function privateChatArea() {
       }
       if(currentUserId && chatUserId){
         const fetchNotifications = async () => {
-      const userDoc = doc(db, "users", currentUserId);
+      const userDoc = doc(db, "admin", currentUserId);
           await updateDoc(userDoc, {
              personalChatNotifications: arrayRemove(chatUserId),
           });

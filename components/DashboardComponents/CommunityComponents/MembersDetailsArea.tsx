@@ -22,9 +22,10 @@ type Member = {
 
 type MembersDetailsAreaProps = {
   members: Member[];
+  isCurrentUserAdmin: boolean;
 };
 
-function MembersDetailsArea({ members }: MembersDetailsAreaProps) {
+function MembersDetailsArea({ members, isCurrentUserAdmin }: MembersDetailsAreaProps) {
   const [loading, setLoading] = useState(true);
   const [id, setId] = useState<string>('');
   const [admin, setAdmin] = useState<boolean>(false);
@@ -262,7 +263,7 @@ function MembersDetailsArea({ members }: MembersDetailsAreaProps) {
                         </p>
                       </div>
                     </div>
-                  );
+                  );   
                 })}
               </div>
             </div>
@@ -271,7 +272,7 @@ function MembersDetailsArea({ members }: MembersDetailsAreaProps) {
       })}
 
       {openDialogue && (
-        <MemberClickDialog open={true} onClose={() => setOpenDialogue(false)} id={id} isAdmin={admin} />
+        <MemberClickDialog open={true} onClose={() => setOpenDialogue(false)} id={id} isAdmin={admin} isCurrentUserAdmin={isCurrentUserAdmin}/>
       )}
     </div>
   );

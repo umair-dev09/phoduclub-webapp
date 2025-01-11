@@ -3,7 +3,7 @@ import { PopoverContent, PopoverTrigger, Popover } from "@nextui-org/popover";
 import Image from "next/image";
 import EmojiPicker, { EmojiClickData } from "emoji-picker-react";
 import { auth, db, storage } from "@/firebase";
-import { addDoc, collection, doc, getDoc,getDocs, serverTimestamp, setDoc } from "firebase/firestore";
+import { addDoc, collection, doc, getDoc,getDocs, serverTimestamp, setDoc, updateDoc } from "firebase/firestore";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import MuxUploader from "@mux/mux-uploader-react";
 type BottomTextProps = {
@@ -13,6 +13,7 @@ type BottomTextProps = {
   headingId: string | null;
   communityId: string | null;
   replyData: { message: string | null; senderId: string | null; messageType: string | null; fileUrl: string | null; fileName: string | null; chatId: string | null; } | null;
+  channelMembers: { id: string, isAdmin: boolean }[] | null;
 };
 
 type UserData = {
@@ -20,11 +21,13 @@ type UserData = {
   uniqueId: string;
   userId: string;
   profilePic: string;
+  isAdmin: boolean;
 }
 
 interface Mention {
   userId: string;
   id: string;
+  isAdmin: boolean;
 }
 
 function BottomText({
@@ -34,6 +37,7 @@ function BottomText({
   channelId,
   headingId,
   communityId,
+  channelMembers,
 }: BottomTextProps) {
   const [text, setText] = useState("");
   const [height, setHeight] = useState("32px");
@@ -80,9 +84,9 @@ function BottomText({
     }
   }, [showReplyLayout, replyData]);
 
- // Fetch users from Firestore
+ // Fetch users from Firestore 
  useEffect(() => {
-  const fetchUsers = async () => {
+  const fetchUsersAndAdmins = async () => {
     try {
       const currentUser = auth.currentUser; // Get the current user from Firebase Auth
       if (!currentUser) {
@@ -92,26 +96,57 @@ function BottomText({
 
       const currentUserId = currentUser.uid; // Use the current user's UID
 
+      // Reference to the users and admins collections
       const usersCollection = collection(db, "users");
-      const querySnapshot = await getDocs(usersCollection);
+      const adminsCollection = collection(db, "admin");
 
-      const userList: UserData[] = querySnapshot.docs
+      // Fetch users and admins concurrently
+      const [usersSnapshot, adminsSnapshot] = await Promise.all([
+        getDocs(usersCollection),
+        getDocs(adminsCollection),
+      ]);
+
+      // Extract user data
+      const userList: UserData[] = usersSnapshot.docs
         .map((doc) => ({
           name: doc.data().name,
           uniqueId: doc.data().uniqueId,
           userId: doc.data().userId,
           profilePic: doc.data().profilePic,
+          isAdmin: false,
         }))
-        .filter((user) => user.uniqueId !== currentUserId); // Exclude current user
+        .filter((user) => user.uniqueId !== currentUserId); // Exclude the current user
 
-      setUsers(userList);
+      // Extract admin data
+      const adminList: UserData[] = adminsSnapshot.docs
+        .map((doc) => ({
+          name: doc.data().name,
+          uniqueId: doc.data().adminId,
+          userId: doc.data().userId,
+          profilePic: doc.data().profilePic,
+          isAdmin: true,
+        }))
+        .filter((admin) => admin.uniqueId !== currentUserId); // Exclude the current user
+
+      // Combine user and admin lists
+      const combinedList = [...userList, ...adminList];
+
+      // Filter only members (users or admins who are members of the channel)
+      const filteredMembers = combinedList.filter((userOrAdmin) => {
+        if (!channelMembers) return false;
+        return channelMembers.some((member) => member.id === userOrAdmin.uniqueId);
+      });
+
+      // Set the filtered members to the state
+      setUsers(filteredMembers);
     } catch (error) {
-      console.error("Error fetching users:", error);
+      console.error("Error fetching users and admins:", error);
     }
   };
 
-  fetchUsers();
-}, []);
+  fetchUsersAndAdmins();
+}, [channelMembers]); // Re-run if `channelMembers` changes
+
 
   const highlightMentions = (value: string) => {
     const mentionRegex = /@(\w+)/g; // Match @username
@@ -166,7 +201,7 @@ function BottomText({
     // Store the mention with both name and uniqueId
     setMentions((prevMentions) => [
       ...prevMentions,
-      { userId: user.userId, id: user.uniqueId, isAdmin: false, },
+      { userId: user.userId, id: user.uniqueId, isAdmin: user.isAdmin, },
     ]);
   
     // Set the cursor position after the inserted username
@@ -204,6 +239,19 @@ function BottomText({
       const newChatRef = doc(chatsRef);
       const chatId = newChatRef.id;
   
+      // Fetch channel data to get channelMembers
+      const channelRef = doc(db, `communities/${communityId}/channelsHeading/${headingId}/channels/${channelId}`);
+      
+      if (!Array.isArray(channelMembers)) {
+        console.error("Invalid channelMembers format");
+        return;
+      }
+  
+      // Filter out current user ID from channelMembers
+      const channelNotification = channelMembers
+        .filter((member) => member.id !== user.uid) // Exclude current user
+        .map((member) => member.id); // Extract user IDs
+  
       // Prepare message data
       const messageData = {
         message: text || null,
@@ -213,7 +261,7 @@ function BottomText({
         isReplying: showReplyLayout ? true : false,
         replyingToId: showReplyLayout ? replyData?.senderId : null,
         replyingToChatId: showReplyLayout ? replyData?.chatId : null,
-        replyingToMsg: showReplyLayout ? replyData?.message : null,  
+        replyingToMsg: showReplyLayout ? replyData?.message : null,
         replyingToMsgType: showReplyLayout ? replyData?.messageType : null,
         replyingToFileUrl: showReplyLayout ? replyData?.fileUrl : null,
         replyingToFileName: showReplyLayout ? replyData?.fileName : null,
@@ -228,6 +276,12 @@ function BottomText({
       await setDoc(newChatRef, messageData);
       console.log("Message stored successfully");
   
+      // Update the channel document with channelNotification
+      await updateDoc(channelRef, {
+        channelNotification: channelNotification,
+      });
+      console.log("Channel notification updated successfully");
+  
       // Reset states after sending message
       setText("");
       setFileUrl(null);
@@ -236,11 +290,12 @@ function BottomText({
       setSelectedFile(null);
       setMentions([]); // Clear mentions
       setShowReplyLayout(false);
-      setHeight('32px');
+      setHeight("32px");
     } catch (error) {
       console.error("Error sending message:", error);
     }
   };
+  
   
 
 

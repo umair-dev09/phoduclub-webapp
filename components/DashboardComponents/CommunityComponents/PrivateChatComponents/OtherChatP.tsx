@@ -17,6 +17,7 @@ import CommunityVideoPlayer from "@/components/CommunityVideoPlayer";
 import Skeleton, { SkeletonTheme } from 'react-loading-skeleton'
 import 'react-loading-skeleton/dist/skeleton.css'
 import { Tooltip } from "@nextui-org/react";
+import MediaViewDialog from "../MediaViewDialog";
 
 type OtherChatProps = {
     currentUserId: string;
@@ -409,15 +410,14 @@ function OtherChatP({ message, currentUserId, isDeleted, highlightedText, messag
           ))}
         </div>
       )}
-      {/* {showMediaDialog && <MediaViewDialog open={true} onClose={() => setShowMediaDialog(false)} src={fileUrl} mediaType={messageType || ''} />}
-
-      {openDialogue && (
+      {showMediaDialog && <MediaViewDialog open={true} onClose={() => setShowMediaDialog(false)} src={fileUrl} mediaType={messageType || ''} />}
+ 
+      {/* {openDialogue && (
 
         <MemberClickDialog open={true} onClose={() => setOpenDialogue(false)} id={id} isAdmin={admin} />
 
-      )}
+      )} */}
 
-      {deleteDialog && <Delete communityId={communityId} headingId={headingId} channelId={channelId} chatId={chatId} open={true} onClose={() => setDeleteDialog(false)} deletedByAdmin={true} adminThatDeletedId={auth.currentUser?.uid || ''} />} */}
 
     </div>
 

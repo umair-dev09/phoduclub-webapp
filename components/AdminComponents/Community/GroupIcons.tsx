@@ -94,7 +94,7 @@ function GroupIcons() {
   const onMessageButtonClick = () => {
     setSelectedButton("message"); // Mark the message button as selected
     setSelectedCommunityId(null); // Deselect any selected community
-    router.push('/admin/community/personal-chat')
+    router.push('/admin/community/private-chat');
   };
   return (
     <div className="flex flex-col h-full">

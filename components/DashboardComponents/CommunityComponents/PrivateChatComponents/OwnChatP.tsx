@@ -12,6 +12,7 @@ import LoadingData from "@/components/Loading";
 import MessageLoading from "@/components/MessageLoading";
 import CommunityVideoPlayer from "@/components/CommunityVideoPlayer";
 import DeleteP from "./DeleteMessageDialog";
+import MediaViewDialog from "../MediaViewDialog";
 // import MediaViewDialog from "./MediaViewDialog";
 // import Delete from "./Delete";
 type OwnChatProps = {
@@ -366,7 +367,7 @@ const handleCopy = async () => {
          
             </div>
         
-            {/* {showMediaDialog && <MediaViewDialog open={true} onClose={() => setShowMediaDialog(false)} src={fileUrl} mediaType={messageType || ''}/> } */}
+            {showMediaDialog && <MediaViewDialog open={true} onClose={() => setShowMediaDialog(false)} src={fileUrl} mediaType={messageType || ''}/> }
             {deleteDialog && <DeleteP pChatId={pChatId} chatId={chatId} open={true} onClose={() => setDeleteDialog(false)} />}
            
         </div>

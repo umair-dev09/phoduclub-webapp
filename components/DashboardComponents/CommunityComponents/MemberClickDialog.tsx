@@ -17,6 +17,7 @@ interface MemberClickDialogProps {
   onClose: () => void;
   id: string;
   isAdmin: boolean;
+  isCurrentUserAdmin: boolean;
 }
 
 type UserData = {
@@ -39,7 +40,7 @@ function generateChatId(userId1:string, userId2:string) {
 }
 
 
-function MemberClickDialog({ open, onClose, id, isAdmin }: MemberClickDialogProps) {
+function MemberClickDialog({ open, onClose, id, isAdmin, isCurrentUserAdmin }: MemberClickDialogProps) {
   const [user, setUser] = useState<UserData | null>(null);
   const [loading, setLoading] = useState(true);
   const [messageButtonLoading, setMessageButtonLoading] = useState(false);
@@ -151,11 +152,63 @@ function MemberClickDialog({ open, onClose, id, isAdmin }: MemberClickDialogProp
       const chatDocSnap = await getDoc(chatDocRef);
 
       if (chatDocSnap.exists()) {
-        router.push(`/community/private-chat/${user.name.toLowerCase().replace(/\s+/g, '-')}/?pId=${generateChatId(currentUserId, id)}`);
+        if(isCurrentUserAdmin){
+          router.push(`/admin/community/private-chat/${user.name.toLowerCase().replace(/\s+/g, '-')}/?pId=${generateChatId(currentUserId, id)}`);
+          setMessageButtonLoading(false);
+        }else{
+          router.push(`/community/private-chat/${user.name.toLowerCase().replace(/\s+/g, '-')}/?pId=${generateChatId(currentUserId, id)}`);
         setMessageButtonLoading(false);
+        }
+        
       } else {
+        if(isCurrentUserAdmin){
+          const chatId = generateChatId(currentUserId, id);
+          const chatDocRef = doc(db, 'privatechats', chatId);
+          if(isAdmin){
+            await setDoc(chatDocRef, {
+              participants: [currentUserId, id],
+              chatStatus: 'accepted',
+              createdAt: Timestamp.now(),
+            });
+    
+            const currentUserDocRef = doc(db, 'admin', currentUserId);
+            const recipientUserDocRef = doc(db, 'admin', id);
+    
+            await updateDoc(currentUserDocRef, {
+              chatList: arrayUnion({ id: id, isAdmin: true }),
+            });
+    
+            await updateDoc(recipientUserDocRef, {
+              chatList: arrayUnion({ id: currentUserId, isAdmin: true }),
+            });
+            onClose();
+            router.push(`/admin/community/private-chat/${user.name.toLowerCase().replace(/\s+/g, '-')}/?pId=${generateChatId(currentUserId, id)}`);
+          }
+          else{
+            await setDoc(chatDocRef, {
+              participants: [currentUserId, id],
+              chatStatus: 'accepted',
+              createdAt: Timestamp.now(),
+            });
+    
+            const currentUserDocRef = doc(db, 'admin', currentUserId);
+            const recipientUserDocRef = doc(db, 'users', id);
+    
+            await updateDoc(currentUserDocRef, {
+              chatList: arrayUnion({ id: id, isAdmin: false }),
+            });
+    
+            await updateDoc(recipientUserDocRef, {
+              chatList: arrayUnion({ id: currentUserId, isAdmin: true }),
+            });
+            onClose();
+            router.push(`/admin/community/private-chat/${user.name.toLowerCase().replace(/\s+/g, '-')}/?pId=${generateChatId(currentUserId, id)}`);
+          }
+        }
+        else{
        setSendrequestDialog(true);
        setMessageButtonLoading(false);
+        }
       }
     }
   };

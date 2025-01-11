@@ -97,7 +97,7 @@ function OwnChat({message, isDeleted, mentions, adminThatDeletedId, isDeletedByA
      
       const renderMessageWithMentions = () => {
         if (!highlightedText || !mentions) return highlightedText;
-
+      
         // Helper function to check if text is a URL
         const isUrl = (text: string) => {
           try {
@@ -107,7 +107,7 @@ function OwnChat({message, isDeleted, mentions, adminThatDeletedId, isDeletedByA
             return false;
           }
         };
-
+      
         // Helper function to process text parts
         const processTextPart = (text: string, key: number | string) => {
           // Check if the text is a URL
@@ -126,60 +126,56 @@ function OwnChat({message, isDeleted, mentions, adminThatDeletedId, isDeletedByA
           }
           return text;
         };
-
-        if (typeof highlightedText === "string") {
-          const parts = highlightedText.split(/(@\w+|\s+)/);
-          return parts.map((part, index) => {
-            if (part.startsWith("@")) {
-              const mentionName = part.substring(1);
-              const mention = mentions.find((m) => m.userId === mentionName);
-
-              if (mention) {
-                return (
-                  <span
-                    key={index}
-                    style={{ color: "yellow", cursor: "pointer" }}
-                    onClick={() => {setOpenDialogue(true); setId(mention.id); setAdmin(mention.isAdmin)}}
-                  >
-                    {part}
-                  </span>
-                );
-              }
+      
+        const processMention = (part: string, index: number | string) => {
+          if (part.startsWith("@")) {
+            const mentionName = part.substring(1).trim(); // Remove '@' and trim whitespace
+      
+            // Match mention by checking userId or id
+            const mention = mentions.find((m) => m.userId === mentionName || m.id === mentionName);
+      
+            if (mention) {
+              return (
+                <span
+                  key={index}
+                  style={{ color: "yellow", cursor: "pointer" }}
+                  onClick={() => {
+                    setOpenDialogue(true);
+                    setId(mention.id);
+                    setAdmin(mention.isAdmin);
+                  }}
+                >
+                  {part} {/* Keep the full mention, including '@' */}
+                </span>
+              );
             }
-            return processTextPart(part, index);
-          });
+      
+            console.log("Mention Not Found for:", mentionName);
+          }
+          return processTextPart(part, index);
+        };
+      
+        // Updated regex to handle @mentions including # and numbers
+        const mentionRegex = /(@[\w#]+|\s+)/;
+      
+        if (typeof highlightedText === "string") {
+          const parts = highlightedText.split(mentionRegex);
+          return parts.map((part, index) => processMention(part, index));
         }
-
+      
         if (Array.isArray(highlightedText)) {
           return highlightedText.map((node, index) => {
             if (typeof node === "string") {
-              const parts = node.split(/(@\w+|\s+)/);
-              return parts.map((part, innerIndex) => {
-                if (part.startsWith("@")) {
-                  const mentionName = part.substring(1);
-                  const mention = mentions.find((m) => m.userId === mentionName);
-
-                  if (mention) {
-                    return (
-                      <span
-                        key={`${index}-${innerIndex}`}
-                        style={{ color: "yellow", cursor: "pointer" }}
-                        onClick={() => {setOpenDialogue(true); setId(mention.id); setAdmin(mention.isAdmin)}}
-                      >
-                        {part}
-                      </span>
-                    );
-                  }
-                }
-                return processTextPart(part, `${index}-${innerIndex}`);
-              });
+              const parts = node.split(mentionRegex);
+              return parts.map((part, innerIndex) => processMention(part, `${index}-${innerIndex}`));
             }
             return node;
           });
         }
-
+      
         return null;
       };
+      
       
       
 

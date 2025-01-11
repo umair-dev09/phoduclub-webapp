@@ -648,15 +648,12 @@ function AddMembersGroup({ open, onClose, communityId }: AddMembersGroupProps) {
                                                                     </td>
                                                                     <td className="pl-2 py-3">
                                                                         <div className="flex flex-row gap-2 items-center">
-                                                                            <div className="relative">
                                                                                 <Image className="rounded-full w-10 h-10"
                                                                                     src={admin.profilePic || "/images/DP_Lion.svg"}
                                                                                     alt="DP"
                                                                                     width={40}
                                                                                     height={40}
                                                                                 />
-
-                                                                            </div>
                                                                             <div className="flex flex-col">
                                                                                 <div className="flex flex-row gap-[6px]">
                                                                                     <span className="text-sm font-semibold whitespace-nowrap">
