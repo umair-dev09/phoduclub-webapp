@@ -14,6 +14,7 @@ import BottomTextP from "@/components/DashboardComponents/CommunityComponents/Pr
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import BlockUser from "@/components/DashboardComponents/CommunityComponents/BlockUser";
+import MemberClickDialogP from "@/components/DashboardComponents/CommunityComponents/PrivateChatComponents/MemberClickDialogP";
 
 interface UserData {
   name: string;
@@ -46,6 +47,7 @@ type Chat = {
 
 function privateChatArea() {
   const searchParams = useSearchParams();
+  const [openDialogue, setOpenDialogue] = useState(false);
   const [loading, setLoading] = useState(true);
   const currentUserId = auth.currentUser?.uid;
   const pChatId = searchParams.get('pId');
@@ -390,7 +392,7 @@ function privateChatArea() {
     <div className="flex flex-col h-full ">
       {/* Chat Head */}
       <div className="flex flex-row items-center justify-between px-6 h-[72px] bg-white border-b border-lightGrey">
-        <div className="flex flex-row items-center gap-2">
+        <button className="flex flex-row items-center gap-2" onClick={() => setOpenDialogue(true)}>
           <div className="relative">
             <Image className="rounded-full w-10 h-10" src={userData?.profilePic || '/images/DP.png'} alt="DP" width={36} height={36} />
             <div className={`absolute right-0 bottom-0 w-[14px] h-[14px] ${userData?.isOnline ? 'bg-green-500' : 'bg-neutral-400'} rounded-full border-2 border-white`}></div>
@@ -399,7 +401,7 @@ function privateChatArea() {
           {(chatStatus === 'blocked' && blockedBy === currentUserId) && (
           <Image src='/icons/message-blocked.svg' alt="Blocked icon" width={16} height={16} />
           )}
-        </div>
+        </button>
         <Popover
           isOpen={isPopoverOpen}
           onOpenChange={(open) => setIsPopoverOpen(open)}
@@ -415,8 +417,7 @@ function privateChatArea() {
           <PopoverContent className='flex flex-col bg-white w-auto h-auto py-1 px-0 border border-lightGrey rounded-md shadow-md'>
             <button
               className='flex flex-row items-center gap-2 w-[183px] px-4 py-[10px] transition-colors  hover:bg-neutral-100'
-            // onClick={closePopover}
-            >
+              onClick={() => {setOpenDialogue(true); setIsPopoverOpen(false)}}>
               <Image src='/icons/user-sharing.svg' alt='mark as read' width={18} height={18} />
               <p className='text-sm'>View profile</p>
             </button>
@@ -611,8 +612,12 @@ function privateChatArea() {
           </div>
         )}
       </div>
+      {openDialogue && (
+        <MemberClickDialogP open={true} onClose={() => setOpenDialogue(false)} id={chatUserId || ''} isAdmin={isAdmin || false} />
+      )}
       <ToastContainer />
       {blockUserDialog && < BlockUser open={blockUserDialog} onClose={() => setBlockUserDilaog(false)} userId={chatUserId || ''} userName={userData?.name || ''} pChatId={pChatId || ''}/>}
+     
     </div>
   );
 

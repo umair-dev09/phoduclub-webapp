@@ -6,6 +6,7 @@ import { arrayRemove, arrayUnion, doc, getDoc, onSnapshot, updateDoc } from 'fir
 import LoadingData from '@/components/Loading';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import MemberClickDialogP from '@/components/DashboardComponents/CommunityComponents/PrivateChatComponents/MemberClickDialogP';
 
 interface UserDetails {
   userId: string;
@@ -25,7 +26,8 @@ function NewRequest() {
   const [requestUsers, setRequestUsers] = useState<UserDetails[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null); // To capture any errors
-
+  const [openDialogue, setOpenDialogue] = useState(false);
+  const [id, setId] = useState<string>('');
   useEffect(() => {
     if (!currentUserId) return;
 
@@ -124,6 +126,12 @@ function NewRequest() {
     [currentUserId]
   );
 
+  const handleClick = (id: string) => {
+    setId(id);           // Set the id of the clicked member
+    setOpenDialogue(true);     // Open the dialog or perform any other action
+  };
+
+
   if (loading) {
     return <LoadingData />;
   }
@@ -160,7 +168,7 @@ function NewRequest() {
                 ></div>
               </div>
               <div className="flex flex-col justify-start">
-                <button>
+                <button onClick={() => handleClick(user.uniqueId)}>
                   <h2 className="text-[#182230] text-normal font-semibold hover:underline">{user.name}</h2>
                 </button>
                 <p className="text-sm text-[#475467]">{user.userId}</p>
@@ -186,6 +194,9 @@ function NewRequest() {
         ))}
       </div>
       <ToastContainer />
+      {openDialogue && (
+        <MemberClickDialogP open={true} onClose={() => setOpenDialogue(false)} id={id} isAdmin={false} />
+      )}
     </div>
   );
 }
