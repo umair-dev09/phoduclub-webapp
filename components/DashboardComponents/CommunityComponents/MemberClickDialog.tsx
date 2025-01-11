@@ -26,6 +26,7 @@ type UserData = {
   profilePic: string;
   targetYear: string;
   targetExams: string[];
+  adminId: string;
   role: string;
   isPremium: boolean | false;
 }
@@ -72,48 +73,85 @@ function MemberClickDialog({ open, onClose, id, isAdmin }: MemberClickDialogProp
 
 
   const handleSendRequest = async () => {
-    if (user?.uniqueId && currentUserId) {
-      const chatId = generateChatId(currentUserId, user.uniqueId);
-      const chatDocRef = doc(db, 'privatechats', chatId);
-      const chatDocSnap = await getDoc(chatDocRef);
-
-      if (chatDocSnap.exists()) {
-        router.push(`/community/private-chat/${user.name.toLowerCase().replace(/\s+/g, '-')}/?pId=${generateChatId(currentUserId, user.uniqueId)}`);
-      } else {
-        await setDoc(chatDocRef, {
-          participants: [currentUserId, user.uniqueId],
-          chatStatus: 'requested',
-          createdAt: Timestamp.now(),
-        });
-
-        const currentUserDocRef = doc(db, 'users', currentUserId);
-        const recipientUserDocRef = doc(db, 'users', user.uniqueId);
-
-        await updateDoc(currentUserDocRef, {
-          sentRequests: arrayUnion(user.uniqueId),
-          chatList: arrayUnion(user.uniqueId),
-        });
-
-        await updateDoc(recipientUserDocRef, {
-          receivedRequests: arrayUnion(currentUserId),
-        });
-        toast.success('Chat request sent!');
-        setSendrequestDialog(false);
-        onClose();
-        router.push(`/community/private-chat/${user.name.toLowerCase().replace(/\s+/g, '-')}/?pId=${generateChatId(currentUserId, user.uniqueId)}`);
+    if (user && currentUserId) {
+      if(isAdmin){
+        const chatId = generateChatId(currentUserId, id);
+        const chatDocRef = doc(db, 'privatechats', chatId);
+        const chatDocSnap = await getDoc(chatDocRef);
+  
+        if (chatDocSnap.exists()) {
+          router.push(`/community/private-chat/${user.name.toLowerCase().replace(/\s+/g, '-')}/?pId=${generateChatId(currentUserId, id)}`);
+        } else {
+          await setDoc(chatDocRef, {
+            participants: [currentUserId, id],
+            chatStatus: 'requested',
+            createdAt: Timestamp.now(),
+          });
+  
+          const currentUserDocRef = doc(db, 'users', currentUserId);
+          const recipientUserDocRef = doc(db, 'admin', id);
+  
+          await updateDoc(currentUserDocRef, {
+            sentRequests: arrayUnion(id),
+            chatList: arrayUnion({ id: id, isAdmin: true }),
+          });
+  
+          await updateDoc(recipientUserDocRef, {
+            receivedRequests: arrayUnion(currentUserId),
+          });
+          toast.success('Chat request sent!');
+          setSendrequestDialog(false);
+          onClose();
+          router.push(`/community/private-chat/${user.name.toLowerCase().replace(/\s+/g, '-')}/?pId=${generateChatId(currentUserId, id)}`);
+        }
       }
+      else{
+        const chatId = generateChatId(currentUserId, id);
+        const chatDocRef = doc(db, 'privatechats', chatId);
+        const chatDocSnap = await getDoc(chatDocRef);
+  
+        if (chatDocSnap.exists()) {
+          router.push(`/community/private-chat/${user.name.toLowerCase().replace(/\s+/g, '-')}/?pId=${generateChatId(currentUserId, id)}`);
+        } else {
+         
+            await setDoc(chatDocRef, {
+              participants: [currentUserId,id],
+              chatStatus: 'requested',
+              createdAt: Timestamp.now(),
+            });
+    
+            const currentUserDocRef = doc(db, 'users', currentUserId);
+            const recipientUserDocRef = doc(db, 'users', id);
+    
+            await updateDoc(currentUserDocRef, {
+              sentRequests: arrayUnion(id),
+              chatList: arrayUnion({ id: id, isAdmin: false }),
+            });
+    
+            await updateDoc(recipientUserDocRef, {
+              receivedRequests: arrayUnion(currentUserId),
+            });
+            toast.success('Chat request sent!');
+            setSendrequestDialog(false);
+            onClose();
+            router.push(`/community/private-chat/${user.name.toLowerCase().replace(/\s+/g, '-')}/?pId=${generateChatId(currentUserId, id)}`);
+          
+          
+        }
+      }
+      
     }
   };
 
   const handleMessageClick = async () => {
     setMessageButtonLoading(true);
-    if (user?.uniqueId && currentUserId) {
-      const chatId = generateChatId(currentUserId, user.uniqueId);
+    if (user && currentUserId) {
+      const chatId = generateChatId(currentUserId, id);
       const chatDocRef = doc(db, 'privatechats', chatId);
       const chatDocSnap = await getDoc(chatDocRef);
 
       if (chatDocSnap.exists()) {
-        router.push(`/community/private-chat/${user.name.toLowerCase().replace(/\s+/g, '-')}/?pId=${generateChatId(currentUserId, user.uniqueId)}`);
+        router.push(`/community/private-chat/${user.name.toLowerCase().replace(/\s+/g, '-')}/?pId=${generateChatId(currentUserId, id)}`);
         setMessageButtonLoading(false);
       } else {
        setSendrequestDialog(true);

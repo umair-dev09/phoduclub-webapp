@@ -77,7 +77,7 @@ export default function Login_Page() {
             const q = query(userRef, where("phone", "==", formattedPhone));
             const querySnapshot = await getDocs(q);
 
-            if (!querySnapshot.empty) {
+            // if (!querySnapshot.empty) {
                 setupRecaptcha();
                 // Trigger Firebase Phone Authentication
                 signInWithPhoneNumber(auth, formattedPhone, window.recaptchaVerifier)
@@ -93,10 +93,10 @@ export default function Login_Page() {
                     setErrorMessage("Failed to send verification code. Please try again.");
                 });
 
-            } else {
-                setErrorMessage("Your number is not registered. Please Signup first.");
-                setIsLoading(false);
-            }
+            // } else {
+            //     setErrorMessage("Your number is not registered. Please Signup first.");
+            //     setIsLoading(false);
+            // }
 
         } catch (error) {
             console.error("Error while login user:", error);

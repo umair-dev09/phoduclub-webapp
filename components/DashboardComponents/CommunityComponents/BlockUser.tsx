@@ -12,9 +12,10 @@ interface BlockUserProps {
     onClose: () => void; // Define onClose as a function
     userId: string;
     userName: string;
+    pChatId: string;
 }
 
-function BlockUser({ open, onClose, userId, userName }: BlockUserProps) {
+function BlockUser({ open, onClose, userId, userName, pChatId }: BlockUserProps) {
     const [isLoading, setIsLoading] = useState(false);
     const currentUserId = auth.currentUser?.uid;
 
@@ -23,22 +24,20 @@ function BlockUser({ open, onClose, userId, userName }: BlockUserProps) {
         setIsLoading(true);
 
         try {
+            toast.dismiss();
             // Add user to blocked users collection
             const userDoc = doc(db, "users", currentUserId);
             await updateDoc(userDoc, {
-                [`blockedUsers.${userId}`]: true
+               blockedUsers: arrayUnion(userId),
             });
 
-            // Update chat status to blocked
-            const chatId = [currentUserId, userId].sort().join('_');
-            const chatDoc = doc(db, "privatechats", chatId);
+            const chatDoc = doc(db, "privatechats", pChatId);
             await updateDoc(chatDoc, {
                 chatStatus: 'blocked',
                 blockedBy: currentUserId,
-                blockedAt: new Date()
             });
 
-            toast.success(`${userName} has been blocked`);
+            toast.success(`${userName} has been blocked.`);
             onClose();
         } catch (error) {
             console.error("Error blocking user: ", error);
@@ -48,20 +47,6 @@ function BlockUser({ open, onClose, userId, userName }: BlockUserProps) {
         }
     };
 
-    // const handleExitGroup = async () => {
-    //     if (!currentUserId) return;
-
-    //     const communityRef = doc(db, "communities", communityId);
-    //     try {
-    //         await updateDoc(communityRef, {
-    //             groupExitedMembers: arrayUnion(currentUserId),
-    //         });
-    //         onClose(); // Close the dialog after successful exit
-    //         toast.success('Group Exited Successfully');
-    //     } catch (error) {
-    //         console.error("Error exiting group: ", error);
-    //     }
-    // };
 
     return (
         // <Modal
@@ -138,7 +123,7 @@ function BlockUser({ open, onClose, userId, userName }: BlockUserProps) {
                     <ModalBody>
                         <div className="flex flex-col pb-2 gap-2">
                             <span className="text-sm font-normal text-[#667085]">
-                                Are you sure you want to block this user? They will no longer be able to send you messages, and you won't see any of their messages. You can unblock them at any time.
+                                Are you sure you want to block this user? They will no longer be able to send you messages. You can unblock them at any time.
                             </span>
                         </div>
                     </ModalBody>
