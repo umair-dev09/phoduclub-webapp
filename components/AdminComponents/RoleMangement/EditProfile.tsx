@@ -290,7 +290,7 @@ function Editprofile({ open, close, adminId }: EditProfileProps) {
                             </button>
                         </ModalHeader>
                         <ModalBody>
-                            <div className="px-6">
+                            <div className="px-6 overflow-hidden">
                                 <div className="flex flex-col gap-2 items-center">
                                     <Image className="rounded-full"
                                         src={profilePic || "/defaultAdminDP.jpg"}
@@ -357,9 +357,9 @@ function Editprofile({ open, close, adminId }: EditProfileProps) {
                                         />
                                     </div>
                                 </div>
-                                <div className="flex flex-col gap-1 ">
+                                {/* <div className="flex flex-col gap-1 w-[450px] overflow-hidden">
                                     <label className='text-[14px] text-[#344054] font-medium'>Moblie No.</label>
-                                    <div className="mt-1 pr-6">
+                                    <div className="mt-1">
                                         <PhoneInput
                                             country={'in'}
                                             value={phone}
@@ -372,7 +372,7 @@ function Editprofile({ open, close, adminId }: EditProfileProps) {
                                             containerClass="phone-input-container "
                                             inputClass="forminput "
                                             inputStyle={{
-                                                width: '450px',
+                                                width: '350px',
                                                 height: '42px',
                                                 borderRadius: "4px",
                                                 border: "1px solid #D0D5DD",
@@ -381,7 +381,35 @@ function Editprofile({ open, close, adminId }: EditProfileProps) {
                                             }}
                                             onFocus={(e) => e.target.style.boxShadow = "0 0 0 2px #D6BBFB"}
                                             onBlur={(e) => e.target.style.boxShadow = "0px 1px 2px 0px rgba(16, 24, 40, 0.05)"}
-
+                                        />
+                                    </div>
+                                </div> */}
+                                <div className="flex flex-col gap-1 w-full">
+                                    <label className='text-[14px] text-[#344054] font-medium'>Mobile No.</label>
+                                    <div className="w-full">
+                                        <PhoneInput
+                                            country={'in'}
+                                            value={phone}
+                                            onChange={(phone) => setPhone(phone)}
+                                            inputProps={{
+                                                required: true,
+                                                autoFocus: true,
+                                                placeholder: "+91 00000-00000"
+                                            }}
+                                            containerClass="phone-input-container"
+                                            inputClass="forminput"
+                                            containerStyle={{
+                                                width: '100%'
+                                            }}
+                                            inputStyle={{
+                                                width: '100%',
+                                                height: '42px',
+                                                borderRadius: "4px",
+                                                border: "1px solid #D0D5DD",
+                                                boxShadow: "0px 1px 2px 0px #1018280D"
+                                            }}
+                                            onFocus={(e) => e.target.style.boxShadow = "0 0 0 2px #D6BBFB"}
+                                            onBlur={(e) => e.target.style.boxShadow = "0px 1px 2px 0px rgba(16, 24, 40, 0.05)"}
                                         />
                                     </div>
                                 </div>
