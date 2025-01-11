@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { getFirestore, collection, getDocs, query, where, onSnapshot } from "firebase/firestore";
+import { getFirestore, collection, getDocs, query, where, onSnapshot, doc } from "firebase/firestore";
 import { onAuthStateChanged, User } from 'firebase/auth'; // Import the User type from Firebase
 import { auth } from "@/firebase";
 import { useRouter, useSearchParams, usePathname } from 'next/navigation';
@@ -28,7 +28,9 @@ function GroupIcons() {
   const pathname = usePathname();
   const pCheck = pathname === '/community/private-chat';
   const pId = searchParams?.get('pId');
-
+  const currentUserId = auth.currentUser?.uid;
+      const [personalChatNotifications, setPersonalChatNotifications] = useState<number>(0);
+  
   useEffect(() => {
     if (pCheck || pId) {
       setSelectedCommunityId(null);
@@ -57,6 +59,17 @@ function GroupIcons() {
 
     return () => unsubscribe();
   }, []);
+
+  useEffect(() => {
+    if (!currentUserId) return;
+
+    const unsubscribe = onSnapshot(doc(db, 'users', currentUserId), (docSnapshot) => {
+        const personalChatNotifications = docSnapshot.data()?.personalChatNotifications || [];
+        setPersonalChatNotifications(personalChatNotifications.length);
+    });
+
+    return () => unsubscribe();
+}, [currentUserId]);
 
   useEffect(() => {
     if (user) {
@@ -107,9 +120,12 @@ function GroupIcons() {
           <div className={`flex items-center justify-center w-[42px] h-[42px] rounded-full bg-[#C74FE6] border-[#C74FE6] border-2 text-[#624C18] font-bold ${selectedButton === "message" ? "border-white" : "group-hover:border-white"}`}>
             <Image src="/icons/messageIcon.svg" alt="message icon" width={18} height={18} />
           </div>
-          {/* <div className="absolute top-6 left-6 px-2 py-1 bg-red-600 rounded-full text-white text-xs font-medium hidden group-hover:flex">
-            6
-          </div> */}
+          {personalChatNotifications >= 1 &&(
+          <div className="absolute top-6 left-6 px-2 py-1 bg-red-600 rounded-full text-white text-xs font-medium">
+          {personalChatNotifications}
+        </div>
+          )}
+        
         </button>
       </div>
 

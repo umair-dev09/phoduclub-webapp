@@ -85,7 +85,7 @@ import Image from "next/image";
 
 function RequestSentNotes() {
     return (
-        <div className="flex flex-1 flex-col">
+        <div className="flex flex-col h-full">
             <div className="flex flex-1 items-center justify-center">
                 <div className="flex flex-col w-[20.75rem] p-6 border border-neutral-300 rounded-2xl bg-white gap-4">
                     <div className="flex flex-row justify-start w-full gap-1">

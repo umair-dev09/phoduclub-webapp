@@ -3,7 +3,7 @@ import { PopoverContent, PopoverTrigger, Popover } from "@nextui-org/popover";
 import Image from "next/image";
 import EmojiPicker, { EmojiClickData } from "emoji-picker-react";
 import { auth, db, storage } from "@/firebase";
-import { addDoc, collection, doc, getDoc,getDocs, serverTimestamp, setDoc } from "firebase/firestore";
+import { addDoc, arrayUnion, collection, doc, getDoc,getDocs, serverTimestamp, setDoc, updateDoc } from "firebase/firestore";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import MuxUploader from "@mux/mux-uploader-react";
 type BottomTextProps = {
@@ -12,6 +12,7 @@ type BottomTextProps = {
   pChatId: string | null;
   replyData: { message: string | null; senderId: string | null; messageType: string | null; fileUrl: string | null; fileName: string | null; chatId: string | null; } | null;
   replyName: string;
+  chatWithId: string;
 };
 
 type UserData = {
@@ -21,17 +22,13 @@ type UserData = {
   profilePic: string;
 }
 
-interface Mention {
-  userId: string;
-  id: string;
-}
-
 function BottomTextP({
   showReplyLayout,
   replyData,
   setShowReplyLayout,
   pChatId,
   replyName,
+  chatWithId,
 }: BottomTextProps) {
   const [text, setText] = useState("");
   const [height, setHeight] = useState("32px");
@@ -178,7 +175,10 @@ function BottomTextP({
       // Store the message with mentions in Firestore
       await setDoc(newChatRef, messageData);
       console.log("Message stored successfully");
-  
+      const userDoc = doc(db, "users", chatWithId);
+      await updateDoc(userDoc, {
+         personalChatNotifications: arrayUnion(user.uid),
+      });
       // Reset states after sending message
       setText("");
       setFileUrl(null);

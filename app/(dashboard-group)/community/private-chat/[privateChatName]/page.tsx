@@ -3,7 +3,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@nextui-org/popover";
 import React, { ReactNode, useEffect, useRef } from "react";
 import Image from "next/image";
 import { useSearchParams } from "next/navigation";
-import { getFirestore, doc, getDoc, onSnapshot, collection, query, orderBy } from "firebase/firestore";
+import { getFirestore, doc, getDoc, onSnapshot, collection, query, orderBy, arrayRemove, updateDoc } from "firebase/firestore";
 import { useState } from "react";
 import RequestSentNotes from "@/components/DashboardComponents/CommunityComponents/RequestSentNotes";
 import LoadingData from "@/components/Loading";
@@ -11,7 +11,8 @@ import { auth, db } from "@/firebase";
 import OwnChatP from "@/components/DashboardComponents/CommunityComponents/PrivateChatComponents/OwnChatP";
 import OtherChatP from "@/components/DashboardComponents/CommunityComponents/PrivateChatComponents/OtherChatP";
 import BottomTextP from "@/components/DashboardComponents/CommunityComponents/PrivateChatComponents/BottomTextP";
-import { ToastContainer } from "react-toastify";
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import BlockUser from "@/components/DashboardComponents/CommunityComponents/BlockUser";
 
 interface UserData {
@@ -48,8 +49,10 @@ function privateChatArea() {
   const [loading, setLoading] = useState(true);
   const currentUserId = auth.currentUser?.uid;
   const pChatId = searchParams.get('pId');
+  const isAdmin = searchParams.get('admin') === 'true'; // Convert string to boolean
   const chatUserId = pChatId ? pChatId.split('_').filter(id => id !== currentUserId)[0] : null;
   const [chatStatus, setChatStatus] = useState<string | null>(null);
+  const [blockedBy, setBlockedBy] = useState<string | null>(null);
   const containerRef = useRef<HTMLDivElement | null>(null); // Ref for the scrollable container
   const [showScrollButton, setShowScrollButton] = useState(false); // New state to control button visibility
   const isAutoScrolling = useRef(false);
@@ -71,6 +74,7 @@ function privateChatArea() {
       const unsubscribeChat = onSnapshot(chatDoc, (chatSnapshot) => {
         if (chatSnapshot.exists()) {
           setChatStatus(chatSnapshot.data().chatStatus);
+          setBlockedBy(chatSnapshot.data().blockedBy);
           setLoading(false);
         }
       });
@@ -81,7 +85,7 @@ function privateChatArea() {
 
   useEffect(() => {
     if (chatUserId) {
-      const userDoc = doc(db, "users", chatUserId);
+      const userDoc = doc(db, isAdmin ? "admin" : "users", chatUserId);
 
       const unsubscribeUser = onSnapshot(userDoc, (userSnapshot) => {
         if (userSnapshot.exists()) {
@@ -115,7 +119,8 @@ function privateChatArea() {
     }
   }, [pChatId]);
 
-  // Scroll to the last message immediately after chats are updated
+
+// Scroll to the last message immediately after chats are updated
   const initialLoadRef = useRef(true); // Tracks if the user just selected a channel
 
   useEffect(() => {
@@ -151,6 +156,15 @@ function privateChatArea() {
         // User's own message or already near bottom - scroll smoothly
         scrollToBottom('smooth');
       }
+      if(currentUserId && chatUserId){
+        const fetchChats = async () => {
+      const userDoc = doc(db, "users", currentUserId);
+          await updateDoc(userDoc, {
+             personalChatNotifications: arrayRemove(chatUserId),
+          });
+        };
+        fetchChats();
+       }
     }
   }, [chats, currentUserId]);
 
@@ -340,6 +354,30 @@ function privateChatArea() {
     setBlockUserDilaog(true); // Open the dialog
   };
 
+   const handleUnblockUser = async () => {
+          if (currentUserId && pChatId && chatUserId) {
+          try {
+            toast.dismiss();
+              // Add user to blocked users collection
+              const userDoc = doc(db, "users", currentUserId);
+              await updateDoc(userDoc, {
+                 blockedUsers: arrayRemove(chatUserId),
+              });
+  
+              const chatDoc = doc(db, "privatechats", pChatId);
+              await updateDoc(chatDoc, {
+                  chatStatus: 'accepted',
+                  blockedBy: null,
+              });
+              toast.success(`${userData?.name} has been Unblocked.`);
+              
+          } catch (error) {
+              console.error("Error blocking user: ", error);
+              toast.error("Failed to block user. Please try again.");
+          } 
+        }
+      };
+
   if (!isMounted) {
     return <LoadingData />;
   }
@@ -358,10 +396,13 @@ function privateChatArea() {
             <div className={`absolute right-0 bottom-0 w-[14px] h-[14px] ${userData?.isOnline ? 'bg-green-500' : 'bg-neutral-400'} rounded-full border-2 border-white`}></div>
           </div>
           <p className="text-[#4B5563] text-[16px] font-semibold">{userData?.name}</p>
+          {(chatStatus === 'blocked' && blockedBy === currentUserId) && (
+          <Image src='/icons/message-blocked.svg' alt="Blocked icon" width={16} height={16} />
+          )}
         </div>
         <Popover
           isOpen={isPopoverOpen}
-          onOpenChange={setIsPopoverOpen}
+          onOpenChange={(open) => setIsPopoverOpen(open)}
           placement="bottom-end"
         >
           <PopoverTrigger>
@@ -379,14 +420,17 @@ function privateChatArea() {
               <Image src='/icons/user-sharing.svg' alt='mark as read' width={18} height={18} />
               <p className='text-sm'>View profile</p>
             </button>
-            <button
-              className='flex flex-row items-center gap-2 w-[183px] px-4 py-[10px] transition-colors  hover:bg-neutral-100'
-            // onClick={closePopover}
-            >
-              <Image src='/icons/folder-02.svg' alt='media' width={18} height={18} />
-              <p className='text-sm'>Media</p>
-            </button>
-            <button
+            {(chatStatus === 'accepted' || chatStatus === 'blocked')&&(
+                <button
+                className='flex flex-row items-center gap-2 w-[183px] px-4 py-[10px] transition-colors  hover:bg-neutral-100'
+                // onClick={closePopover}
+                >
+                <Image src='/icons/folder-02.svg' alt='media' width={18} height={18} />
+                <p className='text-sm'>Media</p>
+                </button>
+            )}
+            {chatStatus === 'accepted' &&(
+             <button
               className='flex flex-row items-center gap-2 w-[183px] px-4 py-[10px] transition-colors  hover:bg-neutral-100'
               // onClick={closePopover}
               onClick={handleBlockUserClick}
@@ -394,12 +438,23 @@ function privateChatArea() {
               <Image src='/icons/user-block-red-01.svg' alt='exit group' width={18} height={18} />
               <p className='text-sm text-red-600'>Block user</p>
             </button>
+            )}
+             {(chatStatus === 'blocked' && blockedBy === currentUserId) &&(
+             <button
+              className='flex flex-row items-center gap-2 w-[183px] px-4 py-[10px] transition-colors  hover:bg-neutral-100'
+              // onClick={closePopover}
+              onClick={() => {handleUnblockUser(); setIsPopoverOpen(false)}}
+            >
+              <Image src='/icons/user-block-red-01.svg' alt='exit group' width={18} height={18} />
+              <p className='text-sm text-red-600'>Unblock user</p>
+            </button>
+            )}
           </PopoverContent>
         </Popover>
       </div>
       <div className="flex-1 min-h-0">
         {chatStatus === 'requested' && <RequestSentNotes />}
-        {chatStatus === 'accepted' && (
+        {(chatStatus === 'accepted' || chatStatus === 'blocked') && (
           <div className="flex flex-col h-full">
             <div
               className="overflow-y-auto p-4 flex flex-col flex-1 gap-4 overflow-x-hidden relative"
@@ -498,40 +553,66 @@ function privateChatArea() {
                 );
               })}
             </div>
-            {/* Bottom text input area */}
-            <div className="flex-none relative">
-              {showScrollButton && (
+            {(chatStatus === 'blocked' && blockedBy === currentUserId) && (
+               <div className="bg-white p-4 flex flex-col gap-1 justify-center items-center w-full h-auto">
+                 <p className='text-sm text-center '>
+                 You have blocked this user. To resume the conversation, unblock them first. 
+                </p>
+                <button onClick={handleUnblockUser}>
+                <p className='text-purple underline text-sm'>Unblock user</p>
+                 </button>
+               </div>
+            )}
+         {(chatStatus === 'blocked' && blockedBy != currentUserId) && (
+
+                <div className="bg-white p-4 flex flex-col gap-1 justify-center items-center w-full h-auto">
+                <p className='text-sm text-center py-1'>
+                You cannot send message to this user, until the user unblocks you. 
+               </p>
+              </div>
+          )}    
+            
+            {chatStatus === 'accepted' &&(
+                <>
+                {/* Bottom text input area */}
+                <div className="relative">
+                {showScrollButton && (
                 <button
-                  onClick={() => scrollToBottom()}
-                  className="absolute bottom-[85px] right-4 bg-white border pt-[2px] text-white rounded-full shadow-md hover:bg-[#f7f7f7] transition-all w-[38px] h-[38px] flex items-center justify-center"
+                    onClick={() => scrollToBottom()}
+                    className="absolute bottom-[85px] right-4 bg-white border pt-[2px] text-white rounded-full shadow-md hover:bg-[#f7f7f7] transition-all w-[38px] h-[38px] flex items-center justify-center"
                 >
-                  <Image
+                    <Image
                     src="/icons/Arrow-down-1.svg"
                     alt="Scroll to bottom"
                     width={22}
                     height={22}
-                  />
+                    />
                 </button>
-              )}
-              <BottomTextP
+                )}
+                <BottomTextP
                 showReplyLayout={showReplyLayout}
                 setShowReplyLayout={setShowReplyLayout}
                 replyData={replyData}
                 pChatId={pChatId || ''}
                 replyName={userData?.name || ''}
-              />
-            </div>
+                chatWithId={chatUserId || ''}
+                />
+                </div>
+                </>
+            )}
+
+            
           </div>
         )}
         {chatStatus === 'declined' && (
-          <div className="flex flex-col flex-1 w-full gap-3 items-center justify-center">
+          <div className="flex flex-col h-full w-full gap-3 items-center justify-center">
             <p className="text-[#667085]  text-center w-[50%]">Your chat request was declined by the user. You can try to send chat request again but its not recommended to send chat request to same user multiple times.</p>
             <button className="py-[0.625rem] px-6 text-white text-sm shadow-inner-button font-semibold border border-solid w-[300px]  border-white bg-[#9012FF] hover:bg-[#6D0DCC]  rounded-md">Send Request Again</button>
           </div>
         )}
       </div>
       <ToastContainer />
-      {blockUserDialog && < BlockUser open={blockUserDialog} onClose={() => setBlockUserDilaog(false)} userId={chatUserId || ''} userName={userData?.name || ''} />}
+      {blockUserDialog && < BlockUser open={blockUserDialog} onClose={() => setBlockUserDilaog(false)} userId={chatUserId || ''} userName={userData?.name || ''} pChatId={pChatId || ''}/>}
     </div>
   );
 
