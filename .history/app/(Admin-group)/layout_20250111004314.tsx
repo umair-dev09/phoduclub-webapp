@@ -25,7 +25,6 @@ export default function DashboardGroup({ children }: DashboardGroupProps) {
         const rId = searchParams?.get('rId');
         const uId = searchParams?.get('uId');
         const nId = searchParams?.get('nId');
-        const communityId = searchParams?.get('communityId');
         let pageName = '';
 
         if (qId) {
@@ -45,9 +44,6 @@ export default function DashboardGroup({ children }: DashboardGroupProps) {
         }
         else if (nId) {
             pageName = 'Back to Messenger';
-        }
-        else if (communityId) {
-            pageName = 'Community';
         }
         // Remove the else if (pageName) condition and directly use the switch
         else {
@@ -112,7 +108,7 @@ export default function DashboardGroup({ children }: DashboardGroupProps) {
                 case 'community':
                     pageName = 'Community';
                     break;
-                case 'personal-chat':
+                case 'community':
                     pageName = 'Community';
                     break;
                 default:

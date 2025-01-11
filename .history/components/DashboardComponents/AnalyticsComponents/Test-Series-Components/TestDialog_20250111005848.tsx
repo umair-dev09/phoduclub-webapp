@@ -14,7 +14,10 @@ const dummyData = [
     { attempt: 2, date: "Jan 7, 2024 04:15 PM", accuracy: "85%", score: 34 },
     { attempt: 3, date: "Jan 8, 2024 02:45 PM", accuracy: "78%", score: 30 },
     { attempt: 4, date: "Jan 9, 2024 01:20 PM", accuracy: "90%", score: 36 },
-
+    { attempt: 5, date: "Jan 10, 2024 11:10 AM", accuracy: "88%", score: 35 },
+    { attempt: 3, date: "Jan 8, 2024 02:45 PM", accuracy: "78%", score: 30 },
+    { attempt: 4, date: "Jan 9, 2024 01:20 PM", accuracy: "90%", score: 36 },
+    { attempt: 5, date: "Jan 10, 2024 11:10 AM", accuracy: "88%", score: 35 },
 ];
 
 function TestDialog({ open, onClose, forallsubject = false }: TestDialogprops) {
@@ -52,10 +55,10 @@ function TestDialog({ open, onClose, forallsubject = false }: TestDialogprops) {
                             You have attempted 5 times this test, please select which attempts
                             analytics you would like to see.
                         </span>
-                        <div className="overflow-y-auto pb-2 rounded-md max-h-[300px]">
-                            <table className="w-full rounded-md text-left bg-white border border-lightGrey">
-                                <thead className="border border-lightGrey rounded-md  sticky top-0 bg-white z-10">
-                                    <tr>
+                        <div className="flex rounded-md overflow-hidden border border-lightGrey">
+                            <table className="w-full bg-white text-left">
+                                <thead className="sticky top-0 bg-white z-10">
+                                    <tr className="border-b border-lightGrey">
                                         <th className="px-4 py-2 text-[#667085] font-medium text-sm">
                                             Attempts
                                         </th>
@@ -92,14 +95,17 @@ function TestDialog({ open, onClose, forallsubject = false }: TestDialogprops) {
                                                 />
                                             </div>
                                         </th>
-                                        <th className="pl-8 py-2  text-[#667085] font-medium text-sm">
+                                        <th className="px-4 py-2 text-[#667085] font-medium text-sm">
                                             Action
                                         </th>
                                     </tr>
                                 </thead>
-                                <tbody>
+                                <tbody className="max-h-[300px] overflow-y-auto block w-full">
                                     {dummyData.map((item, index) => (
-                                        <tr key={index} className="border border-lightGrey">
+                                        <tr
+                                            key={index}
+                                            className="border-b border-lightGrey block w-full"
+                                        >
                                             <td className="px-4 py-2 text-[#1D2939] font-normal text-sm">
                                                 {item.attempt}
                                             </td>
@@ -137,6 +143,7 @@ function TestDialog({ open, onClose, forallsubject = false }: TestDialogprops) {
                                 </tbody>
                             </table>
                         </div>
+
                     </ModalBody>
                 </>
             </ModalContent>
