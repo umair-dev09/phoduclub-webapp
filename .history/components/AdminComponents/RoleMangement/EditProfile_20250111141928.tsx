@@ -39,7 +39,7 @@ function Editprofile({ open, close, adminId }: EditProfileProps) {
     const [showCropper, setShowCropper] = useState(false);
     const [showImageCropper, setShowImageCropper] = useState(false);
     const [uploadedImage, setUploadedImage] = useState<File | null>(null);
-    const [scrollBehavior, setScrollBehavior] = useState<"inside" | "outside">("outside");
+
     const isFormValid = firstName && lastName && userId && phone && selectedRole;
 
 
@@ -277,7 +277,7 @@ function Editprofile({ open, close, adminId }: EditProfileProps) {
                     </DialogPanel>
                 </div>
             </Dialog> */}
-            <Modal isOpen={open} onOpenChange={(isOpen) => !isOpen && close()} hideCloseButton scrollBehavior={scrollBehavior} >
+            <Modal isOpen={open} onOpenChange={(isOpen) => !isOpen && close()} hideCloseButton >
 
                 <ModalContent>
                     <>
@@ -290,8 +290,8 @@ function Editprofile({ open, close, adminId }: EditProfileProps) {
                             </button>
                         </ModalHeader>
                         <ModalBody>
-                            <div className="pb-2 px-1 ">
-                                <div className="flex flex-col gap-2 items-center pb-2">
+                            <div className="py-2 overflow-hidden">
+                                <div className="flex flex-col gap-2 items-center">
                                     <Image className="rounded-full"
                                         src={profilePic || "/defaultAdminDP.jpg"}
                                         width={120}
@@ -310,55 +310,54 @@ function Editprofile({ open, close, adminId }: EditProfileProps) {
                                     </label>
 
                                 </div>
-                                <div className="flex flex-col gap-4">
-                                    <div className="flex flex-row w-full gap-4 ">
-                                        <div className="flex flex-col gap-1 w-1/2 flex-grow">
-                                            <label htmlFor="rating" className="text-[#1D2939] text-sm font-medium">
-                                                First Name
-                                            </label>
-                                            <div className="flex flex-row py-2 px-4 w-full gap-2 border border-gray-300  h-10 focus:outline focus:outline-[1.5px] focus:outline-[#D6BBFB] hover:outline hover:outline-[1.5px] hover:outline-[#D6BBFB] rounded-md transition duration-200 ease-in-out ">
-                                                <input
-
-                                                    className="w-full text-sm font-medium text-[#1D2939] placeholder:font-normal placeholder:text-[#A1A1A1] rounded-md outline-none"
-                                                    type="text"
-                                                    placeholder="First Name"
-                                                    value={firstName}
-                                                    onChange={(e) => setFirstName(e.target.value)}
-                                                />
-                                            </div>
-                                        </div>
-                                        <div className="flex flex-col gap-1 w-1/2 flex-grow">
-                                            <label htmlFor="num-ratings" className="text-[#1D2939] text-sm font-medium">
-                                                Last Name
-                                            </label>
-                                            <div className="flex flex-row py-2 px-4 w-full gap-2 border border-gray-300  h-10 focus:outline focus:outline-[1.5px] focus:outline-[#D6BBFB] hover:outline hover:outline-[1.5px] hover:outline-[#D6BBFB] rounded-md transition duration-200 ease-in-out ">
-                                                <input
-
-                                                    className="w-full text-sm font-medium text-[#1D2939] placeholder:font-normal placeholder:text-[#A1A1A1] rounded-md outline-none"
-                                                    type="text"
-                                                    placeholder="Last Name"
-                                                    value={lastName}
-                                                    onChange={(e) => setLastName(e.target.value)}
-                                                />
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div className="flex flex-col gap-1 w-full ">
-                                        <label htmlFor="num-ratings" className="text-[#1D2939] text-sm font-medium">
-                                            User ID
+                                <div className="flex flex-row w-full gap-4 ">
+                                    <div className="flex flex-col gap-1 w-1/2 flex-grow">
+                                        <label htmlFor="rating" className="text-[#1D2939] text-sm font-medium">
+                                            First Name
                                         </label>
-                                        <div className="flex flex-row  w-full gap-2  border border-gray-300  h-10 focus:outline focus:outline-[1.5px] focus:outline-[#D6BBFB] hover:outline hover:outline-[1.5px] hover:outline-[#D6BBFB]  rounded-md transition duration-200 ease-in-out ">
+                                        <div className="flex flex-row py-2 px-4 w-full gap-2 border border-gray-300  h-10 focus:outline focus:outline-[1.5px] focus:outline-[#D6BBFB] hover:outline hover:outline-[1.5px] hover:outline-[#D6BBFB] rounded-md transition duration-200 ease-in-out ">
                                             <input
 
-                                                className="w-full text-sm font-medium py-2 px-4 text-[#1D2939] placeholder:font-normal placeholder:text-[#A1A1A1] rounded-md outline-none"
+                                                className="w-full text-sm font-medium text-[#1D2939] placeholder:font-normal placeholder:text-[#A1A1A1] rounded-md outline-none"
                                                 type="text"
-                                                placeholder="User Id"
-                                                value={userId}
-                                                disabled={true}
+                                                placeholder="First Name"
+                                                value={firstName}
+                                                onChange={(e) => setFirstName(e.target.value)}
                                             />
                                         </div>
                                     </div>
-                                    {/* <div className="flex flex-col gap-1 w-[450px] overflow-hidden">
+                                    <div className="flex flex-col gap-1 w-1/2 flex-grow">
+                                        <label htmlFor="num-ratings" className="text-[#1D2939] text-sm font-medium">
+                                            Last Name
+                                        </label>
+                                        <div className="flex flex-row py-2 px-4 w-full gap-2 border border-gray-300  h-10 focus:outline focus:outline-[1.5px] focus:outline-[#D6BBFB] hover:outline hover:outline-[1.5px] hover:outline-[#D6BBFB] rounded-md transition duration-200 ease-in-out ">
+                                            <input
+
+                                                className="w-full text-sm font-medium text-[#1D2939] placeholder:font-normal placeholder:text-[#A1A1A1] rounded-md outline-none"
+                                                type="text"
+                                                placeholder="Last Name"
+                                                value={lastName}
+                                                onChange={(e) => setLastName(e.target.value)}
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="flex flex-col gap-1 w-full ">
+                                    <label htmlFor="num-ratings" className="text-[#1D2939] text-sm font-medium">
+                                        User ID
+                                    </label>
+                                    <div className="flex flex-row  w-full gap-2  border border-gray-300  h-10 focus:outline focus:outline-[1.5px] focus:outline-[#D6BBFB] hover:outline hover:outline-[1.5px] hover:outline-[#D6BBFB]  rounded-md transition duration-200 ease-in-out ">
+                                        <input
+
+                                            className="w-full text-sm font-medium py-2 px-4 text-[#1D2939] placeholder:font-normal placeholder:text-[#A1A1A1] rounded-md outline-none"
+                                            type="text"
+                                            placeholder="User Id"
+                                            value={userId}
+                                            disabled={true}
+                                        />
+                                    </div>
+                                </div>
+                                {/* <div className="flex flex-col gap-1 w-[450px] overflow-hidden">
                                     <label className='text-[14px] text-[#344054] font-medium'>Moblie No.</label>
                                     <div className="mt-1">
                                         <PhoneInput
@@ -385,63 +384,62 @@ function Editprofile({ open, close, adminId }: EditProfileProps) {
                                         />
                                     </div>
                                 </div> */}
-                                    <div className="flex flex-col gap-1 w-full">
-                                        <label className='text-[14px] text-[#344054] font-medium'>Mobile No.</label>
-                                        <div className="w-full">
-                                            <PhoneInput
-                                                country={'in'}
-                                                value={phone}
-                                                onChange={(phone) => setPhone(phone)}
-                                                inputProps={{
-                                                    required: true,
-                                                    autoFocus: true,
-                                                    placeholder: "+91 00000-00000"
-                                                }}
-                                                containerClass="phone-input-container"
-                                                inputClass="forminput"
-                                                containerStyle={{
-                                                    width: '100%'
-                                                }}
-                                                inputStyle={{
-                                                    width: '100%',
-                                                    height: '42px',
-                                                    borderRadius: "4px",
-                                                    border: "1px solid #D0D5DD",
-                                                    boxShadow: "0px 1px 2px 0px #1018280D"
-                                                }}
-                                                onFocus={(e) => e.target.style.boxShadow = "0 0 0 2px #D6BBFB"}
-                                                onBlur={(e) => e.target.style.boxShadow = "0px 1px 2px 0px rgba(16, 24, 40, 0.05)"}
-                                            />
-                                        </div>
+                                <div className="flex flex-col gap-1 w-full">
+                                    <label className='text-[14px] text-[#344054] font-medium'>Mobile No.</label>
+                                    <div className="w-full">
+                                        <PhoneInput
+                                            country={'in'}
+                                            value={phone}
+                                            onChange={(phone) => setPhone(phone)}
+                                            inputProps={{
+                                                required: true,
+                                                autoFocus: true,
+                                                placeholder: "+91 00000-00000"
+                                            }}
+                                            containerClass="phone-input-container"
+                                            inputClass="forminput"
+                                            containerStyle={{
+                                                width: '100%'
+                                            }}
+                                            inputStyle={{
+                                                width: '100%',
+                                                height: '42px',
+                                                borderRadius: "4px",
+                                                border: "1px solid #D0D5DD",
+                                                boxShadow: "0px 1px 2px 0px #1018280D"
+                                            }}
+                                            onFocus={(e) => e.target.style.boxShadow = "0 0 0 2px #D6BBFB"}
+                                            onBlur={(e) => e.target.style.boxShadow = "0px 1px 2px 0px rgba(16, 24, 40, 0.05)"}
+                                        />
                                     </div>
-                                    <div className="flex flex-col gap-1 w-full ">
-                                        <label htmlFor="num-ratings" className="text-[#1D2939] text-sm font-medium">
-                                            Role
-                                        </label>
-                                        <Popover placement="bottom" isOpen={roleDialogOpen} onOpenChange={(open) => setRoleDialogOpen(open)} >
-                                            <PopoverTrigger>
-                                                <button className="flex flex-row py-2 px-4 w-full gap-2 border border-solid border-[#D0D5DD] rounded-md transition duration-200 ease-in-out justify-between bg-[#fafafa]"
-                                                    onClick={() => setRoleDialogOpen(false)}
-                                                >
-                                                    <span className="font-normal text-sm text-[#182230]">{selectedRole}</span>
-                                                    <Image src="/icons/by-role-arrow-down.svg" width={20} height={20} alt="Select-role Button" />
-                                                </button>
-                                            </PopoverTrigger>
-                                            <PopoverContent className="p-0">
-                                                <div className="w-[450px] bg-white border border-lightGrey rounded-md">
-                                                    {["Admin", "Teacher", "Customer Care", "Guide", "Editor", "Chief Moderator"].map((role) => (
-                                                        <button
-                                                            key={role}
-                                                            onClick={() => { handleRoleSelect(role); setRoleDialogOpen(false); }}
-                                                            className="flex flex-row items-center justify-start w-full py-[0.625rem] px-4 gap-2 hover:bg-[#F2F4F7]"
-                                                        >
-                                                            <span className="text-sm text-[#0C111D] font-normal">{role}</span>
-                                                        </button>
-                                                    ))}
-                                                </div>
-                                            </PopoverContent>
-                                        </Popover>
-                                    </div>
+                                </div>
+                                <div className="flex flex-col gap-1 w-full ">
+                                    <label htmlFor="num-ratings" className="text-[#1D2939] text-sm font-medium">
+                                        Role
+                                    </label>
+                                    <Popover placement="bottom" isOpen={roleDialogOpen} onOpenChange={(open) => setRoleDialogOpen(open)} >
+                                        <PopoverTrigger>
+                                            <button className="flex flex-row py-2 px-4 w-full gap-2 border border-solid border-[#D0D5DD] rounded-md transition duration-200 ease-in-out justify-between bg-[#fafafa]"
+                                                onClick={() => setRoleDialogOpen(false)}
+                                            >
+                                                <span className="font-normal text-sm text-[#182230]">{selectedRole}</span>
+                                                <Image src="/icons/by-role-arrow-down.svg" width={20} height={20} alt="Select-role Button" />
+                                            </button>
+                                        </PopoverTrigger>
+                                        <PopoverContent className="p-0">
+                                            <div className="w-[450px] bg-white border border-lightGrey rounded-md">
+                                                {["Admin", "Teacher", "Customer Care", "Guide", "Editor", "Chief Moderator"].map((role) => (
+                                                    <button
+                                                        key={role}
+                                                        onClick={() => { handleRoleSelect(role); setRoleDialogOpen(false); }}
+                                                        className="flex flex-row items-center justify-start w-full py-[0.625rem] px-4 gap-2 hover:bg-[#F2F4F7]"
+                                                    >
+                                                        <span className="text-sm text-[#0C111D] font-normal">{role}</span>
+                                                    </button>
+                                                ))}
+                                            </div>
+                                        </PopoverContent>
+                                    </Popover>
                                 </div>
                             </div>
                         </ModalBody>

@@ -421,7 +421,7 @@ function Editprofile({ open, close, adminId }: EditProfileProps) {
                                         <Popover placement="bottom" isOpen={roleDialogOpen} onOpenChange={(open) => setRoleDialogOpen(open)} >
                                             <PopoverTrigger>
                                                 <button className="flex flex-row py-2 px-4 w-full gap-2 border border-solid border-[#D0D5DD] rounded-md transition duration-200 ease-in-out justify-between bg-[#fafafa]"
-                                                    onClick={() => setRoleDialogOpen(false)}
+                                                    onClick={() => setRoleDialogOpen(true)}
                                                 >
                                                     <span className="font-normal text-sm text-[#182230]">{selectedRole}</span>
                                                     <Image src="/icons/by-role-arrow-down.svg" width={20} height={20} alt="Select-role Button" />
