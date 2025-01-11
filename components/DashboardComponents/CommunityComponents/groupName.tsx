@@ -100,7 +100,7 @@ function GroupName({ communityId, isAdmin }: groupNameProps) {
 
 
   return (
-    <div className='flex flex-row items-center justify-between min-h-[72px] border-b border-lightGrey py-[12px]'>
+    <div className='flex flex-row items-center justify-between min-h-[72px] border-b border-lightGrey'>
       <div className='flex items-center justify-center w-full'>
         {isMuted && (
           <Image className={`{isMuted ? 'flex : 'none'}`} src='/icons/notification-off-02.svg' alt="Muted" width={16} height={16} />
@@ -131,8 +131,8 @@ function GroupName({ communityId, isAdmin }: groupNameProps) {
 
               <div className='flex-1 flex items-center justify-between'>
                 <div className="flex flex-col">
-                  <div className='font-semibold'>
-                    <h4>{groupData?.communityName || <Skeleton width={80} height={20} />}</h4>
+                  <div className='font-semibold w-32'>
+                    <h4 className="truncate">{groupData?.communityName || <Skeleton width={80} height={20} />}</h4>
                   </div>
                   {loading ? (
                     <Skeleton width={60} height={18} />

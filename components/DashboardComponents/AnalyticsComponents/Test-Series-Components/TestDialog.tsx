@@ -56,7 +56,7 @@ function TestDialog({ open, onClose, forallsubject = false }: TestDialogprops) {
                             <table className="w-full rounded-md text-left bg-white border border-lightGrey">
                                 <thead className="border border-lightGrey rounded-md  sticky top-0 bg-white z-10">
                                     <tr>
-                                        <th className="px-4 py-2 text-[#667085] font-medium text-sm">
+                                        <th className="px-4 py-2 text-[#667085] font-medium text-sm rounded-tl-xl">
                                             Attempts
                                         </th>
                                         <th className="px-4 py-2 text-[#667085] font-medium text-sm">
