@@ -131,7 +131,7 @@ function GroupName({ communityId, isAdmin }: groupNameProps) {
 
               <div className='flex-1 flex items-center justify-between'>
                 <div className="flex flex-col">
-                  <div className='font-semibold w-28'>
+                  <div className='font-semibold w-32'>
                     <h4 className="truncate">{groupData?.communityName || <Skeleton width={80} height={20} />}</h4>
                   </div>
                   {loading ? (
