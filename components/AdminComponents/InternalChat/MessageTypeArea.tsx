@@ -234,7 +234,7 @@ function MessageTypeArea({
       setSelectedFile(null);
       setMentions([]); // Clear mentions
       setShowReplyLayout(false);
-      setHeight('32px');
+      setHeight('33px');
     } catch (error) {
       console.error("Error sending message:", error);
     }
@@ -284,6 +284,14 @@ function MessageTypeArea({
       handleMediaUpload(file, type);
     }
   };
+   const handleKeyDown = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
+        if (event.key === 'Enter' && !event.shiftKey) {
+          event.preventDefault(); // Prevent the default "new line" behavior
+          if (text.trim() || fileUrl) {
+            handleSend(); // Call your send message function
+          }
+        }
+      };
   
   return (
     <div className="flex flex-col bg-white h-auto px-4 py-4">
@@ -402,15 +410,16 @@ function MessageTypeArea({
       <div className='flex flex-row'>
         <div className={`flex flex-row rounded-md w-full h-auto bg-[#FCFCFD] py-[6px] ${isFocused ? 'border border-[#D6BBFB]' : 'border border-[#D0D5DD]'}`}>
           <textarea
-          ref={textareaRef}
-            value={text}
-            onChange={handleInput}
-            onFocus={handleFocus}
-            onBlur={handleBlur}
-            className="w-full max-h-[120px] bg-[#FCFCFD] overflow-y-auto resize-none px-3 rounded-md outline-none font-normal text-sm leading-tight pt-[5px]"
-            style={{ height: height }}
-            placeholder={"Type your message here..."}
-          />
+                          ref={textareaRef}
+                          value={text}
+                          onChange={handleInput}
+                          onKeyDown={handleKeyDown} // Add this line
+                          onFocus={handleFocus}
+                          onBlur={handleBlur}
+                          className="w-full max-h-[120px] bg-[#FCFCFD] overflow-y-auto resize-none px-3 rounded-md outline-none font-normal text-sm leading-tight pt-[5px]"
+                          style={{ height: height }}
+                          placeholder={"Type your message here..."}
+                        />
           <div className='flex flex-row gap-[12px] mr-4 ml-1 items-end mb-2'>
             <Popover className='mb-2' placement="bottom-end">
               <PopoverTrigger>
