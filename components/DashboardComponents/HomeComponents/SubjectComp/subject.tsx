@@ -1,7 +1,10 @@
 "use client";
 import Image from 'next/image';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import BottomSheet from '@/components/DashboardComponents/HomeComponents/SubjectComp/bottomUpSheet';
+import { collection, getDocs } from 'firebase/firestore';
+import { db } from '@/firebase';
+import LoadingData from '@/components/Loading';
 
 interface CircularProgressProps {
     percentage: number;
@@ -33,70 +36,210 @@ const CircularProgress: React.FC<CircularProgressProps> = ({ percentage }) => {
 };
 
 const SubjectLayout: React.FC = () => {
-    const subjectsData = [
-        { name: 'Overall', numerator: 98, denominator: 98, icon: '/icons/overall.svg' },
-        { name: 'Physics', numerator: 0, denominator: 33, icon: '/icons/physics.svg' },
-        { name: 'Chemistry', numerator: 8, denominator: 34, icon: '/icons/chemistry.svg' },
-        { name: 'Maths', numerator: 15, denominator: 31, icon: '/icons/maths.svg' },
-    ];
+    const [loading, setLoading] = useState(true);
 
-    const calculatePercentage = (numerator: number, denominator: number) => {
-        return denominator === 0 ? 0 : Math.round((numerator / denominator) * 100);
-    };
+    const [subjectCounts, setSubjectCounts] = useState({
+        physics: 0,
+        chemistry: 0,
+        maths: 0,
+        total: 0
+    });
 
 
-    const [selectedSubject, setSelectedSubject] = useState<string | null>(null);
-    const [showDrawer, setShowDrawer] = useState(false);
-    const openBottomSheet = (subjectName: string) => {
-        setSelectedSubject('Overall');
-        setShowDrawer(true);
-    };
+    useEffect(() => {
+        const fetchSubjectCounts = async () => {
+            try {
+                const sptRef = collection(db, 'spt');
+                const sptSnapshot = await getDocs(sptRef);
+                
+                let physics = 0;
+                let chemistry = 0;
+                let maths = 0;
+                let total = sptSnapshot.size;
+
+                for (const doc of sptSnapshot.docs) {
+                    const subject = doc.data().subject?.toLowerCase();
+                    if (subject === 'physics') physics++;
+                    else if (subject === 'chemistry') chemistry++;
+                    else if (subject === 'maths') maths++;
+                }
+
+                setSubjectCounts({
+                    physics,
+                    chemistry,
+                    maths,
+                    total
+                });
+            } catch (error) {
+                console.error('Error fetching subject counts:', error);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchSubjectCounts();
+    }, []);
+
+    if(loading){
+        return <LoadingData />
+    }
+
+    // const [selectedSubject, setSelectedSubject] = useState<string | null>(null);
+    // const [showDrawer, setShowDrawer] = useState(false);
+    // const openBottomSheet = (subjectName: string) => {
+    //     setSelectedSubject('Overall');
+    //     setShowDrawer(true);
+    // };
+
 
     return (
         <div className="grid grid-cols-2 gap-5 p-6 w-full">
-            {subjectsData.map((subject,index) => {
+            {/* {subjectsData.map((subject,index) => {
                 const percentage = calculatePercentage(subject.numerator, subject.denominator);
                 const isComplete = percentage === 100;
 
-                return (
+                return ( */}
+                    
                     <button
-                        onClick={() => openBottomSheet(subject.name)}
-                        key={index}
-                        className={`border border-gray-200 rounded-lg px-6 py-2 flex items-center justify-between transition-transform duration-300 ease-in-out hover:border-[#7400E03D] hover:shadow-lg hover:scale-105 ${isComplete ? 'bg-[#F9FAFB] hover:border-gray-200' : 'bg-white hover:border-[#7400E03D] '  // Conditional background color
-                            }`}
+                        // onClick={() => openBottomSheet(subject.name)}
+                        // key={index}
+                        className={`border border-gray-200 rounded-lg px-6 py-2 flex items-center justify-between transition-transform duration-300 ease-in-out hover:border-[#7400E03D] hover:shadow-lg hover:scale-105 
+                           `}
+                        //    ${isComplete ? 'bg-[#F9FAFB] hover:border-gray-200' : 'bg-white hover:border-[#7400E03D] '  }
                     >
                         <div className="pt-2">
                             <div className="flex items-center flex-row gap-[6px]">
                                 <Image
-                                    src={subject.icon}
-                                    alt={`${subject.name}-icon`}
+                                    src={`/icons/overall.svg`}
+                                    alt={`Overall-icon`}
                                     width={16}
                                     height={16}
                                 />
-                                <div className="text-[#667085] text-xs font-semibold ">{subject.name}</div>
+                                <div className="text-[#667085] text-xs font-semibold ">Overall</div>
 
-                                {isComplete && (
+                                {/* {isComplete && (
                                     <Image
                                         src="/icons/right-mark.svg"
                                         alt="right-mark"
                                         width={16}
                                         height={16}
                                     />
-                                )}
+                                )} */}
                             </div>
                             <div className="flex items-center leading-none mt-2">
-                                <span className="text-3xl font-semibold text-[#1D2939]">{subject.numerator}</span>
-                                <span className="text-base text-[#1D2939] ml-1 font-semibold">/{subject.denominator}</span>
+                                <span className="text-3xl font-semibold text-[#1D2939]">0</span>
+                                <span className="text-base text-[#1D2939] ml-1 font-semibold mt-1">/{subjectCounts.total}</span>
                             </div>
                         </div>
                         <div className="relative w-16 h-16">
-                            <CircularProgress percentage={percentage} />
+                            <CircularProgress percentage={0} />
                         </div>
                     </button>
-                );
-            })}
+                    <button
+                        // onClick={() => openBottomSheet(subject.name)}
+                        // key={index}
+                        className={`border border-gray-200 rounded-lg px-6 py-2 flex items-center justify-between transition-transform duration-300 ease-in-out hover:border-[#7400E03D] hover:shadow-lg hover:scale-105 
+                           `}
+                        //    ${isComplete ? 'bg-[#F9FAFB] hover:border-gray-200' : 'bg-white hover:border-[#7400E03D] '  }
+                    >
+                        <div className="pt-2">
+                            <div className="flex items-center flex-row gap-[6px]">
+                                <Image
+                                    src={`/icons/physics.svg`}
+                                    alt={`Physics-icon`}
+                                    width={16}
+                                    height={16}
+                                />
+                                <div className="text-[#667085] text-xs font-semibold ">Physics</div>
 
-            <BottomSheet isOpen={showDrawer} closeModal={() => setShowDrawer(!showDrawer)} subjectName={selectedSubject} />
+                                {/* {isComplete && (
+                                    <Image
+                                        src="/icons/right-mark.svg"
+                                        alt="right-mark"
+                                        width={16}
+                                        height={16}
+                                    />
+                                )} */}
+                            </div>
+                            <div className="flex items-center leading-none mt-2">
+                                <span className="text-3xl font-semibold text-[#1D2939]">0</span>
+                                <span className="text-base text-[#1D2939] ml-1 font-semibold mt-1">/{subjectCounts.physics}</span>
+                            </div>
+                        </div>
+                        <div className="relative w-16 h-16">
+                            <CircularProgress percentage={0} />
+                        </div>
+                    </button> <button
+                        // onClick={() => openBottomSheet(subject.name)}
+                        // key={index}
+                        className={`border border-gray-200 rounded-lg px-6 py-2 flex items-center justify-between transition-transform duration-300 ease-in-out hover:border-[#7400E03D] hover:shadow-lg hover:scale-105 
+                           `}
+                        //    ${isComplete ? 'bg-[#F9FAFB] hover:border-gray-200' : 'bg-white hover:border-[#7400E03D] '  }
+                    >
+                        <div className="pt-2">
+                            <div className="flex items-center flex-row gap-[6px]">
+                                <Image
+                                    src={`/icons/chemistry.svg`}
+                                    alt={`Chemistry-icon`}
+                                    width={16}
+                                    height={16}
+                                />
+                                <div className="text-[#667085] text-xs font-semibold ">Chemistry</div>
+
+                                {/* {isComplete && (
+                                    <Image
+                                        src="/icons/right-mark.svg"
+                                        alt="right-mark"
+                                        width={16}
+                                        height={16}
+                                    />
+                                )} */}
+                            </div>
+                            <div className="flex items-center leading-none mt-2">
+                                <span className="text-3xl font-semibold text-[#1D2939]"></span>
+                                <span className="text-base text-[#1D2939] ml-1 font-semibold">/{subjectCounts.chemistry}</span>
+                            </div>
+                        </div>
+                        <div className="relative w-16 h-16">
+                            <CircularProgress percentage={0} />
+                        </div>
+                    </button> <button
+                        // onClick={() => openBottomSheet(subject.name)}
+                        // key={index}
+                        className={`border border-gray-200 rounded-lg px-6 py-2 flex items-center justify-between transition-transform duration-300 ease-in-out hover:border-[#7400E03D] hover:shadow-lg hover:scale-105 
+                           `}
+                        //    ${isComplete ? 'bg-[#F9FAFB] hover:border-gray-200' : 'bg-white hover:border-[#7400E03D] '  }
+                    >
+                        <div className="pt-2">
+                            <div className="flex items-center flex-row gap-[6px]">
+                                <Image
+                                    src={`/icons/maths.svg`}
+                                    alt={`Maths-icon`}
+                                    width={16}
+                                    height={16}
+                                />
+                                <div className="text-[#667085] text-xs font-semibold ">Maths</div>
+
+                                {/* {isComplete && (
+                                    <Image
+                                        src="/icons/right-mark.svg"
+                                        alt="right-mark"
+                                        width={16}
+                                        height={16}
+                                    />
+                                )} */}
+                            </div>
+                            <div className="flex items-center leading-none mt-2">
+                                <span className="text-3xl font-semibold text-[#1D2939]"></span>
+                                <span className="text-base text-[#1D2939] ml-1 font-semibold">/{subjectCounts.maths}</span>
+                            </div>
+                        </div>
+                        <div className="relative w-16 h-16">
+                            <CircularProgress percentage={0} />
+                        </div>
+                    </button>
+            
+            {/* <BottomSheet isOpen={showDrawer} closeModal={() => setShowDrawer(!showDrawer)} subjectName={selectedSubject} /> */}
 
         </div>
     );

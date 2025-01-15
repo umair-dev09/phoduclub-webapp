@@ -160,7 +160,7 @@ function CoursesComp() {
     }
   
     return (
-        <div className="space-y-6 px-6 w-full mt-2 ">   
+        <div className="space-y-6 px-6 w-full mt-3">   
          {courses.map((course, index) => (         
                     <div key={index} className="flex flex-col border-b border-gray-200 pb-6">
                         <div className="flex items-center justify-between">

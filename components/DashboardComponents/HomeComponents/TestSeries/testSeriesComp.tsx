@@ -151,7 +151,7 @@ function TestSeriesComp() {
     return (
         <div>
                         {tests.map((test, index) => (
-                    <div key={index} className="flex flex-col mt-6 mx-6">
+                    <div key={index} className="flex flex-col mt-3 mx-6">
                         <div className="flex justify-between items-center">
                             <div className="flex items-center">
                                 <h3 className="font-semibold text-lg">{test.testName}</h3>

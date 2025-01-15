@@ -44,24 +44,27 @@ function Chemisty() {
       useEffect(() => {
         const sptCollection = collection(db, 'spt');
         const unsubscribe = onSnapshot(sptCollection, (snapshot) => {
-            const updatedSubjects: Subject[] = snapshot.docs.map((doc) => {
-                const subjectData = doc.data();
-                return {
-                    chapterId: subjectData.chapterId,
-                    chapterName: subjectData.chapterName,
-                    priority: subjectData.priority,
-                    subject: subjectData.subject,
-                } as Subject;
-            });
-
+            const updatedSubjects: Subject[] = snapshot.docs
+                .map((doc) => {
+                    const subjectData = doc.data();
+                    return {
+                        chapterId: subjectData.chapterId,
+                        chapterName: subjectData.chapterName,
+                        priority: subjectData.priority,
+                        subject: subjectData.subject,
+                    } as Subject;
+                })
+                .filter((subject) => subject.subject === 'chemistry'); // Filter only Chemistry subjects
+    
             setSubjects(updatedSubjects);
             setData(updatedSubjects); // Update data for pagination and search
             setLoading(false);
         });
-
+    
         // Cleanup listener on component unmount
         return () => unsubscribe();
     }, []);
+    
 
     const lastItemIndex = currentPage * itemsPerPage;
     const firstItemIndex = lastItemIndex - itemsPerPage;
@@ -195,7 +198,8 @@ function Chemisty() {
                                                                         e.stopPropagation(); // Prevent propagation to other elements
                                                                         setIsdelete(true); // Trigger delete action
                                                                         setActivePopover(null);
-
+                                                                        setChapterId(subject.chapterId);
+                                                                        setChapterName(subject.chapterName);
                                                                     }}
                                                                 >
                                                                     <Image src="/icons/delete.svg" alt="edit" width={18} height={18} />
@@ -251,7 +255,7 @@ function Chemisty() {
                 />
             )}
             {isdelete && (
-                <DeleteDialog open={isdelete} onClose={() => setIsdelete(false)} />
+                <DeleteDialog open={isdelete} onClose={() => setIsdelete(false)} chapterId={chapterId} chapterName={chapterName}/>
             )}
         </div>
     )

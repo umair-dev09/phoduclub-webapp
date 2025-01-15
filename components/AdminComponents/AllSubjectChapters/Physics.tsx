@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
 import Addchapterdialog from "./AddchapterDialog";
 import {
@@ -14,53 +14,60 @@ import { Popover, PopoverContent, PopoverTrigger } from "@nextui-org/popover";
 import SubjectPriority from './SubjectPriority';
 import LoadingData from '@/components/Loading';
 import DeleteDialog from './DeleteDialog';
+import { collection, onSnapshot } from 'firebase/firestore';
+import { db } from '@/firebase';
 
 // Define types for subjects data
 type Subject = {
-    title: string;
+    chapterName: string;
     priority: 'Low' | 'Medium' | 'High';
+    subject: string;
+    chapterId: string;
 }
 
-// Mock fetchSubjects function with types
-const fetchSubjects = async (): Promise<Subject[]> => {
-    const allSubjects: Subject[] = [
-        { title: 'Kinematics', priority: 'Medium' },
-        { title: 'Laws of Motion', priority: 'High' },
-        { title: 'Work, Energy, and Power', priority: 'Low' },
-        { title: 'Rotational Motion', priority: 'Medium' },
-        { title: 'Gravitation', priority: 'Low' },
-        { title: 'Thermodynamics', priority: 'High' },
-        { title: 'Waves and Oscillations', priority: 'Medium' },
-    ];
-    return allSubjects;
-};
 
 function Physics() {
     const [addchapterdialog, setAddchapterdialog] = useState(false);
-    const [iseditopen, setIseditopen] = useState(false)
+    const [isdelete, setIsdelete] = useState(false);
     const [loading, setLoading] = useState(true);
     const [data, setData] = useState<Subject[]>([]);
     const [subjects, setSubjects] = useState<Subject[]>([]);
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage] = useState(10);
     const [searchTerm, setSearchTerm] = useState('');
-    const [isdelete, setIsdelete] = useState(false);
+    const [activePopover, setActivePopover] = useState<number | null>(null);
+    const [chapterName, setChapterName] = useState('');
+    const [priority, setPriority] = useState('');
+    const [chapterId, setChapterId] = useState('');
+
+      // Real-time listener to fetch users and update state when data changes
+      useEffect(() => {
+        const sptCollection = collection(db, 'spt');
+        const unsubscribe = onSnapshot(sptCollection, (snapshot) => {
+            const updatedSubjects: Subject[] = snapshot.docs.map((doc) => {
+                const subjectData = doc.data();
+                return {
+                    chapterId: subjectData.chapterId,
+                    chapterName: subjectData.chapterName,
+                    priority: subjectData.priority,
+                    subject: subjectData.subject,
+                } as Subject;
+            })
+            .filter((subject) => subject.subject === 'physics'); // Filter only Chemistry subjects
+
+
+            setSubjects(updatedSubjects);
+            setData(updatedSubjects); // Update data for pagination and search
+            setLoading(false);
+        });
+
+        // Cleanup listener on component unmount
+        return () => unsubscribe();
+    }, []);
+
     const lastItemIndex = currentPage * itemsPerPage;
     const firstItemIndex = lastItemIndex - itemsPerPage;
     const currentItems = data.slice(firstItemIndex, lastItemIndex);
-    const [activePopover, setActivePopover] = useState<number | null>(null);
-
-    // Fetch subjects when component mounts
-    useEffect(() => {
-        const loadSubjects = async () => {
-            setLoading(true);
-            const subjects = await fetchSubjects();
-            setSubjects(subjects);
-            setData(subjects);
-            setLoading(false);
-        };
-        loadSubjects();
-    }, []);
 
     useEffect(() => {
         let filteredTests = subjects;
@@ -68,7 +75,7 @@ function Physics() {
         // Filter by search term
         if (searchTerm) {
             filteredTests = filteredTests.filter(subject =>
-                subject.title.toLowerCase().includes(searchTerm.toLowerCase())
+                subject.chapterName.toLowerCase().includes(searchTerm.toLowerCase())
             );
         }
 
@@ -80,6 +87,8 @@ function Physics() {
     const handlePopoverOpen = (index: number) => {
         setActivePopover(index);
     };
+
+
     return (
         <div className="flex flex-col w-full gap-4 ">
             <div className="flex flex-row justify-between items-center">
@@ -88,7 +97,7 @@ function Physics() {
                 </h2>
                 <div className="flex flex-row gap-3">
                     {/* Search Button */}
-                    <button className="h-[44px] w-[250px] rounded-md bg-[#FFFFFF] border border-gray-300 focus:outline focus:outline-[1.5px] focus:outline-[#D6BBFB] hover:outline hover:outline-[1.5px] hover:outline-[#D6BBFB] focus-within:border-[#D7BBFC] focus-within:ring-4 focus-within:ring-[#E8DEFB] focus-within:outline-none transition-colors flex items-center">
+                    <button className="h-[44px] w-[250px] rounded-md bg-[#FFFFFF] border border-gray-300 focus:outline focus:outline-[1.5px] focus:outline-[#D6BBFB] hover:outline hover:outline-[1.5px] hover:outline-[#D6BBFB] focus-within:border-[#D7BBFC] focus-within:ring-4 focus-within:ring-[#E8DEFB] focus-within:outline-none transition-colorsflex items-center">
                         <div className="flex flex-row items-center gap-2 pl-2">
                             <Image
                                 src="/icons/search-button.svg"
@@ -107,8 +116,10 @@ function Physics() {
                     </button>
                     <button className=' w-[168px] h-11 flex items-center justify-center  rounded-md flex-row gap-2 shadow-inner-button bg-[#9012FF] border border-[#800EE2] border-solid hover:bg-[#6D0DCC] '
                         onClick={() => {
-                            setAddchapterdialog(true);
-                            setIseditopen(false);
+                            setAddchapterdialog(true); // Open the dialog
+                            setChapterName('');
+                            setPriority('');
+                            setChapterId('');
                         }}>
                         <Image
                             src="/icons/plus-white-sign.svg"
@@ -141,7 +152,7 @@ function Physics() {
                                         currentItems.map((subject, index) => (
                                             <tr key={index} className="border-t border-solid border-[#EAECF0]">
                                                 <td>
-                                                    <p className="px-8 text-start text-sm text-[#1D2939] font-normal leading-6 whitespace-nowrap">{subject.title}</p>
+                                                    <p className="px-8 text-start text-sm text-[#1D2939] font-normal leading-6 whitespace-nowrap">{subject.chapterName}</p>
                                                 </td>
                                                 <td className="px-8 py-4 text-center text-[#101828] text-sm">
                                                     <span className='flex justify-start rounded-full'>
@@ -149,15 +160,13 @@ function Physics() {
                                                     </span>
                                                 </td>
                                                 <td className="text-right px-8 py-4 text-[#101828] text-sm">
-                                                    <Popover
-                                                        placement='bottom-end'
+                                                    <Popover placement="bottom-end"
                                                         isOpen={activePopover === index}
                                                         onOpenChange={(open) => open ? handlePopoverOpen(index) : setActivePopover(null)}
                                                     >
                                                         <PopoverTrigger>
-                                                            <button
-                                                                type='button'
-                                                                className="ml-[60%] p-1 rounded-full outline-none transition-colors duration-150 hover:bg-[#F2F4F7]"
+                                                            <button type='button' className="ml-[60%] p-1 rounded-full outline-none transition-colors duration-150 hover:bg-[#F2F4F7]"
+
                                                             >
                                                                 <Image
                                                                     src="/icons/three-dots.svg"
@@ -172,27 +181,33 @@ function Physics() {
                                                                 <button
                                                                     className='flex flex-row items-center w-full px-4 py-[10px] gap-1 transition-colors duration-150 hover:bg-[#F2F4F7]'
                                                                     onClick={() => {
-                                                                        setIseditopen(true);
-                                                                        setAddchapterdialog(true);
+                                                                        setAddchapterdialog(true); // Open the dialog
                                                                         setActivePopover(null);
+                                                                        setChapterId(subject.chapterId);
+                                                                        setChapterName(subject.chapterName);
+                                                                        setPriority(subject.priority);
                                                                     }}
                                                                 >
                                                                     <Image src='/icons/edit-02.svg' alt='edit' width={18} height={18} />
                                                                     <p className='text-sm text-[#0C111D] font-normal leading-5'>Edit</p>
                                                                 </button>
                                                                 <button
-                                                                    className='flex flex-row items-center w-full px-4 py-[10px] gap-1 transition-colors duration-150 hover:bg-[#FEE4E2]'
-                                                                    onClick={() => {
-                                                                        setIsdelete(true);
+                                                                    className="flex flex-row items-center w-full px-4 py-[10px] gap-1 transition-colors duration-150 hover:bg-[#FEE4E2]"
+                                                                    onClick={(e) => {
+                                                                        e.stopPropagation(); // Prevent propagation to other elements
+                                                                        setIsdelete(true); // Trigger delete action
                                                                         setActivePopover(null);
+                                                                        setChapterId(subject.chapterId);
+                                                                        setChapterName(subject.chapterName);
                                                                     }}
                                                                 >
-                                                                    <Image src='/icons/delete.svg' alt='edit' width={18} height={18} />
-                                                                    <p className='text-sm text-[#DE3024] font-normal leading-5'>Delete</p>
+                                                                    <Image src="/icons/delete.svg" alt="edit" width={18} height={18} />
+                                                                    <p className="text-sm text-[#DE3024] font-normal leading-5">Delete</p>
                                                                 </button>
                                                             </div>
                                                         </PopoverContent>
                                                     </Popover>
+
                                                 </td>
                                             </tr>
                                         ))
@@ -223,9 +238,23 @@ function Physics() {
                     </div>
                 </div>
             )}
-            {addchapterdialog && <Addchapterdialog open={addchapterdialog} iseditopen={iseditopen} onClose={() => setAddchapterdialog(false)} />}
+            {addchapterdialog && (
+                <Addchapterdialog
+                    open={addchapterdialog}
+                    onClose={() => {
+                        setAddchapterdialog(false);
+                        setIsdelete(false);
+                    }}
+                    subject='physics'
+                    chapterName={chapterName}
+                    setChapterName={setChapterName}
+                    priority={priority}
+                    setPriority={setPriority}
+                    chapterId={chapterId}
+                />
+            )}
             {isdelete && (
-                <DeleteDialog open={isdelete} onClose={() => setIsdelete(false)} />
+                <DeleteDialog open={isdelete} onClose={() => setIsdelete(false)} chapterId={chapterId} chapterName={chapterName}/>
             )}
         </div>
     )

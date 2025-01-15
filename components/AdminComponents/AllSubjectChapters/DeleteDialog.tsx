@@ -1,15 +1,32 @@
+import { db } from "@/firebase";
 import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button } from "@nextui-org/react";
+import { deleteDoc, doc } from "firebase/firestore";
 import Image from "next/image";
 import { useState } from "react";
+import { toast } from "react-toastify";
 
 interface Deleteprops {
     open: boolean;
     onClose: () => void;
+    chapterId: string;
+    chapterName: string;
 }
 
-function DeleteChapter({ open, onClose }: Deleteprops) {
+function DeleteChapter({ open, onClose, chapterId, chapterName }: Deleteprops) {
     const [confirmedName, setConfirmedName] = useState('');
-    const isFormValid = confirmedName;
+    const isFormValid = chapterName === confirmedName;
+
+    const handleDeleteChapter = async () => {
+        try {
+            await deleteDoc(doc(db, 'spt', chapterId));
+            toast.success('Chapter Removed Successfully!');
+            onClose();
+        } catch (error) {
+            console.error('Error removing chapter from Firestore:', error);
+            toast.error('Failed to remove chapter. Please try again.');
+        }
+    };
+   
     return (
         <Modal
             isOpen={open}
@@ -37,8 +54,8 @@ function DeleteChapter({ open, onClose }: Deleteprops) {
                                     <input
                                         className="font-normal text-[#667085] w-full text-sm placeholder:text-[#A1A1A1] rounded-md px-1 py-1 focus:outline-none focus:ring-0 border-none"
                                         type="text"
-                                        placeholder="Chapter Name"
-                                        value={confirmedName}
+                                        placeholder={chapterName}
+                                       value={confirmedName}
                                         onChange={(e) => setConfirmedName(e.target.value)}
                                     />
                                 </div>
@@ -50,10 +67,8 @@ function DeleteChapter({ open, onClose }: Deleteprops) {
                         <Button variant="light" className=" font-semibold  border border-lightGrey" onPress={onClose}>
                             Cancel
                         </Button>
-                        <Button onPress={() => {
-                            // Add delete action logic here
-                            onClose(); // Close dialog after delete
-                        }}
+                        <Button onClick={handleDeleteChapter}
+                        disabled={!isFormValid}
                             className={` font-semibold text-[#FFFFFF]  ${!isFormValid ? "bg-[#f3b7b3] cursor-not-allowed" : "hover:bg-[#B0201A] bg-[#BB241A]"} rounded-md`}>
                             Delete
                         </Button>
