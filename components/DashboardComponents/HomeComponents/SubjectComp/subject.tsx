@@ -5,6 +5,8 @@ import BottomSheet from '@/components/DashboardComponents/HomeComponents/Subject
 import { collection, getDocs } from 'firebase/firestore';
 import { db } from '@/firebase';
 import LoadingData from '@/components/Loading';
+import MessageLoading from '@/components/MessageLoading';
+import { ToastContainer } from 'react-toastify';
 
 interface CircularProgressProps {
     percentage: number;
@@ -37,7 +39,9 @@ const CircularProgress: React.FC<CircularProgressProps> = ({ percentage }) => {
 
 const SubjectLayout: React.FC = () => {
     const [loading, setLoading] = useState(true);
-
+    const [selectedSubject, setSelectedSubject] = useState<string | null>(null);
+    const [showDrawer, setShowDrawer] = useState(false);
+   
     const [subjectCounts, setSubjectCounts] = useState({
         physics: 0,
         chemistry: 0,
@@ -81,15 +85,13 @@ const SubjectLayout: React.FC = () => {
     }, []);
 
     if(loading){
-        return <LoadingData />
+        return <MessageLoading />
     }
-
-    // const [selectedSubject, setSelectedSubject] = useState<string | null>(null);
-    // const [showDrawer, setShowDrawer] = useState(false);
-    // const openBottomSheet = (subjectName: string) => {
-    //     setSelectedSubject('Overall');
-    //     setShowDrawer(true);
-    // };
+    const openBottomSheet = (subjectName: string) => {
+        setSelectedSubject(subjectName);
+        setShowDrawer(true);
+    };
+  
 
 
     return (
@@ -101,8 +103,7 @@ const SubjectLayout: React.FC = () => {
                 return ( */}
                     
                     <button
-                        // onClick={() => openBottomSheet(subject.name)}
-                        // key={index}
+                        onClick={() => openBottomSheet('overall')}
                         className={`border border-gray-200 rounded-lg px-6 py-2 flex items-center justify-between transition-transform duration-300 ease-in-out hover:border-[#7400E03D] hover:shadow-lg hover:scale-105 
                            `}
                         //    ${isComplete ? 'bg-[#F9FAFB] hover:border-gray-200' : 'bg-white hover:border-[#7400E03D] '  }
@@ -136,8 +137,7 @@ const SubjectLayout: React.FC = () => {
                         </div>
                     </button>
                     <button
-                        // onClick={() => openBottomSheet(subject.name)}
-                        // key={index}
+                        onClick={() => openBottomSheet('physics')}
                         className={`border border-gray-200 rounded-lg px-6 py-2 flex items-center justify-between transition-transform duration-300 ease-in-out hover:border-[#7400E03D] hover:shadow-lg hover:scale-105 
                            `}
                         //    ${isComplete ? 'bg-[#F9FAFB] hover:border-gray-200' : 'bg-white hover:border-[#7400E03D] '  }
@@ -170,8 +170,7 @@ const SubjectLayout: React.FC = () => {
                             <CircularProgress percentage={0} />
                         </div>
                     </button> <button
-                        // onClick={() => openBottomSheet(subject.name)}
-                        // key={index}
+                        onClick={() => openBottomSheet('chemistry')}
                         className={`border border-gray-200 rounded-lg px-6 py-2 flex items-center justify-between transition-transform duration-300 ease-in-out hover:border-[#7400E03D] hover:shadow-lg hover:scale-105 
                            `}
                         //    ${isComplete ? 'bg-[#F9FAFB] hover:border-gray-200' : 'bg-white hover:border-[#7400E03D] '  }
@@ -196,16 +195,16 @@ const SubjectLayout: React.FC = () => {
                                 )} */}
                             </div>
                             <div className="flex items-center leading-none mt-2">
-                                <span className="text-3xl font-semibold text-[#1D2939]"></span>
-                                <span className="text-base text-[#1D2939] ml-1 font-semibold">/{subjectCounts.chemistry}</span>
+                                <span className="text-3xl font-semibold text-[#1D2939]">0</span>
+                                <span className="text-base text-[#1D2939] ml-1 font-semibold mt-1">/{subjectCounts.chemistry}</span>
                             </div>
                         </div>
                         <div className="relative w-16 h-16">
                             <CircularProgress percentage={0} />
                         </div>
-                    </button> <button
-                        // onClick={() => openBottomSheet(subject.name)}
-                        // key={index}
+                    </button> 
+                    <button
+                        onClick={() => openBottomSheet('maths')}
                         className={`border border-gray-200 rounded-lg px-6 py-2 flex items-center justify-between transition-transform duration-300 ease-in-out hover:border-[#7400E03D] hover:shadow-lg hover:scale-105 
                            `}
                         //    ${isComplete ? 'bg-[#F9FAFB] hover:border-gray-200' : 'bg-white hover:border-[#7400E03D] '  }
@@ -230,8 +229,8 @@ const SubjectLayout: React.FC = () => {
                                 )} */}
                             </div>
                             <div className="flex items-center leading-none mt-2">
-                                <span className="text-3xl font-semibold text-[#1D2939]"></span>
-                                <span className="text-base text-[#1D2939] ml-1 font-semibold">/{subjectCounts.maths}</span>
+                                <span className="text-3xl font-semibold text-[#1D2939]">0</span>
+                                <span className="text-base text-[#1D2939] ml-1 font-semibold mt-1">/{subjectCounts.maths}</span>
                             </div>
                         </div>
                         <div className="relative w-16 h-16">
@@ -239,8 +238,8 @@ const SubjectLayout: React.FC = () => {
                         </div>
                     </button>
             
-            {/* <BottomSheet isOpen={showDrawer} closeModal={() => setShowDrawer(!showDrawer)} subjectName={selectedSubject} /> */}
-
+           {showDrawer && <BottomSheet isOpen={showDrawer} closeModal={() => setShowDrawer(!showDrawer)} subjectName={selectedSubject} />} 
+           <ToastContainer/>
         </div>
     );
 };
