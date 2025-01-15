@@ -42,7 +42,7 @@ function timeLeft(dateString: string) {
   const differenceInDays = Math.floor(differenceInTime / (1000 * 3600 * 24));
 
   // Return the result
-  return differenceInDays > 0 ? `${differenceInDays} days left` : 'Ended';
+  return differenceInDays > 0 ? `${differenceInDays} days left` : 'Ended';     
 }
 
 

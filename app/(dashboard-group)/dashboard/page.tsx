@@ -2,8 +2,6 @@
 
 import Announcement from '@/components/DashboardComponents/HomeComponents/Announcement/Announcement';
 import Subject from '@/components/DashboardComponents/HomeComponents/SubjectComp/subject';
-import TestSeries from '@/components/DashboardComponents/HomeComponents/TestSeries/Testseries';
-import Course from '@/components/DashboardComponents/HomeComponents/Course/Course';
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { onAuthStateChanged } from "firebase/auth";
@@ -12,6 +10,8 @@ import { auth, db } from "@/firebase";
 import router from "next/router";
 import Image from "next/image";
 import { collection, onSnapshot, orderBy, query } from 'firebase/firestore';
+import CoursesComp from '@/components/DashboardComponents/HomeComponents/Course/coursesComp';
+import TestSeriesComp from '@/components/DashboardComponents/HomeComponents/TestSeries/testSeriesComp';
 
 interface NotificationData {
      name: string;
@@ -71,19 +71,6 @@ export default function DashboardPage() {
 
      return (
           <div className='relative flex flex-col w-full h-auto'>
-               {/* {showNoti && (
-                    <div className='flex flex-row bg-[#FEDAAA] h-auto w-full py-3 px-4 items-center justify-between'>
-                         {notification.length > 0 && (
-                              <div key={notification[0].notificationId} className='flex flex-row flex-1 items-center justify-center'>
-                                   <Image className='w-5 h-5 mr-[6px]' src={notification[0]?.notificationIcon} width={24} height={24} alt='icon' />
-                                   <h3 className='text-sm font-bold'>{notification[0]?.name}: </h3>
-                                   <h3 className='text-sm font-normal ml-1'>{notification[0]?.description}</h3>
-                                   <button className='ml-3 h-[36px] w-auto px-3 text-[13px] font-semibold border bg-white border-[#cccccc] rounded-md'>{notification[0]?.cta}</button>
-                              </div>
-                         )}
-                         <button onClick={() => setShowNoti(false)}><Image className='w-5 h-5 mr-[6px] ' src='/icons/cancel.svg' width={24} height={24} alt='icon' /></button>
-                    </div>
-               )} */}
                <div className=" flex flex-col  flex-1 h-auto overflow-y-auto  px-6 py-6">
                     <div className="flex flex-row w-full gap-4">
                          <div className="flex flex-col flex-1 bg-white  rounded-lg h-[327px] w-1/2 ">
@@ -104,7 +91,7 @@ export default function DashboardPage() {
                          </div>
                     </div>
                     <div className="flex flex-row   w-full mt-4 gap-4  ">
-                         <div className="flex flex-col flex-1 bg-white  rounded-lg  h-[737px] w-1/2 ">
+                         <div className="flex flex-col flex-1 bg-white  rounded-lg h-fit max-h-[730px] w-1/2 pb-4">
                               <div className="flex justify-between items-center pt-6 px-6 w-full text-[#1D2939] text-lg font-bold">
                                    <h3 className="font-bold text-lg">Test Series</h3>
                                    <button
@@ -114,11 +101,11 @@ export default function DashboardPage() {
                                    </button>
                               </div>
 
-                              <div className="flex justify-center flex-1 overflow-y-auto rounded-b-lg">
-                                   <TestSeries />
+                              <div className="flex flex-col flex-1">
+                              <TestSeriesComp />
                               </div>
                          </div>
-                         <div className="flex flex-col flex-1 bg-white rounded-lg  h-[737px] w-1/2">
+                         <div className="flex flex-col flex-1 bg-white rounded-lg h-fit  max-h-[730px] w-1/2 pb-4">
                               <div className="flex justify-between items-center pt-6 px-6 w-full text-[#1D2939] text-lg font-bold">
                                    <h3 className="font-bold text-lg">Courses</h3>
                                    <button
@@ -129,14 +116,14 @@ export default function DashboardPage() {
                               </div>
 
                               <div className="flex justify-center flex-1 overflow-y-auto rounded-b-lg">
-                                   <Course />
+                                   <CoursesComp />
                               </div>
                          </div>
                     </div>
                </div>
 
                {/* Contained Modal */}
-               <div className="absolute inset-0 flex items-center justify-center bg-black/30 backdrop-blur-xl">
+               {/* <div className="absolute inset-0 flex items-center justify-center bg-black/30 backdrop-blur-xl">
                     <div className="bg-white rounded-2xl w-[37.5rem] p-6">
                          <div className="flex flex-col">
                               <div className="flex justify-center mb-4">
@@ -165,7 +152,7 @@ export default function DashboardPage() {
                               </div>
                          </div>
                     </div>
-               </div>
+               </div> */}
           </div>
      );
 }
