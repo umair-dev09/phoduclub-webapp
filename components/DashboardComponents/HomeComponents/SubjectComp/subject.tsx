@@ -3,10 +3,11 @@ import Image from 'next/image';
 import { useEffect, useState } from 'react';
 import BottomSheet from '@/components/DashboardComponents/HomeComponents/SubjectComp/bottomUpSheet';
 import { collection, getDocs } from 'firebase/firestore';
-import { db } from '@/firebase';
+import { auth, db } from '@/firebase';
 import LoadingData from '@/components/Loading';
 import MessageLoading from '@/components/MessageLoading';
 import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 interface CircularProgressProps {
     percentage: number;
@@ -41,14 +42,19 @@ const SubjectLayout: React.FC = () => {
     const [loading, setLoading] = useState(true);
     const [selectedSubject, setSelectedSubject] = useState<string | null>(null);
     const [showDrawer, setShowDrawer] = useState(false);
-   
+    const currentUserId = auth.currentUser?.uid;
     const [subjectCounts, setSubjectCounts] = useState({
         physics: 0,
         chemistry: 0,
         maths: 0,
         total: 0
     });
-
+    const [userInSubjectCounts, setUserInSubjectCounts] = useState({
+        physics: 0,
+        chemistry: 0,
+        maths: 0,
+        total: 0
+    });
 
     useEffect(() => {
         const fetchSubjectCounts = async () => {
@@ -61,11 +67,28 @@ const SubjectLayout: React.FC = () => {
                 let maths = 0;
                 let total = sptSnapshot.size;
 
+                let userPhysics = 0;
+                let userChemistry = 0;
+                let userMaths = 0;
+                let userTotal = 0;
+
                 for (const doc of sptSnapshot.docs) {
                     const subject = doc.data().subject?.toLowerCase();
                     if (subject === 'physics') physics++;
                     else if (subject === 'chemistry') chemistry++;
                     else if (subject === 'maths') maths++;
+
+                    // Check if user exists in students subcollection
+                    const studentsRef = collection(doc.ref, 'students');
+                    const studentSnapshot = await getDocs(studentsRef);
+                    const userExists = studentSnapshot.docs.some(doc => doc.id === currentUserId);
+
+                    if (userExists) {
+                        if (subject === 'physics') userPhysics++;
+                        else if (subject === 'chemistry') userChemistry++;
+                        else if (subject === 'maths') userMaths++;
+                        userTotal++;
+                    }
                 }
 
                 setSubjectCounts({
@@ -74,6 +97,13 @@ const SubjectLayout: React.FC = () => {
                     maths,
                     total
                 });
+
+                setUserInSubjectCounts({
+                    physics: userPhysics,
+                    chemistry: userChemistry,
+                    maths: userMaths,
+                    total: userTotal
+                });
             } catch (error) {
                 console.error('Error fetching subject counts:', error);
             } finally {
@@ -81,8 +111,10 @@ const SubjectLayout: React.FC = () => {
             }
         };
 
-        fetchSubjectCounts();
-    }, []);
+        if (currentUserId) {
+            fetchSubjectCounts();
+        }
+    }, [currentUserId]);
 
     if(loading){
         return <MessageLoading />
@@ -128,7 +160,7 @@ const SubjectLayout: React.FC = () => {
                                 )} */}
                             </div>
                             <div className="flex items-center leading-none mt-2">
-                                <span className="text-3xl font-semibold text-[#1D2939]">0</span>
+                                <span className="text-3xl font-semibold text-[#1D2939]">{userInSubjectCounts.total}</span>
                                 <span className="text-base text-[#1D2939] ml-1 font-semibold mt-1">/{subjectCounts.total}</span>
                             </div>
                         </div>
@@ -162,7 +194,7 @@ const SubjectLayout: React.FC = () => {
                                 )} */}
                             </div>
                             <div className="flex items-center leading-none mt-2">
-                                <span className="text-3xl font-semibold text-[#1D2939]">0</span>
+                                <span className="text-3xl font-semibold text-[#1D2939]">{userInSubjectCounts.physics}</span>
                                 <span className="text-base text-[#1D2939] ml-1 font-semibold mt-1">/{subjectCounts.physics}</span>
                             </div>
                         </div>
@@ -195,7 +227,7 @@ const SubjectLayout: React.FC = () => {
                                 )} */}
                             </div>
                             <div className="flex items-center leading-none mt-2">
-                                <span className="text-3xl font-semibold text-[#1D2939]">0</span>
+                                <span className="text-3xl font-semibold text-[#1D2939]">{userInSubjectCounts.chemistry}</span>
                                 <span className="text-base text-[#1D2939] ml-1 font-semibold mt-1">/{subjectCounts.chemistry}</span>
                             </div>
                         </div>
@@ -229,7 +261,7 @@ const SubjectLayout: React.FC = () => {
                                 )} */}
                             </div>
                             <div className="flex items-center leading-none mt-2">
-                                <span className="text-3xl font-semibold text-[#1D2939]">0</span>
+                                <span className="text-3xl font-semibold text-[#1D2939]">{userInSubjectCounts.maths}</span>
                                 <span className="text-base text-[#1D2939] ml-1 font-semibold mt-1">/{subjectCounts.maths}</span>
                             </div>
                         </div>
