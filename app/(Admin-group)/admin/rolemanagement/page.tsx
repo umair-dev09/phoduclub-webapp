@@ -414,7 +414,6 @@ function RoleMangement() {
                     </div>
                 </div>
             )}
-            {isRemoveOpen && < Remove onClose={closeRemove} open={true} />}
             {/* Dialog Component  for AddNewUser*/}
             {isAddUser && <Addnewuser close={closeAddUser} open={true} isEditing={isEditing} profilePic={profilePic} setProfilePic={setProfilePic} firstName={firstName} setFirstName={setFirstName} lastName={lastName} setLastName={setLastName} userId={userId} setUserId={setUserId} phone={phone} setPhone={setPhone} selectedRole={selectedRole} setSelectedRole={setSelectedRole} adminIdd={adminIdd} setAdminId={setAdminIdd} />}
             <ToastContainer />

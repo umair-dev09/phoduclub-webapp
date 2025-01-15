@@ -14,29 +14,20 @@ import { Popover, PopoverContent, PopoverTrigger } from "@nextui-org/popover";
 import SubjectPriority from './SubjectPriority';
 import LoadingData from '@/components/Loading';
 import DeleteDialog from './DeleteDialog';
+import { collection, onSnapshot } from 'firebase/firestore';
+import { db } from '@/firebase';
+
 // Define types for subjects data
 type Subject = {
-    title: string;
+    chapterName: string;
     priority: 'Low' | 'Medium' | 'High';
+    subject: string;
+    chapterId: string;
 }
 
-// Mock fetchSubjects function with types
-const fetchSubjects = async (): Promise<Subject[]> => {
-    const allSubjects: Subject[] = [
-        { title: 'Atomic Structure', priority: 'Low' },
-        { title: 'Chemical Bonding and Molecular Structure', priority: 'Medium' },
-        { title: 'Thermodynamics and Thermochemistry', priority: 'High' },
-        { title: 'Equilibrium', priority: 'Low' },
-        { title: 'Electrochemistry', priority: 'Medium' },
-        { title: 'Chemical Kinetics', priority: 'High' },
-        { title: 'Surface Chemistry', priority: 'Low' },
-    ];
-    return allSubjects;
-};
 
 function Chemisty() {
     const [addchapterdialog, setAddchapterdialog] = useState(false);
-    const [iseditopen, setIseditopen] = useState(false)
     const [isdelete, setIsdelete] = useState(false);
     const [loading, setLoading] = useState(true);
     const [data, setData] = useState<Subject[]>([]);
@@ -44,22 +35,37 @@ function Chemisty() {
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage] = useState(10);
     const [searchTerm, setSearchTerm] = useState('');
+    const [activePopover, setActivePopover] = useState<number | null>(null);
+    const [chapterName, setChapterName] = useState('');
+    const [priority, setPriority] = useState('');
+    const [chapterId, setChapterId] = useState('');
+
+      // Real-time listener to fetch users and update state when data changes
+      useEffect(() => {
+        const sptCollection = collection(db, 'spt');
+        const unsubscribe = onSnapshot(sptCollection, (snapshot) => {
+            const updatedSubjects: Subject[] = snapshot.docs.map((doc) => {
+                const subjectData = doc.data();
+                return {
+                    chapterId: subjectData.chapterId,
+                    chapterName: subjectData.chapterName,
+                    priority: subjectData.priority,
+                    subject: subjectData.subject,
+                } as Subject;
+            });
+
+            setSubjects(updatedSubjects);
+            setData(updatedSubjects); // Update data for pagination and search
+            setLoading(false);
+        });
+
+        // Cleanup listener on component unmount
+        return () => unsubscribe();
+    }, []);
+
     const lastItemIndex = currentPage * itemsPerPage;
     const firstItemIndex = lastItemIndex - itemsPerPage;
     const currentItems = data.slice(firstItemIndex, lastItemIndex);
-    const [activePopover, setActivePopover] = useState<number | null>(null);
-
-    // Fetch subjects when component mounts
-    useEffect(() => {
-        const loadSubjects = async () => {
-            setLoading(true);
-            const subjects = await fetchSubjects();
-            setSubjects(subjects);
-            setData(subjects);
-            setLoading(false);
-        };
-        loadSubjects();
-    }, []);
 
     useEffect(() => {
         let filteredTests = subjects;
@@ -67,7 +73,7 @@ function Chemisty() {
         // Filter by search term
         if (searchTerm) {
             filteredTests = filteredTests.filter(subject =>
-                subject.title.toLowerCase().includes(searchTerm.toLowerCase())
+                subject.chapterName.toLowerCase().includes(searchTerm.toLowerCase())
             );
         }
 
@@ -108,8 +114,10 @@ function Chemisty() {
                     </button>
                     <button className=' w-[168px] h-11 flex items-center justify-center  rounded-md flex-row gap-2 shadow-inner-button bg-[#9012FF] border border-[#800EE2] border-solid hover:bg-[#6D0DCC] '
                         onClick={() => {
-                            setIseditopen(false); // Set to create mode
                             setAddchapterdialog(true); // Open the dialog
+                            setChapterName('');
+                            setPriority('');
+                            setChapterId('');
                         }}>
                         <Image
                             src="/icons/plus-white-sign.svg"
@@ -142,7 +150,7 @@ function Chemisty() {
                                         currentItems.map((subject, index) => (
                                             <tr key={index} className="border-t border-solid border-[#EAECF0]">
                                                 <td>
-                                                    <p className="px-8 text-start text-sm text-[#1D2939] font-normal leading-6 whitespace-nowrap">{subject.title}</p>
+                                                    <p className="px-8 text-start text-sm text-[#1D2939] font-normal leading-6 whitespace-nowrap">{subject.chapterName}</p>
                                                 </td>
                                                 <td className="px-8 py-4 text-center text-[#101828] text-sm">
                                                     <span className='flex justify-start rounded-full'>
@@ -171,9 +179,11 @@ function Chemisty() {
                                                                 <button
                                                                     className='flex flex-row items-center w-full px-4 py-[10px] gap-1 transition-colors duration-150 hover:bg-[#F2F4F7]'
                                                                     onClick={() => {
-                                                                        setIseditopen(true); // Set to edit mode
                                                                         setAddchapterdialog(true); // Open the dialog
                                                                         setActivePopover(null);
+                                                                        setChapterId(subject.chapterId);
+                                                                        setChapterName(subject.chapterName);
+                                                                        setPriority(subject.priority);
                                                                     }}
                                                                 >
                                                                     <Image src='/icons/edit-02.svg' alt='edit' width={18} height={18} />
@@ -228,12 +238,16 @@ function Chemisty() {
             {addchapterdialog && (
                 <Addchapterdialog
                     open={addchapterdialog}
-                    iseditopen={iseditopen}
                     onClose={() => {
                         setAddchapterdialog(false);
-                        setIseditopen(false);
                         setIsdelete(false);
                     }}
+                    subject='chemistry'
+                    chapterName={chapterName}
+                    setChapterName={setChapterName}
+                    priority={priority}
+                    setPriority={setPriority}
+                    chapterId={chapterId}
                 />
             )}
             {isdelete && (

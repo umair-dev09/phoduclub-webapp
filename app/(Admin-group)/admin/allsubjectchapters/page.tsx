@@ -4,6 +4,8 @@ import Chemistry from "@/components/AdminComponents/AllSubjectChapters/Chemistry
 import Physics from "@/components/AdminComponents/AllSubjectChapters/Physics";
 import Maths from "@/components/AdminComponents/AllSubjectChapters/Maths";
 import { useState } from 'react';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 function AllSubject() {
     const [activeTab, setActiveTab] = useState("Chemistry");
     return (
@@ -26,7 +28,7 @@ function AllSubject() {
                     title={
                         <div className="flex items-center space-x-2">
                             <span className="font-medium text-base">
-                                Chemistry
+                                Chemistry  
                             </span>
                         </div>
                     }
@@ -59,6 +61,7 @@ function AllSubject() {
                     <Maths />
                 </Tab>
             </Tabs>
+            <ToastContainer/>
         </div>
     );
 }
