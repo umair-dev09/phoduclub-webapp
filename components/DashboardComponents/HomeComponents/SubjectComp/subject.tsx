@@ -2,12 +2,13 @@
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
 import BottomSheet from '@/components/DashboardComponents/HomeComponents/SubjectComp/bottomUpSheet';
-import { collection, getDocs } from 'firebase/firestore';
+import { collection, getDocs, onSnapshot } from 'firebase/firestore';
 import { auth, db } from '@/firebase';
 import LoadingData from '@/components/Loading';
 import MessageLoading from '@/components/MessageLoading';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import DashboardLoading from '@/components/DashboardLoading';
 
 interface CircularProgressProps {
     percentage: number;
@@ -57,67 +58,92 @@ const SubjectLayout: React.FC = () => {
     });
 
     useEffect(() => {
-        const fetchSubjectCounts = async () => {
-            try {
-                const sptRef = collection(db, 'spt');
-                const sptSnapshot = await getDocs(sptRef);
-                
-                let physics = 0;
-                let chemistry = 0;
-                let maths = 0;
-                let total = sptSnapshot.size;
+        let unsubscribes: (() => void)[] = [];
 
-                let userPhysics = 0;
-                let userChemistry = 0;
-                let userMaths = 0;
-                let userTotal = 0;
+        const setupRealtimeUpdates = () => {
+            if (!currentUserId) return;
 
-                for (const doc of sptSnapshot.docs) {
-                    const subject = doc.data().subject?.toLowerCase();
-                    if (subject === 'physics') physics++;
-                    else if (subject === 'chemistry') chemistry++;
-                    else if (subject === 'maths') maths++;
+            const sptRef = collection(db, 'spt');
+            const mainUnsubscribe = onSnapshot(sptRef, async (snapshot) => {
+                try {
+                    let physics = 0;
+                    let chemistry = 0;
+                    let maths = 0;
+                    let total = snapshot.size;
 
-                    // Check if user exists in students subcollection
-                    const studentsRef = collection(doc.ref, 'students');
-                    const studentSnapshot = await getDocs(studentsRef);
-                    const userExists = studentSnapshot.docs.some(doc => doc.id === currentUserId);
+                    let userPhysics = 0;
+                    let userChemistry = 0;
+                    let userMaths = 0;
+                    let userTotal = 0;
 
-                    if (userExists) {
-                        if (subject === 'physics') userPhysics++;
-                        else if (subject === 'chemistry') userChemistry++;
-                        else if (subject === 'maths') userMaths++;
-                        userTotal++;
+                    // Clear previous student listeners
+                    unsubscribes.forEach(unsub => unsub());
+                    unsubscribes = [];
+
+                    for (const doc of snapshot.docs) {
+                        const subject = doc.data().subject?.toLowerCase();
+                        if (subject === 'physics') physics++;
+                        else if (subject === 'chemistry') chemistry++;
+                        else if (subject === 'maths') maths++;
+
+                        // Setup realtime listener for each student subcollection
+                        const studentsRef = collection(doc.ref, 'students');
+                        const studentUnsubscribe = onSnapshot(studentsRef, (studentSnapshot) => {
+                            const userDoc = studentSnapshot.docs.find(doc => doc.id === currentUserId);
+                            if (userDoc) {
+                                const userData = userDoc.data();
+                                const isComplete = userData.targetDate && 
+                                                 userData.theory === true && 
+                                                 userData.practice === true && 
+                                                 userData.pyqs === true && 
+                                                 userData.revision1 === true && 
+                                                 userData.revision2 === true;
+
+                                if (isComplete) {
+                                    if (subject === 'physics') userPhysics++;
+                                    else if (subject === 'chemistry') userChemistry++;
+                                    else if (subject === 'maths') userMaths++;
+                                    userTotal++;
+                                }
+                            }
+
+                            setUserInSubjectCounts({
+                                physics: userPhysics,
+                                chemistry: userChemistry,
+                                maths: userMaths,
+                                total: userTotal
+                            });
+                        });
+
+                        unsubscribes.push(studentUnsubscribe);
                     }
+
+                    setSubjectCounts({
+                        physics,
+                        chemistry,
+                        maths,
+                        total
+                    });
+
+                } catch (error) {
+                    console.error('Error in realtime updates:', error);
+                } finally {
+                    setLoading(false);
                 }
+            });
 
-                setSubjectCounts({
-                    physics,
-                    chemistry,
-                    maths,
-                    total
-                });
-
-                setUserInSubjectCounts({
-                    physics: userPhysics,
-                    chemistry: userChemistry,
-                    maths: userMaths,
-                    total: userTotal
-                });
-            } catch (error) {
-                console.error('Error fetching subject counts:', error);
-            } finally {
-                setLoading(false);
-            }
+            unsubscribes.push(mainUnsubscribe);
         };
 
-        if (currentUserId) {
-            fetchSubjectCounts();
-        }
+        setupRealtimeUpdates();
+
+        return () => {
+            unsubscribes.forEach(unsub => unsub());
+        };
     }, [currentUserId]);
 
     if(loading){
-        return <MessageLoading />
+        return <DashboardLoading />
     }
     const openBottomSheet = (subjectName: string) => {
         setSelectedSubject(subjectName);
@@ -126,10 +152,15 @@ const SubjectLayout: React.FC = () => {
   
 
 
+    const calculatePercentage = (userTotal: number, totalSubjects: number): number => {
+        if (totalSubjects === 0) return 0;
+        return Math.round((userTotal / totalSubjects) * 100);
+    };
+
     return (
         <div className="grid grid-cols-2 gap-5 p-6 w-full">
             {/* {subjectsData.map((subject,index) => {
-                const percentage = calculatePercentage(subject.numerator, subject.denominator);
+                const percentage =
                 const isComplete = percentage === 100;
 
                 return ( */}
@@ -137,8 +168,7 @@ const SubjectLayout: React.FC = () => {
                     <button
                         onClick={() => openBottomSheet('overall')}
                         className={`border border-gray-200 rounded-lg px-6 py-2 flex items-center justify-between transition-transform duration-300 ease-in-out hover:border-[#7400E03D] hover:shadow-lg hover:scale-105 
-                           `}
-                        //    ${isComplete ? 'bg-[#F9FAFB] hover:border-gray-200' : 'bg-white hover:border-[#7400E03D] '  }
+                           ${calculatePercentage(userInSubjectCounts.total, subjectCounts.total) === 100 ? 'bg-[#F9FAFB] hover:border-gray-200' : 'bg-white hover:border-[#7400E03D] '  }`}
                     >
                         <div className="pt-2">
                             <div className="flex items-center flex-row gap-[6px]">
@@ -150,14 +180,14 @@ const SubjectLayout: React.FC = () => {
                                 />
                                 <div className="text-[#667085] text-xs font-semibold ">Overall</div>
 
-                                {/* {isComplete && (
+                                {calculatePercentage(userInSubjectCounts.total, subjectCounts.total) === 100 && (
                                     <Image
                                         src="/icons/right-mark.svg"
                                         alt="right-mark"
                                         width={16}
                                         height={16}
                                     />
-                                )} */}
+                                )}
                             </div>
                             <div className="flex items-center leading-none mt-2">
                                 <span className="text-3xl font-semibold text-[#1D2939]">{userInSubjectCounts.total}</span>
@@ -165,14 +195,13 @@ const SubjectLayout: React.FC = () => {
                             </div>
                         </div>
                         <div className="relative w-16 h-16">
-                            <CircularProgress percentage={0} />
+                            <CircularProgress percentage={calculatePercentage(userInSubjectCounts.total, subjectCounts.total)} />
                         </div>
                     </button>
                     <button
                         onClick={() => openBottomSheet('physics')}
                         className={`border border-gray-200 rounded-lg px-6 py-2 flex items-center justify-between transition-transform duration-300 ease-in-out hover:border-[#7400E03D] hover:shadow-lg hover:scale-105 
-                           `}
-                        //    ${isComplete ? 'bg-[#F9FAFB] hover:border-gray-200' : 'bg-white hover:border-[#7400E03D] '  }
+                          ${calculatePercentage(userInSubjectCounts.physics, subjectCounts.physics) === 100 ? 'bg-[#F9FAFB] hover:border-gray-200' : 'bg-white hover:border-[#7400E03D] '  } `}
                     >
                         <div className="pt-2">
                             <div className="flex items-center flex-row gap-[6px]">
@@ -184,14 +213,14 @@ const SubjectLayout: React.FC = () => {
                                 />
                                 <div className="text-[#667085] text-xs font-semibold ">Physics</div>
 
-                                {/* {isComplete && (
+                                {calculatePercentage(userInSubjectCounts.physics, subjectCounts.physics) === 100 && (
                                     <Image
                                         src="/icons/right-mark.svg"
                                         alt="right-mark"
                                         width={16}
                                         height={16}
                                     />
-                                )} */}
+                                )}
                             </div>
                             <div className="flex items-center leading-none mt-2">
                                 <span className="text-3xl font-semibold text-[#1D2939]">{userInSubjectCounts.physics}</span>
@@ -199,13 +228,13 @@ const SubjectLayout: React.FC = () => {
                             </div>
                         </div>
                         <div className="relative w-16 h-16">
-                            <CircularProgress percentage={0} />
+                            <CircularProgress percentage={calculatePercentage(userInSubjectCounts.physics, subjectCounts.physics)} />
                         </div>
                     </button> <button
                         onClick={() => openBottomSheet('chemistry')}
                         className={`border border-gray-200 rounded-lg px-6 py-2 flex items-center justify-between transition-transform duration-300 ease-in-out hover:border-[#7400E03D] hover:shadow-lg hover:scale-105 
-                           `}
-                        //    ${isComplete ? 'bg-[#F9FAFB] hover:border-gray-200' : 'bg-white hover:border-[#7400E03D] '  }
+                             ${calculatePercentage(userInSubjectCounts.chemistry, subjectCounts.chemistry) === 100 ? 'bg-[#F9FAFB] hover:border-gray-200' : 'bg-white hover:border-[#7400E03D] '  } `}
+                        
                     >
                         <div className="pt-2">
                             <div className="flex items-center flex-row gap-[6px]">
@@ -217,14 +246,14 @@ const SubjectLayout: React.FC = () => {
                                 />
                                 <div className="text-[#667085] text-xs font-semibold ">Chemistry</div>
 
-                                {/* {isComplete && (
+                                {calculatePercentage(userInSubjectCounts.chemistry, subjectCounts.chemistry) === 100 && (
                                     <Image
                                         src="/icons/right-mark.svg"
                                         alt="right-mark"
                                         width={16}
                                         height={16}
                                     />
-                                )} */}
+                                )}
                             </div>
                             <div className="flex items-center leading-none mt-2">
                                 <span className="text-3xl font-semibold text-[#1D2939]">{userInSubjectCounts.chemistry}</span>
@@ -232,14 +261,13 @@ const SubjectLayout: React.FC = () => {
                             </div>
                         </div>
                         <div className="relative w-16 h-16">
-                            <CircularProgress percentage={0} />
+                            <CircularProgress percentage={calculatePercentage(userInSubjectCounts.chemistry, subjectCounts.chemistry)} />
                         </div>
                     </button> 
                     <button
                         onClick={() => openBottomSheet('maths')}
                         className={`border border-gray-200 rounded-lg px-6 py-2 flex items-center justify-between transition-transform duration-300 ease-in-out hover:border-[#7400E03D] hover:shadow-lg hover:scale-105 
-                           `}
-                        //    ${isComplete ? 'bg-[#F9FAFB] hover:border-gray-200' : 'bg-white hover:border-[#7400E03D] '  }
+                             ${calculatePercentage(userInSubjectCounts.maths, subjectCounts.maths) === 100 ? 'bg-[#F9FAFB] hover:border-gray-200' : 'bg-white hover:border-[#7400E03D] '  } `}
                     >
                         <div className="pt-2">
                             <div className="flex items-center flex-row gap-[6px]">
@@ -250,15 +278,14 @@ const SubjectLayout: React.FC = () => {
                                     height={16}
                                 />
                                 <div className="text-[#667085] text-xs font-semibold ">Maths</div>
-
-                                {/* {isComplete && (
+                                {calculatePercentage(userInSubjectCounts.maths, subjectCounts.maths) === 100 && (
                                     <Image
                                         src="/icons/right-mark.svg"
                                         alt="right-mark"
                                         width={16}
                                         height={16}
                                     />
-                                )} */}
+                                )}
                             </div>
                             <div className="flex items-center leading-none mt-2">
                                 <span className="text-3xl font-semibold text-[#1D2939]">{userInSubjectCounts.maths}</span>
@@ -266,7 +293,7 @@ const SubjectLayout: React.FC = () => {
                             </div>
                         </div>
                         <div className="relative w-16 h-16">
-                            <CircularProgress percentage={0} />
+                            <CircularProgress percentage={calculatePercentage(userInSubjectCounts.maths, subjectCounts.maths)} />
                         </div>
                     </button>
             

@@ -273,7 +273,7 @@ const BottomSheet: React.FC<BottomUpSheet> = ({ closeModal, isOpen, subjectName 
                             chapter.priority === 'Medium' ? 'bg-[#DB6704]' :
                             'bg-[#DE3024]'
                             }`}></div>
-                            <p className="text-sm text-gray-700">{chapter.priority}</p>
+                            <p className="text-[13px] text-gray-700">{chapter.priority}</p>
                         </div>
                         </td>
                       <td>

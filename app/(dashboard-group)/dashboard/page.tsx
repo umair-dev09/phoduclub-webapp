@@ -85,7 +85,7 @@ export default function DashboardPage() {
                               <div className="flex flex-row justify-between pt-6 px-6 w-full text-[#1D2939] text-lg font-bold">
                                    <h3 className='text-[#1D2939] font-bold text-lg'>Announcements</h3>
                               </div>
-                              <div className='h-full overflow-y-auto'>
+                              <div className='flex flex-1 overflow-y-auto'>
                                    <Announcement />
                               </div>
                          </div>
@@ -107,7 +107,7 @@ export default function DashboardPage() {
                          </div>
                          <div className="flex flex-col flex-1 bg-white rounded-lg h-fit  max-h-[730px] w-1/2 pb-4">
                               <div className="flex justify-between items-center pt-6 px-6 w-full text-[#1D2939] text-lg font-bold">
-                                   <h3 className="font-bold text-lg">Courses</h3>
+                                   <h3 className="font-bold text-lg">Course</h3>
                                    <button
                                         className="text-sm font-semibold text-[#7400E0] hover:bg-[#F5F0FF] hover:rounded-full px-3 py-1 transition duration-200 ease-in-out"
                                         onClick={() => router.replace('learn/courses')}>

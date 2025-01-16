@@ -14,7 +14,8 @@ type BottomTextProps = {
   communityId: string | null;
   replyData: { message: string | null; senderId: string | null; messageType: string | null; fileUrl: string | null; fileName: string | null; chatId: string | null; } | null;
   channelMembers: { id: string, isAdmin: boolean }[] | null;
-
+  channelName: string | null;
+  channelEmoji: string | null;
 };
 
 type UserData = {
@@ -39,10 +40,13 @@ function BottomText({
   headingId,
   communityId,
   channelMembers,
+  channelEmoji,
+   channelName,
 }: BottomTextProps) {
   const [text, setText] = useState("");
   const [height, setHeight] = useState("32px");
   const [isFocused, setIsFocused] = useState(false);
+  const [isAnnouncement, setIsAnnouncement] = useState(false);
   const [progress, setProgress] = useState<number | null>(null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [fileUrl, setFileUrl] = useState<string | null>(null);
@@ -235,23 +239,45 @@ function BottomText({
         db,
         `communities/${communityId}/channelsHeading/${headingId}/channels/${channelId}/chats`
       );
-  
+      
+    
+
       const newChatRef = doc(chatsRef);
       const chatId = newChatRef.id;
-  
+      let announcementId = null;
+      if (isAnnouncement) {
+        const announcementsRef = collection(db, `communities/${communityId}/Announcements`);
+        const announcementDoc = await addDoc(announcementsRef, {
+          message: text || null,
+          senderId: user.uid,
+          timestamp: serverTimestamp(),
+          channelEmoji,
+          channelName,
+          communityId,
+          headingId,
+          channelId,
+          chatId,
+        });
+        announcementId = announcementDoc.id;
+        // Update the document with its own ID
+        await updateDoc(announcementDoc, {
+          announcementId: announcementId
+        });
+        console.log("Announcement stored successfully");
+      }
       
-            // Fetch channel data to get channelMembers
-            const channelRef = doc(db, `communities/${communityId}/channelsHeading/${headingId}/channels/${channelId}`);
-            
-            if (!Array.isArray(channelMembers)) {
-              console.error("Invalid channelMembers format");
-              return;
-            }
+        // Fetch channel data to get channelMembers
+        const channelRef = doc(db, `communities/${communityId}/channelsHeading/${headingId}/channels/${channelId}`);
         
-            // Filter out current user ID from channelMembers
-            const channelNotification = channelMembers
-              .filter((member) => member.id !== user.uid) // Exclude current user
-              .map((member) => member.id); // Extract user IDs
+        if (!Array.isArray(channelMembers)) {
+          console.error("Invalid channelMembers format");
+          return;
+        }
+        
+        // Filter out current user ID from channelMembers
+        const channelNotification = channelMembers
+          .filter((member) => member.id !== user.uid) // Exclude current user
+          .map((member) => member.id); // Extract user IDs
         
 
       // Prepare message data
@@ -273,8 +299,9 @@ function BottomText({
         fileName: fileName || null,
         fileSize: selectedFile?.size || null,
         mentions: mentions.length ? mentions : [], // Store mentions as an array of objects
+        isAnnouncement: isAnnouncement,
+        announcementId: isAnnouncement ? announcementId : null, // Add announcementId to messageData
       };
-  
       // Store the message with mentions in Firestore
       await setDoc(newChatRef, messageData);
       console.log("Message stored successfully");
@@ -284,6 +311,9 @@ function BottomText({
           channelNotification: channelNotification,
         });
         console.log("Channel notification updated successfully");
+        // If this is an announcement, store it in the announcements subcollection
+       
+
       // Reset states after sending message
       setText("");
       setFileUrl(null);
@@ -293,6 +323,7 @@ function BottomText({
       setMentions([]); // Clear mentions
       setShowReplyLayout(false);
       setHeight('33px');
+      setIsAnnouncement(false);
     } catch (error) {
       console.error("Error sending message:", error);
     }
@@ -353,7 +384,11 @@ function BottomText({
   
   return (
     <div className="flex flex-col bg-white h-auto px-4 py-4">
-
+      {isAnnouncement &&(
+        <div className="flex flex-row items-center justify-between bg-white w-full h-auto pb-3 mt-[-4px]">
+        <span className="text-sm text-gray-600">This message will be send as announcement.</span> 
+        </div>
+      )}
        {/* Media Layout Start */}
        {fileName && (
         <div className="flex flex-row rounded-md bg-[#F2F4F7] w-full z-10 h-auto border border-[#D0D5DD] p-[12px] mb-3 justify-between">
@@ -489,7 +524,7 @@ function BottomText({
                 <EmojiPicker onEmojiClick={handleEmojiClick} hiddenEmojis={['1f595']} />
               </PopoverContent>
             </Popover>
-
+            {!isAnnouncement &&( 
             <Popover className='mb-2' placement="bottom-end" isOpen={isMediaPopupOpen} onOpenChange={(open) => setIsMediaPopupOpen(open)}>
               <PopoverTrigger>
                 <button className='transition-colors hover:bg-neutral-100 hover:rounded-[100px] focus:outline-none'>
@@ -545,6 +580,13 @@ function BottomText({
                 </div>
               </PopoverContent>
             </Popover>
+            )}
+            {!fileName && (
+            <button className='transition-colors hover:bg-neutral-100 hover:rounded-[100px] focus:outline-none' 
+             onClick={() => setIsAnnouncement(!isAnnouncement)}>
+              {isAnnouncement ? <Image src='/icons/megaphone-a-purple.svg' alt='Announcement icon' width={23} height={23} /> : <Image src='/icons/megaphone-a-light.svg' alt='Announcement icon' width={23} height={23} />}
+                </button>
+                )}
           </div>
         </div>
 

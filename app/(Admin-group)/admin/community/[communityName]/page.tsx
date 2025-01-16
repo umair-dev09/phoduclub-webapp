@@ -918,7 +918,7 @@ function Chatinfo() {
                   />
                 </button>
               )}
-              <BottomText showReplyLayout={showReplyLayout} setShowReplyLayout={setShowReplyLayout} replyData={replyData} channelId={selectedChannel?.channelId} communityId={communityId} headingId={selectedChannel.headingId ?? ''} channelMembers={selectedChannel.members || []}/>
+              <BottomText channelName={selectedChannel.channelName} channelEmoji={selectedChannel.channelEmoji} showReplyLayout={showReplyLayout} setShowReplyLayout={setShowReplyLayout} replyData={replyData} channelId={selectedChannel?.channelId} communityId={communityId} headingId={selectedChannel.headingId ?? ''} channelMembers={selectedChannel.members || []}/>
             </div>
           </>
         ) : (
