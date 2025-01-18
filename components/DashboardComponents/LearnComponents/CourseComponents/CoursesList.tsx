@@ -183,7 +183,7 @@ function CoursesList() {
             </div>
           ))
         ) : (
-          <div className="flex flex-1 flex-col items-center justify-center m-6 gap-4">
+          <div className="flex flex-1 flex-col items-center justify-center m-6 py-12 gap-4">
             <Image src={'/images/A-B-Testing-2--Streamline-Brooklyn.svg'} alt="Image" width={140} height={140} />
             <h4 className="text-base text-[#101828] font-bold leading-6">No Suggestions</h4>
           </div>

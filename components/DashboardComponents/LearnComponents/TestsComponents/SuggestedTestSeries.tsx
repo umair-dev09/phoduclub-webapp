@@ -36,8 +36,11 @@ function SuggestedTestSeries() {
         for (const doc of snapshot.docs) {
           const testData = doc.data();
 
-          // Only add tests where the currentUserId is NOT in StudentsPurchased and status is 'live'
-          if (testData.status === 'live') {
+          // Only add tests where:
+          // 1. currentUserId is NOT in StudentsPurchased
+          // 2. status is 'live'
+          // 3. isInCourse is NOT true
+          if (testData.status === 'live' && !testData.isInCourse) {
             const studentsPurchasedCollection = collection(doc.ref, 'StudentsPurchased');
             const studentDoc = await getDocs(studentsPurchasedCollection);
             const studentPurchased = studentDoc.docs.some(student => student.id === currentUserId);
@@ -64,7 +67,6 @@ function SuggestedTestSeries() {
 
               await fetchSectionsCount(`testseries/${testData.testId}`);
               console.log(`Total Sections with Questions: ${totalSectionsWithQuestions}`);
-              // setTotalNoOfTests(totalSectionsWithQuestions);
 
               allTests.push({
                 testName: testData.testName,
@@ -75,7 +77,6 @@ function SuggestedTestSeries() {
                 status: testData.status,
                 testDescription: testData.testDescription,
                 totalNoOfTests: totalSectionsWithQuestions,
-
               });
             }
           }
@@ -172,7 +173,7 @@ function SuggestedTestSeries() {
             </div>
           ))
         ) : (
-          <div className="flex flex-1 flex-col items-center justify-center m-6 gap-4">
+          <div className="flex flex-1 flex-col items-center justify-center m-6 py-12 gap-4">
             <Image src={'/images/A-B-Testing-2--Streamline-Brooklyn.svg'} alt="Image" width={140} height={140} />
             <h4 className="text-base text-[#101828] font-bold leading-6">No Suggestions</h4>
           </div>
