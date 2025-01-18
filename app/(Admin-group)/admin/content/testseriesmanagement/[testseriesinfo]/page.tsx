@@ -53,6 +53,7 @@ type testData = {
     startDate: string | null;
     endDate: string | null;
     createdBy: string | null;
+    isInCourse: boolean | null;
 };
 const totalStars = 5;
 const StarIcon: React.FC<{ filled: boolean; isHalf: boolean }> = ({ filled, isHalf }) => (
@@ -533,6 +534,7 @@ function TestSeriesInfo() {
                     <div className=' text-[#667085] text-sm font-normal break-all' dangerouslySetInnerHTML={{
                         __html: testData?.testDescription || '',
                     }} />
+                    {!testData?.isInCourse && (
                     <div className="flex flex-col gap-2">
                         <div className="flex items-center gap-2 flex-row h-[24px] ">
                             <RatingStars rating={testData?.rating || ''} />
@@ -564,6 +566,7 @@ function TestSeriesInfo() {
                             )}
                         </div>
                     </div>
+                    )}
                 </div>
             </div>
             <div className="w-full h-auto mt-4 flex flex-row gap-4 ">

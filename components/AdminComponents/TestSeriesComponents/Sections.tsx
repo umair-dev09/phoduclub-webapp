@@ -1,8 +1,8 @@
 'use client'
 import React, { useState, useEffect } from "react";
 import { Dialog, DialogBackdrop, DialogPanel } from "@headlessui/react";
-import { Checkbox, DatePicker, DateValue } from "@nextui-org/react";
-import { today, getLocalTimeZone } from "@internationalized/date";
+import { Checkbox, DatePicker, DateValue, Switch } from "@nextui-org/react";
+import { today, getLocalTimeZone, parseDate, parseDateTime } from "@internationalized/date";
 import { collection, onSnapshot, doc, setDoc, updateDoc, deleteDoc, getDocs, writeBatch } from "firebase/firestore";
 import { db } from "@/firebase";
 import { toast } from "react-toastify";
@@ -912,7 +912,14 @@ const Sections: React.FC<SectionsProps> = ({
                    
                     
                   </div>
-                  <div className="flex flex-row gap-3 mt-2 items-center">
+                  <div className="flex flex-row gap-3 mt-2 items-center ">
+                  {(section.sections && section.sections.length < 1 && !section.hasQuestions) && (
+                  <div className="flex flex-row  items-center">
+                  <Switch checked size="sm" />
+                  <span className="text-[#1D2939] text-[12px] font-semibold">Mark as umbrella Test</span>
+                  <div className="bg-[#D0D5DD] w-[1px] h-[20px] ml-2"/>
+                  </div>  
+                  )}
                   {section.hasQuestions ? (
                     <button
                         className="flex flex-row gap-1 items-center"
@@ -1112,7 +1119,8 @@ const Sections: React.FC<SectionsProps> = ({
                 <DatePicker 
                   granularity="minute" 
                   minValue={today(getLocalTimeZone())}
-                  value={dateForPicker}
+                  // value={dateForPicker}
+                  value={sectionScheduleDate ? parseDateTime(sectionScheduleDate) : undefined}
                   hideTimeZone
                   onChange={handleDateChange}
                 />       

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { Dispatch, SetStateAction, useState } from 'react';
 import Image from "next/image";
 import { Popover, PopoverContent, PopoverTrigger } from "@nextui-org/popover";
 import { Checkbox, DatePicker } from '@nextui-org/react';
@@ -15,6 +15,10 @@ type PreferenceProps = {
     setEndDate: (endDate: string) => void;
     liveQuizNow: boolean;
     setLiveQuizNow: React.Dispatch<React.SetStateAction<boolean>>;  // Explicit type for setter
+    selectedYears:  Option[];
+    setSelectedYears: Dispatch<SetStateAction<Option[]>>;
+    selectedExams:  Option[];
+    setSelectedExams: Dispatch<SetStateAction<Option[]>>;
 }
 
 const formatScheduleDate = (dateString: string | null): string => {
@@ -47,7 +51,7 @@ const formatScheduleDate = (dateString: string | null): string => {
     } catch (error) {
         console.error("Error formatting date:", error);
         return "-";
-    }
+    }   
 };
 
 
@@ -56,12 +60,8 @@ type Option = {
     label: string;
 };
 
-function Preference({ liveQuizNow, setLiveQuizNow, startDate, setStartDate, endDate, setEndDate }: PreferenceProps) {
-    const [selectedYears, setSelectedYears] = useState<Option[]>([]);
-    const [selectedExams, setSelectedExams] = useState<Option[]>([]);
-    const [datapickerforEnd, setDatapickerforEnd] = useState(false);
-    const [datapickerforStart, setDatapickerforStart] = useState(false);
-
+function Preference({ liveQuizNow, setLiveQuizNow, startDate, setStartDate, endDate, setEndDate, selectedExams, setSelectedExams, selectedYears, setSelectedYears }: PreferenceProps) {
+    
     const years: Option[] = [
         { value: "2024", label: "2024" },
         { value: "2025", label: "2025" },
@@ -73,7 +73,8 @@ function Preference({ liveQuizNow, setLiveQuizNow, startDate, setStartDate, endD
         { value: "JEE", label: "JEE" },
         { value: "VITEEE", label: "VITEEE" },
         { value: "WBJEE", label: "WBJEE" },
-    ];
+    ]; 
+    
 
     return (
         <div className='flex flex-col ml-1 pt-4 gap-4'>
@@ -94,18 +95,10 @@ function Preference({ liveQuizNow, setLiveQuizNow, startDate, setStartDate, endD
                 <div className='flex flex-row w-full gap-4'>
                     <div className='flex flex-col w-1/2 gap-1'>
                         <span className='font-medium text-[#1D2939] text-sm'>Start Date & Time</span>
-                        <div className="flex flex-row justify-between items-center mb-3">
-                            <p className="text-[#1D2939] text-sm font-medium">  {formatScheduleDate(startDate) || ""}</p>
-                            <button
-                                className="flex flex-row gap-1 rounded-md border-[2px] border-solid border-[#9012FF] hover:bg-[#F5F0FF] bg-[#FFFFFF] p-2 "
-                                onClick={() => setDatapickerforStart(!datapickerforStart)}>
-                                <span className="text-[#9012FF] font-semibold text-sm">{startDate ? 'Change Date' : 'Select Date'}</span>
-                            </button>
-                        </div>
-                        {(datapickerforStart &&
                             <DatePicker
                                 granularity="minute"
                                 minValue={today(getLocalTimeZone())}
+                                value={startDate ? parseDateTime(startDate): undefined}
                                 hideTimeZone
                                 isDisabled={liveQuizNow}
                                 onChange={(date) => {
@@ -114,22 +107,13 @@ function Preference({ liveQuizNow, setLiveQuizNow, startDate, setStartDate, endD
 
                                 }}
                             />
-                        )}
                     </div>
                     <div className='flex flex-col w-1/2 gap-1'>
-                        <span className='font-medium text-[#1D2939] text-sm'>End Date & Time</span>
-                        <div className="flex flex-row justify-between items-center mb-3">
-                            <p className="text-[#1D2939] text-sm font-medium">  {formatScheduleDate(endDate) || ""}</p>
-                            <button
-                                className="flex flex-row gap-1 rounded-md border-[2px] border-solid border-[#9012FF] hover:bg-[#F5F0FF] bg-[#FFFFFF] p-2 "
-                                onClick={() => setDatapickerforEnd(!datapickerforEnd)}>
-                                <span className="text-[#9012FF] font-semibold text-sm">{endDate ? 'Change Date' : 'Select Date'}</span>
-                            </button>
-                        </div>
-                        {(datapickerforEnd &&
+                    <span className='font-medium text-[#1D2939] text-sm'>End Date & Time</span>
                             <DatePicker
                                 granularity="minute"
-                                minValue={today(getLocalTimeZone())}
+                                minValue={startDate ? parseDateTime(startDate) : today(getLocalTimeZone())}
+                                value={endDate ? parseDateTime(endDate): undefined}
                                 hideTimeZone
                                 onChange={(date) => {
                                     const dateString = date ? date.toString() : "";
@@ -137,7 +121,6 @@ function Preference({ liveQuizNow, setLiveQuizNow, startDate, setStartDate, endD
 
                                 }}
                             />
-                        )}
                     </div>
                 </div>
             </div>

@@ -7,6 +7,7 @@ import { usePathname, useSearchParams } from 'next/navigation';
 import { toast, ToastContainer } from 'react-toastify';
 import Image from 'next/image';
 import 'react-toastify/dist/ReactToastify.css';
+import LoadingData from "@/components/Loading";
 
 interface DashboardGroupProps {
     children: ReactNode;
@@ -32,7 +33,7 @@ export default function DashboardGroup({ children }: DashboardGroupProps) {
     };
 
     return (
-        <Suspense fallback={<div>Loading...</div>}>
+        <Suspense fallback={<LoadingData />}>
             <div className="body overflow-none">
                 <div className="flex flex-col h-full">
                     <div className="overflow-y-auto overflow-x-hidden flex-1 min-w-[3.5rem] scrollbar-hide">
