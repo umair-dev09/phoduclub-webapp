@@ -85,7 +85,7 @@ export default function DashboardPage() {
                               <div className="flex flex-row justify-between pt-6 px-6 w-full text-[#1D2939] text-lg font-bold">
                                    <h3 className='text-[#1D2939] font-bold text-lg'>Announcements</h3>
                               </div>
-                              <div className='flex flex-1 overflow-y-auto'>
+                              <div className='flex flex-1 overflow-y-auto justify-center'>
                                    <Announcement />
                               </div>
                          </div>
@@ -102,7 +102,7 @@ export default function DashboardPage() {
                               </div>
 
                               <div className="flex flex-col flex-1">
-                              <TestSeriesComp />
+                                   <TestSeriesComp />
                               </div>
                          </div>
                          <div className="flex flex-col flex-1 bg-white rounded-lg h-fit  max-h-[730px] w-1/2 pb-4">
