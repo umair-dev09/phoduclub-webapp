@@ -7,7 +7,7 @@ import Text from "./Text";
 import Quiz from "./QuizBottomSheets/Quiz";
 import Video from "./Video";
 import { DatePicker, DateValue } from "@nextui-org/react";
-import { now, today, CalendarDate, getLocalTimeZone, parseZonedDateTime, parseAbsoluteToLocal, ZonedDateTime, parseDateTime } from "@internationalized/date";
+import { now, today, CalendarDate, getLocalTimeZone, parseZonedDateTime, parseAbsoluteToLocal, ZonedDateTime } from "@internationalized/date";
 import { addDoc, collection, doc, getDoc, getDocs, onSnapshot, setDoc, query, deleteDoc, updateDoc } from "firebase/firestore";
 import { auth, db, storage } from "@/firebase";
 import { toast } from 'react-toastify';
@@ -632,6 +632,15 @@ function CourseContent({ courseId }: CourseContentProps) {
                             </div>
                             <div className="flex flex-col w-full gap-2  mb-2">
                                 <p className="text-start text-lg text-[#1D2939] font-semibold">Schedule Section</p>
+                                <div className="flex flex-row justify-between items-center">
+                                    <p className="text-[#1D2939] text-sm font-medium">  {formatScheduleDate(sectionScheduleDate) || " "}</p>
+                                    <button
+                                        className="flex flex-row gap-1 rounded-md border-[2px] border-solid border-[#9012FF] hover:bg-[#F5F0FF] bg-[#FFFFFF] p-2 "
+                                        onClick={() => setShowDatepicker(!showDatepicker)}>
+                                        <span className="text-[#9012FF] font-semibold text-sm">{sectionScheduleDate ? 'Change Date' : 'Select Date'}</span>
+                                    </button>
+                                </div>
+
                                 <DatePicker
                                     granularity="minute"
                                     minValue={today(getLocalTimeZone())}

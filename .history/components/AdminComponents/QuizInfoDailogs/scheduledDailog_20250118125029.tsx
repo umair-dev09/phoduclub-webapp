@@ -156,6 +156,19 @@ function ScheduledDialog({ startDate, endDate, setEndDate, setStartDate, fromCon
                             <div className="grid grid-cols-2 gap-6">
                                 <div className="space-y-2">
                                     <span className="font-medium text-[#1D2939] text-sm">Start Date & Time</span>
+                                    {/* <div className="flex justify-between items-center">
+                                        <p className="text-[#1D2939] text-sm font-medium">
+                                            {formatScheduleDate(startDate)}
+                                        </p>
+                                        <button
+                                            className="px-3 py-2 rounded-md border-2 border-[#9012FF] hover:bg-[#F5F0FF] transition-colors"
+                                            onClick={() => setDatapickerforStart(!datapickerforStart)}
+                                        >
+                                            <span className="text-[#9012FF] font-semibold text-sm">
+                                                {startDate ? 'Change Date' : 'Select Date'}
+                                            </span>
+                                        </button>
+                                    </div> */}
                                     <DatePicker
                                         granularity="minute"
                                         minValue={today(getLocalTimeZone())}

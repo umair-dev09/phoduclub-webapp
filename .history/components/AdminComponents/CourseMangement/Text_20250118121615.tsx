@@ -571,19 +571,29 @@ function Text({ isOpen, toggleDrawer, sectionId, courseId, isEditing, contentId 
                             </div>
                             <div className="flex flex-col gap-2 mb-3 mt-1">
                                 <span className="text-[#1D2939] font-semibold text-sm">Schedule Lesson</span>
-                                <DatePicker
-                                    granularity="minute"
-                                    minValue={today(getLocalTimeZone())}
-                                    value={contentScheduleDate ? parseDateTime(contentScheduleDate) : undefined}
-                                    hideTimeZone
-                                    onChange={(date) => {
-                                        const dateString = date ? date.toString() : "";
-                                        setContentScheduleDate(dateString);
 
-                                    }}
+                                <div className="flex flex-row justify-between items-center">
+                                    <p className="text-[#1D2939] text-sm font-medium">  {formatScheduleDate(contentScheduleDate) || " "}</p>
+                                    <button
+                                        className="flex flex-row gap-1 rounded-md border-[2px] border-solid border-[#9012FF] hover:bg-[#F5F0FF] bg-[#FFFFFF] p-2 "
+                                        onClick={() => setShowDatepicker(!showDatepicker)}>
+                                        <span className="text-[#9012FF] font-semibold text-sm">{contentScheduleDate ? 'Change Date' : 'Select Date'}</span>
+                                    </button>
+                                </div>
+                                {(showDatepicker &&
+                                    <DatePicker
+                                        granularity="minute"
+                                        minValue={today(getLocalTimeZone())}
+                                        value={contentScheduleDate ? parseDateTime(contentScheduleDate) : undefined}
+                                        hideTimeZone
+                                        onChange={(date) => {
+                                            const dateString = date ? date.toString() : "";
+                                            setContentScheduleDate(dateString);
 
-                                />
+                                        }}
 
+                                    />
+                                )}
 
                             </div>
 
