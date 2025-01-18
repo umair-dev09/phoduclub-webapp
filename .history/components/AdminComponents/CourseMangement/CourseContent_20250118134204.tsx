@@ -523,7 +523,7 @@ function CourseContent({ courseId }: CourseContentProps) {
                                     placement="bottom">
                                     <PopoverTrigger>
                                         <button
-                                            className="flex flex-row gap-1 items-center px-5 rounded-md border-[2px] border-solid hover:bg-[#F5F0FF] border-[#9012FF] h-[44px] w-auto justify-center "
+                                            className="flex flex-row gap-1 items-center px-5 rounded-md border-[2px] border-solid border-[#9012FF] h-[44px] w-auto justify-center "
                                         >
                                             <Image src="/icons/plus-sign.svg" height={18} width={18} alt="Plus Sign" />
                                             <span className="text-[#9012FF] font-semibold text-sm">Add Content</span>
