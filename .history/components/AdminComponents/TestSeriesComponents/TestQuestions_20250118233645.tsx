@@ -292,22 +292,26 @@ function TestQuestions({ questionsList, setQuestionsList }: QuestionsProps) {
                             <div className="w-[5%] pl-4 py-3">
 
                                 <Popover
-                                    placement="bottom"
+                                    placement="bottom-start"
                                     isOpen={popoveropen1}  // Controlled by popoveropen1 state
                                     onOpenChange={(open) => setPopoveropen1(open)}  // Update state based on popover's open status
-                                    className="absolute left-1/2 transform -translate-x-1/2 top-1/2 mt-40"  // Center horizontally and place very below the center
+                                    className="absolute left-1/2 top-1/2 transform -translate-x-1/2 mt-32"  // Center horizontally and move very below
                                 >
                                     <PopoverTrigger>
                                         <Checkbox
                                             size="md"
                                             color="primary"
-                                            onChange={() => setPopoveropen1(false)}  // Close popover when checkbox is clicked
+                                            onClick={() => setPopoveropen1(popoveropen1)}  // Toggle popover visibility on checkbox click
                                         />
                                     </PopoverTrigger>
 
                                     <PopoverContent className="flex gap-2 flex-row bg-white rounded-[8px] border-[1px] border-solid border-[#EAECF0] p-2 w-[120px] shadow-[0_2px_4px_#EAECF0]">
-                                        <button>1</button>
-                                        <button>2</button>
+                                        <button>
+                                            1
+                                        </button>
+                                        <button>
+                                            2
+                                        </button>
                                     </PopoverContent>
                                 </Popover>
 

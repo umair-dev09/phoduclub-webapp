@@ -290,27 +290,14 @@ function TestQuestions({ questionsList, setQuestionsList }: QuestionsProps) {
                     <div className="flex flex-col w-full">
                         <div className="flex flex-row items-center bg-[#F2F4F7] border-b">
                             <div className="w-[5%] pl-4 py-3">
-
-                                <Popover
-                                    placement="bottom"
-                                    isOpen={popoveropen1}  // Controlled by popoveropen1 state
-                                    onOpenChange={(open) => setPopoveropen1(open)}  // Update state based on popover's open status
-                                    className="absolute left-1/2 transform -translate-x-1/2 top-1/2 mt-40"  // Center horizontally and place very below the center
-                                >
-                                    <PopoverTrigger>
-                                        <Checkbox
-                                            size="md"
-                                            color="primary"
-                                            onChange={() => setPopoveropen1(false)}  // Close popover when checkbox is clicked
-                                        />
-                                    </PopoverTrigger>
-
-                                    <PopoverContent className="flex gap-2 flex-row bg-white rounded-[8px] border-[1px] border-solid border-[#EAECF0] p-2 w-[120px] shadow-[0_2px_4px_#EAECF0]">
-                                        <button>1</button>
-                                        <button>2</button>
-                                    </PopoverContent>
-                                </Popover>
-
+                                <Checkbox
+                                    size="md"
+                                    color="primary"
+                                    onClick={ }
+                                // isSelected={isAllSelected}
+                                // isIndeterminate={isIndeterminate}
+                                // onChange={toggleAllRowsSelection}
+                                />
                             </div>
                             <div className="w-[65%] py-3">
                                 <p className="text-sm text-[#667085] font-medium leading-6">
@@ -688,7 +675,6 @@ function TestQuestions({ questionsList, setQuestionsList }: QuestionsProps) {
                     <span className="text-[#8501FF] text-sm font-semibold">Add Question</span>
                 </button>
             </div> */}
-
         </div>
     );
 }

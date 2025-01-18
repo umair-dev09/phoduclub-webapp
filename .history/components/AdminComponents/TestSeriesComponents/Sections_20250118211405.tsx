@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import { Dialog, DialogBackdrop, DialogPanel } from "@headlessui/react";
 import { Checkbox, DatePicker, DateValue, Switch } from "@nextui-org/react";
 import { today, getLocalTimeZone, parseDate, parseDateTime } from "@internationalized/date";
-import { collection, onSnapshot, doc, setDoc, updateDoc, deleteDoc, getDocs, writeBatch, getDoc } from "firebase/firestore";
+import { collection, onSnapshot, doc, setDoc, updateDoc, deleteDoc, getDocs, writeBatch } from "firebase/firestore";
 import { db } from "@/firebase";
 import { toast } from "react-toastify";
 import Image from "next/image";
@@ -27,8 +27,6 @@ interface Section {
   marksPerQ: string;
   nMarksPerQ: string;
   testTime: string;
-  isUmbrellaTest: boolean;
-  isParentUmbrellaTest: boolean;
 }
 interface Question {
   question: string;
@@ -71,7 +69,7 @@ const Sections: React.FC<SectionsProps> = ({
   setIsSectionEditing,
 }) => {
   const [dateForPicker, setDateForPicker] = useState<DateValue | null>(null);
-  const [isUpdating, setIsUpdating] = useState<string>('');
+
   const [sectionss, setSections] = useState<Section[]>([]);
   const [currentPath, setCurrentPath] = useState<string[]>([]);
   const [breadcrumbs, setBreadcrumbs] = useState<{ id: string; name: string }[]>([]);
@@ -147,104 +145,100 @@ const Sections: React.FC<SectionsProps> = ({
   const isSaveButtonDisabled = !isAnyQuestionsAdded();
   const isDoneWithQuestionDetailsButton = description && marksPerQ && nMarksPerQ && timeNumber && timeText;
   useEffect(() => {
-      if (!testId) return;
-    
-      // Fetch sections and subsections in real-time
-      const fetchSections = async (): Promise<() => void> => {
-        try {
-          setLoading(true); // Start loading
-    
-          const path = currentPath.reduce(
-            (acc, id) => `${acc}/sections/${id}`,
-            `testseries/${testId}`
+    if (!testId) return;
+
+    // Fetch sections and subsections in real-time
+    const fetchSections = async (): Promise<() => void> => {
+      try {
+        setLoading(true); // Start loading
+
+        const path = currentPath.reduce(
+          (acc, id) => `${acc}/sections/${id}`,
+          `testseries/${testId}`
+        );
+
+        const sectionCollection = collection(db, `${path}/sections`);
+
+        const unsubscribe = onSnapshot(sectionCollection, async (snapshot) => {
+          const fetchedSections = await Promise.all(
+            snapshot.docs.map(async (doc) => {
+              const sectionData = doc.data();
+
+              // Fetching subsections (nested subcollection)
+              const subsectionsCollection = collection(doc.ref, 'sections');
+              const subsectionsSnapshot = await getDocs(subsectionsCollection);
+              const subsections = await Promise.all(
+                subsectionsSnapshot.docs.map(async (subsectionDoc) => {
+                  const subsectionData = subsectionDoc.data();
+                  return {
+                    id: subsectionDoc.id,
+                    sectionName: subsectionData.sectionName,
+                    sectionScheduleDate: subsectionData.sectionScheduleDate,
+                    parentSectionId: subsectionData.parentSectionId || null,
+                    order: subsectionData.order || 0,
+                    hasQuestions: subsectionData.hasQuestions || false,
+                    sections: [],
+                    description: sectionData.description,
+                    marksPerQ: sectionData.marksPerQ,
+                    nMarksPerQ: sectionData.nMarksPerQ,
+                    testTime: sectionData.testTime,
+                  };
+                })
+              );
+
+              // Check if section has questions
+              const questionsCollection = collection(doc.ref, 'questions');
+              const questionsSnapshot = await getDocs(questionsCollection);
+
+              return {
+                id: doc.id,
+                sectionName: sectionData.sectionName,
+                sectionScheduleDate: sectionData.sectionScheduleDate,
+                parentSectionId: sectionData.parentSectionId || null,
+                order: sectionData.order || 0,
+                hasQuestions: sectionData.hasQuestions,
+                sections: subsections,
+                description: sectionData.description,
+                marksPerQ: sectionData.marksPerQ,
+                nMarksPerQ: sectionData.nMarksPerQ,
+                testTime: sectionData.testTime,
+              };
+            })
           );
-    
-          const sectionCollection = collection(db, `${path}/sections`);
-    
-          const unsubscribe = onSnapshot(sectionCollection, async (snapshot) => {
-            const fetchedSections = await Promise.all(
-              snapshot.docs.map(async (doc) => {
-                const sectionData = doc.data();
-    
-                // Fetching subsections (nested subcollection)
-                const subsectionsCollection = collection(doc.ref, 'sections');
-                const subsectionsSnapshot = await getDocs(subsectionsCollection);
-                const subsections = await Promise.all(
-                  subsectionsSnapshot.docs.map(async (subsectionDoc) => {
-                    const subsectionData = subsectionDoc.data();
-                    return {
-                      id: subsectionDoc.id,
-                      sectionName: subsectionData.sectionName,
-                      sectionScheduleDate: subsectionData.sectionScheduleDate,
-                      parentSectionId: subsectionData.parentSectionId || null,
-                      order: subsectionData.order || 0,
-                      hasQuestions: subsectionData.hasQuestions || false,
-                      sections: [],
-                      description: sectionData.description,
-                      marksPerQ: sectionData.marksPerQ,
-                      nMarksPerQ: sectionData.nMarksPerQ,
-                      testTime: sectionData.testTime,
-                      isUmbrellaTest: subsectionData.isUmbrellaTest || false,
-                      isParentUmbrellaTest: subsectionData.isParentUmbrellaTest || false,
-                    };
-                  })
-                );
-    
-                // Check if section has questions
-                const questionsCollection = collection(doc.ref, 'questions');
-                const questionsSnapshot = await getDocs(questionsCollection);
-    
-                return {
-                  id: doc.id,
-                  sectionName: sectionData.sectionName,
-                  sectionScheduleDate: sectionData.sectionScheduleDate,
-                  parentSectionId: sectionData.parentSectionId || null,
-                  order: sectionData.order || 0,
-                  hasQuestions: sectionData.hasQuestions,
-                  sections: subsections,
-                  description: sectionData.description,
-                  marksPerQ: sectionData.marksPerQ,
-                  nMarksPerQ: sectionData.nMarksPerQ,
-                  testTime: sectionData.testTime,
-                  isUmbrellaTest: sectionData.isUmbrellaTest || false,
-                  isParentUmbrellaTest: sectionData.isParentUmbrellaTest || false,
-                };
-              })
-            );
-    
-            // Sort sections and update state
-            setSections(fetchedSections.sort((a, b) => (a.order || 0) - (b.order || 0)));
-            setLoading(false); // End loading when data is fetched
-          });
-    
-          return unsubscribe; // Return unsubscribe function
-        } catch (error) {
-          console.error('Error fetching sections: ', error);
-          setLoading(false); // Ensure loading stops in case of error
-          return () => {}; // Return a no-op unsubscribe in case of error
-        }
-      };
-    
-      // Async wrapper for fetchSections
-      const getUnsubscribe = async (): Promise<() => void> => {
-        const unsubscribe = await fetchSections();
-        return unsubscribe;
-      };
-    
-      let unsubscribeFn: () => void; // Explicitly typed as a function that returns void
-    
-      getUnsubscribe()
-        .then((unsubscribe) => {
-          unsubscribeFn = unsubscribe; // Store the unsubscribe function
-        })
-        .catch((err) => {
-          console.error('Error initializing sections listener:', err);
+
+          // Sort sections and update state
+          setSections(fetchedSections.sort((a, b) => (a.order || 0) - (b.order || 0)));
+          setLoading(false); // End loading when data is fetched
         });
-    
-      return () => {
-        if (unsubscribeFn) unsubscribeFn(); // Cleanup on unmount or dependency change
-      };
-    }, [currentPath, testId]);
+
+        return unsubscribe; // Return unsubscribe function
+      } catch (error) {
+        console.error('Error fetching sections: ', error);
+        setLoading(false); // Ensure loading stops in case of error
+        return () => { }; // Return a no-op unsubscribe in case of error
+      }
+    };
+
+    // Async wrapper for fetchSections
+    const getUnsubscribe = async (): Promise<() => void> => {
+      const unsubscribe = await fetchSections();
+      return unsubscribe;
+    };
+
+    let unsubscribeFn: () => void; // Explicitly typed as a function that returns void
+
+    getUnsubscribe()
+      .then((unsubscribe) => {
+        unsubscribeFn = unsubscribe; // Store the unsubscribe function
+      })
+      .catch((err) => {
+        console.error('Error initializing sections listener:', err);
+      });
+
+    return () => {
+      if (unsubscribeFn) unsubscribeFn(); // Cleanup on unmount or dependency change
+    };
+  }, [currentPath, testId]);
   const [questionsBreadcrumb, setQuestionsBreadcrumb] = useState<{ id: string; name: string } | null>(null);
 
   const fetchQuestions = async (sectionId: string, sectionName: string) => {
@@ -305,68 +299,55 @@ const Sections: React.FC<SectionsProps> = ({
   };
 
 
-    const handleAddSection = async () => {
+  const handleAddSection = async () => {
     if (!testId || !sectionName || !sectionScheduleDate) return;
-    if(isSectionEditing){
+    if (isSectionEditing) {
       try {
-      const path = currentPath.reduce(
-        (acc, id) => `${acc}/sections/${id}`,
-        `testseries/${testId}`
-      );
-      const newSectionRef = doc(db, `${path}/sections/${editSectionId}`);
-      await updateDoc(newSectionRef, {
-        sectionName,
-        sectionScheduleDate,
-      });
-    
-      toast.success("Section update successfully");
-      resetForm();
-      } catch (error) {
-      console.error("Error adding section: ", error);
-      toast.error("Failed to update section");
-      }
-    }
-    else{
-      try {
-      const path = currentPath.reduce(
-        (acc, id) => `${acc}/sections/${id}`,
-        `testseries/${testId}`
-      );
-
-      // Get the parent section's isUmbrellaTest status if there's a parent
-      let parentIsUmbrella = false;
-      const parentSectionId = currentPath[currentPath.length - 1];
-      if (parentSectionId) {
-        const parentPath = currentPath.slice(0, -1).reduce(
-        (acc, id) => `${acc}/sections/${id}`,
-        `testseries/${testId}`
+        const path = currentPath.reduce(
+          (acc, id) => `${acc}/sections/${id}`,
+          `testseries/${testId}`
         );
-        const parentDoc = await getDoc(doc(db, `${parentPath}/sections/${parentSectionId}`));
-        parentIsUmbrella = parentDoc.exists() ? (parentDoc.data().isUmbrellaTest || false) : false;
-      }
+        const newSectionRef = doc(db, `${path}/sections/${editSectionId}`);
+        await updateDoc(newSectionRef, {
+          sectionName,
+          sectionScheduleDate,
+        });
 
-      const sectionCollection = collection(db, `${path}/sections`);
-      const newSectionRef = doc(sectionCollection);
-    
-      await setDoc(newSectionRef, {
-        sectionName,
-        sectionScheduleDate,
-        sectionId: newSectionRef.id,
-        parentSectionId: currentPath[currentPath.length - 1] || null,
-        order: sectionss.length + 1,
-        hasQuestions: false,
-        isParentUmbrellaTest: parentIsUmbrella,
-        createdAt: new Date().toISOString()
-      });
-    
-      toast.success("Section added successfully");
-      resetForm();
+        toast.success("Section update successfully");
+        resetForm();
       } catch (error) {
-      console.error("Error adding section: ", error);
-      toast.error("Failed to add section");
+        console.error("Error adding section: ", error);
+        toast.error("Failed to update section");
       }
     }
-    };
+    else {
+      try {
+        const path = currentPath.reduce(
+          (acc, id) => `${acc}/sections/${id}`,
+          `testseries/${testId}`
+        );
+        const sectionCollection = collection(db, `${path}/sections`);
+        const newSectionRef = doc(sectionCollection);
+
+        await setDoc(newSectionRef, {
+          sectionName,
+          sectionScheduleDate,
+          sectionId: newSectionRef.id,
+          parentSectionId: currentPath[currentPath.length - 1] || null,
+          order: sectionss.length + 1,
+          hasQuestions: false,
+          createdAt: new Date().toISOString()
+        });
+
+        toast.success("Section added successfully");
+        resetForm();
+      } catch (error) {
+        console.error("Error adding section: ", error);
+        toast.error("Failed to add section");
+      }
+    }
+
+  };
 
   interface FirestoreQuestion {
     difficulty: string;
@@ -868,27 +849,6 @@ const Sections: React.FC<SectionsProps> = ({
     setQuestionsBreadcrumb(null);
   };
 
-  const handleUmbrellaToggle = async (sectionId: string, currentValue: boolean) => {
-  try {
-    setIsUpdating(sectionId);
-    // Construct the base path
-    const path = currentPath.reduce(
-      (acc, id) => `${acc}/sections/${id}`,
-      `testseries/${testId}`
-    );
-    
-    // Create a reference to the section document
-    const sectionRef = doc(db, `${path}/sections/${sectionId}`);
-    await updateDoc(sectionRef, {
-      isUmbrellaTest: !currentValue,
-    });
-  } catch (error) {
-    console.error('Error updating umbrella test status:', error);
-  } finally {
-    setIsUpdating('');
-  }
-};
-
   if (loading) {
     return <LoadingData />
   }
@@ -979,40 +939,30 @@ const Sections: React.FC<SectionsProps> = ({
 
                         </div>
                         <div className="flex flex-row gap-3 mt-2 items-center ">
-                        {!section.isParentUmbrellaTest && (section.isUmbrellaTest || (section.sections && section.sections.length < 1 && !section.hasQuestions)) && (
-                          <div className="flex flex-row items-center">
-                          <Switch size="sm" 
-                            isSelected={section.isUmbrellaTest || false}
-                            isDisabled={isUpdating === section.id || section.isUmbrellaTest}
-                            onValueChange={() => {
-                            if (!section.isUmbrellaTest) {
-                            handleUmbrellaToggle(section.id, section.isUmbrellaTest || false)
-                            }
-                            }}
-                          />
-                          <span className="text-[#1D2939] text-[12px] font-semibold">Mark as umbrella Test</span>
-                          <div className="bg-[#D0D5DD] w-[1px] h-[20px] ml-2"/>
-                          </div>
+                          {(section.sections && section.sections.length < 1 && !section.hasQuestions) && (
+                            <div className="flex flex-row  items-center">
+                              <Switch checked size="sm" />
+                              <span className="text-[#1D2939] text-[12px] font-semibold">Mark as umbrella Test</span>
+                              <div className="bg-[#D0D5DD] w-[1px] h-[20px] ml-2" />
+                            </div>
                           )}
                           {section.hasQuestions ? (
-                          <button
+                            <button
                               className="flex flex-row gap-1 items-center"
                               onClick={() => fetchQuestions(section.id, section.sectionName)}
-                          >
+                            >
                               <span className="text-[#9012FF] font-semibold text-sm">View Questions</span>
-                          </button>
-                        ) : (
-                          !section.isParentUmbrellaTest && (
+                            </button>
+                          ) : (
                             <button
                               className="flex flex-row gap-1 items-center"
                               onClick={() => {
                                 navigateToSection(section.id, section.sectionName);
-                              }}
-                            >
+                              }}                      >
+                              {/* <Image src="/icons/plus-sign.svg" height={18} width={18} alt="Plus Sign" /> */}
                               <span className="text-[#9012FF] font-semibold text-sm">View Section</span>
                             </button>
-                          )
-                        )}
+                          )}
 
                           <Popover placement="bottom-end"
                             isOpen={popoveropen1 === section.id}
@@ -1100,7 +1050,7 @@ const Sections: React.FC<SectionsProps> = ({
                                     : setPopoveropen2(null)
                                 }>
                                 <PopoverTrigger>
-                                  <button className="ml-[6px] outline-none">
+                                  <button className="ml-[6px]">
                                     <Image
                                       src="/icons/three-dots.svg"
                                       width={20}
@@ -1110,8 +1060,19 @@ const Sections: React.FC<SectionsProps> = ({
                                   </button>
                                 </PopoverTrigger>
                                 <PopoverContent className="w-[10.438rem] py-1 px-0 bg-white border border-lightGrey rounded-md">
-                                  <button className=" flex flex-row items-center justify-start w-full py-[0.625rem] px-4 gap-2 hover:bg-[#FEE4E2] outline-none"
+
+                                  <button className="flex flex-row gap-1 items-center px-4 py-2 rounded-none w-auto h-auto"
                                     onClick={() => { openDeleteSubsectionModal(section.id, subsection.id); setDeletedialog(true); setPopoveropen2(null) }}>
+                                    <Image
+                                      src="/icons/delete.svg"
+                                      width={16}
+                                      height={16}
+                                      alt="Delete Actions"
+                                    />
+                                    <p className="text-sm text-[#DE3024]">Delete</p>
+                                  </button>
+                                  <button className=" flex flex-row items-center justify-start w-full py-[0.625rem] px-4 gap-2 hover:bg-[#FEE4E2] outline-none"
+                                    onClick={(e) => { setDeletedialog(true); e.stopPropagation(); openDeleteSectionModal(section); setPopoveropen1(null); }}>
                                     <Image
                                       src="/icons/delete.svg"
                                       width={16}
@@ -1128,43 +1089,32 @@ const Sections: React.FC<SectionsProps> = ({
                         ))}
                       </>
                     ) : (
-                             <>
-        {!section.hasQuestions &&(
-        <div className="border-t w-full h-auto flex flex-col gap-2 items-center justify-center p-8">
-        <h3>
-          {section.isParentUmbrellaTest 
-            ? 'Create Questions'
-            : section.isUmbrellaTest 
-              ? 'Create Section' 
-              : 'Create section/questions'}
-        </h3>
-        
-        <p className="text-sm text-center w-[90%] text-[#667085]">Test Lorem ipsum is placeholder text commonly used in the graphic, print, and publishing industries for previewing layouts and visual mockups. Name</p>
-        <div className="flex flex-row gap-5 mt-1">
-          {!section.isParentUmbrellaTest &&(
-            <button
-            onClick={() => {
-            navigateToSection(section.id, section.sectionName);
-          }}
-          className="flex flex-row gap-1 items-center rounded-md border-[2px] border-solid border-[#9012FF] hover:bg-[#F5F0FF] bg-[#FFFFFF] h-[44px] w-[162px] justify-center">
-          <Image src="/icons/plus-sign.svg" height={18} width={18} alt="Plus Sign" />
-          <span className="text-[#9012FF] font-semibold text-sm">Add Section</span>
-          </button>
-          )}
-          
-          {!section.isUmbrellaTest && (
-           <button
-            onClick={() => fetchQuestions(section.id, section.sectionName)}
-           className="flex flex-row gap-1 items-center rounded-md border-[2px] border-solid border-[#9012FF] hover:bg-[#F5F0FF] bg-[#FFFFFF] h-[44px] w-[162px] justify-center">
-           <Image src="/icons/plus-sign.svg" height={18} width={18} alt="Plus Sign" />
-           <span className="text-[#9012FF] font-semibold text-sm">Add Question</span>
-           </button>
-           )}
-        </div>
-        </div>
-        )}
-       
-        </>
+                      <>
+                        {!section.hasQuestions && (
+                          <div className="border-t w-full h-auto flex flex-col gap-2 items-center justify-center p-8">
+                            <h3>Create section/questions</h3>
+
+                            <p className="text-sm text-center w-[90%] text-[#667085]">Test Lorem ipsum is placeholder text commonly used in the graphic, print, and publishing industries for previewing layouts and visual mockups. Name</p>
+                            <div className="flex flex-row gap-5 mt-1">
+                              <button
+                                onClick={() => {
+                                  navigateToSection(section.id, section.sectionName);
+                                }}
+                                className="flex flex-row gap-1 items-center rounded-md border-[2px] border-solid border-[#9012FF] hover:bg-[#F5F0FF] bg-[#FFFFFF] h-[44px] w-[162px] justify-center">
+                                <Image src="/icons/plus-sign.svg" height={18} width={18} alt="Plus Sign" />
+                                <span className="text-[#9012FF] font-semibold text-sm">Add Section</span>
+                              </button>
+                              <button
+                                onClick={() => fetchQuestions(section.id, section.sectionName)}
+                                className="flex flex-row gap-1 items-center rounded-md border-[2px] border-solid border-[#9012FF] hover:bg-[#F5F0FF] bg-[#FFFFFF] h-[44px] w-[162px] justify-center">
+                                <Image src="/icons/plus-sign.svg" height={18} width={18} alt="Plus Sign" />
+                                <span className="text-[#9012FF] font-semibold text-sm">Add Question</span>
+                              </button>
+                            </div>
+                          </div>
+                        )}
+
+                      </>
                     )}
 
                   </Collapsible>
@@ -1468,5 +1418,3 @@ const Sections: React.FC<SectionsProps> = ({
 };
 
 export default Sections;
-
-

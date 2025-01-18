@@ -95,9 +95,42 @@ export default function PaymentStatusPage() {
 
       try {
         if (productType === 'course') {
-        await setDoc(doc(collection(db, `course/${productId}/StudentsPurchased`), uid), enrollmentData);
-        } else if (productType === 'testseries') {
-        await setDoc(doc(collection(db, `testseries/${productId}/StudentsPurchased`), uid), enrollmentData);
+          // First check if course has hasTests
+          const courseDoc = await getDoc(doc(db, `course/${productId}`));
+          const courseData = courseDoc.data();
+
+          if (courseData?.hasTests) {
+            // Get bundleTestIds array
+            const bundleTestIds = courseData.bundleTestIds || [];
+            
+            // Process each test series
+            for (const testId of bundleTestIds) {
+              const testDoc = await getDoc(doc(db, `testseries/${testId}`));
+              const testData = testDoc.data();
+              
+              // Get current studentsFromCourse array or initialize if doesn't exist
+              const studentsFromCourse = testData?.studentsFromCourse || [];
+              
+              // Check if user already exists in the array
+              const userExists = studentsFromCourse.some((student: any) => student.id === uid);
+              
+              if (!userExists) {
+                // Add new student entry
+                await setDoc(doc(db, `testseries/${testId}`), {
+                  studentsFromCourse: [...studentsFromCourse, {
+                    id: uid,
+                    courseId: productId,
+                  }]
+                }, { merge: true });
+              }
+            }
+          }
+          
+          // Proceed with original enrollment
+          await setDoc(doc(collection(db, `course/${productId}/StudentsPurchased`), uid), enrollmentData);
+        } 
+        else if (productType === 'testseries') {  
+          await setDoc(doc(collection(db, `testseries/${productId}/StudentsPurchased`), uid), enrollmentData);
         }
 
         await setDoc(doc(collection(db, `users/${uid}/transactions`), productId), transactionData);
@@ -136,7 +169,7 @@ export default function PaymentStatusPage() {
   return (
     <div className="p-6 w-screen mx-auto flex items-center justify-center h-screen flex-col gap-2">
      <h3>Transaction Completed!</h3>
-     <p className='italic'>Redirecting you to the product page.If not redirected please close this tab.</p>
+     <p className='italic'>Redirecting you to the product page. If not redirected please close this tab.</p>
     </div>
   );
 } 

@@ -5,7 +5,7 @@ import { useRouter, usePathname } from "next/navigation";
 import LoadingData from "@/components/Loading";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth, db } from "@/firebase";
-import { collection, getDocs, onSnapshot } from "@firebase/firestore";
+import { collection, getDocs, onSnapshot, doc as firestoreDoc, getDoc } from "@firebase/firestore";
 import { Progress } from "@nextui-org/progress";
 
 interface TestData {
@@ -20,6 +20,8 @@ interface TestData {
   totalSectionsWithQuestions: number;
   totalSectionsWithStudentsAttempted: number;
   studentProgress: number;
+  courseName: string;
+  isInCourse?: boolean;
 }
 
 function formatExpiryDate(inputDate: string) {
@@ -50,13 +52,37 @@ function MyTestSeries() {
         for (const doc of snapshot.docs) {
           const testData = doc.data();
 
-          // Only process tests that are 'live' and the user has purchased it
+          // Only process tests that are 'live'
           if (testData.status === 'live') {
-            const studentsPurchasedCollection = collection(doc.ref, 'StudentsPurchased');
-            const studentDoc = await getDocs(studentsPurchasedCollection);
-            const studentPurchased = studentDoc.docs.some(student => student.id === currentUserId);
+            let shouldIncludeTest = false;
+            let courseName = '';
 
-            if (studentPurchased) {
+            // Check if test is part of a course
+            if (testData.isInCourse) {
+              // Check if user exists in studentsFromCourse map
+              const studentsFromCourse = testData.studentsFromCourse || [];
+              const studentData = studentsFromCourse.find(
+                (student: { id: string; courseId: string }) => 
+                student.id === currentUserId
+              );
+              
+              if (studentData) {
+                shouldIncludeTest = true;
+                // Fetch course name using courseId
+                const courseDocRef = firestoreDoc(db, 'course', studentData.courseId);
+                const courseDoc = await getDoc(courseDocRef);
+                if (courseDoc.exists()) {
+                  courseName = courseDoc.data().courseName || '';
+                }
+              }
+            } else {
+              // Check individual purchase using StudentsPurchased collection
+              const studentsPurchasedCollection = collection(doc.ref, 'StudentsPurchased');
+              const studentDoc = await getDocs(studentsPurchasedCollection);
+              shouldIncludeTest = studentDoc.docs.some(student => student.id === currentUserId);
+            }
+
+            if (shouldIncludeTest) {
               // Initialize the counters for sections with questions and sections with StudentsAttempted
               let sectionsWithQuestionsCount = 0;
               let sectionsWithStudentsAttemptedCount = 0;
@@ -66,16 +92,13 @@ function MyTestSeries() {
                 const sectionCollection = collection(db, path);
                 const sectionSnapshot = await getDocs(sectionCollection);
 
-                // Loop through each section document
                 for (const sectionDoc of sectionSnapshot.docs) {
                   const sectionData = sectionDoc.data();
 
-                  // If the section has 'hasQuestions' set to true, increment the questions count
                   if (sectionData.hasQuestions === true) {
                     sectionsWithQuestionsCount += 1;
                   }
 
-                  // Check if the StudentsAttempted subcollection contains the current userId
                   const studentsAttemptedCollection = collection(sectionDoc.ref, 'StudentsAttempted');
                   const studentsAttemptedSnapshot = await getDocs(studentsAttemptedCollection);
 
@@ -83,22 +106,18 @@ function MyTestSeries() {
                     sectionsWithStudentsAttemptedCount += 1;
                   }
 
-                  // Recursively check if the section has sub-sections
                   const subSectionPath = `${path}/${sectionDoc.id}/sections`;
-                  await countSectionsWithQuestionsAndAttempts(subSectionPath); // Recurse for sub-collections
+                  await countSectionsWithQuestionsAndAttempts(subSectionPath);
                 }
               };
 
-              // Start the recursive counting from the root level of sections for this test
               await countSectionsWithQuestionsAndAttempts(`${doc.ref.path}/sections`);
 
-              // Calculate student progress as a percentage
               const studentProgress = sectionsWithQuestionsCount > 0
                 ? (sectionsWithStudentsAttemptedCount / sectionsWithQuestionsCount) * 100
                 : 0;
               const roundedProgress = Math.round(studentProgress);
 
-              // Push the test data along with the counts and student progress
               allTests.push({
                 testName: testData.testName,
                 price: testData.price,
@@ -110,7 +129,9 @@ function MyTestSeries() {
                 endDate: testData.endDate,
                 totalSectionsWithQuestions: sectionsWithQuestionsCount,
                 totalSectionsWithStudentsAttempted: sectionsWithStudentsAttemptedCount,
-                studentProgress: roundedProgress, // Add student progress to the test data
+                studentProgress: roundedProgress,
+                isInCourse: testData.isInCourse,
+                courseName: courseName, // Added courseName to the test data
               });
             }
           }
@@ -129,7 +150,7 @@ function MyTestSeries() {
         if (user?.uid) {
           fetchTests(user.uid);
         } else {
-          setTests([]); // No user logged in
+          setTests([]);
           setLoading(false);
         }
       });
@@ -138,7 +159,7 @@ function MyTestSeries() {
     };
 
     initialize();
-  }, []); // Only trigger once on component mount
+  }, []);
 
   const handleTabClick = (path: string) => {
     router.push(path);
@@ -165,12 +186,13 @@ function MyTestSeries() {
 
                   {/* Test image and suggestion label container */}
                   <div className="flex w-full h-[50%] items-center flex-col">
-                    {/* <div className="flex items-center absolute top-3 left-5 mr-5 bg-[#c74fe6] bg-opacity-80 text-xs font-medium border border-[#c74fe6] text-white rounded-full px-3 py-2 z-10 transition-transform duration-300 ease-in-out">
-                            <p>JEE Mains Test</p>
-                        </div> */}
+                    {test.isInCourse && (
+                    <div className="flex items-center absolute top-3 left-5 mr-5 bg-[#c74fe6] bg-opacity-80 text-xs font-medium border border-[#c74fe6] text-white rounded-full px-3 py-2 z-10 transition-transform duration-300 ease-in-out">
+                            <p>{test.courseName}</p>
+                        </div>
+                     )}
                     <Image className="w-full h-[300px]" src={test.testImage || "/images/course_img.svg"} alt="Test" width={300} height={300} />
                   </div>
-
                   {/* Test details container */}
                   <div className="flex w-full h-full flex-col bg-white border border-[#EAECF0] border-t-0 rounded-br-lg rounded-bl-lg px-6">
 

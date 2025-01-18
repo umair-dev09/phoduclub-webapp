@@ -57,14 +57,14 @@ const CreateTestSeries = () => {
     const [isSectionEditing, setIsSectionEditing] = useState(false);
     const [isInCourse, setIsInCourse] = useState<boolean>(false);
     const [originalIsInCourse, setOriginalIsInCourse] = useState<boolean>(false);
-    const [coursesList, setCoursesList] = useState<Option[]>([]);
-    const [selectedCourses, setSelectedCourses] = useState<Option[]>([]);
-    const [originalSelectedCourses, setOriginalSelectedCourses] = useState<Option[]>([]);
-    const [selectedYears, setSelectedYears] = useState<Option[]>([]);
-    const [selectedExams, setSelectedExams] = useState<Option[]>([]);
+      const [coursesList, setCoursesList] = useState<Option[]>([]);
+      const [selectedCourses, setSelectedCourses] = useState<Option[]>([]);
+      const [originalSelectedCourses, setOriginalSelectedCourses] = useState<Option[]>([]);
+     const [selectedYears, setSelectedYears] = useState<Option[]>([]);
+     const [selectedExams, setSelectedExams] = useState<Option[]>([]);
 
-
-    useEffect(() => {
+        
+      useEffect(() => {
         const fetchCourses = async () => {
             try {
                 const coursesSnapshot = await getDocs(collection(db, "course"));
@@ -80,7 +80,7 @@ const CreateTestSeries = () => {
         };
         fetchCourses();
     }, []);
-
+      
     const router = useRouter();
 
     useEffect(() => {
@@ -90,7 +90,7 @@ const CreateTestSeries = () => {
 
     }, [testId]);
 
-
+   
 
     const fetchTestData = async (testId: string) => {
         setLoading(true);
@@ -121,15 +121,15 @@ const CreateTestSeries = () => {
                 setOriginalIsInCourse(testData.isInCourse || false);
                 setSelectedCourses(testData.selectedCourses || []);
                 setOriginalSelectedCourses(testData.selectedCourses || []);
-
-                if (testData.forExams) {
+                
+                if(testData.forExams){
                     const defaultExams = testData.forExams.map((years: any) => ({
                         value: years,
                         label: years,
                     }));
                     setSelectedExams(defaultExams);
                 }
-                if (testData.forYears) {
+                if(testData.forYears){
                     const defaultYears = testData.forYears.map((years: any) => ({
                         value: years,
                         label: years,
@@ -195,7 +195,7 @@ const CreateTestSeries = () => {
                                 price: !isInCourse ? price : null,
                                 discountPrice: !isInCourse ? discountPrice : null,
                                 rating: !isInCourse ? rating : null,
-                                noOfRating: !isInCourse ? noOfRating : null,
+                                noOfRating:  !isInCourse ? noOfRating : null,
                                 publishDate: new Date().toISOString(),
                                 status: 'saved',
                                 isInCourse: isInCourse,
@@ -251,10 +251,10 @@ const CreateTestSeries = () => {
 
     const isFormValid = () => {
         if (currentStep === Step.TestSeriesInfo) {
-            return name.trim() !== '' && description.trim() !== '' && image.trim() !== '' && (isInCourse ? (selectedCourses.length >= 1) : (price.trim() !== '' && discountPrice.trim() !== '' && rating.trim() !== '' && noOfRating.trim() !== ''));
+            return name.trim() !== '' && description.trim() !== '' && image.trim() !== '' && (isInCourse ? (selectedCourses.length >= 1) : (price.trim() !== '' && discountPrice.trim() !== ''  && rating.trim() !== '' && noOfRating.trim() !== ''));
         }
         else if (currentStep === Step.Perference) {
-            return endDate.trim() !== '' && selectedExams.length >= 1 && selectedYears.length >= 1;
+            return endDate.trim() !== '' && selectedExams.length >= 1 && selectedYears.length >= 1; 
         }
         else {
             return true;
@@ -280,7 +280,7 @@ const CreateTestSeries = () => {
             case Step.Perference:
                 return <Perference selectedExams={selectedExams} setSelectedExams={setSelectedExams} selectedYears={selectedYears} setSelectedYears={setSelectedYears} startDate={startDate} endDate={endDate} setEndDate={setEndDate} setLiveQuizNow={setLiveQuizNow} liveQuizNow={liveQuizNow} setStartDate={setStartDate} />;
             default:
-                return <TestSeriesInfo selectedCourses={selectedCourses} setSelectedCourses={setSelectedCourses} coursesList={coursesList} isInCourse={isInCourse} setIsInCourse={setIsInCourse} name={name} setName={setName} description={description} setDescription={setDescription} imageUrl={image} setImageUrl={setImage} price={price} setPrice={setPrice} discountPrice={discountPrice} setDiscountPrice={setDiscountPrice} rating={rating} setRating={setRating} noOfRating={noOfRating} setNoOfRating={setNoOfRating} />;
+                return <TestSeriesInfo  selectedCourses={selectedCourses} setSelectedCourses={setSelectedCourses}  coursesList={coursesList} isInCourse={isInCourse} setIsInCourse={setIsInCourse} name={name} setName={setName} description={description} setDescription={setDescription} imageUrl={image} setImageUrl={setImage} price={price} setPrice={setPrice} discountPrice={discountPrice} setDiscountPrice={setDiscountPrice} rating={rating} setRating={setRating} noOfRating={noOfRating} setNoOfRating={setNoOfRating} />;
         }
     };
 
@@ -336,90 +336,90 @@ const CreateTestSeries = () => {
                             {["Test Series Info", "Sections", "Review", "Perference"][currentStep]}
                         </span>
                         <div className="flex flex-row gap-3 mb-3">
-                            {testId && (isInCourse ? (selectedCourses.length >= 1) : (price.trim() !== '' && discountPrice.trim() !== '' && rating.trim() !== '' && noOfRating.trim() !== '')) && (
-                                name !== originalName || description !== originalDescription || image !== originalImage || price !== originalPrice || discountPrice !== originalDiscountPrice || rating !== originalRating || noOfRating !== originalNoOfRating || isInCourse !== originalIsInCourse || selectedCourses !== originalSelectedCourses
+                            {testId && (isInCourse ? (selectedCourses.length >= 1) : (price.trim() !== '' && discountPrice.trim() !== '' && rating.trim() !== '' && noOfRating.trim() !== '' ) )  && (
+                                name !== originalName || description !== originalDescription || image !== originalImage || price !== originalPrice || discountPrice !== originalDiscountPrice || rating !== originalRating || noOfRating !== originalNoOfRating || isInCourse !== originalIsInCourse || selectedCourses !== originalSelectedCourses 
                             ) && (
-                                    <button
-                                        onClick={async () => {
-                                            try {
-                                                const testRef = doc(db, "testseries", testId);
-                                                await updateDoc(testRef, {
-                                                    testName: name,
-                                                    testDescription: description,
-                                                    testImage: image,
-                                                    price: !isInCourse ? price : null,
-                                                    discountPrice: !isInCourse ? discountPrice : null,
-                                                    rating: !isInCourse ? rating : null,
-                                                    noOfRating: !isInCourse ? noOfRating : null,
-                                                    isInCourse: isInCourse,
-                                                    selectedCourses: isInCourse ? selectedCourses : [],
+                                <button
+                                    onClick={async () => {
+                                        try {
+                                            const testRef = doc(db, "testseries", testId);
+                                            await updateDoc(testRef, {
+                                                testName: name,
+                                                testDescription: description,
+                                                testImage: image,
+                                                price: !isInCourse ? price : null,
+                                                discountPrice: !isInCourse ? discountPrice : null,
+                                                rating: !isInCourse ? rating : null,
+                                                noOfRating:  !isInCourse ? noOfRating : null,
+                                                isInCourse: isInCourse,
+                                                selectedCourses: isInCourse ? selectedCourses : [],
+                                            });
+
+                                            const batch = writeBatch(db);
+
+                                            if (isInCourse) {
+                                                // Get arrays of course IDs
+                                                const newCourseIds = selectedCourses.map(c => c.value);
+                                                const oldCourseIds = originalSelectedCourses.map(c => c.value);
+                                                
+                                                // Add testId to newly selected courses
+                                                selectedCourses.forEach(course => {
+                                                    if (!oldCourseIds.includes(course.value)) {
+                                                        const courseRef = doc(db, 'course', course.value);
+                                                        batch.update(courseRef, {
+                                                            bundleTestIds: arrayUnion(testId),
+                                                            hasTests: true,
+                                                        });
+                                                    }
                                                 });
 
-                                                const batch = writeBatch(db);
-
-                                                if (isInCourse) {
-                                                    // Get arrays of course IDs
-                                                    const newCourseIds = selectedCourses.map(c => c.value);
-                                                    const oldCourseIds = originalSelectedCourses.map(c => c.value);
-
-                                                    // Add testId to newly selected courses
-                                                    selectedCourses.forEach(course => {
-                                                        if (!oldCourseIds.includes(course.value)) {
-                                                            const courseRef = doc(db, 'course', course.value);
-                                                            batch.update(courseRef, {
-                                                                bundleTestIds: arrayUnion(testId),
-                                                                hasTests: true,
-                                                            });
-                                                        }
-                                                    });
-
-                                                    // Remove testId from unselected courses
-                                                    originalSelectedCourses.forEach(course => {
-                                                        if (!newCourseIds.includes(course.value)) {
-                                                            const courseRef = doc(db, 'course', course.value);
-                                                            batch.update(courseRef, {
-                                                                bundleTestIds: arrayRemove(testId),
-                                                                hasTests: false,
-                                                            });
-                                                        }
-                                                    });
-                                                } else {
-                                                    // Remove testId from all previously selected courses
-                                                    originalSelectedCourses.forEach(course => {
+                                                // Remove testId from unselected courses
+                                                originalSelectedCourses.forEach(course => {
+                                                    if (!newCourseIds.includes(course.value)) {
                                                         const courseRef = doc(db, 'course', course.value);
                                                         batch.update(courseRef, {
                                                             bundleTestIds: arrayRemove(testId),
                                                             hasTests: false,
                                                         });
+                                                    }
+                                                });
+                                            } else {
+                                                // Remove testId from all previously selected courses
+                                                originalSelectedCourses.forEach(course => {
+                                                    const courseRef = doc(db, 'course', course.value);
+                                                    batch.update(courseRef, {
+                                                        bundleTestIds: arrayRemove(testId),
+                                                        hasTests: false,
                                                     });
-                                                }
-
-                                                await batch.commit();
-
-                                                setOriginalName(name);
-                                                setOriginalDescription(description);
-                                                setOriginalImage(image);
-                                                setOriginalPrice(price);
-                                                setOriginalDiscountPrice(discountPrice);
-                                                setOriginalRating(rating);
-                                                setOriginalNoOfRating(noOfRating);
-                                                setOriginalIsInCourse(isInCourse);
-                                                setOriginalSelectedCourses(selectedCourses);
-                                                toast.success('Changes saved successfully!');
-                                            } catch (error) {
-                                                console.error("Error saving changes:", error);
-                                                toast.error('Failed to save changes');
+                                                });
                                             }
-                                        }}
-                                        className="flex flex-row gap-1 items-center h-[44px] w-auto justify-center mr-1"
-                                    >
-                                        <span className="text-[#9012FF] font-semibold text-sm">Save Changes</span>
-                                    </button>
-                                )}
+
+                                            await batch.commit();
+                                            
+                                            setOriginalName(name);
+                                            setOriginalDescription(description);
+                                            setOriginalImage(image);
+                                            setOriginalPrice(price);
+                                            setOriginalDiscountPrice(discountPrice);
+                                            setOriginalRating(rating);
+                                            setOriginalNoOfRating(noOfRating);
+                                            setOriginalIsInCourse(isInCourse);
+                                            setOriginalSelectedCourses(selectedCourses);
+                                            toast.success('Changes saved successfully!');
+                                        } catch (error) {
+                                            console.error("Error saving changes:", error);
+                                            toast.error('Failed to save changes');
+                                        }
+                                    }}
+                                    className="flex flex-row gap-1 items-center h-[44px] w-auto justify-center mr-1"
+                                >
+                                    <span className="text-[#9012FF] font-semibold text-sm">Save Changes</span>
+                                </button>
+                            )}
                             {currentStep === Step.Sections && (
                                 <button
                                     onClick={() => { setIsCreateSection(true); setSectionName(''); setSectionScheduleDate(''); setIsSectionEditing(false) }}
-                                    className="flex flex-row gap-1 items-center h-[44px] w-auto justify-center mr-1 outline-none"
+                                    className="flex flex-row gap-1 items-center h-[44px] w-auto justify-center mr-1"
                                 >
                                     <Image src="/icons/plus-sign.svg" height={18} width={18} alt="Plus Sign" />
                                     <span className="text-[#9012FF] font-semibold text-sm">Add Section</span>

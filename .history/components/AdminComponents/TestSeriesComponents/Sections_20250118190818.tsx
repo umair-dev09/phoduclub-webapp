@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import { Dialog, DialogBackdrop, DialogPanel } from "@headlessui/react";
 import { Checkbox, DatePicker, DateValue, Switch } from "@nextui-org/react";
 import { today, getLocalTimeZone, parseDate, parseDateTime } from "@internationalized/date";
-import { collection, onSnapshot, doc, setDoc, updateDoc, deleteDoc, getDocs, writeBatch, getDoc } from "firebase/firestore";
+import { collection, onSnapshot, doc, setDoc, updateDoc, deleteDoc, getDocs, writeBatch } from "firebase/firestore";
 import { db } from "@/firebase";
 import { toast } from "react-toastify";
 import Image from "next/image";
@@ -27,8 +27,6 @@ interface Section {
   marksPerQ: string;
   nMarksPerQ: string;
   testTime: string;
-  isUmbrellaTest: boolean;
-  isParentUmbrellaTest: boolean;
 }
 interface Question {
   question: string;
@@ -71,7 +69,7 @@ const Sections: React.FC<SectionsProps> = ({
   setIsSectionEditing,
 }) => {
   const [dateForPicker, setDateForPicker] = useState<DateValue | null>(null);
-  const [isUpdating, setIsUpdating] = useState<string>('');
+
   const [sectionss, setSections] = useState<Section[]>([]);
   const [currentPath, setCurrentPath] = useState<string[]>([]);
   const [breadcrumbs, setBreadcrumbs] = useState<{ id: string; name: string }[]>([]);
@@ -90,37 +88,11 @@ const Sections: React.FC<SectionsProps> = ({
   const [saveQuestionDialog, setSaveQuestionDialog] = useState(false);
   const [csvUploadDialog, setCsvUploadDialog] = useState(false);
   const [selectedSection, setSelectedSection] = useState<Section | null>(null);
-  const [deletedialog, setDeletedialog] = useState(false);
-  const [sectionToDelete, setSectionToDelete] = useState<{ id: string } | null>(null);
-  const [subsectionToDelete, setSubsectionToDelete] = useState<{ parentSectionId: string, sectionId: string } | null>(null);
   const isSectionButtonDisabled = !sectionName || !sectionScheduleDate;
   const formatScheduleDate = (dateString: string): string => {
     const date = new Date(dateString);
     return format(date, 'dd MMM, yyyy  hh:mm a');
   };
-  // opening popover for section
-  const [popoveropen1, setPopoveropen1] = useState<string | null>(null);
-  const handlePopoverOpen1 = (sectionId: string) => {
-    setPopoveropen1(sectionId);
-  };
-  // opening popover for Subsection
-  const [popoveropen2, setPopoveropen2] = useState<{ sectionId: string, subsectionId: string } | null>(null);
-  const handlePopoverOpen2 = (sectionId: string, subsectionId: string) => {
-    setPopoveropen2({ sectionId, subsectionId });
-  };
-  // opening delete modal of section
-  const openDeleteSectionModal = (section: { id: string }) => {
-    setSectionToDelete(section);
-    setSubsectionToDelete(null);
-    setDeletedialog(true);
-  };
-  // opening delete modal of Subsection
-  const openDeleteSubsectionModal = (sectionId: string, parentSectionId: string) => {
-    setSubsectionToDelete({ sectionId, parentSectionId });
-    setSectionToDelete(null);
-    setDeletedialog(true);
-  };
-
   const [showQuestions, setShowQuestions] = useState(false);
   const [questionsList, setQuestionsList] = useState<Question[]>([{
     question: '',
@@ -147,104 +119,100 @@ const Sections: React.FC<SectionsProps> = ({
   const isSaveButtonDisabled = !isAnyQuestionsAdded();
   const isDoneWithQuestionDetailsButton = description && marksPerQ && nMarksPerQ && timeNumber && timeText;
   useEffect(() => {
-      if (!testId) return;
-    
-      // Fetch sections and subsections in real-time
-      const fetchSections = async (): Promise<() => void> => {
-        try {
-          setLoading(true); // Start loading
-    
-          const path = currentPath.reduce(
-            (acc, id) => `${acc}/sections/${id}`,
-            `testseries/${testId}`
+    if (!testId) return;
+
+    // Fetch sections and subsections in real-time
+    const fetchSections = async (): Promise<() => void> => {
+      try {
+        setLoading(true); // Start loading
+
+        const path = currentPath.reduce(
+          (acc, id) => `${acc}/sections/${id}`,
+          `testseries/${testId}`
+        );
+
+        const sectionCollection = collection(db, `${path}/sections`);
+
+        const unsubscribe = onSnapshot(sectionCollection, async (snapshot) => {
+          const fetchedSections = await Promise.all(
+            snapshot.docs.map(async (doc) => {
+              const sectionData = doc.data();
+
+              // Fetching subsections (nested subcollection)
+              const subsectionsCollection = collection(doc.ref, 'sections');
+              const subsectionsSnapshot = await getDocs(subsectionsCollection);
+              const subsections = await Promise.all(
+                subsectionsSnapshot.docs.map(async (subsectionDoc) => {
+                  const subsectionData = subsectionDoc.data();
+                  return {
+                    id: subsectionDoc.id,
+                    sectionName: subsectionData.sectionName,
+                    sectionScheduleDate: subsectionData.sectionScheduleDate,
+                    parentSectionId: subsectionData.parentSectionId || null,
+                    order: subsectionData.order || 0,
+                    hasQuestions: subsectionData.hasQuestions || false,
+                    sections: [],
+                    description: sectionData.description,
+                    marksPerQ: sectionData.marksPerQ,
+                    nMarksPerQ: sectionData.nMarksPerQ,
+                    testTime: sectionData.testTime,
+                  };
+                })
+              );
+
+              // Check if section has questions
+              const questionsCollection = collection(doc.ref, 'questions');
+              const questionsSnapshot = await getDocs(questionsCollection);
+
+              return {
+                id: doc.id,
+                sectionName: sectionData.sectionName,
+                sectionScheduleDate: sectionData.sectionScheduleDate,
+                parentSectionId: sectionData.parentSectionId || null,
+                order: sectionData.order || 0,
+                hasQuestions: sectionData.hasQuestions,
+                sections: subsections,
+                description: sectionData.description,
+                marksPerQ: sectionData.marksPerQ,
+                nMarksPerQ: sectionData.nMarksPerQ,
+                testTime: sectionData.testTime,
+              };
+            })
           );
-    
-          const sectionCollection = collection(db, `${path}/sections`);
-    
-          const unsubscribe = onSnapshot(sectionCollection, async (snapshot) => {
-            const fetchedSections = await Promise.all(
-              snapshot.docs.map(async (doc) => {
-                const sectionData = doc.data();
-    
-                // Fetching subsections (nested subcollection)
-                const subsectionsCollection = collection(doc.ref, 'sections');
-                const subsectionsSnapshot = await getDocs(subsectionsCollection);
-                const subsections = await Promise.all(
-                  subsectionsSnapshot.docs.map(async (subsectionDoc) => {
-                    const subsectionData = subsectionDoc.data();
-                    return {
-                      id: subsectionDoc.id,
-                      sectionName: subsectionData.sectionName,
-                      sectionScheduleDate: subsectionData.sectionScheduleDate,
-                      parentSectionId: subsectionData.parentSectionId || null,
-                      order: subsectionData.order || 0,
-                      hasQuestions: subsectionData.hasQuestions || false,
-                      sections: [],
-                      description: sectionData.description,
-                      marksPerQ: sectionData.marksPerQ,
-                      nMarksPerQ: sectionData.nMarksPerQ,
-                      testTime: sectionData.testTime,
-                      isUmbrellaTest: subsectionData.isUmbrellaTest || false,
-                      isParentUmbrellaTest: subsectionData.isParentUmbrellaTest || false,
-                    };
-                  })
-                );
-    
-                // Check if section has questions
-                const questionsCollection = collection(doc.ref, 'questions');
-                const questionsSnapshot = await getDocs(questionsCollection);
-    
-                return {
-                  id: doc.id,
-                  sectionName: sectionData.sectionName,
-                  sectionScheduleDate: sectionData.sectionScheduleDate,
-                  parentSectionId: sectionData.parentSectionId || null,
-                  order: sectionData.order || 0,
-                  hasQuestions: sectionData.hasQuestions,
-                  sections: subsections,
-                  description: sectionData.description,
-                  marksPerQ: sectionData.marksPerQ,
-                  nMarksPerQ: sectionData.nMarksPerQ,
-                  testTime: sectionData.testTime,
-                  isUmbrellaTest: sectionData.isUmbrellaTest || false,
-                  isParentUmbrellaTest: sectionData.isParentUmbrellaTest || false,
-                };
-              })
-            );
-    
-            // Sort sections and update state
-            setSections(fetchedSections.sort((a, b) => (a.order || 0) - (b.order || 0)));
-            setLoading(false); // End loading when data is fetched
-          });
-    
-          return unsubscribe; // Return unsubscribe function
-        } catch (error) {
-          console.error('Error fetching sections: ', error);
-          setLoading(false); // Ensure loading stops in case of error
-          return () => {}; // Return a no-op unsubscribe in case of error
-        }
-      };
-    
-      // Async wrapper for fetchSections
-      const getUnsubscribe = async (): Promise<() => void> => {
-        const unsubscribe = await fetchSections();
-        return unsubscribe;
-      };
-    
-      let unsubscribeFn: () => void; // Explicitly typed as a function that returns void
-    
-      getUnsubscribe()
-        .then((unsubscribe) => {
-          unsubscribeFn = unsubscribe; // Store the unsubscribe function
-        })
-        .catch((err) => {
-          console.error('Error initializing sections listener:', err);
+
+          // Sort sections and update state
+          setSections(fetchedSections.sort((a, b) => (a.order || 0) - (b.order || 0)));
+          setLoading(false); // End loading when data is fetched
         });
-    
-      return () => {
-        if (unsubscribeFn) unsubscribeFn(); // Cleanup on unmount or dependency change
-      };
-    }, [currentPath, testId]);
+
+        return unsubscribe; // Return unsubscribe function
+      } catch (error) {
+        console.error('Error fetching sections: ', error);
+        setLoading(false); // Ensure loading stops in case of error
+        return () => { }; // Return a no-op unsubscribe in case of error
+      }
+    };
+
+    // Async wrapper for fetchSections
+    const getUnsubscribe = async (): Promise<() => void> => {
+      const unsubscribe = await fetchSections();
+      return unsubscribe;
+    };
+
+    let unsubscribeFn: () => void; // Explicitly typed as a function that returns void
+
+    getUnsubscribe()
+      .then((unsubscribe) => {
+        unsubscribeFn = unsubscribe; // Store the unsubscribe function
+      })
+      .catch((err) => {
+        console.error('Error initializing sections listener:', err);
+      });
+
+    return () => {
+      if (unsubscribeFn) unsubscribeFn(); // Cleanup on unmount or dependency change
+    };
+  }, [currentPath, testId]);
   const [questionsBreadcrumb, setQuestionsBreadcrumb] = useState<{ id: string; name: string } | null>(null);
 
   const fetchQuestions = async (sectionId: string, sectionName: string) => {
@@ -305,68 +273,55 @@ const Sections: React.FC<SectionsProps> = ({
   };
 
 
-    const handleAddSection = async () => {
+  const handleAddSection = async () => {
     if (!testId || !sectionName || !sectionScheduleDate) return;
-    if(isSectionEditing){
+    if (isSectionEditing) {
       try {
-      const path = currentPath.reduce(
-        (acc, id) => `${acc}/sections/${id}`,
-        `testseries/${testId}`
-      );
-      const newSectionRef = doc(db, `${path}/sections/${editSectionId}`);
-      await updateDoc(newSectionRef, {
-        sectionName,
-        sectionScheduleDate,
-      });
-    
-      toast.success("Section update successfully");
-      resetForm();
-      } catch (error) {
-      console.error("Error adding section: ", error);
-      toast.error("Failed to update section");
-      }
-    }
-    else{
-      try {
-      const path = currentPath.reduce(
-        (acc, id) => `${acc}/sections/${id}`,
-        `testseries/${testId}`
-      );
-
-      // Get the parent section's isUmbrellaTest status if there's a parent
-      let parentIsUmbrella = false;
-      const parentSectionId = currentPath[currentPath.length - 1];
-      if (parentSectionId) {
-        const parentPath = currentPath.slice(0, -1).reduce(
-        (acc, id) => `${acc}/sections/${id}`,
-        `testseries/${testId}`
+        const path = currentPath.reduce(
+          (acc, id) => `${acc}/sections/${id}`,
+          `testseries/${testId}`
         );
-        const parentDoc = await getDoc(doc(db, `${parentPath}/sections/${parentSectionId}`));
-        parentIsUmbrella = parentDoc.exists() ? (parentDoc.data().isUmbrellaTest || false) : false;
-      }
+        const newSectionRef = doc(db, `${path}/sections/${editSectionId}`);
+        await updateDoc(newSectionRef, {
+          sectionName,
+          sectionScheduleDate,
+        });
 
-      const sectionCollection = collection(db, `${path}/sections`);
-      const newSectionRef = doc(sectionCollection);
-    
-      await setDoc(newSectionRef, {
-        sectionName,
-        sectionScheduleDate,
-        sectionId: newSectionRef.id,
-        parentSectionId: currentPath[currentPath.length - 1] || null,
-        order: sectionss.length + 1,
-        hasQuestions: false,
-        isParentUmbrellaTest: parentIsUmbrella,
-        createdAt: new Date().toISOString()
-      });
-    
-      toast.success("Section added successfully");
-      resetForm();
+        toast.success("Section update successfully");
+        resetForm();
       } catch (error) {
-      console.error("Error adding section: ", error);
-      toast.error("Failed to add section");
+        console.error("Error adding section: ", error);
+        toast.error("Failed to update section");
       }
     }
-    };
+    else {
+      try {
+        const path = currentPath.reduce(
+          (acc, id) => `${acc}/sections/${id}`,
+          `testseries/${testId}`
+        );
+        const sectionCollection = collection(db, `${path}/sections`);
+        const newSectionRef = doc(sectionCollection);
+
+        await setDoc(newSectionRef, {
+          sectionName,
+          sectionScheduleDate,
+          sectionId: newSectionRef.id,
+          parentSectionId: currentPath[currentPath.length - 1] || null,
+          order: sectionss.length + 1,
+          hasQuestions: false,
+          createdAt: new Date().toISOString()
+        });
+
+        toast.success("Section added successfully");
+        resetForm();
+      } catch (error) {
+        console.error("Error adding section: ", error);
+        toast.error("Failed to add section");
+      }
+    }
+
+  };
 
   interface FirestoreQuestion {
     difficulty: string;
@@ -868,27 +823,6 @@ const Sections: React.FC<SectionsProps> = ({
     setQuestionsBreadcrumb(null);
   };
 
-  const handleUmbrellaToggle = async (sectionId: string, currentValue: boolean) => {
-  try {
-    setIsUpdating(sectionId);
-    // Construct the base path
-    const path = currentPath.reduce(
-      (acc, id) => `${acc}/sections/${id}`,
-      `testseries/${testId}`
-    );
-    
-    // Create a reference to the section document
-    const sectionRef = doc(db, `${path}/sections/${sectionId}`);
-    await updateDoc(sectionRef, {
-      isUmbrellaTest: !currentValue,
-    });
-  } catch (error) {
-    console.error('Error updating umbrella test status:', error);
-  } finally {
-    setIsUpdating('');
-  }
-};
-
   if (loading) {
     return <LoadingData />
   }
@@ -979,46 +913,34 @@ const Sections: React.FC<SectionsProps> = ({
 
                         </div>
                         <div className="flex flex-row gap-3 mt-2 items-center ">
-                        {!section.isParentUmbrellaTest && (section.isUmbrellaTest || (section.sections && section.sections.length < 1 && !section.hasQuestions)) && (
-                          <div className="flex flex-row items-center">
-                          <Switch size="sm" 
-                            isSelected={section.isUmbrellaTest || false}
-                            isDisabled={isUpdating === section.id || section.isUmbrellaTest}
-                            onValueChange={() => {
-                            if (!section.isUmbrellaTest) {
-                            handleUmbrellaToggle(section.id, section.isUmbrellaTest || false)
-                            }
-                            }}
-                          />
-                          <span className="text-[#1D2939] text-[12px] font-semibold">Mark as umbrella Test</span>
-                          <div className="bg-[#D0D5DD] w-[1px] h-[20px] ml-2"/>
-                          </div>
+                          {(section.sections && section.sections.length < 1 && !section.hasQuestions) && (
+                            <div className="flex flex-row  items-center">
+                              <Switch checked size="sm" />
+                              <span className="text-[#1D2939] text-[12px] font-semibold">Mark as umbrella Test</span>
+                              <div className="bg-[#D0D5DD] w-[1px] h-[20px] ml-2" />
+                            </div>
                           )}
                           {section.hasQuestions ? (
-                          <button
+                            <button
                               className="flex flex-row gap-1 items-center"
                               onClick={() => fetchQuestions(section.id, section.sectionName)}
-                          >
+                            >
                               <span className="text-[#9012FF] font-semibold text-sm">View Questions</span>
-                          </button>
-                        ) : (
-                          !section.isParentUmbrellaTest && (
+                            </button>
+                          ) : (
                             <button
                               className="flex flex-row gap-1 items-center"
                               onClick={() => {
                                 navigateToSection(section.id, section.sectionName);
-                              }}
-                            >
+                              }}                      >
+                              {/* <Image src="/icons/plus-sign.svg" height={18} width={18} alt="Plus Sign" /> */}
                               <span className="text-[#9012FF] font-semibold text-sm">View Section</span>
                             </button>
-                          )
-                        )}
+                          )}
 
-                          <Popover placement="bottom-end"
-                            isOpen={popoveropen1 === section.id}
-                            onOpenChange={(open) => open ? handlePopoverOpen1(section.id) : setPopoveropen1(null)}>
+                          <Popover placement="bottom-end">
                             <PopoverTrigger>
-                              <button className="outline-none">
+                              <button>
                                 <Image
                                   src="/icons/three-dots.svg"
                                   width={20}
@@ -1027,27 +949,29 @@ const Sections: React.FC<SectionsProps> = ({
                                 />
                               </button>
                             </PopoverTrigger>
-                            <PopoverContent className="w-[10.438rem] py-1 px-0 bg-white border border-lightGrey rounded-md">
-                              <button className="flex flex-row items-center justify-start w-full py-[0.625rem] px-4 gap-2 hover:bg-[#F2F4F7] outline-none"
-                                onClick={(e) => { { handleEditSection(section.id, section.sectionName, section.sectionScheduleDate) }; e.stopPropagation(); setPopoveropen1(null); }}>
-                                <Image
-                                  src="/icons/edit-icon.svg"
-                                  width={14}
-                                  height={14}
-                                  alt="Edit Actions"
-                                />
-                                <p className="text-sm ">Edit Section</p>
-                              </button>
-                              <button className=" flex flex-row items-center justify-start w-full py-[0.625rem] px-4 gap-2 hover:bg-[#FEE4E2] outline-none"
-                                onClick={(e) => { setDeletedialog(true); e.stopPropagation(); openDeleteSectionModal(section); setPopoveropen1(null); }}>
-                                <Image
-                                  src="/icons/delete.svg"
-                                  width={16}
-                                  height={16}
-                                  alt="Delete Actions"
-                                />
-                                <p className="text-sm text-[#DE3024]">Delete</p>
-                              </button>
+                            <PopoverContent className="p-0 rounded-md">
+                              <div>
+                                <button className="flex flex-row gap-1 items-center px-4 py-2 rounded-none w-auto h-auto"
+                                  onClick={(e) => { { handleEditSection(section.id, section.sectionName, section.sectionScheduleDate) }; e.stopPropagation(); }}>
+                                  <Image
+                                    src="/icons/edit-icon.svg"
+                                    width={14}
+                                    height={14}
+                                    alt="Edit Actions"
+                                  />
+                                  <p className="text-sm ">Edit Section</p>
+                                </button>
+                                <button className="flex flex-row gap-1 items-center px-4 py-2 rounded-none w-auto h-auto"
+                                  onClick={() => handleDeleteSection(section.id)}>
+                                  <Image
+                                    src="/icons/delete.svg"
+                                    width={16}
+                                    height={16}
+                                    alt="Delete Actions"
+                                  />
+                                  <p className="text-sm text-[#DE3024]">Delete</p>
+                                </button>
+                              </div>
                             </PopoverContent>
                           </Popover>
 
@@ -1092,15 +1016,9 @@ const Sections: React.FC<SectionsProps> = ({
                             <div className="flex flex-row gap-[6px] items-center">
                               <Image src="/icons/schedule.svg" width={14} height={14} alt="schedule" />
                               <p className="text-sm text-[#475467]">Schedule: <span className="font-medium ml-1 text-black">{formatScheduleDate(subsection.sectionScheduleDate)}</span></p>
-                              <Popover placement="bottom-end"
-                                isOpen={popoveropen2?.sectionId === section.id && popoveropen2?.subsectionId === subsection.id}
-                                onOpenChange={(open) =>
-                                  open
-                                    ? handlePopoverOpen2(section.id, subsection.id)
-                                    : setPopoveropen2(null)
-                                }>
+                              <Popover placement="bottom-end">
                                 <PopoverTrigger>
-                                  <button className="ml-[6px] outline-none">
+                                  <button className="ml-[6px]">
                                     <Image
                                       src="/icons/three-dots.svg"
                                       width={20}
@@ -1109,18 +1027,19 @@ const Sections: React.FC<SectionsProps> = ({
                                     />
                                   </button>
                                 </PopoverTrigger>
-                                <PopoverContent className="w-[10.438rem] py-1 px-0 bg-white border border-lightGrey rounded-md">
-                                  <button className=" flex flex-row items-center justify-start w-full py-[0.625rem] px-4 gap-2 hover:bg-[#FEE4E2] outline-none"
-                                    onClick={() => { openDeleteSubsectionModal(section.id, subsection.id); setDeletedialog(true); setPopoveropen2(null) }}>
-                                    <Image
-                                      src="/icons/delete.svg"
-                                      width={16}
-                                      height={16}
-                                      alt="Delete Actions"
-                                    />
-                                    <p className="text-sm text-[#DE3024]">Delete</p>
-                                  </button>
-
+                                <PopoverContent className="p-0 rounded-md">
+                                  <div>
+                                    <button className="flex flex-row gap-1 items-center px-4 py-2 rounded-none w-auto h-auto"
+                                      onClick={() => handleDeleteSubSection(section.id, subsection.id)}>
+                                      <Image
+                                        src="/icons/delete.svg"
+                                        width={16}
+                                        height={16}
+                                        alt="Delete Actions"
+                                      />
+                                      <p className="text-sm text-[#DE3024]">Delete</p>
+                                    </button>
+                                  </div>
                                 </PopoverContent>
                               </Popover>
                             </div>
@@ -1128,43 +1047,32 @@ const Sections: React.FC<SectionsProps> = ({
                         ))}
                       </>
                     ) : (
-                             <>
-        {!section.hasQuestions &&(
-        <div className="border-t w-full h-auto flex flex-col gap-2 items-center justify-center p-8">
-        <h3>
-          {section.isParentUmbrellaTest 
-            ? 'Create Questions'
-            : section.isUmbrellaTest 
-              ? 'Create Section' 
-              : 'Create section/questions'}
-        </h3>
-        
-        <p className="text-sm text-center w-[90%] text-[#667085]">Test Lorem ipsum is placeholder text commonly used in the graphic, print, and publishing industries for previewing layouts and visual mockups. Name</p>
-        <div className="flex flex-row gap-5 mt-1">
-          {!section.isParentUmbrellaTest &&(
-            <button
-            onClick={() => {
-            navigateToSection(section.id, section.sectionName);
-          }}
-          className="flex flex-row gap-1 items-center rounded-md border-[2px] border-solid border-[#9012FF] hover:bg-[#F5F0FF] bg-[#FFFFFF] h-[44px] w-[162px] justify-center">
-          <Image src="/icons/plus-sign.svg" height={18} width={18} alt="Plus Sign" />
-          <span className="text-[#9012FF] font-semibold text-sm">Add Section</span>
-          </button>
-          )}
-          
-          {!section.isUmbrellaTest && (
-           <button
-            onClick={() => fetchQuestions(section.id, section.sectionName)}
-           className="flex flex-row gap-1 items-center rounded-md border-[2px] border-solid border-[#9012FF] hover:bg-[#F5F0FF] bg-[#FFFFFF] h-[44px] w-[162px] justify-center">
-           <Image src="/icons/plus-sign.svg" height={18} width={18} alt="Plus Sign" />
-           <span className="text-[#9012FF] font-semibold text-sm">Add Question</span>
-           </button>
-           )}
-        </div>
-        </div>
-        )}
-       
-        </>
+                      <>
+                        {!section.hasQuestions && (
+                          <div className="border-t w-full h-auto flex flex-col gap-2 items-center justify-center p-8">
+                            <h3>Create section/questions</h3>
+
+                            <p className="text-sm text-center w-[90%] text-[#667085]">Test Lorem ipsum is placeholder text commonly used in the graphic, print, and publishing industries for previewing layouts and visual mockups. Name</p>
+                            <div className="flex flex-row gap-5 mt-1">
+                              <button
+                                onClick={() => {
+                                  navigateToSection(section.id, section.sectionName);
+                                }}
+                                className="flex flex-row gap-1 items-center rounded-md border-[2px] border-solid border-[#9012FF] hover:bg-[#F5F0FF] bg-[#FFFFFF] h-[44px] w-[162px] justify-center">
+                                <Image src="/icons/plus-sign.svg" height={18} width={18} alt="Plus Sign" />
+                                <span className="text-[#9012FF] font-semibold text-sm">Add Section</span>
+                              </button>
+                              <button
+                                onClick={() => fetchQuestions(section.id, section.sectionName)}
+                                className="flex flex-row gap-1 items-center rounded-md border-[2px] border-solid border-[#9012FF] hover:bg-[#F5F0FF] bg-[#FFFFFF] h-[44px] w-[162px] justify-center">
+                                <Image src="/icons/plus-sign.svg" height={18} width={18} alt="Plus Sign" />
+                                <span className="text-[#9012FF] font-semibold text-sm">Add Question</span>
+                              </button>
+                            </div>
+                          </div>
+                        )}
+
+                      </>
                     )}
 
                   </Collapsible>
@@ -1183,9 +1091,65 @@ const Sections: React.FC<SectionsProps> = ({
       {/* Create Section Dialog */}
       {/* Your existing Dialog component code remains the same */}
       {/* Create Section Dialog */}
+      {/* <Dialog open={isCreateSection} onClose={() => setIsCreateSection(false)}>
+        <DialogBackdrop className="fixed inset-0 bg-black/30" />
+        <div className="fixed inset-0 flex items-center justify-center">
+          <DialogPanel className="bg-white rounded-2xl w-[559px] h-auto">
+            <div className="flex flex-col gap-6">
+              <div className="flex flex-row justify-between items-center px-6 pt-4">
+                <h3 className="text-2xl font-semibold text-[#1D2939]">{isSectionEditing ? 'Edit Section' : 'Create Section'}</h3>
+                <button onClick={() => setIsCreateSection(false)}>
+                  <Image src="/icons/cancel.svg" alt="Cancel" width={20} height={20} />
+                </button>
+              </div>
+              <div className="flex flex-col w-full gap-2 px-6">
+                <p className="text-start text-sm text-[#1D2939] font-medium">Name</p>
+                <div className="flex flex-row w-full h-10 px-3 outline-none border border-[#D0D5DD] rounded-md">
+                  <input
+                    type="text"
+                    className="w-full text-sm text-[#182230] font-normal outline-none rounded-md"
+                    placeholder="Enter Name"
+                    value={sectionName}
+                    onChange={(e) => setSectionName(e.target.value)}
+                  />
+                </div>
+              </div>  
+              <div className="flex flex-col w-full gap-2 px-6 mb-2">
+                <p className="text-start text-lg text-[#1D2939] font-semibold">Schedule Section</p>
+                <DatePicker
+                  granularity="minute"
+                  minValue={today(getLocalTimeZone())}
+                  // value={dateForPicker}
+                  value={sectionScheduleDate ? parseDateTime(sectionScheduleDate) : undefined}
+                  hideTimeZone
+                  onChange={handleDateChange}
+                />
+              </div>
+              <hr />
+              <div className="flex flex-row justify-end mx-6 my-2 items-center gap-4 pb-2">
+                <button
+                  onClick={() => setIsCreateSection(false)}
+                  className="py-[0.625rem] px-6 border-[1.5px] border-lightGrey rounded-md text-[#1D2939] font-semibold text-sm"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleAddSection}
+                  disabled={isSectionButtonDisabled}
+                  className={`py-[0.625rem] px-6 text-white shadow-inner-button border border-white ${isSectionButtonDisabled ? 'bg-[#CDA0FC]' : 'bg-[#9012FF]'
+                    } rounded-md font-semibold text-sm`}
+                >
+                  {isSectionEditing ? 'Save Changes' : 'Create Section'}
+                </button>
+              </div>
+            </div>
+          </DialogPanel>
+        </div>
+      </Dialog> */}
       <Modal isOpen={isCreateSection} onOpenChange={(isOpen) => !isOpen && setIsCreateSection(false)} hideCloseButton
-        size="lg"
+        size="md"
       >
+
         <ModalContent>
           <>
             <ModalHeader className="flex flex-row justify-between items-center gap-1">
@@ -1235,71 +1199,6 @@ const Sections: React.FC<SectionsProps> = ({
           </>
         </ModalContent>
       </Modal >
-      {/* Delete section Dialog */}
-      <Modal
-        isOpen={deletedialog}
-        onOpenChange={(isOpen) => {
-          if (!isOpen) {
-            setDeletedialog(false);
-            setSectionToDelete(null);
-            setSubsectionToDelete(null);
-          }
-        }}
-        hideCloseButton
-      >
-        <ModalContent>
-          <>
-            {/* Modal Header */}
-            <ModalHeader className="flex flex-row justify-between gap-1">
-              <h1 className="text-[#1D2939] font-bold text-lg">
-                Delete
-              </h1>
-              <button
-                className="w-[32px] h-[32px] rounded-full flex items-center justify-center hover:bg-[#F2F4F7]"
-                onClick={() => setDeletedialog(false)}
-                aria-label="Close dialog"
-              >
-                <Image src="/icons/cancel.svg" alt="Cancel" width={20} height={20} />
-              </button>
-            </ModalHeader>
-
-            {/* Modal Body */}
-            <ModalBody>
-              <div className="flex flex-col pb-2 gap-2">
-                <span className="text-sm font-normal text-[#667085]">
-                  Are you sure you want to delete this? This action cannot be undone.
-                </span>
-              </div>
-            </ModalBody>
-
-            {/* Modal Footer */}
-            <ModalFooter className="border-t border-lightGrey">
-              <button
-                className="py-[0.625rem] px-6 border-2 border-solid border-[#EAECF0] font-semibold text-sm text-[#1D2939] hover:bg-[#F2F4F7] rounded-md"
-                onClick={() => setDeletedialog(false)}
-              >
-                Cancel
-              </button>
-              <button
-                className="py-[0.625rem] px-6 text-white shadow-inner-button font-semibold bg-[#BB241A] hover:bg-[#B0201A]  border border-[#DE3024] rounded-md"
-                onClick={async () => {
-                  if (sectionToDelete) {
-                    await handleDeleteSection(sectionToDelete.id);
-                  } else if (subsectionToDelete) {
-                    await handleDeleteSubSection(
-                      subsectionToDelete.sectionId,
-                      subsectionToDelete.parentSectionId
-                    );
-                  }
-                  setDeletedialog(false);
-                }}
-              >
-                Delete
-              </button>
-            </ModalFooter>
-          </>
-        </ModalContent>
-      </Modal>
       {/*Question Save Dialog */}
       <Dialog open={saveQuestionDialog} onClose={() => setSaveQuestionDialog(false)}>
         <DialogBackdrop className="fixed inset-0 bg-black/30 " />
@@ -1468,5 +1367,3 @@ const Sections: React.FC<SectionsProps> = ({
 };
 
 export default Sections;
-
-
