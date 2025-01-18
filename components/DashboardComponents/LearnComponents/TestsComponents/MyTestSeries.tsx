@@ -50,13 +50,26 @@ function MyTestSeries() {
         for (const doc of snapshot.docs) {
           const testData = doc.data();
 
-          // Only process tests that are 'live' and the user has purchased it
+          // Only process tests that are 'live'
           if (testData.status === 'live') {
-            const studentsPurchasedCollection = collection(doc.ref, 'StudentsPurchased');
-            const studentDoc = await getDocs(studentsPurchasedCollection);
-            const studentPurchased = studentDoc.docs.some(student => student.id === currentUserId);
+            let shouldIncludeTest = false;
 
-            if (studentPurchased) {
+            // Check if test is part of a course
+            if (testData.isInCourse) {
+              // Check if user exists in studentsFromCourse map
+              const studentsFromCourse = testData.studentsFromCourse || [];
+              shouldIncludeTest = studentsFromCourse.some(
+                (student: { id: string; courseId: string }) => 
+                student.id === currentUserId
+              );
+            } else {
+              // Check individual purchase using StudentsPurchased collection
+              const studentsPurchasedCollection = collection(doc.ref, 'StudentsPurchased');
+              const studentDoc = await getDocs(studentsPurchasedCollection);
+              shouldIncludeTest = studentDoc.docs.some(student => student.id === currentUserId);
+            }
+
+            if (shouldIncludeTest) {
               // Initialize the counters for sections with questions and sections with StudentsAttempted
               let sectionsWithQuestionsCount = 0;
               let sectionsWithStudentsAttemptedCount = 0;
@@ -66,16 +79,13 @@ function MyTestSeries() {
                 const sectionCollection = collection(db, path);
                 const sectionSnapshot = await getDocs(sectionCollection);
 
-                // Loop through each section document
                 for (const sectionDoc of sectionSnapshot.docs) {
                   const sectionData = sectionDoc.data();
 
-                  // If the section has 'hasQuestions' set to true, increment the questions count
                   if (sectionData.hasQuestions === true) {
                     sectionsWithQuestionsCount += 1;
                   }
 
-                  // Check if the StudentsAttempted subcollection contains the current userId
                   const studentsAttemptedCollection = collection(sectionDoc.ref, 'StudentsAttempted');
                   const studentsAttemptedSnapshot = await getDocs(studentsAttemptedCollection);
 
@@ -83,22 +93,18 @@ function MyTestSeries() {
                     sectionsWithStudentsAttemptedCount += 1;
                   }
 
-                  // Recursively check if the section has sub-sections
                   const subSectionPath = `${path}/${sectionDoc.id}/sections`;
-                  await countSectionsWithQuestionsAndAttempts(subSectionPath); // Recurse for sub-collections
+                  await countSectionsWithQuestionsAndAttempts(subSectionPath);
                 }
               };
 
-              // Start the recursive counting from the root level of sections for this test
               await countSectionsWithQuestionsAndAttempts(`${doc.ref.path}/sections`);
 
-              // Calculate student progress as a percentage
               const studentProgress = sectionsWithQuestionsCount > 0
                 ? (sectionsWithStudentsAttemptedCount / sectionsWithQuestionsCount) * 100
                 : 0;
               const roundedProgress = Math.round(studentProgress);
 
-              // Push the test data along with the counts and student progress
               allTests.push({
                 testName: testData.testName,
                 price: testData.price,
@@ -110,7 +116,7 @@ function MyTestSeries() {
                 endDate: testData.endDate,
                 totalSectionsWithQuestions: sectionsWithQuestionsCount,
                 totalSectionsWithStudentsAttempted: sectionsWithStudentsAttemptedCount,
-                studentProgress: roundedProgress, // Add student progress to the test data
+                studentProgress: roundedProgress,
               });
             }
           }
@@ -129,7 +135,7 @@ function MyTestSeries() {
         if (user?.uid) {
           fetchTests(user.uid);
         } else {
-          setTests([]); // No user logged in
+          setTests([]);
           setLoading(false);
         }
       });
@@ -138,7 +144,7 @@ function MyTestSeries() {
     };
 
     initialize();
-  }, []); // Only trigger once on component mount
+  }, []);
 
   const handleTabClick = (path: string) => {
     router.push(path);
