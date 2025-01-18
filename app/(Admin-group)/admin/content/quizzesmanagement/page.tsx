@@ -94,7 +94,7 @@ const fetchQuizzes = (callback: (quizzes: Quiz[]) => void) => {
 };
 
 
-function Quizz() {
+const Quizz = () => {
     const [data, setData] = useState<Quiz[]>([]);
     const [quizzes, setQuizzes] = useState<Quiz[]>([]);
     const [currentPage, setCurrentPage] = useState(1);
@@ -129,6 +129,35 @@ function Quizz() {
     const [statusFilter, setStatusFilter] = useState(null);
     const isTextSearch = searchTerm.trim().length > 0 && !dateFilter && !statusFilter;
 
+    // const [sortConfig, setSortConfig] = useState({
+    //     key: '',
+    //     direction: 'asc'
+    // });
+
+    interface SortConfig {
+        key: string;
+        direction: 'asc' | 'desc';
+    }
+
+    const [sortConfig, setSortConfig] = useState<SortConfig>({
+        key: '',
+        direction: 'asc',
+    });
+
+    // Add sorting function
+    const sortData = (data: Quiz[], key: string, direction: 'asc' | 'desc') => {
+        return [...data].sort((a, b) => {
+            if (key === 'students') {
+                // Sort by student count
+                return direction === 'asc'
+                    ? a.students - b.students
+                    : b.students - a.students;
+            }
+            // Return 0 for unsupported sort keys
+            return 0;
+        });
+    };
+
     // Fetch quizzes when component mounts
     useEffect(() => {
         const loadQuizzes = () => {
@@ -147,19 +176,81 @@ function Quizz() {
     }, []);
 
     // Separate derived state logic
+    // useEffect(() => {
+    //     if (quizzes.length === 0) return; // Avoid unnecessary updates before data is fetched
+
+    //     let filteredQuizzes = quizzes;
+
+    //     // Filter by search term
+    //     if (searchTerm) {
+    //         filteredQuizzes = filteredQuizzes.filter((quiz) =>
+    //             quiz.title.toLowerCase().includes(searchTerm.toLowerCase())
+    //         );
+    //     }
+
+    //     // Filter by selected statuses
+    //     const selectedStatuses = Object.entries(checkedState)
+    //         .filter(([_, isChecked]) => isChecked)
+    //         .map(([status]) => statusMapping[status as Option])
+    //         .flat();
+
+    //     if (selectedStatuses.length > 0) {
+    //         filteredQuizzes = filteredQuizzes.filter((quiz) =>
+    //             selectedStatuses.includes(quiz.status)
+    //         );
+    //     }
+
+    //     // Filter by selected date
+    //     if (selectedDate) {
+    //         const selectedDateString = selectedDate instanceof Date && !isNaN(selectedDate.getTime())
+    //             ? selectedDate.toISOString().split('T')[0]
+    //             : null;
+
+    //         if (selectedDateString) {
+    //             filteredQuizzes = filteredQuizzes.filter((quiz) => {
+    //                 const quizDate = new Date(quiz.date);
+    //                 const quizDateString = quizDate instanceof Date && !isNaN(quizDate.getTime())
+    //                     ? quizDate.toISOString().split('T')[0]
+    //                     : null;
+
+    //                 return quizDateString === selectedDateString;
+    //             });
+    //         }
+    //     }
+
+    //     // Apply sorting if configured
+    //     if (sortConfig.key) {
+    //         processedData = sortData(processedData, sortConfig.key, sortConfig.direction);
+    //     }
+
+    //     // Sort by quizPublishedDate in ascending order
+    //     filteredQuizzes = filteredQuizzes.sort((a, b) => {
+    //         const dateA = new Date(a.date).getTime();
+    //         const dateB = new Date(b.date).getTime();
+
+    //         if (isNaN(dateA) || isNaN(dateB)) return 0; // Handle invalid dates gracefully
+
+    //         return dateA - dateB;
+    //     });
+
+    //     // Update state with filtered and sorted quizzes
+    //     setData(filteredQuizzes);
+    //     setCurrentPage(1); // Reset to the first page when filters change
+    // }, [searchTerm, checkedState, quizzes, selectedDate, sortConfig]);
+
     useEffect(() => {
-        if (quizzes.length === 0) return; // Avoid unnecessary updates before data is fetched
+        if (quizzes.length === 0) return;
 
         let filteredQuizzes = quizzes;
 
-        // Filter by search term
+        // Apply existing filters
         if (searchTerm) {
             filteredQuizzes = filteredQuizzes.filter((quiz) =>
                 quiz.title.toLowerCase().includes(searchTerm.toLowerCase())
             );
         }
 
-        // Filter by selected statuses
+        // Apply status filters
         const selectedStatuses = Object.entries(checkedState)
             .filter(([_, isChecked]) => isChecked)
             .map(([status]) => statusMapping[status as Option])
@@ -171,7 +262,7 @@ function Quizz() {
             );
         }
 
-        // Filter by selected date
+        // Apply date filter
         if (selectedDate) {
             const selectedDateString = selectedDate instanceof Date && !isNaN(selectedDate.getTime())
                 ? selectedDate.toISOString().split('T')[0]
@@ -189,20 +280,36 @@ function Quizz() {
             }
         }
 
-        // Sort by quizPublishedDate in ascending order
-        filteredQuizzes = filteredQuizzes.sort((a, b) => {
-            const dateA = new Date(a.date).getTime();
-            const dateB = new Date(b.date).getTime();
-
-            if (isNaN(dateA) || isNaN(dateB)) return 0; // Handle invalid dates gracefully
-
-            return dateA - dateB;
-        });
+        // Apply sorting if configured
+        if (sortConfig.key) {
+            filteredQuizzes = sortData(filteredQuizzes, sortConfig.key, sortConfig.direction);
+        }
 
         // Update state with filtered and sorted quizzes
         setData(filteredQuizzes);
-        setCurrentPage(1); // Reset to the first page when filters change
-    }, [searchTerm, checkedState, quizzes, selectedDate]);
+        setCurrentPage(1); // Reset to first page when filters/sort change
+    }, [searchTerm, checkedState, quizzes, selectedDate, sortConfig]);
+
+    // const handleSort = (key) => {
+    //     setSortConfig((prevConfig) => ({
+    //         key,
+    //         direction:
+    //             prevConfig.key === key && prevConfig.direction === 'asc'
+    //                 ? 'desc'
+    //                 : 'asc'
+    //     }));
+    // };
+
+    const handleSort = (key: keyof Quiz) => {
+        setSortConfig((prevConfig) => ({
+            key,
+            direction:
+                prevConfig.key === key && prevConfig.direction === 'asc'
+                    ? 'desc'
+                    : 'asc',
+        }));
+    };
+
     const lastItemIndex = currentPage * itemsPerPage;
     const firstItemIndex = lastItemIndex - itemsPerPage;
 
@@ -455,21 +562,29 @@ function Quizz() {
                                     <tr>
                                         <th className="w-1/4 text-left px-8 py-4 pl-8 rounded-tl-xl text-[#667085] font-medium text-sm">Quizzes</th>
                                         <th className="w-[17%] text-center px-8 py-4 text-[#667085] font-medium text-sm">
-                                            <div className="flex flex-row justify-center gap-1">
+                                            <div className="flex flex-row justify-center gap-1 cursor-pointer">
                                                 <p>Questions</p>
                                                 <Image src='/icons/unfold-more-round.svg' alt="more" width={16} height={16} />
                                             </div>
                                         </th>
                                         <th className="w-[17%] text-center px-8 py-4 text-[#667085] font-medium text-sm">
-                                            <div className="flex flex-row justify-center gap-1">
+                                            <div className="flex flex-row justify-center gap-1 cursor-pointer">
                                                 <p>Published on</p>
                                                 <Image src='/icons/unfold-more-round.svg' alt="more" width={16} height={16} />
                                             </div>
                                         </th>
                                         <th className="w-[17%] text-center px-8 py-4 text-[#667085] font-medium text-sm">
-                                            <div className="flex flex-row justify-center gap-1">
+                                            <div
+                                                className="flex flex-row justify-center gap-1 cursor-pointer"
+                                                onClick={() => handleSort('students')}
+                                            >
                                                 <p className="whitespace-nowrap">Students Attempted</p>
-                                                <Image src='/icons/unfold-more-round.svg' alt="more" width={16} height={16} />
+                                                <Image
+                                                    src={'/icons/unfold-more-round.svg'}
+                                                    alt="sort"
+                                                    width={16}
+                                                    height={16}
+                                                />
                                             </div>
                                         </th>
                                         <th className="w-[17%] text-center px-8 py-4 rounded-tr-xl text-[#667085] font-medium text-sm">Status</th>

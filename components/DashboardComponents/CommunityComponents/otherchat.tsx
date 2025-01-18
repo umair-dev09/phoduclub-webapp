@@ -56,6 +56,7 @@ type ReactionCount = {
   emoji: string;
   count: number;
 };
+
 type UserData = {
   name: string;
   profilePic: string;
@@ -63,6 +64,20 @@ type UserData = {
   isPremium: string;
   userId: string;
 };
+
+interface Mention {
+  id: string;
+  userId: string;
+  isAdmin: boolean;
+}
+
+interface Props {
+  highlightedText: string | React.ReactNode[];
+  mentions: Mention[];
+  setOpenDialogue: (open: boolean) => void;
+  setId: (id: string) => void;
+  setAdmin: (isAdmin: boolean) => void;
+}
 
 function OtherChat({ message, currentUserId, adminThatDeletedId, isDeletedByAdmin, isCurrentUserAdmin, setLoading, mentions, isDeleted, highlightedText, messageType, fileUrl, fileName, isHighlighted, isAdmin, scrollToReply, fileSize, senderId, timestamp, communityId, headingId, channelId, chatId, isReplying, replyingToId, replyingToChatId, replyingToFileName, replyingToFileUrl, replyingToMsg, replyingToMsgType, setShowReplyLayout, handleReply }: OtherChatProps) {
   const [reactions, setReactions] = useState<ReactionCount[]>([]);
@@ -75,6 +90,14 @@ function OtherChat({ message, currentUserId, adminThatDeletedId, isDeletedByAdmi
   const [userLoading, setUserLoading] = useState(true);
   const [id, setId] = useState<string>('');
   const [admin, setAdmin] = useState<boolean>(false);
+  const [isExpanded, setIsExpanded] = useState(false);
+
+  useEffect(() => {
+    if (!isOpen) {
+      setIsExpanded(false);
+    }
+  }, [isOpen]);
+
   useEffect(() => {
     if (!senderId) return;
     const fetchUserData = async () => {
@@ -134,10 +157,92 @@ function OtherChat({ message, currentUserId, adminThatDeletedId, isDeletedByAdmi
   }, [reactionsRef]);
 
 
+  // const renderMessageWithMentions = () => {
+  //   if (!highlightedText || !mentions) return highlightedText;
+
+  //   // Helper function to check if text is a URL
+  //   const isUrl = (text: string) => {
+  //     try {
+  //       new URL(text);
+  //       return true;
+  //     } catch {
+  //       return false;
+  //     }
+  //   };
+
+  //   // Helper function to process text parts
+  //   const processTextPart = (text: string, key: number | string) => {
+  //     // Check if the text is a URL
+  //     if (isUrl(text)) {
+  //       return (
+  //         <a
+  //           key={key}
+  //           href={text}
+  //           target="_blank"
+  //           rel="noopener noreferrer"
+  //           className="text-blue-200 hover:underline"
+  //         >
+  //           {text}
+  //         </a>
+  //       );
+  //     }
+  //     return text;
+  //   };
+
+  //   const processMention = (part: string, index: number | string) => {
+  //     if (part.startsWith("@")) {
+  //       const mentionName = part.substring(1).trim(); // Remove '@' and trim whitespace
+
+  //       // Match mention by checking userId or id
+  //       const mention = mentions.find((m) => m.userId === mentionName || m.id === mentionName);
+
+  //       if (mention) {
+  //         return (
+  //           <span
+  //             key={index}
+  //             style={{ color: "#C74FE6", cursor: "pointer" }}
+  //             onClick={() => {
+  //               setOpenDialogue(true);
+  //               setId(mention.id);
+  //               setAdmin(mention.isAdmin);
+  //             }}
+  //           >
+  //             {part} {/* Keep the full mention, including '@' */}
+  //           </span>
+  //         );
+  //       }
+
+  //       console.log("Mention Not Found for:", mentionName);
+  //     }
+  //     return processTextPart(part, index);
+  //   };
+
+  //   // Updated regex to handle @mentions including # and numbers
+  //   const mentionRegex = /(@[\w#]+|\s+)/;
+
+  //   if (typeof highlightedText === "string") {
+  //     const parts = highlightedText.split(mentionRegex);
+  //     return parts.map((part, index) => processMention(part, index));
+  //   }
+
+  //   if (Array.isArray(highlightedText)) {
+  //     return highlightedText.map((node, index) => {
+  //       if (typeof node === "string") {
+  //         const parts = node.split(mentionRegex);
+  //         return parts.map((part, innerIndex) => processMention(part, `${index}-${innerIndex}`));
+  //       }
+  //       return node;
+  //     });
+  //   }
+
+  //   return null;
+  // };
+
   const renderMessageWithMentions = () => {
     if (!highlightedText || !mentions) return highlightedText;
-  
-    // Helper function to check if text is a URL
+
+    const maxWords = 30;
+
     const isUrl = (text: string) => {
       try {
         new URL(text);
@@ -146,10 +251,8 @@ function OtherChat({ message, currentUserId, adminThatDeletedId, isDeletedByAdmi
         return false;
       }
     };
-  
-    // Helper function to process text parts
+
     const processTextPart = (text: string, key: number | string) => {
-      // Check if the text is a URL
       if (isUrl(text)) {
         return (
           <a
@@ -165,14 +268,12 @@ function OtherChat({ message, currentUserId, adminThatDeletedId, isDeletedByAdmi
       }
       return text;
     };
-  
+
     const processMention = (part: string, index: number | string) => {
       if (part.startsWith("@")) {
-        const mentionName = part.substring(1).trim(); // Remove '@' and trim whitespace
-  
-        // Match mention by checking userId or id
+        const mentionName = part.substring(1).trim();
         const mention = mentions.find((m) => m.userId === mentionName || m.id === mentionName);
-  
+
         if (mention) {
           return (
             <span
@@ -184,37 +285,107 @@ function OtherChat({ message, currentUserId, adminThatDeletedId, isDeletedByAdmi
                 setAdmin(mention.isAdmin);
               }}
             >
-              {part} {/* Keep the full mention, including '@' */}
+              {part}
             </span>
           );
         }
-  
-        console.log("Mention Not Found for:", mentionName);
       }
       return processTextPart(part, index);
     };
-  
-    // Updated regex to handle @mentions including # and numbers
-    const mentionRegex = /(@[\w#]+|\s+)/;
-  
-    if (typeof highlightedText === "string") {
-      const parts = highlightedText.split(mentionRegex);
-      return parts.map((part, index) => processMention(part, index));
-    }
-  
-    if (Array.isArray(highlightedText)) {
-      return highlightedText.map((node, index) => {
-        if (typeof node === "string") {
-          const parts = node.split(mentionRegex);
-          return parts.map((part, innerIndex) => processMention(part, `${index}-${innerIndex}`));
-        }
-        return node;
-      });
-    }
-  
-    return null;
+
+    // Regex to find mentions
+    const mentionRegex = /(@[\w#]+)/g;
+
+    const processHighlightedText = () => {
+      if (typeof highlightedText === "string") {
+        const parts = highlightedText.split(mentionRegex);
+        return parts.map((part, index) => processMention(part, index));
+      }
+
+      if (Array.isArray(highlightedText)) {
+        return highlightedText.map((node, index) => {
+          if (typeof node === "string") {
+            const parts = node.split(mentionRegex);
+            return parts.map((part, innerIndex) => processMention(part, `${index}-${innerIndex}`));
+          }
+          return node;
+        });
+      }
+      return null;
+    };
+
+    const fullContent = processHighlightedText();
+
+    const getWordCount = (content: any): number => {
+      if (typeof content === "string") {
+        return content.trim().split(/\s+/).length;
+      }
+      if (Array.isArray(content)) {
+        return content.reduce((count, node) => {
+          if (typeof node === "string") {
+            return count + node.trim().split(/\s+/).length;
+          }
+          return count;
+        }, 0);
+      }
+      return 0;
+    };
+
+    const wordCount = getWordCount(fullContent);
+
+    // Limit to 20 words initially if not expanded
+    const getTruncatedContent = () => {
+      if (isExpanded) {
+        return fullContent;  // Show full content when expanded
+      }
+
+      if (wordCount <= maxWords) {
+        return fullContent;  // Show full content if less than maxWords
+      }
+
+      if (typeof highlightedText === "string") {
+        const words = highlightedText.split(/\s+/);
+        return words.slice(0, maxWords).join(" ") + "...";  // Show truncated content
+      }
+
+      if (Array.isArray(fullContent)) {
+        let wordCounter = 0;
+        return fullContent.reduce((acc: React.ReactNode[], node) => {
+          if (wordCounter >= maxWords) return acc;
+
+          if (typeof node === "string") {
+            const words = node.split(/\s+/);
+            const remainingWords = maxWords - wordCounter;
+            wordCounter += words.length;
+            if (wordCounter > maxWords) {
+              acc.push(words.slice(0, remainingWords).join(" ") + "...");
+            } else {
+              acc.push(node);
+            }
+          } else {
+            acc.push(node);
+            wordCounter += 1;
+          }
+          return acc;
+        }, []);
+      }
+      return null;
+    };
+
+    return (
+      <div>
+        <span>{getTruncatedContent()}</span>
+        {wordCount > maxWords && !isExpanded && (
+          <button
+            onClick={() => setIsExpanded(true)}
+            className="text-blue-500 hover:underline ml-2"
+          >
+            View More
+          </button>
+        )}
+      </div>
+    );
   };
-  
 
   const handleReplyMessage = () => {
     setShowReplyLayout(true);
@@ -348,9 +519,7 @@ function OtherChat({ message, currentUserId, adminThatDeletedId, isDeletedByAdmi
   // }, [isDeletedByAdmin, adminThatDeletedId]);
   return (
     <div className="w-full h-auto flex flex-col pr-[10%] ">
-
       <div className="gap-2 flex items-center">
-
         <button className="relative" onClick={() => { setOpenDialogue(true); setId(senderId || ''); setAdmin(isAdmin) }}>
           {userLoading ? (
             <Skeleton width={40} height={40} borderRadius={1000} />
@@ -370,11 +539,8 @@ function OtherChat({ message, currentUserId, adminThatDeletedId, isDeletedByAdmi
         {showBookmark && (<Image src='/icons/bookmark1.svg' alt='Bookmark icon' width={12} height={12} />)}
       </div>
 
-
-
       <div className="ml-11 flex flex-row gap-2 items-center relative group">
         <div className={`flex flex-col px-4 py-3 transition-all duration-500 border border-[#EAECF0] ${isHighlighted ? 'bg-[#EAECF0]' : 'bg-white'} rounded-xl gap-[8px]  ${messageType === 'image' || messageType === 'document' ? 'max-w-[380px]' : 'max-w-[600px]'} `}>
-
           {/*Image Layout*/}
           {messageType === 'image' && !isDeleted && fileUrl && (
             <div>
@@ -450,11 +616,8 @@ function OtherChat({ message, currentUserId, adminThatDeletedId, isDeletedByAdmi
                 {renderMessageWithMentions()}
               </div>
             )}
-
           </div>
-
         </div>
-
 
         <Popover
           placement="bottom-start"
@@ -543,11 +706,9 @@ function OtherChat({ message, currentUserId, adminThatDeletedId, isDeletedByAdmi
                   <span className='font-normal text-[#DE3024] text-sm'>Delete Message</span>
                 </button>
               )}
-
             </div>
           </PopoverContent>
         </Popover>
-
       </div>
       {!isDeleted && (
         <div className="flex flex-row justify-start mt-1 gap-2 h-auto w-full ml-11 flex-wrap">
@@ -567,9 +728,7 @@ function OtherChat({ message, currentUserId, adminThatDeletedId, isDeletedByAdmi
       {showMediaDialog && <MediaViewDialog open={true} onClose={() => setShowMediaDialog(false)} src={fileUrl} mediaType={messageType || ''} />}
 
       {openDialogue && (
-
-        <MemberClickDialog open={true} onClose={() => setOpenDialogue(false)} id={id} isAdmin={admin} isCurrentUserAdmin={false}/>
-
+        <MemberClickDialog open={true} onClose={() => setOpenDialogue(false)} id={id} isAdmin={admin} isCurrentUserAdmin={false} />
       )}
 
       {deleteDialog && <Delete communityId={communityId} headingId={headingId} channelId={channelId} chatId={chatId} open={true} onClose={() => setDeleteDialog(false)} deletedByAdmin={true} adminThatDeletedId={auth.currentUser?.uid || ''} />}
