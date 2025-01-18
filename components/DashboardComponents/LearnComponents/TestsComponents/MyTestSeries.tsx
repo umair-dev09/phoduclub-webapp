@@ -5,7 +5,7 @@ import { useRouter, usePathname } from "next/navigation";
 import LoadingData from "@/components/Loading";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth, db } from "@/firebase";
-import { collection, getDocs, onSnapshot } from "@firebase/firestore";
+import { collection, getDocs, onSnapshot, doc as firestoreDoc, getDoc } from "@firebase/firestore";
 import { Progress } from "@nextui-org/progress";
 
 interface TestData {
@@ -20,6 +20,8 @@ interface TestData {
   totalSectionsWithQuestions: number;
   totalSectionsWithStudentsAttempted: number;
   studentProgress: number;
+  courseName: string;
+  isInCourse?: boolean;
 }
 
 function formatExpiryDate(inputDate: string) {
@@ -53,15 +55,26 @@ function MyTestSeries() {
           // Only process tests that are 'live'
           if (testData.status === 'live') {
             let shouldIncludeTest = false;
+            let courseName = '';
 
             // Check if test is part of a course
             if (testData.isInCourse) {
               // Check if user exists in studentsFromCourse map
               const studentsFromCourse = testData.studentsFromCourse || [];
-              shouldIncludeTest = studentsFromCourse.some(
+              const studentData = studentsFromCourse.find(
                 (student: { id: string; courseId: string }) => 
                 student.id === currentUserId
               );
+              
+              if (studentData) {
+                shouldIncludeTest = true;
+                // Fetch course name using courseId
+                const courseDocRef = firestoreDoc(db, 'course', studentData.courseId);
+                const courseDoc = await getDoc(courseDocRef);
+                if (courseDoc.exists()) {
+                  courseName = courseDoc.data().courseName || '';
+                }
+              }
             } else {
               // Check individual purchase using StudentsPurchased collection
               const studentsPurchasedCollection = collection(doc.ref, 'StudentsPurchased');
@@ -117,6 +130,8 @@ function MyTestSeries() {
                 totalSectionsWithQuestions: sectionsWithQuestionsCount,
                 totalSectionsWithStudentsAttempted: sectionsWithStudentsAttemptedCount,
                 studentProgress: roundedProgress,
+                isInCourse: testData.isInCourse,
+                courseName: courseName, // Added courseName to the test data
               });
             }
           }
@@ -171,12 +186,13 @@ function MyTestSeries() {
 
                   {/* Test image and suggestion label container */}
                   <div className="flex w-full h-[50%] items-center flex-col">
-                    {/* <div className="flex items-center absolute top-3 left-5 mr-5 bg-[#c74fe6] bg-opacity-80 text-xs font-medium border border-[#c74fe6] text-white rounded-full px-3 py-2 z-10 transition-transform duration-300 ease-in-out">
-                            <p>JEE Mains Test</p>
-                        </div> */}
+                    {test.isInCourse && (
+                    <div className="flex items-center absolute top-3 left-5 mr-5 bg-[#c74fe6] bg-opacity-80 text-xs font-medium border border-[#c74fe6] text-white rounded-full px-3 py-2 z-10 transition-transform duration-300 ease-in-out">
+                            <p>{test.courseName}</p>
+                        </div>
+                     )}
                     <Image className="w-full h-[300px]" src={test.testImage || "/images/course_img.svg"} alt="Test" width={300} height={300} />
                   </div>
-
                   {/* Test details container */}
                   <div className="flex w-full h-full flex-col bg-white border border-[#EAECF0] border-t-0 rounded-br-lg rounded-bl-lg px-6">
 
