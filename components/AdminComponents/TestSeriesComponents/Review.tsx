@@ -28,6 +28,7 @@ interface Section {
   nMarksPerQ: string;
   testTime: string;
   Questions?: Question[];
+  isUmbrellaTest: boolean;
 
 }
 interface Question {
@@ -116,11 +117,12 @@ function Review({ name, testId, description, testImage, price, rating, discountP
                     order: subsectionData.order || 0,
                     hasQuestions: subsectionData.hasQuestions || false,
                     sections: [],
-                    description: sectionData.description,
-                    marksPerQ: sectionData.marksPerQ,
-                    nMarksPerQ: sectionData.nMarksPerQ,
-                    testTime: sectionData.testTime,
+                    description: subsectionData.description,
+                    marksPerQ: subsectionData.marksPerQ,
+                    nMarksPerQ: subsectionData.nMarksPerQ,
+                    testTime: subsectionData.testTime,
                     Questions: [],
+                    isUmbrellaTest: subsectionData.isUmbrellaTest || false,
                   };
                 })
               );
@@ -149,6 +151,7 @@ function Review({ name, testId, description, testImage, price, rating, discountP
                 nMarksPerQ: sectionData.nMarksPerQ,
                 testTime: sectionData.testTime,
                 Questions: questionsss,
+                isUmbrellaTest: sectionData.isUmbrellaTest || false,
               };
             })
           );
@@ -413,9 +416,9 @@ function Review({ name, testId, description, testImage, price, rating, discountP
           ) : (
             <div className='flex flex-col gap-4 pb-12'>
               {sectionss.map((section, index) => (
-                <div key={index} className={`${section.hasQuestions ? '' : 'cursor-pointer'} flex flex-row items-center justify-between px-6 py-4 bg-white border border-lightGrey rounded-xl`}
+                <div key={index} className={`${section.hasQuestions || section.isUmbrellaTest? '' : 'cursor-pointer'} flex flex-row items-center justify-between px-6 py-4 bg-white border border-lightGrey rounded-xl`}
                   onClick={() => {
-                    if (section.hasQuestions) {
+                    if (section.hasQuestions || section.isUmbrellaTest) {
                       // Do nothing if section.hasQuestion is true
                       return;
                     }
@@ -431,7 +434,7 @@ function Review({ name, testId, description, testImage, price, rating, discountP
                     )}
                   </div>
                   <div>
-                    {section.hasQuestions ? (
+                    {(section.hasQuestions || section.isUmbrellaTest) ? (
                       <button className='w-[7.25rem] h-9 px-[0.875rem] py-[0.625rem] text-white text-xs font-semibold bg-[#9012FF] border border-[#800EE2] rounded-[6px] shadow-inner-button transition-colors duration-150 hover:bg-[#6D0DCC]'
                         onClick={() => {
                           const sectionIds = getSectionPath(section.id);
