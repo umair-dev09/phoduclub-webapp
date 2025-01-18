@@ -156,33 +156,61 @@ function ScheduledDialog({ startDate, endDate, setEndDate, setStartDate, fromCon
                             <div className="grid grid-cols-2 gap-6">
                                 <div className="space-y-2">
                                     <span className="font-medium text-[#1D2939] text-sm">Start Date & Time</span>
-                                    <DatePicker
-                                        granularity="minute"
-                                        minValue={today(getLocalTimeZone())}
-                                        isDisabled={liveNow}
-                                        value={startDate ? parseDateTime(startDate) : undefined}
-                                        hideTimeZone
-                                        onChange={(date) => {
-                                            const dateString = date ? date.toString() : "";
-                                            setStartDate(dateString);
-                                        }}
-                                    />
-
+                                    {/* <div className="flex justify-between items-center">
+                                        <p className="text-[#1D2939] text-sm font-medium">
+                                            {formatScheduleDate(startDate)}
+                                        </p>
+                                        <button
+                                            className="px-3 py-2 rounded-md border-2 border-[#9012FF] hover:bg-[#F5F0FF] transition-colors"
+                                            onClick={() => setDatapickerforStart(!datapickerforStart)}
+                                        >
+                                            <span className="text-[#9012FF] font-semibold text-sm">
+                                                {startDate ? 'Change Date' : 'Select Date'}
+                                            </span>
+                                        </button>
+                                    </div> */}
+                                    {datapickerforStart && (
+                                        <DatePicker
+                                            granularity="minute"
+                                            minValue={today(getLocalTimeZone())}
+                                            isDisabled={liveNow}
+                                            value={startDate ? parseDateTime(startDate) : undefined}
+                                            hideTimeZone
+                                            onChange={(date) => {
+                                                setStartDate(date ? date.toString() : "");
+                                                setDatapickerforStart(false);
+                                            }}
+                                        />
+                                    )}
                                 </div>
 
                                 <div className="space-y-2">
                                     <span className="font-medium text-[#1D2939] text-sm">End Date & Time</span>
-                                    <DatePicker
-                                        granularity="minute"
-                                        minValue={today(getLocalTimeZone())}
-                                        value={endDate ? parseDateTime(endDate) : undefined}
-                                        hideTimeZone
-                                        onChange={(date) => {
-                                            const dateString = date ? date.toString() : "";
-                                            setEndDate(dateString);
-                                        }}
-                                    />
-
+                                    {/* <div className="flex justify-between items-center">
+                                        <p className="text-[#1D2939] text-sm font-medium">
+                                            {formatScheduleDate(endDate)}
+                                        </p>
+                                        <button
+                                            className="px-3 py-2 rounded-md border-2 border-[#9012FF] hover:bg-[#F5F0FF] transition-colors"
+                                            onClick={() => setDatapickerforEnd(!datapickerforEnd)}
+                                        >
+                                            <span className="text-[#9012FF] font-semibold text-sm">
+                                                {endDate ? 'Change Date' : 'Select Date'}
+                                            </span>
+                                        </button>
+                                    </div> */}
+                                    {datapickerforEnd && (
+                                        <DatePicker
+                                            granularity="minute"
+                                            minValue={today(getLocalTimeZone())}
+                                            value={endDate ? parseDateTime(endDate) : undefined}
+                                            hideTimeZone
+                                            onChange={(date) => {
+                                                setEndDate(date ? date.toString() : "");
+                                                setDatapickerforEnd(false);
+                                            }}
+                                        />
+                                    )}
                                 </div>
                             </div>
                         </div>

@@ -784,7 +784,6 @@ function Messenger() {
                                     <DatePicker
                                         granularity="minute"
                                         minValue={today(getLocalTimeZone())}
-                                        value={startDate ? parseDateTime(startDate) : undefined}
                                         hideTimeZone
                                         onChange={(date) => {
                                             const dateString = date ? date.toString() : "";
@@ -810,7 +809,6 @@ function Messenger() {
                                     <DatePicker
                                         granularity="minute"
                                         minValue={today(getLocalTimeZone())}
-                                        value={endDate ? parseDateTime(endDate) : undefined}
                                         hideTimeZone
                                         onChange={(date) => {
                                             const dateString = date ? date.toString() : "";

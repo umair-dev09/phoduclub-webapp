@@ -39,9 +39,10 @@ function Chemisty() {
     const [chapterName, setChapterName] = useState('');
     const [priority, setPriority] = useState('');
     const [chapterId, setChapterId] = useState('');
+    const isTextSearch = searchTerm.trim().length > 0;
 
-      // Real-time listener to fetch users and update state when data changes
-      useEffect(() => {
+    // Real-time listener to fetch users and update state when data changes
+    useEffect(() => {
         const sptCollection = collection(db, 'spt');
         const unsubscribe = onSnapshot(sptCollection, (snapshot) => {
             const updatedSubjects: Subject[] = snapshot.docs
@@ -55,16 +56,15 @@ function Chemisty() {
                     } as Subject;
                 })
                 .filter((subject) => subject.subject === 'chemistry'); // Filter only Chemistry subjects
-    
+
             setSubjects(updatedSubjects);
             setData(updatedSubjects); // Update data for pagination and search
             setLoading(false);
         });
-    
+
         // Cleanup listener on component unmount
         return () => unsubscribe();
     }, []);
-    
 
     const lastItemIndex = currentPage * itemsPerPage;
     const firstItemIndex = lastItemIndex - itemsPerPage;
@@ -88,7 +88,6 @@ function Chemisty() {
     const handlePopoverOpen = (index: number) => {
         setActivePopover(index);
     };
-
 
     return (
         <div className="flex flex-col w-full gap-4 ">
@@ -214,10 +213,17 @@ function Chemisty() {
                                         ))
                                     ) : (
                                         <tr className='border-t border-lightGrey'>
-                                            <td colSpan={3} className="text-center py-8">
-                                                <div className="flex flex-col items-center justify-center gap-2">
-                                                    <p className="text-[#667085] text-sm">No chapters found for &quot;{searchTerm}&quot;</p>
-                                                </div>
+                                            <td colSpan={6} className="text-center py-8">
+                                                {isTextSearch && (
+                                                    <p className="text-[#667085] text-sm">
+                                                        No chapters found for &quot;{searchTerm}&quot;
+                                                    </p>
+                                                )}
+                                                {!isTextSearch && (
+                                                    <p className="text-[#667085] text-sm">
+                                                        No chapters found
+                                                    </p>
+                                                )}
                                             </td>
                                         </tr>
                                     )}
@@ -255,7 +261,7 @@ function Chemisty() {
                 />
             )}
             {isdelete && (
-                <DeleteDialog open={isdelete} onClose={() => setIsdelete(false)} chapterId={chapterId} chapterName={chapterName}/>
+                <DeleteDialog open={isdelete} onClose={() => setIsdelete(false)} chapterId={chapterId} chapterName={chapterName} />
             )}
         </div>
     )

@@ -100,7 +100,7 @@ function Video({ isOpen, toggleDrawer, sectionId, courseId, isEditing, contentId
             setDisscusionOpen(false);
             setVideoId('');
             setSelectedFile(null);
-
+            formatScheduleDate
         }
     }, [isEditing, contentId]);
 

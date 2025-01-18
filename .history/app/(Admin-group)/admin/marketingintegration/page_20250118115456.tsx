@@ -781,45 +781,44 @@ function Messenger() {
                                             <span className="text-[#9012FF] font-semibold text-sm">{isEditing ? 'Change Date' : 'Select Date'}</span>
                                         </button>
                                     </div> */}
-                                    <DatePicker
-                                        granularity="minute"
-                                        minValue={today(getLocalTimeZone())}
-                                        value={startDate ? parseDateTime(startDate) : undefined}
-                                        hideTimeZone
-                                        onChange={(date) => {
-                                            const dateString = date ? date.toString() : "";
-                                            setStartDate(dateString);
+                                    {(datapickerforStart &&
+                                        <DatePicker
+                                            granularity="minute"
+                                            minValue={today(getLocalTimeZone())}
+                                            hideTimeZone
+                                            onChange={(date) => {
+                                                const dateString = date ? date.toString() : "";
+                                                setStartDate(dateString);
 
-                                        }}
+                                            }}
 
-                                    />
-
+                                        />
+                                    )}
                                 </div>
                                 <div className='flex flex-col w-full gap-1'>
                                     <span className='font-medium text-[#1D2939] text-sm'>End Date & Time</span>
 
-                                    {/* <div className="flex flex-row justify-between items-center mb-3">
+                                    <div className="flex flex-row justify-between items-center mb-3">
                                         <p className="text-[#1D2939] text-sm font-medium">  {formatScheduleDate(endDate) || " "}</p>
                                         <button
                                             className="flex flex-row gap-1 rounded-md border-[2px] border-solid border-[#9012FF] hover:bg-[#F5F0FF] bg-[#FFFFFF] p-2 "
                                             onClick={() => setDatapickerforEnd(!datapickerforEnd)}>
                                             <span className="text-[#9012FF] font-semibold text-sm">{isEditing ? 'Change Date' : 'Select Date'}</span>
                                         </button>
-                                    </div> */}
+                                    </div>
+                                    {(datapickerforEnd &&
+                                        <DatePicker
+                                            granularity="minute"
+                                            minValue={today(getLocalTimeZone())}
+                                            hideTimeZone
+                                            onChange={(date) => {
+                                                const dateString = date ? date.toString() : "";
+                                                setEndDate(dateString);
 
-                                    <DatePicker
-                                        granularity="minute"
-                                        minValue={today(getLocalTimeZone())}
-                                        value={endDate ? parseDateTime(endDate) : undefined}
-                                        hideTimeZone
-                                        onChange={(date) => {
-                                            const dateString = date ? date.toString() : "";
-                                            setEndDate(dateString);
+                                            }}
 
-                                        }}
-
-                                    />
-
+                                        />
+                                    )}
 
                                 </div>
                             </div>
