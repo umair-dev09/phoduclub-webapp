@@ -1043,14 +1043,10 @@ const Sections: React.FC<SectionsProps> = ({
                               <Image src="/icons/schedule.svg" width={14} height={14} alt="schedule" />
                               <p className="text-sm text-[#475467]">Schedule: <span className="font-medium ml-1 text-black">{formatScheduleDate(subsection.sectionScheduleDate)}</span></p>
                               <Popover placement="bottom-end"
-                                isOpen={popoveropen2?.sectionId === section.id && popoveropen2?.subsectionId === subsection.id}
-                                onOpenChange={(open) =>
-                                  open
-                                    ? handlePopoverOpen2(section.id, subsection.id)
-                                    : setPopoveropen2(null)
-                                }>
+                                isOpen={popoveropen2 === section.id, subsection.id}
+                                onOpenChange={(open) => open ? handlePopoverOpen2(section.id, subsection.id) : setPopoveropen2(null)}>
                                 <PopoverTrigger>
-                                  <button className="ml-[6px] outline-none">
+                                  <button className="ml-[6px]">
                                     <Image
                                       src="/icons/three-dots.svg"
                                       width={20}
@@ -1059,18 +1055,19 @@ const Sections: React.FC<SectionsProps> = ({
                                     />
                                   </button>
                                 </PopoverTrigger>
-                                <PopoverContent className="w-[10.438rem] py-1 px-0 bg-white border border-lightGrey rounded-md">
-                                  <button className=" flex flex-row items-center justify-start w-full py-[0.625rem] px-4 gap-2 hover:bg-[#FEE4E2] outline-none"
-                                    onClick={() => { openDeleteSubsectionModal(section.id, subsection.id); setDeletedialog(true); setPopoveropen2(null) }}>
-                                    <Image
-                                      src="/icons/delete.svg"
-                                      width={16}
-                                      height={16}
-                                      alt="Delete Actions"
-                                    />
-                                    <p className="text-sm text-[#DE3024]">Delete</p>
-                                  </button>
-
+                                <PopoverContent className="p-0 rounded-md">
+                                  <div>
+                                    <button className="flex flex-row gap-1 items-center px-4 py-2 rounded-none w-auto h-auto"
+                                      onClick={() => { openDeleteSubsectionModal(section.id, subsection.id); setDeletedialog(true); setPopoveropen2(null) }}>
+                                      <Image
+                                        src="/icons/delete.svg"
+                                        width={16}
+                                        height={16}
+                                        alt="Delete Actions"
+                                      />
+                                      <p className="text-sm text-[#DE3024]">Delete</p>
+                                    </button>
+                                  </div>
                                 </PopoverContent>
                               </Popover>
                             </div>

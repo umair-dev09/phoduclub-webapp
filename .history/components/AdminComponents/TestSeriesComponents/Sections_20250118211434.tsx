@@ -1050,7 +1050,7 @@ const Sections: React.FC<SectionsProps> = ({
                                     : setPopoveropen2(null)
                                 }>
                                 <PopoverTrigger>
-                                  <button className="ml-[6px] outline-none">
+                                  <button className="ml-[6px]">
                                     <Image
                                       src="/icons/three-dots.svg"
                                       width={20}

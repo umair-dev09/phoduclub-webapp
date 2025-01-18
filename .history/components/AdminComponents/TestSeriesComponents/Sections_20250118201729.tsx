@@ -89,34 +89,15 @@ const Sections: React.FC<SectionsProps> = ({
   const [csvUploadDialog, setCsvUploadDialog] = useState(false);
   const [selectedSection, setSelectedSection] = useState<Section | null>(null);
   const [deletedialog, setDeletedialog] = useState(false);
-  const [sectionToDelete, setSectionToDelete] = useState<{ id: string } | null>(null);
-  const [subsectionToDelete, setSubsectionToDelete] = useState<{ parentSectionId: string, sectionId: string } | null>(null);
+  const [sectionToDelete, setSectionToDelete] = useState<Section | null>(null);
   const isSectionButtonDisabled = !sectionName || !sectionScheduleDate;
   const formatScheduleDate = (dateString: string): string => {
     const date = new Date(dateString);
     return format(date, 'dd MMM, yyyy  hh:mm a');
   };
-  // opening popover for section
   const [popoveropen1, setPopoveropen1] = useState<string | null>(null);
   const handlePopoverOpen1 = (sectionId: string) => {
     setPopoveropen1(sectionId);
-  };
-  // opening popover for Subsection
-  const [popoveropen2, setPopoveropen2] = useState<{ sectionId: string, subsectionId: string } | null>(null);
-  const handlePopoverOpen2 = (sectionId: string, subsectionId: string) => {
-    setPopoveropen2({ sectionId, subsectionId });
-  };
-  // opening delete modal of section
-  const openDeleteSectionModal = (section: { id: string }) => {
-    setSectionToDelete(section);
-    setSubsectionToDelete(null);
-    setDeletedialog(true);
-  };
-  // opening delete modal of Subsection
-  const openDeleteSubsectionModal = (sectionId: string, parentSectionId: string) => {
-    setSubsectionToDelete({ sectionId, parentSectionId });
-    setSectionToDelete(null);
-    setDeletedialog(true);
   };
 
   const [showQuestions, setShowQuestions] = useState(false);
@@ -989,7 +970,7 @@ const Sections: React.FC<SectionsProps> = ({
                                 <p className="text-sm ">Edit Section</p>
                               </button>
                               <button className=" flex flex-row items-center justify-start w-full py-[0.625rem] px-4 gap-2 hover:bg-[#FEE4E2] outline-none"
-                                onClick={(e) => { setDeletedialog(true); e.stopPropagation(); openDeleteSectionModal(section); setPopoveropen1(null); }}>
+                                onClick={() => { setDeletedialog(true); setPopoveropen1(null); }}>
                                 <Image
                                   src="/icons/delete.svg"
                                   width={16}
@@ -1042,15 +1023,9 @@ const Sections: React.FC<SectionsProps> = ({
                             <div className="flex flex-row gap-[6px] items-center">
                               <Image src="/icons/schedule.svg" width={14} height={14} alt="schedule" />
                               <p className="text-sm text-[#475467]">Schedule: <span className="font-medium ml-1 text-black">{formatScheduleDate(subsection.sectionScheduleDate)}</span></p>
-                              <Popover placement="bottom-end"
-                                isOpen={popoveropen2?.sectionId === section.id && popoveropen2?.subsectionId === subsection.id}
-                                onOpenChange={(open) =>
-                                  open
-                                    ? handlePopoverOpen2(section.id, subsection.id)
-                                    : setPopoveropen2(null)
-                                }>
+                              <Popover placement="bottom-end">
                                 <PopoverTrigger>
-                                  <button className="ml-[6px] outline-none">
+                                  <button className="ml-[6px]">
                                     <Image
                                       src="/icons/three-dots.svg"
                                       width={20}
@@ -1059,18 +1034,19 @@ const Sections: React.FC<SectionsProps> = ({
                                     />
                                   </button>
                                 </PopoverTrigger>
-                                <PopoverContent className="w-[10.438rem] py-1 px-0 bg-white border border-lightGrey rounded-md">
-                                  <button className=" flex flex-row items-center justify-start w-full py-[0.625rem] px-4 gap-2 hover:bg-[#FEE4E2] outline-none"
-                                    onClick={() => { openDeleteSubsectionModal(section.id, subsection.id); setDeletedialog(true); setPopoveropen2(null) }}>
-                                    <Image
-                                      src="/icons/delete.svg"
-                                      width={16}
-                                      height={16}
-                                      alt="Delete Actions"
-                                    />
-                                    <p className="text-sm text-[#DE3024]">Delete</p>
-                                  </button>
-
+                                <PopoverContent className="p-0 rounded-md">
+                                  <div>
+                                    <button className="flex flex-row gap-1 items-center px-4 py-2 rounded-none w-auto h-auto"
+                                      onClick={() => handleDeleteSubSection(section.id, subsection.id)}>
+                                      <Image
+                                        src="/icons/delete.svg"
+                                        width={16}
+                                        height={16}
+                                        alt="Delete Actions"
+                                      />
+                                      <p className="text-sm text-[#DE3024]">Delete</p>
+                                    </button>
+                                  </div>
                                 </PopoverContent>
                               </Popover>
                             </div>
@@ -1177,13 +1153,7 @@ const Sections: React.FC<SectionsProps> = ({
       {/* Delete section Dialog */}
       <Modal
         isOpen={deletedialog}
-        onOpenChange={(isOpen) => {
-          if (!isOpen) {
-            setDeletedialog(false);
-            setSectionToDelete(null);
-            setSubsectionToDelete(null);
-          }
-        }}
+        onOpenChange={(isOpen) => !isOpen && setDeletedialog(false)}
         hideCloseButton
       >
         <ModalContent>
@@ -1222,15 +1192,10 @@ const Sections: React.FC<SectionsProps> = ({
               <button
                 className="py-[0.625rem] px-6 text-white shadow-inner-button font-semibold bg-[#BB241A] hover:bg-[#B0201A]  border border-[#DE3024] rounded-md"
                 onClick={async () => {
-                  if (sectionToDelete) {
-                    await handleDeleteSection(sectionToDelete.id);
-                  } else if (subsectionToDelete) {
-                    await handleDeleteSubSection(
-                      subsectionToDelete.sectionId,
-                      subsectionToDelete.parentSectionId
-                    );
+                  if (selectedSectionId) {
+                    await handleDeleteSection(selectedSectionId);
+                    setDeletedialog(false);
                   }
-                  setDeletedialog(false);
                 }}
               >
                 Delete

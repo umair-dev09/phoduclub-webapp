@@ -88,37 +88,11 @@ const Sections: React.FC<SectionsProps> = ({
   const [saveQuestionDialog, setSaveQuestionDialog] = useState(false);
   const [csvUploadDialog, setCsvUploadDialog] = useState(false);
   const [selectedSection, setSelectedSection] = useState<Section | null>(null);
-  const [deletedialog, setDeletedialog] = useState(false);
-  const [sectionToDelete, setSectionToDelete] = useState<{ id: string } | null>(null);
-  const [subsectionToDelete, setSubsectionToDelete] = useState<{ parentSectionId: string, sectionId: string } | null>(null);
   const isSectionButtonDisabled = !sectionName || !sectionScheduleDate;
   const formatScheduleDate = (dateString: string): string => {
     const date = new Date(dateString);
     return format(date, 'dd MMM, yyyy  hh:mm a');
   };
-  // opening popover for section
-  const [popoveropen1, setPopoveropen1] = useState<string | null>(null);
-  const handlePopoverOpen1 = (sectionId: string) => {
-    setPopoveropen1(sectionId);
-  };
-  // opening popover for Subsection
-  const [popoveropen2, setPopoveropen2] = useState<{ sectionId: string, subsectionId: string } | null>(null);
-  const handlePopoverOpen2 = (sectionId: string, subsectionId: string) => {
-    setPopoveropen2({ sectionId, subsectionId });
-  };
-  // opening delete modal of section
-  const openDeleteSectionModal = (section: { id: string }) => {
-    setSectionToDelete(section);
-    setSubsectionToDelete(null);
-    setDeletedialog(true);
-  };
-  // opening delete modal of Subsection
-  const openDeleteSubsectionModal = (sectionId: string, parentSectionId: string) => {
-    setSubsectionToDelete({ sectionId, parentSectionId });
-    setSectionToDelete(null);
-    setDeletedialog(true);
-  };
-
   const [showQuestions, setShowQuestions] = useState(false);
   const [questionsList, setQuestionsList] = useState<Question[]>([{
     question: '',
@@ -964,11 +938,9 @@ const Sections: React.FC<SectionsProps> = ({
                             </button>
                           )}
 
-                          <Popover placement="bottom-end"
-                            isOpen={popoveropen1 === section.id}
-                            onOpenChange={(open) => open ? handlePopoverOpen1(section.id) : setPopoveropen1(null)}>
+                          <Popover placement="bottom-end">
                             <PopoverTrigger>
-                              <button className="outline-none">
+                              <button>
                                 <Image
                                   src="/icons/three-dots.svg"
                                   width={20}
@@ -977,27 +949,29 @@ const Sections: React.FC<SectionsProps> = ({
                                 />
                               </button>
                             </PopoverTrigger>
-                            <PopoverContent className="w-[10.438rem] py-1 px-0 bg-white border border-lightGrey rounded-md">
-                              <button className="flex flex-row items-center justify-start w-full py-[0.625rem] px-4 gap-2 hover:bg-[#F2F4F7] outline-none"
-                                onClick={(e) => { { handleEditSection(section.id, section.sectionName, section.sectionScheduleDate) }; e.stopPropagation(); setPopoveropen1(null); }}>
-                                <Image
-                                  src="/icons/edit-icon.svg"
-                                  width={14}
-                                  height={14}
-                                  alt="Edit Actions"
-                                />
-                                <p className="text-sm ">Edit Section</p>
-                              </button>
-                              <button className=" flex flex-row items-center justify-start w-full py-[0.625rem] px-4 gap-2 hover:bg-[#FEE4E2] outline-none"
-                                onClick={(e) => { setDeletedialog(true); e.stopPropagation(); openDeleteSectionModal(section); setPopoveropen1(null); }}>
-                                <Image
-                                  src="/icons/delete.svg"
-                                  width={16}
-                                  height={16}
-                                  alt="Delete Actions"
-                                />
-                                <p className="text-sm text-[#DE3024]">Delete</p>
-                              </button>
+                            <PopoverContent className="p-0 rounded-md">
+                              <div>
+                                <button className="flex flex-row gap-1 items-center px-4 py-2 rounded-none w-auto h-auto"
+                                  onClick={(e) => { { handleEditSection(section.id, section.sectionName, section.sectionScheduleDate) }; e.stopPropagation(); }}>
+                                  <Image
+                                    src="/icons/edit-icon.svg"
+                                    width={14}
+                                    height={14}
+                                    alt="Edit Actions"
+                                  />
+                                  <p className="text-sm ">Edit Section</p>
+                                </button>
+                                <button className="flex flex-row gap-1 items-center px-4 py-2 rounded-none w-auto h-auto"
+                                  onClick={() => handleDeleteSection(section.id)}>
+                                  <Image
+                                    src="/icons/delete.svg"
+                                    width={16}
+                                    height={16}
+                                    alt="Delete Actions"
+                                  />
+                                  <p className="text-sm text-[#DE3024]">Delete</p>
+                                </button>
+                              </div>
                             </PopoverContent>
                           </Popover>
 
@@ -1042,15 +1016,9 @@ const Sections: React.FC<SectionsProps> = ({
                             <div className="flex flex-row gap-[6px] items-center">
                               <Image src="/icons/schedule.svg" width={14} height={14} alt="schedule" />
                               <p className="text-sm text-[#475467]">Schedule: <span className="font-medium ml-1 text-black">{formatScheduleDate(subsection.sectionScheduleDate)}</span></p>
-                              <Popover placement="bottom-end"
-                                isOpen={popoveropen2?.sectionId === section.id && popoveropen2?.subsectionId === subsection.id}
-                                onOpenChange={(open) =>
-                                  open
-                                    ? handlePopoverOpen2(section.id, subsection.id)
-                                    : setPopoveropen2(null)
-                                }>
+                              <Popover placement="bottom-end">
                                 <PopoverTrigger>
-                                  <button className="ml-[6px] outline-none">
+                                  <button className="ml-[6px]">
                                     <Image
                                       src="/icons/three-dots.svg"
                                       width={20}
@@ -1059,18 +1027,19 @@ const Sections: React.FC<SectionsProps> = ({
                                     />
                                   </button>
                                 </PopoverTrigger>
-                                <PopoverContent className="w-[10.438rem] py-1 px-0 bg-white border border-lightGrey rounded-md">
-                                  <button className=" flex flex-row items-center justify-start w-full py-[0.625rem] px-4 gap-2 hover:bg-[#FEE4E2] outline-none"
-                                    onClick={() => { openDeleteSubsectionModal(section.id, subsection.id); setDeletedialog(true); setPopoveropen2(null) }}>
-                                    <Image
-                                      src="/icons/delete.svg"
-                                      width={16}
-                                      height={16}
-                                      alt="Delete Actions"
-                                    />
-                                    <p className="text-sm text-[#DE3024]">Delete</p>
-                                  </button>
-
+                                <PopoverContent className="p-0 rounded-md">
+                                  <div>
+                                    <button className="flex flex-row gap-1 items-center px-4 py-2 rounded-none w-auto h-auto"
+                                      onClick={() => handleDeleteSubSection(section.id, subsection.id)}>
+                                      <Image
+                                        src="/icons/delete.svg"
+                                        width={16}
+                                        height={16}
+                                        alt="Delete Actions"
+                                      />
+                                      <p className="text-sm text-[#DE3024]">Delete</p>
+                                    </button>
+                                  </div>
                                 </PopoverContent>
                               </Popover>
                             </div>
@@ -1122,9 +1091,64 @@ const Sections: React.FC<SectionsProps> = ({
       {/* Create Section Dialog */}
       {/* Your existing Dialog component code remains the same */}
       {/* Create Section Dialog */}
+      {/* <Dialog open={isCreateSection} onClose={() => setIsCreateSection(false)}>
+        <DialogBackdrop className="fixed inset-0 bg-black/30" />
+        <div className="fixed inset-0 flex items-center justify-center">
+          <DialogPanel className="bg-white rounded-2xl w-[559px] h-auto">
+            <div className="flex flex-col gap-6">
+              <div className="flex flex-row justify-between items-center px-6 pt-4">
+                <h3 className="text-2xl font-semibold text-[#1D2939]">{isSectionEditing ? 'Edit Section' : 'Create Section'}</h3>
+                <button onClick={() => setIsCreateSection(false)}>
+                  <Image src="/icons/cancel.svg" alt="Cancel" width={20} height={20} />
+                </button>
+              </div>
+              <div className="flex flex-col w-full gap-2 px-6">
+                <p className="text-start text-sm text-[#1D2939] font-medium">Name</p>
+                <div className="flex flex-row w-full h-10 px-3 outline-none border border-[#D0D5DD] rounded-md">
+                  <input
+                    type="text"
+                    className="w-full text-sm text-[#182230] font-normal outline-none rounded-md"
+                    placeholder="Enter Name"
+                    value={sectionName}
+                    onChange={(e) => setSectionName(e.target.value)}
+                  />
+                </div>
+              </div>  
+              <div className="flex flex-col w-full gap-2 px-6 mb-2">
+                <p className="text-start text-lg text-[#1D2939] font-semibold">Schedule Section</p>
+                <DatePicker
+                  granularity="minute"
+                  minValue={today(getLocalTimeZone())}
+                  // value={dateForPicker}
+                  value={sectionScheduleDate ? parseDateTime(sectionScheduleDate) : undefined}
+                  hideTimeZone
+                  onChange={handleDateChange}
+                />
+              </div>
+              <hr />
+              <div className="flex flex-row justify-end mx-6 my-2 items-center gap-4 pb-2">
+                <button
+                  onClick={() => setIsCreateSection(false)}
+                  className="py-[0.625rem] px-6 border-[1.5px] border-lightGrey rounded-md text-[#1D2939] font-semibold text-sm"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleAddSection}
+                  disabled={isSectionButtonDisabled}
+                  className={`py-[0.625rem] px-6 text-white shadow-inner-button border border-white ${isSectionButtonDisabled ? 'bg-[#CDA0FC]' : 'bg-[#9012FF]'
+                    } rounded-md font-semibold text-sm`}
+                >
+                  {isSectionEditing ? 'Save Changes' : 'Create Section'}
+                </button>
+              </div>
+            </div>
+          </DialogPanel>
+        </div>
+      </Dialog> */}
       <Modal isOpen={isCreateSection} onOpenChange={(isOpen) => !isOpen && setIsCreateSection(false)} hideCloseButton
-        size="lg"
       >
+
         <ModalContent>
           <>
             <ModalHeader className="flex flex-row justify-between items-center gap-1">
@@ -1136,28 +1160,17 @@ const Sections: React.FC<SectionsProps> = ({
               </button>
             </ModalHeader>
             <ModalBody>
-              <div className="flex flex-col w-full gap-2">
-                <p className="text-start text-sm text-[#1D2939] font-medium">Name</p>
-                <div className="flex flex-row w-full h-10 px-3 outline-none border border-[#D0D5DD] rounded-md">
+              <div className="flex flex-col gap-1 pb-2">
+                <span className="font-semibold text-sm text-[#1D2939]">Category name</span>
+                <div className='flex px-2 items-center h-[40px] border border-gray-300   focus:outline focus:outline-[1.5px] focus:outline-[#D6BBFB] hover:outline hover:outline-[1.5px] hover:outline-[#D6BBFB] shadow-sm rounded-md'>
                   <input
+                    className="font-normal text-[#667085] w-full text-sm placeholder:text-[#A1A1A1] rounded-md px-1 py-1 focus:outline-none focus:ring-0 border-none"
+                    placeholder="Category name"
                     type="text"
-                    className="w-full text-sm text-[#182230] font-normal outline-none rounded-md"
-                    placeholder="Enter Name"
-                    value={sectionName}
-                    onChange={(e) => setSectionName(e.target.value)}
+                    value={categoryName}
+                    onChange={(e) => setCategoryName(e.target.value)}
                   />
                 </div>
-              </div>
-              <div className="flex flex-col w-full gap-2 mb-2">
-                <p className="text-start text-lg text-[#1D2939] font-semibold">Schedule Section</p>
-                <DatePicker
-                  granularity="minute"
-                  minValue={today(getLocalTimeZone())}
-                  // value={dateForPicker}
-                  value={sectionScheduleDate ? parseDateTime(sectionScheduleDate) : undefined}
-                  hideTimeZone
-                  onChange={handleDateChange}
-                />
               </div>
             </ModalBody>
             <ModalFooter className="border-t border-lightGrey">
@@ -1165,7 +1178,7 @@ const Sections: React.FC<SectionsProps> = ({
               <Button
                 onClick={handleAddSection}
                 disabled={isSectionButtonDisabled}
-                className={`py-[0.625rem] px-6 text-white shadow-inner-button border border-white ${isSectionButtonDisabled ? 'bg-[#CDA0FC]' : 'bg-[#9012FF] hover:bg-[#6D0DCC] '
+                className={`py-[0.625rem] px-6 text-white shadow-inner-button border border-white ${isSectionButtonDisabled ? 'bg-[#CDA0FC]' : 'bg-[#9012FF]'
                   } rounded-md font-semibold text-sm`}
               >
                 {isSectionEditing ? 'Save Changes' : 'Create Section'}
@@ -1174,71 +1187,6 @@ const Sections: React.FC<SectionsProps> = ({
           </>
         </ModalContent>
       </Modal >
-      {/* Delete section Dialog */}
-      <Modal
-        isOpen={deletedialog}
-        onOpenChange={(isOpen) => {
-          if (!isOpen) {
-            setDeletedialog(false);
-            setSectionToDelete(null);
-            setSubsectionToDelete(null);
-          }
-        }}
-        hideCloseButton
-      >
-        <ModalContent>
-          <>
-            {/* Modal Header */}
-            <ModalHeader className="flex flex-row justify-between gap-1">
-              <h1 className="text-[#1D2939] font-bold text-lg">
-                Delete
-              </h1>
-              <button
-                className="w-[32px] h-[32px] rounded-full flex items-center justify-center hover:bg-[#F2F4F7]"
-                onClick={() => setDeletedialog(false)}
-                aria-label="Close dialog"
-              >
-                <Image src="/icons/cancel.svg" alt="Cancel" width={20} height={20} />
-              </button>
-            </ModalHeader>
-
-            {/* Modal Body */}
-            <ModalBody>
-              <div className="flex flex-col pb-2 gap-2">
-                <span className="text-sm font-normal text-[#667085]">
-                  Are you sure you want to delete this? This action cannot be undone.
-                </span>
-              </div>
-            </ModalBody>
-
-            {/* Modal Footer */}
-            <ModalFooter className="border-t border-lightGrey">
-              <button
-                className="py-[0.625rem] px-6 border-2 border-solid border-[#EAECF0] font-semibold text-sm text-[#1D2939] hover:bg-[#F2F4F7] rounded-md"
-                onClick={() => setDeletedialog(false)}
-              >
-                Cancel
-              </button>
-              <button
-                className="py-[0.625rem] px-6 text-white shadow-inner-button font-semibold bg-[#BB241A] hover:bg-[#B0201A]  border border-[#DE3024] rounded-md"
-                onClick={async () => {
-                  if (sectionToDelete) {
-                    await handleDeleteSection(sectionToDelete.id);
-                  } else if (subsectionToDelete) {
-                    await handleDeleteSubSection(
-                      subsectionToDelete.sectionId,
-                      subsectionToDelete.parentSectionId
-                    );
-                  }
-                  setDeletedialog(false);
-                }}
-              >
-                Delete
-              </button>
-            </ModalFooter>
-          </>
-        </ModalContent>
-      </Modal>
       {/*Question Save Dialog */}
       <Dialog open={saveQuestionDialog} onClose={() => setSaveQuestionDialog(false)}>
         <DialogBackdrop className="fixed inset-0 bg-black/30 " />
