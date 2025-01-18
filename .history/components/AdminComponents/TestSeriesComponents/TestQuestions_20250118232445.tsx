@@ -290,27 +290,14 @@ function TestQuestions({ questionsList, setQuestionsList }: QuestionsProps) {
                     <div className="flex flex-col w-full">
                         <div className="flex flex-row items-center bg-[#F2F4F7] border-b">
                             <div className="w-[5%] pl-4 py-3">
-
-                                <Popover
-                                    placement="bottom"
-                                    isOpen={popoveropen1}  // Controlled by popoveropen1 state
-                                    onOpenChange={(open) => setPopoveropen1(open)}  // Update state based on popover's open status
-                                    className="absolute left-1/2 transform -translate-x-1/2 top-1/2 mt-40"  // Center horizontally and place very below the center
-                                >
-                                    <PopoverTrigger>
-                                        <Checkbox
-                                            size="md"
-                                            color="primary"
-                                            onChange={() => setPopoveropen1(false)}  // Close popover when checkbox is clicked
-                                        />
-                                    </PopoverTrigger>
-
-                                    <PopoverContent className="flex gap-2 flex-row bg-white rounded-[8px] border-[1px] border-solid border-[#EAECF0] p-2 w-[120px] shadow-[0_2px_4px_#EAECF0]">
-                                        <button>1</button>
-                                        <button>2</button>
-                                    </PopoverContent>
-                                </Popover>
-
+                                <Checkbox
+                                    size="md"
+                                    color="primary"
+                                    onClick={() => setPopoveropen1(true)}
+                                // isSelected={isAllSelected}
+                                // isIndeterminate={isIndeterminate}
+                                // onChange={toggleAllRowsSelection}
+                                />
                             </div>
                             <div className="w-[65%] py-3">
                                 <p className="text-sm text-[#667085] font-medium leading-6">
@@ -688,7 +675,28 @@ function TestQuestions({ questionsList, setQuestionsList }: QuestionsProps) {
                     <span className="text-[#8501FF] text-sm font-semibold">Add Question</span>
                 </button>
             </div> */}
+            <Popover placement="bottom-start" className="flex flex-row justify-end">
+                <PopoverTrigger className="">
+                    <button className="flex items-center justify-center p-1">
+                        {alignments[index]?.explanation === 'center' ? (
+                            <Image src="/icons/align-middle.svg" width={24} height={26} alt="align-center" />
+                        ) : alignments[index]?.explanation === 'right' ? (
+                            <Image src="/icons/align-right.svg" width={24} height={26} alt="align-right" />
+                        ) : (
+                            <Image src="/icons/dropdown-icon-1.svg" width={32} height={32} alt="align-left" />
+                        )}
+                    </button>
+                </PopoverTrigger>
+                <PopoverContent className="flex flex-row bg-white rounded-[8px] border-[1px] border-solid border-[#EAECF0] p-2 w-[120px] shadow-[0_2px_4px_#EAECF0] gap-2 ">
+                    <button>
+                        1
+                    </button>
+                    <button>
+                        2
+                    </button>
 
+                </PopoverContent>
+            </Popover>
         </div>
     );
 }

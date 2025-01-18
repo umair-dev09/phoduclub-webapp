@@ -291,26 +291,34 @@ function TestQuestions({ questionsList, setQuestionsList }: QuestionsProps) {
                         <div className="flex flex-row items-center bg-[#F2F4F7] border-b">
                             <div className="w-[5%] pl-4 py-3">
 
-                                <Popover
-                                    placement="bottom"
-                                    isOpen={popoveropen1}  // Controlled by popoveropen1 state
-                                    onOpenChange={(open) => setPopoveropen1(open)}  // Update state based on popover's open status
-                                    className="absolute left-1/2 transform -translate-x-1/2 top-1/2 mt-40"  // Center horizontally and place very below the center
-                                >
-                                    <PopoverTrigger>
-                                        <Checkbox
-                                            size="md"
-                                            color="primary"
-                                            onChange={() => setPopoveropen1(false)}  // Close popover when checkbox is clicked
-                                        />
-                                    </PopoverTrigger>
 
-                                    <PopoverContent className="flex gap-2 flex-row bg-white rounded-[8px] border-[1px] border-solid border-[#EAECF0] p-2 w-[120px] shadow-[0_2px_4px_#EAECF0]">
-                                        <button>1</button>
-                                        <button>2</button>
-                                    </PopoverContent>
-                                </Popover>
-
+                                <div className="fixed inset-x-0 top-1/2 flex justify-center">
+                                    <Popover
+                                        placement="bottom"
+                                        isOpen={popoveropen1}
+                                        onOpenChange={setPopoveropen1}
+                                    >
+                                        <PopoverTrigger>
+                                            <div className="translate-y-[-50%]">
+                                                <Checkbox
+                                                    size="md"
+                                                    color="primary"
+                                                // isSelected={isAllSelected}
+                                                // isIndeterminate={isIndeterminate}
+                                                // onChange={toggleAllRowsSelection}
+                                                />
+                                            </div>
+                                        </PopoverTrigger>
+                                        <PopoverContent className="flex gap-2 flex-row bg-white rounded-[8px] border-[1px] border-solid border-[#EAECF0] p-2 w-[120px] shadow-[0_2px_4px_#EAECF0] mt-4">
+                                            <button className="flex-1 p-2 hover:bg-[#F2F4F7] rounded-md">
+                                                1
+                                            </button>
+                                            <button className="flex-1 p-2 hover:bg-[#F2F4F7] rounded-md">
+                                                2
+                                            </button>
+                                        </PopoverContent>
+                                    </Popover>
+                                </div>
                             </div>
                             <div className="w-[65%] py-3">
                                 <p className="text-sm text-[#667085] font-medium leading-6">

@@ -293,15 +293,15 @@ function TestQuestions({ questionsList, setQuestionsList }: QuestionsProps) {
 
                                 <Popover
                                     placement="bottom"
+                                    className="absolute left-80 align-middle top-80"
                                     isOpen={popoveropen1}  // Controlled by popoveropen1 state
-                                    onOpenChange={(open) => setPopoveropen1(open)}  // Update state based on popover's open status
-                                    className="absolute left-1/2 transform -translate-x-1/2 top-1/2 mt-40"  // Center horizontally and place very below the center
+                                    onOpenChange={(open) => setPopoveropen1(open)}
                                 >
                                     <PopoverTrigger>
                                         <Checkbox
                                             size="md"
                                             color="primary"
-                                            onChange={() => setPopoveropen1(false)}  // Close popover when checkbox is clicked
+                                            onChange={() => setPopoveropen1(false)}
                                         />
                                     </PopoverTrigger>
 
@@ -310,7 +310,6 @@ function TestQuestions({ questionsList, setQuestionsList }: QuestionsProps) {
                                         <button>2</button>
                                     </PopoverContent>
                                 </Popover>
-
                             </div>
                             <div className="w-[65%] py-3">
                                 <p className="text-sm text-[#667085] font-medium leading-6">
