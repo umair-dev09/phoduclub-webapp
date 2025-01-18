@@ -129,33 +129,6 @@ const Quizz = () => {
     const [statusFilter, setStatusFilter] = useState(null);
     const isTextSearch = searchTerm.trim().length > 0 && !dateFilter && !statusFilter;
 
-    interface SortConfig {
-        key: string;
-        direction: 'asc' | 'desc';
-    }
-
-    // const [sortConfig, setSortConfig] = useState<SortConfig>({
-    //     key: '',
-    //     direction: 'asc',
-    // });
-
-    // Add sorting function
-    const sortData = (data: Quiz[], key: string, direction: 'asc' | 'desc') => {
-        return [...data].sort((a, b) => {
-            if (key === 'students') {
-                return direction === 'asc'
-                    ? a.students - b.students
-                    : b.students - a.students;
-            }
-            if (key === 'questions') {
-                return direction === 'asc'
-                    ? a.questions - b.questions
-                    : b.questions - a.questions;
-            }
-            return 0;
-        });
-    };
-
     // Fetch quizzes when component mounts
     useEffect(() => {
         const loadQuizzes = () => {
@@ -180,58 +153,6 @@ const Quizz = () => {
         key: '',
         direction: null
     });
-
-    // useEffect(() => {
-    //     if (quizzes.length === 0) return;
-
-    //     let filteredQuizzes = quizzes;
-
-    //     // Apply existing filters
-    //     if (searchTerm) {
-    //         filteredQuizzes = filteredQuizzes.filter((quiz) =>
-    //             quiz.title.toLowerCase().includes(searchTerm.toLowerCase())
-    //         );
-    //     }
-
-    //     // Apply status filters
-    //     const selectedStatuses = Object.entries(checkedState)
-    //         .filter(([_, isChecked]) => isChecked)
-    //         .map(([status]) => statusMapping[status as Option])
-    //         .flat();
-
-    //     if (selectedStatuses.length > 0) {
-    //         filteredQuizzes = filteredQuizzes.filter((quiz) =>
-    //             selectedStatuses.includes(quiz.status)
-    //         );
-    //     }
-
-    //     // Apply date filter
-    //     if (selectedDate) {
-    //         const selectedDateString = selectedDate instanceof Date && !isNaN(selectedDate.getTime())
-    //             ? selectedDate.toISOString().split('T')[0]
-    //             : null;
-
-    //         if (selectedDateString) {
-    //             filteredQuizzes = filteredQuizzes.filter((quiz) => {
-    //                 const quizDate = new Date(quiz.date);
-    //                 const quizDateString = quizDate instanceof Date && !isNaN(quizDate.getTime())
-    //                     ? quizDate.toISOString().split('T')[0]
-    //                     : null;
-
-    //                 return quizDateString === selectedDateString;
-    //             });
-    //         }
-    //     }
-
-    //     // Apply sorting if configured
-    //     if (sortConfig.key) {
-    //         filteredQuizzes = sortData(filteredQuizzes, sortConfig.key, sortConfig.direction);
-    //     }
-
-    //     // Update state with filtered and sorted quizzes
-    //     setData(filteredQuizzes);
-    //     setCurrentPage(1); // Reset to first page when filters/sort change
-    // }, [searchTerm, checkedState, quizzes, selectedDate, sortConfig]);
 
     useEffect(() => {
         if (quizzes.length === 0) return;
@@ -275,12 +196,26 @@ const Quizz = () => {
             }
         }
 
-        // Only apply sorting if Questions column is actively sorted
-        if (sortConfig.key === 'questions' && sortConfig.direction) {
+        if (sortConfig.key && sortConfig.direction) {
             filteredQuizzes = filteredQuizzes.sort((a, b) => {
-                return sortConfig.direction === 'asc'
-                    ? a.questions - b.questions
-                    : b.questions - a.questions;
+                if (sortConfig.key === 'questions') {
+                    return sortConfig.direction === 'asc'
+                        ? a.questions - b.questions
+                        : b.questions - a.questions;
+                }
+                if (sortConfig.key === 'publishedOn') {
+                    const dateA = new Date(a.date).getTime();
+                    const dateB = new Date(b.date).getTime();
+                    return sortConfig.direction === 'asc'
+                        ? dateA - dateB
+                        : dateB - dateA;
+                }
+                if (sortConfig.key === 'students') {
+                    return sortConfig.direction === 'asc'
+                        ? a.students - b.students
+                        : b.students - a.students;
+                }
+                return 0;
             });
         }
 
@@ -289,39 +224,19 @@ const Quizz = () => {
     }, [searchTerm, checkedState, quizzes, selectedDate, sortConfig]);
 
     const handleSort = (key: string) => {
-        if (key === 'questions') {
+        if (key === 'questions' || key === 'publishedOn' || key === 'students') {
             setSortConfig((prevConfig) => {
                 // Cycle through: no sort -> asc -> desc -> no sort
-                if (prevConfig.key !== 'questions' || !prevConfig.direction) {
-                    return { key: 'questions', direction: 'asc' };
+                if (prevConfig.key !== key || !prevConfig.direction) {
+                    return { key, direction: 'asc' };
                 } else if (prevConfig.direction === 'asc') {
-                    return { key: 'questions', direction: 'desc' };
+                    return { key, direction: 'desc' };
                 } else {
                     return { key: '', direction: null }; // Reset to original order
                 }
             });
         }
     };
-
-    // const handleSort = (key) => {
-    //     setSortConfig((prevConfig) => ({
-    //         key,
-    //         direction:
-    //             prevConfig.key === key && prevConfig.direction === 'asc'
-    //                 ? 'desc'
-    //                 : 'asc'
-    //     }));
-    // };
-
-    // const handleSort = (key: keyof Quiz) => {
-    //     setSortConfig((prevConfig) => ({
-    //         key,
-    //         direction:
-    //             prevConfig.key === key && prevConfig.direction === 'asc'
-    //                 ? 'desc'
-    //                 : 'asc',
-    //     }));
-    // };
 
     const lastItemIndex = currentPage * itemsPerPage;
     const firstItemIndex = lastItemIndex - itemsPerPage;
@@ -584,13 +499,19 @@ const Quizz = () => {
                                             </div>
                                         </th>
                                         <th className="w-[17%] text-center px-8 py-4 text-[#667085] font-medium text-sm">
-                                            <div className="flex flex-row justify-center gap-1 cursor-pointer">
+                                            <div
+                                                className="flex flex-row justify-center gap-1 cursor-pointer"
+                                                onClick={() => handleSort('publishedOn')}
+                                            >
                                                 <p>Published on</p>
                                                 <Image src='/icons/unfold-more-round.svg' alt="more" width={16} height={16} />
                                             </div>
                                         </th>
                                         <th className="w-[17%] text-center px-8 py-4 text-[#667085] font-medium text-sm">
-                                            <div className="flex flex-row justify-center gap-1 cursor-pointer" >
+                                            <div
+                                                className="flex flex-row justify-center gap-1 cursor-pointer"
+                                                onClick={() => handleSort('students')}
+                                            >
                                                 <p className="whitespace-nowrap">Students Attempted</p>
                                                 <Image
                                                     src={'/icons/unfold-more-round.svg'}
