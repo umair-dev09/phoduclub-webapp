@@ -9,7 +9,11 @@ import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
 import { storage, db } from '@/firebase'; // Adjust path if needed
 import { toast } from "react-toastify";
 import { Checkbox } from "@nextui-org/react";
-
+import Select, { SingleValue } from 'react-select';
+type Option = {
+    value: string;
+    label: string;
+};
 type TestSeriesInfoProps = {
     name: string;
     setName: (name: string) => void;
@@ -27,9 +31,13 @@ type TestSeriesInfoProps = {
     setNoOfRating: (noOfRating: string) => void;
     isInCourse: boolean;
     setIsInCourse: (isInCourse: boolean) => void;
+    coursesList: Option[];
+    selectedCourses:  Option[];
+    setSelectedCourses: Dispatch<SetStateAction<Option[]>>;
 }
 
-function TestSeriesInfo({ name, setName, isInCourse, setIsInCourse, description, setDescription, imageUrl, setImageUrl, price, setPrice, discountPrice, setDiscountPrice, rating, setRating, noOfRating, setNoOfRating }: TestSeriesInfoProps) {
+function TestSeriesInfo({ name, setName, selectedCourses, setSelectedCourses, coursesList, isInCourse, setIsInCourse, description, setDescription, imageUrl, setImageUrl, price, setPrice, discountPrice, setDiscountPrice, rating, setRating, noOfRating, setNoOfRating }: TestSeriesInfoProps) {
+    
 
     // State to manage each dialog's for Upload Image
     // -------------------------------------------------------------------------------------------------------------------------------
@@ -231,7 +239,7 @@ function TestSeriesInfo({ name, setName, isInCourse, setIsInCourse, description,
     };
 
     return (
-        <>
+        <div className="pb-8">
             <div className='mt-4 h-auto rounded-xl border border-solid border-[#EAECF0] bg-[#FFFFFF] flex flex-col p-5 gap-3'>
                 <div className='flex flex-col gap-2'>
                     <span className='text-[#1D2939] text-sm font-semibold'>Test Series Name</span>
@@ -375,8 +383,73 @@ function TestSeriesInfo({ name, setName, isInCourse, setIsInCourse, description,
             </Checkbox>
             {isInCourse ? (
             <div className="mt-4 h-auto rounded-xl border border-solid border-[#EAECF0] bg-[#FFFFFF] flex flex-col p-5 gap-3">
-            <h3>Select product (Optional)</h3>
+            <h3>Select Courses</h3>
+            <div className="w-full">
+                        <p className="mb-1 font-medium text-sm">Courses</p>
+                        <Select
+                            id="target-exam"
+                            value={selectedCourses}
+                            onChange={(newValue) => setSelectedCourses(newValue as Option[])}
+                            options={coursesList}
+                            isMulti
+                            placeholder="Select Courses"
+                            className='overflow-visible,
+'
+                            styles={{
+                                option: (provided, state) => ({
+                                    ...provided,
+                                    color: "black",
+                                    backgroundColor: state.isFocused ? "#E39FF6" : "white",
+                                }),
+                                multiValue: (provided) => ({
+                                    ...provided,
+                                    backgroundColor: "#EDE4FF",
+                                    borderRadius: "100px",
+                                    fontWeight: "500",
+                                    marginRight: "7px",
+                                    paddingRight: "8px",
+                                    paddingLeft: "8px",
+                                    paddingTop: "4px",
+                                    paddingBottom: "4px",
+                                }),
+                                multiValueLabel: (provided) => ({
+                                    ...provided,
+                                    color: "black",
+                                }),
+                                multiValueRemove: (provided) => ({
+                                    ...provided,
+                                    color: "gray",
+                                    cursor: "pointer",
+                                    ":hover": {
+                                        backgroundColor: "#ffffff",
+                                        borderRadius: "8px",
+                                    },
+                                }),
+                                menu: (provided) => ({
+                                    ...provided,
+                                    backgroundColor: "white",
+                                    height: "auto",
+                                    marginBottom: "50px",
+                                }),
+                                menuList: (provided) => ({
+                                    ...provided,
+                                    padding: "0",
+                                }),
+                                control: (provided) => ({
+                                    ...provided,
+                                    border: "1px solid #e6e6e6",
+                                    borderRadius: "8px",
+                                    padding: "4px",
+                                    boxShadow: "none",
+                                    "&:hover": {
+                                        outline: "1px solid #e5a1f5",
+                                    },
 
+                                }),
+                            }}
+                        />
+                    </div>
+                <span className="text-[#475467] text-[13px]">Test series will be only available who purchase the selected courses.</span>    
             </div>
             ) : (
                 <div className="mt-4 h-auto rounded-xl border border-solid border-[#EAECF0] bg-[#FFFFFF] flex flex-col p-5 gap-3">
@@ -417,7 +490,7 @@ function TestSeriesInfo({ name, setName, isInCourse, setIsInCourse, description,
             </div>
 
             )}           
-            
+            {!isInCourse && (
             <div className="mt-4 h-auto rounded-xl border border-solid border-[#EAECF0] bg-[#FFFFFF] flex flex-col p-5 gap-3 mb-4">
                 <h3>Ratings</h3>
                 {/* Ratings of Courses */}
@@ -507,9 +580,9 @@ function TestSeriesInfo({ name, setName, isInCourse, setIsInCourse, description,
                 )}
 
             </div>
+            )}
 
-
-        </>
+        </div>
     );
 }
 
