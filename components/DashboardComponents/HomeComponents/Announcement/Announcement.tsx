@@ -31,7 +31,7 @@ function Announcement() {
 
             const communitiesRef = collection(db, 'communities');
             const communitiesSnapshot = await getDocs(communitiesRef);
-            
+
             const relevantCommunities = communitiesSnapshot.docs.filter(doc => {
                 const members = doc.data().members || [];
                 return members.some((member: { id: string, isAdmin: false }) => member.id === currentUserId);
@@ -40,10 +40,10 @@ function Announcement() {
             const announcementPromises = relevantCommunities.map(async (community) => {
                 const announcementsRef = collection(doc(db, 'communities', community.id), 'Announcements');
                 const announcementsSnapshot = await getDocs(announcementsRef);
-                
+
                 const announcements = await Promise.all(announcementsSnapshot.docs.map(async (docSnapshot) => {
                     const data = docSnapshot.data();
-                    
+
                     // Fetch sender details from admin collection
                     const senderRef = doc(db, 'admin', data.senderId);
                     const senderDoc = await getDoc(senderRef);
@@ -70,7 +70,7 @@ function Announcement() {
             });
 
             const allAnnouncements = await Promise.all(announcementPromises);
-            setAnnouncements(allAnnouncements.flat().sort((a, b) => 
+            setAnnouncements(allAnnouncements.flat().sort((a, b) =>
                 b.timestamp.toMillis() - a.timestamp.toMillis()
             ));
             setLoading(false);
@@ -79,20 +79,20 @@ function Announcement() {
         fetchAnnouncements();
     }, [currentUserId]);
 
-    if(loading) {
-     return <DashboardLoading />
+    if (loading) {
+        return <DashboardLoading />
     }
-   
+
     return (
-        <div className="flex-col  flex   rounded-b-lg">
+        <div className="flex-col flex rounded-b-lg">
             {announcements.length > 0 ? (
                 // Display announcements if they exist
                 announcements.map((announcement, index) => (
-                    <div key={index} className=' flex flex-col gap-4 pt-6 px-6 items-start  h-auto cursor-pointer hover:bg-[#F9FAFB]'    
-                     onClick={() => router.push(`/community/${(announcement.communityName || 'default').toLowerCase().replace(/\s+/g, '-')}?communityId=${announcement.communityId}`)}>
+                    <div key={index} className=' flex flex-col gap-4 pt-6 px-6 items-start  h-auto cursor-pointer hover:bg-[#F9FAFB]'
+                        onClick={() => router.push(`/community/${(announcement.communityName || 'default').toLowerCase().replace(/\s+/g, '-')}?communityId=${announcement.communityId}`)}>
                         <div className=' flex flex-row gap-3 items-start'>
                             <div className='flex flex-row gap-3 items-center'>
-                                <Image className='rounded-full w-10 h-10' 
+                                <Image className='rounded-full w-10 h-10'
                                     src={announcement.senderProfilePic || '/defaultDP.svg'}
                                     alt={'sender image'}
                                     height={40}
@@ -128,7 +128,7 @@ function Announcement() {
                 ))
             ) : (
                 // Show this message if there are no announcements
-                <div className="flex flex-col justify-center items-center  flex-1 ">
+                <div className="flex flex-col justify-center items-center flex-1">
                     <Image
                         src="/images/no_announcement_img.svg"
                         alt="No announcement image"
@@ -139,7 +139,6 @@ function Announcement() {
                     <p className="text-sm text-gray-600 font-normal text-center">Will show relevant announcements here</p>
                 </div>
             )}
-
         </div>
     );
 }
