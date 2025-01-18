@@ -126,10 +126,16 @@ function Test() {
         const checkTestPurchased = async () => {
             if (testId && auth.currentUser?.uid) {
                 const currentUserId = auth.currentUser.uid;
+                
+                // First check if user has directly purchased the test
                 const userDocRef = doc(db, 'testseries', testId, 'StudentsPurchased', currentUserId);
                 const userDocSnapshot = await getDoc(userDocRef);
 
-                if (userDocSnapshot.exists()) {
+                // Also check if test is part of a course
+                const testSeriesRef = doc(db, 'testseries', testId);
+                const testSeriesSnapshot = await getDoc(testSeriesRef);
+
+                if (userDocSnapshot.exists() || testSeriesSnapshot.data()?.isInCourse === true) {
                     setTestAlreadyPurchased(true);
                     setLoading(false);
                 } else {
