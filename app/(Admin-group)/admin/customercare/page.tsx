@@ -60,6 +60,9 @@ function CustomerCare() {
     const router = useRouter();
     const [isPopoverOpen, setIsPopoverOpen] = useState(false);
     const [isSelcetDateOpen, setIsSelectDateOpen] = useState(false);
+    const [dateFilter, setDateFilter] = useState(null);
+    const [statusFilter, setStatusFilter] = useState(null);
+    const isTextSearch = searchTerm.trim().length > 0 && !dateFilter && !statusFilter;
 
     // Fetch customer care when component mounts
     useEffect(() => {
@@ -692,68 +695,85 @@ function CustomerCare() {
                             </tr>
                         </thead>
                         <tbody>
-                            {currentItems.map((customer, index) => (
-                                <tr key={customer.uniqueId} onClick={() => handleTabClick('/admin/customercare/customerinfo')} className="h-auto border-t border-[#EAECF0] cursor-pointer">
-                                    <td className="pl-8 py-4 text-center text-[#101828] text-sm">
-                                        <Checkbox
-                                            size="md"
-                                            color="primary"
-                                            isSelected={selectedRows.has(customer.uniqueId)}
-                                            onChange={() => toggleRowSelection(customer.uniqueId)}
-                                        />
-                                    </td>
-                                    <td className="py-4 text-center text-[#101828] text-sm">
-                                        {index + 1}
-                                    </td>
-                                    <td className="pl-6 py-0">
-                                        <div className="flex flex-row gap-2">
-                                            <div className="flex items-center">
-                                                <div className="relative">
-                                                    <Image src='/images/DP_Lion.svg' alt="DP" width={40} height={40} />
-                                                    <Image className="absolute right-0 bottom-0" src='/icons/winnerBatch.svg' alt="Batch" width={18} height={18} />
-                                                </div>
-                                            </div>
-                                            <div className="flex items-start justify-start flex-col">
-                                                <div className="text-sm font-semibold whitespace-nowrap">
-                                                    {customer.title}
-                                                </div>
-                                                <div className="flex justify-start items-start text-[13px] text-[#667085]">{customer.uniqueId}</div>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td className="py-4">
-                                        <div className="flex flex-col gap-1">
-                                            <p className="text-[#101828] text-left text-sm whitespace-nowrap overflow-hidden text-ellipsis">This message is not relevant to study.</p>
-                                            <div className="flex flex-col justify-start gap-1">
-                                                <div className="flex flex-row gap-1">
-                                                    <p className="w-fit px-3 py-1 text-xs text-[#475467] border border-solid border-[#EAECF0] font-medium bg-[#FFFFFF] rounded-[0.375rem]">Scam</p>
-                                                    {/* <p className="w-fit px-3 py-1 text-xs text-white font-medium bg-[#344054] rounded-[0.375rem]">General</p>
-                                                    <p className="w-fit px-3 py-1 text-xs text-white font-medium bg-[#344054] rounded-[0.375rem]">Product</p> */}
-                                                </div>
-                                                {/* <p className="w-fit px-3 py-1 text-xs text-white font-medium bg-[#0A5B39] rounded-[0.375rem]">Transaction ID: 254784523698</p> */}
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td className="flex items-centre justify-left h-full pl-10 py-4 text-[#101828] text-sm">
-                                        <CustomerCareImportance Priority={customer.Priority} />
-                                    </td>
-                                    <td className="py-4 text-center text-[#101828] text-sm whitespace-nowrap">Mon Jan 6, 2024</td>
-                                    <td className="py-4 text-[#101828] text-sm">
-                                        <div className="flex flex-row items-center gap-2">
-                                            <Image
-                                                src="/icons/profile-pic2.svg"
-                                                width={24}
-                                                height={24}
-                                                alt="profile-icons"
+                            {data.length > 0 ? (
+                                currentItems.map((customer, index) => (
+                                    <tr key={customer.uniqueId} onClick={() => handleTabClick('/admin/customercare/customerinfo')} className="h-auto border-t border-[#EAECF0] cursor-pointer">
+                                        <td className="pl-8 py-4 text-center text-[#101828] text-sm">
+                                            <Checkbox
+                                                size="md"
+                                                color="primary"
+                                                isSelected={selectedRows.has(customer.uniqueId)}
+                                                onChange={() => toggleRowSelection(customer.uniqueId)}
                                             />
-                                            <p className="text-[#1D2939] font-medium text-sm whitespace-nowrap overflow-hidden">Jenny Wilson</p>
-                                        </div>
-                                    </td>
-                                    <td className="flex items-center justify-start pr-4 py-4 text-[#101828] text-sm">
-                                        <CustomerCareStatus status={customer.status} />
+                                        </td>
+                                        <td className="py-4 text-center text-[#101828] text-sm">
+                                            {index + 1}
+                                        </td>
+                                        <td className="pl-6 py-0">
+                                            <div className="flex flex-row gap-2">
+                                                <div className="flex items-center">
+                                                    <div className="relative">
+                                                        <Image src='/images/DP_Lion.svg' alt="DP" width={40} height={40} />
+                                                        <Image className="absolute right-0 bottom-0" src='/icons/winnerBatch.svg' alt="Batch" width={18} height={18} />
+                                                    </div>
+                                                </div>
+                                                <div className="flex items-start justify-start flex-col">
+                                                    <div className="text-sm font-semibold whitespace-nowrap">
+                                                        {customer.title}
+                                                    </div>
+                                                    <div className="flex justify-start items-start text-[13px] text-[#667085]">{customer.uniqueId}</div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td className="py-4">
+                                            <div className="flex flex-col gap-1">
+                                                <p className="text-[#101828] text-left text-sm whitespace-nowrap overflow-hidden text-ellipsis">This message is not relevant to study.</p>
+                                                <div className="flex flex-col justify-start gap-1">
+                                                    <div className="flex flex-row gap-1">
+                                                        <p className="w-fit px-3 py-1 text-xs text-[#475467] border border-solid border-[#EAECF0] font-medium bg-[#FFFFFF] rounded-[0.375rem]">Scam</p>
+                                                        {/* <p className="w-fit px-3 py-1 text-xs text-white font-medium bg-[#344054] rounded-[0.375rem]">General</p>
+                                                    <p className="w-fit px-3 py-1 text-xs text-white font-medium bg-[#344054] rounded-[0.375rem]">Product</p> */}
+                                                    </div>
+                                                    {/* <p className="w-fit px-3 py-1 text-xs text-white font-medium bg-[#0A5B39] rounded-[0.375rem]">Transaction ID: 254784523698</p> */}
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td className="flex items-centre justify-left h-full pl-10 py-4 text-[#101828] text-sm">
+                                            <CustomerCareImportance Priority={customer.Priority} />
+                                        </td>
+                                        <td className="py-4 text-center text-[#101828] text-sm whitespace-nowrap">Mon Jan 6, 2024</td>
+                                        <td className="py-4 text-[#101828] text-sm">
+                                            <div className="flex flex-row items-center gap-2">
+                                                <Image
+                                                    src="/icons/profile-pic2.svg"
+                                                    width={24}
+                                                    height={24}
+                                                    alt="profile-icons"
+                                                />
+                                                <p className="text-[#1D2939] font-medium text-sm whitespace-nowrap overflow-hidden">Jenny Wilson</p>
+                                            </div>
+                                        </td>
+                                        <td className="flex items-center justify-start pr-4 py-4 text-[#101828] text-sm">
+                                            <CustomerCareStatus status={customer.status} />
+                                        </td>
+                                    </tr>
+                                ))
+                            ) : (
+                                <tr className='border-t border-lightGrey'>
+                                    <td colSpan={8} className="text-center py-8">
+                                        {isTextSearch && (
+                                            <p className="text-[#667085] text-sm">
+                                                No users found for &quot;{searchTerm}&quot;
+                                            </p>
+                                        )}
+                                        {!isTextSearch && (
+                                            <p className="text-[#667085] text-sm">
+                                                No users found
+                                            </p>
+                                        )}
                                     </td>
                                 </tr>
-                            ))}
+                            )}
                         </tbody>
                     </table>
                 </div>

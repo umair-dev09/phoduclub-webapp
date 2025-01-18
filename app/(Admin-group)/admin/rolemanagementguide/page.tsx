@@ -33,6 +33,7 @@ function RoleManagementGuide() {
     const [users, setUsers] = useState<UserData[]>([]);
     const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState('');
+    const [currentPage, setCurrentPage] = useState(1);
 
     useEffect(() => {
         const usersCollection = collection(db, 'users');
@@ -115,6 +116,22 @@ function RoleManagementGuide() {
             toast.error('Failed to remove guide role. Please try again later.');
         }
     };
+
+    useEffect(() => {
+        let filteredUsers = users;
+
+        // Filter by search term
+        if (searchTerm) {
+            filteredUsers = filteredUsers.filter(user =>
+                user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                user.phone.toLowerCase().includes(searchTerm.toLowerCase())
+            );
+        }
+
+        // Update state with filtered and sorted roles
+        setData(filteredUsers);
+        setCurrentPage(1); // Reset to first page when filters change
+    }, [searchTerm, users]);
 
     if (loading) {
         return <LoadingData />
