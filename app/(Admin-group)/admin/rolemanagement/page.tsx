@@ -53,6 +53,7 @@ function RoleMangement() {
     const router = useRouter();
     const [isAddUser, setisAddUser] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
+    const isTextSearch = searchTerm.trim().length > 0;
 
     // For removing user dialog
     const [isRemoveOpen, setIsRemoveOpen] = useState(false);
@@ -391,9 +392,16 @@ function RoleMangement() {
                                 ) : (
                                     <tr className='border-t border-lightGrey'>
                                         <td colSpan={5} className="text-center py-8">
-                                            <div className="flex flex-col items-center justify-center gap-2">
-                                                <p className="text-[#667085] text-sm">No chapters found for &quot;{searchTerm}&quot;</p>
-                                            </div>
+                                            {isTextSearch && (
+                                                <p className="text-[#667085] text-sm">
+                                                    No chapters found for &quot;{searchTerm}&quot;
+                                                </p>
+                                            )}
+                                            {!isTextSearch && (
+                                                <p className="text-[#667085] text-sm">
+                                                    No chapters found
+                                                </p>
+                                            )}
                                         </td>
                                     </tr>
                                 )}
