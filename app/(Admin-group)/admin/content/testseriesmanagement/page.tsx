@@ -196,31 +196,31 @@ function TesstseriesInfo() {
         }
 
         if (sortConfig.key && sortConfig.direction) {
-            filteredTests = filteredTests.sort((a, b) => {
-                // if (sortConfig.key === 'price') {
-                //     return sortConfig.direction === 'asc'
-                //         ? a.price - b.price
-                //         : b.price - a.price;
-                // }
+            filteredTests.sort((a, b) => {
                 if (sortConfig.key === 'price') {
-                    const priceA = parseFloat(a.discountPrice.replace(/[^0-9.-]+/g, "")); // Parse price as number
+                    const priceA = parseFloat(a.discountPrice.replace(/[^0-9.-]+/g, ""));
                     const priceB = parseFloat(b.discountPrice.replace(/[^0-9.-]+/g, ""));
                     return sortConfig.direction === 'asc' ? priceA - priceB : priceB - priceA;
                 }
                 if (sortConfig.key === 'publishedOn') {
                     const dateA = new Date(a.date).getTime();
                     const dateB = new Date(b.date).getTime();
-                    return sortConfig.direction === 'asc'
-                        ? dateA - dateB
-                        : dateB - dateA;
+                    return sortConfig.direction === 'asc' ? dateA - dateB : dateB - dateA;
                 }
                 return 0;
+            });
+        } else if (!sortConfig.key) {
+            // Only apply default date sorting if no other sort is active
+            filteredTests.sort((a, b) => {
+                const dateA = new Date(a.date).getTime();
+                const dateB = new Date(b.date).getTime();
+                return dateA - dateB;
             });
         }
 
         setData(filteredTests);
         setCurrentPage(1); // Reset to first page when filters change
-    }, [searchTerm, checkedState, tests, selectedDate, data, sortConfig]);
+    }, [searchTerm, checkedState, tests, selectedDate, sortConfig]);
 
     const handleSort = (key: string) => {
         if (key === 'questions' || key === 'publishedOn') {
