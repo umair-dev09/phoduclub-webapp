@@ -385,8 +385,8 @@ function TestQuestions({ questionsList, setQuestionsList }: QuestionsProps) {
         return (
             <div
                 className={`fixed left-0 right-0 bottom-8 w-screen flex items-center justify-center transition-all duration-500 ease-in-out transform ${showSelectionPopup
-                    ? 'translate-y-0'
-                    : 'translate-y-16 pointer-events-none'
+                    ? 'translate-y-0 opacity-100'
+                    : 'translate-y-16 opacity-0 pointer-events-none'
                     }`}
                 style={{ bottom: '2rem', zIndex: 50 }} // Added zIndex for overlay cases
             >
