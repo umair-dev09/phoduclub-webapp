@@ -95,6 +95,13 @@ function TesstseriesInfo() {
     const [dateFilter, setDateFilter] = useState(null);
     const [statusFilter, setStatusFilter] = useState(null);
     const isTextSearch = searchTerm.trim().length > 0 && !dateFilter && !statusFilter;
+    const [sortConfig, setSortConfig] = useState<{
+        key: string;
+        direction: 'asc' | 'desc' | null;
+    }>({
+        key: '',
+        direction: null
+    });
 
     useEffect(() => {
         const testCollection = collection(db, "testseries");
@@ -188,8 +195,47 @@ function TesstseriesInfo() {
             setData(sortedTests);
         }
 
+        if (sortConfig.key && sortConfig.direction) {
+            filteredTests = filteredTests.sort((a, b) => {
+                // if (sortConfig.key === 'price') {
+                //     return sortConfig.direction === 'asc'
+                //         ? a.price - b.price
+                //         : b.price - a.price;
+                // }
+                if (sortConfig.key === 'price') {
+                    const priceA = parseFloat(a.discountPrice.replace(/[^0-9.-]+/g, "")); // Parse price as number
+                    const priceB = parseFloat(b.discountPrice.replace(/[^0-9.-]+/g, ""));
+                    return sortConfig.direction === 'asc' ? priceA - priceB : priceB - priceA;
+                }
+                if (sortConfig.key === 'publishedOn') {
+                    const dateA = new Date(a.date).getTime();
+                    const dateB = new Date(b.date).getTime();
+                    return sortConfig.direction === 'asc'
+                        ? dateA - dateB
+                        : dateB - dateA;
+                }
+                return 0;
+            });
+        }
+
+        setData(filteredTests);
         setCurrentPage(1); // Reset to first page when filters change
-    }, [searchTerm, checkedState, tests, selectedDate, data]);
+    }, [searchTerm, checkedState, tests, selectedDate, data, sortConfig]);
+
+    const handleSort = (key: string) => {
+        if (key === 'questions' || key === 'publishedOn') {
+            setSortConfig((prevConfig) => {
+                // Cycle through: no sort -> asc -> desc -> no sort
+                if (prevConfig.key !== key || !prevConfig.direction) {
+                    return { key, direction: 'asc' };
+                } else if (prevConfig.direction === 'asc') {
+                    return { key, direction: 'desc' };
+                } else {
+                    return { key: '', direction: null }; // Reset to original order
+                }
+            });
+        }
+    };
 
     const lastItemIndex = currentPage * itemsPerPage;
     const firstItemIndex = lastItemIndex - itemsPerPage;
@@ -429,13 +475,19 @@ function TesstseriesInfo() {
                                     <tr>
                                         <th className="w-[30%] text-left px-8 py-4 pl-8 rounded-tl-xl text-[#667085] font-medium text-sm">Test Series</th>
                                         <th className="w-[20%] text-center px-8 py-4 text-[#667085] font-medium text-sm">
-                                            <div className="flex flex-row justify-center gap-1">
+                                            <div
+                                                className="flex flex-row justify-center gap-1 cursor-pointer"
+                                                onClick={() => handleSort('price')}
+                                            >
                                                 <p>Price</p>
                                                 <Image src='/icons/unfold-more-round.svg' alt="more" width={16} height={16} />
                                             </div>
                                         </th>
                                         <th className="w-[20%] text-center px-8 py-4 text-[#667085] font-medium text-sm">
-                                            <div className="flex flex-row justify-center gap-1">
+                                            <div
+                                                className="flex flex-row justify-center gap-1 cursor-pointer"
+                                                onClick={() => handleSort('publishedOn')}
+                                            >
                                                 <p>Published on</p>
                                                 <Image src='/icons/unfold-more-round.svg' alt="more" width={16} height={16} />
                                             </div>

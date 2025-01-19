@@ -34,6 +34,8 @@ function RoleManagementGuide() {
     const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState('');
     const [currentPage, setCurrentPage] = useState(1);
+    const isTextSearch = searchTerm.trim().length > 0;
+
 
     useEffect(() => {
         const usersCollection = collection(db, 'users');
@@ -51,19 +53,27 @@ function RoleManagementGuide() {
                         profilePic: userData.profilePic,
                         createdAt: userData.createdAt,
                         isPremium: userData.isPremium,
-                        isGuide: userData.isGuide, // Ensure this field exists
+                        isGuide: userData.isGuide,
                     } as UserData;
                 })
-                .filter((user) => user.isGuide); // Filter users with isGuide true
+                .filter((user) => user.isGuide);
 
             setUsers(updatedUsers);
-            setData(updatedUsers); // Update data for pagination and search
             setLoading(false);
         });
 
-        // Cleanup listener on component unmount
         return () => unsubscribe();
     }, []);
+
+    const filteredUsers = React.useMemo(() => {
+        if (!searchTerm.trim()) return users;
+
+        return users.filter(user =>
+            user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            user.phone.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            user.userId.toLowerCase().includes(searchTerm.toLowerCase())
+        );
+    }, [users, searchTerm]);
 
     const handleAddGuide = async () => {
         if (!uniqueID) return;
@@ -136,19 +146,6 @@ function RoleManagementGuide() {
     if (loading) {
         return <LoadingData />
     }
-
-    // useEffect(() => {
-    //     // if (users.length === 0) return;
-
-    //     let filteredQuizzes = users;
-
-    //     // Filter by search term
-    //     if (searchTerm) {
-    //         filteredQuizzes = filteredQuizzes.filter((user) =>
-    //             user.name.toLowerCase().includes(searchTerm.toLowerCase())
-    //         );
-    //     }
-    // }, [searchTerm, users]);
 
     return (
         <div className="flex flex-col w-full  gap-4 p-8">
@@ -238,38 +235,56 @@ function RoleManagementGuide() {
                         </tr>
                     </thead>
                     <tbody>
-                        {users.map((users, index) => (
-                            <tr key={index} className="border-t border-solid border-[#EAECF0]">
-                                <td className="py-[12px]">
-                                    <div className="flex flex-row ml-8 gap-[10px] min-w-[260px]">
-                                        <Image className="rounded-full object-cover" src={users.profilePic || '/defaultAdminDP.jpg'} alt="DP" width={38} height={38} />
-                                        <div className="flex items-start justify-center flex-col mb-[2px]">
-                                            <span className="font-semibold text-sm text-[#182230] whitespace-nowrap">{users.name}</span>
+                        {/* {users.map((users, index) => ( */}
+                        {data.length > 0 ? (
+                            filteredUsers.map((user, index) => (
+                                <tr key={index} className="border-t border-solid border-[#EAECF0]">
+                                    <td className="py-[12px]">
+                                        <div className="flex flex-row ml-8 gap-[10px] min-w-[260px]">
+                                            <Image className="rounded-full object-cover" src={user.profilePic || '/defaultAdminDP.jpg'} alt="DP" width={38} height={38} />
+                                            <div className="flex items-start justify-center flex-col mb-[2px]">
+                                                <span className="font-semibold text-sm text-[#182230] whitespace-nowrap">{user.name}</span>
+                                            </div>
                                         </div>
-                                    </div>
-                                </td>
-                                <td className="px-8 py-4 text-start text-[#101828] text-sm ">
-                                    <span className="flex min-w-fit">{users.userId}</span>
-                                </td>
-                                <td className="px-8 py-4 text-start text-[#101828] text-sm ">
-                                    <span className="flex min-w-fit">{users.phone}</span>
-                                </td>
-                                <td className="px-8 py-4 ">
-                                    <div className="bg-[#F2F4F7] py-2 px-3 gap-1 flex flex-row rounded-[6px] items-center h-6 w-[72px]">
-                                        <span className="w-[6px] h-[6px] bg-[#182230] rounded-full"></span>
-                                        <span className="font-medium text-[#182230] text-xs">Guide</span>
-                                    </div>
-                                </td>
-                                <td className="flex items-center justify-center px-8 py-4">
-                                    <button
-                                        className="text-[#DE3024] font-medium text-sm cursor-pointer pt-[2px]"
-                                        onClick={() => { setIsDialogOpen(true); setRemoveId(users.uniqueId) }} // Open the dialog on click
-                                    >
-                                        Remove
-                                    </button>
+                                    </td>
+                                    <td className="px-8 py-4 text-start text-[#101828] text-sm ">
+                                        <span className="flex min-w-fit">{user.userId}</span>
+                                    </td>
+                                    <td className="px-8 py-4 text-start text-[#101828] text-sm ">
+                                        <span className="flex min-w-fit">{user.phone}</span>
+                                    </td>
+                                    <td className="px-8 py-4 ">
+                                        <div className="bg-[#F2F4F7] py-2 px-3 gap-1 flex flex-row rounded-[6px] items-center h-6 w-[72px]">
+                                            <span className="w-[6px] h-[6px] bg-[#182230] rounded-full"></span>
+                                            <span className="font-medium text-[#182230] text-xs">Guide</span>
+                                        </div>
+                                    </td>
+                                    <td className="flex items-center justify-center px-8 py-4">
+                                        <button
+                                            className="text-[#DE3024] font-medium text-sm cursor-pointer pt-[2px]"
+                                            onClick={() => { setIsDialogOpen(true); setRemoveId(user.uniqueId) }} // Open the dialog on click
+                                        >
+                                            Remove
+                                        </button>
+                                    </td>
+                                </tr>
+                            ))
+                        ) : (
+                            <tr className='border-t border-lightGrey'>
+                                <td colSpan={5} className="text-center py-8">
+                                    {isTextSearch && (
+                                        <p className="text-[#667085] text-sm">
+                                            No users found for &quot;{searchTerm}&quot;
+                                        </p>
+                                    )}
+                                    {!isTextSearch && (
+                                        <p className="text-[#667085] text-sm">
+                                            No users found
+                                        </p>
+                                    )}
                                 </td>
                             </tr>
-                        ))}
+                        )}
                     </tbody>
                 </table>
             </div>

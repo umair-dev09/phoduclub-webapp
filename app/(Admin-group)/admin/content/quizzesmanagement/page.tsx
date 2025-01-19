@@ -94,7 +94,7 @@ const fetchQuizzes = (callback: (quizzes: Quiz[]) => void) => {
 };
 
 
-function Quizz() {
+const Quizz = () => {
     const [data, setData] = useState<Quiz[]>([]);
     const [quizzes, setQuizzes] = useState<Quiz[]>([]);
     const [currentPage, setCurrentPage] = useState(1);
@@ -146,20 +146,27 @@ function Quizz() {
         loadQuizzes();
     }, []);
 
-    // Separate derived state logic
+    const [sortConfig, setSortConfig] = useState<{
+        key: string;
+        direction: 'asc' | 'desc' | null;
+    }>({
+        key: '',
+        direction: null
+    });
+
     useEffect(() => {
-        if (quizzes.length === 0) return; // Avoid unnecessary updates before data is fetched
+        if (quizzes.length === 0) return;
 
-        let filteredQuizzes = quizzes;
+        let filteredQuizzes = [...quizzes];
 
-        // Filter by search term
+        // Apply existing filters
         if (searchTerm) {
             filteredQuizzes = filteredQuizzes.filter((quiz) =>
                 quiz.title.toLowerCase().includes(searchTerm.toLowerCase())
             );
         }
 
-        // Filter by selected statuses
+        // Apply status filters
         const selectedStatuses = Object.entries(checkedState)
             .filter(([_, isChecked]) => isChecked)
             .map(([status]) => statusMapping[status as Option])
@@ -171,7 +178,7 @@ function Quizz() {
             );
         }
 
-        // Filter by selected date
+        // Apply date filter
         if (selectedDate) {
             const selectedDateString = selectedDate instanceof Date && !isNaN(selectedDate.getTime())
                 ? selectedDate.toISOString().split('T')[0]
@@ -189,20 +196,48 @@ function Quizz() {
             }
         }
 
-        // Sort by quizPublishedDate in ascending order
-        filteredQuizzes = filteredQuizzes.sort((a, b) => {
-            const dateA = new Date(a.date).getTime();
-            const dateB = new Date(b.date).getTime();
+        if (sortConfig.key && sortConfig.direction) {
+            filteredQuizzes = filteredQuizzes.sort((a, b) => {
+                if (sortConfig.key === 'questions') {
+                    return sortConfig.direction === 'asc'
+                        ? a.questions - b.questions
+                        : b.questions - a.questions;
+                }
+                if (sortConfig.key === 'publishedOn') {
+                    const dateA = new Date(a.date).getTime();
+                    const dateB = new Date(b.date).getTime();
+                    return sortConfig.direction === 'asc'
+                        ? dateA - dateB
+                        : dateB - dateA;
+                }
+                if (sortConfig.key === 'students') {
+                    return sortConfig.direction === 'asc'
+                        ? a.students - b.students
+                        : b.students - a.students;
+                }
+                return 0;
+            });
+        }
 
-            if (isNaN(dateA) || isNaN(dateB)) return 0; // Handle invalid dates gracefully
-
-            return dateA - dateB;
-        });
-
-        // Update state with filtered and sorted quizzes
         setData(filteredQuizzes);
-        setCurrentPage(1); // Reset to the first page when filters change
-    }, [searchTerm, checkedState, quizzes, selectedDate]);
+        setCurrentPage(1);
+    }, [searchTerm, checkedState, quizzes, selectedDate, sortConfig]);
+
+    const handleSort = (key: string) => {
+        if (key === 'questions' || key === 'publishedOn' || key === 'students') {
+            setSortConfig((prevConfig) => {
+                // Cycle through: no sort -> asc -> desc -> no sort
+                if (prevConfig.key !== key || !prevConfig.direction) {
+                    return { key, direction: 'asc' };
+                } else if (prevConfig.direction === 'asc') {
+                    return { key, direction: 'desc' };
+                } else {
+                    return { key: '', direction: null }; // Reset to original order
+                }
+            });
+        }
+    };
+
     const lastItemIndex = currentPage * itemsPerPage;
     const firstItemIndex = lastItemIndex - itemsPerPage;
 
@@ -455,21 +490,35 @@ function Quizz() {
                                     <tr>
                                         <th className="w-1/4 text-left px-8 py-4 pl-8 rounded-tl-xl text-[#667085] font-medium text-sm">Quizzes</th>
                                         <th className="w-[17%] text-center px-8 py-4 text-[#667085] font-medium text-sm">
-                                            <div className="flex flex-row justify-center gap-1">
+                                            <div
+                                                className="flex flex-row justify-center gap-1 cursor-pointer"
+                                                onClick={() => handleSort('questions')}
+                                            >
                                                 <p>Questions</p>
                                                 <Image src='/icons/unfold-more-round.svg' alt="more" width={16} height={16} />
                                             </div>
                                         </th>
                                         <th className="w-[17%] text-center px-8 py-4 text-[#667085] font-medium text-sm">
-                                            <div className="flex flex-row justify-center gap-1">
+                                            <div
+                                                className="flex flex-row justify-center gap-1 cursor-pointer"
+                                                onClick={() => handleSort('publishedOn')}
+                                            >
                                                 <p>Published on</p>
                                                 <Image src='/icons/unfold-more-round.svg' alt="more" width={16} height={16} />
                                             </div>
                                         </th>
                                         <th className="w-[17%] text-center px-8 py-4 text-[#667085] font-medium text-sm">
-                                            <div className="flex flex-row justify-center gap-1">
+                                            <div
+                                                className="flex flex-row justify-center gap-1 cursor-pointer"
+                                                onClick={() => handleSort('students')}
+                                            >
                                                 <p className="whitespace-nowrap">Students Attempted</p>
-                                                <Image src='/icons/unfold-more-round.svg' alt="more" width={16} height={16} />
+                                                <Image
+                                                    src={'/icons/unfold-more-round.svg'}
+                                                    alt="sort"
+                                                    width={16}
+                                                    height={16}
+                                                />
                                             </div>
                                         </th>
                                         <th className="w-[17%] text-center px-8 py-4 rounded-tr-xl text-[#667085] font-medium text-sm">Status</th>
