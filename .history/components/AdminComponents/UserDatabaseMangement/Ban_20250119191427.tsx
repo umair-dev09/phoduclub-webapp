@@ -85,8 +85,9 @@ function Ban({ open, onClose, id, banUser }: BanProps) { // Use the interface
                         </div>
                     </ModalBody>
                     <ModalFooter className="border-t border-lightGrey">
-                        <Button variant="light" className="py-[0.625rem] px-6 border-[1.5px] border-lightGrey font-semibold text-sm text-[#1D2939] rounded-md" onClick={onClose}>Cancel</Button>
-                        <Button className={`py-[0.625rem] px-6 text-white font-semibold shadow-inner-button  ${banUser ? 'bg-[#BB241A] hover:bg-[#B0201A] ' : ' hover:bg-[#014D2A] bg-[#0B9055]'} border border-white rounded-md`} onClick={handleBanUser}>{banUser ? 'Ban User' : 'Revoke Ban'}</Button>
+                        <Button variant="light" className="py-[0.625rem] px-6 border-2  border-solid border-[#EAECF0] font-semibold text-sm text-[#1D2939] rounded-md hover:bg-[#F2F4F7]" onClick={onClose} >Cancel</Button>
+                        <Button className={`py-[0.625rem] px-6 text-white text-sm shadow-inner-button font-semibold  border border-solid  border-white ${isFormValid ? "bg-[#BB241A] hover:bg-[#B0201A] " : "bg-[#f3b7b3] cursor-not-allowed"} rounded-md`} onClick={handleDeleteChannel}>Delete Channel</Button>
+
                     </ModalFooter>
                 </>
             </ModalContent>

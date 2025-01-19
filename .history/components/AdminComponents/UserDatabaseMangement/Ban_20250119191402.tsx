@@ -79,14 +79,24 @@ function Ban({ open, onClose, id, banUser }: BanProps) { // Use the interface
                         </button>
                     </ModalHeader>
                     <ModalBody>
-                        <div className="h-auto flex flex-col">
-                            <span className="text-sm font-normal text-[#667085]">{banUser ? 'Are you sure you want to ban this user?' : 'Are you sure you want to revoke ban for this user?'}</span>
-                            <p className="text-sm font-normal text-[#667085]">{banUser ? 'Banning will immediately restrict their access to the platform and disable their account.' : 'Revoking Ban will immediately give user access to the platform and enable their account.'}</p>
+                        <span className="font-normal text-sm text-[#667085]">All data inside this channel will be gone.</span>
+                        <div className="flex flex-col gap-1 pb-2">
+                            <span className="font-semibold text-sm text-[#1D2939]">To confirm, please enter the name of the channel.</span>
+                            <div className='flex px-2 items-center h-[40px] border border-gray-300  focus:outline focus:outline-[1.5px] focus :outline-[#D6BBFB] hover:outline hover:outline-[1.5px] hover:outline-[#D6BBFB] shadow-sm rounded-md'>
+                                <input
+                                    className="font-normal text-[#667085] w-full text-sm placeholder:text-[#A1A1A1] rounded-md px-1 py-1 focus:outline-none focus:ring-0 border-none"
+                                    type="text"
+                                    placeholder={channelName}
+                                    value={confirmedName}
+                                    onChange={(e) => setConfirmedName(e.target.value)}
+                                />
+                            </div>
                         </div>
                     </ModalBody>
                     <ModalFooter className="border-t border-lightGrey">
-                        <Button variant="light" className="py-[0.625rem] px-6 border-[1.5px] border-lightGrey font-semibold text-sm text-[#1D2939] rounded-md" onClick={onClose}>Cancel</Button>
-                        <Button className={`py-[0.625rem] px-6 text-white font-semibold shadow-inner-button  ${banUser ? 'bg-[#BB241A] hover:bg-[#B0201A] ' : ' hover:bg-[#014D2A] bg-[#0B9055]'} border border-white rounded-md`} onClick={handleBanUser}>{banUser ? 'Ban User' : 'Revoke Ban'}</Button>
+                        <Button variant="light" className="py-[0.625rem] px-6 border-2  border-solid border-[#EAECF0] font-semibold text-sm text-[#1D2939] rounded-md hover:bg-[#F2F4F7]" onClick={onClose} >Cancel</Button>
+                        <Button className={`py-[0.625rem] px-6 text-white text-sm shadow-inner-button font-semibold  border border-solid  border-white ${isFormValid ? "bg-[#BB241A] hover:bg-[#B0201A] " : "bg-[#f3b7b3] cursor-not-allowed"} rounded-md`} onClick={handleDeleteChannel}>Delete Channel</Button>
+
                     </ModalFooter>
                 </>
             </ModalContent>

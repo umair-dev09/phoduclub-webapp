@@ -453,12 +453,12 @@ function User() {
                                                         <Image src='/icons/edit-icon.svg' alt="user profile" width={18} height={18} />
                                                         <p className="text-sm text-[#0C111D] font-normal">Edit details</p>
                                                     </button>
-                                                    <button className=" flex flex-row items-center justify-start w-full py-[0.625rem] px-4 gap-2 hover:bg-[#FEE4E2] "
+                                                    <button className=" flex flex-row items-center justify-start w-full py-[0.625rem] px-4 gap-2 hover:bg-[#F2F4F7]"
                                                         onClick={() => { setIsBanOpen(true); setAuthId(users.uniqueId); setActivePopover(null); }}>
                                                         <Image src='/icons/user-block-red-01.svg' alt="user profile" width={18} height={18} />
                                                         <p className="text-sm text-[#DE3024] font-normal">Ban</p>
                                                     </button>
-                                                    <button className=" flex flex-row items-center justify-start w-full py-[0.625rem] px-4 gap-2 hover:bg-[#FEE4E2] "
+                                                    <button className=" flex flex-row items-center justify-start w-full py-[0.625rem] px-4 gap-2 hover:bg-[#F2F4F7]"
                                                         onClick={() => { setIsDeleteOpen(true); setName(users.name); setAuthId(users.uniqueId); setActivePopover(null); }}>
                                                         <Image src='/icons/delete.svg' alt="user profile" width={18} height={18} />
                                                         <p className="text-sm text-[#DE3024] font-normal">Delete</p>
