@@ -655,8 +655,9 @@ function CustomerCare() {
             </div>
 
             <div className="flex flex-col justify-between h-full">
-                <div className="flex border border-[#EAECF0] rounded-xl overflow-y-hidden overflow-x-auto">
-                    <table className="w-full h-auto bg-white rounded-xl">
+                {/* Table Wrapper */}
+                <div className="flex border border-[#EAECF0] rounded-xl overflow-x-auto">
+                    <table className="table-auto w-full bg-white rounded-xl">
                         <thead>
                             <tr>
                                 <th className="w-10 pl-8">
@@ -683,7 +684,7 @@ function CustomerCare() {
                                 <th className="text-center py-4 text-[#667085] font-medium text-sm">
                                     <div className="flex flex-row justify-center gap-1">
                                         <p>Date</p>
-                                        <Image src='/icons/unfold-more-round.svg' alt="more" width={16} height={16} />
+                                        <Image src="/icons/unfold-more-round.svg" alt="more" width={16} height={16} />
                                     </div>
                                 </th>
                                 <th className="text-left py-4 text-[#667085] font-medium text-sm">
@@ -697,7 +698,11 @@ function CustomerCare() {
                         <tbody>
                             {data.length > 0 ? (
                                 currentItems.map((customer, index) => (
-                                    <tr key={customer.uniqueId} onClick={() => handleTabClick('/admin/customercare/customerinfo')} className="h-auto border-t border-[#EAECF0] cursor-pointer">
+                                    <tr
+                                        key={customer.uniqueId}
+                                        onClick={() => handleTabClick("/admin/customercare/customerinfo")}
+                                        className="border-t border-[#EAECF0] cursor-pointer"
+                                    >
                                         <td className="pl-8 py-4 text-center text-[#101828] text-sm">
                                             <Checkbox
                                                 size="md"
@@ -706,42 +711,56 @@ function CustomerCare() {
                                                 onChange={() => toggleRowSelection(customer.uniqueId)}
                                             />
                                         </td>
-                                        <td className="py-4 text-center text-[#101828] text-sm">
-                                            {index + 1}
-                                        </td>
+                                        <td className="py-4 text-center text-[#101828] text-sm">{index + 1}</td>
                                         <td className="pl-6 py-0">
                                             <div className="flex flex-row gap-2">
                                                 <div className="flex items-center">
                                                     <div className="relative">
-                                                        <Image src='/images/DP_Lion.svg' alt="DP" width={40} height={40} />
-                                                        <Image className="absolute right-0 bottom-0" src='/icons/winnerBatch.svg' alt="Batch" width={18} height={18} />
+                                                        <Image
+                                                            src="/images/DP_Lion.svg"
+                                                            alt="DP"
+                                                            width={40}
+                                                            height={40}
+                                                        />
+                                                        <Image
+                                                            className="absolute right-0 bottom-0"
+                                                            src="/icons/winnerBatch.svg"
+                                                            alt="Batch"
+                                                            width={18}
+                                                            height={18}
+                                                        />
                                                     </div>
                                                 </div>
                                                 <div className="flex items-start justify-start flex-col">
                                                     <div className="text-sm font-semibold whitespace-nowrap">
                                                         {customer.title}
                                                     </div>
-                                                    <div className="flex justify-start items-start text-[13px] text-[#667085]">{customer.uniqueId}</div>
+                                                    <div className="flex justify-start items-start text-[13px] text-[#667085]">
+                                                        {customer.uniqueId}
+                                                    </div>
                                                 </div>
                                             </div>
                                         </td>
                                         <td className="py-4">
                                             <div className="flex flex-col gap-1">
-                                                <p className="text-[#101828] text-left text-sm whitespace-nowrap overflow-hidden text-ellipsis">This message is not relevant to study.</p>
+                                                <p className="text-[#101828] text-left text-sm whitespace-nowrap overflow-hidden text-ellipsis">
+                                                    This message is not relevant to study.
+                                                </p>
                                                 <div className="flex flex-col justify-start gap-1">
                                                     <div className="flex flex-row gap-1">
-                                                        <p className="w-fit px-3 py-1 text-xs text-[#475467] border border-solid border-[#EAECF0] font-medium bg-[#FFFFFF] rounded-[0.375rem]">Scam</p>
-                                                        {/* <p className="w-fit px-3 py-1 text-xs text-white font-medium bg-[#344054] rounded-[0.375rem]">General</p>
-                                                    <p className="w-fit px-3 py-1 text-xs text-white font-medium bg-[#344054] rounded-[0.375rem]">Product</p> */}
+                                                        <p className="w-fit px-3 py-1 text-xs text-[#475467] border border-solid border-[#EAECF0] font-medium bg-[#FFFFFF] rounded-[0.375rem]">
+                                                            Scam
+                                                        </p>
                                                     </div>
-                                                    {/* <p className="w-fit px-3 py-1 text-xs text-white font-medium bg-[#0A5B39] rounded-[0.375rem]">Transaction ID: 254784523698</p> */}
                                                 </div>
                                             </div>
                                         </td>
-                                        <td className="flex items-centre justify-left h-full pl-10 py-4 text-[#101828] text-sm">
+                                        <td className="flex items-center justify-left pl-10 py-4 text-[#101828] text-sm">
                                             <CustomerCareImportance Priority={customer.Priority} />
                                         </td>
-                                        <td className="py-4 text-center text-[#101828] text-sm whitespace-nowrap">Mon Jan 6, 2024</td>
+                                        <td className="py-4 text-center text-[#101828] text-sm whitespace-nowrap">
+                                            Mon Jan 6, 2024
+                                        </td>
                                         <td className="py-4 text-[#101828] text-sm">
                                             <div className="flex flex-row items-center gap-2">
                                                 <Image
@@ -750,7 +769,9 @@ function CustomerCare() {
                                                     height={24}
                                                     alt="profile-icons"
                                                 />
-                                                <p className="text-[#1D2939] font-medium text-sm whitespace-nowrap overflow-hidden">Jenny Wilson</p>
+                                                <p className="text-[#1D2939] font-medium text-sm whitespace-nowrap overflow-hidden">
+                                                    Jenny Wilson
+                                                </p>
                                             </div>
                                         </td>
                                         <td className="flex items-center justify-start pr-4 py-4 text-[#101828] text-sm">
@@ -759,7 +780,7 @@ function CustomerCare() {
                                     </tr>
                                 ))
                             ) : (
-                                <tr className='border-t border-lightGrey'>
+                                <tr className="border-t border-lightGrey">
                                     <td colSpan={8} className="text-center py-8">
                                         {isTextSearch && (
                                             <p className="text-[#667085] text-sm">
@@ -767,9 +788,7 @@ function CustomerCare() {
                                             </p>
                                         )}
                                         {!isTextSearch && (
-                                            <p className="text-[#667085] text-sm">
-                                                No users found
-                                            </p>
+                                            <p className="text-[#667085] text-sm">No users found</p>
                                         )}
                                     </td>
                                 </tr>

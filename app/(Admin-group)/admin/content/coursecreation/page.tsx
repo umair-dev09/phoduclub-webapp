@@ -120,6 +120,14 @@ function Course() {
         return () => unsubscribe();
     }, []);
 
+    const [sortConfig, setSortConfig] = useState<{
+        key: string;
+        direction: 'asc' | 'desc' | null;
+    }>({
+        key: '',
+        direction: null
+    });
+
     useEffect(() => {
         let filteredCourses = Courses;
 
@@ -174,11 +182,43 @@ function Course() {
             return dateA - dateB; // Sort by time in ascending order (earliest first)
         });
 
+        if (sortConfig.key && sortConfig.direction) {
+            filteredCourses = filteredCourses.sort((a, b) => {
+                if (sortConfig.key === 'price') {
+                    return sortConfig.direction === 'asc'
+                        ? a.price - b.price
+                        : b.price - a.price;
+                }
+                if (sortConfig.key === 'publishedOn') {
+                    const dateA = new Date(a.date).getTime();
+                    const dateB = new Date(b.date).getTime();
+                    return sortConfig.direction === 'asc'
+                        ? dateA - dateB
+                        : dateB - dateA;
+                }
+                return 0;
+            });
+        }
+
         // Update state with filtered and sorted quizzes
         setData(filteredCourses);
         setCurrentPage(1); // Reset to first page when filters change
-    }, [searchTerm, checkedState, selectedDate]);
+    }, [searchTerm, checkedState, selectedDate, sortConfig]);
 
+    const handleSort = (key: string) => {
+        if (key === 'price' || key === 'publishedOn') {
+            setSortConfig((prevConfig) => {
+                // Cycle through: no sort -> asc -> desc -> no sort
+                if (prevConfig.key !== key || !prevConfig.direction) {
+                    return { key, direction: 'asc' };
+                } else if (prevConfig.direction === 'asc') {
+                    return { key, direction: 'desc' };
+                } else {
+                    return { key: '', direction: null }; // Reset to original order
+                }
+            });
+        }
+    };
 
     const lastItemIndex = currentPage * itemsPerPage;
     const firstItemIndex = lastItemIndex - itemsPerPage;
@@ -421,7 +461,7 @@ function Course() {
                         )}
                     </div>
                     <div className="h-full">
-                        <div className="border border-[#EAECF0] rounded-xl overflow-x-auto">
+                        <div className="border border-[#EAECF0] rounded-xl overflow-x-auto h-full">
                             <table className="w-full bg-white rounded-xl">
                                 <thead>
                                     <tr>
@@ -429,13 +469,19 @@ function Course() {
                                             Courses
                                         </th>
                                         <th className="text-center px-8 py-4 text-[#667085] font-medium text-sm">
-                                            <div className="flex flex-row justify-center gap-1">
+                                            <div
+                                                className="flex flex-row justify-center gap-1 cursor-pointer"
+                                                onClick={() => handleSort('price')}
+                                            >
                                                 <p>Price</p>
                                                 <Image src='/icons/unfold-more-round.svg' alt="more" width={16} height={16} />
                                             </div>
                                         </th>
                                         <th className="text-center px-8 py-4 text-[#667085] font-medium text-sm">
-                                            <div className="flex flex-row justify-center gap-1">
+                                            <div
+                                                className="flex flex-row justify-center gap-1 cursor-pointer"
+                                                onClick={() => handleSort('publishedOn')}
+                                            >
                                                 <p>Published on</p>
                                                 <Image src='/icons/unfold-more-round.svg' alt="more" width={16} height={16} />
                                             </div>
