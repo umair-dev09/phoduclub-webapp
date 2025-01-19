@@ -36,6 +36,14 @@ interface QuestionsProps {
     setQuestionsList: React.Dispatch<React.SetStateAction<Question[]>>;
 }
 
+interface SelectionPopupProps {
+    showSelectionPopup: boolean;
+    selectedQuestions: Set<number>;
+    handleSelectAll: () => void;
+    handleUnselectAll: () => void;
+    handleMainDifficultySelect: (difficulty: string) => void;
+}
+
 function TestQuestions({ questionsList, setQuestionsList }: QuestionsProps) {
     const [difficultyPopupOpen, setDifficultyPopupOpen] = useState(false);
     // Handler for checkbox change
@@ -359,27 +367,118 @@ function TestQuestions({ questionsList, setQuestionsList }: QuestionsProps) {
         setIsPopoverOpen(false); // Close the popover
         setSelectedQuestions(new Set());
         setMainCheckboxState(false);
+    };
 
+    const [showSelectionPopup, setShowSelectionPopup] = useState(false);
+
+    useEffect(() => {
+        setShowSelectionPopup(selectedQuestions.size > 0);
+    }, [selectedQuestions]);
+
+    const SelectionPopup: React.FC<SelectionPopupProps> = ({
+        showSelectionPopup,
+        selectedQuestions,
+        handleSelectAll,
+        handleUnselectAll,
+        handleMainDifficultySelect
+    }) => {
+        return (
+            <div
+                className={`fixed left-0 right-0 bottom-8 w-screen flex items-center justify-center transition-all duration-500 ease-in-out transform ${showSelectionPopup
+                    ? 'translate-y-0'
+                    : 'translate-y-16 pointer-events-none'
+                    }`}
+                style={{ bottom: '2rem', zIndex: 50 }} // Added zIndex for overlay cases
+            >
+                <div className="flex flex-row gap-4 items-center justify-between bg-white rounded-md border border-solid border-[#EAECF0] px-4 py-3 w-auto shadow-lg">
+                    <p className="font-semibold text-[#1D2939] text-base">
+                        {selectedQuestions.size} selected
+                    </p>
+                    <div className="flex gap-2">
+                        <button
+                            className="rounded-md border border-lightGrey px-3 py-2 hover:bg-gray-50 transition-colors duration-200"
+                            onClick={handleSelectAll}
+                        >
+                            <p className="font-medium text-[#1D2939] text-sm">Select All</p>
+                        </button>
+                        <button
+                            className="rounded-md border border-lightGrey px-3 py-2 hover:bg-gray-50 transition-colors duration-200"
+                            onClick={handleUnselectAll}
+                        >
+                            <p className="font-medium text-[#1D2939] text-sm">Unselect All</p>
+                        </button>
+                    </div>
+                    <Popover placement="top">
+                        <PopoverTrigger>
+                            <button className="flex items-center gap-1 hover:bg-gray-50 rounded-md px-3 py-2 transition-colors duration-200">
+                                <p className="text-sm text-[#182230] font-medium">Difficulty</p>
+                                <svg
+                                    width="16"
+                                    height="16"
+                                    viewBox="0 0 16 16"
+                                    fill="none"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    className="transition-transform duration-200"
+                                >
+                                    <path
+                                        d="M4 6L8 10L12 6"
+                                        stroke="currentColor"
+                                        strokeWidth="1.5"
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                    />
+                                </svg>
+                            </button>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-[141px] p-0 rounded-md border border-lightGrey">
+                            <div className="flex flex-col w-full">
+                                {['Easy', 'Medium', 'Hard'].map((difficulty) => (
+                                    <button
+                                        key={difficulty}
+                                        className="w-full px-2 py-2 transition-colors duration-200 hover:bg-[#F2F4F7]"
+                                        onClick={() => handleMainDifficultySelect(difficulty)}
+                                    >
+                                        <p className={`w-full py-1 text-sm text-center text-[#0C111D] font-medium rounded-sm ${difficulty === 'Easy' ? 'bg-[#D3F8E0]' :
+                                            difficulty === 'Medium' ? 'bg-[#FFFAEB]' :
+                                                'bg-[#FEE4E2]'
+                                            }`}>
+                                            {difficulty}
+                                        </p>
+                                    </button>
+                                ))}
+                            </div>
+                        </PopoverContent>
+                    </Popover>
+                </div>
+            </div>
+        );
     };
 
 
-
-
-
-
     return (
-        <div className=" h-auto ">
-
+        <div className="h-auto">
             <div className=" bg-white rounded-xl ">
                 <div className="w-full border-t-2 border-lightGrey">
                     <div className="flex flex-col w-full">
                         <div className="flex flex-row items-center bg-[#F2F4F7] border-b">
                             <div className="w-[5%] pl-4 py-3">
-
-                                <Popover placement="bottom"
+                                <div
+                                    onClick={(e) => {
+                                        e.stopPropagation(); // Prevent event bubbling
+                                        setIsPopoverOpen((prev) => !prev); // Toggle popover state
+                                    }}
+                                >
+                                    <Checkbox
+                                        size="md"
+                                        color="primary"
+                                        isSelected={mainCheckboxState}
+                                        onChange={() => handleMainCheckboxChange()} // Handle selection logic separately
+                                    />
+                                </div>
+                                {/* <Popover placement="bottom"
                                     isOpen={isPopoverOpen}
                                     onOpenChange={(open) => setIsPopoverOpen(open)}
-                                    className="absoulte left-80 top-60">
+                                    className="absoulte left-80">
                                     <PopoverTrigger>
                                         <div
                                             onClick={(e) => {
@@ -413,7 +512,6 @@ function TestQuestions({ questionsList, setQuestionsList }: QuestionsProps) {
                                                 <p className="font-medium text-[#1D2939] text-sm">Unselect All</p>
                                             </button>
                                         </div>
-                                        {/* Popover Difficulty Dropdown */}
                                         <Popover placement="top">
                                             <PopoverTrigger>
                                                 <button className="flex items-center gap-1">
@@ -443,13 +541,9 @@ function TestQuestions({ questionsList, setQuestionsList }: QuestionsProps) {
                                                     </button>
                                                 </div>
                                             </PopoverContent>
-
                                         </Popover>
-
                                     </PopoverContent>
-                                </Popover>
-
-
+                                </Popover> */}
                             </div>
                             <div className="w-[65%] py-3">
                                 <p className="text-sm text-[#667085] font-medium leading-6">
@@ -658,8 +752,8 @@ function TestQuestions({ questionsList, setQuestionsList }: QuestionsProps) {
                                                 </div>
                                                 <input
                                                     className="font-medium pl-3 text-[#101828] text-sm placeholder:text-[#A1A1A1] rounded-md w-full placeholder:font-normal
-                                                focus:outline-none focus:ring-0 border border-solid border-[#D0D5DD] h-[40px] focus:border-[#D6BBFB]
-                                              focus:shadow-[0px_0px_0px_4px_rgba(158,119,237,0.25),0px_1px_2px_0px_rgba(16,24,40,0.05)]"
+                                                                focus:outline-none focus:ring-0 border border-solid border-[#D0D5DD] h-[40px] focus:border-[#D6BBFB]
+                                                                focus:shadow-[0px_0px_0px_4px_rgba(158,119,237,0.25),0px_1px_2px_0px_rgba(16,24,40,0.05)]"
                                                     placeholder={`Option ${optionKey}`}
                                                     value={question.options[optionKey]}
                                                     onChange={(e) => handleOptionChange(index, optionKey, e.target.value)}
@@ -832,6 +926,13 @@ function TestQuestions({ questionsList, setQuestionsList }: QuestionsProps) {
                 </button>
             </div> */}
 
+            <SelectionPopup
+                showSelectionPopup={showSelectionPopup}
+                selectedQuestions={selectedQuestions}
+                handleSelectAll={handleSelectAll}
+                handleUnselectAll={handleUnselectAll}
+                handleMainDifficultySelect={handleMainDifficultySelect}
+            />
         </div>
     );
 }
