@@ -346,7 +346,7 @@ function TestQuestions({ questionsList, setQuestionsList }: QuestionsProps) {
     };
 
 
-    // handle to diffcult popover
+
     const handleMainDifficultySelect = (value: string) => {
         const newQuestionsList = [...questionsList];
 

@@ -2,7 +2,7 @@
 import Image from "next/image";
 import { PopoverContent, PopoverTrigger, Popover } from '@nextui-org/popover';
 import Collapsible from 'react-collapsible';
-import { Checkbox, dropdown } from "@nextui-org/react";
+import { Checkbox } from "@nextui-org/react";
 import React, { useState, useEffect, useRef, SetStateAction, Dispatch } from "react";
 // import 'react-quill/dist/quill.snow.css';
 import ReactQuill from 'react-quill-new'; // Ensure correct import
@@ -282,7 +282,7 @@ function TestQuestions({ questionsList, setQuestionsList }: QuestionsProps) {
         }));
     };
 
-    const [selectedQuestions, setSelectedQuestions] = useState<Set<number>>(new Set());
+    const [selectedQuestions, setSelectedQuestions] = useState(new Set());
     const [mainCheckboxState, setMainCheckboxState] = useState(false);
     const [isPopoverOpen, setIsPopoverOpen] = useState(false);
 
@@ -308,9 +308,7 @@ function TestQuestions({ questionsList, setQuestionsList }: QuestionsProps) {
             // Deselect all questions
             setSelectedQuestions(new Set());
             setIsPopoverOpen(false); // Close popover when deselecting all
-
         }
-
     };
 
     // Handle individual checkbox toggle
@@ -327,7 +325,6 @@ function TestQuestions({ questionsList, setQuestionsList }: QuestionsProps) {
 
         // Update main checkbox state based on selections
         setMainCheckboxState(newSelected.size === questionsList.length);
-
     };
 
     // Handle "Select All" from popover
@@ -346,22 +343,6 @@ function TestQuestions({ questionsList, setQuestionsList }: QuestionsProps) {
     };
 
 
-    // handle to diffcult popover
-    const handleMainDifficultySelect = (value: string) => {
-        const newQuestionsList = [...questionsList];
-
-        // Iterate over selectedQuestions and update difficulties
-        selectedQuestions.forEach((questionIndex) => {
-            newQuestionsList[questionIndex].difficulty = value;
-        });
-
-        setQuestionsList(newQuestionsList); // Update state
-        setIsPopoverOpen(false); // Close the popover
-        setSelectedQuestions(new Set());
-        setMainCheckboxState(false);
-
-    };
-
 
 
 
@@ -375,11 +356,10 @@ function TestQuestions({ questionsList, setQuestionsList }: QuestionsProps) {
                     <div className="flex flex-col w-full">
                         <div className="flex flex-row items-center bg-[#F2F4F7] border-b">
                             <div className="w-[5%] pl-4 py-3">
-
                                 <Popover placement="bottom"
                                     isOpen={isPopoverOpen}
                                     onOpenChange={(open) => setIsPopoverOpen(open)}
-                                    className="absoulte left-80 top-60">
+                                >
                                     <PopoverTrigger>
                                         <div
                                             onClick={(e) => {
@@ -422,30 +402,24 @@ function TestQuestions({ questionsList, setQuestionsList }: QuestionsProps) {
                                                 </button>
                                             </PopoverTrigger>
                                             <PopoverContent className="w-[141px] px-0 py-0 rounded-md border border-lightGrey">
-                                                <div className="flex flex-col w-full">
-                                                    <button
-                                                        className="w-full px-2 py-[10px] transition-colors duration-150 hover:bg-[#F2F4F7]"
-                                                        onClick={() => handleMainDifficultySelect("Easy")}
+                                                <div className="flex flex-col w-full ">
+                                                    <button className="w-full px-2 py-[10px] transition-colors duration-150 hover:bg-[#F2F4F7]"
                                                     >
                                                         <p className="w-[90px] py-1 text-sm text-center text-[#0C111D] font-normal leading-5 rounded-sm bg-[#D3F8E0]">Easy</p>
                                                     </button>
-                                                    <button
-                                                        className="w-full px-2 py-[10px] transition-colors duration-150 hover:bg-[#F2F4F7]"
-                                                        onClick={() => handleMainDifficultySelect("Medium")}
+                                                    <button className="w-full px-2 py-[10px] transition-colors duration-150 hover:bg-[#F2F4F7]"
                                                     >
                                                         <p className="w-[90px] py-1 text-sm text-center text-[#0C111D] font-normal leading-5 rounded-sm bg-[#FFFAEB]">Medium</p>
                                                     </button>
-                                                    <button
-                                                        className="w-full px-2 py-[10px] transition-colors duration-150 hover:bg-[#F2F4F7]"
-                                                        onClick={() => handleMainDifficultySelect("Hard")}
+                                                    <button className="w-full px-2 py-[10px] transition-colors duration-150 hover:bg-[#F2F4F7]"
                                                     >
                                                         <p className="w-[90px] py-1 text-sm text-center text-[#0C111D] font-normal leading-5 rounded-sm bg-[#FEE4E2]">Hard</p>
                                                     </button>
                                                 </div>
                                             </PopoverContent>
 
-                                        </Popover>
 
+                                        </Popover>
                                     </PopoverContent>
                                 </Popover>
 
@@ -477,10 +451,7 @@ function TestQuestions({ questionsList, setQuestionsList }: QuestionsProps) {
                                                     size="md"
                                                     color="primary"
                                                     isSelected={selectedQuestions.has(index)}
-                                                    onChange={() => {
-                                                        handleIndividualCheckboxChange(index);
-
-                                                    }}
+                                                    onChange={() => handleIndividualCheckboxChange(index)}
                                                 />
                                             </div>
                                         </div>
@@ -493,7 +464,7 @@ function TestQuestions({ questionsList, setQuestionsList }: QuestionsProps) {
                                             </div>
                                         </div>
                                         <div className="w-[20%] py-1">
-                                            {/* index Difficulty Dropdown */}
+                                            {/*  Difficulty Dropdown */}
                                             <Popover placement="bottom" isOpen={!!openPopovers[index]}
                                                 onOpenChange={() => closePopover(index)}>
                                                 <PopoverTrigger>
