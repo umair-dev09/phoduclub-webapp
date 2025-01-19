@@ -412,7 +412,22 @@ function TestQuestions({ questionsList, setQuestionsList }: QuestionsProps) {
                         <PopoverTrigger>
                             <button className="flex items-center gap-1 hover:bg-gray-50 rounded-md px-3 py-2 transition-colors duration-200">
                                 <p className="text-sm text-[#182230] font-medium">Difficulty</p>
-                                <Image src="/icons/arrow-down-01-round.svg" alt="open" width={18} height={18} />
+                                {/* <svg
+                                    width="16"
+                                    height="16"
+                                    viewBox="0 0 16 16"
+                                    fill="none"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    className="transition-transform duration-200"
+                                >
+                                    <path
+                                        d="M4 6L8 10L12 6"
+                                        stroke="currentColor"
+                                        strokeWidth="1.5"
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                    />
+                                </svg> */}
                             </button>
                         </PopoverTrigger>
                         <PopoverContent className="w-[141px] p-0 rounded-md border border-lightGrey">
