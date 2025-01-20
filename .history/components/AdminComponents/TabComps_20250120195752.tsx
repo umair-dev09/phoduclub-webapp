@@ -269,10 +269,10 @@ function TabComps({ isCollapsed, setIsCollapsed }: TabCompsProps) {
                                     src={
                                         isOpenArray[0]
                                             ? isContentSection()
-                                                ? '/icons/white-arrow-up.svg'
+                                                ? 'arrow-up-01-round(2)-white'
                                                 : '/icons/arrow-up-01-round.svg'
                                             : isContentSection()
-                                                ? '/icons/white-arrow-down.svg'
+                                                ? '/icons/admin-content-2.svg'
                                                 : '/icons/arrow-down-02-round.svg'
                                     }
                                     width={20}
