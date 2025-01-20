@@ -8,15 +8,21 @@ import { Tooltip } from "@nextui-org/react";
 import { onAuthStateChanged, User } from 'firebase/auth'; // Import the User type from Firebase
 import { auth } from '@/firebase';
 import { getFirestore, doc, getDoc, updateDoc, onSnapshot } from 'firebase/firestore';
+
 type CurrentUserData = {
     role: string;
     adminId: string;
 }
 
-function TabComps() {
+interface TabCompsProps {
+    isCollapsed: boolean;
+    setIsCollapsed: (value: boolean) => void;
+}
+
+function TabComps({ isCollapsed, setIsCollapsed }: TabCompsProps) {
     const router = useRouter();
     const pathname = usePathname();
-    const [isCollapsed, setIsCollapsed] = useState(false);
+    // const [isCollapsed, setIsCollapsed] = useState(false);
     const [isOpenArray, setIsOpenArray] = useState([false, false, false]);
     const [currentUserData, setCurrentUserData] = useState<CurrentUserData | null>(null);
     const [loading, setLoading] = useState(true); // Track loading state
@@ -165,22 +171,19 @@ function TabComps() {
 
     return (
         <div className={`flex flex-col relative transition-all duration-[500ms] ease-in-out ${isCollapsed ? 'w-[3.5rem]' : 'w-[16rem]'} pl-2 py-[0.625rem] bg-[#131313]`}>
-            {/* Sidebar Toggle Button */}
-            <button className={`flex items-center justify-center absolute top-[3.6rem] left-[97.5%] w-8 h-8 bg-white border-[0.106rem] border-lightGrey rounded-full transition-all ${isCollapsed ? ' -translate-x-1' : ''}`} onClick={handleCollapseClick}>
-                {isCollapsed ? (
-                    <Image className='flex flex-row items-center justify-center mr-[2px]' alt='Collapse Icon Right' src="/icons/collapse-right.svg" width={8} height={8} />
-                ) : (
-                    <Image className='flex flex-row items-center justify-center mr-[2px]' alt="Collapse Icon Left" src="/icons/collapse-left.svg" width={8} height={8} />
-                )}
-            </button>
-
             {/* Logo Section */}
             <div className='overflow-hidden'>
-                <button className={`items-center justify-center w-10 h-10 mt-3 mb-[0.73rem] ml-[0.2rem] text-white font-bold bg-[#3c2f40] rounded-[0.375rem] transition-all ${isCollapsed ? 'flex' : 'hidden'}`}
+                {/* <button className={`items-center justify-center w-10 h-10 mt-3 mb-[0.73rem] ml-[0.2rem] text-white font-bold bg-[#3c2f40] rounded-[0.375rem] transition-all ${isCollapsed ? 'flex' : 'hidden'}`}
                     onClick={() => { router.push("/admin") }}
                 >
                     P
-                </button>
+                </button> */}
+                <p className={`items-center justify-start mt-3 mb-[0.73rem] ml-[0.2rem] transition-all ${isCollapsed ? 'flex' : 'hidden'}`}
+                    onClick={() => { router.push("/admin") }}
+                >
+                    {/* P */}
+                    <Image src='/icon.jpg' alt='phodu logo' width={40} height={40} />
+                </p>
                 <div className={`flex-col mt-2 mb-[0.475rem] ml-2 transition-all ${!isCollapsed ? 'flex' : 'hidden'}`}>
                     <p className='text-white text-left text-lg font-bold'>
                         <button
@@ -265,13 +268,18 @@ function TabComps() {
                                 <Image
                                     src={
                                         isOpenArray[0]
-                                            ? '/icons/arrow-up-01-round.svg'
-                                            : '/icons/arrow-down-02-round.svg'
+                                            ? isContentSection()
+                                                ? '/icons/admin-content.svg'
+                                                : '/icons/arrow-up-01-round.svg'
+                                            : isContentSection()
+                                                ? '/icons/admin-content-2.svg'
+                                                : '/icons/arrow-down-02-round.svg'
                                     }
                                     width={20}
                                     height={20}
                                     alt="Toggle"
                                 />
+
                             </div>
                         )}
 
@@ -421,7 +429,7 @@ function TabComps() {
                         {renderButtonWith('Role Management', '/icons/Role Management-2.svg', '/icons/Role Management.svg', activeTab === 'rolemanagement', () => handleTabClick('rolemanagement', '/admin/rolemanagement'))}
                         {renderButtonWith('User Database', '/icons/community-2.svg', '/icons/community.svg', activeTab === 'userdatabase', () => handleTabClick('userdatabase', '/admin/userdatabase'))}
                         {renderButtonWith('Marketing Integration', '/icons/Marketing Integration-2.svg', '/icons/Marketing Integration.svg', activeTab === 'marketingintegration', () => handleTabClick('marketingintegration', '/admin/marketingintegration'))}
-                        {renderButtonWith('All Subject Chapters', '/icons/Subject Chapters-1.svg', '/icons/Subject Chapters-2.svg', activeTab === 'marketingintegration', () => handleTabClick('marketingintegration', '/admin/marketingintegration'))}
+                        {renderButtonWith('All Subject Chapters', '/icons/Subject Chapters-2.svg', '/icons/Subject Chapters-1.svg', activeTab === 'allsubjectchapters', () => handleTabClick('allsubjectchapters', '/admin/allsubjectchapters'))}
                     </>
                 )}
                 {(currentUserData?.role === 'Admin' || currentUserData?.role === 'Customer Care') && (

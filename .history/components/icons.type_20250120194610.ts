@@ -57,7 +57,7 @@ export type IconsType =
   | "align-right"
   | "align-middle"
   | "edit-02"
-  | "QuestionMark"
+  | "questionmark"
   | "right-arrow"
   | "full-star"
   | "half-star"
@@ -173,7 +173,10 @@ export type IconsType =
   | "collaspeDetails-2"
   | "Subject Chapters-1"
   | "Subject Chapters-2"
-  | "plus-white-sign";
+  | "plus-white-sign"
+  | "exit-channel-red"
+  | "arrow-up-01-round(2)-white";
+
 
 
 

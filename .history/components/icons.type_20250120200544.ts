@@ -57,7 +57,7 @@ export type IconsType =
   | "align-right"
   | "align-middle"
   | "edit-02"
-  | "QuestionMark"
+  | "questionmark"
   | "right-arrow"
   | "full-star"
   | "half-star"
@@ -166,7 +166,20 @@ export type IconsType =
   | "download-reciepts"
   | "Download Invoice"
   | "quiz-02"
-  | "right-mark";
+  | "right-mark"
+  | 'red-cancel-icon'
+  | "green-right-mark"
+  | "community-pink-color"
+  | "collaspeDetails-2"
+  | "Subject Chapters-1"
+  | "Subject Chapters-2"
+  | "plus-white-sign"
+  | "exit-channel-red"
+  | "arrow-up-01-round(2)-white"
+  | "arrow-down-01-round(2)-white"
+  | "white-arrow-up"
+  | "white-arrow-down";
+
 
 
 
