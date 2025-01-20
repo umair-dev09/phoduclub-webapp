@@ -1,7 +1,7 @@
 "use client";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { useState, useEffect } from "react";
+import { useState, useEffect, use } from "react";
 import { Calendar } from "@nextui-org/calendar";
 import { today, getLocalTimeZone } from "@internationalized/date";
 import {
@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/pagination";
 import { Popover, PopoverContent, PopoverTrigger } from "@nextui-org/popover";
 import Remove from "@/components/AdminComponents/QuizInfoDailogs/Remove";
-
+import { Checkbox } from "@nextui-org/react";
 // Define types for StudentAttempts data
 interface StudentAttempts {
     title: string;
@@ -57,7 +57,7 @@ function StudentsAttemptedTestseries() {
     const [statusFilter, setStatusFilter] = useState(null);
     const isTextSearch = searchTerm.trim().length > 0 && !dateFilter && !statusFilter;
     const [popoveropen2, setPopoveropen2] = useState<number | null>(null);
-
+    const [isPopoverOpen, setIsPopoverOpen] = useState(false);
     // Fetch StudentAttempts when component mounts
     useEffect(() => {
         const loadStudentAttempts = async () => {
@@ -211,16 +211,39 @@ function StudentsAttemptedTestseries() {
                         </PopoverContent>
                     </Popover>
 
-                    <button className="h-[44px] w-[105px] rounded-md bg-[#FFFFFF] border border-solid border-[#D0D5DD] flex items-center justify-center gap-2">
-                        <span className="font-medium text-sm text-[#667085] ml-2">Sort By</span>
-                        <Image
-                            src="/icons/chevron-down-dark-1.svg"
-                            width={20}
-                            height={20}
-                            alt="arrow-down-dark-1"
-                        />
-                    </button>
 
+                    <Popover
+                        placement="bottom-end"
+                        isOpen={isPopoverOpen}
+                        onOpenChange={(open) => setIsPopoverOpen(open)}
+                    >
+                        <PopoverTrigger>
+                            <button className="h-[44px] w-[105px] rounded-md bg-[#FFFFFF] border border-solid border-[#D0D5DD] flex items-center justify-center gap-2">
+                                <span className="font-medium text-sm text-[#667085] ml-2">Sort By</span>
+                                <Image
+                                    src="/icons/chevron-down-dark-1.svg"
+                                    width={20}
+                                    height={20}
+                                    alt="arrow-down-dark-1"
+                                />
+                            </button>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-[12.875rem] items-start py-2 px-0 h-auto gap-1 border border-lightGrey rounded-md shadow-[0_12px_16px_-4px_rgba(16,24,40,0.08)]">
+                            <div className="flex flex-col w-full ">
+                                <span className="text-xs font-normal text-[#475467] mb-1 px-2 ">Students</span>
+                                <button className="flex flex-row w-full gap-2  items-center  hover:bg-neutral-100 h-10 px-2"
+                                    onClick={() => { setIsPopoverOpen(false); }}>
+                                    <Checkbox color="primary" />
+                                    <span className="text-[#1D2939] font-medium text-sm">Free</span>
+                                </button>
+                                <button className="flex flex-row w-full gap-2  items-center hover:bg-neutral-100 h-10 px-2"
+                                    onClick={() => { setIsPopoverOpen(false); }}>
+                                    <Checkbox color="primary" />
+                                    <span className="text-[#1D2939] font-medium text-sm">Paid</span>
+                                </button>
+                            </div>
+                        </PopoverContent>
+                    </Popover>
 
                     {/* <Popover placement="bottom-end"
                         isOpen={popoveropen}

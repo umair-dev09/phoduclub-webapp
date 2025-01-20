@@ -221,15 +221,14 @@ function StudentsAttemptedTestseries() {
                         />
                     </button>
 
-
-                    {/* <Popover placement="bottom-end"
+                    <Popover placement="bottom-end"
                         isOpen={popoveropen}
                         onOpenChange={() => setPopoveropen(!popoveropen)} >
                         <PopoverTrigger>
-                            <button className="flex flex-row items-center py-[0.625rem] px-6 gap-1 bg-purple border border-[#800EE2] rounded-md shadow-inner-button outline-none">
+                            {/* <button className="flex flex-row items-center py-[0.625rem] px-6 gap-1 bg-purple border border-[#800EE2] rounded-md shadow-inner-button outline-none">
                                 <Image src='/icons/plus-sign-white.svg' alt="add" width={18} height={18} />
                                 <p className="text-sm text-white font-semibold">Add User</p>
-                            </button>
+                            </button> */}
                         </PopoverTrigger>
                         <PopoverContent className="flex flex-col w-[304px] h-auto p-6 gap-4 bg-white border border-lightGrey rounded-xl">
                             <div className="flex flex-col gap-2 w-full">
@@ -286,7 +285,7 @@ function StudentsAttemptedTestseries() {
                             </div>
 
                         </PopoverContent>
-                    </Popover> */}
+                    </Popover>
                 </div>
             </div>
 

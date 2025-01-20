@@ -1,7 +1,7 @@
 "use client";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { useState, useEffect } from "react";
+import { useState, useEffect, use } from "react";
 import { Calendar } from "@nextui-org/calendar";
 import { today, getLocalTimeZone } from "@internationalized/date";
 import {
@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/pagination";
 import { Popover, PopoverContent, PopoverTrigger } from "@nextui-org/popover";
 import Remove from "@/components/AdminComponents/QuizInfoDailogs/Remove";
-
+import { Checkbox } from "@nextui-org/react";
 // Define types for StudentAttempts data
 interface StudentAttempts {
     title: string;
@@ -53,7 +53,11 @@ function StudentsAttemptedTestseries() {
     const router = useRouter();
     const [popoveropen, setPopoveropen] = useState(false);
     const [isSelcetDateOpen, setIsSelectDateOpen] = useState(false);
-
+    const [dateFilter, setDateFilter] = useState(null);
+    const [statusFilter, setStatusFilter] = useState(null);
+    const isTextSearch = searchTerm.trim().length > 0 && !dateFilter && !statusFilter;
+    const [popoveropen2, setPopoveropen2] = useState<number | null>(null);
+    const [isPopoverOpen, setIsPopoverOpen] = useState(false);
     // Fetch StudentAttempts when component mounts
     useEffect(() => {
         const loadStudentAttempts = async () => {
@@ -143,6 +147,10 @@ function StudentsAttemptedTestseries() {
     // Check if all fields are filled
     const isAddButtonDisabled = !uniqueId || !startDate || !endDate;
 
+    const handlePopoverOpen = (index: number) => {
+        setPopoveropen2(index);
+    };
+
     return (
         <div className="flex flex-col w-full pt-4 gap-4">
             <div className="flex flex-row justify-between items-center">
@@ -165,11 +173,11 @@ function StudentsAttemptedTestseries() {
                 </button>
                 <div className="flex flex-row gap-3">
                     {/* Select Date Button */}
-                    <Popover placement="bottom" isOpen={isSelcetDateOpen}>
+                    <Popover placement="bottom" isOpen={isSelcetDateOpen} onOpenChange={(open) => setIsSelectDateOpen(open)}>
                         <PopoverTrigger>
-                            <button className="h-[44px] w-[143px] rounded-md bg-[#FFFFFF] border border-solid border-[#D0D5DD] flex items-center p-3" onClick={() => setIsSelectDateOpen(true)}>
+                            <button className="h-[44px] w-[143px] rounded-md bg-[#FFFFFF] border border-solid border-[#D0D5DD] outline-none flex items-center p-3">
                                 <Image
-                                    src="/icons/select-date.svg"
+                                    src="/icons/select-Date.svg"
                                     width={20}
                                     height={20}
                                     alt="Select-date Button"
@@ -181,7 +189,6 @@ function StudentsAttemptedTestseries() {
                             <Calendar
                                 defaultValue={today(getLocalTimeZone())}
                                 showMonthAndYearPickers
-                                color="secondary"
                                 onChange={(value) => {
                                     const date = new Date(value.year, value.month - 1, value.day); // Adjust for zero-based month index
                                     setSelectedDate(date); // Update state with the new Date object
@@ -192,7 +199,7 @@ function StudentsAttemptedTestseries() {
                             {/* Conditionally render the "Clear" button */}
                             {selectedDate && (
                                 <button
-                                    className="min-w-[84px] min-h-[30px] rounded-md bg-[#9012FF] text-[14px] font-medium text-white mb-2"
+                                    className="min-w-[84px] min-h-[30px] rounded-md bg-[#9012FF] border border-[#800EE2] shadow-inner-button text-[14px] font-medium text-white mb-2 transition-colors duration-150 hover:bg-[#6D0DCC]"
                                     onClick={() => {
                                         setSelectedDate(null); // Clear the selected date
                                         setIsSelectDateOpen(false);
@@ -204,17 +211,39 @@ function StudentsAttemptedTestseries() {
                         </PopoverContent>
                     </Popover>
 
-                    <button className="h-[44px] w-[105px] rounded-md bg-[#FFFFFF] border border-solid border-[#D0D5DD] flex items-center justify-center gap-2">
-                        <span className="font-medium text-sm text-[#667085] ml-2">Sort By</span>
-                        <Image
-                            src="/icons/chevron-down-dark-1.svg"
-                            width={20}
-                            height={20}
-                            alt="arrow-down-dark-1"
-                        />
-                    </button>
 
-                    <Popover placement="bottom-end"
+                    <Popover
+                        placement="bottom-end"
+                        isOpen={isPopoverOpen}
+                        onOpenChange={(open) => setIsPopoverOpen(open)}
+                    >
+                        <PopoverTrigger>
+                            <button className="h-[44px] w-[105px] rounded-md bg-[#FFFFFF] border border-solid border-[#D0D5DD] flex items-center justify-center gap-2">
+                                <span className="font-medium text-sm text-[#667085] ml-2">Sort By</span>
+                                <Image
+                                    src="/icons/chevron-down-dark-1.svg"
+                                    width={20}
+                                    height={20}
+                                    alt="arrow-down-dark-1"
+                                />
+                            </button>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-[12.875rem] items-start py-2 px-0 h-auto gap-1 border border-lightGrey rounded-md shadow-[0_12px_16px_-4px_rgba(16,24,40,0.08)]">
+                            <div className="flex flex-col w-full ">
+                                <span className="text-xs font-normal text-[#475467] mb-1 px-2 ">Students</span>
+                                <button className="flex flex-row w-full gap-2  items-center  hover:bg-neutral-100 h-10 px-2">
+                                    <Checkbox color="primary" />
+                                    <span className="text-[#1D2939] font-medium text-sm">Free</span>
+                                </button>
+                                <button className="flex flex-row w-full gap-2  items-center hover:bg-neutral-100 h-10 px-2">
+                                    <Checkbox color="primary" />
+                                    <span className="text-[#1D2939] font-medium text-sm">Paid</span>
+                                </button>
+                            </div>
+                        </PopoverContent>
+                    </Popover>
+
+                    {/* <Popover placement="bottom-end"
                         isOpen={popoveropen}
                         onOpenChange={() => setPopoveropen(!popoveropen)} >
                         <PopoverTrigger>
@@ -278,7 +307,7 @@ function StudentsAttemptedTestseries() {
                             </div>
 
                         </PopoverContent>
-                    </Popover>
+                    </Popover> */}
                 </div>
             </div>
 
@@ -319,53 +348,80 @@ function StudentsAttemptedTestseries() {
                             </tr>
                         </thead>
                         <tbody>
-                            {currentItems.map((students, index) => (
-                                <tr key={index} className="border-t border-solid border-[#EAECF0]">
-                                    <td className="py-2">
-                                        <div className="flex flex-row ml-8 gap-2">
-                                            <div className="flex items-center">
-                                                <div className="relative">
-                                                    <Image src='/images/DP_Lion.svg' alt="DP" width={40} height={40} />
-                                                    <Image className="absolute right-0 bottom-0" src='/icons/winnerBatch.svg' alt="Batch" width={18} height={18} />
+                            {data.length > 0 ? (
+                                currentItems.map((students, index) => (
+                                    <tr key={index} className="border-t border-solid border-[#EAECF0]">
+                                        <td className="py-2">
+                                            <div className="flex flex-row ml-8 gap-2">
+                                                <div className="flex items-center">
+                                                    <div className="relative">
+                                                        <Image src='/images/DP_Lion.svg' alt="DP" width={40} height={40} />
+                                                        <Image className="absolute right-0 bottom-0" src='/icons/winnerBatch.svg' alt="Batch" width={18} height={18} />
+                                                    </div>
+                                                </div>
+                                                <div className="flex items-start justify-start flex-col">
+                                                    <div className="font-semibold">{students.title}</div>
+                                                    <div className="flex justify-start items-start text-[13px] text-[#667085]">{students.uniqueId}</div>
                                                 </div>
                                             </div>
-                                            <div className="flex items-start justify-start flex-col">
-                                                <div className="font-semibold">{students.title}</div>
-                                                <div className="flex justify-start items-start text-[13px] text-[#667085]">{students.uniqueId}</div>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td className="px-8 py-4 text-center text-[#101828] text-sm">{students.enrollmentType}</td>
-                                    <td className="px-8 py-4 text-center text-[#101828] text-sm">{students.progress}</td>
-                                    <td className="px-8 py-4 text-center text-[#101828] text-sm">{students.enrolledDate}</td>
-                                    <td className="px-8 py-4 text-center text-[#101828] text-sm">{students.expiryDate}</td>
-                                    <td className="flex items-center justify-center px-8 py-4 text-[#101828] text-sm">
-                                        <Popover placement="bottom-end">
-                                            <PopoverTrigger>
-                                                <button className="outline-none">
-                                                    <Image
-                                                        src="/icons/three-dots.svg"
-                                                        width={20}
-                                                        height={20}
-                                                        alt="More Actions"
-                                                    />
-                                                </button>
-                                            </PopoverTrigger>
-                                            <PopoverContent className="w-[10.438rem] py-1 px-0 bg-white border border-lightGrey rounded-md">
-                                                <button className="flex flex-row items-center justify-start w-full py-[0.625rem] px-4 gap-2 hover:bg-[#F2F4F7] outline-none">
-                                                    <Image src='/icons/user-account.svg' alt="user profile" width={18} height={18} />
-                                                    <p className="text-sm text-[#0C111D] font-normal">Go to Profile</p>
-                                                </button>
-                                                <button className=" flex flex-row items-center justify-start w-full py-[0.625rem] px-4 gap-2 hover:bg-[#F2F4F7] outline-none"
-                                                    onClick={openRemove}>
-                                                    <Image src='/icons/delete.svg' alt="user profile" width={18} height={18} />
-                                                    <p className="text-sm text-[#DE3024] font-normal">Remove</p>
-                                                </button>
-                                            </PopoverContent>
-                                        </Popover>
+                                        </td>
+                                        <td className="px-8 py-4 text-center text-[#101828] text-sm">{students.enrollmentType}</td>
+                                        <td className="px-8 py-4 text-center text-[#101828] text-sm">{students.progress}</td>
+                                        <td className="px-8 py-4 text-center text-[#101828] text-sm">{students.enrolledDate}</td>
+                                        <td className="px-8 py-4 text-center text-[#101828] text-sm">{students.expiryDate}</td>
+                                        <td className="flex items-center justify-center px-8 py-4 text-[#101828] text-sm">
+                                            <Popover placement="bottom-end"
+                                                isOpen={popoveropen2 === index}
+                                                onOpenChange={(open) => open ? handlePopoverOpen(index) : setPopoveropen2(null)}>
+                                                <PopoverTrigger>
+                                                    <button
+                                                        className="w-[32px] h-[32px] rounded-full flex items-center justify-center transition-all duration-300 ease-in-out hover:bg-[#F2F4F7]"
+
+                                                    >
+                                                        <button className="outline-none">
+                                                            <Image
+                                                                src="/icons/three-dots.svg"
+                                                                width={20}
+                                                                height={20}
+                                                                alt="More Actions"
+                                                            />
+                                                        </button>
+                                                    </button>
+                                                </PopoverTrigger>
+                                                <PopoverContent className="w-[10.438rem] py-1 px-0 bg-white border border-lightGrey rounded-md">
+                                                    <button className="flex flex-row items-center justify-start w-full py-[0.625rem] px-4 gap-2 hover:bg-[#F2F4F7] outline-none">
+                                                        <Image src='/icons/user-account.svg' alt="user profile" width={18} height={18} />
+                                                        <p className="text-sm text-[#0C111D] font-normal">Go to Profile</p>
+                                                    </button>
+                                                    <button className=" flex flex-row items-center justify-start w-full py-[0.625rem] px-4 gap-2 hover:bg-[#FEE4E2] outline-none"
+                                                        onClick={() => {
+                                                            { setIsRemoveOpen(true) };
+                                                            setPopoveropen2(null);
+                                                        }}>
+                                                        <Image src='/icons/delete.svg' alt="user profile" width={18} height={18} />
+                                                        <p className="text-sm text-[#DE3024] font-normal">Remove</p>
+                                                    </button>
+                                                </PopoverContent>
+                                            </Popover>
+                                        </td>
+                                    </tr>
+                                ))
+                            ) : (
+                                <tr className='border-t border-lightGrey'>
+                                    <td colSpan={6} className="text-center py-8">
+                                        {isTextSearch && (
+                                            <p className="text-[#667085] text-sm">
+                                                No users found for &quot;{searchTerm}&quot;
+                                            </p>
+                                        )}
+                                        {!isTextSearch && (
+                                            <p className="text-[#667085] text-sm">
+                                                No users found
+                                            </p>
+                                        )}
                                     </td>
                                 </tr>
-                            ))}
+                            )}
                         </tbody>
                     </table>
                 </div>
@@ -382,7 +438,7 @@ function StudentsAttemptedTestseries() {
                     </div>
                 </div>
             </div>
-            {isRemoveOpen && < Remove onClose={closeRemove} open={true} />}
+            {isRemoveOpen && < Remove onClose={() => setIsRemoveOpen(false)} open={isRemoveOpen} />}
         </div>
     );
 }
