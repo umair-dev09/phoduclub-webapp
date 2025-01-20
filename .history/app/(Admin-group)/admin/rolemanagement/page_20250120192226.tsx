@@ -35,7 +35,7 @@ interface RoleManagementInfo {
 
 type Option = "Admin" | "Customer Care" | "Teacher" | "Chief Modrator" | "Editor";
 
-function rolemangement() {
+function RoleMangement() {
     const [firstName, setFirstName] = useState('');
     const [profilePic, setProfilePic] = useState('');
     const [lastName, setLastName] = useState('');
@@ -47,12 +47,13 @@ function rolemangement() {
     const [data, setData] = useState<RoleManagementInfo[]>([]);
     const [users, setUsers] = useState<RoleManagementInfo[]>([]);
     const [currentPage, setCurrentPage] = useState(1);
-    const [itemsPerPage] = useState(6);
+    const [itemsPerPage] = useState(10);
     const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState('');
     const router = useRouter();
     const [isAddUser, setisAddUser] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
+    const isTextSearch = searchTerm.trim().length > 0;
 
     // For removing user dialog
     const [isRemoveOpen, setIsRemoveOpen] = useState(false);
@@ -208,7 +209,7 @@ function rolemangement() {
     };
 
     return (
-        <div className="flex flex-col w-full  gap-4 p-8">
+        <div className="flex flex-col w-full gap-4 p-8">
             <div className="flex flex-row justify-between items-center">
                 <span className="text-lg font-semibold text-[#1D2939]">Users</span>
                 <div className="flex flex-row gap-3">
@@ -270,7 +271,7 @@ function rolemangement() {
 
                     {/* Add New User Button */}
                     <button
-                        className="h-[44px] w-auto px-6 py-2 bg-[#8501FF] rounded-md shadow-inner-button border border-solid border-[#800EE2] flex items-center justify-center"
+                        className="h-[44px] w-auto px-6 py-2 bg-[#8501FF] rounded-md shadow-inner-button border border-solid border-[#800EE2] flex items-center justify-center transition-colors duration-150 hover:bg-[#6D0DCC]"
                         onClick={() => handleAddNewUser()} >
                         <span className="text-[#FFFFFF] font-semibold text-sm">Add New User</span>
                     </button>
@@ -282,7 +283,7 @@ function rolemangement() {
                     <LoadingData />
                 </div>
             ) : (
-                <div className="flex flex-col overflow-y-auto">
+                <div className="flex flex-col overflow-y-auto overflow-x-hidden">
                     <div className="flex flex-row items-center justify-between w-full">
                         <div className="flex flex-row gap-2">
                             {Object.keys(checkedState)
@@ -314,7 +315,7 @@ function rolemangement() {
                             </button>
                         )}
                     </div>
-                    <div className="border border-[#EAECF0] rounded-xl ">
+                    <div className="border border-[#EAECF0] rounded-xl overflow-x-auto">
                         <table className="w-full bg-white rounded-xl ">
                             <thead>
                                 <tr className="gap-[200px]">
@@ -340,53 +341,70 @@ function rolemangement() {
                                 </tr>
                             </thead>
                             <tbody>
-                                {currentItems.map((users, index) => (
-                                    <tr key={index} className="border-t border-solid border-[#EAECF0]">
-                                        <td className="py-[12px]">
-                                            <div className="flex flex-row ml-8 gap-[10px] min-w-[260px]">
-                                                <Image className='rounded-full object-cover' src={users.profilePic || '/defaultAdminDP.jpg'} alt="DP" width={38} height={38} />
-                                                <div className="flex items-start justify-center flex-col mb-[2px]">
-                                                    <button onClick={() => handleTabClick(`/admin/rolemanagement/${users.name.toLowerCase().replace(/\s+/g, '-')}?rId=${users.adminId}`)} className="font-semibold text-sm text-[#9012FF] underline">{users.name}</button>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td className="px-8 py-4 text-start text-[#101828] text-sm "><span className="flex min-w-fit">{users.userId}</span></td>
-                                        <td className="px-8 py-4 text-start text-[#101828] text-sm "><span className="flex min-w-fit">{users.phone}</span></td>
-                                        <td className="px-8 py-4 text-start text-[#101828] text-sm">
-                                            <span className="flex min-w-[200px]">
-                                                <UserRolesView role={users.role} />
-                                            </span>
-                                        </td>
-                                        <td className="flex items-center justify-center px-8 py-4 text-[#101828] text-sm">
-                                            <Popover placement="bottom-end"  >
-                                                <PopoverTrigger>
-                                                    <button onClick={() => setActionDialog(actionDialog === users.adminId ? null : users.adminId)}                                                >
-                                                        <Image
-                                                            src="/icons/three-dots.svg"
-                                                            width={20}
-                                                            height={20}
-                                                            alt="More Actions"
-                                                        />
-                                                    </button>
-                                                </PopoverTrigger>
-                                                <PopoverContent className="flex px-0 rounded-md w-auto py-2">
-                                                    <div >
-                                                        <button className="flex flex-row items-center justify-start w-full py-2 gap-2 hover:bg-[#F2F4F7] pl-4 pr-9"
-                                                            onClick={() => handleEditDetails(true, users)} >
-                                                            <Image src="/icons/edit-02.svg" width={18} height={18} alt="edit" />
-                                                            <span className="text-sm text-[#0C111D] font-normal">Edit details</span>
-                                                        </button>
-                                                        <button className=" flex flex-row items-center justify-start w-full py-2 gap-2 hover:bg-[#F2F4F7] pl-4 pr-9"
-                                                            onClick={() => handleRemoveUser(users.adminId)}>
-                                                            <Image src='/icons/delete.svg' alt="user profile" width={18} height={18} />
-                                                            <p className="text-sm text-[#DE3024] font-normal">Remove</p>
-                                                        </button>
+                                {data.length > 0 ? (
+                                    currentItems.map((users, index) => (
+                                        <tr key={index} className="border-t border-solid border-[#EAECF0]">
+                                            <td className="py-[12px]">
+                                                <button onClick={() => handleTabClick(`/admin/rolemanagement/${users.name.toLowerCase().replace(/\s+/g, '-')}?rId=${users.adminId}`)} className="flex flex-row items-center ml-8 gap-[10px] min-w-[260px]">
+                                                    <Image className='rounded-full object-cover' src={users.profilePic || '/defaultAdminDP.jpg'} alt="DP" width={38} height={38} />
+                                                    <div className="flex items-start justify-center flex-col mb-[2px]">
+                                                        <div className="font-semibold text-sm text-[#9012FF] underline whitespace-nowrap">{users.name}</div>
                                                     </div>
-                                                </PopoverContent>
-                                            </Popover>
+                                                </button>
+                                            </td>
+                                            <td className="px-8 py-4 text-start text-[#101828] text-sm "><span className="flex min-w-fit">{users.userId}</span></td>
+                                            <td className="px-8 py-4 text-start text-[#101828] text-sm "><span className="flex min-w-fit">{users.phone}</span></td>
+                                            <td className="px-8 py-4 text-start text-[#101828] text-sm">
+                                                <span className="flex min-w-[200px]">
+                                                    <UserRolesView role={users.role} />
+                                                </span>
+                                            </td>
+                                            <td className="flex items-center justify-center px-8 py-4 text-[#101828] text-sm">
+                                                <Popover placement="bottom-end"  >
+                                                    <PopoverTrigger>
+                                                        <button onClick={() => setActionDialog(actionDialog === users.adminId ? null : users.adminId)}                                                >
+                                                            <Image
+                                                                src="/icons/three-dots.svg"
+                                                                width={20}
+                                                                height={20}
+                                                                alt="More Actions"
+                                                            />
+                                                        </button>
+                                                    </PopoverTrigger>
+                                                    <PopoverContent className="flex px-0 rounded-md w-auto py-2">
+                                                        <div >
+                                                            <button className="flex flex-row items-center justify-start w-full py-2 gap-2 hover:bg-[#F2F4F7] pl-4 pr-9"
+                                                                onClick={() => handleEditDetails(true, users)} >
+                                                                <Image src="/icons/edit-02.svg" width={18} height={18} alt="edit" />
+                                                                <span className="text-sm text-[#0C111D] font-normal">Edit details</span>
+                                                            </button>
+                                                            <button className=" flex flex-row items-center justify-start w-full py-2 gap-2 hover:bg-[#FEE4E2]  pl-4 pr-9"
+                                                                onClick={() => handleRemoveUser(users.adminId)}>
+                                                                <Image src='/icons/delete.svg' alt="user profile" width={18} height={18} />
+                                                                <p className="text-sm text-[#DE3024] font-normal">Remove</p>
+                                                            </button>
+                                                        </div>
+                                                    </PopoverContent>
+                                                </Popover>
+                                            </td>
+                                        </tr>
+                                    ))
+                                ) : (
+                                    <tr className='border-t border-lightGrey'>
+                                        <td colSpan={5} className="text-center py-8">
+                                            {isTextSearch && (
+                                                <p className="text-[#667085] text-sm">
+                                                    No chapters found for &quot;{searchTerm}&quot;
+                                                </p>
+                                            )}
+                                            {!isTextSearch && (
+                                                <p className="text-[#667085] text-sm">
+                                                    No chapters found
+                                                </p>
+                                            )}
                                         </td>
                                     </tr>
-                                ))}
+                                )}
                             </tbody>
                         </table>
                     </div>
@@ -404,7 +422,6 @@ function rolemangement() {
                     </div>
                 </div>
             )}
-            {isRemoveOpen && < Remove onClose={closeRemove} open={true} />}
             {/* Dialog Component  for AddNewUser*/}
             {isAddUser && <Addnewuser close={closeAddUser} open={true} isEditing={isEditing} profilePic={profilePic} setProfilePic={setProfilePic} firstName={firstName} setFirstName={setFirstName} lastName={lastName} setLastName={setLastName} userId={userId} setUserId={setUserId} phone={phone} setPhone={setPhone} selectedRole={selectedRole} setSelectedRole={setSelectedRole} adminIdd={adminIdd} setAdminId={setAdminIdd} />}
             <ToastContainer />
@@ -530,4 +547,4 @@ function PaginationSection({
     );
 }
 
-export default rolemangement;
+export default RoleMangement;

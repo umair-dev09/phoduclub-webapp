@@ -379,10 +379,9 @@ function RoleMangement() {
                                                                 <span className="text-sm text-[#0C111D] font-normal">Edit details</span>
                                                             </button>
                                                             <button className=" flex flex-row items-center justify-start w-full py-2 gap-2 hover:bg-[#FEE4E2]  pl-4 pr-9"
-                                                            // onClick={() => handleRemoveUser(users.adminId)}>
-                                                            >
+                                                                onClick={() => handleRemoveUser(users.adminId)}>
                                                                 <Image src='/icons/delete.svg' alt="user profile" width={18} height={18} />
-                                                                <p className="text-sm text-[#DE3024] font-normal">Remove</p>
+                                                                <p className="text-sm text-[#DE3024] font-normal">Remove1</p>
                                                             </button>
                                                         </div>
                                                     </PopoverContent>
