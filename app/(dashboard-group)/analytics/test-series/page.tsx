@@ -27,20 +27,26 @@ interface TestData {
   attempted: string;
   accuracy: string;
   timeTaken: string;
-  totalTime: string;
+  testTime: string;
 }
 
-function formatExpiryDate(inputDate: string) {
-  const date = new Date(inputDate); // Create Date object from input string
+function formatTimeInSeconds(seconds: string) {
+  if(!seconds) return '-';
+  const totalSeconds = Number(seconds);
+  const hours = Math.floor(totalSeconds / 3600); // Calculate hours
+  const minutes = Math.floor((totalSeconds % 3600) / 60); // Calculate remaining minutes
+  let formattedTime = '';
 
-  // Get the day, month, and year
-  const day = date.getDate();
-  const month = date.toLocaleString('default', { month: 'short' }); // Get abbreviated month (e.g., "Aug")
-  const year = date.getFullYear();
-    
-  // Format the date as "DD MMM, YYYY"
-  return `${day} ${month}, ${year}`;
+  if (hours > 0) {
+      formattedTime += `${hours}h`; // Add hours if present
+  }
+  if (minutes > 0 || hours === 0) {
+      formattedTime += (formattedTime ? ' ' : '') + `${minutes}m`; // Add minutes
+  }
+
+  return formattedTime;
 }
+
 
 function TestSeries() {
     const [tests, setTests] = useState<TestData[]>([]);
@@ -121,11 +127,11 @@ function TestSeries() {
                         totalAttempted = `${parseInt(totalAttempted.split('/')[0] || '0') + currentAttempted}/${parseInt(totalAttempted.split('/')[1] || '0') + currentTotal || '-'}`;
                         
                         // For accuracy, only take number before '/'
-                        const scoreValue = parseInt(latestAttempt.score?.split('/')[0] || '0');
+                        const scoreValue = parseInt(latestAttempt.score?.split('/')[0] || '-');
                         totalScore += scoreValue;
-                        totalAccuracySum += parseInt(latestAttempt.accuracy?.split('%')[0] || '0');
-                        totalTimeTakenMinutes += parseInt(latestAttempt.timeTaken?.split('m')[0] || '0');
-                        maxTotalTimeMinutes += parseInt(latestAttempt.totalTime?.split('m')[0] || '0');
+                        totalAccuracySum += parseInt(latestAttempt.accuracy?.split('%')[0] || '-');
+                        totalTimeTakenMinutes += parseInt(latestAttempt.timeTaken || '-');
+                        maxTotalTimeMinutes += parseInt(latestAttempt.testTime || '0');
                       }
                     }
   
@@ -160,9 +166,9 @@ function TestSeries() {
                   courseName: courseName,
                   score: totalScore,
                   attempted: totalAttempted || '-',
-                  accuracy: `${avgAccuracy}%`,
-                  timeTaken: `${totalTimeTakenMinutes}m`,
-                  totalTime: `${maxTotalTimeMinutes}m`
+                  accuracy: `${avgAccuracy}%` || '-',
+                  timeTaken: `${totalTimeTakenMinutes}` || '-',
+                  testTime: `${maxTotalTimeMinutes}`|| '-',
                 });
               }
             }
@@ -222,8 +228,8 @@ function TestSeries() {
                 <td className="flex justify-center items-center w-[15%]">{test.score}</td>
                 <td className="flex justify-center items-center w-[15%]">{test.attempted}</td>
                 <td className="flex justify-center items-center w-[15%]">{test.accuracy}</td>
-                <td className="flex justify-center items-center w-[15%]">45h 30m</td>
-                <td className="flex justify-center items-center w-[15%]"><p className="text-end w-16">2h</p></td>
+                <td className="flex justify-center items-center w-[15%]">{formatTimeInSeconds(test.timeTaken) || '-'}</td>
+                <td className="flex justify-center items-center w-[15%]"><p className="text-end w-16">{formatTimeInSeconds(test.testTime) || '-'}</p></td>
             </tr>
 
         </button>

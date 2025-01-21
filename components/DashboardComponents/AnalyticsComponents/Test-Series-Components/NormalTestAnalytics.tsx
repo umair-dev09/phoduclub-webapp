@@ -24,8 +24,10 @@ interface AttemptedDetails {
     attemptCount: any;
     attemptedQuestions: string;
     score: string;
+    testTime: string;
     accuracy: string;
     answeredCorrect: string;
+    isUmbrellaTest: boolean;
     answeredIncorrect: string;
     timeTaken: string;
     questions: AnsweredQuestion[];
@@ -66,6 +68,22 @@ function formatFirestoreTimestamp(timestamp: FirestoreTimestamp): string {
     return `${months[date.getMonth()]} ${date.getDate()}, ${date.getFullYear()}  ${(hours % 12 || 12).toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')} ${ampm}`;
 }
 
+function formatTimeInSeconds(seconds: string) {
+    const totalSeconds = Number(seconds);
+    const hours = Math.floor(totalSeconds / 3600); // Calculate hours
+    const minutes = Math.floor((totalSeconds % 3600) / 60); // Calculate remaining minutes
+    let formattedTime = '';
+  
+    if (hours > 0) {
+        formattedTime += `${hours}h`; // Add hours if present
+    }
+    if (minutes > 0 || hours === 0) {
+        formattedTime += (formattedTime ? ' ' : '') + `${minutes}m`; // Add minutes
+    }
+  
+    return formattedTime;
+  }
+
 function NormalTestAnalytics({ onClose, forallsubject = false, attemptedDetails, sectionName, testAttemptId, setTestAttemptId }: NormalTestAnalyticsprops) {
      
     const router = useRouter();
@@ -93,10 +111,15 @@ function NormalTestAnalytics({ onClose, forallsubject = false, attemptedDetails,
         <div className="flex flex-1 flex-col h-auto overflow-y-auto pt-3">
             {/* heading */}
             <div>
-          
+                <div className="flex flex-row gap-5 ml-8 items-center mb-1">
+                 <button className="flex flex-row items-center gap-[6px]" onClick={() => onClose()}>
+                                         <Image src='/icons/arrow-left-02-round.svg' alt='back' width={20} height={20} />
+                <span className="font-bold text-[#1D2939] text-base">{sectionName}</span>   
+                </button>   
+
                 <Popover placement="bottom-start" isOpen={attemptPopover} onOpenChange={(open) => setAttemptPopover(open)} >
                     <PopoverTrigger>
-                        <button onClick={() => setAttemptPopover(true)} className="ml-8  bg-[#EDE4FF] rounded-md  items-center justify-center flex  outline-none transition-colors duration-150">
+                        <button onClick={() => setAttemptPopover(true)} className="bg-[#EDE4FF] rounded-md  items-center justify-center flex  outline-none transition-colors duration-150">
                             <div className="flex flex-row items-center gap-2 p-2">
                                 <span className="font-medium text-xs text-[#9012FF]">  {currentAttempt ? `Attempt ${[...attemptedDetails].sort((a, b) => b.attemptDateAndTime.seconds - a.attemptDateAndTime.seconds).indexOf(currentAttempt) + 1} - ${formatFirestoreTimestamp(currentAttempt.attemptDateAndTime)}` : 'Select Attempt'}</span>
                                 <Image
@@ -125,6 +148,7 @@ function NormalTestAnalytics({ onClose, forallsubject = false, attemptedDetails,
                         ))}
                     </PopoverContent>
                 </Popover>
+                </div>
                 <div className="h-[50px] border-b border-solid border-[#EAECF0] flex flex-row gap-[16px] mt-2 px-8 w-full overflow-x-auto">
                     <Tabs
                         aria-label="Analytics Tabs"
@@ -149,7 +173,7 @@ function NormalTestAnalytics({ onClose, forallsubject = false, attemptedDetails,
             </div>
             <div className="overflow-y-auto flex-1 flex flex-col h-auto px-8">
                 {/* overview Line */}
-                <div onClick={() => {onClose()}} id="overview" className="h-[44px] flex flex-col justify-end py-2 cursor-pointer">
+                <div id="overview" className="h-[44px] flex flex-col justify-end py-2">
                     <span className="text-[#1D2939] text-lg font-semibold">Overview</span>
                 </div>
                 {/* Overall Data */}
@@ -181,7 +205,7 @@ function NormalTestAnalytics({ onClose, forallsubject = false, attemptedDetails,
                             {/* Time Taken */}
                             <div className="flex flex-1 flex-col gap-2">
                                 <div className="font-normal text-xs text-[#667085]">Time Taken</div>
-                                <h3 className="text-[15px]">80 of 100 hrs</h3>
+                                <h3 className="text-[15px]">{formatTimeInSeconds(currentAttempt?.timeTaken || '0')} of {formatTimeInSeconds(currentAttempt?.testTime || '0')}</h3>
                             </div>
                         </div>
 

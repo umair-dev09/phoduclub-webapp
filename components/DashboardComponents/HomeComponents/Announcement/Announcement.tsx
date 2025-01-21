@@ -24,7 +24,7 @@ function Announcement() {
     const router = useRouter();
     const currentUserId = auth.currentUser?.uid;
     const [announcements, setAnnouncements] = useState<Announcement[]>([]);
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(true);
     useEffect(() => {
         const fetchAnnouncements = async () => {
             if (!currentUserId) return;

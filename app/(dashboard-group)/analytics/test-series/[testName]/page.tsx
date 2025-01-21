@@ -13,6 +13,7 @@ import { Dialog, DialogBackdrop, DialogPanel } from "@headlessui/react";
 import { Progress } from "@nextui-org/progress";
 import TestDialog from "@/components/DashboardComponents/AnalyticsComponents/Test-Series-Components/TestDialog";
 import NormalTestAnalytics from "@/components/DashboardComponents/AnalyticsComponents/Test-Series-Components/NormalTestAnalytics";
+import UmbrellaTestAnalytics from "@/components/DashboardComponents/AnalyticsComponents/Test-Series-Components/UmbrellaTestAnalytics";
 
 interface Section {
     id: string;
@@ -53,6 +54,19 @@ interface AnsweredQuestion {
 
 }
 
+interface SubAttemptDetails {
+    attemptedQuestions: string;
+    score: string;
+    accuracy: string;
+    answeredCorrect: string;
+    answeredIncorrect: string;
+    timeTaken: string;
+    testTime: string;
+    questions: AnsweredQuestion[];
+    sectionName: string;
+    attemptId: string;
+}
+
 interface AttemptedDetails {
     userId: string | undefined;
     attemptCount: any;
@@ -62,7 +76,11 @@ interface AttemptedDetails {
     answeredCorrect: string;
     answeredIncorrect: string;
     timeTaken: string;
+    testTime: string;
+    isUmbrellaTest: boolean;
     questions: AnsweredQuestion[];
+    subattempts: SubAttemptDetails[];
+    sectionName: string;
     attemptId: string;
     attemptDateAndTime: {
         seconds: number;
@@ -98,6 +116,7 @@ function TestAnalytics() {
     const [detailview, setDetailview] = useState(false);
     const [sectionName, setSectionName] = useState('');
     const [detailedAnalyticsOpen, setDetailedAnalyticsOpen] = useState(false);
+    const [isUmbrellaAnalytics, setIsUmbrellaAnalytics] = useState(false);
     const [attemptId, setAttemptId] = useState('');
 
     useEffect(() => {
@@ -131,37 +150,56 @@ function TestAnalytics() {
 
     const [attemptsCount, setAttemptsCount] = useState<{ [key: string]: number }>({});
 
-    const fetchSectionAttemptData = async (sectionId: string, fullPath: string) => {
+    const fetchSectionAttemptData = async (sectionId: string, fullPath: string, isUmbrellaTest: boolean) => {
         try {
             const userId = auth.currentUser?.uid;
             if (!userId) return null;
-
+    
             // Query all attempts for this user
             const attemptsRef = collection(db, `${fullPath}/sections/${sectionId}/attempts`);
             const userAttemptsQuery = query(attemptsRef);
             const attemptsSnapshot = await getDocs(userAttemptsQuery);
-
+    
             // Filter attempts for current user and count them
             const userAttempts = attemptsSnapshot.docs.filter(doc => {
                 const data = doc.data();
                 return data && data.userId === userId;
             });
             const attemptCount = userAttempts.length;
-
+    
             // Update attempts count
             setAttemptsCount(prev => ({
                 ...prev,
                 [sectionId]: attemptCount
             }));
-
+    
             if (attemptCount === 0) return null;
-
-            // Map all attempts to their data, including the document ID as attemptId
-            const allAttempts = userAttempts.map(attempt => ({
-                ...(attempt.data() as AttemptedDetails),
-                attemptId: attempt.id // Include the document ID as attemptId
+    
+            // Map all attempts to their data, including subattempts for umbrella tests
+            const allAttempts = await Promise.all(userAttempts.map(async attempt => {
+                const attemptData = attempt.data() as AttemptedDetails;
+    
+                // If it's an umbrella test, fetch subattempts
+                if (isUmbrellaTest) {
+                    const subattemptsRef = collection(attempt.ref, 'subattempts');
+                    const subattemptsSnapshot = await getDocs(subattemptsRef);
+                    const subattempts = subattemptsSnapshot.docs.map(subDoc => ({
+                        ...(subDoc.data() as SubAttemptDetails),
+                    }));
+                    return {
+                        ...attemptData,
+                        attemptId: attempt.id,
+                        subattempts: subattempts
+                    };
+                }
+    
+                return {
+                    ...attemptData,
+                    attemptId: attempt.id,
+                    subattempts: []
+                };
             }));
-
+    
             return { attemptedDetails: allAttempts };
         } catch (error) {
             console.error('Error fetching attempt data:', error);
@@ -191,7 +229,7 @@ function TestAnalytics() {
                         let attemptData: { attemptedDetails: AttemptedDetails[] } = { attemptedDetails: [] };
 
                         if (sectionData.hasQuestions || sectionData.isUmbrellaTest) {
-                            const fetchedData = await fetchSectionAttemptData(sectionId, path) as { attemptedDetails: AttemptedDetails[] };
+                            const fetchedData = await fetchSectionAttemptData(sectionId, path, sectionData.isUmbrellaTest) as { attemptedDetails: AttemptedDetails[] };
                             if (fetchedData) {
                                 attemptData = fetchedData;
                             }
@@ -342,7 +380,7 @@ function TestAnalytics() {
         <div className="flex flex-row w-full">
             {testAlreadyPurchased ? (
                 <>
-                 {detailedAnalyticsOpen ? (
+                 {detailedAnalyticsOpen || isUmbrellaAnalytics ? (
                   <div className="flex flex-1 flex-col  overflow-y-auto w-full">
                    <div className="flex flex-row items-center gap-2 ml-8 mt-4">
                  <div className="flex flex-row">
@@ -372,7 +410,11 @@ function TestAnalytics() {
                  {/* <div className="flex flex-col gap-[17px] ml-8 mt-5">
                     <span className="font-bold text-[#1D2939] text-1g">{breadcrumbs.length > 0 ? breadcrumbs[breadcrumbs.length - 1].name : "All Tests"}</span>
                 </div> */}
-                <NormalTestAnalytics onClose={() => setDetailedAnalyticsOpen(false)} attemptedDetails={detailAttempts} sectionName={sectionName} testAttemptId={attemptId} setTestAttemptId={setAttemptId}/>
+                {isUmbrellaAnalytics ? (
+                  <UmbrellaTestAnalytics onClose={() => setDetailedAnalyticsOpen(false)} attemptedDetails={detailAttempts} sectionName={sectionName} testAttemptId={attemptId} setTestAttemptId={setAttemptId}/>
+                ) : (
+                   <NormalTestAnalytics onClose={() => setDetailedAnalyticsOpen(false)} attemptedDetails={detailAttempts} sectionName={sectionName} testAttemptId={attemptId} setTestAttemptId={setAttemptId}/>
+                )}
                   </div>
             ) : (
                 <div className="flex flex-1 flex-col pb-3 overflow-y-auto w-full">
@@ -602,7 +644,7 @@ function TestAnalytics() {
                 </div>
             )}
 
-         {detailview && <TestDialog open={detailview} onClose={() => setDetailview(false)} attemptedDetails={detailAttempts} sectionName={sectionName} setAttemptId={setAttemptId} setDetailedAnalyticsOpen={setDetailedAnalyticsOpen}/>
+         {detailview && <TestDialog open={detailview} onClose={() => setDetailview(false)} setIsUmbrellaAnalytics={setIsUmbrellaAnalytics} attemptedDetails={detailAttempts} sectionName={sectionName} setAttemptId={setAttemptId} setDetailedAnalyticsOpen={setDetailedAnalyticsOpen}/>
         }
    
         </div>

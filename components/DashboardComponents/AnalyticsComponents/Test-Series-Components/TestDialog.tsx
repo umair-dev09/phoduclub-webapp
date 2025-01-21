@@ -10,6 +10,7 @@ interface TestDialogprops {
     attemptedDetails: AttemptedDetails[];
     sectionName: string;
     setDetailedAnalyticsOpen: (value: boolean) => void;
+    setIsUmbrellaAnalytics: (value: boolean) => void;
     setAttemptId: (value: string) => void;
 
 }
@@ -22,6 +23,8 @@ interface AttemptedDetails {
     answeredCorrect: string;
     answeredIncorrect: string;
     timeTaken: string;
+    isUmbrellaTest: boolean;
+    testTime: string;
     questions: AnsweredQuestion[];
     attemptDateAndTime: {
         seconds: number;
@@ -59,7 +62,7 @@ function formatFirestoreTimestamp(timestamp: FirestoreTimestamp): string {
     return `${months[date.getMonth()]} ${date.getDate()}, ${date.getFullYear()}  ${(hours % 12 || 12).toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')} ${ampm}`;
 }
 
-function TestDialog({ open, onClose, forallsubject = false, attemptedDetails, sectionName, setDetailedAnalyticsOpen, setAttemptId }: TestDialogprops) {
+function TestDialog({ open, onClose, forallsubject = false, attemptedDetails, sectionName, setIsUmbrellaAnalytics, setDetailedAnalyticsOpen, setAttemptId }: TestDialogprops) {
     const router = useRouter();
 
     const handleTabClick = (tabName: string, path: string) => {
@@ -159,7 +162,11 @@ function TestDialog({ open, onClose, forallsubject = false, attemptedDetails, se
                                             <td className="px-4 py-2 text-[#1D2939] font-normal text-sm">
                                                 <button
                                                     onClick={() => {
-                                                        setDetailedAnalyticsOpen(true);
+                                                        if (attempt.isUmbrellaTest) {
+                                                            setIsUmbrellaAnalytics(true);
+                                                        } else {
+                                                            setDetailedAnalyticsOpen(true);
+                                                        }
                                                         onClose();
                                                         setAttemptId(attempt.attemptId || '');
                                                     }}

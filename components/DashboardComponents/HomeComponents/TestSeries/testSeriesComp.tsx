@@ -176,14 +176,14 @@ function TestSeriesComp() {
                                     <h3 className="font-semibold text-base">{test.totalSectionsWithStudentsAttempted || 0} / {test.totalSectionsWithQuestions || 0}</h3>
                                 </div>
                             </div>
-                            <div className="flex flex-col items-center">
+                            {/* <div className="flex flex-col items-center">
                                 <p className="text-gray-500 font-sm">Score</p>
                                 <div className="flex items-center">
                                     <h3 className="font-semibold">{}</h3>
                                     <h3 className="font-semibold mx-1">/</h3>
                                     <h3 className="font-semibold ">{}</h3>
                                 </div>
-                            </div>
+                            </div> */}
                             <div className="flex flex-col items-end">
                                 <p className="text-gray-500 font-sm ">Time Left</p>
                                 <h3 className="font-semibold text-base">

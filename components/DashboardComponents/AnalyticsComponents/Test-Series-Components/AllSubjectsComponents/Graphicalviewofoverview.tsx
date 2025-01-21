@@ -9,9 +9,9 @@ import {
     ChartTooltipContent,
 } from "@/components/ui/chart"
 
-export const description = "A donut chart with text"
+// export const description = "A donut chart with text"
 
-const chartData = [
+const chartData = [    
     { subjects: "Physics", marks: 27, fill: "#C7A5FF" },
     { subjects: "Chemistry", marks: 200, fill: "#9012FF" },
     { subjects: "Mathematics", marks: 287, fill: "#5C02B0" },
@@ -102,34 +102,100 @@ const CustomPieTooltip: React.FC<PieTooltipProps> = ({ active, payload }) => {
     return null;
 };
 
-function Quizzes() {
+interface SubAttemptDetails {
+    attemptedQuestions: string;
+    score: string;
+    accuracy: string;
+    answeredCorrect: string;
+    answeredIncorrect: string;
+    timeTaken: string;
+    testTime: string;
+    questions: AnsweredQuestion[];
+    sectionName: string;
+    attemptId: string;
+}
 
-    const data = [
-        {
-            "name": "Easy",
-            "correct": 12,
-            "incorrect": 5,
-            "Unanswered": 3
+interface GraphicalViewOfOverviewProps {
+    questions: AnsweredQuestion[];
+    subattempts: SubAttemptDetails[];
+}
 
+type DifficultyLevel = 'Easy' | 'Medium' | 'Hard';
+
+interface AnsweredQuestion {
+    questionId: string;
+    status: string;
+    answered: boolean;
+    selectedOption: string | null;
+    answeredCorrect: boolean | null;
+    allotedTime: number;
+    spentTime: number;
+    difficulty: DifficultyLevel;
+    remarks: string;
+}
+
+
+function GraphicalViewOfOverview({ questions, subattempts }: GraphicalViewOfOverviewProps) {
+
+     // Process data for bar chart
+     const difficultyData = {
+        Easy: { correct: 0, incorrect: 0, unanswered: 0 },
+        Medium: { correct: 0, incorrect: 0, unanswered: 0 },
+        Hard: { correct: 0, incorrect: 0, unanswered: 0 }
+    };
+
+    questions.forEach(question => {
+        if (!question.answered) {
+            difficultyData[question.difficulty].unanswered++;
+        } else if (question.answeredCorrect) {
+            difficultyData[question.difficulty].correct++;
+        } else {
+            difficultyData[question.difficulty].incorrect++;
+        }
+    });
+
+    const barChartData = [
+        {
+            name: 'Easy',
+            correct: difficultyData['Easy'].correct,
+            incorrect: difficultyData['Easy'].incorrect,
+            unanswered: difficultyData['Easy'].unanswered
         },
         {
-            "name": "Moderate",
-            "correct": 4,
-            "incorrect": 1,
-            "Unanswered": 8
+            name: 'Medium',
+            correct: difficultyData['Medium'].correct,
+            incorrect: difficultyData['Medium'].incorrect,
+            unanswered: difficultyData['Medium'].unanswered
         },
         {
-            "name": "Tough",
-            "correct": 9,
-            "incorrect": 1,
-            "Unanswered": 5
-        },
+            name: 'Hard',
+            correct: difficultyData['Hard'].correct,
+            incorrect: difficultyData['Hard'].incorrect,
+            unanswered: difficultyData['Hard'].unanswered
+        }
     ];
 
-    // const totalVisitors = React.useMemo(() => {
-    //     return chartData.reduce((acc, curr) => acc + curr.marks, 0);
-    // }, []);
+    const chartData = [    
+        { subjects: "Physics", marks: 27, fill: "#C7A5FF" },
+        { subjects: "Chemistry", marks: 200, fill: "#9012FF" },
+        { subjects: "Mathematics", marks: 287, fill: "#5C02B0" },
+    ];
 
+    const subjectColors = [
+        '#C7A5FF', // Lavender
+        '#9012FF', // Purple
+        '#5C02B0', // Indigo
+        '#4B0082',  // Indigo
+        '#FF6B6B',  // Coral
+        '#4CAF50',  // Green
+        '#9C27B0',  // Purple
+        '#FF9800',  // Orange
+        '#2196F3',  // Blue
+        '#E91E63',  // Pink
+        '#00BCD4',  // Cyan
+        '#FFC107',  // Amber
+        '#795548'   // Brown
+    ];
 
 
     return (
@@ -153,34 +219,32 @@ function Quizzes() {
                         </div>
                     </div>
                     <ResponsiveContainer width="100%" height="80%" className="pb-3">
-                        <BarChart
-                            data={data}
-                            barGap={5}
-                            barCategoryGap="5%"
-                            margin={{ right: 20, left: -20 }} // Set left margin to 0
-                        >
-                            <CartesianGrid strokeDasharray="3 3" horizontal={false} vertical={false} />
-                            <XAxis
-                                dataKey="name"
-                                fontFamily="poppins"
-                                fontSize={14}
-                                fontWeight={400}
-                                fill="#667085"
-                                padding={{ left: 10, right: 20 }}
-                            />
-                            <YAxis
-                                domain={[0, 'dataMax']}
-                                fontFamily="poppins"
-                                fontSize={14}
-                                fontWeight={400}
-                                fill="#667085"
-
-                            />
-                            <Tooltip content={<CustomTooltip />} cursor={false} isAnimationActive={true} />
-                            <Legend wrapperStyle={{ display: 'none' }} />
-                            <Bar dataKey="correct" fill="#17B26A" barSize={55} />
-                            <Bar dataKey="incorrect" fill="#F04438" barSize={55} />
-                            <Bar dataKey="Unanswered" fill="#D0D5DD" barSize={55} />
+                         <BarChart
+                         data={barChartData}
+                         barGap={5}
+                         barCategoryGap="30%"
+                         margin={{ right: 20, left: -20 }}
+                         >
+                        <CartesianGrid strokeDasharray="3 3" horizontal={false} vertical={false} />
+                         <XAxis
+                             dataKey="name"
+                             fontFamily="poppins"
+                             fontSize={14}
+                             fontWeight={400}
+                             fill="#667085"
+                         />
+                         <YAxis
+                             domain={[0, 'dataMax']}
+                             fontFamily="poppins"
+                             fontSize={14}
+                             fontWeight={400}
+                             fill="#667085"
+                         />
+                         <Tooltip content={<CustomTooltip />} cursor={false} isAnimationActive={true} />
+                         <Legend wrapperStyle={{ display: 'none' }} />
+                         <Bar dataKey="correct" fill="#17B26A" barSize={55} />
+                         <Bar dataKey="incorrect" fill="#F04438" barSize={55} />
+                         <Bar dataKey="unanswered" fill="#D0D5DD" barSize={55} />
                         </BarChart>
                     </ResponsiveContainer>
                 </div>
@@ -188,32 +252,56 @@ function Quizzes() {
                     <div><h3>Score by Subjects</h3></div>
                     <div className="flex flex-1 items-center">
                         <ResponsiveContainer className='flex w-[50%]'>
-                            <ChartContainer config={chartConfig} className="h-auto w-[70%]">
+                            <ChartContainer 
+                                config={{
+                                    ...Object.fromEntries(
+                                        subattempts.map((subattempt, index) => [
+                                            subattempt.sectionName,
+                                            {
+                                                label: subattempt.sectionName,
+                                                color: subjectColors[index % subjectColors.length]
+                                            }
+                                        ])
+                                    )
+                                }}
+                                className="h-auto w-[70%]"
+                            >
                                 <PieChart>
                                     <Tooltip content={<CustomPieTooltip />} cursor={false} />
                                     <Pie
-                                        data={chartData}
+                                        data={subattempts
+                                            .filter(subattempt => parseInt(subattempt.score) >= 0)
+                                            .map((subattempt, index) => ({
+                                                subjects: subattempt.sectionName,
+                                                marks: parseInt(subattempt.score),
+                                                fill: subjectColors[index % subjectColors.length]
+                                            }))}
                                         dataKey="marks"
                                         nameKey="subjects"
                                         innerRadius={60}
                                         strokeWidth={3}
                                         stroke="#FFFFFF"
                                     >
-                                        {chartData.map((entry, index) => (
-                                            <Cell key={`cell-${index}`} fill={entry.fill} />
-                                        ))}
+                                        {subattempts
+                                            .filter(subattempt => parseInt(subattempt.score) >= 0)
+                                            .map((entry, index) => (
+                                                <Cell key={`cell-${index}`} 
+                                                fill={subjectColors[index % subjectColors.length]}
+                                                />
+                                            ))}
                                     </Pie>
                                 </PieChart>
 
                             </ChartContainer>
                         </ResponsiveContainer>
                         <div className="flex flex-col w-[50%] justify-evenly">
-                            {chartData.map((subject, index) => (
+                            {subattempts.map((subattempt, index) => (
                                 <div key={index} className="flex flex-1 mb-2">
-                                    <div><span className={`block rounded-full w-3 h-3 mr-2 mt-[23%]`} style={{ backgroundColor: subject.fill }}></span></div>
+                                    <div><span className={`block rounded-full w-3 h-3 mr-2 mt-[23%]`} style={{ backgroundColor: subjectColors[index % subjectColors.length] }}></span></div>
+                                   
                                     <div>
-                                        {subject.subjects}
-                                        <h3>{subject.marks}</h3>
+                                        {subattempt.sectionName}
+                                        <h3>{subattempt.score}</h3>
                                     </div>
                                 </div>
                             ))}
@@ -225,4 +313,4 @@ function Quizzes() {
     );
 }
 
-export default Quizzes;
+export default GraphicalViewOfOverview;
