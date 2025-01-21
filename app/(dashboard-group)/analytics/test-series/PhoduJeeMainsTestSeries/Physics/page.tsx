@@ -190,7 +190,6 @@ function JeeMains() {
                         <span className="text-[#1D2939] text-lg font-semibold">Attempts & Difficulty Analysis</span>
                     </div>
                     <div>
-                        < AttemptsDifficultyAnalysis />
                     </div>
                 </div>
                 {/* Attempts over the 3 hours */}

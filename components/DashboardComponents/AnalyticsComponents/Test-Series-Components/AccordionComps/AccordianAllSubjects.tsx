@@ -126,7 +126,7 @@ function AccordianAllSubjects() {
                     </div>
                 </div>
             ))}
-            {detailview && <TestDialog open={detailview} forallsubject={true} onClose={() => setDetailview(false)} />}
+            {/* {detailview && <TestDialog open={detailview} forallsubject={true} onClose={() => setDetailview(false)} />} */}
         </div>
     );
 }
