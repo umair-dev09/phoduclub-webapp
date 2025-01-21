@@ -67,7 +67,7 @@ const RatingStars: React.FC<{ rating: string | null }> = ({ rating }) => {
       {[...Array(emptyStars)].map((_, index) => (
         <StarIcon key={`empty-${index}`} filled={false} isHalf={false} />
       ))}
-    </div>
+    </div>    
   );
 };
 

@@ -31,7 +31,7 @@ function formatExpiryDate(inputDate: string) {
   const day = date.getDate();
   const month = date.toLocaleString('default', { month: 'short' }); // Get abbreviated month (e.g., "Aug")
   const year = date.getFullYear();
-
+    
   // Format the date as "DD MMM, YYYY"
   return `${day} ${month}, ${year}`;
 }
@@ -83,11 +83,11 @@ function MyTestSeries() {
             }
 
             if (shouldIncludeTest) {
-              // Initialize the counters for sections with questions and sections with StudentsAttempted
+              // Initialize the counters for sections with questions and sections with attempts
               let sectionsWithQuestionsCount = 0;
-              let sectionsWithStudentsAttemptedCount = 0;
+              let sectionsWithAttemptsCount = 0;
 
-              // Recursive function to count sections with hasQuestions = true and StudentsAttempted subcollection
+              // Recursive function to count sections with hasQuestions = true or isUmbrellaTest = true
               const countSectionsWithQuestionsAndAttempts = async (path: string) => {
                 const sectionCollection = collection(db, path);
                 const sectionSnapshot = await getDocs(sectionCollection);
@@ -95,26 +95,31 @@ function MyTestSeries() {
                 for (const sectionDoc of sectionSnapshot.docs) {
                   const sectionData = sectionDoc.data();
 
-                  if (sectionData.hasQuestions === true) {
+                  // Count section if it has questions or is an umbrella test, but not if it's a parent umbrella test
+                  if ((sectionData.hasQuestions === true && !sectionData.isParentUmbrellaTest) || 
+                      (sectionData.isUmbrellaTest === true && !sectionData.isParentUmbrellaTest)) {
                     sectionsWithQuestionsCount += 1;
+
+                    // Check attempts collection
+                    const attemptsCollection = collection(sectionDoc.ref, 'attempts');
+                    const attemptsSnapshot = await getDocs(attemptsCollection);
+                    
+                    // Count only one attempt per section if user has attempted
+                    if (attemptsSnapshot.docs.some(attempt => attempt.data().userId === currentUserId)) {
+                      sectionsWithAttemptsCount += 1;
+                    }
                   }
 
-                  const studentsAttemptedCollection = collection(sectionDoc.ref, 'StudentsAttempted');
-                  const studentsAttemptedSnapshot = await getDocs(studentsAttemptedCollection);
-
-                  if (studentsAttemptedSnapshot.docs.some(student => student.id === currentUserId)) {
-                    sectionsWithStudentsAttemptedCount += 1;
-                  }
-
+                  // Recursively check subsections
                   const subSectionPath = `${path}/${sectionDoc.id}/sections`;
                   await countSectionsWithQuestionsAndAttempts(subSectionPath);
                 }
-              };
+              };   
 
               await countSectionsWithQuestionsAndAttempts(`${doc.ref.path}/sections`);
 
               const studentProgress = sectionsWithQuestionsCount > 0
-                ? (sectionsWithStudentsAttemptedCount / sectionsWithQuestionsCount) * 100
+                ? (sectionsWithAttemptsCount / sectionsWithQuestionsCount) * 100
                 : 0;
               const roundedProgress = Math.round(studentProgress);
 
@@ -128,10 +133,10 @@ function MyTestSeries() {
                 testDescription: testData.testDescription,
                 endDate: testData.endDate,
                 totalSectionsWithQuestions: sectionsWithQuestionsCount,
-                totalSectionsWithStudentsAttempted: sectionsWithStudentsAttemptedCount,
+                totalSectionsWithStudentsAttempted: sectionsWithAttemptsCount,
                 studentProgress: roundedProgress,
                 isInCourse: testData.isInCourse,
-                courseName: courseName, // Added courseName to the test data
+                courseName: courseName,
               });
             }
           }

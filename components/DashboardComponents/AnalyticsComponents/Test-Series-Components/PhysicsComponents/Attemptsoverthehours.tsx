@@ -204,7 +204,7 @@ function JeeMains() {
                         width={12}
                         height={16}
                         alt="correct-green-circle" />
-                    <span className="font-normal text-[#667085] text-sm mt-1">correct</span>
+                    <span className="font-normal text-[#667085] text-sm mt-1">Correct</span>
                 </div>
                 <div className="flex flex-row gap-1">
                     <Image
@@ -222,7 +222,7 @@ function JeeMains() {
                         height={16}
                         alt="overall-voilet-circle" />
 
-                    <span className="font-normal text-[#667085] text-sm mt-1 ">overall</span>
+                    <span className="font-normal text-[#667085] text-sm mt-1 ">Overall</span>
                 </div>
 
             </div>

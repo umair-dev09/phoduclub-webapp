@@ -24,6 +24,11 @@ interface Section {
     // Questions?: Question[];
     QuestionsCount: number;
     SubsectionsCount?: number;
+    isUmbrellaTest: boolean;
+    totalSectionsWithQuestions: number;
+    totalSectionsWithStudentsAttempted: number;
+    studentProgress: number;
+    subsectionCountUmbrella: number;
 }
 interface Question {
     id: string;
@@ -69,7 +74,9 @@ function formatTimeTaken(seconds: string) {
     return formattedTime;
 }
 
-function formatTimeLeft(input: string) {
+function formatTimeLeft(input: string | undefined) {
+    if (!input) return '0m';
+    
     let totalMinutes = 0;
 
     // Extract hours and minutes from the input string
@@ -114,7 +121,7 @@ function Test() {
     const [loading, setLoading] = useState(true); // Track loading state 
     const pathname = usePathname();
     const [accordionOpen, setAccordionOpen] = useState(false);
-    const userId = auth.currentUser?.uid;
+    const currentUserId = auth.currentUser?.uid;
     const [testCompleted, setTestCompleted] = useState(false); // New state for test completion
     let [showTestDialog, setShowTestDialog] = useState(false);
     const [sectionLoading, setSectionLoading] = useState(false);
@@ -148,20 +155,48 @@ function Test() {
     }, [testId, auth.currentUser]);
 
     // ----------------------------------------------------------------------------------------
-    const [sectionAttempts, setSectionAttempts] = useState<{ [key: string]: { attemptedDetails: AttemptedDetails | null } }>({})
+    const [sectionAttempts, setSectionAttempts] = useState<{ [key: string]: { attemptedDetails: AttemptedDetails | null } }>({});
+    const [attemptsCount, setAttemptsCount] = useState<{ [key: string]: number }>({});
 
     const fetchSectionAttemptData = async (sectionId: string, fullPath: string) => {
         try {
             const userId = auth.currentUser?.uid;
             if (!userId) return null;
 
-            // Fetch the student attempt document
-            const studentAttemptRef = doc(db, `${fullPath}/sections/${sectionId}/StudentsAttempted/${userId}`);
-            const studentAttemptSnapshot = await getDoc(studentAttemptRef);
+            // Query all attempts for this user
+            const attemptsRef = collection(db, `${fullPath}/sections/${sectionId}/attempts`);
+            const userAttemptsQuery = query(attemptsRef);
+            const attemptsSnapshot = await getDocs(userAttemptsQuery);
 
-            if (!studentAttemptSnapshot.exists()) return null;
+            // Filter attempts for current user and count them
+            const userAttempts = attemptsSnapshot.docs.filter(doc => {
+                const data = doc.data();
+                return data && data.userId === userId;
+            });
+            const attemptCount = userAttempts.length;
 
-            const attemptData = studentAttemptSnapshot.data();
+            // Update attempts count
+            setAttemptsCount(prev => ({
+                ...prev,
+                [sectionId]: attemptCount
+            }));
+
+            if (attemptCount === 0) return null;
+
+            // Find the attempt with highest attemptNumber
+            const latestAttempt = userAttempts.reduce((latest, current) => {
+                const currentData = current.data();
+                const latestData = latest?.data();
+                const currentAttemptNum = currentData?.attemptNumber || 0;
+                const latestAttemptNum = latestData?.attemptNumber || 0;
+                return currentAttemptNum > latestAttemptNum ? current : latest;
+            }, userAttempts[0]);
+
+            if (!latestAttempt) return null;
+
+            const attemptData = latestAttempt.data();
+            if (!attemptData) return null;
+
             return { attemptedDetails: attemptData };
         } catch (error) {
             console.error('Error fetching attempt data:', error);
@@ -190,7 +225,7 @@ function Test() {
                         // Fetch attempt data only if necessary
                         let attemptData: { attemptedDetails: AttemptedDetails | null } = { attemptedDetails: null };
 
-                        if (sectionData.hasQuestions) {
+                        if (sectionData.hasQuestions || sectionData.isUmbrellaTest) {
                             const fetchedData = await fetchSectionAttemptData(sectionId, path) as { attemptedDetails: AttemptedDetails };
                             if (fetchedData) {
                                 attemptData = fetchedData;
@@ -210,11 +245,59 @@ function Test() {
                             questionsCount = questionsSnapshot.data().count;
                         }
 
-                        // Fetch the number of subsections (sections within this section)
+                        // Fetch and count only subsections that have hasQuestions = false
                         let subsectionCount = 0;
                         const subsectionsCollection = collection(doc.ref, "sections");
-                        const subsectionsSnapshot = await getCountFromServer(subsectionsCollection);
-                        subsectionCount = subsectionsSnapshot.data().count;
+                        const subsectionsSnapshot = await getDocs(subsectionsCollection);
+                        subsectionCount = subsectionsSnapshot.docs.filter(doc => 
+                            doc.data().hasQuestions === false && !doc.data().isUmbrellaTest
+                        ).length;
+
+                        let subsectionCountUmbrella = 0;
+                      
+                        subsectionCountUmbrella = subsectionsSnapshot.docs.filter(doc => 
+                            doc.data().isParentUmbrellaTest === true
+                        ).length;
+
+                         // Initialize the counters for sections with questions and sections with attempts
+              let sectionsWithQuestionsCount = 0;
+              let sectionsWithAttemptsCount = 0;
+
+              // Recursive function to count sections with hasQuestions = true or isUmbrellaTest = true
+              const countSectionsWithQuestionsAndAttempts = async (path: string) => {
+                const sectionCollection = collection(db, path);
+                const sectionSnapshot = await getDocs(sectionCollection);
+
+                for (const sectionDoc of sectionSnapshot.docs) {
+                  const sectionData = sectionDoc.data();
+
+                  // Count section if it has questions or is an umbrella test, but not if it's a parent umbrella test
+                  if ((sectionData.hasQuestions === true && !sectionData.isParentUmbrellaTest) || 
+                      (sectionData.isUmbrellaTest === true && !sectionData.isParentUmbrellaTest)) {
+                    sectionsWithQuestionsCount += 1;
+
+                    // Check attempts collection
+                    const attemptsCollection = collection(sectionDoc.ref, 'attempts');
+                    const attemptsSnapshot = await getDocs(attemptsCollection);
+                    
+                    // Count only one attempt per section if user has attempted
+                    if (attemptsSnapshot.docs.some(attempt => attempt.data().userId === currentUserId)) {
+                      sectionsWithAttemptsCount += 1;
+                    }
+                  }
+
+                  // Recursively check subsections
+                  const subSectionPath = `${path}/${sectionDoc.id}/sections`;
+                  await countSectionsWithQuestionsAndAttempts(subSectionPath);
+                }
+              };   
+
+              await countSectionsWithQuestionsAndAttempts(`${doc.ref.path}/sections`);
+
+              const studentProgress = sectionsWithQuestionsCount > 0
+                ? (sectionsWithAttemptsCount / sectionsWithQuestionsCount) * 100
+                : 0;
+              const roundedProgress = Math.round(studentProgress);
 
                         return {
                             id: sectionId,
@@ -230,6 +313,11 @@ function Test() {
                             testTime: sectionData.testTime,
                             QuestionsCount: questionsCount,
                             SubsectionsCount: subsectionCount, // Number of subsections
+                            subsectionCountUmbrella: subsectionCountUmbrella,
+                            isUmbrellaTest: sectionData.isUmbrellaTest || false,
+                            totalSectionsWithQuestions: sectionsWithQuestionsCount,
+                            totalSectionsWithStudentsAttempted: sectionsWithAttemptsCount,
+                            studentProgress: roundedProgress,
                         };
                     })
                 );
@@ -247,6 +335,7 @@ function Test() {
         // Clean up
         return () => {
             setSections([]);
+            setAttemptsCount({});
         };
     }, [currentPath, testId]);
 
@@ -275,20 +364,19 @@ function Test() {
     const getSectionPath = (currentSectionId: string): string[] => {
         return [...currentSectionIds, currentSectionId];
     };
-    const handleTabClick = (tabName: string, path: string) => {
 
-        setActiveTab(tabName);
+    const handleTabClick = ( path: string) => {
         router.push(path);
     };
 
-    useEffect(() => {
-        if (pathname) {
-            const currentPath = pathname.split('/')[4];
-            if (currentPath === 'TestSubject') {
-                setActiveTab('TestSubject');
-            }
-        }
-    }, [pathname]);
+    // useEffect(() => {
+    //     if (pathname) {
+    //         const currentPath = pathname.split('/')[4];
+    //         if (currentPath === 'TestSubject') {
+    //             setActiveTab('TestSubject');
+    //         }
+    //     }
+    // }, [pathname]);
 
     const handleStartTest = (description: string, time: string, marksPerQ: string, noOfQuestions: number, sectionId: string) => {
         setShowTestDialog(true);
@@ -662,7 +750,7 @@ function Test() {
                                         {/* Row container for non-test sections (math, chemistry) */}
                                         <div className="flex flex-row flex-wrap gap-4 h-auto w-auto">
                                             {sectionss
-                                                .filter(section => !section.hasQuestions)
+                                                .filter(section => !section.hasQuestions && !section.isUmbrellaTest)
                                                 .map((section, index) => (
                                                     <button
                                                         key={index}
@@ -679,24 +767,24 @@ function Test() {
                                                                         </button>
                                                                     </div>
                                                                     <span className="font-normal text-[12px] text-[#667085] mt-1 text-left">
-                                                                        {section.SubsectionsCount} Tests
+                                                                        {section.totalSectionsWithQuestions} Tests & {section.SubsectionsCount} Sections
                                                                     </span>
                                                                 </div>
 
                                                                 <div className="h-[44px] flex flex-col">
                                                                     <div className="flex justify-between h-[24px] mb-2">
                                                                         <span className="font-medium text-xs text-[#667085]">Attempted</span>
-                                                                        <span className="font-medium text-xs text-[#667085]">Total Score</span>
+                                                                        {/* <span className="font-medium text-xs text-[#667085]">Total Score</span> */}
                                                                     </div>
                                                                     <div className="flex justify-between h-[24px]">
-                                                                        <span className="ml-4 font-semibold text-[#1D2939] text-xs">1/5</span>
-                                                                        <span className="ml-4 font-semibold text-[#1D2939] text-xs">130</span>
+                                                                        <span className="ml-4 font-semibold text-[#1D2939] text-xs">{section.totalSectionsWithStudentsAttempted || 0}/{section.totalSectionsWithQuestions || 0}</span>
+                                                                        {/* <span className="ml-4 font-semibold text-[#1D2939] text-xs">130</span> */}
                                                                     </div>
                                                                 </div>
 
                                                                 <div className="flex items-center justify-between flex-row gap-[10px]">
-                                                                    <Progress aria-label="Loading..." className="max-w-md h-2" value={43} />
-                                                                    <span className="font-normal text-[#667085] text-xs">43%</span>
+                                                                    <Progress aria-label="Loading..." className="max-w-md h-2" value={section.studentProgress || 0} />
+                                                                    <span className="font-normal text-[#667085] text-xs">{section.studentProgress || 0}%</span>
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -707,7 +795,7 @@ function Test() {
                                         {/* Column container for test sections */}
                                         <div className="flex flex-col gap-4">
                                             {sectionss
-                                                .filter(section => section.hasQuestions)
+                                                .filter(section => section.hasQuestions || section.isUmbrellaTest)
                                                 .sort((a, b) => (a.order || 0) - (b.order || 0))
                                                 .map((section, index) => (
                                                     <div key={index} className="flex flex-col w-full h-auto rounded-[12px] border border-solid border-[#EAECF0] bg-[#FFFFFF]">
@@ -720,7 +808,7 @@ function Test() {
                                                                             {section.sectionName}
                                                                         </span>
                                                                         <span className="text-[#667085] font-normal text-[12px]">
-                                                                            {section.QuestionsCount} Questions
+                                                                            {section.isUmbrellaTest ? section.subsectionCountUmbrella : section.QuestionsCount} {section.isUmbrellaTest ? 'Tests' :'Questions'}
                                                                         </span>
                                                                     </div>
                                                                     <div className="flex items-center p-3 gap-4">
@@ -847,7 +935,7 @@ function Test() {
                                                                         <div className="h-[51px] ml-5 mr-5 justify-between flex items-center">
                                                                             <div className="flex flex-row items-center justify-center">
                                                                                 <span className="font-normal text-[#667085] text-xs">
-                                                                                    5 times attempted
+                                                                                    {attemptsCount[section.id] || 0} times attempted
                                                                                 </span>
                                                                                 <div className="tooltip relative inline-block">
                                                                                     <button>

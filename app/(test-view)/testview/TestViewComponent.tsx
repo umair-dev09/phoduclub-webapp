@@ -329,7 +329,7 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 interface Section {
     id: string;
     sectionName: string;
-    sectionScheduleDate: string;
+    sectionScheduleDate: string;  
     parentSectionId?: string | null;
     order?: number;
     hasQuestions: boolean;
