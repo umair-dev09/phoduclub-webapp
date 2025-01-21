@@ -320,7 +320,7 @@ function UmbrellaTestAnalytics({ onClose,  attemptedDetails, sectionName, testAt
                         <span className="text-[#1D2939] text-lg font-semibold ">Time & Accuracy</span>
                     </div>
                     <div>
-                        <TimeAccuracy />
+                        <TimeAccuracy questions={currentAttempt?.questions || []} subattempts={currentAttempt?.subattempts || []} overallAccuracy={currentAttempt?.accuracy || ''} overallTimeTaken={currentAttempt?.timeTaken || ''}/>
                     </div>
                 </div>
                 {/* --------------------------------------******************************************************---------------------------------------------- */}
@@ -399,39 +399,40 @@ function UmbrellaTestAnalytics({ onClose,  attemptedDetails, sectionName, testAt
                             <tbody>
                                 <tr className="border-t border-[#EAECF0]">
                                     <td className="py-3 text-left pl-6 text-[#1D2939] font-semibold text-sm">Overall</td>
-                                    <td className="py-3 text-center text-[#1D2939] font-normal text-sm">2</td>
-                                    <td className="py-3 text-center text-[#1D2939] font-normal text-sm">5</td>
-                                    <td className="py-3 text-center text-[#1D2939] font-normal text-sm">15</td>
-                                    <td className="py-3 text-center text-[#1D2939] font-normal text-sm">25</td>
+                                    <td className="py-3 text-center text-[#1D2939] font-normal text-sm">
+                                        {currentAttempt?.questions.filter(q => q.remarks === 'Perfect').length}
+                                    </td>
+                                    <td className="py-3 text-center text-[#1D2939] font-normal text-sm">
+                                        {currentAttempt?.questions.filter(q => q.remarks === 'Wasted').length}
+                                    </td>
+                                    <td className="py-3 text-center text-[#1D2939] font-normal text-sm">
+                                        {currentAttempt?.questions.filter(q => q.remarks === 'Overtime').length}
+                                    </td>
+                                    <td className="py-3 text-center text-[#1D2939] font-normal text-sm">
+                                        {currentAttempt?.questions.filter(q => q.remarks === 'Confused').length}
+                                    </td>
                                 </tr>
-                                <tr className="border-t border-[#EAECF0]">
-                                    <td className="py-3 text-left pl-6 text-[#1D2939] font-semibold text-sm">Physics</td>
-                                    <td className="py-3 text-center text-[#1D2939] font-normal text-sm">2</td>
-                                    <td className="py-3 text-center text-[#1D2939] font-normal text-sm">5</td>
-                                    <td className="py-3 text-center text-[#1D2939] font-normal text-sm">15</td>
-                                    <td className="py-3 text-center text-[#1D2939] font-normal text-sm">25</td>
+                                {currentAttempt?.subattempts.map((subattempt, index) => (
+                                <tr key={index} className="border-t border-[#EAECF0]">
+                                <td className="py-3 text-left pl-6 text-[#1D2939] font-semibold text-sm">{subattempt.sectionName}</td>
+                                <td className="py-3 text-center text-[#1D2939] font-normal text-sm">{subattempt?.questions.filter(q => q.remarks === 'Perfect').length}</td>
+                                <td className="py-3 text-center text-[#1D2939] font-normal text-sm">{subattempt?.questions.filter(q => q.remarks === 'Wasted').length}
+                                </td>
+                                <td className="py-3 text-center text-[#1D2939] font-normal text-sm">{subattempt?.questions.filter(q => q.remarks === 'Overtime').length}
+                                </td>
+                                <td className="py-3 text-center text-[#1D2939] font-normal text-sm">{subattempt?.questions.filter(q => q.remarks === 'Confused').length}
+                                </td>
                                 </tr>
-                                <tr className="border-t border-[#EAECF0]">
-                                    <td className="py-3 text-left pl-6 text-[#1D2939] font-semibold text-sm">Chemistry</td>
-                                    <td className="py-3 text-center text-[#1D2939] font-normal text-sm">2</td>
-                                    <td className="py-3 text-center text-[#1D2939] font-normal text-sm">5</td>
-                                    <td className="py-3 text-center text-[#1D2939] font-normal text-sm">15</td>
-                                    <td className="py-3 text-center text-[#1D2939] font-normal text-sm">25</td>
-                                </tr>
-                                <tr className="border-t border-[#EAECF0]">
-                                    <td className="py-3 text-left pl-6 text-[#1D2939] font-semibold text-sm">Mathematics</td>
-                                    <td className="py-3 text-center text-[#1D2939] font-normal text-sm">2</td>
-                                    <td className="py-3 text-center text-[#1D2939] font-normal text-sm">5</td>
-                                    <td className="py-3 text-center text-[#1D2939] font-normal text-sm">15</td>
-                                    <td className="py-3 text-center text-[#1D2939] font-normal text-sm">25</td>
-                                </tr>
+                                ))}
+                                
+                                
                             </tbody>
                         </table>
                     </div>
 
                     {/* Attempts Graph */}
                     <div >
-                        <Attempts />
+                        <Attempts questions={currentAttempt?.questions || []} subattempts={currentAttempt?.subattempts || []}/>
                     </div>
                 </div>
                 {/* --------------------------------------******************************************************---------------------------------------------- */}
@@ -442,20 +443,19 @@ function UmbrellaTestAnalytics({ onClose,  attemptedDetails, sectionName, testAt
                     </div>
                     {/* Difficulty Analysis  graph*/}
                     <div>
-                        <  DifficultyAnalysis />
+                        <  DifficultyAnalysis questions={currentAttempt?.questions || []} subattempts={currentAttempt?.subattempts || []}/>
                     </div>
                 </div>
                 {/* --------------------------------------******************************************************---------------------------------------------- */}
                 {/* Attempts over the 3 hours */}
-                <div id="Attemptsoverthe3hours" className="flex flex-col">
+                {/* <div id="Attemptsoverthe3hours" className="flex flex-col">
                     <div className="h-[44px] flex flex-row items-center gap-2 mb-2">
                         <span className="text-[#1D2939] text-lg font-semibold ">  Attempts over the 3 hours</span>
                     </div>
-                    {/* Line graph and Attemptsoverthehours data table */}
                     <div>
                         <  Attemptsoverthehours />
                     </div>
-                </div>
+                </div> */}
 
                 {/* --------------------------------------******************************************************---------------------------------------------- */}
                 {/* Complete Analysis */}

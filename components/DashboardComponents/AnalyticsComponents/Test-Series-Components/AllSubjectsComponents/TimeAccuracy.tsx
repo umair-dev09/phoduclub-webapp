@@ -11,26 +11,26 @@ import {
 
 export const description = "A donut chart with text"
 
-const chartData = [
-    { subjects: "Physics", marks: 27, fill: "#C7A5FF" },
-    { subjects: "Chemistry", marks: 200, fill: "#9012FF" },
-    { subjects: "Mathematics", marks: 287, fill: "#5C02B0" },
-];
+// const chartData = [
+//     { subjects: "Physics", marks: 27, fill: "#C7A5FF" },
+//     { subjects: "Chemistry", marks: 200, fill: "#9012FF" },
+//     { subjects: "Mathematics", marks: 287, fill: "#5C02B0" },
+// ];
 
-const chartConfig = {
-    Physics: {
-        label: "Physics",
-        color: "#C7A5FF",
-    },
-    Chemistry: {
-        label: "Chemistry",
-        color: "#9012FF",
-    },
-    Mathematics: {
-        label: "Mathematics",
-        color: "#5C02B0",
-    },
-} satisfies ChartConfig;
+// const chartConfig = {
+//     Physics: {
+//         label: "Physics",
+//         color: "#C7A5FF",
+//     },
+//     Chemistry: {
+//         label: "Chemistry",
+//         color: "#9012FF",
+//     },
+//     Mathematics: {
+//         label: "Mathematics",
+//         color: "#5C02B0",
+//     },
+// } satisfies ChartConfig;
 const CustomPieTooltipforpie: React.FC<PieTooltipProps> = ({ active, payload }) => {
     if (active && payload && payload.length) {
         const { name, value, payload: { fill } } = payload[0];
@@ -42,7 +42,7 @@ const CustomPieTooltipforpie: React.FC<PieTooltipProps> = ({ active, payload }) 
                     {/* Name and value */}
                     <p className="flex items-center text-sm font-semibold text-[#667085] mr-4 ">{name}</p>
                 </div>
-                <p className="flex items-center text-[0.938rem] font-semibold text-[#1D2939]">{value}</p>
+                <p className="flex items-center text-[0.938rem] font-semibold text-[#1D2939]">{formatTimeInSeconds(value)}</p>
             </div>
         );
     }
@@ -57,19 +57,17 @@ interface CustomTooltipforAttemptsProps {
 }
 const CustomTooltipforAttempts: React.FC<CustomTooltipforAttemptsProps> = ({ active, payload }) => {
     if (active && payload && payload.length) {
-        const data = payload[0].payload;
-        const attempts = data.Attempts;
-        const fillColor = data.fill;
+        const { name, value, payload: { fill } } = payload[0];
+
         return (
             <div className="relative bg-white border border-lightGrey rounded-md w-auto h-auto text-sm pointer-events-none" style={{ boxShadow: "2px 5px 11px 0px #0000001A" }}>
                 {/* Tooltip content */}
                 <div className="p-2">
-
                     <div className="flex items-center w-auto h-auto justify-center">
                         <div className="flex items-center">
-                            <span className="inline-block w-[10px] h-[10px] rounded-full" style={{ backgroundColor: fillColor }} />
-                            <span className="text-[#667085] font-normal text-sm ml-2">{`Attempts `}</span>
-                            <span className="font-semibold text-base text-[#1D2939] ml-5 ">{attempts}</span>
+                            <span className="inline-block w-[10px] h-[10px] rounded-full" style={{ backgroundColor: fill }} />
+                            <span className="text-[#667085] font-normal text-sm ml-2">{`Accuracy `}</span>
+                            <span className="font-semibold text-base text-[#1D2939] ml-5 ">{value}%</span>
                         </div>
                     </div>
                 </div>
@@ -84,46 +82,78 @@ interface PieTooltipProps extends TooltipProps<number, string> {
     payload?: any[];
 }
 
-function Quizzes() {
-    const totalVisitors = React.useMemo(() => {
-        return chartData.reduce((acc, curr) => acc + curr.marks, 0);
-    }, []);
+interface SubAttemptDetails {
+    attemptedQuestions: string;
+    score: string;
+    accuracy: string;
+    answeredCorrect: string;
+    answeredIncorrect: string;
+    timeTaken: string;
+    testTime: string;
+    questions: AnsweredQuestion[];
+    sectionName: string;
+    attemptId: string;
+}
+
+interface GraphicalViewOfOverviewProps {
+    questions: AnsweredQuestion[];
+    subattempts: SubAttemptDetails[];
+    overallTimeTaken: string;
+    overallAccuracy: string;
+}
+
+type DifficultyLevel = 'Easy' | 'Medium' | 'Hard';
+
+interface AnsweredQuestion {
+    questionId: string;
+    status: string;
+    answered: boolean;
+    selectedOption: string | null;
+    answeredCorrect: boolean | null;
+    allotedTime: number;
+    spentTime: number;
+    difficulty: DifficultyLevel;
+    remarks: string;
+}
+
+function formatTimeInSeconds(seconds: string) {
+    const totalSeconds = Number(seconds);
+    const hours = Math.floor(totalSeconds / 3600); // Calculate hours
+    const minutes = Math.floor((totalSeconds % 3600) / 60); // Calculate remaining minutes
+    let formattedTime = '';
+  
+    if (hours > 0) {
+        formattedTime += `${hours}h`; // Add hours if present
+    }
+    if (minutes > 0 || hours === 0) {
+        formattedTime += (formattedTime ? ' ' : '') + `${minutes}m`; // Add minutes
+    }
+  
+    return formattedTime;
+  }
+
+function TimeAccuracy({ questions, subattempts, overallAccuracy, overallTimeTaken }: GraphicalViewOfOverviewProps) {                   
+    // const totalVisitors = React.useMemo(() => {
+    //     return chartData.reduce((acc, curr) => acc + curr.marks, 0);
+    // }, []);
     // Data for Attempts
-    const Attempts = [
-        {
-            "subject": "Maths",
-            "Attempts": 2,
-            fill: "#C7A5FF",
-        },
-        {
-            "subject": "Physics",
-            "Attempts": 18,
-            fill: "#5C02B0",
-        },
-        {
-            "subject": "Chemistry",
-            "Attempts": 8,
-            fill: '#9012FF',
-        }
+  
+    const subjectColors = [
+        '#C7A5FF', // Lavender
+        '#9012FF', // Purple
+        '#5C02B0', // Indigo
+        '#4B0082',  // Indigo
+        '#FF6B6B',  // Coral
+        '#4CAF50',  // Green
+        '#9C27B0',  // Purple
+        '#FF9800',  // Orange
+        '#2196F3',  // Blue
+        '#E91E63',  // Pink
+        '#00BCD4',  // Cyan
+        '#FFC107',  // Amber
+        '#795548'   // Brown
     ];
-    // Data for Accuracy
-    const Accuracy = [
-        {
-            "subject": "Maths",
-            "Attempts": 100,
-            fill: "#C7A5FF",
-        },
-        {
-            "subject": "Physics",
-            "Attempts": 5,
-            fill: "#5C02B0",
-        },
-        {
-            "subject": "Chemistry",
-            "Attempts": 3,
-            fill: '#9012FF',
-        }
-    ];
+
 
     return (
         <div className="flex gap-2 flex-col h-auto mb-8">
@@ -132,19 +162,37 @@ function Quizzes() {
                     <div><h3>Session wise time spent</h3></div>
                     <div className="flex flex-1 items-center">
                         <ResponsiveContainer className='flex w-[50%]'>
-                            <ChartContainer config={chartConfig} className="h-auto w-[70%]">
+                            <ChartContainer config={{
+                                    ...Object.fromEntries(
+                                        subattempts.map((subattempt, index) => [
+                                            subattempt.sectionName,
+                                            {
+                                                label: subattempt.sectionName,
+                                                color: subjectColors[index % subjectColors.length]
+                                            }
+                                        ])
+                                    )
+                                }} className="h-auto w-[70%]">
                                 <PieChart>
                                     <Tooltip content={<CustomPieTooltipforpie />} cursor={false} />
                                     <Pie
-                                        data={chartData}
-                                        dataKey="marks"
+                                        data={subattempts
+                                            .map((subattempt, index) => ({
+                                                subjects: subattempt.sectionName,
+                                                timespent: subattempt.timeTaken,
+                                                fill: subjectColors[index % subjectColors.length]
+                                            }))}
+                                        dataKey="timespent"
                                         nameKey="subjects"
                                         innerRadius={40}
                                         strokeWidth={3}
                                         stroke="#FFFFFF"
                                     >
-                                        {chartData.map((entry, index) => (
-                                            <Cell key={`cell-${index}`} fill={entry.fill} />
+                                        {subattempts
+                                        .map((entry, index) => (
+                                            <Cell key={`cell-${index}`} 
+                                            fill={subjectColors[index % subjectColors.length]}
+                                            />
                                         ))}
                                     </Pie>
                                 </PieChart>
@@ -152,12 +200,13 @@ function Quizzes() {
                             </ChartContainer>
                         </ResponsiveContainer>
                         <div className="flex flex-col w-[50%] justify-evenly">
-                            {chartData.map((subject, index) => (
+                        {subattempts.map((subattempt, index) => (
                                 <div key={index} className="flex flex-1 mb-2">
-                                    <div><span className={`block rounded-full w-3 h-3 mr-2 mt-[23%]`} style={{ backgroundColor: subject.fill }}></span></div>
+                                    <div><span className={`block rounded-full w-3 h-3 mr-2 mt-[23%]`} style={{ backgroundColor: subjectColors[index % subjectColors.length] }}></span></div>
+                                   
                                     <div>
-                                        {subject.subjects}
-                                        <h3>{subject.marks}</h3>
+                                        {subattempt.sectionName}
+                                        <h3>{formatTimeInSeconds(subattempt.timeTaken)}</h3>
                                     </div>
                                 </div>
                             ))}
@@ -169,34 +218,26 @@ function Quizzes() {
                         <thead>
                             <tr className="text-[#667085]">
                                 <th className="w-[10%] px-8 py-3 text-left">Subject</th>
-                                <th className="w-[10%] text-center">Score</th>
-                                <th className="w-[10%] text-center">Correct</th>
+                                <th className="w-[10%] text-center">Time Spent</th>
+                                <th className="w-[10%] text-center">Accuracy</th>
 
                             </tr>
                         </thead>
                         <tbody>
                             <tr className="border-t border-[#EAECF0]">
                                 <td className="px-8 py-3 text-left text-[#1D2939] font-semibold text-sm">Overall</td>
-                                <td className=" px-8 py-3 text-center text-[#1D2939] font-normal text-sm">200/300</td>
-                                <td className="px-8 py-3 text-center text-[#1D2939] font-normal text-sm">5/75</td>
+                                <td className=" px-8 py-3 text-center text-[#1D2939] font-normal text-sm">{formatTimeInSeconds(overallTimeTaken)}</td>
+                                <td className="px-8 py-3 text-center text-[#1D2939] font-normal text-sm">{overallAccuracy}</td>
 
                             </tr>
-                            <tr className="border-t border-[#EAECF0]">
-                                <td className=" px-8 py-3 text-left text-[#1D2939] font-semibold text-sm">Physics</td>
-                                <td className="px-8 py-3 text-center text-[#1D2939] font-normal text-sm">100/300</td>
-                                <td className="px-8 py-3 text-center text-[#1D2939] font-normal text-sm">5/75</td>
+                            {subattempts.map((subattempt, index) => (
+                            <tr key={index} className="border-t border-[#EAECF0]">
+                                <td className=" px-8 py-3 text-left text-[#1D2939] font-semibold text-sm">{subattempt.sectionName}</td>
+                                <td className="px-8 py-3 text-center text-[#1D2939] font-normal text-sm">{formatTimeInSeconds(subattempt.timeTaken)}</td>
+                                <td className="px-8 py-3 text-center text-[#1D2939] font-normal text-sm">{subattempt.accuracy}</td>
+                            </tr>
+                           ))}
 
-                            </tr>
-                            <tr className="border-t border-[#EAECF0]">
-                                <td className="px-8 py-3 text-left text-[#1D2939] font-semibold text-sm">Chemistry</td>
-                                <td className="px-8 py-3 text-center text-[#1D2939] font-normal text-sm">250/300</td>
-                                <td className="px-8 py-3 text-center text-[#1D2939] font-normal text-sm">50/75</td>
-                            </tr>
-                            <tr className="border-t border-[#EAECF0]">
-                                <td className="px-8 py-3 text-left text-[#1D2939] font-semibold text-sm">Maths</td>
-                                <td className="px-8 py-3 text-center text-[#1D2939] font-normal text-sm">250/300</td>
-                                <td className="px-8 py-3 text-center text-[#1D2939] font-normal text-sm">50/75</td>
-                            </tr>
                         </tbody>
                     </table>
                 </div>
@@ -204,7 +245,7 @@ function Quizzes() {
             {/*  Below Code Represent the Horizontal Graph */}
             <div className="flex flex-row gap-4 h-[250px]">
                 {/* horizontal graph for the Attempts */}
-                <div className=" w-full rounded-xl h-auto flex  flex-col bg-[#FFFFFF] border border-solid border-[#EAECF0] pr-5">
+                {/* <div className=" w-full rounded-xl h-auto flex  flex-col bg-[#FFFFFF] border border-solid border-[#EAECF0] pr-5">
                     <div className=" m-5">
                         <span className="font-semibold text-[#1D2939] text-lg">Attempts</span>
                     </div>
@@ -240,7 +281,7 @@ function Quizzes() {
                             />
                         </BarChart>
                     </ResponsiveContainer>
-                </div>
+                </div> */}
                 {/* horizontal graph for the Accuracy */}
                 <div className=" w-full rounded-xl h-auto flex  flex-col bg-[#FFFFFF] border border-solid border-[#EAECF0] pr-5">
                     <div className=" m-5">
@@ -248,7 +289,11 @@ function Quizzes() {
                     </div>
                     <ResponsiveContainer width="100%" height="65%" className='mr-[10px]'>
                         <BarChart
-                            data={Accuracy}
+                            data={subattempts.map((subattempt, index) => ({
+                                subject: subattempt.sectionName,
+                                Accuracy: parseFloat(subattempt.accuracy),
+                                fill: subjectColors[index % subjectColors.length]
+                            }))}
                             layout="vertical"
                             barGap={30}
                         >
@@ -273,7 +318,7 @@ function Quizzes() {
                             <Legend wrapperStyle={{ display: 'none' }} />
                             <Tooltip content={<CustomTooltipforAttempts />} cursor={false} />
                             <Bar
-                                dataKey="Attempts"
+                                dataKey="Accuracy"
                                 barSize={30}
                             />
                         </BarChart>
@@ -284,4 +329,4 @@ function Quizzes() {
     );
 }
 
-export default Quizzes;
+export default TimeAccuracy;

@@ -248,7 +248,7 @@ function NormalTestAnalytics({ onClose, forallsubject = false, attemptedDetails,
                     </div>
                 </div>
                 {/* Attempts over the 3 hours */}
-                <div id="Attemptsoverthe3hours" className="flex flex-col">
+                {/* <div id="Attemptsoverthe3hours" className="flex flex-col">
                     <div className="h-[44px] flex flex-col justify-end mb-2">
                         <span className="text-[#1D2939] text-lg font-semibold">Attempts over the 3 hours</span>
                     </div>
@@ -256,7 +256,7 @@ function NormalTestAnalytics({ onClose, forallsubject = false, attemptedDetails,
                         <Attemptsoverthehours />
                     </div>
 
-                </div>
+                </div> */}
                 {/* Complete Analysis */}
                 <div id="CompleteAnalysis" className="flex flex-col">
                     <div className="h-[44px] flex flex-col justify-end mb-2 ">

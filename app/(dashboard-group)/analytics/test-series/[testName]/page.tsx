@@ -26,15 +26,16 @@ interface Section {
     description: string;
     marksPerQ: string;
     nMarksPerQ: string;
-    testTime: string;
     // Questions?: Question[];
     QuestionsCount: number;
     SubsectionsCount?: number;
     isUmbrellaTest: boolean;
     totalSectionsWithQuestions: number;
     totalSectionsWithStudentsAttempted: number;
-    studentProgress: number;
     subSectionsCountUmbrella: number;
+    timeTaken: string;
+    testTime: string;
+    score: number;
 }
 interface Question {
     id: string;
@@ -87,6 +88,22 @@ interface AttemptedDetails {
         nanoseconds: number;
     };
 }
+
+function formatTimeInSeconds(seconds: string) {
+    const totalSeconds = Number(seconds);
+    const hours = Math.floor(totalSeconds / 3600); // Calculate hours
+    const minutes = Math.floor((totalSeconds % 3600) / 60); // Calculate remaining minutes
+    let formattedTime = '';
+  
+    if (hours > 0) {
+        formattedTime += `${hours}h`; // Add hours if present
+    }
+    if (minutes > 0 || hours === 0) {
+        formattedTime += (formattedTime ? ' ' : '') + `${minutes}m`; // Add minutes
+    }
+  
+    return formattedTime;
+  }
 
 function TestAnalytics() {
     const router = useRouter();
@@ -264,6 +281,9 @@ function TestAnalytics() {
                         // Initialize the counters for sections with questions and sections with attempts
                         let sectionsWithQuestionsCount = 0;
                         let sectionsWithAttemptsCount = 0;
+                        let totalScore = 0;
+                        let totalTimeTakenMinutes = 0;
+                        let maxTotalTimeMinutes = 0;
 
                         // Recursive function to count sections with hasQuestions = true or isUmbrellaTest = true
                         const countSectionsWithQuestionsAndAttempts = async (path: string) => {
@@ -281,7 +301,23 @@ function TestAnalytics() {
                                     // Check attempts collection
                                     const attemptsCollection = collection(sectionDoc.ref, 'attempts');
                                     const attemptsSnapshot = await getDocs(attemptsCollection);
-                                    
+
+                                    const userAttempts = attemptsSnapshot.docs
+                                    .filter(attempt => attempt.data().userId === currentUserId)
+                                    .sort((a, b) => b.data().attemptNumber - a.data().attemptNumber);
+
+                                    if (userAttempts.length > 0) {
+                                        const latestAttempt = userAttempts[0].data();
+                                        // sectionsWithAttemptsCount += 1;
+                                        // totalScore += latestAttempt.score || 0;
+
+                                        // For accuracy, only take number before '/'
+                                        const scoreValue = parseInt(latestAttempt.score?.split('/')[0] || '-');
+                                        totalScore += scoreValue;
+                                        totalTimeTakenMinutes += parseInt(latestAttempt.timeTaken || '-');
+                                        maxTotalTimeMinutes += parseInt(latestAttempt.testTime || '0');
+                                      }
+
                                     // Count only one attempt per section if user has attempted
                                     if (attemptsSnapshot.docs.some(attempt => attempt.data().userId === auth.currentUser?.uid)) {
                                         sectionsWithAttemptsCount += 1;
@@ -296,11 +332,6 @@ function TestAnalytics() {
 
                         await countSectionsWithQuestionsAndAttempts(`${doc.ref.path}/sections`);
 
-                        const studentProgress = sectionsWithQuestionsCount > 0
-                            ? (sectionsWithAttemptsCount / sectionsWithQuestionsCount) * 100
-                            : 0;
-                        const roundedProgress = Math.round(studentProgress);
-
                         return {
                             id: sectionId,
                             sectionName: sectionData.sectionName,
@@ -312,14 +343,15 @@ function TestAnalytics() {
                             description: sectionData.description,
                             marksPerQ: sectionData.marksPerQ,
                             nMarksPerQ: sectionData.nMarksPerQ,
-                            testTime: sectionData.testTime,
                             QuestionsCount: questionsCount,
                             SubsectionsCount: subsectionCount, // Number of subsections
                             subSectionsCountUmbrella: subsectionCountUmbrella,
                             isUmbrellaTest: sectionData.isUmbrellaTest || false,
                             totalSectionsWithQuestions: sectionsWithQuestionsCount,
                             totalSectionsWithStudentsAttempted: sectionsWithAttemptsCount,
-                            studentProgress: roundedProgress,
+                            score: totalScore,
+                            timeTaken: `${totalTimeTakenMinutes}` || '-',
+                            testTime: `${maxTotalTimeMinutes}`|| '-',
                         };
                     })
                 );
@@ -411,7 +443,7 @@ function TestAnalytics() {
                     <span className="font-bold text-[#1D2939] text-1g">{breadcrumbs.length > 0 ? breadcrumbs[breadcrumbs.length - 1].name : "All Tests"}</span>
                 </div> */}
                 {isUmbrellaAnalytics ? (
-                  <UmbrellaTestAnalytics onClose={() => setDetailedAnalyticsOpen(false)} attemptedDetails={detailAttempts} sectionName={sectionName} testAttemptId={attemptId} setTestAttemptId={setAttemptId}/>
+                  <UmbrellaTestAnalytics onClose={() => setIsUmbrellaAnalytics(false)} attemptedDetails={detailAttempts} sectionName={sectionName} testAttemptId={attemptId} setTestAttemptId={setAttemptId}/>
                 ) : (
                    <NormalTestAnalytics onClose={() => setDetailedAnalyticsOpen(false)} attemptedDetails={detailAttempts} sectionName={sectionName} testAttemptId={attemptId} setTestAttemptId={setAttemptId}/>
                 )}
@@ -479,21 +511,21 @@ function TestAnalytics() {
                                     <div className="w-[1px] bg-lightGrey mr-4"></div>
                                     <div className="flex flex-col gap-1.5">
                                         <p className="text-xs font-normal text-[#1D2939]">Score</p>
-                                        <h3 className="text-[15px] font-semibold">127</h3>
+                                        <h3 className="text-[15px] font-semibold">{section.score}</h3>
                                     </div>
                                 </div>
                                 <div className="flex fles-row mr-20">
                                     <div className="w-[1px] bg-lightGrey mr-4"></div>
                                     <div className="flex flex-col gap-1.5">
                                         <p className="text-xs font-normal text-[#1D2939]">Time taken</p>
-                                        <h3 className="text-[15px] font-semibold">45h 30m</h3>
+                                        <h3 className="text-[15px] font-semibold">{formatTimeInSeconds(section.timeTaken)}</h3>
                                     </div>
                                 </div>
                                 <div className="flex fles-row mr-20">
                                     <div className="w-[1px] bg-lightGrey mr-4"></div>
                                     <div className="flex flex-col gap-1.5">
                                         <p className="text-xs font-normal text-[#1D2939]">Total Time</p>
-                                        <h3 className="text-[15px] font-semibold">90h 20m</h3>
+                                        <h3 className="text-[15px] font-semibold">{formatTimeInSeconds(section.testTime)}</h3>
                                     </div>
                                 </div>
     
