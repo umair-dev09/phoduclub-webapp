@@ -382,7 +382,7 @@ function RoleMangement() {
                                                             // onClick={() => handleRemoveUser(users.adminId)}>
                                                             >
                                                                 <Image src='/icons/delete.svg' alt="user profile" width={18} height={18} />
-                                                                <p className="text-sm text-[#DE3024] font-normal">Remove</p>
+                                                                <p className="text-sm text-[#DE3024] font-normal">Remove1</p>
                                                             </button>
                                                         </div>
                                                     </PopoverContent>

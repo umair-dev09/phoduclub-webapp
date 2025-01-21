@@ -21,7 +21,7 @@ interface StudentPurchased {
     title: string;
     uniqueId: string;
     enrollmentType: string;
-    progress: number;
+    progress: string;
     enrolledDate: string;
     status: 'Live' | 'Paused' | 'Finished' | 'Scheduled' | 'Cancelled' | 'Saved';
 }
@@ -29,16 +29,16 @@ interface StudentPurchased {
 // Mock fetchstudents function with types
 const fetchStudents = async (): Promise<StudentPurchased[]> => {
     const allStudents: StudentPurchased[] = [
-        { title: "John Doe", uniqueId: "john#1234", enrollmentType: "Free", progress: 50, enrolledDate: "Dec 1, 2023", status: "Live" },
-        { title: "Jane Smith", uniqueId: "jane#5678", enrollmentType: "Paid", progress: 30, enrolledDate: "Nov 15, 2023", status: "Saved" },
-        { title: "Alice Johnson", uniqueId: "alice#9101", enrollmentType: "Free", progress: 75, enrolledDate: "Oct 1, 2023", status: "Paused" },
-        { title: "Robert Brown", uniqueId: "robert#1122", enrollmentType: "Paid", progress: 100, enrolledDate: "Sep 1, 2023", status: "Finished" },
-        { title: "Emily Davis", uniqueId: "emily#3344", enrollmentType: "Free", progress: 10, enrolledDate: "Jan 1, 2024", status: "Scheduled" },
-        { title: "Michael Wilson", uniqueId: "michael#5566", enrollmentType: "Paid", progress: 0, enrolledDate: "Feb 1, 2024", status: "Cancelled" },
-        { title: "Sophia Moore", uniqueId: "sophia#7788", enrollmentType: "Free", progress: 85, enrolledDate: "Jul 15, 2023", status: "Live" },
-        { title: "Chris Taylor", uniqueId: "chris#9900", enrollmentType: "Paid", progress: 20, enrolledDate: "Dec 10, 2023", status: "Saved" },
-        { title: "Olivia Martinez", uniqueId: "olivia#1112", enrollmentType: "Free", progress: 45, enrolledDate: "Nov 25, 2023", status: "Paused" },
-        { title: "Daniel Garcia", uniqueId: "daniel#1314", enrollmentType: "Paid", progress: 100, enrolledDate: "Aug 20, 2023", status: "Finished" }
+        { title: "John Doe", uniqueId: "john#1234", enrollmentType: "Free", progress: "50%", enrolledDate: "Dec 1, 2023", status: "Live" },
+        { title: "Jane Smith", uniqueId: "jane#5678", enrollmentType: "Paid", progress: "30%", enrolledDate: "Nov 15, 2023", status: "Saved" },
+        { title: "Alice Johnson", uniqueId: "alice#9101", enrollmentType: "Free", progress: "75%", enrolledDate: "Oct 1, 2023", status: "Paused" },
+        { title: "Robert Brown", uniqueId: "robert#1122", enrollmentType: "Paid", progress: "100%", enrolledDate: "Sep 1, 2023", status: "Finished" },
+        { title: "Emily Davis", uniqueId: "emily#3344", enrollmentType: "Free", progress: "10%", enrolledDate: "Jan 1, 2024", status: "Scheduled" },
+        { title: "Michael Wilson", uniqueId: "michael#5566", enrollmentType: "Paid", progress: "0%", enrolledDate: "Feb 1, 2024", status: "Cancelled" },
+        { title: "Sophia Moore", uniqueId: "sophia#7788", enrollmentType: "Free", progress: "85%", enrolledDate: "Jul 15, 2023", status: "Live" },
+        { title: "Chris Taylor", uniqueId: "chris#9900", enrollmentType: "Paid", progress: "20%", enrolledDate: "Dec 10, 2023", status: "Saved" },
+        { title: "Olivia Martinez", uniqueId: "olivia#1112", enrollmentType: "Free", progress: "45%", enrolledDate: "Nov 25, 2023", status: "Paused" },
+        { title: "Daniel Garcia", uniqueId: "daniel#1314", enrollmentType: "Paid", progress: "100%", enrolledDate: "Aug 20, 2023", status: "Finished" }
     ];
     return allStudents;
 };
@@ -98,24 +98,6 @@ function StudentsPurchasedCourseInfo() {
         ? selectedDate.toLocaleDateString("en-US", { year: 'numeric', month: 'short', day: 'numeric' })
         : "Select dates";
 
-    const [enrollmentFilter, setEnrollmentFilter] = useState<string | null>(null);
-    const [sortConfig, setSortConfig] = useState<{
-        key: string;
-        direction: 'asc' | 'desc' | null;
-    }>({
-        key: '',
-        direction: null
-    });
-
-    const handleClear = () => {
-        setSortConfig({ key: '', direction: null }); // Reset sorting
-        setSearchTerm(''); // Clear search term
-        setSelectedDate(null); // Clear selected date
-        setEnrollmentFilter(null); // Clear enrollment filter
-        setData(students); // Reset table data to the original list
-        setCurrentPage(1); // Reset to the first page
-    };
-
     useEffect(() => {
         let filteredStudentsPurchased = students;
 
@@ -123,12 +105,6 @@ function StudentsPurchasedCourseInfo() {
         if (searchTerm) {
             filteredStudentsPurchased = filteredStudentsPurchased.filter(course =>
                 course.title.toLowerCase().includes(searchTerm.toLowerCase())
-            );
-        }
-
-        if (enrollmentFilter) {
-            filteredStudentsPurchased = filteredStudentsPurchased.filter(student =>
-                student.enrollmentType === enrollmentFilter
             );
         }
 
@@ -164,40 +140,10 @@ function StudentsPurchasedCourseInfo() {
             return dateA - dateB; // Sort by time in ascending order (earliest first)
         });
 
-        if (sortConfig.key && sortConfig.direction) {
-            filteredStudentsPurchased = filteredStudentsPurchased.sort((a, b) => {
-                if (sortConfig.key === 'progress') {
-                    return sortConfig.direction === 'asc'
-                        ? a.progress - b.progress
-                        : b.progress - a.progress;
-                } else if (sortConfig.key === 'enrolledDate') {
-                    const dateA = new Date(a[sortConfig.key]).getTime();
-                    const dateB = new Date(b[sortConfig.key]).getTime();
-                    return sortConfig.direction === 'asc'
-                        ? dateA - dateB
-                        : dateB - dateA;
-                }
-                return 0;
-            });
-        }
-
         // Update state with filtered and sorted quizzes
         setData(filteredStudentsPurchased);
         setCurrentPage(1); // Reset to first page when filters change
-    }, [searchTerm, students, selectedDate, sortConfig]);
-
-    const handleSort = (key: string) => {
-        setSortConfig((prevConfig) => {
-            // Cycle through: no sort -> asc -> desc -> no sort
-            if (prevConfig.key !== key || !prevConfig.direction) {
-                return { key, direction: 'asc' };
-            } else if (prevConfig.direction === 'asc') {
-                return { key, direction: 'desc' };
-            } else {
-                return { key: '', direction: null }; // Reset to original order
-            }
-        });
-    };
+    }, [searchTerm, students, selectedDate]);
 
     const handlePopoverOpen = (index: number) => {
         setPopoveropen2(index);
@@ -266,59 +212,15 @@ function StudentsPurchasedCourseInfo() {
                     </Popover>
 
                     {/* Sort Button */}
-                    <Popover placement="bottom">
-                        <PopoverTrigger>
-                            <button className="h-[44px] w-[105px] rounded-md bg-[#FFFFFF] border border-solid border-[#D0D5DD] flex items-center justify-center gap-2 outline-none">
-                                <span className="font-medium text-sm text-[#667085] ml-2">
-                                    {enrollmentFilter || "Sort By"}
-                                </span>
-                                <Image
-                                    src="/icons/chevron-down-dark-1.svg"
-                                    width={20}
-                                    height={20}
-                                    alt="arrow-down-dark-1"
-                                />
-                            </button>
-                        </PopoverTrigger>
-                        <PopoverContent className="flex flex-col w-28 h-auto px-0 py-1 bg-white border border-lightGrey rounded-md">
-                            <div
-                                className="flex flex-row items-center w-full my-0 py-[0.625rem] px-4 gap-2 cursor-pointer transition-colors hover:bg-[#F2F4F7]"
-                                onClick={() => {
-                                    setEnrollmentFilter('Free');
-                                    setSortConfig({ key: '', direction: null });
-                                }}
-                            >
-                                <p className={`text-sm ${enrollmentFilter === 'Free' ? 'font-medium text-purple' : 'font-normal text-[#0C111D]'}`}>
-                                    Free
-                                </p>
-                                {enrollmentFilter === 'Free' && (
-                                    <Image src="/icons/check.svg" width={16} height={16} alt="Selected" />
-                                )}
-                            </div>
-                            <div
-                                className="flex flex-row items-center w-full my-0 py-[0.625rem] px-4 gap-2 cursor-pointer transition-colors hover:bg-[#F2F4F7]"
-                                onClick={() => {
-                                    setEnrollmentFilter('Paid');
-                                    setSortConfig({ key: '', direction: null });
-                                }}
-                            >
-                                <p className={`text-sm ${enrollmentFilter === 'Paid' ? 'font-medium text-purple' : 'font-normal text-[#0C111D]'}`}>
-                                    Paid
-                                </p>
-                                {enrollmentFilter === 'Paid' && (
-                                    <Image src="/icons/check.svg" width={16} height={16} alt="Selected" />
-                                )}
-                            </div>
-                            {enrollmentFilter && (
-                                <div
-                                    className="flex flex-row items-center w-full my-0 py-[0.625rem] px-4 gap-2 cursor-pointer transition-colors hover:bg-[#F2F4F7] border-t border-lightGrey"
-                                    onClick={handleClear}
-                                >
-                                    <p className="text-sm font-normal text-[#0C111D]">Clear</p>
-                                </div>
-                            )}
-                        </PopoverContent>
-                    </Popover>
+                    <button className="h-[44px] w-[105px] rounded-md bg-[#FFFFFF] border border-solid border-[#D0D5DD] flex items-center justify-center gap-2">
+                        <span className="font-medium text-sm text-[#667085] ml-2">Sort By</span>
+                        <Image
+                            src="/icons/chevron-down-dark-1.svg"
+                            width={20}
+                            height={20}
+                            alt="arrow-down-dark-1"
+                        />
+                    </button>
 
                     {/* <Popover placement="bottom-end"
                         isOpen={popoveropen}
@@ -402,17 +304,13 @@ function StudentsPurchasedCourseInfo() {
                                         <p>Enrollment</p>
                                     </div>
                                 </th>
-                                <th className="text-center px-8 py-4 text-[#667085] font-medium text-sm cursor-pointer"
-                                    onClick={() => handleSort('progress')}
-                                >
+                                <th className="text-center px-8 py-4 text-[#667085] font-medium text-sm">
                                     <div className="flex flex-row justify-center gap-1">
                                         <p>Progress</p>
                                         <Image src='/icons/unfold-more-round.svg' alt="" width={16} height={16} />
                                     </div>
                                 </th>
-                                <th className="text-center px-8 py-4 text-[#667085] font-medium text-sm cursor-pointer"
-                                    onClick={() => handleSort('enrolledDate')}
-                                >
+                                <th className="text-center px-8 py-4 text-[#667085] font-medium text-sm">
                                     <div className="flex flex-row justify-center gap-1">
                                         <p>Enrollment Date</p>
                                         <Image src='/icons/unfold-more-round.svg' alt="" width={16} height={16} />
@@ -440,7 +338,7 @@ function StudentsPurchasedCourseInfo() {
                                             </div>
                                         </td>
                                         <td className="px-8 py-4 text-center text-[#101828] text-sm">{student.enrollmentType}</td>
-                                        <td className="px-8 py-4 text-center text-[#101828] text-sm">{student.progress}%</td>
+                                        <td className="px-8 py-4 text-center text-[#101828] text-sm">{student.progress}</td>
                                         <td className="px-8 py-4 text-center text-[#101828] text-sm">{student.enrolledDate}</td>
                                         <td className="flex items-center justify-center px-8 py-4 text-[#101828] text-sm">
                                             <Popover placement="bottom-end"
@@ -462,6 +360,7 @@ function StudentsPurchasedCourseInfo() {
                                                     </button>
                                                 </PopoverTrigger>
                                                 <PopoverContent className="w-[10.438rem] py-1 px-0 bg-white border border-lightGrey rounded-md">
+
                                                     <button className="flex flex-row items-center justify-start w-full py-[0.625rem] px-4 gap-2 hover:bg-[#F2F4F7]">
                                                         <Image src='/icons/user-account.svg' alt="user profile" width={18} height={18} />
                                                         <p className="text-sm text-[#0C111D] font-normal">Go to Profile</p>

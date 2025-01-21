@@ -89,7 +89,7 @@ function Delete({ open, onClose, name, authId }: DeleteProps) {
                         <div className=" h-auto   flex flex-col">
                             <span className="text-sm font-normal text-[#667085]">Deleting the user will permanently remove all their data from the platform, including their account, activity, and content.</span>
                         </div>
-                        <div className=" h-auto pb-2 gap-2 flex flex-col">
+                        <div className=" h-auto  gap-2 flex flex-col">
                             <h3 className="font-medium text-sm text-[#1D2939]">To confirm, please enter the name of the user.</h3>
                             <div className="flex flex-row py-2 px-4 w-full gap-2 border border-solid border-[#D0D5DD] rounded-md transition duration-200 ease-in-out">
                                 <input

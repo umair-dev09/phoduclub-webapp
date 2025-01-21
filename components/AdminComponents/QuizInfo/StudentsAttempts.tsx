@@ -21,24 +21,24 @@ interface StudentsAttempts {
     title: string;
     uniqueId: string;
     dateTime: string;
-    score: string;
+    score: number;
     timeTaken: string;
-    ranking: string;
+    ranking: number;
 }
 
 // Mock fetchStudentAttempts function with types
 const fetchStudentsAttempts = async (): Promise<StudentsAttempts[]> => {
     const allStudentsAttempts: StudentsAttempts[] = [
-        { title: "Jenny", uniqueId: "jenny#8547", dateTime: "06 Jan, 2024 07:30 PM", score: "78", timeTaken: "1 hr 15 mins", ranking: "15" },
-        { title: "Tom", uniqueId: "tom#7453", dateTime: "08 Jan, 2024 06:00 PM", score: "65", timeTaken: "50 mins", ranking: "45" },
-        { title: "Alice", uniqueId: "alice#1234", dateTime: "10 Jan, 2024 09:15 AM", score: "85", timeTaken: "1 hr", ranking: "8" },
-        { title: "Harry", uniqueId: "harry#5678", dateTime: "12 Jan, 2024 11:45 AM", score: "92", timeTaken: "1 hr 20 mins", ranking: "3" },
-        { title: "Sophia", uniqueId: "sophia#9801", dateTime: "14 Jan, 2024 04:00 PM", score: "54", timeTaken: "35 mins", ranking: "80" },
-        { title: "Mia", uniqueId: "mia#3210", dateTime: "16 Jan, 2024 08:20 PM", score: "47", timeTaken: "40 mins", ranking: "120" },
-        { title: "Oliver", uniqueId: "oliver#1112", dateTime: "18 Jan, 2024 01:10 PM", score: "88", timeTaken: "1 hr 10 mins", ranking: "12" },
-        { title: "Emma", uniqueId: "emma#3345", dateTime: "20 Jan, 2024 03:25 PM", score: "73", timeTaken: "55 mins", ranking: "25" },
-        { title: "Liam", uniqueId: "liam#7689", dateTime: "22 Jan, 2024 07:00 AM", score: "67", timeTaken: "50 mins", ranking: "40" },
-        { title: "Ava", uniqueId: "ava#5567", dateTime: "24 Jan, 2024 02:30 PM", score: "95", timeTaken: "1 hr 25 mins", ranking: "1" }
+        { title: "Jenny", uniqueId: "jenny#8547", dateTime: "06 Jan, 2024 07:30 PM", score: 78, timeTaken: "1 hr 15 mins", ranking: 15 },
+        { title: "Tom", uniqueId: "tom#7453", dateTime: "08 Jan, 2024 06:00 PM", score: 65, timeTaken: "50 mins", ranking: 45 },
+        { title: "Alice", uniqueId: "alice#1234", dateTime: "10 Jan, 2024 09:15 AM", score: 85, timeTaken: "1 hr", ranking: 8 },
+        { title: "Harry", uniqueId: "harry#5678", dateTime: "12 Jan, 2024 11:45 AM", score: 92, timeTaken: "1 hr 20 mins", ranking: 3 },
+        { title: "Sophia", uniqueId: "sophia#9801", dateTime: "14 Jan, 2024 04:00 PM", score: 54, timeTaken: "35 mins", ranking: 80 },
+        { title: "Mia", uniqueId: "mia#3210", dateTime: "16 Jan, 2024 08:20 PM", score: 47, timeTaken: "40 mins", ranking: 120 },
+        { title: "Oliver", uniqueId: "oliver#1112", dateTime: "18 Jan, 2024 01:10 PM", score: 88, timeTaken: "1 hr 10 mins", ranking: 12 },
+        { title: "Emma", uniqueId: "emma#3345", dateTime: "20 Jan, 2024 03:25 PM", score: 73, timeTaken: "55 mins", ranking: 25 },
+        { title: "Liam", uniqueId: "liam#7689", dateTime: "22 Jan, 2024 07:00 AM", score: 67, timeTaken: "50 mins", ranking: 40 },
+        { title: "Ava", uniqueId: "ava#5567", dateTime: "24 Jan, 2024 02:30 PM", score: 95, timeTaken: "1 hr 25 mins", ranking: 1 }
     ];
     return allStudentsAttempts;
 };
@@ -72,6 +72,14 @@ function StudentsAttemptedTestseries() {
     const firstItemIndex = lastItemIndex - itemsPerPage;
     const currentItems = data.slice(firstItemIndex, lastItemIndex);
 
+    const [sortConfig, setSortConfig] = useState<{
+        key: string;
+        direction: 'asc' | 'desc' | null;
+    }>({
+        key: '',
+        direction: null
+    });
+
     // Function to handle tab click and navigate to a new route
     const handleTabClick = (path: string) => {
         router.push(path);
@@ -90,6 +98,24 @@ function StudentsAttemptedTestseries() {
     const isAddButtonDisabled = !uniqueId || !startDate || !endDate;
 
     const [selectedDate, setSelectedDate] = useState<Date | null>(null); // Store selected date as Date object
+
+    const convertTimeToMinutes = (timeString: string): number => {
+        const parts = timeString.toLowerCase().split(' ');
+        let totalMinutes = 0;
+
+        for (let i = 0; i < parts.length; i += 2) {
+            const value = parseInt(parts[i]);
+            const unit = parts[i + 1];
+
+            if (unit.startsWith('hr')) {
+                totalMinutes += value * 60;
+            } else if (unit.startsWith('min')) {
+                totalMinutes += value;
+            }
+        }
+
+        return totalMinutes;
+    };
 
     useEffect(() => {
         let filterStudentsAttempts = StudentsAttempts;
@@ -133,10 +159,48 @@ function StudentsAttemptedTestseries() {
             return dateA - dateB; // Sort by time in ascending order (earliest first)
         });
 
+        if (sortConfig.key && sortConfig.direction) {
+            filterStudentsAttempts = filterStudentsAttempts.sort((a, b) => {
+                if (sortConfig.key === 'score') {
+                    return sortConfig.direction === 'asc'
+                        ? a.score - b.score
+                        : b.score - a.score;
+                }
+                if (sortConfig.key === 'ranking') {
+                    return sortConfig.direction === 'asc'
+                        ? a.ranking - b.ranking
+                        : b.ranking - a.ranking;
+                }
+                if (sortConfig.key === 'timeTaken') {
+                    const timeA = convertTimeToMinutes(a.timeTaken);
+                    const timeB = convertTimeToMinutes(b.timeTaken);
+                    return sortConfig.direction === 'asc'
+                        ? timeA - timeB
+                        : timeB - timeA;
+                }
+                return 0;
+            });
+        }
+
         // Update state with filtered and sorted StudentAttempts
         setData(filterStudentsAttempts);
         setCurrentPage(1); // Reset to first page when filters change
-    }, [searchTerm, StudentsAttempts, selectedDate]);
+    }, [searchTerm, StudentsAttempts, selectedDate, sortConfig]);
+
+    const handleSort = (key: string) => {
+        if (key === 'score' || key === 'ranking' || key === 'timeTaken') {  // Added 'timeTaken'
+            setSortConfig((prevConfig) => {
+                // Cycle through: no sort -> asc -> desc -> no sort
+                if (prevConfig.key !== key || !prevConfig.direction) {
+                    return { key, direction: 'asc' };
+                } else if (prevConfig.direction === 'asc') {
+                    return { key, direction: 'desc' };
+                } else {
+                    return { key: '', direction: null }; // Reset to original order
+                }
+            });
+        }
+    };
 
     // Format selected date as 'Nov 9, 2024'
     const formattedDate = selectedDate
@@ -227,20 +291,31 @@ function StudentsAttemptedTestseries() {
                                         <Image src='/icons/unfold-more-round.svg' alt="" width={16} height={16} />
                                     </div>
                                 </th>
-                                <th className="text-center px-8 py-4 text-[#667085] font-medium text-sm">
+                                <th
+                                    className="text-center px-8 py-4 text-[#667085] font-medium text-sm cursor-pointer [&_*]:select-none [&_*]:-webkit-user-select-none [&_*]:-moz-user-select-none [&_*]:-ms-user-select-none"
+                                    onClick={() => handleSort('score')}
+                                >
                                     <div className="flex flex-row justify-center gap-1">
                                         <p>Score</p>
                                         <Image src='/icons/unfold-more-round.svg' alt="" width={16} height={16} />
                                     </div>
                                 </th>
-                                <th className="text-center px-8 py-4 text-[#667085] font-medium text-sm">
-                                    <div className="flex flex-row justify-center gap-1">
+                                <th className="text-center px-8 py-4 text-[#667085] font-medium text-sm cursor-pointer"
+                                    onClick={() => handleSort('timeTaken')}
+                                >
+                                    <div
+                                        className="flex flex-row justify-center gap-1"
+                                    >
                                         <p>Time Taken</p>
                                         <Image src='/icons/unfold-more-round.svg' alt="" width={16} height={16} />
                                     </div>
                                 </th>
-                                <th className="text-center px-8 py-4 rounded-tr-xl text-[#667085] font-medium text-sm">
-                                    <div className="flex flex-row justify-center gap-1">
+                                <th className="text-center px-8 py-4 rounded-tr-xl text-[#667085] font-medium text-sm cursor-pointer"
+                                    onClick={() => handleSort('ranking')}
+                                >
+                                    <div
+                                        className="flex flex-row justify-center gap-1"
+                                    >
                                         <p>Ranking</p>
                                         <Image src='/icons/unfold-more-round.svg' alt="" width={16} height={16} />
                                     </div>

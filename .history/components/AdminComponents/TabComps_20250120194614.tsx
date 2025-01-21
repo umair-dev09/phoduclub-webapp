@@ -268,18 +268,14 @@ function TabComps({ isCollapsed, setIsCollapsed }: TabCompsProps) {
                                 <Image
                                     src={
                                         isOpenArray[0]
-                                            ? isContentSection()
-                                                ? '/icons/white-arrow-up.svg'
-                                                : '/icons/arrow-up-01-round.svg'
-                                            : isContentSection()
-                                                ? '/icons/white-arrow-down.svg'
-                                                : '/icons/arrow-down-02-round.svg'
+
+                                            ? '/icons/arrow-up-01-round.svg'
+                                            : '/icons/arrow-down-02-round.svg'
                                     }
                                     width={20}
                                     height={20}
                                     alt="Toggle"
                                 />
-
                             </div>
                         )}
 

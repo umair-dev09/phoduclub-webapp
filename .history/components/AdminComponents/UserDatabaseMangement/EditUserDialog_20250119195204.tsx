@@ -39,7 +39,6 @@ function EditUserDialog({ open, onClose, name, email, userIdd, phonee, profilePi
     const [pic, setPic] = useState('');
     const [phone, setPhone] = useState('');
     const [selectedExams, setSelectedExams] = useState<Option[]>([]);
-    const [scrollBehavior, setScrollBehavior] = useState<"inside" | "outside">("outside");
     const exams: Option[] = [
         { value: 'BITSAT', label: 'BITSAT' },
         { value: 'JEE', label: 'JEE' },
@@ -306,8 +305,8 @@ function EditUserDialog({ open, onClose, name, email, userIdd, phonee, profilePi
         //     </div>
         // </Dialog>
         <Modal isOpen={true} onOpenChange={(isOpen) => !isOpen && onClose()} hideCloseButton
-            scrollBehavior={scrollBehavior}
         >
+
             <ModalContent>
                 <>
                     <ModalHeader className="flex flex-row justify-between items-center gap-1">
@@ -500,7 +499,7 @@ function EditUserDialog({ open, onClose, name, email, userIdd, phonee, profilePi
                         <Button variant="light" onClick={onClose} className="px-6 py-2 border rounded-md text-sm font-semibold hover:bg-[#F2F4F7]">
                             Discard
                         </Button>
-                        <Button onClick={handleEditUser} disabled={!isFormValid} className={`px-6 py-2  text-white font-semibold rounded-md text-sm ${!isFormValid ? 'bg-[#CDA0FC]' : 'hover:bg-[#6D0DCC] bg-[#9012FF]'}`}>
+                        <Button onClick={handleEditUser} disabled={!isFormValid} className={`px-6 py-2  text-white font-semibold rounded-md text-sm ${!isFormValid ? 'bg-[#CDA0FC]' : 'bg-[#9012FF]'}`}>
                             Save Changes
                         </Button>
                     </ModalFooter>

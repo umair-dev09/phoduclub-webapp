@@ -87,7 +87,6 @@ function User() {
     const [users, setUsers] = useState<UserData[]>([]);
     const isFormValid = firstName && lastName && userId && phone.length >= 12 && emailId;
     const [selectedExams, setSelectedExams] = useState<Option[]>([]);
-    const [activePopover, setActivePopover] = useState<number | null>(null);
     const exams: Option[] = [
         { value: 'BITSAT', label: 'BITSAT' },
         { value: 'JEE', label: 'JEE' },
@@ -297,10 +296,6 @@ function User() {
     if (loading) {
         return <LoadingData />
     }
-
-    const handlePopoverOpen = (index: number) => {
-        setActivePopover(index);
-    };
     return (
         <div className="flex flex-col w-full h-full gap-4 ">
             <div className="flex flex-row justify-between items-center">
@@ -434,9 +429,7 @@ function User() {
                                         <td className="px-8 py-4 text-center text-[#101828] text-sm">{users.phone}</td>
                                         <td className="px-8 py-4 text-center text-[#101828] text-sm w-fit whitespace-nowrap">{formatFirestoreTimestamp(users.createdAt)}</td>
                                         <td className="flex items-center justify-center px-8 py-4 text-[#101828] text-sm">
-                                            <Popover placement="bottom-end"
-                                                isOpen={activePopover === index}
-                                                onOpenChange={(open) => open ? handlePopoverOpen(index) : setActivePopover(null)}>
+                                            <Popover placement="bottom-end">
                                                 <PopoverTrigger>
                                                     <button className="ml-[25%] outline-none">
                                                         <Image
@@ -449,17 +442,17 @@ function User() {
                                                 </PopoverTrigger>
                                                 <PopoverContent className=" w-[167px] px-0 border border-solid border-[#EAECF0] bg-[#FFFFFF] rounded-md  shadow-lg">
                                                     <button className="flex flex-row items-center justify-start w-full py-[0.625rem] px-4 gap-2 hover:bg-[#F2F4F7]"
-                                                        onClick={() => { handleEditDetails(users.name, users.email, users.phone, users.uniqueId, users.userId, users.profilePic, users.targetYear, users.targetExams); setActivePopover(null); }}>
+                                                        onClick={() => handleEditDetails(users.name, users.email, users.phone, users.uniqueId, users.userId, users.profilePic, users.targetYear, users.targetExams)}>
                                                         <Image src='/icons/edit-icon.svg' alt="user profile" width={18} height={18} />
                                                         <p className="text-sm text-[#0C111D] font-normal">Edit details</p>
                                                     </button>
-                                                    <button className=" flex flex-row items-center justify-start w-full py-[0.625rem] px-4 gap-2 hover:bg-[#FEE4E2] "
-                                                        onClick={() => { setIsBanOpen(true); setAuthId(users.uniqueId); setActivePopover(null); }}>
+                                                    <button className=" flex flex-row items-center justify-start w-full py-[0.625rem] px-4 gap-2 hover:bg-[#F2F4F7]"
+                                                        onClick={() => { setIsBanOpen(true); setAuthId(users.uniqueId) }}>
                                                         <Image src='/icons/user-block-red-01.svg' alt="user profile" width={18} height={18} />
                                                         <p className="text-sm text-[#DE3024] font-normal">Ban</p>
                                                     </button>
-                                                    <button className=" flex flex-row items-center justify-start w-full py-[0.625rem] px-4 gap-2 hover:bg-[#FEE4E2] "
-                                                        onClick={() => { setIsDeleteOpen(true); setName(users.name); setAuthId(users.uniqueId); setActivePopover(null); }}>
+                                                    <button className=" flex flex-row items-center justify-start w-full py-[0.625rem] px-4 gap-2 hover:bg-[#F2F4F7]"
+                                                        onClick={() => { setIsDeleteOpen(true); setName(users.name); setAuthId(users.uniqueId); }}>
                                                         <Image src='/icons/delete.svg' alt="user profile" width={18} height={18} />
                                                         <p className="text-sm text-[#DE3024] font-normal">Delete</p>
                                                     </button>

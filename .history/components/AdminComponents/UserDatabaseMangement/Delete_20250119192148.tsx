@@ -89,7 +89,7 @@ function Delete({ open, onClose, name, authId }: DeleteProps) {
                         <div className=" h-auto   flex flex-col">
                             <span className="text-sm font-normal text-[#667085]">Deleting the user will permanently remove all their data from the platform, including their account, activity, and content.</span>
                         </div>
-                        <div className=" h-auto pb-2 gap-2 flex flex-col">
+                        <div className=" h-auto  gap-2 flex flex-col">
                             <h3 className="font-medium text-sm text-[#1D2939]">To confirm, please enter the name of the user.</h3>
                             <div className="flex flex-row py-2 px-4 w-full gap-2 border border-solid border-[#D0D5DD] rounded-md transition duration-200 ease-in-out">
                                 <input
@@ -103,8 +103,8 @@ function Delete({ open, onClose, name, authId }: DeleteProps) {
                         </div>
                     </ModalBody>
                     <ModalFooter className="border-t border-lightGrey">
-                        <Button variant="light" className="py-[0.625rem] px-6 border-[1.5px] border-lightGrey font-semibold text-sm text-[#1D2939] rounded-md" onClick={onClose}>Cancel</Button>
-                        <Button className={`py-[0.625rem] px-6 text-white font-semibold shadow-inner-button  ${!isFormValid ? 'bg-[#ec6d64f8]' : 'hover:bg-[#B0201A] bg-[#BB241A]'} border border-white rounded-md`} onClick={handleDeleteUser} disabled={!isFormValid}>Delete User</Button>
+                        <Button variant="light" className="py-[0.625rem] px-6 border-[1.5px] border-lightGrey font-semibold text-sm hover:bg-[#F2F4F7] text-[#1D2939] rounded-md" onClick={onClose}>Cancel</Button>
+                        <Button className={`py-[0.625rem] px-6 text-white shadow-inner-button  ${!isFormValid ? 'bg-[#ec6d64f8]' : 'bg-[#BB241A]'} border border-white rounded-md`} onClick={handleDeleteUser} disabled={!isFormValid}>Delete User</Button>
 
                     </ModalFooter>
                 </>

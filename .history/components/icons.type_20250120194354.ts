@@ -175,10 +175,7 @@ export type IconsType =
   | "Subject Chapters-2"
   | "plus-white-sign"
   | "exit-channel-red"
-  | "arrow-up-01-round(2)-white"
-  | "arrow-down-01-round(2)-white"
-  | "white-arrow-up"
-  | "white-arrow-down";
+  | "arrow-down-01-round(2)-white";
 
 
 

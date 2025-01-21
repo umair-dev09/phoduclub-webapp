@@ -74,7 +74,7 @@ function Banned() {
     const [userId, setUserId] = useState('');
     const [name, setName] = useState('');
     const [userTypePopup, setUserTypePopup] = useState(false);
-    const [activePopover, setActivePopover] = useState<number | null>(null);
+
     const router = useRouter();
     const [selectedRows, setSelectedRows] = useState<Set<string>>(new Set());
 
@@ -194,9 +194,6 @@ function Banned() {
     if (loading) {
         return <LoadingData />
     }
-    const handlePopoverOpen = (index: number) => {
-        setActivePopover(index);
-    };
     return (
         <div className="flex flex-col w-full gap-4 ">
             <div className="flex flex-row justify-between items-center">
@@ -359,9 +356,7 @@ function Banned() {
                                     <td className="px-8 py-4 text-center text-[#101828] text-sm">{banned.phone}</td>
                                     <td className="px-8 py-4 text-center text-[#101828] text-sm whitespace-nowrap">{formatFirestoreTimestamp(banned.createdAt)}</td>
                                     <td className="flex items-center justify-center px-8 py-4 text-[#101828] text-sm">
-                                        <Popover placement="bottom-end"
-                                            isOpen={activePopover === index}
-                                            onOpenChange={(open) => open ? handlePopoverOpen(index) : setActivePopover(null)}>
+                                        <Popover placement="bottom-end">
                                             <PopoverTrigger>
                                                 <button className="ml-[25%] outline-none">
                                                     <Image
@@ -374,12 +369,12 @@ function Banned() {
                                             </PopoverTrigger>
                                             <PopoverContent className=" w-[167px] px-0 border border-solid border-[#EAECF0] bg-[#FFFFFF] rounded-md  shadow-lg">
                                                 <button className=" flex flex-row items-center justify-start w-full py-[0.625rem] px-4 gap-2 hover:bg-[#E9FAF1]"
-                                                    onClick={() => { setIsBanOpen(true); setUserId(banned.uniqueId); setActivePopover(null); }}>
+                                                    onClick={() => { setIsBanOpen(true); setUserId(banned.uniqueId) }}>
                                                     <Image src='/icons/user-block-green-01.svg' alt="Revoke Ban" width={18} height={18} />
                                                     <p className="text-sm text-[#0B9055] font-normal">Revoke Ban</p>
                                                 </button>
                                                 <button className=" flex flex-row items-center justify-start w-full py-[0.625rem] px-4 gap-2 hover:bg-[#FEE4E2] "
-                                                    onClick={() => { setIsDeleteOpen(true); setName(banned.name); setUserId(banned.uniqueId); setActivePopover(null); }}>
+                                                    onClick={() => { setIsDeleteOpen(true); setName(banned.name); setUserId(banned.uniqueId); }}>
                                                     <Image src='/icons/delete.svg' alt="Delete" width={18} height={18} />
                                                     <p className="text-sm text-[#DE3024] font-normal">Delete</p>
                                                 </button>

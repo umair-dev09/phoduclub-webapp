@@ -21,7 +21,7 @@ interface StudentAttempts {
     title: string;
     uniqueId: string;
     enrollmentType: string;
-    progress: string;
+    progress: number;
     enrolledDate: string;
     expiryDate: string;
 }
@@ -29,16 +29,16 @@ interface StudentAttempts {
 // Mock fetchStudentAttempts function with types
 const fetchStudentAttempts = async (): Promise<StudentAttempts[]> => {
     const allStudentAttempts: StudentAttempts[] = [
-        { title: "Alice", uniqueId: "alice#1234", enrollmentType: "Free", progress: "50%", enrolledDate: "Dec 1, 2023", expiryDate: "Jun 1, 2024" },
-        { title: "Bob", uniqueId: "bob#5678", enrollmentType: "Paid", progress: "30%", enrolledDate: "Nov 15, 2023", expiryDate: "May 15, 2024" },
-        { title: "Charlie", uniqueId: "charlie#9101", enrollmentType: "Free", progress: "75%", enrolledDate: "Oct 1, 2023", expiryDate: "Apr 1, 2024" },
-        { title: "Diana", uniqueId: "diana#1121", enrollmentType: "Paid", progress: "100%", enrolledDate: "Sep 1, 2023", expiryDate: "Mar 1, 2024" },
-        { title: "Eve", uniqueId: "eve#3141", enrollmentType: "Free", progress: "10%", enrolledDate: "Jan 1, 2024", expiryDate: "Jul 1, 2024" },
-        { title: "Frank", uniqueId: "frank#5161", enrollmentType: "Paid", progress: "0%", enrolledDate: "Feb 1, 2024", expiryDate: "Aug 1, 2024" },
-        { title: "Grace", uniqueId: "grace#7181", enrollmentType: "Free", progress: "85%", enrolledDate: "Jul 15, 2023", expiryDate: "Jan 15, 2024" },
-        { title: "Hank", uniqueId: "hank#9202", enrollmentType: "Paid", progress: "20%", enrolledDate: "Dec 10, 2023", expiryDate: "Jun 10, 2024" },
-        { title: "Ivy", uniqueId: "ivy#1233", enrollmentType: "Free", progress: "45%", enrolledDate: "Nov 25, 2023", expiryDate: "May 25, 2024" },
-        { title: "Jack", uniqueId: "jack#4567", enrollmentType: "Paid", progress: "100%", enrolledDate: "Aug 20, 2023", expiryDate: "Feb 20, 2024" }
+        { title: "Alice", uniqueId: "alice#1234", enrollmentType: "Free", progress: 50, enrolledDate: "Dec 1, 2023", expiryDate: "Jun 1, 2024" },
+        { title: "Bob", uniqueId: "bob#5678", enrollmentType: "Paid", progress: 30, enrolledDate: "Nov 15, 2023", expiryDate: "May 15, 2024" },
+        { title: "Charlie", uniqueId: "charlie#9101", enrollmentType: "Free", progress: 75, enrolledDate: "Oct 1, 2023", expiryDate: "Apr 1, 2024" },
+        { title: "Diana", uniqueId: "diana#1121", enrollmentType: "Paid", progress: 100, enrolledDate: "Sep 1, 2023", expiryDate: "Mar 1, 2024" },
+        { title: "Eve", uniqueId: "eve#3141", enrollmentType: "Free", progress: 10, enrolledDate: "Jan 1, 2024", expiryDate: "Jul 1, 2024" },
+        { title: "Frank", uniqueId: "frank#5161", enrollmentType: "Paid", progress: 0, enrolledDate: "Feb 1, 2024", expiryDate: "Aug 1, 2024" },
+        { title: "Grace", uniqueId: "grace#7181", enrollmentType: "Free", progress: 85, enrolledDate: "Jul 15, 2023", expiryDate: "Jan 15, 2024" },
+        { title: "Hank", uniqueId: "hank#9202", enrollmentType: "Paid", progress: 20, enrolledDate: "Dec 10, 2023", expiryDate: "Jun 10, 2024" },
+        { title: "Ivy", uniqueId: "ivy#1233", enrollmentType: "Free", progress: 45, enrolledDate: "Nov 25, 2023", expiryDate: "May 25, 2024" },
+        { title: "Jack", uniqueId: "jack#4567", enrollmentType: "Paid", progress: 100, enrolledDate: "Aug 20, 2023", expiryDate: "Feb 20, 2024" }
     ];
     return allStudentAttempts;
 };
@@ -90,6 +90,24 @@ function StudentsAttemptedTestseries() {
 
     const [selectedDate, setSelectedDate] = useState<Date | null>(null); // Store selected date as Date object
 
+    const [enrollmentFilter, setEnrollmentFilter] = useState<string | null>(null);
+    const [sortConfig, setSortConfig] = useState<{
+        key: string;
+        direction: 'asc' | 'desc' | null;
+    }>({
+        key: '',
+        direction: null
+    });
+
+    const handleClear = () => {
+        setSortConfig({ key: '', direction: null }); // Reset sorting
+        setSearchTerm(''); // Clear search term
+        setSelectedDate(null); // Clear selected date
+        setEnrollmentFilter(null); // Clear enrollment filter
+        setData(studentAttempts); // Reset table data to the original list
+        setCurrentPage(1); // Reset to the first page
+    };
+
     useEffect(() => {
         let filterStudentsAttempts = studentAttempts;
 
@@ -97,6 +115,12 @@ function StudentsAttemptedTestseries() {
         if (searchTerm) {
             filterStudentsAttempts = filterStudentsAttempts.filter(student =>
                 student.title.toLowerCase().includes(searchTerm.toLowerCase())
+            );
+        }
+
+        if (enrollmentFilter) {
+            filterStudentsAttempts = filterStudentsAttempts.filter(student =>
+                student.enrollmentType === enrollmentFilter
             );
         }
 
@@ -134,10 +158,54 @@ function StudentsAttemptedTestseries() {
             return dateA - dateB;
         });
 
+        if (sortConfig.key && sortConfig.direction) {
+            filterStudentsAttempts = filterStudentsAttempts.sort((a, b) => {
+                if (sortConfig.key === 'progress') {
+                    return sortConfig.direction === 'asc'
+                        ? a.progress - b.progress
+                        : b.progress - a.progress;
+                } else if (sortConfig.key === 'enrolledDate' || sortConfig.key === 'expiryDate') {
+                    const dateA = new Date(a[sortConfig.key]).getTime();
+                    const dateB = new Date(b[sortConfig.key]).getTime();
+                    return sortConfig.direction === 'asc'
+                        ? dateA - dateB
+                        : dateB - dateA;
+                }
+                return 0;
+            });
+        }
+
         // Update state with filtered and sorted StudentsAttempts
         setData(filterStudentsAttempts);
         setCurrentPage(1); // Reset to first page when filters change
-    }, [searchTerm, studentAttempts, selectedDate]);
+    }, [searchTerm, studentAttempts, selectedDate, sortConfig]);
+
+    // const handleSort = (key: string) => {
+    //     if (key === 'progress') {  // Added 'timeTaken'
+    //         setSortConfig((prevConfig) => {
+    //             // Cycle through: no sort -> asc -> desc -> no sort
+    //             if (prevConfig.key !== key || !prevConfig.direction) {
+    //                 return { key, direction: 'asc' };
+    //             } else if (prevConfig.direction === 'asc') {
+    //                 return { key, direction: 'desc' };
+    //             } else {
+    //                 return { key: '', direction: null }; // Reset to original order
+    //             }
+    //         });
+    //     }
+    // };
+    const handleSort = (key: string) => {
+        setSortConfig((prevConfig) => {
+            // Cycle through: no sort -> asc -> desc -> no sort
+            if (prevConfig.key !== key || !prevConfig.direction) {
+                return { key, direction: 'asc' };
+            } else if (prevConfig.direction === 'asc') {
+                return { key, direction: 'desc' };
+            } else {
+                return { key: '', direction: null }; // Reset to original order
+            }
+        });
+    };
 
     // Format selected date as 'Nov 9, 2024'
     const formattedDate = selectedDate
@@ -211,17 +279,61 @@ function StudentsAttemptedTestseries() {
                         </PopoverContent>
                     </Popover>
 
-                    <button className="h-[44px] w-[105px] rounded-md bg-[#FFFFFF] border border-solid border-[#D0D5DD] flex items-center justify-center gap-2">
-                        <span className="font-medium text-sm text-[#667085] ml-2">Sort By</span>
-                        <Image
-                            src="/icons/chevron-down-dark-1.svg"
-                            width={20}
-                            height={20}
-                            alt="arrow-down-dark-1"
-                        />
-                    </button>
+                    <Popover placement="bottom">
+                        <PopoverTrigger>
+                            <button className="h-[44px] w-[105px] rounded-md bg-[#FFFFFF] border border-solid border-[#D0D5DD] flex items-center justify-center gap-2 outline-none">
+                                <span className="font-medium text-sm text-[#667085] ml-2">
+                                    {enrollmentFilter || "Sort By"}
+                                </span>
+                                <Image
+                                    src="/icons/chevron-down-dark-1.svg"
+                                    width={20}
+                                    height={20}
+                                    alt="arrow-down-dark-1"
+                                />
+                            </button>
+                        </PopoverTrigger>
+                        <PopoverContent className="flex flex-col w-28 h-auto px-0 py-1 bg-white border border-lightGrey rounded-md">
+                            <div
+                                className="flex flex-row items-center w-full my-0 py-[0.625rem] px-4 gap-2 cursor-pointer transition-colors hover:bg-[#F2F4F7]"
+                                onClick={() => {
+                                    setEnrollmentFilter('Free');
+                                    setSortConfig({ key: '', direction: null });
+                                }}
+                            >
+                                <p className={`text-sm ${enrollmentFilter === 'Free' ? 'font-medium text-purple' : 'font-normal text-[#0C111D]'}`}>
+                                    Free
+                                </p>
+                                {enrollmentFilter === 'Free' && (
+                                    <Image src="/icons/check.svg" width={16} height={16} alt="Selected" />
+                                )}
+                            </div>
+                            <div
+                                className="flex flex-row items-center w-full my-0 py-[0.625rem] px-4 gap-2 cursor-pointer transition-colors hover:bg-[#F2F4F7]"
+                                onClick={() => {
+                                    setEnrollmentFilter('Paid');
+                                    setSortConfig({ key: '', direction: null });
+                                }}
+                            >
+                                <p className={`text-sm ${enrollmentFilter === 'Paid' ? 'font-medium text-purple' : 'font-normal text-[#0C111D]'}`}>
+                                    Paid
+                                </p>
+                                {enrollmentFilter === 'Paid' && (
+                                    <Image src="/icons/check.svg" width={16} height={16} alt="Selected" />
+                                )}
+                            </div>
+                            {enrollmentFilter && (
+                                <div
+                                    className="flex flex-row items-center w-full my-0 py-[0.625rem] px-4 gap-2 cursor-pointer transition-colors hover:bg-[#F2F4F7] border-t border-lightGrey"
+                                    onClick={handleClear}
+                                >
+                                    <p className="text-sm font-normal text-[#0C111D]">Clear</p>
+                                </div>
+                            )}
+                        </PopoverContent>
+                    </Popover>
 
-                    <Popover placement="bottom-end"
+                    {/* <Popover placement="bottom-end"
                         isOpen={popoveropen}
                         onOpenChange={() => setPopoveropen(!popoveropen)} >
                         <PopoverTrigger>
@@ -285,7 +397,7 @@ function StudentsAttemptedTestseries() {
                             </div>
 
                         </PopoverContent>
-                    </Popover>
+                    </Popover> */}
                 </div>
             </div>
 
@@ -304,19 +416,25 @@ function StudentsAttemptedTestseries() {
                                         <Image src='/icons/unfold-more-round.svg' alt="" width={16} height={16} />
                                     </div>
                                 </th>
-                                <th className=" w-[17%] text-center px-8 py-4 text-[#667085] font-medium text-sm">
+                                <th className=" w-[17%] text-center px-8 py-4 text-[#667085] font-medium text-sm cursor-pointer"
+                                    onClick={() => handleSort('progress')}
+                                >
                                     <div className="flex flex-row justify-center gap-1">
                                         <p>Progress</p>
                                         <Image src='/icons/unfold-more-round.svg' alt="" width={16} height={16} />
                                     </div>
                                 </th>
-                                <th className=" w-[17%] text-center px-8 py-4 text-[#667085] font-medium text-sm">
+                                <th className=" w-[17%] text-center px-8 py-4 text-[#667085] font-medium text-sm cursor-pointer"
+                                    onClick={() => handleSort('enrolledDate')}
+                                >
                                     <div className="flex flex-row justify-center gap-1">
                                         <p>Enrollment Date</p>
                                         <Image src='/icons/unfold-more-round.svg' alt="" width={16} height={16} />
                                     </div>
                                 </th>
-                                <th className=" w-[17%] text-center px-8 py-4 rounded-tr-xl text-[#667085] font-medium text-sm">
+                                <th className=" w-[17%] text-center px-8 py-4 rounded-tr-xl text-[#667085] font-medium text-sm cursor-pointer"
+                                    onClick={() => handleSort('expiryDate')}
+                                >
                                     <div className="flex flex-row justify-center gap-1">
                                         <p>Expiry Date</p>
                                         <Image src='/icons/unfold-more-round.svg' alt="" width={16} height={16} />
@@ -344,7 +462,7 @@ function StudentsAttemptedTestseries() {
                                             </div>
                                         </td>
                                         <td className="px-8 py-4 text-center text-[#101828] text-sm">{students.enrollmentType}</td>
-                                        <td className="px-8 py-4 text-center text-[#101828] text-sm">{students.progress}</td>
+                                        <td className="px-8 py-4 text-center text-[#101828] text-sm">{students.progress}%</td>
                                         <td className="px-8 py-4 text-center text-[#101828] text-sm">{students.enrolledDate}</td>
                                         <td className="px-8 py-4 text-center text-[#101828] text-sm">{students.expiryDate}</td>
                                         <td className="flex items-center justify-center px-8 py-4 text-[#101828] text-sm">

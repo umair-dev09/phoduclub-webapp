@@ -39,7 +39,6 @@ function EditUserDialog({ open, onClose, name, email, userIdd, phonee, profilePi
     const [pic, setPic] = useState('');
     const [phone, setPhone] = useState('');
     const [selectedExams, setSelectedExams] = useState<Option[]>([]);
-    const [scrollBehavior, setScrollBehavior] = useState<"inside" | "outside">("outside");
     const exams: Option[] = [
         { value: 'BITSAT', label: 'BITSAT' },
         { value: 'JEE', label: 'JEE' },
@@ -306,8 +305,8 @@ function EditUserDialog({ open, onClose, name, email, userIdd, phonee, profilePi
         //     </div>
         // </Dialog>
         <Modal isOpen={true} onOpenChange={(isOpen) => !isOpen && onClose()} hideCloseButton
-            scrollBehavior={scrollBehavior}
         >
+
             <ModalContent>
                 <>
                     <ModalHeader className="flex flex-row justify-between items-center gap-1">
