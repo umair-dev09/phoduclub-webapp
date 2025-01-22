@@ -106,6 +106,9 @@ function StudentsAttemptedTestseries() {
         setEnrollmentFilter(null); // Clear enrollment filter
         setData(studentAttempts); // Reset table data to the original list
         setCurrentPage(1); // Reset to the first page
+        setEnrollmentFilter(null);
+        setSortConfig({ key: '', direction: null });
+        setIsOpen(false); // Close Popover on Clear
     };
 
     useEffect(() => {

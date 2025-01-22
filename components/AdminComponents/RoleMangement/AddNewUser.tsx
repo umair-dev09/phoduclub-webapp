@@ -56,11 +56,10 @@ function AddNewUser({
     setProfilePic,
     phone,
     setPhone,
-    selectedRole,
-    setSelectedRole,
+    // selectedRole,
+    // setSelectedRole,
 }: AddNewUserProps) {
     const [loading, setLoading] = useState(false); // Loading state
-    const [roleDialogOpen, setRoleDialogOpen] = useState(false); // Loading state
     // const [selectedCourses, setSelectedCourses] = useState<string[]>([]); // Track selected courses
 
     // Toggle course selection
@@ -69,13 +68,6 @@ function AddNewUser({
     //         prev.includes(course) ? prev.filter((item) => item !== course) : [...prev, course]
     //     );
     // }
-
-    const ROLE_OPTIONS = ["Admin", "Teacher", "Customer Care", "Editor", "Chief Moderator"];
-
-    const handleRoleSelect = (role: string) => {
-        setSelectedRole(role);
-        setRoleDialogOpen(false);
-    };
 
     // Check if all required fields are filled
     // const isFormValid = firstName && lastName && userId && phone && selectedRole;
@@ -123,11 +115,6 @@ function AddNewUser({
         }
     };
 
-    type CustomState = {
-        isSelected: boolean;
-        isFocused: boolean;
-    };
-
     const roles: Option[] = [
         { value: 'Admin', label: 'Admin' },
         { value: 'Teacher', label: 'Teacher' },
@@ -135,8 +122,12 @@ function AddNewUser({
         { value: 'Editor', label: 'Editor' },
         { value: 'Chief Moderator', label: 'Chief Moderator' },
     ];
+    const [selectedRole, setSelectedRole] = useState<SingleValue<Option>>(null);
 
-    // const [selectedRole, setSelectedRole] = useState<SingleValue<Option>>(null);
+    type CustomState = {
+        isSelected: boolean;
+        isFocused: boolean;
+    };
 
     return (
         <Dialog open={open} onClose={close} className="relative z-50">
@@ -214,37 +205,10 @@ function AddNewUser({
                             />
                         </div>
 
-                        <div className="flex flex-col gap-1 w-full">
-                            <label className="text-[#1D2939] text-sm font-medium">Role</label>
-                            <div className="flex flex-row py-2 px-4 w-full gap-2 border border-gray-300  h-10 focus:outline focus:outline-[1.5px] focus:outline-[#D6BBFB] hover:outline hover:outline-[1.5px] hover:outline-[#D6BBFB] rounded-md transition duration-200 ease-in-out justify-between" onClick={() => setRoleDialogOpen(true)}>
-                                <span className="font-normal text-sm text-[#182230]">{selectedRole || "Select Role"}</span>
-                                <Popover placement="bottom-end" isOpen={roleDialogOpen} onOpenChange={(open) => setRoleDialogOpen(open)}>
-                                    <PopoverTrigger>
-                                        <button>
-                                            <Image src="/icons/by-role-arrow-down.svg" width={20} height={20} alt="Select-role Button" />
-                                        </button>
-                                    </PopoverTrigger>
-                                    <PopoverContent className="w-[450px] ml-5 px-0 py-1 bg-white border border-lightGrey rounded-md">
-                                        <div className="w-full">
-                                            {["Admin", "Teacher", "Customer Care", "Editor", "Chief Moderator"].map((role) => (
-                                                <button
-                                                    key={role}
-                                                    onClick={() => { handleRoleSelect(role); }}
-                                                    className="flex flex-row items-center justify-start w-full py-[0.625rem] px-4 gap-2 hover:bg-[#F2F4F7]"
-                                                >
-                                                    <span className="text-sm text-[#0C111D] font-normal">{role}</span>
-                                                </button>
-                                            ))}
-                                        </div>
-                                    </PopoverContent>
-                                </Popover>
-                            </div>
-                        </div>
-
-                        {/* <div className='w-full'>
-                            <label htmlFor="target-year" className='mb-1 font-medium text-sm'>Target Year</label>
+                        <div className='w-full'>
+                            <label htmlFor="target-year" className='mb-1 font-medium text-sm'>Role</label>
                             <Select
-                                id="target-year"
+                                id="role"
                                 value={selectedRole}
                                 onChange={setSelectedRole}
                                 options={roles}
@@ -272,7 +236,7 @@ function AddNewUser({
                                     }),
                                 }}
                             />
-                        </div> */}
+                        </div>
 
                         <div className="flex flex-row justify-end my-2 items-center gap-4 border-t border-solid border-[#EAECF0] pt-4">
                             <button onClick={close} className="py-[0.625rem] px-6 border-[1.5px] border-lightGrey rounded-md text-[#1D2939] font-semibold hover:bg-[#F2F4F7] text-sm">Cancel</button>

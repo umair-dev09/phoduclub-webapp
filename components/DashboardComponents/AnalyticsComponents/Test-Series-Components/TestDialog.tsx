@@ -58,7 +58,7 @@ function formatFirestoreTimestamp(timestamp: FirestoreTimestamp): string {
     const hours = date.getHours();
     const minutes = date.getMinutes();
     const ampm = hours >= 12 ? 'PM' : 'AM';
-    
+
     return `${months[date.getMonth()]} ${date.getDate()}, ${date.getFullYear()}  ${(hours % 12 || 12).toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')} ${ampm}`;
 }
 
@@ -97,14 +97,14 @@ function TestDialog({ open, onClose, forallsubject = false, attemptedDetails, se
                             You have attempted {attemptedDetails.length || '0'} times this test, please select which attempts
                             analytics you would like to see.
                         </span>
-                        <div className="overflow-y-auto pb-2 rounded-md max-h-[300px]">
-                            <table className="w-full rounded-md text-left bg-white border border-lightGrey">
-                                <thead className="border border-lightGrey rounded-md  sticky top-0 bg-white z-10">
+                        <div className="overflow-x-auto max-h-[300px] mb-4 rounded-md border border-lightGrey">
+                            <table className="w-full text-left bg-white relative">
+                                <thead className="sticky top-0 bg-white z-20">
                                     <tr>
-                                        <th className="px-4 py-2 text-[#667085] font-medium text-sm rounded-tl-xl">
+                                        <th className="px-4 py-2 text-[#667085] font-medium text-sm rounded-tl-xl after:absolute after:bottom-0 after:left-0 after:w-full after:h-[1px] after:bg-[#E4E7EC]">
                                             Attempts
                                         </th>
-                                        <th className="px-4 py-2 text-[#667085] font-medium text-sm">
+                                        <th className="px-4 py-2 text-[#667085] font-medium text-sm after:absolute after:bottom-0 after:left-0 after:w-full after:h-[1px] after:bg-[#E4E7EC]">
                                             <div className="flex flex-row gap-1 items-center">
                                                 Date & Times
                                                 <Image
@@ -115,7 +115,7 @@ function TestDialog({ open, onClose, forallsubject = false, attemptedDetails, se
                                                 />
                                             </div>
                                         </th>
-                                        <th className="px-4 py-2 text-[#667085] font-medium text-sm">
+                                        <th className="px-4 py-2 text-[#667085] font-medium text-sm after:absolute after:bottom-0 after:left-0 after:w-full after:h-[1px] after:bg-[#E4E7EC]">
                                             <div className="flex flex-row gap-1 items-center">
                                                 Accuracy
                                                 <Image
@@ -126,7 +126,7 @@ function TestDialog({ open, onClose, forallsubject = false, attemptedDetails, se
                                                 />
                                             </div>
                                         </th>
-                                        <th className="px-4 py-2 text-[#667085] font-medium text-sm">
+                                        <th className="px-4 py-2 text-[#667085] font-medium text-sm after:absolute after:bottom-0 after:left-0 after:w-full after:h-[1px] after:bg-[#E4E7EC]">
                                             <div className="flex flex-row gap-1 items-center">
                                                 Score
                                                 <Image
@@ -137,7 +137,7 @@ function TestDialog({ open, onClose, forallsubject = false, attemptedDetails, se
                                                 />
                                             </div>
                                         </th>
-                                        <th className="pl-8 py-2  text-[#667085] font-medium text-sm">
+                                        <th className="pl-8 py-2 text-[#667085] font-medium text-sm after:absolute after:bottom-0 after:left-0 after:w-full after:h-[1px] after:bg-[#E4E7EC]">
                                             Action
                                         </th>
                                     </tr>
@@ -146,37 +146,37 @@ function TestDialog({ open, onClose, forallsubject = false, attemptedDetails, se
                                     {[...attemptedDetails]
                                         .sort((a, b) => b.attemptDateAndTime.seconds - a.attemptDateAndTime.seconds)
                                         .map((attempt, index) => (
-                                        <tr key={index} className="border border-lightGrey">
-                                            <td className="px-4 py-3 text-[#1D2939] font-normal text-sm">
-                                                {index + 1}
-                                            </td>
-                                            <td className="px-4 py-2 text-[#1D2939] font-normal text-sm">
-                                                {formatFirestoreTimestamp(attempt.attemptDateAndTime)}
-                                            </td>
-                                            <td className="px-4 py-2 text-[#1D2939] font-normal text-sm">
-                                                {attempt.accuracy}
-                                            </td>
-                                            <td className="px-4 py-2 text-[#1D2939] font-normal text-sm">
-                                                {attempt.score}
-                                            </td>
-                                            <td className="px-4 py-2 text-[#1D2939] font-normal text-sm">
-                                                <button
-                                                    onClick={() => {
-                                                        if (attempt.isUmbrellaTest) {
-                                                            setIsUmbrellaAnalytics(true);
-                                                        } else {
-                                                            setDetailedAnalyticsOpen(true);
-                                                        }
-                                                        onClose();
-                                                        setAttemptId(attempt.attemptId || '');
-                                                    }}
-                                                    className="font-semibold text-[#9012FF] text-sm hover:underline"
-                                                >
-                                                    Detail View
-                                                </button>
-                                            </td>
-                                        </tr>
-                                    ))}
+                                            <tr key={index} className='border-t border-lightGrey'>
+                                                <td className="px-4 py-3 text-[#1D2939] font-normal text-sm">
+                                                    {index + 1}
+                                                </td>
+                                                <td className="px-4 py-2 text-[#1D2939] font-normal text-sm">
+                                                    {formatFirestoreTimestamp(attempt.attemptDateAndTime)}
+                                                </td>
+                                                <td className="px-4 py-2 text-[#1D2939] font-normal text-sm">
+                                                    {attempt.accuracy}
+                                                </td>
+                                                <td className="px-4 py-2 text-[#1D2939] font-normal text-sm">
+                                                    {attempt.score}
+                                                </td>
+                                                <td className="px-4 py-2 text-[#1D2939] font-normal text-sm">
+                                                    <button
+                                                        onClick={() => {
+                                                            if (attempt.isUmbrellaTest) {
+                                                                setIsUmbrellaAnalytics(true);
+                                                            } else {
+                                                                setDetailedAnalyticsOpen(true);
+                                                            }
+                                                            onClose();
+                                                            setAttemptId(attempt.attemptId || '');
+                                                        }}
+                                                        className="font-semibold text-[#9012FF] text-sm hover:underline"
+                                                    >
+                                                        Detail View
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        ))}
                                 </tbody>
                             </table>
                         </div>
