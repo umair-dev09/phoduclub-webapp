@@ -842,7 +842,7 @@ function Test() {
                                                                                 <div>
                                                                                     <button className="h-[36px] flex flex-row items-center justify-center rounded-md  gap-2 px-3"
                                                                                         style={{ border: "1.5px solid #EAECF0" }}
-                                                                                        onClick={(e) => { e.stopPropagation(); handleStartTest(section.description, section.testTime, section.marksPerQ, section.QuestionsCount || 0, section.id, section.isUmbrellaTest, section.SubsectionsCount || 0); }}
+                                                                                        onClick={(e) => { e.stopPropagation(); handleStartTest(section.description, section.testTime, section.marksPerQ, section.QuestionsCount || 0, section.id, section.isUmbrellaTest,  section.subsectionCountUmbrella  || 0); }}
                                                                                     >
                                                                                         <Image
                                                                                             src="/icons/Re-attempt.svg"
@@ -861,7 +861,7 @@ function Test() {
                                                                                 />
                                                                             </div>
                                                                         ) : (
-                                                                            <button onClick={(e) => { e.stopPropagation(); handleStartTest(section.description, section.testTime, section.marksPerQ, section.QuestionsCount || 0, section.id, section.isUmbrellaTest, section.SubsectionsCount || 0); }}>
+                                                                            <button onClick={(e) => { e.stopPropagation(); handleStartTest(section.description, section.testTime, section.marksPerQ, section.QuestionsCount || 0, section.id, section.isUmbrellaTest,  section.subsectionCountUmbrella  || 0); }}>
                                                                                 <div className="flex items-center justify-center w-[116px] h-[36px] rounded-[6px] bg-[#9012FF] border border-solid border-[#800EE2] shadow-inner-button hover:bg-[#6D0DCC]">
                                                                                     <span className="font-medium text-[14px] text-[#FCFCFD]">
                                                                                         Start test

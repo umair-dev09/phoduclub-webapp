@@ -712,24 +712,51 @@ const updateCurrentQuestionTime = () => {
         // }, [currentQuestionIndex, isTimeOver, lastQuestionStartTime]);
 
 
+        
         const updateQuestionState = (index: number, updates: Partial<QuestionState>, subSectionIndex?: number) => {
+
             if (currentSection?.isUmbrellaTest && typeof subSectionIndex === 'number') {
+
                 setSubSections(prev => {
+
                     const updated = [...prev];
-                    if (!updated[subSectionIndex].states) {
-                        updated[subSectionIndex].states = [];
+
+                    const subsection = updated[subSectionIndex];
+
+                    if (!subsection) return prev;
+
+
+
+                    if (!subsection.states) {
+
+                        subsection.states = [];
+
                     }
-                    updated[subSectionIndex].states = updated[subSectionIndex].states.map((state, i) =>
+
+
+
+                    subsection.states = subsection.states.map((state, i) =>
+
                         i === index ? { ...state, ...updates } : state
+
                     );
+
                     return updated;
+
                 });
+
             } else {
+
                 setQuestionStates(prev => prev.map((state, i) =>
+
                     i === index ? { ...state, ...updates } : state
+
                 ));
+
             }
+
         };
+
       // Handle question changes
   const handleQuestionChange = (newIndex: number) => {
     updateCurrentQuestionTime(); // Save time for current question
