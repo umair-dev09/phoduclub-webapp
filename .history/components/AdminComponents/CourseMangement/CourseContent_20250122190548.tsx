@@ -479,7 +479,7 @@ function CourseContent({ courseId }: CourseContentProps) {
                                                     onOpenChange={(open) => open ? handlePopoverOpen(index) : setPopoverOpen(null)}>
                                                     <PopoverTrigger>
                                                         <button
-
+                                                            onClick={() => setPopoverOpen(popoverOpen === index ? null : index)}
                                                         >
 
                                                             <Image
