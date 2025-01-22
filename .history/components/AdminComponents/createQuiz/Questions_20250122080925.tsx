@@ -576,7 +576,7 @@ function Questions({ questionsList, setQuestionsList }: QuestionsProps) {
 
             <div className="flex justify-center items-center mt-4">
                 <button
-                    className="h-[36px] w-[127px] rounded-[8px] bg-[#FFFFFF] hover:bg-[#F5F0FF] border border-solid border-[#8501FF] flex justify-center items-center"
+                    className="h-[36px] w-[127px] rounded-[8px] bg-[#FFFFFF] border border-solid border-[#8501FF] flex justify-center items-center"
                     onClick={handleAddQuestion}
                 >
                     <span className="text-[#8501FF] text-sm font-semibold">Add Question</span>

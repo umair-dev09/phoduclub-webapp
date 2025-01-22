@@ -102,7 +102,7 @@ function CourseContent({ courseId }: CourseContentProps) {
     const [popoveropen1, setPopoveropen1] = useState<number | null>(null);
     const [popoveropen2, setPopoveropen2] = useState<number | null>(null);
     const [popoveropen3, setPopoveropen3] = useState<number | null>(null);
-    const [openPopoverIndex, setOpenPopoverIndex] = useState<number | null>(null);
+    const [popoveropen4, setPopoveropen4] = useState<number | null>(null);
     useEffect(() => {
         const sectionsRef = collection(db, 'course', courseId, 'sections');
         const q = query(sectionsRef);
@@ -298,8 +298,8 @@ function CourseContent({ courseId }: CourseContentProps) {
     const handlePopoverOpen3 = (index: number) => {
         setPopoveropen3(index);
     };
-    const handlePopoverToggle = (index: number) => {
-        setOpenPopoverIndex(openPopoverIndex === index ? null : index);
+    const handlePopoverOpen4 = (index: number) => {
+        setPopoveropen4(popoveropen4 === index ? null : index);
     };
     return (
         <div className="flex flex-col gap-4 ">
@@ -474,12 +474,19 @@ function CourseContent({ courseId }: CourseContentProps) {
                                             <td className="flex items-center justify-center px-8 py-4 text-[#101828] text-sm">
                                                 <Popover
                                                     placement="bottom-end"
-                                                    isOpen={openPopoverIndex === index}
-                                                    onOpenChange={(open) => handlePopoverToggle(index)}
+                                                    isOpen={popoveropen4 === index}
+                                                    onOpenChange={(open) => {
+                                                        if (!open) {
+                                                            setPopoveropen4(null);
+                                                        }
+                                                    }}
                                                 >
                                                     <PopoverTrigger>
                                                         <button
-
+                                                            onClick={(e) => {
+                                                                e.stopPropagation(); // Prevent event bubbling
+                                                                handlePopoverOpen4(index);
+                                                            }}
                                                         >
 
                                                             <Image
@@ -503,13 +510,13 @@ function CourseContent({ courseId }: CourseContentProps) {
                                                                     else if (content.type === 'Text') {
                                                                         setShowDrawerfortest(true);
                                                                     }
-                                                                    setPassedSectionId(section.sectionId); setIsContentEditing(true); setContentId(content.contentId); handlePopoverToggle(index);
+                                                                    setPassedSectionId(section.sectionId); setIsContentEditing(true); setContentId(content.contentId); setPopoveropen4(null);
                                                                 }} >
                                                                 <Image src="/icons/edit-02.svg" width={18} height={18} alt="edit" />
                                                                 <span className="text-sm text-[#0C111D] font-normal">Edit</span>
                                                             </button>
                                                             <button className=" flex flex-row items-center justify-start w-full py-2 gap-2 hover:bg-[#FEE4E2] pl-4 pr-9"
-                                                                onClick={() => { handleDeleteContent(section.sectionId, content.contentId); handlePopoverToggle(index); }}>
+                                                                onClick={() => { handleDeleteContent(section.sectionId, content.contentId); setPopoveropen4(null); }}>
                                                                 <Image src='/icons/delete.svg' alt="user profile" width={18} height={18} />
                                                                 <p className="text-sm text-[#DE3024] font-normal">Remove</p>
                                                             </button>

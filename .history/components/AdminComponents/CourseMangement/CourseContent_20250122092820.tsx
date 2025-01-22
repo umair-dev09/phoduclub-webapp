@@ -102,7 +102,7 @@ function CourseContent({ courseId }: CourseContentProps) {
     const [popoveropen1, setPopoveropen1] = useState<number | null>(null);
     const [popoveropen2, setPopoveropen2] = useState<number | null>(null);
     const [popoveropen3, setPopoveropen3] = useState<number | null>(null);
-    const [openPopoverIndex, setOpenPopoverIndex] = useState<number | null>(null);
+    const [popoveropen4, setPopoveropen4] = useState<number | null>(null);
     useEffect(() => {
         const sectionsRef = collection(db, 'course', courseId, 'sections');
         const q = query(sectionsRef);
@@ -298,8 +298,8 @@ function CourseContent({ courseId }: CourseContentProps) {
     const handlePopoverOpen3 = (index: number) => {
         setPopoveropen3(index);
     };
-    const handlePopoverToggle = (index: number) => {
-        setOpenPopoverIndex(openPopoverIndex === index ? null : index);
+    const handlePopoverOpen4 = (index: number) => {
+        setPopoveropen4(prev => (prev === index ? null : index));
     };
     return (
         <div className="flex flex-col gap-4 ">
@@ -373,14 +373,14 @@ function CourseContent({ courseId }: CourseContentProps) {
                                             >
                                                 <button
 
-                                                    className="flex flex-row gap-1 items-center rounded-md hover:bg-[#F5F0FF] outline-none hover:rounded-full px-3 py-1 transition duration-200 ease-in-out h-[44px] w-auto justify-center"
+                                                    className="flex flex-row gap-1 items-center rounded-md hover:bg-[#F5F0FF] hover:rounded-full px-3 py-1 transition duration-200 ease-in-out h-[44px] w-auto justify-center"
                                                 >
                                                     <Image src="/icons/plus-sign.svg" height={18} width={18} alt="Plus Sign" />
                                                     <span className="text-[#9012FF] font-semibold text-sm">Add Content</span>
                                                 </button>
                                             </PopoverTrigger>
                                             <PopoverContent className="flex flex-col px-0 text-sm font-normal bg-white border border-lightGrey rounded-md w-[167px] shadow-md">
-                                                <button className=" p-3 gap-2 flex-row flex h-[40px] hover:bg-[#F2F4F7] w-full outline-none"
+                                                <button className=" p-3 gap-2 flex-row flex h-[40px] hover:bg-[#F2F4F7] w-full"
                                                     onClick={(e) => {
                                                         openDrawerfortest(); setPassedSectionId(section.sectionId); setIsContentEditing(false);
                                                         setPopoveropen1(null); e.stopPropagation();
@@ -388,7 +388,7 @@ function CourseContent({ courseId }: CourseContentProps) {
                                                     <Image src="/icons/read.svg" alt="learn-icon" width={20} height={20} />
                                                     <span className="text-sm text-[#0C111D] font-normal">Text</span>
                                                 </button>
-                                                <button className=" p-3 gap-2 flex-row flex h-[40px] hover:bg-[#F2F4F7] w-full outline-none"
+                                                <button className=" p-3 gap-2 flex-row flex h-[40px] hover:bg-[#F2F4F7] w-full"
                                                     onClick={(e) => {
                                                         openDrawerforVideo(); setPassedSectionId(section.sectionId); setIsContentEditing(false);
                                                         setPopoveropen1(null);
@@ -397,7 +397,7 @@ function CourseContent({ courseId }: CourseContentProps) {
                                                     <Image src="/icons/vedio.svg" alt="video-icon" width={20} height={20} />
                                                     <span className="text-sm text-[#0C111D] font-normal">Video</span>
                                                 </button>
-                                                <button className=" p-3 gap-2 flex-row flex h-[40px] hover:bg-[#F2F4F7] w-full outline-none"
+                                                <button className=" p-3 gap-2 flex-row flex h-[40px] hover:bg-[#F2F4F7] w-full"
                                                     onClick={(e) => {
                                                         openDrawerforQuiz(); setPassedSectionId(section.sectionId); setIsContentEditing(false);
                                                         setPopoveropen1(null);
@@ -472,15 +472,15 @@ function CourseContent({ courseId }: CourseContentProps) {
                                             <td className="px-5 py-4 text-start text-[#101828] text-sm">{formatScheduleDate(content.lessonScheduleDate)}</td>
                                             <td className="px-5 py-4 text-start text-[#101828] text-sm">{content.type}</td>
                                             <td className="flex items-center justify-center px-8 py-4 text-[#101828] text-sm">
-                                                <Popover
-                                                    placement="bottom-end"
-                                                    isOpen={openPopoverIndex === index}
-                                                    onOpenChange={(open) => handlePopoverToggle(index)}
-                                                >
+                                                <Popover placement="bottom-end"
+                                                    isOpen={popoveropen4 === index}
+                                                    onOpenChange={(open) => {
+                                                        if (!open) {
+                                                            setPopoveropen4(null);
+                                                        }
+                                                    }}>
                                                     <PopoverTrigger>
-                                                        <button
-
-                                                        >
+                                                        <button>
 
                                                             <Image
                                                                 src="/icons/three-dots.svg"
@@ -503,13 +503,13 @@ function CourseContent({ courseId }: CourseContentProps) {
                                                                     else if (content.type === 'Text') {
                                                                         setShowDrawerfortest(true);
                                                                     }
-                                                                    setPassedSectionId(section.sectionId); setIsContentEditing(true); setContentId(content.contentId); handlePopoverToggle(index);
+                                                                    setPassedSectionId(section.sectionId); setIsContentEditing(true); setContentId(content.contentId); setPopoveropen4(null);
                                                                 }} >
                                                                 <Image src="/icons/edit-02.svg" width={18} height={18} alt="edit" />
                                                                 <span className="text-sm text-[#0C111D] font-normal">Edit</span>
                                                             </button>
                                                             <button className=" flex flex-row items-center justify-start w-full py-2 gap-2 hover:bg-[#FEE4E2] pl-4 pr-9"
-                                                                onClick={() => { handleDeleteContent(section.sectionId, content.contentId); handlePopoverToggle(index); }}>
+                                                                onClick={() => { handleDeleteContent(section.sectionId, content.contentId); setPopoveropen4(null); }}>
                                                                 <Image src='/icons/delete.svg' alt="user profile" width={18} height={18} />
                                                                 <p className="text-sm text-[#DE3024] font-normal">Remove</p>
                                                             </button>

@@ -529,8 +529,10 @@ function CourseContent({ courseId }: CourseContentProps) {
                                     Test Lorem ipsum is placeholder text commonly used in the graphic, print, and publishing industries for previewing layouts and visual mockups.
                                 </span>
                                 <Popover
-                                    isOpen={popoveropen3 === index}
-                                    onOpenChange={(open) => open ? handlePopoverOpen3(index) : setPopoveropen3(null)}
+                                    // isOpen={popoveropen3 === index}
+                                    // onOpenChange={(open) => open ? handlePopoverOpen3(index) : setPopoveropen3(null)}
+                                    isOpen={openPopoverIndex === index}
+                                    onOpenChange={(open) => handlePopoverToggle(index)}
                                     placement="bottom">
                                     <PopoverTrigger>
                                         <button
@@ -544,7 +546,8 @@ function CourseContent({ courseId }: CourseContentProps) {
                                         <button className=" p-3 gap-2 flex-row flex h-[40px] hover:bg-[#F2F4F7] w-full"
                                             onClick={() => {
                                                 setShowDrawerfortest(true); setPassedSectionId(section.sectionId); setIsContentEditing(false);
-                                                setPopoveropen3(null);
+                                                // setPopoveropen3(null);
+                                                handlePopoverToggle(index)
                                             }}>
                                             <Image src="/icons/read.svg" alt="learn-icon" width={20} height={20} />
                                             <span className="text-sm text-[#0C111D] font-normal">Text</span>
@@ -552,7 +555,8 @@ function CourseContent({ courseId }: CourseContentProps) {
                                         <button className=" p-3 gap-2 flex-row flex h-[40px] hover:bg-[#F2F4F7] w-full"
                                             onClick={() => {
                                                 openDrawerforVideo(); setPassedSectionId(section.sectionId); setIsContentEditing(false);
-                                                setPopoveropen3(null);
+                                                // setPopoveropen3(null);
+                                                handlePopoverToggle(index)
                                             }}>
                                             <Image src="/icons/vedio.svg" alt="video-icon" width={20} height={20} />
                                             <span className="text-sm text-[#0C111D] font-normal">Video</span>
@@ -560,7 +564,8 @@ function CourseContent({ courseId }: CourseContentProps) {
                                         <button className=" p-3 gap-2 flex-row flex h-[40px] hover:bg-[#F2F4F7] w-full"
                                             onClick={() => {
                                                 openDrawerforQuiz(); setPassedSectionId(section.sectionId); setIsContentEditing(false);
-                                                setPopoveropen3(null);
+                                                // setPopoveropen3(null);
+                                                handlePopoverToggle(index)
                                             }}>
                                             <Image src="/icons/test.svg" alt="test-icon" width={20} height={20} />
                                             <span className="text-sm text-[#0C111D] font-normal">Quiz</span>

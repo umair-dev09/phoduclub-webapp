@@ -1,3 +1,5 @@
+
+
 "use client";
 import Image from "next/image";
 import { PopoverContent, PopoverTrigger, Popover } from '@nextui-org/popover';
@@ -9,8 +11,6 @@ import ReactQuill from 'react-quill-new'; // Ensure correct import
 import Quill from 'quill'; // Import Quill to use it for types
 import QuillResizeImage from 'quill-resize-image';
 Quill.register("modules/resize", QuillResizeImage);
-
-// Define interfaces outside the component
 interface Question {
     question: string;
     isChecked: boolean;
@@ -31,25 +31,26 @@ interface Options {
 interface QuestionsProps {
     questionsList: Question[];
     setQuestionsList: React.Dispatch<React.SetStateAction<Question[]>>;
+    anyQuestionAdded: string;
+    setAnyQuestionAdded: (anyQuestionAdded: string) => void;
 }
 
-function Questions({ questionsList, setQuestionsList }: QuestionsProps) {
-    const [visited, setVisited] = useState<boolean[]>(new Array(questionsList.length).fill(false));
-    const [openIndex, setOpenIndex] = useState<number | null>(null);
+function Questions({ questionsList, setQuestionsList, anyQuestionAdded, setAnyQuestionAdded }: QuestionsProps) {
+
     // Handler for input change
-    // const handleInputChange = (index: number, value: string | React.ChangeEvent<HTMLInputElement>) => {
-    //     const newQuestionsList = [...questionsList];
+    const handleInputChange = (index: number, value: string | React.ChangeEvent<HTMLInputElement>) => {
+        const newQuestionsList = [...questionsList];
 
-    //     // Check if value is a string (from ReactQuill) or a ChangeEvent (from input)
-    //     if (typeof value === 'string') {
-    //         newQuestionsList[index].question = value;
-    //     } else {
-    //         newQuestionsList[index].question = value.target.value;
-    //     }
+        // Check if value is a string (from ReactQuill) or a ChangeEvent (from input)
+        if (typeof value === 'string') {
+            newQuestionsList[index].question = value;
+        } else {
+            newQuestionsList[index].question = value.target.value;
+        }
 
-    //     setQuestionsList(newQuestionsList);
-    // };
-    // // -----------------------------------------------------------------------------------------------------------
+        setQuestionsList(newQuestionsList);
+    };
+    // -----------------------------------------------------------------------------------------------------------
     // Handler for checkbox change
     const handleCheckboxChange = (index: number) => {
         const newQuestionsList = [...questionsList];
@@ -59,6 +60,7 @@ function Questions({ questionsList, setQuestionsList }: QuestionsProps) {
     // -----------------------------------------------------------------------------------------------------------
     // Handler for adding new question
     const handleAddQuestion = () => {
+        setAnyQuestionAdded('Yes');
         setQuestionsList([
             ...questionsList,
             {
@@ -71,8 +73,6 @@ function Questions({ questionsList, setQuestionsList }: QuestionsProps) {
                 questionId: '',
             }
         ]);
-        setVisited([...visited, false]);
-        setOpenIndex(null);
     };
     // -----------------------------------------------------------------------------------------------------------
     // Handler for adding the Questions
@@ -268,34 +268,13 @@ function Questions({ questionsList, setQuestionsList }: QuestionsProps) {
             [index]: false,
         }));
     };
-    const isDataMissing = (question: Question) => {
-        return !question.question.trim() ||
-            !question.options.A.trim() ||
-            !question.options.B.trim() ||
-            !question.options.C.trim() ||
-            !question.options.D.trim() ||
-            !question.correctAnswer ||
-            !question.explanation.trim();
-    };
-    const handleOpen = (index: number) => {
-        setVisited((prevVisited) => {
-            const newVisited = [...prevVisited];
-            newVisited[index] = true;
-            return newVisited;
-        });
-        setOpenIndex(index);
-    };
-
     return (
         <div className="pb-4 h-auto">
             {questionsList.map((question, index) => (
-                <div key={index} className=" border-lightGrey rounded-md border mt-4 h-auto bg-[#FFFFFF] ">
-
+                <div key={index} className="rounded-md border border-solid border-[#EAECF0] mt-4 h-auto bg-[#FFFFFF]">
                     <Collapsible
-                        open={openIndex === index}
-                        className={`border  rounded-md ${visited[index] && isDataMissing(question) ? "border-red-700" : "border-[#EAECF0]"}`}
                         trigger={
-                            <div className='h-auto bg-[#FFFFFF] flex flex-col p-5 gap-2 rounded-md '>
+                            <div className='h-auto bg-[#FFFFFF] flex flex-col p-5 gap-2 rounded-md'>
                                 <div className="h-auto flex flex-row justify-between gap-4 items-start">
                                     <div className="flex gap-2 ">
                                         <div className="h-6 min-w-[24px] rounded-[4px] mt-[2px] bg-[#EAECF0] flex justify-center ">
@@ -305,7 +284,7 @@ function Questions({ questionsList, setQuestionsList }: QuestionsProps) {
                                     </div>
                                     <Popover placement="bottom-end" isOpen={!!openPopovers[index]}
                                         onOpenChange={() => closePopover(index)}>
-                                        <PopoverTrigger>
+                                        <PopoverTrigger onClick={(event) => event.stopPropagation()}>
                                             <button className="w-[32px] h-[32px]  rounded-full flex items-center justify-center transition-all duration-300 ease-in-out hover:bg-[#F2F4F7]">
                                                 <button className="min-w-[20px] min-h-[20px] mt-[2px]"
                                                     onClick={() => togglePopover(index)}>
@@ -320,8 +299,8 @@ function Questions({ questionsList, setQuestionsList }: QuestionsProps) {
                                         </PopoverTrigger>
                                         <PopoverContent className="h-[88px] w-[167px] px-0 border border-solid border-[#EAECF0] bg-[#FFFFFF] rounded-md flex flex-col py-[4px] shadow-lg">
                                             <button
-                                                className="flex flex-row h-[40px] w-full px-3 gap-2 hover:bg-[#F2F4F7] items-center"
 
+                                                className="flex flex-row h-[40px] w-full px-3 gap-2 hover:bg-[#F2F4F7] items-center"
                                                 onClick={(e) => { e.stopPropagation(); closePopover(index); handleAddQuestionduplicate(question) }}>
                                                 <Image
                                                     src="/icons/duplicate.svg"
@@ -332,9 +311,8 @@ function Questions({ questionsList, setQuestionsList }: QuestionsProps) {
                                                 <span className="text-[#0C111D] text-sm font-medium">Duplicate</span>
                                             </button>
                                             <button
-                                                className="flex flex-row h-[40px] w-full px-3 gap-2 hover:bg-[#FEE4E2] items-center"
-                                                onClick={(e) => { e.stopPropagation(); closePopover(index); handleDeleteQuestion(index) }}
-                                            >
+                                                className="flex flex-row h-[40px] w-full px-3 gap-2 hover:bg-[#F2F4F7] items-center"
+                                                onClick={(e) => { e.stopPropagation(); closePopover(index); handleDeleteQuestion(index) }}>
                                                 <Image
                                                     src="/icons/delete.svg"
                                                     width={18}
@@ -343,12 +321,13 @@ function Questions({ questionsList, setQuestionsList }: QuestionsProps) {
                                                 />
                                                 <span className="text-[#DE3024] text-sm font-medium">Delete</span>
                                             </button>
+
                                         </PopoverContent>
                                     </Popover>
                                 </div>
                             </div>
                         }
-                        onOpening={() => handleOpen(index)}
+
                     >
                         <div className='h-auto bg-[#FFFFFF] flex flex-col pb-5 px-5 gap-2 rounded-br-md rounded-bl-md'>
                             <div className="flex flex-col gap-2">
@@ -362,18 +341,9 @@ function Questions({ questionsList, setQuestionsList }: QuestionsProps) {
                                             value={question.question}
                                             onChange={(content) => handleQuillChange(index, 'question', content)}
                                             modules={modules}
-                                            placeholder="Question"
-                                            className="text-[#1D2939] focus:outline-none rounded-b-[12px] custom-quill placeholder:not-italic min-h-[10px] max-h-[350px] overflow-y-auto border-none font-normal break-all"
-                                        />
-                                        {/* <ReactQuill
-                                            ref={quillRef1}
-                                            value={question.question}
-                                            onChange={(value) => handleInputChange(index, value)}
-                                            onKeyDown={handleKeyDown1}
-                                            modules={{ toolbar: false }}
                                             placeholder="Description"
                                             className="text-[#1D2939] focus:outline-none rounded-b-[12px] custom-quill placeholder:not-italic min-h-[10px] max-h-[150px] overflow-y-auto border-none font-normal break-all"
-                                        /> */}
+                                        />
                                     </div>
                                     <div className="h-[66px] bg-[#FFFFFF] rounded-bl-[12px] rounded-br-[12px] flex justify-center items-center">
                                         <div className="flex flex-row w-full justify-between items-center mx-5">
@@ -425,6 +395,7 @@ function Questions({ questionsList, setQuestionsList }: QuestionsProps) {
                                     </div>
                                 </div>
                             </div>
+
                             <span className="font-semibold text-base text-[#1D2939]">Options</span>
                             <div className="flex flex-col gap-3">
                                 {(Object.keys(question.options) as Array<keyof Options>).map((optionKey) => (
@@ -437,7 +408,7 @@ function Questions({ questionsList, setQuestionsList }: QuestionsProps) {
                                         <input
                                             className="font-medium pl-3 text-[#101828] text-sm placeholder:text-[#A1A1A1] rounded-md w-full placeholder:font-normal
                                                 focus:outline-none focus:ring-0 border border-solid border-[#D0D5DD] h-[40px] focus:border-[#D6BBFB]
-                                                focus:shadow-[0px_0px_0px_4px_rgba(158,119,237,0.25),0px_1px_2px_0px_rgba(16,24,40,0.05)]"
+                                              focus:shadow-[0px_0px_0px_4px_rgba(158,119,237,0.25),0px_1px_2px_0px_rgba(16,24,40,0.05)]"
                                             placeholder={`Option ${optionKey}`}
                                             value={question.options[optionKey]}
                                             onChange={(e) => handleOptionChange(index, optionKey, e.target.value)}
@@ -502,17 +473,9 @@ function Questions({ questionsList, setQuestionsList }: QuestionsProps) {
                                         value={question.explanation}
                                         onChange={(content) => handleQuillChange(index, 'explanation', content)}
                                         modules={modules}
-                                        placeholder="Explanation"
-                                        className="text-[#1D2939] focus:outline-none rounded-b-[12px] custom-quill placeholder:not-italic min-h-[10px] max-h-[350px] overflow-y-auto border-none font-normal break-all"
-                                    />
-                                    {/* <ReactQuill
-                                        ref={quillRef2}
-                                        value={question.explanation}
-                                        onChange={(value) => handleExplanationChange(index, value)} // Use `value` directly
-                                        onKeyDown={handleKeyDown2}
-                                        modules={{ toolbar: false }}
                                         placeholder="Description"
-                                    /> */}
+                                        className="text-[#1D2939] focus:outline-none rounded-b-[12px] custom-quill placeholder:not-italic min-h-[10px] max-h-[150px] overflow-y-auto border-none font-normal break-all"
+                                    />
 
                                 </div>
 
@@ -534,9 +497,9 @@ function Questions({ questionsList, setQuestionsList }: QuestionsProps) {
                                             <Popover placement="bottom-start" className="flex flex-row justify-end">
                                                 <PopoverTrigger className="">
                                                     <button className="flex items-center justify-center p-1">
-                                                        {alignments[index]?.explanation === 'center' ? (
+                                                        {alignment2 === 'center' ? (
                                                             <Image src="/icons/align-middle.svg" width={24} height={26} alt="align-center" />
-                                                        ) : alignments[index]?.explanation === 'right' ? (
+                                                        ) : alignment2 === 'right' ? (
                                                             <Image src="/icons/align-right.svg" width={24} height={26} alt="align-right" />
                                                         ) : (
                                                             <Image src="/icons/dropdown-icon-1.svg" width={32} height={32} alt="align-left" />
@@ -545,23 +508,23 @@ function Questions({ questionsList, setQuestionsList }: QuestionsProps) {
                                                 </PopoverTrigger>
                                                 <PopoverContent className="flex flex-row bg-white rounded-[8px] border-[1px] border-solid border-[#EAECF0] p-2 w-[120px] shadow-[0_2px_4px_#EAECF0] gap-2 ">
                                                     {/* Alignment options inside the popover */}
-
-                                                    <button onClick={() => handleIconClick(index, 'explanation', 'align-left')} className="flex items-center justify-center">
+                                                    <button onClick={() => handleIconClick2("align-left")} className="flex items-center justify-center hover:bg-[#EAECF0]">
                                                         <Image src="/icons/align-left.svg" width={30} height={30} alt="align-left" />
                                                     </button>
-                                                    <button onClick={() => handleIconClick(index, 'explanation', 'align-center')} className="flex items-center justify-center">
+                                                    <button onClick={() => handleIconClick2("align-center")} className="flex items-center justify-center hover:bg-[#EAECF0]">
                                                         <Image src="/icons/align-middle.svg" width={30} height={30} alt="align-center" />
                                                     </button>
-                                                    <button onClick={() => handleIconClick(index, 'explanation', 'align-right')} className="flex items-center justify-center">
+                                                    <button onClick={() => handleIconClick2("align-right")} className="flex items-center justify-center hover:bg-[#EAECF0]">
                                                         <Image src="/icons/align-right.svg" width={30} height={30} alt="align-right" />
                                                     </button>
 
                                                 </PopoverContent>
                                             </Popover>
-                                            <button onClick={() => handleIconClick(index, 'explanation', 'ordered')}>
-                                                <Image src="/icons/dropdown-icon-2.svg" width={27} height={27} alt="ordered-list" />
+                                            <button
+                                                onClick={() => handleIconClick2('ordered')}>
+                                                <Image src="/icons/dropdown-icon-2.svg" width={27} height={27} alt="dropdown-icon" />
                                             </button>
-                                            <button onClick={() => handleIconClick(index, 'explanation', 'image')}
+                                            <button onClick={() => handleIconClick2('image')}
                                                 className="hover:bg-[#EAECF0]">
                                                 <Image src="/icons/upload-image-icon.svg" width={24} height={24} alt="upload-image-icon" />
                                             </button>
@@ -576,16 +539,14 @@ function Questions({ questionsList, setQuestionsList }: QuestionsProps) {
 
             <div className="flex justify-center items-center mt-4">
                 <button
-                    className="h-[36px] w-[127px] rounded-[8px] bg-[#FFFFFF] hover:bg-[#F5F0FF] border border-solid border-[#8501FF] flex justify-center items-center"
+                    className="h-[36px] w-[127px] rounded-[8px] bg-[#FFFFFF] border border-solid border-[#8501FF] flex justify-center items-center"
                     onClick={handleAddQuestion}
                 >
                     <span className="text-[#8501FF] text-sm font-semibold">Add Question</span>
                 </button>
             </div>
-
-        </div >
+        </div>
     );
 }
 
 export default Questions;
-

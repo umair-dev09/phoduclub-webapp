@@ -724,10 +724,7 @@ const Sections: React.FC<SectionsProps> = ({
                         <p className="text-sm">Add manually</p>
                       </button>
                       <button className="flex flex-row gap-1 items-center px-4 py-2 rounded-none w-full h-auto hover:bg-[#F2F4F7]"
-                        onClick={() => {
-                          setCsvUploadDialog(true);
-                          setPopoveropen(false);
-                        }} >
+                        onClick={() => setCsvUploadDialog(true)} >
                         <p className="text-sm">Upload CSV File</p>
                       </button>
                     </div>
@@ -750,18 +747,12 @@ const Sections: React.FC<SectionsProps> = ({
                   <PopoverContent className="p-0 rounded-md">
                     <div className="flex flex-col w-[180px] justify-center items-center py-1">
                       <button className="flex flex-row gap-1 items-center px-4 py-2 rounded-none w-full h-auto hover:bg-[#F2F4F7] "
-                        onClick={() => {
-                          handleAddQuestion();
-                          setPopoveropen(false);
-                        }}
+                        onClick={handleAddQuestion}
                       >
                         <p className="text-sm">Add manually</p>
                       </button>
                       <button className="flex flex-row gap-1 items-center px-4 py-2 rounded-none w-full h-auto hover:bg-[#F2F4F7]"
-                        onClick={() => {
-                          setCsvUploadDialog(true);
-                          setPopoveropen(false);
-                        }} >
+                        onClick={() => setCsvUploadDialog(true)} >
                         <p className="text-sm">Upload CSV File</p>
                       </button>
                     </div>
@@ -1430,7 +1421,7 @@ const Sections: React.FC<SectionsProps> = ({
         </div>
       </Dialog>
       {/*CSV Upload Dialog */}
-      {/* <Dialog open={csvUploadDialog} onClose={() => setCsvUploadDialog(false)}>
+      <Dialog open={csvUploadDialog} onClose={() => setCsvUploadDialog(false)}>
         <DialogBackdrop className="fixed inset-0 bg-black/30 " />
         <div className="fixed inset-0 flex items-center justify-center z-10">
           <DialogPanel className="bg-white rounded-2xl w-[559px] h-auto ">
@@ -1477,71 +1468,60 @@ const Sections: React.FC<SectionsProps> = ({
             </div>
           </DialogPanel>
         </div>
-      </Dialog> */}
-      <Modal
-        isOpen={csvUploadDialog}
-        onOpenChange={(isOpen) => !isOpen && setCsvUploadDialog(false)}
-        hideCloseButton
-        size="lg"
-      >
-        <ModalContent>
-          <>
-            {/* Modal Header */}
-            <ModalHeader className="flex flex-row justify-between gap-1">
+      </Dialog>
+      <ModalContent>
+        <>
+          {/* Modal Header */}
+          <ModalHeader className="flex flex-row justify-between gap-1">
 
-              <h3 className="text-xl font-semibold text-[#1D2939]">Bulk Question creation</h3>
-              <button
-                className="w-[32px] h-[32px] rounded-full flex items-center justify-center hover:bg-[#F2F4F7]"
+            <h3 className="text-xl font-semibold text-[#1D2939]">Bulk Question creation</h3>
+            <button
+              className="w-[32px] h-[32px] rounded-full flex items-center justify-center hover:bg-[#F2F4F7]"
 
-                aria-label="Close dialog"
-              >
-                <button onClick={() => setCsvUploadDialog(false)}>
-                  <Image src="/icons/cancel.svg" alt="Cancel" width={20} height={20} />
-                </button>
+              aria-label="Close dialog"
+            >
+              <button onClick={() => setCsvUploadDialog(false)}>
+                <Image src="/icons/cancel.svg" alt="Cancel" width={20} height={20} />
               </button>
-            </ModalHeader>
+            </button>
+          </ModalHeader>
 
-            {/* Modal Body */}
-            <ModalBody>
-              <p className="mt-2">Uplaod File</p>
-              <div className="bg-[#F9FAFB] rounded-xl flex flex-col items-center justify-center px-2 py-5 border-dashed border ">
-                <Image src="/icons/csv-upload-graphics.svg" alt="csv" width={42} height={42} />
-                <input
-                  type="file"
-                  accept=".csv"
-                  onChange={handleCSV_QuestionUpload}
-                  className="hidden"
-                  id="csvUpload"
-                />
-                <label htmlFor="csvUpload" className="cursor-pointer text-purple text-sm font-semibold mt-2 mb-1">
-                  Click to upload
-                </label>
-                <span className="text-[#667085] text-sm">.csv .xlsx</span>
-              </div>
-              <hr />
-              <div className="flex flex-row justify-start my-2 items-center  pb-2">
-                <button
-                  className="flex flex-row gap-2 items-center"
-                  onClick={() => {
-                    const link = document.createElement('a');
-                    link.href = '/sample-file.csv'; // Replace with the actual path to your sample file
-                    link.download = 'sample-file.csv';
-                    document.body.appendChild(link);
-                    link.click();
-                    document.body.removeChild(link);
-                  }}
-                >
-                  <Image src="/icons/download-csv.svg" alt="Download CSV" width={18} height={18} />
-                  <p className="text-[#344054] text-sm">Download Sample file</p>
-                </button>
+          {/* Modal Body */}
+          <ModalBody>
+            <div className="flex flex-col pb-2 gap-2">
+              <span className="text-sm font-normal text-[#667085]">
+                Are you sure you want to delete this? This action cannot be undone.
+              </span>
+            </div>
+          </ModalBody>
 
-              </div>
-            </ModalBody>
-
-
-          </>
-        </ModalContent>
-      </Modal>
+          {/* Modal Footer */}
+          <ModalFooter className="border-t border-lightGrey">
+            <button
+              className="py-[0.625rem] px-6 border-2 border-solid border-[#EAECF0] font-semibold text-sm text-[#1D2939] hover:bg-[#F2F4F7] rounded-md"
+              onClick={() => setDeletedialog(false)}
+            >
+              Cancel
+            </button>
+            <button
+              className="py-[0.625rem] px-6 text-white shadow-inner-button font-semibold bg-[#BB241A] hover:bg-[#B0201A]  border border-[#DE3024] rounded-md"
+              onClick={async () => {
+                if (sectionToDelete) {
+                  await handleDeleteSection(sectionToDelete.id);
+                } else if (subsectionToDelete) {
+                  await handleDeleteSubSection(
+                    subsectionToDelete.sectionId,
+                    subsectionToDelete.parentSectionId
+                  );
+                }
+                setDeletedialog(false);
+              }}
+            >
+              Delete
+            </button>
+          </ModalFooter>
+        </>
+      </ModalContent>
     </div>
   );
 };

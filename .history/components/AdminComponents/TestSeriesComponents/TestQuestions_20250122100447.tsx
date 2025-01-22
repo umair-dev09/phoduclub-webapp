@@ -46,7 +46,6 @@ interface SelectionPopupProps {
 
 function TestQuestions({ questionsList, setQuestionsList }: QuestionsProps) {
     const [difficultyPopupOpen, setDifficultyPopupOpen] = useState(false);
-    const [visited, setVisited] = useState<boolean[]>(new Array(questionsList.length).fill(false));
     // Handler for checkbox change
     const handleCheckboxChange = (index: number) => {
         const newQuestionsList = [...questionsList];
@@ -385,14 +384,6 @@ function TestQuestions({ questionsList, setQuestionsList }: QuestionsProps) {
             !question.correctAnswer ||
             !question.explanation.trim();
     };
-    const handleOpen = (index: number) => {
-        setVisited((prevVisited) => {
-            const newVisited = [...prevVisited];
-            newVisited[index] = true;
-            return newVisited;
-        });
-
-    };
     const SelectionPopup: React.FC<SelectionPopupProps> = ({
         showSelectionPopup,
         selectedQuestions,
@@ -583,10 +574,10 @@ function TestQuestions({ questionsList, setQuestionsList }: QuestionsProps) {
                                         </div>
                                         <div className="w-[65%] flex ">
                                             <div className="flex gap-2 pr-4 items-start">
-                                                <div className={`"h-auto w-auto rounded-[4px]  bg-[#EAECF0] flex justify-center py-[2px] px-2 "${visited[index] && isDataMissing(question) ? " bg-red-600 mt-1 text-white" : "bg-[#EAECF0] mt-1 text-[#1D2939]"}`}>
-                                                    <span className=" font-semibold text-[12px] ">{index + 1}</span>
+                                                <div className="h-auto w-auto rounded-[4px] mt-1 bg-[#EAECF0] flex justify-center py-[2px] px-2 ">
+                                                    <span className="text-[#1D2939] font-semibold text-[12px] ">{index + 1}</span>
                                                 </div>
-                                                <div className={`"font-normal text-sm break-all "${visited[index] && isDataMissing(question) ? " text-red-600 ml-1 mt-1" : " text-[#1D2939]  ml-1 mt-1"}`} dangerouslySetInnerHTML={{ __html: question.question || "Question" }}></div>
+                                                <div className="font-normal text-sm break-all text-[#1D2939] ml-1 mt-1" dangerouslySetInnerHTML={{ __html: question.question || "Question" }}></div>
                                             </div>
                                         </div>
                                         <div className="w-[20%] py-1">
@@ -675,14 +666,14 @@ function TestQuestions({ questionsList, setQuestionsList }: QuestionsProps) {
                                         </div>
                                     </div>
                                 }
-                                onOpening={() => handleOpen(index)}
                             >
                                 <div className='h-auto bg-[#FFFFFF] flex flex-col pb-5 px-5 gap-2 mt-1 border-b'>
                                     <div className="flex flex-col gap-2">
                                         <span className="font-semibold text-base text-[#1D2939]">Question</span>
                                         {/*  QUILL 1 for QUESTIONS*/}
                                         <div
-                                            className="pt-2 bg-[#FFFFFF] border border-gray-300 focus:outline focus:outline-[1.5px] focus:outline-[#D6BBFB] hover:outline hover:outline-[1.5px] hover:outline-[#D6BBFB] focus-within:border-[#D7BBFC] focus-within:ring-4 focus-within:ring-[#E8DEFB] focus-within:outline-none transition-colors rounded-[12px] h-auto">
+                                            className={`pt-2 bg-[#FFFFFF] border ${writing[index]?.question ? 'border-[#D6BBFB]  shadow-[0px_0px_0px_4px_rgba(158,119,237,0.25),0px_1px_2px_0px_rgba(16,24,40,0.05)]' : 'border-[#EAECF0]'
+                                                } rounded-[12px] h-auto`}>
                                             <div className="bg-[#FFFFFF] ">
                                                 <ReactQuill
                                                     ref={(el) => handleQuillMount(index, 'question', el)}
@@ -813,7 +804,8 @@ function TestQuestions({ questionsList, setQuestionsList }: QuestionsProps) {
                                         </PopoverContent>
                                     </Popover>
                                     <div
-                                        className="pt-2 bg-[#FFFFFF] border border-gray-300 focus:outline focus:outline-[1.5px] focus:outline-[#D6BBFB] hover:outline hover:outline-[1.5px] hover:outline-[#D6BBFB] focus-within:border-[#D7BBFC] focus-within:ring-4 focus-within:ring-[#E8DEFB] focus-within:outline-none transition-colors rounded-[12px] h-auto">
+                                        className={`pt-2 bg-[#FFFFFF] border ${writing[index]?.explanation ? 'border-[#D6BBFB]  shadow-[0px_0px_0px_4px_rgba(158,119,237,0.25),0px_1px_2px_0px_rgba(16,24,40,0.05)]' : 'border-[#EAECF0]'
+                                            } rounded-[12px] h-auto`}>
                                         {/* Textarea for writing the description */}
                                         <div className="bg-[#FFFFFF] ">
                                             <ReactQuill

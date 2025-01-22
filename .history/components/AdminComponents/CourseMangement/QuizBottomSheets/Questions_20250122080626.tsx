@@ -1,3 +1,5 @@
+
+
 "use client";
 import Image from "next/image";
 import { PopoverContent, PopoverTrigger, Popover } from '@nextui-org/popover';
@@ -7,9 +9,6 @@ import React, { useState, useEffect, useRef, SetStateAction, Dispatch } from "re
 import 'quill/dist/quill.snow.css';
 import ReactQuill from 'react-quill-new'; // Ensure correct import
 import Quill from 'quill'; // Import Quill to use it for types
-import QuillResizeImage from 'quill-resize-image';
-Quill.register("modules/resize", QuillResizeImage);
-
 // Define interfaces outside the component
 interface Question {
     question: string;
@@ -31,25 +30,26 @@ interface Options {
 interface QuestionsProps {
     questionsList: Question[];
     setQuestionsList: React.Dispatch<React.SetStateAction<Question[]>>;
+    anyQuestionAdded: string;
+    setAnyQuestionAdded: (anyQuestionAdded: string) => void;
 }
 
-function Questions({ questionsList, setQuestionsList }: QuestionsProps) {
-    const [visited, setVisited] = useState<boolean[]>(new Array(questionsList.length).fill(false));
-    const [openIndex, setOpenIndex] = useState<number | null>(null);
+function Questions({ questionsList, setQuestionsList, anyQuestionAdded, setAnyQuestionAdded }: QuestionsProps) {
+
     // Handler for input change
-    // const handleInputChange = (index: number, value: string | React.ChangeEvent<HTMLInputElement>) => {
-    //     const newQuestionsList = [...questionsList];
+    const handleInputChange = (index: number, value: string | React.ChangeEvent<HTMLInputElement>) => {
+        const newQuestionsList = [...questionsList];
 
-    //     // Check if value is a string (from ReactQuill) or a ChangeEvent (from input)
-    //     if (typeof value === 'string') {
-    //         newQuestionsList[index].question = value;
-    //     } else {
-    //         newQuestionsList[index].question = value.target.value;
-    //     }
+        // Check if value is a string (from ReactQuill) or a ChangeEvent (from input)
+        if (typeof value === 'string') {
+            newQuestionsList[index].question = value;
+        } else {
+            newQuestionsList[index].question = value.target.value;
+        }
 
-    //     setQuestionsList(newQuestionsList);
-    // };
-    // // -----------------------------------------------------------------------------------------------------------
+        setQuestionsList(newQuestionsList);
+    };
+    // -----------------------------------------------------------------------------------------------------------
     // Handler for checkbox change
     const handleCheckboxChange = (index: number) => {
         const newQuestionsList = [...questionsList];
@@ -59,6 +59,7 @@ function Questions({ questionsList, setQuestionsList }: QuestionsProps) {
     // -----------------------------------------------------------------------------------------------------------
     // Handler for adding new question
     const handleAddQuestion = () => {
+        setAnyQuestionAdded('Yes');
         setQuestionsList([
             ...questionsList,
             {
@@ -71,8 +72,6 @@ function Questions({ questionsList, setQuestionsList }: QuestionsProps) {
                 questionId: '',
             }
         ]);
-        setVisited([...visited, false]);
-        setOpenIndex(null);
     };
     // -----------------------------------------------------------------------------------------------------------
     // Handler for adding the Questions
@@ -156,101 +155,171 @@ function Questions({ questionsList, setQuestionsList }: QuestionsProps) {
         popoverOpenStates[questionIndex];
     // -----------------------------------------------------------------------------------------------------------
     // state for ReactQuill 1 FOR QUESTIONS
+    const [value1, setValue1] = useState('');
+    const quillRef1 = useRef<ReactQuill | null>(null); // Ref to hold ReactQuill instance
+    const [quill1, setQuill1] = useState<Quill | null>(null);
+    const [alignment1, setAlignment1] = useState<string | null>(null); // State to hold alignment
+    const [isWriting1, setIsWriting1] = useState(false); // Track if text is being written
 
-    // Create refs for each question's quill instances
-    const [alignments, setAlignments] = useState<{ [key: number]: { question: string | null, explanation: string | null } }>({});
-    const [writing, setWriting] = useState<{ [key: number]: { question: boolean, explanation: boolean } }>({});
-
-    // Use a ref for quill instances to prevent re-renders
-    const quillInstancesRef = useRef<{
-        [key: number]: {
-            question: Quill | null;
-            explanation: Quill | null;
-        };
-    }>({});
-
-    const modules = {
-        toolbar: false, // We're using custom toolbar
-        resize: {
-            locale: {},
-        },
-
+    const handleChange1 = (content: string) => {
+        setValue1(content);
+        checkTextContent1(content);
     };
 
-
-
-    const handleQuillMount = (index: number, type: 'question' | 'explanation', quill: ReactQuill | null) => {
-        if (quill) {
-            if (!quillInstancesRef.current[index]) {
-                quillInstancesRef.current[index] = {
-                    question: null,
-                    explanation: null
-                };
-            }
-            quillInstancesRef.current[index][type] = quill.getEditor();
-        }
-    };
-
-    const handleQuillChange = (index: number, type: 'question' | 'explanation', content: string) => {
-        const newQuestionsList = [...questionsList];
-        if (type === 'question') {
-            newQuestionsList[index].question = content;
-        } else {
-            newQuestionsList[index].explanation = content;
-        }
-        setQuestionsList(newQuestionsList);
-
-
-        // Update writing state
+    const checkTextContent1 = (content: string) => {
         const plainText = content.replace(/<[^>]+>/g, '').trim();
-        setWriting(prev => ({
-            ...prev,
-            [index]: {
-                ...prev[index],
-                [type]: plainText.length > 0
-            }
-        }));
+        setIsWriting1(plainText.length > 0);
     };
 
-    const handleIconClick = (index: number, type: 'question' | 'explanation', format: string) => {
-        const quill = quillInstancesRef.current[index]?.[type];
-        if (!quill) return;
-
-        const range = quill.getSelection();
-        if (!range) return;
-
-        const currentFormats = quill.getFormat(range);
-
-        if (format === 'ordered') {
-            quill.format('list', currentFormats.list === 'ordered' ? false : 'ordered');
-        } else if (format === 'image') {
-            const fileInput = document.createElement('input');
-            fileInput.type = 'file';
-            fileInput.accept = 'image/*';
-            fileInput.onchange = () => {
-                const file = fileInput.files?.[0];
-                if (file) {
-                    const reader = new FileReader();
-                    reader.onload = (e) => {
-                        if (e.target?.result && quill) {
-                            quill.insertEmbed(range.index, 'image', e.target.result as string);
+    const handleIconClick1 = (format: string) => {
+        if (quill1) {
+            const range = quill1.getSelection();
+            if (range) {
+                const currentFormats = quill1.getFormat(range);
+                if (format === 'ordered') {
+                    quill1.format('list', currentFormats.list === 'ordered' ? false : 'ordered');
+                } else if (format === 'image') {
+                    const fileInput = document.createElement('input');
+                    fileInput.type = 'file';
+                    fileInput.accept = 'image/*';
+                    fileInput.onchange = () => {
+                        const file = fileInput.files?.[0];
+                        if (file) {
+                            const reader = new FileReader();
+                            reader.onload = (e) => {
+                                if (e.target && e.target.result) {
+                                    const imageUrl = e.target.result as string;
+                                    quill1.insertEmbed(range.index, 'image', imageUrl);
+                                }
+                            };
+                            reader.readAsDataURL(file);
                         }
                     };
-                    reader.readAsDataURL(file);
+                    fileInput.click();
+                } else if (format === 'bullet') {
+                    quill1.format('list', currentFormats.list === 'bullet' ? false : 'bullet');
+                } else if (format.startsWith('align')) {
+                    if (format === 'align-left') {
+                        quill1.format('align', false);
+                        setAlignment1('left');
+                    } else {
+                        quill1.format('align', format.split('-')[1]);
+                        setAlignment1(format.split('-')[1]);
+                    }
+                } else {
+                    const isActive = currentFormats[format];
+                    quill1.format(format, !isActive);
                 }
-            };
-            fileInput.click();
-        } else if (format.startsWith('align')) {
-            setAlignments(prev => ({
-                ...prev,
-                [index]: {
-                    ...prev[index],
-                    [type]: format === 'align-left' ? 'left' : format.split('-')[1]
+            }
+        }
+    };
+
+    useEffect(() => {
+        if (quillRef1.current) {
+            setQuill1(quillRef1.current.getEditor());
+        }
+    }, []);
+
+    const handleKeyDown1 = () => {
+        if (quill1) {
+            const range = quill1.getSelection();
+            if (range) {
+                const currentFormats = quill1.getFormat(range);
+                if (currentFormats.bold) {
+                    quill1.format('bold', false);
                 }
-            }));
-            quill.format('align', format === 'align-left' ? false : format.split('-')[1]);
-        } else {
-            quill.format(format, !currentFormats[format]);
+                if (currentFormats.italic) {
+                    quill1.format('italic', false);
+                }
+                if (currentFormats.underline) {
+                    quill1.format('underline', false);
+                }
+            }
+        }
+    };
+
+    // ------------------------------------------------------------------------------------------------------------------------------------
+    // state for ReactQuill 1 FOR EXPLAINTION
+    const [value2, setValue2] = useState('');
+    const quillRef2 = useRef<ReactQuill | null>(null); // Ref to hold ReactQuill instance
+    const [quill2, setQuill2] = useState<Quill | null>(null);
+    const [alignment2, setAlignment2] = useState<string | null>(null); // State to hold alignment
+    const [isWriting2, setIsWriting2] = useState(false); // Track if text is being written
+
+    const handleChange2 = (content: string) => {
+        setValue2(content);
+        checkTextContent2(content);
+    };
+
+    const checkTextContent2 = (content: string) => {
+        const plainText = content.replace(/<[^>]+>/g, '').trim();
+        setIsWriting2(plainText.length > 0);
+    };
+
+    const handleIconClick2 = (format: string) => {
+        if (quill2) {
+            const range = quill2.getSelection();
+            if (range) {
+                const currentFormats = quill2.getFormat(range);
+                if (format === 'ordered') {
+                    quill2.format('list', currentFormats.list === 'ordered' ? false : 'ordered');
+                } else if (format === 'image') {
+                    const fileInput = document.createElement('input');
+                    fileInput.type = 'file';
+                    fileInput.accept = 'image/*';
+                    fileInput.onchange = () => {
+                        const file = fileInput.files?.[0];
+                        if (file) {
+                            const reader = new FileReader();
+                            reader.onload = (e) => {
+                                if (e.target && e.target.result) {
+                                    const imageUrl = e.target.result as string;
+                                    quill2.insertEmbed(range.index, 'image', imageUrl);
+                                }
+                            };
+                            reader.readAsDataURL(file);
+                        }
+                    };
+                    fileInput.click();
+                } else if (format === 'bullet') {
+                    quill2.format('list', currentFormats.list === 'bullet' ? false : 'bullet');
+                } else if (format.startsWith('align')) {
+                    if (format === 'align-left') {
+                        quill2.format('align', false);
+                        setAlignment2('left');
+                    } else {
+                        quill2.format('align', format.split('-')[1]);
+                        setAlignment2(format.split('-')[1]);
+                    }
+                } else {
+                    const isActive = currentFormats[format];
+                    quill2.format(format, !isActive);
+                }
+            }
+        }
+    };
+
+    useEffect(() => {
+        if (quillRef2.current) {
+            setQuill2(quillRef2.current.getEditor());
+        }
+    }, []);
+
+    const handleKeyDown2 = () => {
+        if (quill2) {
+            const range = quill2.getSelection();
+            if (range) {
+                const currentFormats = quill2.getFormat(range);
+                if (currentFormats.bold) {
+                    quill2.format('bold', false);
+                }
+                if (currentFormats.italic) {
+                    quill2.format('italic', false);
+                }
+                if (currentFormats.underline) {
+                    quill2.format('underline', false);
+                }
+            }
         }
     };
 
@@ -268,34 +337,13 @@ function Questions({ questionsList, setQuestionsList }: QuestionsProps) {
             [index]: false,
         }));
     };
-    const isDataMissing = (question: Question) => {
-        return !question.question.trim() ||
-            !question.options.A.trim() ||
-            !question.options.B.trim() ||
-            !question.options.C.trim() ||
-            !question.options.D.trim() ||
-            !question.correctAnswer ||
-            !question.explanation.trim();
-    };
-    const handleOpen = (index: number) => {
-        setVisited((prevVisited) => {
-            const newVisited = [...prevVisited];
-            newVisited[index] = true;
-            return newVisited;
-        });
-        setOpenIndex(index);
-    };
-
     return (
         <div className="pb-4 h-auto">
             {questionsList.map((question, index) => (
-                <div key={index} className=" border-lightGrey rounded-md border mt-4 h-auto bg-[#FFFFFF] ">
-
+                <div key={index} className="rounded-md border border-solid border-[#EAECF0] mt-4 h-auto bg-[#FFFFFF]">
                     <Collapsible
-                        open={openIndex === index}
-                        className={`border  rounded-md ${visited[index] && isDataMissing(question) ? "border-red-700" : "border-[#EAECF0]"}`}
                         trigger={
-                            <div className='h-auto bg-[#FFFFFF] flex flex-col p-5 gap-2 rounded-md '>
+                            <div className='h-auto bg-[#FFFFFF] flex flex-col p-5 gap-2 rounded-md'>
                                 <div className="h-auto flex flex-row justify-between gap-4 items-start">
                                     <div className="flex gap-2 ">
                                         <div className="h-6 min-w-[24px] rounded-[4px] mt-[2px] bg-[#EAECF0] flex justify-center ">
@@ -305,7 +353,7 @@ function Questions({ questionsList, setQuestionsList }: QuestionsProps) {
                                     </div>
                                     <Popover placement="bottom-end" isOpen={!!openPopovers[index]}
                                         onOpenChange={() => closePopover(index)}>
-                                        <PopoverTrigger>
+                                        <PopoverTrigger onClick={(event) => event.stopPropagation()}>
                                             <button className="w-[32px] h-[32px]  rounded-full flex items-center justify-center transition-all duration-300 ease-in-out hover:bg-[#F2F4F7]">
                                                 <button className="min-w-[20px] min-h-[20px] mt-[2px]"
                                                     onClick={() => togglePopover(index)}>
@@ -320,8 +368,8 @@ function Questions({ questionsList, setQuestionsList }: QuestionsProps) {
                                         </PopoverTrigger>
                                         <PopoverContent className="h-[88px] w-[167px] px-0 border border-solid border-[#EAECF0] bg-[#FFFFFF] rounded-md flex flex-col py-[4px] shadow-lg">
                                             <button
-                                                className="flex flex-row h-[40px] w-full px-3 gap-2 hover:bg-[#F2F4F7] items-center"
 
+                                                className="flex flex-row h-[40px] w-full px-3 gap-2 hover:bg-[#F2F4F7] items-center"
                                                 onClick={(e) => { e.stopPropagation(); closePopover(index); handleAddQuestionduplicate(question) }}>
                                                 <Image
                                                     src="/icons/duplicate.svg"
@@ -332,9 +380,8 @@ function Questions({ questionsList, setQuestionsList }: QuestionsProps) {
                                                 <span className="text-[#0C111D] text-sm font-medium">Duplicate</span>
                                             </button>
                                             <button
-                                                className="flex flex-row h-[40px] w-full px-3 gap-2 hover:bg-[#FEE4E2] items-center"
-                                                onClick={(e) => { e.stopPropagation(); closePopover(index); handleDeleteQuestion(index) }}
-                                            >
+                                                className="flex flex-row h-[40px] w-full px-3 gap-2 hover:bg-[#F2F4F7] items-center"
+                                                onClick={(e) => { e.stopPropagation(); closePopover(index); handleDeleteQuestion(index) }}>
                                                 <Image
                                                     src="/icons/delete.svg"
                                                     width={18}
@@ -343,12 +390,13 @@ function Questions({ questionsList, setQuestionsList }: QuestionsProps) {
                                                 />
                                                 <span className="text-[#DE3024] text-sm font-medium">Delete</span>
                                             </button>
+
                                         </PopoverContent>
                                     </Popover>
                                 </div>
                             </div>
                         }
-                        onOpening={() => handleOpen(index)}
+
                     >
                         <div className='h-auto bg-[#FFFFFF] flex flex-col pb-5 px-5 gap-2 rounded-br-md rounded-bl-md'>
                             <div className="flex flex-col gap-2">
@@ -358,14 +406,6 @@ function Questions({ questionsList, setQuestionsList }: QuestionsProps) {
                                     className="pt-2 bg-[#FFFFFF] border border-gray-300 focus:outline focus:outline-[1.5px] focus:outline-[#D6BBFB] hover:outline hover:outline-[1.5px] hover:outline-[#D6BBFB] focus-within:border-[#D7BBFC] focus-within:ring-4 focus-within:ring-[#E8DEFB] focus-within:outline-none transition-colors rounded-[12px] h-auto">
                                     <div className="bg-[#FFFFFF] ">
                                         <ReactQuill
-                                            ref={(el) => handleQuillMount(index, 'question', el)}
-                                            value={question.question}
-                                            onChange={(content) => handleQuillChange(index, 'question', content)}
-                                            modules={modules}
-                                            placeholder="Question"
-                                            className="text-[#1D2939] focus:outline-none rounded-b-[12px] custom-quill placeholder:not-italic min-h-[10px] max-h-[350px] overflow-y-auto border-none font-normal break-all"
-                                        />
-                                        {/* <ReactQuill
                                             ref={quillRef1}
                                             value={question.question}
                                             onChange={(value) => handleInputChange(index, value)}
@@ -373,26 +413,26 @@ function Questions({ questionsList, setQuestionsList }: QuestionsProps) {
                                             modules={{ toolbar: false }}
                                             placeholder="Description"
                                             className="text-[#1D2939] focus:outline-none rounded-b-[12px] custom-quill placeholder:not-italic min-h-[10px] max-h-[150px] overflow-y-auto border-none font-normal break-all"
-                                        /> */}
+                                        />
                                     </div>
                                     <div className="h-[66px] bg-[#FFFFFF] rounded-bl-[12px] rounded-br-[12px] flex justify-center items-center">
                                         <div className="flex flex-row w-full justify-between items-center mx-5">
                                             <div className="h-[24px] w-[288px] gap-[24px] flex flex-row">
-                                                <button onClick={() => handleIconClick(index, 'question', 'bold')}>
+                                                <button onClick={() => handleIconClick1('bold')}>
                                                     <Image src="/icons/Bold.svg" width={24} height={24} alt="bold" />
                                                 </button>
-                                                <button onClick={() => handleIconClick(index, 'question', 'italic')}>
+                                                <button onClick={() => handleIconClick1('italic')}>
                                                     <Image src="/icons/italic-icon.svg" width={24} height={24} alt="italic-icon" />
                                                 </button>
-                                                <button onClick={() => handleIconClick(index, 'question', 'underline')}>
+                                                <button onClick={() => handleIconClick1('underline')}>
                                                     <Image src="/icons/underline-icon.svg" width={24} height={24} alt="underline-icon" />
                                                 </button>
                                                 <Popover placement="bottom-start" className="flex flex-row justify-end">
                                                     <PopoverTrigger className="">
                                                         <button className="flex items-center justify-center p-1">
-                                                            {alignments[index]?.question === 'center' ? (
+                                                            {alignment1 === 'center' ? (
                                                                 <Image src="/icons/align-middle.svg" width={24} height={26} alt="align-center" />
-                                                            ) : alignments[index]?.question === 'right' ? (
+                                                            ) : alignment1 === 'right' ? (
                                                                 <Image src="/icons/align-right.svg" width={24} height={26} alt="align-right" />
                                                             ) : (
                                                                 <Image src="/icons/dropdown-icon-1.svg" width={32} height={32} alt="align-left" />
@@ -401,22 +441,22 @@ function Questions({ questionsList, setQuestionsList }: QuestionsProps) {
                                                     </PopoverTrigger>
                                                     <PopoverContent className="flex flex-row bg-white rounded-[8px] border-[1px] border-solid border-[#EAECF0] p-2 w-[120px] shadow-[0_2px_4px_#EAECF0] gap-2 ">
 
-                                                        <button onClick={() => handleIconClick(index, 'question', 'align-left')} className="flex items-center justify-center">
+                                                        <button onClick={() => handleIconClick1("align-left")} className="flex items-center justify-center">
                                                             <Image src="/icons/align-left.svg" width={30} height={30} alt="align-left" />
                                                         </button>
-                                                        <button onClick={() => handleIconClick(index, 'question', 'align-center')} className="flex items-center justify-center">
+                                                        <button onClick={() => handleIconClick1("align-center")} className="flex items-center justify-center">
                                                             <Image src="/icons/align-middle.svg" width={30} height={30} alt="align-center" />
                                                         </button>
-                                                        <button onClick={() => handleIconClick(index, 'question', 'align-right')} className="flex items-center justify-center">
+                                                        <button onClick={() => handleIconClick1("align-right")} className="flex items-center justify-center">
                                                             <Image src="/icons/align-right.svg" width={30} height={30} alt="align-right" />
                                                         </button>
 
                                                     </PopoverContent>
                                                 </Popover>
-                                                <button onClick={() => handleIconClick(index, 'question', 'ordered')}>
+                                                <button onClick={() => handleIconClick1('ordered')}>
                                                     <Image src="/icons/dropdown-icon-2.svg" width={27} height={27} alt="ordered-list" />
                                                 </button>
-                                                <button onClick={() => handleIconClick(index, 'question', 'image')}
+                                                <button onClick={() => handleIconClick1('image')}
                                                     className="hover:bg-[#EAECF0]">
                                                     <Image src="/icons/upload-image-icon.svg" width={24} height={24} alt="upload-image-icon" />
                                                 </button>
@@ -425,6 +465,7 @@ function Questions({ questionsList, setQuestionsList }: QuestionsProps) {
                                     </div>
                                 </div>
                             </div>
+
                             <span className="font-semibold text-base text-[#1D2939]">Options</span>
                             <div className="flex flex-col gap-3">
                                 {(Object.keys(question.options) as Array<keyof Options>).map((optionKey) => (
@@ -437,7 +478,7 @@ function Questions({ questionsList, setQuestionsList }: QuestionsProps) {
                                         <input
                                             className="font-medium pl-3 text-[#101828] text-sm placeholder:text-[#A1A1A1] rounded-md w-full placeholder:font-normal
                                                 focus:outline-none focus:ring-0 border border-solid border-[#D0D5DD] h-[40px] focus:border-[#D6BBFB]
-                                                focus:shadow-[0px_0px_0px_4px_rgba(158,119,237,0.25),0px_1px_2px_0px_rgba(16,24,40,0.05)]"
+                                              focus:shadow-[0px_0px_0px_4px_rgba(158,119,237,0.25),0px_1px_2px_0px_rgba(16,24,40,0.05)]"
                                             placeholder={`Option ${optionKey}`}
                                             value={question.options[optionKey]}
                                             onChange={(e) => handleOptionChange(index, optionKey, e.target.value)}
@@ -494,25 +535,19 @@ function Questions({ questionsList, setQuestionsList }: QuestionsProps) {
                                 </PopoverContent>
                             </Popover>
                             <div
-                                className="pt-2 bg-[#FFFFFF] rounded-[12px] border border-gray-300 focus:outline focus:outline-[1.5px] focus:outline-[#D6BBFB] hover:outline hover:outline-[1.5px] hover:outline-[#D6BBFB] focus-within:border-[#D7BBFC] focus-within:ring-4 focus-within:ring-[#E8DEFB] focus-within:outline-none transition-colors h-auto">
+                                className={`pt-2 bg-[#FFFFFF] border ${isWriting2 ? 'border-[#D6BBFB]  shadow-[0px_0px_0px_4px_rgba(158,119,237,0.25),0px_1px_2px_0px_rgba(16,24,40,0.05)]' : 'border-[#EAECF0]'
+                                    } rounded-[12px] h-auto`}>
                                 {/* Textarea for writing the description */}
                                 <div className="bg-[#FFFFFF] ">
                                     <ReactQuill
-                                        ref={(el) => handleQuillMount(index, 'explanation', el)}
-                                        value={question.explanation}
-                                        onChange={(content) => handleQuillChange(index, 'explanation', content)}
-                                        modules={modules}
-                                        placeholder="Explanation"
-                                        className="text-[#1D2939] focus:outline-none rounded-b-[12px] custom-quill placeholder:not-italic min-h-[10px] max-h-[350px] overflow-y-auto border-none font-normal break-all"
-                                    />
-                                    {/* <ReactQuill
                                         ref={quillRef2}
                                         value={question.explanation}
                                         onChange={(value) => handleExplanationChange(index, value)} // Use `value` directly
                                         onKeyDown={handleKeyDown2}
                                         modules={{ toolbar: false }}
                                         placeholder="Description"
-                                    /> */}
+                                        className="text-[#1D2939] focus:outline-none rounded-b-[12px] custom-quill placeholder:not-italic min-h-[10px] max-h-[150px] overflow-y-auto border-none font-normal break-all"
+                                    />
 
                                 </div>
 
@@ -521,22 +556,22 @@ function Questions({ questionsList, setQuestionsList }: QuestionsProps) {
                                         {/* Formatting options */}
                                         <div className="h-[24px] w-[288px] gap-[24px] flex flex-row">
                                             {/* Icons for formatting */}
-                                            <button onClick={() => handleIconClick(index, 'explanation', 'bold')}>
+                                            <button onClick={() => handleIconClick2('bold')}>
                                                 <Image src="/icons/Bold.svg" width={24} height={24} alt="bold" />
                                             </button>
-                                            <button onClick={() => handleIconClick(index, 'explanation', 'italic')}>
+                                            <button onClick={() => handleIconClick2('italic')}>
                                                 <Image src="/icons/italic-icon.svg" width={24} height={24} alt="italic-icon" />
                                             </button>
-                                            <button onClick={() => handleIconClick(index, 'explanation', 'underline')}>
+                                            <button onClick={() => handleIconClick2('underline')}>
                                                 <Image src="/icons/underline-icon.svg" width={24} height={24} alt="underline-icon" />
                                             </button>
                                             {/* Alignment options in a popover */}
                                             <Popover placement="bottom-start" className="flex flex-row justify-end">
                                                 <PopoverTrigger className="">
                                                     <button className="flex items-center justify-center p-1">
-                                                        {alignments[index]?.explanation === 'center' ? (
+                                                        {alignment2 === 'center' ? (
                                                             <Image src="/icons/align-middle.svg" width={24} height={26} alt="align-center" />
-                                                        ) : alignments[index]?.explanation === 'right' ? (
+                                                        ) : alignment2 === 'right' ? (
                                                             <Image src="/icons/align-right.svg" width={24} height={26} alt="align-right" />
                                                         ) : (
                                                             <Image src="/icons/dropdown-icon-1.svg" width={32} height={32} alt="align-left" />
@@ -545,23 +580,23 @@ function Questions({ questionsList, setQuestionsList }: QuestionsProps) {
                                                 </PopoverTrigger>
                                                 <PopoverContent className="flex flex-row bg-white rounded-[8px] border-[1px] border-solid border-[#EAECF0] p-2 w-[120px] shadow-[0_2px_4px_#EAECF0] gap-2 ">
                                                     {/* Alignment options inside the popover */}
-
-                                                    <button onClick={() => handleIconClick(index, 'explanation', 'align-left')} className="flex items-center justify-center">
+                                                    <button onClick={() => handleIconClick2("align-left")} className="flex items-center justify-center hover:bg-[#EAECF0]">
                                                         <Image src="/icons/align-left.svg" width={30} height={30} alt="align-left" />
                                                     </button>
-                                                    <button onClick={() => handleIconClick(index, 'explanation', 'align-center')} className="flex items-center justify-center">
+                                                    <button onClick={() => handleIconClick2("align-center")} className="flex items-center justify-center hover:bg-[#EAECF0]">
                                                         <Image src="/icons/align-middle.svg" width={30} height={30} alt="align-center" />
                                                     </button>
-                                                    <button onClick={() => handleIconClick(index, 'explanation', 'align-right')} className="flex items-center justify-center">
+                                                    <button onClick={() => handleIconClick2("align-right")} className="flex items-center justify-center hover:bg-[#EAECF0]">
                                                         <Image src="/icons/align-right.svg" width={30} height={30} alt="align-right" />
                                                     </button>
 
                                                 </PopoverContent>
                                             </Popover>
-                                            <button onClick={() => handleIconClick(index, 'explanation', 'ordered')}>
-                                                <Image src="/icons/dropdown-icon-2.svg" width={27} height={27} alt="ordered-list" />
+                                            <button
+                                                onClick={() => handleIconClick2('ordered')}>
+                                                <Image src="/icons/dropdown-icon-2.svg" width={27} height={27} alt="dropdown-icon" />
                                             </button>
-                                            <button onClick={() => handleIconClick(index, 'explanation', 'image')}
+                                            <button onClick={() => handleIconClick2('image')}
                                                 className="hover:bg-[#EAECF0]">
                                                 <Image src="/icons/upload-image-icon.svg" width={24} height={24} alt="upload-image-icon" />
                                             </button>
@@ -576,16 +611,14 @@ function Questions({ questionsList, setQuestionsList }: QuestionsProps) {
 
             <div className="flex justify-center items-center mt-4">
                 <button
-                    className="h-[36px] w-[127px] rounded-[8px] bg-[#FFFFFF] hover:bg-[#F5F0FF] border border-solid border-[#8501FF] flex justify-center items-center"
+                    className="h-[36px] w-[127px] rounded-[8px] bg-[#FFFFFF] border border-solid border-[#8501FF] flex justify-center items-center"
                     onClick={handleAddQuestion}
                 >
                     <span className="text-[#8501FF] text-sm font-semibold">Add Question</span>
                 </button>
             </div>
-
-        </div >
+        </div>
     );
 }
 
 export default Questions;
-

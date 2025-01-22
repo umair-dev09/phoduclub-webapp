@@ -35,7 +35,6 @@ interface QuestionsProps {
 
 function Questions({ questionsList, setQuestionsList }: QuestionsProps) {
     const [visited, setVisited] = useState<boolean[]>(new Array(questionsList.length).fill(false));
-    const [openIndex, setOpenIndex] = useState<number | null>(null);
     // Handler for input change
     // const handleInputChange = (index: number, value: string | React.ChangeEvent<HTMLInputElement>) => {
     //     const newQuestionsList = [...questionsList];
@@ -71,8 +70,6 @@ function Questions({ questionsList, setQuestionsList }: QuestionsProps) {
                 questionId: '',
             }
         ]);
-        setVisited([...visited, false]);
-        setOpenIndex(null);
     };
     // -----------------------------------------------------------------------------------------------------------
     // Handler for adding the Questions
@@ -283,17 +280,14 @@ function Questions({ questionsList, setQuestionsList }: QuestionsProps) {
             newVisited[index] = true;
             return newVisited;
         });
-        setOpenIndex(index);
     };
 
     return (
         <div className="pb-4 h-auto">
             {questionsList.map((question, index) => (
-                <div key={index} className=" border-lightGrey rounded-md border mt-4 h-auto bg-[#FFFFFF] ">
-
+                <div key={index} className={`rounded-md border mt-4 h-auto bg-[#FFFFFF] ${visited[index] && isDataMissing(question) ? "border-red-500" : "border-[#EAECF0]"}`}>
                     <Collapsible
-                        open={openIndex === index}
-                        className={`border  rounded-md ${visited[index] && isDataMissing(question) ? "border-red-700" : "border-[#EAECF0]"}`}
+                        className={`border  rounded-md ${visited[index] && isDataMissing(question) ? "border-red-500" : "border-[#EAECF0]"}`}
                         trigger={
                             <div className='h-auto bg-[#FFFFFF] flex flex-col p-5 gap-2 rounded-md '>
                                 <div className="h-auto flex flex-row justify-between gap-4 items-start">
@@ -332,7 +326,7 @@ function Questions({ questionsList, setQuestionsList }: QuestionsProps) {
                                                 <span className="text-[#0C111D] text-sm font-medium">Duplicate</span>
                                             </button>
                                             <button
-                                                className="flex flex-row h-[40px] w-full px-3 gap-2 hover:bg-[#FEE4E2] items-center"
+                                                className="flex flex-row h-[40px] w-full px-3 gap-2 hover:bg-[#F2F4F7] items-center"
                                                 onClick={(e) => { e.stopPropagation(); closePopover(index); handleDeleteQuestion(index) }}
                                             >
                                                 <Image
@@ -355,7 +349,8 @@ function Questions({ questionsList, setQuestionsList }: QuestionsProps) {
                                 <span className="font-semibold text-base text-[#1D2939]">Question</span>
                                 {/*  QUILL 1 for QUESTIONS*/}
                                 <div
-                                    className="pt-2 bg-[#FFFFFF] border border-gray-300 focus:outline focus:outline-[1.5px] focus:outline-[#D6BBFB] hover:outline hover:outline-[1.5px] hover:outline-[#D6BBFB] focus-within:border-[#D7BBFC] focus-within:ring-4 focus-within:ring-[#E8DEFB] focus-within:outline-none transition-colors rounded-[12px] h-auto">
+                                    className={`pt-2 bg-[#FFFFFF] border ${writing[index]?.question ? 'border-[#D6BBFB]  shadow-[0px_0px_0px_4px_rgba(158,119,237,0.25),0px_1px_2px_0px_rgba(16,24,40,0.05)]' : 'border-[#EAECF0]'
+                                        } rounded-[12px] h-auto`}>
                                     <div className="bg-[#FFFFFF] ">
                                         <ReactQuill
                                             ref={(el) => handleQuillMount(index, 'question', el)}
@@ -494,7 +489,8 @@ function Questions({ questionsList, setQuestionsList }: QuestionsProps) {
                                 </PopoverContent>
                             </Popover>
                             <div
-                                className="pt-2 bg-[#FFFFFF] rounded-[12px] border border-gray-300 focus:outline focus:outline-[1.5px] focus:outline-[#D6BBFB] hover:outline hover:outline-[1.5px] hover:outline-[#D6BBFB] focus-within:border-[#D7BBFC] focus-within:ring-4 focus-within:ring-[#E8DEFB] focus-within:outline-none transition-colors h-auto">
+                                className={`pt-2 bg-[#FFFFFF] border ${writing[index]?.explanation ? 'border-[#D6BBFB]  shadow-[0px_0px_0px_4px_rgba(158,119,237,0.25),0px_1px_2px_0px_rgba(16,24,40,0.05)]' : 'border-[#EAECF0]'
+                                    } rounded-[12px] h-auto`}>
                                 {/* Textarea for writing the description */}
                                 <div className="bg-[#FFFFFF] ">
                                     <ReactQuill
@@ -576,7 +572,7 @@ function Questions({ questionsList, setQuestionsList }: QuestionsProps) {
 
             <div className="flex justify-center items-center mt-4">
                 <button
-                    className="h-[36px] w-[127px] rounded-[8px] bg-[#FFFFFF] hover:bg-[#F5F0FF] border border-solid border-[#8501FF] flex justify-center items-center"
+                    className="h-[36px] w-[127px] rounded-[8px] bg-[#FFFFFF] border border-solid border-[#8501FF] flex justify-center items-center"
                     onClick={handleAddQuestion}
                 >
                     <span className="text-[#8501FF] text-sm font-semibold">Add Question</span>

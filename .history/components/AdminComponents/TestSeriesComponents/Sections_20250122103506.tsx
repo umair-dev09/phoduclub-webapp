@@ -724,10 +724,7 @@ const Sections: React.FC<SectionsProps> = ({
                         <p className="text-sm">Add manually</p>
                       </button>
                       <button className="flex flex-row gap-1 items-center px-4 py-2 rounded-none w-full h-auto hover:bg-[#F2F4F7]"
-                        onClick={() => {
-                          setCsvUploadDialog(true);
-                          setPopoveropen(false);
-                        }} >
+                        onClick={() => setCsvUploadDialog(true)} >
                         <p className="text-sm">Upload CSV File</p>
                       </button>
                     </div>
@@ -750,10 +747,7 @@ const Sections: React.FC<SectionsProps> = ({
                   <PopoverContent className="p-0 rounded-md">
                     <div className="flex flex-col w-[180px] justify-center items-center py-1">
                       <button className="flex flex-row gap-1 items-center px-4 py-2 rounded-none w-full h-auto hover:bg-[#F2F4F7] "
-                        onClick={() => {
-                          handleAddQuestion();
-                          setPopoveropen(false);
-                        }}
+                        onClick={handleAddQuestion}
                       >
                         <p className="text-sm">Add manually</p>
                       </button>

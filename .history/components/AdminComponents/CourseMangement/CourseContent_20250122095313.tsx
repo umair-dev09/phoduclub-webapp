@@ -474,12 +474,19 @@ function CourseContent({ courseId }: CourseContentProps) {
                                             <td className="flex items-center justify-center px-8 py-4 text-[#101828] text-sm">
                                                 <Popover
                                                     placement="bottom-end"
-                                                    isOpen={openPopoverIndex === index}
-                                                    onOpenChange={(open) => handlePopoverToggle(index)}
+                                                    isOpen={popoveropen4 === index}
+                                                    onOpenChange={(open) => {
+                                                        if (!open) {
+                                                            setPopoveropen4(null);
+                                                        }
+                                                    }}
                                                 >
                                                     <PopoverTrigger>
                                                         <button
-
+                                                            onClick={(e) => {
+                                                                e.stopPropagation(); // Prevent event bubbling
+                                                                handlePopoverOpen4(index);
+                                                            }}
                                                         >
 
                                                             <Image
@@ -503,13 +510,13 @@ function CourseContent({ courseId }: CourseContentProps) {
                                                                     else if (content.type === 'Text') {
                                                                         setShowDrawerfortest(true);
                                                                     }
-                                                                    setPassedSectionId(section.sectionId); setIsContentEditing(true); setContentId(content.contentId); handlePopoverToggle(index);
+                                                                    setPassedSectionId(section.sectionId); setIsContentEditing(true); setContentId(content.contentId); setPopoveropen4(null);
                                                                 }} >
                                                                 <Image src="/icons/edit-02.svg" width={18} height={18} alt="edit" />
                                                                 <span className="text-sm text-[#0C111D] font-normal">Edit</span>
                                                             </button>
                                                             <button className=" flex flex-row items-center justify-start w-full py-2 gap-2 hover:bg-[#FEE4E2] pl-4 pr-9"
-                                                                onClick={() => { handleDeleteContent(section.sectionId, content.contentId); handlePopoverToggle(index); }}>
+                                                                onClick={() => { handleDeleteContent(section.sectionId, content.contentId); setPopoveropen4(null); }}>
                                                                 <Image src='/icons/delete.svg' alt="user profile" width={18} height={18} />
                                                                 <p className="text-sm text-[#DE3024] font-normal">Remove</p>
                                                             </button>

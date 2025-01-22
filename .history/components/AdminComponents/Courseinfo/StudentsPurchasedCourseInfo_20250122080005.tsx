@@ -267,7 +267,7 @@ function StudentsPurchasedCourseInfo() {
 
                     {/* Sort Button */}
                     <Popover placement="bottom"
-                        isOpen={popoveropen1}
+                        isOpen={open}
                         onOpenChange={(open) => setPopoveropen1(open)}>
                         <PopoverTrigger>
                             <button className="h-[44px] w-[105px] rounded-md bg-[#FFFFFF] border border-solid border-[#D0D5DD] flex items-center justify-center gap-2 outline-none">
@@ -288,7 +288,6 @@ function StudentsPurchasedCourseInfo() {
                                 onClick={() => {
                                     setEnrollmentFilter('Free');
                                     setSortConfig({ key: '', direction: null });
-                                    setPopoveropen1(false);
                                 }}
                             >
                                 <p className={`text-sm ${enrollmentFilter === 'Free' ? 'font-medium text-purple' : 'font-normal text-[#0C111D]'}`}>
@@ -303,7 +302,6 @@ function StudentsPurchasedCourseInfo() {
                                 onClick={() => {
                                     setEnrollmentFilter('Paid');
                                     setSortConfig({ key: '', direction: null });
-                                    setPopoveropen1(false);
                                 }}
                             >
                                 <p className={`text-sm ${enrollmentFilter === 'Paid' ? 'font-medium text-purple' : 'font-normal text-[#0C111D]'}`}>
@@ -316,7 +314,7 @@ function StudentsPurchasedCourseInfo() {
                             {enrollmentFilter && (
                                 <div
                                     className="flex flex-row items-center w-full my-0 py-[0.625rem] px-4 gap-2 cursor-pointer transition-colors hover:bg-[#F2F4F7] border-t border-lightGrey"
-                                    onClick={() => { handleClear(); setPopoveropen1(false); }}
+                                    onClick={handleClear}
                                 >
                                     <p className="text-sm font-normal text-[#0C111D]">Clear</p>
                                 </div>
