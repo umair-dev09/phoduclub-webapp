@@ -15,6 +15,8 @@ import Drawer from "react-modern-drawer";
 import ReviewTest from "@/components/DashboardComponents/LearnComponents/TestsComponents/ReviewTest";
 import { useRouter } from "next/navigation";
 import { set, sub } from "date-fns";
+import InstructionsDialog from "./AttemptTestDialogues/InstructionsDialogue";
+import InformationDialog from "./AttemptTestDialogues/InformationDialogue";
 
 interface Section {
     id: string;
@@ -29,16 +31,16 @@ interface Section {
     testTime: number;
     isUmbrellaTest: boolean;
     isParentUmbrellaTest: boolean;
-  }
-  
-  // Enhanced interfaces
+}
+
+// Enhanced interfaces
 interface Question extends BaseQuestion {
     allotedTime: number;
     spentTime: number;
     remarks: QuestionRemarks;
-  }
-  
-  interface BaseQuestion {
+}
+
+interface BaseQuestion {
     question: string;
     isChecked: boolean;
     isActive: boolean;
@@ -47,23 +49,23 @@ interface Question extends BaseQuestion {
     answerExplanation: string;
     questionId: string;
     difficulty: 'Easy' | 'Medium' | 'High';
-  }
-  
-  type QuestionRemarks = 'Perfect' | 'Overtime' | 'Wasted' | 'Confused' | '-';
-  
-  interface AttemptInterval {
+}
+
+type QuestionRemarks = 'Perfect' | 'Overtime' | 'Wasted' | 'Confused' | '-';
+
+interface AttemptInterval {
     interval: number; // time in seconds
     correctAnswered: number;
     incorrectAnswered: number;
-  }
-  interface Options {
+}
+interface Options {
     A: string;
     B: string;
     C: string;
     D: string;
-  }
-  
-  interface SectionResult {
+}
+
+interface SectionResult {
     sectionName: string;
     attemptedQuestions: string;
     answeredCorrect: string;
@@ -72,9 +74,9 @@ interface Question extends BaseQuestion {
     accuracy: string;
     timeTaken: string;
     questions: QuestionState[];
-  }
-  
-  interface QuestionState {
+}
+
+interface QuestionState {
     questionId: string;
     status: 'not-visited' | 'not-answered' | 'marked' | 'answered' | 'answered-marked';
     answered: boolean;
@@ -86,37 +88,37 @@ interface Question extends BaseQuestion {
     question: string;
     difficulty: 'Easy' | 'Medium' | 'High';
 }
-  // Helper functions
+// Helper functions
 const calculateAllotedTime = (difficulty: string): number => {
     switch (difficulty) {
-      case 'Easy': return 60;
-      case 'Medium': return 90;
-      case 'Hard': return 120;
-      default: return 90;
+        case 'Easy': return 60;
+        case 'Medium': return 90;
+        case 'Hard': return 120;
+        default: return 90;
     }
-  };
-  
-  const determineRemarks = (
+};
+
+const determineRemarks = (
     allotedTime: number,
     spentTime: number,
     isCorrect: boolean | null,
     answered: boolean
-  ): QuestionRemarks => {
+): QuestionRemarks => {
     if (!answered) {
-      return spentTime > allotedTime ? 'Confused' : '-';
+        return spentTime > allotedTime ? 'Confused' : '-';
     }
-    
-    if (isCorrect) {
-      return spentTime <= allotedTime ? 'Perfect' : 'Overtime';
-    }
-    
-    return spentTime < (allotedTime * 0.5) ? 'Wasted' : '-';
-  };
 
-  interface SubSection extends Section {
+    if (isCorrect) {
+        return spentTime <= allotedTime ? 'Perfect' : 'Overtime';
+    }
+
+    return spentTime < (allotedTime * 0.5) ? 'Wasted' : '-';
+};
+
+interface SubSection extends Section {
     questions?: Question[];
     states?: QuestionState[];
-  }
+}
 
 type UserData = {
     uniqueId: string;
@@ -202,7 +204,7 @@ const StatusDisplay = ({ counts }: { counts: ReturnType<typeof getStatusCounts> 
     );
 };
 
-function formatTimeForReview (seconds: number): string {
+function formatTimeForReview(seconds: number): string {
     const totalSeconds = seconds;
     const hours = Math.floor(totalSeconds / 3600); // Calculate hours
     const minutes = Math.floor((totalSeconds % 3600) / 60); // Calculate remaining minutes
@@ -221,8 +223,8 @@ function formatTimeForReview (seconds: number): string {
 interface SubSectionTimer {
     timeSpent: number;
     lastStartTime: number;
-  }
-  
+}
+
 
 function ReviewTestView() {
     const searchParams = useSearchParams();
@@ -259,170 +261,170 @@ function ReviewTestView() {
     const [activeSubSectionIndex, setActiveSubSectionIndex] = useState(0);
     const [startQuestionTime, setStartQuestionTime] = useState<number>(Date.now());
     // const [questionTimers, setQuestionTimers] = useState<{ [key: string]: number }>({});
-//   const [lastQuestionStartTime, setLastQuestionStartTime] = useState<number>(Date.now());
-// const [sectionTimers, setSectionTimers] = useState<{ [key: string]: number }>({});
-// const [lastSectionTimestamp, setLastSectionTimestamp] = useState<{ [key: string]: number }>({});
-// const [overallTestStartTime] = useState<number>(Date.now());
+    //   const [lastQuestionStartTime, setLastQuestionStartTime] = useState<number>(Date.now());
+    // const [sectionTimers, setSectionTimers] = useState<{ [key: string]: number }>({});
+    // const [lastSectionTimestamp, setLastSectionTimestamp] = useState<{ [key: string]: number }>({});
+    // const [overallTestStartTime] = useState<number>(Date.now());
 
- // Initialize question states with timing fields
- const initializeQuestionStates = (questions: any[]) => {
-    return questions.map(q => ({
-      selectedOption: null,
-      answered: false,
-      answeredCorrect: null,
-      status: 'not-visited',
-      spentTime: 0,
-      allotedTime: calculateAllotedTime(q)
-    }));
-  };
-  const calculateFinalRemarks = (questionStates: QuestionState[]) => {
-    return questionStates.map(state => ({
-      ...state,
-      remarks: determineRemarks(
-         state.allotedTime,
-         state.spentTime,
-         state.answeredCorrect,
-         state.answered,
-        // Add other necessary parameters your determineRemarks function needs
-      )
-    }));
-  };
-  const [remainingTime, setRemainingTime] = useState<number>(0);
-const [formattedTime, setFormattedTime] = useState<string>("00:00:00");
-const [initialTestTime, setInitialTestTime] = useState<number>(0);
-const [timerStarted, setTimerStarted] = useState(false);
-const [subsectionTimers, setSubsectionTimers] = useState<{ [key: string]: SubSectionTimer }>({});
+    // Initialize question states with timing fields
+    const initializeQuestionStates = (questions: any[]) => {
+        return questions.map(q => ({
+            selectedOption: null,
+            answered: false,
+            answeredCorrect: null,
+            status: 'not-visited',
+            spentTime: 0,
+            allotedTime: calculateAllotedTime(q)
+        }));
+    };
+    const calculateFinalRemarks = (questionStates: QuestionState[]) => {
+        return questionStates.map(state => ({
+            ...state,
+            remarks: determineRemarks(
+                state.allotedTime,
+                state.spentTime,
+                state.answeredCorrect,
+                state.answered,
+                // Add other necessary parameters your determineRemarks function needs
+            )
+        }));
+    };
+    const [remainingTime, setRemainingTime] = useState<number>(0);
+    const [formattedTime, setFormattedTime] = useState<string>("00:00:00");
+    const [initialTestTime, setInitialTestTime] = useState<number>(0);
+    const [timerStarted, setTimerStarted] = useState(false);
+    const [subsectionTimers, setSubsectionTimers] = useState<{ [key: string]: SubSectionTimer }>({});
 
-// Add helper function to format time
-const formatTime = (seconds: number): string => {
-  const hours = Math.floor(seconds / 3600);
-  const minutes = Math.floor((seconds % 3600) / 60);
-  const remainingSeconds = seconds % 60;
-  
-  return [hours, minutes, remainingSeconds]
-    .map(val => val.toString().padStart(2, '0'))
-    .join(':');
-};
+    // Add helper function to format time
+    const formatTime = (seconds: number): string => {
+        const hours = Math.floor(seconds / 3600);
+        const minutes = Math.floor((seconds % 3600) / 60);
+        const remainingSeconds = seconds % 60;
 
-// Add function to calculate total test time
-const calculateTotalTestTime = (section: any): number => {
-  if (!section) return 0;
-  
-  if (section.isUmbrellaTest) {
-    return subSections.reduce((total, subsection) => 
-      total + (subsection.testTime || 0), 0);
-  }
-  
-  return parseInt(section.testTime) || 0;
-};
+        return [hours, minutes, remainingSeconds]
+            .map(val => val.toString().padStart(2, '0'))
+            .join(':');
+    };
 
-const initializeTimer = (section: Section) => {
-    if (!timerStarted) {
-      const totalTime = section.isUmbrellaTest
-        ? subSections.reduce((total, sub) => total + (sub.testTime || 0), 0)
-        : section.testTime || 0;
-      
-      setInitialTestTime(totalTime);
-      setRemainingTime(totalTime);
-      setFormattedTime(formatTime(totalTime));
-      setTimerStarted(true);
-    }
-  };
-  
-// Update useEffect for timer
-useEffect(() => {
-    if (currentSection && !timerStarted) {
-        initializeTimer(currentSection);
-    }
-}, [currentSection, subSections]);
+    // Add function to calculate total test time
+    const calculateTotalTestTime = (section: any): number => {
+        if (!section) return 0;
 
-// Separate timer countdown effect 
-useEffect(() => {
-    if (!timerStarted || remainingTime <= 0) return;
+        if (section.isUmbrellaTest) {
+            return subSections.reduce((total, subsection) =>
+                total + (subsection.testTime || 0), 0);
+        }
 
-    const timer = setInterval(() => {
-        setRemainingTime(prev => {
-            const newTime = Math.max(0, prev - 1);
-            setFormattedTime(formatTime(newTime));
-            
-            // Trigger handleTimeOver when time reaches 0
-            if (newTime === 0) {
-                handleTimeOver();
+        return parseInt(section.testTime) || 0;
+    };
+
+    const initializeTimer = (section: Section) => {
+        if (!timerStarted) {
+            const totalTime = section.isUmbrellaTest
+                ? subSections.reduce((total, sub) => total + (sub.testTime || 0), 0)
+                : section.testTime || 0;
+
+            setInitialTestTime(totalTime);
+            setRemainingTime(totalTime);
+            setFormattedTime(formatTime(totalTime));
+            setTimerStarted(true);
+        }
+    };
+
+    // Update useEffect for timer
+    useEffect(() => {
+        if (currentSection && !timerStarted) {
+            initializeTimer(currentSection);
+        }
+    }, [currentSection, subSections]);
+
+    // Separate timer countdown effect 
+    useEffect(() => {
+        if (!timerStarted || remainingTime <= 0) return;
+
+        const timer = setInterval(() => {
+            setRemainingTime(prev => {
+                const newTime = Math.max(0, prev - 1);
+                setFormattedTime(formatTime(newTime));
+
+                // Trigger handleTimeOver when time reaches 0
+                if (newTime === 0) {
+                    handleTimeOver();
+                }
+
+                return newTime;
+            });
+        }, 1000);
+
+        return () => clearInterval(timer);
+    }, [timerStarted, remainingTime]);
+
+    const getTotalTimeSpent = (timer: SubSectionTimer): number => {
+        if (!timer) return 0;
+        const currentTime = Date.now();
+        const activeTime = timer.lastStartTime ? Math.floor((currentTime - timer.lastStartTime) / 1000) : 0;
+        return timer.timeSpent + activeTime;
+    };
+
+    const startSubsectionTimer = (sectionId: string) => {
+        setSubsectionTimers(prev => ({
+            ...prev,
+            [sectionId]: {
+                timeSpent: prev[sectionId]?.timeSpent || 0,
+                lastStartTime: Date.now()
             }
-            
-            return newTime;
+        }));
+    };
+
+    const stopSubsectionTimer = (sectionId: string) => {
+        setSubsectionTimers(prev => {
+            const timer = prev[sectionId];
+            if (!timer) return prev;
+
+            return {
+                ...prev,
+                [sectionId]: {
+                    timeSpent: getTotalTimeSpent(timer),
+                    lastStartTime: 0
+                }
+            };
         });
-    }, 1000);
+    };
 
-    return () => clearInterval(timer);
-}, [timerStarted, remainingTime]);
+    // Timer management functions
+    const updateCurrentQuestionTime = () => {
+        const currentTime = Date.now();
+        const timeSpent = Math.floor((currentTime - startQuestionTime) / 1000);
 
-  const getTotalTimeSpent = (timer: SubSectionTimer): number => {
-    if (!timer) return 0;
-    const currentTime = Date.now();
-    const activeTime = timer.lastStartTime ? Math.floor((currentTime - timer.lastStartTime) / 1000) : 0;
-    return timer.timeSpent + activeTime;
-  };
-  
-  const startSubsectionTimer = (sectionId: string) => {
-    setSubsectionTimers(prev => ({
-      ...prev,
-      [sectionId]: {
-        timeSpent: prev[sectionId]?.timeSpent || 0,
-        lastStartTime: Date.now()
-      }
-    }));
-  };
-  
-  const stopSubsectionTimer = (sectionId: string) => {
-    setSubsectionTimers(prev => {
-      const timer = prev[sectionId];
-      if (!timer) return prev;
-      
-      return {
-        ...prev,
-        [sectionId]: {
-          timeSpent: getTotalTimeSpent(timer),
-          lastStartTime: 0
+        if (currentSection?.isUmbrellaTest) {
+            // Update time in subsection states
+            const updatedSubSections = [...subSections];
+            const currentSubSection = updatedSubSections[activeSubSectionIndex];
+
+            if (currentSubSection?.states?.[currentQuestionIndex]) {
+                currentSubSection.states[currentQuestionIndex] = {
+                    ...currentSubSection.states[currentQuestionIndex],
+                    spentTime: (currentSubSection.states[currentQuestionIndex].spentTime || 0) + timeSpent
+                };
+                setSubSections(updatedSubSections);
+            }
+        } else {
+            // Update time for normal test
+            setQuestionStates(prev => {
+                const updated = [...prev];
+                if (updated[currentQuestionIndex]) {
+                    updated[currentQuestionIndex] = {
+                        ...updated[currentQuestionIndex],
+                        spentTime: (updated[currentQuestionIndex].spentTime || 0) + timeSpent
+                    };
+                }
+                return updated;
+            });
         }
-      };
-    });
-  };
 
-// Timer management functions
-const updateCurrentQuestionTime = () => {
-    const currentTime = Date.now();
-    const timeSpent = Math.floor((currentTime - startQuestionTime) / 1000);
-    
-    if (currentSection?.isUmbrellaTest) {
-      // Update time in subsection states
-      const updatedSubSections = [...subSections];
-      const currentSubSection = updatedSubSections[activeSubSectionIndex];
-      
-      if (currentSubSection?.states?.[currentQuestionIndex]) {
-        currentSubSection.states[currentQuestionIndex] = {
-          ...currentSubSection.states[currentQuestionIndex],
-          spentTime: (currentSubSection.states[currentQuestionIndex].spentTime || 0) + timeSpent
-        };
-        setSubSections(updatedSubSections);
-      }
-    } else {
-      // Update time for normal test
-      setQuestionStates(prev => {
-        const updated = [...prev];
-        if (updated[currentQuestionIndex]) {
-          updated[currentQuestionIndex] = {
-            ...updated[currentQuestionIndex],
-            spentTime: (updated[currentQuestionIndex].spentTime || 0) + timeSpent
-          };
-        }
-        return updated;
-      });
-    }
-    
-    setStartQuestionTime(Date.now());
-  };
-  
+        setStartQuestionTime(Date.now());
+    };
+
 
     // const handleTimeUpdate = (timeLeft: number) => {
     //     setCurrentTime(timeLeft);
@@ -450,118 +452,84 @@ const updateCurrentQuestionTime = () => {
     }, []);
 
     const fetchQuestionsForSection = async (path: string) => {
-            const sectionRef = doc(db, path);
-            const questionsRef = collection(sectionRef, 'Questions');
-            const questionsSnap = await getDocs(questionsRef);
-            
-            const fetchedQuestions: Question[] = [];
-            questionsSnap.forEach((questionDoc) => {
-                const questionData = questionDoc.data() as Question;
-                fetchedQuestions.push({
-                    ...questionData,
-                    questionId: questionDoc.id,
-                    isChecked: false,
-                    isActive: false
-                });
+        const sectionRef = doc(db, path);
+        const questionsRef = collection(sectionRef, 'Questions');
+        const questionsSnap = await getDocs(questionsRef);
+
+        const fetchedQuestions: Question[] = [];
+        questionsSnap.forEach((questionDoc) => {
+            const questionData = questionDoc.data() as Question;
+            fetchedQuestions.push({
+                ...questionData,
+                questionId: questionDoc.id,
+                isChecked: false,
+                isActive: false
             });
-            
-            return fetchedQuestions;
-        };
-    
+        });
 
-     const fetchSubSections = async (path: string) => {
-            const sectionRef = doc(db, path);
-            const subSectionsRef = collection(sectionRef, 'sections');
-            const subSectionsSnap = await getDocs(subSectionsRef);
-            
-            const fetchedSubSections: SubSection[] = [];
-            for (const subSectionDoc of subSectionsSnap.docs) {
-                const subSectionData = subSectionDoc.data() as SubSection;
-                const subSectionPath = `${path}/sections/${subSectionDoc.id}`;
-                const questions = await fetchQuestionsForSection(subSectionPath);
-                
-                fetchedSubSections.push({
-                    ...subSectionData,
-                    id: subSectionDoc.id,
-                    questions
-                });
+        return fetchedQuestions;
+    };
+
+
+    const fetchSubSections = async (path: string) => {
+        const sectionRef = doc(db, path);
+        const subSectionsRef = collection(sectionRef, 'sections');
+        const subSectionsSnap = await getDocs(subSectionsRef);
+
+        const fetchedSubSections: SubSection[] = [];
+        for (const subSectionDoc of subSectionsSnap.docs) {
+            const subSectionData = subSectionDoc.data() as SubSection;
+            const subSectionPath = `${path}/sections/${subSectionDoc.id}`;
+            const questions = await fetchQuestionsForSection(subSectionPath);
+
+            fetchedSubSections.push({
+                ...subSectionData,
+                id: subSectionDoc.id,
+                questions
+            });
+        }
+
+        return fetchedSubSections.sort((a, b) => (a.order || 0) - (b.order || 0));
+    };
+
+    useEffect(() => {
+        if (dataFetched.current) return;
+        let isMounted = true;
+
+        const fetchData = async () => {
+            if (!tId || sections.length === 0) {
+                setError("Missing test ID or section IDs");
+                setIsInitialLoading(false);
+                return;
             }
-            
-            return fetchedSubSections.sort((a, b) => (a.order || 0) - (b.order || 0));
-        };
 
-        useEffect(() => {
-            if (dataFetched.current) return;
-            let isMounted = true;
-        
-            const fetchData = async () => {
-                if (!tId || sections.length === 0) {
-                    setError("Missing test ID or section IDs");
-                    setIsInitialLoading(false);
-                    return;
+            try {
+                let currentPath = `testseries/${tId}`;
+                for (const sectionId of sections) {
+                    currentPath += `/sections/${sectionId}`;
                 }
-        
-                try {
-                    let currentPath = `testseries/${tId}`;
-                    for (const sectionId of sections) {
-                        currentPath += `/sections/${sectionId}`;
-                    }
-        
-                    const sectionRef = doc(db, currentPath);
-                    const sectionSnap = await getDoc(sectionRef);
-        
-                    if (!sectionSnap.exists()) {
-                        throw new Error(`Section not found`);
-                    }
-        
-                    const sectionData = sectionSnap.data() as Section;
-                    
-                    if (isMounted) {
-                        setCurrentSection(sectionData);
-                        
-                        if (sectionData.isUmbrellaTest) {
-                            const fetchedSubSections = await fetchSubSections(currentPath);
-                            console.log('Fetched subsections:', fetchedSubSections);
-                            
-                            // Initialize question states for all subsections
-                            const initializedSubSections = fetchedSubSections.map(subSection => ({
-                                ...subSection,
-                                questions: subSection.questions || [],
-                                states: (subSection.questions || []).map(q => ({
-                                    questionId: q.questionId,
-                                    status: 'not-visited' as const,
-                                    answered: false,
-                                    selectedOption: null,
-                                    answeredCorrect: null,
-                                    spentTime: 0,
-                                    allotedTime: calculateAllotedTime(q.difficulty),
-                                    remarks: determineRemarks(calculateAllotedTime(q.difficulty), 0, null, false),
-                                    question: q.question,
-                                    difficulty: q.difficulty,
-                                }))
-                            }));
-                            
-                            setSubSections(initializedSubSections);
-                            const totalTime = initializedSubSections.reduce(
-                                (total, sub) => total + (sub.testTime || 0), 
-                                0
-                              );
-                              setRemainingTime(totalTime);
-                              setFormattedTime(formatTime(totalTime));
-                            if (initializedSubSections.length > 0) {
-                                const firstSection = initializedSubSections[0];
-                                setQuestions(firstSection.questions || []);
-                                setQuestionStates(firstSection.states || []);
-                            }
-                            setIsInitialLoading(false);
 
-                        } else {
-                            const fetchedQuestions = await fetchQuestionsForSection(currentPath);
-                            console.log('Setting direct questions:', fetchedQuestions);
-                            setQuestions(fetchedQuestions);
-                            
-                            // Initialize question states for regular test
-                            const initialStates = fetchedQuestions.map(q => ({
+                const sectionRef = doc(db, currentPath);
+                const sectionSnap = await getDoc(sectionRef);
+
+                if (!sectionSnap.exists()) {
+                    throw new Error(`Section not found`);
+                }
+
+                const sectionData = sectionSnap.data() as Section;
+
+                if (isMounted) {
+                    setCurrentSection(sectionData);
+
+                    if (sectionData.isUmbrellaTest) {
+                        const fetchedSubSections = await fetchSubSections(currentPath);
+                        console.log('Fetched subsections:', fetchedSubSections);
+
+                        // Initialize question states for all subsections
+                        const initializedSubSections = fetchedSubSections.map(subSection => ({
+                            ...subSection,
+                            questions: subSection.questions || [],
+                            states: (subSection.questions || []).map(q => ({
                                 questionId: q.questionId,
                                 status: 'not-visited' as const,
                                 answered: false,
@@ -572,99 +540,133 @@ const updateCurrentQuestionTime = () => {
                                 remarks: determineRemarks(calculateAllotedTime(q.difficulty), 0, null, false),
                                 question: q.question,
                                 difficulty: q.difficulty,
-                            }));
-                            setQuestionStates(initialStates);
-                            const sectionTime = sectionData.testTime || 0;
-                            setRemainingTime(sectionTime);
-                            setFormattedTime(formatTime(sectionTime));
-                            setIsInitialLoading(false);
+                            }))
+                        }));
 
+                        setSubSections(initializedSubSections);
+                        const totalTime = initializedSubSections.reduce(
+                            (total, sub) => total + (sub.testTime || 0),
+                            0
+                        );
+                        setRemainingTime(totalTime);
+                        setFormattedTime(formatTime(totalTime));
+                        if (initializedSubSections.length > 0) {
+                            const firstSection = initializedSubSections[0];
+                            setQuestions(firstSection.questions || []);
+                            setQuestionStates(firstSection.states || []);
                         }
-                        
-                        setError(null);
-                        dataFetched.current = true;
                         setIsInitialLoading(false);
-                    }
-                } catch (error) {
-                    console.error("Error fetching data:", error);
-                    if (isMounted) {
-                        setError("Failed to load questions. Please try again.");
-                    }
-                } finally {
-                    if (isMounted) {
+
+                    } else {
+                        const fetchedQuestions = await fetchQuestionsForSection(currentPath);
+                        console.log('Setting direct questions:', fetchedQuestions);
+                        setQuestions(fetchedQuestions);
+
+                        // Initialize question states for regular test
+                        const initialStates = fetchedQuestions.map(q => ({
+                            questionId: q.questionId,
+                            status: 'not-visited' as const,
+                            answered: false,
+                            selectedOption: null,
+                            answeredCorrect: null,
+                            spentTime: 0,
+                            allotedTime: calculateAllotedTime(q.difficulty),
+                            remarks: determineRemarks(calculateAllotedTime(q.difficulty), 0, null, false),
+                            question: q.question,
+                            difficulty: q.difficulty,
+                        }));
+                        setQuestionStates(initialStates);
+                        const sectionTime = sectionData.testTime || 0;
+                        setRemainingTime(sectionTime);
+                        setFormattedTime(formatTime(sectionTime));
                         setIsInitialLoading(false);
+
                     }
+
+                    setError(null);
+                    dataFetched.current = true;
+                    setIsInitialLoading(false);
                 }
-            };
-        
-            fetchData();
-            return () => {
-                isMounted = false;
-            };
-        }, [tId, sections]);
-        const handleTimeOver = useCallback(() => {
-    
-            setIsTimeOver(true);
-            setError("Time's up! Please submit your test.");
-            console.log("Time's up!");
-            }, []);
-        
-            // const startTimer = useCallback((initialSeconds: number) => {
-            //     if (timerRef.current) {
-            //         clearInterval(timerRef.current);
-            //     }
-                
-            //     // Only set initial time if it hasn't been set yet
-            //     setTimeLeft(prev => prev === 0 ? initialSeconds : prev);
-                
-            //     timerRef.current = setInterval(() => {
-            //         setTimeLeft((prev) => {
-            //             if (prev <= 1) {
-            //                 if (timerRef.current) {
-            //                     clearInterval(timerRef.current);
-            //                 }
-            //                 handleTimeOver();
-            //                 return 0;
-            //             }
-            //             return prev - 1;
-            //         });
-                    
-            //         setCurrentTime(prev => prev + 1);
-            //     }, 1000);
-            // }, [handleTimeOver]);
-          
-        //   useEffect(() => {
-        //     if (!currentSection) return;
-          
-        //     let totalTestTime = 0;
-            
-        //     try {
-        //       if (currentSection.isUmbrellaTest && subSections.length > 0) {
-        //         totalTestTime = subSections.reduce((acc, section) => {
-        //           return acc + convertTimeToSeconds(section.testTime);
-        //         }, 0);
-        //       } else {
-        //         totalTestTime = convertTimeToSeconds(currentSection.testTime);
-        //       }
-          
-        //       console.log('Total Test Time:', totalTestTime);
-              
-        //       if (totalTestTime > 0) {
-        //         setTimeLeft(totalTestTime);
-        //         startTimer(totalTestTime);
-        //       }
-        //     } catch (error) {
-        //       console.error('Error setting up timer:', error);
-        //     }
-          
-        //     return () => {
-        //       if (timerRef.current) {
-        //         clearInterval(timerRef.current);
-        //       }
-        //     };
-        //   }, [currentSection, subSections, startTimer]);
-     
-       // Enhanced section time tracking
+            } catch (error) {
+                console.error("Error fetching data:", error);
+                if (isMounted) {
+                    setError("Failed to load questions. Please try again.");
+                }
+            } finally {
+                if (isMounted) {
+                    setIsInitialLoading(false);
+                }
+            }
+        };
+
+        fetchData();
+        return () => {
+            isMounted = false;
+        };
+    }, [tId, sections]);
+    const handleTimeOver = useCallback(() => {
+
+        setIsTimeOver(true);
+        setError("Time's up! Please submit your test.");
+        console.log("Time's up!");
+    }, []);
+
+    // const startTimer = useCallback((initialSeconds: number) => {
+    //     if (timerRef.current) {
+    //         clearInterval(timerRef.current);
+    //     }
+
+    //     // Only set initial time if it hasn't been set yet
+    //     setTimeLeft(prev => prev === 0 ? initialSeconds : prev);
+
+    //     timerRef.current = setInterval(() => {
+    //         setTimeLeft((prev) => {
+    //             if (prev <= 1) {
+    //                 if (timerRef.current) {
+    //                     clearInterval(timerRef.current);
+    //                 }
+    //                 handleTimeOver();
+    //                 return 0;
+    //             }
+    //             return prev - 1;
+    //         });
+
+    //         setCurrentTime(prev => prev + 1);
+    //     }, 1000);
+    // }, [handleTimeOver]);
+
+    //   useEffect(() => {
+    //     if (!currentSection) return;
+
+    //     let totalTestTime = 0;
+
+    //     try {
+    //       if (currentSection.isUmbrellaTest && subSections.length > 0) {
+    //         totalTestTime = subSections.reduce((acc, section) => {
+    //           return acc + convertTimeToSeconds(section.testTime);
+    //         }, 0);
+    //       } else {
+    //         totalTestTime = convertTimeToSeconds(currentSection.testTime);
+    //       }
+
+    //       console.log('Total Test Time:', totalTestTime);
+
+    //       if (totalTestTime > 0) {
+    //         setTimeLeft(totalTestTime);
+    //         startTimer(totalTestTime);
+    //       }
+    //     } catch (error) {
+    //       console.error('Error setting up timer:', error);
+    //     }
+
+    //     return () => {
+    //       if (timerRef.current) {
+    //         clearInterval(timerRef.current);
+    //       }
+    //     };
+    //   }, [currentSection, subSections, startTimer]);
+
+    // Enhanced section time tracking
     // useEffect(() => {
     //     if (!currentSection?.isUmbrellaTest) return;
 
@@ -682,95 +684,95 @@ const updateCurrentQuestionTime = () => {
     // }, [activeSubSectionIndex, currentSection?.isUmbrellaTest, subSections]);
 
 
-            // Initialize question timers
-        // useEffect(() => {
-        //     const initialTimers: { [key: string]: number } = {};
-        //     questions.forEach(q => {
-        //     initialTimers[q.questionId] = 0;
-        //     });
-        //     setQuestionTimers(initialTimers);
-        // }, [questions]);
+    // Initialize question timers
+    // useEffect(() => {
+    //     const initialTimers: { [key: string]: number } = {};
+    //     questions.forEach(q => {
+    //     initialTimers[q.questionId] = 0;
+    //     });
+    //     setQuestionTimers(initialTimers);
+    // }, [questions]);
 
-        // Track time spent on questions
-        // useEffect(() => {
-        //     let intervalId: NodeJS.Timeout;
-            
-        //     if (!isTimeOver) {
-        //     intervalId = setInterval(() => {
-        //         const now = Date.now();
-        //         const timeSpent = Math.floor((now - lastQuestionStartTime) / 1000);
-                
-        //         setQuestionTimers(prev => ({
-        //         ...prev,
-        //         [questions[currentQuestionIndex]?.questionId]: 
-        //             (prev[questions[currentQuestionIndex]?.questionId] || 0) + 1
-        //         }));
-        //     }, 1000);
-        //     }
+    // Track time spent on questions
+    // useEffect(() => {
+    //     let intervalId: NodeJS.Timeout;
 
-        //     return () => clearInterval(intervalId);
-        // }, [currentQuestionIndex, isTimeOver, lastQuestionStartTime]);
+    //     if (!isTimeOver) {
+    //     intervalId = setInterval(() => {
+    //         const now = Date.now();
+    //         const timeSpent = Math.floor((now - lastQuestionStartTime) / 1000);
 
+    //         setQuestionTimers(prev => ({
+    //         ...prev,
+    //         [questions[currentQuestionIndex]?.questionId]: 
+    //             (prev[questions[currentQuestionIndex]?.questionId] || 0) + 1
+    //         }));
+    //     }, 1000);
+    //     }
 
-        
-        const updateQuestionState = (index: number, updates: Partial<QuestionState>, subSectionIndex?: number) => {
-
-            if (currentSection?.isUmbrellaTest && typeof subSectionIndex === 'number') {
-
-                setSubSections(prev => {
-
-                    const updated = [...prev];
-
-                    const subsection = updated[subSectionIndex];
-
-                    if (!subsection) return prev;
+    //     return () => clearInterval(intervalId);
+    // }, [currentQuestionIndex, isTimeOver, lastQuestionStartTime]);
 
 
 
-                    if (!subsection.states) {
+    const updateQuestionState = (index: number, updates: Partial<QuestionState>, subSectionIndex?: number) => {
 
-                        subsection.states = [];
+        if (currentSection?.isUmbrellaTest && typeof subSectionIndex === 'number') {
 
-                    }
+            setSubSections(prev => {
+
+                const updated = [...prev];
+
+                const subsection = updated[subSectionIndex];
+
+                if (!subsection) return prev;
 
 
 
-                    subsection.states = subsection.states.map((state, i) =>
+                if (!subsection.states) {
 
-                        i === index ? { ...state, ...updates } : state
+                    subsection.states = [];
 
-                    );
+                }
 
-                    return updated;
 
-                });
 
-            } else {
-
-                setQuestionStates(prev => prev.map((state, i) =>
+                subsection.states = subsection.states.map((state, i) =>
 
                     i === index ? { ...state, ...updates } : state
 
-                ));
+                );
 
-            }
+                return updated;
 
-        };
+            });
 
-      // Handle question changes
-  const handleQuestionChange = (newIndex: number) => {
-    updateCurrentQuestionTime(); // Save time for current question
-    setCurrentQuestionIndex(newIndex);
-    setStartQuestionTime(Date.now()); // Reset timer for new question
-  };
- // Timer effect
-//  useEffect(() => {
-//     setStartQuestionTime(Date.now());
-    
-//     return () => {
-//       updateCurrentQuestionTime(); // Save time when unmounting
-//     };
-//   }, [currentQuestionIndex]);
+        } else {
+
+            setQuestionStates(prev => prev.map((state, i) =>
+
+                i === index ? { ...state, ...updates } : state
+
+            ));
+
+        }
+
+    };
+
+    // Handle question changes
+    const handleQuestionChange = (newIndex: number) => {
+        updateCurrentQuestionTime(); // Save time for current question
+        setCurrentQuestionIndex(newIndex);
+        setStartQuestionTime(Date.now()); // Reset timer for new question
+    };
+    // Timer effect
+    //  useEffect(() => {
+    //     setStartQuestionTime(Date.now());
+
+    //     return () => {
+    //       updateCurrentQuestionTime(); // Save time when unmounting
+    //     };
+    //   }, [currentQuestionIndex]);
 
     const handleQuestionSelect = (index: number) => {
         if (index >= 0 && index < questions.length) {
@@ -825,7 +827,7 @@ const updateCurrentQuestionTime = () => {
             ));
         }
     };
-    
+
 
     const handleMarkForReview = () => {
         const currentState = questionStates[currentQuestionIndex];
@@ -850,568 +852,568 @@ const updateCurrentQuestionTime = () => {
         }
     };
 
-   // Update handleSaveAndNext function:
-   const handleSaveAndNext = () => {
-    updateCurrentQuestionTime();
-    
-    const updatedStates = [...questionStates];
-    updatedStates[currentQuestionIndex] = {
-      ...updatedStates[currentQuestionIndex],
-      selectedOption: selectedOption,
-      answered: true,
-      status: 'answered'
-    };
-    
-    setQuestionStates(updatedStates);
-    
-    if (currentQuestionIndex < questions.length - 1) {
-      setCurrentQuestionIndex(currentQuestionIndex + 1);
-      setSelectedOption(null);
-      setStartQuestionTime(Date.now());
-    }
-  };
+    // Update handleSaveAndNext function:
+    const handleSaveAndNext = () => {
+        updateCurrentQuestionTime();
 
-// Modified score calculation for umbrella tests
-const calculateUmbrellaTestScore = () => {
-    return subSections.reduce((total, section) => {
-        const sectionQuestions = section.questions || [];
-        const sectionStates = section.states || [];
-        
-        const correctAnswers = sectionStates.filter(s => s.answeredCorrect).length;
-        const incorrectAnswers = sectionStates.filter(s => s.answered && !s.answeredCorrect).length;
-        
-        const marksPerCorrect = parseFloat(section.marksPerQ || "0");
-        const marksPerIncorrect = parseFloat(section.nMarksPerQ || "0");
-        
-        const sectionScore = (correctAnswers * marksPerCorrect) - (incorrectAnswers * marksPerIncorrect);
-        const maxPossibleScore = sectionQuestions.length * marksPerCorrect;
-        
-        return {
-            score: total.score + sectionScore,
-            maxScore: total.maxScore + maxPossibleScore
+        const updatedStates = [...questionStates];
+        updatedStates[currentQuestionIndex] = {
+            ...updatedStates[currentQuestionIndex],
+            selectedOption: selectedOption,
+            answered: true,
+            status: 'answered'
         };
-    }, { score: 0, maxScore: 0 });
-};
 
-       // Function to calculate section results
-  const calculateSectionResults = (section: SubSection, questions: Question[], states: QuestionState[]) => {
-    const totalQuestions = questions.length;
-    const attemptedQuestions = states.filter(q => q.answered).length;
-    const answeredQuestions = states.filter(q => q.answered);
-    const correctAnswers = answeredQuestions.filter(q => q.answeredCorrect).length;
-    const incorrectAnswers = answeredQuestions.filter(q => q.answeredCorrect === false).length;
+        setQuestionStates(updatedStates);
 
-    let marksPerCorrect, marksPerIncorrect;
-    if (currentSection?.isUmbrellaTest) {
-        // For umbrella tests, sum up marks from all subsections
-        marksPerCorrect = subSections.reduce((total, sub) => total + parseFloat(sub.marksPerQ || "0"), 0);
-        marksPerIncorrect = subSections.reduce((total, sub) => total + parseFloat(sub.nMarksPerQ || "0"), 0);
-    } else {
-        // For regular sections, use the section's own marks
-        marksPerCorrect = parseFloat(section.marksPerQ || "0");
-        marksPerIncorrect = parseFloat(section.nMarksPerQ || "0");
-    }
-
-    const totalScore = (correctAnswers * marksPerCorrect) - (incorrectAnswers * marksPerIncorrect);
-    const maxPossibleScore = totalQuestions * marksPerCorrect;
-    let accuracy = attemptedQuestions > 0 ? (correctAnswers / attemptedQuestions) * 100 : 0;
-    accuracy = accuracy < 0 ? 0 : accuracy;
-
-    return {
-      attemptedQuestions: `${attemptedQuestions}/${totalQuestions}`,
-      answeredCorrect: `${correctAnswers}/${attemptedQuestions}`,
-      answeredIncorrect: `${incorrectAnswers}/${attemptedQuestions}`,
-      score: `${totalScore}/${maxPossibleScore}`,
-      accuracy: `${accuracy.toFixed(2)}%`,
-    //   timeTaken: currentTime.toString(),
-    };
-  };
-  
-   // Function to update display states
-   const updateDisplayStates = (results: any) => {
-    setAttemptedQuestions(results.attemptedQuestions);
-    setAnsweredCorrect(results.answeredCorrect);
-    setAnsweredIncorrect(results.answeredIncorrect);
-    setScore(results.score);
-    setAccuracy(results.accuracy);
-    setTimeTaken(results.timeTaken);
-    // setTestTime(currentSection?.testTime || "");
-  };
-  
-// Update handleSubSectionChange function
-const handleSubSectionChange = (index: number) => {
-    updateCurrentQuestionTime(); // Save current question time
-    
-    if (currentSection?.isUmbrellaTest) {
-      const newSection = subSections[index];
-      const questions = newSection.questions || [];
-      const states = newSection.states || questions.map(q => ({
-        questionId: q.questionId,
-        status: 'not-visited' as const,
-        answered: false,
-        selectedOption: null,
-        answeredCorrect: null,
-        spentTime: 0,
-        allotedTime: calculateAllotedTime(q.difficulty),
-        remarks: determineRemarks(calculateAllotedTime(q.difficulty), 0, null, false),
-        question: q.question,
-        difficulty: q.difficulty,
-      }));
-      
-      setQuestions(questions);
-      setQuestionStates(states);
-      setCurrentQuestionIndex(0);
-      setSelectedOption(null);
-    }
-    
-    setActiveSubSectionIndex(index);
-    setStartQuestionTime(Date.now());
-    // Stop timer for current section
-  const currentSectionId = subSections[activeSubSectionIndex].id;
-  stopSubsectionTimer(currentSectionId);
-
-  // Start timer for new section
-  const newSectionId = subSections[index].id;
-  startSubsectionTimer(newSectionId);
-  };
-
-  // Initialize timer on component mount
-useEffect(() => {
-    if (currentSection?.isUmbrellaTest && subSections.length > 0) {
-      const initialSectionId = subSections[activeSubSectionIndex].id;
-      startSubsectionTimer(initialSectionId);
-    }
-  }, [currentSection, subSections]);
-  
-// Add cleanup on unmount
-useEffect(() => {
-    return () => {
-      if (currentSection?.isUmbrellaTest) {
-        const currentSectionId = subSections[activeSubSectionIndex]?.id;
-        if (currentSectionId) {
-          stopSubsectionTimer(currentSectionId);
+        if (currentQuestionIndex < questions.length - 1) {
+            setCurrentQuestionIndex(currentQuestionIndex + 1);
+            setSelectedOption(null);
+            setStartQuestionTime(Date.now());
         }
-      }
     };
-}, []);
 
+    // Modified score calculation for umbrella tests
+    const calculateUmbrellaTestScore = () => {
+        return subSections.reduce((total, section) => {
+            const sectionQuestions = section.questions || [];
+            const sectionStates = section.states || [];
 
-// Add useEffect to handle timer updates
-useEffect(() => {
-  setStartQuestionTime(Date.now());
-  return () => {
-    updateCurrentQuestionTime();
-  };
-}, [currentQuestionIndex, activeSubSectionIndex]);
+            const correctAnswers = sectionStates.filter(s => s.answeredCorrect).length;
+            const incorrectAnswers = sectionStates.filter(s => s.answered && !s.answeredCorrect).length;
 
-// const handleSubmit = async () => {
-//     setIsSubmitButtonDisabled(true);
-//     if (!currentUserId) {
-//       console.error('User not authenticated');
-//       setIsSubmitButtonDisabled(false);
-//       return;
-//     }
+            const marksPerCorrect = parseFloat(section.marksPerQ || "0");
+            const marksPerIncorrect = parseFloat(section.nMarksPerQ || "0");
 
-//     try {
-//         const now = Date.now();
-//         // const finalTimeTaken = Math.floor((now - overallTestStartTime) / 1000);
+            const sectionScore = (correctAnswers * marksPerCorrect) - (incorrectAnswers * marksPerIncorrect);
+            const maxPossibleScore = sectionQuestions.length * marksPerCorrect;
 
-  
-//       // Calculate final section times for umbrella test
-//     //   if (currentSection?.isUmbrellaTest) {
-//     //     const currentSectionId = subSections[activeSubSectionIndex].id;
-//     //     const timeSpent = Math.floor((now - (lastSectionTimestamp[currentSectionId] || now)) / 1000);
-        
-//     //     setSectionTimers(prev => ({
-//     //       ...prev,
-//     //       [currentSectionId]: (prev[currentSectionId] || 0) + timeSpent
-//     //     }));
-//     //   }
-//       const timestamp = serverTimestamp();
-//       let currentPath = `testseries/${tId}`;
-//       for (const sectionId of sections) {
-//           currentPath += `/sections/${sectionId}`;
-//       }
-//       currentPath += `/attempts`;
-//       const attemptsRef = collection(db, currentPath);
-//       const newAttemptRef = doc(attemptsRef);
+            return {
+                score: total.score + sectionScore,
+                maxScore: total.maxScore + maxPossibleScore
+            };
+        }, { score: 0, maxScore: 0 });
+    };
 
-//       // Combine all questions and their states for umbrella test
-//       const allQuestions = currentSection?.isUmbrellaTest
-//         ? subSections.flatMap(section => section.questions || [])
-//         : questions;
-
-//       const allStates = currentSection?.isUmbrellaTest
-//         ? subSections.flatMap(section => section.states || [])
-//         : questionStates;
-
-//       // Calculate overall results
-//       const results = calculateSectionResults(
-//         currentSection as SubSection,
-//         allQuestions,
-//         allStates
-//       );
-
-//       // Prepare question data with new fields
-//       const enhancedQuestionData = allQuestions.map((q, index) => {
-//         const state = allStates[index];
-//         // const spentTime = questionTimers[q.questionId] || 0;
-//         const allotedTime = calculateAllotedTime(q.difficulty);
-        
-//     //     return {
-//     //       questionId: q.questionId,
-//     //       difficulty: q.difficulty,
-//     //       selectedOption: state?.selectedOption || null,
-//     //       answeredCorrect: state?.answeredCorrect || null,
-//     //       status: state?.status || 'not-visited',
-//     //       answered: state?.answered || false,
-//     //       allotedTime,
-//     //       spentTime,
-//     //       remarks: determineRemarks(
-//     //         allotedTime,
-//     //         spentTime,
-//     //         state?.answeredCorrect,
-//     //         state?.answered || false
-//     //       )
-//     //     };
-//     //   });
-
-//       // Base document data
-//     const attemptData: any = {
-//         userId: currentUserId,
-//         attemptNumber: (await getDocs(query(attemptsRef, where('userId', '==', currentUserId)))).size + 1,
-//         attemptDateAndTime: timestamp,
-//         isUmbrellaTest: currentSection?.isUmbrellaTest || false,
-//         ...results,
-//         questions: enhancedQuestionData,
-//         // timeTaken: finalTimeTaken,
-//         testTime: currentSection?.isUmbrellaTest
-//         //   ? subSections.reduce((acc, section) => acc + convertTimeToSeconds(section.testTime), 0)
-//         //   : convertTimeToSeconds(currentSection?.testTime || ""),
-//     };
-
-
-//       // Store the attempt
-//       await setDoc(newAttemptRef, attemptData);
-
-//       // Handle umbrella test sections
-//       if (currentSection?.isUmbrellaTest) {
-//         // attemptData.sectionTimers = sectionTimers;
-//         const subattemptsRef = collection(newAttemptRef, 'subattempts');
-//         for (const section of subSections) {
-//           if (!section.questions || !section.states) continue;
-          
-//           const sectionResults = calculateSectionResults(
-//             section,
-//             section.questions,
-//             section.states,
-//           );
-
-//         //   const sectionTime = sectionTimers[section.id];
-//           const subattemptData = {
-//             sectionName: section.sectionName,
-//             ...sectionResults,
-//             // timeTaken: sectionTimers[section.id] || 0,
-//             // testTime: convertTimeToSeconds(section.testTime),
-//             questions: section.questions.map((q, index) => ({
-//             //   ...enhancedQuestionData.find(eq => eq.questionId === q.questionId)
-//             }))
-//           };
-
-//           await setDoc(doc(subattemptsRef), subattemptData);
-//         }
-
-//         // Set combined questions and states for umbrella test
-//         setQuestions(allQuestions);
-//         setQuestionStates(allStates);
-//       } else {
-//         // For regular tests, use the enhanced question data
-//         // setQuestionStates(enhancedQuestionData);
-//       }
-
-//       setAttemptedQuestions(results.attemptedQuestions);
-//       setAnsweredCorrect(results.answeredCorrect);
-//       setAnsweredIncorrect(results.answeredIncorrect);
-//       setScore(results.score);
-//       setAccuracy(results.accuracy);
-//     //   setTimeTaken(results.timeTaken);
-//     //   setTestTime(currentSection?.testTime || "");
-//       setIsSubmitButtonDisabled(false);
-//       onCloseFirst();
-//       onOpenSecond();
-      
-//     } catch (error) {
-//       console.error('Error storing test attempt details:', error);
-//       setIsSubmitButtonDisabled(false);
-//       toast.error('Failed to submit test');
-//     }
-// };
-
-//   const handleSubmit = async () => {
-//     // Update time for current question
-//     updateCurrentQuestionTime();
-//     const getFinalSubsectionTimes = () => {
-//         const finalTimes: { [key: string]: number } = {};
-        
-//         Object.entries(subsectionTimers).forEach(([sectionId, timer]) => {
-//           finalTimes[sectionId] = getTotalTimeSpent(timer);
-//         });
-        
-//         return finalTimes;
-//       };
-
-//     // Function to calculate remarks and format question data
-//     const getFinalQuestionData = (states: QuestionState[]) => {
-//       return states.map(state => ({
-//         ...state,
-//         remarks: determineRemarks(
-//             state.allotedTime,
-//             state.spentTime,
-//             state.answeredCorrect,
-//             state.answered,
-//         )
-//       }));
-//     };
-  
-//     try {
-//       if (currentSection?.isUmbrellaTest) {
-//         // Process all subsections
-//         const allSectionsData = subSections.map(section => {
-//           return getFinalQuestionData(section.states || []);
-//         });
-  
-//         // Combine all questions data
-//         const combinedQuestionsData = allSectionsData.flat();
-  
-//         // Log individual sections
-//         console.log('Individual Sections Data:', allSectionsData);
-//         console.log('Combined Questions Data:', combinedQuestionsData);
-  
-//         // Update states with remarks
-//         const updatedSubSections = subSections.map((section, index) => ({
-//           ...section,
-//           states: allSectionsData[index]
-//         }));
-//         setSubSections(updatedSubSections);
-//       } else {
-//         // Regular test - process current section only
-//         const finalQuestionData = getFinalQuestionData(questionStates);
-//         console.log('Final Question Data:', finalQuestionData);
-//         setQuestionStates(finalQuestionData);
-//       }
-  
-//       setIsSubmitButtonDisabled(true);
-//       console.log('Remaining Time:', remainingTime);
-//       console.log('Sections Time:', getFinalSubsectionTimes());
-
-//       // ... continue with existing submit logic ...
-//     } catch (error) {
-//       console.error('Error in handleSubmit:', error);
-//       setIsSubmitButtonDisabled(false);
-//       toast.error('Failed to submit test');
-//     }
-//   };
-
-
-
-const handleSubmit = async () => {
-    const loadingToastId = toast.loading('Submitting your test responses...');
-    updateCurrentQuestionTime();
-    setIsSubmitButtonDisabled(true);
-  
-    if (!currentUserId) {
-      toast.dismiss(loadingToastId);
-      toast.error('User authentication required');
-      setIsSubmitButtonDisabled(false);
-      return;
-    }
-    
-    // Calculate final question data with remarks
-    const getFinalQuestionData = (states: QuestionState[]) => states.map(state => ({
-      ...state,
-      remarks: determineRemarks(
-        state.allotedTime,
-        state.spentTime,
-        state.answeredCorrect,
-        state.answered
-      )
-    }));
-  
-    const finalQuestionData = currentSection?.isUmbrellaTest 
-      ? [] 
-      : getFinalQuestionData(questionStates);
-    
-    const combinedQuestionsData = currentSection?.isUmbrellaTest
-      ? subSections.flatMap(section => getFinalQuestionData(section.states || []))
-      : [];
-  
-    try {
-      // Generate current path
-      let currentPath = `testseries/${tId}`;
-      for (const sectionId of sections) {
-        currentPath += `/sections/${sectionId}`;
-      }
-      currentPath += `/attempts`;
-      
-      const batch = writeBatch(db);
-      
-      // Get attempt number efficiently
-      const attemptsRef = collection(db, currentPath);
-      const userAttempts = await getDocs(
-        query(attemptsRef, where('userId', '==', currentUserId))
-      );
-      const attemptNumber = userAttempts.size + 1;
-  
-      const calculateMetrics = (questions: any[], section?: Section) => {
-        
+    // Function to calculate section results
+    const calculateSectionResults = (section: SubSection, questions: Question[], states: QuestionState[]) => {
         const totalQuestions = questions.length;
-        const attemptedQuestions = questions.filter(q => q.answered).length;
-        const correctAnswers = questions.filter(q => q.answeredCorrect).length;
-        const incorrectAnswers = attemptedQuestions - correctAnswers;
+        const attemptedQuestions = states.filter(q => q.answered).length;
+        const answeredQuestions = states.filter(q => q.answered);
+        const correctAnswers = answeredQuestions.filter(q => q.answeredCorrect).length;
+        const incorrectAnswers = answeredQuestions.filter(q => q.answeredCorrect === false).length;
+
         let marksPerCorrect, marksPerIncorrect;
-        if (currentSection?.isUmbrellaTest || !section?.isParentUmbrellaTest) {
+        if (currentSection?.isUmbrellaTest) {
             // For umbrella tests, sum up marks from all subsections
             marksPerCorrect = subSections.reduce((total, sub) => total + parseFloat(sub.marksPerQ || "0"), 0);
             marksPerIncorrect = subSections.reduce((total, sub) => total + parseFloat(sub.nMarksPerQ || "0"), 0);
         } else {
             // For regular sections, use the section's own marks
-            marksPerCorrect = parseFloat(section?.marksPerQ || "0");
-            marksPerIncorrect = parseFloat(section?.nMarksPerQ || "0");
+            marksPerCorrect = parseFloat(section.marksPerQ || "0");
+            marksPerIncorrect = parseFloat(section.nMarksPerQ || "0");
         }
+
         const totalScore = (correctAnswers * marksPerCorrect) - (incorrectAnswers * marksPerIncorrect);
         const maxPossibleScore = totalQuestions * marksPerCorrect;
-        const accuracy = attemptedQuestions > 0 ? (correctAnswers / attemptedQuestions) * 100 : 0;
-  
+        let accuracy = attemptedQuestions > 0 ? (correctAnswers / attemptedQuestions) * 100 : 0;
+        accuracy = accuracy < 0 ? 0 : accuracy;
+
         return {
-          attemptedQuestions: `${attemptedQuestions}/${totalQuestions}`,
-          answeredCorrect: `${correctAnswers}/${totalQuestions}`,
-          answeredIncorrect: `${incorrectAnswers}/${totalQuestions}`,
-          score: `${totalScore}/${maxPossibleScore}`,
-          accuracy: `${accuracy.toFixed(2)}%`
+            attemptedQuestions: `${attemptedQuestions}/${totalQuestions}`,
+            answeredCorrect: `${correctAnswers}/${attemptedQuestions}`,
+            answeredIncorrect: `${incorrectAnswers}/${attemptedQuestions}`,
+            score: `${totalScore}/${maxPossibleScore}`,
+            accuracy: `${accuracy.toFixed(2)}%`,
+            //   timeTaken: currentTime.toString(),
         };
-      };
-  
-      if (currentSection?.isUmbrellaTest) {
-        // Create main attempt document
-        const mainAttemptRef = doc(attemptsRef);
-        const combinedMetrics = calculateMetrics(combinedQuestionsData);
-        const totalTestTime = subSections.reduce((sum, section) => 
-          sum + section.testTime, 0);
-        const timeTaken = totalTestTime - remainingTime;
+    };
 
-        const mainAttemptData = {
-          attemptDateAndTime: serverTimestamp(),
-          isUmbrellaTest: true,
-          testTime: totalTestTime,
-          timeTaken: timeTaken,
-          userId: currentUserId,
-          attemptNumber,
-          ...combinedMetrics,
-          questions: combinedQuestionsData
+    // Function to update display states
+    const updateDisplayStates = (results: any) => {
+        setAttemptedQuestions(results.attemptedQuestions);
+        setAnsweredCorrect(results.answeredCorrect);
+        setAnsweredIncorrect(results.answeredIncorrect);
+        setScore(results.score);
+        setAccuracy(results.accuracy);
+        setTimeTaken(results.timeTaken);
+        // setTestTime(currentSection?.testTime || "");
+    };
+
+    // Update handleSubSectionChange function
+    const handleSubSectionChange = (index: number) => {
+        updateCurrentQuestionTime(); // Save current question time
+
+        if (currentSection?.isUmbrellaTest) {
+            const newSection = subSections[index];
+            const questions = newSection.questions || [];
+            const states = newSection.states || questions.map(q => ({
+                questionId: q.questionId,
+                status: 'not-visited' as const,
+                answered: false,
+                selectedOption: null,
+                answeredCorrect: null,
+                spentTime: 0,
+                allotedTime: calculateAllotedTime(q.difficulty),
+                remarks: determineRemarks(calculateAllotedTime(q.difficulty), 0, null, false),
+                question: q.question,
+                difficulty: q.difficulty,
+            }));
+
+            setQuestions(questions);
+            setQuestionStates(states);
+            setCurrentQuestionIndex(0);
+            setSelectedOption(null);
+        }
+
+        setActiveSubSectionIndex(index);
+        setStartQuestionTime(Date.now());
+        // Stop timer for current section
+        const currentSectionId = subSections[activeSubSectionIndex].id;
+        stopSubsectionTimer(currentSectionId);
+
+        // Start timer for new section
+        const newSectionId = subSections[index].id;
+        startSubsectionTimer(newSectionId);
+    };
+
+    // Initialize timer on component mount
+    useEffect(() => {
+        if (currentSection?.isUmbrellaTest && subSections.length > 0) {
+            const initialSectionId = subSections[activeSubSectionIndex].id;
+            startSubsectionTimer(initialSectionId);
+        }
+    }, [currentSection, subSections]);
+
+    // Add cleanup on unmount
+    useEffect(() => {
+        return () => {
+            if (currentSection?.isUmbrellaTest) {
+                const currentSectionId = subSections[activeSubSectionIndex]?.id;
+                if (currentSectionId) {
+                    stopSubsectionTimer(currentSectionId);
+                }
+            }
         };
-  
-        batch.set(mainAttemptRef, mainAttemptData);
-  
-        const getFinalSubsectionTimes = () => {
-            const finalTimes: { [key: string]: number } = {};
-            
-            Object.entries(subsectionTimers).forEach(([sectionId, timer]) => {
-              finalTimes[sectionId] = getTotalTimeSpent(timer);
+    }, []);
+
+
+    // Add useEffect to handle timer updates
+    useEffect(() => {
+        setStartQuestionTime(Date.now());
+        return () => {
+            updateCurrentQuestionTime();
+        };
+    }, [currentQuestionIndex, activeSubSectionIndex]);
+
+    // const handleSubmit = async () => {
+    //     setIsSubmitButtonDisabled(true);
+    //     if (!currentUserId) {
+    //       console.error('User not authenticated');
+    //       setIsSubmitButtonDisabled(false);
+    //       return;
+    //     }
+
+    //     try {
+    //         const now = Date.now();
+    //         // const finalTimeTaken = Math.floor((now - overallTestStartTime) / 1000);
+
+
+    //       // Calculate final section times for umbrella test
+    //     //   if (currentSection?.isUmbrellaTest) {
+    //     //     const currentSectionId = subSections[activeSubSectionIndex].id;
+    //     //     const timeSpent = Math.floor((now - (lastSectionTimestamp[currentSectionId] || now)) / 1000);
+
+    //     //     setSectionTimers(prev => ({
+    //     //       ...prev,
+    //     //       [currentSectionId]: (prev[currentSectionId] || 0) + timeSpent
+    //     //     }));
+    //     //   }
+    //       const timestamp = serverTimestamp();
+    //       let currentPath = `testseries/${tId}`;
+    //       for (const sectionId of sections) {
+    //           currentPath += `/sections/${sectionId}`;
+    //       }
+    //       currentPath += `/attempts`;
+    //       const attemptsRef = collection(db, currentPath);
+    //       const newAttemptRef = doc(attemptsRef);
+
+    //       // Combine all questions and their states for umbrella test
+    //       const allQuestions = currentSection?.isUmbrellaTest
+    //         ? subSections.flatMap(section => section.questions || [])
+    //         : questions;
+
+    //       const allStates = currentSection?.isUmbrellaTest
+    //         ? subSections.flatMap(section => section.states || [])
+    //         : questionStates;
+
+    //       // Calculate overall results
+    //       const results = calculateSectionResults(
+    //         currentSection as SubSection,
+    //         allQuestions,
+    //         allStates
+    //       );
+
+    //       // Prepare question data with new fields
+    //       const enhancedQuestionData = allQuestions.map((q, index) => {
+    //         const state = allStates[index];
+    //         // const spentTime = questionTimers[q.questionId] || 0;
+    //         const allotedTime = calculateAllotedTime(q.difficulty);
+
+    //     //     return {
+    //     //       questionId: q.questionId,
+    //     //       difficulty: q.difficulty,
+    //     //       selectedOption: state?.selectedOption || null,
+    //     //       answeredCorrect: state?.answeredCorrect || null,
+    //     //       status: state?.status || 'not-visited',
+    //     //       answered: state?.answered || false,
+    //     //       allotedTime,
+    //     //       spentTime,
+    //     //       remarks: determineRemarks(
+    //     //         allotedTime,
+    //     //         spentTime,
+    //     //         state?.answeredCorrect,
+    //     //         state?.answered || false
+    //     //       )
+    //     //     };
+    //     //   });
+
+    //       // Base document data
+    //     const attemptData: any = {
+    //         userId: currentUserId,
+    //         attemptNumber: (await getDocs(query(attemptsRef, where('userId', '==', currentUserId)))).size + 1,
+    //         attemptDateAndTime: timestamp,
+    //         isUmbrellaTest: currentSection?.isUmbrellaTest || false,
+    //         ...results,
+    //         questions: enhancedQuestionData,
+    //         // timeTaken: finalTimeTaken,
+    //         testTime: currentSection?.isUmbrellaTest
+    //         //   ? subSections.reduce((acc, section) => acc + convertTimeToSeconds(section.testTime), 0)
+    //         //   : convertTimeToSeconds(currentSection?.testTime || ""),
+    //     };
+
+
+    //       // Store the attempt
+    //       await setDoc(newAttemptRef, attemptData);
+
+    //       // Handle umbrella test sections
+    //       if (currentSection?.isUmbrellaTest) {
+    //         // attemptData.sectionTimers = sectionTimers;
+    //         const subattemptsRef = collection(newAttemptRef, 'subattempts');
+    //         for (const section of subSections) {
+    //           if (!section.questions || !section.states) continue;
+
+    //           const sectionResults = calculateSectionResults(
+    //             section,
+    //             section.questions,
+    //             section.states,
+    //           );
+
+    //         //   const sectionTime = sectionTimers[section.id];
+    //           const subattemptData = {
+    //             sectionName: section.sectionName,
+    //             ...sectionResults,
+    //             // timeTaken: sectionTimers[section.id] || 0,
+    //             // testTime: convertTimeToSeconds(section.testTime),
+    //             questions: section.questions.map((q, index) => ({
+    //             //   ...enhancedQuestionData.find(eq => eq.questionId === q.questionId)
+    //             }))
+    //           };
+
+    //           await setDoc(doc(subattemptsRef), subattemptData);
+    //         }
+
+    //         // Set combined questions and states for umbrella test
+    //         setQuestions(allQuestions);
+    //         setQuestionStates(allStates);
+    //       } else {
+    //         // For regular tests, use the enhanced question data
+    //         // setQuestionStates(enhancedQuestionData);
+    //       }
+
+    //       setAttemptedQuestions(results.attemptedQuestions);
+    //       setAnsweredCorrect(results.answeredCorrect);
+    //       setAnsweredIncorrect(results.answeredIncorrect);
+    //       setScore(results.score);
+    //       setAccuracy(results.accuracy);
+    //     //   setTimeTaken(results.timeTaken);
+    //     //   setTestTime(currentSection?.testTime || "");
+    //       setIsSubmitButtonDisabled(false);
+    //       onCloseFirst();
+    //       onOpenSecond();
+
+    //     } catch (error) {
+    //       console.error('Error storing test attempt details:', error);
+    //       setIsSubmitButtonDisabled(false);
+    //       toast.error('Failed to submit test');
+    //     }
+    // };
+
+    //   const handleSubmit = async () => {
+    //     // Update time for current question
+    //     updateCurrentQuestionTime();
+    //     const getFinalSubsectionTimes = () => {
+    //         const finalTimes: { [key: string]: number } = {};
+
+    //         Object.entries(subsectionTimers).forEach(([sectionId, timer]) => {
+    //           finalTimes[sectionId] = getTotalTimeSpent(timer);
+    //         });
+
+    //         return finalTimes;
+    //       };
+
+    //     // Function to calculate remarks and format question data
+    //     const getFinalQuestionData = (states: QuestionState[]) => {
+    //       return states.map(state => ({
+    //         ...state,
+    //         remarks: determineRemarks(
+    //             state.allotedTime,
+    //             state.spentTime,
+    //             state.answeredCorrect,
+    //             state.answered,
+    //         )
+    //       }));
+    //     };
+
+    //     try {
+    //       if (currentSection?.isUmbrellaTest) {
+    //         // Process all subsections
+    //         const allSectionsData = subSections.map(section => {
+    //           return getFinalQuestionData(section.states || []);
+    //         });
+
+    //         // Combine all questions data
+    //         const combinedQuestionsData = allSectionsData.flat();
+
+    //         // Log individual sections
+    //         console.log('Individual Sections Data:', allSectionsData);
+    //         console.log('Combined Questions Data:', combinedQuestionsData);
+
+    //         // Update states with remarks
+    //         const updatedSubSections = subSections.map((section, index) => ({
+    //           ...section,
+    //           states: allSectionsData[index]
+    //         }));
+    //         setSubSections(updatedSubSections);
+    //       } else {
+    //         // Regular test - process current section only
+    //         const finalQuestionData = getFinalQuestionData(questionStates);
+    //         console.log('Final Question Data:', finalQuestionData);
+    //         setQuestionStates(finalQuestionData);
+    //       }
+
+    //       setIsSubmitButtonDisabled(true);
+    //       console.log('Remaining Time:', remainingTime);
+    //       console.log('Sections Time:', getFinalSubsectionTimes());
+
+    //       // ... continue with existing submit logic ...
+    //     } catch (error) {
+    //       console.error('Error in handleSubmit:', error);
+    //       setIsSubmitButtonDisabled(false);
+    //       toast.error('Failed to submit test');
+    //     }
+    //   };
+
+
+
+    const handleSubmit = async () => {
+        const loadingToastId = toast.loading('Submitting your test responses...');
+        updateCurrentQuestionTime();
+        setIsSubmitButtonDisabled(true);
+
+        if (!currentUserId) {
+            toast.dismiss(loadingToastId);
+            toast.error('User authentication required');
+            setIsSubmitButtonDisabled(false);
+            return;
+        }
+
+        // Calculate final question data with remarks
+        const getFinalQuestionData = (states: QuestionState[]) => states.map(state => ({
+            ...state,
+            remarks: determineRemarks(
+                state.allotedTime,
+                state.spentTime,
+                state.answeredCorrect,
+                state.answered
+            )
+        }));
+
+        const finalQuestionData = currentSection?.isUmbrellaTest
+            ? []
+            : getFinalQuestionData(questionStates);
+
+        const combinedQuestionsData = currentSection?.isUmbrellaTest
+            ? subSections.flatMap(section => getFinalQuestionData(section.states || []))
+            : [];
+
+        try {
+            // Generate current path
+            let currentPath = `testseries/${tId}`;
+            for (const sectionId of sections) {
+                currentPath += `/sections/${sectionId}`;
+            }
+            currentPath += `/attempts`;
+
+            const batch = writeBatch(db);
+
+            // Get attempt number efficiently
+            const attemptsRef = collection(db, currentPath);
+            const userAttempts = await getDocs(
+                query(attemptsRef, where('userId', '==', currentUserId))
+            );
+            const attemptNumber = userAttempts.size + 1;
+
+            const calculateMetrics = (questions: any[], section?: Section) => {
+
+                const totalQuestions = questions.length;
+                const attemptedQuestions = questions.filter(q => q.answered).length;
+                const correctAnswers = questions.filter(q => q.answeredCorrect).length;
+                const incorrectAnswers = attemptedQuestions - correctAnswers;
+                let marksPerCorrect, marksPerIncorrect;
+                if (currentSection?.isUmbrellaTest || !section?.isParentUmbrellaTest) {
+                    // For umbrella tests, sum up marks from all subsections
+                    marksPerCorrect = subSections.reduce((total, sub) => total + parseFloat(sub.marksPerQ || "0"), 0);
+                    marksPerIncorrect = subSections.reduce((total, sub) => total + parseFloat(sub.nMarksPerQ || "0"), 0);
+                } else {
+                    // For regular sections, use the section's own marks
+                    marksPerCorrect = parseFloat(section?.marksPerQ || "0");
+                    marksPerIncorrect = parseFloat(section?.nMarksPerQ || "0");
+                }
+                const totalScore = (correctAnswers * marksPerCorrect) - (incorrectAnswers * marksPerIncorrect);
+                const maxPossibleScore = totalQuestions * marksPerCorrect;
+                const accuracy = attemptedQuestions > 0 ? (correctAnswers / attemptedQuestions) * 100 : 0;
+
+                return {
+                    attemptedQuestions: `${attemptedQuestions}/${totalQuestions}`,
+                    answeredCorrect: `${correctAnswers}/${totalQuestions}`,
+                    answeredIncorrect: `${incorrectAnswers}/${totalQuestions}`,
+                    score: `${totalScore}/${maxPossibleScore}`,
+                    accuracy: `${accuracy.toFixed(2)}%`
+                };
+            };
+
+            if (currentSection?.isUmbrellaTest) {
+                // Create main attempt document
+                const mainAttemptRef = doc(attemptsRef);
+                const combinedMetrics = calculateMetrics(combinedQuestionsData);
+                const totalTestTime = subSections.reduce((sum, section) =>
+                    sum + section.testTime, 0);
+                const timeTaken = totalTestTime - remainingTime;
+
+                const mainAttemptData = {
+                    attemptDateAndTime: serverTimestamp(),
+                    isUmbrellaTest: true,
+                    testTime: totalTestTime,
+                    timeTaken: timeTaken,
+                    userId: currentUserId,
+                    attemptNumber,
+                    ...combinedMetrics,
+                    questions: combinedQuestionsData
+                };
+
+                batch.set(mainAttemptRef, mainAttemptData);
+
+                const getFinalSubsectionTimes = () => {
+                    const finalTimes: { [key: string]: number } = {};
+
+                    Object.entries(subsectionTimers).forEach(([sectionId, timer]) => {
+                        finalTimes[sectionId] = getTotalTimeSpent(timer);
+                    });
+
+                    return finalTimes;
+                };
+
+                // Add subattempts in the same batch
+                const sectionTimes = getFinalSubsectionTimes();
+                const subattemptsRef = collection(mainAttemptRef, 'subattempts');
+
+                subSections.forEach((section) => {
+                    const sectionMetrics = calculateMetrics(section.states || [], section);
+                    const subattemptRef = doc(subattemptsRef);
+
+                    batch.set(subattemptRef, {
+                        sectionId: section.id,
+                        sectionName: section.sectionName,
+                        timeTaken: sectionTimes[section.id] || 0,
+                        testTime: section.testTime,
+                        ...sectionMetrics,
+                        questions: section.states
+                    });
+                });
+
+            } else {
+                // Handle regular test attempt
+                const metrics = calculateMetrics(finalQuestionData, currentSection || undefined);
+                const attemptRef = doc(attemptsRef);
+                const timeTaken = (currentSection?.testTime ?? 0) - remainingTime;
+                batch.set(attemptRef, {
+                    attemptDateAndTime: serverTimestamp(),
+                    isUmbrellaTest: false,
+                    testTime: currentSection?.testTime,
+                    timeTaken: timeTaken,
+                    userId: currentUserId,
+                    attemptNumber,
+                    ...metrics,
+                    questions: finalQuestionData
+                });
+            }
+
+            // Commit all operations in a single batch
+            await batch.commit();
+
+            // Update loading toast to success
+            toast.dismiss(loadingToastId);
+            toast.success('Test submitted successfully! Redirecting to results...', {
+                autoClose: 3000,
+                position: 'top-center'
             });
-            
-            return finalTimes;
-        };
-        
-        // Add subattempts in the same batch
-        const sectionTimes = getFinalSubsectionTimes();
-        const subattemptsRef = collection(mainAttemptRef, 'subattempts');
-  
-        subSections.forEach((section) => {
-          const sectionMetrics = calculateMetrics(section.states || [], section);
-          const subattemptRef = doc(subattemptsRef);
-          
-          batch.set(subattemptRef, {
-            sectionId: section.id,
-            sectionName: section.sectionName,
-            timeTaken: sectionTimes[section.id] || 0,
-            testTime: section.testTime,
-            ...sectionMetrics,
-            questions: section.states
-          });
-        });
-  
-      } else {
-        // Handle regular test attempt
-        const metrics = calculateMetrics(finalQuestionData, currentSection || undefined);
-        const attemptRef = doc(attemptsRef);
-        const timeTaken = (currentSection?.testTime ?? 0) - remainingTime;
-        batch.set(attemptRef, {
-          attemptDateAndTime: serverTimestamp(),
-          isUmbrellaTest: false,
-          testTime: currentSection?.testTime,
-          timeTaken: timeTaken,
-          userId: currentUserId,
-          attemptNumber,
-          ...metrics,
-          questions: finalQuestionData
-        });
-      }
-  
-      // Commit all operations in a single batch
-      await batch.commit();
-      
-      // Update loading toast to success
-      toast.dismiss(loadingToastId);
-      toast.success('Test submitted successfully! Redirecting to results...', {
-        autoClose: 3000,
-        position: 'top-center'
-      });
-      
-      if (currentSection?.isUmbrellaTest) {
-        const combinedMetrics = calculateMetrics(combinedQuestionsData);
-        const totalTestTime = subSections.reduce((sum, section) => sum + section.testTime, 0);
-        const timeTaken = totalTestTime - remainingTime;
 
-        setAttemptedQuestions(combinedMetrics.attemptedQuestions);
-        setAnsweredCorrect(combinedMetrics.answeredCorrect);
-        setAnsweredIncorrect(combinedMetrics.answeredIncorrect);
-        setScore(combinedMetrics.score);
-        setAccuracy(combinedMetrics.accuracy);
-        setTimeTaken(timeTaken);
-        setTestTime(totalTestTime);
-    } else {
-        const metrics = calculateMetrics(finalQuestionData, currentSection || undefined);
-        const timeTaken = (currentSection?.testTime ?? 0) - remainingTime;
+            if (currentSection?.isUmbrellaTest) {
+                const combinedMetrics = calculateMetrics(combinedQuestionsData);
+                const totalTestTime = subSections.reduce((sum, section) => sum + section.testTime, 0);
+                const timeTaken = totalTestTime - remainingTime;
 
-        setAttemptedQuestions(metrics.attemptedQuestions);
-        setAnsweredCorrect(metrics.answeredCorrect);
-        setAnsweredIncorrect(metrics.answeredIncorrect);
-        setScore(metrics.score);
-        setAccuracy(metrics.accuracy);
-        setTimeTaken(timeTaken);
-        setTestTime(currentSection?.testTime ?? 0);
-    }
-      setIsSubmitButtonDisabled(true);
-      
-      // Add a small delay before navigation for better UX
-      setTimeout(() => {
-        onCloseFirst();
-        onOpenSecond();
-      }, 1000);
-      
-    } catch (error) {
-      console.error('Error in handleSubmit:', error);
-      
-      // Dismiss loading toast and show error
-      toast.dismiss(loadingToastId);
-      toast.error('Failed to submit test. Please try again or contact support if the issue persists.', {
-        autoClose: 5000,
-        position: 'top-center'
-      });
-      
-      setIsSubmitButtonDisabled(false);
-    }
-  };
+                setAttemptedQuestions(combinedMetrics.attemptedQuestions);
+                setAnsweredCorrect(combinedMetrics.answeredCorrect);
+                setAnsweredIncorrect(combinedMetrics.answeredIncorrect);
+                setScore(combinedMetrics.score);
+                setAccuracy(combinedMetrics.accuracy);
+                setTimeTaken(timeTaken);
+                setTestTime(totalTestTime);
+            } else {
+                const metrics = calculateMetrics(finalQuestionData, currentSection || undefined);
+                const timeTaken = (currentSection?.testTime ?? 0) - remainingTime;
+
+                setAttemptedQuestions(metrics.attemptedQuestions);
+                setAnsweredCorrect(metrics.answeredCorrect);
+                setAnsweredIncorrect(metrics.answeredIncorrect);
+                setScore(metrics.score);
+                setAccuracy(metrics.accuracy);
+                setTimeTaken(timeTaken);
+                setTestTime(currentSection?.testTime ?? 0);
+            }
+            setIsSubmitButtonDisabled(true);
+
+            // Add a small delay before navigation for better UX
+            setTimeout(() => {
+                onCloseFirst();
+                onOpenSecond();
+            }, 1000);
+
+        } catch (error) {
+            console.error('Error in handleSubmit:', error);
+
+            // Dismiss loading toast and show error
+            toast.dismiss(loadingToastId);
+            toast.error('Failed to submit test. Please try again or contact support if the issue persists.', {
+                autoClose: 5000,
+                position: 'top-center'
+            });
+
+            setIsSubmitButtonDisabled(false);
+        }
+    };
 
 
     const handleClearResponse = () => {
@@ -1431,6 +1433,9 @@ const handleSubmit = async () => {
     const currentQuestion = questions[currentQuestionIndex];
     const currentQuestionState = questionStates[currentQuestionIndex];
 
+    const [instructionsDialogue, setInstructionsDialogue] = useState(false);
+    const [informationDialogue, setInformationDialogue] = useState(false);
+
     return (
         <div className="Main Layout flex flex-col w-full h-screen overflow-y-hidden">
             <div className="flex w-full h-12 bg-[#3b56c0] pl-3 items-center">
@@ -1445,35 +1450,37 @@ const handleSubmit = async () => {
                         </p>
                         <div className="flex flex-row gap-3">
                             <button className="flex flex-row gap-1 items-center">
-                                <Image src="/icons/instructions.svg" alt="Instructions Icon" width={12} height={12} />
+                                <button onClick={() => { setInstructionsDialogue(true) }}>
+                                    <Image src="/icons/instructions.svg" alt="Instructions Icon" width={12} height={12} />
+                                </button>
                                 <p className="font-[Inter] font-medium text-[12px] ">Instructions</p>
                             </button>
                             <span className="font-[Inter] font-normal text-[12px]">Time Left: {formattedTime}</span>
+                        </div>
+                    </div>
+                    {/* Section switching area for umbrella tests - Now with flex-wrap */}
+                    {currentSection?.isUmbrellaTest && (
+                        <div className="flex border-b border-[#A1A1A199]">
+                            <div className="flex flex-wrap">
+                                {subSections.map((subSection, index) => (
+                                    <button
+                                        key={subSection.id}
+                                        className={`flex flex-row gap-[6px] border-r  border-[#A1A1A199] h-8 items-center justify-center px-2 ${index === activeSubSectionIndex ? 'bg-[#4871CB]' : 'bg-white'
+                                            }`}
+                                        onClick={() => handleSubSectionChange(index)}
+                                    >
+                                        <span className={`font-[Inter] font-semibold text-[11px] ${index === activeSubSectionIndex ? 'text-white' : 'text-[#4871CB]'
+                                            }`}>
+                                            {subSection.sectionName}
+                                        </span>
+                                        <button onClick={() => { setInformationDialogue(true) }}>
+                                            <Image src="/icons/instructions.svg" alt="Instructions Icon" width={12} height={12} />
+                                        </button>
+                                    </button>
+                                ))}
                             </div>
-                    </div>           
-                   {/* Section switching area for umbrella tests - Now with flex-wrap */}
-                   {currentSection?.isUmbrellaTest && (
-                       <div className="flex border-b border-[#A1A1A199]">
-                           <div className="flex flex-wrap">
-                               {subSections.map((subSection, index) => (
-                                   <button
-                                       key={subSection.id}
-                                       className={`flex flex-row gap-[6px] border-r  border-[#A1A1A199] h-8 items-center justify-center px-2 ${
-                                           index === activeSubSectionIndex ? 'bg-[#4871CB]' : 'bg-white'
-                                       }`}
-                                       onClick={() => handleSubSectionChange(index)}
-                                   >
-                                       <span className={`font-[Inter] font-semibold text-[11px] ${
-                                           index === activeSubSectionIndex ? 'text-white' : 'text-[#4871CB]'
-                                       }`}>
-                                           {subSection.sectionName}
-                                       </span>
-                                    <Image src="/icons/instructions.svg" alt="Instructions Icon" width={12} height={12}/> 
-                                   </button>
-                               ))}
-                           </div>
-                       </div>
-                   )}
+                        </div>
+                    )}
                     <div className="flex h-8 border-b border-[#A1A1A199] items-center px-3">
                         <h3 className="font-[Inter] font-semibold text-[14px] ">Question No {currentQuestionIndex + 1}.</h3>
                     </div>
@@ -1543,11 +1550,11 @@ const handleSubmit = async () => {
                     </div>
 
                     <StatusDisplay counts={getStatusCounts(questionStates)} />
-                     {/* Section header */}
-                     <div className="flex h-9 bg-[#4871CB] pl-3 border-t border-b border-[#A1A1A199] items-center">
+                    {/* Section header */}
+                    <div className="flex h-9 bg-[#4871CB] pl-3 border-t border-b border-[#A1A1A199] items-center">
                         <h3 className="text-white text-[14px] font-bold font-[Inter]">
-                            {currentSection?.isUmbrellaTest 
-                                ? subSections[activeSubSectionIndex]?.sectionName 
+                            {currentSection?.isUmbrellaTest
+                                ? subSections[activeSubSectionIndex]?.sectionName
                                 : currentSection?.sectionName}
                         </h3>
                     </div>
@@ -1698,6 +1705,8 @@ const handleSubmit = async () => {
                 </ModalContent>
             </Modal>
             <ReviewTest setShowReviewSheet={setShowReviewSheet} showReviewSheet={showReviewSheet} questionsList={questions} answeredQuestions={questionStates} timeTaken={timeTaken} />
+            {instructionsDialogue && <InstructionsDialog onClose={() => { setInstructionsDialogue(false) }} />}
+            {informationDialogue && <InformationDialog onClose={() => { setInformationDialogue(false) }} />}
             <ToastContainer />
         </div>
     );
