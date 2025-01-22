@@ -26,8 +26,8 @@ interface SubAttemptDetails {
     accuracy: string;
     answeredCorrect: string;
     answeredIncorrect: string;
-    timeTaken: string;
-    testTime: string;
+    timeTaken: number;
+    testTime: number;
     questions: AnsweredQuestion[];
     sectionName: string;
     attemptId: string;
@@ -38,12 +38,12 @@ interface AttemptedDetails {
     attemptCount: any;
     attemptedQuestions: string;
     score: string;
-    testTime: string;
+    testTime: number;
     accuracy: string;
     sectionName: string;
     answeredCorrect: string;
     answeredIncorrect: string;
-    timeTaken: string;
+    timeTaken: number;
     isUmbrellaTest: boolean;
     questions: AnsweredQuestion[];
     subattempts: SubAttemptDetails[];
@@ -84,7 +84,7 @@ function formatFirestoreTimestamp(timestamp: FirestoreTimestamp): string {
     return `${months[date.getMonth()]} ${date.getDate()}, ${date.getFullYear()}  ${(hours % 12 || 12).toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')} ${ampm}`;
 }
 
-function formatTimeInSeconds(seconds: string) {
+function formatTimeInSeconds(seconds: number | string): string {
     const totalSeconds = Number(seconds);
     const hours = Math.floor(totalSeconds / 3600); // Calculate hours
     const minutes = Math.floor((totalSeconds % 3600) / 60); // Calculate remaining minutes
@@ -93,14 +93,14 @@ function formatTimeInSeconds(seconds: string) {
     if (hours > 0) {
         formattedTime += `${hours}h`; // Add hours if present
     }
-    if (minutes > 0 || hours === 0) {
+    if (minutes > 0 || hours === 0) {  
         formattedTime += (formattedTime ? ' ' : '') + `${minutes}m`; // Add minutes
     }
   
     return formattedTime;
   }
 
-function UmbrellaTestAnalytics({ onClose,  attemptedDetails, sectionName, testAttemptId, setTestAttemptId }: UmbrellaTestAnalyticsprops) {
+function UmbrellaTestAnalytics({ onClose,  attemptedDetails = [], sectionName, testAttemptId, setTestAttemptId }: UmbrellaTestAnalyticsprops) {
     const router = useRouter();
     const [attemptPopover, setAttemptPopover] = useState(false);
     const sectionMap = {
@@ -320,7 +320,7 @@ function UmbrellaTestAnalytics({ onClose,  attemptedDetails, sectionName, testAt
                         <span className="text-[#1D2939] text-lg font-semibold ">Time & Accuracy</span>
                     </div>
                     <div>
-                        <TimeAccuracy questions={currentAttempt?.questions || []} subattempts={currentAttempt?.subattempts || []} overallAccuracy={currentAttempt?.accuracy || ''} overallTimeTaken={currentAttempt?.timeTaken || ''}/>
+                        <TimeAccuracy questions={currentAttempt?.questions || []} subattempts={currentAttempt?.subattempts || []} overallAccuracy={currentAttempt?.accuracy || ''} overallTimeTaken={currentAttempt?.timeTaken || 0}/>
                     </div>
                 </div>
                 {/* --------------------------------------******************************************************---------------------------------------------- */}

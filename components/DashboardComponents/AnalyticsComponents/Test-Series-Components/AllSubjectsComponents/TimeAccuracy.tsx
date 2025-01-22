@@ -88,8 +88,8 @@ interface SubAttemptDetails {
     accuracy: string;
     answeredCorrect: string;
     answeredIncorrect: string;
-    timeTaken: string;
-    testTime: string;
+    timeTaken: number;
+    testTime: number;
     questions: AnsweredQuestion[];
     sectionName: string;
     attemptId: string;
@@ -98,7 +98,7 @@ interface SubAttemptDetails {
 interface GraphicalViewOfOverviewProps {
     questions: AnsweredQuestion[];
     subattempts: SubAttemptDetails[];
-    overallTimeTaken: string;
+    overallTimeTaken: number;
     overallAccuracy: string;
 }
 
@@ -116,7 +116,7 @@ interface AnsweredQuestion {
     remarks: string;
 }
 
-function formatTimeInSeconds(seconds: string) {
+function formatTimeInSeconds(seconds: number | string): string {
     const totalSeconds = Number(seconds);
     const hours = Math.floor(totalSeconds / 3600); // Calculate hours
     const minutes = Math.floor((totalSeconds % 3600) / 60); // Calculate remaining minutes

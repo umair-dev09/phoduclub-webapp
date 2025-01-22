@@ -4,7 +4,7 @@ import Image from "next/image";
 import Accordian from "@/components/DashboardComponents/AnalyticsComponents/Test-Series-Components/AccordionComps/Accordian";
 import AccordianAllSubjects from "@/components/DashboardComponents/AnalyticsComponents/Test-Series-Components/AccordionComps/AccordianAllSubjects";
 import { Tooltip } from "@nextui-org/react";
-import { useState, useEffect } from "react";
+import { useState, useEffect } from "react";  
 import { auth, db } from "@/firebase";
 import { collection, doc, getCountFromServer, getDoc, getDocs, onSnapshot, query } from "firebase/firestore";
 import LoadingData from "@/components/Loading";
@@ -33,8 +33,8 @@ interface Section {
     totalSectionsWithQuestions: number;
     totalSectionsWithStudentsAttempted: number;
     subSectionsCountUmbrella: number;
-    timeTaken: string;
-    testTime: string;
+    timeTaken: number;
+    testTime: number;
     score: number;
 }
 interface Question {
@@ -61,8 +61,8 @@ interface SubAttemptDetails {
     accuracy: string;
     answeredCorrect: string;
     answeredIncorrect: string;
-    timeTaken: string;
-    testTime: string;
+    timeTaken: number;
+    testTime: number;
     questions: AnsweredQuestion[];
     sectionName: string;
     attemptId: string;
@@ -76,8 +76,8 @@ interface AttemptedDetails {
     accuracy: string;
     answeredCorrect: string;
     answeredIncorrect: string;
-    timeTaken: string;
-    testTime: string;
+    timeTaken: number;
+    testTime: number;
     isUmbrellaTest: boolean;
     questions: AnsweredQuestion[];
     subattempts: SubAttemptDetails[];
@@ -89,7 +89,7 @@ interface AttemptedDetails {
     };
 }
 
-function formatTimeInSeconds(seconds: string) {
+function formatTimeInSeconds(seconds: number | string): string {
     const totalSeconds = Number(seconds);
     const hours = Math.floor(totalSeconds / 3600); // Calculate hours
     const minutes = Math.floor((totalSeconds % 3600) / 60); // Calculate remaining minutes
@@ -314,8 +314,8 @@ function TestAnalytics() {
                                         // For accuracy, only take number before '/'
                                         const scoreValue = parseInt(latestAttempt.score?.split('/')[0] || '-');
                                         totalScore += scoreValue;
-                                        totalTimeTakenMinutes += parseInt(latestAttempt.timeTaken || '-');
-                                        maxTotalTimeMinutes += parseInt(latestAttempt.testTime || '0');
+                                        totalTimeTakenMinutes += latestAttempt.timeTaken || '-';
+                                        maxTotalTimeMinutes += latestAttempt.testTime || '0';
                                       }
 
                                     // Count only one attempt per section if user has attempted
@@ -350,8 +350,8 @@ function TestAnalytics() {
                             totalSectionsWithQuestions: sectionsWithQuestionsCount,
                             totalSectionsWithStudentsAttempted: sectionsWithAttemptsCount,
                             score: totalScore,
-                            timeTaken: `${totalTimeTakenMinutes}` || '-',
-                            testTime: `${maxTotalTimeMinutes}`|| '-',
+                            timeTaken: typeof totalTimeTakenMinutes === 'string' ? 0 : totalTimeTakenMinutes || 0,
+                            testTime: maxTotalTimeMinutes || 0,
                         };
                     })
                 );

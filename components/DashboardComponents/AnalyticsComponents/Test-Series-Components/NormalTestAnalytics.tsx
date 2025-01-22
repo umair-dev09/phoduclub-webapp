@@ -24,12 +24,12 @@ interface AttemptedDetails {
     attemptCount: any;
     attemptedQuestions: string;
     score: string;
-    testTime: string;
+    testTime: number;
     accuracy: string;
     answeredCorrect: string;
     isUmbrellaTest: boolean;
     answeredIncorrect: string;
-    timeTaken: string;
+    timeTaken: number;
     questions: AnsweredQuestion[];
     attemptDateAndTime: {
         seconds: number;
@@ -66,9 +66,9 @@ function formatFirestoreTimestamp(timestamp: FirestoreTimestamp): string {
     const ampm = hours >= 12 ? 'PM' : 'AM';
     
     return `${months[date.getMonth()]} ${date.getDate()}, ${date.getFullYear()}  ${(hours % 12 || 12).toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')} ${ampm}`;
-}
+} 
 
-function formatTimeInSeconds(seconds: string) {
+function formatTimeInSeconds(seconds: number | string): string {
     const totalSeconds = Number(seconds);
     const hours = Math.floor(totalSeconds / 3600); // Calculate hours
     const minutes = Math.floor((totalSeconds % 3600) / 60); // Calculate remaining minutes
