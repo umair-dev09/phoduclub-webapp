@@ -75,6 +75,17 @@ function convertToSeconds(timeString: string): number {
   }
 }
 
+function formatTimeLeft(seconds: number | string): string {
+  const minutes = Number(seconds) / 60;
+  
+  if (minutes < 60) {
+      return `${Math.round(minutes)} Minutes`;
+  } else {
+      const hours = minutes / 60;
+      return `${hours % 1 === 0 ? hours : hours.toFixed(1)} Hours`;
+  }
+}
+
 const Sections: React.FC<SectionsProps> = ({
   isCreateSection,
   setIsCreateSection,
@@ -706,7 +717,7 @@ const Sections: React.FC<SectionsProps> = ({
                   <div className="flex flex-row gap-[6px] items-center mt-1">
                     <Image src="/icons/clock-01.svg" width={12} height={12} alt="schedule" />
                     <p className="text-[#475467] text-xs">Overall Time :</p>
-                    <p className="text-xs font-medium">{selectedSection.testTime || ''}</p>
+                    <p className="text-xs font-medium">{formatTimeLeft(selectedSection.testTime) || ''}</p>
                     <hr className="h-4 w-[1.5px] bg-[#D0D5DD] mx-2" />
                     <Image src="/icons/book-m.svg" width={12} height={12} alt="schedule" />
                     <p className="text-[#475467] text-xs">Marks per Question :</p>
@@ -978,7 +989,7 @@ const Sections: React.FC<SectionsProps> = ({
                               <div className="flex flex-row gap-[6px] items-center mt-1">
                                 <Image src="/icons/clock-01.svg" width={12} height={12} alt="schedule" />
                                 <p className="text-[#475467] text-xs">Overall Time :</p>
-                                <p className="text-xs font-medium">{section.testTime || ''}</p>
+                                <p className="text-xs font-medium">{formatTimeLeft(section.testTime) || ''}</p>
                                 <hr className="h-4 w-[1.5px] bg-[#D0D5DD] mx-2" />
                                 <Image src="/icons/book-m.svg" width={12} height={12} alt="schedule" />
                                 <p className="text-[#475467] text-xs">Marks per Question :</p>
