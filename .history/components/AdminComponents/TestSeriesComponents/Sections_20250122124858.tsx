@@ -1,5 +1,5 @@
 'use client'
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, use } from "react";
 import { Dialog, DialogBackdrop, DialogPanel } from "@headlessui/react";
 import { Checkbox, DatePicker, DateValue, Switch } from "@nextui-org/react";
 import { today, getLocalTimeZone, parseDate, parseDateTime } from "@internationalized/date";
@@ -120,8 +120,8 @@ const Sections: React.FC<SectionsProps> = ({
   const [deletedialog, setDeletedialog] = useState(false);
   const [sectionToDelete, setSectionToDelete] = useState<{ id: string } | null>(null);
   const [subsectionToDelete, setSubsectionToDelete] = useState<{ parentSectionId: string, sectionId: string } | null>(null);
-  const [popoveropen, setPopoveropen] = useState(false);
   const isSectionButtonDisabled = !sectionName || !sectionScheduleDate;
+  const [popoveropen, setPopoveropen] = useState(false);
   const formatScheduleDate = (dateString: string): string => {
     const date = new Date(dateString);
     return format(date, 'dd MMM, yyyy  hh:mm a');
@@ -765,9 +765,7 @@ const Sections: React.FC<SectionsProps> = ({
 
             ) : (
               <div className="flex justify-end mb-4">
-                <Popover placement="bottom"
-                  isOpen={popoveropen}
-                  onOpenChange={(open) => setPopoveropen(open)}>
+                <Popover placement="bottom">
                   <PopoverTrigger>
                     <button
                       className="flex flex-row gap-1 items-center"
@@ -1571,9 +1569,10 @@ const Sections: React.FC<SectionsProps> = ({
           </>
         </ModalContent>
       </Modal>
-
     </div>
   );
 };
 
 export default Sections;
+
+

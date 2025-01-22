@@ -120,7 +120,6 @@ const Sections: React.FC<SectionsProps> = ({
   const [deletedialog, setDeletedialog] = useState(false);
   const [sectionToDelete, setSectionToDelete] = useState<{ id: string } | null>(null);
   const [subsectionToDelete, setSubsectionToDelete] = useState<{ parentSectionId: string, sectionId: string } | null>(null);
-  const [popoveropen, setPopoveropen] = useState(false);
   const isSectionButtonDisabled = !sectionName || !sectionScheduleDate;
   const formatScheduleDate = (dateString: string): string => {
     const date = new Date(dateString);
@@ -729,9 +728,7 @@ const Sections: React.FC<SectionsProps> = ({
                     <p className="text-xs font-medium">{selectedSection.nMarksPerQ || ''}</p>
                   </div>
                 </div>
-                <Popover placement="bottom"
-                  isOpen={popoveropen}
-                  onOpenChange={(open) => setPopoveropen(open)}>
+                <Popover placement="bottom">
                   <PopoverTrigger>
                     <button
                       className="flex flex-row gap-1 items-center"
@@ -743,18 +740,12 @@ const Sections: React.FC<SectionsProps> = ({
                   <PopoverContent className="p-0 rounded-md">
                     <div className="flex flex-col w-[180px] justify-center items-center py-1">
                       <button className="flex flex-row gap-1 items-center px-4 py-2 rounded-none w-full h-auto hover:bg-[#F2F4F7] "
-                        onClick={() => {
-                          handleAddQuestion();
-                          setPopoveropen(false);
-                        }}
+                        onClick={handleAddQuestion}
                       >
                         <p className="text-sm">Add manually</p>
                       </button>
                       <button className="flex flex-row gap-1 items-center px-4 py-2 rounded-none w-full h-auto hover:bg-[#F2F4F7]"
-                        onClick={() => {
-                          setCsvUploadDialog(true);
-                          setPopoveropen(false);
-                        }} >
+                        onClick={() => setCsvUploadDialog(true)} >
                         <p className="text-sm">Upload CSV File</p>
                       </button>
                     </div>
@@ -765,9 +756,7 @@ const Sections: React.FC<SectionsProps> = ({
 
             ) : (
               <div className="flex justify-end mb-4">
-                <Popover placement="bottom"
-                  isOpen={popoveropen}
-                  onOpenChange={(open) => setPopoveropen(open)}>
+                <Popover placement="bottom">
                   <PopoverTrigger>
                     <button
                       className="flex flex-row gap-1 items-center"
@@ -779,18 +768,12 @@ const Sections: React.FC<SectionsProps> = ({
                   <PopoverContent className="p-0 rounded-md">
                     <div className="flex flex-col w-[180px] justify-center items-center py-1">
                       <button className="flex flex-row gap-1 items-center px-4 py-2 rounded-none w-full h-auto hover:bg-[#F2F4F7] "
-                        onClick={() => {
-                          handleAddQuestion();
-                          setPopoveropen(false);
-                        }}
+                        onClick={handleAddQuestion}
                       >
                         <p className="text-sm">Add manually</p>
                       </button>
                       <button className="flex flex-row gap-1 items-center px-4 py-2 rounded-none w-full h-auto hover:bg-[#F2F4F7]"
-                        onClick={() => {
-                          setCsvUploadDialog(true);
-                          setPopoveropen(false);
-                        }} >
+                        onClick={() => setCsvUploadDialog(true)} >
                         <p className="text-sm">Upload CSV File</p>
                       </button>
                     </div>
