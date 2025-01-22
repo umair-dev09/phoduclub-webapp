@@ -47,10 +47,7 @@ const data = [
 
 function Community() {
 
-    const [isOpenArray, setIsOpenArray] = useState(
-        new Array(data.length).fill(false) // Dynamically initialize based on the number of groups
-    );
-
+    const [isOpenArray, setIsOpenArray] = useState([false, false, false]); // Initialize with false for each collapsible
 
     // Function to toggle a specific collapsible's state
     const toggleCollapsible = (index: number) => {

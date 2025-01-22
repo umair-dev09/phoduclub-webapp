@@ -226,7 +226,7 @@ function Courses() {
                 <div className="flex flex-col overflow-y-auto border-b border-solid border-[#EAECF0] ">
                     {sections.map((section, index) => (
                         <Collapsible key={index}
-                            open={openSections.welcome && isOpenArray[index]} // Control open state based on individual section
+                            open={openSections.welcome} // Control open state based on individual section
                             trigger={
                                 <div
                                     className="h-[60px] flex flex-row justify-between py-2 px-4 items-center hover:bg-[#F7F8FB]"

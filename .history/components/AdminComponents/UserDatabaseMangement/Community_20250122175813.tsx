@@ -23,41 +23,22 @@ const data = [
             { name: "Chemistry", icon: "/icons/ChemistryQuicktest.png" },
         ],
     },
-    {
-        title: "JEE - 2024",
-        channels: [
-            { name: "Study materials", icon: "/icons/studymaterial.png" },
-            { name: "Quiz talk", icon: "/icons/QuiqTalk.png" },
-            { name: "Physics 101", icon: "/icons/PhyiscsQuicktest.png" },
-            { name: "Chemistry", icon: "/icons/ChemistryQuicktest.png" },
-            { name: "Maths", icon: "/icons/MathsQuicktest.png" },
-        ],
-    },
-    {
-        title: "NEET - 2024",
-        channels: [
-            { name: "Study materials", icon: "/icons/studymaterial.png" },
-            { name: "Biology", icon: "/icons/ChemistryQuicktest.png" },
-            { name: "Physics", icon: "/icons/PhyiscsQuicktest.png" },
-            { name: "Chemistry", icon: "/icons/ChemistryQuicktest.png" },
-        ],
-    },
-
 ];
 
 function Community() {
+    const [isOpen, setIsOpen] = useState(false);
 
-    const [isOpenArray, setIsOpenArray] = useState(
-        new Array(data.length).fill(false) // Dynamically initialize based on the number of groups
-    );
-
-
-    // Function to toggle a specific collapsible's state
-    const toggleCollapsible = (index: number) => {
-        const newIsOpenArray = [...isOpenArray];
-        newIsOpenArray[index] = !newIsOpenArray[index]; // Toggle the specific index
-        setIsOpenArray(newIsOpenArray);
+    const handleCollapsibleClick = () => {
+        setIsOpen(!isOpen);
     };
+    //  const [isOpenArray, setIsOpenArray] = useState([false, false, false]); // Initialize with false for each collapsible
+
+    //   // Function to toggle a specific collapsible's state
+    //   const toggleCollapsible = (index: number) => {
+    //     const newIsOpenArray = [...isOpenArray];
+    //     newIsOpenArray[index] = !newIsOpenArray[index]; // Toggle the specific index
+    //     setIsOpenArray(newIsOpenArray);
+    //   };
     return (
         <div className="flex flex-col gap-6 p-8">
             <div className="flex flex-row gap-3 border-b border-solid border-[#EAECF0]">
@@ -83,19 +64,18 @@ function Community() {
                 {data.map((group, index) => (
                     <Collapsible
                         key={index}
-
-
+                        open={openIndex === index}
+                        onTriggerOpening={() => toggleCollapsible(index)}
+                        onTriggerClosing={() => toggleCollapsible(index)}
                         trigger={
                             <div
-                                className={`h-[76px] w-full px-6 flex flex-row justify-between items-center border-t border-lightGrey transition-colors hover:bg-[#F9FAFB] ${isOpenArray[index] ? "" : "rounded-b-xl"
+                                className={`h-[76px] w-full px-6 flex flex-row justify-between items-center border-t border-lightGrey transition-colors hover:bg-[#F9FAFB] ${openIndex === index ? "" : "rounded-b-xl"
                                     }`}
-                                onClick={() => toggleCollapsible(index)}
                             >
-                                <div className="flex flex-row gap-2"
-                                >
+                                <div className="flex flex-row gap-2">
                                     <Image
                                         src={
-                                            isOpenArray[index]
+                                            openIndex === index
                                                 ? "/icons/Arrow-up.svg"
                                                 : "/icons/Arrow-down-1.svg"
                                         }
@@ -103,8 +83,6 @@ function Community() {
                                         height={20}
                                         alt="Arrow-toggle"
                                     />
-
-
                                     <Image
                                         src="/icons/elements (3).svg"
                                         width={40}
@@ -150,8 +128,6 @@ function Community() {
                                 </Popover>
                             </div>
                         }
-                        transitionTime={350}
-                        open={isOpenArray[index]}
                     >
                         <div className="rounded-lg h-auto border border-solid border-[#EAECF0] mx-6 mb-4">
                             {group.channels.map((channel, channelIndex) => (

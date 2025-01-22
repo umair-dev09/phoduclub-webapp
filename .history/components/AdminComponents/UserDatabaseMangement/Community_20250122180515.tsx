@@ -42,15 +42,30 @@ const data = [
             { name: "Chemistry", icon: "/icons/ChemistryQuicktest.png" },
         ],
     },
-
+    {
+        title: "JEE - 2024",
+        channels: [
+            { name: "Study materials", icon: "/icons/studymaterial.png" },
+            { name: "Quiz talk", icon: "/icons/QuiqTalk.png" },
+            { name: "Physics 101", icon: "/icons/PhyiscsQuicktest.png" },
+            { name: "Chemistry", icon: "/icons/ChemistryQuicktest.png" },
+            { name: "Maths", icon: "/icons/MathsQuicktest.png" },
+        ],
+    },
+    {
+        title: "NEET - 2024",
+        channels: [
+            { name: "Study materials", icon: "/icons/studymaterial.png" },
+            { name: "Biology", icon: "/icons/ChemistryQuicktest.png" },
+            { name: "Physics", icon: "/icons/PhyiscsQuicktest.png" },
+            { name: "Chemistry", icon: "/icons/ChemistryQuicktest.png" },
+        ],
+    },
 ];
 
 function Community() {
 
-    const [isOpenArray, setIsOpenArray] = useState(
-        new Array(data.length).fill(false) // Dynamically initialize based on the number of groups
-    );
-
+    const [isOpenArray, setIsOpenArray] = useState([false, false, false]); // Initialize with false for each collapsible
 
     // Function to toggle a specific collapsible's state
     const toggleCollapsible = (index: number) => {

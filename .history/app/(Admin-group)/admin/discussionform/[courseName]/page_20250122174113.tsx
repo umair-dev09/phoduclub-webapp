@@ -226,11 +226,11 @@ function Courses() {
                 <div className="flex flex-col overflow-y-auto border-b border-solid border-[#EAECF0] ">
                     {sections.map((section, index) => (
                         <Collapsible key={index}
-                            open={openSections.welcome && isOpenArray[index]} // Control open state based on individual section
+                            open={openSections.welcome} // Control open state based on individual section
                             trigger={
                                 <div
                                     className="h-[60px] flex flex-row justify-between py-2 px-4 items-center hover:bg-[#F7F8FB]"
-                                    onClick={() => toggleCollapsible(index)} // Pass section name to toggle function
+                                    onClick={() => toggleCollapsible(0)} // Pass section name to toggle function
                                 >
                                     <span className="font-semibold text-base text-[#1D2939] text-left">{index + 1}. {section.sectionName}</span>
                                     <Image
@@ -241,8 +241,8 @@ function Courses() {
                                     />
                                 </div>
                             }
-                            transitionTime={350}
-
+                            onOpening={() => toggleCollapsible(0)}  // Set the state to open when expanding
+                            onClosing={() => toggleCollapsible(0)} // Set the state to closed when collapsing
                         >
                             <div className="flex flex-col border-t py-2">
                                 {section.content && section.content.length > 0 ? (

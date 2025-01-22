@@ -23,34 +23,15 @@ const data = [
             { name: "Chemistry", icon: "/icons/ChemistryQuicktest.png" },
         ],
     },
-    {
-        title: "JEE - 2024",
-        channels: [
-            { name: "Study materials", icon: "/icons/studymaterial.png" },
-            { name: "Quiz talk", icon: "/icons/QuiqTalk.png" },
-            { name: "Physics 101", icon: "/icons/PhyiscsQuicktest.png" },
-            { name: "Chemistry", icon: "/icons/ChemistryQuicktest.png" },
-            { name: "Maths", icon: "/icons/MathsQuicktest.png" },
-        ],
-    },
-    {
-        title: "NEET - 2024",
-        channels: [
-            { name: "Study materials", icon: "/icons/studymaterial.png" },
-            { name: "Biology", icon: "/icons/ChemistryQuicktest.png" },
-            { name: "Physics", icon: "/icons/PhyiscsQuicktest.png" },
-            { name: "Chemistry", icon: "/icons/ChemistryQuicktest.png" },
-        ],
-    },
-
 ];
 
 function Community() {
+    const [isOpen, setIsOpen] = useState(false);
 
-    const [isOpenArray, setIsOpenArray] = useState(
-        new Array(data.length).fill(false) // Dynamically initialize based on the number of groups
-    );
-
+    const handleCollapsibleClick = () => {
+        setIsOpen(!isOpen);
+    };
+    const [isOpenArray, setIsOpenArray] = useState([false, false, false]); // Initialize with false for each collapsible
 
     // Function to toggle a specific collapsible's state
     const toggleCollapsible = (index: number) => {
@@ -89,21 +70,22 @@ function Community() {
                             <div
                                 className={`h-[76px] w-full px-6 flex flex-row justify-between items-center border-t border-lightGrey transition-colors hover:bg-[#F9FAFB] ${isOpenArray[index] ? "" : "rounded-b-xl"
                                     }`}
-                                onClick={() => toggleCollapsible(index)}
                             >
                                 <div className="flex flex-row gap-2"
                                 >
-                                    <Image
-                                        src={
-                                            isOpenArray[index]
-                                                ? "/icons/Arrow-up.svg"
-                                                : "/icons/Arrow-down-1.svg"
-                                        }
-                                        width={20}
-                                        height={20}
-                                        alt="Arrow-toggle"
-                                    />
-
+                                    <button
+                                        onClick={() => toggleCollapsible(index)}>
+                                        <Image
+                                            src={
+                                                isOpenArray[index]
+                                                    ? "/icons/Arrow-up.svg"
+                                                    : "/icons/Arrow-down-1.svg"
+                                            }
+                                            width={20}
+                                            height={20}
+                                            alt="Arrow-toggle"
+                                        />
+                                    </button>
 
                                     <Image
                                         src="/icons/elements (3).svg"

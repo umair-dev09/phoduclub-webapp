@@ -77,7 +77,7 @@ function formatTimeTaken(seconds: number) {
 
 // function formatTimeLeft(input: string | undefined) {
 //     if (!input) return '0m';
-
+    
 //     let totalMinutes = 0;
 
 //     // Extract hours and minutes from the input string
@@ -107,7 +107,7 @@ function formatTimeTaken(seconds: number) {
 
 function formatTimeLeft(seconds: number): string {
     const minutes = seconds / 60;
-
+    
     if (minutes < 60) {
         return `${Math.round(minutes)} Minutes`;
     } else {
@@ -147,7 +147,7 @@ function Test() {
         const checkTestPurchased = async () => {
             if (testId && auth.currentUser?.uid) {
                 const currentUserId = auth.currentUser.uid;
-
+                
                 // First check if user has directly purchased the test
                 const userDocRef = doc(db, 'testseries', testId, 'StudentsPurchased', currentUserId);
                 const userDocSnapshot = await getDoc(userDocRef);
@@ -263,55 +263,55 @@ function Test() {
                         let subsectionCount = 0;
                         const subsectionsCollection = collection(doc.ref, "sections");
                         const subsectionsSnapshot = await getDocs(subsectionsCollection);
-                        subsectionCount = subsectionsSnapshot.docs.filter(doc =>
+                        subsectionCount = subsectionsSnapshot.docs.filter(doc => 
                             doc.data().hasQuestions === false && !doc.data().isUmbrellaTest
                         ).length;
 
                         let subsectionCountUmbrella = 0;
-
-                        subsectionCountUmbrella = subsectionsSnapshot.docs.filter(doc =>
+                      
+                        subsectionCountUmbrella = subsectionsSnapshot.docs.filter(doc => 
                             doc.data().isParentUmbrellaTest === true
                         ).length;
 
-                        // Initialize the counters for sections with questions and sections with attempts
-                        let sectionsWithQuestionsCount = 0;
-                        let sectionsWithAttemptsCount = 0;
+                         // Initialize the counters for sections with questions and sections with attempts
+              let sectionsWithQuestionsCount = 0;
+              let sectionsWithAttemptsCount = 0;
 
-                        // Recursive function to count sections with hasQuestions = true or isUmbrellaTest = true
-                        const countSectionsWithQuestionsAndAttempts = async (path: string) => {
-                            const sectionCollection = collection(db, path);
-                            const sectionSnapshot = await getDocs(sectionCollection);
+              // Recursive function to count sections with hasQuestions = true or isUmbrellaTest = true
+              const countSectionsWithQuestionsAndAttempts = async (path: string) => {
+                const sectionCollection = collection(db, path);
+                const sectionSnapshot = await getDocs(sectionCollection);
 
-                            for (const sectionDoc of sectionSnapshot.docs) {
-                                const sectionData = sectionDoc.data();
+                for (const sectionDoc of sectionSnapshot.docs) {
+                  const sectionData = sectionDoc.data();
 
-                                // Count section if it has questions or is an umbrella test, but not if it's a parent umbrella test
-                                if ((sectionData.hasQuestions === true && !sectionData.isParentUmbrellaTest) ||
-                                    (sectionData.isUmbrellaTest === true && !sectionData.isParentUmbrellaTest)) {
-                                    sectionsWithQuestionsCount += 1;
+                  // Count section if it has questions or is an umbrella test, but not if it's a parent umbrella test
+                  if ((sectionData.hasQuestions === true && !sectionData.isParentUmbrellaTest) || 
+                      (sectionData.isUmbrellaTest === true && !sectionData.isParentUmbrellaTest)) {
+                    sectionsWithQuestionsCount += 1;
 
-                                    // Check attempts collection
-                                    const attemptsCollection = collection(sectionDoc.ref, 'attempts');
-                                    const attemptsSnapshot = await getDocs(attemptsCollection);
+                    // Check attempts collection
+                    const attemptsCollection = collection(sectionDoc.ref, 'attempts');
+                    const attemptsSnapshot = await getDocs(attemptsCollection);
+                    
+                    // Count only one attempt per section if user has attempted
+                    if (attemptsSnapshot.docs.some(attempt => attempt.data().userId === currentUserId)) {
+                      sectionsWithAttemptsCount += 1;
+                    }
+                  }
 
-                                    // Count only one attempt per section if user has attempted
-                                    if (attemptsSnapshot.docs.some(attempt => attempt.data().userId === currentUserId)) {
-                                        sectionsWithAttemptsCount += 1;
-                                    }
-                                }
+                  // Recursively check subsections
+                  const subSectionPath = `${path}/${sectionDoc.id}/sections`;
+                  await countSectionsWithQuestionsAndAttempts(subSectionPath);
+                }
+              };   
 
-                                // Recursively check subsections
-                                const subSectionPath = `${path}/${sectionDoc.id}/sections`;
-                                await countSectionsWithQuestionsAndAttempts(subSectionPath);
-                            }
-                        };
+              await countSectionsWithQuestionsAndAttempts(`${doc.ref.path}/sections`);
 
-                        await countSectionsWithQuestionsAndAttempts(`${doc.ref.path}/sections`);
-
-                        const studentProgress = sectionsWithQuestionsCount > 0
-                            ? (sectionsWithAttemptsCount / sectionsWithQuestionsCount) * 100
-                            : 0;
-                        const roundedProgress = Math.round(studentProgress);
+              const studentProgress = sectionsWithQuestionsCount > 0
+                ? (sectionsWithAttemptsCount / sectionsWithQuestionsCount) * 100
+                : 0;
+              const roundedProgress = Math.round(studentProgress);
 
                         return {
                             id: sectionId,
@@ -379,7 +379,7 @@ function Test() {
         return [...currentSectionIds, currentSectionId];
     };
 
-    const handleTabClick = (path: string) => {
+    const handleTabClick = ( path: string) => {
         router.push(path);
     };
 
@@ -818,13 +818,13 @@ function Test() {
                                                         <Collapsible
                                                             trigger={
                                                                 <div className="w-full h-auto p-2 flex justify-between items-center"
-                                                                    onClick={() => toggleCollapsible(index)}>
+                                                                    onClick={() => toggleCollapsible(0)}>
                                                                     <div className="flex flex-col gap-1 ml-3 ">
                                                                         <span className="text-[#1D2939] font-semibold text-[16px]">
                                                                             {section.sectionName}
                                                                         </span>
                                                                         <span className="text-[#667085] font-normal text-[12px]">
-                                                                            {section.isUmbrellaTest ? section.subsectionCountUmbrella : section.QuestionsCount} {section.isUmbrellaTest ? 'Tests' : 'Questions'}
+                                                                            {section.isUmbrellaTest ? section.subsectionCountUmbrella : section.QuestionsCount} {section.isUmbrellaTest ? 'Tests' :'Questions'}
                                                                         </span>
                                                                     </div>
                                                                     <div className="flex items-center p-3 gap-4">
@@ -842,7 +842,7 @@ function Test() {
                                                                                 <div>
                                                                                     <button className="h-[36px] flex flex-row items-center justify-center rounded-md  gap-2 px-3"
                                                                                         style={{ border: "1.5px solid #EAECF0" }}
-                                                                                        onClick={(e) => { e.stopPropagation(); handleStartTest(section.description, section.testTime, section.marksPerQ, section.QuestionsCount || 0, section.id, section.isUmbrellaTest, section.subsectionCountUmbrella || 0); }}
+                                                                                        onClick={(e) => { e.stopPropagation(); handleStartTest(section.description, section.testTime, section.marksPerQ, section.QuestionsCount || 0, section.id, section.isUmbrellaTest,  section.subsectionCountUmbrella  || 0); }}
                                                                                     >
                                                                                         <Image
                                                                                             src="/icons/Re-attempt.svg"
@@ -853,7 +853,7 @@ function Test() {
                                                                                     </button>
                                                                                 </div>
                                                                                 <Image
-                                                                                    src={isOpenArray[index] ? "/icons/arrowdown.svg" : "/icons/arrowup.svg"}
+                                                                                    src={isOpenArray[0] ? "/icons/arrowdown.svg" : "/icons/arrowup.svg"}
                                                                                     alt="arrow"
                                                                                     width={24}
                                                                                     height={24}
@@ -861,7 +861,7 @@ function Test() {
                                                                                 />
                                                                             </div>
                                                                         ) : (
-                                                                            <button onClick={(e) => { e.stopPropagation(); handleStartTest(section.description, section.testTime, section.marksPerQ, section.QuestionsCount || 0, section.id, section.isUmbrellaTest, section.subsectionCountUmbrella || 0); }}>
+                                                                            <button onClick={(e) => { e.stopPropagation(); handleStartTest(section.description, section.testTime, section.marksPerQ, section.QuestionsCount || 0, section.id, section.isUmbrellaTest,  section.subsectionCountUmbrella  || 0); }}>
                                                                                 <div className="flex items-center justify-center w-[116px] h-[36px] rounded-[6px] bg-[#9012FF] border border-solid border-[#800EE2] shadow-inner-button hover:bg-[#6D0DCC]">
                                                                                     <span className="font-medium text-[14px] text-[#FCFCFD]">
                                                                                         Start test
@@ -873,7 +873,9 @@ function Test() {
                                                                     </div>
                                                                 </div>
                                                             }
-                                                            open={isOpenArray[index]}
+                                                            transitionTime={350}
+                                                            onOpening={() => toggleCollapsible(0)}  // Set the state to open when expanding
+                                                            onClosing={() => toggleCollapsible(0)} // Set the state to closed when collapsing
                                                         >
                                                             {sectionAttempts[section.id]?.attemptedDetails && (
                                                                 <div className={`overflow-hidden`} >
@@ -1022,29 +1024,29 @@ function Test() {
                             </div>
                             {isUmbrellaTest ? (
                                 <div className="mt-[33px] flex-row flex justify-start">
-                                    <div className="gap-1 flex-col flex items-start w-full border-r border-lightGrey ml-7 justify-center text-center">
-                                        <span className="font-normal text-sm text-[#667085] ">No. of Tests</span>
-                                        <span className="text-[#1D2939] text-lg font-semibold text-center">{noOfTests}</span>
-                                    </div>
-
+                                <div className="gap-1 flex-col flex items-start w-full border-r border-lightGrey ml-7 justify-center text-center">
+                                    <span className="font-normal text-sm text-[#667085] ">No. of Tests</span>
+                                    <span className="text-[#1D2939] text-lg font-semibold text-center">{noOfTests}</span>
                                 </div>
+                                
+                            </div>
                             ) : (
                                 <div className="mt-[33px] flex-row flex">
-                                    <div className="gap-1 flex-col flex items-center w-full border-r border-lightGrey">
-                                        <span className="font-normal text-sm text-[#667085]">Time Duration</span>
-                                        <span className="text-[#1D2939] text-lg font-semibold">{formatTimeLeft(time)}</span>
-                                    </div>
-                                    <div className="gap-1 flex-col flex items-center w-full border-r border-lightGrey">
-                                        <span className="font-normal text-sm text-[#667085]">No. of Questions</span>
-                                        <span className="text-[#1D2939] text-lg font-semibold">{noOfQuestions}</span>
-                                    </div>
-                                    <div className="gap-1 flex-col flex items-center w-full">
-                                        <span className="font-normal text-sm text-[#667085]">Marks Per Question</span>
-                                        <span className="text-[#1D2939] text-lg font-semibold">{marksPerQ}</span>
-                                    </div>
+                                <div className="gap-1 flex-col flex items-center w-full border-r border-lightGrey">
+                                    <span className="font-normal text-sm text-[#667085]">Time Duration</span>
+                                    <span className="text-[#1D2939] text-lg font-semibold">{formatTimeLeft(time)}</span>
                                 </div>
+                                <div className="gap-1 flex-col flex items-center w-full border-r border-lightGrey">
+                                    <span className="font-normal text-sm text-[#667085]">No. of Questions</span>
+                                    <span className="text-[#1D2939] text-lg font-semibold">{noOfQuestions}</span>
+                                </div>
+                                <div className="gap-1 flex-col flex items-center w-full">
+                                    <span className="font-normal text-sm text-[#667085]">Marks Per Question</span>
+                                    <span className="text-[#1D2939] text-lg font-semibold">{marksPerQ}</span>
+                                </div>
+                            </div>
                             )}
-
+                            
                         </div>
                         <div className="flex flex-row justify-end py-3 pr-6 gap-4  border-t border-lightGrey border-solid">
                             <button
