@@ -120,7 +120,7 @@ function NotificationName() {
                         </button>
                     </div>
                 </div>
-                {/* <div className="flex flex-row gap-2">
+                <div className="flex flex-row gap-2">
                     <div className="bg-[#EAECF0] rounded-[8px] p-2 flex flex-row gap-1">
                         <Image
                             src="/icons/information-circle.svg"
@@ -133,7 +133,7 @@ function NotificationName() {
                     <button>
                         <Image src="/icons/edit-icon.svg" width={18} height={18} alt="Edit-quiz" />
                     </button>
-                </div> */}
+                </div>
                 <span className="font-normal text-sm text-[#1D2939]">{data?.description}</span>
             </div>
             <hr className="my-8" />

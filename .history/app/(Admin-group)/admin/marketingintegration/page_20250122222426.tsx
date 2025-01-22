@@ -965,7 +965,7 @@ function PaginationSection({
     };
 
     return (
-        <Pagination className="mt-4 justify-end pb-4">
+        <Pagination className="mt-4 justify-end pb-2">
             <PaginationContent className="bg-white border border-lightGrey rounded-md flex flex-row items-center">
                 <PaginationItem>
                     <button

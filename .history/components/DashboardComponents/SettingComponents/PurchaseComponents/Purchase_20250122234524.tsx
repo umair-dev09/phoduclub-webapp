@@ -146,7 +146,7 @@ function Purchase() {
                                         </td>
                                         <td className="px-6 py-4 text-center text-[#667085] font-normal leading-6 whitespace-nowrap">{formatDate(transaction.dateOfPurchase)}</td>
                                         <td className="px-6 py-4 text-center text-[#667085] font-normal leading-6 whitespace-nowrap">₹ {transaction.purchasedPrice}</td>
-                                        <td className="px-6 py-4 text-center text-[#667085] font-normal leading-6 whitespace-nowrap">
+                                        <td className="px-8 py-4 text-center text-[#667085] font-normal leading-6 whitespace-nowrap">
                                             <div className="flex items-center justify-center relative">
                                                 <span>{transaction.transactionId}</span>
                                                 <button

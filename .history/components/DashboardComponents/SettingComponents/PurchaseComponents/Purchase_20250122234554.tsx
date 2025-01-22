@@ -148,7 +148,7 @@ function Purchase() {
                                         <td className="px-6 py-4 text-center text-[#667085] font-normal leading-6 whitespace-nowrap">₹ {transaction.purchasedPrice}</td>
                                         <td className="px-6 py-4 text-center text-[#667085] font-normal leading-6 whitespace-nowrap">
                                             <div className="flex items-center justify-center relative">
-                                                <span>{transaction.transactionId}</span>
+                                                <span className="ml-2">{transaction.transactionId}</span>
                                                 <button
                                                     className={`ml-2 transition-opacity duration-200 ${hoveredRow === index ? 'opacity-100' : 'opacity-0'
                                                         }`}

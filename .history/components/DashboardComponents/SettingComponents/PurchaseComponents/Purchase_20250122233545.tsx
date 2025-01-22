@@ -90,7 +90,7 @@ function Purchase() {
             navigator.clipboard.writeText(transactionId)
                 .then(() => {
                     setCopied(transactionId); // Store the transactionId when copied
-                    setTimeout(() => setCopied(null), 500); // Hide the message after 2 seconds
+                    setTimeout(() => setCopied(null), 2000); // Hide the message after 2 seconds
                 })
                 .catch(err => console.error('Failed to copy text: ', err));
         } else {
@@ -162,10 +162,9 @@ function Purchase() {
                                                     />
                                                 </button>
                                                 {copied === transaction.transactionId && (
-                                                    <span className="absolute -right-10 top-1/2 transform -translate-y-1/2 px-2 bg-[#1D2939] rounded-[6px] text-white font-medium text-[11px] transition-all duration-200">
-                                                        Copied!
+                                                    <span className="absolute right-4 top-1/2 transform -translate-y-1/2 px-2 bg-[#1D2939] rounded-[6px] text-white font-medium text-[11px] transition-all duration-200">
+                                                        Copied!!
                                                     </span>
-
 
                                                 )}
                                             </div>

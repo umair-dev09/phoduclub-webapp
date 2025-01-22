@@ -41,7 +41,7 @@ interface PurchaseData {
 function Purchase() {
     const [transactions, setTransactions] = useState<PurchaseData[]>([]);
     const [loading, setLoading] = useState(true);
-    const [copied, setCopied] = useState<string | null>(null);
+    const [copied, setCopied] = useState(false);
     const [hoveredRow, setHoveredRow] = useState<number | null>(null);
     const userId = auth.currentUser?.uid;
     useEffect(() => {
@@ -89,14 +89,15 @@ function Purchase() {
         if (transactionId) {
             navigator.clipboard.writeText(transactionId)
                 .then(() => {
-                    setCopied(transactionId); // Store the transactionId when copied
-                    setTimeout(() => setCopied(null), 500); // Hide the message after 2 seconds
+                    setCopied(true);
+                    setTimeout(() => setCopied(false), 2000); // Hide the message after 2 seconds
                 })
                 .catch(err => console.error('Failed to copy text: ', err));
         } else {
             console.error('No valid transactionId to copy');
         }
     };
+
 
     useEffect(() => {
         const fetchAllContentNames = async () => {
@@ -162,11 +163,9 @@ function Purchase() {
                                                     />
                                                 </button>
                                                 {copied === transaction.transactionId && (
-                                                    <span className="absolute -right-10 top-1/2 transform -translate-y-1/2 px-2 bg-[#1D2939] rounded-[6px] text-white font-medium text-[11px] transition-all duration-200">
-                                                        Copied!
+                                                    <span className="absolute -top-6 left-1/2 transform -translate-x-1/2 px-2 bg-[#1D2939] rounded-[6px] text-white font-medium text-[11px] transition-all duration-200">
+                                                        Copied!!
                                                     </span>
-
-
                                                 )}
                                             </div>
                                         </td>

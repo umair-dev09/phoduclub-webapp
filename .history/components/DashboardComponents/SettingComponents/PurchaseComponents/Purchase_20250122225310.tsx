@@ -41,8 +41,6 @@ interface PurchaseData {
 function Purchase() {
     const [transactions, setTransactions] = useState<PurchaseData[]>([]);
     const [loading, setLoading] = useState(true);
-    const [copied, setCopied] = useState<string | null>(null);
-    const [hoveredRow, setHoveredRow] = useState<number | null>(null);
     const userId = auth.currentUser?.uid;
     useEffect(() => {
         const fetchTransactions = async () => {
@@ -84,20 +82,6 @@ function Purchase() {
         }
     };
 
-
-    const handleCopy = (transactionId: string) => {
-        if (transactionId) {
-            navigator.clipboard.writeText(transactionId)
-                .then(() => {
-                    setCopied(transactionId); // Store the transactionId when copied
-                    setTimeout(() => setCopied(null), 500); // Hide the message after 2 seconds
-                })
-                .catch(err => console.error('Failed to copy text: ', err));
-        } else {
-            console.error('No valid transactionId to copy');
-        }
-    };
-
     useEffect(() => {
         const fetchAllContentNames = async () => {
             const updatedTransactions = await Promise.all(
@@ -135,9 +119,7 @@ function Purchase() {
                         <tbody className="divide-y divide-gray-200">
                             {transactions.length > 0 ? (
                                 transactions.map((transaction, index) => (
-                                    <tr key={index} className="hover:bg-gray-50 text-sm"
-                                        onMouseEnter={() => setHoveredRow(index)}
-                                        onMouseLeave={() => setHoveredRow(null)}>
+                                    <tr key={index} className="hover:bg-gray-50 text-sm">
                                         <td className="px-6 py-4">
                                             <div className="flex flex-col whitespace-nowrap">
                                                 <span className="text-[#1D2939] font-semibold leading-6">{transaction.contentName || transaction.contentType}</span>
@@ -146,31 +128,16 @@ function Purchase() {
                                         </td>
                                         <td className="px-6 py-4 text-center text-[#667085] font-normal leading-6 whitespace-nowrap">{formatDate(transaction.dateOfPurchase)}</td>
                                         <td className="px-6 py-4 text-center text-[#667085] font-normal leading-6 whitespace-nowrap">₹ {transaction.purchasedPrice}</td>
-                                        <td className="px-6 py-4 text-center text-[#667085] font-normal leading-6 whitespace-nowrap">
-                                            <div className="flex items-center justify-center relative">
-                                                <span>{transaction.transactionId}</span>
-                                                <button
-                                                    className={`ml-2 transition-opacity duration-200 ${hoveredRow === index ? 'opacity-100' : 'opacity-0'
-                                                        }`}
-                                                    onClick={() => handleCopy(transaction.transactionId)}
-                                                >
-                                                    <Image
-                                                        src="/icons/CopyButton.svg"
-                                                        alt="copy button"
-                                                        height={22}
-                                                        width={22}
-                                                    />
-                                                </button>
-                                                {copied === transaction.transactionId && (
-                                                    <span className="absolute -right-10 top-1/2 transform -translate-y-1/2 px-2 bg-[#1D2939] rounded-[6px] text-white font-medium text-[11px] transition-all duration-200">
-                                                        Copied!
-                                                    </span>
-
-
-                                                )}
-                                            </div>
+                                        <td className="px-6 py-4 text-center text-[#667085] font-normal leading-6 whitespace-nowrap">{transaction.transactionId}
+                                            <button>
+                                                {/* onClick={handleCopy}> */}
+                                                <Image
+                                                    src="/icons/CopyButton.svg"
+                                                    alt="copy buttons"
+                                                    height={22}
+                                                    width={22} />
+                                            </button>
                                         </td>
-
                                         <td className="px-6 py-4 text-right">
                                             <Popover placement="bottom-end">
                                                 <PopoverTrigger>

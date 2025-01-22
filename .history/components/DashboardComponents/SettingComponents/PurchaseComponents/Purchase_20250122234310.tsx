@@ -90,7 +90,7 @@ function Purchase() {
             navigator.clipboard.writeText(transactionId)
                 .then(() => {
                     setCopied(transactionId); // Store the transactionId when copied
-                    setTimeout(() => setCopied(null), 500); // Hide the message after 2 seconds
+                    setTimeout(() => setCopied(null), 1000); // Hide the message after 2 seconds
                 })
                 .catch(err => console.error('Failed to copy text: ', err));
         } else {

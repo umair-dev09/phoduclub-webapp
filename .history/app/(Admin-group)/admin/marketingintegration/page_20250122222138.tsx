@@ -267,7 +267,7 @@ function Messenger() {
             </div>
 
             <div className="flex flex-col justify-between h-full">
-                <div className="flex border border-[#EAECF0] rounded-xl ">
+                <div className="flex border border-[#EAECF0] rounded-xl overflow-x-auto">
                     <table className="w-full bg-white rounded-xl">
                         <thead>
                             <tr>
@@ -965,7 +965,7 @@ function PaginationSection({
     };
 
     return (
-        <Pagination className="mt-4 justify-end pb-4">
+        <Pagination className="mt-4 justify-end">
             <PaginationContent className="bg-white border border-lightGrey rounded-md flex flex-row items-center">
                 <PaginationItem>
                     <button
