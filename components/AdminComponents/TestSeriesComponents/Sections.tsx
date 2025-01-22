@@ -58,6 +58,22 @@ interface SectionsProps {
   setSectionName: (value: string) => void;
   setSectionScheduleDate: (value: string) => void;
 }
+function convertToSeconds(timeString: string): number {
+  const [value, unit] = timeString.split(' ');
+  const numValue = parseInt(value, 10);
+
+  if (isNaN(numValue)) {
+    throw new Error("Invalid time value. Must be a number.");
+  }
+
+  if (unit === 'Minutes') {
+    return numValue * 60; // Convert minutes to seconds
+  } else if (unit === 'Hours') {
+    return numValue * 3600; // Convert hours to seconds
+  } else {
+    throw new Error("Invalid time unit. Only 'Minutes' and 'Hours' are allowed.");
+  }
+}
 
 const Sections: React.FC<SectionsProps> = ({
   isCreateSection,
@@ -77,7 +93,7 @@ const Sections: React.FC<SectionsProps> = ({
   const [breadcrumbs, setBreadcrumbs] = useState<{ id: string; name: string }[]>([]);
   const [questionText, setQuestionText] = useState("");
   const [timeNumber, setTimeNumber] = useState("");
-  const [timeText, setTimeText] = useState("Minute(s)");
+  const [timeText, setTimeText] = useState("Minutes");
   const [marksPerQ, setMarksPerQ] = useState("");
   const [description, setDescription] = useState("");
   const [editSectionId, setEditSectionId] = useState("");
@@ -182,7 +198,7 @@ const Sections: React.FC<SectionsProps> = ({
                       sections: [],
                       description: sectionData.description,
                       marksPerQ: sectionData.marksPerQ,
-                      nMarksPerQ: sectionData.nMarksPerQ,
+                      nMarksPerQ: sectionData.nMarksPerQ, 
                       testTime: sectionData.testTime,
                       isUmbrellaTest: subsectionData.isUmbrellaTest || false,
                       isParentUmbrellaTest: subsectionData.isParentUmbrellaTest || false,
@@ -533,7 +549,7 @@ const Sections: React.FC<SectionsProps> = ({
         description,
         marksPerQ,
         nMarksPerQ,
-        testTime: timeNumber + " " + timeText,
+        testTime: convertToSeconds(timeNumber + " " + timeText),
       });
 
       // Commit all changes
@@ -544,7 +560,7 @@ const Sections: React.FC<SectionsProps> = ({
       setnMarksPerQ('');
       setDescription('');
       setTimeNumber('');
-      setTimeText('Minute(s)');
+      setTimeText('Minutes');
       setSaveQuestionSectionId('');
       setSaveQuestionDialog(false);
 
@@ -1344,7 +1360,7 @@ const Sections: React.FC<SectionsProps> = ({
                         </button>
                       </PopoverTrigger>
                       <PopoverContent className='flex flex-col justify-start w-[120px] h-auto py-1 px-0  bg-white '>
-                        {["Minute(s)", "Hour(s)"].map(time => (
+                        {["Minutes", "Hours"].map(time => (
                           <button
                             key={time}
                             onClick={() => { setTimeText(time); setIsOpenT(false); }}

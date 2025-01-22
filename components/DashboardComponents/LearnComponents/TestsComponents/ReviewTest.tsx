@@ -37,13 +37,14 @@ interface ReviewTestProps {
     setShowReviewSheet: React.Dispatch<React.SetStateAction<boolean>>;
     questionsList: Question[];
     answeredQuestions: AnsweredQuestion[];
-    timeTaken: string;
+    timeTaken: number;
 }
 
 function convertSecondsToHHMM(seconds: number): string {
     const hours = Math.floor(seconds / 3600);
     const minutes = Math.floor((seconds % 3600) / 60);
-    return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`;
+    const remainingSeconds = seconds % 60;
+    return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(remainingSeconds).padStart(2, '0')}`;
 }
 
 
@@ -65,7 +66,7 @@ function ReviewTest({ showReviewSheet, setShowReviewSheet, questionsList, answer
                         <span className="text-lg font-semibold text-[#1D2939]">Review Attempted Quiz</span>
                         <span className="text-lg font-semibold text-[#1D2939] flex items-center justify-center gap-2">
                             <Image width={24} height={24} src="/icons/alarm-clock.svg" alt="timer" />
-                            <span className="text-lg font-medium">Time Taken -</span> {convertSecondsToHHMM(19)}
+                            <span className="text-lg font-medium">Time Taken -</span> {convertSecondsToHHMM(timeTaken)}
                         </span>
                         <button 
                             className="w-auto h-[44px] px-8 bg-[#FFFFFF] border-[1px] border-[#EAECF0] rounded-[8px] flex items-center justify-center hover:bg-[#F2F4F7]"

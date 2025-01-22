@@ -22,9 +22,9 @@ interface AttemptedDetails {
     accuracy: string;
     answeredCorrect: string;
     answeredIncorrect: string;
-    timeTaken: string;
+    timeTaken: number;
     isUmbrellaTest: boolean;
-    testTime: string;
+    testTime: number;
     questions: AnsweredQuestion[];
     attemptDateAndTime: {
         seconds: number;
