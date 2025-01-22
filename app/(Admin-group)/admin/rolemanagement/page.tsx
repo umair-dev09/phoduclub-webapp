@@ -20,6 +20,7 @@ import { collection, getDocs, query, where, doc, getDoc, onSnapshot, deleteDoc }
 import { db } from '@/firebase';
 import LoadingData from "@/components/Loading";
 import UserRolesView from "@/components/AdminComponents/RoleMangement/UserRolesView";
+import Delete from '@/components/AdminComponents/RoleMangement/Delete';
 
 // Define types for role data
 interface RoleManagementInfo {
@@ -30,8 +31,6 @@ interface RoleManagementInfo {
     role: string;
     profilePic: string;
 }
-
-
 
 type Option = "Admin" | "Customer Care" | "Teacher" | "Chief Modrator" | "Editor";
 
@@ -54,6 +53,12 @@ function RoleMangement() {
     const [isAddUser, setisAddUser] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
     const isTextSearch = searchTerm.trim().length > 0;
+    const [isDeleteOpen, setIsDeleteOpen] = useState(false);
+    const closeDelete = () => {
+        setIsDeleteOpen(false);
+        setUserToDelete(null);
+    };
+    const [userToDelete, setUserToDelete] = useState<RoleManagementInfo | null>(null);
 
     // For removing user dialog
     const [isRemoveOpen, setIsRemoveOpen] = useState(false);
@@ -379,7 +384,11 @@ function RoleMangement() {
                                                                 <span className="text-sm text-[#0C111D] font-normal">Edit details</span>
                                                             </button>
                                                             <button className=" flex flex-row items-center justify-start w-full py-2 gap-2 hover:bg-[#FEE4E2]  pl-4 pr-9"
-                                                            // onClick={() => handleRemoveUser(users.adminId)}>
+                                                                // onClick={() => handleRemoveUser(users.adminId)}>
+                                                                onClick={() => {
+                                                                    setUserToDelete(users);
+                                                                    setIsDeleteOpen(true);
+                                                                }}
                                                             >
                                                                 <Image src='/icons/delete.svg' alt="user profile" width={18} height={18} />
                                                                 <p className="text-sm text-[#DE3024] font-normal">Remove</p>
@@ -425,6 +434,14 @@ function RoleMangement() {
             )}
             {/* Dialog Component  for AddNewUser*/}
             {isAddUser && <Addnewuser close={closeAddUser} open={true} isEditing={isEditing} profilePic={profilePic} setProfilePic={setProfilePic} firstName={firstName} setFirstName={setFirstName} lastName={lastName} setLastName={setLastName} userId={userId} setUserId={setUserId} phone={phone} setPhone={setPhone} selectedRole={selectedRole} setSelectedRole={setSelectedRole} adminIdd={adminIdd} setAdminId={setAdminIdd} />}
+            {isDeleteOpen && userToDelete && (
+                <Delete
+                    onClose={closeDelete}
+                    open={true}
+                    authId={userToDelete.adminId}
+                    name={userToDelete.name}
+                />
+            )}
             <ToastContainer />
         </div>
     );

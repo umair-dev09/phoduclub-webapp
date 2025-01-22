@@ -57,6 +57,7 @@ function StudentsAttemptedTestseries() {
     const [statusFilter, setStatusFilter] = useState(null);
     const isTextSearch = searchTerm.trim().length > 0 && !dateFilter && !statusFilter;
     const [popoveropen2, setPopoveropen2] = useState<number | null>(null);
+    const [isOpen, setIsOpen] = useState(false);
 
     // Fetch StudentAttempts when component mounts
     useEffect(() => {
@@ -106,6 +107,9 @@ function StudentsAttemptedTestseries() {
         setEnrollmentFilter(null); // Clear enrollment filter
         setData(studentAttempts); // Reset table data to the original list
         setCurrentPage(1); // Reset to the first page
+        setEnrollmentFilter(null);
+        setSortConfig({ key: '', direction: null });
+        setIsOpen(false); // Close Popover on Clear
     };
 
     useEffect(() => {
@@ -279,7 +283,7 @@ function StudentsAttemptedTestseries() {
                         </PopoverContent>
                     </Popover>
 
-                    <Popover placement="bottom">
+                    <Popover placement="bottom" isOpen={isOpen} onOpenChange={setIsOpen}>
                         <PopoverTrigger>
                             <button className="h-[44px] w-[105px] rounded-md bg-[#FFFFFF] border border-solid border-[#D0D5DD] flex items-center justify-center gap-2 outline-none">
                                 <span className="font-medium text-sm text-[#667085] ml-2">

@@ -537,37 +537,37 @@ function TestSeriesInfo() {
                         __html: testData?.testDescription || '',
                     }} />
                     {!testData?.isInCourse && (
-                    <div className="flex flex-col gap-2">
-                        <div className="flex items-center gap-2 flex-row h-[24px] ">
-                            <RatingStars rating={testData?.rating || ''} />
-                            <div className="text-[#1D2939] text-sm font-bold flex items-center flex-row">
-                                {testData?.rating || 0}
-                                <span className="text-[#1D2939] font-normal text-sm ml-1">
-                                    <span className="flex items-center">
-                                        <span className="inline-block">({testData?.noOfRating + '+'}</span>
-                                        <span className="inline-block">Ratings)</span>
+                        <div className="flex flex-col gap-2">
+                            <div className="flex items-center gap-2 flex-row h-[24px] ">
+                                <RatingStars rating={testData?.rating || ''} />
+                                <div className="text-[#1D2939] text-sm font-bold flex items-center flex-row">
+                                    {testData?.rating || 0}
+                                    <span className="text-[#1D2939] font-normal text-sm ml-1">
+                                        <span className="flex items-center">
+                                            <span className="inline-block">({testData?.noOfRating + '+'}</span>
+                                            <span className="inline-block">Ratings)</span>
+                                        </span>
                                     </span>
-                                </span>
-                            </div>
-                        </div>
-                        <div className="flex flex-row gap-3 items-center">
-                            <div className="text-[#1D2939] text-2xl font-bold">
-                                ₹{testData?.discountPrice && new Intl.NumberFormat('en-IN').format(parseFloat(testData.discountPrice))}
-                            </div>
-                            <div className="text-[#667085] text-base font-normal line-through">
-                                ₹{testData?.price && new Intl.NumberFormat('en-IN').format(parseFloat(testData.price))}
-                            </div>
-                            {testData?.price && testData?.discountPrice && (
-                                <div className="bg-[#DB6704] w-[76px] h-[25px] flex items-center justify-center rounded-full text-white text-xs font-semibold">
-                                    {`${Math.round(
-                                        ((parseFloat(testData.price) - parseFloat(testData.discountPrice)) /
-                                            parseFloat(testData.price)) *
-                                        100
-                                    )}% off`}
                                 </div>
-                            )}
+                            </div>
+                            <div className="flex flex-row gap-3 items-center">
+                                <div className="text-[#1D2939] text-2xl font-bold">
+                                    ₹{testData?.discountPrice && new Intl.NumberFormat('en-IN').format(parseFloat(testData.discountPrice))}
+                                </div>
+                                <div className="text-[#667085] text-base font-normal line-through">
+                                    ₹{testData?.price && new Intl.NumberFormat('en-IN').format(parseFloat(testData.price))}
+                                </div>
+                                {testData?.price && testData?.discountPrice && (
+                                    <div className="bg-[#DB6704] w-[76px] h-[25px] flex items-center justify-center rounded-full text-white text-xs font-semibold">
+                                        {`${Math.round(
+                                            ((parseFloat(testData.price) - parseFloat(testData.discountPrice)) /
+                                                parseFloat(testData.price)) *
+                                            100
+                                        )}% off`}
+                                    </div>
+                                )}
+                            </div>
                         </div>
-                    </div>
                     )}
                 </div>
             </div>
@@ -678,7 +678,7 @@ function TestSeriesInfo() {
                                                         )}
                                                     </div>
                                                     <div>
-                                                        {(section.hasQuestions|| section.isUmbrellaTest) ? (
+                                                        {(section.hasQuestions || section.isUmbrellaTest) ? (
                                                             <button className='w-[7.25rem] h-9 px-[0.875rem] py-[0.625rem] text-white text-xs font-semibold bg-[#9012FF] border border-[#800EE2] rounded-[6px] shadow-inner-button transition-colors duration-150 hover:bg-[#6D0DCC]'
                                                                 onClick={() => {
                                                                     const sectionIds = getSectionPath(section.id);
