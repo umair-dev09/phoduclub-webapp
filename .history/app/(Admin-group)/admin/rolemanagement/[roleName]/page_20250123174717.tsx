@@ -58,7 +58,7 @@ function UsersRoleName() {
     setisAddUser(false);
     setIsEditing(false);
   };
-  const [popoveropen, setPopoveropen] = useState(false);
+  const [popoveropen, setPopoveropen] = useState(falsse);
   useEffect(() => {
     // Listen for real-time updates to the course collection
     const unsubscribe = onSnapshot(collection(db, 'course'), (courseSnapshot) => {
@@ -276,10 +276,7 @@ function UsersRoleName() {
               </div>
             </div>
 
-            <Popover placement="bottom"
-              isOpen={popoveropen}
-              onOpenChange={(open) => setPopoveropen(open)}>
-
+            <Popover placement="bottom">
               <PopoverTrigger>
                 <button className=" h-10 w-10 focus:outline-none flex items-center justify-center rounded-[8px] hover:bg-[#F2F4F7] border border-solid border-[#EAECF0]">
                   <Image
@@ -295,7 +292,7 @@ function UsersRoleName() {
                   <Image src="/icons/edit-icon.svg" width={18} height={18} alt="Edit-quiz" />
                   <span className="text-sm text-[#0C111D] font-normal">Edit profile</span>
                 </button>
-                <button className=" p-3 gap-2 flex-row flex h-[40px] hover:bg-[#FEE4E2]  w-full" onClick={() => { setIsDeleteOpen(true); setPopoveropen(false) }}>
+                <button className=" p-3 gap-2 flex-row flex h-[40px] hover:bg-[#F2F4F7] w-full" onClick={() => setIsDeleteOpen(true)}>
                   <Image src="/icons/delete.svg" width={18} height={18} alt="delete-quiz" />
                   <span className="text-sm text-[#DE3024] font-normal">Delete profile</span>
                 </button>

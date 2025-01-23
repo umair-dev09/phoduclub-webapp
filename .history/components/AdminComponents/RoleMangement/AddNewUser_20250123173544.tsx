@@ -71,7 +71,6 @@ function AddNewUser({
 
     // Check if all required fields are filled
     // const isFormValid = firstName && lastName && userId && phone && selectedRole;
-    const [scrollBehavior, setScrollBehavior] = useState<"inside" | "outside">("outside");
     const isFormValid = firstName && lastName && userId && phone;
     // const isFormValid = firstName && lastName && userId && phone;
 
@@ -253,8 +252,7 @@ function AddNewUser({
         //         </DialogPanel>
         //     </div >
         // </Dialog >
-        <Modal isOpen={open} onOpenChange={(isOpen) => !isOpen && close()} hideCloseButton
-            scrollBehavior={scrollBehavior}>
+        <Modal isOpen={open} onOpenChange={(isOpen) => !isOpen && close()} hideCloseButton >
 
             <ModalContent>
                 <>
@@ -368,7 +366,7 @@ function AddNewUser({
                         <Button
                             onClick={handleAddUser}
                             disabled={!isFormValid || loading} // Disable if form is invalid or loading
-                            className={`py-[0.625rem] px-6 text-white shadow-inner-button  border border-white rounded-md font-semibold text-sm ${!isFormValid || loading ? 'bg-[#CDA0FC]' : 'hover:bg-[#6D0DCC] bg-[#9012FF]'}`}>
+                            className={`py-[0.625rem] px-6 text-white shadow-inner-button  border border-white rounded-md font-semibold text-sm ${!isFormValid || loading ? 'bg-[#CDA0FC]' : 'bg-[#9012FF]'}`}>
                             {isEditing ? "Save Changes" : "Add New User"}
                         </Button>
                     </ModalFooter>
