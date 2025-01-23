@@ -1,7 +1,7 @@
 "use client";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import AttemptsDifficultyAnalysis from "@/components/DashboardComponents/AnalyticsComponents/Test-Series-Components/PhysicsComponents/AttemptsDifficultyAnalysis"
 import Attemptsoverthehours from "@/components/DashboardComponents/AnalyticsComponents/Test-Series-Components/PhysicsComponents/Attemptsoverthehours"
 import { Dialog, DialogBackdrop, DialogPanel } from "@headlessui/react";
@@ -85,7 +85,7 @@ function formatTimeInSeconds(seconds: number | string): string {
 }
 
 function NormalTestAnalytics({ onClose, forallsubject = false, attemptedDetails, sectionName, testAttemptId, setTestAttemptId }: NormalTestAnalyticsprops) {
-
+    const [activeTab, setActiveTab] = useState<string>('overview');
     const router = useRouter();
     let [showpremiumDialog, setShowpremiumDialog] = useState(false);
     const sectionMap = {
@@ -106,6 +106,29 @@ function NormalTestAnalytics({ onClose, forallsubject = false, attemptedDetails,
         }
     }, [sectionMap]);
     const currentAttempt = attemptedDetails.find(attempt => attempt.attemptId === testAttemptId);
+
+    useEffect(() => {
+        const sections = Object.values(sectionMap).map((sectionId) => document.querySelector(sectionId));
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach((entry) => {
+                if (entry.isIntersecting) {
+                    const sectionId = entry.target.id;
+                    setActiveTab(sectionId);
+                }
+            });
+        }, { threshold: 0.5 });
+
+        sections.forEach((section) => {
+            if (section) observer.observe(section);
+        });
+
+        return () => {
+            sections.forEach((section) => {
+                if (section) observer.unobserve(section);
+            });
+        };
+    }, []);
 
     return (
         <div className="flex flex-1 flex-col h-auto overflow-y-auto pt-3">
@@ -154,6 +177,7 @@ function NormalTestAnalytics({ onClose, forallsubject = false, attemptedDetails,
                         aria-label="Analytics Tabs"
                         color="primary"
                         variant="underlined"
+                        selectedKey={activeTab}
                         onSelectionChange={handleTabChange}
                         classNames={{
                             tabList: "gap-6 w-full relative rounded-none p-0",
@@ -287,9 +311,9 @@ function NormalTestAnalytics({ onClose, forallsubject = false, attemptedDetails,
                                         <td className="py-3 text-center text-[#1D2939] font-normal text-sm">{question.answered ? 'Yes' : 'No'}</td>
                                         <td className={`py-3 text-center ${question.answered ? question.answeredCorrect ? 'text-[#0B9055]' : 'text-[#DE3024]' : 'text-[#667085]'} font-medium text-sm`}>{question.answered ? question.answeredCorrect ? 'Correct' : 'Incorrect' : '-'}</td>
                                         <td className={`py-3 text-center font-medium text-sm ${question.remarks === 'Perfect' ? 'text-[#0B9055]' :
-                                                question.remarks === 'Overtime' ? 'text-[#C74FE6]' :
-                                                    question.remarks === 'Wasted' ? 'text-[#DE3024]' :
-                                                        'text-[#667085]'
+                                            question.remarks === 'Overtime' ? 'text-[#C74FE6]' :
+                                                question.remarks === 'Wasted' ? 'text-[#DE3024]' :
+                                                    'text-[#667085]'
                                             }`}>{question.remarks}</td>
                                     </tr>
                                 ))}

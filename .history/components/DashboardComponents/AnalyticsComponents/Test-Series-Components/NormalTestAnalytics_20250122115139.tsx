@@ -64,28 +64,28 @@ function formatFirestoreTimestamp(timestamp: FirestoreTimestamp): string {
     const hours = date.getHours();
     const minutes = date.getMinutes();
     const ampm = hours >= 12 ? 'PM' : 'AM';
-
+    
     return `${months[date.getMonth()]} ${date.getDate()}, ${date.getFullYear()}  ${(hours % 12 || 12).toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')} ${ampm}`;
-}
+} 
 
 function formatTimeInSeconds(seconds: number | string): string {
     const totalSeconds = Number(seconds);
     const hours = Math.floor(totalSeconds / 3600); // Calculate hours
     const minutes = Math.floor((totalSeconds % 3600) / 60); // Calculate remaining minutes
     let formattedTime = '';
-
+  
     if (hours > 0) {
         formattedTime += `${hours}h`; // Add hours if present
     }
     if (minutes > 0 || hours === 0) {
         formattedTime += (formattedTime ? ' ' : '') + `${minutes}m`; // Add minutes
     }
-
+  
     return formattedTime;
-}
+  }
 
 function NormalTestAnalytics({ onClose, forallsubject = false, attemptedDetails, sectionName, testAttemptId, setTestAttemptId }: NormalTestAnalyticsprops) {
-
+     
     const router = useRouter();
     let [showpremiumDialog, setShowpremiumDialog] = useState(false);
     const sectionMap = {
@@ -112,42 +112,42 @@ function NormalTestAnalytics({ onClose, forallsubject = false, attemptedDetails,
             {/* heading */}
             <div>
                 <div className="flex flex-row gap-5 ml-8 items-center mb-1">
-                    <button className="flex flex-row items-center gap-[6px]" onClick={() => onClose()}>
-                        <Image src='/icons/arrow-left-02-round.svg' alt='back' width={20} height={20} />
-                        <span className="font-bold text-[#1D2939] text-base">{sectionName}</span>
-                    </button>
+                 <button className="flex flex-row items-center gap-[6px]" onClick={() => onClose()}>
+                                         <Image src='/icons/arrow-left-02-round.svg' alt='back' width={20} height={20} />
+                <span className="font-bold text-[#1D2939] text-base">{sectionName}</span>   
+                </button>   
 
-                    <Popover placement="bottom-start" isOpen={attemptPopover} onOpenChange={(open) => setAttemptPopover(open)} >
-                        <PopoverTrigger>
-                            <button onClick={() => setAttemptPopover(true)} className="bg-[#EDE4FF] rounded-md  items-center justify-center flex  outline-none transition-colors duration-150">
-                                <div className="flex flex-row items-center gap-2 p-2">
-                                    <span className="font-medium text-xs text-[#9012FF]">  {currentAttempt ? `Attempt ${[...attemptedDetails].sort((a, b) => b.attemptDateAndTime.seconds - a.attemptDateAndTime.seconds).indexOf(currentAttempt) + 1} - ${formatFirestoreTimestamp(currentAttempt.attemptDateAndTime)}` : 'Select Attempt'}</span>
-                                    <Image
-                                        src="/icons/arrow-down-01-round.svg"
-                                        width={18}
-                                        height={18}
-                                        alt="Arrow-button"
-                                    />
-                                </div>
+                <Popover placement="bottom-start" isOpen={attemptPopover} onOpenChange={(open) => setAttemptPopover(open)} >
+                    <PopoverTrigger>
+                        <button onClick={() => setAttemptPopover(true)} className="bg-[#EDE4FF] rounded-md  items-center justify-center flex  outline-none transition-colors duration-150">
+                            <div className="flex flex-row items-center gap-2 p-2">
+                                <span className="font-medium text-xs text-[#9012FF]">  {currentAttempt ? `Attempt ${[...attemptedDetails].sort((a, b) => b.attemptDateAndTime.seconds - a.attemptDateAndTime.seconds).indexOf(currentAttempt) + 1} - ${formatFirestoreTimestamp(currentAttempt.attemptDateAndTime)}` : 'Select Attempt'}</span>
+                                <Image
+                                    src="/icons/arrow-down-01-round.svg"
+                                    width={18}
+                                    height={18}
+                                    alt="Arrow-button"
+                                />
+                            </div>
 
+                        </button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto px-0 py-1 rounded-md border border-lightGrey">
+                    {[...attemptedDetails]
+                                        .sort((a, b) => b.attemptDateAndTime.seconds - a.attemptDateAndTime.seconds)
+                                        .map((attempt, index) => (
+                            <button
+                                key={attempt.attemptId}
+                                onClick={() => {setTestAttemptId(attempt.attemptId);  setAttemptPopover(false)}}
+                                className='flex flex-row items-center w-full px-4 py-[10px] gap-1 transition-colors duration-150 hover:bg-[#EDE4FF]'
+                            >
+                                <p className='text-sm text-[#0C111D] font-normal'>
+                                    Attempt {index + 1} - {formatFirestoreTimestamp(attempt.attemptDateAndTime)}
+                                </p>
                             </button>
-                        </PopoverTrigger>
-                        <PopoverContent className="w-auto px-0 py-1 rounded-md border border-lightGrey">
-                            {[...attemptedDetails]
-                                .sort((a, b) => b.attemptDateAndTime.seconds - a.attemptDateAndTime.seconds)
-                                .map((attempt, index) => (
-                                    <button
-                                        key={attempt.attemptId}
-                                        onClick={() => { setTestAttemptId(attempt.attemptId); setAttemptPopover(false) }}
-                                        className='flex flex-row items-center w-full px-4 py-[10px] gap-1 transition-colors duration-150 hover:bg-[#EDE4FF]'
-                                    >
-                                        <p className='text-sm text-[#0C111D] font-normal'>
-                                            Attempt {index + 1} - {formatFirestoreTimestamp(attempt.attemptDateAndTime)}
-                                        </p>
-                                    </button>
-                                ))}
-                        </PopoverContent>
-                    </Popover>
+                        ))}
+                    </PopoverContent>
+                </Popover>
                 </div>
                 <div className="h-[50px] border-b border-solid border-[#EAECF0] flex flex-row gap-[16px] mt-2 px-8 w-full overflow-x-auto">
                     <Tabs
@@ -244,7 +244,7 @@ function NormalTestAnalytics({ onClose, forallsubject = false, attemptedDetails,
                         <span className="text-[#1D2939] text-lg font-semibold">Attempts & Difficulty Analysis</span>
                     </div>
                     <div>
-                        < AttemptsDifficultyAnalysis questions={currentAttempt?.questions || []} />
+                        < AttemptsDifficultyAnalysis questions={currentAttempt?.questions || []}/>
                     </div>
                 </div>
                 {/* Attempts over the 3 hours */}
@@ -277,22 +277,23 @@ function NormalTestAnalytics({ onClose, forallsubject = false, attemptedDetails,
                                 </tr>
                             </thead>
                             <tbody className="border-b border-[#EAECF0]">
-                                {currentAttempt?.questions.map((question, index) => (
-                                    <tr key={index} className="border-t border-[#EAECF0]">
-                                        <td className="py-3 text-center text-[#1D2939] font-normal text-sm">{index + 1}</td>
-                                        {/* <td className="py-3 text-left text-[#1D2939] font-semibold text-sm">Current Electricity</td> */}
-                                        <td className="py-3 text-center text-[#1D2939] font-normal text-sm">{question.difficulty}</td>
-                                        <td className="py-3 text-center text-[#1D2939] font-normal text-sm">{question.allotedTime}s</td>
-                                        <td className="py-3 text-center text-[#1D2939] font-normal text-sm">{question.spentTime}s</td>
-                                        <td className="py-3 text-center text-[#1D2939] font-normal text-sm">{question.answered ? 'Yes' : 'No'}</td>
-                                        <td className={`py-3 text-center ${question.answered ? question.answeredCorrect ? 'text-[#0B9055]' : 'text-[#DE3024]' : 'text-[#667085]'} font-medium text-sm`}>{question.answered ? question.answeredCorrect ? 'Correct' : 'Incorrect' : '-'}</td>
-                                        <td className={`py-3 text-center font-medium text-sm ${question.remarks === 'Perfect' ? 'text-[#0B9055]' :
-                                                question.remarks === 'Overtime' ? 'text-[#C74FE6]' :
-                                                    question.remarks === 'Wasted' ? 'text-[#DE3024]' :
-                                                        'text-[#667085]'
-                                            }`}>{question.remarks}</td>
-                                    </tr>
-                                ))}
+                            {currentAttempt?.questions.map((question, index) => (
+                                     <tr key={index} className="border-t border-[#EAECF0]">
+                                     <td className="py-3 text-center text-[#1D2939] font-normal text-sm">{index + 1}</td>
+                                     {/* <td className="py-3 text-left text-[#1D2939] font-semibold text-sm">Current Electricity</td> */}
+                                     <td className="py-3 text-center text-[#1D2939] font-normal text-sm">{question.difficulty}</td>
+                                     <td className="py-3 text-center text-[#1D2939] font-normal text-sm">{question.allotedTime}s</td>
+                                     <td className="py-3 text-center text-[#1D2939] font-normal text-sm">{question.spentTime}s</td>
+                                     <td className="py-3 text-center text-[#1D2939] font-normal text-sm">{question.answered ? 'Yes' : 'No'}</td>
+                                     <td className={`py-3 text-center ${question.answered ? question.answeredCorrect ? 'text-[#0B9055]' : 'text-[#DE3024]' : 'text-[#667085]'} font-medium text-sm`}>{question.answered ? question.answeredCorrect ? 'Correct' : 'Incorrect' : '-'}</td>
+                                     <td className={`py-3 text-center font-medium text-sm ${
+                                         question.remarks === 'Perfect' ? 'text-[#0B9055]' :
+                                         question.remarks === 'Overtime' ? 'text-[#C74FE6]' :
+                                         question.remarks === 'Wasted' ? 'text-[#DE3024]' :
+                                         'text-[#667085]'
+                                     }`}>{question.remarks}</td>
+                                 </tr>
+                                ))} 
 
                             </tbody>
                         </table>

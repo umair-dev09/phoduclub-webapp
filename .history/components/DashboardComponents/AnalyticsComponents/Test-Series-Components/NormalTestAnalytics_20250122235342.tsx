@@ -106,6 +106,28 @@ function NormalTestAnalytics({ onClose, forallsubject = false, attemptedDetails,
         }
     }, [sectionMap]);
     const currentAttempt = attemptedDetails.find(attempt => attempt.attemptId === testAttemptId);
+    useEffect(() => {
+        const sections = Object.values(sectionMap).map((sectionId) => document.querySelector(sectionId));
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach((entry) => {
+                if (entry.isIntersecting) {
+                    const sectionId = entry.target.id;
+                    setActiveTab(sectionId);
+                }
+            });
+        }, { threshold: 0.5 });
+
+        sections.forEach((section) => {
+            if (section) observer.observe(section);
+        });
+
+        return () => {
+            sections.forEach((section) => {
+                if (section) observer.unobserve(section);
+            });
+        };
+    }, []);
 
     return (
         <div className="flex flex-1 flex-col h-auto overflow-y-auto pt-3">
