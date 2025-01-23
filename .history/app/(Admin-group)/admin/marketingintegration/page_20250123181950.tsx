@@ -399,7 +399,7 @@
 //                             <div className="flex flex-col w-full gap-1 ">
 //                                 <label className="text-[#1D2939] text-sm font-medium">Name</label>
 //                                 <div className="flex flex-row p-2 w-full gap-2 border border-gray-300  h-10 focus:outline focus:outline-[1.5px] focus:outline-[#D6BBFB] hover:outline hover:outline-[1.5px] hover:outline-[#D6BBFB] rounded-md ">
-
+                                  
 //                                     <Popover placement="bottom" onOpenChange={(open) => setNotiIconPop(open)} isOpen={notiIconPop}>
 //                                         <PopoverTrigger>
 //                                             <button className="flex flex-row w-[44px] items-center rounded-md transition duration-200 ease-in-out justify-between focus:outline-none"
@@ -420,7 +420,7 @@
 //                                             </button>
 //                                         </PopoverTrigger>
 //                                         <PopoverContent className="flex flex-col gap-1 px-0 w-12 rounded-md">
-
+                                        
 //                                             <button
 //                                                 className="flex flex-row w-full p-1 hover:bg-[#F2F4F7] justify-center items-center outline-none"
 //                                                 onClick={() => { handleIconSelect("/icons/idea-2.svg"); setNotiIconPop(false); }}
@@ -433,7 +433,7 @@
 //                                                     alt="Idea Button"
 //                                                 />
 //                                             </button>
-
+                                          
 //                                             <button
 //                                                 className="flex flex-row w-full p-1 hover:bg-[#F2F4F7] justify-center items-center outline-none"
 //                                                 onClick={() => { handleIconSelect("/icons/megaphone.svg"); setNotiIconPop(false); }}
@@ -445,7 +445,7 @@
 //                                                     alt="Megaphone Button"
 //                                                 />
 //                                             </button>
-
+                                         
 //                                             <button
 //                                                 className="flex flex-row w-full p-1 hover:bg-[#F2F4F7] justify-center items-center outline-none"
 //                                                 onClick={() => { handleIconSelect("/icons/read-2.svg"); setNotiIconPop(false); }}
@@ -994,11 +994,3 @@
 // }
 
 // export default Messenger;
-function market() {
-    return (
-        <div>
-            marketingintegration
-        </div>
-    )
-}
-export default market
