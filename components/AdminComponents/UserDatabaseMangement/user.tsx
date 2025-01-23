@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { Dialog, DialogBackdrop, DialogPanel } from "@headlessui/react";
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
@@ -100,6 +100,7 @@ function User() {
     const [userTypePopup, setUserTypePopup] = useState(false);
     const router = useRouter();
     const [scrollBehavior, setScrollBehavior] = useState<"inside" | "outside">("outside");
+    const [selectedRows, setSelectedRows] = useState<Set<string>>(new Set());
 
     type CustomState = {
         isSelected: boolean;
@@ -294,6 +295,55 @@ function User() {
     const [statusFilter, setStatusFilter] = useState(null);
     const isTextSearch = searchTerm.trim().length > 0 && !dateFilter && !statusFilter;
 
+    const { isAllSelected, isIndeterminate } = useMemo(() => {
+        const totalItems = data.length; // Total items in the dataset
+        const selectedItemsCount = data.filter(item => selectedRows.has(item.uniqueId)).length;
+
+        return {
+            // Check if all items in the dataset are selected
+            isAllSelected: totalItems > 0 && selectedItemsCount === totalItems,
+            // Check if there are some selected but not all
+            isIndeterminate: selectedItemsCount > 0 && selectedItemsCount < totalItems
+        };
+    }, [data, selectedRows]);
+
+    const deselectAllRows = () => {
+        setSelectedRows(new Set()); // Clear all selected rows
+    };
+
+    const toggleRowSelection = (uniqueId: string) => {
+        setSelectedRows(prev => {
+            const newSelectedRows = new Set(prev);
+            if (newSelectedRows.has(uniqueId)) {
+                newSelectedRows.delete(uniqueId);
+            } else {
+                newSelectedRows.add(uniqueId);
+            }
+            return newSelectedRows;
+        });
+    };
+
+    const toggleAllRowsSelection = () => {
+        setSelectedRows(prev => {
+            const newSelectedRows = new Set(prev);
+
+            // Check if ALL items are currently selected across all pages
+            const allItemsSelected = data.every(item => newSelectedRows.has(item.uniqueId));
+
+            if (allItemsSelected) {
+                // If all items are selected, clear the selection completely
+                newSelectedRows.clear();
+            } else {
+                // Select ALL items across all pages
+                data.forEach(item => {
+                    newSelectedRows.add(item.uniqueId);
+                });
+            }
+
+            return newSelectedRows;
+        });
+    };
+
     if (loading) {
         return <LoadingData />
     }
@@ -361,6 +411,50 @@ function User() {
                 </div>
             </div>
 
+            {selectedRows.size > 0 && (
+                <div
+                    className="flex flex-row items-center justify-between
+                                            min-h-9
+                                            transition-all duration-300 ease-in-out 
+                                            transform opacity-100 translate-y-0 
+                                            overflow-hidden"
+                >
+                    <div className="flex flex-row gap-3 text-sm font-semibold leading-5">
+                        <p className="text-[#1D2939]">({selectedRows.size}) Selected</p>
+                        {!isAllSelected && (
+                            <button
+                                className="text-[#9012FF] underline mr-2"
+                                onClick={toggleAllRowsSelection}
+                            >
+                                Select all {data.length}
+                            </button>
+                        )}
+                        {isAllSelected && (
+                            <button
+                                className="text-[#9012FF] underline"
+                                onClick={deselectAllRows}
+                            >
+                                Deselect all
+                            </button>
+                        )}
+                    </div>
+                    <div className="flex flex-row gap-2">
+                        <button className="flex flex-row items-center px-[0.875rem] py-[0.625rem] gap-1 bg-white border border-lightGrey rounded-md">
+                            <Image src='/icons/edit-02.svg' alt="revoke ban" width={20} height={20} />
+                            <p className="text-sm text-[#1D2939] font-medium leading-[1.125rem]">Edit Details</p>
+                        </button>
+                        <button className="flex flex-row items-center px-[0.875rem] py-[0.625rem] gap-1 bg-white border border-lightGrey rounded-md">
+                            <Image src='/icons/user-block-red-01.svg' alt="revoke ban" width={20} height={20} />
+                            <p className="text-sm text-[#DE3024] font-medium leading-[1.125rem]">Ban</p>
+                        </button>
+                        <button className="flex flex-row items-center px-[0.875rem] py-[0.625rem] gap-1 bg-white border border-lightGrey rounded-md">
+                            <Image src='/icons/delete.svg' alt="revoke ban" width={20} height={20} />
+                            <p className="text-sm text-[#DE3024] font-medium leading-[1.125rem]">Delete</p>
+                        </button>
+                    </div>
+                </div>
+            )}
+
             <div className="flex flex-col justify-between h-full">
                 <div className="flex border border-[#EAECF0] rounded-xl overflow-x-auto">
                     <table className="w-full h-auto bg-white rounded-xl">
@@ -370,9 +464,9 @@ function User() {
                                     <Checkbox
                                         size="md"
                                         color="primary"
-                                    // isSelected={selectedRows.size === currentItems.length && currentItems.length > 0}
-                                    // isIndeterminate={selectedRows.size > 0 && selectedRows.size < currentItems.length}
-                                    // onChange={handleHeaderCheckboxSelect}
+                                        isSelected={isAllSelected}
+                                        isIndeterminate={isIndeterminate}
+                                        onChange={toggleAllRowsSelection}
                                     />
                                 </th>
                                 <th className="w-[30%] text-left px-8 py-4 pl-8 rounded-tl-xl flex flex-row">
@@ -404,9 +498,8 @@ function User() {
                                             <Checkbox
                                                 size="md"
                                                 color="primary"
-                                            // isSelected={selectedRows.has(banned.name)}
-                                            // onChange={() => handleRowSelect(banned.name)}
-                                            // onClick={(e) => e.stopPropagation()}
+                                                isSelected={selectedRows.has(users.uniqueId)}
+                                                onChange={() => toggleRowSelection(users.uniqueId)}
                                             />
                                         </td>
                                         <td className="py-2">

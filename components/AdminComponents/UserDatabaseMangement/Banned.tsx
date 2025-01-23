@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { Dialog, DialogBackdrop, DialogPanel } from "@headlessui/react";
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
@@ -76,7 +76,6 @@ function Banned() {
     const [userTypePopup, setUserTypePopup] = useState(false);
     const [activePopover, setActivePopover] = useState<number | null>(null);
     const router = useRouter();
-    const [selectedRows, setSelectedRows] = useState<Set<string>>(new Set());
 
     useEffect(() => {
         let filteredUsers = users;
@@ -164,32 +163,60 @@ function Banned() {
     };
     const [phone, setPhone] = useState("");
 
-    // Function to handle header checkbox selection
-    const handleHeaderCheckboxSelect = () => {
-        if (selectedRows.size === currentItems.length) {
-            // If all rows are already selected, unselect all
-            setSelectedRows(new Set());
-        } else {
-            // Select all current page rows
-            const allCurrentPageIds = currentItems.map(item => item.name);
-            setSelectedRows(new Set(allCurrentPageIds));
-        }
-    };
-
-    // Function to handle row selection
-    const handleRowSelect = (quizId: string) => {
-        const newSelectedRows = new Set(selectedRows);
-        if (newSelectedRows.has(quizId)) {
-            newSelectedRows.delete(quizId);
-        } else {
-            newSelectedRows.add(quizId);
-        }
-        setSelectedRows(newSelectedRows);
-    };
-
     const [dateFilter, setDateFilter] = useState(null);
     const [statusFilter, setStatusFilter] = useState(null);
     const isTextSearch = searchTerm.trim().length > 0 && !dateFilter && !statusFilter;
+
+    // ------------------------------------------------------- CHECKBOX LOGIC -------------------------------------------------------
+
+    const [selectedRows, setSelectedRows] = useState<Set<string>>(new Set());
+
+    const { isAllSelected, isIndeterminate } = useMemo(() => {
+        const totalItems = data.length; // Total items in the dataset
+        const selectedItemsCount = data.filter(item => selectedRows.has(item.uniqueId)).length;
+        return {
+            // Check if all items in the dataset are selected
+            isAllSelected: totalItems > 0 && selectedItemsCount === totalItems,
+            // Check if there are some selected but not all
+            isIndeterminate: selectedItemsCount > 0 && selectedItemsCount < totalItems
+        };
+    }, [data, selectedRows]);
+
+    const deselectAllRows = () => {
+        setSelectedRows(new Set()); // Clear all selected rows
+    };
+
+    const toggleRowSelection = (uniqueId: string) => {
+        setSelectedRows(prev => {
+            const newSelectedRows = new Set(prev);
+            if (newSelectedRows.has(uniqueId)) {
+                newSelectedRows.delete(uniqueId);
+            } else {
+                newSelectedRows.add(uniqueId);
+            }
+            return newSelectedRows;
+        });
+    };
+
+    const toggleAllRowsSelection = () => {
+        setSelectedRows(prev => {
+            const newSelectedRows = new Set(prev);
+            // Check if ALL items are currently selected across all pages
+            const allItemsSelected = data.every(item => newSelectedRows.has(item.uniqueId));
+            if (allItemsSelected) {
+                // If all items are selected, clear the selection completely
+                newSelectedRows.clear();
+            } else {
+                // Select ALL items across all pages
+                data.forEach(item => {
+                    newSelectedRows.add(item.uniqueId);
+                });
+            }
+            return newSelectedRows;
+        });
+    };
+
+    // ------------------------------------------------------- CHECKBOX LOGIC -------------------------------------------------------
 
     if (loading) {
         return <LoadingData />
@@ -262,15 +289,20 @@ function Banned() {
                 >
                     <div className="flex flex-row gap-3 text-sm font-semibold leading-5">
                         <p className="text-[#1D2939]">({selectedRows.size}) Selected</p>
-                        {selectedRows.size < data.length && (
+                        {!isAllSelected && (
                             <button
-                                onClick={() => {
-                                    const allCurrentPageIds = currentItems.map(item => item.name);
-                                    setSelectedRows(new Set(allCurrentPageIds));
-                                }}
-                                className="text-[#9012FF] underline"
+                                className="text-[#9012FF] underline mr-2"
+                                onClick={toggleAllRowsSelection}
                             >
                                 Select all {data.length}
+                            </button>
+                        )}
+                        {isAllSelected && (
+                            <button
+                                className="text-[#9012FF] underline"
+                                onClick={deselectAllRows}
+                            >
+                                Deselect all
                             </button>
                         )}
                     </div>
@@ -295,9 +327,9 @@ function Banned() {
                                 <Checkbox
                                     size="md"
                                     color="primary"
-                                    isSelected={selectedRows.size === currentItems.length && currentItems.length > 0}
-                                    isIndeterminate={selectedRows.size > 0 && selectedRows.size < currentItems.length}
-                                    onChange={handleHeaderCheckboxSelect}
+                                    isSelected={isAllSelected}
+                                    isIndeterminate={isIndeterminate}
+                                    onChange={toggleAllRowsSelection}
                                 />
                             </th>
                             <th className="text-left px-8 py-4 flex flex-row">
@@ -329,9 +361,8 @@ function Banned() {
                                         <Checkbox
                                             size="md"
                                             color="primary"
-                                            isSelected={selectedRows.has(banned.name)}
-                                            onChange={() => handleRowSelect(banned.name)}
-                                            onClick={(e) => e.stopPropagation()} // Prevent row click when checking checkbox
+                                            isSelected={selectedRows.has(banned.uniqueId)}
+                                            onChange={() => toggleRowSelection(banned.uniqueId)}
                                         />
                                     </td>
                                     <td className="py-2">

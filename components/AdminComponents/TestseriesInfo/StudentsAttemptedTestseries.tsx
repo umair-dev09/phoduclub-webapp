@@ -106,9 +106,6 @@ function StudentsAttemptedTestseries() {
         setEnrollmentFilter(null); // Clear enrollment filter
         setData(studentAttempts); // Reset table data to the original list
         setCurrentPage(1); // Reset to the first page
-        setEnrollmentFilter(null);
-        setSortConfig({ key: '', direction: null });
-        setIsOpen(false); // Close Popover on Clear
     };
 
     useEffect(() => {
@@ -282,9 +279,11 @@ function StudentsAttemptedTestseries() {
                         </PopoverContent>
                     </Popover>
 
-                    <Popover placement="bottom"
+                    <Popover
+                        placement="bottom"
                         isOpen={popoveropen1}
-                        onOpenChange={(open) => setPopoveropen1(open)}>
+                        onOpenChange={(open) => setPopoveropen1(open)}
+                    >
                         <PopoverTrigger>
                             <button className="h-[44px] w-[105px] rounded-md bg-[#FFFFFF] border border-solid border-[#D0D5DD] flex items-center justify-center gap-2 outline-none">
                                 <span className="font-medium text-sm text-[#667085] ml-2">
@@ -304,7 +303,7 @@ function StudentsAttemptedTestseries() {
                                 onClick={() => {
                                     setEnrollmentFilter('Free');
                                     setSortConfig({ key: '', direction: null });
-                                    setPopoveropen1(false);
+                                    setPopoveropen1(false); // Explicitly close the popover
                                 }}
                             >
                                 <p className={`text-sm ${enrollmentFilter === 'Free' ? 'font-medium text-purple' : 'font-normal text-[#0C111D]'}`}>
@@ -319,7 +318,7 @@ function StudentsAttemptedTestseries() {
                                 onClick={() => {
                                     setEnrollmentFilter('Paid');
                                     setSortConfig({ key: '', direction: null });
-                                    setPopoveropen1(false);
+                                    setPopoveropen1(false); // Explicitly close the popover
                                 }}
                             >
                                 <p className={`text-sm ${enrollmentFilter === 'Paid' ? 'font-medium text-purple' : 'font-normal text-[#0C111D]'}`}>
@@ -332,7 +331,10 @@ function StudentsAttemptedTestseries() {
                             {enrollmentFilter && (
                                 <div
                                     className="flex flex-row items-center w-full my-0 py-[0.625rem] px-4 gap-2 cursor-pointer transition-colors hover:bg-[#F2F4F7] border-t border-lightGrey"
-                                    onClick={() => { handleClear(); setPopoveropen1(false); }}
+                                    onClick={() => {
+                                        handleClear();
+                                        setPopoveropen1(false); // Explicitly close the popover
+                                    }}
                                 >
                                     <p className="text-sm font-normal text-[#0C111D]">Clear</p>
                                 </div>

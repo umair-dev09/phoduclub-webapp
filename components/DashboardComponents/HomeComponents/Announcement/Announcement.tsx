@@ -121,7 +121,7 @@ function Announcement() {
                         </div>
                         <div className='flex flex-col gap-1'>
                             <h1 className='text-[#1F2937] font-semibold text-sm'>{announcement.channelEmoji + " " + announcement.channelName}</h1>
-                            <span className='text-sm font-normal text-[#475467] ml-1'>{announcement.message}</span>
+                            <span className='text-sm font-normal text-[#475467] ml-1 line-clamp-2'>{announcement.message}</span>
                         </div>
                         <hr className='bg-[#EAECF0] w-full' />
                     </div>
