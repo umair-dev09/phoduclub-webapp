@@ -23,16 +23,14 @@ function DiscussionForm({ children }: DiscussionFormProps) {
 
     return (
         <div className="flex flex-1 flex-row">
-        {/* Left Sidebar */}
-        <div className="flex flex-col w-[90px] bg-white  border-r border-b border-lightGrey">
-            <div>
+            {/* Left Sidebar */}
+            <div className="flex flex-col w-[90px] bg-white  border-r border-b border-lightGrey">
                 <CourseIcons />
             </div>
+            <div className="flex-1">
+                {children}
+            </div>
         </div>
-        <div className="flex-1">
-            {children}
-        </div>
-    </div>
     );
 }
 
