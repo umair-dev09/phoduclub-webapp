@@ -383,7 +383,7 @@ function RoleMangement() {
                                                     <PopoverContent className="flex px-0 rounded-md w-auto py-2">
                                                         <div >
                                                             <button className="flex flex-row items-center justify-start w-full py-2 gap-2 hover:bg-[#F2F4F7] pl-4 pr-9"
-                                                                onClick={() => { handleEditDetails(true, users); setPopoverOpen(null); }} >
+                                                                onClick={() => { handleEditDetails(true, users); setPopoverOpen(null) }} >
                                                                 <Image src="/icons/edit-02.svg" width={18} height={18} alt="edit" />
                                                                 <span className="text-sm text-[#0C111D] font-normal">Edit details</span>
                                                             </button>
@@ -392,7 +392,6 @@ function RoleMangement() {
                                                                 onClick={() => {
                                                                     setUserToDelete(users);
                                                                     setIsDeleteOpen(true);
-                                                                    setPopoverOpen(null);
                                                                 }}
                                                             >
                                                                 <Image src='/icons/delete.svg' alt="user profile" width={18} height={18} />

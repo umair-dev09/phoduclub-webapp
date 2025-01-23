@@ -75,7 +75,7 @@ function Delete({ open, onClose, name, authId }: DeleteProps) {
         //         </DialogPanel>
         //     </div >
         // </Dialog >
-        <Modal isOpen={open} onOpenChange={(isOpen) => !isOpen && onClose()} hideCloseButton >
+        <Modal isOpen={open} onOpenChange={(isOpen) => !isOpen && onclose()} hideCloseButton >
 
             <ModalContent>
                 <>
@@ -112,7 +112,7 @@ function Delete({ open, onClose, name, authId }: DeleteProps) {
                     </ModalBody>
                     <ModalFooter className="border-t border-lightGrey">
                         <Button variant="light" className="py-[0.625rem] px-6 border-2  border-solid border-[#EAECF0] font-semibold text-sm text-[#1D2939] rounded-md hover:bg-[#F2F4F7]" onClick={onClose} >Cancel</Button>
-                        <Button className={`py-[0.625rem] px-6 text-white font-semibold shadow-inner-button  ${!isFormValid ? 'bg-[#ec6d64f8]' : 'hover:bg-[#B0201A] bg-[#BB241A]'} border border-white rounded-md`} onClick={handleDeleteUser} disabled={!isFormValid}>Delete User</Button>
+                        <Button className={`py-[0.625rem] px-6 text-white shadow-inner-button  ${!isFormValid ? 'bg-[#ec6d64f8]' : 'hover:bg-[#B0201A] bg-[#BB241A]'} border border-white rounded-md`} onClick={handleDeleteUser} disabled={!isFormValid}>Delete User</Button>
                     </ModalFooter>
                 </>
             </ModalContent>

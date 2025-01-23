@@ -295,7 +295,7 @@ function UsersRoleName() {
                   <Image src="/icons/edit-icon.svg" width={18} height={18} alt="Edit-quiz" />
                   <span className="text-sm text-[#0C111D] font-normal">Edit profile</span>
                 </button>
-                <button className=" p-3 gap-2 flex-row flex h-[40px] hover:bg-[#FEE4E2]  w-full" onClick={() => { setIsDeleteOpen(true); setPopoveropen(false) }}>
+                <button className=" p-3 gap-2 flex-row flex h-[40px] hover:bg-[#F2F4F7] w-full" onClick={() => { setIsDeleteOpen(true); setPopoveropen(false) }}>
                   <Image src="/icons/delete.svg" width={18} height={18} alt="delete-quiz" />
                   <span className="text-sm text-[#DE3024] font-normal">Delete profile</span>
                 </button>
