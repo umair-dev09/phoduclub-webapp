@@ -21,6 +21,7 @@ const CreateCourse = () => {
     const quillRef = useRef<ReactQuill | null>(null); // Ref to hold ReactQuill instance
     const [quill, setQuill] = useState<Quill | null>(null);
     const [alignment, setAlignment] = useState<string | null>(null); // State to hold alignment
+    const [isWriting, setIsWriting] = useState(false); // Track if text is being written
     const [courseName, setCourseName] = useState('');
     const [courseDescription, setCourseDescription] = useState('');
     const [price, setPrice] = useState('');
@@ -64,20 +65,20 @@ const CreateCourse = () => {
     };
 
     const handleChange = (content: string) => {
-
+        checkTextContent(content);
         setCourseDescription(content);
-
-        if (quill && quill.getText().trim() === '') {
-            setCourseDescription('');
-        } else {
-
-            setCourseDescription(content);
-        }
 
     };
     const isFormValid = courseName && courseDescription && price && discountPrice && rating && numRatings && imageUrl;
 
-
+    const checkTextContent = (content: string) => {
+        // Trim the content and check if there's actual text (excluding HTML tags like <p></p>)
+        const plainText = content.replace(/<[^>]+>/g, '').trim();
+        setIsWriting(plainText.length > 0);
+    };
+    const handleBlur = () => {
+        setIsWriting(false); // Reset isWriting when user clicks outside
+    };
 
 
 
@@ -372,12 +373,12 @@ const CreateCourse = () => {
                     <div className="flex flex-col gap-2">
                         <span className='text-[#1D2939] text-sm font-semibold '>Description</span>
                         <div
-
-                            className="pt-2 bg-[#FFFFFF]  border border-gray-300 focus:outline focus:outline-[1.5px] focus:outline-[#D6BBFB] hover:outline hover:outline-[1.5px] hover:outline-[#D6BBFB] focus-within:border-[#D7BBFC] focus-within:ring-4 focus-within:ring-[#E8DEFB] focus-within:outline-none transition-colors rounded-[12px]  h-auto">
-
+                            className={`pt-2 bg-[#FFFFFF] border ${isWriting ? 'border-[#D6BBFB]  shadow-[0px_0px_0px_4px_rgba(158,119,237,0.25),0px_1px_2px_0px_rgba(16,24,40,0.05)]' : 'border-[#EAECF0]'
+                                } rounded-[12px] h-auto`}>
                             <div className="bg-[#FFFFFF] ">
                                 <ReactQuill
                                     ref={quillRef}
+                                    onBlur={handleBlur}
                                     value={courseDescription}
                                     onChange={handleChange}
                                     onKeyDown={handleKeyDown}

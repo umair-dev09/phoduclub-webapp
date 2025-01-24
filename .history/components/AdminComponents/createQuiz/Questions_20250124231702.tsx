@@ -159,7 +159,7 @@ function Questions({ questionsList, setQuestionsList }: QuestionsProps) {
 
     // Create refs for each question's quill instances
     const [alignments, setAlignments] = useState<{ [key: number]: { question: string | null, explanation: string | null } }>({});
-    // const [writing, setWriting] = useState<{ [key: number]: { question: boolean, explanation: boolean } }>({});
+    const [writing, setWriting] = useState<{ [key: number]: { question: boolean, explanation: boolean } }>({});
 
     // Use a ref for quill instances to prevent re-renders
     const quillInstancesRef = useRef<{
@@ -200,16 +200,19 @@ function Questions({ questionsList, setQuestionsList }: QuestionsProps) {
         }
         setQuestionsList(newQuestionsList);
 
-        // Track empty content
         if (!content || content.trim() === '<p><br></p>') {
-            if (type === 'question') {
-                newQuestionsList[index].question = '';
-            } else {
-                newQuestionsList[index].explanation = '';
-            }
+
+            setQuestionsList(newQuestionsList);
         }
-
-
+        // Update writing state
+        const plainText = content.replace(/<[^>]+>/g, '').trim();
+        setWriting(prev => ({
+            ...prev,
+            [index]: {
+                ...prev[index],
+                [type]: plainText.length > 0
+            }
+        }));
     };
 
     const handleIconClick = (index: number, type: 'question' | 'explanation', format: string) => {
@@ -293,7 +296,7 @@ function Questions({ questionsList, setQuestionsList }: QuestionsProps) {
 
                     <Collapsible
                         open={openIndex === index}
-                        className={`border  rounded-md ${visited[index] && isDataMissing(question) ? "border-1.5 border-[#F04438]" : "border-[#EAECF0]"}`}
+                        className={`border  rounded-md ${visited[index] && isDataMissing(question) ? "border-red-700" : "border-[#EAECF0]"}`}
                         trigger={
                             <div className='h-auto bg-[#FFFFFF] flex flex-col p-5 gap-2 rounded-md '>
                                 <div className="h-auto flex flex-row justify-between gap-4 items-start">

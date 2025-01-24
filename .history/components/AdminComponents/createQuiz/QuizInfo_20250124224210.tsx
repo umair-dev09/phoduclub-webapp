@@ -4,14 +4,14 @@ import 'quill/dist/quill.snow.css';
 import ReactQuill from 'react-quill-new'; // Ensure correct import
 import Quill from 'quill'; // Import Quill to use it for types
 import { Popover, PopoverTrigger, PopoverContent } from '@nextui-org/popover';
-
-// Sending Data the to Createquiz
+import QuillResizeImage from 'quill-resize-image';
+Quill.register("modules/resize", QuillResizeImage);
+// Sending Data the to Createquiz 
 interface QuizInfoProps {
     quizName: string;
     setQuizName: Dispatch<SetStateAction<string>>;
     quizDescription: string;
     setQuizDescription: Dispatch<SetStateAction<string>>;
-
 }
 
 function Quizinfo({ quizName, setQuizName, quizDescription, setQuizDescription }: QuizInfoProps) {
@@ -19,6 +19,7 @@ function Quizinfo({ quizName, setQuizName, quizDescription, setQuizDescription }
     const quillRef = useRef<ReactQuill | null>(null); // Ref to hold ReactQuill instance
     const [quill, setQuill] = useState<Quill | null>(null);
     const [alignment, setAlignment] = useState<string | null>(null); // State to hold alignment
+    const [isWriting, setIsWriting] = useState(false); // Track if text is being written
     const modules = {
         toolbar: false, // We're using custom toolbar
         resize: {
@@ -28,31 +29,45 @@ function Quizinfo({ quizName, setQuizName, quizDescription, setQuizDescription }
     };
 
     const handleChange = (content: string) => {
-
-        setQuizDescription(content); // Update quiz description with editor content
+        // Set the content in local state
         setValue(content);
-        // If content is effectively empty (just contains whitespace or is an empty HTML tag)
-        if (!content || content.trim() === '<p><br></p>') {
-            setValue('');
-            setQuizDescription('');
+
+        // Check if the content is empty or non-empty
+        checkTextContent(content);
+
+        // Update the parent component's state with the new content
+        setQuizDescription(content);
+
+        // Check if the content is empty after trimming and reset the state if needed
+        if (quill) {
+            const textContent = quill.getText().trim();  // Get plain text from the editor
+            // We consider the content as "empty" if it contains only whitespace or line breaks.
+            if (textContent === '' || textContent === '\n') {
+                setValue(''); // Clear the content if it's empty
+            } else {
+                setValue(content); // Otherwise, set the content normally
+            }
         }
     };
 
-
+    const checkTextContent = (content: string) => {
+        // Trim the content and check if there's actual text (excluding HTML tags like <p></p>)
+        const plainText = content.replace(/<[^>]+>/g, '').trim();
+        setIsWriting(plainText.length > 0);
+    };
 
     const handleIconClick = (format: string) => {
         if (quill) {
-            const range = quill.getSelection();
+            const range = quill.getSelection();  // Get the current selection
             if (range) {
-                const currentFormats = quill.getFormat(range);
-                if (format === 'ordered') {
-                    // Toggle ordered list
-                    quill.format('list', currentFormats.list === 'ordered' ? false : 'ordered');
-                } else if (format === 'bullet') {
-                    // Toggle bullet list
-                    quill.format('list', currentFormats.list === 'bullet' ? false : 'bullet');
-                }
-                else if (format === 'image') {
+                const currentFormats = quill.getFormat(range);  // Get current formatting at selection
+
+                if (format === 'link') {
+                    const url = prompt("Enter the link URL:");
+                    if (url) {
+                        quill.format('link', url);  // Apply link formatting with the provided URL
+                    }
+                } else if (format === 'image') {
                     const fileInput = document.createElement('input');
                     fileInput.type = 'file';
                     fileInput.accept = 'image/*';
@@ -70,22 +85,25 @@ function Quizinfo({ quizName, setQuizName, quizDescription, setQuizDescription }
                         }
                     };
                     fileInput.click();
-                }
-                else if (format.startsWith('align')) {
+                } else if (format === 'ordered') {
+                    quill.format('list', currentFormats.list === 'ordered' ? false : 'ordered');
+                } else if (format.startsWith('align')) {
                     if (format === 'align-left') {
-                        quill.format('align', false); // Remove alignment for 'left'
-                        setAlignment('left'); // Update alignment state to 'left'
+                        quill.format('align', false);
+                        setAlignment('left');
                     } else {
                         quill.format('align', format.split('-')[1]);
                         setAlignment(format.split('-')[1]);
                     }
                 } else {
                     const isActive = currentFormats[format];
-                    quill.format(format, !isActive); // Toggle other formatting options
+                    quill.format(format, !isActive);
                 }
             }
         }
     };
+
+
 
     useEffect(() => {
         if (quillRef.current) {
@@ -122,7 +140,14 @@ function Quizinfo({ quizName, setQuizName, quizDescription, setQuizDescription }
                 <span className='text-[#1D2939] text-sm font-medium'>Quiz Name</span>
                 <input
                     className="font-medium pl-3 text-[#1D2939] text-sm placeholder:text-[#A1A1A1] rounded-md placeholder:font-normal
-                         border border-gray-300 focus:outline focus:outline-[1.5px] focus:outline-[#D6BBFB] hover:outline hover:outline-[1.5px] hover:outline-[#D6BBFB] focus-within:border-[#D7BBFC] focus-within:ring-4 focus-within:ring-[#E8DEFB] focus-within:outline-none transition-colors h-[40px]  "
+                        focus:outline-none focus:ring-0 
+                        border border-solid border-[#D0D5DD] h-[40px] 
+                        shadow-[0px_1px_2px_0px_rgba(16,24,40,0.05)] 
+                        transition duration-200 ease-in-out 
+                        focus:border-[#D6BBFB] 
+                        focus:shadow-[0px_0px_0px_4px_rgba(158,119,237,0.25),0px_1px_2px_0px_rgba(16,24,40,0.05)]
+                        focus:text-[#1D2939]
+                        focus:font-medium"
                     placeholder="Quiz Name"
                     type="text"
                     value={quizName}
@@ -133,7 +158,8 @@ function Quizinfo({ quizName, setQuizName, quizDescription, setQuizDescription }
             <div className="flex flex-col gap-2">
                 <span className='text-[#1D2939] text-sm font-medium pt-1'>Description</span>
                 <div
-                    className="pt-2 bg-[#FFFFFF] border border-gray-300 focus:outline focus:outline-[1.5px] focus:outline-[#D6BBFB] hover:outline hover:outline-[1.5px] hover:outline-[#D6BBFB] focus-within:border-[#D7BBFC] focus-within:ring-4 focus-within:ring-[#E8DEFB] focus-within:outline-none transition-colors rounded-[12px] h-auto">
+                    className={`pt-2 bg-[#FFFFFF] border ${isWriting ? 'border-[#D6BBFB]  shadow-[0px_0px_0px_4px_rgba(158,119,237,0.25),0px_1px_2px_0px_rgba(16,24,40,0.05)]' : 'border-[#EAECF0]'
+                        } rounded-[12px] h-auto`}>
                     {/* Textarea for writing the description */}
                     <div className="bg-[#FFFFFF] ">
                         <ReactQuill
@@ -161,7 +187,6 @@ function Quizinfo({ quizName, setQuizName, quizDescription, setQuizDescription }
                                 <button onClick={() => handleIconClick('underline')}>
                                     <Image src="/icons/underline-icon.svg" width={24} height={24} alt="underline-icon" />
                                 </button>
-
                                 {/* Alignment options in a popover */}
                                 <Popover placement="bottom-start" className="flex flex-row justify-end">
                                     <PopoverTrigger className="">
@@ -177,7 +202,6 @@ function Quizinfo({ quizName, setQuizName, quizDescription, setQuizDescription }
                                     </PopoverTrigger>
                                     <PopoverContent className="flex flex-row bg-white rounded-[8px] border-[1px] border-solid border-[#EAECF0] p-2 w-[120px] shadow-[0_2px_4px_#EAECF0] gap-2 ">
                                         {/* Alignment options inside the popover */}
-
                                         <button onClick={() => handleIconClick("align-left")} className="flex items-center justify-center hover:bg-[#EAECF0]">
                                             <Image src="/icons/align-left.svg" width={30} height={30} alt="align-left" />
                                         </button>
@@ -190,10 +214,9 @@ function Quizinfo({ quizName, setQuizName, quizDescription, setQuizDescription }
 
                                     </PopoverContent>
                                 </Popover>
-
-                                {/* List options */}
-                                <button onClick={() => handleIconClick('ordered')}>
-                                    <Image src="/icons/dropdown-icon-2.svg" width={27} height={27} alt="ordered-list" />
+                                <button
+                                    onClick={() => handleIconClick('ordered')}>
+                                    <Image src="/icons/dropdown-icon-2.svg" width={27} height={27} alt="dropdown-icon" />
                                 </button>
                                 <button onClick={() => handleIconClick('image')}>
                                     <Image src="/icons/upload-image-icon.svg" width={24} height={24} alt="upload-image-icon" />

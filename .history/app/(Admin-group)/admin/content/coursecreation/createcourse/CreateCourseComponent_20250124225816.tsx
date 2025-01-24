@@ -21,6 +21,7 @@ const CreateCourse = () => {
     const quillRef = useRef<ReactQuill | null>(null); // Ref to hold ReactQuill instance
     const [quill, setQuill] = useState<Quill | null>(null);
     const [alignment, setAlignment] = useState<string | null>(null); // State to hold alignment
+    const [isWriting, setIsWriting] = useState(false); // Track if text is being written
     const [courseName, setCourseName] = useState('');
     const [courseDescription, setCourseDescription] = useState('');
     const [price, setPrice] = useState('');
@@ -64,20 +65,20 @@ const CreateCourse = () => {
     };
 
     const handleChange = (content: string) => {
-
+        checkTextContent(content);
         setCourseDescription(content);
-
-        if (quill && quill.getText().trim() === '') {
-            setCourseDescription('');
-        } else {
-
-            setCourseDescription(content);
-        }
 
     };
     const isFormValid = courseName && courseDescription && price && discountPrice && rating && numRatings && imageUrl;
 
-
+    const checkTextContent = (content: string) => {
+        // Trim the content and check if there's actual text (excluding HTML tags like <p></p>)
+        const plainText = content.replace(/<[^>]+>/g, '').trim();
+        setIsWriting(plainText.length > 0);
+    };
+    const handleBlur = () => {
+        setIsWriting(false); // Reset isWriting when user clicks outside
+    };
 
 
 
@@ -378,6 +379,7 @@ const CreateCourse = () => {
                             <div className="bg-[#FFFFFF] ">
                                 <ReactQuill
                                     ref={quillRef}
+                                    onBlur={handleBlur}
                                     value={courseDescription}
                                     onChange={handleChange}
                                     onKeyDown={handleKeyDown}
