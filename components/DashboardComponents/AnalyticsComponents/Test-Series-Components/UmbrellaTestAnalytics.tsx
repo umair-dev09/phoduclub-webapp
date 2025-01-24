@@ -27,7 +27,6 @@ interface SubAttemptDetails {
     answeredCorrect: string;
     answeredIncorrect: string;
     timeTaken: number;
-    testTime: number;
     questions: AnsweredQuestion[];
     sectionName: string;
     attemptId: string;
@@ -99,6 +98,157 @@ function formatTimeInSeconds(seconds: number | string): string {
   
     return formattedTime;
   }
+
+  function generateTestSummary(attempt: AttemptedDetails | undefined): string {
+    if (!attempt) return "No test attempt data available.";
+
+    // Parse key metrics
+    const totalQuestions = parseInt(attempt.attemptedQuestions.split('/')[1]);
+    const attemptedQuestions = parseInt(attempt.attemptedQuestions.split('/')[0]);
+    const correctQuestions = parseInt(attempt.answeredCorrect.split('/')[0]);
+    const incorrectQuestions = parseInt(attempt.answeredIncorrect.split('/')[0]);
+    const unattemptedQuestions = totalQuestions - attemptedQuestions;
+    const accuracy = parseFloat(attempt.accuracy);
+    const timeTaken = attempt.timeTaken;
+    const totalTestTime = attempt.testTime;
+
+    // Analyze question remarks, ignoring '-'
+    const questionRemarks = attempt.questions
+        .filter(question => question.remarks !== '-')
+        .reduce((acc, question) => {
+            acc[question.remarks] = (acc[question.remarks] || 0) + 1;
+            return acc;
+        }, {} as Record<string, number>);
+
+    // Generate summary text
+    let summaryText = "";
+
+    // Overall performance assessment
+    const performanceScore = (correctQuestions / totalQuestions) * 100;
+    let performanceDescription = "";
+    if (performanceScore >= 90) performanceDescription = "Excellent";
+    else if (performanceScore >= 75) performanceDescription = "Very Good";
+    else if (performanceScore >= 60) performanceDescription = "Good";
+    else if (performanceScore >= 40) performanceDescription = "Needs Improvement";
+    else performanceDescription = "Requires Significant Work";
+
+    summaryText += `1. Overall Performance: ${performanceDescription} (${performanceScore.toFixed(2)}%)\n`;
+
+    // Question breakdown
+    summaryText += `2. Question Analysis:\n`;
+    summaryText += `   - Total Questions: ${totalQuestions}\n`;
+    summaryText += `   - Attempted Questions: ${attemptedQuestions}\n`;
+    summaryText += `   - Correct Answers: ${correctQuestions}\n`;
+    summaryText += `   - Incorrect Answers: ${incorrectQuestions}\n`;
+    summaryText += `   - Unattempted Questions: ${unattemptedQuestions}\n`;
+
+    // Remarks breakdown
+    if (Object.keys(questionRemarks).length > 0) {
+        summaryText += `3. Question Remarks:\n`;
+        Object.entries(questionRemarks).forEach(([remark, count]) => {
+            summaryText += `   - ${remark}: ${count} question(s)\n`;
+        });
+    }
+
+    // Time management
+    const timeUtilization = (timeTaken / totalTestTime) * 100;
+    summaryText += `4. Time Management:\n`;
+    summaryText += `   - Time Taken: ${formatTimeInSeconds(timeTaken)} of ${formatTimeInSeconds(totalTestTime)}\n`;
+    summaryText += `   - Time Utilization: ${timeUtilization.toFixed(2)}%\n`;
+
+    // Accuracy insights
+    summaryText += `5. Accuracy:\n`;
+    summaryText += `   - Overall Accuracy: ${accuracy.toFixed(2)}%\n`;
+
+    // Performance improvement suggestions
+    summaryText += `\nImprovement Suggestions:\n`;
+    if (unattemptedQuestions > 0) {
+        summaryText += `- Focus on time management to attempt all questions.\n`;
+    }
+    if (incorrectQuestions > correctQuestions) {
+        summaryText += `- Review and understand the concepts behind incorrect answers.\n`;
+    }
+    if (questionRemarks['Overtime'] || questionRemarks['Wasted']) {
+        summaryText += `- Work on optimizing your problem-solving speed and question selection strategy.\n`;
+    }
+
+    return summaryText;
+}
+
+function generateSubTestSummary(attempt: SubAttemptDetails | undefined, totalTestTime: number): string {
+    if (!attempt) return "No test attempt data available.";
+
+    // Parse key metrics
+    const totalQuestions = parseInt(attempt.attemptedQuestions.split('/')[1]);
+    const attemptedQuestions = parseInt(attempt.attemptedQuestions.split('/')[0]);
+    const correctQuestions = parseInt(attempt.answeredCorrect.split('/')[0]);
+    const incorrectQuestions = parseInt(attempt.answeredIncorrect.split('/')[0]);
+    const unattemptedQuestions = totalQuestions - attemptedQuestions;
+    const accuracy = parseFloat(attempt.accuracy);
+    const timeTaken = attempt.timeTaken;
+
+    // Analyze question remarks, ignoring '-'
+    const questionRemarks = attempt.questions
+        .filter(question => question.remarks !== '-')
+        .reduce((acc, question) => {
+            acc[question.remarks] = (acc[question.remarks] || 0) + 1;
+            return acc;
+        }, {} as Record<string, number>);
+
+    // Generate summary text
+    let summaryText = "";
+
+    // Overall performance assessment
+    const performanceScore = (correctQuestions / totalQuestions) * 100;
+    let performanceDescription = "";
+    if (performanceScore >= 90) performanceDescription = "Excellent";
+    else if (performanceScore >= 75) performanceDescription = "Very Good";
+    else if (performanceScore >= 60) performanceDescription = "Good";
+    else if (performanceScore >= 40) performanceDescription = "Needs Improvement";
+    else performanceDescription = "Requires Significant Work";
+
+    summaryText += `1. ${attempt.sectionName} Performance: ${performanceDescription} (${performanceScore.toFixed(2)}%)\n`;
+
+    // Question breakdown
+    summaryText += `2. Question Analysis:\n`;
+    summaryText += `   - Total Questions: ${totalQuestions}\n`;
+    summaryText += `   - Attempted Questions: ${attemptedQuestions}\n`;
+    summaryText += `   - Correct Answers: ${correctQuestions}\n`;
+    summaryText += `   - Incorrect Answers: ${incorrectQuestions}\n`;
+    summaryText += `   - Unattempted Questions: ${unattemptedQuestions}\n`;
+
+    // Remarks breakdown
+    if (Object.keys(questionRemarks).length > 0) {
+        summaryText += `3. Question Remarks:\n`;
+        Object.entries(questionRemarks).forEach(([remark, count]) => {
+            summaryText += `   - ${remark}: ${count} question(s)\n`;
+        });
+    }
+
+    // Time management
+    const timeUtilization = (timeTaken / totalTestTime) * 100;
+    summaryText += `4. Time Management:\n`;
+    summaryText += `   - Time Taken: ${formatTimeInSeconds(timeTaken)} of ${formatTimeInSeconds(totalTestTime)}\n`;
+    summaryText += `   - Time Utilization: ${timeUtilization.toFixed(2)}%\n`;
+
+    // Accuracy insights
+    summaryText += `5. Accuracy:\n`;
+    summaryText += `   - ${attempt.sectionName} Accuracy: ${accuracy.toFixed(2)}%\n`;
+
+    // Performance improvement suggestions
+    summaryText += `\nImprovement Suggestions:\n`;
+    if (unattemptedQuestions > 0) {
+        summaryText += `- Focus on time management to attempt all questions.\n`;
+    }
+    if (incorrectQuestions > correctQuestions) {
+        summaryText += `- Review and understand the concepts behind incorrect answers.\n`;
+    }
+    if (questionRemarks['Overtime'] || questionRemarks['Wasted']) {
+        summaryText += `- Work on optimizing your problem-solving speed and question selection strategy.\n`;
+    }
+
+    return summaryText;
+}
 
 function UmbrellaTestAnalytics({ onClose,  attemptedDetails = [], sectionName, testAttemptId, setTestAttemptId }: UmbrellaTestAnalyticsprops) {
     const router = useRouter();
@@ -508,28 +658,26 @@ function UmbrellaTestAnalytics({ onClose,  attemptedDetails = [], sectionName, t
                     </div>
 
                     <div className="flex flex-col mb-8 gap-4">
-                        <div className="h-auto bg-[#FFFFFF] border border-solid border-[#EAECF0] p-3  rounded-md">
+                    <div className="h-auto bg-[#FFFFFF] border border-solid border-[#EAECF0] p-3  rounded-md">
                             <div className=" flex flex-col gap-2 ml-2">
-                                <span className="font-semibold text-[#1D2939] text-sm">Physics</span>
-                                <span className="font-normal text-[#667085] text-sm">Great! You did not miss any concept.</span>
+                                <span className="font-semibold text-[#1D2939] text-sm">Overall</span>
+                                <div className="h-auto mb-6 text-[#667085] font-normal text-sm whitespace-pre-line">
+                                {generateTestSummary(currentAttempt)}
+                                </div>
                             </div>
                         </div>
-                        <div className="h-auto bg-[#FFFFFF] border border-solid border-[#EAECF0] p-3  rounded-md">
+                        {currentAttempt?.subattempts.map((subattempt, index) => (
+                            <div className="h-auto bg-[#FFFFFF] border border-solid border-[#EAECF0] p-3  rounded-md">
                             <div className=" flex flex-col gap-2 ml-2">
-                                <span className="font-semibold text-[#1D2939] text-sm">Chemistry</span>
-                                <span className="font-normal text-[#667085] text-sm ml-2">1.Extraction of Aluminum by Purification of Bauxite</span>
-                                <span className="font-normal text-[#667085] text-sm ml-2">2.Types of Interhalogens</span>
+                                <span className="font-semibold text-[#1D2939] text-sm">{subattempt.sectionName}</span>
+                                <div className="h-auto mb-6 text-[#667085] font-normal text-sm whitespace-pre-line">
+                                {generateSubTestSummary(subattempt, currentAttempt?.testTime || 0)}
+                                </div>
                             </div>
                         </div>
-                        <div className="h-auto bg-[#FFFFFF] border border-solid border-[#EAECF0] p-3  rounded-md">
-                            <div className=" flex flex-col gap-2 ml-2">
-                                <span className="font-semibold text-[#1D2939] text-sm">Mathematics</span>
-                                <span className="font-normal text-[#667085] text-sm ml-2">1.Condition of one common root</span>
-                                <span className="font-normal text-[#667085] text-sm ml-2">2.Condition for a line to be secant, tangent or a chord</span>
-                                <span className="font-normal text-[#667085] text-sm ml-2">3.Question on tan inverse</span>
-                                <span className="font-normal text-[#667085] text-sm ml-2">4.When limit tends to 0 or finite number</span>
-                            </div>
-                        </div>
+                        ))}
+                        
+                       
                     </div>
                 </div>
             </div>

@@ -58,7 +58,6 @@ interface SubAttemptDetails {
     answeredCorrect: string;
     answeredIncorrect: string;
     timeTaken: number;
-    testTime: number;
     questions: AnsweredQuestion[];
     sectionName: string;
     attemptId: string;
