@@ -293,7 +293,7 @@ function Questions({ questionsList, setQuestionsList }: QuestionsProps) {
 
                     <Collapsible
                         open={openIndex === index}
-                        className={`border  rounded-md ${visited[index] && isDataMissing(question) ? "border-1.5 border-[#F04438]" : "border-[#EAECF0]"}`}
+                        className={`border  rounded-md ${visited[index] && isDataMissing(question) ? "border border-[#F04438]" : "border-[#EAECF0]"}`}
                         trigger={
                             <div className='h-auto bg-[#FFFFFF] flex flex-col p-5 gap-2 rounded-md '>
                                 <div className="h-auto flex flex-row justify-between gap-4 items-start">

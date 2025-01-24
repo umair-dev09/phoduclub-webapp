@@ -64,7 +64,7 @@ const CreateCourse = () => {
     };
 
     const handleChange = (content: string) => {
-
+        checkTextContent(content);
         setCourseDescription(content);
 
         if (quill && quill.getText().trim() === '') {
@@ -77,6 +77,11 @@ const CreateCourse = () => {
     };
     const isFormValid = courseName && courseDescription && price && discountPrice && rating && numRatings && imageUrl;
 
+    const checkTextContent = (content: string) => {
+        // Trim the content and check if there's actual text (excluding HTML tags like <p></p>)
+        const plainText = content.replace(/<[^>]+>/g, '').trim();
+
+    };
 
 
 

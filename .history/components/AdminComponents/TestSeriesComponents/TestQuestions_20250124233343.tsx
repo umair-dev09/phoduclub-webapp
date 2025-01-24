@@ -582,10 +582,10 @@ function TestQuestions({ questionsList, setQuestionsList }: QuestionsProps) {
                                         </div>
                                         <div className="w-[65%] flex ">
                                             <div className="flex gap-2 pr-4 items-start">
-                                                <div className={`"h-auto w-auto rounded-[4px]  bg-[#EAECF0] flex justify-center py-[2px] px-2 "${visited[index] && isDataMissing(question) ? " bg-[#F04438] mt-1 text-white" : "bg-[#EAECF0] mt-1 text-[#1D2939]"}`}>
+                                                <div className={`"h-auto w-auto rounded-[4px]  bg-[#EAECF0] flex justify-center py-[2px] px-2 "${visited[index] && isDataMissing(question) ? " bg-red-600 mt-1 text-white" : "bg-[#EAECF0] mt-1 text-[#1D2939]"}`}>
                                                     <span className=" font-semibold text-[12px] ">{index + 1}</span>
                                                 </div>
-                                                <div className={`"font-normal text-sm break-all "${visited[index] && isDataMissing(question) ? " text-[#F04438] ml-1 mt-1" : " text-[#1D2939]  ml-1 mt-1"}`} dangerouslySetInnerHTML={{ __html: question.question || "Question" }}></div>
+                                                <div className={`"font-normal text-sm break-all "${visited[index] && isDataMissing(question) ? " text-red-600 ml-1 mt-1" : " text-[#1D2939]  ml-1 mt-1"}`} dangerouslySetInnerHTML={{ __html: question.question || "Question" }}></div>
                                             </div>
                                         </div>
                                         <div className="w-[20%] py-1">
