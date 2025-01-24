@@ -366,31 +366,7 @@ function ReviewTestView() {
         return timer.timeSpent + activeTime;
     };
 
-    const startSubsectionTimer = (sectionId: string) => {
-        setSubsectionTimers(prev => ({
-            ...prev,
-            [sectionId]: {
-                timeSpent: prev[sectionId]?.timeSpent || 0,
-                lastStartTime: Date.now()
-            }
-        }));
-    };
-
-    const stopSubsectionTimer = (sectionId: string) => {
-        setSubsectionTimers(prev => {
-            const timer = prev[sectionId];
-            if (!timer) return prev;
-
-            return {
-                ...prev,
-                [sectionId]: {
-                    timeSpent: getTotalTimeSpent(timer),
-                    lastStartTime: 0
-                }
-            };
-        });
-    };
-
+   
     // Timer management functions
     const updateCurrentQuestionTime = () => {
         const currentTime = Date.now();
@@ -975,7 +951,44 @@ function ReviewTestView() {
         // Start timer for new section
         const newSectionId = subSections[index].id;
         startSubsectionTimer(newSectionId);
+
+        const getFinalSubsectionTimes = () => {
+            const finalTimes: { [key: string]: number } = {};
+
+            Object.entries(subsectionTimers).forEach(([sectionId, timer]) => {
+            finalTimes[sectionId] = getTotalTimeSpent(timer);
+            });
+
+            return finalTimes;
+        };
+        console.log('Sections Time:', getFinalSubsectionTimes());
     };
+
+    const startSubsectionTimer = (sectionId: string) => {
+        setSubsectionTimers(prev => ({
+            ...prev,
+            [sectionId]: {
+                timeSpent: prev[sectionId]?.timeSpent || 0,
+                lastStartTime: Date.now()
+            }
+        }));
+    };
+
+    const stopSubsectionTimer = (sectionId: string) => {
+        setSubsectionTimers(prev => {
+            const timer = prev[sectionId];
+            if (!timer) return prev;
+
+            return {
+                ...prev,
+                [sectionId]: {
+                    timeSpent: getTotalTimeSpent(timer),
+                    lastStartTime: 0
+                }
+            };
+        });
+    };
+
 
     // Initialize timer on component mount
     useEffect(() => {
@@ -1228,7 +1241,7 @@ function ReviewTestView() {
             return;
         }
 
-        // Calculate final question data with remarks
+        // Enhanced function to calculate remarks for each question
         const getFinalQuestionData = (states: QuestionState[]) => states.map(state => ({
             ...state,
             remarks: determineRemarks(
@@ -1239,16 +1252,25 @@ function ReviewTestView() {
             )
         }));
 
-        const finalQuestionData = currentSection?.isUmbrellaTest
-            ? []
-            : getFinalQuestionData(questionStates);
+        // Process questions for both regular and umbrella tests
+        const processQuestions = () => {
+            if (currentSection?.isUmbrellaTest) {
+                // Process each subsection's questions with remarks
+                return subSections.map(section => ({
+                    ...section,
+                    states: getFinalQuestionData(section.states || [])
+                }));
+            } else {
+                return getFinalQuestionData(questionStates);
+            }
+        };
 
+        const processedQuestions = processQuestions();
         const combinedQuestionsData = currentSection?.isUmbrellaTest
-            ? subSections.flatMap(section => getFinalQuestionData(section.states || []))
-            : [];
+            ? (processedQuestions as SubSection[]).flatMap(section => section.states || [])
+            : processedQuestions;
 
         try {
-            // Generate current path
             let currentPath = `testseries/${tId}`;
             for (const sectionId of sections) {
                 currentPath += `/sections/${sectionId}`;
@@ -1256,8 +1278,6 @@ function ReviewTestView() {
             currentPath += `/attempts`;
 
             const batch = writeBatch(db);
-
-            // Get attempt number efficiently
             const attemptsRef = collection(db, currentPath);
             const userAttempts = await getDocs(
                 query(attemptsRef, where('userId', '==', currentUserId))
@@ -1265,21 +1285,27 @@ function ReviewTestView() {
             const attemptNumber = userAttempts.size + 1;
 
             const calculateMetrics = (questions: any[], section?: Section) => {
-
                 const totalQuestions = questions.length;
                 const attemptedQuestions = questions.filter(q => q.answered).length;
                 const correctAnswers = questions.filter(q => q.answeredCorrect).length;
                 const incorrectAnswers = attemptedQuestions - correctAnswers;
                 let marksPerCorrect, marksPerIncorrect;
-                if (currentSection?.isUmbrellaTest || !section?.isParentUmbrellaTest) {
-                    // For umbrella tests, sum up marks from all subsections
-                    marksPerCorrect = subSections.reduce((total, sub) => total + parseFloat(sub.marksPerQ || "0"), 0);
-                    marksPerIncorrect = subSections.reduce((total, sub) => total + parseFloat(sub.nMarksPerQ || "0"), 0);
+                
+                if (currentSection?.isUmbrellaTest) {
+                    if (section?.isParentUmbrellaTest) {
+                        marksPerCorrect = parseFloat(section?.marksPerQ || "0");
+                        marksPerIncorrect = parseFloat(section?.nMarksPerQ || "0");
+                    } else {
+                        marksPerCorrect = subSections.reduce((total, sub) => 
+                            total + parseFloat(sub.marksPerQ || "0"), 0);
+                        marksPerIncorrect = subSections.reduce((total, sub) => 
+                            total + parseFloat(sub.nMarksPerQ || "0"), 0);
+                    }
                 } else {
-                    // For regular sections, use the section's own marks
                     marksPerCorrect = parseFloat(section?.marksPerQ || "0");
                     marksPerIncorrect = parseFloat(section?.nMarksPerQ || "0");
                 }
+
                 const totalScore = (correctAnswers * marksPerCorrect) - (incorrectAnswers * marksPerIncorrect);
                 const maxPossibleScore = totalQuestions * marksPerCorrect;
                 const accuracy = attemptedQuestions > 0 ? (correctAnswers / attemptedQuestions) * 100 : 0;
@@ -1294,7 +1320,6 @@ function ReviewTestView() {
             };
 
             if (currentSection?.isUmbrellaTest) {
-                // Create main attempt document
                 const mainAttemptRef = doc(attemptsRef);
                 const combinedMetrics = calculateMetrics(combinedQuestionsData);
                 const totalTestTime = subSections.reduce((sum, section) =>
@@ -1313,22 +1338,21 @@ function ReviewTestView() {
                 };
 
                 batch.set(mainAttemptRef, mainAttemptData);
-
+                
                 const getFinalSubsectionTimes = () => {
                     const finalTimes: { [key: string]: number } = {};
-
+        
                     Object.entries(subsectionTimers).forEach(([sectionId, timer]) => {
-                        finalTimes[sectionId] = getTotalTimeSpent(timer);
+                    finalTimes[sectionId] = getTotalTimeSpent(timer);
                     });
-
+        
                     return finalTimes;
                 };
-
-                // Add subattempts in the same batch
                 const sectionTimes = getFinalSubsectionTimes();
                 const subattemptsRef = collection(mainAttemptRef, 'subattempts');
 
-                subSections.forEach((section) => {
+                // Process each subsection with remarks
+                processedQuestions.forEach((section: any) => {
                     const sectionMetrics = calculateMetrics(section.states || [], section);
                     const subattemptRef = doc(subattemptsRef);
 
@@ -1338,15 +1362,15 @@ function ReviewTestView() {
                         timeTaken: sectionTimes[section.id] || 0,
                         testTime: section.testTime,
                         ...sectionMetrics,
-                        questions: section.states
+                        questions: section.states // These now include remarks
                     });
                 });
 
             } else {
-                // Handle regular test attempt
-                const metrics = calculateMetrics(finalQuestionData, currentSection || undefined);
+                const metrics = calculateMetrics(processedQuestions, currentSection || undefined);
                 const attemptRef = doc(attemptsRef);
                 const timeTaken = (currentSection?.testTime ?? 0) - remainingTime;
+                
                 batch.set(attemptRef, {
                     attemptDateAndTime: serverTimestamp(),
                     isUmbrellaTest: false,
@@ -1355,26 +1379,27 @@ function ReviewTestView() {
                     userId: currentUserId,
                     attemptNumber,
                     ...metrics,
-                    questions: finalQuestionData
+                    questions: processedQuestions // These now include remarks
                 });
             }
 
-            // Commit all operations in a single batch
             await batch.commit();
 
-            // Update loading toast to success
             toast.dismiss(loadingToastId);
             toast.success('Test submitted successfully! Redirecting to results...', {
                 autoClose: 3000,
                 position: 'top-center'
             });
 
+            // Update UI state
             if (currentSection?.isUmbrellaTest) {
                 const combinedMetrics = calculateMetrics(combinedQuestionsData);
                 const totalTestTime = subSections.reduce((sum, section) => sum + section.testTime, 0);
                 const timeTaken = totalTestTime - remainingTime;
-
+                const allQuestions = subSections.flatMap(section => section.questions || []);
+                
                 setAttemptedQuestions(combinedMetrics.attemptedQuestions);
+                setQuestions(allQuestions);
                 setAnsweredCorrect(combinedMetrics.answeredCorrect);
                 setAnsweredIncorrect(combinedMetrics.answeredIncorrect);
                 setScore(combinedMetrics.score);
@@ -1382,7 +1407,7 @@ function ReviewTestView() {
                 setTimeTaken(timeTaken);
                 setTestTime(totalTestTime);
             } else {
-                const metrics = calculateMetrics(finalQuestionData, currentSection || undefined);
+                const metrics = calculateMetrics(processedQuestions, currentSection || undefined);
                 const timeTaken = (currentSection?.testTime ?? 0) - remainingTime;
 
                 setAttemptedQuestions(metrics.attemptedQuestions);
@@ -1393,9 +1418,9 @@ function ReviewTestView() {
                 setTimeTaken(timeTaken);
                 setTestTime(currentSection?.testTime ?? 0);
             }
-            setIsSubmitButtonDisabled(true);
 
-            // Add a small delay before navigation for better UX
+            setIsSubmitButtonDisabled(true);
+            
             setTimeout(() => {
                 onCloseFirst();
                 onOpenSecond();
@@ -1403,17 +1428,15 @@ function ReviewTestView() {
 
         } catch (error) {
             console.error('Error in handleSubmit:', error);
-
-            // Dismiss loading toast and show error
             toast.dismiss(loadingToastId);
             toast.error('Failed to submit test. Please try again or contact support if the issue persists.', {
                 autoClose: 5000,
                 position: 'top-center'
             });
-
             setIsSubmitButtonDisabled(false);
         }
     };
+
 
 
     const handleClearResponse = () => {

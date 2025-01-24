@@ -101,7 +101,7 @@ const Sections: React.FC<SectionsProps> = ({
   const [isUpdating, setIsUpdating] = useState<string>('');
   const [sectionss, setSections] = useState<Section[]>([]);
   const [currentPath, setCurrentPath] = useState<string[]>([]);
-  const [breadcrumbs, setBreadcrumbs] = useState<{ id: string; name: string }[]>([]);
+  const [breadcrumbs, setBreadcrumbs] = useState<{ id: string; name: string; isUmbrellaTest: boolean; isParentUmbrellaTest: boolean }[]>([]);
   const [questionText, setQuestionText] = useState("");
   const [timeNumber, setTimeNumber] = useState("");
   const [timeText, setTimeText] = useState("Minutes");
@@ -109,6 +109,8 @@ const Sections: React.FC<SectionsProps> = ({
   const [description, setDescription] = useState("");
   const [editSectionId, setEditSectionId] = useState("");
   const [nMarksPerQ, setnMarksPerQ] = useState("");
+  const [isUmbrellaTest, setIsUmbrellaTest] = useState(false);
+  const [isParentUmbrellaTest, setIsParentUmbrellaTest] = useState(false);
   const [saveQuestionSectionId, setSaveQuestionSectionId] = useState("");
   const [selectedSectionId, setSelectedSectionId] = useState<string | null>(null);
   const [showQuestionInput, setShowQuestionInput] = useState(false);
@@ -334,7 +336,7 @@ const Sections: React.FC<SectionsProps> = ({
 
 
   const handleAddSection = async () => {
-    if (!testId || !sectionName || !sectionScheduleDate) return;
+    if (!testId || !sectionName) return;
     if (isSectionEditing) {
       try {
         const path = currentPath.reduce(
@@ -344,7 +346,7 @@ const Sections: React.FC<SectionsProps> = ({
         const newSectionRef = doc(db, `${path}/sections/${editSectionId}`);
         await updateDoc(newSectionRef, {
           sectionName,
-          sectionScheduleDate,
+          sectionScheduleDate: isParentUmbrellaTest ? null : sectionScheduleDate,
         });
 
         toast.success("Section update successfully");
@@ -378,7 +380,7 @@ const Sections: React.FC<SectionsProps> = ({
 
         await setDoc(newSectionRef, {
           sectionName,
-          sectionScheduleDate,
+          sectionScheduleDate: isParentUmbrellaTest ? null : sectionScheduleDate,
           sectionId: newSectionRef.id,
           parentSectionId: currentPath[currentPath.length - 1] || null,
           order: sectionss.length + 1,
@@ -512,7 +514,7 @@ const Sections: React.FC<SectionsProps> = ({
       toast.error("Failed to save questions");
     }
   };
-  const handleSaveQuestionsWithDetails = async (sectionId: string) => {
+  const handleSaveQuestionsWithDetails = async (sectionId: string, isUmbrellaTest: boolean) => {
     try {
       // Construct the base path
       const path = currentPath.reduce(
@@ -528,56 +530,76 @@ const Sections: React.FC<SectionsProps> = ({
 
       // Start a batch write
       const batch = writeBatch(db);
+      if(isUmbrellaTest){
+        batch.update(sectionRef, {
+          description,
+          marksPerQ,
+          nMarksPerQ,
+          testTime: convertToSeconds(timeNumber + " " + timeText),
+        });
+        await batch.commit();
+        toast.success("Details added successfully");
+        setMarksPerQ('');
+        setnMarksPerQ('');
+        setDescription('');
+        setTimeNumber('');
+        setTimeText('Minutes');
+        setSaveQuestionSectionId('');
+        setSaveQuestionDialog(false);
+        setIsUmbrellaTest(false);
+      }
+      else{
+        // Process each question in the list
+        for (const question of questionsList) {
+          let questionRef;
 
-      // Process each question in the list
-      for (const question of questionsList) {
-        let questionRef;
+          if (!question.questionId || question.questionId.startsWith('temp-')) {
+            // For new questions, create a new document reference in the Questions collection
+            questionRef = doc(questionsCollectionRef);
+          } else {
+            // For existing questions, use their current ID
+            questionRef = doc(questionsCollectionRef, question.questionId);
+          }
 
-        if (!question.questionId || question.questionId.startsWith('temp-')) {
-          // For new questions, create a new document reference in the Questions collection
-          questionRef = doc(questionsCollectionRef);
-        } else {
-          // For existing questions, use their current ID
-          questionRef = doc(questionsCollectionRef, question.questionId);
+          // Prepare question data
+          const questionData = {
+            questionId: questionRef.id,
+            question: question.question,
+            options: question.options,
+            correctAnswer: question.correctAnswer,
+            answerExplanation: question.explanation,
+            difficulty: question.difficulty,
+          };
+
+          // Add to batch
+          batch.set(questionRef, questionData);
         }
 
-        // Prepare question data
-        const questionData = {
-          questionId: questionRef.id,
-          question: question.question,
-          options: question.options,
-          correctAnswer: question.correctAnswer,
-          answerExplanation: question.explanation,
-          difficulty: question.difficulty,
-        };
+        // Update section to indicate it has questions
+        batch.update(sectionRef, {
+          hasQuestions: true,
+          description,
+          marksPerQ,
+          nMarksPerQ,
+          testTime: convertToSeconds(timeNumber + " " + timeText),
+        });
 
-        // Add to batch
-        batch.set(questionRef, questionData);
-      }
+        // Commit all changes
+        await batch.commit();
+        await fetchQuestions(sectionId, selectedSection?.sectionName || '');
+        toast.success("Questions and details added successfully");
+        setMarksPerQ('');
+        setnMarksPerQ('');
+        setDescription('');
+        setTimeNumber('');
+        setTimeText('Minutes');
+        setSaveQuestionSectionId('');
+        setSaveQuestionDialog(false);
 
-      // Update section to indicate it has questions
-      batch.update(sectionRef, {
-        hasQuestions: true,
-        description,
-        marksPerQ,
-        nMarksPerQ,
-        testTime: convertToSeconds(timeNumber + " " + timeText),
-      });
-
-      // Commit all changes
-      await batch.commit();
-      await fetchQuestions(sectionId, selectedSection?.sectionName || '');
-      toast.success("Questions and details added successfully");
-      setMarksPerQ('');
-      setnMarksPerQ('');
-      setDescription('');
-      setTimeNumber('');
-      setTimeText('Minutes');
-      setSaveQuestionSectionId('');
-      setSaveQuestionDialog(false);
-
-      // Navigate back to the previous section
-      handleNavigationClick(currentPath.length - 1);
+        // Navigate back to the previous section
+        handleNavigationClick(currentPath.length - 1);
+              }
+     
 
     } catch (error) {
       console.error("Error saving questions: ", error);
@@ -711,8 +733,8 @@ const Sections: React.FC<SectionsProps> = ({
         <div className="p-4">
           <div className="flex flex-col">
             {selectedSection.hasQuestions ? (
-              <div className="flex justify-between mb-4">
-
+              <div className={`flex ${selectedSection.isParentUmbrellaTest ? 'justify-end' : 'justify-between'} mb-4`}>
+                {!selectedSection.isParentUmbrellaTest &&(
                 <div className="flex flex-col gap-1">
                   <p className="text-[#475467] text-sm">{selectedSection.description || ''}</p>
                   <div className="flex flex-row gap-[6px] items-center mt-1">
@@ -729,6 +751,7 @@ const Sections: React.FC<SectionsProps> = ({
                     <p className="text-xs font-medium">{selectedSection.nMarksPerQ || ''}</p>
                   </div>
                 </div>
+                )}
                 <Popover placement="bottom"
                   isOpen={popoveropen}
                   onOpenChange={(open) => setPopoveropen(open)}>
@@ -812,12 +835,17 @@ const Sections: React.FC<SectionsProps> = ({
               </button>
               <button
                 onClick={() => {
+                  if(selectedSection.isParentUmbrellaTest){
+                    handleSaveQuestionsWithoutDetails(selectedSection.id); // Perform this action if hasQuestions is true
+                  }
+                  else{
                   if (selectedSection.hasQuestions) {
                     handleSaveQuestionsWithoutDetails(selectedSection.id); // Perform this action if hasQuestions is true
                   } else {
                     setSaveQuestionDialog(true); // Open dialog if hasQuestions is false
                     setSaveQuestionSectionId(selectedSection.id);
                   }
+                }
                 }}
                 disabled={isSaveButtonDisabled}
                 className={`py-2 px-7 text-white shadow-inner-button border border-white ${isSaveButtonDisabled ? 'bg-[#CDA0FC]' : 'bg-[#9012FF]'
@@ -847,9 +875,9 @@ const Sections: React.FC<SectionsProps> = ({
   };
 
 
-  const navigateToSection = (sectionId: string, sectionName: string) => {
+  const navigateToSection = (sectionId: string, sectionName: string, isUmbrellaTest: boolean, isParentUmbrellaTest: boolean) => {
     setCurrentPath((prev) => [...prev, sectionId]);
-    setBreadcrumbs((prev) => [...prev, { id: sectionId, name: sectionName }]);
+    setBreadcrumbs((prev) => [...prev, { id: sectionId, name: sectionName, isUmbrellaTest: isUmbrellaTest, isParentUmbrellaTest: isParentUmbrellaTest}]);
   };
 
   const handleEditSection = (sectionId: string, sectionName: string, sectionScheduleDate: string) => {
@@ -907,6 +935,7 @@ const Sections: React.FC<SectionsProps> = ({
   const resetNavigation = () => {
     setCurrentPath([]);
     setBreadcrumbs([]);
+    setIsParentUmbrellaTest(false);
     setShowQuestions(false);
     setSelectedSection(null);
     setQuestionsBreadcrumb(null);
@@ -926,6 +955,9 @@ const Sections: React.FC<SectionsProps> = ({
       await updateDoc(sectionRef, {
         isUmbrellaTest: !currentValue,
       });
+      setSaveQuestionDialog(true); // Open dialog if hasQuestions is false
+      setSaveQuestionSectionId(sectionId);
+      setIsUmbrellaTest(true);
     } catch (error) {
       console.error('Error updating umbrella test status:', error);
     } finally {
@@ -952,7 +984,14 @@ const Sections: React.FC<SectionsProps> = ({
           <div key={breadcrumb.id} className="flex flex-row items-center gap-2">
             <Image src="/icons/course-left.svg" width={6} height={6} alt="arrow" className="w-[10px] h-[10px]" />
             <button
-              onClick={() => handleNavigationClick(index)}
+              onClick={() => {handleNavigationClick(index); 
+                if(breadcrumb.isUmbrellaTest || breadcrumb.isParentUmbrellaTest){
+                  setIsParentUmbrellaTest(true);
+                }
+                else{
+                  setIsParentUmbrellaTest(false);
+                }
+              }}
               className={
                 index === breadcrumbs.length - 1 && !showQuestions
                   ? "text-black font-medium"
@@ -994,13 +1033,16 @@ const Sections: React.FC<SectionsProps> = ({
                       <div className="flex flex-row justify-between items-start w-full p-4 bg-[#FCFCFD] rounded-[16px]">
                         <div className="flex flex-col gap-1">
                           <h3 className="font-medium">{section.sectionName}</h3>
-                          <div className="flex flex-row gap-1 items-center">
+                          {!section.isParentUmbrellaTest &&(
+                            <div className="flex flex-row gap-1 items-center">
                             <Image src="/icons/schedule.svg" width={12} height={12} alt="schedule" />
                             <p className="text-sm">
                               Schedule: <span className="font-medium ml-[2px]">{formatScheduleDate(section.sectionScheduleDate)}</span>
                             </p>
-                          </div>
-                          {section.hasQuestions && (
+                            </div>
+                          )}
+                         
+                          {((section.hasQuestions && !section.isParentUmbrellaTest) || section.isUmbrellaTest) && (
                             <>
                               <p className="text-[#475467] text-sm">{section.description || ''}</p>
                               <div className="flex flex-row gap-[6px] items-center mt-1">
@@ -1022,7 +1064,7 @@ const Sections: React.FC<SectionsProps> = ({
 
 
                         </div>
-                        <div className="flex flex-row gap-3 mt-2 items-center ">
+                        <div className={`flex flex-row gap-3 ${section.isParentUmbrellaTest? 'mt-1' : 'mt-2'} items-center `}>
                           {!section.isParentUmbrellaTest && (section.isUmbrellaTest || (section.sections && section.sections.length < 1 && !section.hasQuestions)) && (
                             <div className="flex flex-row items-center">
                               <Switch size="sm"
@@ -1041,7 +1083,14 @@ const Sections: React.FC<SectionsProps> = ({
                           {section.hasQuestions ? (
                             <button
                               className="flex flex-row gap-1 items-center"
-                              onClick={() => fetchQuestions(section.id, section.sectionName)}
+                              onClick={() => {fetchQuestions(section.id, section.sectionName);
+                                if(section.isUmbrellaTest || section.isParentUmbrellaTest){
+                                  setIsParentUmbrellaTest(true);
+                                }
+                                else{
+                                  setIsParentUmbrellaTest(false);
+                                }
+                              }}
                             >
                               <span className="text-[#9012FF] font-semibold text-sm">View Questions</span>
                             </button>
@@ -1050,7 +1099,13 @@ const Sections: React.FC<SectionsProps> = ({
                               <button
                                 className="flex flex-row gap-1 items-center"
                                 onClick={() => {
-                                  navigateToSection(section.id, section.sectionName);
+                                  navigateToSection(section.id, section.sectionName, section.isUmbrellaTest, section.isParentUmbrellaTest);
+                                  if(section.isUmbrellaTest || section.isParentUmbrellaTest){
+                                    setIsParentUmbrellaTest(true);
+                                  }
+                                  else{
+                                    setIsParentUmbrellaTest(false);
+                                  }
                                 }}
                               >
                                 <span className="text-[#9012FF] font-semibold text-sm">View Section</span>
@@ -1188,7 +1243,14 @@ const Sections: React.FC<SectionsProps> = ({
                               {!section.isParentUmbrellaTest && (
                                 <button
                                   onClick={() => {
-                                    navigateToSection(section.id, section.sectionName);
+                                    navigateToSection(section.id, section.sectionName, section.isUmbrellaTest, section.isParentUmbrellaTest);
+                                    if(section.isUmbrellaTest || section.isParentUmbrellaTest){
+                                      setIsParentUmbrellaTest(true);
+                                    }
+                                    else{
+                                      setIsParentUmbrellaTest(false);
+                                    }
+                                  
                                   }}
                                   className="flex flex-row gap-1 items-center rounded-md border-[2px] border-solid border-[#9012FF] hover:bg-[#F5F0FF] bg-[#FFFFFF] h-[44px] w-[162px] justify-center">
                                   <Image src="/icons/plus-sign.svg" height={18} width={18} alt="Plus Sign" />
@@ -1198,7 +1260,14 @@ const Sections: React.FC<SectionsProps> = ({
 
                               {!section.isUmbrellaTest && (
                                 <button
-                                  onClick={() => fetchQuestions(section.id, section.sectionName)}
+                                  onClick={() => {fetchQuestions(section.id, section.sectionName);
+                                    if(section.isUmbrellaTest || section.isParentUmbrellaTest){
+                                      setIsParentUmbrellaTest(true);
+                                    }
+                                    else{
+                                      setIsParentUmbrellaTest(false);
+                                    }
+                                  }}
                                   className="flex flex-row gap-1 items-center rounded-md border-[2px] border-solid border-[#9012FF] hover:bg-[#F5F0FF] bg-[#FFFFFF] h-[44px] w-[162px] justify-center">
                                   <Image src="/icons/plus-sign.svg" height={18} width={18} alt="Plus Sign" />
                                   <span className="text-[#9012FF] font-semibold text-sm">Add Question</span>
@@ -1253,24 +1322,27 @@ const Sections: React.FC<SectionsProps> = ({
                   />
                 </div>
               </div>
+              {!isParentUmbrellaTest && (
               <div className="flex flex-col w-full gap-2 mb-2">
-                <p className="text-start text-lg text-[#1D2939] font-semibold">Schedule Section</p>
-                <DatePicker
-                  granularity="minute"
-                  minValue={today(getLocalTimeZone())}
-                  // value={dateForPicker}
-                  value={sectionScheduleDate ? parseDateTime(sectionScheduleDate) : undefined}
-                  hideTimeZone
-                  onChange={handleDateChange}
-                />
+              <p className="text-start text-lg text-[#1D2939] font-semibold">Schedule Section</p>
+              <DatePicker
+                granularity="minute"
+                minValue={today(getLocalTimeZone())}
+                // value={dateForPicker}
+                value={sectionScheduleDate ? parseDateTime(sectionScheduleDate) : undefined}
+                hideTimeZone
+                onChange={handleDateChange}
+              />
               </div>
+              )}
+             
             </ModalBody>
             <ModalFooter className="border-t border-lightGrey">
               <Button variant="light" className="py-[0.625rem] px-6 border-2  border-solid border-[#EAECF0] font-semibold text-sm text-[#1D2939] rounded-md hover:bg-[#F2F4F7]" onClick={() => setIsCreateSection(false)}>Cancel</Button>
               <Button
                 onClick={handleAddSection}
-                disabled={isSectionButtonDisabled}
-                className={`py-[0.625rem] px-6 text-white shadow-inner-button border border-white ${isSectionButtonDisabled ? 'bg-[#CDA0FC]' : 'bg-[#9012FF] hover:bg-[#6D0DCC] '
+                disabled={(isParentUmbrellaTest ? sectionName.length === 0 : isSectionButtonDisabled)}
+                className={`py-[0.625rem] px-6 text-white shadow-inner-button border border-white ${(isParentUmbrellaTest ? sectionName.length === 0 : isSectionButtonDisabled) ? 'bg-[#CDA0FC]' : 'bg-[#9012FF] hover:bg-[#6D0DCC] '
                   } rounded-md font-semibold text-sm`}
               >
                 {isSectionEditing ? 'Save Changes' : 'Create Section'}
@@ -1279,6 +1351,9 @@ const Sections: React.FC<SectionsProps> = ({
           </>
         </ModalContent>
       </Modal >
+      
+
+      
       {/* Delete section Dialog */}
       <Modal
         isOpen={deletedialog}
@@ -1446,7 +1521,7 @@ const Sections: React.FC<SectionsProps> = ({
                   Cancel
                 </button>
                 <button
-                  onClick={() => handleSaveQuestionsWithDetails(saveQuestionSectionId)}
+                  onClick={() => handleSaveQuestionsWithDetails(saveQuestionSectionId, isUmbrellaTest)}
                   disabled={!isDoneWithQuestionDetailsButton}
                   className={`py-[0.625rem] px-6 text-white shadow-inner-button border border-white ${!isDoneWithQuestionDetailsButton ? 'bg-[#CDA0FC]' : 'bg-[#9012FF]'
                     } rounded-md font-semibold text-sm`}
