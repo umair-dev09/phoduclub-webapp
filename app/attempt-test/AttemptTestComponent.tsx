@@ -306,23 +306,9 @@ function ReviewTestView() {
             .join(':');
     };
 
-    // Add function to calculate total test time
-    const calculateTotalTestTime = (section: any): number => {
-        if (!section) return 0;
-
-        if (section.isUmbrellaTest) {
-            return subSections.reduce((total, subsection) =>
-                total + (subsection.testTime || 0), 0);
-        }
-
-        return parseInt(section.testTime) || 0;
-    };
-
     const initializeTimer = (section: Section) => {
         if (!timerStarted) {
-            const totalTime = section.isUmbrellaTest
-                ? subSections.reduce((total, sub) => total + (sub.testTime || 0), 0)
-                : section.testTime || 0;
+            const totalTime = section.testTime || 0;
 
             setInitialTestTime(totalTime);
             setRemainingTime(totalTime);
@@ -520,12 +506,9 @@ function ReviewTestView() {
                         }));
 
                         setSubSections(initializedSubSections);
-                        const totalTime = initializedSubSections.reduce(
-                            (total, sub) => total + (sub.testTime || 0),
-                            0
-                        );
-                        setRemainingTime(totalTime);
-                        setFormattedTime(formatTime(totalTime));
+                        const sectionTime = sectionData.testTime || 0;
+                        setRemainingTime(sectionTime);
+                        setFormattedTime(formatTime(sectionTime));
                         if (initializedSubSections.length > 0) {
                             const firstSection = initializedSubSections[0];
                             setQuestions(firstSection.questions || []);
@@ -1291,17 +1274,16 @@ function ReviewTestView() {
                 const incorrectAnswers = attemptedQuestions - correctAnswers;
                 let marksPerCorrect, marksPerIncorrect;
                 
-                if (currentSection?.isUmbrellaTest) {
-                    if (section?.isParentUmbrellaTest) {
-                        marksPerCorrect = parseFloat(section?.marksPerQ || "0");
-                        marksPerIncorrect = parseFloat(section?.nMarksPerQ || "0");
-                    } else {
-                        marksPerCorrect = subSections.reduce((total, sub) => 
-                            total + parseFloat(sub.marksPerQ || "0"), 0);
-                        marksPerIncorrect = subSections.reduce((total, sub) => 
-                            total + parseFloat(sub.nMarksPerQ || "0"), 0);
-                    }
-                } else {
+                if (section?.isParentUmbrellaTest) {
+                    marksPerCorrect = parseFloat(currentSection?.marksPerQ || "0");
+                    marksPerIncorrect = parseFloat(currentSection?.nMarksPerQ || "0");
+                    
+                }
+                else if (currentSection?.isUmbrellaTest) {
+                    marksPerCorrect = parseFloat(currentSection?.marksPerQ || "0");
+                    marksPerIncorrect = parseFloat(currentSection?.nMarksPerQ || "0");
+                }
+                 else {
                     marksPerCorrect = parseFloat(section?.marksPerQ || "0");
                     marksPerIncorrect = parseFloat(section?.nMarksPerQ || "0");
                 }
@@ -1324,12 +1306,12 @@ function ReviewTestView() {
                 const combinedMetrics = calculateMetrics(combinedQuestionsData);
                 const totalTestTime = subSections.reduce((sum, section) =>
                     sum + section.testTime, 0);
-                const timeTaken = totalTestTime - remainingTime;
+                const timeTaken = (currentSection?.testTime ?? 0) - remainingTime;
 
                 const mainAttemptData = {
                     attemptDateAndTime: serverTimestamp(),
                     isUmbrellaTest: true,
-                    testTime: totalTestTime,
+                    testTime: currentSection?.testTime,
                     timeTaken: timeTaken,
                     userId: currentUserId,
                     attemptNumber,
@@ -1360,7 +1342,7 @@ function ReviewTestView() {
                         sectionId: section.id,
                         sectionName: section.sectionName,
                         timeTaken: sectionTimes[section.id] || 0,
-                        testTime: section.testTime,
+                        // testTime: section.testTime,
                         ...sectionMetrics,
                         questions: section.states // These now include remarks
                     });
@@ -1394,8 +1376,7 @@ function ReviewTestView() {
             // Update UI state
             if (currentSection?.isUmbrellaTest) {
                 const combinedMetrics = calculateMetrics(combinedQuestionsData);
-                const totalTestTime = subSections.reduce((sum, section) => sum + section.testTime, 0);
-                const timeTaken = totalTestTime - remainingTime;
+                const timeTaken = (currentSection?.testTime ?? 0) - remainingTime;
                 const allQuestions = subSections.flatMap(section => section.questions || []);
                 
                 setAttemptedQuestions(combinedMetrics.attemptedQuestions);
@@ -1405,7 +1386,7 @@ function ReviewTestView() {
                 setScore(combinedMetrics.score);
                 setAccuracy(combinedMetrics.accuracy);
                 setTimeTaken(timeTaken);
-                setTestTime(totalTestTime);
+                setTestTime(currentSection?.testTime ?? 0);
             } else {
                 const metrics = calculateMetrics(processedQuestions, currentSection || undefined);
                 const timeTaken = (currentSection?.testTime ?? 0) - remainingTime;

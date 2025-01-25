@@ -84,6 +84,81 @@ function formatTimeInSeconds(seconds: number | string): string {
     return formattedTime;
 }
 
+function generateTestSummary(attempt: AttemptedDetails | undefined): string {
+    if (!attempt) return "No test attempt data available.";
+
+    // Parse key metrics
+    const totalQuestions = parseInt(attempt.attemptedQuestions.split('/')[1]);
+    const attemptedQuestions = parseInt(attempt.attemptedQuestions.split('/')[0]);
+    const correctQuestions = parseInt(attempt.answeredCorrect.split('/')[0]);
+    const incorrectQuestions = parseInt(attempt.answeredIncorrect.split('/')[0]);
+    const unattemptedQuestions = totalQuestions - attemptedQuestions;
+    const accuracy = parseFloat(attempt.accuracy);
+    const timeTaken = attempt.timeTaken;
+    const totalTestTime = attempt.testTime;
+
+    // Analyze question remarks, ignoring '-'
+    const questionRemarks = attempt.questions
+        .filter(question => question.remarks !== '-')
+        .reduce((acc, question) => {
+            acc[question.remarks] = (acc[question.remarks] || 0) + 1;
+            return acc;
+        }, {} as Record<string, number>);
+
+    // Generate summary text
+    let summaryText = "Test Performance Summary:\n\n";
+
+    // Overall performance assessment
+    const performanceScore = (correctQuestions / totalQuestions) * 100;
+    let performanceDescription = "";
+    if (performanceScore >= 90) performanceDescription = "Excellent";
+    else if (performanceScore >= 75) performanceDescription = "Very Good";
+    else if (performanceScore >= 60) performanceDescription = "Good";
+    else if (performanceScore >= 40) performanceDescription = "Needs Improvement";
+    else performanceDescription = "Requires Significant Work";
+
+    summaryText += `1. Overall Performance: ${performanceDescription} (${performanceScore.toFixed(2)}%)\n`;
+
+    // Question breakdown
+    summaryText += `2. Question Analysis:\n`;
+    summaryText += `   - Total Questions: ${totalQuestions}\n`;
+    summaryText += `   - Attempted Questions: ${attemptedQuestions}\n`;
+    summaryText += `   - Correct Answers: ${correctQuestions}\n`;
+    summaryText += `   - Incorrect Answers: ${incorrectQuestions}\n`;
+    summaryText += `   - Unattempted Questions: ${unattemptedQuestions}\n`;
+
+    // Remarks breakdown
+    if (Object.keys(questionRemarks).length > 0) {
+        summaryText += `3. Question Remarks:\n`;
+        Object.entries(questionRemarks).forEach(([remark, count]) => {
+            summaryText += `   - ${remark}: ${count} question(s)\n`;
+        });
+    }
+
+    // Time management
+    const timeUtilization = (timeTaken / totalTestTime) * 100;
+    summaryText += `4. Time Management:\n`;
+    summaryText += `   - Time Taken: ${formatTimeInSeconds(timeTaken)} of ${formatTimeInSeconds(totalTestTime)}\n`;
+    summaryText += `   - Time Utilization: ${timeUtilization.toFixed(2)}%\n`;
+
+    // Accuracy insights
+    summaryText += `5. Accuracy:\n`;
+    summaryText += `   - Overall Accuracy: ${accuracy.toFixed(2)}%\n`;
+
+    // Performance improvement suggestions
+    summaryText += `\nImprovement Suggestions:\n`;
+    if (unattemptedQuestions > 0) {
+        summaryText += `- Focus on time management to attempt all questions.\n`;
+    }
+    if (incorrectQuestions > correctQuestions) {
+        summaryText += `- Review and understand the concepts behind incorrect answers.\n`;
+    }
+    if (questionRemarks['Overtime'] || questionRemarks['Wasted']) {
+        summaryText += `- Work on optimizing your problem-solving speed and question selection strategy.\n`;
+    }
+
+    return summaryText;
+}
 function NormalTestAnalytics({ onClose, forallsubject = false, attemptedDetails, sectionName, testAttemptId, setTestAttemptId }: NormalTestAnalyticsprops) {
 
     const router = useRouter();
@@ -303,8 +378,8 @@ function NormalTestAnalytics({ onClose, forallsubject = false, attemptedDetails,
                     <div className="h-[44px] flex flex-col justify-end mb-2 ">
                         <span className="text-[#1D2939] text-lg font-semibold">Summary</span>
                     </div>
-                    <div className="h-auto mb-8 p-4 rounded-xl bg-[#FFFFFF] border border-[#EAECF0] text-[#667085] font-normal text-sm flex">
-                        Great! You did not miss any concept.
+                    <div className="h-auto mb-8 p-4 rounded-xl bg-[#FFFFFF] border border-[#EAECF0] text-[#667085] font-normal text-sm whitespace-pre-line">
+                    {generateTestSummary(currentAttempt)}
                     </div>
                 </div>
             </div>

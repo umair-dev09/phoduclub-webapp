@@ -164,7 +164,52 @@ function TestAnalytics() {
     // ----------------------------------------------------------------------------------------
     const [sectionAttempts, setSectionAttempts] = useState<{ [key: string]: { attemptedDetails: AttemptedDetails[] } }>({});
     const [detailAttempts, setDetailAttempts] = useState<AttemptedDetails[]>([]);
+    const [sectionAttemptsL, setSectionAttemptsL] = useState<{ [key: string]: { attemptedDetails: AttemptedDetails | null } }>({});
+    const fetchSectionAttemptDataL = async (sectionId: string, fullPath: string) => {
+        try {
+            const userId = auth.currentUser?.uid;
+            if (!userId) return null;
 
+            // Query all attempts for this user
+            const attemptsRef = collection(db, `${fullPath}/sections/${sectionId}/attempts`);
+            const userAttemptsQuery = query(attemptsRef);
+            const attemptsSnapshot = await getDocs(userAttemptsQuery);
+
+            // Filter attempts for current user and count them
+            const userAttempts = attemptsSnapshot.docs.filter(doc => {
+                const data = doc.data();
+                return data && data.userId === userId;
+            });
+            const attemptCount = userAttempts.length;
+
+            // Update attempts count
+            setAttemptsCount(prev => ({
+                ...prev,
+                [sectionId]: attemptCount
+            }));
+
+            if (attemptCount === 0) return null;
+
+            // Find the attempt with highest attemptNumber
+            const latestAttempt = userAttempts.reduce((latest, current) => {
+                const currentData = current.data();
+                const latestData = latest?.data();
+                const currentAttemptNum = currentData?.attemptNumber || 0;
+                const latestAttemptNum = latestData?.attemptNumber || 0;
+                return currentAttemptNum > latestAttemptNum ? current : latest;
+            }, userAttempts[0]);
+
+            if (!latestAttempt) return null;
+
+            const attemptData = latestAttempt.data();
+            if (!attemptData) return null;
+
+            return { attemptedDetails: attemptData };
+        } catch (error) {
+            console.error('Error fetching attempt data:', error);
+            return null;
+        }
+    };
     const [attemptsCount, setAttemptsCount] = useState<{ [key: string]: number }>({});
 
     const fetchSectionAttemptData = async (sectionId: string, fullPath: string, isUmbrellaTest: boolean) => {
@@ -244,6 +289,19 @@ function TestAnalytics() {
 
                         // Fetch attempt data only if necessary
                         let attemptData: { attemptedDetails: AttemptedDetails[] } = { attemptedDetails: [] };
+                        let attemptDataL: { attemptedDetails: AttemptedDetails | null } = { attemptedDetails: null };
+
+                        if (sectionData.hasQuestions || sectionData.isUmbrellaTest) {
+                            const fetchedData = await fetchSectionAttemptDataL(sectionId, path) as { attemptedDetails: AttemptedDetails };
+                            if (fetchedData) {
+                                attemptDataL = fetchedData;
+                            }
+
+                            setSectionAttemptsL((prev) => ({
+                                ...prev,
+                                [sectionId]: attemptDataL,
+                            }));
+                        }
 
                         if (sectionData.hasQuestions || sectionData.isUmbrellaTest) {
                             const fetchedData = await fetchSectionAttemptData(sectionId, path, sectionData.isUmbrellaTest) as { attemptedDetails: AttemptedDetails[] };
@@ -578,52 +636,33 @@ function TestAnalytics() {
                                                         <div className="flex items-center justify-center h-auto">
                                                             <div className="flex flex-row mr-5 gap-1.5 text-[0.813rem]">
                                                                 <p className="font-semibold text-[#1D2939]">
-                                                                    {(() => {
-                                                                        const attempts = sectionAttempts[section.id]?.attemptedDetails || [];
-                                                                        const latestAttempt = attempts.reduce((max, attempt) => attempt.attemptCount > max.attemptCount ? attempt : max, attempts[0] || {});
-                                                                        return latestAttempt.attemptedQuestions || "0/0";
-                                                                    })()}
+                                                                {sectionAttemptsL[section.id]?.attemptedDetails?.attemptedQuestions || "0/0"}
+
                                                                 </p>
                                                                 <p className="text-[#667085]">Attempted</p>
                                                             </div>
                                                             <div className="w-[1px] bg-lightGrey mr-4 h-10"></div>
                                                             <div className="flex flex-row mr-5 gap-1.5 text-[0.813rem]">
                                                                 <p className="font-semibold text-[#1D2939]">
-                                                                    {(() => {
-                                                                        const attempts = sectionAttempts[section.id]?.attemptedDetails || [];
-                                                                        const latestAttempt = attempts.reduce((max, attempt) => attempt.attemptCount > max.attemptCount ? attempt : max, attempts[0] || {});
-                                                                        return latestAttempt.answeredCorrect || "0/0";
-                                                                    })()}
+                                                                {sectionAttemptsL[section.id]?.attemptedDetails?.answeredCorrect || "0/0"}
                                                                 </p>
                                                                 <p className="text-[#667085]">Correct</p>
                                                             </div>
                                                             <div className="w-[1px] bg-lightGrey mr-4 h-10"></div>
                                                             <div className="flex flex-row mr-5 gap-1.5 text-[0.813rem]">
                                                                 <p className="font-semibold text-[#1D2939]">
-                                                                    {(() => {
-                                                                        const attempts = sectionAttempts[section.id]?.attemptedDetails || [];
-                                                                        const latestAttempt = attempts.reduce((max, attempt) => attempt.attemptCount > max.attemptCount ? attempt : max, attempts[0] || {});
-                                                                        return latestAttempt.answeredIncorrect || "0/0";
-                                                                    })()}
+                                                                {sectionAttemptsL[section.id]?.attemptedDetails?.answeredIncorrect || "0/0"}
                                                                 </p>
                                                                 <p className="text-[#667085]">Incorrect</p>
                                                             </div>
                                                             <div className="w-[1px] bg-lightGrey mr-4 h-10"></div>
                                                             <div className="flex flex-row mr-5 gap-1.5 text-[0.813rem]">
-                                                                <p className="font-semibold text-[#1D2939]"> {(() => {
-                                                                    const attempts = sectionAttempts[section.id]?.attemptedDetails || [];
-                                                                    const latestAttempt = attempts.reduce((max, attempt) => attempt.attemptCount > max.attemptCount ? attempt : max, attempts[0] || {});
-                                                                    return latestAttempt.accuracy || "0/0";
-                                                                })()}</p>
+                                                                <p className="font-semibold text-[#1D2939]">{sectionAttemptsL[section.id]?.attemptedDetails?.accuracy || "0%"}</p>
                                                                 <p className="text-[#667085]">Accuracy</p>
                                                             </div>
                                                             <div className="w-[1px] bg-lightGrey mr-4 h-10"></div>
                                                             <div className="flex flex-row mr-5 gap-1.5 text-[0.813rem]">
-                                                                <p className="font-semibold text-[#1D2939]"> {(() => {
-                                                                    const attempts = sectionAttempts[section.id]?.attemptedDetails || [];
-                                                                    const latestAttempt = attempts.reduce((max, attempt) => attempt.attemptCount > max.attemptCount ? attempt : max, attempts[0] || {});
-                                                                    return latestAttempt.score || "0/0";
-                                                                })()}</p>
+                                                                <p className="font-semibold text-[#1D2939]">{sectionAttemptsL[section.id]?.attemptedDetails?.score || "0"}</p>
                                                                 <p className="text-[#667085]">Score</p>
                                                             </div>
                                                             {sectionAttempts[section.id]?.attemptedDetails && sectionAttempts[section.id]?.attemptedDetails.some(attempt => attempt.userId === currentUserId) ? (

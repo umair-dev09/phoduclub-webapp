@@ -1020,31 +1020,29 @@ function Test() {
                             <div className=" h-auto mr-[24px] ml-[24px] mt-[13px] ">
                                 <span className="text-sm text-[#667085] font-normal">{description}</span>
                             </div>
-                            {isUmbrellaTest ? (
-                                <div className="mt-[33px] flex-row flex justify-start">
-                                    <div className="gap-1 flex-col flex items-start w-full border-r border-lightGrey ml-7 justify-center text-center">
-                                        <span className="font-normal text-sm text-[#667085] ">No. of Tests</span>
-                                        <span className="text-[#1D2939] text-lg font-semibold text-center">{noOfTests}</span>
-                                    </div>
-
-                                </div>
-                            ) : (
+                             
                                 <div className="mt-[33px] flex-row flex">
                                     <div className="gap-1 flex-col flex items-center w-full border-r border-lightGrey">
                                         <span className="font-normal text-sm text-[#667085]">Time Duration</span>
                                         <span className="text-[#1D2939] text-lg font-semibold">{formatTimeLeft(time)}</span>
                                     </div>
-                                    <div className="gap-1 flex-col flex items-center w-full border-r border-lightGrey">
+                                    {isUmbrellaTest ? (
+                                     <div className="gap-1 flex-col flex items-center w-full border-r border-lightGrey">
+                                     <span className="font-normal text-sm text-[#667085]">No. of Tests</span>
+                                     <span className="text-[#1D2939] text-lg font-semibold">{noOfTests}</span>
+                                 </div>
+                                    ) : (
+                                        <div className="gap-1 flex-col flex items-center w-full border-r border-lightGrey">
                                         <span className="font-normal text-sm text-[#667085]">No. of Questions</span>
                                         <span className="text-[#1D2939] text-lg font-semibold">{noOfQuestions}</span>
                                     </div>
+                                    )}
+                                   
                                     <div className="gap-1 flex-col flex items-center w-full">
                                         <span className="font-normal text-sm text-[#667085]">Marks Per Question</span>
                                         <span className="text-[#1D2939] text-lg font-semibold">{marksPerQ}</span>
                                     </div>
                                 </div>
-                            )}
-
                         </div>
                         <div className="flex flex-row justify-end py-3 pr-6 gap-4  border-t border-lightGrey border-solid">
                             <button
