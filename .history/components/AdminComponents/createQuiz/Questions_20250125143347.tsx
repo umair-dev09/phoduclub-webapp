@@ -72,7 +72,7 @@ function Questions({ questionsList, setQuestionsList }: QuestionsProps) {
             }
         ]);
         setVisited([...visited, false]);
-        // setOpenIndex(null);
+        setOpenIndex(null);
     };
     // -----------------------------------------------------------------------------------------------------------
     // Handler for adding the Questions
@@ -283,18 +283,19 @@ function Questions({ questionsList, setQuestionsList }: QuestionsProps) {
             newVisited[index] = true;
             return newVisited;
         });
-
+        setOpenIndex(index);
     };
 
     return (
         <div className="pb-4 h-auto">
             {questionsList.map((question, index) => (
-                <div key={index} className={` ${visited[index] && isDataMissing(question) ? "border-1.5 border-[#F04438]" : " border border-[#EAECF0]"} rounded-md   mt-4 h-auto bg-[#FFFFFF] `}>
+                <div key={index} className="border-lightGrey rounded-md  mt-4 h-auto bg-[#FFFFFF] ">
 
                     <Collapsible
                         open={openIndex === index}
+                        className={`border  rounded-md ${visited[index] && isDataMissing(question) ? "border-1.5 border-[#F04438]" : "border-[#EAECF0]"}`}
                         trigger={
-                            <div className='h-auto bg-[#FFFFFF] flex flex-col p-5 gap-2 rounded-md'>
+                            <div className='h-auto bg-[#FFFFFF] flex flex-col p-5 gap-2 rounded-tl-md rounded-tr-md  border-t border-r border-l border-lightGrey'>
                                 <div className="h-auto flex flex-row justify-between gap-4 items-start">
                                     <div className="flex gap-2 ">
                                         <div className="h-6 min-w-[24px] rounded-[4px] mt-[2px] bg-[#EAECF0] flex justify-center ">
@@ -305,7 +306,7 @@ function Questions({ questionsList, setQuestionsList }: QuestionsProps) {
                                     <Popover placement="bottom-end" isOpen={!!openPopovers[index]}
                                         onOpenChange={() => closePopover(index)}>
                                         <PopoverTrigger>
-                                            <button className="w-[32px] h-[32px]  rounded-full flex items-center outline-none justify-center transition-all duration-300 ease-in-out hover:bg-[#F2F4F7]"
+                                            <button className="w-[32px] h-[32px]  rounded-full flex items-center justify-center transition-all duration-300 ease-in-out hover:bg-[#F2F4F7]"
                                                 onClick={() => togglePopover(index)}>
                                                 <button className="min-w-[20px] min-h-[20px] mt-[2px]"
                                                 >
@@ -350,7 +351,7 @@ function Questions({ questionsList, setQuestionsList }: QuestionsProps) {
                         }
                         onOpening={() => handleOpen(index)}
                     >
-                        <div className='h-auto bg-[#FFFFFF]   flex flex-col pb-5 px-5 gap-2 rounded-br-md rounded-bl-md'>
+                        <div className='h-auto bg-[#FFFFFF]  border-b border-r border-l border-lightGrey flex flex-col pb-5 px-5 gap-2 rounded-br-md rounded-bl-md'>
                             <div className="flex flex-col gap-2">
                                 <span className="font-semibold text-base text-[#1D2939]">Question</span>
                                 {/*  QUILL 1 for QUESTIONS*/}

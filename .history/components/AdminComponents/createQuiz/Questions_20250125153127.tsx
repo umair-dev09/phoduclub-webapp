@@ -72,7 +72,7 @@ function Questions({ questionsList, setQuestionsList }: QuestionsProps) {
             }
         ]);
         setVisited([...visited, false]);
-        // setOpenIndex(null);
+        setOpenIndex(null);
     };
     // -----------------------------------------------------------------------------------------------------------
     // Handler for adding the Questions
@@ -283,7 +283,7 @@ function Questions({ questionsList, setQuestionsList }: QuestionsProps) {
             newVisited[index] = true;
             return newVisited;
         });
-
+        setOpenIndex(index);
     };
 
     return (
@@ -348,7 +348,7 @@ function Questions({ questionsList, setQuestionsList }: QuestionsProps) {
                                 </div>
                             </div>
                         }
-                        onOpening={() => handleOpen(index)}
+
                     >
                         <div className='h-auto bg-[#FFFFFF]   flex flex-col pb-5 px-5 gap-2 rounded-br-md rounded-bl-md'>
                             <div className="flex flex-col gap-2">

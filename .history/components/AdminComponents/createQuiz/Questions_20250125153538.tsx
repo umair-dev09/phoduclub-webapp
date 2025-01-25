@@ -72,7 +72,7 @@ function Questions({ questionsList, setQuestionsList }: QuestionsProps) {
             }
         ]);
         setVisited([...visited, false]);
-        // setOpenIndex(null);
+        setOpenIndex(null);
     };
     // -----------------------------------------------------------------------------------------------------------
     // Handler for adding the Questions
@@ -283,13 +283,20 @@ function Questions({ questionsList, setQuestionsList }: QuestionsProps) {
             newVisited[index] = true;
             return newVisited;
         });
-
+        setOpenIndex(index);
     };
 
     return (
         <div className="pb-4 h-auto">
             {questionsList.map((question, index) => (
-                <div key={index} className={` ${visited[index] && isDataMissing(question) ? "border-1.5 border-[#F04438]" : " border border-[#EAECF0]"} rounded-md   mt-4 h-auto bg-[#FFFFFF] `}>
+                <div
+                    key={index}
+                    className={` 
+                      ${!visited[index] ? "border border-gray-400" : isDataMissing(question) ? "border-1.5 border-[#F04438]" : "border border-[#EAECF0]"} 
+                      rounded-md mt-4 h-auto bg-[#FFFFFF]
+                  `}
+                    onClick={() => handleOpen(index)}
+                >
 
                     <Collapsible
                         open={openIndex === index}
@@ -348,7 +355,7 @@ function Questions({ questionsList, setQuestionsList }: QuestionsProps) {
                                 </div>
                             </div>
                         }
-                        onOpening={() => handleOpen(index)}
+
                     >
                         <div className='h-auto bg-[#FFFFFF]   flex flex-col pb-5 px-5 gap-2 rounded-br-md rounded-bl-md'>
                             <div className="flex flex-col gap-2">

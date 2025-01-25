@@ -72,7 +72,7 @@ function Questions({ questionsList, setQuestionsList }: QuestionsProps) {
             }
         ]);
         setVisited([...visited, false]);
-        // setOpenIndex(null);
+        setOpenIndex(null);
     };
     // -----------------------------------------------------------------------------------------------------------
     // Handler for adding the Questions
@@ -253,7 +253,7 @@ function Questions({ questionsList, setQuestionsList }: QuestionsProps) {
             quill.format(format, !currentFormats[format]);
         }
     };
-
+    const [collapsed, setCollapsed] = useState<boolean[]>([]);
     const [openPopovers, setOpenPopovers] = React.useState<{ [key: number]: boolean }>({});
     const togglePopover = (index: number) => {
         setOpenPopovers((prev) => ({
@@ -283,14 +283,46 @@ function Questions({ questionsList, setQuestionsList }: QuestionsProps) {
             newVisited[index] = true;
             return newVisited;
         });
-
+        setOpenIndex(index);
+        setCollapsed((prevCollapsed) => {
+            const newCollapsed = [...prevCollapsed];
+            newCollapsed[index] = false; // Mark as expanded (not collapsed)
+            return newCollapsed;
+        });
     };
+
+    const handleCollapse = (index: number) => {
+        setCollapsed((prevCollapsed) => {
+            const newCollapsed = [...prevCollapsed];
+            newCollapsed[index] = true; // Mark as collapsed
+            return newCollapsed;
+        });
+    };
+
 
     return (
         <div className="pb-4 h-auto">
             {questionsList.map((question, index) => (
-                <div key={index} className={` ${visited[index] && isDataMissing(question) ? "border-1.5 border-[#F04438]" : " border border-[#EAECF0]"} rounded-md   mt-4 h-auto bg-[#FFFFFF] `}>
-
+                <div
+                    key={index}
+                    className={`
+                    ${collapsed[index] && !visited[index]
+                            ? "border border-gray-400" // Grey for first-time collapse
+                            : !collapsed[index] && !visited[index]
+                                ? "border border-gray-400" // Grey when expanded for the first time
+                                : visited[index] && isDataMissing(question)
+                                    ? "border-1.5 border-[#F04438]" // Red if data is missing after visiting
+                                    : "border border-[#EAECF0]"} // Default border
+                    rounded-md mt-4 h-auto bg-[#FFFFFF]
+                `}
+                    onClick={() => {
+                        if (collapsed[index]) {
+                            handleOpen(index); // Expand if collapsed
+                        } else {
+                            handleCollapse(index); // Collapse if expanded
+                        }
+                    }}
+                >
                     <Collapsible
                         open={openIndex === index}
                         trigger={

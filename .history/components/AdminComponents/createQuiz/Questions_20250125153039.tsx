@@ -72,7 +72,7 @@ function Questions({ questionsList, setQuestionsList }: QuestionsProps) {
             }
         ]);
         setVisited([...visited, false]);
-        // setOpenIndex(null);
+        setOpenIndex(null);
     };
     // -----------------------------------------------------------------------------------------------------------
     // Handler for adding the Questions
@@ -283,7 +283,7 @@ function Questions({ questionsList, setQuestionsList }: QuestionsProps) {
             newVisited[index] = true;
             return newVisited;
         });
-
+        setOpenIndex(index);
     };
 
     return (
