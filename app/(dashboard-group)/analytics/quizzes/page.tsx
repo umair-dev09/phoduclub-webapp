@@ -17,6 +17,7 @@ interface AttemptData {
     timeTaken: number;
     totalQuestions: number;
     totalTime: number;
+    displayUserId?: string;
 }
 
 function formatTime(seconds: number): string {
@@ -28,6 +29,7 @@ function formatTime(seconds: number): string {
         return `${hrs}hrs`;
     }
 }
+
 
 function QuizAnalytics() {
   
@@ -44,7 +46,7 @@ function QuizAnalytics() {
           totalTime: 0
       });
       const [isUserPremium, setIsUserPremium] = useState(false);
-      const [currentUserDisplayId, setCurrentUSerDisplayId] = useState('');
+      const [currentUserDisplayId, setCurrentUserDisplayId] = useState('');
 
       const [premiumAttempts, setPremiumAttempts] = useState<any[]>([]);
       const [selectedAttemptFilter, setSelectedAttemptFilter] = useState<string>('All');
@@ -60,7 +62,7 @@ function QuizAnalytics() {
             if (userDoc.exists()) {
                 const userData = userDoc.data();
                 setIsUserPremium(userData.isPremium || false);
-                setCurrentUSerDisplayId(userData.userId || '');
+                setCurrentUserDisplayId(userData.userId || '');
             }
           } catch (error) {
             console.error("Error fetching user data:", error);
@@ -138,7 +140,8 @@ function QuizAnalytics() {
                       attemptedQuestions: statsData.attemptedQuestions || 0,
                       timeTaken: statsData.timeTaken || 0,
                       totalQuestions: statsData.totalQuestions || 0,
-                      totalTime: statsData.totalTime || 0
+                      totalTime: statsData.totalTime || 0,
+                      displayUserId: statsData.displayUserId || '',
                   });
               }
   
@@ -189,6 +192,7 @@ function QuizAnalytics() {
                           name: userData?.name || 'Current User',
                           profilePic: userData?.profilePic || '/images/DP_Lion.svg',
                           score: 0,
+                          isPremium: userData?.isPremium || false,
                           rank: sortedLeaderboard.length + 1
                       });
                   }
@@ -360,7 +364,111 @@ function QuizAnalytics() {
                         <td className="w-[12%] text-center"><p>Accuracy</p></td>
                         <td className="w-[12%] text-center"><p>Time Spent</p></td>
                     </tr>
-                    <Leaderboard />               
+                {/*Top 10 Leaderboard */}
+<div>
+            <tr className="flex flex-1 py-3 text-[#1D2939] border-t border-lightGrey hover:bg-[#F2F4F7]">
+                <td className="flex items-center justify-center w-[8%]">
+                    <Image src='/icons/actualCrown.svg' alt="Crown" width={25.07} height={21} />
+                </td>
+                <td className="flex flex-row w-[20%] gap-2">
+                    <div className="flex items-center">
+                        <div className="relative">
+                            <Image className="min-w-10 min-h-10 rounded-full" src={leaderboard[0]?.profilePic || '/images/DP_Lion.svg'}  alt="DP" width={40} height={40} />
+                            {leaderboard[0]?.isPremium && (
+                            <Image className="absolute right-0 bottom-0" src='/icons/winnerBatch.svg' alt="Batch" width={18} height={18} />
+                            )}
+                        </div>
+                    </div>
+                    <div className="flex items-start justify-start flex-col">
+                        <div className="font-semibold">{leaderboard[0]?.name || 'User'} </div>
+                        <div className="flex justify-start items-start text-[13px] text-[#667085]">{leaderboard[0]?.displayUserId || ''} </div>
+                    </div>
+                </td>
+                <td className="flex items-center justify-center w-[12%]"><p>{leaderboard[0]?.score || 0} </p></td>
+                <td className="flex items-center justify-center w-[12%]"><p>{leaderboard[0]?.attemptedQuestions || 0}/{leaderboard[0]?.totalQuestions || 0}</p></td>
+                <td className="flex items-center justify-center w-[12%]"><p>{leaderboard[0]?.answeredCorrect || 0}</p></td>
+                <td className="flex items-center justify-center w-[12%]"><p>{leaderboard[0]?.answeredIncorrect || 0}</p></td>
+                <td className="flex items-center justify-center w-[12%]"><p>99%</p></td>
+                <td className="flex items-center justify-center w-[12%]"><p className="w-20 text-end">{formatTime(leaderboard[0]?.timeTaken) || 0}</p></td>
+            </tr>
+            <tr className="flex flex-1 py-3 text-[#1D2939] border-t border-lightGrey hover:bg-[#F2F4F7]">
+                <td className="flex items-center justify-center w-[8%]">
+                    <Image src='/icons/rank-2.svg' alt="2nd rank" width={25.07} height={21} />
+                </td>
+                <td className="flex flex-row w-[20%] gap-2">
+                    <div className="flex items-center">
+                        <div className="relative">
+                        <Image className="min-w-10 min-h-10 rounded-full" src={leaderboard[1]?.profilePic || '/images/DP_Lion.svg'}  alt="DP" width={40} height={40} />
+                            {leaderboard[1]?.isPremium && (
+                            <Image className="absolute right-0 bottom-0" src='/icons/winnerBatch.svg' alt="Batch" width={18} height={18} />
+                            )}
+                        </div>
+                    </div>
+                    <div className="flex items-start justify-start flex-col">
+                        <div className="font-semibold">{leaderboard[1]?.name || 'User'}</div>
+                        <div className="flex justify-start items-start text-[13px] text-[#667085]">{leaderboard[1]?.displayUserId || ''}</div>
+                    </div>
+                </td>
+                <td className="flex items-center justify-center w-[12%]"><p>{leaderboard[1]?.score || 0}</p></td>
+                <td className="flex items-center justify-center w-[12%]"><p>{leaderboard[1]?.attemptedQuestions || 0}/{leaderboard[1]?.totalQuestions || 0}</p></td>
+                <td className="flex items-center justify-center w-[12%]"><p>{leaderboard[1]?.answeredCorrect || 0}</p></td>
+                <td className="flex items-center justify-center w-[12%]"><p>{leaderboard[1]?.answeredIncorrect || 0}</p></td>
+                <td className="flex items-center justify-center w-[12%]"><p>99%</p></td>
+                <td className="flex items-center justify-center w-[12%]"><p className="w-20 text-end">{formatTime(leaderboard[1]?.timeTaken) || 0}</p></td>
+            </tr>
+            <tr className="flex flex-1 py-3 text-[#1D2939] border-t border-lightGrey hover:bg-[#F2F4F7]">
+                <td className="flex items-center justify-center w-[8%]">
+                    <Image src='/icons/rank-3.svg' alt="3rd rank" width={25.07} height={21} />
+                </td>
+                <td className="flex flex-row w-[20%] gap-2">
+                    <div className="flex items-center">
+                        <div className="relative">
+                        <Image className="min-w-10 min-h-10 rounded-full" src={leaderboard[2]?.profilePic || '/images/DP_Lion.svg'}  alt="DP" width={40} height={40} />
+                            {leaderboard[2]?.isPremium && (
+                            <Image className="absolute right-0 bottom-0" src='/icons/winnerBatch.svg' alt="Batch" width={18} height={18} />
+                            )}
+                        </div>
+                    </div>
+                    <div className="flex items-start justify-start flex-col">
+                        <div className="font-semibold">{leaderboard[2]?.name || 'User'}2</div>
+                        <div className="flex justify-start items-start text-[13px] text-[#667085]">{leaderboard[2]?.displayUserId || ''}</div>
+                    </div>
+                </td>
+                <td className="flex items-center justify-center w-[12%]"><p>{leaderboard[2]?.score || 0}</p></td>
+                <td className="flex items-center justify-center w-[12%]"><p>{leaderboard[2]?.attemptedQuestions || 0}/{leaderboard[2]?.totalQuestions || 0}</p></td>
+                <td className="flex items-center justify-center w-[12%]"><p>{leaderboard[2]?.answeredCorrect || 0}</p></td>
+                <td className="flex items-center justify-center w-[12%]"><p>{leaderboard[2]?.answeredIncorrect || 0}</p></td>
+                <td className="flex items-center justify-center w-[12%]"><p>99%</p></td>
+                <td className="flex items-center justify-center w-[12%]"><p className="w-20 text-end">{formatTime(leaderboard[2]?.timeTaken) || 0}</p></td>
+            </tr>
+            {leaderboard.slice(3, 10).map((user, index) => (
+            <tr key={user.userId} className="flex flex-1 py-3 text-[#1D2939] border-t border-lightGrey hover:bg-[#F2F4F7]">
+                <td className="flex items-center justify-center w-[8%]">
+                    <div className="bg-gray-400 px-[8px] py-[2px] rounded-[0.5rem] inline-block"> <span className="text-white text-[12px] font-semibold">{index + 4}</span></div>
+                </td>
+                <td className="flex flex-row w-[20%] gap-2">
+                    <div className="flex items-center">
+                        <div className="relative">
+                        <Image className="min-w-10 min-h-10 rounded-full" src={user.profilePic || '/images/DP_Lion.svg'}  alt="DP" width={40} height={40} />
+                            {user.isPremium && (
+                            <Image className="absolute right-0 bottom-0" src='/icons/winnerBatch.svg' alt="Batch" width={18} height={18} />
+                            )}
+                        </div>
+                    </div>
+                    <div className="flex items-start justify-start flex-col">
+                        <div className="font-semibold">{user.name || 'User'}</div>
+                        <div className="flex justify-start items-start text-[13px] text-[#667085]">{user.displayUserId || ''}</div>
+                    </div>
+                </td>
+                <td className="flex items-center justify-center w-[12%]"><p>{user.score || 0}</p></td>
+                <td className="flex items-center justify-center w-[12%]"><p>{user.attemptedQuestions || 0}/{user.totalQuestions || 0}</p></td>
+                <td className="flex items-center justify-center w-[12%]"><p>{user.answeredCorrect || 0}</p></td>
+                <td className="flex items-center justify-center w-[12%]"><p>{user.answeredIncorrect || 0}</p></td>
+                <td className="flex items-center justify-center w-[12%]"><p>99%</p></td>
+                <td className="flex items-center justify-center w-[12%]"><p className="w-20 text-end">{formatTime(user.timeTaken) || 0}</p></td>
+            </tr>
+            ))}
+        </div>
                 </table>
                 {currentUserRank && (
                 <div className="pb-4">

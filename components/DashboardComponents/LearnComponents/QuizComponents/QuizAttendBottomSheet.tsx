@@ -11,7 +11,7 @@ import "react-modern-drawer/dist/index.css"
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { auth, db } from "@/firebase";
-import { arrayUnion, collection, doc, increment, setDoc } from "firebase/firestore";
+import { arrayUnion, collection, doc, getDoc, increment, setDoc } from "firebase/firestore";
 import QuizTimer from "@/components/QuizTImer";
 import { set } from "date-fns";
 import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, useDisclosure } from "@nextui-org/modal";
@@ -63,6 +63,7 @@ function QuizAttendBottomSheet({
     const [showReviewSheet, setShowReviewSheet] = useState(false);
     const [questionStates, setQuestionStates] = useState<QuestionState[]>([]);
     const userId = auth.currentUser?.uid;
+    const [displayUserId, setDisplayUserId] = useState('');
     const { isOpen: isOpenReviewD, onOpen: onOpenReviewD, onClose: onCloseReviewD } = useDisclosure();
     const [remainingTime, setRemainingTime] = useState<number>(0);
     const [formattedTime, setFormattedTime] = useState<string>("00:00:00");
@@ -100,6 +101,23 @@ function QuizAttendBottomSheet({
     
         return formattedTime;
     }
+
+    useEffect(() => {
+        const fetchUserId = async () => {
+            if (auth.currentUser) {
+                const userDocRef = doc(db, 'users', auth.currentUser.uid);
+                const userDoc = await getDoc(userDocRef);
+                if (userDoc.exists()) {
+                    const userData = userDoc.data();
+                    setDisplayUserId(userData.userId);
+                } else {
+                    console.error("No such document!");
+                }
+            }
+        };
+
+        fetchUserId();
+    }, []);
 
     // Initialize timer when bottom sheet opens
     useEffect(() => {
@@ -230,6 +248,7 @@ function QuizAttendBottomSheet({
                         totalTime: increment(quizTime),
                         lastUpdatedTime: new Date(),
                         userId: userId,
+                        displayUserId: displayUserId,
                     }, { merge: true });
 
                 } catch (error) {
@@ -260,7 +279,8 @@ function QuizAttendBottomSheet({
                         timeTaken: increment(quizTime - remainingTime),
                         totalTime: increment(quizTime),
                         lastUpdatedTime: new Date(),
-                        userId: userId
+                        userId: userId,
+                        displayUserId: displayUserId,
                     }, { merge: true });
 
                 } catch (error) {
