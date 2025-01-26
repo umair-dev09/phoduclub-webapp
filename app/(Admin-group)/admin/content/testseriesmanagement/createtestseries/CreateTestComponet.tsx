@@ -148,17 +148,122 @@ const CreateTestSeries = () => {
     const currentDate = new Date();
     const formattedDate = currentDate.toISOString().slice(0, 19); // Converts to the format "YYYY-MM-DDTHH:MM:SS"
     const handleNextClick = async () => {
+       
+        if(testId && (isInCourse ? (selectedCourses.length >= 1) : (price.trim() !== '' && discountPrice.trim() !== '' && rating.trim() !== '' && noOfRating.trim() !== '')) && (
+            name !== originalName || description !== originalDescription || image !== originalImage || price !== originalPrice || discountPrice !== originalDiscountPrice || rating !== originalRating || noOfRating !== originalNoOfRating || isInCourse !== originalIsInCourse || selectedCourses !== originalSelectedCourses
+        )){
+            try {
+                const testRef = doc(db, "testseries", testId);
+                await updateDoc(testRef, {
+                    testName: name,
+                    testDescription: description,
+                    testImage: image,
+                    price: !isInCourse ? price : null,
+                    discountPrice: !isInCourse ? discountPrice : null,
+                    rating: !isInCourse ? rating : null,
+                    noOfRating: !isInCourse ? noOfRating : null,
+                    isInCourse: isInCourse,
+                    selectedCourses: isInCourse ? selectedCourses : [],
+                });
+
+                const batch = writeBatch(db);
+
+                if (isInCourse) {
+                    // Get arrays of course IDs
+                    const newCourseIds = selectedCourses.map(c => c.value);
+                    const oldCourseIds = originalSelectedCourses.map(c => c.value);
+
+                    // Add testId to newly selected courses
+                    selectedCourses.forEach(course => {
+                        if (!oldCourseIds.includes(course.value)) {
+                            const courseRef = doc(db, 'course', course.value);
+                            batch.update(courseRef, {
+                                bundleTestIds: arrayUnion(testId),
+                                hasTests: true,
+                            });
+                        }
+                    });
+
+                    // Remove testId from unselected courses
+                    originalSelectedCourses.forEach(course => {
+                        if (!newCourseIds.includes(course.value)) {
+                            const courseRef = doc(db, 'course', course.value);
+                            batch.update(courseRef, {
+                                bundleTestIds: arrayRemove(testId),
+                                hasTests: false,
+                            });
+                        }
+                    });
+                } else {
+                    // Remove testId from all previously selected courses
+                    originalSelectedCourses.forEach(course => {
+                        const courseRef = doc(db, 'course', course.value);
+                        batch.update(courseRef, {
+                            bundleTestIds: arrayRemove(testId),
+                            hasTests: false,
+                        });
+                    });
+                }
+
+                await batch.commit();
+
+                setOriginalName(name);
+                setOriginalDescription(description);
+                setOriginalImage(image);
+                setOriginalPrice(price);
+                setOriginalDiscountPrice(discountPrice);
+                setOriginalRating(rating);
+                setOriginalNoOfRating(noOfRating);
+                setOriginalIsInCourse(isInCourse);
+                setOriginalSelectedCourses(selectedCourses);
+                toast.success('Changes saved successfully!');
+            } catch (error) {
+                console.error("Error saving changes:", error);
+                toast.error('Failed to save changes');
+            }
+        }
 
         if (currentStep === Step.Perference) {
             if (testId) {
+                if(status === 'saved' || status === null){
+                    try {
+                        const testRef = doc(db, "testseries", testId);
+    
+                        // Prepare updated quiz data
+                        const testData = {
+                            startDate: liveQuizNow ? formattedDate : startDate,
+                            endDate,
+                            status: liveQuizNow ? "live" : "scheduled", // You can change this as needed
+                            forExams: selectedExams.map(exam => exam.value),
+                            forYears: selectedYears.map(year => year.value),
+
+                        };
+    
+                        // Update the existing quiz data
+                        await updateDoc(testRef, testData);
+                        setStartDate('');
+                        setEndDate('');
+                        setLiveQuizNow(false);
+                        setSelectedExams([]);
+                        setSelectedYears([]);
+                        toast.success('Test Series updated succesfully!');
+                        setTimeout(() => {
+                            router.back();
+                        }, 500);
+                    }
+                    catch (error) {
+                        console.log(error);
+                    }
+                }
+                else{ 
                 try {
                     const testRef = doc(db, "testseries", testId);
 
                     // Prepare updated quiz data
                     const testData = {
-                        startDate: liveQuizNow ? formattedDate : startDate,
-                        endDate,
-                        status: liveQuizNow ? "live" : "scheduled", // You can change this as needed
+                        // startDate: liveQuizNow ? formattedDate : startDate,
+                        // endDate,
+                        // status: liveQuizNow ? "live" : "scheduled", // You can change this as needed
                         forExams: selectedExams.map(exam => exam.value),
                         forYears: selectedYears.map(year => year.value),
                     };
@@ -178,6 +283,7 @@ const CreateTestSeries = () => {
                 catch (error) {
                     console.log(error);
                 }
+            }  
             }
         }
         else if (currentStep < Step.Sections) {
@@ -278,7 +384,7 @@ const CreateTestSeries = () => {
             case Step.Review:
                 return <Review testId={testId || ''} name={name} description={description} testImage={image} price={price} discountPrice={discountPrice} rating={rating} noOfRating={noOfRating} />;
             case Step.Perference:
-                return <Perference selectedExams={selectedExams} setSelectedExams={setSelectedExams} selectedYears={selectedYears} setSelectedYears={setSelectedYears} startDate={startDate} endDate={endDate} setEndDate={setEndDate} setLiveQuizNow={setLiveQuizNow} liveQuizNow={liveQuizNow} setStartDate={setStartDate} />;
+                return <Perference selectedExams={selectedExams} setSelectedExams={setSelectedExams} selectedYears={selectedYears} setSelectedYears={setSelectedYears} startDate={startDate} endDate={endDate} setEndDate={setEndDate} setLiveQuizNow={setLiveQuizNow} liveQuizNow={liveQuizNow} setStartDate={setStartDate} status={status || null}/>;
             default:
                 return <TestSeriesInfo selectedCourses={selectedCourses} setSelectedCourses={setSelectedCourses} coursesList={coursesList} isInCourse={isInCourse} setIsInCourse={setIsInCourse} name={name} setName={setName} description={description} setDescription={setDescription} imageUrl={image} setImageUrl={setImage} price={price} setPrice={setPrice} discountPrice={discountPrice} setDiscountPrice={setDiscountPrice} rating={rating} setRating={setRating} noOfRating={noOfRating} setNoOfRating={setNoOfRating} />;
         }
@@ -440,7 +546,7 @@ const CreateTestSeries = () => {
                                 disabled={isNextButtonDisabled}
                             >
                                 <span className="font-semibold text-sm text-[#FFFFFF]">
-                                    {(currentStep === Step.Perference && status !== 'saved') ? 'Save' : currentStep === Step.Perference ? "Publish" : "Next"}
+                                    {(currentStep === Step.Perference && status !== 'saved' && status !== null) ? 'Save' : currentStep === Step.Perference ? "Publish" : "Next"}
                                 </span>
                             </button>
                             {/* )} */}

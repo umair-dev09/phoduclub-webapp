@@ -9,6 +9,7 @@ import Select, { SingleValue } from 'react-select';
 const exams: string[] = ["JEE", "BITSAT", "VITEEE", "WBJEE"];
 
 type PreferenceProps = {
+    status: string | null;
     startDate: string;
     setStartDate: (startDate: string) => void;
     endDate: string;
@@ -60,7 +61,7 @@ type Option = {
     label: string;
 };
 
-function Preference({ liveQuizNow, setLiveQuizNow, startDate, setStartDate, endDate, setEndDate, selectedExams, setSelectedExams, selectedYears, setSelectedYears }: PreferenceProps) {
+function Preference({ liveQuizNow, setLiveQuizNow, startDate, setStartDate, endDate, status, setEndDate, selectedExams, setSelectedExams, selectedYears, setSelectedYears }: PreferenceProps) {
 
     const years: Option[] = [
         { value: "2024", label: "2024" },
@@ -79,6 +80,7 @@ function Preference({ liveQuizNow, setLiveQuizNow, startDate, setStartDate, endD
     return (
         <div className='flex flex-col ml-1 pt-4 gap-4'>
             {/* Schedule Test Series Section */}
+            { (status === 'saved' || status === null) && (
             <div className='flex flex-col w-full h-auto p-6 bg-white border border-lightGrey rounded-xl gap-4'>
                 <div className="flex flex-row justify-between w-full items-center">
                     <span className='font-semibold text-lg text-[#1D2939]'>Schedule Test Series</span>
@@ -124,7 +126,7 @@ function Preference({ liveQuizNow, setLiveQuizNow, startDate, setStartDate, endD
                     </div>
                 </div>
             </div>
-
+            )}
             {/* Test Series available for Section */}
             <div className="flex flex-col w-full p-6 bg-white border border-lightGrey rounded-xl">
                 <h3>Test Series available for</h3>

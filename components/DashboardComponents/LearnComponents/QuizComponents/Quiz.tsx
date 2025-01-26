@@ -19,9 +19,11 @@ interface Quiz {
     quizPublishedDate: string;
     startDate: string;
     endDate: string;
-    quizTime: string;
-    marksPerQuestion: string;
-    nMarksPerQuestion: string;
+    quizTime: number;
+    isPremiumQuiz: boolean;
+    product: { productId: string; productName: string ; productType: string };
+    marksPerQuestion: number;
+    nMarksPerQuestion: number;
     questionsList: Question[];
 }
 interface Options {
@@ -36,27 +38,76 @@ interface Question {
     correctAnswer: string | null;
     answerExplanation: string;
     questionId: string;
+    status: string;
+    isChecked: boolean;
+    isActive: boolean;
 }
 
-const fetchQuizzes = (callback: (quizzes: Quiz[]) => void) => {
+const fetchQuizzes = (callback: (quizzes: Quiz[] | ((prevQuizzes: Quiz[]) => Quiz[])) => void) => {
     const quizzesCollection = collection(db, 'quiz');
 
+    // Create a map to store attempt listeners
+    const attemptListeners = new Map();
+
     const unsubscribe = onSnapshot(quizzesCollection, async (quizzesSnapshot) => {
+        // Cleanup previous attempt listeners
+        attemptListeners.forEach((listener) => listener());
+        attemptListeners.clear();
+
         const quizzesData = await Promise.all(
             quizzesSnapshot.docs.map(async (quizDoc) => {
                 const quizData = quizDoc.data();
                 const quizId = quizDoc.id;
 
-                // Filter quizzes by status
                 if (quizData.status !== 'live' && quizData.status !== 'scheduled') {
                     return null;
                 }
 
-                // Check if the current user has attempted the quiz
-                const studentsAttemptedCollection = collection(db, 'quiz', quizId, 'StudentsAttempted');
-                const studentsAttemptedSnapshot = await getDocs(studentsAttemptedCollection);
-                const currentUserId = auth.currentUser?.uid; // Replace with the actual current user ID
-                const hasAttempted = studentsAttemptedSnapshot.docs.some(doc => doc.id === currentUserId);
+                const currentUserId = auth.currentUser?.uid;
+
+                if (quizData.isPremiumQuiz) {
+                    const userDoc = await getDocs(collection(db, 'users'));
+                    const currentUserDoc = userDoc.docs.find(doc => doc.id === currentUserId);
+                    const userData = currentUserDoc?.data();
+                    
+                    if (!userData?.isPremium) {
+                        return null;
+                    }
+                    else{
+                    // Check for course or testseries purchase
+                    if (quizData.product) {
+                        const { productId, productType } = quizData.product;
+                        const collectionName = productType === 'course' ? 'course' : 'testseries';
+                        
+                        // Check if student has purchased the product
+                        const studentPurchaseRef = collection(db, collectionName, productId, 'StudentsPurchased');
+                        const studentPurchaseDoc = await getDocs(studentPurchaseRef);
+                        const hasPurchased = studentPurchaseDoc.docs.some(doc => doc.id === currentUserId);
+
+                        if (!hasPurchased) {
+                            return null;
+                        }
+                    }
+                    }
+
+                  
+                }
+
+                // Set up real-time listener for attempts
+                const studentsAttemptedCollection = collection(db, 'quiz', quizId, 'attempts');
+                const attemptListener = onSnapshot(studentsAttemptedCollection, (attemptsSnapshot) => {
+                    const hasAttempted = attemptsSnapshot.docs.some(doc => doc.id === currentUserId);
+                    if (hasAttempted) {
+                        // Update the quizzes state by removing this quiz
+                        callback((prevQuizzes: Quiz[]) => prevQuizzes.filter(q => q.quizId !== quizId));
+                    }
+                });
+
+                // Store the listener for cleanup
+                attemptListeners.set(quizId, attemptListener);
+
+                const hasAttempted = (await getDocs(studentsAttemptedCollection))
+                    .docs.some(doc => doc.id === currentUserId);
 
                 if (hasAttempted) {
                     return null;
@@ -64,28 +115,25 @@ const fetchQuizzes = (callback: (quizzes: Quiz[]) => void) => {
 
                 const questionsCollection = collection(db, 'quiz', quizId, 'Questions');
                 const questionsSnapshot = await getDocs(questionsCollection);
-                const fetchedQuestions: Question[] = questionsSnapshot.docs.map((doc) => {
-                    const data = doc.data();
-                    return {
-                        question: data.question,
-                        questionId: data.questionId,
-                        isChecked: false,
-                        isActive: false,
-                        options: {
-                            A: data.options.A,
-                            B: data.options.B,
-                            C: data.options.C,
-                            D: data.options.D,
-                        },
-                        correctAnswer: data.correctAnswer?.replace('option', ''),
-                        answerExplanation: data.answerExplanation || '',
-                    };
-                });
-                const questionsCount = questionsSnapshot.size;
+                const fetchedQuestions: Question[] = questionsSnapshot.docs.map((doc) => ({
+                    question: doc.data().question,
+                    questionId: doc.data().questionId,
+                    isChecked: false,
+                    isActive: false,
+                    options: {
+                        A: doc.data().options.A,
+                        B: doc.data().options.B,
+                        C: doc.data().options.C,
+                        D: doc.data().options.D,
+                    },
+                    correctAnswer: doc.data().correctAnswer?.replace('option', ''),
+                    answerExplanation: doc.data().answerExplanation || '',
+                    status: '',
+                }));
 
                 return {
                     title: quizData.quizName,
-                    questions: questionsCount,
+                    questions: questionsSnapshot.size,
                     quizId: quizData.quizId,
                     status: quizData.status,
                     startDate: quizData.startDate,
@@ -94,19 +142,22 @@ const fetchQuizzes = (callback: (quizzes: Quiz[]) => void) => {
                     marksPerQuestion: quizData.marksPerQuestion,
                     nMarksPerQuestion: quizData.nMarksPerQuestion,
                     questionsList: fetchedQuestions,
+                    isPremiumQuiz: quizData.isPremiumQuiz,
+                    product: quizData.product,
                 } as Quiz;
             })
         );
 
-        // Filter out null values
         const filteredQuizzesData = quizzesData.filter(quiz => quiz !== null) as Quiz[];
-
-        // Sort by date (or any stable key) before passing data
         filteredQuizzesData.sort((a, b) => new Date(a.startDate).getTime() - new Date(b.startDate).getTime());
         callback(filteredQuizzesData);
     });
 
-    return unsubscribe;
+    // Return a cleanup function that removes both quiz and attempt listeners
+    return () => {
+        unsubscribe();
+        attemptListeners.forEach((listener) => listener());
+    };
 };
 
 // Function to calculate the remaining time in seconds
@@ -125,36 +176,31 @@ const formatTime = (totalSeconds: number): string => {
     return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
 };
 
-const convertToTimeFormat = (timeStr: string): string => {
-    const regex = /(\d+)\s*(Minute|Hour)\(s\)/i;
-    const match = timeStr.match(regex);
+const convertToTimeFormat = (seconds: number): string => {
+    if (!seconds || seconds < 0) return "0 Minutes"; // Return default for invalid input
 
-    if (!match) return "00:00"; // Return default value if the format doesn't match
+    const totalMinutes = Math.floor(seconds / 60);
+    const hours = Math.floor(totalMinutes / 60);
+    const minutes = totalMinutes % 60;
 
-    const value = parseInt(match[1], 10); // Get the numeric value
-    const unit = match[2].toLowerCase(); // Get the unit (either minute or hour)
-
-    let totalMinutes = 0;
-
-    if (unit === "minute") {
-        totalMinutes = value;
-    } else if (unit === "hour") {
-        totalMinutes = value * 60; // Convert hours to minutes
+    if (hours > 0) {
+        return `${hours} ${hours === 1 ? 'Hour' : 'Hours'}`;
+    } else {
+        return `${minutes} ${minutes === 1 ? 'Minute' : 'Minutes'}`;
     }
-
-    const hours = Math.floor(totalMinutes / 60).toString().padStart(2, "0"); // Calculate hours and format
-    const minutes = (totalMinutes % 60).toString().padStart(2, "0"); // Calculate minutes and format
-
-    return `${hours}:${minutes}`;
 };
 
 function Quiz() {
     const [quizzes, setQuizzes] = useState<Quiz[]>([]);
     const [loading, setLoading] = useState(true);
+    const [isPremiumQuiz, setIsPremiumQuiz] = useState(true);
+    const [product, setProduct] = useState<{ productId: string; productName: string ; productType: string } | null>(null);
     const [showBottomSheet, setShowBottomSheet] = useState(false);
-    const [marksPerQ, setMarksPerQ] = useState('');
+    const [marksPerQ, setMarksPerQ] = useState(0);
+    const [nMarksPerQ, setnMarksPerQ] = useState(0);
     const [noOfQuestions, setNoOfQuestions] = useState(0);
-    const [timeOfQuiz, setTimeOfQuiz] = useState('');
+    const [timeOfQuiz, setTimeOfQuiz] = useState(0);
+    const [formattedQTime, setFormattedQTime] = useState('');
     const [quizTimes, setQuizTimes] = useState<{ id: string; startTime: number; endTime: number }[]>([]);
     const [passsedQuestionList, setPassedQuestionList] = useState<Question[]>([]);
     const [quizId, setQuizId] = useState('');
@@ -218,19 +264,19 @@ function Quiz() {
     }
 
     return (
-        <div className="flex flex-1">
-            {quizzes.length <= 1 ? (
+        <div className="flex flex-col w-full">
+            {quizzes.length < 1 ? ( 
                 <div className="flex flex-1 justify-center items-center flex-col">
                 <Image src="/images/noQuizzes.svg" alt="No Quizzes" width={140} height={140} />
                 <h3 className="text-base font-bold">No Quizzes</h3>
                 <p>Your live quizzes will show up here</p>
                 </div>
             ) : (
-                <div className="grid grid-cols-3 gap-5 w-full">
+                <div className="flex flex-row flex-wrap gap-6 w-full">
                 {quizzes.map((quiz, index) => {
                     const quizTime = quizTimes.find(qt => qt.id === quiz.quizId);
                     return (
-                        <div key={index} className="relative flex flex-col justify-between h-[11.25rem] rounded-xl py-6 px-6 bg-white border border-lightGrey">
+                        <div key={index} className={`relative flex flex-col justify-between h-fit gap-4 w-auto min-w-[300px] rounded-xl py-6 px-6 bg-white border ${quiz.isPremiumQuiz ? 'border-[#e3ae3d]' : 'border-lightGrey'}`}>
                             {/* Live Banner */}
                             {quiz.status === 'live' && (
                                 <div className="absolute top-0 right-0 mt-3 mr-[-4.5px]">
@@ -267,7 +313,7 @@ function Quiz() {
                             )}
                             {/* Start Quiz Button */}
                             <button
-                                onClick={() => { onStartQuiz(); setTimeOfQuiz(convertToTimeFormat(quiz.quizTime)); setMarksPerQ(quiz.marksPerQuestion); setQuizId(quiz.quizId); setNoOfQuestions(quiz.questions); setPassedQuestionList(quiz.questionsList) }}
+                                onClick={() => { onStartQuiz(); setTimeOfQuiz(quiz.quizTime); setProduct(quiz.product); setIsPremiumQuiz(quiz.isPremiumQuiz); setFormattedQTime(convertToTimeFormat(quiz.quizTime)); setMarksPerQ(quiz.marksPerQuestion); setnMarksPerQ(quiz.nMarksPerQuestion); setQuizId(quiz.quizId); setNoOfQuestions(quiz.questions); setPassedQuestionList(quiz.questionsList) }}
                                 disabled={quiz.status === 'scheduled'}
                                 className={`flex items-center justify-center w-full px-[14px] py-[10px] text-xs text-white font-semibold rounded-[6px] shadow-inner-button ${quiz.status === 'live' ? 'bg-[#9012FF] hover:bg-[#6D0DCC]' : 'bg-[#D8ACFF] cursor-not-allowed'}`}>
                                 Start Quiz
@@ -301,7 +347,7 @@ function Quiz() {
                             <div className="mt-[33px] mb-8 flex-row flex items-center">
                                 <div className="gap-1 flex-col flex items-center w-full border-r border-lightGrey">
                                     <span className="font-normal text-sm text-[#667085]">Time Duration</span>
-                                    <span className="text-[#1D2939] text-lg font-semibold">{timeOfQuiz || '00:00'}
+                                    <span className="text-[#1D2939] text-lg font-semibold">{formattedQTime || '0 Minutes'}
                                     </span>
                                 </div>
                                 <div className="gap-1 flex-col flex items-center w-full border-r border-lightGrey">
@@ -339,7 +385,7 @@ function Quiz() {
                 </div>
             </Dialog>
 
-            <QuizAttendBottomSheet showBottomSheet={showBottomSheet} setShowBottomSheet={setShowBottomSheet} questionsList={passsedQuestionList} quizId={quizId} quizTime={timeOfQuiz} />
+            <QuizAttendBottomSheet isPremiumQuiz={isPremiumQuiz} product={product} showBottomSheet={showBottomSheet} nMarksPerQuestion={nMarksPerQ} marksPerQuestion={marksPerQ} setShowBottomSheet={setShowBottomSheet} questionsList={passsedQuestionList} quizId={quizId} quizTime={timeOfQuiz} />
             <ToastContainer />
         </div>
     );

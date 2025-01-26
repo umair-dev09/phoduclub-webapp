@@ -43,10 +43,21 @@ type QuestionData = {
     question: string;
     correctAnswer: string;
     answerExplanation: string;
-    options: Options;
+    options: Options;   
     questionId: string;
 
 };
+
+function formatQuizTime(seconds: number | string): string {
+    const minutes = Number(seconds) / 60;
+  
+    if (minutes < 60) {
+      return `${Math.round(minutes)} Minutes`;
+    } else {
+      const hours = minutes / 60;
+      return `${hours % 1 === 0 ? hours : hours.toFixed(1)} Hours`;
+    }
+  }
 
 const cleanQuizDescription = (description: string) => {
     let sanitizedDescription = DOMPurify.sanitize(description);
@@ -203,10 +214,6 @@ function Quizinfo() {
     else {
         formattedEndDate = "-"; // If startDate is null, set it to "-"
     }
-
-    const formattedQuizTime = quizData?.quizTime
-        ? quizData.quizTime.replace(/ Minute\(s\)/, ' min').replace(/ Hour\(s\)/, ' hours')
-        : "-";
 
     if (loading) {
         return <LoadingData />;
@@ -383,7 +390,7 @@ function Quizinfo() {
                 </div>
                 <div className="w-full flex flex-col p-4 border border-solid border-[#EAECF0] bg-[#FFFFFF] rounded-xl">
                     <span className="text-[#667085] font-normal text-sm">Overall quiz time</span>
-                    <span className="font-medium text-[#1D2939] text-base">{formattedQuizTime}</span>
+                    <span className="font-medium text-[#1D2939] text-base">{formatQuizTime(quizData?.quizTime || '0 Minutes')}</span>
                 </div>
             </div>
 

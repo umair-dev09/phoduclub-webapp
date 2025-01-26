@@ -31,9 +31,11 @@ interface Options {
 interface QuestionsProps {
     questionsList: Question[];
     setQuestionsList: React.Dispatch<React.SetStateAction<Question[]>>;
+    deletedQuestionIds: string[];
+    setDeletedQuestionIds: Dispatch<SetStateAction<string[]>>;
 }
 
-function Questions({ questionsList, setQuestionsList }: QuestionsProps) {
+function Questions({ questionsList, setQuestionsList, deletedQuestionIds, setDeletedQuestionIds }: QuestionsProps) {
     const [visited, setVisited] = useState<boolean[]>(new Array(questionsList.length).fill(false));
     const [openIndex, setOpenIndex] = useState<number | null>(null);
     // Handler for input change
@@ -75,32 +77,36 @@ function Questions({ questionsList, setQuestionsList }: QuestionsProps) {
         setOpenIndex(null);
     };
     // -----------------------------------------------------------------------------------------------------------
-    // Handler for adding the Questions
-    const handleAddQuestionduplicate = (duplicateQuestion?: Question) => {
-        const newQuestion = duplicateQuestion
-            ? { ...duplicateQuestion } // Duplicate all properties of the question
-            : {
-                question: '',
-                isChecked: false,
-                isActive: false,
-                options: { A: '', B: '', C: '', D: '' },
-                correctAnswer: null,
-                explanation: '',
-                questionId: '',
-            };
+  // Update duplicate handler to generate temp ID
+const handleAddQuestionduplicate = (duplicateQuestion?: Question) => {
+    const newQuestion = duplicateQuestion
+        ? { 
+            ...duplicateQuestion,
+            questionId: `temp-${Date.now()}` // Add unique temp ID
+          }
+        : {
+            question: '',
+            isChecked: false,
+            isActive: false,
+            options: { A: '', B: '', C: '', D: '' },
+            correctAnswer: null,
+            explanation: '',
+            questionId: `temp-${Date.now()}`,
+        };
 
-        setQuestionsList([...questionsList, newQuestion]);
-    };
+    setQuestionsList([...questionsList, newQuestion]);
+};
+
     // -----------------------------------------------------------------------------------------------------------
-    // Handler for deleting question
-    const handleDeleteQuestion = (index: number) => {
-        console.log("Deleting question at index:", index); // Debugging
-        setQuestionsList((prevList) => {
-            // Set isActive to false for the question being deleted
-            const updatedList = prevList.map((q, i) => (i === index ? { ...q, isActive: false } : q));
-            return updatedList.filter((_, i) => i !== index); // Delete the question
-        });
-    };
+   // Update delete handler to track deleted IDs
+const handleDeleteQuestion = (index: number) => {
+    const questionToDelete = questionsList[index];
+    if (questionToDelete.questionId && !questionToDelete.questionId.startsWith('temp-')) {
+        setDeletedQuestionIds(prev => [...prev, questionToDelete.questionId]);
+    }
+    
+    setQuestionsList(prevList => prevList.filter((_, i) => i !== index));
+};
     // -----------------------------------------------------------------------------------------------------------
     // Handler for option change
     const handleOptionChange = (questionIndex: number, optionKey: keyof Options, value: string) => {

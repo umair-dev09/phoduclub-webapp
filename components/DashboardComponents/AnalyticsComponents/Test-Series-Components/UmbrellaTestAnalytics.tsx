@@ -667,7 +667,7 @@ function UmbrellaTestAnalytics({ onClose,  attemptedDetails = [], sectionName, t
                             </div>
                         </div>
                         {currentAttempt?.subattempts.map((subattempt, index) => (
-                            <div className="h-auto bg-[#FFFFFF] border border-solid border-[#EAECF0] p-3  rounded-md">
+                            <div key={index} className="h-auto bg-[#FFFFFF] border border-solid border-[#EAECF0] p-3  rounded-md">
                             <div className=" flex flex-col gap-2 ml-2">
                                 <span className="font-semibold text-[#1D2939] text-sm">{subattempt.sectionName}</span>
                                 <div className="h-auto mb-6 text-[#667085] font-normal text-sm whitespace-pre-line">

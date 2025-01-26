@@ -467,7 +467,7 @@ function AddMembersGroup({ open, onClose, communityId }: AddMembersGroupProps) {
                     <ModalBody>
                         <h3 className="font-semibold text-lg text-[#1D2939] mt-4">Add Members</h3>
                         <Tabs
-                            aria-label="Market Integration Tabs"
+                            aria-label="Market Integration Tabs" 
                             color="primary"
                             variant="underlined"
                             selectedKey={activeTab}
