@@ -31,11 +31,9 @@ interface Options {
 interface QuestionsProps {
     questionsList: Question[];
     setQuestionsList: React.Dispatch<React.SetStateAction<Question[]>>;
-    deletedQuestionIds: string[];
-    setDeletedQuestionIds: Dispatch<SetStateAction<string[]>>;
 }
 
-function Questions({ questionsList, setQuestionsList, deletedQuestionIds, setDeletedQuestionIds }: QuestionsProps) {
+function Questions({ questionsList, setQuestionsList }: QuestionsProps) {
     const [visited, setVisited] = useState<boolean[]>(new Array(questionsList.length).fill(false));
     const [openIndex, setOpenIndex] = useState<number | null>(null);
     // Handler for input change
@@ -74,39 +72,35 @@ function Questions({ questionsList, setQuestionsList, deletedQuestionIds, setDel
             }
         ]);
         setVisited([...visited, false]);
-        // setOpenIndex(null);
+        setOpenIndex(null);
     };
     // -----------------------------------------------------------------------------------------------------------
-  // Update duplicate handler to generate temp ID
-const handleAddQuestionduplicate = (duplicateQuestion?: Question) => {
-    const newQuestion = duplicateQuestion
-        ? { 
-            ...duplicateQuestion,
-            questionId: `temp-${Date.now()}` // Add unique temp ID
-          }
-        : {
-            question: '',
-            isChecked: false,
-            isActive: false,
-            options: { A: '', B: '', C: '', D: '' },
-            correctAnswer: null,
-            explanation: '',
-            questionId: `temp-${Date.now()}`,
-        };
+    // Handler for adding the Questions
+    const handleAddQuestionduplicate = (duplicateQuestion?: Question) => {
+        const newQuestion = duplicateQuestion
+            ? { ...duplicateQuestion } // Duplicate all properties of the question
+            : {
+                question: '',
+                isChecked: false,
+                isActive: false,
+                options: { A: '', B: '', C: '', D: '' },
+                correctAnswer: null,
+                explanation: '',
+                questionId: '',
+            };
 
-    setQuestionsList([...questionsList, newQuestion]);
-};
-
+        setQuestionsList([...questionsList, newQuestion]);
+    };
     // -----------------------------------------------------------------------------------------------------------
-   // Update delete handler to track deleted IDs
-const handleDeleteQuestion = (index: number) => {
-    const questionToDelete = questionsList[index];
-    if (questionToDelete.questionId && !questionToDelete.questionId.startsWith('temp-')) {
-        setDeletedQuestionIds(prev => [...prev, questionToDelete.questionId]);
-    }
-    
-    setQuestionsList(prevList => prevList.filter((_, i) => i !== index));
-};
+    // Handler for deleting question
+    const handleDeleteQuestion = (index: number) => {
+        console.log("Deleting question at index:", index); // Debugging
+        setQuestionsList((prevList) => {
+            // Set isActive to false for the question being deleted
+            const updatedList = prevList.map((q, i) => (i === index ? { ...q, isActive: false } : q));
+            return updatedList.filter((_, i) => i !== index); // Delete the question
+        });
+    };
     // -----------------------------------------------------------------------------------------------------------
     // Handler for option change
     const handleOptionChange = (questionIndex: number, optionKey: keyof Options, value: string) => {
@@ -259,7 +253,7 @@ const handleDeleteQuestion = (index: number) => {
             quill.format(format, !currentFormats[format]);
         }
     };
-
+    const [collapsed, setCollapsed] = useState<boolean[]>([]);
     const [openPopovers, setOpenPopovers] = React.useState<{ [key: number]: boolean }>({});
     const togglePopover = (index: number) => {
         setOpenPopovers((prev) => ({
@@ -289,14 +283,46 @@ const handleDeleteQuestion = (index: number) => {
             newVisited[index] = true;
             return newVisited;
         });
-
+        setOpenIndex(index);
+        setCollapsed((prevCollapsed) => {
+            const newCollapsed = [...prevCollapsed];
+            newCollapsed[index] = false; // Mark as expanded (not collapsed)
+            return newCollapsed;
+        });
     };
+
+    const handleCollapse = (index: number) => {
+        setCollapsed((prevCollapsed) => {
+            const newCollapsed = [...prevCollapsed];
+            newCollapsed[index] = true; // Mark as collapsed
+            return newCollapsed;
+        });
+    };
+
 
     return (
         <div className="pb-4 h-auto">
             {questionsList.map((question, index) => (
-                <div key={index} className={` ${visited[index] && isDataMissing(question) ? "border-1.5 border-[#F04438]" : " border border-[#EAECF0]"} rounded-md   mt-4 h-auto bg-[#FFFFFF] `}>
-
+                <div
+                    key={index}
+                    className={`
+                    ${collapsed[index] && !visited[index]
+                            ? "border border-gray-400" // Grey for first-time collapse
+                            : !collapsed[index] && !visited[index]
+                                ? "border border-gray-400" // Grey when expanded for the first time
+                                : visited[index] && isDataMissing(question)
+                                    ? "border-1.5 border-[#F04438]" // Red if data is missing after visiting
+                                    : "border border-[#EAECF0]"} // Default border
+                    rounded-md mt-4 h-auto bg-[#FFFFFF]
+                `}
+                    onClick={() => {
+                        if (collapsed[index]) {
+                            handleOpen(index); // Expand if collapsed
+                        } else {
+                            handleCollapse(index); // Collapse if expanded
+                        }
+                    }}
+                >
                     <Collapsible
                         open={openIndex === index}
                         trigger={

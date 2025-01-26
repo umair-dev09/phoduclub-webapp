@@ -31,11 +31,9 @@ interface Options {
 interface QuestionsProps {
     questionsList: Question[];
     setQuestionsList: React.Dispatch<React.SetStateAction<Question[]>>;
-    deletedQuestionIds: string[];
-    setDeletedQuestionIds: Dispatch<SetStateAction<string[]>>;
 }
 
-function Questions({ questionsList, setQuestionsList, deletedQuestionIds, setDeletedQuestionIds }: QuestionsProps) {
+function Questions({ questionsList, setQuestionsList }: QuestionsProps) {
     const [visited, setVisited] = useState<boolean[]>(new Array(questionsList.length).fill(false));
     const [openIndex, setOpenIndex] = useState<number | null>(null);
     // Handler for input change
@@ -74,39 +72,35 @@ function Questions({ questionsList, setQuestionsList, deletedQuestionIds, setDel
             }
         ]);
         setVisited([...visited, false]);
-        // setOpenIndex(null);
+        setOpenIndex(null);
     };
     // -----------------------------------------------------------------------------------------------------------
-  // Update duplicate handler to generate temp ID
-const handleAddQuestionduplicate = (duplicateQuestion?: Question) => {
-    const newQuestion = duplicateQuestion
-        ? { 
-            ...duplicateQuestion,
-            questionId: `temp-${Date.now()}` // Add unique temp ID
-          }
-        : {
-            question: '',
-            isChecked: false,
-            isActive: false,
-            options: { A: '', B: '', C: '', D: '' },
-            correctAnswer: null,
-            explanation: '',
-            questionId: `temp-${Date.now()}`,
-        };
+    // Handler for adding the Questions
+    const handleAddQuestionduplicate = (duplicateQuestion?: Question) => {
+        const newQuestion = duplicateQuestion
+            ? { ...duplicateQuestion } // Duplicate all properties of the question
+            : {
+                question: '',
+                isChecked: false,
+                isActive: false,
+                options: { A: '', B: '', C: '', D: '' },
+                correctAnswer: null,
+                explanation: '',
+                questionId: '',
+            };
 
-    setQuestionsList([...questionsList, newQuestion]);
-};
-
+        setQuestionsList([...questionsList, newQuestion]);
+    };
     // -----------------------------------------------------------------------------------------------------------
-   // Update delete handler to track deleted IDs
-const handleDeleteQuestion = (index: number) => {
-    const questionToDelete = questionsList[index];
-    if (questionToDelete.questionId && !questionToDelete.questionId.startsWith('temp-')) {
-        setDeletedQuestionIds(prev => [...prev, questionToDelete.questionId]);
-    }
-    
-    setQuestionsList(prevList => prevList.filter((_, i) => i !== index));
-};
+    // Handler for deleting question
+    const handleDeleteQuestion = (index: number) => {
+        console.log("Deleting question at index:", index); // Debugging
+        setQuestionsList((prevList) => {
+            // Set isActive to false for the question being deleted
+            const updatedList = prevList.map((q, i) => (i === index ? { ...q, isActive: false } : q));
+            return updatedList.filter((_, i) => i !== index); // Delete the question
+        });
+    };
     // -----------------------------------------------------------------------------------------------------------
     // Handler for option change
     const handleOptionChange = (questionIndex: number, optionKey: keyof Options, value: string) => {
@@ -289,16 +283,30 @@ const handleDeleteQuestion = (index: number) => {
             newVisited[index] = true;
             return newVisited;
         });
+        setOpenIndex(index);
+
 
     };
 
+    const getBorderClass = (index: number, question: Question) => {
+        if (!visited[index]) {
+            return "border border-gray-400"; // First time collapsed
+        }
+
+        return visited[index] && isDataMissing(question)
+            ? "border-red-500" // Missing data after first visit
+            : "border border-red-500"; // Visited with complete data
+    };
     return (
         <div className="pb-4 h-auto">
             {questionsList.map((question, index) => (
-                <div key={index} className={` ${visited[index] && isDataMissing(question) ? "border-1.5 border-[#F04438]" : " border border-[#EAECF0]"} rounded-md   mt-4 h-auto bg-[#FFFFFF] `}>
-
+                <div
+                    key={index}
+                    className={`${getBorderClass(index, question)} rounded-md mt-4 h-auto bg-[#FFFFFF]`}
+                >
                     <Collapsible
                         open={openIndex === index}
+                        onChange={() => handleOpen(index)}
                         trigger={
                             <div className='h-auto bg-[#FFFFFF] flex flex-col p-5 gap-2 rounded-md'>
                                 <div className="h-auto flex flex-row justify-between gap-4 items-start">
@@ -354,7 +362,7 @@ const handleDeleteQuestion = (index: number) => {
                                 </div>
                             </div>
                         }
-                        onOpening={() => handleOpen(index)}
+
                     >
                         <div className='h-auto bg-[#FFFFFF]   flex flex-col pb-5 px-5 gap-2 rounded-br-md rounded-bl-md'>
                             <div className="flex flex-col gap-2">
