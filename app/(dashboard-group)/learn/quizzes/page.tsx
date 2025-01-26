@@ -40,7 +40,7 @@ export default function MyQuiz() {
 
     const [leaderboard, setLeaderboard] = useState<any[]>([]);
     const [currentUserRank, setCurrentUserRank] = useState<any>(null);
-    const currentUserId = auth.currentUser?.uid; // Replace with the actual logged-in user's ID
+    const currentUserId = auth.currentUser?.uid;
     const [currentUserStats, setCurrentUserStats] = useState<AttemptData>({
         score: 0,
         answeredCorrect: 0,
@@ -52,7 +52,6 @@ export default function MyQuiz() {
     });
     const [isUserPremium, setIsUserPremium] = useState(false);
     const [premiumAttempts, setPremiumAttempts] = useState<any[]>([]);
-
     const [selectedAttemptFilter, setSelectedAttemptFilter] = useState<string>('All');
 
     useEffect(() => {
@@ -81,8 +80,10 @@ export default function MyQuiz() {
                 const filteredAttempts = [];
 
                 for (const premiumDoc of premiumQuizSnapshot.docs) {
-                    const attemptsSnapshot = await getDocs(collection(db, "premiumQuizAttemptsData", premiumDoc.id, "userAttempts"));
-                    const hasUserAttempted = attemptsSnapshot.docs.some(attemptDoc => attemptDoc.id === currentUserId);
+                    const attemptsRef = collection(db, "premiumQuizAttemptsData", premiumDoc.id, "userAttempts");
+                    const userAttemptsSnapshot = await getDocs(query(attemptsRef));
+                    
+                    const hasUserAttempted = userAttemptsSnapshot.docs.some(attemptDoc => attemptDoc.id === currentUserId);
 
                     if (hasUserAttempted) {
                         let name = '';
@@ -99,9 +100,8 @@ export default function MyQuiz() {
 
                         filteredAttempts.push({
                             productId: premiumDoc.id,
-                            productType: premiumDoc.data().productType,
-                            name: name,
-                            ...premiumDoc.data()
+                            productType: docData.productType,
+                            name: name
                         });
                     }
                 }
@@ -120,68 +120,79 @@ export default function MyQuiz() {
             const usersRef = collection(db, "users");
             const allAttemptsData: any[] = [];
 
-            let attemptsQuery;
-            if (collectionPath === 'premiumQuizAttemptsData' && productId) {
+            let leaderboardDoc;
+            if (collectionPath === 'globalQuizAttemptsData') {
+                leaderboardDoc = await getDoc(doc(db, collectionPath, currentUserId!));
+            } else if (collectionPath === 'premiumQuizAttemptsData' && productId) {
                 const attemptsRef = collection(db, collectionPath, productId, "userAttempts");
-                attemptsQuery = query(attemptsRef);
-            } else {
-                attemptsQuery = query(collection(db, collectionPath));
+                const snapshot = await getDocs(attemptsRef);
+                leaderboardDoc = snapshot.docs.find(doc => doc.id === currentUserId);
             }
 
-            const snapshot = await getDocs(attemptsQuery);
-
-            snapshot.forEach((doc) => {
-                allAttemptsData.push({ 
-                    userId: doc.id, 
-                    ...doc.data() 
-                });
-            });
-
-            let fullLeaderboardData = await Promise.all(
-                allAttemptsData.map(async (attempt) => {
-                    const userDoc = await getDoc(doc(usersRef, attempt.userId));
-                    return {
-                        ...attempt,
-                        ...userDoc.data(),
-                    };
-                })
-            );
-
-            // Sort and rank users
-            fullLeaderboardData = fullLeaderboardData.sort((a, b) => (b.score || 0) - (a.score || 0));
-
-            let currentRank = 1;
-            let prevScore = fullLeaderboardData[0]?.score || 0;
-            
-            fullLeaderboardData = fullLeaderboardData.map((user, index) => {
-                if ((user.score || 0) < prevScore) {
-                    currentRank = index + 1;
-                }
-                prevScore = user.score || 0;
-                return { ...user, rank: currentRank };
-            });
-
-            // Update current user rank
-            const currentUserData = fullLeaderboardData.find(user => user.userId === currentUserId);
-            
-            if (currentUserData) {
-                setCurrentUserRank(currentUserData);
-            }
-
-            setLeaderboard(fullLeaderboardData);
-
-            // Update current user stats
-            const currentUserAttemptsDoc = fullLeaderboardData.find(user => user.userId === currentUserId);
-            if (currentUserAttemptsDoc) {
+            // Fetch and set current user stats
+            if (leaderboardDoc) {
+                const statsData = leaderboardDoc.exists() ? leaderboardDoc.data() : {};
                 setCurrentUserStats({
-                    score: currentUserAttemptsDoc.score || 0,
-                    answeredCorrect: currentUserAttemptsDoc.answeredCorrect || 0,
-                    answeredIncorrect: currentUserAttemptsDoc.answeredIncorrect || 0,
-                    attemptedQuestions: currentUserAttemptsDoc.attemptedQuestions || 0,
-                    timeTaken: currentUserAttemptsDoc.timeTaken || 0,
-                    totalQuestions: currentUserAttemptsDoc.totalQuestions || 0,
-                    totalTime: currentUserAttemptsDoc.totalTime || 0
+                    score: statsData.score || 0,
+                    answeredCorrect: statsData.answeredCorrect || 0,
+                    answeredIncorrect: statsData.answeredIncorrect || 0,
+                    attemptedQuestions: statsData.attemptedQuestions || 0,
+                    timeTaken: statsData.timeTaken || 0,
+                    totalQuestions: statsData.totalQuestions || 0,
+                    totalTime: statsData.totalTime || 0
                 });
+            }
+
+            // Fetch leaderboard data
+            let leaderboardSnapshot;
+            if (collectionPath === 'globalQuizAttemptsData') {
+                leaderboardSnapshot = await getDocs(collection(db, collectionPath));
+            } else if (collectionPath === 'premiumQuizAttemptsData' && productId) {
+                leaderboardSnapshot = await getDocs(collection(db, collectionPath, productId, "userAttempts"));
+            }
+
+            if (leaderboardSnapshot) {
+                const leaderboardPromises = leaderboardSnapshot.docs.map(async (attemptDoc) => {
+                    const userDoc = await getDoc(doc(usersRef, attemptDoc.id));
+                    const userData = userDoc.exists() ? userDoc.data() : {};
+                    const attemptData = attemptDoc.data() as AttemptData;
+
+                    return {
+                        userId: attemptDoc.id,
+                        ...userData,
+                        ...attemptData
+                    };
+                });
+
+                const fullLeaderboardData = await Promise.all(leaderboardPromises);
+
+                // Sort leaderboard by score
+                const sortedLeaderboard = fullLeaderboardData
+                    .sort((a, b) => (b.score ?? 0) - (a.score ?? 0))
+                    .map((user, index) => ({
+                        ...user,
+                        rank: index + 1
+                    }));
+
+                // Set leaderboard and current user rank
+                setLeaderboard(sortedLeaderboard);
+
+                const currentUserRankData = sortedLeaderboard.find(user => user.userId === currentUserId);
+                
+                if (currentUserRankData) {
+                    setCurrentUserRank(currentUserRankData);
+                } else {
+                    const userDoc = await getDoc(doc(usersRef, currentUserId!));
+                    const userData = userDoc.exists() ? userDoc.data() : {};
+
+                    setCurrentUserRank({
+                        userId: currentUserId,
+                        name: userData?.name || 'Current User',
+                        profilePic: userData?.profilePic || '/images/DP_Lion.svg',
+                        score: 0,
+                        rank: sortedLeaderboard.length + 1
+                    });
+                }
             }
         } catch (error) {
             console.error("Error fetching leaderboard data:", error);
@@ -204,7 +215,6 @@ export default function MyQuiz() {
     const handleAttemptFilterChange = (filter: string) => {
         setSelectedAttemptFilter(filter);
     };
-
     return (
         <div className="CONTAINER flex flex-1 flex-row ">
             {/* Left side - Quizzes */}
@@ -220,7 +230,7 @@ export default function MyQuiz() {
                         {isUserPremium ? (
                         <Popover placement="bottom-end">
                         <PopoverTrigger>
-                            <div className="flex w-[102px] h-[2.313rem] bg-white rounded-md px-3 py-2 text-sm justify-between">
+                            <div className="flex w-auto h-[2.313rem] gap-2 bg-white rounded-md px-3 py-2 text-sm justify-between">
                                 <div>{selectedAttemptFilter}</div>
                                 <div>
                                     <div>
@@ -236,7 +246,7 @@ export default function MyQuiz() {
                                 </div>
                             </div>
                         </PopoverTrigger>
-                        <PopoverContent className="flex flex-col bg-white w-[170px] h-auto px-0 items-start border border-lightGrey rounded-md">
+                        <PopoverContent className="flex flex-col bg-white w-auto h-auto px-0 items-start border border-lightGrey rounded-md">
 
                             <button
                                                             onClick={() => handleAttemptFilterChange('All')} 
