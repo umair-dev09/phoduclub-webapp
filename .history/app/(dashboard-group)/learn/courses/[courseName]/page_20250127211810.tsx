@@ -564,7 +564,7 @@ function Course() {
                     >
                       <span className="font-semibold text-base text-[#1D2939] text-left">{index + 1}. {section.sectionName}</span>
                       <Image
-                        src={isOpenArray[index] ? '/icons/arrow-up-dark.svg' : '/icons/arrow-down-dark.svg'}
+                        src={isOpenArray[index] ? '/icons/arrow-down-dark.svg' : '/icons/arrow-up-dark.svg'}
                         width={20}
                         height={20}
                         alt="Arrow-toggle"

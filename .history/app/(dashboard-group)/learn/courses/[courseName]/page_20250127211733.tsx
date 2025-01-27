@@ -555,8 +555,7 @@ function Course() {
             {sections.map((section, index) => (
               <div key={index} className=" flex flex-col border-b border-solid border-[#EAECF0] ">
                 <Collapsible
-                  // open={index === 0} // Set the open state based on the isOpenArray
-                  key={index}
+                  open={index === 0} // Set the open state based on the isOpenArray
                   trigger={
                     <div
                       className="h-[60px] flex flex-row justify-between py-2 px-4 items-center hover:bg-[#EAECF0]"
@@ -564,7 +563,7 @@ function Course() {
                     >
                       <span className="font-semibold text-base text-[#1D2939] text-left">{index + 1}. {section.sectionName}</span>
                       <Image
-                        src={isOpenArray[index] ? '/icons/arrow-up-dark.svg' : '/icons/arrow-down-dark.svg'}
+                        src={isOpenArray[index] ? '/icons/arrow-down-dark.svg' : '/icons/arrow-up-dark.svg'}
                         width={20}
                         height={20}
                         alt="Arrow-toggle"
