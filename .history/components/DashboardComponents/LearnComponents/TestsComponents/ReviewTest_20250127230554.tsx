@@ -16,10 +16,11 @@ interface Options {
 
 interface AnsweredQuestion {
     questionId: string;
-    selectedOption: string; // User's answer
-    answeredCorrect: boolean; // Whether the answer is correct
+    status: string;
+    answered: boolean;
+    selectedOption: string | null;
+    answeredCorrect: boolean | null;
 }
-
 
 interface Question {
     question: string;
@@ -36,17 +37,18 @@ interface ReviewTestProps {
     setShowReviewSheet: React.Dispatch<React.SetStateAction<boolean>>;
     questionsList: Question[];
     answeredQuestions: AnsweredQuestion[];
-    timeTaken: string;
+    timeTaken: number;
 }
 
 function convertSecondsToHHMM(seconds: number): string {
     const hours = Math.floor(seconds / 3600);
     const minutes = Math.floor((seconds % 3600) / 60);
-    return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`;
+    const remainingSeconds = seconds % 60;
+    return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(remainingSeconds).padStart(2, '0')}`;
 }
 
 
-function ReviewQuiz({ showReviewSheet, setShowReviewSheet, questionsList, answeredQuestions, timeTaken }: ReviewTestProps) {
+function ReviewTest({ showReviewSheet, setShowReviewSheet, questionsList, answeredQuestions, timeTaken }: ReviewTestProps) {
     const getAnsweredQuestionData = (questionId: string) => {
         return answeredQuestions.find(aq => aq.questionId === questionId);
     };
@@ -61,10 +63,10 @@ function ReviewQuiz({ showReviewSheet, setShowReviewSheet, questionsList, answer
             >
                 <div className="flex flex-col w-[full] h-full">
                     <div className="p-5 flex justify-between items-center h-[69px] w-full border-b-[1.5px] border-t-[1.5px] border-[#EAECF0] rounded-tl-[18px] rounded-tr-[16px]">
-                        <span className="text-lg font-semibold text-[#1D2939]">Review Attempted Quiz</span>
+                        <span className="text-lg font-semibold text-[#1D2939]">Review Attempted Questions</span>
                         <span className="text-lg font-semibold text-[#1D2939] flex items-center justify-center gap-2">
                             <Image width={24} height={24} src="/icons/alarm-clock.svg" alt="timer" />
-                            <span className="text-lg font-medium">Time Taken -</span> {convertSecondsToHHMM(19)}
+                            <span className="text-lg font-medium">Time Taken -</span> {convertSecondsToHHMM(timeTaken)}
                         </span>
                         <button
                             className="w-auto h-[44px] px-8 bg-[#FFFFFF] border-[1px] border-[#EAECF0] rounded-[8px] flex items-center justify-center hover:bg-[#F2F4F7]"
@@ -82,6 +84,7 @@ function ReviewQuiz({ showReviewSheet, setShowReviewSheet, questionsList, answer
                                 <div className="flex flex-col gap-5 items-center justify-center">
                                     {questionsList.map((q, index) => {
                                         const answeredData = getAnsweredQuestionData(q.questionId);
+                                        const isAnswered = answeredData?.answered;
                                         const isCorrect = answeredData?.answeredCorrect;
                                         const selectedOption = answeredData?.selectedOption;
 
@@ -102,11 +105,11 @@ function ReviewQuiz({ showReviewSheet, setShowReviewSheet, questionsList, answer
                                                     <div className="w-auto h-auto gap-[15px] flex flex-col">
                                                         <div className="flex flex-col gap-1">
                                                             {Object.entries(q.options).map(([key, value]) => {
-                                                                const isSelectedOption = selectedOption === key;
+                                                                const isSelectedOption = isAnswered && selectedOption === key;
                                                                 const isCorrectOption = key === q.correctAnswer;
 
                                                                 let radioColor = '#D0D5DD'; // default color
-                                                                if (!isCorrect) {
+                                                                if (isAnswered && !isCorrect) {
                                                                     // For incorrect answers, show both selected and correct
                                                                     if (isSelectedOption) {
                                                                         radioColor = '#FF4D4F'; // wrong answer in red
@@ -118,12 +121,12 @@ function ReviewQuiz({ showReviewSheet, setShowReviewSheet, questionsList, answer
                                                                 }
 
                                                                 let checked = false;
-                                                                if (!isCorrect) {
+                                                                if (isAnswered && !isCorrect) {
                                                                     // Show both selected and correct options checked
                                                                     checked = isSelectedOption || isCorrectOption;
                                                                 } else {
                                                                     // For correct answers or unanswered questions
-                                                                    checked = (isSelectedOption) || (isCorrectOption);
+                                                                    checked = (isAnswered && isSelectedOption) || (!isAnswered && isCorrectOption);
                                                                 }
 
                                                                 return (
@@ -153,23 +156,28 @@ function ReviewQuiz({ showReviewSheet, setShowReviewSheet, questionsList, answer
                                                     <hr />
 
                                                     {/* Status indicators */}
-                                                    {isCorrect && (
+                                                    {isAnswered && isCorrect && (
                                                         <div className="w-[121px] h-10 items-center px-2 flex flex-row bg-[#EDFCF3] border border-solid border-[#AAF0C7] rounded-[6px] gap-1">
                                                             <Image src="/icons/green-right-mark.svg" width={24} height={24} alt="right-mark-icon" />
                                                             <span className="text-[#0A5B39] font-medium text-base">Correct</span>
                                                         </div>
                                                     )}
 
-                                                    {!isCorrect && (
+                                                    {isAnswered && !isCorrect && (
                                                         <div className="w-[121px] h-10 px-2 flex flex-row items-center bg-[#FEF3F2] border border-solid border-[#FFCDC9] rounded-[6px] gap-1">
                                                             <Image src="/icons/red-cancel-icon.svg" width={24} height={24} alt="red-cancel-icon" />
                                                             <span className="text-[#9A221A] font-medium text-base">Incorrect</span>
                                                         </div>
                                                     )}
 
+                                                    {!isAnswered && (
+                                                        <div className="w-[135px] h-10 px-2 flex flex-row items-center bg-[#f0f0f0] border border-solid border-[#cecece] rounded-[6px] gap-1">
+                                                            <span className="text-[#979797] font-medium text-base">Not Answered</span>
+                                                        </div>
+                                                    )}
 
                                                     {/* Show explanation for incorrect or unanswered questions */}
-                                                    {(!isCorrect) && (
+                                                    {(!isAnswered || (isAnswered && !isCorrect)) && (
                                                         <div className="w-full h-auto bg-[#F9FAFB] border-2 border-solid border-[#F2F4F7] rounded-[8px] flex p-4">
                                                             <div className="text-[#1D2939] font-normal text-sm italic leading-[25px]"
                                                                 dangerouslySetInnerHTML={{
@@ -186,10 +194,24 @@ function ReviewQuiz({ showReviewSheet, setShowReviewSheet, questionsList, answer
                             </div>
                         </div>
                     </div>
+                    <div className="p-5 flex justify-between items-center h-[69px] w-full border-b-[1.5px] border-t-[1.5px] border-[#EAECF0] rounded-tl-[18px] rounded-tr-[16px]">
+                        <button className='border border-lightGrey rounded-md items-center justify-center h-11 w-[111px] hover:bg-lightGrey'>
+                            <span className="text-base font-medium text-[#1D2939]">Previous</span>
+                        </button>
+
+                        <button
+                            className="w-[111px] h-[44px]  border border-[#800EE2] bg-[#800EE2] rounded-md flex items-center justify-center hover:bg-[#6D0DCC]"
+                            onClick={() => setShowReviewSheet(false)}
+                        >
+                            <span className="w-auto h-full flex items-center justify-center text-sm font-semibold text-[#FFFFFF] border-none">
+                                Next
+                            </span>
+                        </button>
+                    </div>
                 </div>
-            </Drawer>
-        </div>
+            </Drawer >
+        </div >
     );
 }
 
-export default ReviewQuiz;
+export default ReviewTest;

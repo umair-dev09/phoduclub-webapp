@@ -177,7 +177,25 @@ function Profile() {
     };
 
     const colors = [styles.red, styles.orange, styles.green, styles.blue];
-
+    // Define a color mapping for each exam
+    // Define a color mapping for each exam
+    const examColorMapping: {
+        JEE: string;
+        BITSAT: string;
+        VITEEE: string;
+        SRMJEEE: string;
+        KCET: string;
+        COMEDK: string;
+        MET: string;
+    } = {
+        'BITSAT': 'red',
+        'JEE': 'orange',
+        'SRMJEEE': 'green',
+        'COMEDK': 'blue',
+        'KCET': 'purple',
+        'VITEEE': 'yellow',
+        'MET': 'pink'
+    };
     return (
         <div className="flex flex-col h-full w-full justify-between">
             <div className="flex flex-col flex-grow overflow-y-auto pb-[300px] mx-[20px]">
@@ -268,33 +286,31 @@ function Profile() {
                         <div className={styles.enrolledExams}>
                             {userData?.targetExams?.map((exam, index) => {
                                 let examColor = '';
-                                switch (exam) {
 
+                                // Assign specific colors to each exam directly
+                                switch (exam) {
                                     case 'JEE':
-                                        examColor = '#F04438'; // Red
+                                        examColor = '#FF5733'; // Red
                                         break;
                                     case 'BITSAT':
-                                        examColor = '#F79009'; // Orange
+                                        examColor = '#FF8C00'; // Orange
                                         break;
                                     case 'VITEEE':
-                                        examColor = '#17B26A'; // Green
+                                        examColor = '#28A745'; // Green
                                         break;
                                     case 'SRMJEEE':
-                                        examColor = '#2E90FA'; // Purple
-                                        break;
                                     case 'KCET':
-                                        examColor = '#1177BB'; // Blue
+                                        examColor = '#007BFF'; // Blue
                                         break;
                                     case 'COMEDK':
-                                        examColor = '#F04438'; // Red
+                                        examColor = '#FF5733'; // Red
                                         break;
                                     case 'MET':
-                                        examColor = '#F79009'; // Orange
+                                        examColor = '#FF8C00'; // Orange
                                         break;
                                     default:
                                         examColor = '#CCCCCC'; // Default gray color
                                         break;
-
                                 }
 
                                 return (

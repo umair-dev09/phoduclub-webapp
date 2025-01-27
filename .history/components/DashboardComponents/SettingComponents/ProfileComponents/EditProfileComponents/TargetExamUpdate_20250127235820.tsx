@@ -240,7 +240,7 @@ function TargetExamUpdate({ setIsEditing }: TargetExamsUpdateProps) {
         isOpen={isOpen}
         onOpenChange={(isOpen) => !isOpen && setIsOpen(false)}
         hideCloseButton
-        scrollBehavior={scrollBehavior}
+        size="lg"
       >
         <ModalContent>
           <>

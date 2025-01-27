@@ -66,7 +66,7 @@ function ReviewQuiz({ showReviewSheet, setShowReviewSheet, questionsList, answer
                             <Image width={24} height={24} src="/icons/alarm-clock.svg" alt="timer" />
                             <span className="text-lg font-medium">Time Taken -</span> {convertSecondsToHHMM(19)}
                         </span>
-                        <button
+                        <button 
                             className="w-auto h-[44px] px-8 bg-[#FFFFFF] border-[1px] border-[#EAECF0] rounded-[8px] flex items-center justify-center hover:bg-[#F2F4F7]"
                             onClick={() => setShowReviewSheet(false)}
                         >
@@ -92,19 +92,19 @@ function ReviewQuiz({ showReviewSheet, setShowReviewSheet, questionsList, answer
                                                         <span className="text-[#1D2939] font-semibold text-base">
                                                             {index + 1}.
                                                         </span>
-                                                        <div
+                                                        <div 
                                                             className="question-content text-[#1D2939] font-semibold text-base"
-                                                            dangerouslySetInnerHTML={{
-                                                                __html: q.question || 'Question not available'
+                                                            dangerouslySetInnerHTML={{ 
+                                                                __html: q.question || 'Question not available' 
                                                             }}
                                                         />
                                                     </div>
                                                     <div className="w-auto h-auto gap-[15px] flex flex-col">
                                                         <div className="flex flex-col gap-1">
                                                             {Object.entries(q.options).map(([key, value]) => {
-                                                                const isSelectedOption = selectedOption === key;
+                                                                const isSelectedOption =  selectedOption === key;
                                                                 const isCorrectOption = key === q.correctAnswer;
-
+                                                                
                                                                 let radioColor = '#D0D5DD'; // default color
                                                                 if (!isCorrect) {
                                                                     // For incorrect answers, show both selected and correct
@@ -151,31 +151,31 @@ function ReviewQuiz({ showReviewSheet, setShowReviewSheet, questionsList, answer
                                                         </div>
                                                     </div>
                                                     <hr />
-
+                                                    
                                                     {/* Status indicators */}
-                                                    {isCorrect && (
+                                                    { isCorrect && (
                                                         <div className="w-[121px] h-10 items-center px-2 flex flex-row bg-[#EDFCF3] border border-solid border-[#AAF0C7] rounded-[6px] gap-1">
                                                             <Image src="/icons/green-right-mark.svg" width={24} height={24} alt="right-mark-icon" />
                                                             <span className="text-[#0A5B39] font-medium text-base">Correct</span>
                                                         </div>
                                                     )}
-
-                                                    {!isCorrect && (
+                                                    
+                                                    { !isCorrect && (
                                                         <div className="w-[121px] h-10 px-2 flex flex-row items-center bg-[#FEF3F2] border border-solid border-[#FFCDC9] rounded-[6px] gap-1">
                                                             <Image src="/icons/red-cancel-icon.svg" width={24} height={24} alt="red-cancel-icon" />
                                                             <span className="text-[#9A221A] font-medium text-base">Incorrect</span>
                                                         </div>
                                                     )}
-
-
+                                                    
+                                                  
                                                     {/* Show explanation for incorrect or unanswered questions */}
                                                     {(!isCorrect) && (
                                                         <div className="w-full h-auto bg-[#F9FAFB] border-2 border-solid border-[#F2F4F7] rounded-[8px] flex p-4">
                                                             <div className="text-[#1D2939] font-normal text-sm italic leading-[25px]"
-                                                                dangerouslySetInnerHTML={{
-                                                                    __html: q.answerExplanation || 'No explanation available'
-                                                                }}
-                                                            />
+                                                            dangerouslySetInnerHTML={{ 
+                                                                __html: q.answerExplanation || 'No explanation available' 
+                                                            }}
+                                                            />                                                           
                                                         </div>
                                                     )}
                                                 </div>

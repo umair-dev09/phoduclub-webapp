@@ -268,33 +268,31 @@ function Profile() {
                         <div className={styles.enrolledExams}>
                             {userData?.targetExams?.map((exam, index) => {
                                 let examColor = '';
-                                switch (exam) {
 
+                                // Assign specific colors to each exam directly
+                                switch (exam) {
                                     case 'JEE':
-                                        examColor = '#F04438'; // Red
+                                        examColor = '#FF5733'; // Red
                                         break;
                                     case 'BITSAT':
-                                        examColor = '#F79009'; // Orange
+                                        examColor = '#FF8C00'; // Orange
                                         break;
                                     case 'VITEEE':
-                                        examColor = '#17B26A'; // Green
+                                        examColor = '#28A745'; // Green
                                         break;
                                     case 'SRMJEEE':
-                                        examColor = '#2E90FA'; // Purple
-                                        break;
                                     case 'KCET':
-                                        examColor = '#1177BB'; // Blue
+                                        examColor = '#007BFF'; // Blue
                                         break;
                                     case 'COMEDK':
-                                        examColor = '#F04438'; // Red
+                                        examColor = '#FF5733'; // Red
                                         break;
                                     case 'MET':
-                                        examColor = '#F79009'; // Orange
+                                        examColor = '#FF8C00'; // Orange
                                         break;
                                     default:
                                         examColor = '#CCCCCC'; // Default gray color
                                         break;
-
                                 }
 
                                 return (

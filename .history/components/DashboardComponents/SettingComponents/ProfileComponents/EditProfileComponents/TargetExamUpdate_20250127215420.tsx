@@ -34,7 +34,7 @@ function TargetExamUpdate({ setIsEditing }: TargetExamsUpdateProps) {
   const [selectedExams, setSelectedExams] = useState<Option[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
-  const [scrollBehavior, setScrollBehavior] = useState<"inside" | "outside">("outside");
+  const [scrollBehavior, setScrollBehavior] = useState<"inside" | "outside">("inside");
 
   const db = getFirestore();
 

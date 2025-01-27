@@ -177,6 +177,16 @@ function Profile() {
     };
 
     const colors = [styles.red, styles.orange, styles.green, styles.blue];
+    // Define a color mapping for each exam
+    const examColorMapping = {
+        'BITSAT': 'color1',
+        'JEE': 'color2',
+        'SRMJEEE': 'color3',
+        'COMEDK': 'color4',
+        'KCET': 'color5',
+        'VITEEE': 'color6',
+        'MET': 'color7'
+    };
 
     return (
         <div className="flex flex-col h-full w-full justify-between">
@@ -267,42 +277,10 @@ function Profile() {
                     <div className={styles.examSection}>
                         <div className={styles.enrolledExams}>
                             {userData?.targetExams?.map((exam, index) => {
-                                let examColor = '';
-                                switch (exam) {
-
-                                    case 'JEE':
-                                        examColor = '#F04438'; // Red
-                                        break;
-                                    case 'BITSAT':
-                                        examColor = '#F79009'; // Orange
-                                        break;
-                                    case 'VITEEE':
-                                        examColor = '#17B26A'; // Green
-                                        break;
-                                    case 'SRMJEEE':
-                                        examColor = '#2E90FA'; // Purple
-                                        break;
-                                    case 'KCET':
-                                        examColor = '#1177BB'; // Blue
-                                        break;
-                                    case 'COMEDK':
-                                        examColor = '#F04438'; // Red
-                                        break;
-                                    case 'MET':
-                                        examColor = '#F79009'; // Orange
-                                        break;
-                                    default:
-                                        examColor = '#CCCCCC'; // Default gray color
-                                        break;
-
-                                }
-
+                                const examColor = examColorMapping[exam] || 'defaultColor';
                                 return (
                                     <div key={index} className={styles.button}>
-                                        <span
-                                            className={styles.dot}
-                                            style={{ backgroundColor: examColor }} // Directly apply the color here
-                                        ></span>
+                                        <span className={`${styles.dot} ${examColor}`}></span>
                                         <p className={styles.examText}>{exam}</p> {/* Render each exam */}
                                     </div>
                                 );

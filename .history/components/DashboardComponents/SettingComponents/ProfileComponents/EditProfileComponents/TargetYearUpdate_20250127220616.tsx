@@ -29,7 +29,7 @@ function TargetYearUpdate({ setIsEditing }: TargetYearUpdateProps) {
   const [user, setUser] = useState<User | null>(null);
   const [error, setError] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [scrollBehavior, setScrollBehavior] = useState<"inside" | "outside">("outside");
+
   const db = getFirestore();
 
 
@@ -210,7 +210,6 @@ function TargetYearUpdate({ setIsEditing }: TargetYearUpdateProps) {
         isOpen={isOpen}
         onOpenChange={(isOpen) => !isOpen && setIsOpen(false)}
         hideCloseButton
-        scrollBehavior={scrollBehavior}
       >
         <ModalContent>
           <>
