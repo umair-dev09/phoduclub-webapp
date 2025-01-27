@@ -41,12 +41,10 @@ function Editprofile({ open, close, adminId }: EditProfileProps) {
     const [uploadedImage, setUploadedImage] = useState<File | null>(null);
     const [scrollBehavior, setScrollBehavior] = useState<"inside" | "outside">("outside");
 
-    // Function to count only digits in phone number
     const getDigitCount = (phoneNumber: string) => {
         return phoneNumber.replace(/\D/g, '').length;
     };
 
-    // Updated form validation to check actual digit count
     const isFormValid = firstName &&
         lastName &&
         userId &&
