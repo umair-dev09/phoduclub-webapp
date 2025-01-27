@@ -255,7 +255,7 @@ function TargetExamUpdate({ setIsEditing }: TargetExamsUpdateProps) {
 
             <ModalBody className='flex gap-4 pb-4'>
               <p className='text-sm  text-[#667085]'>
-                Please update your target exams by selecting from the options below. You can choose multiple exams to tailor your learning experience.
+                Lorem ipsum is a dummy text widely used in digital industry will be used here in as a preview
               </p>
 
 

@@ -177,7 +177,16 @@ function Profile() {
     };
 
     const colors = [styles.red, styles.orange, styles.green, styles.blue];
-
+    // Define a color mapping for each exam
+    const examColorMapping = {
+        'JEE': styles.red,
+        'BITSAT': styles.orange,
+        'VITEEE': styles.green,
+        'SRMJEEE': styles.blue,
+        'KCET': styles.blue,
+        'COMEDK': styles.red,
+        'MET': styles.orange
+    };
     return (
         <div className="flex flex-col h-full w-full justify-between">
             <div className="flex flex-col flex-grow overflow-y-auto pb-[300px] mx-[20px]">
@@ -229,8 +238,11 @@ function Profile() {
                                             <div className={styles.sizeRecommendation}>File size must be less than 5MB</div>
                                         )}
                                         {copied && <span className='flex ml-2 mb-1 px-3 py-[4px] bg-[#1D2939] rounded-[6px] text-white font-medium text-[11px]'>Copied!</span>}
+
                                     </div>
+
                                 )}
+
                                 {/* Conditionally show Change and Remove buttons */}
                                 {isEditing && (
                                     <div className={styles.changeRemove}>
@@ -264,42 +276,10 @@ function Profile() {
                     <div className={styles.examSection}>
                         <div className={styles.enrolledExams}>
                             {userData?.targetExams?.map((exam, index) => {
-                                let examColor = '';
-                                switch (exam) {
-
-                                    case 'JEE':
-                                        examColor = '#F04438'; // Red
-                                        break;
-                                    case 'BITSAT':
-                                        examColor = '#F79009'; // Orange
-                                        break;
-                                    case 'VITEEE':
-                                        examColor = '#17B26A'; // Green
-                                        break;
-                                    case 'SRMJEEE':
-                                        examColor = '#2E90FA'; // Purple
-                                        break;
-                                    case 'KCET':
-                                        examColor = '#1177BB'; // Blue
-                                        break;
-                                    case 'COMEDK':
-                                        examColor = '#F04438'; // Red
-                                        break;
-                                    case 'MET':
-                                        examColor = '#F79009'; // Orange
-                                        break;
-                                    default:
-                                        examColor = '#CCCCCC'; // Default gray color
-                                        break;
-
-                                }
-
+                                const examColor = examColorMapping[exam] || 'defaultColor';
                                 return (
                                     <div key={index} className={styles.button}>
-                                        <span
-                                            className={styles.dot}
-                                            style={{ backgroundColor: examColor }} // Directly apply the color here
-                                        ></span>
+                                        <span className={`${styles.dot} ${examColor}`}></span>
                                         <p className={styles.examText}>{exam}</p> {/* Render each exam */}
                                     </div>
                                 );
@@ -332,7 +312,6 @@ function Profile() {
                                     type="text"
                                     value={nameInput}
                                     onChange={handleNameChange} // Handle input changes
-                                    maxLength={50}
                                     className='w-[320px] h-[40px] rounded-md border-solid border-[1px] border-[#d0d5dd] px-[8px] hover:border-none hover:outline hover:outline-[1.5px] hover:outline-[#D6BBFB] focus:outline focus:outline-[1.5px] focus:outline-[#D6BBFB] focus:border-none'
                                 />
                             )}

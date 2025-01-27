@@ -81,7 +81,7 @@ function Questions({ questionsList, setQuestionsList, anyQuestionAdded, setAnyQu
         const newQuestion = duplicateQuestion
             ? {
                 ...duplicateQuestion,
-                question: `${duplicateQuestion.question} (Copy)`,
+                question: `${duplicateQuestion.question} (copy)`,
             } // Duplicate all properties of the question
             : {
                 question: '',

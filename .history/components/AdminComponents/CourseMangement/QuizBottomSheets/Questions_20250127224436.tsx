@@ -81,7 +81,8 @@ function Questions({ questionsList, setQuestionsList, anyQuestionAdded, setAnyQu
         const newQuestion = duplicateQuestion
             ? {
                 ...duplicateQuestion,
-                question: `${duplicateQuestion.question} (Copy)`,
+                question: `${duplicateQuestion.question} (copy)`,
+                questionId: `temp-${Date.now()}` // Add unique temp ID
             } // Duplicate all properties of the question
             : {
                 question: '',
@@ -91,6 +92,7 @@ function Questions({ questionsList, setQuestionsList, anyQuestionAdded, setAnyQu
                 correctAnswer: null,
                 explanation: '',
                 questionId: '',
+                questionId: `temp-${Date.now()}`,
             };
 
         setQuestionsList([...questionsList, newQuestion]);
