@@ -9,7 +9,7 @@ export default function MyCourse() {
                     <MyCourses />
                 </div>
             </div>
-            <div className='flex w-full  ml-6'>
+            <div className='flex w-full ml-6 mb-8'>
                 <div className='flex flex-1'>
                     <CoursesList />
                 </div>

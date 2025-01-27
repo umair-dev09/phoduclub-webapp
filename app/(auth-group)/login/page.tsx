@@ -41,7 +41,7 @@ export default function Login_Page() {
     }, [db, router]);
 
     useEffect(() => {
-        if (phone.length >= 10) {
+        if (phone.length >= 13) {
             setIsPhoneValid(true);
             setErrorMessage('');
             setButtonColor('#7400E0');

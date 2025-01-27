@@ -20,6 +20,30 @@ function Login() {
     const [phoneError, setPhoneError] = useState('');
     const [adminId, setAdminId] = useState('');
     const db = getFirestore();
+    const [isPhoneValid, setIsPhoneValid] = useState(false);
+
+    const handlePhoneChange = (value: string): void => {
+        // Limit the phone number to 12 digits (including country code)
+        if (value.length <= 12) {
+            setPhone(value);
+            // Clear phone error if it exists
+            if (phoneError) {
+                setPhoneError('');
+            }
+        }
+    };
+
+    useEffect(() => {
+        if (phone.length === 12) {
+            setIsPhoneValid(true);
+        } else {
+            setIsPhoneValid(false);
+        }
+    }, [phone]);
+
+    useEffect(() => {
+        setButtonDisabled(Name.trim() === '' || phone.length !== 12);
+    }, [Name, phone]);
 
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
@@ -42,10 +66,6 @@ function Login() {
         return () => unsubscribe();
     }, [db, router]);
 
-    useEffect(() => {
-        setButtonDisabled(Name.trim() === '' || phone.trim() === '');
-    }, [Name, phone]);
-
     const setupRecaptcha = () => {
         if (!window.recaptchaVerifier) {
             window.recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
@@ -63,9 +83,10 @@ function Login() {
         setPhoneError('');
         setShowLoading(true);
 
-        if (Name.trim() === '' || phone.trim() === '') {
+        if (Name.trim() === '' || phone.length !== 12) {
             if (Name.trim() === '') setUsernameError('Incorrect User ID');
-            if (phone.trim() === '') setPhoneError('Please enter a correct mobile number');
+            if (phone.length !== 12) setPhoneError('Please enter a complete phone number');
+            setShowLoading(false);
             return;
         }
 
@@ -77,22 +98,22 @@ function Login() {
 
             if (!querySnapshot.empty) {
                 const adminDoc = querySnapshot.docs[0];
-                setAdminId(adminDoc.id);  // Store adminId
+                setAdminId(adminDoc.id);
 
                 setupRecaptcha();
 
-                // Trigger Firebase Phone Authentication
                 signInWithPhoneNumber(auth, formattedPhone, window.recaptchaVerifier)
                     .then((confirmationResult) => {
-                        window.confirmationResult = confirmationResult;  // Save for OTP verification
+                        window.confirmationResult = confirmationResult;
                         router.push(`/admin-verify?adminId=${adminDoc.id}`);
                         setShowLoading(false);
                     })
-                    .catch((error) => { console.error("SMS not sent:", error); setShowLoading(false); }
-                    );
+                    .catch((error) => {
+                        console.error("SMS not sent:", error);
+                        setShowLoading(false);
+                    });
 
             } else {
-                // Username or phone number errors
                 const usernameExists = !(await getDocs(query(adminRef, where("userId", "==", Name)))).empty;
                 const phoneExists = !(await getDocs(query(adminRef, where("phone", "==", formattedPhone)))).empty;
                 if (usernameExists && phoneExists) {
@@ -105,9 +126,9 @@ function Login() {
             }
         } catch (error) {
             console.error("Error checking admin data:", error);
+            setShowLoading(false);
         }
     };
-
 
     return (
         <div className="bg-[#f7f8fb] h-screen w-screen flex justify-center items-center ">
@@ -136,6 +157,7 @@ function Login() {
                                     placeholder='Admin'
                                     value={Name}
                                     onChange={(e) => setName(e.target.value)}
+                                    maxLength={50}
                                     className="w-full rounded-md h-[40px] pl-2 text-[#344054] font-normal text-sm border-none focus:ring-0 focus:border-black focus:outline-none shadow-[0px_1px_2px_0px_rgba(16,24,40,0.05)]"
                                 />
                             </div>
@@ -148,7 +170,8 @@ function Login() {
                                 <PhoneInput
                                     country={'in'}
                                     value={phone}
-                                    onChange={(phone) => setPhone(phone)}
+                                    // onChange={(phone) => setPhone(phone)}
+                                    onChange={handlePhoneChange}
                                     inputProps={{
                                         name: 'phone',
                                         required: true,

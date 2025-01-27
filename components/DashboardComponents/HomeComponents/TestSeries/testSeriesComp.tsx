@@ -195,105 +195,70 @@ function TestSeriesComp() {
           </div>
         ))
       ) : (
-        <div className="flex flex-row justify-evenly mt-4 mb-1">
-          <div className="flex items-center justify-center flex-col rounded-lg relative overflow-hidden transition-transform duration-300 w-[300px] h-auto">
-            {/* Container for the suggestion badge and course image */}
-            <div>
-              {/* Suggestion badge with icon and text */}
-              <div className="flex items-center absolute top-3 left-3 mr-5 bg-linear-to-r bg-[linear-gradient(92deg,rgba(255,255,255,0.5)0%,rgba(255,255,255,0.4)100%)] text-xs font-medium border border-white rounded-full py-1 px-3 z-10 transition-transform transition-font-size duration-300 ease-in-out">
-                <Image
-                  className="mr-[5px]"
-                  src="/icons/suggestion_icon.svg"
-                  alt="suggestion icon"
-                  width={16}
-                  height={16}
-                />
-                <p>Suggested for you</p>
-              </div>
-              {/* Course image */}
-              <Image className="w-[300px] h-[200px] object-cover border border-[#EAECF0] rounded-tl-lg rounded-tr-lg" src={"/images/course_img.svg"} alt="Course image" width={300} height={300} />
-            </div>
-            {/* Container for course details and buy button */}
-            <div className="flex w-full flex-col border border-[#EAECF0] border-t-0 bg-white rounded-br-lg rounded-bl-lg">
-              {/* Course name and details */}
-              <div className="mt-4">
-                {/* Course name */}
-                <div className="text-lg font-semibold leading-6 ml-4">
-                  <p>Name</p>
-                </div>
-                {/* Course details: lessons, duration */}
-                <div className="text-xs mx-4 font-normal leading-4 text-[#667085] flex items-center gap-1">
-                  <p>no.of Lessons</p>
-                  <span>&#x2022;</span>
-                  <p>3hr 14m</p>
-                </div>
-              </div>
-              {/* Pricing and buy button */}
-              <div className="flex justify-between mt-2 mb-4 mx-4 text-lg font-semibold">
-                {/* Price */}
-                <div className="flex items-end">
-                  <h4>&#8377; Course Price</h4>
-                </div>
-                {/* Buy Now button */}
+        <div className="flex flex-wrap justify-between mt-7 mb-1 gap-6 mx-6">
+          {Array(2)
+            .fill(null)
+            .map((_, index) => (
+              <div
+                key={index}
+                className="flex flex-col flex-1 rounded-lg relative overflow-hidden transition-transform duration-300 h-auto max-w-[calc(50%-12px)]"
+              >
+                {/* Container for the suggestion badge and course image */}
                 <div>
-                  <button className="text-xs font-semibold py-2.5 px-3.5 shadow-inner-button rounded-md bg-white border-2 border-[#9012FF] text-[#7400E0] hover:bg-[#F2F4F7] transition-colors"
-                  // onClick={() => handleTabClick(`/learn/courses/purchase/${course.courseName.toLowerCase().replace(/\s+/g, '-')}/?cId=${course.courseId}`)}
-                  >
-                    Buy Now
-                  </button>
+                  {/* Suggestion badge with icon and text */}
+                  <div className="flex items-center absolute top-3 left-3 bg-[linear-gradient(92deg,rgba(255,255,255,0.5)0%,rgba(255,255,255,0.4)100%)] text-xs font-medium border border-white rounded-full py-1 px-3 z-10">
+                    <Image
+                      className="mr-[5px]"
+                      src="/icons/suggestion_icon.svg"
+                      alt="suggestion icon"
+                      width={16}
+                      height={16}
+                    />
+                    <p>Suggested for you</p>
+                  </div>
+                  {/* Course image */}
+                  <Image
+                    className="w-full h-[160px] object-cover border border-[#EAECF0] rounded-tl-lg rounded-tr-lg"
+                    src={"/images/course_img.svg"}
+                    alt="Course image"
+                    width={300}
+                    height={300}
+                  />
+                </div>
+                {/* Container for course details and buy button */}
+                <div className="flex w-full flex-col border border-[#EAECF0] border-t-0 bg-white rounded-br-lg rounded-bl-lg">
+                  {/* Course name and details */}
+                  <div className="mt-4">
+                    {/* Course name */}
+                    <div className="text-base font-semibold leading-6 ml-4">
+                      <p>Name</p>
+                    </div>
+                    {/* Course details: lessons, duration */}
+                    <div className="text-xs mx-4 font-normal leading-[18px] text-[#667085] flex items-center gap-1">
+                      <p>Lessons</p>
+                      <span>&#x2022;</span>
+                      <p>3hr 14m</p>
+                    </div>
+                  </div>
+                  {/* Pricing and buy button */}
+                  <div className="flex justify-between mt-2 mb-4 mx-4 text-base font-semibold">
+                    {/* Price */}
+                    <div className="flex items-end">
+                      <h4>&#8377; 2400</h4>
+                    </div>
+                    {/* Buy Now button */}
+                    <div>
+                      <button
+                        className="text-xs font-semibold leading-5 py-[10px] px-[14px] shadow-inner-button rounded-md bg-white border-2 border-[#9012FF] text-[#7400E0] hover:bg-[#F2F4F7] transition-colors"
+                      // onClick={() => handleTabClick(`/learn/courses/purchase/${course.courseName.toLowerCase().replace(/\s+/g, '-')}/?cId=${course.courseId}`)}
+                      >
+                        Buy Now
+                      </button>
+                    </div>
+                  </div>
                 </div>
               </div>
-            </div>
-          </div>
-          <div className="flex items-center justify-center flex-col rounded-lg relative overflow-hidden transition-transform duration-300 w-[300px] h-auto">
-            {/* Container for the suggestion badge and course image */}
-            <div>
-              {/* Suggestion badge with icon and text */}
-              <div className="flex items-center absolute top-3 left-3 mr-5 bg-linear-to-r bg-[linear-gradient(92deg,rgba(255,255,255,0.5)0%,rgba(255,255,255,0.4)100%)] text-xs font-medium border border-white rounded-full py-1 px-3 z-10 transition-transform transition-font-size duration-300 ease-in-out">
-                <Image
-                  className="mr-[5px]"
-                  src="/icons/suggestion_icon.svg"
-                  alt="suggestion icon"
-                  width={16}
-                  height={16}
-                />
-                <p>Suggested for you</p>
-              </div>
-              {/* Course image */}
-              <Image className="w-[300px] h-[200px] object-cover border border-[#EAECF0] rounded-tl-lg rounded-tr-lg" src={"/images/course_img.svg"} alt="Course image" width={300} height={300} />
-            </div>
-            {/* Container for course details and buy button */}
-            <div className="flex w-full flex-col border border-[#EAECF0] border-t-0 bg-white rounded-br-lg rounded-bl-lg">
-              {/* Course name and details */}
-              <div className="mt-4">
-                {/* Course name */}
-                <div className="text-lg font-semibold leading-6 ml-4">
-                  <p>Name</p>
-                </div>
-                {/* Course details: lessons, duration */}
-                <div className="text-xs mx-4 font-normal leading-4 text-[#667085] flex items-center gap-1">
-                  <p>no.of Lessons</p>
-                  <span>&#x2022;</span>
-                  <p>3hr 14m</p>
-                </div>
-              </div>
-              {/* Pricing and buy button */}
-              <div className="flex justify-between mt-2 mb-4 mx-4 text-lg font-semibold">
-                {/* Price */}
-                <div className="flex items-end">
-                  <h4>&#8377; Course Price</h4>
-                </div>
-                {/* Buy Now button */}
-                <div>
-                  <button className="text-xs font-semibold py-2.5 px-3.5 shadow-inner-button rounded-md bg-white border-2 border-[#9012FF] text-[#7400E0] hover:bg-[#F2F4F7] transition-colors"
-                  // onClick={() => handleTabClick(`/learn/courses/purchase/${course.courseName.toLowerCase().replace(/\s+/g, '-')}/?cId=${course.courseId}`)}
-                  >
-                    Buy Now
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
+            ))}
         </div>
       )}
     </div>
