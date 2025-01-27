@@ -389,11 +389,9 @@ function UsersRoleName() {
                   <h3 className="text-lg font-bold text-[#1D2939]">
                     Assign New Course
                   </h3>
-                  <button className="w-[32px] h-[32px]  rounded-full flex items-center justify-center transition-all duration-300 ease-in-out hover:bg-[#F2F4F7]">
-                    <button onClick={() => setAssignOpen(false)}>
+                    <button className="w-[32px] h-[32px]  rounded-full flex items-center justify-center transition-all duration-300 ease-in-out hover:bg-[#F2F4F7]" onClick={() => setAssignOpen(false)}>
                       <Image src="/icons/cancel.svg" alt="Cancel" width={20} height={20} />
                     </button>
-                  </button>
                 </div>
                 <div className='flex flex-col overflow-y-auto max-h-[500px] border rounded-sm divide-y-small'>
                   {courses.map((course, index) => (

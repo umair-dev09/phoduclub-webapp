@@ -8,7 +8,7 @@ import Publish from "@/components/AdminComponents/createQuiz/Publish";
 import { toast, ToastContainer } from 'react-toastify';
 import { now, today, CalendarDate, getLocalTimeZone, parseDateTime } from "@internationalized/date";
 import { auth, db, storage } from "@/firebase";
-import { addDoc, collection, doc, getDoc, getDocs, updateDoc, setDoc } from "firebase/firestore";
+import { addDoc, collection, doc, getDoc, getDocs, updateDoc, setDoc, writeBatch } from "firebase/firestore";
 import 'react-toastify/dist/ReactToastify.css';
 // Define interfaces for question options and structure
 interface Options { 
@@ -35,14 +35,51 @@ enum Step {
     QuizCreated = 4,
 }
 
+function convertToSeconds(timeString: string): number {
+    const [value, unit] = timeString.split(' ');
+    const numValue = parseInt(value, 10);
+  
+    if (isNaN(numValue)) {
+      throw new Error("Invalid time value. Must be a number.");
+    }
+  
+    if (unit === 'Minutes') {
+      return numValue * 60; // Convert minutes to seconds
+    } else if (unit === 'Hours') {
+      return numValue * 3600; // Convert hours to seconds
+    } else {
+      throw new Error("Invalid time unit. Only 'Minutes' and 'Hours' are allowed.");
+    }
+  }
+function convertQuizTimeToText(seconds: number): { timeNumber: string; timeText: string } {
+    if (seconds < 3600) {
+        // Less than an hour, convert to minutes
+        const minutes = Math.floor(seconds / 60);
+        return {
+            timeNumber: minutes.toString(),
+            timeText: "Minutes"
+        };
+    } else {
+        // Convert to hours
+        const hours = Math.floor(seconds / 3600);
+        return {
+            timeNumber: hours.toString(),
+            timeText: "Hours"
+        };
+    }
+}
+
 function CreateQuiz() {
-    const [isPublished, setIsPublished] = useState(false); // New state to track if the quiz is published
-    const [marksPerQ, setMarksPerQ] = useState("");
-    const [nMarksPerQ, setnMarksPerQ] = useState("");
+    const [isPremiumQuiz, setIsPremiumQuiz] = useState(false);
+    const [product, setProduct] = useState<{ productId: string; productName: string ; productType: string } | null>(null);
+    const [marksPerQ, setMarksPerQ] = useState(0);
+    const [nMarksPerQ, setnMarksPerQ] = useState(0);
     const [timeNumber, setTimeNumber] = useState("");
-    const [timeText, setTimeText] = useState("Minute(s)");
+    const [timeText, setTimeText] = useState("Minutes");
     const [startDate, setStartDate] = useState("");
     const [endDate, setEndDate] = useState("");
+    const [originalName, setOriginalName] = useState('');
+    const [originalDescription, setOriginalDescription] = useState('');
     let [liveQuizNow, setLiveQuizNow] = useState<boolean>(false);
     const searchParams = useSearchParams();
     const status = searchParams.get("s");
@@ -50,6 +87,10 @@ function CreateQuiz() {
     const router = useRouter();
     const [quizName, setQuizName] = useState<string>('');
     const [quizDescription, setQuizDescription] = useState<string>('');
+    const [deletedQuestionIds, setDeletedQuestionIds] = useState<string[]>([]);
+    const [questionsList, setQuestionsList] = useState<Question[]>([{ question: "", isChecked: false, isActive: false, options: { A: "", B: "", C: "", D: "" }, correctAnswer: null, explanation: "", questionId: "" }]);
+    const [originalQuestionsList, setOriginalQuestionsList] = useState<Question[]>([{ question: "", isChecked: false, isActive: false, options: { A: "", B: "", C: "", D: "" }, correctAnswer: null, explanation: "", questionId: "" }]);
+
     useEffect(() => {
         if (quizId) {
             fetchQuizData(quizId);
@@ -65,23 +106,17 @@ function CreateQuiz() {
             if (quizDocSnap.exists()) {
                 const quizData = quizDocSnap.data();
                 setQuizName(quizData.quizName || "");
+                setOriginalName(quizData.quizName || "");
                 setQuizDescription(quizData.quizDescription || "");
+                setOriginalDescription(quizData.quizDescription || "");
                 setStartDate(quizData.startDate || "");
                 setEndDate(quizData.endDate || "");
                 setMarksPerQ(quizData.marksPerQuestion || "");
                 setnMarksPerQ(quizData.nMarksPerQuestion || "");
-                const quizTime = quizData.quizTime || "";
-
-                // Use regex to extract the number and the text (Minute(s)/Hour(s))
-                const timeMatch = quizTime.match(/(\d+)\s*(Minute\(s\)|Hour\(s\))/);
-
-                if (timeMatch) {
-                    setTimeNumber(timeMatch[1]);  // The first capturing group will give the number
-                    setTimeText(timeMatch[2]);    // The second capturing group will give 'Minute(s)' or 'Hour(s)'
-                } else {
-                    setTimeNumber("");  // Default if no match found
-                    setTimeText("Minute(s)");    // Default if no match found
-                }
+                setTimeNumber(convertQuizTimeToText(quizData.quizTime).timeNumber);
+                setTimeText(convertQuizTimeToText(quizData.quizTime).timeText);
+                setIsPremiumQuiz(quizData.isPremiumQuiz || false);
+                setProduct(quizData.product || null);
                 // Fetch Questions subcollection
                 const questionsCollectionRef = collection(quizDocRef, "Questions");
                 const questionsSnapshot = await getDocs(questionsCollectionRef);
@@ -103,6 +138,7 @@ function CreateQuiz() {
                     };
                 });
                 setQuestionsList(fetchedQuestions);
+                setOriginalQuestionsList(fetchedQuestions);
             } else {
                 toast.error("Quiz not found!");
             }
@@ -116,15 +152,6 @@ function CreateQuiz() {
     // Validation function to check if all fields are filled
     const [currentStep, setCurrentStep] = useState<Step>(Step.QuizInfo);
     // Add questionsList state here
-    const [questionsList, setQuestionsList] = useState<Question[]>([{
-        question: '',
-        isChecked: false,
-        isActive: false,
-        options: { A: '', B: '', C: '', D: '' },
-        correctAnswer: null,
-        explanation: '',
-        questionId: ''
-    }]);
 
 
     // Validation function to check if all fields are filled for the Questions step
@@ -133,7 +160,7 @@ function CreateQuiz() {
             return quizName.trim() !== '' && quizDescription.trim() !== '';
         }
         else if (currentStep === Step.Publish) {
-            return marksPerQ.trim() !== '' && endDate.trim() !== '' && nMarksPerQ.trim() !== '' && timeNumber.trim() !== '' && timeText.trim() !== '';
+            return marksPerQ !== 0 && endDate.trim() !== '' && timeNumber.trim() !== '' && timeText.trim() !== '' && (!isPremiumQuiz || (isPremiumQuiz && product !== null));
         }
         return questionsList.every(question =>
             question.question.trim() !== '' &&
@@ -171,161 +198,200 @@ function CreateQuiz() {
     const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
     const handleNextClick = async () => {
+        if(quizId && (quizName !== originalName || quizDescription !== originalDescription || questionsList !== originalQuestionsList)){
+            handleSaveChanges();
+        }
         if (currentStep === Step.Publish) {
             toast.promise(
                 new Promise(async (resolve, reject) => {
                     try {
                         // Simulate delay
                         await new Promise(resolve => setTimeout(resolve, 100));
-
-                        // If the quiz is saved, update the existing quiz data, otherwise create a new quiz
-                        if (status === "saved" && quizId) {
-                            // Reference the existing quiz
-                            const quizRef = doc(db, "quiz", quizId);
-
-                            // Prepare updated quiz data
-                            const quizData = {
+                        if(quizId){
+                          if(status === 'saved' || status === null){
+                            // Update existing quiz document
+                            const quizRef = doc(db, 'quiz', quizId);
+                            await updateDoc(quizRef, {
                                 quizName,
                                 quizDescription,
                                 startDate: liveQuizNow ? formattedDate : startDate,
                                 endDate,
-                                quizTime: timeNumber + " " + timeText,
+                                quizTime: timeNumber && timeText ? convertToSeconds(timeNumber + " " + timeText) : 0,
                                 marksPerQuestion: marksPerQ,
-                                nMarksPerQuestion: nMarksPerQ,
-                                status: liveQuizNow ? "live" : "scheduled", 
-                                quizPublishedDate: new Date().toISOString(),
-                                createdBy: userId,
-                            };
-
-                            // Update the existing quiz data
-                            await updateDoc(quizRef, quizData);
-
-                            // Update the questions
-                            for (let question of questionsList) {
-                                const questionRef = doc(collection(quizRef, "Questions"), question.questionId || '');
-
-                                // Map options to an options object
-                                const options = {
-                                    A: question.options.A,
-                                    B: question.options.B,
-                                    C: question.options.C,
-                                    D: question.options.D,
-                                };
-
-                                // Determine the correct answer based on the letter provided
-                                let correctAnswer;
-                                switch (question.correctAnswer) {
-                                    case "A":
-                                        correctAnswer = 'A';
-                                        break;
-                                    case "B":
-                                        correctAnswer = 'B';
-                                        break;
-                                    case "C":
-                                        correctAnswer = 'C';
-                                        break;
-                                    case "D":
-                                        correctAnswer = 'D';
-                                        break;
-                                    default:
-                                        correctAnswer = null;
-                                }
-
-                                const questionData = {
-                                    questionId: question.questionId,
-                                    question: question.question,
-                                    options,
-                                    correctAnswer,
-                                    answerExplanation: question.explanation,
-                                };
-
-                                // Update each question in Firestore
-                                await updateDoc(questionRef, questionData);
-                            }
-
-                            resolve('Quiz Updated Successfully!');
-                            setTimeout(() => {
-                                router.back();
-                            }, 500);
-
-                        } else {
-                            // If the status is not 'saved', create a new quiz
-                            const quizRef = doc(collection(db, "quiz"));
-
-                            const quizData = {
-                                quizId: quizRef.id, // Use the generated ID as the quizId
-                                quizName,
-                                quizDescription,
-                                startDate: liveQuizNow ? formattedDate : startDate,
-                                endDate,
-                                quizTime: timeNumber + " " + timeText,
-                                marksPerQuestion: marksPerQ,
-                                nMarksPerQuestion: nMarksPerQ,
+                                nMarksPerQuestion: nMarksPerQ || 0,
                                 status: liveQuizNow ? "live" : "scheduled", // You can change this as needed
                                 quizPublishedDate: new Date().toISOString(),
                                 createdBy: userId,
-                            };
-
-                            await setDoc(quizRef, quizData);
-
-                            for (let question of questionsList) {
-                                const questionRef = doc(collection(quizRef, "Questions"));
-                                const questionId = questionRef.id;
-
-                                const options = {
-                                    A: question.options.A,
-                                    B: question.options.B,
-                                    C: question.options.C,
-                                    D: question.options.D,
-                                };
-
-                                let correctAnswer;
-                                switch (question.correctAnswer) {
-                                    case "A":
-                                        correctAnswer = 'A';
-                                        break;
-                                    case "B":
-                                        correctAnswer = 'B';
-                                        break;
-                                    case "C":
-                                        correctAnswer = 'C';
-                                        break;
-                                    case "D":
-                                        correctAnswer = 'D';
-                                        break;
-                                    default:
-                                        correctAnswer = null;
-                                }
-
-                                const questionData = {
-                                    questionId,
-                                    question: question.question,
-                                    options,
-                                    correctAnswer,
-                                    answerExplanation: question.explanation,
-                                };
-
-                                await setDoc(questionRef, questionData);
-                            }
-
-                            resolve('Quiz Saved Successfully!');
+                                isPremiumQuiz,
+                                product: isPremiumQuiz ? product : null,
+                            });
+                            setOriginalName(quizName);
+                            setOriginalDescription(quizDescription);
+                            resolve('Changes Saved Successfully!');
                             setTimeout(() => {
                                 router.back();
                             }, 500);
+                          }
+                          else{
+                            // Update existing quiz document
+                            const quizRef = doc(db, 'quiz', quizId);
+                            await updateDoc(quizRef, {
+                                quizName,
+                                quizDescription,
+                                // startDate: liveQuizNow ? formattedDate : startDate,
+                                // endDate,
+                                quizTime: timeNumber && timeText ? convertToSeconds(timeNumber + " " + timeText) : 0,
+                                marksPerQuestion: marksPerQ,
+                                nMarksPerQuestion: nMarksPerQ || 0,
+                                // status: liveQuizNow ? "live" : "scheduled", // You can change this as needed
+                                quizPublishedDate: new Date().toISOString(),
+                                isPremiumQuiz,
+                                product: isPremiumQuiz ? product : null,
+                                createdBy: userId,
+                            });
+
+                           
+                            setOriginalName(quizName);
+                            setOriginalDescription(quizDescription);
+                            resolve('Changes Saved Successfully!');
+                            setTimeout(() => {
+                                router.back();
+                            }, 500);
+                          }
                         }
+                        else{
+                        const docRef = await addDoc(collection(db, 'quiz'), {
+                            quizName,
+                            quizDescription,
+                            startDate: liveQuizNow ? formattedDate : startDate,
+                            endDate,
+                            quizTime: timeNumber && timeText ? convertToSeconds(timeNumber + " " + timeText) : 0,
+                            marksPerQuestion: marksPerQ,
+                            nMarksPerQuestion: nMarksPerQ || 0,
+                            status: liveQuizNow ? "live" : "scheduled", // You can change this as needed
+                            quizPublishedDate: new Date().toISOString(),
+                            isPremiumQuiz,
+                            product: isPremiumQuiz ? product : null,
+                            createdBy: userId,
+                        });
+
+                        await updateDoc(doc(db, 'quiz', docRef.id), {
+                            quizId: docRef.id,
+                        });
+
+                        const quizRef = doc(db, 'quiz', docRef.id);
+                        const questionsCollectionRef = collection(quizRef, 'Questions');
+                        const batch = writeBatch(db);
+                        
+                         // Delete removed questions
+                        for (const deletedId of deletedQuestionIds) {
+                            const deleteRef = doc(questionsCollectionRef, deletedId);
+                            batch.delete(deleteRef);
+                        }
+
+
+                         // Process each question in the list
+                        for (const question of questionsList) {
+                            let questionRef;
+                            
+                            if (!question.questionId || question.questionId.startsWith('temp-')) {
+                                questionRef = doc(questionsCollectionRef);
+                            } else {
+                                questionRef = doc(questionsCollectionRef, question.questionId);
+                            }
+
+                            const questionData = {
+                                questionId: questionRef.id,
+                                question: question.question,
+                                options: question.options,
+                                correctAnswer: question.correctAnswer,
+                                answerExplanation: question.explanation,
+                            };
+                            batch.set(questionRef, questionData);
+                        }
+                        
+                        await batch.commit();
+
+                        resolve('Quiz Saved Successfully!');
+                        setTimeout(() => {
+                            router.back();
+                        }, 500);
+                    }
                     } catch (error) {
                         reject('Error in publishing/updating quiz');
                     }
                 }),
                 {
-                    pending: 'Uploading Quiz...',
-                    success: 'Quiz Published!',
+                    pending: 'Publishing/Updating Quiz...',
+                    success: 'Quiz Published/Saved Successfully!',
                     error: 'Error publishing/updating quiz'
                 }
             );
         } else if (currentStep < Step.Publish) {
             setCurrentStep(currentStep + 1);
         }
+    };
+
+    const handleSaveChanges = async () => {
+        toast.promise(
+            new Promise(async (resolve, reject) => {
+                try {
+                    // Simulate delay
+                    await new Promise(resolve => setTimeout(resolve, 100));
+                    if (quizId) {
+                        // Update existing quiz document
+                        const quizRef = doc(db, 'quiz', quizId);
+                        await updateDoc(quizRef, {
+                            quizName,
+                            quizDescription,
+                        });
+
+                        // Update questions using batch
+                        const questionsCollectionRef = collection(quizRef, 'Questions');
+                        const batch = writeBatch(db);
+
+                         // Delete removed questions
+                        for (const deletedId of deletedQuestionIds) {
+                            const deleteRef = doc(questionsCollectionRef, deletedId);
+                            batch.delete(deleteRef);
+                        }
+                         // Process each question in the list
+                        for (const question of questionsList) {
+                            let questionRef;
+                            
+                            if (!question.questionId || question.questionId.startsWith('temp-')) {
+                                questionRef = doc(questionsCollectionRef);
+                            } else {
+                                questionRef = doc(questionsCollectionRef, question.questionId);
+                            }
+
+                            const questionData = {
+                                questionId: questionRef.id,
+                                question: question.question,
+                                options: question.options,
+                                correctAnswer: question.correctAnswer,
+                                answerExplanation: question.explanation,
+                            };
+                            batch.set(questionRef, questionData);
+                        }
+                        
+                        await batch.commit();
+                        setOriginalName(quizName);
+                        setOriginalDescription(quizDescription);
+                        setOriginalQuestionsList(questionsList);
+                        resolve('Changes Saved Successfully!');
+                    }
+                } catch (error) {
+                    reject('Error in saving/updating quiz');
+                    console.error('Error saving quiz:', error);
+                }
+            }),
+            {
+                pending: 'Saving Changes...',
+                success: 'Changes Saved!',
+                error: 'Error saving changes',
+            }
+        );
     };
 
     const handleSaveClick = async () => {
@@ -337,133 +403,111 @@ function CreateQuiz() {
 
                     // If status is 'saved' and quizId exists, update the quiz
                     if (status === "saved" && quizId) {
-                        // Reference the existing quiz
-                        const quizRef = doc(db, "quiz", quizId);
-
-                        // Prepare updated quiz data
-                        const quizData = {
+                        // Update existing quiz document
+                        const quizRef = doc(db, 'quiz', quizId);
+                        await updateDoc(quizRef, {
                             quizName,
                             quizDescription,
                             startDate: liveQuizNow ? formattedDate : startDate,
                             endDate,
-                            quizTime: timeNumber + " " + timeText,
+                            quizTime: timeNumber && timeText ? convertToSeconds(timeNumber + " " + timeText) : 0,
                             marksPerQuestion: marksPerQ,
-                            nMarksPerQuestion: nMarksPerQ,
+                            nMarksPerQuestion: nMarksPerQ || 0,
                             status: "saved",
                             quizPublishedDate: new Date().toISOString(),
+                            isPremiumQuiz: false,
                             createdBy: userId,
-                        };
+                        });
 
-                        // Update the existing quiz data
-                        await updateDoc(quizRef, quizData);
+                        // Update questions using batch
+                        const questionsCollectionRef = collection(quizRef, 'Questions');
+                        const batch = writeBatch(db);
 
-                        // Update the questions
-                        for (let question of questionsList) {
-                            const questionRef = doc(collection(quizRef, "Questions"), question.questionId || '');
+                         // Delete removed questions
+                        for (const deletedId of deletedQuestionIds) {
+                            const deleteRef = doc(questionsCollectionRef, deletedId);
+                            batch.delete(deleteRef);
+                        }
 
-                            // Map options to an options object
-                            const options = {
-                                A: question.options.A,
-                                B: question.options.B,
-                                C: question.options.C,
-                                D: question.options.D,
-                            };
 
-                            // Determine the correct answer based on the letter provided
-                            let correctAnswer;
-                            switch (question.correctAnswer) {
-                                case "A":
-                                    correctAnswer = 'A';
-                                    break;
-                                case "B":
-                                    correctAnswer = 'B';
-                                    break;
-                                case "C":
-                                    correctAnswer = 'C';
-                                    break;
-                                case "D":
-                                    correctAnswer = 'D';
-                                    break;
-                                default:
-                                    correctAnswer = null;
+                         // Process each question in the list
+                        for (const question of questionsList) {
+                            let questionRef;
+                            
+                            if (!question.questionId || question.questionId.startsWith('temp-')) {
+                                questionRef = doc(questionsCollectionRef);
+                            } else {
+                                questionRef = doc(questionsCollectionRef, question.questionId);
                             }
 
                             const questionData = {
-                                questionId: question.questionId,
+                                questionId: questionRef.id,
                                 question: question.question,
-                                options,
-                                correctAnswer,
+                                options: question.options,
+                                correctAnswer: question.correctAnswer,
                                 answerExplanation: question.explanation,
                             };
-
-                            // Update each question in Firestore
-                            await updateDoc(questionRef, questionData);
+                            batch.set(questionRef, questionData);
                         }
-
+                        
+                        await batch.commit();
+                        
                         resolve('Quiz Updated Successfully!');
                         setTimeout(() => {
                             router.back();
                         }, 500);
 
                     } else {
-                        // If the status is not 'saved', create a new quiz
-                        const quizRef = doc(collection(db, "quiz"));
-
-                        const quizData = {
-                            quizId: quizRef.id, // Use the generated ID as the quizId
+                        const docRef = await addDoc(collection(db, 'quiz'), {
                             quizName,
                             quizDescription,
                             startDate: liveQuizNow ? formattedDate : startDate,
                             endDate,
-                            quizTime: timeNumber + " " + timeText,
+                            quizTime: timeNumber && timeText ? convertToSeconds(timeNumber + " " + timeText) : 0,
                             marksPerQuestion: marksPerQ,
-                            nMarksPerQuestion: nMarksPerQ,
+                            nMarksPerQuestion: nMarksPerQ || 0,
                             status: "saved",
                             quizPublishedDate: new Date().toISOString(),
+                            isPremiumQuiz: false,
                             createdBy: userId,
-                        };
+                        });
 
-                        await setDoc(quizRef, quizData);
+                        await updateDoc(doc(db, 'quiz', docRef.id), {
+                            quizId: docRef.id,
+                        });
 
-                        for (let question of questionsList) {
-                            const questionRef = doc(collection(quizRef, "Questions"));
-                            const questionId = questionRef.id;
+                        const quizRef = doc(db, 'quiz', docRef.id);
+                        const questionsCollectionRef = collection(quizRef, 'Questions');
+                        const batch = writeBatch(db);
+                        
+                         // Delete removed questions
+                        for (const deletedId of deletedQuestionIds) {
+                            const deleteRef = doc(questionsCollectionRef, deletedId);
+                            batch.delete(deleteRef);
+                        }
 
-                            const options = {
-                                A: question.options.A,
-                                B: question.options.B,
-                                C: question.options.C,
-                                D: question.options.D,
-                            };
 
-                            let correctAnswer;
-                            switch (question.correctAnswer) {
-                                case "A":
-                                    correctAnswer = 'A';
-                                    break;
-                                case "B":
-                                    correctAnswer = 'B';
-                                    break;
-                                case "C":
-                                    correctAnswer = 'C';
-                                    break;
-                                case "D":
-                                    correctAnswer = 'D';
-                                    break;
-                                default:
-                                    correctAnswer = null;
+                         // Process each question in the list
+                        for (const question of questionsList) {
+                            let questionRef;
+                            
+                            if (!question.questionId || question.questionId.startsWith('temp-')) {
+                                questionRef = doc(questionsCollectionRef);
+                            } else {
+                                questionRef = doc(questionsCollectionRef, question.questionId);
                             }
 
                             const questionData = {
-                                questionId,
+                                questionId: questionRef.id,
                                 question: question.question,
-                                options,
-                                correctAnswer,
+                                options: question.options,
+                                correctAnswer: question.correctAnswer,
                                 answerExplanation: question.explanation,
                             };
-
-                            await setDoc(questionRef, questionData);
+                            batch.set(questionRef, questionData);
                         }
+                        
+                        await batch.commit();
 
                         resolve('Quiz Saved Successfully!');
                         setTimeout(() => {
@@ -473,6 +517,7 @@ function CreateQuiz() {
 
                 } catch (error) {
                     reject('Error in saving/updating quiz');
+                    console.error('Error saving quiz:', error);
                 }
             }),
             {
@@ -506,12 +551,14 @@ function CreateQuiz() {
                     <Questions
                         questionsList={questionsList}
                         setQuestionsList={setQuestionsList}
+                        deletedQuestionIds={deletedQuestionIds}
+                        setDeletedQuestionIds={setDeletedQuestionIds}
                     />
                 );
             case Step.Review:
                 return <Review questionsList={questionsList} />;
             case Step.Publish:
-                return <Publish marksPerQ={marksPerQ} setMarksPerQ={setMarksPerQ} nMarksPerQ={nMarksPerQ} setnMarksPerQ={setnMarksPerQ} timeNumber={timeNumber} setTimeNumber={setTimeNumber} timeText={timeText} setTimeText={setTimeText} startDate={startDate} setStartDate={setStartDate} endDate={endDate} setEndDate={setEndDate} liveQuizNow={liveQuizNow} setLiveQuizNow={setLiveQuizNow} />;
+                return <Publish product={product} isPremiumQuiz={isPremiumQuiz} setIsPremiumQuiz={setIsPremiumQuiz} setProduct={setProduct} status={status} marksPerQ={marksPerQ} setMarksPerQ={setMarksPerQ} nMarksPerQ={nMarksPerQ} setnMarksPerQ={setnMarksPerQ} timeNumber={timeNumber} setTimeNumber={setTimeNumber} timeText={timeText} setTimeText={setTimeText} startDate={startDate} setStartDate={setStartDate} endDate={endDate} setEndDate={setEndDate} liveQuizNow={liveQuizNow} setLiveQuizNow={setLiveQuizNow} />;
 
             default:
                 return <Quizinfo
@@ -569,12 +616,16 @@ function CreateQuiz() {
                             {["Quiz info", "Questions", "Review", "Publish"][currentStep]}
                         </span>
                         <div className="flex flex-row gap-3 mb-3">
-                            {isSaveButtonDisabled === false && (
+                            {currentStep === Step.Questions && status === null && (
                                 <button className="mr-1" onClick={handleSaveClick}>
                                     <span className="text-[#8501FF] font-semibold text-sm">Save quiz</span>
                                 </button>
                             )}
-
+                            {quizId && !isNextButtonDisabled && (quizName !== originalName || quizDescription !== originalDescription || questionsList !== originalQuestionsList) && (
+                                <button className="mr-1" onClick={handleSaveChanges}>
+                                    <span className="text-[#8501FF] font-semibold text-sm">Save changes</span>
+                                </button>
+                            )}
                             {currentStep > Step.QuizInfo && (
                                 <button
                                     className="h-[44px] w-[135px] bg-[#FFFFFF] hover:bg-[#F2F4F7] rounded-md shadow-inner-button border border-solid border-[#EAECF0] flex items-center justify-center"
@@ -594,7 +645,7 @@ function CreateQuiz() {
                                 disabled={isNextButtonDisabled}
                             >
                                 <span className={`font-semibold text-sm ${isNextButtonDisabled ? 'text-[#9CA3AF]' : 'text-[#FFFFFF]'}`}>
-                                    {currentStep === Step.Publish ? "Publish" : "Next"}
+                                    {(currentStep === Step.Publish && status !== 'saved' && status !== null) ? 'Save' : currentStep === Step.Publish ? "Publish" : "Next"}
                                 </span>
                             </button>
                         </div>

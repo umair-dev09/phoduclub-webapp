@@ -105,10 +105,10 @@ const Sections: React.FC<SectionsProps> = ({
   const [questionText, setQuestionText] = useState("");
   const [timeNumber, setTimeNumber] = useState("");
   const [timeText, setTimeText] = useState("Minutes");
-  const [marksPerQ, setMarksPerQ] = useState("");
+  const [marksPerQ, setMarksPerQ] = useState(0);
   const [description, setDescription] = useState("");
   const [editSectionId, setEditSectionId] = useState("");
-  const [nMarksPerQ, setnMarksPerQ] = useState("");
+  const [nMarksPerQ, setnMarksPerQ] = useState(0);
   const [isUmbrellaTest, setIsUmbrellaTest] = useState(false);
   const [isParentUmbrellaTest, setIsParentUmbrellaTest] = useState(false);
   const [saveQuestionSectionId, setSaveQuestionSectionId] = useState("");
@@ -175,7 +175,7 @@ const Sections: React.FC<SectionsProps> = ({
     );
   };
   const isSaveButtonDisabled = !isAnyQuestionsAdded();
-  const isDoneWithQuestionDetailsButton = description && marksPerQ && nMarksPerQ && timeNumber && timeText;
+  const isDoneWithQuestionDetailsButton = description && marksPerQ && timeNumber && timeText;
   useEffect(() => {
     if (!testId) return;
 
@@ -530,7 +530,7 @@ const Sections: React.FC<SectionsProps> = ({
 
       // Start a batch write
       const batch = writeBatch(db);
-      if(isUmbrellaTest){
+      if(isUmbrellaTest){ 
         batch.update(sectionRef, {
           description,
           marksPerQ,
@@ -539,8 +539,8 @@ const Sections: React.FC<SectionsProps> = ({
         });
         await batch.commit();
         toast.success("Details added successfully");
-        setMarksPerQ('');
-        setnMarksPerQ('');
+        setMarksPerQ(0);
+        setnMarksPerQ(0);
         setDescription('');
         setTimeNumber('');
         setTimeText('Minutes');
@@ -588,8 +588,8 @@ const Sections: React.FC<SectionsProps> = ({
         await batch.commit();
         await fetchQuestions(sectionId, selectedSection?.sectionName || '');
         toast.success("Questions and details added successfully");
-        setMarksPerQ('');
-        setnMarksPerQ('');
+        setMarksPerQ(0);
+        setnMarksPerQ(0);
         setDescription('');
         setTimeNumber('');
         setTimeText('Minutes');
@@ -1488,7 +1488,7 @@ const Sections: React.FC<SectionsProps> = ({
                       value={marksPerQ}
                       onChange={(e) => {
                         const value = e.target.value.replace(/[^0-9]/g, ""); // Allows only numbers
-                        setMarksPerQ(value); // Stores the input value as a string
+                        setMarksPerQ(Number(value)); // Convert string to number before setting state
                       }}
                       className="w-full py-2 px-3 text-sm text-[#1D2939] font-normal placeholder:text-[#667085] border border-lightGrey rounded-md focus:border-[#D7BBFC] focus:ring-4 focus:ring-[#E8DEFB] outline-none transition-colors" />
                     <p className="mt-1 text-[0.813rem] text-[#475467] font-normal">
@@ -1496,14 +1496,14 @@ const Sections: React.FC<SectionsProps> = ({
                     </p>
                   </div>
                   <div className='flex flex-col w-full gap-1'>
-                    <p className='text-sm font-medium text-[#1D2939]'>Negative marks per question</p>
+                    <p className='text-sm font-medium text-[#1D2939]'>Negative marks per question (-)</p>
                     <input type="text" placeholder="0"
-                      maxLength={1} // Limits input to 2 characters
+                      maxLength={2} // Limits input to 2 characters
                       pattern="\d*" // Restricts input to numbers only
                       value={nMarksPerQ}
                       onChange={(e) => {
                         const value = e.target.value.replace(/[^0-9]/g, ""); // Allows only numbers
-                        setnMarksPerQ(value); // Stores the input value as a string
+                        setnMarksPerQ(Number(value)); // Convert string to number before setting state
                       }}
                       className="w-full py-2 px-3 text-sm text-[#1D2939] font-normal placeholder:text-[#667085] border border-lightGrey rounded-md focus:border-[#D7BBFC] focus:ring-4 focus:ring-[#E8DEFB] outline-none transition-colors" />
                     <p className="mt-1 text-[0.813rem] text-[#475467] font-normal">

@@ -266,39 +266,16 @@ function ReviewTestView() {
     // const [lastSectionTimestamp, setLastSectionTimestamp] = useState<{ [key: string]: number }>({});
     // const [overallTestStartTime] = useState<number>(Date.now());
 
-    // Initialize question states with timing fields
-    const initializeQuestionStates = (questions: any[]) => {
-        return questions.map(q => ({
-            selectedOption: null,
-            answered: false,
-            answeredCorrect: null,
-            status: 'not-visited',
-            spentTime: 0,
-            allotedTime: calculateAllotedTime(q)
-        }));
-    };
-    const calculateFinalRemarks = (questionStates: QuestionState[]) => {
-        return questionStates.map(state => ({
-            ...state,
-            remarks: determineRemarks(
-                state.allotedTime,
-                state.spentTime,
-                state.answeredCorrect,
-                state.answered,
-                // Add other necessary parameters your determineRemarks function needs
-            )
-        }));
-    };
     const [remainingTime, setRemainingTime] = useState<number>(0);
     const [formattedTime, setFormattedTime] = useState<string>("00:00:00");
-    const [initialTestTime, setInitialTestTime] = useState<number>(0);
+    // const [initialTestTime, setInitialTestTime] = useState<number>(0);
     const [timerStarted, setTimerStarted] = useState(false);
     const [subsectionTimers, setSubsectionTimers] = useState<{ [key: string]: SubSectionTimer }>({});
 
     // Add helper function to format time
     const formatTime = (seconds: number): string => {
         const hours = Math.floor(seconds / 3600);
-        const minutes = Math.floor((seconds % 3600) / 60);
+        const minutes = Math.floor((seconds % 3600) / 60); 
         const remainingSeconds = seconds % 60;
 
         return [hours, minutes, remainingSeconds]
@@ -310,7 +287,6 @@ function ReviewTestView() {
         if (!timerStarted) {
             const totalTime = section.testTime || 0;
 
-            setInitialTestTime(totalTime);
             setRemainingTime(totalTime);
             setFormattedTime(formatTime(totalTime));
             setTimerStarted(true);
@@ -1665,7 +1641,7 @@ function ReviewTestView() {
                         <ModalBody className="px-0">
                             <div className="flex flex-col items-center gap-2 mt-6 px-6 py-3">
                                 <div className="flex justify-center items-center w-[86px] h-[86px] rounded-full bg-[#F8E8FF] border border-[#F0D3FB]">
-                                    <Image src='icons/tick-01.svg' alt="completed" width={36} height={36} />
+                                    <Image src='/icons/tick-01.svg' alt="completed" width={36} height={36} />
                                 </div>
                                 <h2 className="text-[#000000] text-xl font-bold">Test Completed!</h2>
                             </div>

@@ -1,168 +1,298 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Leaderboard from "@/components/DashboardComponents/AnalyticsComponents/Quizzes-Components/Leaderboard";
 import { Bar, BarChart, CartesianGrid, Legend, ResponsiveContainer, Tooltip, TooltipProps, XAxis, YAxis } from "recharts";
 import { PieChart, Pie, Cell } from 'recharts';
 import { ChartLegend, ChartLegendContent } from "@/components/ui/chart"
 import Image from "next/image";
+import { Popover, PopoverContent, PopoverTrigger } from "@nextui-org/popover";
+import { collection, doc, getDoc, getDocs, query } from "firebase/firestore";
+import { auth, db } from "@/firebase";
 
-import {
-    ChartConfig,
-    ChartContainer,
-    ChartTooltip,
-    ChartTooltipContent,
-} from "@/components/ui/chart"
-
-const chartData = [
-    { browser: "Physics", marks: 30, fill: "#C7A5FF" },
-    { browser: "Chemistry", marks: 200, fill: "#9012FF" },
-    { browser: "Maths", marks: 287, fill: "#5C02B0" },
-];
-
-const chartConfig = {
-    Physics: {
-        label: "Physics",
-        color: "red",
-    },
-    Chemistry: {
-        label: "Chemistry",
-        color: "#9012FF",
-    },
-    Maths: {
-        label: "Maths",
-        color: "#5C02B0",
-    },
-} satisfies ChartConfig;
-
-interface CustomTooltipProps {
-    active?: boolean;
-    payload?: any[];
-    label?: string;
+interface AttemptData {
+    score?: number;
+    answeredCorrect: number;
+    answeredIncorrect: number;
+    attemptedQuestions: number;
+    timeTaken: number;
+    totalQuestions: number;
+    totalTime: number;
+    displayUserId?: string;
 }
 
-const CustomTooltip: React.FC<CustomTooltipProps> = ({ active, payload, label }) => {
-    if (active && payload && payload.length) {
-        const correctValue = payload.find(item => item.name === "correct")?.value;
-        const incorrectValue = payload.find(item => item.name === "incorrect")?.value;
-
-        return (
-            <div style={{
-                position: 'relative',
-                backgroundColor: 'white',
-                border: '1px solid #EAECF0',
-                borderRadius: '8px',
-                width: 'auto',
-                height: "auto",
-
-                fontSize: '14px',
-                pointerEvents: 'none', // Prevent mouse events from affecting the tooltip
-                boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.1)",
-                padding: '16px'
-
-            }}>
-                {/* Tooltip content */}
-
-                <div style={{ display: 'flex', alignItems: 'center', width: "auto", height: "auto", justifyItems: 'center', }}>
-                    <div style={{ display: 'flex', alignItems: 'center', }}>
-                        <span style={{
-                            display: 'inline-block',
-                            width: '12px',
-                            height: '12px',
-                            borderRadius: '50%',
-                            backgroundColor: '#17B26A',
-                            padding: '3px',
-                            marginRight: '4px',
-                        }} />
-                        <span className="text-[#667085] font-normal text-sm ml-1">{`Correct `}</span>
-                        <span className=" ml-12 font-semibold text-base text-[#1D2939]">{correctValue}</span>
-                    </div>
-                </div>
-                <div style={{ display: 'flex', alignItems: 'center', width: "auto", height: "auto", justifyItems: 'center', }}>
-                    <div style={{ display: 'flex', alignItems: 'center', }}>
-                        <span style={{
-                            display: 'inline-block',
-                            width: '12px',
-                            height: '12px',
-                            borderRadius: '50%',
-                            backgroundColor: '#F04438', // Color for "Incorrect"
-                            marginRight: '4px',
-                            padding: '3px'
-                        }} />
-                        <span className="text-[#667085] font-normal text-sm ml-1">{`Incorrect `}</span>
-                        <span className="ml-10 font-semibold text-base text-[#1D2939]">{incorrectValue}</span>
-                    </div>
-                </div>
-
-            </div>
-        );
+function formatTime(seconds: number): string {
+    if (seconds < 3600) {
+        const mins = Math.floor(seconds / 60);
+        return `${mins}m`;
+    } else {
+        const hrs = Math.floor(seconds / 3600);
+        return `${hrs}hrs`;
     }
-    return null;
 }
 
-interface PieTooltipProps extends TooltipProps<number, string> {
-    active?: boolean;
-    payload?: any[];
-}
-const CustomPieTooltip: React.FC<PieTooltipProps> = ({ active, payload }) => {
-    if (active && payload && payload.length) {
-        const { name, value, payload: { fill } } = payload[0];
-        return (
-            <div className="flex flex-row items-center justify-between w-40" style={{
-                backgroundColor: 'white',
-                border: '1px solid #EAECF0',
-                borderRadius: '8px',
-                padding: '10px',
-                boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.1)"
-            }}>
-                <div className="flex flex-row items-center">
-                    {/* Color dot dynamically based on fill */}
-                    <span style={{
-                        display: 'inline-block',
-                        width: '12px', // Set equal width
-                        height: '12px', // Set equal height
-                        borderRadius: '50%', // This ensures it's a perfect circle
-                        backgroundColor: fill, // Set the fill color here
-                        marginRight: '8px'
-                    }} />
-                    {/* Name and value */}
-                    <p className="flex items-center text-sm font-semibold text-[#667085]">{name}</p>
-                </div>
-                <p className="flex items-center text-[0.938rem] font-semibold text-[#1D2939]">{value}</p>
-            </div>
-        );
-    }
 
-    return null;
-};
+function QuizAnalytics() {
+  
+      const [leaderboard, setLeaderboard] = useState<any[]>([]);
+      const [currentUserRank, setCurrentUserRank] = useState<any>(null);
+      const currentUserId = auth.currentUser?.uid;
+      const [currentUserStats, setCurrentUserStats] = useState<AttemptData>({
+          score: 0,
+          answeredCorrect: 0,
+          answeredIncorrect: 0,
+          attemptedQuestions: 0,
+          timeTaken: 0,
+          totalQuestions: 0,
+          totalTime: 0
+      });
+      const [isUserPremium, setIsUserPremium] = useState(false);
+      const [currentUserDisplayId, setCurrentUserDisplayId] = useState('');
+
+      const [premiumAttempts, setPremiumAttempts] = useState<any[]>([]);
+      const [selectedAttemptFilter, setSelectedAttemptFilter] = useState<string>('All');
+  
 
 
-function Quizzes() {
-
-    const totalVisitors = React.useMemo(() => {
-        return chartData.reduce((acc, curr) => acc + curr.marks, 0);
-    }, []);
-
-    const data = [
-        {
-            "name": "Chemistry",
-            "correct": 12,
-            "incorrect": 5
-        },
-        {
-            "name": "Physics",
-            "correct": 4,
-            "incorrect": 1
-        },
-        {
-            "name": "Maths",
-            "correct": 9,
-            "incorrect": 1
-        },
-    ];
+    useEffect(() => {
+        if (!currentUserId) return;
+  
+        const fetchUserData = async () => {
+          try {
+            const userDoc = await getDoc(doc(db, "users", currentUserId));
+            if (userDoc.exists()) {
+                const userData = userDoc.data();
+                setIsUserPremium(userData.isPremium || false);
+                setCurrentUserDisplayId(userData.userId || '');
+            }
+          } catch (error) {
+            console.error("Error fetching user data:", error);
+          }
+        };
+  
+        fetchUserData();
+    }, [currentUserId]);
+  
+      useEffect(() => {
+          if (!currentUserId) return;
+  
+          const fetchPremiumAttempts = async () => {
+              try {
+                  const premiumQuizSnapshot = await getDocs(collection(db, "premiumQuizAttemptsData"));
+                  const filteredAttempts = [];
+  
+                  for (const premiumDoc of premiumQuizSnapshot.docs) {
+                      const attemptsRef = collection(db, "premiumQuizAttemptsData", premiumDoc.id, "userAttempts");
+                      const userAttemptsSnapshot = await getDocs(query(attemptsRef));
+                      
+                      const hasUserAttempted = userAttemptsSnapshot.docs.some(attemptDoc => attemptDoc.id === currentUserId);
+  
+                      if (hasUserAttempted) {
+                          let name = '';
+                          const docData = premiumDoc.data();
+                          if (docData.productType === 'testseries') {
+                              const testSeriesDocRef = doc(db, "testseries", premiumDoc.id);
+                              const testSeriesDoc = await getDoc(testSeriesDocRef);
+                              name = testSeriesDoc.exists() ? (testSeriesDoc.data() as { testName: string }).testName : '';
+                          } else if (docData.productType === 'course') {
+                              const courseDocRef = doc(db, "course", premiumDoc.id);
+                              const courseDoc = await getDoc(courseDocRef);
+                              name = courseDoc.exists() ? (courseDoc.data() as { courseName: string }).courseName : '';
+                          }
+  
+                          filteredAttempts.push({
+                              productId: premiumDoc.id,
+                              productType: docData.productType,
+                              name: name
+                          });
+                      }
+                  }
+  
+                  setPremiumAttempts(filteredAttempts);
+              } catch (error) {
+                  console.error("Error fetching premium attempts:", error);
+              }
+          };
+  
+          fetchPremiumAttempts();
+      }, [currentUserId]);
+  
+      const fetchLeaderboardData = async (collectionPath: string, productId?: string) => {
+          try {
+              const usersRef = collection(db, "users");
+              const allAttemptsData: any[] = [];
+  
+              let leaderboardDoc;
+              if (collectionPath === 'globalQuizAttemptsData') {
+                  leaderboardDoc = await getDoc(doc(db, collectionPath, currentUserId!));
+              } else if (collectionPath === 'premiumQuizAttemptsData' && productId) {
+                  const attemptsRef = collection(db, collectionPath, productId, "userAttempts");
+                  const snapshot = await getDocs(attemptsRef);
+                  leaderboardDoc = snapshot.docs.find(doc => doc.id === currentUserId);
+              }
+  
+              // Fetch and set current user stats
+              if (leaderboardDoc) {
+                  const statsData = leaderboardDoc.exists() ? leaderboardDoc.data() : {};
+                  setCurrentUserStats({
+                      score: statsData.score || 0,
+                      answeredCorrect: statsData.answeredCorrect || 0,
+                      answeredIncorrect: statsData.answeredIncorrect || 0,
+                      attemptedQuestions: statsData.attemptedQuestions || 0,
+                      timeTaken: statsData.timeTaken || 0,
+                      totalQuestions: statsData.totalQuestions || 0,
+                      totalTime: statsData.totalTime || 0,
+                      displayUserId: statsData.displayUserId || '',
+                  });
+              }
+  
+              // Fetch leaderboard data
+              let leaderboardSnapshot;
+              if (collectionPath === 'globalQuizAttemptsData') {
+                  leaderboardSnapshot = await getDocs(collection(db, collectionPath));
+              } else if (collectionPath === 'premiumQuizAttemptsData' && productId) {
+                  leaderboardSnapshot = await getDocs(collection(db, collectionPath, productId, "userAttempts"));
+              }
+  
+              if (leaderboardSnapshot) {
+                  const leaderboardPromises = leaderboardSnapshot.docs.map(async (attemptDoc) => {
+                      const userDoc = await getDoc(doc(usersRef, attemptDoc.id));
+                      const userData = userDoc.exists() ? userDoc.data() : {};
+                      const attemptData = attemptDoc.data() as AttemptData;
+  
+                      return {
+                             uniqueId: attemptDoc.id,
+                          ...userData,
+                          ...attemptData
+                      };
+                  });
+  
+                  const fullLeaderboardData = await Promise.all(leaderboardPromises);
+  
+                  // Sort leaderboard by score
+                  const sortedLeaderboard = fullLeaderboardData
+                      .sort((a, b) => (b.score ?? 0) - (a.score ?? 0))
+                      .map((user, index) => ({
+                          ...user,
+                          rank: index + 1
+                      }));
+  
+                  // Set leaderboard and current user rank
+                  setLeaderboard(sortedLeaderboard);
+  
+                  const currentUserRankData = sortedLeaderboard.find(user => user.uniqueId === currentUserId);
+                  
+                  if (currentUserRankData) {
+                      setCurrentUserRank(currentUserRankData);
+                  } else {
+                      const userDoc = await getDoc(doc(usersRef, currentUserId!));
+                      const userData = userDoc.exists() ? userDoc.data() : {};
+  
+                      setCurrentUserRank({
+                          userId: userData?.userId || 'loading...',
+                          name: userData?.name || 'Current User',
+                          profilePic: userData?.profilePic || '/images/DP_Lion.svg',
+                          score: 0,
+                          isPremium: userData?.isPremium || false,
+                          rank: sortedLeaderboard.length + 1
+                      });
+                  }
+              }
+          } catch (error) {
+              console.error("Error fetching leaderboard data:", error);
+          }
+      };
+  
+      useEffect(() => {
+          if (!currentUserId) return;
+  
+          if (selectedAttemptFilter === 'All') {
+              fetchLeaderboardData('globalQuizAttemptsData');
+          } else {
+              const selectedPremiumAttempt = premiumAttempts.find(attempt => attempt.name === selectedAttemptFilter);
+              if (selectedPremiumAttempt) {
+                  fetchLeaderboardData('premiumQuizAttemptsData', selectedPremiumAttempt.productId);
+              }
+          }
+      }, [currentUserId, selectedAttemptFilter, premiumAttempts]);
+  
+      const handleAttemptFilterChange = (filter: string) => {
+          setSelectedAttemptFilter(filter);
+      };
 
     return (
         <div className="flex flex-1 flex-col py-6 mx-8">
-            <div className="text-[#1D2939]"><h3>Overview</h3></div>
+            <div className="flex flex-row justify-between items-center text-[#1D2939]">
+            <div className="flex flex-row gap-3 items-center">
+            <h3>Overview</h3>
+            <div className="flex items-center text-sm">{new Date().toLocaleString("default", { month: "long" })}</div>
+            </div>
+            <div className="flex flex-row justify-between">
+                        <div className="flex flex-row gap-4">
+                        </div>
+
+                        {isUserPremium ? (
+                        <Popover placement="bottom-end">
+                        <PopoverTrigger>
+                            <div className="flex w-auto h-[2.313rem] gap-2 bg-white rounded-md px-3 py-2 text-sm justify-between">
+                                <div>{selectedAttemptFilter}</div>
+                                <div>
+                                    <div>
+                                        <button>
+                                            <Image src='/icons/arrowup.svg' alt="popup" width={20} height={20} />
+                                        </button>
+                                    </div>
+                                    <div className="hidden">
+                                        <button>
+                                            <Image src='/icons/arrowdown.svg' alt="popup" width={20} height={20} />
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </PopoverTrigger>
+                        <PopoverContent className="flex flex-col bg-white w-auto h-auto px-0 items-start border border-lightGrey rounded-md">
+
+                            <button
+                                                            onClick={() => handleAttemptFilterChange('All')} 
+                                                            className="flex w-full px-[10px] py-[10px] hover:bg-[#EAECF0] rounded-t-8">
+                                All
+                            </button>
+                            {premiumAttempts.map((attempt, index) => (
+                                <button 
+                                    key={index} 
+                                    onClick={() => handleAttemptFilterChange(attempt.name)} 
+                                    className="flex w-full px-[10px] py-[10px] hover:bg-[#EAECF0]"
+                                >
+                                    {attempt.name || 'loading...'}
+                                </button>
+                            ))}
+                            
+                           
+
+                        </PopoverContent>
+                        </Popover>
+                        )
+                        : (
+                            <div className="flex w-[102px] h-[2.313rem] bg-white rounded-md px-3 py-2 text-sm justify-between">
+                            <div>All</div>
+                            <div>
+                                <div>
+                                    <button>
+                                        <Image src='/icons/arrowup.svg' alt="popup" width={20} height={20} />
+                                    </button>
+                                </div>
+                                <div className="hidden">
+                                    <button>
+                                        <Image src='/icons/arrowdown.svg' alt="popup" width={20} height={20} />
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        )} 
+                    
+
+                        
+                    </div>
+            </div>
             <div className="mt-5 mb-4">
                 <div className="bg-white p-4 flex flex-col rounded-2xl border border-lightGrey">
                     <div className="flex flex-row justify-between">
@@ -170,7 +300,7 @@ function Quizzes() {
                         <div className="flex flex-1 flex-row justify-between pr-4">
                             <div className="flex flex-col gap-2">
                                 <div className="font-normal text-xs text-[#667085]">Total Questions</div>
-                                <h3 className="text-[15px]">3000</h3>
+                                <h3 className="text-[15px]">{currentUserStats.totalQuestions}</h3>
                             </div>
                             <div className="flex justify-center items-center">
                                 <div className="w-px bg-lightGrey h-4/5"></div>
@@ -180,7 +310,7 @@ function Quizzes() {
                         <div className="flex flex-1 flex-row justify-between pr-4">
                             <div className="flex flex-col gap-2">
                                 <div className="font-normal text-xs text-[#667085]">Attempted Questions</div>
-                                <h3 className="text-[15px]">2000</h3>
+                                <h3 className="text-[15px]">{currentUserStats.attemptedQuestions}</h3>
                             </div>
                             <div className="flex justify-center items-center">
                                 <div className="w-px bg-lightGrey h-4/5"></div>
@@ -189,7 +319,7 @@ function Quizzes() {
                         {/* Time Taken */}
                         <div className="flex flex-1 flex-col gap-2">
                             <div className="font-normal text-xs text-[#667085]">Time Taken</div>
-                            <h3 className="text-[15px]">80 of 100 hrs</h3>
+                            <h3 className="text-[15px]">{formatTime(currentUserStats.timeTaken)} of {formatTime(currentUserStats.totalTime)}</h3>
                         </div>
                     </div>
                     {/* Additional Stats */}
@@ -197,7 +327,7 @@ function Quizzes() {
                         <div className="flex flex-1 flex-row justify-between pr-4">
                             <div className="flex flex-col gap-2">
                                 <div className="font-normal text-xs text-[#667085]">Answered Correct</div>
-                                <h3 className="text-[15px]">800</h3>
+                                <h3 className="text-[15px]">{currentUserStats.answeredCorrect}</h3>
                             </div>
                             <div className="flex justify-center items-center">
                                 <div className="w-px bg-lightGrey h-4/5"></div>
@@ -206,7 +336,7 @@ function Quizzes() {
                         <div className="flex flex-1 flex-row justify-between pr-4">
                             <div className="flex flex-col gap-2">
                                 <div className="font-normal text-xs text-[#667085]">Answered Incorrect</div>
-                                <h3 className="text-[15px]">200</h3>
+                                <h3 className="text-[15px]">{currentUserStats.answeredIncorrect}</h3>
                             </div>
                             <div className="flex justify-center items-center">
                                 <div className="w-px bg-lightGrey h-4/5"></div>
@@ -214,109 +344,12 @@ function Quizzes() {
                         </div>
                         <div className="flex flex-1 flex-col gap-2">
                             <div className="font-normal text-xs text-[#667085]">Total Score</div>
-                            <h3 className="text-[15px]">568</h3>
+                            <h3 className="text-[15px]">{currentUserStats.score}</h3>
                         </div>
                     </div>
                 </div>
             </div>
-            <div className="flex w-full h-auto flex-row gap-4">
-                <div className="w-1/2 rounded-xl h-[320px] flex-col bg-[#FFFFFF] border border-[#EAECF0]">
-                    <div className="h-[50px] flex flex-row justify-between mt-3 ">
-                        <span className="flex items-center justify-center ml-10 font-semibold text-[#1D2939] text-lg">Attempted Questions</span>
-                        <div className=" flex flex-row gap-5">
-                            <div className="flex flex-row gap-2">
-                                <span style={{
-                                    display: 'inline-block',
-                                    width: '10px',
-                                    height: '10px',
-                                    borderRadius: '50%',
-                                    backgroundColor: '#17B26A',
-                                    marginTop: "19px" // Color for "Correct"
-                                }} />
-                                <span className="flex items-center justify-center text-[#667085] font-normal text-sm">Correct</span>
-                            </div>
-                            <div className="flex flex-row gap-2">
-                                <span style={{
-                                    display: 'inline-block',
-                                    width: '10px',
-                                    height: '10px',
-                                    borderRadius: '50%',
-                                    backgroundColor: '#F04438', // Color for "Incorrect"
-                                    marginTop: "19px"
-                                }} />
-                                <span className="flex items-center justify-center text-[#667085] font-normal text-sm mr-5">Incorrect</span>
-                            </div>
-                        </div>
-                    </div>
-                    <ResponsiveContainer width="100%" height="80%">
-                        <BarChart
-                            data={data}
-                            barGap={5}
-                            barCategoryGap="5%"
-                            margin={{ right: 20, }} // Set left margin to 0
-                        >
-                            <CartesianGrid strokeDasharray="3 3" horizontal={false} vertical={false} />
-                            <XAxis
-                                dataKey="name"
-                                fontFamily="poppins"
-                                fontSize={14}
-                                fontWeight={400}
-                                fill="#667085"
-                                padding={{ left: 10, right: 20 }}
-                            />
-                            <YAxis
-                                domain={[0, 'dataMax']}
-                                fontFamily="poppins"
-                                fontSize={14}
-                                fontWeight={400}
-                                fill="#667085"
 
-                            />
-                            <Tooltip content={<CustomTooltip />} cursor={false} isAnimationActive={true} />
-                            <Legend wrapperStyle={{ display: 'none' }} />
-                            <Bar dataKey="correct" fill="#17B26A" barSize={55} />
-                            <Bar dataKey="incorrect" fill="#F04438" barSize={55} />
-                        </BarChart>
-                    </ResponsiveContainer>
-                </div>
-
-                <div className="flex flex-col w-1/2 p-4 bg-white border border-lightGrey rounded-xl">
-                    <div><h3>Score by Subjects</h3></div>
-                    <div className="flex flex-1 items-center">
-                        <ResponsiveContainer className='flex w-[50%]'>
-                            <ChartContainer config={chartConfig} className="h-auto w-[70%]">
-                                <PieChart>
-                                    <Tooltip content={<CustomPieTooltip />} cursor={false} />
-                                    <Pie
-                                        data={chartData}
-                                        dataKey="marks"
-                                        nameKey="browser"
-                                        innerRadius={60}
-                                        strokeWidth={3}
-                                        stroke="#FFFFFF"
-                                    >
-                                        {chartData.map((entry, index) => (
-                                            <Cell key={`cell-${index}`} fill={entry.fill} />
-                                        ))}
-                                    </Pie>
-                                </PieChart>
-                            </ChartContainer>
-                        </ResponsiveContainer>
-
-                        <div className="flex flex-col w-[50%] justify-evenly">
-                            {chartData.map((subject, index) => (
-                                <div key={index} className="flex flex-1 mb-2">
-                                    <div><span className={`block rounded-full w-3 h-3 mr-2 mt-[23%]`} style={{ backgroundColor: subject.fill }}></span></div>
-                                    <div>
-                                        {subject.browser}
-                                        <h3>{subject.marks}</h3>
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
-                    </div>
-                </div>
-            </div>
 
             <div className="py-5 text-[#1D2939]"><h3>Leaderboard Analytics</h3></div>
             <div className="flex flex-col w-full h-auto gap-2">
@@ -331,40 +364,142 @@ function Quizzes() {
                         <td className="w-[12%] text-center"><p>Accuracy</p></td>
                         <td className="w-[12%] text-center"><p>Time Spent</p></td>
                     </tr>
-                    <Leaderboard />
-                    <Leaderboard />
-                    <Leaderboard />
-                    <Leaderboard />
-                    <Leaderboard />
+                {/*Top 10 Leaderboard */}
+<div>
+            <tr className="flex flex-1 py-3 text-[#1D2939] border-t border-lightGrey hover:bg-[#F2F4F7]">
+                <td className="flex items-center justify-center w-[8%]">
+                    <Image src='/icons/actualCrown.svg' alt="Crown" width={25.07} height={21} />
+                </td>
+                <td className="flex flex-row w-[20%] gap-2">
+                    <div className="flex items-center">
+                        <div className="relative">
+                            <Image className="min-w-10 min-h-10 rounded-full" src={leaderboard[0]?.profilePic || '/images/DP_Lion.svg'}  alt="DP" width={40} height={40} />
+                            {leaderboard[0]?.isPremium && (
+                            <Image className="absolute right-0 bottom-0" src='/icons/winnerBatch.svg' alt="Batch" width={18} height={18} />
+                            )}
+                        </div>
+                    </div>
+                    <div className="flex items-start justify-start flex-col">
+                        <div className="font-semibold">{leaderboard[0]?.name || 'User'} </div>
+                        <div className="flex justify-start items-start text-[13px] text-[#667085]">{leaderboard[0]?.displayUserId || ''} </div>
+                    </div>
+                </td>
+                <td className="flex items-center justify-center w-[12%]"><p>{leaderboard[0]?.score || 0} </p></td>
+                <td className="flex items-center justify-center w-[12%]"><p>{leaderboard[0]?.attemptedQuestions || 0}/{leaderboard[0]?.totalQuestions || 0}</p></td>
+                <td className="flex items-center justify-center w-[12%]"><p>{leaderboard[0]?.answeredCorrect || 0}</p></td>
+                <td className="flex items-center justify-center w-[12%]"><p>{leaderboard[0]?.answeredIncorrect || 0}</p></td>
+                <td className="flex items-center justify-center w-[12%]"><p>99%</p></td>
+                <td className="flex items-center justify-center w-[12%]"><p className="w-20 text-end">{formatTime(leaderboard[0]?.timeTaken) || 0}</p></td>
+            </tr>
+            <tr className="flex flex-1 py-3 text-[#1D2939] border-t border-lightGrey hover:bg-[#F2F4F7]">
+                <td className="flex items-center justify-center w-[8%]">
+                    <Image src='/icons/rank-2.svg' alt="2nd rank" width={25.07} height={21} />
+                </td>
+                <td className="flex flex-row w-[20%] gap-2">
+                    <div className="flex items-center">
+                        <div className="relative">
+                        <Image className="min-w-10 min-h-10 rounded-full" src={leaderboard[1]?.profilePic || '/images/DP_Lion.svg'}  alt="DP" width={40} height={40} />
+                            {leaderboard[1]?.isPremium && (
+                            <Image className="absolute right-0 bottom-0" src='/icons/winnerBatch.svg' alt="Batch" width={18} height={18} />
+                            )}
+                        </div>
+                    </div>
+                    <div className="flex items-start justify-start flex-col">
+                        <div className="font-semibold">{leaderboard[1]?.name || 'User'}</div>
+                        <div className="flex justify-start items-start text-[13px] text-[#667085]">{leaderboard[1]?.displayUserId || ''}</div>
+                    </div>
+                </td>
+                <td className="flex items-center justify-center w-[12%]"><p>{leaderboard[1]?.score || 0}</p></td>
+                <td className="flex items-center justify-center w-[12%]"><p>{leaderboard[1]?.attemptedQuestions || 0}/{leaderboard[1]?.totalQuestions || 0}</p></td>
+                <td className="flex items-center justify-center w-[12%]"><p>{leaderboard[1]?.answeredCorrect || 0}</p></td>
+                <td className="flex items-center justify-center w-[12%]"><p>{leaderboard[1]?.answeredIncorrect || 0}</p></td>
+                <td className="flex items-center justify-center w-[12%]"><p>99%</p></td>
+                <td className="flex items-center justify-center w-[12%]"><p className="w-20 text-end">{formatTime(leaderboard[1]?.timeTaken) || 0}</p></td>
+            </tr>
+            <tr className="flex flex-1 py-3 text-[#1D2939] border-t border-lightGrey hover:bg-[#F2F4F7]">
+                <td className="flex items-center justify-center w-[8%]">
+                    <Image src='/icons/rank-3.svg' alt="3rd rank" width={25.07} height={21} />
+                </td>
+                <td className="flex flex-row w-[20%] gap-2">
+                    <div className="flex items-center">
+                        <div className="relative">
+                        <Image className="min-w-10 min-h-10 rounded-full" src={leaderboard[2]?.profilePic || '/images/DP_Lion.svg'}  alt="DP" width={40} height={40} />
+                            {leaderboard[2]?.isPremium && (
+                            <Image className="absolute right-0 bottom-0" src='/icons/winnerBatch.svg' alt="Batch" width={18} height={18} />
+                            )}
+                        </div>
+                    </div>
+                    <div className="flex items-start justify-start flex-col">
+                        <div className="font-semibold">{leaderboard[2]?.name || 'User'}2</div>
+                        <div className="flex justify-start items-start text-[13px] text-[#667085]">{leaderboard[2]?.displayUserId || ''}</div>
+                    </div>
+                </td>
+                <td className="flex items-center justify-center w-[12%]"><p>{leaderboard[2]?.score || 0}</p></td>
+                <td className="flex items-center justify-center w-[12%]"><p>{leaderboard[2]?.attemptedQuestions || 0}/{leaderboard[2]?.totalQuestions || 0}</p></td>
+                <td className="flex items-center justify-center w-[12%]"><p>{leaderboard[2]?.answeredCorrect || 0}</p></td>
+                <td className="flex items-center justify-center w-[12%]"><p>{leaderboard[2]?.answeredIncorrect || 0}</p></td>
+                <td className="flex items-center justify-center w-[12%]"><p>99%</p></td>
+                <td className="flex items-center justify-center w-[12%]"><p className="w-20 text-end">{formatTime(leaderboard[2]?.timeTaken) || 0}</p></td>
+            </tr>
+            {leaderboard.slice(3, 10).map((user, index) => (
+            <tr key={user.userId} className="flex flex-1 py-3 text-[#1D2939] border-t border-lightGrey hover:bg-[#F2F4F7]">
+                <td className="flex items-center justify-center w-[8%]">
+                    <div className="bg-gray-400 px-[8px] py-[2px] rounded-[0.5rem] inline-block"> <span className="text-white text-[12px] font-semibold">{index + 4}</span></div>
+                </td>
+                <td className="flex flex-row w-[20%] gap-2">
+                    <div className="flex items-center">
+                        <div className="relative">
+                        <Image className="min-w-10 min-h-10 rounded-full" src={user.profilePic || '/images/DP_Lion.svg'}  alt="DP" width={40} height={40} />
+                            {user.isPremium && (
+                            <Image className="absolute right-0 bottom-0" src='/icons/winnerBatch.svg' alt="Batch" width={18} height={18} />
+                            )}
+                        </div>
+                    </div>
+                    <div className="flex items-start justify-start flex-col">
+                        <div className="font-semibold">{user.name || 'User'}</div>
+                        <div className="flex justify-start items-start text-[13px] text-[#667085]">{user.displayUserId || ''}</div>
+                    </div>
+                </td>
+                <td className="flex items-center justify-center w-[12%]"><p>{user.score || 0}</p></td>
+                <td className="flex items-center justify-center w-[12%]"><p>{user.attemptedQuestions || 0}/{user.totalQuestions || 0}</p></td>
+                <td className="flex items-center justify-center w-[12%]"><p>{user.answeredCorrect || 0}</p></td>
+                <td className="flex items-center justify-center w-[12%]"><p>{user.answeredIncorrect || 0}</p></td>
+                <td className="flex items-center justify-center w-[12%]"><p>99%</p></td>
+                <td className="flex items-center justify-center w-[12%]"><p className="w-20 text-end">{formatTime(user.timeTaken) || 0}</p></td>
+            </tr>
+            ))}
+        </div>
                 </table>
+                {currentUserRank && (
                 <div className="pb-4">
                     <table className="flex flex-col w-full h-min border border-lightGrey rounded-xl bg-[#973AFF] text-white text-sm font-medium">
                         <tr className="flex flex-1 py-3">
-                            <td className="flex items-center justify-center w-[8%]"><p>10,545</p></td>
+                            <td className="flex items-center justify-center w-[8%]"><p>{currentUserRank.rank}</p></td>
                             <td className="flex flex-row w-[20%] gap-2">
                                 <div className="flex items-center">
                                     <div className="relative">
-                                        <Image src='/images/DP_Lion.svg' alt="DP" width={40} height={40} />
+                                        <Image className="min-w-10 min-h-10 rounded-full" src={currentUserRank.profilePic ||'/images/DP_Lion.svg'} alt="DP" width={40} height={40} />
                                         <Image className="absolute right-0 bottom-0" src='/icons/winnerBatch.svg' alt="Batch" width={18} height={18} />
                                     </div>
                                 </div>
                                 <div className="flex items-start justify-start flex-col">
                                     <div className="font-semibold">You</div>
-                                    <div className="flex justify-start items-start text-[13px]">jenny#8547</div>
+                                    <div className="flex justify-start items-start text-[13px]">{currentUserDisplayId}</div>
                                 </div>
                             </td>
-                            <td className="flex items-center justify-center w-[12%]"><p>9632</p></td>
-                            <td className="flex items-center justify-center w-[12%]"><p>10000/10000</p></td>
-                            <td className="flex items-center justify-center w-[12%]"><p>9500</p></td>
-                            <td className="flex items-center justify-center w-[12%]"><p>500</p></td>
+                            <td className="flex items-center justify-center w-[12%]"><p>{currentUserRank.score}</p></td>
+                            <td className="flex items-center justify-center w-[12%]"><p>{currentUserStats.attemptedQuestions}/{currentUserStats.totalQuestions}</p></td>
+                            <td className="flex items-center justify-center w-[12%]"><p>{currentUserStats.answeredCorrect}</p></td>
+                            <td className="flex items-center justify-center w-[12%]"><p>{currentUserStats.answeredIncorrect}</p></td>
                             <td className="flex items-center justify-center w-[12%]"><p>99%</p></td>
-                            <td className="flex items-center justify-center w-[12%]"><p className="w-20 text-end">350h</p></td>
+                            <td className="flex items-center justify-center w-[12%]"><p className="w-20 text-end">{formatTime(currentUserStats.timeTaken)}</p></td>
                         </tr>
                     </table>
                 </div>
+                )}
             </div>
         </div>
     );
 }
 
-export default Quizzes;
+export default QuizAnalytics;

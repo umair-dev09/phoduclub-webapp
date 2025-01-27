@@ -63,7 +63,7 @@ function ReviewTest({ showReviewSheet, setShowReviewSheet, questionsList, answer
             >
                 <div className="flex flex-col w-[full] h-full">
                     <div className="p-5 flex justify-between items-center h-[69px] w-full border-b-[1.5px] border-t-[1.5px] border-[#EAECF0] rounded-tl-[18px] rounded-tr-[16px]">
-                        <span className="text-lg font-semibold text-[#1D2939]">Review Attempted Quiz</span>
+                        <span className="text-lg font-semibold text-[#1D2939]">Review Attempted Questions</span>
                         <span className="text-lg font-semibold text-[#1D2939] flex items-center justify-center gap-2">
                             <Image width={24} height={24} src="/icons/alarm-clock.svg" alt="timer" />
                             <span className="text-lg font-medium">Time Taken -</span> {convertSecondsToHHMM(timeTaken)}
