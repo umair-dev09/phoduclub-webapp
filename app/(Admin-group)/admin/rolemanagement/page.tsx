@@ -290,7 +290,7 @@ function RoleMangement() {
                     <LoadingData />
                 </div>
             ) : (
-                <div className="flex flex-col overflow-y-auto overflow-x-hidden">
+                <div className="flex flex-col">
                     <div className="flex flex-row items-center justify-between w-full">
                         <div className="flex flex-row gap-2">
                             {Object.keys(checkedState)
@@ -322,8 +322,8 @@ function RoleMangement() {
                             </button>
                         )}
                     </div>
-                    <div className="border border-[#EAECF0] rounded-xl overflow-x-auto">
-                        <table className="w-full bg-white rounded-xl ">
+                    <div className="border border-[#EAECF0] rounded-xl">
+                        <table className="w-full bg-white rounded-xl">
                             <thead>
                                 <tr className="gap-[200px]">
                                     <th className="w-[25%] text-left px-8 py-4 pl-8 rounded-tl-xl flex flex-row ">
