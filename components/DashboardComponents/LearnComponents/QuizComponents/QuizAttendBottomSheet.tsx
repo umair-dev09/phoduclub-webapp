@@ -229,6 +229,7 @@ function QuizAttendBottomSheet({
                 answeredCorrect: calculateQuizStats().answeredCorrect,
                 answeredIncorrect: calculateQuizStats().answeredIncorrect,
                 totalQuestions: calculateQuizStats().totalQuestions,
+                attemptDate: new Date(),
             };
             // Fixed Firestore path structure
             const quizPath = `quiz/${quizId}/attempts`;
