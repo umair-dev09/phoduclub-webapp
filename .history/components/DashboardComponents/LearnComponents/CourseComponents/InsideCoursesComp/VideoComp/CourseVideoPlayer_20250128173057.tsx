@@ -14,8 +14,8 @@ interface VdoCipherResponse {
 }
 
 const CourseVideoPlayer: React.FC<VideoPlayerProps> = ({ videoSrc }) => {
-  const videoNode = useRef<HTMLVideoElement | null>(null);
-  const playerRef = useRef<Player | null>(null); // Use VideoJsPlayer type from videojs namespac
+  // const videoNode = useRef<HTMLVideoElement | null>(null);
+  // const playerRef = useRef<Player | null>(null); // Use VideoJsPlayer type from videojs namespac
 
 
 
@@ -46,35 +46,50 @@ const CourseVideoPlayer: React.FC<VideoPlayerProps> = ({ videoSrc }) => {
 
   const [videoData, setVideoData] = useState<VdoCipherResponse | null>(null);
   const [error, setError] = useState<string>("");
+  const [uploading, setUploading] = useState(false);
 
   const videocipherid = "3f49cd28d53f41e38fb66aec32ad9c1c"; // Manually set the video ID here
 
+  const fetchVideoData = async () => {
+    if (!videocipherid) {
+      setError("Please provide a video ID");
+      return;
+    }
 
+    setUploading(true);
+    setError("");
+    setVideoData(null);
 
+    try {
+      const response = await fetch("/api/Videocipher", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ videoId: videocipherid }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to fetch video data");
+      }
+
+      const data: VdoCipherResponse = await response.json();
+
+      // Log OTP and PlaybackInfo for debugging
+      console.log("Frontend: OTP:", data.otp);
+      console.log("Frontend: PlaybackInfo:", data.playbackInfo);
+
+      setVideoData(data);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "An error occurred");
+    } finally {
+      setUploading(false);
+    }
+  };
 
   useEffect(() => {
-    const fetchVideoData = async () => {
-      try {
-        const response = await fetch("/api/Videocipher", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "X-Allowed-Domains": window.location.hostname // Add current domain
-          },
-          body: JSON.stringify({ videoId: videocipherid }),
-        });
-
-        if (!response.ok) throw new Error("Domain verification failed");
-
-        const data = await response.json();
-        setVideoData(data);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : "Verification error");
-      }
-    };
-
-    fetchVideoData();
-  }, []);
+    fetchVideoData(); // Fetch video data when the component mounts or when videocipherid changes
+  }, []); // Empty dependency array ensures it runs only once after initial mount
 
   const iframeSrc = videoData
     ? `https://player.vdocipher.com/v2/?otp=${videoData.otp}&playbackInfo=${videoData.playbackInfo}`
@@ -82,31 +97,31 @@ const CourseVideoPlayer: React.FC<VideoPlayerProps> = ({ videoSrc }) => {
 
 
   return (
-
-
-    <div className="relative w-full rounded-md" style={{ paddingBottom: "56.25%" }}>
+    <div className="flex min-w-[350px] w-[100%] h-[75%] mx-auto justify-center">
       {/* <video ref={videoNode} className="video-js vjs-theme-fantasy"
-    //     controls
-    //     preload="auto"
-    //     autoPlay
-    //     data-setup="{}">
-    //     <source src={videoSrc} type="video/mp4" />
-    //     Your browser does not support the video tag.
-    //   </video> */}
-      {error && <div className="text-red-500 p-4">{error}</div>}
+        controls
+        preload="auto"
+        autoPlay
+        data-setup="{}">
+        <source src={videoSrc} type="video/mp4" />
+        Your browser does not support the video tag.
+      </video> */}
 
-      {videoData && (
+      {error && <p className="text-red-500">{error}</p>}
+      {uploading && <p>Loading...</p>}
+      {!uploading && videoData && (
         <iframe
           src={iframeSrc}
-          className="absolute top-0 left-0 w-full h-full "
+          className="w-full h-[450px] rounded-md"
           allow="encrypted-media; fullscreen"
           allowFullScreen
           title="Secure Video Player"
           sandbox="allow-same-origin allow-scripts"
           referrerPolicy="strict-origin"
           loading="eager"
-        />
+        ></iframe>
       )}
+
     </div>
   );
 };

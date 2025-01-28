@@ -46,12 +46,52 @@ const CourseVideoPlayer: React.FC<VideoPlayerProps> = ({ videoSrc }) => {
 
   const [videoData, setVideoData] = useState<VdoCipherResponse | null>(null);
   const [error, setError] = useState<string>("");
+  const [uploading, setUploading] = useState(false);
 
   const videocipherid = "3f49cd28d53f41e38fb66aec32ad9c1c"; // Manually set the video ID here
 
 
 
+  // useEffect(() => {
+  //   const fetchVideoData = async () => {
+  //     if (!videocipherid) {
+  //       setError("Please provide a video ID");
+  //       return;
+  //     }
 
+  //     setUploading(true);
+  //     setError("");
+  //     setVideoData(null);
+
+  //     try {
+  //       const response = await fetch("/api/Videocipher", {
+  //         method: "POST",
+  //         headers: {
+  //           "Content-Type": "application/json",
+  //         },
+  //         body: JSON.stringify({ videoId: videocipherid }),
+  //       });
+
+  //       if (!response.ok) {
+  //         throw new Error("Failed to fetch video data");
+  //       }
+
+  //       const data: VdoCipherResponse = await response.json();
+
+  //       // Log OTP and PlaybackInfo for debugging
+  //       console.log("Frontend: OTP:", data.otp);
+  //       console.log("Frontend: PlaybackInfo:", data.playbackInfo);
+
+  //       setVideoData(data);
+  //     } catch (err) {
+  //       setError(err instanceof Error ? err.message : "An error occurred");
+  //     } finally {
+  //       setUploading(false);
+  //     }
+  //   };
+
+  //   fetchVideoData(); // Fetch video data when the component mounts or when videocipherid changes
+  // }, []); // Empty dependency array ensures it runs only once after initial mount
   useEffect(() => {
     const fetchVideoData = async () => {
       try {
@@ -84,7 +124,7 @@ const CourseVideoPlayer: React.FC<VideoPlayerProps> = ({ videoSrc }) => {
   return (
 
 
-    <div className="relative w-full rounded-md" style={{ paddingBottom: "56.25%" }}>
+    <div className="relative w-full" style={{ paddingBottom: "56.25%" }}>
       {/* <video ref={videoNode} className="video-js vjs-theme-fantasy"
     //     controls
     //     preload="auto"
@@ -98,7 +138,7 @@ const CourseVideoPlayer: React.FC<VideoPlayerProps> = ({ videoSrc }) => {
       {videoData && (
         <iframe
           src={iframeSrc}
-          className="absolute top-0 left-0 w-full h-full "
+          className="absolute top-0 left-0 w-full h-full"
           allow="encrypted-media; fullscreen"
           allowFullScreen
           title="Secure Video Player"

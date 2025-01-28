@@ -14,8 +14,8 @@ interface VdoCipherResponse {
 }
 
 const CourseVideoPlayer: React.FC<VideoPlayerProps> = ({ videoSrc }) => {
-  const videoNode = useRef<HTMLVideoElement | null>(null);
-  const playerRef = useRef<Player | null>(null); // Use VideoJsPlayer type from videojs namespac
+  // const videoNode = useRef<HTMLVideoElement | null>(null);
+  // const playerRef = useRef<Player | null>(null); // Use VideoJsPlayer type from videojs namespac
 
 
 
@@ -46,12 +46,9 @@ const CourseVideoPlayer: React.FC<VideoPlayerProps> = ({ videoSrc }) => {
 
   const [videoData, setVideoData] = useState<VdoCipherResponse | null>(null);
   const [error, setError] = useState<string>("");
+  const [uploading, setUploading] = useState(false);
 
   const videocipherid = "3f49cd28d53f41e38fb66aec32ad9c1c"; // Manually set the video ID here
-
-
-
-
   useEffect(() => {
     const fetchVideoData = async () => {
       try {
@@ -76,37 +73,40 @@ const CourseVideoPlayer: React.FC<VideoPlayerProps> = ({ videoSrc }) => {
     fetchVideoData();
   }, []);
 
+
+
+
+
   const iframeSrc = videoData
     ? `https://player.vdocipher.com/v2/?otp=${videoData.otp}&playbackInfo=${videoData.playbackInfo}`
     : "";
 
 
   return (
-
-
-    <div className="relative w-full rounded-md" style={{ paddingBottom: "56.25%" }}>
+    <div className="flex min-w-[350px] w-[100%] h-[75%] mx-auto justify-center">
       {/* <video ref={videoNode} className="video-js vjs-theme-fantasy"
-    //     controls
-    //     preload="auto"
-    //     autoPlay
-    //     data-setup="{}">
-    //     <source src={videoSrc} type="video/mp4" />
-    //     Your browser does not support the video tag.
-    //   </video> */}
-      {error && <div className="text-red-500 p-4">{error}</div>}
+        controls
+        preload="auto"
+        autoPlay
+        data-setup="{}">
+        <source src={videoSrc} type="video/mp4" />
+        Your browser does not support the video tag.
+      </video> */}
 
-      {videoData && (
+      {error && <p className="text-red-500">{error}</p>}
+      {!uploading && videoData && (
         <iframe
           src={iframeSrc}
-          className="absolute top-0 left-0 w-full h-full "
+          className="w-full h-[450px] rounded-md"
           allow="encrypted-media; fullscreen"
           allowFullScreen
           title="Secure Video Player"
           sandbox="allow-same-origin allow-scripts"
           referrerPolicy="strict-origin"
           loading="eager"
-        />
+        ></iframe>
       )}
+
     </div>
   );
 };

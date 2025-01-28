@@ -47,11 +47,8 @@ const CourseVideoPlayer: React.FC<VideoPlayerProps> = ({ videoSrc }) => {
   const [videoData, setVideoData] = useState<VdoCipherResponse | null>(null);
   const [error, setError] = useState<string>("");
 
+
   const videocipherid = "3f49cd28d53f41e38fb66aec32ad9c1c"; // Manually set the video ID here
-
-
-
-
   useEffect(() => {
     const fetchVideoData = async () => {
       try {
@@ -59,7 +56,7 @@ const CourseVideoPlayer: React.FC<VideoPlayerProps> = ({ videoSrc }) => {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            "X-Allowed-Domains": window.location.hostname // Add current domain
+
           },
           body: JSON.stringify({ videoId: videocipherid }),
         });
@@ -76,16 +73,18 @@ const CourseVideoPlayer: React.FC<VideoPlayerProps> = ({ videoSrc }) => {
     fetchVideoData();
   }, []);
 
+
+
+
+
   const iframeSrc = videoData
     ? `https://player.vdocipher.com/v2/?otp=${videoData.otp}&playbackInfo=${videoData.playbackInfo}`
     : "";
 
 
   return (
-
-
-    <div className="relative w-full rounded-md" style={{ paddingBottom: "56.25%" }}>
-      {/* <video ref={videoNode} className="video-js vjs-theme-fantasy"
+    // <div className="flex min-w-[350px] w-[100%] h-[75%] mx-auto justify-center">
+    //   {/* <video ref={videoNode} className="video-js vjs-theme-fantasy"
     //     controls
     //     preload="auto"
     //     autoPlay
@@ -93,18 +92,41 @@ const CourseVideoPlayer: React.FC<VideoPlayerProps> = ({ videoSrc }) => {
     //     <source src={videoSrc} type="video/mp4" />
     //     Your browser does not support the video tag.
     //   </video> */}
+
+    //   {error && <p className="text-red-500">{error}</p>}
+
+    //   <div className="relative w-full" style={{ paddingBottom: "56.25%" }}>
+    //     {error && <div className="text-red-500 p-4">{error}</div>}
+
+    //     {videoData && (
+    //       <iframe
+    //         src={iframeSrc}
+    //         className="absolute top-0 left-0 w-full h-full"
+    //         allow="encrypted-media; fullscreen"
+    //         allowFullScreen
+    //         title="Secure Video Player"
+    //         sandbox="allow-same-origin allow-scripts"
+    //         referrerPolicy="strict-origin"
+    //         loading="eager"
+    //       />
+    //     )}
+    //   </div>
+
+
+    // </div>
+    <div className="relative w-full" style={{ paddingBottom: "56.25%" }}>
       {error && <div className="text-red-500 p-4">{error}</div>}
 
       {videoData && (
         <iframe
           src={iframeSrc}
-          className="absolute top-0 left-0 w-full h-full "
+          className=" w-full h-full"
           allow="encrypted-media; fullscreen"
           allowFullScreen
           title="Secure Video Player"
-          sandbox="allow-same-origin allow-scripts"
-          referrerPolicy="strict-origin"
-          loading="eager"
+
+
+
         />
       )}
     </div>
