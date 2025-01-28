@@ -28,8 +28,5 @@ export default function MyProfile() {
       {/* Profile Component */}
       <Profile />
     </div>
-
-
-
   );
 }

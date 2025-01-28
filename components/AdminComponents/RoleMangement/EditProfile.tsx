@@ -40,8 +40,17 @@ function Editprofile({ open, close, adminId }: EditProfileProps) {
     const [showImageCropper, setShowImageCropper] = useState(false);
     const [uploadedImage, setUploadedImage] = useState<File | null>(null);
     const [scrollBehavior, setScrollBehavior] = useState<"inside" | "outside">("outside");
-    const isFormValid = firstName && lastName && userId && phone && selectedRole;
 
+    const getDigitCount = (phoneNumber: string) => {
+        return phoneNumber.replace(/\D/g, '').length;
+    };
+
+    const isFormValid = firstName &&
+        lastName &&
+        userId &&
+        phone &&
+        getDigitCount(phone) <= 12 &&
+        selectedRole;
 
     // Function to handle role selection
     const handleRoleSelect = (role: string) => {
@@ -318,11 +327,11 @@ function Editprofile({ open, close, adminId }: EditProfileProps) {
                                             </label>
                                             <div className="flex flex-row py-2 px-4 w-full gap-2 border border-gray-300  h-10 focus:outline focus:outline-[1.5px] focus:outline-[#D6BBFB] hover:outline hover:outline-[1.5px] hover:outline-[#D6BBFB] rounded-md transition duration-200 ease-in-out ">
                                                 <input
-
                                                     className="w-full text-sm font-medium text-[#1D2939] placeholder:font-normal placeholder:text-[#A1A1A1] rounded-md outline-none"
                                                     type="text"
                                                     placeholder="First Name"
                                                     value={firstName}
+                                                    maxLength={25}
                                                     onChange={(e) => setFirstName(e.target.value)}
                                                 />
                                             </div>
@@ -333,11 +342,11 @@ function Editprofile({ open, close, adminId }: EditProfileProps) {
                                             </label>
                                             <div className="flex flex-row py-2 px-4 w-full gap-2 border border-gray-300  h-10 focus:outline focus:outline-[1.5px] focus:outline-[#D6BBFB] hover:outline hover:outline-[1.5px] hover:outline-[#D6BBFB] rounded-md transition duration-200 ease-in-out ">
                                                 <input
-
                                                     className="w-full text-sm font-medium text-[#1D2939] placeholder:font-normal placeholder:text-[#A1A1A1] rounded-md outline-none"
                                                     type="text"
                                                     placeholder="Last Name"
                                                     value={lastName}
+                                                    maxLength={25}
                                                     onChange={(e) => setLastName(e.target.value)}
                                                 />
                                             </div>
@@ -349,7 +358,6 @@ function Editprofile({ open, close, adminId }: EditProfileProps) {
                                         </label>
                                         <div className="flex flex-row  w-full gap-2  border border-gray-300  h-10 focus:outline focus:outline-[1.5px] focus:outline-[#D6BBFB] hover:outline hover:outline-[1.5px] hover:outline-[#D6BBFB]  rounded-md transition duration-200 ease-in-out ">
                                             <input
-
                                                 className="w-full text-sm font-medium py-2 px-4 text-[#1D2939] placeholder:font-normal placeholder:text-[#A1A1A1] rounded-md outline-none"
                                                 type="text"
                                                 placeholder="User Id"
@@ -358,33 +366,6 @@ function Editprofile({ open, close, adminId }: EditProfileProps) {
                                             />
                                         </div>
                                     </div>
-                                    {/* <div className="flex flex-col gap-1 w-[450px] overflow-hidden">
-                                    <label className='text-[14px] text-[#344054] font-medium'>Moblie No.</label>
-                                    <div className="mt-1">
-                                        <PhoneInput
-                                            country={'in'}
-                                            value={phone}
-                                            onChange={(phone) => setPhone(phone)}
-                                            inputProps={{
-                                                required: true,
-                                                autoFocus: true,
-                                                placeholder: "+91 00000-00000"
-                                            }}
-                                            containerClass="phone-input-container "
-                                            inputClass="forminput "
-                                            inputStyle={{
-                                                width: '350px',
-                                                height: '42px',
-                                                borderRadius: "4px",
-                                                border: "1px solid #D0D5DD",
-                                                boxShadow: "0px 1px 2px 0px #1018280D ",
-
-                                            }}
-                                            onFocus={(e) => e.target.style.boxShadow = "0 0 0 2px #D6BBFB"}
-                                            onBlur={(e) => e.target.style.boxShadow = "0px 1px 2px 0px rgba(16, 24, 40, 0.05)"}
-                                        />
-                                    </div>
-                                </div> */}
                                     <div className="flex flex-col gap-1 w-full">
                                         <label className='text-[14px] text-[#344054] font-medium'>Mobile No.</label>
                                         <div className="w-full">

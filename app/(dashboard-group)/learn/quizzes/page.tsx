@@ -216,9 +216,9 @@ export default function MyQuiz() {
         setSelectedAttemptFilter(filter);
     };
     return (
-        <div className="CONTAINER flex flex-1 flex-row ">
+        <div className="CONTAINER flex flex-1 flex-row overflow-hidden">
             {/* Left side - Quizzes */}
-            <div className="QUIZZES flex flex-1 flex-col p-8">
+            <div className="QUIZZES flex flex-1 flex-col p-8 overflow-y-auto">
                 <div className="mb-8">
                     {/* Quiz stats header */}
                     <div className="flex flex-row justify-between">
@@ -293,9 +293,6 @@ export default function MyQuiz() {
                                     </div>
                                 </div>
                             )}
-
-
-
                     </div>
 
                     {/* Quiz Stats */}
@@ -372,7 +369,7 @@ export default function MyQuiz() {
             </div>
 
             {/* Right side - Leaderboard */}
-            <div className="LEADERBOARD w-[380px] bg-white overflow-y-auto p-4 border-l border-l-lightGrey">
+            <div className="LEADERBOARD w-[380px] bg-white p-4 border-l border-l-lightGrey h-full overflow-y-auto">
                 {/* Leaderboard Header */}
                 <div className="flex flex-row justify-between">
                     <h3>Leaderboard</h3>
@@ -397,7 +394,13 @@ export default function MyQuiz() {
                         <div className="relative left-0 bottom-[1rem]">
                             <Image src="/icons/rank-2.svg" alt="2nd rank" width={22} height={22} />
                         </div>
-                        <div className="text-xs font-semibold">{leaderboard[1]?.name || 'User'}</div>
+                        <div className="text-xs font-semibold">
+                            {leaderboard[1]?.name
+                                ? leaderboard[1].name.length > 10
+                                    ? `${leaderboard[1].name.slice(0, 10)}...`
+                                    : leaderboard[1].name
+                                : 'User'}
+                        </div>
                         <div className="text-[0.688rem] font-medium">{leaderboard[1]?.score || 0} Score</div>
                     </div>
 
@@ -418,7 +421,13 @@ export default function MyQuiz() {
                         <div className="relative left-0 bottom-[1rem]">
                             <Image src="/icons/rank-1.svg" alt="1st rank" width={22} height={22} />
                         </div>
-                        <div className="text-xs font-semibold">{leaderboard[0]?.name || 'User'}</div>
+                        <div className="text-xs font-semibold">
+                            {leaderboard[0]?.name
+                                ? leaderboard[0].name.length > 10
+                                    ? `${leaderboard[0].name.slice(0, 10)}...`
+                                    : leaderboard[0].name
+                                : 'User'}
+                        </div>
                         <div className="text-[0.688rem] font-medium">{leaderboard[0]?.score || 0} Score</div>
                     </div>
 
@@ -436,7 +445,13 @@ export default function MyQuiz() {
                         <div className="relative left-0 bottom-[1rem]">
                             <Image src="/icons/rank-3.svg" alt="3rd rank" width={22} height={22} />
                         </div>
-                        <div className="text-xs font-semibold">{leaderboard[2]?.name || 'User'}</div>
+                        <div className="text-xs font-semibold">
+                            {leaderboard[2]?.name
+                                ? leaderboard[2].name.length > 10
+                                    ? `${leaderboard[2].name.slice(0, 10)}...`
+                                    : leaderboard[2].name
+                                : 'User'}
+                        </div>
                         <div className="text-[0.688rem] font-medium">{leaderboard[2]?.score || 0} Score</div>
                     </div>
                 </div>

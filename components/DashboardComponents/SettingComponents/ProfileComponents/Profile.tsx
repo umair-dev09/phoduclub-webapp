@@ -229,11 +229,8 @@ function Profile() {
                                             <div className={styles.sizeRecommendation}>File size must be less than 5MB</div>
                                         )}
                                         {copied && <span className='flex ml-2 mb-1 px-3 py-[4px] bg-[#1D2939] rounded-[6px] text-white font-medium text-[11px]'>Copied!</span>}
-
                                     </div>
-
                                 )}
-
                                 {/* Conditionally show Change and Remove buttons */}
                                 {isEditing && (
                                     <div className={styles.changeRemove}>
@@ -335,6 +332,7 @@ function Profile() {
                                     type="text"
                                     value={nameInput}
                                     onChange={handleNameChange} // Handle input changes
+                                    maxLength={50}
                                     className='w-[320px] h-[40px] rounded-md border-solid border-[1px] border-[#d0d5dd] px-[8px] hover:border-none hover:outline hover:outline-[1.5px] hover:outline-[#D6BBFB] focus:outline focus:outline-[1.5px] focus:outline-[#D6BBFB] focus:border-none'
                                 />
                             )}
