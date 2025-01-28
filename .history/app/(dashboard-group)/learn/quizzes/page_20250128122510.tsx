@@ -37,7 +37,7 @@ function formatTime(seconds: number): string {
 }
 
 export default function MyQuiz() {
-    const [popoveropen, setPopoveropen] = useState(false);
+    const [popoveropen.setPopoveropen] = useState(false);
     const [leaderboard, setLeaderboard] = useState<any[]>([]);
     const [currentUserRank, setCurrentUserRank] = useState<any>(null);
     const currentUserId = auth.currentUser?.uid;
@@ -228,9 +228,7 @@ export default function MyQuiz() {
                         </div>
 
                         {isUserPremium ? (
-                            <Popover placement="bottom-end"
-                                isOpen={popoveropen}
-                                onOpenChange={(open) => setPopoveropen(open)}>
+                            <Popover placement="bottom-end">
                                 <PopoverTrigger>
                                     <div className="flex w-auto h-[2.313rem] gap-2 bg-white rounded-md px-3 py-2 text-sm justify-between">
                                         <div>{selectedAttemptFilter}</div>
@@ -251,20 +249,14 @@ export default function MyQuiz() {
                                 <PopoverContent className="flex flex-col bg-white w-auto h-auto px-0 items-start border border-lightGrey rounded-md">
 
                                     <button
-                                        onClick={() => {
-                                            handleAttemptFilterChange('All');
-                                            setPopoveropen(false);
-                                        }}
+                                        onClick={() => handleAttemptFilterChange('All')}
                                         className="flex w-full px-[10px] py-[10px] hover:bg-[#EAECF0] rounded-t-8">
                                         All
                                     </button>
                                     {premiumAttempts.map((attempt, index) => (
                                         <button
                                             key={index}
-                                            onClick={() => {
-                                                handleAttemptFilterChange(attempt.name);
-                                                setPopoveropen(false);
-                                            }}
+                                            onClick={() => handleAttemptFilterChange(attempt.name)}
                                             className="flex w-full px-[10px] py-[10px] hover:bg-[#EAECF0]"
                                         >
                                             {attempt.name || 'loading...'}

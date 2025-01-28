@@ -261,10 +261,7 @@ export default function MyQuiz() {
                                     {premiumAttempts.map((attempt, index) => (
                                         <button
                                             key={index}
-                                            onClick={() => {
-                                                handleAttemptFilterChange(attempt.name);
-                                                setPopoveropen(false);
-                                            }}
+                                            onClick={() => handleAttemptFilterChange(attempt.name)}
                                             className="flex w-full px-[10px] py-[10px] hover:bg-[#EAECF0]"
                                         >
                                             {attempt.name || 'loading...'}

@@ -14,34 +14,34 @@ interface VdoCipherResponse {
 }
 
 const CourseVideoPlayer: React.FC<VideoPlayerProps> = ({ videoSrc }) => {
-  // const videoNode = useRef<HTMLVideoElement | null>(null);
-  // const playerRef = useRef<Player | null>(null); // Use VideoJsPlayer type from videojs namespac
+  const videoNode = useRef<HTMLVideoElement | null>(null);
+  const playerRef = useRef<Player | null>(null); // Use VideoJsPlayer type from videojs namespac
 
 
 
-  // useEffect(() => {
-  //   if (videoNode.current) {
-  //     playerRef.current = videojs(videoNode.current, {
-  //       controls: true,
-  //       playbackRates: [0.5, 1, 1.5, 2], // Define playback speeds
-  //       controlBar: {
-  //         pictureInPictureToggle: false, // Disable PiP button
-  //       },
-  //       responsive: true,
-  //       fluid: true,
-  //       aspectRatio: "16:9", // Set aspect ratio
-  //     });
+  useEffect(() => {
+    if (videoNode.current) {
+      playerRef.current = videojs(videoNode.current, {
+        controls: true,
+        playbackRates: [0.5, 1, 1.5, 2], // Define playback speeds
+        controlBar: {
+          pictureInPictureToggle: false, // Disable PiP button
+        },
+        responsive: true,
+        fluid: true,
+        aspectRatio: "16:9", // Set aspect ratio
+      });
 
-  //     // Add Fantasy theme
-  //     playerRef.current.addClass("vjs-theme-fantasy");
-  //   }
+      // Add Fantasy theme
+      playerRef.current.addClass("vjs-theme-fantasy");
+    }
 
-  //   // return () => {
-  //   //   if (playerRef.current) {
-  //   //     playerRef.current.dispose();
-  //   //   }
-  //   // };ss
-  // }, []);
+    // return () => {
+    //   if (playerRef.current) {
+    //     playerRef.current.dispose();
+    //   }
+    // };ss
+  }, []);
 
 
   const [videoData, setVideoData] = useState<VdoCipherResponse | null>(null);
@@ -97,7 +97,7 @@ const CourseVideoPlayer: React.FC<VideoPlayerProps> = ({ videoSrc }) => {
 
 
   return (
-    <div>
+    <div className="flex w-25 h-25 justify-center">
       {/* <video ref={videoNode} className="video-js vjs-theme-fantasy"
         controls
         preload="auto"

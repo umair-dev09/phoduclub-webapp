@@ -14,34 +14,34 @@ interface VdoCipherResponse {
 }
 
 const CourseVideoPlayer: React.FC<VideoPlayerProps> = ({ videoSrc }) => {
-  // const videoNode = useRef<HTMLVideoElement | null>(null);
-  // const playerRef = useRef<Player | null>(null); // Use VideoJsPlayer type from videojs namespac
+  const videoNode = useRef<HTMLVideoElement | null>(null);
+  const playerRef = useRef<Player | null>(null); // Use VideoJsPlayer type from videojs namespac
 
 
 
-  // useEffect(() => {
-  //   if (videoNode.current) {
-  //     playerRef.current = videojs(videoNode.current, {
-  //       controls: true,
-  //       playbackRates: [0.5, 1, 1.5, 2], // Define playback speeds
-  //       controlBar: {
-  //         pictureInPictureToggle: false, // Disable PiP button
-  //       },
-  //       responsive: true,
-  //       fluid: true,
-  //       aspectRatio: "16:9", // Set aspect ratio
-  //     });
+  useEffect(() => {
+    if (videoNode.current) {
+      playerRef.current = videojs(videoNode.current, {
+        controls: true,
+        playbackRates: [0.5, 1, 1.5, 2], // Define playback speeds
+        controlBar: {
+          pictureInPictureToggle: false, // Disable PiP button
+        },
+        responsive: true,
+        fluid: true,
+        aspectRatio: "16:9", // Set aspect ratio
+      });
 
-  //     // Add Fantasy theme
-  //     playerRef.current.addClass("vjs-theme-fantasy");
-  //   }
+      // Add Fantasy theme
+      playerRef.current.addClass("vjs-theme-fantasy");
+    }
 
-  //   // return () => {
-  //   //   if (playerRef.current) {
-  //   //     playerRef.current.dispose();
-  //   //   }
-  //   // };ss
-  // }, []);
+    // return () => {
+    //   if (playerRef.current) {
+    //     playerRef.current.dispose();
+    //   }
+    // };ss
+  }, []);
 
 
   const [videoData, setVideoData] = useState<VdoCipherResponse | null>(null);
@@ -97,7 +97,7 @@ const CourseVideoPlayer: React.FC<VideoPlayerProps> = ({ videoSrc }) => {
 
 
   return (
-    <div>
+    <div className="flex min-w-[350px] w-[100%] h-[75%] mx-auto justify-center">
       {/* <video ref={videoNode} className="video-js vjs-theme-fantasy"
         controls
         preload="auto"
@@ -110,15 +110,12 @@ const CourseVideoPlayer: React.FC<VideoPlayerProps> = ({ videoSrc }) => {
       {error && <p className="text-red-500">{error}</p>}
       {uploading && <p>Loading...</p>}
       {!uploading && videoData && (
-        <div className="w-25 h-25 items-center justify-center flex">
-          <iframe
-            src={iframeSrc}
-            className=" w-25 h-25 rounded-lg"
-            allow="encrypted-media"
-            allowFullScreen
-            title="VdoCipher Video Player"
-          />
-        </div>
+        <iframe
+          src={iframeSrc}
+          className="w-full h-[450px] rounded-md"
+          allowFullScreen
+          allow="encrypted-media"
+        ></iframe>
       )}
 
     </div>

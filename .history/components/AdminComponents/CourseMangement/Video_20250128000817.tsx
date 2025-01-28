@@ -14,6 +14,7 @@ import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { auth, db, storage } from "@/firebase";
 import { collection, doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
 import { toast } from 'react-toastify';
+
 // Define the props interface
 interface VideoProps {
     isOpen: boolean;           // isOpen should be a boolean
@@ -23,60 +24,7 @@ interface VideoProps {
     isEditing: boolean;
     contentId: string;
 }
-interface VdoCipherResponse {
-    otp: string;
-    playbackInfo: string;
-}
 function Video({ isOpen, toggleDrawer, sectionId, courseId, isEditing, contentId }: VideoProps) {
-    // ALL RELATED TO VIDEOCIPHER FUNCTION
-    // /-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-    const [videocipherid, setVideocipherid] = useState('');
-    const [videoData, setVideoData] = useState<VdoCipherResponse | null>(null);
-    const [error, setError] = useState<string>('');
-    const [uploading, setUploading] = useState(false);
-
-    const fetchVideoData = async () => {
-        if (!videocipherid) {
-            setError('Please enter a video ID');
-            return;
-        }
-
-        setUploading(true);
-        setError('');
-        setVideoData(null);
-
-        try {
-            const response = await fetch('/api/Videocipher', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ videoId: videocipherid }),
-            });
-
-            if (!response.ok) {
-                throw new Error('Failed to fetch video data');
-            }
-
-            const data: VdoCipherResponse = await response.json();
-
-            // Log otp and playbackInfo to console
-            console.log('Frontend: OTP:', data.otp);
-            console.log('Frontend: PlaybackInfo:', data.playbackInfo);
-
-            setVideoData(data);
-        } catch (err) {
-            setError(err instanceof Error ? err.message : 'An error occurred');
-        } finally {
-            setUploading(false);
-        }
-    };
-    const iframeSrc = videoData
-        ? `https://player.vdocipher.com/v2/?otp=${videoData.otp}&playbackInfo=${videoData.playbackInfo}`
-        : '';
-
-    // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
     // state for ReactQuill
     const quillRef = useRef<ReactQuill | null>(null); // Ref to hold ReactQuill instance
     const [quill, setQuill] = useState<Quill | null>(null);
@@ -666,39 +614,6 @@ function Video({ isOpen, toggleDrawer, sectionId, courseId, isEditing, contentId
                                 )}
 
                             </div>
-                            {/* ENTER THE ID AND UPLOAD THE VIDEO  */}
-                            {/* ---------------------------------------------------------------------------------------------------------------------------------------------------- */}
-                            <div className="flex flex-col gap-4">
-                                <div className="flex items-center flex-row gap-3 ">
-                                    <input
-                                        type="text"
-                                        value={videocipherid}
-                                        onChange={(e) => setVideocipherid(e.target.value)}
-                                        placeholder="Enter Video ID"
-                                        className=" rounded-lg p-2 flex-1 bg-[#FFFFFF] border border-gray-300 focus:outline focus:outline-[1.5px] focus:outline-[#D6BBFB] hover:outline hover:outline-[1.5px] hover:outline-[#D6BBFB] focus-within:border-[#D7BBFC] focus-within:ring-4 focus-within:ring-[#E8DEFB] focus-within:outline-none transition-colors "
-                                    />
-                                    <button
-                                        onClick={fetchVideoData}
-                                        className=" text-white  text-sm font-medium p-2 rounded-lg hover:bg-[#6D0DCC] bg-[#9012FF]"
-                                    >
-                                        Upload Video
-                                    </button>
-                                </div>
-                                {uploading && <div className="text-center">Uploading video...</div>}
-                                {error && <div className="text-red-500 mb-4">{error}</div>}
-                                {videoData && (
-                                    <div className="w-25 h-25 items-center justify-center flex">
-                                        <iframe
-                                            src={iframeSrc}
-                                            className=" w-25 h-25 rounded-lg"
-                                            allow="encrypted-media"
-                                            allowFullScreen
-                                            title="VdoCipher Video Player"
-                                        />
-                                    </div>
-                                )}
-                            </div>
-                            {/* ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ */}
 
                             {/* <div className='flex flex-col gap-2'>
                                 <div className="flex flex-row justify-between items-center">

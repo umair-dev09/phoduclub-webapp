@@ -29,7 +29,6 @@ interface VdoCipherResponse {
 }
 function Video({ isOpen, toggleDrawer, sectionId, courseId, isEditing, contentId }: VideoProps) {
     // ALL RELATED TO VIDEOCIPHER FUNCTION
-    // /-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     const [videocipherid, setVideocipherid] = useState('');
     const [videoData, setVideoData] = useState<VdoCipherResponse | null>(null);
     const [error, setError] = useState<string>('');
@@ -75,7 +74,7 @@ function Video({ isOpen, toggleDrawer, sectionId, courseId, isEditing, contentId
         ? `https://player.vdocipher.com/v2/?otp=${videoData.otp}&playbackInfo=${videoData.playbackInfo}`
         : '';
 
-    // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
 
     // state for ReactQuill
     const quillRef = useRef<ReactQuill | null>(null); // Ref to hold ReactQuill instance
@@ -666,8 +665,6 @@ function Video({ isOpen, toggleDrawer, sectionId, courseId, isEditing, contentId
                                 )}
 
                             </div>
-                            {/* ENTER THE ID AND UPLOAD THE VIDEO  */}
-                            {/* ---------------------------------------------------------------------------------------------------------------------------------------------------- */}
                             <div className="flex flex-col gap-4">
                                 <div className="flex items-center flex-row gap-3 ">
                                     <input
@@ -697,8 +694,9 @@ function Video({ isOpen, toggleDrawer, sectionId, courseId, isEditing, contentId
                                         />
                                     </div>
                                 )}
+
+
                             </div>
-                            {/* ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ */}
 
                             {/* <div className='flex flex-col gap-2'>
                                 <div className="flex flex-row justify-between items-center">

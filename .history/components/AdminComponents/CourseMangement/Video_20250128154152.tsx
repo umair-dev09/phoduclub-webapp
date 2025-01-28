@@ -667,7 +667,6 @@ function Video({ isOpen, toggleDrawer, sectionId, courseId, isEditing, contentId
 
                             </div>
                             {/* ENTER THE ID AND UPLOAD THE VIDEO  */}
-                            {/* ---------------------------------------------------------------------------------------------------------------------------------------------------- */}
                             <div className="flex flex-col gap-4">
                                 <div className="flex items-center flex-row gap-3 ">
                                     <input
@@ -697,8 +696,9 @@ function Video({ isOpen, toggleDrawer, sectionId, courseId, isEditing, contentId
                                         />
                                     </div>
                                 )}
+
+
                             </div>
-                            {/* ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ */}
 
                             {/* <div className='flex flex-col gap-2'>
                                 <div className="flex flex-row justify-between items-center">

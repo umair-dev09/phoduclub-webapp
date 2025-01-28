@@ -97,7 +97,7 @@ const CourseVideoPlayer: React.FC<VideoPlayerProps> = ({ videoSrc }) => {
 
 
   return (
-    <div>
+    <div className="flex w-25 h-25 justify-center">
       {/* <video ref={videoNode} className="video-js vjs-theme-fantasy"
         controls
         preload="auto"
