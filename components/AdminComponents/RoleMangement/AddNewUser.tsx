@@ -277,6 +277,7 @@ function AddNewUser({
                                     type="text"
                                     placeholder="First Name"
                                     value={firstName}
+                                    maxLength={25}
                                     onChange={(e) => setFirstName(e.target.value)}
                                 />
                             </div>
@@ -287,6 +288,7 @@ function AddNewUser({
                                     type="text"
                                     placeholder="Last Name"
                                     value={lastName}
+                                    maxLength={25}
                                     onChange={(e) => setLastName(e.target.value)}
                                 />
                             </div>
