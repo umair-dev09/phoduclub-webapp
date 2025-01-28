@@ -736,7 +736,7 @@ function CourseContent({ courseId }: CourseContentProps) {
                     <>
                         <ModalHeader className="flex flex-row justify-between items-center gap-1">
                             <h1 className="text-[#1D2939] font-bold text-lg">
-                                {contentToDelete ? "Remove Content" : "Delete Section"}
+                                Delete User
                             </h1>
                             <button
                                 className="w-[32px] h-[32px] rounded-full flex items-center justify-center transition-all duration-300 ease-in-out hover:bg-[#F2F4F7]"
@@ -751,33 +751,18 @@ function CourseContent({ courseId }: CourseContentProps) {
                             </button>
                         </ModalHeader>
                         <ModalBody >
-                            <span className="text-sm font-normal text-[#667085]"> {contentToDelete
-                                ? "Removing this content will permanently delete it from the section. This action cannot be undone."
-                                : "Deleting the section will permanently remove all its contents from the platform. This action cannot be undone."}</span>
+                            <span className="text-sm font-normal text-[#667085]">Deleting the user will permanently remove all their data from the platform, including their account, activity, and content.</span>
 
                         </ModalBody>
                         <ModalFooter className="border-t border-lightGrey">
                             <Button variant="light" className="py-[0.625rem] px-6 border-2  border-solid border-[#EAECF0] font-semibold text-sm text-[#1D2939] rounded-md hover:bg-[#F2F4F7]" onClick={() => setDeletedialog(false)} >Cancel</Button>
-                            <Button className="py-[0.625rem] px-6 text-white font-semibold shadow-inner-button   hover:bg-[#B0201A] bg-[#BB241A] border border-white rounded-md"
-                                //  onClick={() => {
-                                //     if (sectionToDelete) {
-                                //         handleDeleteSection(sectionToDelete);
-                                //         handleDeleteContent
-                                //         setDeletedialog(false);
-                                //         setSectionToDelete(null);
-                                //     }
-                                // }} 
-                                onClick={() => {
-                                    if (sectionToDelete) {
-                                        handleDeleteSection(sectionToDelete);
-                                    } else if (contentToDelete) {
-                                        handleDeleteContent(contentToDelete.sectionId, contentToDelete.contentId);
-                                    }
+                            <Button className="py-[0.625rem] px-6 text-white font-semibold shadow-inner-button   hover:bg-[#B0201A] bg-[#BB241A] border border-white rounded-md" onClick={() => {
+                                if (sectionToDelete) {
+                                    handleDeleteSection(sectionToDelete);
                                     setDeletedialog(false);
                                     setSectionToDelete(null);
-                                    setContentToDelete(null);
-                                }}
-                            >{contentToDelete ? "Remove Content" : "Delete Section"}</Button>
+                                }
+                            }}  >Delete User</Button>
                         </ModalFooter>
                     </>
                 </ModalContent>

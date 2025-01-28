@@ -103,9 +103,6 @@ function CourseContent({ courseId }: CourseContentProps) {
     const [popoveropen2, setPopoveropen2] = useState<number | null>(null);
     const [popoveropen3, setPopoveropen3] = useState<number | null>(null);
     const [popoverOpen, setPopoverOpen] = useState<number | null>(null);
-    const [deletedialog, setDeletedialog] = useState(false);
-    const [sectionToDelete, setSectionToDelete] = useState<string | null>(null);
-    const [contentToDelete, setContentToDelete] = useState<{ sectionId: string, contentId: string } | null>(null);
     useEffect(() => {
         const sectionsRef = collection(db, 'course', courseId, 'sections');
         const q = query(sectionsRef);
@@ -341,7 +338,7 @@ function CourseContent({ courseId }: CourseContentProps) {
                 </div>
                 {/* Add section Button - Only show after clicking Create Section in dialog */}
                 <button
-                    className="flex flex-row gap-1 outline-none items-center rounded-md border-[2px] border-solid border-[#9012FF] hover:bg-[#F5F0FF] bg-[#FFFFFF] h-[44px] w-[162px] justify-center"
+                    className="flex flex-row gap-1 items-center rounded-md border-[2px] border-solid border-[#9012FF] hover:bg-[#F5F0FF] bg-[#FFFFFF] h-[44px] w-[162px] justify-center"
                     onClick={openCreateSection}>
                     <Image src="/icons/plus-sign.svg" height={18} width={18} alt="Plus Sign" />
                     <span className="text-[#9012FF] font-semibold text-sm">Add Section</span>
@@ -438,11 +435,7 @@ function CourseContent({ courseId }: CourseContentProps) {
                                                     <Image src="/icons/edit-icon.svg" width={18} height={18} alt="Edit-quiz" />
                                                     <span className="text-sm text-[#0C111D] font-normal">Edit Section</span>
                                                 </button>
-                                                <button className=" p-3 gap-2 flex-row flex h-[40px] hover:bg-[#FEE4E2] w-full" onClick={() => {
-                                                    setSectionToDelete(section.sectionId);
-                                                    setDeletedialog(true); setPopoveropen2(null);
-                                                }}>
-
+                                                <button className=" p-3 gap-2 flex-row flex h-[40px] hover:bg-[#FEE4E2] w-full" onClick={() => handleDeleteSection(section.sectionId)}>
                                                     <Image src="/icons/delete.svg" width={18} height={18} alt="delete-quiz" />
                                                     <span className="text-sm text-[#DE3024] font-normal">Delete Section</span>
                                                 </button>
@@ -516,15 +509,7 @@ function CourseContent({ courseId }: CourseContentProps) {
                                                                 <span className="text-sm text-[#0C111D] font-normal">Edit</span>
                                                             </button>
                                                             <button className=" flex flex-row items-center justify-start w-full py-2 gap-2 hover:bg-[#FEE4E2] pl-4 pr-9"
-                                                                onClick={() => {
-                                                                    setContentToDelete({
-                                                                        sectionId: section.sectionId,
-                                                                        contentId: content.contentId
-                                                                    });
-                                                                    // handleDeleteContent(section.sectionId, content.contentId); 
-                                                                    setPopoverOpen(null);
-                                                                    setDeletedialog(true);
-                                                                }}>
+                                                                onClick={() => { handleDeleteContent(section.sectionId, content.contentId); setPopoverOpen(null); }}>
                                                                 <Image src='/icons/delete.svg' alt="user profile" width={18} height={18} />
                                                                 <p className="text-sm text-[#DE3024] font-normal">Remove</p>
                                                             </button>
@@ -715,73 +700,11 @@ function CourseContent({ courseId }: CourseContentProps) {
                                 disabled={!isCreateSectionFilled}
                                 className={`py-[0.625rem] px-6 text-white shadow-inner-button border border-white ${!isCreateSectionFilled ? 'bg-[#CDA0FC]' : 'bg-[#9012FF] transition-colors duration-150 hover:bg-[#6D0DCC]'} rounded-md font-semibold text-sm`}>
                                 {isSectionEditing ? 'Save Changes' : 'Create Section'}
-                            </Button>
-                        </ModalFooter>
+                            </Button>                         </ModalFooter>
                     </>
                 </ModalContent>
             </Modal>
             {/* DIALOG FOR DELETE */}
-            <Modal
-                isOpen={deletedialog}
-                onOpenChange={(isOpen) => {
-                    if (!isOpen) {
-                        setDeletedialog(false);
-                        setSectionToDelete(null); // Reset on close
-                        setContentToDelete(null);
-                    }
-                }}
-                hideCloseButton  >
-
-                <ModalContent>
-                    <>
-                        <ModalHeader className="flex flex-row justify-between items-center gap-1">
-                            <h1 className="text-[#1D2939] font-bold text-lg">
-                                {contentToDelete ? "Remove Content" : "Delete Section"}
-                            </h1>
-                            <button
-                                className="w-[32px] h-[32px] rounded-full flex items-center justify-center transition-all duration-300 ease-in-out hover:bg-[#F2F4F7]"
-                                onClick={() => setDeletedialog(false)}
-                            >
-                                <Image
-                                    src="/icons/cancel.svg"
-                                    alt="Cancel"
-                                    width={20}
-                                    height={20}
-                                />
-                            </button>
-                        </ModalHeader>
-                        <ModalBody >
-                            <span className="text-sm font-normal text-[#667085]"> {contentToDelete
-                                ? "Removing this content will permanently delete it from the section. This action cannot be undone."
-                                : "Deleting the section will permanently remove all its contents from the platform. This action cannot be undone."}</span>
-
-                        </ModalBody>
-                        <ModalFooter className="border-t border-lightGrey">
-                            <Button variant="light" className="py-[0.625rem] px-6 border-2  border-solid border-[#EAECF0] font-semibold text-sm text-[#1D2939] rounded-md hover:bg-[#F2F4F7]" onClick={() => setDeletedialog(false)} >Cancel</Button>
-                            <Button className="py-[0.625rem] px-6 text-white font-semibold shadow-inner-button   hover:bg-[#B0201A] bg-[#BB241A] border border-white rounded-md"
-                                //  onClick={() => {
-                                //     if (sectionToDelete) {
-                                //         handleDeleteSection(sectionToDelete);
-                                //         handleDeleteContent
-                                //         setDeletedialog(false);
-                                //         setSectionToDelete(null);
-                                //     }
-                                // }} 
-                                onClick={() => {
-                                    if (sectionToDelete) {
-                                        handleDeleteSection(sectionToDelete);
-                                    } else if (contentToDelete) {
-                                        handleDeleteContent(contentToDelete.sectionId, contentToDelete.contentId);
-                                    }
-                                    setDeletedialog(false);
-                                    setSectionToDelete(null);
-                                    setContentToDelete(null);
-                                }}
-                            >{contentToDelete ? "Remove Content" : "Delete Section"}</Button>
-                        </ModalFooter>
-                    </>
-                </ModalContent>
-            </Modal >
 
             {/* Drawer for Test */}
             <Text isOpen={showDrawerfortest} toggleDrawer={() => setShowDrawerfortest(!showDrawerfortest)} sectionId={passedSectionId} courseId={courseId} isEditing={isContentEditing} contentId={contentId} />

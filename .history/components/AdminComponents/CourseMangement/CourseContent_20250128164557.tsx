@@ -7,7 +7,7 @@ import Text from "./Text";
 import Quiz from "./QuizBottomSheets/Quiz";
 import Video from "./Video";
 import { DatePicker, DateValue } from "@nextui-org/react";
-import { now, today, CalendarDate, getLocalTimeZone, parseZonedDateTime, parseAbsoluteToLocal, ZonedDateTime } from "@internationalized/date";
+import { now, today, CalendarDate, getLocalTimeZone, parseZonedDateTime, parseAbsoluteToLocal, ZonedDateTime, parseDateTime } from "@internationalized/date";
 import { addDoc, collection, doc, getDoc, getDocs, onSnapshot, setDoc, query, deleteDoc, updateDoc } from "firebase/firestore";
 import { auth, db, storage } from "@/firebase";
 import { toast } from 'react-toastify';
@@ -15,6 +15,7 @@ import { useEffect } from 'react';
 import LoadingData from "@/components/Loading";
 import { DateTime } from 'luxon';  // Import luxon
 import React from "react";
+import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button } from "@nextui-org/react";
 
 type Sections = {
     sectionName: string;
@@ -56,19 +57,28 @@ const formatScheduleDate = (dateString: string | null): string => {
             return "-";
         }
 
-        // Format the date manually to match "MM/DD/YYYY,HH:mm"
+        // Extract date components
         const year = dateObj.getFullYear();
         const month = String(dateObj.getMonth() + 1).padStart(2, "0");
         const day = String(dateObj.getDate()).padStart(2, "0");
-        const hours = String(dateObj.getHours()).padStart(2, "0");
-        const minutes = String(dateObj.getMinutes()).padStart(2, "0");
 
-        return `${month}/${day}/${year},${hours}:${minutes}`;
+        // Extract time components
+        let hours = dateObj.getHours();
+        const minutes = String(dateObj.getMinutes()).padStart(2, "0");
+        const ampm = hours >= 12 ? "PM" : "AM";
+
+        // Convert hours to 12-hour format
+        hours = hours % 12 || 12; // Convert 0 to 12 for midnight
+        const formattedHours = String(hours).padStart(2, "0");
+
+        // Combine formatted components
+        return `${month}/${day}/${year},${formattedHours}:${minutes} ${ampm}`;
     } catch (error) {
         console.error("Error formatting date:", error);
         return "-";
     }
 };
+
 
 
 
@@ -89,7 +99,13 @@ function CourseContent({ courseId }: CourseContentProps) {
     const [contentId, setContentId] = useState('');
     const [dateForPicker, setDateForPicker] = useState<DateValue | null>(null);
     const [showDatepicker, setShowDatepicker] = useState(false);
-
+    const [popoveropen1, setPopoveropen1] = useState<number | null>(null);
+    const [popoveropen2, setPopoveropen2] = useState<number | null>(null);
+    const [popoveropen3, setPopoveropen3] = useState<number | null>(null);
+    const [popoverOpen, setPopoverOpen] = useState<number | null>(null);
+    const [deletedialog, setDeletedialog] = useState(false);
+    const [sectionToDelete, setSectionToDelete] = useState<string | null>(null);
+    const [contentToDelete, setContentToDelete] = useState<{ sectionId: string, contentId: string } | null>(null);
     useEffect(() => {
         const sectionsRef = collection(db, 'course', courseId, 'sections');
         const q = query(sectionsRef);
@@ -276,22 +292,19 @@ function CourseContent({ courseId }: CourseContentProps) {
     if (loading) {
         return <LoadingData />
     }
-
-
-    const [openPopovers, setOpenPopovers] = React.useState<{ [key: number]: boolean }>({});
-    const togglePopover = (index: number) => {
-        setOpenPopovers((prev) => ({
-            ...prev,
-            [index]: !prev[index],
-        }));
+    const handlePopoverOpen1 = (index: number) => {
+        setPopoveropen1(index);
+    };
+    const handlePopoverOpen2 = (index: number) => {
+        setPopoveropen2(index);
+    };
+    const handlePopoverOpen3 = (index: number) => {
+        setPopoveropen3(index);
+    };
+    const handlePopoverOpen = (index: number) => {
+        setPopoverOpen(index);
     };
 
-    const closePopover = (index: number) => {
-        setOpenPopovers((prev) => ({
-            ...prev,
-            [index]: false,
-        }));
-    };
     return (
         <div className="flex flex-col gap-4 ">
             <div className="flex flex-row justify-between h-16">
@@ -328,7 +341,7 @@ function CourseContent({ courseId }: CourseContentProps) {
                 </div>
                 {/* Add section Button - Only show after clicking Create Section in dialog */}
                 <button
-                    className="flex flex-row gap-1 items-center rounded-md border-[2px] border-solid border-[#9012FF] hover:bg-[#F5F0FF] bg-[#FFFFFF] h-[44px] w-[162px] justify-center"
+                    className="flex flex-row gap-1 outline-none items-center rounded-md border-[2px] border-solid border-[#9012FF] hover:bg-[#F5F0FF] bg-[#FFFFFF] h-[44px] w-[162px] justify-center"
                     onClick={openCreateSection}>
                     <Image src="/icons/plus-sign.svg" height={18} width={18} alt="Plus Sign" />
                     <span className="text-[#9012FF] font-semibold text-sm">Add Section</span>
@@ -356,30 +369,44 @@ function CourseContent({ courseId }: CourseContentProps) {
 
 
                                         <Popover
-                                            placement="bottom" isOpen={!!openPopovers[index]}
-                                            onOpenChange={() => closePopover(index)}>
+                                            isOpen={popoveropen1 === index}
+                                            onOpenChange={(open) => open ? handlePopoverOpen1(index) : setPopoveropen1(null)}
+                                            placement="bottom" >
                                             <PopoverTrigger
+
                                             >
                                                 <button
-                                                    className="flex flex-row gap-1 items-center rounded-md hover:bg-[#F5F0FF] hover:rounded-full px-3 py-1 transition duration-200 ease-in-out h-[44px] w-auto justify-center"
-                                                    onClick={() => togglePopover(index)} >
+
+                                                    className="flex flex-row gap-1 items-center rounded-md hover:bg-[#F5F0FF] outline-none hover:rounded-full px-3 py-1 transition duration-200 ease-in-out h-[44px] w-auto justify-center"
+                                                >
                                                     <Image src="/icons/plus-sign.svg" height={18} width={18} alt="Plus Sign" />
                                                     <span className="text-[#9012FF] font-semibold text-sm">Add Content</span>
                                                 </button>
                                             </PopoverTrigger>
                                             <PopoverContent className="flex flex-col px-0 text-sm font-normal bg-white border border-lightGrey rounded-md w-[167px] shadow-md">
-                                                <button className=" p-3 gap-2 flex-row flex h-[40px] hover:bg-[#F2F4F7] w-full"
-                                                    onClick={() => { openDrawerfortest(); setPassedSectionId(section.sectionId); closePopover(index); setIsContentEditing(false) }}>
+                                                <button className=" p-3 gap-2 flex-row flex h-[40px] hover:bg-[#F2F4F7] w-full outline-none"
+                                                    onClick={(e) => {
+                                                        openDrawerfortest(); setPassedSectionId(section.sectionId); setIsContentEditing(false);
+                                                        setPopoveropen1(null); e.stopPropagation();
+                                                    }}>
                                                     <Image src="/icons/read.svg" alt="learn-icon" width={20} height={20} />
                                                     <span className="text-sm text-[#0C111D] font-normal">Text</span>
                                                 </button>
-                                                <button className=" p-3 gap-2 flex-row flex h-[40px] hover:bg-[#F2F4F7] w-full"
-                                                    onClick={() => { openDrawerforVideo(); setPassedSectionId(section.sectionId); closePopover(index); setIsContentEditing(false) }}>
+                                                <button className=" p-3 gap-2 flex-row flex h-[40px] hover:bg-[#F2F4F7] w-full outline-none"
+                                                    onClick={(e) => {
+                                                        openDrawerforVideo(); setPassedSectionId(section.sectionId); setIsContentEditing(false);
+                                                        setPopoveropen1(null);
+                                                        e.stopPropagation();
+                                                    }}>
                                                     <Image src="/icons/vedio.svg" alt="video-icon" width={20} height={20} />
                                                     <span className="text-sm text-[#0C111D] font-normal">Video</span>
                                                 </button>
-                                                <button className=" p-3 gap-2 flex-row flex h-[40px] hover:bg-[#F2F4F7] w-full"
-                                                    onClick={() => { openDrawerforQuiz(); setPassedSectionId(section.sectionId); closePopover(index); setIsContentEditing(false) }}>
+                                                <button className=" p-3 gap-2 flex-row flex h-[40px] hover:bg-[#F2F4F7] w-full outline-none"
+                                                    onClick={(e) => {
+                                                        openDrawerforQuiz(); setPassedSectionId(section.sectionId); setIsContentEditing(false);
+                                                        setPopoveropen1(null);
+                                                        e.stopPropagation();
+                                                    }}>
                                                     <Image src="/icons/test.svg" alt="test-icon" width={20} height={20} />
                                                     <span className="text-sm text-[#0C111D] font-normal">Quiz</span>
                                                 </button>
@@ -389,10 +416,12 @@ function CourseContent({ courseId }: CourseContentProps) {
 
 
                                         <Popover
-                                            placement="bottom-end">
+                                            placement="bottom-end"
+                                            isOpen={popoveropen2 === index}
+                                            onOpenChange={(open) => open ? handlePopoverOpen2(index) : setPopoveropen2(null)}>
                                             <PopoverTrigger
                                                 onClick={(event) => event.stopPropagation()}>
-                                                <button className="w-[32px] h-[32px]  rounded-full flex items-center justify-center transition-all duration-300 ease-in-out hover:bg-[#F2F4F7]">
+                                                <button className="w-[32px] h-[32px]  rounded-full flex items-center justify-center transition-all duration-300 ease-in-out hover:bg-[#F2F4F7] outline-none">
 
                                                     <Image src="/icons/three-dots.svg" width={18} height={18} alt="three-dots" className="outline-none" />
 
@@ -401,12 +430,19 @@ function CourseContent({ courseId }: CourseContentProps) {
                                             <PopoverContent className="flex flex-col px-0 text-sm font-normal bg-white border border-lightGrey rounded-md w-[167px] shadow-md"
                                                 onClick={(event) => event.stopPropagation()}  >
                                                 <button className=" p-3 gap-2 flex-row flex h-[40px] hover:bg-[#F2F4F7] w-full"
-                                                    onClick={() => editCreateSection(section.sectionName, section.sectionScheduleDate, section.sectionId)
+                                                    onClick={() => {
+                                                        editCreateSection(section.sectionName, section.sectionScheduleDate, section.sectionId);
+                                                        setPopoveropen2(null);
+                                                    }
                                                     }>
                                                     <Image src="/icons/edit-icon.svg" width={18} height={18} alt="Edit-quiz" />
                                                     <span className="text-sm text-[#0C111D] font-normal">Edit Section</span>
                                                 </button>
-                                                <button className=" p-3 gap-2 flex-row flex h-[40px] hover:bg-[#F2F4F7] w-full" onClick={() => handleDeleteSection(section.sectionId)}>
+                                                <button className=" p-3 gap-2 flex-row flex h-[40px] hover:bg-[#FEE4E2] w-full" onClick={() => {
+                                                    setSectionToDelete(section.sectionId);
+                                                    setDeletedialog(true); setPopoveropen2(null);
+                                                }}>
+
                                                     <Image src="/icons/delete.svg" width={18} height={18} alt="delete-quiz" />
                                                     <span className="text-sm text-[#DE3024] font-normal">Delete Section</span>
                                                 </button>
@@ -444,9 +480,15 @@ function CourseContent({ courseId }: CourseContentProps) {
                                             <td className="px-5 py-4 text-start text-[#101828] text-sm">{formatScheduleDate(content.lessonScheduleDate)}</td>
                                             <td className="px-5 py-4 text-start text-[#101828] text-sm">{content.type}</td>
                                             <td className="flex items-center justify-center px-8 py-4 text-[#101828] text-sm">
-                                                <Popover placement="bottom-end"  >
+                                                <Popover
+                                                    placement="bottom-end"
+                                                    isOpen={popoverOpen === index}
+                                                    onOpenChange={(open) => open ? handlePopoverOpen(index) : setPopoverOpen(null)}>
                                                     <PopoverTrigger>
-                                                        <button>
+                                                        <button
+
+                                                        >
+
                                                             <Image
                                                                 src="/icons/three-dots.svg"
                                                                 width={20}
@@ -468,13 +510,21 @@ function CourseContent({ courseId }: CourseContentProps) {
                                                                     else if (content.type === 'Text') {
                                                                         setShowDrawerfortest(true);
                                                                     }
-                                                                    setPassedSectionId(section.sectionId); setIsContentEditing(true); setContentId(content.contentId)
+                                                                    setPassedSectionId(section.sectionId); setIsContentEditing(true); setContentId(content.contentId); setPopoverOpen(null);
                                                                 }} >
                                                                 <Image src="/icons/edit-02.svg" width={18} height={18} alt="edit" />
                                                                 <span className="text-sm text-[#0C111D] font-normal">Edit</span>
                                                             </button>
-                                                            <button className=" flex flex-row items-center justify-start w-full py-2 gap-2 hover:bg-[#F2F4F7] pl-4 pr-9"
-                                                                onClick={() => handleDeleteContent(section.sectionId, content.contentId)}>
+                                                            <button className=" flex flex-row items-center justify-start w-full py-2 gap-2 hover:bg-[#FEE4E2] pl-4 pr-9"
+                                                                onClick={() => {
+                                                                    setContentToDelete({
+                                                                        sectionId: section.sectionId,
+                                                                        contentId: content.contentId
+                                                                    });
+                                                                    // handleDeleteContent(section.sectionId, content.contentId); 
+                                                                    setPopoverOpen(null);
+                                                                    setDeletedialog(true);
+                                                                }}>
                                                                 <Image src='/icons/delete.svg' alt="user profile" width={18} height={18} />
                                                                 <p className="text-sm text-[#DE3024] font-normal">Remove</p>
                                                             </button>
@@ -494,10 +544,12 @@ function CourseContent({ courseId }: CourseContentProps) {
                                     Test Lorem ipsum is placeholder text commonly used in the graphic, print, and publishing industries for previewing layouts and visual mockups.
                                 </span>
                                 <Popover
+                                    isOpen={popoveropen3 === index}
+                                    onOpenChange={(open) => open ? handlePopoverOpen3(index) : setPopoveropen3(null)}
                                     placement="bottom">
                                     <PopoverTrigger>
                                         <button
-                                            className="flex flex-row gap-1 items-center px-5 rounded-md border-[2px] border-solid border-[#9012FF] h-[44px] w-auto justify-center "
+                                            className="flex flex-row gap-1 items-center px-5 rounded-md border-[2px] border-solid hover:bg-[#F5F0FF] border-[#9012FF] h-[44px] w-auto justify-center "
                                         >
                                             <Image src="/icons/plus-sign.svg" height={18} width={18} alt="Plus Sign" />
                                             <span className="text-[#9012FF] font-semibold text-sm">Add Content</span>
@@ -505,17 +557,26 @@ function CourseContent({ courseId }: CourseContentProps) {
                                     </PopoverTrigger>
                                     <PopoverContent className="flex flex-col px-0 text-sm font-normal bg-white border border-lightGrey rounded-md w-[167px] shadow-md">
                                         <button className=" p-3 gap-2 flex-row flex h-[40px] hover:bg-[#F2F4F7] w-full"
-                                            onClick={() => { setShowDrawerfortest(true); setPassedSectionId(section.sectionId); setIsContentEditing(false) }}>
+                                            onClick={() => {
+                                                setShowDrawerfortest(true); setPassedSectionId(section.sectionId); setIsContentEditing(false);
+                                                setPopoveropen3(null);
+                                            }}>
                                             <Image src="/icons/read.svg" alt="learn-icon" width={20} height={20} />
                                             <span className="text-sm text-[#0C111D] font-normal">Text</span>
                                         </button>
                                         <button className=" p-3 gap-2 flex-row flex h-[40px] hover:bg-[#F2F4F7] w-full"
-                                            onClick={() => { openDrawerforVideo(); setPassedSectionId(section.sectionId); setIsContentEditing(false) }}>
+                                            onClick={() => {
+                                                openDrawerforVideo(); setPassedSectionId(section.sectionId); setIsContentEditing(false);
+                                                setPopoveropen3(null);
+                                            }}>
                                             <Image src="/icons/vedio.svg" alt="video-icon" width={20} height={20} />
                                             <span className="text-sm text-[#0C111D] font-normal">Video</span>
                                         </button>
                                         <button className=" p-3 gap-2 flex-row flex h-[40px] hover:bg-[#F2F4F7] w-full"
-                                            onClick={() => { openDrawerforQuiz(); setPassedSectionId(section.sectionId); setIsContentEditing(false) }}>
+                                            onClick={() => {
+                                                openDrawerforQuiz(); setPassedSectionId(section.sectionId); setIsContentEditing(false);
+                                                setPopoveropen3(null);
+                                            }}>
                                             <Image src="/icons/test.svg" alt="test-icon" width={20} height={20} />
                                             <span className="text-sm text-[#0C111D] font-normal">Quiz</span>
                                         </button>
@@ -528,7 +589,7 @@ function CourseContent({ courseId }: CourseContentProps) {
                 </div>
             ))}
 
-            <Dialog open={openSectionDialog} onClose={closeCreateSection} className="relative z-50">
+            {/* <Dialog open={openSectionDialog} onClose={closeCreateSection} className="relative z-50">
                 <DialogBackdrop className="fixed inset-0 bg-black/30" />
                 <div className="fixed inset-0 flex items-center justify-center">
                     <DialogPanel className="bg-white rounded-2xl w-[559px] h-auto">
@@ -561,7 +622,7 @@ function CourseContent({ courseId }: CourseContentProps) {
                                     <p className="text-[#1D2939] text-sm font-medium">  {formatScheduleDate(sectionScheduleDate) || " "}</p>
                                     <button
                                         className="flex flex-row gap-1 rounded-md border-[2px] border-solid border-[#9012FF] hover:bg-[#F5F0FF] bg-[#FFFFFF] p-2 "
-                                        onClick={() => setShowDatepicker(true)}>
+                                        onClick={() => setShowDatepicker(!showDatepicker)}>
                                         <span className="text-[#9012FF] font-semibold text-sm">{sectionScheduleDate ? 'Change Date' : 'Select Date'}</span>
                                     </button>
                                 </div>
@@ -573,7 +634,7 @@ function CourseContent({ courseId }: CourseContentProps) {
                                         onChange={(date) => {
                                             const dateString = date ? date.toString() : "";
                                             setSectionScheduleDate(dateString);
-                                            setShowDatepicker(true); // Return to button view after selecting date
+
                                         }}
 
                                     />
@@ -587,14 +648,141 @@ function CourseContent({ courseId }: CourseContentProps) {
                                 <button
                                     onClick={() => handleAddSection()}
                                     disabled={!isCreateSectionFilled}
-                                    className={`py-[0.625rem] px-6 text-white shadow-inner-button border border-white ${!isCreateSectionFilled ? 'bg-[#CDA0FC]' : 'bg-[#9012FF]'} rounded-md font-semibold text-sm`}>
+                                    className={`py-[0.625rem] px-6 text-white shadow-inner-button border border-white ${!isCreateSectionFilled ? 'bg-[#CDA0FC]' : 'bg-[#9012FF] transition-colors duration-150 hover:bg-[#6D0DCC]'} rounded-md font-semibold text-sm`}>
                                     {isSectionEditing ? 'Save Changes' : 'Create Section'}
                                 </button>
                             </div>
                         </div>
                     </DialogPanel>
                 </div>
-            </Dialog>
+            </Dialog> */}
+            {/* DIALOG FOR CREATING SECTION */}
+            <Modal
+                isOpen={openSectionDialog}
+                onOpenChange={(isOpen) => !isOpen && closeCreateSection()}
+                hideCloseButton
+            >
+                <ModalContent>
+                    <>
+                        <ModalHeader className="flex flex-row justify-between items-center gap-1">
+                            <h3 className="text-2xl font-semibold text-[#1D2939]">{isSectionEditing ? 'Edit Section' : 'Create Section'}</h3>
+                            <button className="w-[32px] h-[32px]  rounded-full flex items-center justify-center transition-all duration-300 ease-in-out hover:bg-[#F2F4F7]">
+
+                                <button onClick={closeCreateSection} className="">
+                                    <Image src="/icons/cancel.svg" alt="Cancel" width={20} height={20} />
+                                </button>
+                            </button>
+                        </ModalHeader>
+
+                        <ModalBody>
+                            <div className="flex flex-col w-full gap-1 ">
+                                <p className="text-start text-sm text-[#1D2939] font-medium">Name</p>
+                                <div className="flex flex-row w-full h-10 px-3 outline-none border border-lightGrey  focus-within:border-[#D7BBFC] focus-within:ring-4 focus-within:ring-[#E8DEFB] focus-within:outline-none transition-colors rounded-md">
+                                    <input
+                                        type="text"
+                                        className="w-full  text-sm text-[#182230] font-normal outline-none rounded-md"
+                                        placeholder="Enter Name"
+                                        value={name}
+                                        onChange={(e) => setName(e.target.value)}
+
+                                    />
+                                </div>
+                            </div>
+                            <div className="flex flex-col w-full gap-2  mb-2">
+                                <p className="text-start text-lg text-[#1D2939] font-semibold">Schedule Section</p>
+                                <DatePicker
+                                    granularity="minute"
+                                    minValue={today(getLocalTimeZone())}
+                                    value={sectionScheduleDate ? parseDateTime(sectionScheduleDate) : undefined}
+                                    hideTimeZone
+                                    onChange={(date) => {
+                                        const dateString = date ? date.toString() : "";
+                                        setSectionScheduleDate(dateString);
+
+                                    }}
+
+                                />
+
+
+
+                            </div>
+                        </ModalBody>
+
+                        <ModalFooter>
+                            <Button onClick={closeCreateSection} variant="light" className="py-[0.625rem] px-6 border-[1.5px] border-lightGrey rounded-md text-[#1D2939] font-semibold text-sm hover:bg-[#F2F4F7]">Cancel</Button>
+                            <Button
+                                onClick={() => handleAddSection()}
+                                disabled={!isCreateSectionFilled}
+                                className={`py-[0.625rem] px-6 text-white shadow-inner-button border border-white ${!isCreateSectionFilled ? 'bg-[#CDA0FC]' : 'bg-[#9012FF] transition-colors duration-150 hover:bg-[#6D0DCC]'} rounded-md font-semibold text-sm`}>
+                                {isSectionEditing ? 'Save Changes' : 'Create Section'}
+                            </Button>
+                        </ModalFooter>
+                    </>
+                </ModalContent>
+            </Modal>
+            {/* DIALOG FOR DELETE */}
+            <Modal
+                isOpen={deletedialog}
+                onOpenChange={(isOpen) => {
+                    if (!isOpen) {
+                        setDeletedialog(false);
+                        setSectionToDelete(null); // Reset on close
+                        setContentToDelete(null);
+                    }
+                }}
+                hideCloseButton  >
+
+                <ModalContent>
+                    <>
+                        <ModalHeader className="flex flex-row justify-between items-center gap-1">
+                            <h1 className="text-[#1D2939] font-bold text-lg">
+                                {contentToDelete ? "Remove Content" : "Delete Section"}
+                            </h1>
+                            <button
+                                className="w-[32px] h-[32px] rounded-full flex items-center justify-center transition-all duration-300 ease-in-out hover:bg-[#F2F4F7]"
+                                onClick={() => setDeletedialog(false)}
+                            >
+                                <Image
+                                    src="/icons/cancel.svg"
+                                    alt="Cancel"
+                                    width={20}
+                                    height={20}
+                                />
+                            </button>
+                        </ModalHeader>
+                        <ModalBody >
+                            <span className="text-sm font-normal text-[#667085]"> {contentToDelete
+                                ? "Removing this content will permanently delete it from the section. This action cannot be undone."
+                                : "Deleting the section will permanently remove all its contents from the platform. This action cannot be undone."}</span>
+
+                        </ModalBody>
+                        <ModalFooter className="border-t border-lightGrey">
+                            <Button variant="light" className="py-[0.625rem] px-6 border-2  border-solid border-[#EAECF0] font-semibold text-sm text-[#1D2939] rounded-md hover:bg-[#F2F4F7]" onClick={() => setDeletedialog(false)} >Cancel</Button>
+                            <Button className="py-[0.625rem] px-6 text-white font-semibold shadow-inner-button   hover:bg-[#B0201A] bg-[#BB241A] border border-white rounded-md"
+                                //  onClick={() => {
+                                //     if (sectionToDelete) {
+                                //         handleDeleteSection(sectionToDelete);
+                                //         handleDeleteContent
+                                //         setDeletedialog(false);
+                                //         setSectionToDelete(null);
+                                //     }
+                                // }} 
+                                onClick={() => {
+                                    if (sectionToDelete) {
+                                        handleDeleteSection(sectionToDelete);
+                                    } else if (contentToDelete) {
+                                        handleDeleteContent(contentToDelete.sectionId, contentToDelete.contentId);
+                                    }
+                                    setDeletedialog(false);
+                                    setSectionToDelete(null);
+                                    setContentToDelete(null);
+                                }}
+                            >{contentToDelete ? "Remove Content" : "Delete Section"}</Button>
+                        </ModalFooter>
+                    </>
+                </ModalContent>
+            </Modal >
+
             {/* Drawer for Test */}
             <Text isOpen={showDrawerfortest} toggleDrawer={() => setShowDrawerfortest(!showDrawerfortest)} sectionId={passedSectionId} courseId={courseId} isEditing={isContentEditing} contentId={contentId} />
             {/* Drawer for Quiz */}

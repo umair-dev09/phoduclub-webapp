@@ -758,26 +758,14 @@ function CourseContent({ courseId }: CourseContentProps) {
                         </ModalBody>
                         <ModalFooter className="border-t border-lightGrey">
                             <Button variant="light" className="py-[0.625rem] px-6 border-2  border-solid border-[#EAECF0] font-semibold text-sm text-[#1D2939] rounded-md hover:bg-[#F2F4F7]" onClick={() => setDeletedialog(false)} >Cancel</Button>
-                            <Button className="py-[0.625rem] px-6 text-white font-semibold shadow-inner-button   hover:bg-[#B0201A] bg-[#BB241A] border border-white rounded-md"
-                                //  onClick={() => {
-                                //     if (sectionToDelete) {
-                                //         handleDeleteSection(sectionToDelete);
-                                //         handleDeleteContent
-                                //         setDeletedialog(false);
-                                //         setSectionToDelete(null);
-                                //     }
-                                // }} 
-                                onClick={() => {
-                                    if (sectionToDelete) {
-                                        handleDeleteSection(sectionToDelete);
-                                    } else if (contentToDelete) {
-                                        handleDeleteContent(contentToDelete.sectionId, contentToDelete.contentId);
-                                    }
+                            <Button className="py-[0.625rem] px-6 text-white font-semibold shadow-inner-button   hover:bg-[#B0201A] bg-[#BB241A] border border-white rounded-md" onClick={() => {
+                                if (sectionToDelete) {
+                                    handleDeleteSection(sectionToDelete);
+                                    handleDeleteContent
                                     setDeletedialog(false);
                                     setSectionToDelete(null);
-                                    setContentToDelete(null);
-                                }}
-                            >{contentToDelete ? "Remove Content" : "Delete Section"}</Button>
+                                }
+                            }}  >Delete User</Button>
                         </ModalFooter>
                     </>
                 </ModalContent>
