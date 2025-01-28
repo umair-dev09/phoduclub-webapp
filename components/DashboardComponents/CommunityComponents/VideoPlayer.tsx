@@ -39,7 +39,8 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ videoSrc }) => {
 
   return (
     <div className="flex min-w-[350px] w-[75%] h-[75%] mx-auto justify-center">
-    <video ref={videoNode} className="video-js vjs-theme-fantasy" 
+    <video ref={videoNode} 
+    className="video-js vjs-theme-fantasy" 
     controls
     preload="auto" 
     autoPlay

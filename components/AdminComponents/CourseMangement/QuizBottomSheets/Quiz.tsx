@@ -12,6 +12,7 @@ import { auth, db, storage } from "@/firebase";
 import { collection, doc, getDoc, getDocs, setDoc, updateDoc } from "firebase/firestore";
 import { toast } from 'react-toastify';
 import React from "react";
+import LoadingData from "@/components/Loading";
 // Define interfaces for question options and structure
 interface Options {
     A: string;
@@ -51,21 +52,21 @@ function Quiz({ isOpen, toggleDrawer, courseId, sectionId, isEditing, contentId 
     const [marksPerQ, setMarksPerQ] = useState("");
     const [nMarksPerQ, setnMarksPerQ] = useState("");
     const [timeNumber, setTimeNumber] = useState("");
-    const [timeText, setTimeText] = useState("Minute(s)");
+    const [timeText, setTimeText] = useState("Minutes");
     const [quizScheduleDate, setQuizScheduleDate] = useState("");
     const [quizName, setQuizName] = useState<string>('');
     const [quizDescription, setQuizDescription] = useState<string>('');
     const [anyQuestionAdded, setAnyQuestionAdded] = useState<string>('');
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(true);
 
     // Validation function to check if all fields are filled
     const [currentStep, setCurrentStep] = useState<Step>(Step.QuizInfo);
     // Add questionsList state here
     const [questionsList, setQuestionsList] = useState<Question[]>([]);
     useEffect(() => {
-        if (isEditing) {
-            setLoading(true);
+        if (isOpen && contentId) {
             fetchContentData(contentId || '');
+            setCurrentStep(0);
         }
         else {
             setCurrentStep(0);
@@ -75,11 +76,13 @@ function Quiz({ isOpen, toggleDrawer, courseId, sectionId, isEditing, contentId 
             setnMarksPerQ('');
             setQuizScheduleDate('');
             setTimeNumber('');
-            setTimeText('Minute(s)');
+            setTimeText('Minutes');
             setQuestionsList([]);
             setAnyQuestionAdded('');
+            setLoading(false);
+            setCurrentStep(0);
         }
-    }, [isEditing, contentId]);
+    }, [isOpen, contentId]);
 
     const fetchContentData = async (contentId: string) => {
         try {
@@ -103,7 +106,7 @@ function Quiz({ isOpen, toggleDrawer, courseId, sectionId, isEditing, contentId 
                     setTimeText(timeMatch[2]);    // The second capturing group will give 'Minute(s)' or 'Hour(s)'
                 } else {
                     setTimeNumber("");  // Default if no match found
-                    setTimeText("Minute(s)");    // Default if no match found
+                    setTimeText("Minutes");    // Default if no match found
                 }
 
                 const questionsCollectionRef = collection(contentDocRef, "Questions");
@@ -347,7 +350,7 @@ function Quiz({ isOpen, toggleDrawer, courseId, sectionId, isEditing, contentId 
                 setnMarksPerQ('');
                 setQuizScheduleDate('');
                 setTimeNumber('');
-                setTimeText('Minute(s)');
+                setTimeText('Minutes');
                 setQuestionsList([]);
                 setAnyQuestionAdded('');
             }
@@ -358,6 +361,9 @@ function Quiz({ isOpen, toggleDrawer, courseId, sectionId, isEditing, contentId 
 
     };
 
+     if(loading){
+        return <LoadingData />
+     }
 
     return (
         <div>
@@ -387,6 +393,9 @@ function Quiz({ isOpen, toggleDrawer, courseId, sectionId, isEditing, contentId 
                             </button>
                         </div>
                     </div>
+                    {loading ? (
+                                            <LoadingData />
+                                        ) : (
                     <div className="flex justify-center h-auto overflow-y-auto ">
                         <div className="ml-[32px] w-[250px] my-[32px] bg-[#FFFFFF] border border-solid border-[#EAECF0] rounded-md">
                             <div className="flex flex-row items-center justify-between m-4">
@@ -457,8 +466,8 @@ function Quiz({ isOpen, toggleDrawer, courseId, sectionId, isEditing, contentId 
                             </div>
                         </div>
                     </div>
-
-
+                    )}
+ 
 
 
 

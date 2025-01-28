@@ -93,7 +93,7 @@ function Schedule({ marksPerQ, setMarksPerQ, nMarksPerQ, setnMarksPerQ, timeNumb
                     <DatePicker
                         granularity="minute"
                         minValue={today(getLocalTimeZone())}
-                        value={quizScheduleDate ? parseDateTime(quizScheduleDate) : undefined}
+                        value={quizScheduleDate || undefined ? parseDateTime(quizScheduleDate) || undefined : undefined}
                         hideTimeZone
                         onChange={(date) => {
                             const dateString = date ? date.toString() : "";

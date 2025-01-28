@@ -8,7 +8,7 @@ import React, { useState, useEffect, useRef, SetStateAction, Dispatch } from "re
 import ReactQuill from 'react-quill-new'; // Ensure correct import
 import Quill from 'quill'; // Import Quill to use it for types
 import QuillResizeImage from 'quill-resize-image';
-import { collection, doc } from "firebase/firestore";
+import { collection, doc, or } from "firebase/firestore";
 import { db } from "@/firebase";
 Quill.register("modules/resize", QuillResizeImage);
 
@@ -22,6 +22,7 @@ interface Question {
     explanation: string;
     questionId: string;
     difficulty: string;
+    order: number;
 }
 
 interface Options {
@@ -53,30 +54,16 @@ function TestQuestions({ questionsList, setQuestionsList }: QuestionsProps) {
         newQuestionsList[index].isChecked = !newQuestionsList[index].isChecked;
         setQuestionsList(newQuestionsList);
     };
-    // -----------------------------------------------------------------------------------------------------------
-    // Handler for adding new question
-    const handleAddQuestion = () => {
-        setQuestionsList([
-            ...questionsList,
-            {
-                question: '',
-                isChecked: false,
-                isActive: false,
-                options: { A: '', B: '', C: '', D: '' },
-                correctAnswer: null,
-                explanation: '',
-                questionId: '',
-                difficulty: 'Easy',
-            }
-        ]);
-    };
+
     // -----------------------------------------------------------------------------------------------------------
     // Handler for adding the Questions
     const handleAddQuestionduplicate = (duplicateQuestion?: Question) => {
         const newQuestion = duplicateQuestion
             ? {
                 ...duplicateQuestion,
-                questionId: doc(collection(db, 'questions')).id // Generate Firestore-style ID
+                question: `${duplicateQuestion.question} (Copy)`,
+                questionId: `temp-${Date.now()}`,
+                order: questionsList.length + 1,
             }
             : {
                 question: '',
@@ -86,7 +73,8 @@ function TestQuestions({ questionsList, setQuestionsList }: QuestionsProps) {
                 correctAnswer: null,
                 explanation: '',
                 difficulty: 'Easy',
-                questionId: doc(collection(db, 'questions')).id,
+                questionId: `temp-${Date.now()}`,
+                order: questionsList.length + 1
             };
 
         setQuestionsList([...questionsList, newQuestion]);
@@ -563,7 +551,9 @@ function TestQuestions({ questionsList, setQuestionsList }: QuestionsProps) {
                                 </p>
                             </div>
                         </div>
-                        {questionsList.map((question, index) => (
+                        {questionsList
+                        .sort((a, b) => a.order - b.order)
+                        .map((question, index) => (
                             <Collapsible key={index} className="border-b "
                                 trigger={
                                     <div className="flex flex-row items-start w-full  border-lightGrey py-2 ">
@@ -745,23 +735,25 @@ function TestQuestions({ questionsList, setQuestionsList }: QuestionsProps) {
                                     </div>
                                     <span className="font-semibold text-base text-[#1D2939]">Options</span>
                                     <div className="flex flex-col gap-3">
-                                        {(Object.keys(question.options) as Array<keyof Options>).map((optionKey) => (
-                                            <div key={optionKey} className="flex flex-row items-center gap-2">
-                                                <div className="h-8 w-8 bg-[#F9FAFB] border border-solid border-[#D0D5DD] rounded-[6px]">
-                                                    <span className="text-[#475467] text-sm font-medium flex justify-center items-center h-full w-full">
-                                                        {optionKey}
-                                                    </span>
+                                        {(Object.keys(question.options) as Array<keyof Options>)
+                                            .sort()
+                                            .map((optionKey) => (
+                                                <div key={optionKey} className="flex flex-row items-center gap-2">
+                                                    <div className="h-8 w-8 bg-[#F9FAFB] border border-solid border-[#D0D5DD] rounded-[6px]">
+                                                        <span className="text-[#475467] text-sm font-medium flex justify-center items-center h-full w-full">
+                                                            {optionKey}
+                                                        </span>
+                                                    </div>
+                                                    <input
+                                                        className="font-medium pl-3 text-[#101828] text-sm placeholder:text-[#A1A1A1] rounded-md w-full placeholder:font-normal
+                                                                    focus:outline-none focus:ring-0 border border-solid border-[#D0D5DD] h-[40px] focus:border-[#D6BBFB]
+                                                                    focus:shadow-[0px_0px_0px_4px_rgba(158,119,237,0.25),0px_1px_2px_0px_rgba(16,24,40,0.05)]"
+                                                        placeholder={`Option ${optionKey}`}
+                                                        value={question.options[optionKey]}
+                                                        onChange={(e) => handleOptionChange(index, optionKey, e.target.value)}
+                                                    />
                                                 </div>
-                                                <input
-                                                    className="font-medium pl-3 text-[#101828] text-sm placeholder:text-[#A1A1A1] rounded-md w-full placeholder:font-normal
-                                                                focus:outline-none focus:ring-0 border border-solid border-[#D0D5DD] h-[40px] focus:border-[#D6BBFB]
-                                                                focus:shadow-[0px_0px_0px_4px_rgba(158,119,237,0.25),0px_1px_2px_0px_rgba(16,24,40,0.05)]"
-                                                    placeholder={`Option ${optionKey}`}
-                                                    value={question.options[optionKey]}
-                                                    onChange={(e) => handleOptionChange(index, optionKey, e.target.value)}
-                                                />
-                                            </div>
-                                        ))}
+                                            ))}
                                     </div>
 
                                     <span className="font-semibold text-base text-[#1D2939]">Correct answer</span>

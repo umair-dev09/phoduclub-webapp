@@ -25,6 +25,7 @@ export interface Question {
     correctAnswer: string | null;
     explanation: string;
     questionId: string;
+    order: number;
 }
 // Define an enum for the steps
 enum Step {
@@ -88,8 +89,8 @@ function CreateQuiz() {
     const [quizName, setQuizName] = useState<string>('');
     const [quizDescription, setQuizDescription] = useState<string>('');
     const [deletedQuestionIds, setDeletedQuestionIds] = useState<string[]>([]);
-    const [questionsList, setQuestionsList] = useState<Question[]>([{ question: "", isChecked: false, isActive: false, options: { A: "", B: "", C: "", D: "" }, correctAnswer: null, explanation: "", questionId: "" }]);
-    const [originalQuestionsList, setOriginalQuestionsList] = useState<Question[]>([{ question: "", isChecked: false, isActive: false, options: { A: "", B: "", C: "", D: "" }, correctAnswer: null, explanation: "", questionId: "" }]);
+    const [questionsList, setQuestionsList] = useState<Question[]>([{ question: "", isChecked: false, isActive: false, options: { A: "", B: "", C: "", D: "" }, correctAnswer: null, explanation: "", questionId: "", order: 1 }]);
+    const [originalQuestionsList, setOriginalQuestionsList] = useState<Question[]>([{ question: "", isChecked: false, isActive: false, options: { A: "", B: "", C: "", D: "" }, correctAnswer: null, explanation: "", questionId: "", order: 1 }]);
 
     useEffect(() => {
         if (quizId) {
@@ -134,7 +135,8 @@ function CreateQuiz() {
                             D: data.options.D
                         },
                         correctAnswer: data.correctAnswer?.replace('option', ''),
-                        explanation: data.answerExplanation || ''
+                        explanation: data.answerExplanation || '',
+                        order: data.order,
                     };
                 });
                 setQuestionsList(fetchedQuestions);
@@ -306,6 +308,7 @@ function CreateQuiz() {
                                 options: question.options,
                                 correctAnswer: question.correctAnswer,
                                 answerExplanation: question.explanation,
+                                order: question.order !== undefined ? question.order : 0,
                             };
                             batch.set(questionRef, questionData);
                         }
@@ -371,6 +374,7 @@ function CreateQuiz() {
                                 options: question.options,
                                 correctAnswer: question.correctAnswer,
                                 answerExplanation: question.explanation,
+                                order: question.order !== undefined ? question.order : 0,
                             };
                             batch.set(questionRef, questionData);
                         }
@@ -446,6 +450,8 @@ function CreateQuiz() {
                                 options: question.options,
                                 correctAnswer: question.correctAnswer,
                                 answerExplanation: question.explanation,
+                                order: question.order !== undefined ? question.order : 0,
+
                             };
                             batch.set(questionRef, questionData);
                         }
@@ -503,6 +509,7 @@ function CreateQuiz() {
                                 options: question.options,
                                 correctAnswer: question.correctAnswer,
                                 answerExplanation: question.explanation,
+                                order: question.order !== undefined ? question.order : 0,
                             };
                             batch.set(questionRef, questionData);
                         }

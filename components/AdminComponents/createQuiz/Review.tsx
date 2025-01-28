@@ -19,6 +19,7 @@ interface Question {
     options: Options;
     correctAnswer: string | null;
     explanation: string;
+    order: number;
 }
 
 interface ReviewProps {
@@ -28,7 +29,9 @@ interface ReviewProps {
 function Review({ questionsList }: ReviewProps) {
     return (
         <div className='flex flex-col w-full h-auto overflow-y-auto pt-5 pb-8 gap-4'>
-            {questionsList.map((question, index) => (
+            {questionsList
+                                .sort((a, b) => a.order - b.order)
+                                .map((question, index) => (
                 <div key={index} className='flex flex-col bg-white p-6 rounded-xl'>
                     <div className='flex flex-row justify-between'>
                         <div className='flex flex-row items-start justify-start gap-1'>

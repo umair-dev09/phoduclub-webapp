@@ -14,12 +14,13 @@ import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { auth, db, storage } from "@/firebase";
 import { collection, doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
 import { toast } from 'react-toastify';
+import LoadingData from "@/components/Loading";
 // Define the props interface
 interface VideoProps {
     isOpen: boolean;           // isOpen should be a boolean
     toggleDrawer: () => void;  // toggleDrawer is a function that returns void
     courseId: string;
-    sectionId: string;
+    sectionId: string; 
     isEditing: boolean;
     contentId: string;
 }
@@ -92,7 +93,7 @@ function Video({ isOpen, toggleDrawer, sectionId, courseId, isEditing, contentId
     const [progress, setProgress] = useState<number | null>(null);
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
     const [uploadTaskRef, setUploadTaskRef] = useState<any>(null); // State to hold the upload task reference
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(true);
     const [showDatepicker, setShowDatepicker] = useState(false);
     const [value, setValue] = useState(lessonOverView);
     const openVideoUploadTab = () => {
@@ -138,8 +139,7 @@ function Video({ isOpen, toggleDrawer, sectionId, courseId, isEditing, contentId
 
 
     useEffect(() => {
-        if (isEditing) {
-            setLoading(true);
+        if (isOpen  && contentId) {
             fetchContentData(contentId || '');
         }
         else {
@@ -152,9 +152,10 @@ function Video({ isOpen, toggleDrawer, sectionId, courseId, isEditing, contentId
             setDisscusionOpen(false);
             setVideoId('');
             setSelectedFile(null);
+            setLoading(false);
 
         }
-    }, [isEditing, contentId]);
+    }, [isOpen, contentId]);
 
     const fetchContentData = async (contentId: string) => {
         try {
@@ -502,6 +503,9 @@ function Video({ isOpen, toggleDrawer, sectionId, courseId, isEditing, contentId
                             </button>
                         </div>
                     </div>
+                    {loading ? (
+                                            <LoadingData />
+                                        ) : (
                     <div className="flex justify-center h-auto overflow-y-auto ">
                         <div className="h-auto gap-4 p-6 rounded-md w-[684px] flex flex-col">
                             <div className='flex flex-col gap-2'>
@@ -737,7 +741,7 @@ function Video({ isOpen, toggleDrawer, sectionId, courseId, isEditing, contentId
                                 <DatePicker
                                     granularity="minute"
                                     minValue={today(getLocalTimeZone())}
-                                    value={contentScheduleDate ? parseDateTime(contentScheduleDate) : undefined}
+                                    value={contentScheduleDate || undefined ? parseDateTime(contentScheduleDate) || undefined : undefined }
                                     hideTimeZone
                                     onChange={(date) => {
                                         const dateString = date ? date.toString() : "";
@@ -773,6 +777,7 @@ function Video({ isOpen, toggleDrawer, sectionId, courseId, isEditing, contentId
 
 
                     </div>
+                                        )}
                 </div>
             </Drawer>
         </div>
