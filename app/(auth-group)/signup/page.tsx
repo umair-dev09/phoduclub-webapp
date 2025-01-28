@@ -183,7 +183,7 @@ export default function Sign() {
     };
 
     const isFormValid = () => {
-        return firstName.trim() !== '' && lastName.trim() !== '' && email.trim() !== '' && /\S+@\S+\.\S+/.test(email) && phone.trim() !== '' && phone.length >= 10 && termsAccepted;
+        return firstName.trim() !== '' && lastName.trim() !== '' && email.trim() !== '' && /\S+@\S+\.\S+/.test(email) && phone.trim() !== '' && phone.length >= 12 && termsAccepted;
     };
 
     return (
@@ -204,6 +204,7 @@ export default function Sign() {
                                         placeholder='First Name'
                                         value={firstName}
                                         onChange={(e) => handleInputChange('firstName', e.target.value)}
+                                        maxLength={25}
                                         className='p-[7px] text-base rounded-[5px] border border-gray-300 text-gray-900 w-44 h-10 box-border mr-2  focus:outline focus:outline-[1.5px] focus:outline-[#D6BBFB] hover:outline hover:outline-[1.5px] hover:outline-[#D6BBFB]'
                                     />
                                     {isSubmitted && errors.firstName && <div id="firstName_error" className='text-red-500 text-[12px] mt-[2px]'>{errors.firstName}</div>}
@@ -216,6 +217,7 @@ export default function Sign() {
                                         placeholder='Last Name'
                                         value={lastName}
                                         onChange={(e) => handleInputChange('lastName', e.target.value)}
+                                        maxLength={25}
                                         className='p-[7px] text-base rounded-[5px] border border-gray-300 text-gray-900 w-44 h-10 box-border focus:outline focus:outline-[1.5px] focus:outline-[#D6BBFB] hover:outline hover:outline-[1.5px] hover:outline-[#D6BBFB]'
                                     />
                                     {isSubmitted && errors.lastName && <div id="username_error" className='text-red-500 text-[12px] mt-[2px]'>{errors.lastName}</div>}
@@ -227,11 +229,12 @@ export default function Sign() {
                             <label className='text-[14px] text-[#080808] font-medium' htmlFor="Email">Email</label>
                             <div >
                                 <input
-                                    type="email" 
+                                    type="email"
                                     id='Email'
                                     placeholder='Enter email'
                                     value={email}
                                     onChange={(e) => handleInputChange('email', e.target.value)}
+                                    maxLength={50}
                                     className='p-[7px] text-base rounded-[5px] border border-gray-300 w-[375px] h-10 focus:outline focus:outline-[1.5px] focus:outline-[#D6BBFB] hover:outline hover:outline-[1.5px] hover:outline-[#D6BBFB]'
                                 />
                                 {isSubmitted && errors.email && <div id="email_error" className='text-red-500 text-[12px] mt-[2px]'>{errors.email}</div>}
@@ -261,7 +264,6 @@ export default function Sign() {
                                     onFocus={(e) => e.target.style.boxShadow = "0 0 0 2px #D6BBFB"}
                                     onBlur={(e) => e.target.style.boxShadow = "0px 1px 2px 0px rgba(16, 24, 40, 0.05)"}
                                 />
-
                                 {isSubmitted && errors.phone && <div id="phone_error" className='text-red-500 text-[12px] mt-[2px]'>{errors.phone}</div>}
                             </div>
                         </div>
@@ -294,9 +296,9 @@ export default function Sign() {
                                 disabled={isLoading}
                             >
                                 {isLoading ? (
-                                <div className='w-5 h-5 animate-spin-loading rounded-[50%] border-4 border-[#ffffff4d] border-solid border-t-4 border-t-customWhite '></div> // Show spinner
+                                    <div className='w-5 h-5 animate-spin-loading rounded-[50%] border-4 border-[#ffffff4d] border-solid border-t-4 border-t-customWhite '></div> // Show spinner
                                 ) : (
-                                'Send verification code'
+                                    'Send verification code'
                                 )}
 
                             </button>

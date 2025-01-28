@@ -29,7 +29,7 @@ export default function LearnLayout({ children }: LearnLayoutProps) {
                 >
                     <Learned />
                 </div>
-                <div className="flex flex-1 flex-col overflow-x-hidden overflow-y-auto pb-8">
+                <div className="flex flex-1 flex-col overflow-x-hidden">
                     {children}
                 </div>
             </div>
