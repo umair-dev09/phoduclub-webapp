@@ -45,6 +45,7 @@ type QuestionData = {
     answerExplanation: string;
     options: Options;   
     questionId: string;
+    order: number;
 
 };
 

@@ -49,6 +49,7 @@ interface BaseQuestion {
     answerExplanation: string;
     questionId: string;
     difficulty: 'Easy' | 'Medium' | 'High';
+    order: number;
 }
 
 type QuestionRemarks = 'Perfect' | 'Overtime' | 'Wasted' | 'Confused' | '-';
@@ -1545,7 +1546,9 @@ function ReviewTestView() {
                             {/*button for selecting question*/}
                             {!isTimeOver && (
                                 <>
-                                    {questions.map((_, index) => (
+                                    {questions
+                                    .sort((a, b) => a.order - b.order)
+                                    .map((_, index) => (
                                         <button
                                             key={index}
                                             onClick={() => handleQuestionSelect(index)}

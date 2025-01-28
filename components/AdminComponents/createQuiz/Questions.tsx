@@ -19,6 +19,7 @@ interface Question {
     correctAnswer: string | null;
     explanation: string;
     questionId: string;
+    order: number;
 }
 
 interface Options {
@@ -71,6 +72,7 @@ function Questions({ questionsList, setQuestionsList, deletedQuestionIds, setDel
                 correctAnswer: null,
                 explanation: '',
                 questionId: '',
+                order: questionsList.length + 1,
             }
         ]);
         setVisited([...visited, false]);
@@ -83,7 +85,8 @@ function Questions({ questionsList, setQuestionsList, deletedQuestionIds, setDel
             ? {
                 ...duplicateQuestion,
                 question: `${duplicateQuestion.question} (Copy)`,
-                questionId: `temp-${Date.now()}` // Add unique temp ID
+                questionId: `temp-${Date.now()}`, // Add unique temp ID
+                order: questionsList.length + 1 // Update order to be the last
             }
             : {
                 question: '',
@@ -93,6 +96,7 @@ function Questions({ questionsList, setQuestionsList, deletedQuestionIds, setDel
                 correctAnswer: null,
                 explanation: '',
                 questionId: `temp-${Date.now()}`,
+                order: questionsList.length + 1,
             };
 
         setQuestionsList([...questionsList, newQuestion]);
@@ -295,7 +299,9 @@ function Questions({ questionsList, setQuestionsList, deletedQuestionIds, setDel
 
     return (
         <div className="pb-4 h-auto">
-            {questionsList.map((question, index) => (
+            {questionsList
+                    .sort((a, b) => a.order - b.order)
+                    .map((question, index) => (
                 <div key={index} className={` ${visited[index] && isDataMissing(question) ? "border-1.5 border-[#F04438]" : " border border-[#EAECF0]"} rounded-md   mt-4 h-auto bg-[#FFFFFF] `}>
 
                     <Collapsible
@@ -434,7 +440,9 @@ function Questions({ questionsList, setQuestionsList, deletedQuestionIds, setDel
                             </div>
                             <span className="font-semibold text-base text-[#1D2939]">Options</span>
                             <div className="flex flex-col gap-3">
-                                {(Object.keys(question.options) as Array<keyof Options>).map((optionKey) => (
+                                {(Object.keys(question.options) as Array<keyof Options>)
+                                .sort()
+                                .map((optionKey) => (
                                     <div key={optionKey} className="flex flex-row items-center gap-2">
                                         <div className="h-8 w-8 bg-[#F9FAFB] border border-solid border-[#D0D5DD] rounded-[6px]">
                                             <span className="text-[#475467] text-sm font-medium flex justify-center items-center h-full w-full">

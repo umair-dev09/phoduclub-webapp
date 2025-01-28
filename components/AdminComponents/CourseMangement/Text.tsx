@@ -35,10 +35,10 @@ function Text({ isOpen, toggleDrawer, sectionId, courseId, isEditing, contentId 
     const [lessonHeading, setLessonHeading] = useState('');
     const [lessonOverView, setLessonOverView] = useState('');
     const [lessonContent, setLessonContent] = useState('');
-    const [pdfLink, setPdfLink] = useState<string | null>(null);
+    const [pdfLink, setPdfLink] = useState('');
     const [contentScheduleDate, setContentScheduleDate] = useState('');
     const [disscusionOpen, setDisscusionOpen] = useState(false);
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(true);
     const [value, setValue] = useState(lessonContent);
     const [fileName, setFileName] = useState<string | null>(null); // State to hold the file name
     const [progress, setProgress] = useState<number | null>(null);
@@ -86,23 +86,39 @@ function Text({ isOpen, toggleDrawer, sectionId, courseId, isEditing, contentId 
 
 
     useEffect(() => {
-        if (isEditing) {
-            setLoading(true);
+        if (isOpen && contentId) {
             fetchContentData(contentId || '');
         }
         else {
+            setContentScheduleDate('');
             setLessonHeading('');
             setLessonOverView('');
             setLessonContent('');
-            setPdfLink(null);
+            setPdfLink('');
             setProgress(null); // Reset progress
             setFileName(null);
-            setContentScheduleDate('');
             setDisscusionOpen(false);
             setValue('');
+            setLoading(false);
 
         }
-    }, [isEditing, contentId]);
+    }, [isOpen, contentId]);
+
+    const extractFileNameFromUrl = (url: string): string => {
+        const decodedUrl = decodeURIComponent(url);
+        const parts = decodedUrl.split('/');
+        const fileNameWithToken = parts[parts.length - 1];
+        const fileName = fileNameWithToken.split('?')[0];
+        return fileName;
+    };
+
+    useEffect(() => {
+        if (pdfLink) {
+            const fileName = extractFileNameFromUrl(pdfLink);
+            setFileName(fileName);
+        }
+    }, [pdfLink]);
+
 
     const fetchContentData = async (contentId: string) => {
         try {
@@ -236,7 +252,7 @@ function Text({ isOpen, toggleDrawer, sectionId, courseId, isEditing, contentId 
         if (file) {
             if (file.type === "application/pdf") { // Check if the file is a PDF
                 setFileName(file.name); // Set file name when a file is selected
-                setPdfLink(null); // Reset file URL until the upload is complete
+                setPdfLink(''); // Reset file URL until the upload is complete
                 try {
                     const storageRef = ref(storage, `CourseContentFiles/${courseId}/${sectionId}/${file.name}`);
                     const uploadTask = uploadBytesResumable(storageRef, file);
@@ -276,7 +292,7 @@ function Text({ isOpen, toggleDrawer, sectionId, courseId, isEditing, contentId 
         const file = event.target.files?.[0];
         if (file) {
             setFileName(file.name); // Set file name when a file is selected
-            setPdfLink(null); // Reset file URL until the upload is complete
+            setPdfLink(''); // Reset file URL until the upload is complete
             try {
                 const storageRef = ref(storage, `CourseContentFiles/${courseId}/${sectionId}/${file.name}`);
                 const uploadTask = uploadBytesResumable(storageRef, file);
@@ -317,12 +333,22 @@ function Text({ isOpen, toggleDrawer, sectionId, courseId, isEditing, contentId 
                     lessonOverView: lessonOverView,
                     lessonContent: lessonContent,
                     pdfLink: pdfLink ? pdfLink : null,
+                    pdfSize: selectedFile?.size || 0,
                     lessonScheduleDate: contentScheduleDate,
                     isDisscusionOpen: disscusionOpen,
                 };
                 await updateDoc(contentRef, courseData);
                 toast.success('Changes saved!');
                 toggleDrawer();
+                setLessonHeading('');
+                setLessonOverView('');
+                setLessonContent('');
+                setPdfLink('');
+                setProgress(null); // Reset progress
+                setFileName(null);
+                setContentScheduleDate('');
+                setDisscusionOpen(false);
+                setValue('');
 
             }
             else {
@@ -335,6 +361,7 @@ function Text({ isOpen, toggleDrawer, sectionId, courseId, isEditing, contentId 
                     lessonOverView: lessonOverView,
                     lessonContent: lessonContent,
                     pdfLink: pdfLink ? pdfLink : null,
+                    pdfSize: selectedFile?.size || 0,
                     lessonScheduleDate: contentScheduleDate,
                     isDisscusionOpen: disscusionOpen,
 
@@ -344,7 +371,7 @@ function Text({ isOpen, toggleDrawer, sectionId, courseId, isEditing, contentId 
                 setLessonHeading('');
                 setLessonOverView('');
                 setLessonContent('');
-                setPdfLink(null);
+                setPdfLink('');
                 setProgress(null); // Reset progress
                 setFileName(null);
                 setContentScheduleDate('');
@@ -357,12 +384,9 @@ function Text({ isOpen, toggleDrawer, sectionId, courseId, isEditing, contentId 
 
     };
 
-    if (loading) {
-        return <LoadingData />
-    }
-
     return (
         <div>
+
             <Drawer
                 open={isOpen}
 
@@ -389,6 +413,10 @@ function Text({ isOpen, toggleDrawer, sectionId, courseId, isEditing, contentId 
                             </button>
                         </div>
                     </div>
+                    {loading ? (
+                        <LoadingData />
+                    ) : (
+
                     <div className="flex justify-center h-auto overflow-y-auto ">
                         <div className="h-auto gap-4 p-6 rounded-md w-[684px] flex flex-col">
                             <div className='flex flex-col gap-2'>
@@ -555,7 +583,7 @@ function Text({ isOpen, toggleDrawer, sectionId, courseId, isEditing, contentId 
                                                     uploadTaskRef.cancel(); // Cancel the upload if it is ongoing
                                                     setProgress(null); // Reset progress
                                                 }
-                                                setPdfLink(null);
+                                                setPdfLink('');
                                                 setFileName(null); // Reset file name on cancel
                                             }}>
                                                 <Image
@@ -575,7 +603,7 @@ function Text({ isOpen, toggleDrawer, sectionId, courseId, isEditing, contentId 
                                 <DatePicker
                                     granularity="minute"
                                     minValue={today(getLocalTimeZone())}
-                                    value={contentScheduleDate ? parseDateTime(contentScheduleDate) : undefined}
+                                    value={contentScheduleDate || undefined ? parseDateTime(contentScheduleDate) || undefined : undefined}
                                     hideTimeZone
                                     onChange={(date) => {
                                         const dateString = date ? date.toString() : "";
@@ -610,6 +638,8 @@ function Text({ isOpen, toggleDrawer, sectionId, courseId, isEditing, contentId 
 
 
                     </div>
+                                            
+                                        )}
                 </div>
             </Drawer>
         </div>

@@ -353,6 +353,7 @@ interface Question {
     explanation: string;
     questionId: string;
     difficulty: string;
+    order: number;
 }
 
 interface Options {
@@ -598,7 +599,8 @@ function ReviewTestView() {
                             <div>
                                 {currentQuestion.options ? (
                                     <RadioGroup value={currentQuestion.correctAnswer || ''}>
-                                        {Object.entries(currentQuestion.options).map(([key, value]) => (
+                                        {Object.entries(currentQuestion.options).
+                                        map(([key, value]) => (
                                             <FormControlLabel
                                                 key={key}
                                                 value={key}
@@ -688,7 +690,9 @@ function ReviewTestView() {
                     <div className="flex flex-col flex-1 bg-[#DEF7FE] overflow-y-auto px-4 py-2">
                         <p className="text-[14px] font-medium font-[Inter]">Choose a Question</p>
                         <div className="flex flex-row flex-wrap mt-2 gap-3">
-                            {questions.map((_, index) => (
+                            {questions
+                            .sort((a, b) => a.order - b.order)
+                            .map((_, index) => (
                                 <button 
                                     key={index}
                                     onClick={() => handleQuestionSelect(index)}

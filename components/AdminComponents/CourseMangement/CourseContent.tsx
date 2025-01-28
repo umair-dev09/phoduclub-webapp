@@ -102,7 +102,7 @@ function CourseContent({ courseId }: CourseContentProps) {
     const [popoveropen1, setPopoveropen1] = useState<number | null>(null);
     const [popoveropen2, setPopoveropen2] = useState<number | null>(null);
     const [popoveropen3, setPopoveropen3] = useState<number | null>(null);
-    const [popoverOpen, setPopoverOpen] = useState<number | null>(null);
+    const [popoverOpen4, setPopoverOpen4] = useState<string | null>(null);
     useEffect(() => {
         const sectionsRef = collection(db, 'course', courseId, 'sections');
         const q = query(sectionsRef);
@@ -298,8 +298,8 @@ function CourseContent({ courseId }: CourseContentProps) {
     const handlePopoverOpen3 = (index: number) => {
         setPopoveropen3(index);
     };
-    const handlePopoverOpen = (index: number) => {
-        setPopoverOpen(index);
+    const handlePopoverOpen4 = (sectionId: string) => {
+        setPopoverOpen4(sectionId);
     };
 
     return (
@@ -384,7 +384,7 @@ function CourseContent({ courseId }: CourseContentProps) {
                                                 <button className=" p-3 gap-2 flex-row flex h-[40px] hover:bg-[#F2F4F7] w-full outline-none"
                                                     onClick={(e) => {
                                                         openDrawerfortest(); setPassedSectionId(section.sectionId); setIsContentEditing(false);
-                                                        setPopoveropen1(null); e.stopPropagation();
+                                                        setPopoveropen1(null); e.stopPropagation(); setContentId('');
                                                     }}>
                                                     <Image src="/icons/read.svg" alt="learn-icon" width={20} height={20} />
                                                     <span className="text-sm text-[#0C111D] font-normal">Text</span>
@@ -393,7 +393,7 @@ function CourseContent({ courseId }: CourseContentProps) {
                                                     onClick={(e) => {
                                                         openDrawerforVideo(); setPassedSectionId(section.sectionId); setIsContentEditing(false);
                                                         setPopoveropen1(null);
-                                                        e.stopPropagation();
+                                                        e.stopPropagation(); setContentId('');
                                                     }}>
                                                     <Image src="/icons/vedio.svg" alt="video-icon" width={20} height={20} />
                                                     <span className="text-sm text-[#0C111D] font-normal">Video</span>
@@ -402,8 +402,8 @@ function CourseContent({ courseId }: CourseContentProps) {
                                                     onClick={(e) => {
                                                         openDrawerforQuiz(); setPassedSectionId(section.sectionId); setIsContentEditing(false);
                                                         setPopoveropen1(null);
-                                                        e.stopPropagation();
-                                                    }}>
+                                                        e.stopPropagation(); setContentId('');
+                                                    }}> 
                                                     <Image src="/icons/test.svg" alt="test-icon" width={20} height={20} />
                                                     <span className="text-sm text-[#0C111D] font-normal">Quiz</span>
                                                 </button>
@@ -462,7 +462,7 @@ function CourseContent({ courseId }: CourseContentProps) {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {section.content?.map((content, index) => (
+                                    {section.content?.map((content, index1) => (
                                         <tr key={content.contentId} className="border-t border-solid border-[#EAECF0]">
                                             <td className="px-5 py-4 text-start text-[#101828] text-sm ">
                                                 <div className="flex flex-row gap-[10px] items-center">
@@ -475,11 +475,12 @@ function CourseContent({ courseId }: CourseContentProps) {
                                             <td className="flex items-center justify-center px-8 py-4 text-[#101828] text-sm">
                                                 <Popover
                                                     placement="bottom-end"
-                                                    isOpen={popoverOpen === index}
-                                                    onOpenChange={(open) => open ? handlePopoverOpen(index) : setPopoverOpen(null)}>
+                                                    isOpen={popoverOpen4 === content.contentId}
+                                                    onOpenChange={(open) => open ? handlePopoverOpen4(content.contentId) : setPopoverOpen4(null)}
+                                                    >
                                                     <PopoverTrigger>
                                                         <button
-
+                                                        onClick={() => setPopoverOpen4(content.contentId)}
                                                         >
 
                                                             <Image
@@ -503,13 +504,13 @@ function CourseContent({ courseId }: CourseContentProps) {
                                                                     else if (content.type === 'Text') {
                                                                         setShowDrawerfortest(true);
                                                                     }
-                                                                    setPassedSectionId(section.sectionId); setIsContentEditing(true); setContentId(content.contentId); setPopoverOpen(null);
+                                                                    setPassedSectionId(section.sectionId); setIsContentEditing(true); setContentId(content.contentId); setPopoverOpen4(null);
                                                                 }} >
                                                                 <Image src="/icons/edit-02.svg" width={18} height={18} alt="edit" />
                                                                 <span className="text-sm text-[#0C111D] font-normal">Edit</span>
                                                             </button>
                                                             <button className=" flex flex-row items-center justify-start w-full py-2 gap-2 hover:bg-[#FEE4E2] pl-4 pr-9"
-                                                                onClick={() => { handleDeleteContent(section.sectionId, content.contentId); setPopoverOpen(null); }}>
+                                                                onClick={() => { handleDeleteContent(section.sectionId, content.contentId); setPopoverOpen4(null); }}>
                                                                 <Image src='/icons/delete.svg' alt="user profile" width={18} height={18} />
                                                                 <p className="text-sm text-[#DE3024] font-normal">Remove</p>
                                                             </button>
@@ -544,7 +545,7 @@ function CourseContent({ courseId }: CourseContentProps) {
                                         <button className=" p-3 gap-2 flex-row flex h-[40px] hover:bg-[#F2F4F7] w-full"
                                             onClick={() => {
                                                 setShowDrawerfortest(true); setPassedSectionId(section.sectionId); setIsContentEditing(false);
-                                                setPopoveropen3(null);
+                                                setPopoveropen3(null); setContentId('');
                                             }}>
                                             <Image src="/icons/read.svg" alt="learn-icon" width={20} height={20} />
                                             <span className="text-sm text-[#0C111D] font-normal">Text</span>
@@ -552,7 +553,7 @@ function CourseContent({ courseId }: CourseContentProps) {
                                         <button className=" p-3 gap-2 flex-row flex h-[40px] hover:bg-[#F2F4F7] w-full"
                                             onClick={() => {
                                                 openDrawerforVideo(); setPassedSectionId(section.sectionId); setIsContentEditing(false);
-                                                setPopoveropen3(null);
+                                                setPopoveropen3(null); setContentId('');
                                             }}>
                                             <Image src="/icons/vedio.svg" alt="video-icon" width={20} height={20} />
                                             <span className="text-sm text-[#0C111D] font-normal">Video</span>
@@ -560,7 +561,7 @@ function CourseContent({ courseId }: CourseContentProps) {
                                         <button className=" p-3 gap-2 flex-row flex h-[40px] hover:bg-[#F2F4F7] w-full"
                                             onClick={() => {
                                                 openDrawerforQuiz(); setPassedSectionId(section.sectionId); setIsContentEditing(false);
-                                                setPopoveropen3(null);
+                                                setPopoveropen3(null); setContentId('');
                                             }}>
                                             <Image src="/icons/test.svg" alt="test-icon" width={20} height={20} />
                                             <span className="text-sm text-[#0C111D] font-normal">Quiz</span>
@@ -705,7 +706,7 @@ function CourseContent({ courseId }: CourseContentProps) {
             </Modal>
 
             {/* Drawer for Test */}
-            <Text isOpen={showDrawerfortest} toggleDrawer={() => setShowDrawerfortest(!showDrawerfortest)} sectionId={passedSectionId} courseId={courseId} isEditing={isContentEditing} contentId={contentId} />
+            <Text isOpen={showDrawerfortest} toggleDrawer={() => setShowDrawerfortest(!showDrawerfortest)} sectionId={passedSectionId} courseId={courseId} isEditing={isContentEditing} contentId={contentId || ''} />
             {/* Drawer for Quiz */}
             <Quiz isOpen={showDrawerforQuiz} toggleDrawer={() => setShowDrawerforQuiz(!showDrawerforQuiz)} sectionId={passedSectionId} courseId={courseId} isEditing={isContentEditing} contentId={contentId} />
             {/* Drawer for Video */}

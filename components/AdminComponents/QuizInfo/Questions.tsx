@@ -18,6 +18,7 @@ type Question = {
     answerExplanation: string;
     options: Options;
     questionId: string;
+    order: number;
 }
 
 type QuestionProps = {
@@ -76,7 +77,9 @@ function Question({ questionsList }: QuestionProps) {
                 </button>
             </div>
             <div className="flex flex-col gap-2 mt-3">
-                {questionsList.map((question, index) => (
+                {questionsList
+                                    .sort((a, b) => a.order - b.order)
+                                    .map((question, index) => (
                     <div
                         key={index}
                         className={`bg-[#FFFFFF] h-auto rounded-xl border border-solid ${expandedStates[index] ? "border-[#EAECF0] hover:border-[#9012FF]" : "border-[#EAECF0] hover:border-[#bbbbbb]"}`}

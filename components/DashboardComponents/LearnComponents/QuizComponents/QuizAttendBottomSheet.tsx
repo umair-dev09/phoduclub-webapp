@@ -31,6 +31,7 @@ interface Question {
     questionId: string;
     isChecked: boolean;
     isActive: boolean; 
+    order: number;
 }
 
 interface QuestionState {
@@ -369,7 +370,9 @@ function QuizAttendBottomSheet({
                   </div>
                 ) : (
                         <div className="flex flex-col gap-5 items-center justify-center">
-                            {questionsList.map((q, index) => {
+                            {questionsList
+                            .sort((a, b) => a.order - b.order)
+                            .map((q, index) => {
                                 // Find the corresponding state for this question
                                 const questionState = questionStates.find(
                                     state => state.questionId === q.questionId

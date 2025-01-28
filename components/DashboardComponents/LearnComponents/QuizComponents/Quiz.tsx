@@ -41,6 +41,7 @@ interface Question {
     status: string;
     isChecked: boolean;
     isActive: boolean;
+    order: number;
 }
 
 const fetchQuizzes = (callback: (quizzes: Quiz[] | ((prevQuizzes: Quiz[]) => Quiz[])) => void) => {
@@ -129,6 +130,7 @@ const fetchQuizzes = (callback: (quizzes: Quiz[] | ((prevQuizzes: Quiz[]) => Qui
                     correctAnswer: doc.data().correctAnswer?.replace('option', ''),
                     answerExplanation: doc.data().answerExplanation || '',
                     status: '',
+                    order: doc.data().order,
                 }));
 
                 return {

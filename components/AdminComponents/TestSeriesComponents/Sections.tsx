@@ -39,6 +39,7 @@ interface Question {
   explanation: string;
   questionId: string;
   difficulty: string;
+  order: number;
 }
 interface Options {
   A: string;
@@ -161,6 +162,7 @@ const Sections: React.FC<SectionsProps> = ({
     explanation: '',
     questionId: '',
     difficulty: 'Easy',
+    order: 1,
   }]);
 
   const isAnyQuestionsAdded = () => {
@@ -302,6 +304,7 @@ const Sections: React.FC<SectionsProps> = ({
           correctAnswer: data.correctAnswer || null,
           explanation: data.answerExplanation || '',
           difficulty: data.difficulty || 'Easy',
+          order: data.order || 1,
         };
       });
 
@@ -316,6 +319,7 @@ const Sections: React.FC<SectionsProps> = ({
             explanation: '',
             questionId: '',
             difficulty: 'Easy',
+            order: 1,
           },
         ]);
       } else {
@@ -483,6 +487,7 @@ const Sections: React.FC<SectionsProps> = ({
           correctAnswer: question.correctAnswer,
           answerExplanation: question.explanation,
           difficulty: question.difficulty,
+          order: question.order !== undefined ? question.order : 0,
         };
 
         batch.set(questionRef, questionData);
@@ -569,6 +574,7 @@ const Sections: React.FC<SectionsProps> = ({
             correctAnswer: question.correctAnswer,
             answerExplanation: question.explanation,
             difficulty: question.difficulty,
+            order: question.order !== undefined ? question.order : 0,
           };
 
           // Add to batch
@@ -618,6 +624,7 @@ const Sections: React.FC<SectionsProps> = ({
       explanation: '',
       questionId: '',
       difficulty: 'Easy',
+      order: 1,
     }]);
   };
   const handleAddQuestion = () => {
@@ -630,6 +637,7 @@ const Sections: React.FC<SectionsProps> = ({
       explanation: '',
       difficulty: 'Easy',
       questionId: `temp-${Date.now()}`, // Temporary ID for new questions
+      order: questionsList.length + 1,
     };
     setQuestionsList(prevList => [...prevList, newQuestion]);
   };
@@ -652,7 +660,7 @@ const Sections: React.FC<SectionsProps> = ({
         complete: (results) => {
           const newQuestions = results.data
             .filter((row: any) => row.question && row.optionA && row.optionB && row.optionC && row.optionD && row.correctAnswer && row.explanation)
-            .map((row: any) => ({
+            .map((row: any, index: number) => ({
               question: row.question || '',
               isChecked: false,
               isActive: false,
@@ -666,6 +674,7 @@ const Sections: React.FC<SectionsProps> = ({
               explanation: row.explanation || '',
               difficulty: row.difficulty || 'Easy',
               questionId: doc(collection(db, 'questions')).id,
+              order: index + 1, // Assign order based on position in CSV
             }));
 
           if (newQuestions.length === 0) {
@@ -697,7 +706,7 @@ const Sections: React.FC<SectionsProps> = ({
 
         const newQuestions = rows
           .filter((row: any[]) => row[headers.indexOf('question')] && row[headers.indexOf('optionA')] && row[headers.indexOf('optionB')] && row[headers.indexOf('optionC')] && row[headers.indexOf('optionD')] && row[headers.indexOf('correctAnswer')] && row[headers.indexOf('explanation')])
-          .map((row: any[]) => ({
+          .map((row: any[], index: number) => ({
             question: row[headers.indexOf('question')] || '',
             isChecked: false,
             isActive: false,
@@ -711,6 +720,7 @@ const Sections: React.FC<SectionsProps> = ({
             explanation: row[headers.indexOf('explanation')] || '',
             difficulty: row[headers.indexOf('difficulty')] || 'Easy',
             questionId: doc(collection(db, 'questions')).id,
+            order: index + 1, // Assign order based on position in XLSX
           }));
 
         if (newQuestions.length === 0) {
