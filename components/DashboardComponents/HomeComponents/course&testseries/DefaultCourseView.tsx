@@ -121,7 +121,7 @@ function CoursesList() {
                     {/* Container for the suggestion badge and course image */}
                     <div>
                         {/* Suggestion badge with icon and text */}
-                        <div className="flex items-center absolute top-3 left-3 mr-5 bg-[linear-gradient(92deg,rgba(255,255,255,0.5)0%,rgba(255,255,255,0.4)100%)] border-white text-xs font-medium border rounded-full py-1 px-3 z-10 transition-transform transition-font-size duration-300 ease-in-out">
+                        <div className="flex items-center absolute top-3 left-3 mr-5 bg-white border-white text-xs font-medium border rounded-full py-1 px-3 z-10 transition-transform transition-font-size duration-300 ease-in-out">
                             <Image
                                 className="mr-[5px]"
                                 src="/icons/suggestion_icon.svg"
