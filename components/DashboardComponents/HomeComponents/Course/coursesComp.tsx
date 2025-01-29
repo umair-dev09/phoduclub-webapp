@@ -7,6 +7,7 @@ import { useState, useEffect } from "react";
 import LoadingData from "@/components/Loading";
 import { onAuthStateChanged } from "firebase/auth";
 import { Progress } from "@nextui-org/progress";
+import DefaultView from '@/components/DashboardComponents/HomeComponents/course&testseries/DefaultCourseView';
 
 // Import useRouter hook
 interface CourseData {
@@ -49,9 +50,10 @@ function CoursesComp() {
   const router = useRouter();
   const [courses, setCourses] = useState<CourseData[]>([]);
   const [loading, setLoading] = useState(true);
+
   useEffect(() => {
     const fetchCourses = async (currentUserId: string) => {
-      const coursesCollection = collection(db, 'course');
+      const coursesCollection = collection(db, 'courses');
 
       // Filter courses where status is 'live' using Firestore query
       const coursesQuery = query(coursesCollection, where('status', '==', 'live'));
@@ -199,16 +201,14 @@ function CoursesComp() {
         ))
       ) : (
         <div className="flex flex-wrap justify-between mt-4 mb-1 gap-6 mx-2">
-          {Array(2)
+          {/* {Array(2)
             .fill(null)
             .map((_, index) => (
               <div
                 key={index}
                 className="flex flex-col flex-1 rounded-lg relative overflow-hidden transition-transform duration-300 h-auto max-w-[calc(50%-12px)]"
               >
-                {/* Container for the suggestion badge and course image */}
                 <div>
-                  {/* Suggestion badge with icon and text */}
                   <div className="flex items-center absolute top-3 left-3 bg-[linear-gradient(92deg,rgba(255,255,255,0.5)0%,rgba(255,255,255,0.4)100%)] text-xs font-medium border border-white rounded-full py-1 px-3 z-10">
                     <Image
                       className="mr-[5px]"
@@ -219,7 +219,6 @@ function CoursesComp() {
                     />
                     <p>Suggested for you</p>
                   </div>
-                  {/* Course image */}
                   <Image
                     className="w-full h-[160px] object-cover border border-[#EAECF0] rounded-tl-lg rounded-tr-lg"
                     src={"/images/course_img.svg"}
@@ -228,28 +227,21 @@ function CoursesComp() {
                     height={300}
                   />
                 </div>
-                {/* Container for course details and buy button */}
                 <div className="flex w-full flex-col border border-[#EAECF0] border-t-0 bg-white rounded-br-lg rounded-bl-lg">
-                  {/* Course name and details */}
                   <div className="mt-4">
-                    {/* Course name */}
                     <div className="text-base font-semibold leading-6 ml-4">
                       <p>Name</p>
                     </div>
-                    {/* Course details: lessons, duration */}
                     <div className="text-xs mx-4 font-normal leading-[18px] text-[#667085] flex items-center gap-1">
                       <p>Lessons</p>
                       <span>&#x2022;</span>
                       <p>3hr 14m</p>
                     </div>
                   </div>
-                  {/* Pricing and buy button */}
                   <div className="flex justify-between mt-2 mb-4 mx-4 text-base font-semibold">
-                    {/* Price */}
                     <div className="flex items-end">
                       <h4>&#8377; 2400</h4>
                     </div>
-                    {/* Buy Now button */}
                     <div>
                       <button
                         className="text-xs font-semibold leading-5 py-[10px] px-[14px] shadow-inner-button rounded-md bg-white border-2 border-[#9012FF] text-[#7400E0] hover:bg-[#F2F4F7] transition-colors"
@@ -261,7 +253,8 @@ function CoursesComp() {
                   </div>
                 </div>
               </div>
-            ))}
+            ))} */}
+          <DefaultView />
         </div>
       )}
     </div>
