@@ -210,11 +210,11 @@ function DiscussionDisplay({ message, userId, timestamp, messageId, isAdmin, cou
                     </div>
 
                 </div>
-                <div className="rounded-md  bg-white break-all">
-                    <div className='text-[#3b3b3b]  text-sm font-normal break-all ml-2 mt-1 mr-8' dangerouslySetInnerHTML={{
-                        __html: message || '',
-                    }} />
-                </div>
+
+                <div className='text-[#3b3b3b] rounded-md  bg-white text-sm font-normal break-all ml-2 mt-1 mr-8' dangerouslySetInnerHTML={{
+                    __html: message || '',
+                }} />
+
                 {/* <ExpandableText content={message} /> */}
 
                 <div className="flex flex-row gap-6 items-center justify-start ">
@@ -265,7 +265,7 @@ function DiscussionDisplay({ message, userId, timestamp, messageId, isAdmin, cou
                     <>
                         <ModalHeader className="flex flex-row justify-between items-center gap-1">
                             <h1 className="text-[#1D2939] font-bold text-lg">
-                                Delete Message
+                                Delete
                             </h1>
                             <button
                                 className="w-[32px] h-[32px] rounded-full flex items-center justify-center transition-all duration-300 ease-in-out hover:bg-[#F2F4F7]"
@@ -280,8 +280,7 @@ function DiscussionDisplay({ message, userId, timestamp, messageId, isAdmin, cou
                             </button>
                         </ModalHeader>
                         <ModalBody >
-                            <span className="text-sm font-normal text-[#667085]">
-                                Are you sure you want to delete this message? This action cannot be undone.</span>
+                            <span className="text-sm font-normal text-[#667085]">Deleting the user will permanently remove all their data from the platform, including their account, activity, and content.</span>
 
                         </ModalBody>
                         <ModalFooter className="border-t border-lightGrey">
