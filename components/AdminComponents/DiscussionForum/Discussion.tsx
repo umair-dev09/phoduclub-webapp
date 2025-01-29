@@ -11,6 +11,7 @@ import { toast } from "react-toastify";
 import LoadingData from "@/components/Loading";
 import DiscussionDisplay from "@/components/DashboardComponents/LearnComponents/CourseComponents/InsideCoursesComp/Discussioncomp/DiscussionDisplay";
 import QuillResizeImage from 'quill-resize-image';
+import MessageLoading from "@/components/MessageLoading";
 Quill.register("modules/resize", QuillResizeImage);
 
 interface DiscussionProps {
@@ -25,7 +26,16 @@ interface DiscussionData {
     userId: string;
     timestamp: string;
     messageId: string;
+    upvotes: string[];
+    deleted: boolean;
+    isPinned: boolean;
+    isReplying: boolean;
+    replyingToId: string;
+    replyingToMsgId: string;
+    isReplyingToMainMsg: boolean;
+    replyingToAdmin: boolean;
 }
+
 
 function Discussion({ courseId, sectionId, contentId }: DiscussionProps) {
 
@@ -35,7 +45,10 @@ function Discussion({ courseId, sectionId, contentId }: DiscussionProps) {
     const [alignment, setAlignment] = useState<string | null>(null); // State to hold Quill instance
     const [isButtonDisabled, setIsButtonDisabled] = useState(true);
     const [loading, setLoading] = useState(true);
-
+ const [showReplyLayout, setShowReplyLayout] = useState(false);
+    const [handleReply, setHandleReply] = useState({
+        message: '', senderId: '' , chatId: '' , displayUserId: '', isReplying: false, replyingToMsgId: '', replyingToAdmin: false
+    });
     const handleChange = (content: string) => {
 
         if (quill && quill.getText().trim() === '') {
@@ -78,6 +91,33 @@ function Discussion({ courseId, sectionId, contentId }: DiscussionProps) {
 
     const handleSendMessage = async () => {
         if (auth.currentUser?.uid) {
+             if(showReplyLayout){
+             try {
+                 const ref = doc(collection(db, 'course', courseId, 'sections', sectionId, 'content', contentId, 'Disscussion'));
+                 const currentUserId = auth.currentUser.uid;
+                 const disscusionData = {
+                     message: value,
+                     userId: currentUserId,
+                     timestamp: new Date().toISOString(),
+                     messageId: ref.id,
+                     isAdmin: true,
+                     isReplying: true,
+                     replyingToId: handleReply.senderId,
+                     replyingToMsgId: handleReply.isReplying ? handleReply.replyingToMsgId : handleReply.chatId,
+                     isReplyingToMainMsg: handleReply.isReplying ? false : true,
+                     replyingToAdmin: handleReply.replyingToAdmin,
+                 };
+                 await setDoc(ref, disscusionData);
+                 setValue('');
+                 setShowReplyLayout(false);
+                 setHandleReply({ message: '', senderId: '', chatId: '', displayUserId: '', isReplying: false, replyingToMsgId: '', replyingToAdmin: false });
+                 toast.success('Message sent!');
+             } catch (error) {
+                 console.error('Error updating course document:', error);
+                 toast.error('Failed to mark lesson completed');
+                            }
+                        }
+        else {
             try {
                 const ref = doc(collection(db, 'course', courseId, 'sections', sectionId, 'content', contentId, 'Disscussion'));
 
@@ -97,6 +137,7 @@ function Discussion({ courseId, sectionId, contentId }: DiscussionProps) {
                 console.error('Error updating course document:', error);
                 toast.error('Failed to mark lesson completed');
             }
+        }
         }
     };
 
@@ -189,19 +230,48 @@ function Discussion({ courseId, sectionId, contentId }: DiscussionProps) {
         }
     }, [value]);
     return (
-        <div className="flex flex-col h-[calc(100vh-200px)]">
+        <div className="flex flex-col bg-white h-[calc(100vh-200px)]">
             <div className="flex-1 overflow-y-auto px-6 gap-4 py-4">
-                {loading ? (
-                    <LoadingData />
-                ) : (
-                    <>
-                        {discussions.map((d) => (
-                            <div key={d.messageId} >
-                                <DiscussionDisplay userId={d.userId} message={d.message} messageId={d.userId} isAdmin={d.isAdmin} timestamp={d.timestamp} courseId={""} sectionId={""} contentId={""} upvotes={[]} />
+            {loading ? (
+                <MessageLoading />
+            ) : (
+                <>
+                   {discussions
+                    .sort((a, b) => (b.isPinned ? 1 : 0) - (a.isPinned ? 1 : 0))
+                    .filter(message => !message.isReplying)
+                    .map((parentMessage) => {
+                        // Find all replies for this message
+                        const replies = discussions.filter(
+                            reply => reply.isReplying && reply.replyingToMsgId === parentMessage.messageId
+                        ).map(reply => ({
+                            ...reply,
+                            courseId,
+                            sectionId,
+                            contentId,
+                            setShowReplyLayout,
+                            setHandleReply
+                        }));
+
+                        // Only pass replies if there are any
+                        const props = {
+                            ...parentMessage,
+                            courseId,
+                            sectionId,
+                            contentId,
+                            replies: replies.length > 0 ? replies : undefined
+                        };
+
+                        return (
+                            <div key={parentMessage.messageId}>
+                                <DiscussionDisplay setShowReplyLayout={setShowReplyLayout} setHandleReply={setHandleReply} {...props} />
+                         
                             </div>
-                        ))}
-                    </>
-                )}
+                        );
+                    })
+                }
+
+                </>
+            )}
                 {/* <div className="flex flex-col gap-4 pb-4">
                     <div className="flex flex-row justify-between items-center">
                         <div className="flex flex-row gap-2">
@@ -305,7 +375,31 @@ function Discussion({ courseId, sectionId, contentId }: DiscussionProps) {
                 </div> */}
             </div>
             <div className="sticky bottom-0 bg-white z-10 p-6">
+            {showReplyLayout && (
+                                <div className=" mb-[12px] flex flex-row items-start gap-4 w-fit h-auto text-sm text-purple font-normal bg-gray-50 border border-gray-200 rounded-md px-4 py-2">
+                                    <span>
+                                    Replying to @{handleReply.displayUserId} <div className={`text-[#3b3b3b]  text-sm font-normal break-all `} dangerouslySetInnerHTML={{
+                                    __html: handleReply.message || '',
+                                }} />
+                                    </span>
+                                    <button className="mt-[2px]"
+                                    onClick={() => {
+                                        setShowReplyLayout(false);
+                                        setHandleReply({ message: '', senderId: '', chatId: '', displayUserId: '', isReplying: false, replyingToMsgId: '', replyingToAdmin: false });
+                                    }}>
+                                    <Image
+                                                src="/icons/cancel.svg"
+                                                alt="cancel icon"
+                                                width={15}
+                                                height={15}                            
+                                              />
+                                    </button>
+                                  
+                                </div>
+                    
+                                )}
                 <div className=" bg-[#F7F8FB] w-full border border-solid border-[#EAECF0] rounded-[12px] h-auto">
+           
                     <div className="bg-[#F7F8FB] border-b border-solid border-b-[#EAECF0] rounded-tl-[12px] rounded-tr-[12px]">
                         <ReactQuill
                             ref={quillRef}
