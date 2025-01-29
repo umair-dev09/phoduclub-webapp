@@ -9,7 +9,7 @@ import Questions from "./Questions";
 import Review from "./Review";
 import Schedule from "./Schedule";
 import { auth, db, storage } from "@/firebase";
-import { collection, doc, getDoc, getDocs, setDoc, updateDoc } from "firebase/firestore";
+import { collection, doc, getDoc, getDocs, setDoc, updateDoc, writeBatch } from "firebase/firestore";
 import { toast } from 'react-toastify';
 import React from "react";
 import LoadingData from "@/components/Loading";
@@ -28,6 +28,7 @@ interface Question {
     correctAnswer: string | null;
     explanation: string;
     questionId: string;
+    order: number
 }
 // Define an enum for the steps
 enum Step {
@@ -42,11 +43,47 @@ enum Step {
 interface QuizProps {
     isOpen: boolean;           // isOpen should be a boolean
     toggleDrawer: () => void;  // toggleDrawer is a function that returns void
-    courseId: string;
+    courseId: string;     
     sectionId: string;
     isEditing: boolean;
     contentId: string;
 }
+
+function convertQuizTimeToText(seconds: number): { timeNumber: string; timeText: string } {
+    if (seconds < 3600) {
+        // Less than an hour, convert to minutes
+        const minutes = Math.floor(seconds / 60);
+        return {
+            timeNumber: minutes.toString(),
+            timeText: "Minutes"
+        };
+    } else {
+        // Convert to hours
+        const hours = Math.floor(seconds / 3600);
+        return {
+            timeNumber: hours.toString(),
+            timeText: "Hours"
+        };
+    }
+}
+
+function convertToSeconds(timeString: string): number {
+    const [value, unit] = timeString.split(' ');
+    const numValue = parseInt(value, 10);
+  
+    if (isNaN(numValue)) {
+      throw new Error("Invalid time value. Must be a number.");
+    }
+  
+    if (unit === 'Minutes') {
+      return numValue * 60; // Convert minutes to seconds
+    } else if (unit === 'Hours') {
+      return numValue * 3600; // Convert hours to seconds
+    } else {
+      throw new Error("Invalid time unit. Only 'Minutes' and 'Hours' are allowed.");
+    }
+  }
+
 function Quiz({ isOpen, toggleDrawer, courseId, sectionId, isEditing, contentId }: QuizProps) {
 
     const [marksPerQ, setMarksPerQ] = useState("");
@@ -58,6 +95,7 @@ function Quiz({ isOpen, toggleDrawer, courseId, sectionId, isEditing, contentId 
     const [quizDescription, setQuizDescription] = useState<string>('');
     const [anyQuestionAdded, setAnyQuestionAdded] = useState<string>('');
     const [loading, setLoading] = useState(true);
+    const [deletedQuestionIds, setDeletedQuestionIds] = useState<string[]>([]);
 
     // Validation function to check if all fields are filled
     const [currentStep, setCurrentStep] = useState<Step>(Step.QuizInfo);
@@ -96,18 +134,8 @@ function Quiz({ isOpen, toggleDrawer, courseId, sectionId, isEditing, contentId 
                 setQuizScheduleDate(content.lessonScheduleDate || '');
                 setMarksPerQ(content.marksPerQuestion || '');
                 setnMarksPerQ(content.nMarksPerQuestion || '');
-                const quizTime = content.quizTime || "";
-
-                // Use regex to extract the number and the text (Minute(s)/Hour(s))
-                const timeMatch = quizTime.match(/(\d+)\s*(Minute\(s\)|Hour\(s\))/);
-
-                if (timeMatch) {
-                    setTimeNumber(timeMatch[1]);  // The first capturing group will give the number
-                    setTimeText(timeMatch[2]);    // The second capturing group will give 'Minute(s)' or 'Hour(s)'
-                } else {
-                    setTimeNumber("");  // Default if no match found
-                    setTimeText("Minutes");    // Default if no match found
-                }
+                setTimeNumber(convertQuizTimeToText(content.quizTime).timeNumber);
+                setTimeText(convertQuizTimeToText(content.quizTime).timeText);
 
                 const questionsCollectionRef = collection(contentDocRef, "Questions");
                 const questionsSnapshot = await getDocs(questionsCollectionRef);
@@ -125,7 +153,8 @@ function Quiz({ isOpen, toggleDrawer, courseId, sectionId, isEditing, contentId 
                             D: data.options.D
                         },
                         correctAnswer: data.correctAnswer?.replace('option', ''),
-                        explanation: data.answerExplanation || ''
+                        explanation: data.answerExplanation || '',
+                        order: data.order || 0,
                     };
                 });
                 setQuestionsList(fetchedQuestions);
@@ -198,6 +227,7 @@ function Quiz({ isOpen, toggleDrawer, courseId, sectionId, isEditing, contentId 
                         setQuestionsList={setQuestionsList}
                         anyQuestionAdded={anyQuestionAdded}
                         setAnyQuestionAdded={setAnyQuestionAdded}
+                        setDeletedQuestionIds={setDeletedQuestionIds}
                     />
                 );
 
@@ -227,6 +257,8 @@ function Quiz({ isOpen, toggleDrawer, courseId, sectionId, isEditing, contentId 
     };
 
     const handleSaveClick = async () => {
+        toast.promise(
+            new Promise(async (resolve, reject) => {
         try {
             if (isEditing) {
                 const contentRef = doc(db, "course", courseId, 'sections', sectionId, 'content', contentId);
@@ -234,52 +266,46 @@ function Quiz({ isOpen, toggleDrawer, courseId, sectionId, isEditing, contentId 
                     lessonHeading: quizName,
                     lessonOverView: quizDescription,
                     lessonScheduleDate: quizScheduleDate,
-                    quizTime: timeNumber + " " + timeText,
+                    quizTime: timeNumber && timeText ? convertToSeconds(timeNumber + " " + timeText) : 0,
                     marksPerQuestion: marksPerQ,
                     nMarksPerQuestion: nMarksPerQ,
                 };
                 await updateDoc(contentRef, courseData);
-                for (let question of questionsList) {
-                    const questionRef = doc(collection(contentRef, "Questions"), question.questionId || '');
-                    const questionId = questionRef.id;
 
-                    const options = {
-                        A: question.options.A,
-                        B: question.options.B,
-                        C: question.options.C,
-                        D: question.options.D,
-                    };
-
-                    let correctAnswer;
-                    switch (question.correctAnswer) {
-                        case "A":
-                            correctAnswer = 'A';
-                            break;
-                        case "B":
-                            correctAnswer = 'B';
-                            break;
-                        case "C":
-                            correctAnswer = 'C';
-                            break;
-                        case "D":
-                            correctAnswer = 'D';
-                            break;
-                        default:
-                            correctAnswer = null;
-                    }
-
-                    const questionData = {
-                        questionId,
-                        question: question.question,
-                        options,
-                        correctAnswer,
-                        answerExplanation: question.explanation,
-                    };
-
-                    await updateDoc(questionRef, questionData);
-                }
-                toast.success('Changes saved!');
-                toggleDrawer();
+                
+                 // Update questions using batch
+                 const questionsCollectionRef = collection(contentRef, 'Questions');
+                 const batch = writeBatch(db);
+                
+                  // Delete removed questions
+                 for (const deletedId of deletedQuestionIds) {
+                     const deleteRef = doc(questionsCollectionRef, deletedId);
+                     batch.delete(deleteRef);
+                 }
+                  // Process each question in the list
+                 for (const question of questionsList) {
+                     let questionRef;
+                     
+                     if (!question.questionId || question.questionId.startsWith('temp-')) {
+                         questionRef = doc(questionsCollectionRef);
+                     } else {
+                         questionRef = doc(questionsCollectionRef, question.questionId);
+                     }
+                
+                     const questionData = {
+                         questionId: questionRef.id,
+                         question: question.question,
+                         options: question.options,
+                         correctAnswer: question.correctAnswer,
+                         answerExplanation: question.explanation,
+                         order: question.order !== undefined ? question.order : 0,
+                     };
+                     batch.set(questionRef, questionData);
+                 }
+                 
+                 await batch.commit();
+                 resolve('Quiz Saved Successfully!');
+                 toggleDrawer();
 
             }
             else {
@@ -293,56 +319,49 @@ function Quiz({ isOpen, toggleDrawer, courseId, sectionId, isEditing, contentId 
                     lessonHeading: quizName,
                     lessonOverView: quizDescription,
                     lessonScheduleDate: quizScheduleDate,
-                    quizTime: timeNumber + " " + timeText,
+                    quizTime: timeNumber && timeText ? convertToSeconds(timeNumber + " " + timeText) : 0,
                     marksPerQuestion: marksPerQ,
                     nMarksPerQuestion: nMarksPerQ,
                 };
 
                 await setDoc(newContentRef, quizData);
 
-                for (let question of questionsList) {
-                    const questionRef = doc(collection(newContentRef, "Questions"));
-                    const questionId = questionRef.id;
+                 const quizRef = doc(db, 'quiz', newContentRef.id);
+                 const questionsCollectionRef = collection(quizRef, 'Questions');
+                 const batch = writeBatch(db);
+                 
+                  // Delete removed questions
+                 for (const deletedId of deletedQuestionIds) {
+                     const deleteRef = doc(questionsCollectionRef, deletedId);
+                     batch.delete(deleteRef);
+                 }
+           
+           
+                  // Process each question in the list
+                 for (const question of questionsList) {
+                     let questionRef;
+                     
+                     if (!question.questionId || question.questionId.startsWith('temp-')) {
+                         questionRef = doc(questionsCollectionRef);
+                     } else {
+                         questionRef = doc(questionsCollectionRef, question.questionId);
+                     }
+           
+                     const questionData = {
+                         questionId: questionRef.id,
+                         question: question.question,
+                         options: question.options,
+                         correctAnswer: question.correctAnswer,
+                         answerExplanation: question.explanation,
+                         order: question.order !== undefined ? question.order : 0,
+                     };
+                     batch.set(questionRef, questionData);
+                 }
+                 
+                                        await batch.commit();
 
-                    const options = {
-                        A: question.options.A,
-                        B: question.options.B,
-                        C: question.options.C,
-                        D: question.options.D,
-                    };
-
-                    let correctAnswer;
-                    switch (question.correctAnswer) {
-                        case "A":
-                            correctAnswer = 'A';
-                            break;
-                        case "B":
-                            correctAnswer = 'B';
-                            break;
-                        case "C":
-                            correctAnswer = 'C';
-                            break;
-                        case "D":
-                            correctAnswer = 'D';
-                            break;
-                        default:
-                            correctAnswer = null;
-                    }
-
-                    const questionData = {
-                        questionId,
-                        question: question.question,
-                        options,
-                        correctAnswer,
-                        answerExplanation: question.explanation,
-                    };
-
-                    await setDoc(questionRef, questionData);
-                }
-
-
-                toast.success('Quiz added!');
-                toggleDrawer();
+                                        resolve('Quiz Saved Successfully!');
+                                        toggleDrawer();
                 setCurrentStep(0);
                 setQuizName('');
                 setQuizDescription('');
@@ -355,9 +374,16 @@ function Quiz({ isOpen, toggleDrawer, courseId, sectionId, isEditing, contentId 
                 setAnyQuestionAdded('');
             }
         } catch (error) {
+            reject('Error in saving/updating quiz');
             console.error('Error adding quiz: ', error);
         }
-
+        }),
+        {
+            pending: 'Saving Quiz...',
+            success: 'Quiz Saved!',
+            error: 'Error saving quiz',
+        }
+    );
 
     };
 

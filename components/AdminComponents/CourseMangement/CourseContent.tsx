@@ -16,6 +16,7 @@ import LoadingData from "@/components/Loading";
 import { DateTime } from 'luxon';  // Import luxon
 import React from "react";
 import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button } from "@nextui-org/react";
+import { set } from "date-fns";
 
 type Sections = {
     sectionName: string;
@@ -270,6 +271,7 @@ function CourseContent({ courseId }: CourseContentProps) {
             await deleteDoc(sectionRef);
 
             toast.success('Section deleted successfully!');
+            setSectionToDelete(null);
         } catch (error) {
             console.error('Error deleting section:', error);
         }
@@ -284,6 +286,7 @@ function CourseContent({ courseId }: CourseContentProps) {
             await deleteDoc(sectionRef);
 
             toast.success('Content deleted successfully!');
+            setContentToDelete(null);
         } catch (error) {
             console.error('Error deleting section:', error);
         }
@@ -473,7 +476,7 @@ function CourseContent({ courseId }: CourseContentProps) {
                                         <tr key={content.contentId} className="border-t border-solid border-[#EAECF0]">
                                             <td className="px-5 py-4 text-start text-[#101828] text-sm ">
                                                 <div className="flex flex-row gap-[10px] items-center">
-                                                    <span className="bg-[#EAECF0] rounded-[4px] text-[12px] font-medium w-auto h-auto px-[7px] py-[1px] min-w-[22px] text-center">{index + 1}</span>
+                                                    <span className="bg-[#EAECF0] rounded-[4px] text-[12px] font-medium w-auto h-auto px-[7px] py-[1px] min-w-[22px] text-center">{index1 + 1}</span>
                                                     {content.lessonHeading}
                                                 </div>
                                             </td>
@@ -517,7 +520,8 @@ function CourseContent({ courseId }: CourseContentProps) {
                                                                 <span className="text-sm text-[#0C111D] font-normal">Edit</span>
                                                             </button>
                                                             <button className=" flex flex-row items-center justify-start w-full py-2 gap-2 hover:bg-[#FEE4E2] pl-4 pr-9"
-                                                                onClick={() => { handleDeleteContent(section.sectionId, content.contentId); setPopoverOpen4(null); }}>
+                                                                onClick={() => {
+                                                                     setDeletedialog(true); setContentToDelete({ sectionId: section.sectionId, contentId: content.contentId }); setPopoverOpen4(null); }}>
                                                                 <Image src='/icons/delete.svg' alt="user profile" width={18} height={18} />
                                                                 <p className="text-sm text-[#DE3024] font-normal">Remove</p>
                                                             </button>

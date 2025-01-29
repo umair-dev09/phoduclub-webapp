@@ -19,63 +19,6 @@ type ScheduleProps = {
 
 }
 
-// const convertToTimeFormat = (timeStr: string): string => {
-//     const regex = /(\d+)\s*(Minute|Hour)\(s\)/i;
-//     const match = timeStr.match(regex);
-
-//     if (!match) return "00:00"; // Return default value if the format doesn't match
-
-//     const value = parseInt(match[1], 10); // Get the numeric value
-//     const unit = match[2].toLowerCase(); // Get the unit (either minute or hour)
-
-//     let totalMinutes = 0;
-
-//     if (unit === "minute") {
-//         totalMinutes = value;
-//     } else if (unit === "hour") {
-//         totalMinutes = value * 60; // Convert hours to minutes
-//     }
-
-//     const hours = Math.floor(totalMinutes / 60).toString().padStart(2, "0"); // Calculate hours and format
-//     const minutes = (totalMinutes % 60).toString().padStart(2, "0"); // Calculate minutes and format
-
-//     return `${hours}:${minutes}`;
-// };
-
-
-const formatScheduleDate = (dateString: string | null): string => {
-    if (!dateString) return "-"; // Return "-" if the date is null or undefined
-
-    try {
-        const dateObj = new Date(dateString);
-
-        if (isNaN(dateObj.getTime())) {
-            // If date is invalid
-            return "-";
-        }
-
-        // Extract date components
-        const year = dateObj.getFullYear();
-        const month = String(dateObj.getMonth() + 1).padStart(2, "0");
-        const day = String(dateObj.getDate()).padStart(2, "0");
-
-        // Extract time components
-        let hours = dateObj.getHours();
-        const minutes = String(dateObj.getMinutes()).padStart(2, "0");
-        const ampm = hours >= 12 ? "PM" : "AM";
-
-        // Convert hours to 12-hour format
-        hours = hours % 12 || 12; // Convert 0 to 12 for midnight
-        const formattedHours = String(hours).padStart(2, "0");
-
-        // Combine formatted components
-        return `${month}/${day}/${year},${formattedHours}:${minutes} ${ampm}`;
-    } catch (error) {
-        console.error("Error formatting date:", error);
-        return "-";
-    }
-};
-
 
 function Schedule({ marksPerQ, setMarksPerQ, nMarksPerQ, setnMarksPerQ, timeNumber, setTimeNumber, timeText, setTimeText, quizScheduleDate, setQuizScheduleDate }: ScheduleProps) {
 
@@ -189,7 +132,7 @@ function Schedule({ marksPerQ, setMarksPerQ, nMarksPerQ, setnMarksPerQ, timeNumb
                                     </button>
                                 </PopoverTrigger>
                                 <PopoverContent className='flex flex-col justify-start w-[120px] h-auto py-1 px-0 bg-white '>
-                                    {["Minute(s)", "Hour(s)"].map(time => (
+                                    {["Minutes", "Hours"].map(time => (
                                         <button
                                             key={time}
                                             onClick={() => { setTimeText(time); setIsOpenT(false); }}

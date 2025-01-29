@@ -8,7 +8,7 @@ import { useState, useEffect } from "react";
 import { Tabs, Tab } from "@nextui-org/react";
 import Collapsible from 'react-collapsible';
 import { Checkbox } from "@nextui-org/react";
-import { getDoc, doc, updateDoc, collection, onSnapshot, query, getDocs, arrayUnion, setDoc, arrayRemove } from "firebase/firestore";
+import { getDoc, doc as firestoreDoc, updateDoc, collection, onSnapshot, query, getDocs, arrayUnion, setDoc, arrayRemove, doc } from "firebase/firestore";
 import { db, auth } from "@/firebase"; // Adjust the path based on your project setup
 import LoadingData from '@/components/Loading';
 import { toast, ToastContainer } from 'react-toastify';
@@ -35,6 +35,7 @@ interface Question {
   correctAnswer: string | null;
   answerExplanation: string;
   questionId: string;
+  order: number;
 }
 
 
@@ -59,24 +60,27 @@ type Content = {
   videoLink: string;
   marksPerQuestion: string;
   nMarksPerQuestion: string;
-  quizTime: string;
+  quizTime: number;
   videoDuration: number;
   questionsCount: number;
   videoId: string;
   questionsList: Question[];
   StudentsCompleted: string[];
+  lessonViewed: string[];
   quizAttempt?: QuizAttempt | null;
 }
+interface QuestionState {
+  questionId: string;
+  selectedOption: string | null;
+  answeredCorrect: boolean | null;
+  answered: boolean;
+}
+
 interface QuizAttempt {
   AnsweredQuestions: QuestionState[];
   userId: string;
-  timeTaken: string;
-}
-
-interface QuestionState {
-  questionId: string;
-  selectedOption: string; // User's answer
-  answeredCorrect: boolean; // Whether the answer is correct
+  timeTaken: number;
+  totalTime: number;
 }
 type CourseData = {
   courseName: string | null;
@@ -114,7 +118,7 @@ function Course() {
     videoLink: string;
     marksPerQuestion: string;
     nMarksPerQuestion: string;
-    quizTime: string;
+    quizTime: number;
     videoDuration: number;
     videoId: string;
     questionsCount: number;
@@ -166,177 +170,286 @@ function Course() {
 
   // Fetch content data from Firestore
   useEffect(() => {
-    if (courseId) {
+    if (courseId && auth.currentUser?.uid) {
+      const currentUserId = auth.currentUser.uid;
       const sectionsRef = collection(db, 'course', courseId, 'sections');
       const q = query(sectionsRef);
 
-      const unsubscribe = onSnapshot(
-        q,
-        (snapshot) => {
-          const sectionsData: Sections[] = snapshot.docs.map((doc) => ({
-            sectionName: doc.data().sectionName,
-            sectionScheduleDate: doc.data().sectionScheduleDate,
-            noOfLessons: doc.data().noOfLessons,
-            sectionId: doc.data().sectionId,
-            content: [], // Initialize with empty content
-          }));
-          setSections(sectionsData);
-          setLoading(false);
+      const unsubscribeRefs: (() => void)[] = [];
 
-          // Fetch content for each section
-          snapshot.docs.forEach((doc) => {
-            const sectionId = doc.id;
-            const contentRef = collection(db, 'course', courseId, 'sections', sectionId, 'content');
-            const contentQuery = query(contentRef);
+      const unsubscribeSections = onSnapshot(
+      q,
+      (snapshot) => {
+        const sectionsData: Sections[] = snapshot.docs.map((doc) => ({
+        sectionName: doc.data().sectionName,
+        sectionScheduleDate: doc.data().sectionScheduleDate,
+        noOfLessons: doc.data().noOfLessons,
+        sectionId: doc.data().sectionId,
+        content: [], 
+        }));
+        setSections(sectionsData);
+        setLoading(false);
 
-            onSnapshot(contentQuery, async (contentSnapshot) => {
-              const contentData: Content[] = await Promise.all(
-                contentSnapshot.docs.map(async (contentDoc) => {
-                  const contentType = contentDoc.data().type;
+        // Fetch content for each section
+        snapshot.docs.forEach((doc) => {
+        const sectionId = doc.id;
+        const contentRef = collection(db, 'course', courseId, 'sections', sectionId, 'content');
+        const contentQuery = query(contentRef);
 
-                  // Fetch questions for the content
-                  const questionsCollection = collection(
-                    db,
-                    'course',
-                    courseId,
-                    'sections',
-                    sectionId,
-                    'content',
-                    contentDoc.id,
-                    'Questions'
-                  );
-                  const questionsSnapshot = await getDocs(questionsCollection);
-                  const fetchedQuestions: Question[] = questionsSnapshot.docs.map((doc) => {
-                    const data = doc.data();
-                    return {
-                      question: data.question,
-                      questionId: data.questionId,
-                      isChecked: false,
-                      isActive: false,
-                      options: {
-                        A: data.options.A,
-                        B: data.options.B,
-                        C: data.options.C,
-                        D: data.options.D,
-                      },
-                      correctAnswer: data.correctAnswer?.replace('option', ''),
-                      answerExplanation: data.answerExplanation || '',
-                    };
-                  });
-                  const questionsCount = questionsSnapshot.size;
+        const unsubscribeContent = onSnapshot(contentQuery, async (contentSnapshot) => {
+          const contentData: Content[] = await Promise.all(
+          contentSnapshot.docs.map(async (contentDoc) => {
+            const contentType = contentDoc.data().type;
 
-                  return {
-                    lessonHeading: contentDoc.data().lessonHeading,
-                    lessonScheduleDate: contentDoc.data().lessonScheduleDate,
-                    type: contentType,
-                    contentId: contentDoc.id,
-                    isDisscusionOpen: contentDoc.data().isDisscusionOpen,
-                    lessonContent: contentDoc.data().lessonContent,
-                    lessonOverView: contentDoc.data().lessonOverView,
-                    pdfLink: contentDoc.data().pdfLink,
-                    pdfSize: contentDoc.data().pdfSize,
-                    videoLink: contentDoc.data().videoLink,
-                    marksPerQuestion: contentDoc.data().marksPerQuestion,
-                    nMarksPerQuestion: contentDoc.data().nMarksPerQuestion,
-                    quizTime: contentDoc.data().quizTime,
-                    videoDuration: contentDoc.data().videoDuration,
-                    questionsCount: questionsCount,
-                    videoId: contentDoc.data().videoId,
-                    questionsList: fetchedQuestions,
-                    StudentsCompleted: contentDoc.data().StudentsCompleted,
-                    quizAttempt: null, // Placeholder for quizAttempt
-                  };
-                })
-              );
-
-              setSections((prevSections) =>
-                prevSections.map((section) =>
-                  section.sectionId === sectionId ? { ...section, content: contentData } : section
-                )
-              );
+            // Fetch questions for the content
+            const questionsCollection = collection(
+            db,
+            'course',
+            courseId,
+            'sections',
+            sectionId,
+            'content',
+            contentDoc.id,
+            'Questions'
+            );
+            const questionsSnapshot = await getDocs(questionsCollection);
+            const fetchedQuestions: Question[] = questionsSnapshot.docs.map((doc) => {
+            const data = doc.data();
+            return {
+              question: data.question,
+              questionId: data.questionId,
+              isChecked: false,
+              isActive: false,
+              options: {
+              A: data.options.A,
+              B: data.options.B,
+              C: data.options.C,
+              D: data.options.D,
+              },
+              correctAnswer: data.correctAnswer?.replace('option', ''),
+              answerExplanation: data.answerExplanation || '',
+              order: data.order,
+            };
             });
-          });
-        },
-        (error) => {
-          console.error('Error fetching sections:', error);
-          setLoading(false);
-        }
-      );
+            const questionsCount = questionsSnapshot.size;
 
-      return () => unsubscribe();
-    }
-  }, [courseId]);
-  // Add this useEffect after your existing useEffects
-  useEffect(() => {
-    // Check if sections data exists and has at least one section
-    if (sections && sections.length > 0) {
-      const firstSection = sections[0];
-
-      // Set the initial sectionId
-      setSectionId(firstSection.sectionId);
-
-      // Check if the first section has content
-      if (firstSection.content && firstSection.content.length > 0) {
-        // Set the initial selected content to the first content item
-        setSelectedContent(firstSection.content[0]);
-      }
-    }
-  }, [sections]); // Depend on sections array
-
-  // ...existing code...
-  // Fetch StudentsAttempted separately
-  useEffect(() => {
-    if (courseId && auth.currentUser) {
-      const currentUserId = auth.currentUser.uid;
-
-      sections.forEach((section) => {
-        const sectionContent = section.content || []; // Ensure content is an array
-        sectionContent.forEach((content) => {
-          if (content.type === 'Quiz') {
-            const studentsAttemptedRef = doc(
+            // Get quiz attempt data if content is Quiz
+            let quizAttempt: QuizAttempt | null = null;
+            if (contentType === 'Quiz') {
+            const attemptRef = firestoreDoc(
               db,
               'course',
               courseId,
               'sections',
-              section.sectionId,
+              sectionId,
               'content',
-              content.contentId,
-              'StudentsAttempted',
+              contentDoc.id,
+              'attempts',
               currentUserId
             );
+            const attemptSnapshot = await getDoc(attemptRef);
+            if (attemptSnapshot.exists()) {
+              const data = attemptSnapshot.data();
+              quizAttempt = {
+              AnsweredQuestions: data.AnsweredQuestions || [],
+              userId: currentUserId,
+              timeTaken: data.timeTaken || 0,
+              totalTime: data.totalTime || 0,
+              };
+            }
+            }
 
-            getDoc(studentsAttemptedRef).then((quizAttemptSnapshot) => {
-              if (quizAttemptSnapshot.exists()) {
-                const quizAttemptData = quizAttemptSnapshot.data();
-                const quizAttempt: QuizAttempt = {
-                  AnsweredQuestions: (quizAttemptData as QuizAttempt).AnsweredQuestions || [],
-                  userId: currentUserId,
-                  timeTaken: (quizAttemptData as QuizAttempt).timeTaken || '',
-                };
+            return {
+            lessonHeading: contentDoc.data().lessonHeading,
+            lessonScheduleDate: contentDoc.data().lessonScheduleDate,
+            type: contentType,
+            contentId: contentDoc.id,
+            isDisscusionOpen: contentDoc.data().isDisscusionOpen,
+            lessonContent: contentDoc.data().lessonContent,
+            lessonOverView: contentDoc.data().lessonOverView,
+            pdfLink: contentDoc.data().pdfLink,
+            pdfSize: contentDoc.data().pdfSize,
+            videoLink: contentDoc.data().videoLink,
+            marksPerQuestion: contentDoc.data().marksPerQuestion,
+            nMarksPerQuestion: contentDoc.data().nMarksPerQuestion,
+            quizTime: contentDoc.data().quizTime,
+            videoDuration: contentDoc.data().videoDuration,
+            questionsCount: questionsCount,
+            videoId: contentDoc.data().videoId,
+            questionsList: fetchedQuestions,
+            StudentsCompleted: contentDoc.data().StudentsCompleted,
+            lessonViewed: contentDoc.data().lessonViewed,
+            quizAttempt: quizAttempt
+            };
+          })
+          );
 
-                setSections((prevSections) =>
-                  prevSections.map((prevSection) => {
-                    if (prevSection.sectionId === section.sectionId) {
-                      const prevSectionContent = prevSection.content || []; // Ensure content is an array
-                      return {
-                        ...prevSection,
-                        content: prevSectionContent.map((prevContent) =>
-                          prevContent.contentId === content.contentId
-                            ? { ...prevContent, quizAttempt }
-                            : prevContent
-                        ),
-                      };
-                    }
-                    return prevSection;
-                  })
-                );
-              }
-            });
-          }
+          setSections((prevSections) =>
+          prevSections.map((section) =>
+            section.sectionId === sectionId ? { ...section, content: contentData } : section
+          )
+          );
         });
-      });
+
+        unsubscribeRefs.push(unsubscribeContent);
+        });
+      },
+      (error) => {
+        console.error('Error fetching sections:', error);
+        setLoading(false);
+      }
+      );
+
+      unsubscribeRefs.push(unsubscribeSections);
+
+      return () => {
+      unsubscribeRefs.forEach(unsubscribe => unsubscribe());
+      };
     }
-  }, [courseId, sections]);
+    }, [courseId, auth.currentUser]);
+  // Add this useEffect after your existing useEffects
+  useEffect(() => {
+    // Only set initial content if no content is currently selected
+    if (!selectedContent && sections && sections.length > 0) {
+      const firstSection = sections[0];
+      setSectionId(firstSection.sectionId);
+
+      if (firstSection.content && firstSection.content.length > 0) {
+        setSelectedContent(firstSection.content[0]);
+      }
+    }
+  }, [sections, selectedContent]); // Add selectedContent as dependency
+
+  // Add new useEffect for real-time quiz attempt updates
+  useEffect(() => {
+    if (!courseId || !auth.currentUser?.uid || !sections.length) return;
+
+    const currentUserId = auth.currentUser.uid;
+    const unsubscribers: (() => void)[] = [];
+
+    sections.forEach(section => {
+      section.content?.forEach(content => {
+        if (content.type === 'Quiz') {
+          const attemptRef = doc(
+            db,
+            'course',
+            courseId,
+            'sections',
+            section.sectionId,
+            'content',
+            content.contentId,
+            'attempts',
+            currentUserId
+          );
+
+          const unsubscribe = onSnapshot(attemptRef, (snapshot) => {
+            if (snapshot.exists()) {
+              const data = snapshot.data();
+              const quizAttempt: QuizAttempt = {
+                AnsweredQuestions: data.AnsweredQuestions || [],
+                userId: currentUserId,
+                timeTaken: data.timeTaken || 0,
+                totalTime: data.totalTime || 0,
+              };
+
+              setSections(prevSections => 
+                prevSections.map(s => 
+                  s.sectionId === section.sectionId
+                    ? {
+                        ...s,
+                        content: s.content?.map(c =>
+                          c.contentId === content.contentId
+                            ? { ...c, quizAttempt }
+                            : c
+                        )
+                      }
+                    : s
+                )
+              );
+
+              // Update selectedContent if it matches the current content
+              if (selectedContent?.contentId === content.contentId) {
+                setSelectedContent(prev => prev ? { ...prev, quizAttempt } : prev);
+              }
+            }
+          });
+
+          unsubscribers.push(unsubscribe);
+        }
+      });
+    });
+
+    return () => {
+      unsubscribers.forEach(unsubscribe => unsubscribe());
+    };
+  }, [courseId, sections, auth.currentUser, selectedContent?.contentId]);
+
+  // ...existing code...
+  // Fetch StudentsAttempted separately
+  // useEffect(() => {
+  //   if (!courseId || !auth.currentUser) return;
+
+  //   const currentUserId = auth.currentUser.uid;
+  //   const unsubscribers: (() => void)[] = [];
+
+  //   const setupQuizListeners = () => {
+  //     sections.forEach((section) => {
+  //       section.content?.forEach((content) => {
+  //         if (content.type === 'Quiz') {
+  //           const studentsAttemptedRef = doc(
+  //             db,
+  //             'course',
+  //             courseId,
+  //             'sections',
+  //             section.sectionId,
+  //             'content',
+  //             content.contentId,
+  //             'attempts',
+  //             currentUserId
+  //           );
+
+  //           const unsubscribe = onSnapshot(studentsAttemptedRef, (snapshot) => {
+  //             if (snapshot.exists()) {
+  //               const quizAttemptData = snapshot.data();
+  //               const quizAttempt: QuizAttempt = {
+  //                 AnsweredQuestions: quizAttemptData.AnsweredQuestions || [],
+  //                 userId: currentUserId,
+  //                 timeTaken: quizAttemptData.timeTaken || 0,
+  //                 totalTime: quizAttemptData.totalTime || 0,
+  //               };
+
+  //               setSections(prevSections => 
+  //                 prevSections.map(s => 
+  //                   s.sectionId === section.sectionId
+  //                     ? {
+  //                         ...s,
+  //                         content: s.content?.map(c =>
+  //                           c.contentId === content.contentId
+  //                             ? { ...c, quizAttempt }
+  //                             : c
+  //                         )
+  //                       }
+  //                     : s
+  //                 )
+  //               );
+  //             }
+  //           });
+
+  //           unsubscribers.push(unsubscribe);
+  //         }
+  //       });
+  //     });
+  //   };
+
+  //   // Only set up listeners when we have sections data
+  //   if (sections.length > 0) {
+  //     setupQuizListeners();
+  //   }
+
+  //   return () => {
+  //     unsubscribers.forEach(unsubscribe => unsubscribe());
+  //   };
+  // }, [courseId, sections, auth.currentUser]); 
 
 
   const handleSelectionChange = (key: string) => {
@@ -417,21 +530,45 @@ function Course() {
         // Check if the user is already in the StudentsCompleted array
         const isUserCompleted = StudentsCompleted?.includes(currentUserId);
 
-        const ref = doc(db, 'course', courseId, 'sections', sectionId, 'content', contentId);
+        const ref = firestoreDoc(db, 'course', courseId, 'sections', sectionId, 'content', contentId);
 
         if (isUserCompleted) {
           // Remove the user if they are already in StudentsCompleted
           await updateDoc(ref, {
             StudentsCompleted: arrayRemove(currentUserId),
+            lessonViewed: arrayUnion(currentUserId),
           });
           console.log(`User ${currentUserId} removed from StudentsCompleted.`);
         } else {
           // Add the user if they are not in StudentsCompleted
           await updateDoc(ref, {
             StudentsCompleted: arrayUnion(currentUserId),
+            lessonViewed: arrayRemove(currentUserId),
           });
           console.log(`User ${currentUserId} added to StudentsCompleted.`);
         }
+      } catch (error) {
+        console.error('Error updating course document:', error);
+        toast.error('Failed to mark lesson completed');
+      }
+    } else {
+      console.error('Invalid course or user');
+    }
+  };
+
+  const handleMarkContentViewed = async (contentId: string, sectionId: string) => {
+    if (courseId && auth.currentUser?.uid) {
+      try {
+        const currentUserId = auth.currentUser.uid;
+
+
+        const ref = firestoreDoc(db, 'course', courseId, 'sections', sectionId, 'content', contentId);
+
+          // Add the user if they are not in StudentsCompleted
+          await updateDoc(ref, {
+            lessonViewed: arrayUnion(currentUserId),
+          });
+        
       } catch (error) {
         console.error('Error updating course document:', error);
         toast.error('Failed to mark lesson completed');
@@ -475,7 +612,7 @@ function Course() {
                 {/* Middle Section */}
                 <div className="mr-8 mt-[24px] rounded-md flex flex-col h-auto">
                   {selectedContent?.type === 'Text' && <TextContent lessonContent={selectedContent.lessonContent} pdfLink={selectedContent.pdfLink || ''} pdfSize={selectedContent.pdfSize} />}
-                  {selectedContent?.type === 'Video' && <VideoContent videoLink={selectedContent.videoLink || ''} />}
+                  {selectedContent?.type === 'Video' && <VideoContent videoId={selectedContent.videoId || ''} />}
                   {selectedContent?.type === 'Quiz' && <QuizContent isAdmin={false} sectionId={sectionId} courseId={courseId || ''} questionsList={selectedContent.questionsList || []} contentId={selectedContent.contentId} quizTime={selectedContent.quizTime} questionCount={selectedContent.questionsCount} marksPerQ={selectedContent.marksPerQuestion} nMarksPerQ={selectedContent.nMarksPerQuestion} lessonOverview={selectedContent.lessonOverView} lessonHeading={selectedContent.lessonHeading} quizAttempt={selectedContent.quizAttempt} />}
                 </div>
 
@@ -585,89 +722,100 @@ function Course() {
 
                           // Check if the StudentsCompleted array contains the current user's ID
                           const isCompleted = content.StudentsCompleted?.includes(userId || '');
+                          const isLessonViewed = content.lessonViewed?.includes(userId || '');
 
                           return (
                             <button
                               key={index}
-                              className={`${selectedContent?.contentId === content.contentId ? 'bg-[#F8F0FF]' : 'bg-[#FFFFFF]'} w-auto mx-2 mb-1 rounded-md flex flex-row items-top justify-center gap-2 h-auto py-3 px-4 hover:bg-[#F8F0FF]`}
+                              className={`${
+                              selectedContent?.contentId === content.contentId 
+                              ? 'bg-[#F8F0FF]' 
+                              : isCompleted 
+                              ? 'bg-green-100' 
+                              : isLessonViewed 
+                              ? 'bg-gray-100' 
+                              : 'bg-[#FFFFFF]'
+                              } w-auto mx-2 mb-1 rounded-md flex flex-row items-top justify-center gap-2 h-auto py-3 px-4 hover:bg-[#F8F0FF]`}
                               onClick={() => {
-                                setSelectedContent(content);
-                                setSectionId(section.sectionId);
+                              setSelectedContent(content);
+                              setSectionId(section.sectionId);
+                              if(!isLessonViewed){
+                              handleMarkContentViewed(content.contentId, section.sectionId);
+                              }
                               }}
                             >
                               {!isCompleted ? (
-                                <Tooltip
-                                  content="Mark as Complete"
-                                  placement="left"
-                                  offset={15}
-                                  closeDelay={100}
-                                  classNames={{
-                                    content: [
-                                      "bg-[#222222] text-white text-sm py-2 px-4 rounded-md",
-                                    ],
-                                  }}
-                                >
-                                  <Checkbox
-                                    size="md"
-                                    color="secondary"
-                                    radius="full"
-                                    isSelected={isCompleted} // This controls if the checkbox is checked or not
-                                    onClick={() => handleMarkContentCompleted(content.contentId, section.sectionId, content.StudentsCompleted)}
-                                  />
-                                </Tooltip>
+                              <Tooltip
+                              content="Mark as Complete"
+                              placement="left"
+                              offset={15}
+                              closeDelay={100}
+                              classNames={{
+                              content: [
+                                "bg-[#222222] text-white text-sm py-2 px-4 rounded-md",
+                              ],
+                              }}
+                              >
+                              <Checkbox
+                              size="md"
+                              color="secondary"
+                              radius="full"
+                              isSelected={isCompleted}
+                              onClick={() => handleMarkContentCompleted(content.contentId, section.sectionId, content.StudentsCompleted)}
+                              />
+                              </Tooltip>
                               ) : (
-                                <Checkbox
-                                  size="md"
-                                  color="secondary"
-                                  radius="full"
-                                  isSelected={isCompleted} // This controls if the checkbox is checked or not
-                                  onClick={() => handleMarkContentCompleted(content.contentId, section.sectionId, content.StudentsCompleted)}
-                                />
+                              <Checkbox
+                              size="md"
+                              color="secondary"
+                              radius="full"
+                              isSelected={isCompleted}
+                              onClick={() => handleMarkContentCompleted(content.contentId, section.sectionId, content.StudentsCompleted)}
+                              />
                               )}
                               <div className="flex flex-col gap-1 pt-[-2px] w-full">
-                                <span className="font-semibold text-sm text-[#1D2939] text-left">
-                                  {index + 1}. {content.lessonHeading}
-                                </span>
-                                {content.type === "Text" && (
-                                  <div className="flex flex-row text-sm font-normal it">
-                                    <Image
-                                      className="mr-1"
-                                      src="/icons/read.svg"
-                                      alt="test-icon"
-                                      width={16}
-                                      height={16}
-                                    />
-                                    <div>---</div>
-                                  </div>
-                                )}
-                                {content.type === "Video" && (
-                                  <div className="flex flex-row text-sm font-normal it">
-                                    <Image
-                                      className="mr-1"
-                                      src="/icons/vedio.svg"
-                                      alt="video-icon"
-                                      width={16}
-                                      height={16}
-                                    />
-                                    <div>
-                                      {formatDuration(content.videoDuration) || "00:00"}
-                                    </div>
+                              <span className="font-semibold text-sm text-[#1D2939] text-left">
+                              {index + 1}. {content.lessonHeading}
+                              </span>
+                              {content.type === "Text" && (
+                              <div className="flex flex-row text-sm font-normal it">
+                              <Image
+                                className="mr-1"
+                                src="/icons/read.svg"
+                                alt="test-icon"
+                                width={16}
+                                height={16}
+                              />
+                              <div>---</div>
+                              </div>
+                              )}
+                              {content.type === "Video" && (
+                              <div className="flex flex-row text-sm font-normal it">
+                              <Image
+                                className="mr-1"
+                                src="/icons/vedio.svg"
+                                alt="video-icon"
+                                width={16}
+                                height={16}
+                              />
+                              <div>
+                                {formatDuration(content.videoDuration) || "00:00"}
+                              </div>
 
-                                  </div>
-                                )}
-                                {content.type === "Quiz" && (
-                                  <div className="flex flex-row text-sm font-normal it">
-                                    <Image
-                                      className="mr-1"
-                                      src="/icons/test.svg"
-                                      alt="video-icon"
-                                      width={16}
-                                      height={16}
-                                    />
-                                    <div>{content.questionsCount} Questions</div>
-                                  </div>
-                                )}
-                                {/* Render other content types (Text, Video, Quiz) as before */}
+                              </div>
+                              )}
+                              {content.type === "Quiz" && (
+                              <div className="flex flex-row text-sm font-normal it">
+                              <Image
+                                className="mr-1"
+                                src="/icons/test.svg"
+                                alt="video-icon"
+                                width={16}
+                                height={16}
+                              />
+                              <div>{content.questionsCount} Questions</div>
+                              </div>
+                              )}
                               </div>
                             </button>
                           );

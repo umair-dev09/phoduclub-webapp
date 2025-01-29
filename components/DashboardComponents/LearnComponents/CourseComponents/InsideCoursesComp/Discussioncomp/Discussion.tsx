@@ -11,6 +11,7 @@ import { collection, doc, onSnapshot, orderBy, query, setDoc } from "firebase/fi
 import { auth, db } from "@/firebase";
 import DiscussionDisplay from "./DiscussionDisplay";
 import LoadingData from "@/components/Loading";
+import MessageLoading from "@/components/MessageLoading";
 
 interface DiscussionProps {
     courseId: string;
@@ -258,7 +259,7 @@ function Discussion({ courseId, sectionId, contentId }: DiscussionProps) {
             {/* THIS IS THE MIDDLE-LINE */}
             <div className="mt-[30px]" />
             {loading ? (
-                <LoadingData />
+                <MessageLoading />
             ) : (
                 <>
                     {discussions.map((d) => (

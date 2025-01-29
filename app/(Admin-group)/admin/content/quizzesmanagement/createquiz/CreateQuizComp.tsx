@@ -136,7 +136,7 @@ function CreateQuiz() {
                         },
                         correctAnswer: data.correctAnswer?.replace('option', ''),
                         explanation: data.answerExplanation || '',
-                        order: data.order,
+                        order: data.order || 0,
                     };
                 });
                 setQuestionsList(fetchedQuestions);

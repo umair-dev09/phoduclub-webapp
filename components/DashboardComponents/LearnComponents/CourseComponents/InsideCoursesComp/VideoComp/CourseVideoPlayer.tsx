@@ -5,7 +5,7 @@ import "@videojs/themes/dist/fantasy/index.css"; // Fantasy theme styles
 import Player from "video.js/dist/types/player"; // Import Player type
 
 interface VideoPlayerProps {
-  videoSrc: string;
+  videoId: string;
 }
 
 interface VdoCipherResponse {
@@ -13,7 +13,7 @@ interface VdoCipherResponse {
   playbackInfo: string;
 }
 
-const CourseVideoPlayer: React.FC<VideoPlayerProps> = ({ videoSrc }) => {
+const CourseVideoPlayer: React.FC<VideoPlayerProps> = ({ videoId }) => {
   const videoNode = useRef<HTMLVideoElement | null>(null);
   const playerRef = useRef<Player | null>(null); // Use VideoJsPlayer type from videojs namespac
 
@@ -47,7 +47,7 @@ const CourseVideoPlayer: React.FC<VideoPlayerProps> = ({ videoSrc }) => {
   const [videoData, setVideoData] = useState<VdoCipherResponse | null>(null);
   const [error, setError] = useState<string>("");
 
-  const videocipherid = "3f49cd28d53f41e38fb66aec32ad9c1c"; // Manually set the video ID here
+  // const videocipherid = "3f49cd28d53f41e38fb66aec32ad9c1c"; // Manually set the video ID here
 
 
 
@@ -61,7 +61,7 @@ const CourseVideoPlayer: React.FC<VideoPlayerProps> = ({ videoSrc }) => {
             "Content-Type": "application/json",
             "X-Allowed-Domains": window.location.hostname // Add current domain
           },
-          body: JSON.stringify({ videoId: videocipherid }),
+          body: JSON.stringify({ videoId: videoId }),
         });
 
         if (!response.ok) throw new Error("Domain verification failed");

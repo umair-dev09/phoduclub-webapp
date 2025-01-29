@@ -5,6 +5,8 @@ import { useState } from "react";
 import Quiz from "./QuizAttendingArea";
 import QuizAttendingArea from "./QuizAttendingArea";
 import ReviewQuiz from "./ReviewQuiz";
+import ReviewTest from "../../../TestsComponents/ReviewTest";
+import { useDisclosure } from "@nextui-org/modal";
 
 interface Options {
     A: string;
@@ -21,27 +23,29 @@ interface Question {
     correctAnswer: string | null;
     answerExplanation: string;
     questionId: string;
+    order: number;
+}
+
+interface QuestionState {
+    questionId: string;
+    selectedOption: string | null;
+    answeredCorrect: boolean | null;
+    answered: boolean;
 }
 
 interface QuizAttempt {
     AnsweredQuestions: QuestionState[];
     userId: string;
-    timeTaken: string;
-  }
-  
-  interface QuestionState {
-    questionId: string;
-    selectedOption: string; // User's answer
-    answeredCorrect: boolean; // Whether the answer is correct
-  }
-
+    timeTaken: number;
+    totalTime: number;
+}
 interface QuizContentProps {
     lessonOverview: string;
     lessonHeading: string;
     marksPerQ: string;
     nMarksPerQ: string;
     questionCount: number;
-    quizTime: string;
+    quizTime: number;
     contentId: string;
     questionsList: Question[];
     courseId: string;
@@ -51,67 +55,33 @@ interface QuizContentProps {
 
 }
 
-const convertToTimeFormat = (timeStr: string): string => {
-    const regex = /(\d+)\s*(Minute|Hour)\(s\)/i;
-    const match = timeStr.match(regex);
 
-    if (!match) return "00:00"; // Return default value if the format doesn't match
+const convertToTimeFormat = (seconds: number): string => {
+    if (!seconds || seconds < 0) return "0 Minutes"; // Return default for invalid input
 
-    const value = parseInt(match[1], 10); // Get the numeric value
-    const unit = match[2].toLowerCase(); // Get the unit (either minute or hour)
+    const totalMinutes = Math.floor(seconds / 60);
+    const hours = Math.floor(totalMinutes / 60);
+    const minutes = totalMinutes % 60;
 
-    let totalMinutes = 0;
-
-    if (unit === "minute") {
-        totalMinutes = value;
-    } else if (unit === "hour") {
-        totalMinutes = value * 60; // Convert hours to minutes
+    if (hours > 0) {
+        return `${hours} ${hours === 1 ? 'Hour' : 'Hours'}`;
+    } else {
+        return `${minutes} ${minutes === 1 ? 'Minute' : 'Minutes'}`;
     }
-
-    const hours = Math.floor(totalMinutes / 60).toString().padStart(2, "0"); // Calculate hours and format
-    const minutes = (totalMinutes % 60).toString().padStart(2, "0"); // Calculate minutes and format
-
-    return `${hours}:${minutes}`;
-};
-
-const convertToDisplayTimeFormat = (timeStr: string): string => {
-    const regex = /(\d+)\s*(Minute|Hour)\(s\)/i;
-    const match = timeStr.match(regex);
-
-    if (!match) return "00:00"; // Return default value if the format doesn't match
-
-    const value = parseInt(match[1], 10); // Get the numeric value
-    const unit = match[2].toLowerCase(); // Get the unit (either minute or hour)
-
-    let totalMinutes = 0;
-    let formattedTime = "";
-
-    if (unit === "minute") {
-        totalMinutes = value;
-        const hours = Math.floor(totalMinutes / 60).toString().padStart(2, "0"); // Calculate hours and format
-        const minutes = (totalMinutes % 60).toString().padStart(2, "0"); // Calculate minutes and format
-        formattedTime = `${hours}:${minutes} Minutes`;
-    } else if (unit === "hour") {
-        totalMinutes = value * 60; // Convert hours to minutes
-        const hours = Math.floor(totalMinutes / 60).toString().padStart(2, "0"); // Format hours
-        const minutes = (totalMinutes % 60).toString().padStart(2, "0"); // Format minutes
-        formattedTime = `${hours}:${minutes} Hours`;
-    }
-
-    return formattedTime;
 };
 
 function QuizContent({ lessonHeading, isAdmin, courseId, sectionId, lessonOverview, questionCount, marksPerQ, nMarksPerQ, quizTime, contentId, questionsList, quizAttempt }: QuizContentProps) {
     const [showReviewSheet, setShowReviewSheet] = useState(false);
 
     const [showQuizDialog, setShowQuizDialog] = useState(false);
-    const [isQuizOpen, setIsQuizOpen] = useState(false);
+    // const [isQuizOpen, setIsQuizOpen] = useState(false);
     const [isQuizSubmitted, setIsQuizSubmitted] = useState(false);
     const [showBottomSheet, setShowBottomSheet] = useState(false);
+    const { isOpen: isOpen, onOpen: onOpen, onClose: onClose } = useDisclosure();
 
     const onStartQuiz = () => {
         setShowQuizDialog(true);
-        setIsQuizOpen(true);
+        onOpen();
     };
 
     const handleQuizSubmit = () => {
@@ -145,7 +115,7 @@ function QuizContent({ lessonHeading, isAdmin, courseId, sectionId, lessonOvervi
                         alt="clock"
                         className="mr-2"
                     />
-                    {convertToDisplayTimeFormat(quizTime)}
+                    {convertToTimeFormat(quizTime)}
                 </span>
 
                 <span className="flex items-center font-semibold text-sm text-[#1D2939]">
@@ -193,24 +163,25 @@ function QuizContent({ lessonHeading, isAdmin, courseId, sectionId, lessonOvervi
                     </div>
                 </div>
             )}
-
+ 
 
 
             {showQuizDialog && (
                 <QuizAttendingArea
-                    isOpen={isQuizOpen}
-                    setIsOpen={setIsQuizOpen}
+                    isOpen={isOpen}
+                    // setIsOpen={setIsQuizOpen}
+                    onClose={onClose}
                     setShowBottomSheet={setShowBottomSheet}
                     onSubmit={handleQuizSubmit}
                     showBottomSheet={showBottomSheet}
                     contentId={contentId}
-                    quizTime={convertToTimeFormat(quizTime)}
+                    quizTime={quizTime}
                     sectionId={sectionId}
                     courseId={courseId}
                     questionsList={questionsList || []}
                 />
             )}
-            <ReviewQuiz setShowReviewSheet={setShowReviewSheet} showReviewSheet={showReviewSheet} questionsList={questionsList} answeredQuestions={quizAttempt?.AnsweredQuestions || []} timeTaken={quizAttempt?.timeTaken || ''}/>
+            <ReviewTest setShowReviewSheet={setShowReviewSheet} showReviewSheet={showReviewSheet} questionsList={questionsList} answeredQuestions={quizAttempt?.AnsweredQuestions || []} timeTaken={quizAttempt?.timeTaken || 0}/>
 
         </div>
 

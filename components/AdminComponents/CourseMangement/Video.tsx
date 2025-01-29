@@ -102,7 +102,7 @@ function Video({ isOpen, toggleDrawer, sectionId, courseId, isEditing, contentId
         window.open("http://localhost:3000/admin/uploadVideo", "_blank", "noopener,noreferrer");
     };
 
-    const isFormValid = lessonHeading && lessonOverView && contentScheduleDate && videoLink;
+    const isFormValid = lessonHeading && lessonOverView && contentScheduleDate  && videocipherid;
 
     const formatScheduleDate = (dateString: string | null): string => {
         if (!dateString) return "-"; // Return "-" if the date is null or undefined
@@ -150,7 +150,7 @@ function Video({ isOpen, toggleDrawer, sectionId, courseId, isEditing, contentId
             setFileName(null);
             setContentScheduleDate('');
             setDisscusionOpen(false);
-            setVideoId('');
+            setVideocipherid('');
             setSelectedFile(null);
             setLoading(false);
 
@@ -170,7 +170,7 @@ function Video({ isOpen, toggleDrawer, sectionId, courseId, isEditing, contentId
                 setContentScheduleDate(content.lessonScheduleDate || '');
                 setDisscusionOpen(content.isDisscusionOpen || '');
                 setFileName(content.videoFileName);
-                setVideoId(content.videoId);
+                setVideocipherid(content.videoId);
                 setLoading(false);
             } else {
                 toast.error("Content not found!");
@@ -424,11 +424,12 @@ function Video({ isOpen, toggleDrawer, sectionId, courseId, isEditing, contentId
                 const courseData = {
                     lessonHeading: lessonHeading,
                     lessonOverView: lessonOverView,
-                    videoLink: videoLink ? videoLink : null,
+                    // videoLink: videoLink ? videoLink : null,
                     lessonScheduleDate: contentScheduleDate,
                     isDisscusionOpen: disscusionOpen,
-                    videoFileName: fileName,
-                    videoDuration,
+                    videoId: videocipherid,
+                    // videoFileName: fileName,
+                    // videoDuration,
                     // videoId,
                 };
                 await updateDoc(contentRef, courseData);
@@ -451,11 +452,12 @@ function Video({ isOpen, toggleDrawer, sectionId, courseId, isEditing, contentId
                     type: 'Video',
                     lessonHeading: lessonHeading,
                     lessonOverView: lessonOverView,
-                    videoLink: videoLink ? videoLink : null,
+                    // videoLink: videoLink ? videoLink : null,
                     lessonScheduleDate: contentScheduleDate,
                     isDisscusionOpen: disscusionOpen,
-                    videoFileName: fileName,
-                    videoDuration,
+                    // videoFileName: fileName,
+                    // videoDuration,
+                    videoId: videocipherid,
                     //   videoId,
                 });
                 toast.success('Video Content added!');
@@ -586,7 +588,7 @@ function Video({ isOpen, toggleDrawer, sectionId, courseId, isEditing, contentId
                                 </div>
                             </div>
                             {/* Upload the video */}
-                            <div className=" flex flex-col gap-2">
+                            {/* <div className=" flex flex-col gap-2">
                                 <span className="text-[#1D2939] font-semibold text-sm">Upload Video</span>
                                 {(!selectedFile) && (
                                     <div className="h-[148px] rounded-xl bg-[#F9FAFB] border-2 border-dashed border-[#D0D5DD]"
@@ -669,7 +671,7 @@ function Video({ isOpen, toggleDrawer, sectionId, courseId, isEditing, contentId
                                     </div>
                                 )}
 
-                            </div>
+                            </div> */}
                             {/* ENTER THE ID AND UPLOAD THE VIDEO  */}
                             {/* ---------------------------------------------------------------------------------------------------------------------------------------------------- */}
                             <div className="flex flex-col gap-4">
@@ -685,16 +687,16 @@ function Video({ isOpen, toggleDrawer, sectionId, courseId, isEditing, contentId
                                         onClick={fetchVideoData}
                                         className=" text-white  text-sm font-medium p-2 rounded-lg hover:bg-[#6D0DCC] bg-[#9012FF]"
                                     >
-                                        Upload Video
+                                        Preview
                                     </button>
                                 </div>
-                                {uploading && <div className="text-center">Uploading video...</div>}
+                                {uploading && <div className="text-center">Loading Video...</div>}
                                 {error && <div className="text-red-500 mb-4">{error}</div>}
                                 {videoData && (
-                                    <div className="w-25 h-25 items-center justify-center flex">
+                                    <div className="w-[500px] h-[300px] items-center justify-center flex">
                                         <iframe
                                             src={iframeSrc}
-                                            className=" w-25 h-25 rounded-lg"
+                                            className=" w-[500px] h-[300px] rounded-lg"
                                             allow="encrypted-media"
                                             allowFullScreen
                                             title="VdoCipher Video Player"

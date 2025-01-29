@@ -13,7 +13,8 @@ import 'react-toastify/dist/ReactToastify.css';
 import { auth, db } from "@/firebase";
 import { collection, doc, setDoc } from "firebase/firestore";
 import QuizTimer from "@/components/QuizTImer";
-import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button } from "@nextui-org/react";
+import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, useDisclosure } from "@nextui-org/react";
+import { on } from "events";
 interface Options {
     A: string;
     B: string;
@@ -29,20 +30,24 @@ interface Question {
     correctAnswer: string | null;
     answerExplanation: string;
     questionId: string;
+    order: number;
 }
 interface QuestionState {
     questionId: string;
     selectedOption: string | null;
     answeredCorrect: boolean | null;
+    answered: boolean;
 }
+
 interface QuizAttempt {
     AnsweredQuestions: QuestionState[];
     userId: string;
-    timeTaken: string;
+    timeTaken: number;
+    totalTime: number;
 }
 type QuizProps = {
     isOpen: boolean;
-    setIsOpen: (isOpen: boolean) => void;
+    onClose: () => void;
     setShowBottomSheet: (show: boolean) => void;
     onSubmit: () => void;
     showBottomSheet: boolean;
@@ -50,31 +55,113 @@ type QuizProps = {
     questionsList: Question[];
     courseId: string;
     sectionId: string;
-    quizTime: string;
+    quizTime: number;
 };
 
 function QuizAttendingArea({
     isOpen,
-    setIsOpen,
+    onClose,
     showBottomSheet,
     setShowBottomSheet,
     onSubmit, contentId, questionsList, courseId, sectionId, quizTime
 }: QuizProps) {
+        const contentRef = React.useRef<HTMLDivElement>(null);
     const [isDialogOpen, setIsDialogOpen] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [questionStates, setQuestionStates] = useState<QuestionState[]>([]);
     const userId = auth.currentUser?.uid;
     const [currentTime, setCurrentTime] = useState<number>(0);
+    const [remainingTime, setRemainingTime] = useState<number>(0);
+    const [formattedTime, setFormattedTime] = useState<string>("00:00:00");
+    const [timerStarted, setTimerStarted] = useState(false);
+    const [isTimeEnded, setIsTimeEnded] = useState(false);
+   // Add helper function to format time
+    const formatTime = (seconds: number): string => {
+        const hours = Math.floor(seconds / 3600);
+        const minutes = Math.floor((seconds % 3600) / 60); 
+        const remainingSeconds = seconds % 60;
 
-    // Initialize questionStates with actual questionIds
+        return [hours, minutes, remainingSeconds]
+            .map(val => val.toString().padStart(2, '0'))
+            .join(':');
+    };
+
+    const initializeTimer = () => {
+        setRemainingTime(quizTime);
+        setFormattedTime(formatTime(quizTime));
+        setTimerStarted(true);
+    };
+
+    function formatTimeForReview(seconds: number): string {
+        const totalSeconds = seconds;
+        const hours = Math.floor(totalSeconds / 3600); // Calculate hours
+        const minutes = Math.floor((totalSeconds % 3600) / 60); // Calculate remaining minutes
+        let formattedTime = '';
+    
+        if (hours > 0) {
+            formattedTime += `${hours}h`; // Add hours if present
+        }
+        if (minutes > 0 || hours === 0) {
+            formattedTime += (formattedTime ? ' ' : '') + `${minutes}m`; // Add minutes
+        }
+    
+        return formattedTime;
+    }
+
+  // Initialize timer when bottom sheet opens
     useEffect(() => {
-        const initialStates: QuestionState[] = questionsList.map((question) => ({
-            questionId: question.questionId,
-            selectedOption: null,
-            answeredCorrect: null
-        }));
-        setQuestionStates(initialStates);
-    }, [questionsList]);
+        if (showBottomSheet) {
+            initializeTimer();
+        } else {
+            // Reset timer when bottom sheet closes
+            setTimerStarted(false);
+        }
+    }, [showBottomSheet, quizTime]);
+
+    // Separate timer countdown effect 
+        useEffect(() => {
+            if (!timerStarted || remainingTime <= 0) return;
+    
+            const timer = setInterval(() => {
+                setRemainingTime(prev => {
+                    const newTime = Math.max(0, prev - 1);
+                    setFormattedTime(formatTime(newTime));
+    
+                    // Trigger handleTimeOver when time reaches 0
+                    if (newTime === 0) {
+                        handleTimeOver();
+                    }
+                    return newTime;
+                });
+            }, 1000);
+    
+            return () => clearInterval(timer);
+        }, [timerStarted, remainingTime]);
+    
+        const handleTimeOver = () => {
+            setIsTimeEnded(true);
+            console.log("Time's up!");
+        };
+
+ // Initialize with actual questionIds
+    useEffect(() => {
+        if (showBottomSheet) {
+            const initialStates: QuestionState[] = questionsList.map((question) => ({
+                questionId: question.questionId,
+                selectedOption: null,
+                answeredCorrect: null,
+                answered: false,
+            }));
+            setQuestionStates(initialStates);
+        }
+    }, [showBottomSheet, questionsList]);
+    useEffect(() => {
+        if (showBottomSheet && contentRef.current) {
+            // Scroll to top when bottom sheet opens
+            contentRef.current.scrollTo({ top: 0, behavior: 'auto' });
+        }
+    }, [showBottomSheet]);
+
 
     // Handle option selection for a question
     const handleOptionSelect = (questionId: string, selectedOption: string) => {
@@ -86,7 +173,8 @@ function QuizAttendingArea({
                     return {
                         ...state,
                         selectedOption: selectedOption,
-                        answeredCorrect: question ? selectedOption === question.correctAnswer : false
+                        answeredCorrect: question ? selectedOption === question.correctAnswer : false,
+                        answered: true,
                     };
                 }
                 return state;
@@ -102,17 +190,19 @@ function QuizAttendingArea({
 
         setIsSubmitting(true);
         try {
-            const quizAttempt: QuizAttempt = {
+            const quizAttempt = {
                 AnsweredQuestions: questionStates,
                 userId: userId,
-                timeTaken: quizTime,
+                timeTaken: quizTime - remainingTime,
+                totalTime: quizTime,
+                attemptDate: new Date(),
             };
-
             // Fixed Firestore path structure
-            const quizPath = `course/${courseId}/sections/${sectionId}/content/${contentId}/StudentsAttempted`;
+            const quizPath = `course/${courseId}/sections/${sectionId}/content/${contentId}/attempts`;
             const studentAttemptRef = doc(db, quizPath, userId);
             await setDoc(studentAttemptRef, quizAttempt);
             toast.success('Quiz attempt saved successfully');
+            setShowBottomSheet(false);
         } catch (error) {
             console.error('Error storing quiz attempt:', error);
             toast.error('Failed to  store quiz attempt');
@@ -127,7 +217,7 @@ function QuizAttendingArea({
     };
 
     const openBottomSheet = () => {
-        setIsOpen(false);
+        onClose();
         setShowBottomSheet(true);
     };
 
@@ -137,25 +227,19 @@ function QuizAttendingArea({
         setShowBottomSheet(false);
     };
 
-    const handleOnTimeEnd = () => {
-        console.log('Time ended');
-
-    };
 
     const handleSaveExit = () => {
-        setIsOpen(false);
+        onClose();
         setShowBottomSheet(false);
     };
 
     const handleDialogSubmit = async () => {
         setIsDialogOpen(false);
-        setIsOpen(false);
+        // setIsOpen(false);
         setShowBottomSheet(false);
         await storeQuizAttempt();
     };
-    const handleTimeUpdate = (timeLeft: number) => {
-        setCurrentTime(timeLeft);
-    };
+ 
     return (
         <>
             {/* Initial Dialog */}
@@ -214,8 +298,8 @@ function QuizAttendingArea({
                 </div >
             </Dialog > */}
             <Modal
-                isOpen={true}
-                onOpenChange={(isOpen) => !isOpen && setIsOpen(false)}
+                isOpen={isOpen}
+                onOpenChange={(isOpen) => !isOpen && onClose()}
                 hideCloseButton
             >
                 <ModalContent>
@@ -223,7 +307,7 @@ function QuizAttendingArea({
                         <ModalHeader className="flex flex-row justify-between items-center gap-1">
                             <h1 className="text-lg font-bold text-[#1D2939]">Confirmation</h1>
                             <button className="w-[32px] h-[32px]  rounded-full flex items-center justify-center transition-all duration-300 ease-in-out hover:bg-[#F2F4F7]">
-                                <button onClick={() => setIsOpen(false)}>
+                                <button onClick={() => onClose()}>
                                     <Image src="/icons/cancel.svg" alt="cancel" width={18} height={18} />
                                 </button>
                             </button>
@@ -243,7 +327,7 @@ function QuizAttendingArea({
                             <Button
                                 className="bg-[#FFFFFF] text-[#1D2939] text-sm font-semibold py-2 px-5 rounded-md w-[118px] h-[44px] hover:bg-[#F2F4F7]"
                                 style={{ border: "1.5px solid #EAECF0" }}
-                                onClick={() => setIsOpen(false)}
+                                onClick={() => onClose()}
                             >
                                 Cancel
                             </Button>
@@ -274,10 +358,10 @@ function QuizAttendingArea({
                 <div className="flex flex-col h-full  overflow-y-auto">
                     <div className="p-5 flex justify-between items-center h-[69px] w-full border-b-[1.5px] border-t-[1.5px] border-[#EAECF0]  rounded-tl-[18px] rounded-tr-[16px]">
                         <span className="text-lg font-semibold text-[#1D2939]">Quiz</span>
-                        <span className="text-lg font-semibold text-[#1D2939] flex items-center justify-center gap-2">
-                            <Image width={24} height={24} src="/icons/alarm-clock.svg" alt="timer" />
-                            <QuizTimer initialTime={quizTime} onTimeEnd={handleOnTimeEnd} onTimeUpdate={handleTimeUpdate} />
-                        </span>
+                         <span className="text-lg font-semibold text-[#1D2939] flex items-center justify-center gap-2">
+                                                    <Image width={24} height={24} src="/icons/alarm-clock.svg" alt="timer" />
+                                                    <span>{formattedTime}</span>
+                                                </span>
 
                         <div
                             className={`w-[150px] h-[44px] bg-[#FFFFFF] border-[1px] border-[#EAECF0] rounded-[8px] flex items-center justify-center transition-transform duration-500 ease-in-out transform z-50 `}
@@ -293,10 +377,16 @@ function QuizAttendingArea({
 
                     </div>
 
-                    {/* Quiz Content */}
-                    <div className="overflow-y-auto p-5 h-full">
+                    <div ref={contentRef} className="overflow-y-auto p-5 h-full">
+                    {isTimeEnded ? (
+                     <div className="flex items-center justify-center h-full text-red-500">
+                      Time&apos;s up! Please submit your attempt.
+                  </div>
+                ) : (
                         <div className="flex flex-col gap-5 items-center justify-center">
-                            {questionsList.map((q, index) => {
+                            {questionsList
+                            .sort((a, b) => a.order - b.order)
+                            .map((q, index) => {
                                 // Find the corresponding state for this question
                                 const questionState = questionStates.find(
                                     state => state.questionId === q.questionId
@@ -340,6 +430,7 @@ function QuizAttendingArea({
                                 );
                             })}
                         </div>
+                )}
                     </div>
                     {/* Bottom Button Section */}
                     <div className="flex flex-row items-center justify-end border-t border-lightGrey px-4 py-3">

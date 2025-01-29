@@ -16,7 +16,7 @@ interface Options {
 
 interface AnsweredQuestion {
     questionId: string;
-    status: string;
+    status?: string;
     answered: boolean;
     selectedOption: string | null;
     answeredCorrect: boolean | null;
@@ -30,6 +30,7 @@ interface Question {
     correctAnswer: string | null;
     answerExplanation: string;
     questionId: string;
+    order: number;
 }
 
 interface ReviewTestProps {
@@ -234,8 +235,12 @@ function ReviewTest({ showReviewSheet, setShowReviewSheet, questionsList, answer
         }
     };
 
-    const isLastQuestion = currentQuestionIndex === questionsList.length - 1;
-    const currentQuestion = questionsList[currentQuestionIndex];
+    const sortedQuestions = React.useMemo(() => {
+        return [...questionsList].sort((a, b) => a.order - b.order);
+    }, [questionsList]);
+
+    const isLastQuestion = currentQuestionIndex === sortedQuestions.length - 1;
+    const currentQuestion = sortedQuestions[currentQuestionIndex];
     const answeredData = getAnsweredQuestionData(currentQuestion?.questionId);
     const isAnswered = answeredData?.answered;
     const isCorrect = answeredData?.answeredCorrect;

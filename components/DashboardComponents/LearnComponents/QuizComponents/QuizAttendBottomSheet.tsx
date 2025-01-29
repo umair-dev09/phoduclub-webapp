@@ -39,7 +39,6 @@ interface QuestionState {
     selectedOption: string | null;
     answeredCorrect: boolean | null;
     answered: boolean;
-    status: string;
 }
 
 type QuizProps = {

@@ -17,6 +17,7 @@ interface Question {
     correctAnswer: string | null;
     explanation: string;
     questionId: string;
+    order: number;
 }
 
 interface Options {
@@ -31,9 +32,11 @@ interface QuestionsProps {
     setQuestionsList: React.Dispatch<React.SetStateAction<Question[]>>;
     anyQuestionAdded: string;
     setAnyQuestionAdded: (anyQuestionAdded: string) => void;
+    setDeletedQuestionIds: Dispatch<SetStateAction<string[]>>;
+
 }
 
-function Questions({ questionsList, setQuestionsList, anyQuestionAdded, setAnyQuestionAdded }: QuestionsProps) {
+function Questions({ questionsList, setQuestionsList, anyQuestionAdded, setAnyQuestionAdded, setDeletedQuestionIds }: QuestionsProps) {
     const [visited, setVisited] = useState<boolean[]>(new Array(questionsList.length).fill(false));
     const [openIndex, setOpenIndex] = useState<number | null>(null);
     // Handler for input change
@@ -70,6 +73,7 @@ function Questions({ questionsList, setQuestionsList, anyQuestionAdded, setAnyQu
                 correctAnswer: null,
                 explanation: '',
                 questionId: '',
+                order: questionsList.length + 1,
             }
         ]);
         setVisited([...visited, false]);
@@ -82,15 +86,18 @@ function Questions({ questionsList, setQuestionsList, anyQuestionAdded, setAnyQu
             ? {
                 ...duplicateQuestion,
                 question: `${duplicateQuestion.question} (Copy)`,
+                questionId: `temp-${Date.now()}`, // Add unique temp ID
+                order: questionsList.length + 1,
             } // Duplicate all properties of the question
             : {
                 question: '',
+                questionId: `temp-${Date.now()}`, // Add unique temp ID
                 isChecked: false,
                 isActive: false,
                 options: { A: '', B: '', C: '', D: '' },
                 correctAnswer: null,
                 explanation: '',
-                questionId: '',
+                order: questionsList.length + 1,
             };
 
         setQuestionsList([...questionsList, newQuestion]);
@@ -98,12 +105,12 @@ function Questions({ questionsList, setQuestionsList, anyQuestionAdded, setAnyQu
     // -----------------------------------------------------------------------------------------------------------
     // Handler for deleting question
     const handleDeleteQuestion = (index: number) => {
-        console.log("Deleting question at index:", index); // Debugging
-        setQuestionsList((prevList) => {
-            // Set isActive to false for the question being deleted
-            const updatedList = prevList.map((q, i) => (i === index ? { ...q, isActive: false } : q));
-            return updatedList.filter((_, i) => i !== index); // Delete the question
-        });
+        const questionToDelete = questionsList[index];
+        if (questionToDelete.questionId && !questionToDelete.questionId.startsWith('temp-')) {
+            setDeletedQuestionIds(prev => [...prev, questionToDelete.questionId]);
+        }
+
+        setQuestionsList(prevList => prevList.filter((_, i) => i !== index));
     };
     // -----------------------------------------------------------------------------------------------------------
     // Handler for option change
@@ -290,7 +297,9 @@ function Questions({ questionsList, setQuestionsList, anyQuestionAdded, setAnyQu
     };
     return (
         <div className="pb-4 h-auto">
-            {questionsList.map((question, index) => (
+            {questionsList
+            .sort((a, b) => a.order - b.order)
+            .map((question, index) => (
                 <div key={index} className={`rounded-md border border-solid border-[#EAECF0] mt-4 h-auto bg-[#FFFFFF] ${visited[index] && isDataMissing(question) ? "border-1.5 border-[#F04438]" : "border border-[#EAECF0]"}`}>
                     <Collapsible
                         open={openIndex === index}
@@ -419,7 +428,8 @@ function Questions({ questionsList, setQuestionsList, anyQuestionAdded, setAnyQu
 
                             <span className="font-semibold text-base text-[#1D2939]">Options</span>
                             <div className="flex flex-col gap-3">
-                                {(Object.keys(question.options) as Array<keyof Options>).map((optionKey) => (
+                                {(Object.keys(question.options) as Array<keyof Options>).sort()
+                                .map((optionKey) => (
                                     <div key={optionKey} className="flex flex-row items-center gap-2">
                                         <div className="h-8 w-8 bg-[#F9FAFB] border border-solid border-[#D0D5DD] rounded-[6px]">
                                             <span className="text-[#475467] text-sm font-medium flex justify-center items-center h-full w-full">

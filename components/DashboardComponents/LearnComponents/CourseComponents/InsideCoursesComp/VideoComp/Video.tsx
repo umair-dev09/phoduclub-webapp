@@ -8,14 +8,14 @@ import VideoPlayer from '@/components/DashboardComponents/CommunityComponents/Vi
 import CourseVideoPlayer from './CourseVideoPlayer';
 
 interface VideoContentProps {
-    videoLink: string;
+    videoId: string;
 }
 
-function VideoContent({ videoLink }: VideoContentProps) {
+function VideoContent({ videoId }: VideoContentProps) {
 
     return (
         <div className='flex w-full pl-8'>
-            <CourseVideoPlayer key={videoLink} videoSrc={videoLink} />
+            <CourseVideoPlayer videoId={videoId} />
         </div>
     );
 }
