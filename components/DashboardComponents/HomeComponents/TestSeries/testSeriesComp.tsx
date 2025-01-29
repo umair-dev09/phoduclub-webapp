@@ -2,7 +2,7 @@
 import Image from "next/image";
 import { useState, useEffect } from "react";
 import { useRouter, usePathname } from "next/navigation";
-import LoadingData from "@/components/Loading";
+import DashboardLoading from "@/components/DashboardLoading";
 import { inMemoryPersistence, onAuthStateChanged } from "firebase/auth";
 import { auth, db } from "@/firebase";
 import { collection, getDocs, onSnapshot } from "@firebase/firestore";
@@ -34,7 +34,6 @@ function formatExpiryDate(inputDate: string) {
   // Format the date as "DD MMM, YYYY"
   return `${day} ${month}, ${year}`;
 }
-
 
 function TestSeriesComp() {
   const [tests, setTests] = useState<TestData[]>([]);
@@ -146,7 +145,11 @@ function TestSeriesComp() {
   };
 
   if (loading) {
-    return <LoadingData />;
+    return (
+      <div className="my-24">
+        <DashboardLoading />
+      </div>
+    );
   }
 
   return (
@@ -166,8 +169,8 @@ function TestSeriesComp() {
               </button>
             </div>
 
-            <div className="flex justify-between items-center mt-2">
-              <Progress aria-label="Loading..." className="max-w-md h-2" value={test.studentProgress || 0} />
+            <div className="flex justify-between items-center mt-2 gap-8">
+              <Progress aria-label="Loading..." className="w-full h-2" value={test.studentProgress || 0} />
               <span className="text-sm font-medium">{test.studentProgress}%</span>
             </div>
 

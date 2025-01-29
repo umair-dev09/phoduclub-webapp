@@ -4,7 +4,7 @@ import { useRouter, usePathname } from "next/navigation";
 import { db, auth } from '@/firebase';
 import { collection, getDocs, onSnapshot } from 'firebase/firestore';
 import { useState, useEffect } from "react";
-import LoadingData from "@/components/Loading";
+import DashboardLoading from "@/components/DashboardLoading";
 import { onAuthStateChanged } from "firebase/auth";
 
 // Import useRouter hook
@@ -113,6 +113,14 @@ function CoursesList() {
     const handleTabClick = (path: string) => {
         router.push(path);
     };
+
+    if (loading) {
+        return (
+            <div className="my-24">
+                <DashboardLoading />
+            </div>
+        );
+    }
 
     return (
         <div className="flex flex-1 flex-row mx-0 gap-6 flex-wrap pr-2">

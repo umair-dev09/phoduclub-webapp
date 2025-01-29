@@ -129,7 +129,7 @@ export default function DashboardPage() {
                                         View all
                                    </button>
                               </div>
-                              <div className="flex flex-col flex-1">
+                              <div className="flex flex-col flex-1 overflow-y-auto">
                                    <TestSeriesComp />
                               </div>
                          </div>

@@ -5,7 +5,17 @@ import { doc, getDoc, setDoc, deleteDoc } from "firebase/firestore";
 import { auth, db } from '@/firebase';
 import { MoonLoader } from "react-spinners";
 
-const AdminVerify: React.FC = () => {
+interface OTPInputProps {
+    onComplete?: (otp: string) => void;
+    length?: number;
+    disabled?: boolean;
+}
+
+const AdminVerify: React.FC<OTPInputProps> = ({
+    onComplete,
+    length = 6,
+    disabled = false,
+}) => {
     const router = useRouter();
     const searchParams = useSearchParams();
     const adminId = searchParams.get("adminId");
@@ -17,7 +27,7 @@ const AdminVerify: React.FC = () => {
     const [verificationError, setVerificationError] = useState<string | null>(null);
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
-        const value = e.target.value;
+        const value = e.target.value.slice(-1);
         const newInputValues = [...inputValues];
         newInputValues[index] = value;
         setInputValues(newInputValues);
@@ -30,12 +40,79 @@ const AdminVerify: React.FC = () => {
         if (value === "" && index > 0) {
             inputRefs.current[index - 1]?.focus();
         }
+
+        // Handle paste event
+        if (e.target.value.length > 1) {
+            const pastedValue = e.target.value.split('');
+            const updatedValues = [...inputValues];
+
+            for (let i = 0; i < length - index; i++) {
+                if (pastedValue[i] && /^\d$/.test(pastedValue[i])) {
+                    updatedValues[index + i] = pastedValue[i];
+                }
+            }
+
+            setInputValues(updatedValues);
+
+            // Focus on the next empty input or the last input
+            const nextEmptyIndex = updatedValues.findIndex((val, idx) => idx > index && !val);
+            const focusIndex = nextEmptyIndex === -1 ? length - 1 : nextEmptyIndex;
+            inputRefs.current[focusIndex]?.focus();
+
+            // Trigger onComplete if all fields are filled
+            if (!updatedValues.includes('')) {
+                onComplete?.(updatedValues.join(''));
+            }
+            return;
+        }
+
+        // Auto-focus next input if current input is filled
+        if (value && index < length - 1) {
+            inputRefs.current[index + 1]?.focus();
+        }
+
+        // Check if all inputs are filled and trigger onComplete
+        if (value && !newInputValues.includes('')) {
+            onComplete?.(newInputValues.join(''));
+        }
     };
 
     const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>, index: number) => {
-        // Move to previous input box on backspace when current input is empty
-        if (e.key === 'Backspace' && inputValues[index] === "" && index > 0) {
+        // Handle backspace
+        if (e.key === 'Backspace') {
+            e.preventDefault();
+
+            const newInputValues = [...inputValues];
+
+            // If current input has value, clear it
+            if (newInputValues[index]) {
+                newInputValues[index] = '';
+                setInputValues(newInputValues);
+            }
+            // If current input is empty, clear previous input and focus on it
+            else if (index > 0) {
+                newInputValues[index - 1] = '';
+                setInputValues(newInputValues);
+                inputRefs.current[index - 1]?.focus();
+            }
+        }
+
+        if (e.key === 'Enter') {
+            // Only trigger if all inputs are filled
+            if (inputValues.every(value => value)) {
+                verifyOTP();
+            }
+            return;
+        }
+
+        // Handle left arrow
+        if (e.key === 'ArrowLeft' && index > 0) {
             inputRefs.current[index - 1]?.focus();
+        }
+
+        // Handle right arrow
+        if (e.key === 'ArrowRight' && index < length - 1) {
+            inputRefs.current[index + 1]?.focus();
         }
     };
 
@@ -124,22 +201,37 @@ const AdminVerify: React.FC = () => {
                 <button className="text-[#9012FF] ml-2" onClick={() => { router.back() }}>Edit</button>
             </p>
             <div className="flex flex-col gap-6">
-                <div className="flex flex-row gap-3 ">
-                    {[...Array(6)].map((_, index) => (
+                <div className="flex flex-row gap-3">
+                    {[...Array(length)].map((_, index) => (
                         <input
                             key={index}
                             ref={(el) => (inputRefs.current[index] = el)}
-                            className={`w-16 h-16 ${verificationError ? 'border-2 border-[#F04438]' : 'border-2'}  rounded-lg py-1 px-2 text-center text-4xl font-semibold text-[#0E2138] placeholder-gray-400 focus:border-[#8601FF] focus:outline-none focus:ring-4 focus:ring-[#D3A7FC]`}
+                            className={`w-16 h-16 
+                                ${verificationError ? 'border-2 border-[#F04438]' : 'border-2'} 
+                                ${disabled ? 'bg-gray-100 cursor-not-allowed' : ''}
+                                rounded-lg py-1 px-2 text-center text-4xl font-semibold 
+                                text-[#0E2138] placeholder-gray-400 
+                                focus:border-[#8601FF] focus:outline-none focus:ring-4 focus:ring-[#D3A7FC]`
+                            }
                             type="text"
                             inputMode="numeric"
                             maxLength={1}
                             placeholder="-"
                             value={inputValues[index]}
-                            onChange={(e) => {
-                                const isNumeric = /^\d?$/.test(e.target.value); // Allow only numeric input
-                                if (isNumeric) handleInputChange(e, index);
-                            }}
+                            onChange={(e) => handleInputChange(e, index)}
                             onKeyDown={(e) => handleKeyDown(e, index)}
+                            disabled={disabled}
+                            onPaste={(e) => {
+                                e.preventDefault();
+                                const pastedData = e.clipboardData.getData('text');
+                                if (!/^\d+$/.test(pastedData)) return; // Only allow numeric paste
+
+                                const event = {
+                                    target: { value: pastedData },
+                                } as React.ChangeEvent<HTMLInputElement>;
+
+                                handleInputChange(event, index);
+                            }}
                         />
                     ))}
                 </div>

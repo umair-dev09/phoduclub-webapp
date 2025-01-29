@@ -4,7 +4,7 @@ import { useRouter, usePathname } from "next/navigation";
 import { db, auth } from '@/firebase';
 import { collection, getDocs, onSnapshot, query, where } from 'firebase/firestore';
 import { useState, useEffect } from "react";
-import LoadingData from "@/components/Loading";
+import DashboardLoading from "@/components/DashboardLoading";
 import { onAuthStateChanged } from "firebase/auth";
 import { Progress } from "@nextui-org/progress";
 import DefaultView from '@/components/DashboardComponents/HomeComponents/course&testseries/DefaultCourseView';
@@ -158,7 +158,11 @@ function CoursesComp() {
 
 
   if (loading) {
-    return <LoadingData />
+    return (
+      <div className="my-24">
+        <DashboardLoading />
+      </div>
+    );
   }
 
   return (
@@ -175,9 +179,9 @@ function CoursesComp() {
               </button>
             </div>
 
-            <div className="flex items-center mt-4">
-              <Progress aria-label="Loading..." className="max-w-md h-2" value={course.studentProgress} />
-              <span className="ml-4 text-sm font-medium text-gray-600">{course.studentProgress}%</span>
+            <div className="flex justify-between items-center mt-2 gap-8">
+              <Progress aria-label="Loading..." className="w-full h-2" value={course.studentProgress} />
+              <span className="text-sm font-medium text-gray-600">{course.studentProgress}%</span>
             </div>
 
             <div className="flex justify-between mt-6">

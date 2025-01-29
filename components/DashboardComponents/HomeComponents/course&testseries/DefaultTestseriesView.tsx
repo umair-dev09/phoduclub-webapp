@@ -2,7 +2,7 @@
 import Image from "next/image";
 import { useState, useEffect } from "react";
 import { useRouter, usePathname } from "next/navigation";
-import LoadingData from "@/components/Loading";
+import DashboardLoading from "@/components/DashboardLoading";
 import { inMemoryPersistence, onAuthStateChanged } from "firebase/auth";
 import { auth, db } from "@/firebase";
 import { collection, getDocs, onSnapshot } from "@firebase/firestore";
@@ -133,7 +133,11 @@ function TestSeriesComp() {
     };
 
     if (loading) {
-        return <LoadingData />;
+        return (
+            <div className="my-24">
+                <DashboardLoading />
+            </div>
+        );
     }
 
     return (
