@@ -236,7 +236,7 @@ function PhoneUpdate({ setIsEditing }: PhoneUpdateProps) {
 
             <ModalBody className='flex gap-4 pb-4'>
               <p className='text-sm  text-[#667085]'>
-                Please verify your current phone number and enter a new phone number. We'll send a verification code to your new number to complete the update.
+                Please verify your current phone number and enter a new phone number. We&apos;ll send a verification code to your new number to complete the update.
               </p>
 
               <div className=" border-t border-lightGrey " />

@@ -4,12 +4,11 @@ import "video.js/dist/video-js.css"; // Core Video.js styles
 import "@videojs/themes/dist/fantasy/index.css"; // Fantasy theme styles
 import Player from "video.js/dist/types/player"; // Import Player type
 import Image from "next/image";
-
 interface VideoPlayerProps {
   videoSrc: string;
 }
 
-const CommunityVideoPlayer: React.FC<VideoPlayerProps> = ({ videoSrc }) => {
+function CommunityVideoPlayer({ videoSrc }: VideoPlayerProps) {
   const videoNode = useRef<HTMLVideoElement | null>(null);
   const playerRef = useRef<Player | null>(null); // Use VideoJsPlayer type from videojs namespace
   const [duration, setDuration] = useState("00:00"); // State for video duration
