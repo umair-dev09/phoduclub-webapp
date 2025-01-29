@@ -51,7 +51,7 @@ function CoursesComp() {
   const [loading, setLoading] = useState(true);
   useEffect(() => {
     const fetchCourses = async (currentUserId: string) => {
-      const coursesCollection = collection(db, 'courses');
+      const coursesCollection = collection(db, 'course');
 
       // Filter courses where status is 'live' using Firestore query
       const coursesQuery = query(coursesCollection, where('status', '==', 'live'));
