@@ -735,7 +735,7 @@ function Course() {
                               : isLessonViewed 
                               ? 'bg-gray-100' 
                               : 'bg-[#FFFFFF]'
-                              } w-auto mx-2 mb-1 rounded-md flex flex-row items-top justify-center gap-2 h-auto py-3 px-4 hover:bg-[#F8F0FF]`}
+                              } w-auto mx-2 mb-[6px] rounded-md flex flex-row items-top justify-center gap-2 h-auto py-3 px-4 hover:bg-[#F8F0FF]`}
                               onClick={() => {
                               setSelectedContent(content);
                               setSectionId(section.sectionId);
