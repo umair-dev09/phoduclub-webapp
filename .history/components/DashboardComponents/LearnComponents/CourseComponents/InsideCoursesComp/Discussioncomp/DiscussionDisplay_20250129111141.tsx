@@ -265,7 +265,7 @@ function DiscussionDisplay({ message, userId, timestamp, messageId, isAdmin, cou
                     <>
                         <ModalHeader className="flex flex-row justify-between items-center gap-1">
                             <h1 className="text-[#1D2939] font-bold text-lg">
-                                Delete Message
+                                Delete User
                             </h1>
                             <button
                                 className="w-[32px] h-[32px] rounded-full flex items-center justify-center transition-all duration-300 ease-in-out hover:bg-[#F2F4F7]"
@@ -280,13 +280,12 @@ function DiscussionDisplay({ message, userId, timestamp, messageId, isAdmin, cou
                             </button>
                         </ModalHeader>
                         <ModalBody >
-                            <span className="text-sm font-normal text-[#667085]">
-                                Are you sure you want to delete this message? This action cannot be undone.</span>
+                            <span className="text-sm font-normal text-[#667085]">Deleting the user will permanently remove all their data from the platform, including their account, activity, and content.</span>
 
                         </ModalBody>
                         <ModalFooter className="border-t border-lightGrey">
                             <Button variant="light" className="py-[0.625rem] px-6 border-2  border-solid border-[#EAECF0] font-semibold text-sm text-[#1D2939] rounded-md hover:bg-[#F2F4F7]" onClick={() => setDeleteDialog(false)} >Cancel</Button>
-                            <Button className={`py-[0.625rem] px-6 text-white font-semibold shadow-inner-button  hover:bg-[#B0201A] bg-[#BB241A] border border-white rounded-md`} onClick={() => setDeleteDialog(false)}>Delete</Button>
+                            <Button className={`py-[0.625rem] px-6 text-white font-semibold shadow-inner-button  hover:bg-[#B0201A] bg-[#BB241A] border border-white rounded-md`} onClick={() => setDeleteDialog(false)}>Delete User</Button>
                         </ModalFooter>
                     </>
                 </ModalContent>

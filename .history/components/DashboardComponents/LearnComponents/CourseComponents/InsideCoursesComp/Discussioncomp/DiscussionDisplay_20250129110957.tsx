@@ -259,38 +259,48 @@ function DiscussionDisplay({ message, userId, timestamp, messageId, isAdmin, cou
                     </button>
                 </div>
             </div>
-            <Modal isOpen={deletedialog} onOpenChange={(isOpen) => !isOpen && setDeleteDialog(false)} hideCloseButton >
+            <Modal isOpen={open} onOpenChange={(isOpen) => !isOpen && setDeleteDialog(false))} hideCloseButton >
 
-                <ModalContent>
-                    <>
-                        <ModalHeader className="flex flex-row justify-between items-center gap-1">
-                            <h1 className="text-[#1D2939] font-bold text-lg">
-                                Delete Message
-                            </h1>
-                            <button
-                                className="w-[32px] h-[32px] rounded-full flex items-center justify-center transition-all duration-300 ease-in-out hover:bg-[#F2F4F7]"
-                                onClick={() => setDeleteDialog(false)}
-                            >
-                                <Image
-                                    src="/icons/cancel.svg"
-                                    alt="Cancel"
-                                    width={20}
-                                    height={20}
+            <ModalContent>
+                <>
+                    <ModalHeader className="flex flex-row justify-between items-center gap-1">
+                        <h1 className="text-[#1D2939] font-bold text-lg">
+                            Delete User
+                        </h1>
+                        <button
+                            className="w-[32px] h-[32px] rounded-full flex items-center justify-center transition-all duration-300 ease-in-out hover:bg-[#F2F4F7]"
+                            onClick={onClose}
+                        >
+                            <Image
+                                src="/icons/cancel.svg"
+                                alt="Cancel"
+                                width={20}
+                                height={20}
+                            />
+                        </button>
+                    </ModalHeader>
+                    <ModalBody >
+                        <span className="text-sm font-normal text-[#667085]">Deleting the user will permanently remove all their data from the platform, including their account, activity, and content.</span>
+                        <div className="flex flex-col gap-1">
+                            <span className="font-semibold text-sm text-[#1D2939]">To confirm, please enter the name of the user.</span>
+                            <div className='flex px-2 items-center h-[40px] border border-solid border-[#D0D5DD] shadow-sm rounded-md'>
+                                <input
+                                    className="font-normal text-[#667085] w-full text-sm placeholder:text-[#A1A1A1] rounded-md px-1 py-1 focus:outline-none focus:ring-0 border-none"
+                                    type="text"
+                                    placeholder={name}
+                                    value={confirmedName}
+                                    onChange={(e) => setConfirmedName(e.target.value)}
                                 />
-                            </button>
-                        </ModalHeader>
-                        <ModalBody >
-                            <span className="text-sm font-normal text-[#667085]">
-                                Are you sure you want to delete this message? This action cannot be undone.</span>
-
-                        </ModalBody>
-                        <ModalFooter className="border-t border-lightGrey">
-                            <Button variant="light" className="py-[0.625rem] px-6 border-2  border-solid border-[#EAECF0] font-semibold text-sm text-[#1D2939] rounded-md hover:bg-[#F2F4F7]" onClick={() => setDeleteDialog(false)} >Cancel</Button>
-                            <Button className={`py-[0.625rem] px-6 text-white font-semibold shadow-inner-button  hover:bg-[#B0201A] bg-[#BB241A] border border-white rounded-md`} onClick={() => setDeleteDialog(false)}>Delete</Button>
-                        </ModalFooter>
-                    </>
-                </ModalContent>
-            </Modal >
+                            </div>
+                        </div>
+                    </ModalBody>
+                    <ModalFooter className="border-t border-lightGrey">
+                        <Button variant="light" className="py-[0.625rem] px-6 border-2  border-solid border-[#EAECF0] font-semibold text-sm text-[#1D2939] rounded-md hover:bg-[#F2F4F7]" onClick={onClose} >Cancel</Button>
+                        <Button className={`py-[0.625rem] px-6 text-white font-semibold shadow-inner-button  ${!isFormValid ? 'bg-[#ec6d64f8]' : 'hover:bg-[#B0201A] bg-[#BB241A]'} border border-white rounded-md`} onClick={handleDeleteUser} disabled={!isFormValid}>Delete User</Button>
+                    </ModalFooter>
+                </>
+            </ModalContent>
+        </Modal >
         </div >
     );
 }

@@ -2,8 +2,7 @@ import { auth, db } from "@/firebase";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
 import Image from "next/image";
 import React, { useState, useEffect, useRef } from "react";
-import { PopoverContent, PopoverTrigger, Popover } from '@nextui-org/popover';
-import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button } from "@nextui-org/react";
+
 interface DisscusionDisplayProps {
     message: string;
     userId: string;
@@ -53,8 +52,6 @@ function getTimeAgo(timestamp: string): string {
 function DiscussionDisplay({ message, userId, timestamp, messageId, isAdmin, courseId, sectionId, contentId, upvotes }: DisscusionDisplayProps) {
     const [sender, setSenderData] = useState<UserData | null>(null);
     const [userLoading, setUserLoading] = useState(true);
-    const [popoveropen, setPopoverOpen] = useState(false);
-    const [deletedialog, setDeleteDialog] = useState(false);
     const currentUserId = auth.currentUser?.uid;
     useEffect(() => {
         if (!userId) return;
@@ -156,65 +153,13 @@ function DiscussionDisplay({ message, userId, timestamp, messageId, isAdmin, cou
                             <span className="font-normal text-sm text-[#1D2939] opacity-[50%]">{sender?.userId}</span>
                         </div>
                     </div>
-                    <div className="flex flex-row gap-1 items-center justify-center">
-                        <span className="text-sm font-normal text-[#1D2939] opacity-[50%] flex items-center">
-                            {getTimeAgo(timestamp)}
-                        </span>
-                        <Popover placement="bottom-end"
-                            isOpen={popoveropen}
-                            onOpenChange={(open) => setPopoverOpen(open)}>
-                            <PopoverTrigger>
-                                <button className="w-[32px] h-[32px]  rounded-full flex items-center justify-center transition-all duration-300 ease-in-out hover:bg-[#F2F4F7]"
-                                >
-                                    <button className="min-w-[20px] min-h-[20px] mt-[2px]">
-                                        <Image
-                                            src="/icons/three-dots.svg"
-                                            width={20}
-                                            height={20}
-                                            alt="Three-dots"
-                                        />
-                                    </button>
-                                </button>
-                            </PopoverTrigger>
-                            <PopoverContent className="h-[88px] w-[167px] px-0 border border-solid border-[#EAECF0] bg-[#FFFFFF] rounded-md flex flex-col py-[4px] shadow-lg">
-                                <button
-                                    onClick={() => setPopoverOpen(false)}
-                                    className="flex flex-row h-[40px] w-full px-3 gap-2 hover:bg-[#F2F4F7] items-center">
-
-                                    <Image
-                                        src="/icons/pin-icon.svg"
-                                        width={18}
-                                        height={18}
-                                        alt="Duplicate"
-                                    />
-                                    <span className="text-[#0C111D] text-sm font-medium">Pin</span>
-                                </button>
-                                <button
-                                    onClick={() => {
-                                        setPopoverOpen(false);
-                                        setDeleteDialog(true);
-
-                                    }}
-                                    className="flex flex-row h-[40px] w-full px-3 gap-2 hover:bg-[#FEE4E2] items-center">
-                                    <Image
-                                        src="/icons/delete.svg"
-                                        width={18}
-                                        height={18}
-                                        alt="Delete"
-                                    />
-                                    <span className="text-[#DE3024] text-sm font-medium">Delete message</span>
-                                </button>
-
-                            </PopoverContent>
-                        </Popover>
-                    </div>
-
+                    <span className="text-sm font-normal text-[#1D2939] opacity-[50%] flex items-center">
+                        {getTimeAgo(timestamp)}
+                    </span>
                 </div>
-                <div className="rounded-md  bg-white break-all">
-                    <div className='text-[#3b3b3b]  text-sm font-normal break-all ml-2 mt-1 mr-8' dangerouslySetInnerHTML={{
-                        __html: message || '',
-                    }} />
-                </div>
+                <div className='text-[#3b3b3b] bg-white text-sm font-normal break-all ml-2 mt-1 mr-8' dangerouslySetInnerHTML={{
+                    __html: message || '',
+                }} />
                 {/* <ExpandableText content={message} /> */}
 
                 <div className="flex flex-row gap-6 items-center justify-start ">
@@ -259,39 +204,7 @@ function DiscussionDisplay({ message, userId, timestamp, messageId, isAdmin, cou
                     </button>
                 </div>
             </div>
-            <Modal isOpen={deletedialog} onOpenChange={(isOpen) => !isOpen && setDeleteDialog(false)} hideCloseButton >
-
-                <ModalContent>
-                    <>
-                        <ModalHeader className="flex flex-row justify-between items-center gap-1">
-                            <h1 className="text-[#1D2939] font-bold text-lg">
-                                Delete Message
-                            </h1>
-                            <button
-                                className="w-[32px] h-[32px] rounded-full flex items-center justify-center transition-all duration-300 ease-in-out hover:bg-[#F2F4F7]"
-                                onClick={() => setDeleteDialog(false)}
-                            >
-                                <Image
-                                    src="/icons/cancel.svg"
-                                    alt="Cancel"
-                                    width={20}
-                                    height={20}
-                                />
-                            </button>
-                        </ModalHeader>
-                        <ModalBody >
-                            <span className="text-sm font-normal text-[#667085]">
-                                Are you sure you want to delete this message? This action cannot be undone.</span>
-
-                        </ModalBody>
-                        <ModalFooter className="border-t border-lightGrey">
-                            <Button variant="light" className="py-[0.625rem] px-6 border-2  border-solid border-[#EAECF0] font-semibold text-sm text-[#1D2939] rounded-md hover:bg-[#F2F4F7]" onClick={() => setDeleteDialog(false)} >Cancel</Button>
-                            <Button className={`py-[0.625rem] px-6 text-white font-semibold shadow-inner-button  hover:bg-[#B0201A] bg-[#BB241A] border border-white rounded-md`} onClick={() => setDeleteDialog(false)}>Delete</Button>
-                        </ModalFooter>
-                    </>
-                </ModalContent>
-            </Modal >
-        </div >
+        </div>
     );
 }
 export default DiscussionDisplay;
