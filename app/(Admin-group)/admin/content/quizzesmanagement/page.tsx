@@ -369,6 +369,7 @@ const Quizz = () => {
                                 placeholder="Search"
                                 type="text"
                                 value={searchTerm}
+                                maxLength={50}
                                 onChange={(e) => setSearchTerm(e.target.value)}
                             />
                         </div>
