@@ -3,8 +3,7 @@ import { ReactNode } from 'react';
 import TabComps from '@/components/DashboardComponents/TabComps';
 import Header from "@/components/HeaderComponents/Header";
 import ClientWrapper from "@/components/ClientWrapper";
-import Notification from '@/components/DashboardComponents/NotificationComponents/Notification';
-
+import Notification from '@/components/DashboardComponents/NotificationComponents/Notification'
 interface DashboardGroupProps {
     children: ReactNode;
 }

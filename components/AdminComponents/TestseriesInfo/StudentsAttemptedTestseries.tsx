@@ -15,35 +15,40 @@ import {
 } from "@/components/ui/pagination";
 import { Popover, PopoverContent, PopoverTrigger } from "@nextui-org/popover";
 import Remove from "@/components/AdminComponents/QuizInfoDailogs/Remove";
+import { collection, deleteDoc, doc, Firestore, getDocs, query, setDoc, where } from "firebase/firestore";
+import { db } from "@/firebase";
+import { Modal, ModalBody, ModalContent, ModalFooter, ModalHeader } from "@nextui-org/modal";
+import { Button } from "@nextui-org/button";
+import { toast } from "react-toastify";
+import LoadingData from "@/components/Loading";
 
 // Define types for StudentAttempts data
 interface StudentAttempts {
-    title: string;
-    uniqueId: string;
+    enrollmentDate: string;
     enrollmentType: string;
-    progress: number;
-    enrolledDate: string;
-    expiryDate: string;
+    userId: string;
+    name: string;
+    profilePic: string;
+    isPremium: boolean;
+    displayUserId: string;
+    studentProgress: number;
 }
 
-// Mock fetchStudentAttempts function with types
-const fetchStudentAttempts = async (): Promise<StudentAttempts[]> => {
-    const allStudentAttempts: StudentAttempts[] = [
-        { title: "Alice", uniqueId: "alice#1234", enrollmentType: "Free", progress: 50, enrolledDate: "Dec 1, 2023", expiryDate: "Jun 1, 2024" },
-        { title: "Bob", uniqueId: "bob#5678", enrollmentType: "Paid", progress: 30, enrolledDate: "Nov 15, 2023", expiryDate: "May 15, 2024" },
-        { title: "Charlie", uniqueId: "charlie#9101", enrollmentType: "Free", progress: 75, enrolledDate: "Oct 1, 2023", expiryDate: "Apr 1, 2024" },
-        { title: "Diana", uniqueId: "diana#1121", enrollmentType: "Paid", progress: 100, enrolledDate: "Sep 1, 2023", expiryDate: "Mar 1, 2024" },
-        { title: "Eve", uniqueId: "eve#3141", enrollmentType: "Free", progress: 10, enrolledDate: "Jan 1, 2024", expiryDate: "Jul 1, 2024" },
-        { title: "Frank", uniqueId: "frank#5161", enrollmentType: "Paid", progress: 0, enrolledDate: "Feb 1, 2024", expiryDate: "Aug 1, 2024" },
-        { title: "Grace", uniqueId: "grace#7181", enrollmentType: "Free", progress: 85, enrolledDate: "Jul 15, 2023", expiryDate: "Jan 15, 2024" },
-        { title: "Hank", uniqueId: "hank#9202", enrollmentType: "Paid", progress: 20, enrolledDate: "Dec 10, 2023", expiryDate: "Jun 10, 2024" },
-        { title: "Ivy", uniqueId: "ivy#1233", enrollmentType: "Free", progress: 45, enrolledDate: "Nov 25, 2023", expiryDate: "May 25, 2024" },
-        { title: "Jack", uniqueId: "jack#4567", enrollmentType: "Paid", progress: 100, enrolledDate: "Aug 20, 2023", expiryDate: "Feb 20, 2024" }
-    ];
-    return allStudentAttempts;
-};
+interface StudentsAttemptsProps {
+    testId: string;
+}
 
-function StudentsAttemptedTestseries() {
+// Function to format date string to "Jan 6, 2024" format
+function formatDateString(dateStr: string): string {
+    const date = new Date(dateStr);
+    return date.toLocaleDateString("en-US", {
+        month: 'short',
+        day: 'numeric', 
+        year: 'numeric'
+    });
+}
+
+function StudentsAttemptedTestseries({testId}: StudentsAttemptsProps) {
     const [data, setData] = useState<StudentAttempts[]>([]);
     const [studentAttempts, setStudentAttempts] = useState<StudentAttempts[]>([]);
     const [currentPage, setCurrentPage] = useState(1);
@@ -59,16 +64,108 @@ function StudentsAttemptedTestseries() {
     const [popoveropen2, setPopoveropen2] = useState<number | null>(null);
     const [popoveropen1, setPopoveropen1] = useState(false);
     // Fetch StudentAttempts when component mounts
-    useEffect(() => {
-        const loadStudentAttempts = async () => {
-            setLoading(true);
-            const studentAttempts = await fetchStudentAttempts();
-            setStudentAttempts(studentAttempts);
-            setData(studentAttempts);
+   // Fetch StudentAttempts when component mounts
+   useEffect(() => {
+    const loadStudentsAttempts = async () => {
+        setLoading(true);
+        try {
+            const attemptsRef = collection(db, 'testseries', testId, 'StudentsPurchased');
+            const attemptsSnapshot = await getDocs(attemptsRef);
+            
+            // Group all user IDs to fetch them in a single batch
+            const userIds = new Set(attemptsSnapshot.docs.map(doc => doc.data().userId));
+            
+            // Fetch all user data in a single batch
+            const userDocs = await getDocs(query(collection(db, 'users'), where('__name__', 'in', Array.from(userIds))));
+            
+            // Create a map of user data for quick lookup
+            const userDataMap = new Map();
+            userDocs.forEach(doc => {
+                userDataMap.set(doc.id, doc.data());
+            });
+
+            // Initialize a map to store user progress
+            const userProgressMap = new Map();
+
+            // Calculate progress for each user
+            for (const doc of attemptsSnapshot.docs) {
+                const userId = doc.data().userId;
+                let sectionsWithQuestionsCount = 0;
+                let sectionsWithAttemptsCount = 0;
+
+                // Function to count sections and attempts
+                const countSectionsWithQuestionsAndAttempts = async (path: string) => {
+                    const sectionCollection = collection(db, path);
+                    const sectionSnapshot = await getDocs(sectionCollection);
+
+                    for (const sectionDoc of sectionSnapshot.docs) {
+                        const sectionData = sectionDoc.data();
+
+                        // Count sections with questions or umbrella tests
+                        if ((sectionData.hasQuestions === true && !sectionData.isParentUmbrellaTest) || 
+                            (sectionData.isUmbrellaTest === true && !sectionData.isParentUmbrellaTest)) {
+                            sectionsWithQuestionsCount += 1;
+
+                            // Check attempts for this user
+                            const attemptsCollection = collection(sectionDoc.ref, 'attempts');
+                            const attemptsSnapshot = await getDocs(query(
+                                attemptsCollection,
+                                where('userId', '==', userId)
+                            ));
+
+                            if (attemptsSnapshot.docs.length > 0) {
+                                sectionsWithAttemptsCount += 1;
+                            }
+                        }
+
+                        // Check subsections
+                        await countSectionsWithQuestionsAndAttempts(`${path}/${sectionDoc.id}/sections`);
+                    }
+                };
+
+                // Calculate progress for this user
+                await countSectionsWithQuestionsAndAttempts(`testseries/${testId}/sections`);
+                const progress = sectionsWithQuestionsCount > 0
+                    ? Math.round((sectionsWithAttemptsCount / sectionsWithQuestionsCount) * 100)
+                    : 0;
+
+                userProgressMap.set(userId, progress);
+            }
+
+            // Process attempts data with user info
+            const attemptsData = attemptsSnapshot.docs.map(doc => {
+                const attemptData = doc.data();
+                const userData = userDataMap.get(attemptData.userId) || {};
+                
+                return {
+                    userId: attemptData.userId,
+                    name: userData.name || 'Unknown',
+                    profilePic: userData.profilePic || '',
+                    isPremium: userData.isPremium || false,
+                    displayUserId: userData.userId || '',
+                    enrollmentDate: attemptData.enrollmentDate || '',
+                    enrollmentType: attemptData.enrollmentType || '',
+                    studentProgress: userProgressMap.get(attemptData.userId) || 0
+                };
+            });
+
+            // // Sort by score and assign rankings
+            // attemptsData.sort((a, b) => b.score - a.score);
+            // attemptsData.forEach((attempt, index) => {
+            //     attempt.ranking = index + 1;
+            // });
+
+            setStudentAttempts(attemptsData);
+            setData(attemptsData);
+        } catch (error) {
+            console.error('Error fetching attempts:', error);
+        } finally {
             setLoading(false);
-        };
-        loadStudentAttempts();
-    }, []);
+        }
+    };
+
+    loadStudentsAttempts();
+}, [testId]);
 
     const lastItemIndex = currentPage * itemsPerPage;
     const firstItemIndex = lastItemIndex - itemsPerPage;
@@ -87,6 +184,7 @@ function StudentsAttemptedTestseries() {
     const [uniqueId, setUniqueId] = useState('');
     const [startDate, setStartDate] = useState('');
     const [endDate, setEndDate] = useState('');
+    const [userToRemove, setUserToRemove] = useState('');
 
     const [selectedDate, setSelectedDate] = useState<Date | null>(null); // Store selected date as Date object
 
@@ -98,6 +196,69 @@ function StudentsAttemptedTestseries() {
         key: '',
         direction: null
     });
+
+    
+        const handleRemoveUser = async (userId: string) => {
+            try {
+                const attemptRef = doc(db, 'testseries', testId, 'StudentsPurchased', userId);
+                await deleteDoc(attemptRef);
+                
+                // Update local state to remove the user
+                setStudentAttempts(prev => prev.filter(student => student.userId !== userId));
+                setData(prev => prev.filter(student => student.userId !== userId));
+                
+                // Close the remove dialog
+                closeRemove();
+            } catch (error) {
+                console.error('Error removing user attempt:', error);
+            }
+        };
+
+        const handleAddUser = async (userId: string) => {
+            try {
+                // Query the users collection for the document with matching userId
+                const usersRef = collection(db, 'users');
+                const q = query(usersRef, where('userId', '==', userId));
+                const querySnapshot = await getDocs(q);
+
+                if (querySnapshot.empty) {
+                    console.error('User not found');
+                    return;
+                }
+
+                // Get the first matching document
+                const userDoc = querySnapshot.docs[0];
+                const userData = userDoc.data();
+                // const uniqueId = userData.uniqueId;
+
+                // Add the user to the StudentsPurchased subcollection
+                const studentRef = doc(db, 'testseries', testId, 'StudentsPurchased', userDoc.id);
+                await setDoc(studentRef, {
+                    userId: userDoc.id,
+                    enrollmentDate: new Date().toISOString(),
+                    enrollmentType: 'free',
+                    // uniqueId: uniqueId
+                });
+
+                // Update local state
+                setStudentAttempts(prev => [...prev, {
+                    userId: userDoc.id,
+                    name: userData.name || 'Unknown',
+                    profilePic: userData.profilePic || '',
+                    isPremium: userData.isPremium || false,
+                    displayUserId: userData.userId || '',
+                    enrollmentDate: new Date().toISOString(),
+                    enrollmentType: 'free',
+                    studentProgress: 0
+                }]);
+
+                setPopoveropen(false);
+                setUniqueId('');
+                toast.success('User added successfully');
+            } catch (error) {
+                console.error('Error adding user:', error);
+            }
+        };
 
     const handleClear = () => {
         setSortConfig({ key: '', direction: null }); // Reset sorting
@@ -114,7 +275,7 @@ function StudentsAttemptedTestseries() {
         // Filter by search term
         if (searchTerm) {
             filterStudentsAttempts = filterStudentsAttempts.filter(student =>
-                student.title.toLowerCase().includes(searchTerm.toLowerCase())
+                student.name.toLowerCase().includes(searchTerm.toLowerCase())
             );
         }
 
@@ -126,31 +287,21 @@ function StudentsAttemptedTestseries() {
 
         // Filter by selected date
         if (selectedDate) {
-            const selectedDateString = selectedDate instanceof Date && !isNaN(selectedDate.getTime())
-                ? selectedDate.toLocaleDateString("en-US", { month: 'short', day: 'numeric', year: 'numeric' })
-                : null;
-
-            if (selectedDateString) {
-                filterStudentsAttempts = filterStudentsAttempts.filter(student =>
-                    student.enrolledDate === selectedDateString ||
-                    student.expiryDate === selectedDateString
-                );
-            }
+            filterStudentsAttempts = filterStudentsAttempts.filter(student => {
+            const studentDate = new Date(student.enrollmentDate);
+            return studentDate.toDateString() === selectedDate.toDateString();
+            });
         }
 
         // Sort by studentsAttemptsPublishedDate in ascending order (earliest date first)
         filterStudentsAttempts = filterStudentsAttempts.sort((a, b) => {
             // Parse dates for both enrolled and expiry dates
-            const dateA = new Date(a.enrolledDate).getTime();
-            const dateB = new Date(b.enrolledDate).getTime();
-
-            // Optionally, you can add a secondary sort by expiry date if enrolled dates are the same
-            const expiryDateA = new Date(a.expiryDate).getTime();
-            const expiryDateB = new Date(b.expiryDate).getTime();
+            const dateA = new Date(a.enrollmentDate).getTime();
+            const dateB = new Date(b.enrollmentDate).getTime();
 
             // Handle invalid date values
             if (isNaN(dateA) || isNaN(dateB)) {
-                console.error("Invalid date value", a.enrolledDate, b.enrolledDate);
+                console.error("Invalid date value", a.enrollmentDate, b.enrollmentDate);
                 return 0;
             }
 
@@ -158,22 +309,22 @@ function StudentsAttemptedTestseries() {
             return dateA - dateB;
         });
 
-        if (sortConfig.key && sortConfig.direction) {
-            filterStudentsAttempts = filterStudentsAttempts.sort((a, b) => {
-                if (sortConfig.key === 'progress') {
-                    return sortConfig.direction === 'asc'
-                        ? a.progress - b.progress
-                        : b.progress - a.progress;
-                } else if (sortConfig.key === 'enrolledDate' || sortConfig.key === 'expiryDate') {
-                    const dateA = new Date(a[sortConfig.key]).getTime();
-                    const dateB = new Date(b[sortConfig.key]).getTime();
-                    return sortConfig.direction === 'asc'
-                        ? dateA - dateB
-                        : dateB - dateA;
-                }
-                return 0;
-            });
-        }
+        // if (sortConfig.key && sortConfig.direction) {
+        //     filterStudentsAttempts = filterStudentsAttempts.sort((a, b) => {
+        //         if (sortConfig.key === 'progress') {
+        //             return sortConfig.direction === 'asc'
+        //                 ? a.progress - b.progress
+        //                 : b.progress - a.progress;
+        //         } else if (sortConfig.key === 'enrolledDate' || sortConfig.key === 'expiryDate') {
+        //             const dateA = new Date(a[sortConfig.key]).getTime();
+        //             const dateB = new Date(b[sortConfig.key]).getTime();
+        //             return sortConfig.direction === 'asc'
+        //                 ? dateA - dateB
+        //                 : dateB - dateA;
+        //         }
+        //         return 0;
+        //     });
+        // }
 
         // Update state with filtered and sorted StudentsAttempts
         setData(filterStudentsAttempts);
@@ -213,11 +364,15 @@ function StudentsAttemptedTestseries() {
         : "Select dates";
 
     // Check if all fields are filled
-    const isAddButtonDisabled = !uniqueId || !startDate || !endDate;
+    const isAddButtonDisabled = !uniqueId ;
 
     const handlePopoverOpen = (index: number) => {
         setPopoveropen2(index);
     };
+
+    if(loading) {
+        return <LoadingData />
+    }
 
     return (
         <div className="flex flex-col w-full pt-4 gap-4">
@@ -287,7 +442,7 @@ function StudentsAttemptedTestseries() {
                         <PopoverTrigger>
                             <button className="h-[44px] w-[105px] rounded-md bg-[#FFFFFF] border border-solid border-[#D0D5DD] flex items-center justify-center gap-2 outline-none">
                                 <span className="font-medium text-sm text-[#667085] ml-2">
-                                    {enrollmentFilter || "Sort By"}
+                                    {enrollmentFilter ? enrollmentFilter.charAt(0).toUpperCase() + enrollmentFilter.slice(1) : "Sort By"}
                                 </span>
                                 <Image
                                     src="/icons/chevron-down-dark-1.svg"
@@ -301,30 +456,30 @@ function StudentsAttemptedTestseries() {
                             <div
                                 className="flex flex-row items-center w-full my-0 py-[0.625rem] px-4 gap-2 cursor-pointer transition-colors hover:bg-[#F2F4F7]"
                                 onClick={() => {
-                                    setEnrollmentFilter('Free');
+                                    setEnrollmentFilter('free');
                                     setSortConfig({ key: '', direction: null });
                                     setPopoveropen1(false); // Explicitly close the popover
                                 }}
                             >
-                                <p className={`text-sm ${enrollmentFilter === 'Free' ? 'font-medium text-purple' : 'font-normal text-[#0C111D]'}`}>
+                                <p className={`text-sm ${enrollmentFilter === 'free' ? 'font-medium text-purple' : 'font-normal text-[#0C111D]'}`}>
                                     Free
                                 </p>
-                                {enrollmentFilter === 'Free' && (
+                                {enrollmentFilter === 'free' && (
                                     <Image src="/icons/check.svg" width={16} height={16} alt="Selected" />
                                 )}
                             </div>
                             <div
                                 className="flex flex-row items-center w-full my-0 py-[0.625rem] px-4 gap-2 cursor-pointer transition-colors hover:bg-[#F2F4F7]"
                                 onClick={() => {
-                                    setEnrollmentFilter('Paid');
+                                    setEnrollmentFilter('paid');
                                     setSortConfig({ key: '', direction: null });
                                     setPopoveropen1(false); // Explicitly close the popover
                                 }}
                             >
-                                <p className={`text-sm ${enrollmentFilter === 'Paid' ? 'font-medium text-purple' : 'font-normal text-[#0C111D]'}`}>
+                                <p className={`text-sm ${enrollmentFilter === 'paid' ? 'font-medium text-purple' : 'font-normal text-[#0C111D]'}`}>
                                     Paid
                                 </p>
-                                {enrollmentFilter === 'Paid' && (
+                                {enrollmentFilter === 'paid' && (
                                     <Image src="/icons/check.svg" width={16} height={16} alt="Selected" />
                                 )}
                             </div>
@@ -342,7 +497,7 @@ function StudentsAttemptedTestseries() {
                         </PopoverContent>
                     </Popover>
 
-                    {/* <Popover placement="bottom-end"
+                    <Popover placement="bottom-end"
                         isOpen={popoveropen}
                         onOpenChange={() => setPopoveropen(!popoveropen)} >
                         <PopoverTrigger>
@@ -363,32 +518,6 @@ function StudentsAttemptedTestseries() {
                                         onChange={(e) => setUniqueId(e.target.value)}
                                     />
                                 </div>
-                                <div className="flex flex-col items-start gap-2">
-                                    <p>Start Date</p>
-                                    <div className="flex flex-row w-full px-3 py-2 gap-2 border border-[#D0D5DD] rounded-md">
-                                        <Image src='/icons/calendar-03.svg' alt="date" width={24} height={24} />
-                                        <input
-                                            type="text"
-                                            placeholder="Enter Start Date"
-                                            className="w-full outline-none placeholder:text-sm placeholder:text-[#667085]"
-                                            value={startDate}
-                                            onChange={(e) => setStartDate(e.target.value)}
-                                        />
-                                    </div>
-                                </div>
-                                <div className="flex flex-col items-start gap-2">
-                                    <p>End Date</p>
-                                    <div className="flex flex-row w-full px-3 py-2 gap-2 border border-[#D0D5DD] rounded-md">
-                                        <Image src='/icons/calendar-03.svg' alt="date" width={24} height={24} />
-                                        <input
-                                            type="text"
-                                            placeholder="Enter End Date"
-                                            className="w-full outline-none placeholder:text-sm placeholder:text-[#667085]"
-                                            value={endDate}
-                                            onChange={(e) => setEndDate(e.target.value)}
-                                        />
-                                    </div>
-                                </div>
                             </div>
                             <div className="flex flex-row justify-between gap-4">
                                 <button className="w-[120px] px-6 py-[0.625rem] h-11 text-sm text-[#1D2939] font-semibold border border-lightGrey rounded-md hover:bg-[#F2F4F7]"
@@ -400,13 +529,13 @@ function StudentsAttemptedTestseries() {
                                                     bg-[#9012FF] border-[#800EE2] text-white 
                                                     ${isAddButtonDisabled ? 'opacity-35 cursor-not-allowed' : 'opacity-100'}`}
                                     disabled={isAddButtonDisabled}
-                                    onClick={() => { setPopoveropen(false); }}>
+                                    onClick={() => { handleAddUser(uniqueId);}}>
                                     Add
                                 </button>
                             </div>
 
                         </PopoverContent>
-                    </Popover> */}
+                    </Popover>
                 </div>
             </div>
 
@@ -419,13 +548,13 @@ function StudentsAttemptedTestseries() {
                                     <span className="text-[#667085] font-medium text-sm">Name</span>
                                     <Image src="/icons/expandall.svg" width={28} height={18} alt="Expand all icon" />
                                 </th>
-                                <th className=" w-[17%] text-center px-8 py-4 text-[#667085] font-medium text-sm">
+                                <th className=" w-[22%] text-center px-8 py-4 text-[#667085] font-medium text-sm">
                                     <div className="flex flex-row justify-center gap-1">
                                         <p>Enrollment Type</p>
                                         <Image src='/icons/unfold-more-round.svg' alt="" width={16} height={16} />
                                     </div>
                                 </th>
-                                <th className=" w-[17%] text-center px-8 py-4 text-[#667085] font-medium text-sm cursor-pointer"
+                                <th className=" w-[22%] text-center px-8 py-4 text-[#667085] font-medium text-sm cursor-pointer"
                                     onClick={() => handleSort('progress')}
                                 >
                                     <div className="flex flex-row justify-center gap-1">
@@ -433,7 +562,7 @@ function StudentsAttemptedTestseries() {
                                         <Image src='/icons/unfold-more-round.svg' alt="" width={16} height={16} />
                                     </div>
                                 </th>
-                                <th className=" w-[17%] text-center px-8 py-4 text-[#667085] font-medium text-sm cursor-pointer"
+                                <th className=" w-[22%] text-center px-8 py-4 text-[#667085] font-medium text-sm cursor-pointer"
                                     onClick={() => handleSort('enrolledDate')}
                                 >
                                     <div className="flex flex-row justify-center gap-1">
@@ -441,14 +570,7 @@ function StudentsAttemptedTestseries() {
                                         <Image src='/icons/unfold-more-round.svg' alt="" width={16} height={16} />
                                     </div>
                                 </th>
-                                <th className=" w-[17%] text-center px-8 py-4 rounded-tr-xl text-[#667085] font-medium text-sm cursor-pointer"
-                                    onClick={() => handleSort('expiryDate')}
-                                >
-                                    <div className="flex flex-row justify-center gap-1">
-                                        <p>Expiry Date</p>
-                                        <Image src='/icons/unfold-more-round.svg' alt="" width={16} height={16} />
-                                    </div>
-                                </th>
+                              
                                 <th className="w-[12%] text-center px-8 py-4 rounded-tr-xl text-[#667085] font-medium text-sm">Action</th>
                             </tr>
                         </thead>
@@ -460,20 +582,19 @@ function StudentsAttemptedTestseries() {
                                             <div className="flex flex-row ml-8 gap-2">
                                                 <div className="flex items-center">
                                                     <div className="relative">
-                                                        <Image src='/images/DP_Lion.svg' alt="DP" width={40} height={40} />
-                                                        <Image className="absolute right-0 bottom-0" src='/icons/winnerBatch.svg' alt="Batch" width={18} height={18} />
+                                                       <Image className="rounded-full w-10 h-10" src={students.profilePic || '/images/DP_Lion.svg'} alt="DP" width={40} height={40} />
+                                                     {students.isPremium && <Image className="absolute right-0 bottom-0" src='/icons/winnerBatch.svg' alt="Batch" width={18} height={18} />}
                                                     </div>
                                                 </div>
                                                 <div className="flex items-start justify-start flex-col">
-                                                    <div className="font-semibold">{students.title}</div>
-                                                    <div className="flex justify-start items-start text-[13px] text-[#667085]">{students.uniqueId}</div>
+                                                    <div className="font-semibold">{students.name}</div>
+                                                    <div className="flex justify-start items-start text-[13px] text-[#667085]">{students.displayUserId}</div>
                                                 </div>
                                             </div>
                                         </td>
-                                        <td className="px-8 py-4 text-center text-[#101828] text-sm">{students.enrollmentType}</td>
-                                        <td className="px-8 py-4 text-center text-[#101828] text-sm">{students.progress}%</td>
-                                        <td className="px-8 py-4 text-center text-[#101828] text-sm">{students.enrolledDate}</td>
-                                        <td className="px-8 py-4 text-center text-[#101828] text-sm">{students.expiryDate}</td>
+                                        <td className="px-8 py-4 text-center text-[#101828] text-sm">{students.enrollmentType.charAt(0).toUpperCase() + students.enrollmentType.slice(1).toLowerCase()}</td>
+                                        <td className="px-8 py-4 text-center text-[#101828] text-sm">{students.studentProgress || 0}%</td>
+                                        <td className="px-8 py-4 text-center text-[#101828] text-sm">{formatDateString(students.enrollmentDate)}</td>
                                         <td className="flex items-center justify-center px-8 py-4 text-[#101828] text-sm">
                                             <Popover placement="bottom-end"
                                                 isOpen={popoveropen2 === index}
@@ -494,14 +615,16 @@ function StudentsAttemptedTestseries() {
                                                     </button>
                                                 </PopoverTrigger>
                                                 <PopoverContent className="w-[10.438rem] py-1 px-0 bg-white border border-lightGrey rounded-md">
-                                                    <button className="flex flex-row items-center justify-start w-full py-[0.625rem] px-4 gap-2 hover:bg-[#F2F4F7] outline-none">
+                                                    <button className="flex flex-row items-center justify-start w-full py-[0.625rem] px-4 gap-2 hover:bg-[#F2F4F7] outline-none"
+                                                     onClick={() => handleTabClick(`/admin/userdatabase/${students.name.toLowerCase().replace(/\s+/g, '-')}?uId=${students.userId}`)}>
                                                         <Image src='/icons/user-account.svg' alt="user profile" width={18} height={18} />
                                                         <p className="text-sm text-[#0C111D] font-normal">Go to Profile</p>
                                                     </button>
                                                     <button className=" flex flex-row items-center justify-start w-full py-[0.625rem] px-4 gap-2 hover:bg-[#FEE4E2] outline-none"
                                                         onClick={() => {
-                                                            { setIsRemoveOpen(true) };
+                                                            setIsRemoveOpen(true);
                                                             setPopoveropen2(null);
+                                                            setUserToRemove(students.userId);
                                                         }}>
                                                         <Image src='/icons/delete.svg' alt="user profile" width={18} height={18} />
                                                         <p className="text-sm text-[#DE3024] font-normal">Remove</p>
@@ -543,7 +666,38 @@ function StudentsAttemptedTestseries() {
                     </div>
                 </div>
             </div>
-            {isRemoveOpen && < Remove onClose={() => setIsRemoveOpen(false)} open={isRemoveOpen} />}
+            {/* {isRemoveOpen && < Remove onClose={() => setIsRemoveOpen(false)} open={isRemoveOpen} />} */}
+            <Modal isOpen={isRemoveOpen} onOpenChange={(isOpen) => !isOpen && setIsRemoveOpen(false)} hideCloseButton >
+            <ModalContent>
+                <>
+                    <ModalHeader className="flex flex-row justify-between items-center gap-1">
+                        <h3 className=" font-bold task-[#1D2939]">Remove user from this testseries?</h3>
+                        <button
+                            className="w-[32px] h-[32px] rounded-full flex items-center justify-center transition-all duration-300 ease-in-out hover:bg-[#F2F4F7]"
+                            onClick={() => setIsRemoveOpen(false)}
+                        >
+                            <Image
+                                src="/icons/cancel.svg"
+                                alt="Cancel"
+                                width={20}
+                                height={20}
+                            />
+                        </button>
+                    </ModalHeader>
+                    <ModalBody >
+                        <p className="pb-2 text-sm font-normal text-[#667085]">Lorem ipsum is placeholder text commonly used</p>
+                    </ModalBody>
+                    <ModalFooter className="border-t border-lightGrey">
+                        <Button
+                            className="py-[0.625rem] px-6 border border-solid border-[#EAECF0] bg-white font-semibold text-sm text-[#1D2939] rounded-md hover:bg-[#F2F4F7]"
+                            onClick={() => setIsRemoveOpen(false)}
+                        >Cancel
+                        </Button>
+                        <Button onClick={() => handleRemoveUser(userToRemove)} className="py-[0.625rem] px-6 text-white shadow-inner-button bg-[#BB241A] border border-[#DE3024] hover:bg-[#B0201A] font-semibold rounded-md">Remove</Button>
+                    </ModalFooter>
+                </>
+            </ModalContent>
+            </Modal >
         </div>
     );
 }
@@ -667,3 +821,4 @@ function PaginationSection({
 }
 
 export default StudentsAttemptedTestseries;
+

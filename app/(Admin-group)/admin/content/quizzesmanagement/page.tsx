@@ -68,7 +68,7 @@ const fetchQuizzes = (callback: (quizzes: Quiz[]) => void) => {
                 const questionsSnapshot = await getDocs(questionsCollection);
                 const questionsCount = questionsSnapshot.size;
 
-                const studentsAttemptedCollection = collection(db, 'quiz', quizId, 'studentsAttempted');
+                const studentsAttemptedCollection = collection(db, 'quiz', quizId, 'attempts');
                 const studentsAttemptedSnapshot = await getDocs(studentsAttemptedCollection);
                 const studentsCount = studentsAttemptedSnapshot.size;
 

@@ -8,6 +8,31 @@ import { Tooltip } from "@nextui-org/react";
 import ExitChannel from "@/components/DashboardComponents/CommunityComponents/ExitChannel";
 import MediaDialog from './MediaDialog';
 import { auth } from '@/firebase';
+
+type Chat = {
+    message: string;
+    messageType: string;
+    fileUrl: string;
+    senderId: string;
+    timestamp: any; // Firebase Timestamp
+    chatId: string;
+    fileName: string;
+    fileSize: number;
+    isReplying: boolean;
+    replyingToId: string;
+    replyingToChatId: string;
+    replyingToMsg: string;
+    replyingToMsgType: string;
+    replyingToFileUrl: string;
+    replyingToFileName: string;
+    isDeleted: boolean;
+    adminThatDeletedId: string;
+    isDeletedByAdmin: boolean;
+    isAdmin: boolean;
+    mentions: { userId: string; id: string, isAdmin: boolean, }[];
+  };
+  
+
 type chatHeadProps = {
     channelName: string | null;
     channelId: string | null;
@@ -18,6 +43,7 @@ type chatHeadProps = {
     isAdmin: boolean;
     channelRequests: { id: string, requestDate: string }[];
     members: { id: string, isAdmin: boolean }[] | null;
+    chats: Chat[];
     setSelectedChannel: React.Dispatch<React.SetStateAction<{
         channelId: string;
         channelName: string;
@@ -36,7 +62,7 @@ type chatHeadProps = {
     } | null>>;
 }
 
-function ChatHead({ channelName, channelId, channelEmoji, members, communityId, categoryId, channelDescription, isAdmin, channelRequests, setSelectedChannel }: chatHeadProps) {
+function ChatHead({ channelName, channelId, channelEmoji, members, chats, communityId, categoryId, channelDescription, isAdmin, channelRequests, setSelectedChannel }: chatHeadProps) {
     const [exitchannel, setExitchannel] = useState(false);
     const [isPopoverOpen, setIsPopoverOpen] = useState(false);
     const [isMutePopoverOpen, setIsMutePopoverOpen] = useState(false);
@@ -246,7 +272,7 @@ function ChatHead({ channelName, channelId, channelEmoji, members, communityId, 
             {channelRequestsDialog && <ChannelRequests open={channelRequestsDialog} onClose={() => setChannelRequestsDialog(false)} requestedUsers={channelRequests} communityId={communityId || ''} headingId={categoryId || ''} channelId={channelId || ''} />}
             {deleteDialog && <Delete open={deleteDialog} onClose={() => setDeleteDialog(false)} communityId={communityId || ''} categoryId={categoryId || ''} channelId={channelId || ''} channelName={channelName || ''} setSelectedChannel={setSelectedChannel} />}
             {exitchannel && <ExitChannel open={exitchannel} onClose={() => setExitchannel(false)} communityId={communityId || ''} channelHeadingId={categoryId || ''} channelId={channelId || ''} channelName={channelName || ''} />}
-            {mediaDialog && <MediaDialog isOpen={mediaDialog} setIsOpen={() => setMediaDialog(false)} />}
+            {mediaDialog && <MediaDialog isOpen={mediaDialog} setIsOpen={() => setMediaDialog(false)} chats={chats} />}
 
         </div>
     );

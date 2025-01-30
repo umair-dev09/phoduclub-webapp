@@ -8,6 +8,8 @@ import { auth, db } from "@/firebase";
 import { collection, getDocs, onSnapshot } from "@firebase/firestore";
 import { Progress } from "@nextui-org/progress";
 import DefaultTestseriesView from '@/components/DashboardComponents/HomeComponents/course&testseries/DefaultTestseriesView';
+import MessageLoading from "@/components/MessageLoading";
+import DashboardLoading from "@/components/DashboardLoading";
 
 interface TestData {
   testName: string;
@@ -146,7 +148,11 @@ function TestSeriesComp() {
   };
 
   if (loading) {
-    return <LoadingData />;
+    return (
+         <div className="py-24">
+         <DashboardLoading />
+         </div>
+    );
   }
 
   return (

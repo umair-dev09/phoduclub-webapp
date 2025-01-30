@@ -13,7 +13,7 @@ interface ResumeQuizProps {
   contentId: string;
 }
 
-function ResumeQuiz({ open, onClose, fromContent, contentId }: ResumeQuizProps) { // Use the interface
+function Resume({ open, onClose, fromContent, contentId }: ResumeQuizProps) { // Use the interface
   const onResume = async () => {
 
     // Determine the Firestore collection based on `fromContent`
@@ -24,6 +24,8 @@ function ResumeQuiz({ open, onClose, fromContent, contentId }: ResumeQuizProps) 
           ? "quiz"
           : fromContent === "course"
             ? "course"
+            : fromContent === "notifications"
+                        ? "notifications"
             : null;
 
     if (!collectionPath) {
@@ -104,6 +106,8 @@ function ResumeQuiz({ open, onClose, fromContent, contentId }: ResumeQuizProps) 
                 ? "Quiz"
                 : fromContent === "course"
                   ? "Course"
+                  : fromContent === "notifications"
+                        ? "Notification"
                   : ""}?</h3>
             <button className="w-[32px] h-[32px]  rounded-full flex items-center justify-center transition-all duration-300 ease-in-out hover:bg-[#F2F4F7] ">
               <button className="" onClick={onClose}>
@@ -120,6 +124,8 @@ function ResumeQuiz({ open, onClose, fromContent, contentId }: ResumeQuizProps) 
                 ? "Quiz"
                 : fromContent === "course"
                   ? "Course"
+                  : fromContent === "notifications"
+                        ? "Notification"
                   : ""}?</p>
           </ModalBody>
 
@@ -132,6 +138,8 @@ function ResumeQuiz({ open, onClose, fromContent, contentId }: ResumeQuizProps) 
                 ? "Quiz"
                 : fromContent === "course"
                   ? "Course"
+                  : fromContent === "notifications"
+                        ? "Notification"
                   : ""} live now</Button>
           </ModalFooter>
         </>
@@ -141,4 +149,4 @@ function ResumeQuiz({ open, onClose, fromContent, contentId }: ResumeQuizProps) 
   );
 }
 
-export default ResumeQuiz;
+export default Resume;

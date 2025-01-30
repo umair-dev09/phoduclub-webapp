@@ -690,7 +690,7 @@ function Chatinfo() {
                         key={channel.channelId}
                         className={`ChannelName flex flex-row items-center justify-between pr-3 group rounded-[7px] transition-colors hover:bg-[#F8F0FF] ${selectedChannel?.channelId === channel.channelId ? 'bg-[#F8F0FF]' : 'bg-[#FFFFFF]'}`}
                         onClick={() => {
-                          setSelectedChannel({ ...channel, headingId: heading.headingId });
+                          setSelectedChannel({ ...channel, headingId: heading.headingId});
                           handleRemoveNotification(heading.headingId, channel.channelId);
                         }}
                       >
@@ -746,7 +746,7 @@ function Chatinfo() {
 
             <div className="flex items-center justify-between h-[72px] bg-white border-b border-lightGrey">
               {/* Pass the selected channel info to ChatHead */}
-              <ChatHead isAdmin={true} channelDescription={selectedChannel.channelDescription || ''} communityId={communityId} categoryId={selectedChannel.headingId || ''} channelId={selectedChannel?.channelId ?? null} channelName={selectedChannel?.channelName ?? null} channelEmoji={selectedChannel?.channelEmoji ?? null} channelRequests={selectedChannel.channelRequests || []} setSelectedChannel={setSelectedChannel} members={selectedChannel.members} />
+              <ChatHead chats={chats} isAdmin={true} channelDescription={selectedChannel.channelDescription || ''} communityId={communityId} categoryId={selectedChannel.headingId || ''} channelId={selectedChannel?.channelId ?? null} channelName={selectedChannel?.channelName ?? null} channelEmoji={selectedChannel?.channelEmoji ?? null} channelRequests={selectedChannel.channelRequests || []} setSelectedChannel={setSelectedChannel} members={selectedChannel.members} />
               <div className="flex flex-row mr-4 gap-4">
                 <Popover placement="bottom" isOpen={searchOpen} onClose={() => { setSearchOpen(false); setSearchQuery('') }}>
                   <PopoverTrigger>

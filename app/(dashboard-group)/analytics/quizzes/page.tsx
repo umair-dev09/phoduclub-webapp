@@ -219,6 +219,8 @@ function QuizAnalytics() {
           setSelectedAttemptFilter(filter);
       };
 
+      
+
     return (
         <div className="flex flex-1 flex-col py-6 mx-8">
             <div className="flex flex-row justify-between items-center text-[#1D2939]">
