@@ -45,7 +45,7 @@ function Discussion({ courseId, sectionId, contentId }: DiscussionProps) {
     const [loading, setLoading] = useState(true);
     const [showReplyLayout, setShowReplyLayout] = useState(false);
     const [handleReply, setHandleReply] = useState({
-        message: '', senderId: '' , chatId: '' , displayUserId: '', isReplying: false, replyingToMsgId: '', replyingToAdmin: false
+        message: '', senderId: '', chatId: '', displayUserId: '', isReplying: false, replyingToMsgId: '', replyingToAdmin: false
     });
     const isFormValid = value.trim();
 
@@ -90,7 +90,7 @@ function Discussion({ courseId, sectionId, contentId }: DiscussionProps) {
     const handleSendMessage = async () => {
         if (value === '') { return; }
         if (auth.currentUser?.uid) {
-            if(showReplyLayout){
+            if (showReplyLayout) {
                 try {
                     const ref = doc(collection(db, 'course', courseId, 'sections', sectionId, 'content', contentId, 'Disscussion'));
                     const currentUserId = auth.currentUser.uid;
@@ -116,25 +116,25 @@ function Discussion({ courseId, sectionId, contentId }: DiscussionProps) {
                     toast.error('Failed to mark lesson completed');
                 }
             }
-            else{
-            try {
-                const ref = doc(collection(db, 'course', courseId, 'sections', sectionId, 'content', contentId, 'Disscussion'));
-                const currentUserId = auth.currentUser.uid;
-                const disscusionData = {
-                    message: value,
-                    userId: currentUserId,
-                    timestamp: new Date().toISOString(),
-                    messageId: ref.id,
-                    isAdmin: false,
-                };
-                await setDoc(ref, disscusionData);
-                setValue('');
-                toast.success('Message sent!');
-            } catch (error) {
-                console.error('Error updating course document:', error);
-                toast.error('Failed to mark lesson completed');
+            else {
+                try {
+                    const ref = doc(collection(db, 'course', courseId, 'sections', sectionId, 'content', contentId, 'Disscussion'));
+                    const currentUserId = auth.currentUser.uid;
+                    const disscusionData = {
+                        message: value,
+                        userId: currentUserId,
+                        timestamp: new Date().toISOString(),
+                        messageId: ref.id,
+                        isAdmin: false,
+                    };
+                    await setDoc(ref, disscusionData);
+                    setValue('');
+                    toast.success('Message sent!');
+                } catch (error) {
+                    console.error('Error updating course document:', error);
+                    toast.error('Failed to mark lesson completed');
+                }
             }
-        }
         }
     };
 
@@ -200,27 +200,25 @@ function Discussion({ courseId, sectionId, contentId }: DiscussionProps) {
         <div className="flex flex-col overflow-y-auto h-auto  w-auto">
             <span id="discussion-input" className="ml-[24px] mt-[20px] w-[149px] h-[24px] text-1g text-[#1D2939] font-medium">Share your doubts</span>
             {showReplyLayout && (
-            <div className="mx-[24px] mt-[20px] mb-[-12px] flex flex-row items-start gap-4 w-fit h-auto text-sm text-purple font-normal bg-gray-50 border border-gray-200 rounded-md px-4 py-2">
-                <span>
-                Replying to @{handleReply.displayUserId} <div className={`text-[#3b3b3b]  text-sm font-normal break-all `} dangerouslySetInnerHTML={{
-                __html: handleReply.message || '',
-            }} />
-                </span>
-                <button className="mt-[2px]"
-                onClick={() => {
-                    setShowReplyLayout(false);
-                    setHandleReply({ message: '', senderId: '', chatId: '', displayUserId: '', isReplying: false, replyingToMsgId: '', replyingToAdmin: false });
-                }}>
-                <Image
+                <div className="mx-[24px] mt-[20px] mb-[-12px] flex flex-row items-start gap-4 w-fit h-auto text-sm text-purple font-normal bg-gray-50 border border-gray-200 rounded-md px-4 py-2">
+                    <span>
+                        Replying to @{handleReply.displayUserId} <div className={`text-[#3b3b3b] text-sm font-normal break-all line-clamp-1`} dangerouslySetInnerHTML={{
+                            __html: handleReply.message || '',
+                        }} />
+                    </span>
+                    <button className="mt-[2px]"
+                        onClick={() => {
+                            setShowReplyLayout(false);
+                            setHandleReply({ message: '', senderId: '', chatId: '', displayUserId: '', isReplying: false, replyingToMsgId: '', replyingToAdmin: false });
+                        }}>
+                        <Image
                             src="/icons/cancel.svg"
                             alt="cancel icon"
                             width={15}
-                            height={15}                            
-                          />
-                </button>
-              
-            </div>
-
+                            height={15}
+                        />
+                    </button>
+                </div>
             )}
 
             {/* -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- */}
@@ -228,7 +226,7 @@ function Discussion({ courseId, sectionId, contentId }: DiscussionProps) {
             <div className="mr-[24px] mt-[20px] ml-[24px] bg-[#F7F8FB] border border-solid border-[#EAECF0] rounded-[12px] h-auto">
 
                 {/* Textarea for writing the comment */}
-                <div 
+                <div
                     className="bg-[#F7F8FB] border-b border-solid border-b-[#EAECF0] rounded-tl-[12px] rounded-tr-[12px]"
                 >
                     <ReactQuill
@@ -241,7 +239,6 @@ function Discussion({ courseId, sectionId, contentId }: DiscussionProps) {
                         className=" text-[#1D2939] focus:outline-none rounded-b-[12px] break-all custom-quill placeholder:not-italic min-h-[10px] max-h-[150px] overflow-y-auto p-4 border-none not-italic"
                     />
                 </div>
-       
 
                 {/* ---------------------------------------------------------------- */}
                 {/* THIS IS  THE PART WHERE WE CHANGE THE STYLING OF COMMENT AND SEND */}
@@ -315,7 +312,6 @@ function Discussion({ courseId, sectionId, contentId }: DiscussionProps) {
                         </button>
                     </div>
                 </div>
-
             </div>
 
             {/* -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- */}
@@ -325,39 +321,38 @@ function Discussion({ courseId, sectionId, contentId }: DiscussionProps) {
                 <MessageLoading />
             ) : (
                 <>
-                   {discussions
-                    .sort((a, b) => (b.isPinned ? 1 : 0) - (a.isPinned ? 1 : 0))
-                    .filter(message => !message.isReplying)
-                    .map((parentMessage) => {
-                        // Find all replies for this message
-                        const replies = discussions.filter(
-                            reply => reply.isReplying && reply.replyingToMsgId === parentMessage.messageId
-                        ).map(reply => ({
-                            ...reply,
-                            courseId,
-                            sectionId,
-                            contentId,
-                            setShowReplyLayout,
-                            setHandleReply
-                        }));
+                    {discussions
+                        .sort((a, b) => (b.isPinned ? 1 : 0) - (a.isPinned ? 1 : 0))
+                        .filter(message => !message.isReplying)
+                        .map((parentMessage) => {
+                            // Find all replies for this message
+                            const replies = discussions.filter(
+                                reply => reply.isReplying && reply.replyingToMsgId === parentMessage.messageId
+                            ).map(reply => ({
+                                ...reply,
+                                courseId,
+                                sectionId,
+                                contentId,
+                                setShowReplyLayout,
+                                setHandleReply
+                            }));
 
-                        // Only pass replies if there are any
-                        const props = {
-                            ...parentMessage,
-                            courseId,
-                            sectionId,
-                            contentId,
-                            replies: replies.length > 0 ? replies : undefined
-                        };
+                            // Only pass replies if there are any
+                            const props = {
+                                ...parentMessage,
+                                courseId,
+                                sectionId,
+                                contentId,
+                                replies: replies.length > 0 ? replies : undefined
+                            };
 
-                        return (
-                            <div key={parentMessage.messageId}>
-                                <DiscussionDisplay setShowReplyLayout={setShowReplyLayout} setHandleReply={setHandleReply} {...props} />
-                         
-                            </div>
-                        );
-                    })
-                }
+                            return (
+                                <div key={parentMessage.messageId}>
+                                    <DiscussionDisplay setShowReplyLayout={setShowReplyLayout} setHandleReply={setHandleReply} {...props} />
+                                </div>
+                            );
+                        })
+                    }
 
                 </>
             )}
