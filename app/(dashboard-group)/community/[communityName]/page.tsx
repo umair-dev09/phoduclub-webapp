@@ -348,9 +348,6 @@ export default function CommunityName() {
     }
   };
 
-
-
-
   // Scroll to the last message immediately after chats are updated
   const initialLoadRef = useRef(true); // Tracks if the user just selected a channel
 
@@ -548,8 +545,6 @@ export default function CommunityName() {
       setShowScrollButton(false);
     }
   };
-
-
 
   useEffect(() => {
     setIsMounted(true);
