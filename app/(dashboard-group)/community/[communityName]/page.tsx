@@ -66,6 +66,20 @@ type Chat = {
   mentions: { userId: string; id: string, isAdmin: boolean, }[];
 };
 
+interface chatHeadProps {
+  isAdmin: boolean;
+  channelId: string | null;
+  channelName: string | null;
+  channelEmoji: string | null;
+  communityId: string | null;
+  categoryId: string;
+  channelDescription: string;
+  channelRequests: { id: string; requestDate: string; }[];
+  setSelectedChannel: React.Dispatch<React.SetStateAction<any>>;
+  members: { id: string; isAdmin: boolean; }[] | null;
+  chats: Chat[]; // Make sure this matches your Chat type
+}
+
 export default function CommunityName() {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -128,177 +142,177 @@ export default function CommunityName() {
     return () => unsubscribe();
   }, [router]);
 
- 
-useEffect(() => {
-  if (!user || !communityId || !auth.currentUser) return;
 
-  const currentUser = auth.currentUser;
-  const channelListeners: { [headingId: string]: () => void } = {};
+  useEffect(() => {
+    if (!user || !communityId || !auth.currentUser) return;
 
-  // Listen to headings
-  const unsubscribeHeadings = onSnapshot(
-    collection(db, `communities/${communityId}/channelsHeading`),
-    async (headingsSnapshot) => {
-      const headingsData = new Map<string, { headingName: string }>();
+    const currentUser = auth.currentUser;
+    const channelListeners: { [headingId: string]: () => void } = {};
 
-      // Store heading data
-      headingsSnapshot.docs.forEach((doc) => {
-        headingsData.set(doc.id, { headingName: doc.data().headingName });
-      });
+    // Listen to headings
+    const unsubscribeHeadings = onSnapshot(
+      collection(db, `communities/${communityId}/channelsHeading`),
+      async (headingsSnapshot) => {
+        const headingsData = new Map<string, { headingName: string }>();
 
-      // Clean up listeners for removed headings
-      Object.keys(channelListeners).forEach((headingId) => {
-        if (!headingsData.has(headingId)) {
-          channelListeners[headingId]();
-          delete channelListeners[headingId];
-        }
-      });
+        // Store heading data
+        headingsSnapshot.docs.forEach((doc) => {
+          headingsData.set(doc.id, { headingName: doc.data().headingName });
+        });
 
-      const notifications: { [key: string]: boolean } = {};
-
-      // Set up or update channel listeners for each heading
-      await Promise.all(
-        headingsSnapshot.docs.map(async (headingDoc) => {
-          const headingId = headingDoc.id;
-          const headingData = headingDoc.data();
-
-          // Fetch channels for each heading
-          if (!channelListeners[headingId]) {
-            const channelsRef = collection(
-              db,
-              `communities/${communityId}/channelsHeading/${headingId}/channels`
-            );
-
-            channelListeners[headingId] = onSnapshot(channelsRef, async (channelsSnapshot) => {
-              const channels: Channel[] = channelsSnapshot.docs.map((channelDoc) => {
-                const channelData = channelDoc.data();
-
-                // Determine notification status for current user
-                const notificationKey = `${headingId}-${channelDoc.id}`;
-                notifications[notificationKey] = channelData.channelNotification?.includes(
-                  currentUser.uid
-                );
-
-                return {
-                  channelId: channelDoc.id,
-                  channelName: channelData.channelName,
-                  channelDescription: channelData.channelDescription,
-                  channelEmoji: channelData.channelEmoji,
-                  members: channelData.members || [],
-                  channelRequests: channelData.channelRequests || [],
-                  declinedRequests: channelData.declinedRequests || [],
-                };
-              });
-
-              // Update channelHeadings state while preserving other headings
-              setChannelHeadings((prevHeadings) => {
-                const updatedHeadings = prevHeadings.filter(
-                  (h) => h.headingId !== headingId
-                );
-                return [
-                  ...updatedHeadings,
-                  {
-                    headingId,
-                    headingName: headingData.headingName,
-                    channels,
-                  },
-                ].sort((a, b) => a.headingName.localeCompare(b.headingName));
-              });
-
-              // Update notification status after processing channels
-              setNotificationStatus((prev) => ({
-                ...prev,
-                ...notifications,
-              }));
-            });
+        // Clean up listeners for removed headings
+        Object.keys(channelListeners).forEach((headingId) => {
+          if (!headingsData.has(headingId)) {
+            channelListeners[headingId]();
+            delete channelListeners[headingId];
           }
-        })
-      );
-    }
-  );
+        });
 
-  // Cleanup function
-  return () => {
-    unsubscribeHeadings();
-    Object.values(channelListeners).forEach((unsubscribe) => unsubscribe());
-  };
-}, [user, communityId]);
+        const notifications: { [key: string]: boolean } = {};
+
+        // Set up or update channel listeners for each heading
+        await Promise.all(
+          headingsSnapshot.docs.map(async (headingDoc) => {
+            const headingId = headingDoc.id;
+            const headingData = headingDoc.data();
+
+            // Fetch channels for each heading
+            if (!channelListeners[headingId]) {
+              const channelsRef = collection(
+                db,
+                `communities/${communityId}/channelsHeading/${headingId}/channels`
+              );
+
+              channelListeners[headingId] = onSnapshot(channelsRef, async (channelsSnapshot) => {
+                const channels: Channel[] = channelsSnapshot.docs.map((channelDoc) => {
+                  const channelData = channelDoc.data();
+
+                  // Determine notification status for current user
+                  const notificationKey = `${headingId}-${channelDoc.id}`;
+                  notifications[notificationKey] = channelData.channelNotification?.includes(
+                    currentUser.uid
+                  );
+
+                  return {
+                    channelId: channelDoc.id,
+                    channelName: channelData.channelName,
+                    channelDescription: channelData.channelDescription,
+                    channelEmoji: channelData.channelEmoji,
+                    members: channelData.members || [],
+                    channelRequests: channelData.channelRequests || [],
+                    declinedRequests: channelData.declinedRequests || [],
+                  };
+                });
+
+                // Update channelHeadings state while preserving other headings
+                setChannelHeadings((prevHeadings) => {
+                  const updatedHeadings = prevHeadings.filter(
+                    (h) => h.headingId !== headingId
+                  );
+                  return [
+                    ...updatedHeadings,
+                    {
+                      headingId,
+                      headingName: headingData.headingName,
+                      channels,
+                    },
+                  ].sort((a, b) => a.headingName.localeCompare(b.headingName));
+                });
+
+                // Update notification status after processing channels
+                setNotificationStatus((prev) => ({
+                  ...prev,
+                  ...notifications,
+                }));
+              });
+            }
+          })
+        );
+      }
+    );
+
+    // Cleanup function
+    return () => {
+      unsubscribeHeadings();
+      Object.values(channelListeners).forEach((unsubscribe) => unsubscribe());
+    };
+  }, [user, communityId]);
 
 
-// Second useEffect to handle ONLY selected channel updates
-useEffect(() => {
-  if (!selectedChannel?.channelId || !selectedChannel.headingId || !communityId) return;
+  // Second useEffect to handle ONLY selected channel updates
+  useEffect(() => {
+    if (!selectedChannel?.channelId || !selectedChannel.headingId || !communityId) return;
 
-  const channelRef = doc(
-    db,
-    `communities/${communityId}/channelsHeading/${selectedChannel.headingId}/channels/${selectedChannel.channelId}`
-  );
+    const channelRef = doc(
+      db,
+      `communities/${communityId}/channelsHeading/${selectedChannel.headingId}/channels/${selectedChannel.channelId}`
+    );
 
-  const unsubscribeSelectedChannel = onSnapshot(channelRef, (channelDoc) => {
-    if (channelDoc.exists()) {
-      const channelData = channelDoc.data();
-      setSelectedChannel(current => {
-        // Only update if this is still the selected channel
-        if (current?.channelId === selectedChannel.channelId) {
-          return {
-            ...current,
-            channelName: channelData.channelName,
-            channelEmoji: channelData.channelEmoji,
-            members: channelData.members,
-            channelRequests: channelData.channelRequests,
-            declinedRequests: channelData.declinedRequests,
-          };
-        }
-        return current;
-      });
-    }
-  });
+    const unsubscribeSelectedChannel = onSnapshot(channelRef, (channelDoc) => {
+      if (channelDoc.exists()) {
+        const channelData = channelDoc.data();
+        setSelectedChannel(current => {
+          // Only update if this is still the selected channel
+          if (current?.channelId === selectedChannel.channelId) {
+            return {
+              ...current,
+              channelName: channelData.channelName,
+              channelEmoji: channelData.channelEmoji,
+              members: channelData.members,
+              channelRequests: channelData.channelRequests,
+              declinedRequests: channelData.declinedRequests,
+            };
+          }
+          return current;
+        });
+      }
+    });
 
-  return () => {
-    unsubscribeSelectedChannel();
-  };
-}, [communityId, selectedChannel?.channelId, selectedChannel?.headingId]);
+    return () => {
+      unsubscribeSelectedChannel();
+    };
+  }, [communityId, selectedChannel?.channelId, selectedChannel?.headingId]);
 
-// Third useEffect for selected channel's chats (remains the same as before)
-useEffect(() => {
-  if (!selectedChannel?.channelId || !selectedChannel.headingId || !communityId) return;
+  // Third useEffect for selected channel's chats (remains the same as before)
+  useEffect(() => {
+    if (!selectedChannel?.channelId || !selectedChannel.headingId || !communityId) return;
 
-  const chatsRef = collection(
-    db,
-    `communities/${communityId}/channelsHeading/${selectedChannel.headingId}/channels/${selectedChannel.channelId}/chats`
-  );
-  const q = query(chatsRef, orderBy('timestamp', 'asc'));
+    const chatsRef = collection(
+      db,
+      `communities/${communityId}/channelsHeading/${selectedChannel.headingId}/channels/${selectedChannel.channelId}/chats`
+    );
+    const q = query(chatsRef, orderBy('timestamp', 'asc'));
 
-  const unsubscribeChats = onSnapshot(q, (snapshot) => {
-    if (selectedChannel?.channelId) {
-      const chatData = snapshot.docs.map((doc) => doc.data()) as Chat[];
-      setChats(chatData);
-    }
-  });
+    const unsubscribeChats = onSnapshot(q, (snapshot) => {
+      if (selectedChannel?.channelId) {
+        const chatData = snapshot.docs.map((doc) => doc.data()) as Chat[];
+        setChats(chatData);
+      }
+    });
 
-  return () => {
-    setChats([]);
-    unsubscribeChats();
-  };
-}, [communityId, selectedChannel?.channelId, selectedChannel?.headingId]);
-// Fourth useEffect to handle group data
-useEffect(() => {
-  if (!user || !communityId) return;
+    return () => {
+      setChats([]);
+      unsubscribeChats();
+    };
+  }, [communityId, selectedChannel?.channelId, selectedChannel?.headingId]);
+  // Fourth useEffect to handle group data
+  useEffect(() => {
+    if (!user || !communityId) return;
 
-  const groupDocRef = doc(db, `communities/${communityId}`);
-  const unsubscribe = onSnapshot(groupDocRef, (groupSnapshot) => {
-    if (groupSnapshot.exists()) {
-      const data = groupSnapshot.data() as GroupData;
-      setGroupData(data);
-    } else {
-      console.error('No group data found!');
-      setError(true);
-    }
-    setLoading(false);
-  });
+    const groupDocRef = doc(db, `communities/${communityId}`);
+    const unsubscribe = onSnapshot(groupDocRef, (groupSnapshot) => {
+      if (groupSnapshot.exists()) {
+        const data = groupSnapshot.data() as GroupData;
+        setGroupData(data);
+      } else {
+        console.error('No group data found!');
+        setError(true);
+      }
+      setLoading(false);
+    });
 
-  return () => unsubscribe();
-}, [user, communityId]);
+    return () => unsubscribe();
+  }, [user, communityId]);
 
   const handleChannelRequest = async () => {
     if (!selectedChannel || !user?.uid) return;
@@ -373,50 +387,50 @@ useEffect(() => {
         // User's own message or already near bottom - scroll smoothly
         scrollToBottom('smooth');
       }
-    //   const fetchNotifications = async () => {
-    //   if (!currentUserId) return;
-  
-    //   try {
-    //     // Reference to the channel document in Firestore
-    //     const channelRef = doc(
-    //       db,
-    //       `communities/${communityId}/channelsHeading/${selectedChannel?.headingId}/channels/${selectedChannel?.channelId}`
-    //     );
-    
-    //     // Get current channel data
-    //     const channelSnap = await getDoc(channelRef);
-    
-    //     if (channelSnap.exists()) {
-    //       const channelData = channelSnap.data();
-    //       const channelNotification = channelData.channelNotification || [];
-    
-    //       // Remove the currentUserId from the channelNotification array
-    //       const updatedChannelNotification = channelNotification.filter(
-    //         (userId: string) => userId !== currentUserId
-    //       );
-    
-    //       // Update the Firestore document with the new channelNotification array
-    //       await updateDoc(channelRef, {
-    //         channelNotification: updatedChannelNotification,
-    //       });
-    
-    //       // Update the local notificationStatus state to reflect this change
-    //       setNotificationStatus((prevStatus) => {
-    //         const updatedStatus = { ...prevStatus };
-    //         const notificationKey = `${selectedChannel?.headingId}-${selectedChannel?.channelId}`;
-    //         delete updatedStatus[notificationKey]; // Remove the entry for the specific channel
-    //         return updatedStatus;
-    //       });
-    
-    //       console.log('Notification removed successfully');
-    //     } else {
-    //       console.error('Channel not found');
-    //     }
-    //   } catch (error) {
-    //     console.error('Error removing notification:', error);
-    //   }
-    // };
-    // fetchNotifications();
+      //   const fetchNotifications = async () => {
+      //   if (!currentUserId) return;
+
+      //   try {
+      //     // Reference to the channel document in Firestore
+      //     const channelRef = doc(
+      //       db,
+      //       `communities/${communityId}/channelsHeading/${selectedChannel?.headingId}/channels/${selectedChannel?.channelId}`
+      //     );
+
+      //     // Get current channel data
+      //     const channelSnap = await getDoc(channelRef);
+
+      //     if (channelSnap.exists()) {
+      //       const channelData = channelSnap.data();
+      //       const channelNotification = channelData.channelNotification || [];
+
+      //       // Remove the currentUserId from the channelNotification array
+      //       const updatedChannelNotification = channelNotification.filter(
+      //         (userId: string) => userId !== currentUserId
+      //       );
+
+      //       // Update the Firestore document with the new channelNotification array
+      //       await updateDoc(channelRef, {
+      //         channelNotification: updatedChannelNotification,
+      //       });
+
+      //       // Update the local notificationStatus state to reflect this change
+      //       setNotificationStatus((prevStatus) => {
+      //         const updatedStatus = { ...prevStatus };
+      //         const notificationKey = `${selectedChannel?.headingId}-${selectedChannel?.channelId}`;
+      //         delete updatedStatus[notificationKey]; // Remove the entry for the specific channel
+      //         return updatedStatus;
+      //       });
+
+      //       console.log('Notification removed successfully');
+      //     } else {
+      //       console.error('Channel not found');
+      //     }
+      //   } catch (error) {
+      //     console.error('Error removing notification:', error);
+      //   }
+      // };
+      // fetchNotifications();
     }
   }, [chats, user?.uid]);
 
@@ -600,31 +614,31 @@ useEffect(() => {
 
   const handleRemoveNotification = async (headingId: string, channelId: string) => {
     if (!currentUserId) return;
-  
+
     try {
       // Reference to the channel document in Firestore
       const channelRef = doc(
         db,
         `communities/${communityId}/channelsHeading/${headingId}/channels/${channelId}`
       );
-  
+
       // Get current channel data
       const channelSnap = await getDoc(channelRef);
-  
+
       if (channelSnap.exists()) {
         const channelData = channelSnap.data();
         const channelNotification = channelData.channelNotification || [];
-  
+
         // Remove the currentUserId from the channelNotification array
         const updatedChannelNotification = channelNotification.filter(
           (userId: string) => userId !== currentUserId
         );
-  
+
         // Update the Firestore document with the new channelNotification array
         await updateDoc(channelRef, {
           channelNotification: updatedChannelNotification,
         });
-  
+
         // Update the local notificationStatus state to reflect this change
         setNotificationStatus((prevStatus) => {
           const updatedStatus = { ...prevStatus };
@@ -632,7 +646,7 @@ useEffect(() => {
           delete updatedStatus[notificationKey]; // Remove the entry for the specific channel
           return updatedStatus;
         });
-  
+
         console.log('Notification removed successfully');
       } else {
         console.error('Channel not found');
@@ -641,7 +655,7 @@ useEffect(() => {
       console.error('Error removing notification:', error);
     }
   };
-  
+
 
   return (
     <div className="flex h-full flex-row">
@@ -650,43 +664,43 @@ useEffect(() => {
         <GroupName communityId={communityId} isAdmin={false} />
         <div className="flex flex-col justify-start items-center mx-4 mt-[15px] gap-6">
           <div className="ChannelHeadingDiv w-full h-auto">
-          {channelHeadings.map((heading) => (
-  <div key={heading.headingId} className="ChannelHeadingDiv w-full h-auto mb-[13px]">
-    <div className="mb-[12px] px-2">
-      <h3 className="ChannelHeading text-base text-[#182230]">{heading.headingName}</h3>
-    </div>
+            {channelHeadings.map((heading) => (
+              <div key={heading.headingId} className="ChannelHeadingDiv w-full h-auto mb-[13px]">
+                <div className="mb-[12px] px-2">
+                  <h3 className="ChannelHeading text-base text-[#182230]">{heading.headingName}</h3>
+                </div>
 
-    <div className="flex flex-col gap-2">
-      {heading.channels.map((channel) => {
-        // Construct notification key for each channel
-        const notificationKey = `${heading.headingId}-${channel.channelId}`;
-        const hasNotification = notificationStatus[notificationKey];
+                <div className="flex flex-col gap-2">
+                  {heading.channels.map((channel) => {
+                    // Construct notification key for each channel
+                    const notificationKey = `${heading.headingId}-${channel.channelId}`;
+                    const hasNotification = notificationStatus[notificationKey];
 
-        return (
-          <button
-            key={channel.channelId}
-            className={`ChannelName flex flex-row items-center justify-between pr-3 group rounded-[7px] transition-colors hover:bg-[#F8F0FF] ${selectedChannel?.channelId === channel.channelId ? 'bg-[#F8F0FF]' : 'bg-[#FFFFFF]'}`}
-            onClick={() => {
-              setSelectedChannel({ ...channel, headingId: heading.headingId });
-              handleRemoveNotification(heading.headingId, channel.channelId);
-            }}
-          >
-            <div className="flex flex-row items-center justify-between p-[6px] w-full">
-              <div className="flex flex-row items-center gap-2">
-                <p>{channel.channelEmoji}</p>
-                <p className="text-[13px] font-semibold text-[#4B5563]">{channel.channelName}</p>
+                    return (
+                      <button
+                        key={channel.channelId}
+                        className={`ChannelName flex flex-row items-center justify-between pr-3 group rounded-[7px] transition-colors hover:bg-[#F8F0FF] ${selectedChannel?.channelId === channel.channelId ? 'bg-[#F8F0FF]' : 'bg-[#FFFFFF]'}`}
+                        onClick={() => {
+                          setSelectedChannel({ ...channel, headingId: heading.headingId });
+                          handleRemoveNotification(heading.headingId, channel.channelId);
+                        }}
+                      >
+                        <div className="flex flex-row items-center justify-between p-[6px] w-full">
+                          <div className="flex flex-row items-center gap-2">
+                            <p>{channel.channelEmoji}</p>
+                            <p className="text-[13px] font-semibold text-[#4B5563]">{channel.channelName}</p>
+                          </div>
+                          {/* Conditionally render notification */}
+                          {hasNotification && (
+                            <div className="w-2 h-2 rounded-full bg-[#DE3024]"></div> // Notification Indicator
+                          )}
+                        </div>
+                      </button>
+                    );
+                  })}
+                </div>
               </div>
-              {/* Conditionally render notification */}
-              {hasNotification && (
-                <div className="w-2 h-2 rounded-full bg-[#DE3024]"></div> // Notification Indicator
-              )}
-            </div>
-          </button>
-        );
-      })}
-    </div>
-  </div>
-))}
+            ))}
 
           </div>
         </div>
@@ -711,7 +725,20 @@ useEffect(() => {
 
             <div className="flex items-center justify-between h-[72px] bg-white border-b border-lightGrey">
               {/* Pass the selected channel info to ChatHead */}
-              <ChatHead isAdmin={false} channelId={selectedChannel?.channelId ?? null} channelName={selectedChannel?.channelName ?? null} channelEmoji={selectedChannel?.channelEmoji ?? null} communityId={communityId} categoryId={selectedChannel.headingId || ''} channelDescription={''} channelRequests={selectedChannel.channelRequests || []} setSelectedChannel={setSelectedChannel} members={selectedChannel.members} />
+              {/* <ChatHead isAdmin={false} channelId={selectedChannel?.channelId ?? null} channelName={selectedChannel?.channelName ?? null} channelEmoji={selectedChannel?.channelEmoji ?? null} communityId={communityId} categoryId={selectedChannel.headingId || ''} channelDescription={''} channelRequests={selectedChannel.channelRequests || []} setSelectedChannel={setSelectedChannel} members={selectedChannel.members} /> */}
+              <ChatHead
+                isAdmin={false}
+                channelId={selectedChannel?.channelId ?? null}
+                channelName={selectedChannel?.channelName ?? null}
+                channelEmoji={selectedChannel?.channelEmoji ?? null}
+                communityId={communityId}
+                categoryId={selectedChannel.headingId || ''}
+                channelDescription={''}
+                channelRequests={selectedChannel.channelRequests || []}
+                setSelectedChannel={setSelectedChannel}
+                members={selectedChannel.members}
+                chats={chats} // Add the chats prop here
+              />
               <div className="flex flex-row mr-4 gap-4">
                 <Popover placement="bottom" isOpen={searchOpen} onClose={() => { setSearchOpen(false); setSearchQuery('') }}>
                   <PopoverTrigger>
@@ -947,7 +974,7 @@ useEffect(() => {
               </div>
             </div>
           </div>
-          <div className='flex flex-col flex-grow overflow-y-auto'><MembersDetailsArea members={selectedChannel.members || []} isCurrentUserAdmin={false}/></div>
+          <div className='flex flex-col flex-grow overflow-y-auto'><MembersDetailsArea members={selectedChannel.members || []} isCurrentUserAdmin={false} /></div>
         </div>
       ) : (
         <>
