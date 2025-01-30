@@ -19,6 +19,7 @@ function Login() {
     const [usernameError, setUsernameError] = useState('');
     const [phoneError, setPhoneError] = useState('');
     const [adminId, setAdminId] = useState('');
+    const [currentInputField, setCurrentInputField] = useState<'userId' | 'phone'>('userId');
     const db = getFirestore();
     const [isPhoneValid, setIsPhoneValid] = useState(false);
 
@@ -130,6 +131,33 @@ function Login() {
         }
     };
 
+    const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+
+            // If we're in userId field and it's filled but phone is empty, move to phone
+            if (currentInputField === 'userId' && Name.trim() !== '' && phone.length !== 12) {
+                const phoneInput = document.querySelector('.react-tel-input input');
+                if (phoneInput instanceof HTMLElement) {
+                    phoneInput.focus();
+                    setCurrentInputField('phone');
+                }
+            }
+            // If we're in phone field and userId is empty but phone is valid, move to userId
+            else if (currentInputField === 'phone' && Name.trim() === '' && phone.length === 12) {
+                const userIdInput = document.querySelector('input[type="text"]');
+                if (userIdInput instanceof HTMLElement) {
+                    userIdInput.focus();
+                    setCurrentInputField('userId');
+                }
+            }
+            // If both fields are filled, submit the form
+            else if (!buttonDisabled) {
+                handleSubmit(e as any);
+            }
+        }
+    };
+
     return (
         <div className="bg-[#f7f8fb] h-screen w-screen flex justify-center items-center ">
             <div className="flex flex-col w-[395px] h-[auto] gap-3">
@@ -157,7 +185,9 @@ function Login() {
                                     placeholder='Admin'
                                     value={Name}
                                     onChange={(e) => setName(e.target.value)}
-                                    maxLength={50}
+                                    onKeyDown={handleKeyDown}
+                                    onFocus={() => setCurrentInputField('userId')}
+                                    maxLength={30}
                                     className="w-full rounded-md h-[40px] pl-2 text-[#344054] font-normal text-sm border-none focus:ring-0 focus:border-black focus:outline-none shadow-[0px_1px_2px_0px_rgba(16,24,40,0.05)]"
                                 />
                             </div>
@@ -176,7 +206,9 @@ function Login() {
                                         name: 'phone',
                                         required: true,
                                         autoFocus: true,
-                                        placeholder: "+91 00000-00000"
+                                        placeholder: "+91 00000-00000",
+                                        onKeyDown: handleKeyDown,
+                                        onFocus: () => setCurrentInputField('phone')
                                     }}
                                     containerClass="phone-input-container"
                                     inputClass="forminput"
@@ -191,7 +223,6 @@ function Login() {
                             </div>
                             {phoneError && <p className="text-red-500 text-sm mt-1">{phoneError}</p>}
                         </div>
-
                         <button
                             className={`mt-3 h-[48px] w-full rounded-md shadow-inner-button ${buttonDisabled ? 'bg-[#d8acff]' : 'hover:bg-[#6D0DCC] bg-[#8501FF]'}`}
                             disabled={buttonDisabled}
@@ -202,7 +233,6 @@ function Login() {
                 </div>
                 <div id="recaptcha-container"></div> {/* Recaptcha element */}
             </div>
-
         </div>
     );
 }

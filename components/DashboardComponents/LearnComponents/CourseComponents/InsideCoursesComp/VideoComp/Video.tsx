@@ -7,7 +7,7 @@ import Player from 'next-video/player';
 import VideoPlayer from '@/components/DashboardComponents/CommunityComponents/VideoPlayer';
 import CourseVideoPlayer from './CourseVideoPlayer';
 
-interface VideoContentProps {
+interface VideoContentProps  {
     videoId: string;
 }
 

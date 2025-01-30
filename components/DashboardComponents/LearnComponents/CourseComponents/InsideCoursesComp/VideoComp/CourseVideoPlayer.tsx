@@ -13,7 +13,7 @@ interface VdoCipherResponse {
   playbackInfo: string;
 }
 
-const CourseVideoPlayer: React.FC<VideoPlayerProps> = ({ videoId }) => {
+function CourseVideoPlayer({ videoId }:VideoPlayerProps) {
   const videoNode = useRef<HTMLVideoElement | null>(null);
   const playerRef = useRef<Player | null>(null); // Use VideoJsPlayer type from videojs namespac
 

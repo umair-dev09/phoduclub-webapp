@@ -74,8 +74,7 @@ const fetchQuizzes = (callback: (quizzes: Quiz[] | ((prevQuizzes: Quiz[]) => Qui
 
                     if (!userData?.isPremium) {
                         return null;
-                    }
-                    else {
+                    } else {
                         // Check for course or testseries purchase
                         if (quizData.product) {
                             const { productId, productType } = quizData.product;
@@ -91,8 +90,15 @@ const fetchQuizzes = (callback: (quizzes: Quiz[] | ((prevQuizzes: Quiz[]) => Qui
                             }
                         }
                     }
+                }
 
-
+                // Fetch product name based on product type
+                let productName = '';
+                if (quizData.product) {
+                    const { productId, productType } = quizData.product;
+                    const productDoc = await getDocs(collection(db, productType, productId));
+                    const productData = productDoc.docs[0]?.data();
+                    productName = productType === 'course' ? productData?.courseName : productData?.testName;
                 }
 
                 // Set up real-time listener for attempts
@@ -146,7 +152,11 @@ const fetchQuizzes = (callback: (quizzes: Quiz[] | ((prevQuizzes: Quiz[]) => Qui
                     nMarksPerQuestion: quizData.nMarksPerQuestion,
                     questionsList: fetchedQuestions,
                     isPremiumQuiz: quizData.isPremiumQuiz,
-                    product: quizData.product,
+                    product: {
+                        productId: quizData.product.productId,
+                        productName: productName,
+                        productType: quizData.product.productType,
+                    },
                 } as Quiz;
             })
         );
@@ -342,12 +352,18 @@ function Quiz() {
                                     </button>
                                 </button>
                             </div>
-                            <div className=" h-auto mr-[24px] ml-[24px] mt-[13px] ">
+                            <div className=" h-auto mr-[24px] ml-[24px] mt-[13px] mb-2">
                                 <span className="text-sm text-[#667085] font-normal">
                                     Ready to begin? Click &apos;Start&apos; to attempt this quiz
                                 </span>
                             </div>
-                            <div className="mt-[33px] mb-8 flex-row flex items-center">
+                            {isPremiumQuiz &&(
+                            <div className="mt-2 mb-1 ml-6 border border-[#e3ae3d] rounded-2xl px-4 py-1 w-fit h-auto">
+                            <span className="text-sm font-normal">{product?.productName || 'Premium Quiz'}</span>
+                            </div>
+                            )}
+
+                            <div className="mt-5 mb-8 flex-row flex items-center">
                                 <div className="gap-1 flex-col flex items-center w-full border-r border-lightGrey">
                                     <span className="font-normal text-sm text-[#667085]">Time Duration</span>
                                     <span className="text-[#1D2939] text-lg font-semibold">{formattedQTime || '0 Minutes'}

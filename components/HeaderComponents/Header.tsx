@@ -90,7 +90,7 @@ function Header() {
                         <PopoverTrigger>
                             <button className='flex flex-row items-center focus:outline-none'>
                                 <div className="relative">
-                                    <Image className="rounded-[50%] ml-[8px]" src={userData?.profilePic || "/defaultDP.svg"} width={38} height={38} quality={100} alt="Profile Picture" />
+                                    <Image className="rounded-[50%] ml-[8px] min-w-[38px]" src={userData?.profilePic || "/defaultDP.svg"} width={38} height={38} quality={100} alt="Profile Picture" />
                                     {userData?.isPremium && (
                                         <Image
                                             className="absolute right-[-2px] bottom-0"

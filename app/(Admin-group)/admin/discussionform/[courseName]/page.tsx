@@ -31,10 +31,11 @@ type Content = {
     lessonOverView: string;
     lessonScheduleDate: string;
     pdfLink: string;
+    pdfSize: number;
     videoLink: string;
     marksPerQuestion: string;
     nMarksPerQuestion: string;
-    quizTime: string;
+    quizTime: number;
     videoDuration: number;
     questionsCount: number;
     videoId: string;
@@ -75,10 +76,11 @@ function Courses() {
         videoLink: string;
         marksPerQuestion: string;
         nMarksPerQuestion: string;
-        quizTime: string;
+        quizTime: number;
         videoDuration: number;
         videoId: string;
         questionsCount: number;
+        pdfSize: number;
     } | null>(null);
     useEffect(() => {
         if (courseId) {
@@ -144,6 +146,7 @@ function Courses() {
                                     lessonContent: contentDoc.data().lessonContent,
                                     lessonOverView: contentDoc.data().lessonOverView,
                                     pdfLink: contentDoc.data().pdfLink,
+                                    pdfSize: contentDoc.data().pdfSize,
                                     videoLink: contentDoc.data().videoLink,
                                     marksPerQuestion: contentDoc.data().marksPerQuestion,
                                     nMarksPerQuestion: contentDoc.data().nMarksPerQuestion,
@@ -352,8 +355,8 @@ function Courses() {
                             }
                         >
                             <div className="mr-4 mt-[24px] rounded-md flex flex-col h-auto overflow-y-auto">
-                                {selectedContent?.type === 'Text' && <TextContent lessonContent={selectedContent.lessonContent} />}
-                                {selectedContent?.type === 'Video' && <VideoContent videoLink={selectedContent.videoLink || ''} />}
+                                {selectedContent?.type === 'Text' && <TextContent lessonContent={selectedContent.lessonContent} pdfLink={selectedContent.pdfLink} pdfSize={selectedContent.pdfSize} />}
+                                {selectedContent?.type === 'Video' && <VideoContent videoId={selectedContent.videoId} />}
                                 {selectedContent?.type === 'Quiz' && <QuizContent sectionId={sectionId} courseId={courseId || ''} isAdmin={true} questionsList={[]} contentId={selectedContent.contentId} quizTime={selectedContent.quizTime} questionCount={selectedContent.questionsCount} marksPerQ={selectedContent.marksPerQuestion} nMarksPerQ={selectedContent.nMarksPerQuestion} lessonOverview={selectedContent.lessonOverView} lessonHeading={selectedContent.lessonHeading} />}
                             </div>
                         </Tab>

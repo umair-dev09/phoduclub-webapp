@@ -38,7 +38,7 @@ type OwnChatProps = {
   isDeleted: boolean;
   adminThatDeletedId: string;
   isDeletedByAdmin: boolean;
-  mentions: { userId: string; id: string, isAdmin: boolean, }[];
+  mentions: { userId: string; id: string, isAdmin: boolean, }[]; 
   highlightedText: string | React.ReactNode[];
   isAdmin: boolean;
   isHighlighted: boolean; // New prop
@@ -54,7 +54,7 @@ type ReactionCount = {
 
 
 
-function OwnChat({ message, isDeleted, mentions, adminThatDeletedId, isDeletedByAdmin, isCurrentUserAdmin, currentUserId, highlightedText, messageType, fileUrl, fileName, isHighlighted, isAdmin, scrollToReply, fileSize, senderId, timestamp, communityId, headingId, channelId, chatId, isReplying, replyingToId, replyingToChatId, replyingToFileName, replyingToFileUrl, replyingToMsg, replyingToMsgType, setShowReplyLayout, handleReply }: OwnChatProps) {
+function OwnChat({ message, isDeleted, mentions, adminThatDeletedId, isDeletedByAdmin, handleReply, isCurrentUserAdmin, currentUserId, highlightedText, messageType, fileUrl, fileName, isHighlighted, isAdmin, scrollToReply, fileSize, senderId, timestamp, communityId, headingId, channelId, chatId, isReplying, replyingToId, replyingToChatId, replyingToFileName, replyingToFileUrl, replyingToMsg, replyingToMsgType, setShowReplyLayout }: OwnChatProps) {
   const [reactions, setReactions] = useState<ReactionCount[]>([]);
   const [isOpen, setIsOpen] = useState(false);
   const [showBookmark, setShowBookmark] = useState(false); // Use a single index to track the active button

@@ -41,7 +41,7 @@ export default function Login_Page() {
     }, [db, router]);
 
     useEffect(() => {
-        if (phone.length >= 12) { 
+        if (phone.length >= 12) {
             setIsPhoneValid(true);
             setErrorMessage('');
             setButtonColor('#7400E0');
@@ -102,13 +102,11 @@ export default function Login_Page() {
             console.error("Error while login user:", error);
             setIsLoading(false);
         }
-
-
     };
 
     return (
         <div className="flex flex-row w-full h-screen bg-[#F7F8FB]">
-            <div className="w-1/2 flex flex-col  ">
+            <div className="w-1/2 flex flex-col">
                 <div className="mt-10 ml-10">
                     <Image
                         src="/images/phoduclublogo.png"
