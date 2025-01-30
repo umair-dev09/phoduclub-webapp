@@ -1,0 +1,44 @@
+import { Dialog, DialogBackdrop, DialogPanel } from "@headlessui/react";
+import VideoPlayer from "./VideoPlayer";
+import Image from "next/image";
+
+interface MediaViewDialogProps {
+    open: boolean;
+    onClose: () => void;
+    src: string;
+    mediaType: string;
+}
+
+function MediaViewDialog({open, onClose, src, mediaType}:MediaViewDialogProps){
+
+    
+
+    return(
+        <Dialog
+        open={open}
+        onClose={onClose}
+        className="relative z-50"
+        aria-label="Create Channel Dialog"
+    >
+        <DialogBackdrop className="fixed inset-0 bg-black/30" />
+        <div className="fixed inset-0 flex items-center justify-center">
+            <DialogPanel transition className="flex flex-col bg-white rounded-md w-[90%] h-[90%]">
+                <div className="flex flex-col items-center w-full h-full gap-4">
+                    <div className="flex flex-row justify-between gap-3 w-full h-[25px] px-4 mt-3">
+                    <Image src="/icons/more-horizontal.svg" alt="Cancel" width={23} height={23} />
+                    <button onClick={onClose}>
+                    <Image src="/icons/cancel.svg" alt="Cancel" width={20} height={20} />
+                    </button>
+                    </div>
+                 {mediaType === 'image' ? (
+                   <Image className="w-[80%] h-[85%] object-contain" src={src} width={800} height={800} alt='media' quality={100}/>
+                 ):(
+                    <VideoPlayer videoSrc={src}/>
+                 )}   
+                </div>
+            </DialogPanel>
+        </div>
+    </Dialog>
+    );
+}
+export default MediaViewDialog;

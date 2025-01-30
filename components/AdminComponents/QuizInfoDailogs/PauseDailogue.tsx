@@ -112,7 +112,7 @@ function PausedDialog({ onClose, fromContent, contentId }: PausedDialogProps) { 
                         </button>
                     </ModalHeader>
                     <ModalBody >
-                        <p className=" text-sm  pb-2 font-normal text-[#667085]">Lorem ipsum is placeholder text commonly used</p>
+                        <p className=" text-sm  pb-2 font-normal text-[#667085]">  Are you sure you want to pause this session?</p>
                     </ModalBody>
                     <ModalFooter className="border-t border-lightGrey">
                         <Button variant="light" className="py-[0.625rem] px-6 border-[1.5px] border-lightGrey rounded-md font-semibold text-sm hover:bg-[#F2F4F7] " onClick={onClose}>Cancel</Button>

@@ -21,7 +21,7 @@ interface ActionButtonProps {
 
 function ActionButton({ src, alt, label }: ActionButtonProps) {
     return (
-        <button className="flex items-center p-3 hover:bg-[#F2F4F7] w-full">
+        <button className="flex items-center p-3 w-full opacity-40 cursor-not-allowed">
             <Image src={src} width={20} height={20} alt={alt} />
             <p className="text-sm text-[#000000] font-normal ml-2">{label}</p>
         </button>
@@ -128,7 +128,7 @@ function Purchase() {
                                 <th className="w-[28%] text-xs text-left py-4 px-6 font-semibold leading-[18px]">ITEMS</th>
                                 <th className="text-xs text-center py-4 px-6 font-semibold leading-[18px]">DATE</th>
                                 <th className="text-xs text-center py-4 px-6 font-semibold leading-[18px]">PRICE</th>
-                                <th className="text-xs text-center py-4 px-6 font-semibold leading-[18px]">TRANSACTION ID</th>
+                                <th className="text-xs text-left py-4 pl-10 font-semibold leading-[18px]">TRANSACTION ID</th>
                                 <th className="w-[10%] text-xs text-center py-4 px-6 font-semibold leading-[18px]">ACTIONS</th>
                             </tr>
                         </thead>
@@ -165,12 +165,9 @@ function Purchase() {
                                                     <span className="absolute -right-10 top-1/2 transform -translate-y-1/2 px-2 bg-[#1D2939] rounded-[6px] text-white font-medium text-[11px] transition-all duration-200">
                                                         Copied!
                                                     </span>
-
-
                                                 )}
                                             </div>
                                         </td>
-
                                         <td className="px-6 py-4 text-right">
                                             <Popover placement="bottom-end">
                                                 <PopoverTrigger>

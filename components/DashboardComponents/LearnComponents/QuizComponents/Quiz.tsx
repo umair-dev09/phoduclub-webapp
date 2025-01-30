@@ -10,6 +10,7 @@ import LoadingData from "@/components/Loading";
 import { toast, ToastContainer } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
 import QuizAttendBottomSheet from "./QuizAttendBottomSheet";
+import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button } from "@nextui-org/react";
 interface Quiz {
     title: string;
     questions: number;
@@ -21,7 +22,7 @@ interface Quiz {
     endDate: string;
     quizTime: number;
     isPremiumQuiz: boolean;
-    product: { productId: string; productName: string ; productType: string };
+    product: { productId: string; productName: string; productType: string };
     marksPerQuestion: number;
     nMarksPerQuestion: number;
     questionsList: Question[];
@@ -70,7 +71,7 @@ const fetchQuizzes = (callback: (quizzes: Quiz[] | ((prevQuizzes: Quiz[]) => Qui
                     const userDoc = await getDocs(collection(db, 'users'));
                     const currentUserDoc = userDoc.docs.find(doc => doc.id === currentUserId);
                     const userData = currentUserDoc?.data();
-                    
+
                     if (!userData?.isPremium) {
                         return null;
                     } else {
@@ -78,7 +79,7 @@ const fetchQuizzes = (callback: (quizzes: Quiz[] | ((prevQuizzes: Quiz[]) => Qui
                         if (quizData.product) {
                             const { productId, productType } = quizData.product;
                             const collectionName = productType === 'course' ? 'course' : 'testseries';
-                            
+
                             // Check if student has purchased the product
                             const studentPurchaseRef = collection(db, collectionName, productId, 'StudentsPurchased');
                             const studentPurchaseDoc = await getDocs(studentPurchaseRef);
@@ -202,7 +203,7 @@ function Quiz() {
     const [quizzes, setQuizzes] = useState<Quiz[]>([]);
     const [loading, setLoading] = useState(true);
     const [isPremiumQuiz, setIsPremiumQuiz] = useState(true);
-    const [product, setProduct] = useState<{ productId: string; productName: string ; productType: string } | null>(null);
+    const [product, setProduct] = useState<{ productId: string; productName: string; productType: string } | null>(null);
     const [showBottomSheet, setShowBottomSheet] = useState(false);
     const [marksPerQ, setMarksPerQ] = useState(0);
     const [nMarksPerQ, setnMarksPerQ] = useState(0);
@@ -273,68 +274,68 @@ function Quiz() {
 
     return (
         <div className="flex flex-col w-full">
-            {quizzes.length < 1 ? ( 
+            {quizzes.length < 1 ? (
                 <div className="flex flex-1 justify-center items-center flex-col">
-                <Image src="/images/noQuizzes.svg" alt="No Quizzes" width={140} height={140} />
-                <h3 className="text-base font-bold">No Quizzes</h3>
-                <p>Your live quizzes will show up here</p>
+                    <Image src="/images/noQuizzes.svg" alt="No Quizzes" width={140} height={140} />
+                    <h3 className="text-base font-bold">No Quizzes</h3>
+                    <p>Your live quizzes will show up here</p>
                 </div>
             ) : (
                 <div className="flex flex-row flex-wrap gap-6 w-full">
-                {quizzes.map((quiz, index) => {
-                    const quizTime = quizTimes.find(qt => qt.id === quiz.quizId);
-                    return (
-                        <div key={index} className={`relative flex flex-col justify-between h-fit gap-4 w-auto min-w-[300px] rounded-xl py-6 px-6 bg-white border ${quiz.isPremiumQuiz ? 'border-[#e3ae3d]' : 'border-lightGrey'}`}>
-                            {/* Live Banner */}
-                            {quiz.status === 'live' && (
-                                <div className="absolute top-0 right-0 mt-3 mr-[-4.5px]">
-                                    <Image className="relative" src="/icons/Live-Banner.svg" alt="live banner" width={48} height={30} />
-                                    <span className="absolute top-[6px] right-1 text-[11px] font-semibold text-white rounded-md px-2 py-1">LIVE</span>
+                    {quizzes.map((quiz, index) => {
+                        const quizTime = quizTimes.find(qt => qt.id === quiz.quizId);
+                        return (
+                            <div key={index} className={`relative flex flex-col justify-between h-fit gap-4 w-auto min-w-[300px] rounded-xl py-6 px-6 bg-white border ${quiz.isPremiumQuiz ? 'border-[#e3ae3d]' : 'border-lightGrey'}`}>
+                                {/* Live Banner */}
+                                {quiz.status === 'live' && (
+                                    <div className="absolute top-0 right-0 mt-3 mr-[-4.5px]">
+                                        <Image className="relative" src="/icons/Live-Banner.svg" alt="live banner" width={48} height={30} />
+                                        <span className="absolute top-[6px] right-1 text-[11px] font-semibold text-white rounded-md px-2 py-1">LIVE</span>
+                                    </div>
+                                )}
+                                {/* Quiz Information */}
+                                <div className="flex flex-col gap-1 text-xs">
+                                    <div className="text-base font-semibold">{quiz.title}</div>
+                                    <div>{quiz.questions} Questions</div>
                                 </div>
-                            )}
-                            {/* Quiz Information */}
-                            <div className="flex flex-col gap-1 text-xs">
-                                <div className="text-base font-semibold">{quiz.title}</div>
-                                <div>{quiz.questions} Questions</div>
+                                {quiz.status === 'live' && quizTime && (
+                                    <div className="flex flex-row text-[#DE3024]">
+                                        <div className="mr-1">
+                                            <Image src="/icons/stop-watch.svg" alt="stop watch" width={18} height={18} />
+                                        </div>
+                                        <div className="flex items-center text-xs gap-1">
+                                            Quiz ends in
+                                            <span className="font-semibold">{formatTime(quizTime.endTime)}</span>
+                                        </div>
+                                    </div>
+                                )}
+                                {quiz.status === 'scheduled' && quizTime && (
+                                    <div className="flex flex-row text-[#0B9055]">
+                                        <div className="mr-1">
+                                            <Image src="/icons/hourglass.svg" alt="stop watch" width={18} height={18} />
+                                        </div>
+                                        <div className="flex items-center text-xs gap-1">
+                                            Quiz starts in
+                                            <span className="font-semibold">{formatTime(quizTime.startTime)}</span>
+                                        </div>
+                                    </div>
+                                )}
+                                {/* Start Quiz Button */}
+                                <button
+                                    onClick={() => { onStartQuiz(); setTimeOfQuiz(quiz.quizTime); setProduct(quiz.product); setIsPremiumQuiz(quiz.isPremiumQuiz); setFormattedQTime(convertToTimeFormat(quiz.quizTime)); setMarksPerQ(quiz.marksPerQuestion); setnMarksPerQ(quiz.nMarksPerQuestion); setQuizId(quiz.quizId); setNoOfQuestions(quiz.questions); setPassedQuestionList(quiz.questionsList) }}
+                                    disabled={quiz.status === 'scheduled'}
+                                    className={`flex items-center justify-center w-full px-[14px] py-[10px] text-xs text-white font-semibold rounded-[6px] shadow-inner-button ${quiz.status === 'live' ? 'bg-[#9012FF] hover:bg-[#6D0DCC]' : 'bg-[#D8ACFF] cursor-not-allowed'}`}>
+                                    Start Quiz
+                                </button>
                             </div>
-                            {quiz.status === 'live' && quizTime && (
-                                <div className="flex flex-row text-[#DE3024]">
-                                    <div className="mr-1">
-                                        <Image src="/icons/stop-watch.svg" alt="stop watch" width={18} height={18} />
-                                    </div>
-                                    <div className="flex items-center text-xs gap-1">
-                                        Quiz ends in
-                                        <span className="font-semibold">{formatTime(quizTime.endTime)}</span>
-                                    </div>
-                                </div>
-                            )}
-                            {quiz.status === 'scheduled' && quizTime && (
-                                <div className="flex flex-row text-[#0B9055]">
-                                    <div className="mr-1">
-                                        <Image src="/icons/hourglass.svg" alt="stop watch" width={18} height={18} />
-                                    </div>
-                                    <div className="flex items-center text-xs gap-1">
-                                        Quiz starts in
-                                        <span className="font-semibold">{formatTime(quizTime.startTime)}</span>
-                                    </div>
-                                </div>
-                            )}
-                            {/* Start Quiz Button */}
-                            <button
-                                onClick={() => { onStartQuiz(); setTimeOfQuiz(quiz.quizTime); setProduct(quiz.product); setIsPremiumQuiz(quiz.isPremiumQuiz); setFormattedQTime(convertToTimeFormat(quiz.quizTime)); setMarksPerQ(quiz.marksPerQuestion); setnMarksPerQ(quiz.nMarksPerQuestion); setQuizId(quiz.quizId); setNoOfQuestions(quiz.questions); setPassedQuestionList(quiz.questionsList) }}
-                                disabled={quiz.status === 'scheduled'}
-                                className={`flex items-center justify-center w-full px-[14px] py-[10px] text-xs text-white font-semibold rounded-[6px] shadow-inner-button ${quiz.status === 'live' ? 'bg-[#9012FF] hover:bg-[#6D0DCC]' : 'bg-[#D8ACFF] cursor-not-allowed'}`}>
-                                Start Quiz
-                            </button>
-                        </div>
-                    );
-                })}
-            </div>
+                        );
+                    })}
+                </div>
             )}
-           
 
 
-            <Dialog open={showQuizDialog} onClose={() => setShowQuizDialog(false)} className="relative z-50">
+
+            {/* <Dialog open={showQuizDialog} onClose={() => setShowQuizDialog(false)} className="relative z-50">
                 <DialogBackdrop className="fixed inset-0 bg-black/30 " />
                 <div className="fixed inset-0 flex items-center justify-center ">
                     <DialogPanel transition className="bg-[#FFFFFF] rounded-2xl w-[480px]">
@@ -397,7 +398,65 @@ function Quiz() {
                         </div>
                     </DialogPanel>
                 </div>
-            </Dialog>
+            </Dialog> */}
+            <Modal isOpen={showQuizDialog} onOpenChange={(isOpen) => !isOpen && setShowQuizDialog(false)} hideCloseButton
+                size="lg"
+            >
+                <ModalContent>
+                    <>
+                        <ModalHeader className="flex flex-row justify-between items-center gap-1">
+                            <span className="text-[#1D2939] font-semibold text-lg">Start Test</span>
+                            <button className="w-[32px] h-[32px]  rounded-full flex items-center justify-center transition-all duration-300 ease-in-out hover:bg-[#F2F4F7]"
+                                onClick={() => setShowQuizDialog(false)}>
+                                <button>
+                                    <Image src="/icons/cancel.svg" alt="cancel" width={18} height={18} />
+                                </button>
+                            </button>
+                        </ModalHeader>
+                        <ModalBody>
+                            <div className=" h-auto ">
+                                <span className="text-sm text-[#667085] font-normal">
+                                    Ready to begin? Click &apos;Start&apos; to attempt this quiz
+                                </span>
+                            </div>
+                            <div className="my-8 flex-row flex items-center ">
+                                <div className="gap-1 flex-col flex items-center w-full border-r border-lightGrey">
+                                    <span className="font-normal text-sm text-[#667085]">Time Duration</span>
+                                    <span className="text-[#1D2939] text-lg font-semibold">{formattedQTime || '0 Minutes'}
+                                    </span>
+                                </div>
+                                <div className="gap-1 flex-col flex items-center w-full border-r border-lightGrey">
+                                    <span className="font-normal text-sm text-[#667085]">No. of Questions</span>
+                                    <span className="text-[#1D2939] text-lg font-semibold">{noOfQuestions || 0}
+                                    </span>
+                                </div>
+                                <div className="gap-1 flex-col flex items-center w-full">
+                                    <span className="font-normal text-sm text-[#667085]">Marks Per Question</span>
+                                    <span className="text-[#1D2939] text-lg font-semibold">{marksPerQ || 0}
+                                    </span>
+                                </div>
+                            </div>
+                        </ModalBody>
+                        <ModalFooter className="border-t border-lightGrey">
+                            <Button variant="light"
+                                className="bg-[#FFFFFF] text-[#1D2939] text-sm font-semibold py-2 px-5 rounded-md w-[118px] h-[44px] shadow-inner-button hover:bg-[#F2F4F7]"
+                                style={{ border: "1.5px solid #EAECF0" }}
+                                onClick={() => setShowQuizDialog(false)}>
+                                Cancel
+                            </Button>
+                            <Button
+                                className="bg-[#8501FF] text-[#FFFFFF] text-sm font-semibold py-2 px-5 rounded-md w-[118px] h-[44px] shadow-inner-button hover:bg-[#6D0DCC]"
+                                style={{
+                                    border: "1px solid #800EE2",
+                                }}
+                                onClick={openDrawer}
+                            >
+                                Start Now
+                            </Button>
+                        </ModalFooter>
+                    </>
+                </ModalContent>
+            </Modal >
 
             <QuizAttendBottomSheet isPremiumQuiz={isPremiumQuiz} product={product} showBottomSheet={showBottomSheet} nMarksPerQuestion={nMarksPerQ} marksPerQuestion={marksPerQ} setShowBottomSheet={setShowBottomSheet} questionsList={passsedQuestionList} quizId={quizId} quizTime={timeOfQuiz} />
             <ToastContainer />

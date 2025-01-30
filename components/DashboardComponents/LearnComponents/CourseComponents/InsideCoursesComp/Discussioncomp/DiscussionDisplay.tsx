@@ -89,7 +89,7 @@ function DiscussionDisplay({ message, userId, timestamp, messageId, isReplyingTo
             replyingToMsgId: replyingToMsgId,
             replyingToAdmin: isAdmin,
         });
-      }
+    }
     useEffect(() => {
         if (!userId) return;
         const fetchUserData = async () => {
@@ -161,11 +161,11 @@ function DiscussionDisplay({ message, userId, timestamp, messageId, isReplyingTo
         if (!currentUserId) return;
         const discussionRef = doc(db, 'course', courseId, 'sections', sectionId, 'content', contentId, 'Disscussion', messageId);
         try {
-            if(isPinned){
-                await updateDoc(discussionRef, {  isPinned: false });
+            if (isPinned) {
+                await updateDoc(discussionRef, { isPinned: false });
             }
-            else{
-                await updateDoc(discussionRef, {  isPinned: true });
+            else {
+                await updateDoc(discussionRef, { isPinned: true });
             }
             console.log("Message pinned successfully");
             toast.success("Message pinned successfully");
@@ -248,89 +248,88 @@ function DiscussionDisplay({ message, userId, timestamp, messageId, isReplyingTo
                             <span className="font-normal text-sm text-[#1D2939] opacity-[50%]">{sender?.userId || 'user#123'}</span>
                         </div>
                     </div>
-                    
+
                     <div className="flex flex-row gap-1 items-center justify-center">
                         {isPinned && (
-                        <Image className="mr-1"
-                        src="/icons/pin-icon.svg"
-                        width={14}
-                        height={14}
-                        alt="Pin"
-                        />
+                            <Image className="mr-1"
+                                src="/icons/pin-icon.svg"
+                                width={14}
+                                height={14}
+                                alt="Pin"
+                            />
                         )}
                         <span className="text-sm font-normal text-[#1D2939] opacity-[50%] flex items-center">
                             {getTimeAgo(timestamp)}
                         </span>
-                        
+
                         {(!deleted && userId === currentUserId) && (
-                        <Popover placement="bottom-end"
-                            isOpen={popoveropen}
-                            onOpenChange={(open) => setPopoverOpen(open)}>
-                            <PopoverTrigger>
-                                <button className="w-[32px] h-[32px]  rounded-full flex items-center justify-center transition-all duration-300 ease-in-out hover:bg-[#F2F4F7]"
-                                >
-                                    <button className="min-w-[20px] min-h-[20px] mt-[2px]">
-                                        <Image
-                                            src="/icons/three-dots.svg"
-                                            width={20}
-                                            height={20}
-                                            alt="Three-dots"
-                                        />
+                            <Popover placement="bottom-end"
+                                isOpen={popoveropen}
+                                onOpenChange={(open) => setPopoverOpen(open)}>
+                                <PopoverTrigger>
+                                    <button className="w-[32px] h-[32px]  rounded-full flex items-center justify-center transition-all duration-300 ease-in-out hover:bg-[#F2F4F7]"
+                                    >
+                                        <button className="min-w-[20px] min-h-[20px] mt-[2px]">
+                                            <Image
+                                                src="/icons/three-dots.svg"
+                                                width={20}
+                                                height={20}
+                                                alt="Three-dots"
+                                            />
+                                        </button>
                                     </button>
-                                </button>
-                            </PopoverTrigger>
-                            <PopoverContent className="h-auto w-auto px-0 border border-solid border-[#EAECF0] bg-[#FFFFFF] rounded-md flex flex-col py-[4px] shadow-lg">
-                                {isAdmin && (
-                                <button
-                                    onClick={() => {setPopoverOpen(false); handlePin();}}
-                                    className="flex flex-row h-[40px] w-full px-3 gap-2 hover:bg-[#F2F4F7] items-center">
+                                </PopoverTrigger>
+                                <PopoverContent className="h-auto w-auto px-0 border border-solid border-[#EAECF0] bg-[#FFFFFF] rounded-md flex flex-col py-[4px] shadow-lg">
+                                    {isAdmin && (
+                                        <button
+                                            onClick={() => { setPopoverOpen(false); handlePin(); }}
+                                            className="flex flex-row h-[40px] w-full px-3 gap-2 hover:bg-[#F2F4F7] items-center">
 
-                                    <Image
-                                        src="/icons/pin-icon.svg"
-                                        width={18}
-                                        height={18}
-                                        alt="Pin"
-                                    />
-                                    <span className="text-[#0C111D] text-sm font-medium">{isPinned ? 'Unpin' : 'Pin'}</span>
-                                </button>
-                                  )} 
+                                            <Image
+                                                src="/icons/pin-icon.svg"
+                                                width={18}
+                                                height={18}
+                                                alt="Pin"
+                                            />
+                                            <span className="text-[#0C111D] text-sm font-medium">{isPinned ? 'Unpin' : 'Pin'}</span>
+                                        </button>
+                                    )}
 
-                                <button
-                                    onClick={() => {
-                                        setPopoverOpen(false);
-                                        setDeleteDialog(true);
+                                    <button
+                                        onClick={() => {
+                                            setPopoverOpen(false);
+                                            setDeleteDialog(true);
 
-                                    }}
-                                    className="flex flex-row h-[40px] w-full px-3 gap-2 hover:bg-[#FEE4E2] items-center">
-                                    <Image
-                                        src="/icons/delete.svg"
-                                        width={18}
-                                        height={18}
-                                        alt="Delete"
-                                    />
-                                    <span className="text-[#DE3024] text-sm font-medium">Delete message</span>
-                                </button>
-
-                            </PopoverContent>
-                        </Popover>
+                                        }}
+                                        className="flex flex-row h-[40px] w-full px-3 gap-2 hover:bg-[#FEE4E2] items-center">
+                                        <Image
+                                            src="/icons/delete.svg"
+                                            width={18}
+                                            height={18}
+                                            alt="Delete"
+                                        />
+                                        <span className="text-[#DE3024] text-sm font-medium">Delete message</span>
+                                    </button>
+                                </PopoverContent>
+                            </Popover>
                         )}
                     </div>
 
                 </div>
                 <div className="rounded-md bg-white break-all">
                     <div className={`text-[#3b3b3b] text-sm font-normal break-all ml-2 mt-1 mr-8 ${deleted ? 'italic' : ''}`} dangerouslySetInnerHTML={{
-                            __html: !isReplying 
+                        __html: !isReplying
+                            ? message || ''
+                            : isReplyingToMainMsg
                                 ? message || ''
-                                : isReplyingToMainMsg
-                                    ? message || ''
-                                    : `<span class="text-purple">@${replySender?.userId}</span> ${message.replace(/<p>/g, '').replace(/<\/p>/g, '')}`
-                        }} />
+                                : `<span class="text-purple">@${replySender?.userId}</span> ${message.replace(/<p>/g, '').replace(/<\/p>/g, '')}`
+                    }} />
                 </div>
                 {/* <ExpandableText content={message} /> */}
 
                 <div className="flex flex-row gap-6 items-center justify-start ">
                     <button
-                        className="flex flex-row gap-[6px] items-center justify-center"
+                        className="items-center justify-center hover:bg-[#F5F0FF] rounded-full px-3 py-2 flex flex-row gap-2 transition-colors duration-300"
                         onClick={handleAddUpvote}
                     >
                         {(upvotes ?? []).includes(currentUserId ?? '') ? (
@@ -345,7 +344,6 @@ function DiscussionDisplay({ message, userId, timestamp, messageId, isReplyingTo
                                     <span className="font-normal text-[#7400E0] text-sm">{upvotes?.length || 0}</span>
                                     <span className=" font-normal text-[#7400E0] text-sm">Upvote</span>
                                 </div>
-
                             </>
                         ) : (
                             <>
@@ -361,29 +359,26 @@ function DiscussionDisplay({ message, userId, timestamp, messageId, isReplyingTo
                                 </div>
                             </>
                         )}
-
-
-
                     </button>
                     {!deleted && (
-                    <button className=" flex flex-row gap-[6px] pb-[3px]"
-                    onClick={() => {
-                        const element = document.getElementById('discussion-input');
-                        element?.scrollIntoView({ behavior: 'smooth' });
-                        handleReplyMessage();
-                    }}>
-                    <Image
-                                    src="/icons/comment-icon.svg"
-                                    width={18}
-                                    height={18}
-                                    alt="three-icon" />
-                                <span className="text-[#1D2939] font-normal text-sm">Reply</span>
-                    </button>
+                        <button className="hover:bg-[#F5F0FF] rounded-full px-3 py-2 flex flex-row gap-2 transition-colors duration-300"
+                            onClick={() => {
+                                const element = document.getElementById('discussion-input');
+                                element?.scrollIntoView({ behavior: 'smooth' });
+                                handleReplyMessage();
+                            }}>
+                            <Image
+                                src="/icons/comment-icon.svg"
+                                width={18}
+                                height={18}
+                                alt="three-icon" />
+                            <span className="text-[#1D2939] font-normal text-sm">Reply</span>
+                        </button>
                     )}
                     {Array.isArray(replies) && replies.length > 0 && (
-                        <button 
+                        <button
                             onClick={() => setShowReplies(!showReplies)}
-                            className="flex flex-row gap-[6px] pb-[3px] text-[#9012FF] font-semibold text-sm"
+                            className="text-[#9012FF] font-semibold text-sm hover:bg-[#F5F0FF] rounded-full px-3 py-2 flex flex-row gap-2 transition-colors duration-300"
                         >
                             <span>
                                 {showReplies ? 'Hide' : 'View'} {replies.length} {replies.length === 1 ? 'Reply' : 'Replies'}
@@ -395,7 +390,7 @@ function DiscussionDisplay({ message, userId, timestamp, messageId, isReplyingTo
             {showReplies && Array.isArray(replies) && replies.length > 0 && (
                 <div className="ml-[24px]">
                     {replies.map(reply => (
-                        <DiscussionDisplay 
+                        <DiscussionDisplay
                             key={reply.messageId}
                             {...reply}
                             courseId={courseId}
@@ -406,7 +401,6 @@ function DiscussionDisplay({ message, userId, timestamp, messageId, isReplyingTo
                 </div>
             )}
             <Modal isOpen={deletedialog} onOpenChange={(isOpen) => !isOpen && setDeleteDialog(false)} hideCloseButton >
-
                 <ModalContent>
                     <>
                         <ModalHeader className="flex flex-row justify-between items-center gap-1">

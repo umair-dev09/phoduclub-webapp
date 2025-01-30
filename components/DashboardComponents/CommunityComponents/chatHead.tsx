@@ -250,18 +250,21 @@ function ChatHead({ channelName, channelId, channelEmoji, members, chats, commun
 
                             </>
                         ) : (
-                           <></>
+                            <></>
                         )}
-                         <button className='flex flex-row gap-2 items-center h-10 w-[206px] px-4 hover:bg-[#EAECF0] '
-                                onClick={() => setMediaDialog(true)}>
-                                <Image
-                                    src="/icons/media.svg"
-                                    width={18}
-                                    height={18}
-                                    alt="media-icon"
-                                />
-                                <span className='font-normal text-[#0C111D] text-sm'>Media</span>
-                            </button>
+                        <button className='flex flex-row gap-2 items-center h-10 w-[206px] px-4 hover:bg-[#EAECF0] '
+                            onClick={() => {
+                                setMediaDialog(true);
+                                setIsPopoverOpen(false);
+                            }}>
+                            <Image
+                                src="/icons/media.svg"
+                                width={18}
+                                height={18}
+                                alt="media-icon"
+                            />
+                            <span className='font-normal text-[#0C111D] text-sm'>Media</span>
+                        </button>
 
 
 

@@ -12,7 +12,7 @@ import HeaderLoading from './HeaderLoading';
 import HelpDropDown from './HelpDropdown';
 import { useRouter } from 'next/navigation';
 import { toast } from 'react-toastify';
-
+import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button } from "@nextui-org/react";
 type UserData = {
     name: string | null;
     userId: string | null;
@@ -27,6 +27,7 @@ function Header() {
     const [error, setError] = useState(false);
     const [open, setOpen] = useState(false);
     const [user, setUser] = useState<User | null>(null);
+    const [logoutdialog, setLogoutdialog] = useState(false);
     const db = getFirestore();
 
     useEffect(() => {
@@ -89,7 +90,7 @@ function Header() {
                         <PopoverTrigger>
                             <button className='flex flex-row items-center focus:outline-none'>
                                 <div className="relative">
-                                    <Image className="rounded-[50%] ml-[8px]" src={userData?.profilePic || "/defaultDP.svg"} width={38} height={38} quality={100} alt="Profile Picture" />
+                                    <Image className="rounded-[50%] ml-[8px] min-w-[38px]" src={userData?.profilePic || "/defaultDP.svg"} width={38} height={38} quality={100} alt="Profile Picture" />
                                     {userData?.isPremium && (
                                         <Image
                                             className="absolute right-[-2px] bottom-0"
@@ -115,7 +116,10 @@ function Header() {
                                 <Image src="/icons/profile.svg" width={18} height={18} alt="Edit-profile" />
                                 <p className="text-sm text-[#0C111D] ml-2">My profile</p>
                             </button>
-                            <button className="flex items-center p-3 hover:bg-[#FEE4E2] w-full" onClick={handleLogout}>
+                            <button className="flex items-center p-3 hover:bg-[#FEE4E2] w-full" onClick={() => {
+                                setOpen(false);
+                                setLogoutdialog(true);
+                            }}>
                                 <Image src="/icons/logout-03.svg" width={18} height={18} alt="Log out" />
                                 <p className="text-sm text-[#DE3024] ml-2">Log out</p>
                             </button>
@@ -123,6 +127,35 @@ function Header() {
                     </Popover>
                 </div>
             </div>
+            <Modal isOpen={logoutdialog} onOpenChange={(isOpen) => !isOpen && setLogoutdialog(false)} hideCloseButton
+            >
+
+                <ModalContent>
+                    <>
+                        <ModalHeader className="flex flex-row justify-between items-center gap-1">
+                            <h3 className=" font-bold text-[#1D2939]">Log out?</h3>
+                            <button className="w-[32px] h-[32px]  rounded-full flex items-center justify-center transition-all duration-300 ease-in-out hover:bg-[#F2F4F7]"
+                                onClick={() => setLogoutdialog(false)} >
+                                <button >
+                                    <Image src="/icons/cancel.svg" alt="Cancel" width={20} height={20} />
+                                </button>
+                            </button>
+                        </ModalHeader>
+                        <ModalBody>
+                            <div className=" h-auto   flex flex-col">
+                                <span className="text-sm font-normal text-[#667085]">
+                                    Are you sure you want to log out? You will need to log in again to access your account.</span>
+                            </div>
+
+                        </ModalBody>
+                        <ModalFooter className="border-t border-lightGrey">
+                            <Button variant="light" className="py-[0.625rem] px-6 border-[1.5px] border-lightGrey font-semibold text-sm text-[#1D2939] rounded-md" onClick={() => setLogoutdialog(false)}>Cancel</Button>
+                            <Button className="py-[0.625rem] px-6 text-white font-semibold shadow-inner-button  hover:bg-[#B0201A] bg-[#BB241A] border border-white rounded-md " onClick={handleLogout} > Log out</Button>
+
+                        </ModalFooter>
+                    </>
+                </ModalContent>
+            </Modal >
         </div>
     );
 }

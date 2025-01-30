@@ -178,135 +178,135 @@ function Course() {
       const unsubscribeRefs: (() => void)[] = [];
 
       const unsubscribeSections = onSnapshot(
-      q,
-      (snapshot) => {
-        const sectionsData: Sections[] = snapshot.docs.map((doc) => ({
-        sectionName: doc.data().sectionName,
-        sectionScheduleDate: doc.data().sectionScheduleDate,
-        noOfLessons: doc.data().noOfLessons,
-        sectionId: doc.data().sectionId,
-        content: [], 
-        }));
-        setSections(sectionsData);
-        setLoading(false);
+        q,
+        (snapshot) => {
+          const sectionsData: Sections[] = snapshot.docs.map((doc) => ({
+            sectionName: doc.data().sectionName,
+            sectionScheduleDate: doc.data().sectionScheduleDate,
+            noOfLessons: doc.data().noOfLessons,
+            sectionId: doc.data().sectionId,
+            content: [],
+          }));
+          setSections(sectionsData);
+          setLoading(false);
 
-        // Fetch content for each section
-        snapshot.docs.forEach((doc) => {
-        const sectionId = doc.id;
-        const contentRef = collection(db, 'course', courseId, 'sections', sectionId, 'content');
-        const contentQuery = query(contentRef);
+          // Fetch content for each section
+          snapshot.docs.forEach((doc) => {
+            const sectionId = doc.id;
+            const contentRef = collection(db, 'course', courseId, 'sections', sectionId, 'content');
+            const contentQuery = query(contentRef);
 
-        const unsubscribeContent = onSnapshot(contentQuery, async (contentSnapshot) => {
-          const contentData: Content[] = await Promise.all(
-          contentSnapshot.docs.map(async (contentDoc) => {
-            const contentType = contentDoc.data().type;
+            const unsubscribeContent = onSnapshot(contentQuery, async (contentSnapshot) => {
+              const contentData: Content[] = await Promise.all(
+                contentSnapshot.docs.map(async (contentDoc) => {
+                  const contentType = contentDoc.data().type;
 
-            // Fetch questions for the content
-            const questionsCollection = collection(
-            db,
-            'course',
-            courseId,
-            'sections',
-            sectionId,
-            'content',
-            contentDoc.id,
-            'Questions'
-            );
-            const questionsSnapshot = await getDocs(questionsCollection);
-            const fetchedQuestions: Question[] = questionsSnapshot.docs.map((doc) => {
-            const data = doc.data();
-            return {
-              question: data.question,
-              questionId: data.questionId,
-              isChecked: false,
-              isActive: false,
-              options: {
-              A: data.options.A,
-              B: data.options.B,
-              C: data.options.C,
-              D: data.options.D,
-              },
-              correctAnswer: data.correctAnswer?.replace('option', ''),
-              answerExplanation: data.answerExplanation || '',
-              order: data.order,
-            };
+                  // Fetch questions for the content
+                  const questionsCollection = collection(
+                    db,
+                    'course',
+                    courseId,
+                    'sections',
+                    sectionId,
+                    'content',
+                    contentDoc.id,
+                    'Questions'
+                  );
+                  const questionsSnapshot = await getDocs(questionsCollection);
+                  const fetchedQuestions: Question[] = questionsSnapshot.docs.map((doc) => {
+                    const data = doc.data();
+                    return {
+                      question: data.question,
+                      questionId: data.questionId,
+                      isChecked: false,
+                      isActive: false,
+                      options: {
+                        A: data.options.A,
+                        B: data.options.B,
+                        C: data.options.C,
+                        D: data.options.D,
+                      },
+                      correctAnswer: data.correctAnswer?.replace('option', ''),
+                      answerExplanation: data.answerExplanation || '',
+                      order: data.order,
+                    };
+                  });
+                  const questionsCount = questionsSnapshot.size;
+
+                  // Get quiz attempt data if content is Quiz
+                  let quizAttempt: QuizAttempt | null = null;
+                  if (contentType === 'Quiz') {
+                    const attemptRef = firestoreDoc(
+                      db,
+                      'course',
+                      courseId,
+                      'sections',
+                      sectionId,
+                      'content',
+                      contentDoc.id,
+                      'attempts',
+                      currentUserId
+                    );
+                    const attemptSnapshot = await getDoc(attemptRef);
+                    if (attemptSnapshot.exists()) {
+                      const data = attemptSnapshot.data();
+                      quizAttempt = {
+                        AnsweredQuestions: data.AnsweredQuestions || [],
+                        userId: currentUserId,
+                        timeTaken: data.timeTaken || 0,
+                        totalTime: data.totalTime || 0,
+                      };
+                    }
+                  }
+
+                  return {
+                    lessonHeading: contentDoc.data().lessonHeading,
+                    lessonScheduleDate: contentDoc.data().lessonScheduleDate,
+                    type: contentType,
+                    contentId: contentDoc.id,
+                    isDisscusionOpen: contentDoc.data().isDisscusionOpen,
+                    lessonContent: contentDoc.data().lessonContent,
+                    lessonOverView: contentDoc.data().lessonOverView,
+                    pdfLink: contentDoc.data().pdfLink,
+                    pdfSize: contentDoc.data().pdfSize,
+                    videoLink: contentDoc.data().videoLink,
+                    marksPerQuestion: contentDoc.data().marksPerQuestion,
+                    nMarksPerQuestion: contentDoc.data().nMarksPerQuestion,
+                    quizTime: contentDoc.data().quizTime,
+                    videoDuration: contentDoc.data().videoDuration,
+                    questionsCount: questionsCount,
+                    videoId: contentDoc.data().videoId,
+                    questionsList: fetchedQuestions,
+                    StudentsCompleted: contentDoc.data().StudentsCompleted,
+                    lessonViewed: contentDoc.data().lessonViewed,
+                    quizAttempt: quizAttempt
+                  };
+                })
+              );
+
+              setSections((prevSections) =>
+                prevSections.map((section) =>
+                  section.sectionId === sectionId ? { ...section, content: contentData } : section
+                )
+              );
             });
-            const questionsCount = questionsSnapshot.size;
 
-            // Get quiz attempt data if content is Quiz
-            let quizAttempt: QuizAttempt | null = null;
-            if (contentType === 'Quiz') {
-            const attemptRef = firestoreDoc(
-              db,
-              'course',
-              courseId,
-              'sections',
-              sectionId,
-              'content',
-              contentDoc.id,
-              'attempts',
-              currentUserId
-            );
-            const attemptSnapshot = await getDoc(attemptRef);
-            if (attemptSnapshot.exists()) {
-              const data = attemptSnapshot.data();
-              quizAttempt = {
-              AnsweredQuestions: data.AnsweredQuestions || [],
-              userId: currentUserId,
-              timeTaken: data.timeTaken || 0,
-              totalTime: data.totalTime || 0,
-              };
-            }
-            }
-
-            return {
-            lessonHeading: contentDoc.data().lessonHeading,
-            lessonScheduleDate: contentDoc.data().lessonScheduleDate,
-            type: contentType,
-            contentId: contentDoc.id,
-            isDisscusionOpen: contentDoc.data().isDisscusionOpen,
-            lessonContent: contentDoc.data().lessonContent,
-            lessonOverView: contentDoc.data().lessonOverView,
-            pdfLink: contentDoc.data().pdfLink,
-            pdfSize: contentDoc.data().pdfSize,
-            videoLink: contentDoc.data().videoLink,
-            marksPerQuestion: contentDoc.data().marksPerQuestion,
-            nMarksPerQuestion: contentDoc.data().nMarksPerQuestion,
-            quizTime: contentDoc.data().quizTime,
-            videoDuration: contentDoc.data().videoDuration,
-            questionsCount: questionsCount,
-            videoId: contentDoc.data().videoId,
-            questionsList: fetchedQuestions,
-            StudentsCompleted: contentDoc.data().StudentsCompleted,
-            lessonViewed: contentDoc.data().lessonViewed,
-            quizAttempt: quizAttempt
-            };
-          })
-          );
-
-          setSections((prevSections) =>
-          prevSections.map((section) =>
-            section.sectionId === sectionId ? { ...section, content: contentData } : section
-          )
-          );
-        });
-
-        unsubscribeRefs.push(unsubscribeContent);
-        });
-      },
-      (error) => {
-        console.error('Error fetching sections:', error);
-        setLoading(false);
-      }
+            unsubscribeRefs.push(unsubscribeContent);
+          });
+        },
+        (error) => {
+          console.error('Error fetching sections:', error);
+          setLoading(false);
+        }
       );
 
       unsubscribeRefs.push(unsubscribeSections);
 
       return () => {
-      unsubscribeRefs.forEach(unsubscribe => unsubscribe());
+        unsubscribeRefs.forEach(unsubscribe => unsubscribe());
       };
     }
-    }, [courseId, auth.currentUser]);
+  }, [courseId, auth.currentUser]);
   // Add this useEffect after your existing useEffects
   useEffect(() => {
     // Only set initial content if no content is currently selected
@@ -352,17 +352,17 @@ function Course() {
                 totalTime: data.totalTime || 0,
               };
 
-              setSections(prevSections => 
-                prevSections.map(s => 
+              setSections(prevSections =>
+                prevSections.map(s =>
                   s.sectionId === section.sectionId
                     ? {
-                        ...s,
-                        content: s.content?.map(c =>
-                          c.contentId === content.contentId
-                            ? { ...c, quizAttempt }
-                            : c
-                        )
-                      }
+                      ...s,
+                      content: s.content?.map(c =>
+                        c.contentId === content.contentId
+                          ? { ...c, quizAttempt }
+                          : c
+                      )
+                    }
                     : s
                 )
               );
@@ -564,11 +564,11 @@ function Course() {
 
         const ref = firestoreDoc(db, 'course', courseId, 'sections', sectionId, 'content', contentId);
 
-          // Add the user if they are not in StudentsCompleted
-          await updateDoc(ref, {
-            lessonViewed: arrayUnion(currentUserId),
-          });
-        
+        // Add the user if they are not in StudentsCompleted
+        await updateDoc(ref, {
+          lessonViewed: arrayUnion(currentUserId),
+        });
+
       } catch (error) {
         console.error('Error updating course document:', error);
         toast.error('Failed to mark lesson completed');
@@ -699,7 +699,7 @@ function Course() {
                   key={index}
                   trigger={
                     <div
-                      className="h-[60px] flex flex-row justify-between py-2 px-4 items-center hover:bg-[#EAECF0]"
+                      className="h-[60px] flex flex-row justify-between py-2 px-4 items-center transition-colors duration-300 hover:bg-[#F9FAFB]"
                       onClick={() => toggleCollapsible(index)} // Pass section name to toggle function
                     >
                       <span className="font-semibold text-base text-[#1D2939] text-left">{index + 1}. {section.sectionName}</span>
@@ -727,95 +727,94 @@ function Course() {
                           return (
                             <button
                               key={index}
-                              className={`${
-                              selectedContent?.contentId === content.contentId 
-                              ? 'bg-[#F8F0FF]' 
-                              : isCompleted 
-                              ? 'bg-green-100' 
-                              : isLessonViewed 
-                              ? 'bg-gray-100' 
-                              : 'bg-[#FFFFFF]'
-                              } w-auto mx-2 mb-[6px] rounded-md flex flex-row items-top justify-center gap-2 h-auto py-3 px-4 hover:bg-[#F8F0FF]`}
+                              className={`${selectedContent?.contentId === content.contentId
+                                ? 'bg-[#F8F0FF]'
+                                : isCompleted
+                                  ? 'bg-green-100'
+                                  : isLessonViewed
+                                    ? 'bg-gray-100'
+                                    : 'bg-[#FFFFFF]'
+                                } w-auto mx-2 mb-[6px] rounded-md flex flex-row items-top justify-center gap-2 h-auto py-3 px-4 hover:bg-[#F8F0FF]`}
                               onClick={() => {
-                              setSelectedContent(content);
-                              setSectionId(section.sectionId);
-                              if(!isLessonViewed){
-                              handleMarkContentViewed(content.contentId, section.sectionId);
-                              }
+                                setSelectedContent(content);
+                                setSectionId(section.sectionId);
+                                if (!isLessonViewed) {
+                                  handleMarkContentViewed(content.contentId, section.sectionId);
+                                }
                               }}
                             >
                               {!isCompleted ? (
-                              <Tooltip
-                              content="Mark as Complete"
-                              placement="left"
-                              offset={15}
-                              closeDelay={100}
-                              classNames={{
-                              content: [
-                                "bg-[#222222] text-white text-sm py-2 px-4 rounded-md",
-                              ],
-                              }}
-                              >
-                              <Checkbox
-                              size="md"
-                              color="secondary"
-                              radius="full"
-                              isSelected={isCompleted}
-                              onClick={() => handleMarkContentCompleted(content.contentId, section.sectionId, content.StudentsCompleted)}
-                              />
-                              </Tooltip>
+                                <Tooltip
+                                  content="Mark as Complete"
+                                  placement="left"
+                                  offset={15}
+                                  closeDelay={100}
+                                  classNames={{
+                                    content: [
+                                      "bg-[#222222] text-white text-sm py-2 px-4 rounded-md",
+                                    ],
+                                  }}
+                                >
+                                  <Checkbox
+                                    size="md"
+                                    color="secondary"
+                                    radius="full"
+                                    isSelected={isCompleted}
+                                    onClick={() => handleMarkContentCompleted(content.contentId, section.sectionId, content.StudentsCompleted)}
+                                  />
+                                </Tooltip>
                               ) : (
-                              <Checkbox
-                              size="md"
-                              color="secondary"
-                              radius="full"
-                              isSelected={isCompleted}
-                              onClick={() => handleMarkContentCompleted(content.contentId, section.sectionId, content.StudentsCompleted)}
-                              />
+                                <Checkbox
+                                  size="md"
+                                  color="secondary"
+                                  radius="full"
+                                  isSelected={isCompleted}
+                                  onClick={() => handleMarkContentCompleted(content.contentId, section.sectionId, content.StudentsCompleted)}
+                                />
                               )}
                               <div className="flex flex-col gap-1 pt-[-2px] w-full">
-                              <span className="font-semibold text-sm text-[#1D2939] text-left">
-                              {index + 1}. {content.lessonHeading}
-                              </span>
-                              {content.type === "Text" && (
-                              <div className="flex flex-row text-sm font-normal it">
-                              <Image
-                                className="mr-1"
-                                src="/icons/read.svg"
-                                alt="test-icon"
-                                width={16}
-                                height={16}
-                              />
-                              <div>---</div>
-                              </div>
-                              )}
-                              {content.type === "Video" && (
-                              <div className="flex flex-row text-sm font-normal it">
-                              <Image
-                                className="mr-1"
-                                src="/icons/vedio.svg"
-                                alt="video-icon"
-                                width={16}
-                                height={16}
-                              />
-                              <div>
-                                {formatDuration(content.videoDuration) || "00:00"}
-                              </div>
+                                <span className="font-semibold text-sm text-[#1D2939] text-left">
+                                  {index + 1}. {content.lessonHeading}
+                                </span>
+                                {content.type === "Text" && (
+                                  <div className="flex flex-row text-sm font-normal it">
+                                    <Image
+                                      className="mr-1"
+                                      src="/icons/read.svg"
+                                      alt="test-icon"
+                                      width={16}
+                                      height={16}
+                                    />
+                                    <div>---</div>
+                                  </div>
+                                )}
+                                {content.type === "Video" && (
+                                  <div className="flex flex-row text-sm font-normal it">
+                                    <Image
+                                      className="mr-1"
+                                      src="/icons/vedio.svg"
+                                      alt="video-icon"
+                                      width={16}
+                                      height={16}
+                                    />
+                                    <div>
+                                      {formatDuration(content.videoDuration) || "00:00"}
+                                    </div>
 
-                              </div>
-                              )}
-                              {content.type === "Quiz" && (
-                              <div className="flex flex-row text-sm font-normal it">
-                              <Image
-                                className="mr-1"
-                                src="/icons/test.svg"
-                                alt="video-icon"
-                                width={16}
-                                height={16}
-                              />
-                              <div>{content.questionsCount} Questions</div>
-                              </div>
-                              )}
+                                  </div>
+                                )}
+                                {content.type === "Quiz" && (
+                                  <div className="flex flex-row text-sm font-normal it">
+                                    <Image
+                                      className="mr-1"
+                                      src="/icons/test.svg"
+                                      alt="video-icon"
+                                      width={16}
+                                      height={16}
+                                    />
+                                    <div>{content.questionsCount} Questions</div>
+                                  </div>
+                                )}
                               </div>
                             </button>
                           );
