@@ -176,11 +176,11 @@ function Community() {
                         transitionTime={350}
                         open={isOpenArray[index]}
                     >
-                        <div className="rounded-lg h-auto border border-solid border-[#EAECF0] mx-6 mb-4 ">
+                        <div className="rounded-lg h-auto border border-solid border-[#EAECF0] mx-6 mb-4">
                             {group.channels.map((channel, channelIndex) => (
                                 <div
                                     key={channelIndex}
-                                    className={`flex flex-row h-[50px] hover:bg-[#F9FAFB] justify-between items-center p-6 ${channelIndex !== 0 ? "border-t border-solid border-[#EAECF0]" : ""
+                                    className={`flex flex-row h-[50px] justify-between items-center p-6 ${channelIndex !== 0 ? "border-t border-solid border-[#EAECF0]" : ""
                                         }`}
                                 >
                                     <div className="flex flex-row gap-2">

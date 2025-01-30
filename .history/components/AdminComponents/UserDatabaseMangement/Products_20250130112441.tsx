@@ -5,8 +5,6 @@ import { useState } from "react";
 function Products() {
     const [popoveropen1, setPopoveropen1] = useState<number | null>(null);
     const [pausedialog, setPausedialog] = useState(false);
-    const [resume, setResume] = useState(false);
-    const [remove, setRemove] = useState(false);
     const handlePopoverOpen1 = (index: number) => {
         setPopoveropen1(index);
     };
@@ -64,15 +62,10 @@ function Products() {
                                 <td className="w-[20%] px-6 py-4 text-center text-gray-700">{course.date}</td>
                                 <td className="w-[10%] px-6 py-4 text-right text-gray-500">
                                     <Popover placement="bottom-end"
-                                        isOpen={popoveropen1 === course.id}
-                                        onOpenChange={(open) => open ? handlePopoverOpen1(course.id) : setPopoveropen1(null)}>
+                                        isOpen={popoveropen1 === course}
+                                        onOpenChange={(open) => open ? handlePopoverOpen1(course) : setPopoveropen1(null)}>
                                         <PopoverTrigger className="outline-none">
-
-                                            <button className="w-[32px] h-[32px]  rounded-full flex items-center justify-center transition-all duration-300 ease-in-out hover:bg-[#F2F4F7] "
-                                            >
-
-                                                <Image src="/icons/three-dots.svg" width={18} height={18} alt="three-dots" className="outline-none" />
-                                            </button>
+                                            <button className="mr-[25%] text-xl font-bold">⋮</button>
                                         </PopoverTrigger>
                                         <PopoverContent className=" w-[167px] px-0 border border-solid border-[#EAECF0] bg-[#FFFFFF] rounded-md  shadow-lg">
                                             <button
@@ -87,7 +80,6 @@ function Products() {
                                                 <span className="text-[#0C111D] text-sm font-medium">Pause</span>
                                             </button>
                                             <button
-                                                onClick={() => { setPopoveropen1(null); setResume(true) }}
                                                 className="flex flex-row h-[40px] w-full p-3  gap-2 hover:bg-[#F2F4F7] items-center">
                                                 <Image
                                                     src="/icons/resume-2.svg"
@@ -98,8 +90,7 @@ function Products() {
                                                 <span className="text-[#0C111D] text-sm font-medium">Resume</span>
                                             </button>
                                             <button
-                                                onClick={() => { setPopoveropen1(null); setRemove(true) }}
-                                                className="flex flex-row h-[40px] w-full p-3  gap-2 hover:bg-[#FEE4E2] items-center">
+                                                className="flex flex-row h-[40px] w-full p-3  gap-2 hover:bg-[#F2F4F7] items-center">
                                                 <Image
                                                     src="/icons/delete.svg"
                                                     width={18}
@@ -117,7 +108,7 @@ function Products() {
                 </table>
             </div>
             {/* MODAL FOR PAUSE */}
-            <Modal isOpen={pausedialog} onOpenChange={(isOpen) => !isOpen && setPausedialog(false)} hideCloseButton >
+            <Modal isOpen={true} onOpenChange={(isOpen) => !isOpen && onClose()} hideCloseButton >
                 <ModalContent>
                     <>
                         <ModalHeader className="flex flex-row justify-between items-center gap-1">
@@ -126,86 +117,22 @@ function Products() {
 
                             </h3>
                             <button className="w-[32px] h-[32px]  rounded-full flex items-center justify-center transition-all duration-300 ease-in-out hover:bg-[#F2F4F7] ">
-                                <button className="" onClick={() => setPausedialog(false)}>
+                                <button className="" onClick={onClose}>
                                     <Image src="/icons/cancel.svg" alt="Cancel" width={20} height={20} />
                                 </button>
                             </button>
                         </ModalHeader>
                         <ModalBody >
-                            <p className=" text-sm  pb-2 font-normal text-[#667085]">  Are you sure you want to pause this course?</p>
+                            <p className=" text-sm  pb-2 font-normal text-[#667085]">Lorem ipsum is placeholder text commonly used</p>
                         </ModalBody>
                         <ModalFooter className="border-t border-lightGrey">
-                            <Button variant="light" className="py-[0.625rem] px-6 border-[1.5px] border-lightGrey rounded-md font-semibold text-sm hover:bg-[#F2F4F7] " onClick={() => setPausedialog(false)}>Cancel</Button>
-                            <Button onClick={() => setPausedialog(false)} className="py-[0.625rem] px-6 text-white shadow-inner-button bg-[#BB241A] font-semibold text-sm  hover:bg-[#B0201A] border border-[#DE3024] rounded-md">Pause
+                            <Button variant="light" className="py-[0.625rem] px-6 border-[1.5px] border-lightGrey rounded-md font-semibold text-sm hover:bg-[#F2F4F7] " onClick={onClose}>Cancel</Button>
+                            <Button onClick={onPause} className="py-[0.625rem] px-6 text-white shadow-inner-button bg-[#BB241A] font-semibold text-sm  hover:bg-[#B0201A] border border-[#DE3024] rounded-md">Pause
                             </Button>
                         </ModalFooter>
                     </>
                 </ModalContent>
             </Modal >
-            {/* MODAL FOR RESUME */}
-            <Modal
-                isOpen={resume}
-                onOpenChange={(isOpen) => !isOpen && setResume(false)}
-                hideCloseButton
-            >
-                <ModalContent>
-                    <>
-                        {/* Modal Header */}
-                        <ModalHeader className="flex flex-row justify-between items-center gap-1">
-                            <h3 className=" font-bold task-[#1D2939]">Live</h3>
-                            <button className="w-[32px] h-[32px]  rounded-full flex items-center justify-center transition-all duration-300 ease-in-out hover:bg-[#F2F4F7] ">
-                                <button className="" onClick={() => setResume(false)}>
-                                    <Image src="/icons/cancel.svg" alt="Cancel" width={20} height={20} />
-                                </button>
-                            </button>
-                        </ModalHeader>
-
-                        {/* Modal Body */}
-                        <ModalBody className="">
-                            <p className=" text-sm  pb-2 font-normal text-[#667085]">Are you sure you want to live this.</p>
-                        </ModalBody>
-
-                        {/* Modal Footer */}
-                        <ModalFooter className="border-t border-lightGrey">
-                            <Button variant="light" className="py-[0.625rem] px-6 border-[1.5px] border-lightGrey rounded-md font-semibold text-sm hover:bg-[#F2F4F7] " onClick={() => setResume(false)}>Cancel</Button>
-                            <Button onClick={() => setResume(false)} className="py-[0.625rem] px-6 text-white shadow-inner-button bg-[#8501FF]  font-semibold text-sm border border-[#9012FF]  hover:bg-[#6D0DCC]  rounded-md">Make it
-                                live now</Button>
-                        </ModalFooter>
-                    </>
-                </ModalContent>
-            </Modal>
-            {/* MODAL FOR REMOVE */}
-            <Modal
-                isOpen={remove}
-                onOpenChange={(isOpen) => !isOpen && setRemove(false)}
-                hideCloseButton
-            >
-                <ModalContent>
-                    <>
-                        {/* Modal Header */}
-                        <ModalHeader className="flex flex-row justify-between items-center gap-1">
-                            <h3 className=" font-bold task-[#1D2939]">Remove Acess</h3>
-                            <button className="w-[32px] h-[32px]  rounded-full flex items-center justify-center transition-all duration-300 ease-in-out hover:bg-[#F2F4F7] ">
-                                <button className="" onClick={() => setRemove(false)}>
-                                    <Image src="/icons/cancel.svg" alt="Cancel" width={20} height={20} />
-                                </button>
-                            </button>
-                        </ModalHeader>
-
-                        {/* Modal Body */}
-                        <ModalBody className="">
-                            <p className=" text-sm  pb-2 font-normal text-[#667085]">Are you sure you want to remove the access?</p>
-                        </ModalBody>
-
-                        {/* Modal Footer */}
-                        <ModalFooter className="border-t border-lightGrey">
-                            <Button variant="light" className="py-[0.625rem] px-6 border-[1.5px] border-lightGrey rounded-md font-semibold text-sm hover:bg-[#F2F4F7] " onClick={() => setRemove(false)}>Cancel</Button>
-                            <Button onClick={() => setRemove(false)} className="py-[0.625rem] px-6 text-white shadow-inner-button bg-[#BB241A] hover:bg-[#B0201A] font-semibold text-sm  rounded-md">Remove</Button>
-                        </ModalFooter>
-                    </>
-                </ModalContent>
-            </Modal>
-
 
         </div>
 

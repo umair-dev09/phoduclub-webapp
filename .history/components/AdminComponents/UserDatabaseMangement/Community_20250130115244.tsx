@@ -46,35 +46,21 @@ const data = [
 ];
 
 function Community() {
-    const [remove, setRemove] = useState(false); // Whether the modal is open
-    const [removeAction, setRemoveAction] = useState<'group' | 'channel' | null>(null)
+    const [remove, setRemove] = useState(false);
     const [popoveropen1, setPopoveropen1] = useState<number | null>(null);
-    const [popoveropen2, setPopoveropen2] = useState<{ groupIndex: number | null, channelIndex: number | null }>({
-        groupIndex: null,
-        channelIndex: null
-    });
     const handlePopoverOpen1 = (index: number) => {
         setPopoveropen1(index);
     };
-    const handlePopoverOpen2 = (groupIndex: number, channelIndex: number) => {
-        setPopoveropen2({
-            groupIndex,
-            channelIndex
-        });
-    };
-
     const [isOpenArray, setIsOpenArray] = useState(
         new Array(data.length).fill(false) // Dynamically initialize based on the number of groups
     );
+
+
     // Function to toggle a specific collapsible's state
     const toggleCollapsible = (index: number) => {
         const newIsOpenArray = [...isOpenArray];
         newIsOpenArray[index] = !newIsOpenArray[index]; // Toggle the specific index
         setIsOpenArray(newIsOpenArray);
-    };
-    const handleRemoveAction = (action: 'group' | 'channel') => {
-        setRemoveAction(action); // Set the action (group or channel)
-        setRemove(true); // Open the modal
     };
     return (
         <div className="flex flex-col gap-6 p-8">
@@ -142,22 +128,19 @@ function Community() {
                                     isOpen={popoveropen1 === index}
                                     onOpenChange={(open) => open ? handlePopoverOpen1(index) : setPopoveropen1(null)}>
                                     <PopoverTrigger>
-                                        <button className="w-[32px] h-[32px]  rounded-full flex items-center justify-center transition-all duration-300 ease-in-out hover:bg-[#F2F4F7] ">
-
-                                            <button>
-                                                <Image
-                                                    src="/icons/more-vertical.svg"
-                                                    alt="more"
-                                                    width={24}
-                                                    height={24}
-                                                />
-                                            </button>
+                                        <button>
+                                            <Image
+                                                src="/icons/more-vertical.svg"
+                                                alt="more"
+                                                width={24}
+                                                height={24}
+                                            />
                                         </button>
                                     </PopoverTrigger>
                                     <PopoverContent className="w-auto px-0 py-1 rounded-md">
                                         <button
-                                            className="flex flex-row items-center w-full px-4 py-[0.625rem] gap-2 transition-colors hover:bg-[#FEE4E2]"
-                                            onClick={(e) => { e.stopPropagation(); setPopoveropen1(null); handleRemoveAction('group') }}
+                                            className="flex flex-row items-center w-full px-4 py-[0.625rem] gap-2 transition-colors hover:bg-[#F2F4F7]"
+                                            onClick={(e) => { e.stopPropagation(); setPopoveropen1(null) }}
                                         >
                                             <Image
                                                 src="/icons/delete.svg"
@@ -176,11 +159,11 @@ function Community() {
                         transitionTime={350}
                         open={isOpenArray[index]}
                     >
-                        <div className="rounded-lg h-auto border border-solid border-[#EAECF0] mx-6 mb-4 ">
+                        <div className="rounded-lg h-auto border border-solid border-[#EAECF0] mx-6 mb-4">
                             {group.channels.map((channel, channelIndex) => (
                                 <div
                                     key={channelIndex}
-                                    className={`flex flex-row h-[50px] hover:bg-[#F9FAFB] justify-between items-center p-6 ${channelIndex !== 0 ? "border-t border-solid border-[#EAECF0]" : ""
+                                    className={`flex flex-row h-[50px] justify-between items-center p-6 ${channelIndex !== 0 ? "border-t border-solid border-[#EAECF0]" : ""
                                         }`}
                                 >
                                     <div className="flex flex-row gap-2">
@@ -194,35 +177,20 @@ function Community() {
                                             {channel.name}
                                         </span>
                                     </div>
-                                    <Popover placement="bottom-end"
-                                        isOpen={popoveropen2.groupIndex === index && popoveropen2.channelIndex === channelIndex}
-                                        onOpenChange={(open) => {
-                                            if (open) {
-                                                handlePopoverOpen2(index, channelIndex);
-                                            } else {
-                                                setPopoveropen2({ groupIndex: null, channelIndex: null });
-                                            }
-                                        }}>
+                                    <Popover placement="bottom-end">
                                         <PopoverTrigger>
-                                            <button className="w-[32px] h-[32px]  rounded-full flex items-center justify-center transition-all duration-300 ease-in-out hover:bg-[#F2F4F7] ">
-
-                                                <button>
-                                                    <Image
-                                                        src="/icons/more-vertical.svg"
-                                                        alt="more"
-                                                        width={24}
-                                                        height={24}
-                                                    />
-                                                </button>
+                                            <button>
+                                                <Image
+                                                    src="/icons/more-vertical.svg"
+                                                    alt="more"
+                                                    width={24}
+                                                    height={24}
+                                                />
                                             </button>
                                         </PopoverTrigger>
                                         <PopoverContent className="w-auto px-0 py-1 rounded-md">
                                             <button
-                                                className="flex flex-row items-center w-full px-4 py-[0.625rem] gap-2 transition-colors hover:bg-[#FEE4E2]"
-                                                onClick={() => {
-                                                    setPopoveropen2({ groupIndex: null, channelIndex: null });
-                                                    handleRemoveAction('channel');
-                                                }}
+                                                className="flex flex-row items-center w-full px-4 py-[0.625rem] gap-2 transition-colors hover:bg-[#F2F4F7]"
                                             >
                                                 <Image
                                                     src="/icons/delete.svg"
@@ -251,25 +219,17 @@ function Community() {
                     <>
                         {/* Modal Header */}
                         <ModalHeader className="flex flex-row justify-between items-center gap-1">
-                            <h3 className=" font-bold task-[#1D2939]">
-                                {removeAction === 'group' ? 'Remove from Group' : 'Remove from Channel'}
-
-
-                            </h3>
+                            <h3 className=" font-bold task-[#1D2939]">Remove Acess</h3>
                             <button className="w-[32px] h-[32px]  rounded-full flex items-center justify-center transition-all duration-300 ease-in-out hover:bg-[#F2F4F7] ">
                                 <button className="" onClick={() => setRemove(false)}>
                                     <Image src="/icons/cancel.svg" alt="Cancel" width={20} height={20} />
                                 </button>
                             </button>
-
-
                         </ModalHeader>
 
                         {/* Modal Body */}
                         <ModalBody className="">
-                            <p className=" text-sm  pb-2 font-normal text-[#667085]">
-                                Are you sure you want to {removeAction === 'group' ? 'remove the user from group' : 'remove the user from channel'}? This action cannot be undone.
-                            </p>
+                            <p className=" text-sm  pb-2 font-normal text-[#667085]">Are you sure you want to remove the access?</p>
                         </ModalBody>
 
                         {/* Modal Footer */}

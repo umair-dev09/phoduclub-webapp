@@ -132,7 +132,7 @@ function Products() {
                             </button>
                         </ModalHeader>
                         <ModalBody >
-                            <p className=" text-sm  pb-2 font-normal text-[#667085]">  Are you sure you want to pause this course?</p>
+                            <p className=" text-sm  pb-2 font-normal text-[#667085]">  Are you sure you want to pause the course?</p>
                         </ModalBody>
                         <ModalFooter className="border-t border-lightGrey">
                             <Button variant="light" className="py-[0.625rem] px-6 border-[1.5px] border-lightGrey rounded-md font-semibold text-sm hover:bg-[#F2F4F7] " onClick={() => setPausedialog(false)}>Cancel</Button>
@@ -194,7 +194,7 @@ function Products() {
 
                         {/* Modal Body */}
                         <ModalBody className="">
-                            <p className=" text-sm  pb-2 font-normal text-[#667085]">Are you sure you want to remove the access?</p>
+                            <p className=" text-sm  pb-2 font-normal text-[#667085]">Are you sure you want to remove this access?</p>
                         </ModalBody>
 
                         {/* Modal Footer */}

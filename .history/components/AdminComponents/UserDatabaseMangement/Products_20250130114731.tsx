@@ -194,7 +194,7 @@ function Products() {
 
                         {/* Modal Body */}
                         <ModalBody className="">
-                            <p className=" text-sm  pb-2 font-normal text-[#667085]">Are you sure you want to remove the access?</p>
+                            <p className=" text-sm  pb-2 font-normal text-[#667085]">Are you sure you want to remove this access?</p>
                         </ModalBody>
 
                         {/* Modal Footer */}

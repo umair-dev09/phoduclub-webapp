@@ -98,7 +98,7 @@ function Products() {
                                                 <span className="text-[#0C111D] text-sm font-medium">Resume</span>
                                             </button>
                                             <button
-                                                onClick={() => { setPopoveropen1(null); setRemove(true) }}
+                                                onClick={() => { setPopoveropen1(null); setPausedialog(true) }}
                                                 className="flex flex-row h-[40px] w-full p-3  gap-2 hover:bg-[#FEE4E2] items-center">
                                                 <Image
                                                     src="/icons/delete.svg"
@@ -194,7 +194,7 @@ function Products() {
 
                         {/* Modal Body */}
                         <ModalBody className="">
-                            <p className=" text-sm  pb-2 font-normal text-[#667085]">Are you sure you want to remove the access?</p>
+                            <p className=" text-sm  pb-2 font-normal text-[#667085]">Are you sure you want to remove this access?</p>
                         </ModalBody>
 
                         {/* Modal Footer */}

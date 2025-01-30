@@ -176,11 +176,11 @@ function Community() {
                         transitionTime={350}
                         open={isOpenArray[index]}
                     >
-                        <div className="rounded-lg h-auto border border-solid border-[#EAECF0] mx-6 mb-4 ">
+                        <div className="rounded-lg h-auto border border-solid border-[#EAECF0] mx-6 mb-4">
                             {group.channels.map((channel, channelIndex) => (
                                 <div
                                     key={channelIndex}
-                                    className={`flex flex-row h-[50px] hover:bg-[#F9FAFB] justify-between items-center p-6 ${channelIndex !== 0 ? "border-t border-solid border-[#EAECF0]" : ""
+                                    className={`flex flex-row h-[50px] justify-between items-center p-6 ${channelIndex !== 0 ? "border-t border-solid border-[#EAECF0]" : ""
                                         }`}
                                 >
                                     <div className="flex flex-row gap-2">
@@ -219,10 +219,7 @@ function Community() {
                                         <PopoverContent className="w-auto px-0 py-1 rounded-md">
                                             <button
                                                 className="flex flex-row items-center w-full px-4 py-[0.625rem] gap-2 transition-colors hover:bg-[#FEE4E2]"
-                                                onClick={() => {
-                                                    setPopoveropen2({ groupIndex: null, channelIndex: null });
-                                                    handleRemoveAction('channel');
-                                                }}
+                                                onClick={() => { setPopoveropen2(null); handleRemoveAction('channel') }}
                                             >
                                                 <Image
                                                     src="/icons/delete.svg"
