@@ -184,7 +184,7 @@ function MyTestSeries() {
             {/* ----------- Test Component ----------- */}
             {/* Main test container with flex layout and specified dimensions */}
             {tests.map((test, index) => (
-              <div key={index} className="cursor-pointer"
+              <div key={index} className="cursor-pointer group"
                 onClick={() => handleTabClick(`/learn/test/${test.testName.toLowerCase().replace(/\s+/g, '-')}/?tId=${test.testId}`)}>
                 <div className="flex items-center justify-center flex-col rounded-lg relative overflow-hidden transition-transform duration-300 ease-in-out w-[22.333rem] h-[378px]">
 
@@ -195,10 +195,10 @@ function MyTestSeries() {
                         <p>{test.courseName}</p>
                       </div>
                     )}
-                    <Image className="w-full h-[300px] border border-lightGrey rounded-t-md" src={test.testImage || "/images/course_img.svg"} alt="Test" width={300} height={300} />
+                    <Image className="w-full h-[300px] border border-lightGrey rounded-t-md overflow-hidden group-hover:opacity-85 transition-opacity duration-150" src={test.testImage || "/images/course_img.svg"} alt="Test" width={300} height={300} />
                   </div>
                   {/* Test details container */}
-                  <div className="flex w-full h-full flex-col bg-white border border-[#EAECF0] border-t rounded-br-lg rounded-bl-lg px-6">
+                  <div className="flex w-full h-full flex-col bg-white border-x border-b border-[#EAECF0] rounded-br-lg rounded-bl-lg px-6 group-hover:bg-[#F9FAFB] transition-opacity duration-150">
 
                     {/* Test title and details (lessons, duration) */}
                     <div className="flex h-[60%] items-center flex-col">

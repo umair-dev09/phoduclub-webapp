@@ -147,9 +147,9 @@ function TestSeriesComp() {
 
   if (loading) {
     return (
-         <div className="py-24">
-         <DashboardLoading />
-         </div>
+      <div className="py-24">
+        <DashboardLoading />
+      </div>
     );
   }
 
