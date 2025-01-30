@@ -172,7 +172,7 @@ function CoursesList() {
                   </div>
                   {/* Buy Now button */}
                   <div>
-                    <button className="text-xs font-semibold py-2.5 px-3.5 shadow-inner-button rounded-md bg-[#9012FF]  text-white hover:bg-[#6D0DCC] "
+                    <button className="text-xs font-semibold py-2.5 px-3.5 shadow-inner-button rounded-md bg-[#9012FF]  text-white hover:bg-[#6D0DCC]"
                       onClick={() => handleTabClick(`/learn/courses/purchase/${course.courseName.toLowerCase().replace(/\s+/g, '-')}/?cId=${course.courseId}`)}
                     >
                       Buy Now

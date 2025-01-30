@@ -116,7 +116,7 @@ function CoursesList() {
 
     if (loading) {
         return (
-            <div className="my-24">
+            <div className="flex flex-1 items-center justify-center my-24">
                 <DashboardLoading />
             </div>
         );
@@ -129,7 +129,7 @@ function CoursesList() {
                     {/* Container for the suggestion badge and course image */}
                     <div>
                         {/* Suggestion badge with icon and text */}
-                        <div className="flex items-center absolute top-3 left-3 mr-5 bg-white border-white text-xs font-medium border rounded-full py-1 px-3 z-10 transition-transform transition-font-size duration-300 ease-in-out">
+                        <div className="flex items-center absolute top-3 left-3 mr-5 bg-[#FFEC45] border border-[#FFEC45] text-xs font-medium rounded-full py-1 px-3 z-10 transition-transform transition-font-size duration-300 ease-in-out">
                             <Image
                                 className="mr-[5px]"
                                 src="/icons/suggestion_icon.svg"
@@ -185,8 +185,8 @@ function CoursesList() {
                                 </div>
                                 <div>
                                     <button
-                                        className="text-xs font-semibold leading-5 py-[10px] px-[14px] shadow-inner-button rounded-md bg-white border-2 border-[#9012FF] text-[#7400E0] hover:bg-[#F2F4F7] transition-colors"
-                                    // onClick={() => handleTabClick(`/learn/courses/purchase/${course.courseName.toLowerCase().replace(/\s+/g, '-')}/?cId=${course.courseId}`)}
+                                        className="text-xs font-semibold leading-5 py-[10px] px-[14px] shadow-inner-button rounded-md bg-[#9012FF]  text-white hover:bg-[#6D0DCC] transition-colors"
+                                        onClick={() => handleTabClick(`/learn/courses/purchase/${course.courseName.toLowerCase().replace(/\s+/g, '-')}/?cId=${course.courseId}`)}
                                     >
                                         Buy Now
                                     </button>
