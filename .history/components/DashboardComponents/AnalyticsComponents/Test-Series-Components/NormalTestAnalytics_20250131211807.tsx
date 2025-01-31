@@ -276,7 +276,6 @@ function NormalTestAnalytics({ onClose, forallsubject = false, attemptedDetails,
                         selectedKey={activeTab}
                         onSelectionChange={(key) => {
                             const sectionId = String(key);
-                            handleTabChange(key);
                             setActiveTab(sectionId);
                             document.getElementById(sectionId)?.scrollIntoView({ behavior: "smooth", block: "start" });
                         }}
