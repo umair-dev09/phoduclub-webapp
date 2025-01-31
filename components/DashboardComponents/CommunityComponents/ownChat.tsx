@@ -38,7 +38,7 @@ type OwnChatProps = {
   isDeleted: boolean;
   adminThatDeletedId: string;
   isDeletedByAdmin: boolean;
-  mentions: { userId: string; id: string, isAdmin: boolean, }[]; 
+  mentions: { userId: string; id: string, isAdmin: boolean, }[];
   highlightedText: string | React.ReactNode[];
   isAdmin: boolean;
   isHighlighted: boolean; // New prop
@@ -94,87 +94,6 @@ function OwnChat({ message, isDeleted, mentions, adminThatDeletedId, isDeletedBy
 
     return () => unsubscribe();
   }, [reactionsRef]);
-
-  // const renderMessageWithMentions = () => {
-  //   if (!highlightedText || !mentions) return highlightedText;
-
-  //   // Helper function to check if text is a URL
-  //   const isUrl = (text: string) => {
-  //     try {
-  //       new URL(text);
-  //       return true;
-  //     } catch {
-  //       return false;
-  //     }
-  //   };
-
-  //   // Helper function to process text parts
-  //   const processTextPart = (text: string, key: number | string) => {
-  //     // Check if the text is a URL
-  //     if (isUrl(text)) {
-  //       return (
-  //         <a
-  //           key={key}
-  //           href={text}
-  //           target="_blank"
-  //           rel="noopener noreferrer"
-  //           className="text-blue-200 hover:underline"
-  //         >
-  //           {text}
-  //         </a>
-  //       );
-  //     }
-  //     return text;
-  //   };
-
-  //   const processMention = (part: string, index: number | string) => {
-  //     if (part.startsWith("@")) {
-  //       const mentionName = part.substring(1).trim(); // Remove '@' and trim whitespace
-
-  //       // Match mention by checking userId or id
-  //       const mention = mentions.find((m) => m.userId === mentionName || m.id === mentionName);
-
-  //       if (mention) {
-  //         return (
-  //           <span
-  //             key={index}
-  //             style={{ color: "yellow", cursor: "pointer" }}
-  //             onClick={() => {
-  //               setOpenDialogue(true);
-  //               setId(mention.id);
-  //               setAdmin(mention.isAdmin);
-  //             }}
-  //           >
-  //             {part} {/* Keep the full mention, including '@' */}
-  //           </span>
-  //         );
-  //       }
-
-  //       console.log("Mention Not Found for:", mentionName);
-  //     }
-  //     return processTextPart(part, index);
-  //   };
-
-  //   // Updated regex to handle @mentions including # and numbers
-  //   const mentionRegex = /(@[\w#]+|\s+)/;
-
-  //   if (typeof highlightedText === "string") {
-  //     const parts = highlightedText.split(mentionRegex);
-  //     return parts.map((part, index) => processMention(part, index));
-  //   }
-
-  //   if (Array.isArray(highlightedText)) {
-  //     return highlightedText.map((node, index) => {
-  //       if (typeof node === "string") {
-  //         const parts = node.split(mentionRegex);
-  //         return parts.map((part, innerIndex) => processMention(part, `${index}-${innerIndex}`));
-  //       }
-  //       return node;
-  //     });
-  //   }
-
-  //   return null;
-  // };
 
   const renderMessageWithMentions = () => {
     if (!highlightedText || !mentions) return highlightedText;
@@ -253,7 +172,6 @@ function OwnChat({ message, isDeleted, mentions, adminThatDeletedId, isDeletedBy
 
     const fullContent = processHighlightedText();
 
-    // Improved word count calculation
     const getWordCount = (content: any): number => {
       if (typeof content === "string") {
         return content.trim().split(/\s+/).length;
@@ -271,13 +189,17 @@ function OwnChat({ message, isDeleted, mentions, adminThatDeletedId, isDeletedBy
 
     const wordCount = getWordCount(highlightedText);
 
-    // Improved truncation
+    // Updated truncation logic
     const getTruncatedContent = () => {
       if (typeof highlightedText === "string") {
+        if (wordCount <= maxWords) return highlightedText;
         const words = highlightedText.split(/\s+/);
         return words.slice(0, maxWords).join(" ") + "...";
       }
+
       if (Array.isArray(fullContent)) {
+        if (wordCount <= maxWords) return fullContent;
+
         let wordCounter = 0;
         return fullContent.reduce((acc: React.ReactNode[], node) => {
           if (wordCounter >= maxWords) return acc;
@@ -285,11 +207,14 @@ function OwnChat({ message, isDeleted, mentions, adminThatDeletedId, isDeletedBy
           if (typeof node === "string") {
             const words = node.split(/\s+/);
             const remainingWords = maxWords - wordCounter;
-            wordCounter += words.length;
-            if (wordCounter > maxWords) {
+
+            if (wordCounter + words.length > maxWords) {
+              // Only add ellipsis when we actually truncate
               acc.push(words.slice(0, remainingWords).join(" ") + "...");
+              wordCounter = maxWords;
             } else {
               acc.push(node);
+              wordCounter += words.length;
             }
           } else {
             acc.push(node);

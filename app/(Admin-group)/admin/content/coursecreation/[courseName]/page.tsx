@@ -403,7 +403,7 @@ function Courses() {
                             </div>
                         }
                     >
-                        <StudentsAttemptedCourseInfo />
+                        <StudentsAttemptedCourseInfo  courseId={courseId || ''}/>
                     </Tab>
                 </Tabs>
             </div>

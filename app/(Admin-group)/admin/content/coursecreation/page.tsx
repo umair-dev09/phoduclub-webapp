@@ -34,7 +34,7 @@ import DeleteDialog from "@/components/AdminComponents/QuizInfoDailogs/DeleteDai
 interface Course {
     courseName: string;
     price: number;
-    discountPrice: string;
+    discountPrice: number;
     courseId: string;
     date: string; // Can be Date type if desired
     courseImage: string;
@@ -42,6 +42,7 @@ interface Course {
     publishDate: string;
     startDate: string;
     endDate: string;
+    studentsPurchased: number;
 }
 
 function formatDate(dateString: string): string {
@@ -93,14 +94,19 @@ function Course() {
     const [dateFilter, setDateFilter] = useState(null);
     const [statusFilter, setStatusFilter] = useState(null);
     const isTextSearch = searchTerm.trim().length > 0 && !dateFilter && !statusFilter;
-
     useEffect(() => {
         const coursesCollection = collection(db, 'course');
-        const unsubscribe = onSnapshot(coursesCollection, (snapshot) => {
-            const coursesData = snapshot.docs.map((courseDoc) => {
+        const unsubscribe = onSnapshot(coursesCollection, async (snapshot) => {
+            // Use Promise.all to wait for all student counts to be fetched
+            const coursesData = await Promise.all(snapshot.docs.map(async (courseDoc) => {
                 const courseData = courseDoc.data();
                 const courseDocId = courseDoc.id;
-
+                
+                // Get StudentsPurchased collection count
+                const studentsPurchasedRef = collection(db, 'course', courseDocId, 'StudentsPurchased');
+                const studentsPurchasedSnapshot = await getDocs(studentsPurchasedRef);
+                const studentsPurchasedCount = studentsPurchasedSnapshot.size;
+                
                 return {
                     courseName: courseData.courseName,
                     courseId: courseData.courseId,
@@ -109,8 +115,9 @@ function Course() {
                     courseImage: courseData.courseImage,
                     price: courseData.price,
                     discountPrice: courseData.discountPrice,
+                    studentsPurchased: studentsPurchasedCount
                 } as Course;
-            });
+            }));
 
             setCourses(coursesData);
             setData(coursesData);
@@ -184,10 +191,10 @@ function Course() {
 
         if (sortConfig.key && sortConfig.direction) {
             filteredCourses = filteredCourses.sort((a, b) => {
-                if (sortConfig.key === 'price') {
+                if (sortConfig.key === 'discountPrice') {
                     return sortConfig.direction === 'asc'
-                        ? a.price - b.price
-                        : b.price - a.price;
+                        ? a.discountPrice - b.discountPrice
+                        : b.discountPrice - a.discountPrice;
                 }
                 if (sortConfig.key === 'publishedOn') {
                     const dateA = new Date(a.date).getTime();
@@ -206,7 +213,7 @@ function Course() {
     }, [searchTerm, checkedState, selectedDate, sortConfig]);
 
     const handleSort = (key: string) => {
-        if (key === 'price' || key === 'publishedOn') {
+        if (key === 'discountPrice' || key === 'publishedOn') {
             setSortConfig((prevConfig) => {
                 // Cycle through: no sort -> asc -> desc -> no sort
                 if (prevConfig.key !== key || !prevConfig.direction) {
@@ -472,7 +479,7 @@ function Course() {
                                         <th className="text-center px-8 py-4 text-[#667085] font-medium text-sm">
                                             <div
                                                 className="flex flex-row justify-center gap-1 cursor-pointer"
-                                                onClick={() => handleSort('price')}
+                                                onClick={() => handleSort('discountPrice')}
                                             >
                                                 <p>Price</p>
                                                 <Image src='/icons/unfold-more-round.svg' alt="more" width={16} height={16} />
@@ -487,18 +494,13 @@ function Course() {
                                                 <Image src='/icons/unfold-more-round.svg' alt="more" width={16} height={16} />
                                             </div>
                                         </th>
-                                        <th className="text-center px-8 py-4 text-[#667085] font-medium text-sm">
+                                        <th className="w-[20%] text-center px-8 py-4 text-[#667085] font-medium text-sm">
                                             <div className="flex flex-row justify-center gap-1">
-                                                <p>Opted</p>
+                                                <p>Students Purchased</p>
                                                 <Image src='/icons/unfold-more-round.svg' alt="more" width={16} height={16} />
                                             </div>
                                         </th>
-                                        <th className="text-center px-8 py-4 text-[#667085] font-medium text-sm">
-                                            <div className="flex flex-row justify-center gap-1">
-                                                <p>Participated</p>
-                                                <Image src='/icons/unfold-more-round.svg' alt="more" width={16} height={16} />
-                                            </div>
-                                        </th>
+                                   
                                         <th className="w-[12%] text-center px-8 py-4 rounded-tr-xl text-[#667085] font-medium text-sm">
                                             <span className="">
                                                 Status
@@ -519,8 +521,8 @@ function Course() {
                                                 </td>
                                                 <td className="px-8 py-4 text-center text-[#101828] text-sm"><span className="mr-1">&#8377;</span>{course.discountPrice || '-'}</td>
                                                 <td className="px-8 py-4 text-center text-[#101828] text-sm whitespace-nowrap">{course.date || '-'}</td>
-                                                <td className="px-8 py-4 text-center text-[#101828] text-sm">200</td>
-                                                <td className="px-8 py-4 text-center text-[#101828] text-sm">134</td>
+                                                <td className="px-8 py-4 text-center text-[#101828] text-sm">{course.studentsPurchased || 0}</td>
+                                                {/* <td className="px-8 py-4 text-center text-[#101828] text-sm">134</td> */}
                                                 <td className="px-8 py-4 text-[#101828] text-sm">
                                                     <span className='flex items-center justify-center rounded-full'>
                                                         <StatusDisplay status={course.status} />

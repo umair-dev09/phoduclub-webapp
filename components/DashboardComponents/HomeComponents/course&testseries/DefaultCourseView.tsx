@@ -116,7 +116,7 @@ function CoursesList() {
 
     if (loading) {
         return (
-            <div className="my-24">
+            <div className="flex flex-1 items-center justify-center my-24">
                 <DashboardLoading />
             </div>
         );
@@ -129,7 +129,7 @@ function CoursesList() {
                     {/* Container for the suggestion badge and course image */}
                     <div>
                         {/* Suggestion badge with icon and text */}
-                        <div className="flex items-center absolute top-3 left-3 mr-5 bg-white border-white text-xs font-medium border rounded-full py-1 px-3 z-10 transition-transform transition-font-size duration-300 ease-in-out">
+                        <div className="flex items-center absolute top-3 left-3 mr-5 bg-[#FFEC45] border border-[#FFEC45] text-xs font-medium rounded-full py-1 px-3 z-10 transition-transform transition-font-size duration-300 ease-in-out">
                             <Image
                                 className="mr-[5px]"
                                 src="/icons/suggestion_icon.svg"
@@ -145,29 +145,6 @@ function CoursesList() {
 
                     {/* Container for course details and buy button */}
                     <div className="flex w-full flex-col border border-[#EAECF0] border-t-0 bg-white rounded-br-lg rounded-bl-lg">
-                        {/* <div className="mt-4">
-                            <div className="text-lg font-semibold leading-6 ml-4">
-                                <p>{course.courseName}</p>
-                            </div>
-                            <div className="text-xs mx-4 font-normal leading-4 text-[#667085] flex items-center gap-1">
-                                <p>{course.totalContentCount} Lessons</p>
-                                <span>&#x2022;</span>
-                                <p>3hr 14m</p>
-                            </div>
-                        </div>
-                        <div className="flex justify-between mt-2 mb-4 mx-4 text-lg font-semibold">
-                            <div className="flex items-end">
-                                <h4>&#8377; {course.discountPrice}</h4>
-                            </div>
-                            <div>
-                                <button className="text-xs font-semibold py-2.5 px-3.5 shadow-inner-button rounded-md bg-[#9012FF] text-white hover:bg-[#6D0DCC]"
-                                    onClick={() => handleTabClick(`/learn/courses/purchase/${course.courseName.toLowerCase().replace(/\s+/g, '-')}/?cId=${course.courseId}`)}
-                                >
-                                    Buy Now
-                                </button>
-                            </div>
-                        </div> */}
-
                         <div className="flex w-full flex-col border border-[#EAECF0] border-t-0 bg-white rounded-br-lg rounded-bl-lg">
                             <div className="mt-4">
                                 <div className="text-base font-semibold leading-6 ml-4">
@@ -185,8 +162,8 @@ function CoursesList() {
                                 </div>
                                 <div>
                                     <button
-                                        className="text-xs font-semibold leading-5 py-[10px] px-[14px] shadow-inner-button rounded-md bg-white border-2 border-[#9012FF] text-[#7400E0] hover:bg-[#F2F4F7] transition-colors"
-                                    // onClick={() => handleTabClick(`/learn/courses/purchase/${course.courseName.toLowerCase().replace(/\s+/g, '-')}/?cId=${course.courseId}`)}
+                                        className="text-xs font-semibold leading-5 py-[10px] px-[14px] shadow-inner-button rounded-md bg-[#9012FF]  text-white hover:bg-[#6D0DCC] transition-colors"
+                                        onClick={() => handleTabClick(`/learn/courses/purchase/${course.courseName.toLowerCase().replace(/\s+/g, '-')}/?cId=${course.courseId}`)}
                                     >
                                         Buy Now
                                     </button>

@@ -271,8 +271,6 @@ export default function MyQuiz() {
                                         </button>
                                     ))}
 
-
-
                                 </PopoverContent>
                             </Popover>
                         )

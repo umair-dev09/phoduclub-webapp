@@ -15,35 +15,40 @@ import {
 } from "@/components/ui/pagination";
 import { Popover, PopoverContent, PopoverTrigger } from "@nextui-org/popover";
 import Remove from "@/components/AdminComponents/QuizInfoDailogs/Remove";
+import { db } from "@/firebase";
+import { collection, getDoc, onSnapshot, doc as firestoreDoc, getDocs, query, where, deleteDoc } from "firebase/firestore";
+import LoadingData from "@/components/Loading";
+import { Modal, ModalBody, ModalContent, ModalFooter, ModalHeader } from "@nextui-org/modal";
+import { Button } from "@nextui-org/button";
 
 // Define types for students attempted data
 interface StudentsAttempts {
-    title: string;
-    uniqueId: string;
-    dateTime: string;
+    userId: string;
+    attemptDate: string;
     score: number;
-    timeTaken: string;
-    ranking: number;
+    timeTaken: number;
+    ranking: number; 
+    name: string;
+    profilePic: string;
+    isPremium: boolean;
+    displayUserId: string;
 }
 
-// Mock fetchStudentAttempts function with types
-const fetchStudentsAttempts = async (): Promise<StudentsAttempts[]> => {
-    const allStudentsAttempts: StudentsAttempts[] = [
-        { title: "Jenny", uniqueId: "jenny#8547", dateTime: "06 Jan, 2024 07:30 PM", score: 78, timeTaken: "1 hr 15 mins", ranking: 15 },
-        { title: "Tom", uniqueId: "tom#7453", dateTime: "08 Jan, 2024 06:00 PM", score: 65, timeTaken: "50 mins", ranking: 45 },
-        { title: "Alice", uniqueId: "alice#1234", dateTime: "10 Jan, 2024 09:15 AM", score: 85, timeTaken: "1 hr", ranking: 8 },
-        { title: "Harry", uniqueId: "harry#5678", dateTime: "12 Jan, 2024 11:45 AM", score: 92, timeTaken: "1 hr 20 mins", ranking: 3 },
-        { title: "Sophia", uniqueId: "sophia#9801", dateTime: "14 Jan, 2024 04:00 PM", score: 54, timeTaken: "35 mins", ranking: 80 },
-        { title: "Mia", uniqueId: "mia#3210", dateTime: "16 Jan, 2024 08:20 PM", score: 47, timeTaken: "40 mins", ranking: 120 },
-        { title: "Oliver", uniqueId: "oliver#1112", dateTime: "18 Jan, 2024 01:10 PM", score: 88, timeTaken: "1 hr 10 mins", ranking: 12 },
-        { title: "Emma", uniqueId: "emma#3345", dateTime: "20 Jan, 2024 03:25 PM", score: 73, timeTaken: "55 mins", ranking: 25 },
-        { title: "Liam", uniqueId: "liam#7689", dateTime: "22 Jan, 2024 07:00 AM", score: 67, timeTaken: "50 mins", ranking: 40 },
-        { title: "Ava", uniqueId: "ava#5567", dateTime: "24 Jan, 2024 02:30 PM", score: 95, timeTaken: "1 hr 25 mins", ranking: 1 }
-    ];
-    return allStudentsAttempts;
+interface StudentsAttemptsProps {
+    quizId: string;
+}
+
+const formatTime = (seconds: number): string => {
+    if (seconds < 60) {
+        return `${seconds}s`;
+    } else if (seconds < 3600) {
+        return `${Math.floor(seconds / 60)}m`;
+    } else {
+        return `${Math.floor(seconds / 3600)}hrs`;
+    }
 };
 
-function StudentsAttemptedTestseries() {
+function StudentsAttemptedQuiz({quizId}: StudentsAttemptsProps) {
     const [data, setData] = useState<StudentsAttempts[]>([]);
     const [StudentsAttempts, setStudentAttempts] = useState<StudentsAttempts[]>([]);
     const [currentPage, setCurrentPage] = useState(1);
@@ -60,13 +65,58 @@ function StudentsAttemptedTestseries() {
     useEffect(() => {
         const loadStudentsAttempts = async () => {
             setLoading(true);
-            const studentsAttempts = await fetchStudentsAttempts();
-            setStudentAttempts(studentsAttempts);
-            setData(studentsAttempts);
-            setLoading(false);
+            try {
+                const attemptsRef = collection(db, 'quiz', quizId, 'attempts');
+                const attemptsSnapshot = await getDocs(attemptsRef);
+                
+                // Group all user IDs to fetch them in a single batch
+                const userIds = new Set(attemptsSnapshot.docs.map(doc => doc.data().userId));
+                
+                // Fetch all user data in a single batch
+                const userRefs = Array.from(userIds).map(uid => firestoreDoc(db, 'users', uid));
+                const userDocs = await getDocs(query(collection(db, 'users'), where('__name__', 'in', Array.from(userIds))));
+                
+                // Create a map of user data for quick lookup
+                const userDataMap = new Map();
+                userDocs.forEach(doc => {
+                    userDataMap.set(doc.id, doc.data());
+                });
+
+                // Process attempts data with user info
+                const attemptsData = attemptsSnapshot.docs.map(doc => {
+                    const attemptData = doc.data();
+                    const userData = userDataMap.get(attemptData.userId) || {};
+                    
+                    return {
+                        userId: attemptData.userId,
+                        attemptDate: attemptData.attemptDate,
+                        score: attemptData.score,
+                        timeTaken: attemptData.timeTaken,
+                        name: userData.name || 'Unknown',
+                        profilePic: userData.profilePic || '',
+                        isPremium: userData.isPremium || false,
+                        displayUserId: userData.userId || '',
+                        ranking: 0 // Will be calculated after sorting
+                    };
+                });
+
+                // Sort by score and assign rankings
+                attemptsData.sort((a, b) => b.score - a.score);
+                attemptsData.forEach((attempt, index) => {
+                    attempt.ranking = index + 1;
+                });
+
+                setStudentAttempts(attemptsData);
+                setData(attemptsData);
+            } catch (error) {
+                console.error('Error fetching attempts:', error);
+            } finally {
+                setLoading(false);
+            }
         };
+
         loadStudentsAttempts();
-    }, []);
+    }, [quizId]);
 
     const lastItemIndex = currentPage * itemsPerPage;
     const firstItemIndex = lastItemIndex - itemsPerPage;
@@ -79,6 +129,22 @@ function StudentsAttemptedTestseries() {
         key: '',
         direction: null
     });
+
+    const handleRemoveUser = async (userId: string) => {
+        try {
+            const attemptRef = firestoreDoc(db, 'quiz', quizId, 'attempts', userId);
+            await deleteDoc(attemptRef);
+            
+            // Update local state to remove the user
+            setStudentAttempts(prev => prev.filter(student => student.userId !== userId));
+            setData(prev => prev.filter(student => student.userId !== userId));
+            
+            // Close the remove dialog
+            closeRemove();
+        } catch (error) {
+            console.error('Error removing user attempt:', error);
+        }
+    };
 
     // Function to handle tab click and navigate to a new route
     const handleTabClick = (path: string) => {
@@ -93,28 +159,30 @@ function StudentsAttemptedTestseries() {
     const [uniqueId, setUniqueId] = useState('');
     const [startDate, setStartDate] = useState('');
     const [endDate, setEndDate] = useState('');
+    const [userToRemove, setUserToRemove] = useState('');
 
     // Check if all fields are filled
     const isAddButtonDisabled = !uniqueId || !startDate || !endDate;
 
     const [selectedDate, setSelectedDate] = useState<Date | null>(null); // Store selected date as Date object
 
-    const convertTimeToMinutes = (timeString: string): number => {
-        const parts = timeString.toLowerCase().split(' ');
-        let totalMinutes = 0;
+    const convertTimeToString = (seconds: number): string => {
+        const hours = Math.floor(seconds / 3600);
+        const minutes = Math.floor((seconds % 3600) / 60);
+        const remainingSeconds = seconds % 60;
 
-        for (let i = 0; i < parts.length; i += 2) {
-            const value = parseInt(parts[i]);
-            const unit = parts[i + 1];
-
-            if (unit.startsWith('hr')) {
-                totalMinutes += value * 60;
-            } else if (unit.startsWith('min')) {
-                totalMinutes += value;
-            }
+        const parts = [];
+        if (hours > 0) {
+            parts.push(`${hours} hr`);
+        }
+        if (minutes > 0) {
+            parts.push(`${minutes} min`);
+        }
+        if (remainingSeconds > 0 || parts.length === 0) {
+            parts.push(`${remainingSeconds} sec`);
         }
 
-        return totalMinutes;
+        return parts.join(' ');
     };
 
     useEffect(() => {
@@ -123,7 +191,7 @@ function StudentsAttemptedTestseries() {
         // Filter by search term
         if (searchTerm) {
             filterStudentsAttempts = filterStudentsAttempts.filter(student =>
-                student.title.toLowerCase().includes(searchTerm.toLowerCase())
+                student.name.toLowerCase().includes(searchTerm.toLowerCase())
             );
         }
 
@@ -135,7 +203,7 @@ function StudentsAttemptedTestseries() {
 
             if (selectedDateString) {
                 filterStudentsAttempts = filterStudentsAttempts.filter(student => {
-                    const studentAttemptsDate = new Date(student.dateTime); // Convert StudentAttempts.date string to Date object
+                    const studentAttemptsDate = new Date(student.attemptDate); // Convert StudentAttempts.date string to Date object
                     const studentAttemptsDateString = studentAttemptsDate instanceof Date && !isNaN(studentAttemptsDate.getTime())
                         ? studentAttemptsDate.toISOString().split('T')[0]
                         : null;
@@ -147,12 +215,12 @@ function StudentsAttemptedTestseries() {
 
         // Sort by StudentAttemptsPublishedDate in ascending order (earliest date first)
         filterStudentsAttempts = filterStudentsAttempts.sort((a, b) => {
-            const dateA = new Date(a.dateTime).getTime();
-            const dateB = new Date(b.dateTime).getTime();
+            const dateA = new Date(a.attemptDate).getTime();
+            const dateB = new Date(b.attemptDate).getTime();
 
             // Handle invalid date values (e.g., when date cannot be parsed)
             if (isNaN(dateA) || isNaN(dateB)) {
-                console.error("Invalid date value", a.dateTime, b.dateTime);
+                console.error("Invalid date value", a.attemptDate, b.attemptDate);
                 return 0; // If dates are invalid, no sorting will occur
             }
 
@@ -172,11 +240,9 @@ function StudentsAttemptedTestseries() {
                         : b.ranking - a.ranking;
                 }
                 if (sortConfig.key === 'timeTaken') {
-                    const timeA = convertTimeToMinutes(a.timeTaken);
-                    const timeB = convertTimeToMinutes(b.timeTaken);
                     return sortConfig.direction === 'asc'
-                        ? timeA - timeB
-                        : timeB - timeA;
+                        ? a.timeTaken - b.timeTaken
+                        : b.timeTaken - a.timeTaken;
                 }
                 return 0;
             });
@@ -210,10 +276,15 @@ function StudentsAttemptedTestseries() {
     const handlePopoverOpen = (index: number) => {
         setPopoveropen(index);
     };
+
+    if(loading){
+        return <LoadingData />;
+    }
+
     return (
         <div className="flex flex-col w-full mt-4 gap-4">
             <div className="flex flex-row justify-between items-center">
-                <span className="text-lg font-semibold text-[#1D2939]">Students attempted (2547)</span>
+                <span className="text-lg font-semibold text-[#1D2939]">Students attempted ({StudentsAttempts.length || 0})</span>
                 <div className="flex flex-row gap-3">
                     {/* Search Button */}
                     <button className="h-[44px] w-[250px] rounded-md bg-[#FFFFFF] border border-solid border-[#D0D5DD] flex items-center">
@@ -331,20 +402,20 @@ function StudentsAttemptedTestseries() {
                                             <div className="flex flex-row ml-8 gap-2">
                                                 <div className="flex items-center">
                                                     <div className="relative">
-                                                        <Image src='/images/DP_Lion.svg' alt="DP" width={40} height={40} />
-                                                        <Image className="absolute right-0 bottom-0" src='/icons/winnerBatch.svg' alt="Batch" width={18} height={18} />
+                                                        <Image className="rounded-full w-10 h-10" src={students.profilePic || '/images/DP_Lion.svg'} alt="DP" width={40} height={40} />
+                                                        {students.isPremium && <Image className="absolute right-0 bottom-0" src='/icons/winnerBatch.svg' alt="Batch" width={18} height={18} />}
                                                     </div>
                                                 </div>
                                                 <div className="flex items-start justify-start flex-col">
-                                                    <div className="font-semibold">{students.title}</div>
-                                                    <div className="flex justify-start items-start text-[13px] text-[#667085]">{students.uniqueId}</div>
+                                                    <div className="font-semibold">{students.name}</div>
+                                                    <div className="flex justify-start items-start text-[13px] text-[#667085]">{students.displayUserId}</div>
                                                 </div>
                                             </div>
                                         </td>
-                                        <td className="px-8 py-4 text-center text-[#101828] text-sm">{students.dateTime}</td>
-                                        <td className="px-8 py-4 text-center text-[#101828] text-sm">{students.score}</td>
-                                        <td className="px-8 py-4 text-center text-[#101828] text-sm">{students.timeTaken}</td>
-                                        <td className="px-8 py-4 text-center text-[#101828] text-sm">{students.ranking}</td>
+                                        <td className="px-8 py-4 text-center text-[#101828] text-sm">{students.attemptDate || '-'}</td>
+                                        <td className="px-8 py-4 text-center text-[#101828] text-sm">{students.score || 0}</td>
+                                        <td className="px-8 py-4 text-center text-[#101828] text-sm">{formatTime(students.timeTaken || 0)}</td>
+                                        <td className="px-8 py-4 text-center text-[#101828] text-sm">{students.ranking || 0}</td>
                                         <td className="flex items-center justify-center px-8 py-4 text-[#101828] text-sm">
                                             <Popover placement="bottom-end"
                                                 isOpen={popoveropen === index}
@@ -366,13 +437,15 @@ function StudentsAttemptedTestseries() {
                                                 </PopoverTrigger>
                                                 <PopoverContent className="w-[10.438rem]  px-0 py-1 bg-white border border-lightGrey rounded-md">
 
-                                                    <button className="flex flex-row items-center justify-start w-full py-[0.625rem] px-4 gap-2 hover:bg-[#F2F4F7]">
+                                                    <button className="flex flex-row items-center justify-start w-full py-[0.625rem] px-4 gap-2 hover:bg-[#F2F4F7]"
+                                                    onClick={() => handleTabClick(`/admin/userdatabase/${students.name.toLowerCase().replace(/\s+/g, '-')}?uId=${students.userId}`)}>
                                                         <Image src='/icons/user-account.svg' alt="user profile" width={18} height={18} />
                                                         <p className="text-sm text-[#0C111D] font-normal">Go to Profile</p>
-                                                    </button>
+                                                        </button>
                                                     <button className=" flex flex-row items-center justify-start w-full py-[0.625rem] px-4 gap-2 hover:bg-[#FEE4E2]"
                                                         onClick={() => {
-                                                            { setIsRemoveOpen(true) };
+                                                            setIsRemoveOpen(true);
+                                                            setUserToRemove(students.userId);
                                                             setPopoveropen(null);
                                                         }}>
                                                         <Image src='/icons/delete.svg' alt="user profile" width={18} height={18} />
@@ -416,7 +489,39 @@ function StudentsAttemptedTestseries() {
                     </div>
                 </div>
             </div>
-            {isRemoveOpen && < Remove onClose={() => setIsRemoveOpen(false)} open={isRemoveOpen} />}
+            {/* {isRemoveOpen && < Remove onClose={() => setIsRemoveOpen(false)} open={isRemoveOpen} />} */}
+
+            <Modal isOpen={isRemoveOpen} onOpenChange={(isOpen) => !isOpen && setIsRemoveOpen(false)} hideCloseButton >
+            <ModalContent>
+                <>
+                    <ModalHeader className="flex flex-row justify-between items-center gap-1">
+                        <h3 className=" font-bold task-[#1D2939]">Remove user from quiz attempt?</h3>
+                        <button
+                            className="w-[32px] h-[32px] rounded-full flex items-center justify-center transition-all duration-300 ease-in-out hover:bg-[#F2F4F7]"
+                            onClick={() => setIsRemoveOpen(false)}
+                        >
+                            <Image
+                                src="/icons/cancel.svg"
+                                alt="Cancel"
+                                width={20}
+                                height={20}
+                            />
+                        </button>
+                    </ModalHeader>
+                    <ModalBody >
+                        <p className="pb-2 text-sm font-normal text-[#667085]">Lorem ipsum is placeholder text commonly used</p>
+                    </ModalBody>
+                    <ModalFooter className="border-t border-lightGrey">
+                        <Button
+                            className="py-[0.625rem] px-6 border border-solid border-[#EAECF0] bg-white font-semibold text-sm text-[#1D2939] rounded-md hover:bg-[#F2F4F7]"
+                            onClick={() => setIsRemoveOpen(false)}
+                        >Cancel
+                        </Button>
+                        <Button onClick={() => handleRemoveUser(userToRemove)} className="py-[0.625rem] px-6 text-white shadow-inner-button bg-[#BB241A] border border-[#DE3024] hover:bg-[#B0201A] font-semibold rounded-md">Remove</Button>
+                    </ModalFooter>
+                </>
+            </ModalContent>
+            </Modal >
         </div>
     );
 }
@@ -539,4 +644,4 @@ function PaginationSection({
     );
 }
 
-export default StudentsAttemptedTestseries;
+export default StudentsAttemptedQuiz;

@@ -31,11 +31,10 @@ function formatExpiryDate(inputDate: string) {
   const day = date.getDate();
   const month = date.toLocaleString('default', { month: 'short' }); // Get abbreviated month (e.g., "Aug")
   const year = date.getFullYear();
-    
+
   // Format the date as "DD MMM, YYYY"
   return `${day} ${month}, ${year}`;
 }
-
 
 function MyTestSeries() {
   const [tests, setTests] = useState<TestData[]>([]);
@@ -62,10 +61,10 @@ function MyTestSeries() {
               // Check if user exists in studentsFromCourse map
               const studentsFromCourse = testData.studentsFromCourse || [];
               const studentData = studentsFromCourse.find(
-                (student: { id: string; courseId: string }) => 
-                student.id === currentUserId
+                (student: { id: string; courseId: string }) =>
+                  student.id === currentUserId
               );
-              
+
               if (studentData) {
                 shouldIncludeTest = true;
                 // Fetch course name using courseId
@@ -96,14 +95,14 @@ function MyTestSeries() {
                   const sectionData = sectionDoc.data();
 
                   // Count section if it has questions or is an umbrella test, but not if it's a parent umbrella test
-                  if ((sectionData.hasQuestions === true && !sectionData.isParentUmbrellaTest) || 
-                      (sectionData.isUmbrellaTest === true && !sectionData.isParentUmbrellaTest)) {
+                  if ((sectionData.hasQuestions === true && !sectionData.isParentUmbrellaTest) ||
+                    (sectionData.isUmbrellaTest === true && !sectionData.isParentUmbrellaTest)) {
                     sectionsWithQuestionsCount += 1;
 
                     // Check attempts collection
                     const attemptsCollection = collection(sectionDoc.ref, 'attempts');
                     const attemptsSnapshot = await getDocs(attemptsCollection);
-                    
+
                     // Count only one attempt per section if user has attempted
                     if (attemptsSnapshot.docs.some(attempt => attempt.data().userId === currentUserId)) {
                       sectionsWithAttemptsCount += 1;
@@ -114,7 +113,7 @@ function MyTestSeries() {
                   const subSectionPath = `${path}/${sectionDoc.id}/sections`;
                   await countSectionsWithQuestionsAndAttempts(subSectionPath);
                 }
-              };   
+              };
 
               await countSectionsWithQuestionsAndAttempts(`${doc.ref.path}/sections`);
 
@@ -185,21 +184,21 @@ function MyTestSeries() {
             {/* ----------- Test Component ----------- */}
             {/* Main test container with flex layout and specified dimensions */}
             {tests.map((test, index) => (
-              <div key={index} className="cursor-pointer"
+              <div key={index} className="cursor-pointer group"
                 onClick={() => handleTabClick(`/learn/test/${test.testName.toLowerCase().replace(/\s+/g, '-')}/?tId=${test.testId}`)}>
-                <div className="flex items-center justify-center flex-col rounded-lg relative overflow-hidden transition-transform duration-300 ease-in-out w-[22.333rem] h-[378px] mr-4">
+                <div className="flex items-center justify-center flex-col rounded-lg relative overflow-hidden transition-transform duration-300 ease-in-out w-[22.333rem] h-[378px]">
 
                   {/* Test image and suggestion label container */}
                   <div className="flex w-full h-[50%] items-center flex-col">
                     {test.isInCourse && (
-                    <div className="flex items-center absolute top-3 left-5 mr-5 bg-[#c74fe6] bg-opacity-80 text-xs font-medium border border-[#c74fe6] text-white rounded-full px-3 py-2 z-10 transition-transform duration-300 ease-in-out">
-                            <p>{test.courseName}</p>
-                        </div>
-                     )}
-                    <Image className="w-full h-[300px]" src={test.testImage || "/images/course_img.svg"} alt="Test" width={300} height={300} />
+                      <div className="flex items-center absolute top-3 left-5 mr-5 bg-[#c74fe6] bg-opacity-80 text-xs font-medium border border-[#c74fe6] text-white rounded-full px-3 py-2 z-10 transition-transform duration-300 ease-in-out">
+                        <p>{test.courseName}</p>
+                      </div>
+                    )}
+                    <Image className="w-full h-[300px] border border-lightGrey rounded-t-md overflow-hidden group-hover:opacity-85 transition-opacity duration-150" src={test.testImage || "/images/course_img.svg"} alt="Test" width={300} height={300} />
                   </div>
                   {/* Test details container */}
-                  <div className="flex w-full h-full flex-col bg-white border border-[#EAECF0] border-t-0 rounded-br-lg rounded-bl-lg px-6">
+                  <div className="flex w-full h-full flex-col bg-white border-x border-b border-[#EAECF0] rounded-br-lg rounded-bl-lg px-6 group-hover:bg-[#F9FAFB] transition-opacity duration-150">
 
                     {/* Test title and details (lessons, duration) */}
                     <div className="flex h-[60%] items-center flex-col">

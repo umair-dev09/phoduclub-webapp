@@ -34,15 +34,15 @@ interface SectionData {
 function timeLeft(dateString: string) {
   const currentDate = new Date(); // Get current date
   const targetDate = new Date(dateString); // Convert input string to Date object
-  
+
   // Calculate the difference in time (in milliseconds)
   const differenceInTime = targetDate.getTime() - currentDate.getTime();
-  
+
   // Convert the time difference from milliseconds to days
   const differenceInDays = Math.floor(differenceInTime / (1000 * 3600 * 24));
 
   // Return the result
-  return differenceInDays > 0 ? `${differenceInDays} days left` : 'Ended';     
+  return differenceInDays > 0 ? `${differenceInDays} days left` : 'Ended';
 }
 
 
@@ -56,60 +56,60 @@ function MyCourses() {
   useEffect(() => {
     const fetchCourses = async (currentUserId: string) => {
       const coursesCollection = collection(db, 'course');
-  
+
       // Filter courses where status is 'live' using Firestore query
       const coursesQuery = query(coursesCollection, where('status', '==', 'live'));
       const unsubscribe = onSnapshot(coursesQuery, async (snapshot) => {
         const allCourses: CourseData[] = [];
-  
+
         // Fetch courses where the currentUserId is in the StudentsPurchased collection
         for (const doc of snapshot.docs) {
           const courseData = doc.data();
-  
+
           // Query for the StudentsPurchased collection to check if the current user is enrolled
           const studentsPurchasedQuery = query(collection(doc.ref, 'StudentsPurchased'), where('userId', '==', currentUserId));
           const studentPurchasedSnapshot = await getDocs(studentsPurchasedQuery);
-  
+
           if (!studentPurchasedSnapshot.empty) {
             // User is enrolled in this course, proceed to fetch sections
             const sectionsCollection = collection(doc.ref, 'sections');
             const sectionsSnapshot = await getDocs(sectionsCollection);
-  
+
             let totalContentCount = 0;
             let totalCompletedContentCount = 0;
-  
+
             // Process sections and content within them
             const sectionsData: SectionData[] = await Promise.all(
               sectionsSnapshot.docs.map(async (sectionDoc) => {
                 const sectionData = sectionDoc.data();
                 const contentCollection = collection(sectionDoc.ref, 'content');
                 const contentSnapshot = await getDocs(contentCollection);
-  
+
                 const sectionContentData: { sectionName: string, contentCount: number, completedContentCount: number } = {
                   sectionName: sectionData.sectionName || 'Untitled Section',
                   contentCount: contentSnapshot.size,
                   completedContentCount: 0,
                 };
-  
+
                 // Check each content for the currentUserId in StudentsCompleted
                 for (const contentDoc of contentSnapshot.docs) {
                   const contentData = contentDoc.data();
                   const studentsCompleted = contentData.StudentsCompleted || [];
-  
+
                   if (studentsCompleted.includes(currentUserId)) {
                     sectionContentData.completedContentCount += 1;
                     totalCompletedContentCount += 1;
                   }
                 }
-  
+
                 totalContentCount += sectionContentData.contentCount;
-  
+
                 return sectionContentData;
               })
             );
             const studentProgress = totalContentCount > 0
-            ? (totalCompletedContentCount / totalContentCount) * 100
-            : 0;
+              ? (totalCompletedContentCount / totalContentCount) * 100
+              : 0;
             const roundedProgress = Math.round(studentProgress);
             allCourses.push({
               courseName: courseData.courseName,
@@ -129,14 +129,14 @@ function MyCourses() {
             });
           }
         }
-  
+
         setCourses(allCourses);
         setLoading(false);
       });
-  
+
       return () => unsubscribe();
     };
-  
+
     const initialize = () => {
       setLoading(true);
       const unsubscribeAuth = onAuthStateChanged(auth, (user) => {
@@ -147,13 +147,13 @@ function MyCourses() {
           setLoading(false);
         }
       });
-  
+
       return () => unsubscribeAuth();
     };
-  
+
     initialize();
   }, []); // Only trigger once on component mount
-  
+
   const handleTabClick = (path: string) => {
     router.push(path);
   };
@@ -182,14 +182,14 @@ function MyCourses() {
             {/* Main course container with flex layout and specified dimensions */}
             {courses.map((course, index) => (
               <button key={index} onClick={() => handleTabClick(`/learn/courses/${course.courseName.toLowerCase().replace(/\s+/g, '-')}/?cId=${course.courseId}`)}
-                className="flex items-center justify-center flex-col rounded-lg relative overflow-hidden transition-transform duration-300 ease-in-out w-[350px] h-[330px]">
+                className="flex group items-center justify-center flex-col rounded-lg relative overflow-hidden transition-transform duration-300 ease-in-out w-[350px] h-[330px]">
                 {/* Course image and suggestion label container */}
-                <div className="flex flex-1 h-[60%] items-center flex-col">
-                  <Image className=" w-[352px] h-[300px] object-cover border border-[#EAECF0] rounded-tl-lg rounded-tr-lg" src={course.courseImage || "/images/course_img.svg"} alt="Course" width={350} height={300} />
-                </div>
+                {/* <div className="flex flex-1 h-[60%] items-center flex-col"> */}
+                <Image className="w-full h-[500px] object-cover border border-[#EAECF0] rounded-t-lg overflow-hidden group-hover:opacity-85 transition-opacity duration-150" src={course.courseImage || "/images/course_img.svg"} alt="Course" width={350} height={300} />
+                {/* </div> */}
 
                 {/* Course details container */}
-                <div className="flex w-full h-full max-h-[9.625rem] flex-col bg-white border border-[#EAECF0] border-t-0 rounded-br-lg rounded-bl-lg px-6">
+                <div className="flex w-full h-full max-h-[9.625rem] flex-col bg-white border border-[#EAECF0] border-t-0 rounded-b-lg px-6 group-hover:bg-[#F9FAFB] transition-colors duration-150">
 
                   {/* Course title and details (lessons, duration) */}
                   <div className="flex h-[60%] items-center flex-col">

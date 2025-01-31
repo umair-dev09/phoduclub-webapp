@@ -93,13 +93,13 @@ const fetchQuizzes = (callback: (quizzes: Quiz[] | ((prevQuizzes: Quiz[]) => Qui
                 }
 
                 // Fetch product name based on product type
-                let productName = '';
-                if (quizData.product) {
-                    const { productId, productType } = quizData.product;
-                    const productDoc = await getDocs(collection(db, productType, productId));
-                    const productData = productDoc.docs[0]?.data();
-                    productName = productType === 'course' ? productData?.courseName : productData?.testName;
-                }
+                // let productName = '';
+                // if (quizData.product) {
+                //     const { productId, productType } = quizData.product;
+                //     const productDoc = await getDocs(collection(db, productType, productId));
+                //     const productData = productDoc.docs[0]?.data();
+                //     productName = productType === 'course' ? productData?.courseName : productData?.testName;
+                // }
 
                 // Set up real-time listener for attempts
                 const studentsAttemptedCollection = collection(db, 'quiz', quizId, 'attempts');
@@ -152,11 +152,7 @@ const fetchQuizzes = (callback: (quizzes: Quiz[] | ((prevQuizzes: Quiz[]) => Qui
                     nMarksPerQuestion: quizData.nMarksPerQuestion,
                     questionsList: fetchedQuestions,
                     isPremiumQuiz: quizData.isPremiumQuiz,
-                    product: {
-                        productId: quizData.product.productId,
-                        productName: productName,
-                        productType: quizData.product.productType,
-                    },
+                    product: quizData.product,
                 } as Quiz;
             })
         );
@@ -328,7 +324,7 @@ function Quiz() {
                                 <button
                                     onClick={() => { onStartQuiz(); setTimeOfQuiz(quiz.quizTime); setProduct(quiz.product); setIsPremiumQuiz(quiz.isPremiumQuiz); setFormattedQTime(convertToTimeFormat(quiz.quizTime)); setMarksPerQ(quiz.marksPerQuestion); setnMarksPerQ(quiz.nMarksPerQuestion); setQuizId(quiz.quizId); setNoOfQuestions(quiz.questions); setPassedQuestionList(quiz.questionsList) }}
                                     disabled={quiz.status === 'scheduled'}
-                                    className={`flex items-center justify-center w-full px-[14px] py-[10px] text-xs text-white font-semibold rounded-[6px] shadow-inner-button ${quiz.status === 'live' ? 'bg-[#9012FF] hover:bg-[#6D0DCC]' : 'bg-[#D8ACFF] cursor-not-allowed'}`}>
+                                    className={`flex items-center justify-center w-full px-[14px] py-[10px] text-xs text-white font-semibold rounded-[6px] shadow-inner-button transition-colors ${quiz.status === 'live' ? 'bg-[#9012FF] hover:bg-[#6D0DCC]' : 'bg-[#D8ACFF] cursor-not-allowed'}`}>
                                     Start Quiz
                                 </button>
                             </div>

@@ -101,7 +101,7 @@ function GroupName({ communityId, isAdmin }: groupNameProps) {
 
   return (
     <div className='flex flex-row items-center justify-between min-h-[72px] border-b border-lightGrey'>
-      <div className='flex items-center justify-center w-full'>
+      <div className='flex items-center justify-center w-full h-full'>
         {isMuted && (
           <Image className={`{isMuted ? 'flex : 'none'}`} src='/icons/notification-off-02.svg' alt="Muted" width={16} height={16} />
         )}
@@ -112,8 +112,8 @@ function GroupName({ communityId, isAdmin }: groupNameProps) {
             trigger: "w-full", // Add class to the trigger wrapper
           }}
         >
-          <PopoverTrigger className="w-full block">
-            <div className='w-full flex flex-row items-center px-4 cursor-pointer hover:bg-gray-50'>
+          <PopoverTrigger className="w-full h-full block">
+            <div className='w-full flex flex-row items-center px-4 my-0 cursor-pointer hover:bg-gray-50'>
               <div className="flex-shrink-0 mr-3">
                 {loading ? (
                   <Skeleton width={40} height={40} borderRadius={1000} />

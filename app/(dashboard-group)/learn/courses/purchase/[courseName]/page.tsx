@@ -9,6 +9,7 @@ import LoadingData from '@/components/Loading';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import CashfreeCheckout from '@/components/CashfreeCheckout';
+import VideoDuration from '@/components/VideoDuration';
 
 type Sections = {
   sectionName: string;
@@ -33,6 +34,7 @@ type Content = {
   quizTime: string;
   videoDuration: number;
   questionsCount: number;
+  videoId: string
 }
 
 type CourseData = {
@@ -213,6 +215,7 @@ export default function CoursePurchasePage() {
                   nMarksPerQuestion: contentDoc.data().nMarksPerQuestion,
                   quizTime: contentDoc.data().quizTime,
                   videoDuration: contentDoc.data().videoDuration,
+                  videoId: contentDoc.data().videoId,
                   questionsCount: questionsCount,
                 };
               }));
@@ -464,7 +467,8 @@ export default function CoursePurchasePage() {
                                 alt="video-icon"
                                 width={16}
                                 height={16} />
-                              <div>{formatDuration(content.videoDuration) || '00:00'}</div>
+                              <div><VideoDuration videoId={content.videoId} />
+                              </div>
                             </div>
                           )}
                           {content.type === 'Quiz' && (

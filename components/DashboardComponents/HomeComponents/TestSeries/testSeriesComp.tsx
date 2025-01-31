@@ -2,12 +2,13 @@
 import Image from "next/image";
 import { useState, useEffect } from "react";
 import { useRouter, usePathname } from "next/navigation";
-import DashboardLoading from "@/components/DashboardLoading";
 import { inMemoryPersistence, onAuthStateChanged } from "firebase/auth";
 import { auth, db } from "@/firebase";
 import { collection, getDocs, onSnapshot } from "@firebase/firestore";
 import { Progress } from "@nextui-org/progress";
 import DefaultTestseriesView from '@/components/DashboardComponents/HomeComponents/course&testseries/DefaultTestseriesView';
+import MessageLoading from "@/components/MessageLoading";
+import DashboardLoading from "@/components/DashboardLoading";
 
 interface TestData {
   testName: string;
@@ -146,7 +147,7 @@ function TestSeriesComp() {
 
   if (loading) {
     return (
-      <div className="my-24">
+      <div className="py-24">
         <DashboardLoading />
       </div>
     );

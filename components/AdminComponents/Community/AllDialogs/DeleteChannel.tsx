@@ -8,6 +8,30 @@ import { db } from '@/firebase';
 import { toast } from 'react-toastify';
 import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button } from "@nextui-org/react";
 
+type Chat = {
+    message: string;
+    messageType: string;
+    fileUrl: string;
+    senderId: string;
+    timestamp: any; // Firebase Timestamp
+    chatId: string;
+    fileName: string;
+    fileSize: number;
+    isReplying: boolean;
+    replyingToId: string;
+    replyingToChatId: string;
+    replyingToMsg: string;
+    replyingToMsgType: string;
+    replyingToFileUrl: string;
+    replyingToFileName: string;
+    isDeleted: boolean;
+    adminThatDeletedId: string;
+    isDeletedByAdmin: boolean;
+    isAdmin: boolean;
+    mentions: { userId: string; id: string, isAdmin: boolean, }[];
+  };
+  
+
 // Define the props interface
 interface Deleteprops {
     open: boolean; // Prop to control dialog visibility

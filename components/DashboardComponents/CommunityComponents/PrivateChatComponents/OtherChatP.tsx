@@ -18,31 +18,32 @@ import Skeleton, { SkeletonTheme } from 'react-loading-skeleton'
 import 'react-loading-skeleton/dist/skeleton.css'
 import { Tooltip } from "@nextui-org/react";
 import MediaViewDialog from "../MediaViewDialog";
+import TruncatedMessage from "./TruncatedMessage";
 
 type OtherChatProps = {
-    currentUserId: string;
-      message: string | null;
-      messageType: string | null;
-      isReplying: boolean ;
-      replyingToId: string | null;
-      replyingToChatId: string | null;
-      replyingToMsg: string | null;
-      replyingToMsgType: string | null;
-      replyingToFileUrl: string ;
-      replyingToFileName: string | null;
-      fileUrl: string ;
-      fileName: string | null;
-      fileSize: number ;
-      senderId: string | null;
-      timestamp: Timestamp | null;
-      chatId: string ;
-      isDeleted: boolean;
-      pChatId: string;
-      highlightedText: string | React.ReactNode[]; 
-      isHighlighted: boolean; // New prop
-      scrollToReply: (replyingToChatId: string) => void;
-      setShowReplyLayout: (value: boolean) => void;
-      handleReply: (message: string | null, senderId: string | null, messageType: string | null, fileUrl: string | null, fileName: string | null,  chatId: string | null) => void; // New prop to handle reply data
+  currentUserId: string;
+  message: string | null;
+  messageType: string | null;
+  isReplying: boolean;
+  replyingToId: string | null;
+  replyingToChatId: string | null;
+  replyingToMsg: string | null;
+  replyingToMsgType: string | null;
+  replyingToFileUrl: string;
+  replyingToFileName: string | null;
+  fileUrl: string;
+  fileName: string | null;
+  fileSize: number;
+  senderId: string | null;
+  timestamp: Timestamp | null;
+  chatId: string;
+  isDeleted: boolean;
+  pChatId: string;
+  highlightedText: string | React.ReactNode[];
+  isHighlighted: boolean; // New prop
+  scrollToReply: (replyingToChatId: string) => void;
+  setShowReplyLayout: (value: boolean) => void;
+  handleReply: (message: string | null, senderId: string | null, messageType: string | null, fileUrl: string | null, fileName: string | null, chatId: string | null) => void; // New prop to handle reply data
 }
 
 type ReactionCount = {
@@ -163,7 +164,7 @@ function OtherChatP({ message, currentUserId, isDeleted, highlightedText, messag
 
       const userId = currentUser.uid;
 
-            const reactionsRef = doc(db,`privatechats/${pChatId}/chats/${chatId}/reactions`,userId);
+      const reactionsRef = doc(db, `privatechats/${pChatId}/chats/${chatId}/reactions`, userId);
 
       await setDoc(reactionsRef, { emoji: emoji.emoji, userId });
 
@@ -183,7 +184,7 @@ function OtherChatP({ message, currentUserId, isDeleted, highlightedText, messag
         return;
       }
       const userId = currentUser.uid;
-      const reactionDocRef = doc(db, `privatechats/${pChatId}/chats/${chatId}/reactions`,userId);
+      const reactionDocRef = doc(db, `privatechats/${pChatId}/chats/${chatId}/reactions`, userId);
 
       const reactionDoc = await getDoc(reactionDocRef);
       if (reactionDoc.exists() && reactionDoc.data().emoji === emoji) {
@@ -247,10 +248,10 @@ function OtherChatP({ message, currentUserId, isDeleted, highlightedText, messag
         <span className="font-normal text-sm text-[#475467]">{formattedTime}</span>
         {showBookmark && (<Image src='/icons/bookmark1.svg' alt='Bookmark icon' width={12} height={12} />)}
       </div> */}
-            <div className="flex flex-row gap-1 ml-[2px] justify-start mb-2">
-               {showBookmark && (<Image src='/icons/bookmark1.svg' alt='Bookmark icon' width={12} height={12} />)} 
-                <div className="text-xs text-neutral-600">{formattedTime}</div>
-                </div>
+      <div className="flex flex-row gap-1 ml-[2px] justify-start mb-2">
+        {showBookmark && (<Image src='/icons/bookmark1.svg' alt='Bookmark icon' width={12} height={12} />)}
+        <div className="text-xs text-neutral-600">{formattedTime}</div>
+      </div>
       <div className=" flex flex-row gap-2 items-center relative group">
         <div className={`flex flex-col px-4 py-3 transition-all duration-500 border border-[#EAECF0] ${isHighlighted ? 'bg-[#EAECF0]' : 'bg-white'} rounded-xl gap-[8px]  ${messageType === 'image' || messageType === 'document' ? 'max-w-[380px]' : 'max-w-[600px]'} `}>
 
@@ -319,19 +320,14 @@ function OtherChatP({ message, currentUserId, isDeleted, highlightedText, messag
               )}
             </div>
           )}
-          <div className="text-sm break-all w-full max-w-full ">
+          <div className="text-sm break-all w-full max-w-full">
             {isDeleted ? (
-              <div className="italic text-[#475467]">This message was deleted</div>
+              <div className="italic text-[#475467]">You deleted this message</div>
             ) : (
-              <div>
-                {highlightedText}
-              </div>
+              <TruncatedMessage message={highlightedText} />
             )}
-
           </div>
-
         </div>
-
 
         <Popover
           placement="bottom-start"
@@ -411,7 +407,7 @@ function OtherChatP({ message, currentUserId, isDeleted, highlightedText, messag
         </div>
       )}
       {showMediaDialog && <MediaViewDialog open={true} onClose={() => setShowMediaDialog(false)} src={fileUrl} mediaType={messageType || ''} />}
- 
+
       {/* {openDialogue && (
 
         <MemberClickDialog open={true} onClose={() => setOpenDialogue(false)} id={id} isAdmin={admin} />

@@ -24,6 +24,8 @@ function PausedDialog({ onClose, fromContent, contentId }: PausedDialogProps) { 
                     ? "quiz"
                     : fromContent === "course"
                         ? "course"
+                        : fromContent === "notifications"
+                        ? "notifications"
                         : null;
 
         if (!collectionPath) {
@@ -98,6 +100,8 @@ function PausedDialog({ onClose, fromContent, contentId }: PausedDialogProps) { 
                                     ? "Quiz"
                                     : fromContent === "course"
                                         ? "Course"
+                                        : fromContent === "notifications"
+                                        ? "Notification"
                                         : ""}?
 
                         </h3>
@@ -118,6 +122,8 @@ function PausedDialog({ onClose, fromContent, contentId }: PausedDialogProps) { 
                                 ? "Quiz"
                                 : fromContent === "course"
                                     ? "Course"
+                                    : fromContent === "notifications"
+                                        ? "Notification"
                                     : ""}</Button>
                     </ModalFooter>
                 </>

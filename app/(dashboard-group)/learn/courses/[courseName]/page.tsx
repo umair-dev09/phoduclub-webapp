@@ -19,6 +19,7 @@ import QuizContent from "@/components/DashboardComponents/LearnComponents/Course
 import Video from 'next-video';
 import CourseVideoPlayer from "@/components/DashboardComponents/LearnComponents/CourseComponents/InsideCoursesComp/VideoComp/Video";
 import { Tooltip } from "@nextui-org/react";
+import VideoDuration from "@/components/VideoDuration";
 
 interface Options {
   A: string;
@@ -798,7 +799,7 @@ function Course() {
                                       height={16}
                                     />
                                     <div>
-                                      {formatDuration(content.videoDuration) || "00:00"}
+                                      <VideoDuration videoId={content.videoId} />
                                     </div>
 
                                   </div>

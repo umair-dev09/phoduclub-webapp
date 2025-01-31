@@ -443,7 +443,7 @@ function Quizinfo() {
                             </div>
                         }
                     >
-                        <StudentsAttempts />
+                        <StudentsAttempts quizId={quizId || ''}/>
                     </Tab>
                 </Tabs>
             </div>
