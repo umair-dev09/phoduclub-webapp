@@ -176,7 +176,7 @@ function MediaDialog({ isOpen, setIsOpen, chats }: MediaDialogProps) {
       <div className="flex gap-[6px] flex-col justify-center items-center mt-4">
         <span className="font-semibold text-sm text-[#0C111D]">No {type.toLowerCase()}</span>
         <span className="font-normal text-xs text-[#667085]">
-          You'll see all shared {type.toLowerCase()} here
+          You&apos;ll see all shared {type.toLowerCase()} here
         </span>
       </div>
     </div>
