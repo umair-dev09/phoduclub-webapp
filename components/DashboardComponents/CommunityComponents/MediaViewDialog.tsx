@@ -45,15 +45,14 @@ function MediaViewDialog({ open, onClose, src, mediaType }: MediaViewDialogProps
             isOpen={open}
             onOpenChange={(isOpen) => !isOpen && onClose()}
             hideCloseButton
-
-            scrollBehavior={scrollBehavior}
-            size="5xl"
+            className="min-w-[900px] min-h-[600px] max-w-[900px] max-h-[600px]"
+            // scrollBehavior={scrollBehavior}
         >
             <ModalContent>
                 <>
                     {/* Modal Header */}
-                    <ModalHeader className="flex flex-row justify-between gap-1">
-                        <div className="flex flex-row justify-between gap-3 w-full h-[25px] px-4 mt-3">
+                    <ModalHeader className="flex flex-row justify-between  w-full h-full ">
+                        <div className="flex flex-row justify-between gap-3 w-full h-[25px]">
                             <Image src="/icons/more-horizontal.svg" alt="Cancel" width={23} height={23} />
                             <button className="w-[32px] h-[32px]  rounded-full flex items-center justify-center transition-all duration-300 ease-in-out hover:bg-[#F2F4F7]"
                                 onClick={onClose}>
@@ -65,9 +64,9 @@ function MediaViewDialog({ open, onClose, src, mediaType }: MediaViewDialogProps
                     </ModalHeader>
 
                     {/* Modal Body */}
-                    <ModalBody className="flex justify-center items-center pb-10">
+                    <ModalBody className="flex justify-center items-center">
                         {mediaType === 'image' ? (
-                            <Image className="w-[80%] h-[85%] object-contain" src={src} width={800} height={800} alt='media' quality={100} />
+                            <Image className="w-[800px] h-[500px] object-cover rounded-md" src={src} width={800} height={800} alt='media' quality={100} />
                         ) : (
                             <VideoPlayer videoSrc={src} />
                         )}

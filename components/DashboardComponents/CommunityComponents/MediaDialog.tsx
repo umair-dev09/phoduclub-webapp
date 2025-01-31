@@ -2,6 +2,8 @@ import { useState } from "react";
 import { Dialog, DialogBackdrop, DialogPanel } from "@headlessui/react";
 import Image from "next/image";
 import React from "react";
+import MediaViewDialog from "./MediaViewDialog";
+import MediaDialogVideoPreview from "@/components/MediaDialogVideoPreview";
 
 type Chat = {
   message: string;
@@ -33,6 +35,9 @@ interface MediaDialogProps {
 }
 
 function MediaDialog({ isOpen, setIsOpen, chats }: MediaDialogProps) {
+    const [showMediaDialog, setShowMediaDialog] = useState(false); 
+    const [fileUrl, setFileUrl] = useState(''); 
+    const [messageType, setMessageType] = useState(''); 
     const handleCancel = () => {
         setIsOpen({ report: false, media: false });
       };
@@ -47,11 +52,11 @@ function MediaDialog({ isOpen, setIsOpen, chats }: MediaDialogProps) {
   };
 
   // Filter messages based on type and content
-  const imageMessages = chats.filter(chat => chat.messageType === 'image' && chat.fileUrl);
-  const videoMessages = chats.filter(chat => chat.messageType === 'video' && chat.fileUrl);
-  const documentMessages = chats.filter(chat => chat.messageType === 'document' && chat.fileUrl);
+  const imageMessages = chats.filter(chat => !chat.isDeleted && chat.messageType === 'image' && chat.fileUrl);
+  const videoMessages = chats.filter(chat => !chat.isDeleted && chat.messageType === 'video' && chat.fileUrl);
+  const documentMessages = chats.filter(chat => !chat.isDeleted && chat.messageType === 'document' && chat.fileUrl);
   const linkMessages = chats.reduce<string[]>((acc, chat) => {
-    if (chat.messageType === 'text') {
+    if (!chat.isDeleted && chat.messageType === 'text') {
       const urls = extractUrls(chat.message);
       return [...acc, ...urls];
     }
@@ -62,15 +67,16 @@ function MediaDialog({ isOpen, setIsOpen, chats }: MediaDialogProps) {
     switch (activeSection) {
       case 'Images':
         return imageMessages.length > 0 ? (
-          <div className="grid grid-cols-2 gap-4">
+          <div className="flex flex-row flex-wrap gap-4 items-center self-center justify-start w-full">
             {imageMessages.map((chat, index) => (
               <div key={chat.chatId} className="relative">
-                <img 
+                <Image onClick={() =>{setShowMediaDialog(true); setFileUrl(chat.fileUrl); setMessageType('image');}}
                   src={chat.fileUrl} 
                   alt={chat.fileName || `Image ${index + 1}`}
-                  className="w-full h-48 object-cover rounded-lg"
+                  className="w-[130px] h-[110px] object-cover rounded-lg"
+                  width={200}
+                  height={200}
                 />
-                <span className="text-xs text-gray-500 mt-1 block">{chat.fileName}</span>
               </div>
             ))}
           </div>
@@ -80,19 +86,22 @@ function MediaDialog({ isOpen, setIsOpen, chats }: MediaDialogProps) {
 
       case 'Videos':
         return videoMessages.length > 0 ? (
-          <div className="flex flex-col gap-4">
+          <div className="flex flex-row flex-wrap gap-4 items-center self-center justify-start w-full">
             {videoMessages.map((chat) => (
-              <div key={chat.chatId} className="flex items-center gap-3 p-3 rounded-lg bg-gray-50">
-                <div className="w-12 h-12 bg-gray-200 rounded-lg flex items-center justify-center">
-                  <Image src="/icons/video-icon.svg" alt="Video" width={24} height={24} />
-                </div>
-                <div className="flex-1">
-                  <p className="text-sm font-medium">{chat.fileName}</p>
-                  <a href={chat.fileUrl} target="_blank" rel="noopener noreferrer" className="text-xs text-blue-600">
-                    View video
-                  </a>
-                </div>
-              </div>
+              // <div key={chat.chatId} className="flex items-center gap-3 p-3 rounded-lg bg-gray-50">
+              //   <div className="w-12 h-12 bg-gray-200 rounded-lg flex items-center justify-center">
+              //     <Image src="/icons/video-icon.svg" alt="Video" width={24} height={24} />
+              //   </div>
+              //   <div className="flex-1">
+              //     <p className="text-sm font-medium">{chat.fileName}</p>
+              //     <a href={chat.fileUrl} target="_blank" rel="noopener noreferrer" className="text-xs text-blue-600">
+              //       View video
+              //     </a>
+              //   </div>
+              // </div>
+              <button key={chat.chatId} onClick={() => {setShowMediaDialog(true); setFileUrl(chat.fileUrl); setMessageType('video');}}>
+                <MediaDialogVideoPreview videoSrc={chat.fileUrl} />
+              </button>
             ))}
           </div>
         ) : (
@@ -105,10 +114,10 @@ function MediaDialog({ isOpen, setIsOpen, chats }: MediaDialogProps) {
             {documentMessages.map((chat) => (
               <div key={chat.chatId} className="flex items-center gap-3 p-3 rounded-lg bg-gray-50">
                 <div className="w-12 h-12 bg-gray-200 rounded-lg flex items-center justify-center">
-                  <Image src="/icons/document-icon.svg" alt="Document" width={24} height={24} />
+                  <Image src="/icons/documents.svg" alt="Document" width={24} height={24} />
                 </div>
                 <div className="flex-1">
-                  <p className="text-sm font-medium">{chat.fileName}</p>
+                  <p className="text-sm break-all font-medium">{chat.fileName}</p>
                   <p className="text-xs text-gray-500">
                     {(chat.fileSize / 1024 / 1024).toFixed(2)} MB
                   </p>
@@ -116,7 +125,9 @@ function MediaDialog({ isOpen, setIsOpen, chats }: MediaDialogProps) {
                 <a 
                   href={chat.fileUrl} 
                   download={chat.fileName}
-                  className="text-blue-600 text-sm"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-blue-600 text-sm hover:underline"
                 >
                   Download
                 </a>
@@ -208,7 +219,9 @@ function MediaDialog({ isOpen, setIsOpen, chats }: MediaDialogProps) {
           </div>
         </DialogPanel>
       </div>
+      {showMediaDialog && <MediaViewDialog open={true} onClose={() => setShowMediaDialog(false)} src={fileUrl} mediaType={messageType || ''} />}
     </Dialog>
+    
   );
 }
 
