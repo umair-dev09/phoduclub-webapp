@@ -182,14 +182,14 @@ function MyCourses() {
             {/* Main course container with flex layout and specified dimensions */}
             {courses.map((course, index) => (
               <button key={index} onClick={() => handleTabClick(`/learn/courses/${course.courseName.toLowerCase().replace(/\s+/g, '-')}/?cId=${course.courseId}`)}
-                className="flex items-center justify-center flex-col rounded-lg relative overflow-hidden transition-transform duration-300 ease-in-out w-[350px] h-[330px]">
+                className="flex group items-center justify-center flex-col rounded-lg relative overflow-hidden transition-transform duration-300 ease-in-out w-[350px] h-[330px]">
                 {/* Course image and suggestion label container */}
                 {/* <div className="flex flex-1 h-[60%] items-center flex-col"> */}
-                <Image className="w-full h-[500px] object-cover border border-[#EAECF0] rounded-t-lg overflow-hidden" src={course.courseImage || "/images/course_img.svg"} alt="Course" width={350} height={300} />
+                <Image className="w-full h-[500px] object-cover border border-[#EAECF0] rounded-t-lg overflow-hidden group-hover:opacity-85 transition-opacity duration-150" src={course.courseImage || "/images/course_img.svg"} alt="Course" width={350} height={300} />
                 {/* </div> */}
 
                 {/* Course details container */}
-                <div className="flex w-full h-full max-h-[9.625rem] flex-col bg-white border border-[#EAECF0] border-t-0 rounded-b-lg px-6">
+                <div className="flex w-full h-full max-h-[9.625rem] flex-col bg-white border border-[#EAECF0] border-t-0 rounded-b-lg px-6 group-hover:bg-[#F9FAFB] transition-colors duration-150">
 
                   {/* Course title and details (lessons, duration) */}
                   <div className="flex h-[60%] items-center flex-col">

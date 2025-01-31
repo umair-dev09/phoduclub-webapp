@@ -162,7 +162,7 @@ function SuggestedTestSeries() {
                   </div>
                   {/* Buy Now button */}
                   <div>
-                    <button className="text-xs font-semibold py-2.5 px-3.5 shadow-inner-button rounded-md bg-[#9012FF] border-2 border-[#9012FF] text-white"
+                    <button className="text-xs font-semibold py-2.5 px-3.5 shadow-inner-button rounded-md bg-[#9012FF] border-2 border-[#9012FF] text-white hover:bg-[#6D0DCC] transition-colors"
                       onClick={() => handleTabClick(`/learn/test/purchase/${test.testName.toLowerCase().replace(/\s+/g, '-')}/?tId=${test.testId}`)}
                     >
                       Buy Now

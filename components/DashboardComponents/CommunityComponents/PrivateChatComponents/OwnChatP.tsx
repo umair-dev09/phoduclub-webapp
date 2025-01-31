@@ -13,8 +13,10 @@ import MessageLoading from "@/components/MessageLoading";
 import CommunityVideoPlayer from "@/components/CommunityVideoPlayer";
 import DeleteP from "./DeleteMessageDialog";
 import MediaViewDialog from "../MediaViewDialog";
+import TruncatedMessage from "./TruncatedMessage";
 // import MediaViewDialog from "./MediaViewDialog";
 // import Delete from "./Delete";
+
 type OwnChatProps = {
   currentUserId: string;
   message: string | null;
@@ -45,8 +47,6 @@ type ReactionCount = {
   emoji: string;
   count: number;
 };
-
-
 
 function OwnChatP({ message, isDeleted, pChatId, currentUserId, highlightedText, messageType, fileUrl, fileName, isHighlighted, scrollToReply, fileSize, senderId, timestamp, chatId, isReplying, replyingToId, replyingToChatId, replyingToFileName, replyingToFileUrl, replyingToMsg, replyingToMsgType, setShowReplyLayout, handleReply }: OwnChatProps) {
   const [reactions, setReactions] = useState<ReactionCount[]>([]);
@@ -118,14 +118,12 @@ function OwnChatP({ message, isDeleted, pChatId, currentUserId, highlightedText,
     }
   };
 
-
   const formatFileSize = (size: number): string => {
     if (size < 1024) return `${size} bytes`;
     else if (size >= 1024 && size < 1024 * 1024) return `${(size / 1024).toFixed(2)} KB`;
     else if (size >= 1024 * 1024 && size < 1024 * 1024 * 1024) return `${(size / (1024 * 1024)).toFixed(2)} MB`;
     else return `${(size / (1024 * 1024 * 1024)).toFixed(2)} GB`;
   };
-
 
   const handleDownload = (fileUrl: string, fileName: string) => {
     // Create an anchor element
@@ -207,7 +205,6 @@ function OwnChatP({ message, isDeleted, pChatId, currentUserId, highlightedText,
               <PopoverTrigger>
                 <button
                   className='w-[48px] h-[26px] rounded-[54px] border border-solid border-[#6770A9]  hover:bg-[#D0D5DD] flex min-w-[46px]  invisible items-center justify-center focus:outline-none bg-[#F2F4F7] ml-1 transition-all group-hover:flex group-hover:visible '
-
                 >
                   <Image
                     src="/icons/arrow-down.svg"
@@ -224,7 +221,6 @@ function OwnChatP({ message, isDeleted, pChatId, currentUserId, highlightedText,
                   />
                 </button>
               </PopoverTrigger>
-
               <PopoverContent className="p-0">
                 <div
                   className='flex flex-col bg-[#FFFFFF] w-auto h-auto border border-[#EAECF0] rounded-[12px] '
@@ -233,7 +229,6 @@ function OwnChatP({ message, isDeleted, pChatId, currentUserId, highlightedText,
                   <EmojiPicker onEmojiClick={handleAddReaction} height={280} searchDisabled={true} reactions={['1f44d', '1f496', '1f602', '1f60d', '1f62e']}
                     style={{
                       border: "none",
-
                     }}
                     previewConfig={
                       {
@@ -241,7 +236,6 @@ function OwnChatP({ message, isDeleted, pChatId, currentUserId, highlightedText,
                       }
                     }
                     reactionsDefaultOpen={true} allowExpandReactions={true} hiddenEmojis={['1f595']} />
-
                   {/* Other options */}
                   <button onClick={handleReplyMessage} className='flex flex-row items-center gap-2 w-30 px-4 py-[10px] transition-colors hover:bg-neutral-100'>
                     <Image src='/icons/Reply.svg' alt='search icon' width={19} height={19} />
@@ -296,7 +290,6 @@ function OwnChatP({ message, isDeleted, pChatId, currentUserId, highlightedText,
                 </button>
               </div>
             )}
-
             {/* */}
             {isReplying && !isDeleted && (
               <div className="flex flex-row p-[10px] bg-[#973AFF] border border-[#AD72FF] rounded-md text-xs gap-1 justify-between cursor-pointer"
@@ -340,11 +333,8 @@ function OwnChatP({ message, isDeleted, pChatId, currentUserId, highlightedText,
               {isDeleted ? (
                 <div className="italic text-[#475467]">You deleted this message</div>
               ) : (
-                <div>
-                  {highlightedText}
-                </div>
+                <TruncatedMessage message={highlightedText} />
               )}
-
             </div>
           </div>
         </div>
@@ -356,7 +346,7 @@ function OwnChatP({ message, isDeleted, pChatId, currentUserId, highlightedText,
                 key={reaction.emoji}
                 onClick={() => handleDeleteReaction(reaction.emoji)}
                 className={`rounded-[54px] border border-solid border-[#D0D5DD] h-[26px] w-auto p-1 flex flex-row justify-center items-center gap-1 transition-colors duration-200 
-                                      bg-[#F2F4F7] text-[#475467] hover:bg-[#F8F0FF] hover:border-[#7400E0]`}
+                            bg-[#F2F4F7] text-[#475467] hover:bg-[#F8F0FF] hover:border-[#7400E0]`}
               >
                 <p className="text-sm">{reaction.emoji}</p>
                 <span className="font-medium text-xs">{reaction.count}</span>
@@ -364,7 +354,6 @@ function OwnChatP({ message, isDeleted, pChatId, currentUserId, highlightedText,
             ))}
           </div>
         )}
-
       </div>
 
       {showMediaDialog && <MediaViewDialog open={true} onClose={() => setShowMediaDialog(false)} src={fileUrl} mediaType={messageType || ''} />}
