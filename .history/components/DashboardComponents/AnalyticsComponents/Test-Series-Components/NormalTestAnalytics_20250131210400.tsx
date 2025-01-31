@@ -8,7 +8,7 @@ import { Tabs, Tab } from "@nextui-org/react";
 import { Key } from '@react-types/shared';
 import { Popover, PopoverContent, PopoverTrigger } from "@nextui-org/popover";
 import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button } from "@nextui-org/react";
-import React, { useState, useEffect, useCallback, useRef } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 interface NormalTestAnalyticsprops {
     onClose: () => void;
     forallsubject?: boolean;
@@ -182,43 +182,29 @@ function NormalTestAnalytics({ onClose, forallsubject = false, attemptedDetails,
     }, [sectionMap]);
     const currentAttempt = attemptedDetails.find(attempt => attempt.attemptId === testAttemptId);
 
-    const scrollContainerRef = useRef<HTMLDivElement | null>(null);
-
     useEffect(() => {
-        const handleScroll = () => {
-            if (!scrollContainerRef.current) return;
+        const observerOptions = {
+            root: null, // Observe relative to the viewport
+            threshold: 0.5, // Trigger when 50% of the section is visible
+        };
 
-            const scrollContainer = scrollContainerRef.current;
-            const containerTop = scrollContainer.getBoundingClientRect().top;
-
-            let currentSection = activeTab; // Keep current section until another passes threshold
-
-            Object.entries(sectionMap).forEach(([key, id]) => {
-                const section = document.querySelector(id);
-                if (section) {
-                    const { top, height } = section.getBoundingClientRect();
-                    const isVisible = top - containerTop < height / 2; // Check if at least 50% of the section is visible
-
-                    if (isVisible) {
-                        currentSection = key;
-                    }
+        const observerCallback = (entries: any[]) => {
+            entries.forEach((entry) => {
+                if (entry.isIntersecting) {
+                    setActiveTab(entry.target.id);
                 }
             });
-
-            setActiveTab(currentSection);
         };
 
-        const scrollContainer = scrollContainerRef.current;
-        if (scrollContainer) {
-            scrollContainer.addEventListener("scroll", handleScroll);
-        }
+        const observer = new IntersectionObserver(observerCallback, observerOptions);
 
-        return () => {
-            if (scrollContainer) {
-                scrollContainer.removeEventListener("scroll", handleScroll);
-            }
-        };
-    }, [activeTab]);
+        Object.values(sectionMap).forEach((id: string) => {
+            const section = document.getElementById(id.substring(1));
+            if (section) observer.observe(section);
+        });
+
+        return () => observer.disconnect();
+    }, []);
 
 
 
@@ -273,14 +259,7 @@ function NormalTestAnalytics({ onClose, forallsubject = false, attemptedDetails,
                         aria-label="Analytics Tabs"
                         color="primary"
                         variant="underlined"
-                        selectedKey={activeTab}
-                        onSelectionChange={(key) => {
-                            const sectionId = String(key);
-                            handleTabChange(key);
-                            setActiveTab(sectionId);
-                            document.getElementById(sectionId)?.scrollIntoView({ behavior: "smooth", block: "start" });
-                        }}
-
+                        onSelectionChange={handleTabChange}
                         classNames={{
                             tabList: "gap-6 w-full relative rounded-none p-0",
                             cursor: "w-full bg-[#7400E0]",
@@ -294,87 +273,94 @@ function NormalTestAnalytics({ onClose, forallsubject = false, attemptedDetails,
                         <Tab key="complete-analysis" title="Complete Analysis" />
                         <Tab key="summary" title="Summary" />
                     </Tabs>
-
+                    {/* <div className="space-y-20">
+                        {Object.entries(sectionMap).map(([key, id]) => (
+                            <div key={key} id={id.substring(1)} className="h-screen flex items-center justify-center border">
+                                <h2 className="text-2xl font-bold capitalize">{key.replace(/-/g, " ")}</h2>
+                            </div>
+                        ))}
+                    </div> */}
                 </div>
             </div>
-            <div ref={scrollContainerRef} className="overflow-y-auto flex-1 flex flex-col h-auto px-8">
-                {/* overview Line */}
-                <div id="overview" className="h-[44px] flex flex-col justify-end py-2">
-                    <span className="text-[#1D2939] text-lg font-semibold">Overview</span>
-                </div>
-                {/* Overall Data */}
-                <div className="  ">
-                    <div className="bg-white p-4 flex flex-col rounded-2xl border border-lightGrey">
-                        <div className="flex flex-row justify-between">
-                            {/* Total Questions */}
-                            <div className="flex flex-1 flex-row justify-between pr-4">
-                                <div className="flex flex-col gap-2">
-                                    <div className="font-normal text-xs text-[#667085]">Total Questions</div>
-                                    <h3 className="text-[15px]">{currentAttempt?.attemptedQuestions.split('/')[1]}</h3>
+            {Object.entries(sectionMap).map(([key, id]) => (
+                <div key={key} id={id.substring(1)} className="overflow-y-auto flex-1 flex flex-col h-auto px-8">
+                    {/* overview Line */}
+                    <div id="overview" className="h-[44px] flex flex-col justify-end py-2">
+                        <span className="text-[#1D2939] text-lg font-semibold">Overview</span>
+                    </div>
+                    {/* Overall Data */}
+                    <div className="  ">
+                        <div className="bg-white p-4 flex flex-col rounded-2xl border border-lightGrey">
+                            <div className="flex flex-row justify-between">
+                                {/* Total Questions */}
+                                <div className="flex flex-1 flex-row justify-between pr-4">
+                                    <div className="flex flex-col gap-2">
+                                        <div className="font-normal text-xs text-[#667085]">Total Questions</div>
+                                        <h3 className="text-[15px]">{currentAttempt?.attemptedQuestions.split('/')[1]}</h3>
+                                    </div>
+                                    <div className="flex justify-center items-center">
+                                        <div className="w-px bg-lightGrey h-4/5"></div>
+                                    </div>
                                 </div>
-                                <div className="flex justify-center items-center">
-                                    <div className="w-px bg-lightGrey h-4/5"></div>
+
+                                {/* Attempted Questions */}
+                                <div className="flex flex-1 flex-row justify-between pr-4">
+                                    <div className="flex flex-col gap-2">
+                                        <div className="font-normal text-xs text-[#667085]">Attempted Questions</div>
+                                        <h3 className="text-[15px]">{currentAttempt?.attemptedQuestions.split('/')[0]}</h3>
+                                    </div>
+                                    <div className="flex justify-center items-center">
+                                        <div className="w-px bg-lightGrey h-4/5"></div>
+                                    </div>
+                                </div>
+
+                                {/* Time Taken */}
+                                <div className="flex flex-1 flex-col gap-2">
+                                    <div className="font-normal text-xs text-[#667085]">Time Taken</div>
+                                    <h3 className="text-[15px]">{formatTimeInSeconds(currentAttempt?.timeTaken || '0')} of {formatTimeInSeconds(currentAttempt?.testTime || '0')}</h3>
                                 </div>
                             </div>
 
-                            {/* Attempted Questions */}
-                            <div className="flex flex-1 flex-row justify-between pr-4">
-                                <div className="flex flex-col gap-2">
-                                    <div className="font-normal text-xs text-[#667085]">Attempted Questions</div>
-                                    <h3 className="text-[15px]">{currentAttempt?.attemptedQuestions.split('/')[0]}</h3>
+                            {/* Additional Stats */}
+                            <div className="flex flex-row justify-between mt-9">
+                                <div className="flex flex-1 flex-row justify-between pr-4">
+                                    <div className="flex flex-col gap-2">
+                                        <div className="font-normal text-xs text-[#667085]">Answered Correct</div>
+                                        <h3 className="text-[15px]">{currentAttempt?.answeredCorrect.split('/')[0]}</h3>
+                                    </div>
+                                    <div className="flex justify-center items-center">
+                                        <div className="w-px bg-lightGrey h-4/5"></div>
+                                    </div>
                                 </div>
-                                <div className="flex justify-center items-center">
-                                    <div className="w-px bg-lightGrey h-4/5"></div>
-                                </div>
-                            </div>
 
-                            {/* Time Taken */}
-                            <div className="flex flex-1 flex-col gap-2">
-                                <div className="font-normal text-xs text-[#667085]">Time Taken</div>
-                                <h3 className="text-[15px]">{formatTimeInSeconds(currentAttempt?.timeTaken || '0')} of {formatTimeInSeconds(currentAttempt?.testTime || '0')}</h3>
+                                <div className="flex flex-1 flex-row justify-between pr-4">
+                                    <div className="flex flex-col gap-2">
+                                        <div className="font-normal text-xs text-[#667085]">Answered Incorrect</div>
+                                        <h3 className="text-[15px]">{currentAttempt?.answeredIncorrect.split('/')[0]}</h3>
+                                    </div>
+                                    <div className="flex justify-center items-center">
+                                        <div className="w-px bg-lightGrey h-4/5"></div>
+                                    </div>
+                                </div>
+
+                                <div className="flex flex-1 flex-col gap-2">
+                                    <div className="font-normal text-xs text-[#667085]">Total Score</div>
+                                    <h3 className="text-[15px]">{currentAttempt?.score.split('/')[0]}</h3>
+                                </div>
                             </div>
                         </div>
-
-                        {/* Additional Stats */}
-                        <div className="flex flex-row justify-between mt-9">
-                            <div className="flex flex-1 flex-row justify-between pr-4">
-                                <div className="flex flex-col gap-2">
-                                    <div className="font-normal text-xs text-[#667085]">Answered Correct</div>
-                                    <h3 className="text-[15px]">{currentAttempt?.answeredCorrect.split('/')[0]}</h3>
-                                </div>
-                                <div className="flex justify-center items-center">
-                                    <div className="w-px bg-lightGrey h-4/5"></div>
-                                </div>
-                            </div>
-
-                            <div className="flex flex-1 flex-row justify-between pr-4">
-                                <div className="flex flex-col gap-2">
-                                    <div className="font-normal text-xs text-[#667085]">Answered Incorrect</div>
-                                    <h3 className="text-[15px]">{currentAttempt?.answeredIncorrect.split('/')[0]}</h3>
-                                </div>
-                                <div className="flex justify-center items-center">
-                                    <div className="w-px bg-lightGrey h-4/5"></div>
-                                </div>
-                            </div>
-
-                            <div className="flex flex-1 flex-col gap-2">
-                                <div className="font-normal text-xs text-[#667085]">Total Score</div>
-                                <h3 className="text-[15px]">{currentAttempt?.score.split('/')[0]}</h3>
-                            </div>
+                    </div>
+                    {/* Attempts & Difficulty Analysis */}
+                    <div id="Attempts" className=" flex flex-col">
+                        <div className="h-[44px] flex flex-col justify-end mb-2">
+                            <span className="text-[#1D2939] text-lg font-semibold">Attempts & Difficulty Analysis</span>
+                        </div>
+                        <div>
+                            < AttemptsDifficultyAnalysis questions={currentAttempt?.questions || []} />
                         </div>
                     </div>
-                </div>
-                {/* Attempts & Difficulty Analysis */}
-                <div id="Attempts" className=" flex flex-col">
-                    <div className="h-[44px] flex flex-col justify-end mb-2">
-                        <span className="text-[#1D2939] text-lg font-semibold">Attempts & Difficulty Analysis</span>
-                    </div>
-                    <div>
-                        < AttemptsDifficultyAnalysis questions={currentAttempt?.questions || []} />
-                    </div>
-                </div>
-                {/* Attempts over the 3 hours */}
-                {/* <div id="Attemptsoverthe3hours" className="flex flex-col">
+                    {/* Attempts over the 3 hours */}
+                    {/* <div id="Attemptsoverthe3hours" className="flex flex-col">
                     <div className="h-[44px] flex flex-col justify-end mb-2">
                         <span className="text-[#1D2939] text-lg font-semibold">Attempts over the 3 hours</span>
                     </div>
@@ -383,57 +369,58 @@ function NormalTestAnalytics({ onClose, forallsubject = false, attemptedDetails,
                     </div>
 
                 </div> */}
-                {/* Complete Analysis */}
-                <div id="CompleteAnalysis" className="flex flex-col">
-                    <div className="h-[44px] flex flex-col justify-end mb-2 ">
-                        <span className="text-[#1D2939] text-lg font-semibold">Complete Analysis</span>
-                    </div>
-                    <div className="h-auto rounded-xl  bg-[#FFFFFF] border border-solid border-[#EAECF0]">
-                        <table className="w-full rounded-xl bg-white text-sm font-medium">
-                            <thead>
-                                <tr className="text-[#667085]">
-                                    <th className="w-[7%] px-8 py-3 text-center">Q. no.</th>
-                                    {/* <th className="w-[10%] text-left">Chapter</th> */}
-                                    <th className="w-[10%] text-center">Difficulty</th>
-                                    <th className="w-[10%] text-center">Allotted</th>
-                                    <th className="w-[10%] text-center">Spent</th>
-                                    <th className="w-[10%] text-center">Attempted</th>
-                                    <th className="w-[10%] text-center">Answer</th>
-                                    <th className="w-[10%] text-center">Remarks</th>
-                                </tr>
-                            </thead>
-                            <tbody className="border-b border-[#EAECF0]">
-                                {currentAttempt?.questions.map((question, index) => (
-                                    <tr key={index} className="border-t border-[#EAECF0]">
-                                        <td className="py-3 text-center text-[#1D2939] font-normal text-sm">{index + 1}</td>
-                                        {/* <td className="py-3 text-left text-[#1D2939] font-semibold text-sm">Current Electricity</td> */}
-                                        <td className="py-3 text-center text-[#1D2939] font-normal text-sm">{question.difficulty}</td>
-                                        <td className="py-3 text-center text-[#1D2939] font-normal text-sm">{question.allotedTime}s</td>
-                                        <td className="py-3 text-center text-[#1D2939] font-normal text-sm">{question.spentTime}s</td>
-                                        <td className="py-3 text-center text-[#1D2939] font-normal text-sm">{question.answered ? 'Yes' : 'No'}</td>
-                                        <td className={`py-3 text-center ${question.answered ? question.answeredCorrect ? 'text-[#0B9055]' : 'text-[#DE3024]' : 'text-[#667085]'} font-medium text-sm`}>{question.answered ? question.answeredCorrect ? 'Correct' : 'Incorrect' : '-'}</td>
-                                        <td className={`py-3 text-center font-medium text-sm ${question.remarks === 'Perfect' ? 'text-[#0B9055]' :
-                                            question.remarks === 'Overtime' ? 'text-[#C74FE6]' :
-                                                question.remarks === 'Wasted' ? 'text-[#DE3024]' :
-                                                    'text-[#667085]'
-                                            }`}>{question.remarks}</td>
+                    {/* Complete Analysis */}
+                    <div id="CompleteAnalysis" className="flex flex-col">
+                        <div className="h-[44px] flex flex-col justify-end mb-2 ">
+                            <span className="text-[#1D2939] text-lg font-semibold">Complete Analysis</span>
+                        </div>
+                        <div className="h-auto rounded-xl  bg-[#FFFFFF] border border-solid border-[#EAECF0]">
+                            <table className="w-full rounded-xl bg-white text-sm font-medium">
+                                <thead>
+                                    <tr className="text-[#667085]">
+                                        <th className="w-[7%] px-8 py-3 text-center">Q. no.</th>
+                                        {/* <th className="w-[10%] text-left">Chapter</th> */}
+                                        <th className="w-[10%] text-center">Difficulty</th>
+                                        <th className="w-[10%] text-center">Allotted</th>
+                                        <th className="w-[10%] text-center">Spent</th>
+                                        <th className="w-[10%] text-center">Attempted</th>
+                                        <th className="w-[10%] text-center">Answer</th>
+                                        <th className="w-[10%] text-center">Remarks</th>
                                     </tr>
-                                ))}
+                                </thead>
+                                <tbody className="border-b border-[#EAECF0]">
+                                    {currentAttempt?.questions.map((question, index) => (
+                                        <tr key={index} className="border-t border-[#EAECF0]">
+                                            <td className="py-3 text-center text-[#1D2939] font-normal text-sm">{index + 1}</td>
+                                            {/* <td className="py-3 text-left text-[#1D2939] font-semibold text-sm">Current Electricity</td> */}
+                                            <td className="py-3 text-center text-[#1D2939] font-normal text-sm">{question.difficulty}</td>
+                                            <td className="py-3 text-center text-[#1D2939] font-normal text-sm">{question.allotedTime}s</td>
+                                            <td className="py-3 text-center text-[#1D2939] font-normal text-sm">{question.spentTime}s</td>
+                                            <td className="py-3 text-center text-[#1D2939] font-normal text-sm">{question.answered ? 'Yes' : 'No'}</td>
+                                            <td className={`py-3 text-center ${question.answered ? question.answeredCorrect ? 'text-[#0B9055]' : 'text-[#DE3024]' : 'text-[#667085]'} font-medium text-sm`}>{question.answered ? question.answeredCorrect ? 'Correct' : 'Incorrect' : '-'}</td>
+                                            <td className={`py-3 text-center font-medium text-sm ${question.remarks === 'Perfect' ? 'text-[#0B9055]' :
+                                                question.remarks === 'Overtime' ? 'text-[#C74FE6]' :
+                                                    question.remarks === 'Wasted' ? 'text-[#DE3024]' :
+                                                        'text-[#667085]'
+                                                }`}>{question.remarks}</td>
+                                        </tr>
+                                    ))}
 
-                            </tbody>
-                        </table>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    {/* Summary */}
+                    <div id="Summary" className="flex flex-col">
+                        <div className="h-[44px] flex flex-col justify-end mb-2 ">
+                            <span className="text-[#1D2939] text-lg font-semibold">Summary</span>
+                        </div>
+                        <div className="h-auto mb-8 p-4 rounded-xl bg-[#FFFFFF] border border-[#EAECF0] text-[#667085] font-normal text-sm whitespace-pre-line">
+                            {generateTestSummary(currentAttempt)}
+                        </div>
                     </div>
                 </div>
-                {/* Summary */}
-                <div id="Summary" className="flex flex-col">
-                    <div className="h-[44px] flex flex-col justify-end mb-2 ">
-                        <span className="text-[#1D2939] text-lg font-semibold">Summary</span>
-                    </div>
-                    <div className="h-auto mb-8 p-4 rounded-xl bg-[#FFFFFF] border border-[#EAECF0] text-[#667085] font-normal text-sm whitespace-pre-line">
-                        {generateTestSummary(currentAttempt)}
-                    </div>
-                </div>
-            </div>
+            ))}
             <div>
                 {/* CLICK OVERALL HEADING TO SEE THE DIALOG */}
                 <Modal isOpen={showpremiumDialog} onOpenChange={(isOpen) => !isOpen && setShowpremiumDialog(false)} hideCloseButton

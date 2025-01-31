@@ -141,8 +141,6 @@ const getStatusCounts = (questionStates: QuestionState[]) => {
     };
 };
 
-
-
 const StatusDisplay = ({ counts }: { counts: ReturnType<typeof getStatusCounts> }) => {
     return (
         <div className="flex flex-col h-fit bg-[#f5f5f5] p-4 gap-5">
@@ -276,7 +274,7 @@ function ReviewTestView() {
     // Add helper function to format time
     const formatTime = (seconds: number): string => {
         const hours = Math.floor(seconds / 3600);
-        const minutes = Math.floor((seconds % 3600) / 60); 
+        const minutes = Math.floor((seconds % 3600) / 60);
         const remainingSeconds = seconds % 60;
 
         return [hours, minutes, remainingSeconds]
@@ -329,7 +327,7 @@ function ReviewTestView() {
         return timer.timeSpent + activeTime;
     };
 
-   
+
     // Timer management functions
     const updateCurrentQuestionTime = () => {
         const currentTime = Date.now();
@@ -916,7 +914,7 @@ function ReviewTestView() {
             const finalTimes: { [key: string]: number } = {};
 
             Object.entries(subsectionTimers).forEach(([sectionId, timer]) => {
-            finalTimes[sectionId] = getTotalTimeSpent(timer);
+                finalTimes[sectionId] = getTotalTimeSpent(timer);
             });
 
             return finalTimes;
@@ -1250,17 +1248,17 @@ function ReviewTestView() {
                 const correctAnswers = questions.filter(q => q.answeredCorrect).length;
                 const incorrectAnswers = attemptedQuestions - correctAnswers;
                 let marksPerCorrect, marksPerIncorrect;
-                
+
                 if (section?.isParentUmbrellaTest) {
                     marksPerCorrect = parseFloat(currentSection?.marksPerQ || "0");
                     marksPerIncorrect = parseFloat(currentSection?.nMarksPerQ || "0");
-                    
+
                 }
                 else if (currentSection?.isUmbrellaTest) {
                     marksPerCorrect = parseFloat(currentSection?.marksPerQ || "0");
                     marksPerIncorrect = parseFloat(currentSection?.nMarksPerQ || "0");
                 }
-                 else {
+                else {
                     marksPerCorrect = parseFloat(section?.marksPerQ || "0");
                     marksPerIncorrect = parseFloat(section?.nMarksPerQ || "0");
                 }
@@ -1297,14 +1295,14 @@ function ReviewTestView() {
                 };
 
                 batch.set(mainAttemptRef, mainAttemptData);
-                
+
                 const getFinalSubsectionTimes = () => {
                     const finalTimes: { [key: string]: number } = {};
-        
+
                     Object.entries(subsectionTimers).forEach(([sectionId, timer]) => {
-                    finalTimes[sectionId] = getTotalTimeSpent(timer);
+                        finalTimes[sectionId] = getTotalTimeSpent(timer);
                     });
-        
+
                     return finalTimes;
                 };
                 const sectionTimes = getFinalSubsectionTimes();
@@ -1329,7 +1327,7 @@ function ReviewTestView() {
                 const metrics = calculateMetrics(processedQuestions, currentSection || undefined);
                 const attemptRef = doc(attemptsRef);
                 const timeTaken = (currentSection?.testTime ?? 0) - remainingTime;
-                
+
                 batch.set(attemptRef, {
                     attemptDateAndTime: serverTimestamp(),
                     isUmbrellaTest: false,
@@ -1355,7 +1353,7 @@ function ReviewTestView() {
                 const combinedMetrics = calculateMetrics(combinedQuestionsData);
                 const timeTaken = (currentSection?.testTime ?? 0) - remainingTime;
                 const allQuestions = subSections.flatMap(section => section.questions || []);
-                
+
                 setAttemptedQuestions(combinedMetrics.attemptedQuestions);
                 setQuestions(allQuestions);
                 setAnsweredCorrect(combinedMetrics.answeredCorrect);
@@ -1378,7 +1376,7 @@ function ReviewTestView() {
             }
 
             setIsSubmitButtonDisabled(true);
-            
+
             setTimeout(() => {
                 onCloseFirst();
                 onOpenSecond();
@@ -1547,28 +1545,28 @@ function ReviewTestView() {
                             {!isTimeOver && (
                                 <>
                                     {questions
-                                    .sort((a, b) => a.order - b.order)
-                                    .map((_, index) => (
-                                        <button
-                                            key={index}
-                                            onClick={() => handleQuestionSelect(index)}
-                                        >
-                                            <div className="relative w-[28px] h-[28px]">
-                                                <Image
-                                                    src={`/icons/${getQuestionButtonStatus(index)}.svg`}
-                                                    alt={`Question ${index + 1}`}
-                                                    width={28}
-                                                    height={28}
-                                                />
-                                                <span className={`absolute inset-0 text-xs font-medium ${getQuestionButtonStatus(index) === 'not-visited'
-                                                    ? 'text-[#242424]'
-                                                    : 'text-white'
-                                                    } flex items-center justify-center`}>
-                                                    {index + 1}
-                                                </span>
-                                            </div>
-                                        </button>
-                                    ))}
+                                        .sort((a, b) => a.order - b.order)
+                                        .map((_, index) => (
+                                            <button
+                                                key={index}
+                                                onClick={() => handleQuestionSelect(index)}
+                                            >
+                                                <div className="relative w-[28px] h-[28px]">
+                                                    <Image
+                                                        src={`/icons/${getQuestionButtonStatus(index)}.svg`}
+                                                        alt={`Question ${index + 1}`}
+                                                        width={28}
+                                                        height={28}
+                                                    />
+                                                    <span className={`absolute inset-0 text-xs font-medium ${getQuestionButtonStatus(index) === 'not-visited'
+                                                        ? 'text-[#242424]'
+                                                        : 'text-white'
+                                                        } flex items-center justify-center`}>
+                                                        {index + 1}
+                                                    </span>
+                                                </div>
+                                            </button>
+                                        ))}
                                 </>
                             )}
 

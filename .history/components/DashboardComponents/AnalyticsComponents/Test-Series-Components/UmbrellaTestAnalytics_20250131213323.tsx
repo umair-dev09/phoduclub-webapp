@@ -277,55 +277,33 @@ function UmbrellaTestAnalytics({ onClose, attemptedDetails = [], sectionName, te
 
     const scrollContainerRef = useRef<HTMLDivElement | null>(null);
 
-
     useEffect(() => {
         const handleScroll = () => {
             if (!scrollContainerRef.current) return;
 
             const scrollContainer = scrollContainerRef.current;
             const containerTop = scrollContainer.getBoundingClientRect().top;
-            const containerHeight = scrollContainer.clientHeight;
-            const scrollPosition = scrollContainer.scrollTop;
 
-            // Find the section that takes up the most space in the viewport
-            let maxVisibleSection = {
-                key: activeTab,
-                visibility: 0
-            };
+            let currentSection = activeTab; // Keep current section until another passes threshold
 
             Object.entries(sectionMap).forEach(([key, id]) => {
                 const section = document.querySelector(id);
                 if (section) {
-                    const rect = section.getBoundingClientRect();
-                    const sectionTop = rect.top - containerTop;
-                    const sectionBottom = rect.bottom - containerTop;
+                    const { top, height } = section.getBoundingClientRect();
+                    const isVisible = top - containerTop < height / 2; // Check if at least 50% of the section is visible
 
-                    // Calculate how much of the section is visible
-                    const visibleTop = Math.max(0, sectionTop);
-                    const visibleBottom = Math.min(containerHeight, sectionBottom);
-                    const visibleHeight = Math.max(0, visibleBottom - visibleTop);
-
-                    // Update if this section has more visible area
-                    if (visibleHeight > maxVisibleSection.visibility) {
-                        maxVisibleSection = {
-                            key,
-                            visibility: visibleHeight
-                        };
+                    if (isVisible) {
+                        currentSection = key;
                     }
                 }
             });
 
-            // Only update if we found a section with better visibility
-            if (maxVisibleSection.key !== activeTab) {
-                setActiveTab(maxVisibleSection.key);
-            }
+            setActiveTab(currentSection);
         };
 
         const scrollContainer = scrollContainerRef.current;
         if (scrollContainer) {
             scrollContainer.addEventListener("scroll", handleScroll);
-            // Initial check
-            handleScroll();
         }
 
         return () => {
@@ -333,7 +311,7 @@ function UmbrellaTestAnalytics({ onClose, attemptedDetails = [], sectionName, te
                 scrollContainer.removeEventListener("scroll", handleScroll);
             }
         };
-    }, [activeTab, sectionMap]);
+    }, [activeTab]);
 
     return (
         <div className="flex flex-1 flex-col h-auto overflow-y-auto pt-3">
@@ -388,9 +366,7 @@ function UmbrellaTestAnalytics({ onClose, attemptedDetails = [], sectionName, te
                         selectedKey={activeTab}
                         onSelectionChange={(key) => {
                             const sectionId = String(key);
-                            setTimeout(() => {
-                                handleTabChange(key);
-                            }, 100);
+                            handleTabChange(key);
                             setActiveTab(sectionId);
                             document.getElementById(sectionId)?.scrollIntoView({ behavior: "smooth", block: "start" });
                         }}
@@ -668,14 +644,14 @@ function UmbrellaTestAnalytics({ onClose, attemptedDetails = [], sectionName, te
                 </div>
                 {/* --------------------------------------******************************************************---------------------------------------------- */}
                 {/* Attempts over the 3 hours */}
-                {/* <div id="Attemptsoverthe3hours" className="flex flex-col">
+                <div id="Attemptsoverthe3hours" className="flex flex-col">
                     <div className="h-[44px] flex flex-row items-center gap-2 mb-2">
                         <span className="text-[#1D2939] text-lg font-semibold ">  Attempts over the 3 hours</span>
                     </div>
                     <div>
                         <  Attemptsoverthehours />
                     </div>
-                </div> */}
+                </div>
 
                 {/* --------------------------------------******************************************************---------------------------------------------- */}
                 {/* Complete Analysis */}

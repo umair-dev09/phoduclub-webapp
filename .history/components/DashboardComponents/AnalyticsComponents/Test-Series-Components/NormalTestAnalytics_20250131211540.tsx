@@ -182,25 +182,22 @@ function NormalTestAnalytics({ onClose, forallsubject = false, attemptedDetails,
     }, [sectionMap]);
     const currentAttempt = attemptedDetails.find(attempt => attempt.attemptId === testAttemptId);
 
-    const scrollContainerRef = useRef<HTMLDivElement | null>(null);
+    const scrollContainerRef = useRef(null);
 
     useEffect(() => {
         const handleScroll = () => {
             if (!scrollContainerRef.current) return;
 
+            let currentSection = "overview";
             const scrollContainer = scrollContainerRef.current;
-            const containerTop = scrollContainer.getBoundingClientRect().top;
-
-            let currentSection = activeTab; // Keep current section until another passes threshold
+            const scrollPosition = scrollContainer.scrollTop;
 
             Object.entries(sectionMap).forEach(([key, id]) => {
-                const section = document.querySelector(id);
+                const section = document.getElementById(id);
                 if (section) {
-                    const { top, height } = section.getBoundingClientRect();
-                    const isVisible = top - containerTop < height / 2; // Check if at least 50% of the section is visible
-
-                    if (isVisible) {
-                        currentSection = key;
+                    const { offsetTop, clientHeight } = section;
+                    if (scrollPosition >= offsetTop - clientHeight / 2) {
+                        currentSection = id;
                     }
                 }
             });
@@ -218,7 +215,7 @@ function NormalTestAnalytics({ onClose, forallsubject = false, attemptedDetails,
                 scrollContainer.removeEventListener("scroll", handleScroll);
             }
         };
-    }, [activeTab]);
+    }, []);
 
 
 
@@ -276,7 +273,6 @@ function NormalTestAnalytics({ onClose, forallsubject = false, attemptedDetails,
                         selectedKey={activeTab}
                         onSelectionChange={(key) => {
                             const sectionId = String(key);
-                            handleTabChange(key);
                             setActiveTab(sectionId);
                             document.getElementById(sectionId)?.scrollIntoView({ behavior: "smooth", block: "start" });
                         }}

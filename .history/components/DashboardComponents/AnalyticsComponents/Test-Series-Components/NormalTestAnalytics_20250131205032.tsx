@@ -162,7 +162,7 @@ function NormalTestAnalytics({ onClose, forallsubject = false, attemptedDetails,
 
     const router = useRouter();
     let [showpremiumDialog, setShowpremiumDialog] = useState(false);
-    const [activeTab, setActiveTab] = useState("overview");
+    const [activeKey, setActiveKey] = useState<Key | null>(null);
     const sectionMap = {
         'overview': '#overview',
         'attempts-difficulty-analysis': '#Attempts',
@@ -171,54 +171,65 @@ function NormalTestAnalytics({ onClose, forallsubject = false, attemptedDetails,
         'summary': '#Summary'
     } as const;
     const [attemptPopover, setAttemptPopover] = useState(false);
+    const isUserInitiated = useRef(false);
 
-    const handleTabChange = React.useCallback((key: Key) => {
+    const handleTabChange = (key: Key) => {
+        isUserInitiated.current = true;
         const sectionSelector = sectionMap[key as keyof typeof sectionMap];
         const element = document.querySelector(sectionSelector);
 
         if (element) {
             element.scrollIntoView({ behavior: 'smooth' });
         }
-    }, [sectionMap]);
+    };
+
     const currentAttempt = attemptedDetails.find(attempt => attempt.attemptId === testAttemptId);
 
-    const scrollContainerRef = useRef<HTMLDivElement | null>(null);
-
     useEffect(() => {
-        const handleScroll = () => {
-            if (!scrollContainerRef.current) return;
-
-            const scrollContainer = scrollContainerRef.current;
-            const containerTop = scrollContainer.getBoundingClientRect().top;
-
-            let currentSection = activeTab; // Keep current section until another passes threshold
-
-            Object.entries(sectionMap).forEach(([key, id]) => {
-                const section = document.querySelector(id);
-                if (section) {
-                    const { top, height } = section.getBoundingClientRect();
-                    const isVisible = top - containerTop < height / 2; // Check if at least 50% of the section is visible
-
-                    if (isVisible) {
-                        currentSection = key;
-                    }
-                }
-            });
-
-            setActiveTab(currentSection);
+        const observerOptions: IntersectionObserverInit = {
+            root: null,
+            rootMargin: '0px',
+            threshold: 0.5
         };
 
-        const scrollContainer = scrollContainerRef.current;
-        if (scrollContainer) {
-            scrollContainer.addEventListener("scroll", handleScroll);
-        }
+        const observerCallback: IntersectionObserverCallback = (entries) => {
+            // Ignore observer updates if user-initiated
+            if (isUserInitiated.current) {
+                isUserInitiated.current = false;
+                return;
+            }
 
-        return () => {
-            if (scrollContainer) {
-                scrollContainer.removeEventListener("scroll", handleScroll);
+            const mostVisibleEntry = entries.find(entry =>
+                entry.isIntersecting &&
+                entry.intersectionRatio > 0.5
+            );
+
+            if (mostVisibleEntry) {
+                const targetId = (mostVisibleEntry.target as HTMLElement).id;
+
+                const key = Object.keys(sectionMap).find(
+                    k => sectionMap[k as keyof typeof sectionMap] === `#${targetId}`
+                ) as Key | undefined;
+
+                if (key) {
+                    setActiveKey(key);
+                }
             }
         };
-    }, [activeTab]);
+
+        const observer = new IntersectionObserver(observerCallback, observerOptions);
+
+        Object.values(sectionMap).forEach(selector => {
+            const element = document.querySelector(selector);
+            if (element) {
+                observer.observe(element);
+            }
+        });
+
+        return () => observer.disconnect();
+    }, [sectionMap]);
+
+
 
 
 
@@ -273,14 +284,7 @@ function NormalTestAnalytics({ onClose, forallsubject = false, attemptedDetails,
                         aria-label="Analytics Tabs"
                         color="primary"
                         variant="underlined"
-                        selectedKey={activeTab}
-                        onSelectionChange={(key) => {
-                            const sectionId = String(key);
-                            handleTabChange(key);
-                            setActiveTab(sectionId);
-                            document.getElementById(sectionId)?.scrollIntoView({ behavior: "smooth", block: "start" });
-                        }}
-
+                        onSelectionChange={handleTabChange}
                         classNames={{
                             tabList: "gap-6 w-full relative rounded-none p-0",
                             cursor: "w-full bg-[#7400E0]",
@@ -297,7 +301,7 @@ function NormalTestAnalytics({ onClose, forallsubject = false, attemptedDetails,
 
                 </div>
             </div>
-            <div ref={scrollContainerRef} className="overflow-y-auto flex-1 flex flex-col h-auto px-8">
+            <div className="overflow-y-auto flex-1 flex flex-col h-auto px-8">
                 {/* overview Line */}
                 <div id="overview" className="h-[44px] flex flex-col justify-end py-2">
                     <span className="text-[#1D2939] text-lg font-semibold">Overview</span>

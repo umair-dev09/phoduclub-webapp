@@ -8,7 +8,7 @@ import { Tabs, Tab } from "@nextui-org/react";
 import { Key } from '@react-types/shared';
 import { Popover, PopoverContent, PopoverTrigger } from "@nextui-org/popover";
 import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button } from "@nextui-org/react";
-import React, { useState, useEffect, useCallback, useRef } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 interface NormalTestAnalyticsprops {
     onClose: () => void;
     forallsubject?: boolean;
@@ -162,7 +162,7 @@ function NormalTestAnalytics({ onClose, forallsubject = false, attemptedDetails,
 
     const router = useRouter();
     let [showpremiumDialog, setShowpremiumDialog] = useState(false);
-    const [activeTab, setActiveTab] = useState("overview");
+    const [activeKey, setActiveKey] = useState<Key>('overview');
     const sectionMap = {
         'overview': '#overview',
         'attempts-difficulty-analysis': '#Attempts',
@@ -182,46 +182,51 @@ function NormalTestAnalytics({ onClose, forallsubject = false, attemptedDetails,
     }, [sectionMap]);
     const currentAttempt = attemptedDetails.find(attempt => attempt.attemptId === testAttemptId);
 
-    const scrollContainerRef = useRef<HTMLDivElement | null>(null);
+
 
     useEffect(() => {
-        const handleScroll = () => {
-            if (!scrollContainerRef.current) return;
+        const observerOptions: IntersectionObserverInit = {
+            root: null, // Use viewport as root
+            rootMargin: '0px',
+            threshold: 0.5 // Section must be 50% visible to trigger
+        };
 
-            const scrollContainer = scrollContainerRef.current;
-            const containerTop = scrollContainer.getBoundingClientRect().top;
-
-            let currentSection = activeTab; // Keep current section until another passes threshold
-
-            Object.entries(sectionMap).forEach(([key, id]) => {
-                const section = document.querySelector(id);
-                if (section) {
-                    const { top, height } = section.getBoundingClientRect();
-                    const isVisible = top - containerTop < height / 2; // Check if at least 50% of the section is visible
-
-                    if (isVisible) {
-                        currentSection = key;
+        const observerCallback = (entries: IntersectionObserverEntry[]) => {
+            let mostVisibleEntry: IntersectionObserverEntry | null = null;
+            // Find the most visible section
+            entries.forEach((entry: IntersectionObserverEntry) => {
+                if (entry.isIntersecting) {
+                    if (!mostVisibleEntry || entry.intersectionRatio > mostVisibleEntry.intersectionRatio) {
+                        mostVisibleEntry = entry;
                     }
                 }
             });
 
-            setActiveTab(currentSection);
-        };
+            if (mostVisibleEntry && mostVisibleEntry.target instanceof Element) {
+                const targetId = mostVisibleEntry.target.id;
+                const key = Object.keys(sectionMap).find(
+                    k => sectionMap[k as keyof typeof sectionMap] === `#${targetId}`
+                ) as Key | undefined;
 
-        const scrollContainer = scrollContainerRef.current;
-        if (scrollContainer) {
-            scrollContainer.addEventListener("scroll", handleScroll);
-        }
-
-        return () => {
-            if (scrollContainer) {
-                scrollContainer.removeEventListener("scroll", handleScroll);
+                if (key) {
+                    setActiveKey(key);
+                }
             }
         };
-    }, [activeTab]);
 
+        const observer = new IntersectionObserver(observerCallback, observerOptions);
 
+        // Start observing all sections
+        Object.values(sectionMap).forEach(selector => {
+            const element = document.querySelector(selector);
+            if (element) {
+                observer.observe(element);
+            }
+        });
 
+        // Cleanup observer on component unmount
+        return () => observer.disconnect();
+    }, [sectionMap]);
 
     return (
         <div className="flex flex-1 flex-col h-auto overflow-y-auto pt-3">
@@ -273,14 +278,7 @@ function NormalTestAnalytics({ onClose, forallsubject = false, attemptedDetails,
                         aria-label="Analytics Tabs"
                         color="primary"
                         variant="underlined"
-                        selectedKey={activeTab}
-                        onSelectionChange={(key) => {
-                            const sectionId = String(key);
-                            handleTabChange(key);
-                            setActiveTab(sectionId);
-                            document.getElementById(sectionId)?.scrollIntoView({ behavior: "smooth", block: "start" });
-                        }}
-
+                        onSelectionChange={handleTabChange}
                         classNames={{
                             tabList: "gap-6 w-full relative rounded-none p-0",
                             cursor: "w-full bg-[#7400E0]",
@@ -297,7 +295,7 @@ function NormalTestAnalytics({ onClose, forallsubject = false, attemptedDetails,
 
                 </div>
             </div>
-            <div ref={scrollContainerRef} className="overflow-y-auto flex-1 flex flex-col h-auto px-8">
+            <div className="overflow-y-auto flex-1 flex flex-col h-auto px-8">
                 {/* overview Line */}
                 <div id="overview" className="h-[44px] flex flex-col justify-end py-2">
                     <span className="text-[#1D2939] text-lg font-semibold">Overview</span>

@@ -84,11 +84,11 @@ function Announcement() {
     }
 
     return (
-        <div className="flex-col flex rounded-b-lg">
+        <div className="flex-col flex rounded-b-lg w-full">
             {announcements.length > 0 ? (
                 // Display announcements if they exist
                 announcements.map((announcement, index) => (
-                    <div key={index} className=' flex flex-col gap-4 pt-6 px-6 items-start  h-auto cursor-pointer hover:bg-[#F9FAFB]'
+                    <div key={index} className=' flex flex-col gap-4 pt-6 px-6 items-start w-full h-auto cursor-pointer hover:bg-[#F9FAFB]'
                         onClick={() => router.push(`/community/${(announcement.communityName || 'default').toLowerCase().replace(/\s+/g, '-')}?communityId=${announcement.communityId}`)}>
                         <div className=' flex flex-row gap-3 items-start'>
                             <div className='flex flex-row gap-3 items-center'>
