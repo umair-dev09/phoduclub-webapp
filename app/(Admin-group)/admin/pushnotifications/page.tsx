@@ -552,7 +552,7 @@ function Messenger() {
                                 <th className="text-center px-8 py-4 text-[#667085] font-medium text-sm">
                                     Clicked
                                 </th>
-                                <th className="text-left px-8 pl-[6%] pr-4 text-[#667085] font-medium text-sm">
+                                <th className="text-left px-8 pl-[4.7%] pr-4 text-[#667085] font-medium text-sm">
                                     Status
                                 </th>
                                 <th className="text-center w-14 px-8 py-4 rounded-tr-xl text-[#667085] font-medium text-sm">
