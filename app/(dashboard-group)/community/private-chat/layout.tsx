@@ -24,6 +24,7 @@ interface ChatUser {
     isAdmin: boolean;
     isBlocked?: boolean;  // Added isBlocked property
     isNotification?: boolean;
+    lastMessageTime?: string;  // Added lastMessageTime property
 }
 
 function generateChatId(userId1: string, userId2: string) {
@@ -64,11 +65,18 @@ function PrivateChatLayout({ children }: GeneralChatLayoutProps) {
     
         const unsubscribe = onSnapshot(doc(db, 'users', currentUserId), async (docSnapshot) => {
             const chatList = docSnapshot.data()?.chatList || [];
-            const currentBlockedUsers = docSnapshot.data()?.blockedUsers || [];  // Get current blocked users
-            const currentChatNotifications = docSnapshot.data()?.personalChatNotifications || [];  // Get current blocked users
+            const currentBlockedUsers = docSnapshot.data()?.blockedUsers || [];
+            const currentChatNotifications = docSnapshot.data()?.personalChatNotifications || [];
+
+            // Sort chatList by lastMessageTime, handling undefined times
+            const sortedChatList = [...chatList].sort((a, b) => {
+                const timeA = a.lastMessageTime ? new Date(a.lastMessageTime).getTime() : 0;
+                const timeB = b.lastMessageTime ? new Date(b.lastMessageTime).getTime() : 0;
+                return timeB - timeA; // Most recent first
+            });
 
             const usersData = await Promise.all(
-                chatList.map(async (chatItem: { id: string; isAdmin: boolean }) => {
+                sortedChatList.map(async (chatItem: { id: string; isAdmin: boolean; lastMessageTime: string }) => {
                     const collection = chatItem.isAdmin ? 'admin' : 'users';
                     const userDoc = await getDoc(doc(db, collection, chatItem.id));
                     const userData = userDoc.data();
@@ -79,8 +87,9 @@ function PrivateChatLayout({ children }: GeneralChatLayoutProps) {
                         profilePic: userData?.profilePic || '/images/DP.png',
                         isOnline: userData?.isOnline,
                         isAdmin: chatItem.isAdmin ? true : false,
-                        isBlocked: currentBlockedUsers.includes(chatItem.id),  // Set blocked status
+                        isBlocked: currentBlockedUsers.includes(chatItem.id),
                         isNotification: currentChatNotifications.includes(chatItem.id),
+                        lastMessageTime: chatItem.lastMessageTime // Added this field
                     };
                 })
             );
@@ -88,7 +97,7 @@ function PrivateChatLayout({ children }: GeneralChatLayoutProps) {
             setChatUsers(usersData);
             setLoading(false);
     
-            const userUnsubscribes = chatList.map((chatItem: { id: string; isAdmin: boolean }) =>
+            const userUnsubscribes = sortedChatList.map((chatItem: { id: string; isAdmin: boolean }) =>
                 onSnapshot(doc(db, chatItem.isAdmin ? 'admin' : 'users', chatItem.id), (userSnapshot) => {
                     const updatedUserData = userSnapshot.data();
                     setChatUsers((prevUsers) =>
@@ -100,7 +109,7 @@ function PrivateChatLayout({ children }: GeneralChatLayoutProps) {
                                       profilePic: updatedUserData?.profilePic || '/images/DP.png',
                                       isOnline: updatedUserData?.isOnline,
                                       isAdmin: chatItem.isAdmin ? true : false,
-                                      isBlocked: currentBlockedUsers.includes(chatItem.id)  // Maintain blocked status
+                                      isBlocked: currentBlockedUsers.includes(chatItem.id)
                                   }
                                 : user
                         )
@@ -146,7 +155,12 @@ function PrivateChatLayout({ children }: GeneralChatLayoutProps) {
                         </>
                     )}
                
-                    {chatUsers.map((user, index) => (
+                    {chatUsers.sort((a, b) => {
+                            // Default to 0 (oldest) if lastMessageTime is undefined
+                            const timeA = a.lastMessageTime ? new Date(a.lastMessageTime).getTime() : 0;
+                            const timeB = b.lastMessageTime ? new Date(b.lastMessageTime).getTime() : 0;
+                            return timeB - timeA;  // Most recent first
+                        }).map((user, index) => (
                         <button key={index} 
                             className={`flex flex-row items-center justify-between w-full h-auto my-1 px-[10px] py-[6px] hover:bg-[#F8F0FF] ${selectedPrivateId === generateChatId(currentUserId || '', user.uniqueId) ? 'bg-[#F8F0FF]' : 'bg-white'} rounded-[7px]`}
                             onClick={() => {
