@@ -178,7 +178,9 @@ export type IconsType =
   | "arrow-up-01-round(2)-white"
   | "arrow-down-01-round(2)-white"
   | "white-arrow-up"
-  | "white-arrow-down";
+  | "white-arrow-down"
+  | "download-02"
+  | "showinchat"
 
 
 

@@ -38,7 +38,7 @@ function MediaViewDialog({ open, onClose, src, mediaType }: MediaViewDialogProps
                                 <PopoverTrigger>
 
                                     <button className="w-[32px] h-[32px] rounded-full flex items-center justify-center transition-all duration-300 ease-in-out hover:bg-[#F2F4F7]"
-                                    >
+                                        onClick={onClose}>
                                         <Image src="/icons/more-horizontal.svg" alt="Cancel" width={23} height={23} />
                                     </button>
                                 </PopoverTrigger>
@@ -68,7 +68,7 @@ function MediaViewDialog({ open, onClose, src, mediaType }: MediaViewDialogProps
                                 </PopoverContent>
                             </Popover>
                             <button className="w-[32px] h-[32px] rounded-full flex items-center justify-center transition-all duration-300 ease-in-out hover:bg-[#F2F4F7]"
-                                onClick={onClose}>
+                            >
                                 <Image src="/icons/cancel.svg" alt="Cancel" width={20} height={20} />
                             </button>
 

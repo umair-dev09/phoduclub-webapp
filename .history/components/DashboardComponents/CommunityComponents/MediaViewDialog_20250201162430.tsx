@@ -30,16 +30,15 @@ function MediaViewDialog({ open, onClose, src, mediaType }: MediaViewDialogProps
                     {/* Modal Header */}
                     <ModalHeader className="flex flex-row justify-between  w-full h-full ">
                         <div className="flex flex-row justify-between gap-3 w-full h-[25px]">
+                            <Image src="/icons/more-horizontal.svg" alt="Cancel" width={23} height={23} />
                             <Popover
                                 isOpen={popoveropen}
                                 onOpenChange={(open) => setPopoveropen(open)}
                                 placement="bottom"
                             >
                                 <PopoverTrigger>
-
-                                    <button className="w-[32px] h-[32px] rounded-full flex items-center justify-center transition-all duration-300 ease-in-out hover:bg-[#F2F4F7]"
-                                    >
-                                        <Image src="/icons/more-horizontal.svg" alt="Cancel" width={23} height={23} />
+                                    <button className="w-[32px] h-[32px] rounded-full flex items-center justify-center transition-all duration-300 ease-in-out hover:bg-[#F2F4F7]">
+                                        <Image src="/icons/cancel.svg" alt="Cancel" width={20} height={20} />
                                     </button>
                                 </PopoverTrigger>
 
@@ -55,7 +54,7 @@ function MediaViewDialog({ open, onClose, src, mediaType }: MediaViewDialogProps
                                         className="p-3 gap-2 flex-row flex h-[40px] hover:bg-[#F2F4F7] w-full outline-none"
                                         onClick={() => setPopoveropen(false)}
                                     >
-                                        <Image src="/icons/showinchat.svg" alt="video-icon" width={20} height={20} />
+                                        <Image src="/icons/message-multiple-01(2).svg" alt="video-icon" width={20} height={20} />
                                         <span className="text-sm text-[#0C111D] font-normal">Show in chat</span>
                                     </button>
                                     <button
@@ -67,12 +66,6 @@ function MediaViewDialog({ open, onClose, src, mediaType }: MediaViewDialogProps
                                     </button>
                                 </PopoverContent>
                             </Popover>
-                            <button className="w-[32px] h-[32px] rounded-full flex items-center justify-center transition-all duration-300 ease-in-out hover:bg-[#F2F4F7]"
-                                onClick={onClose}>
-                                <Image src="/icons/cancel.svg" alt="Cancel" width={20} height={20} />
-                            </button>
-
-
 
                         </div>
                     </ModalHeader>
