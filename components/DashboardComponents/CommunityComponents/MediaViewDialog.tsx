@@ -12,11 +12,9 @@ interface MediaViewDialogProps {
 
 function MediaViewDialog({ open, onClose, src, mediaType }: MediaViewDialogProps) {
 
-
     const [scrollBehavior, setScrollBehavior] = useState<"inside" | "outside">("outside");
 
     return (
-
         <Modal
             isOpen={open}
             onOpenChange={(isOpen) => !isOpen && onClose()}
@@ -47,8 +45,6 @@ function MediaViewDialog({ open, onClose, src, mediaType }: MediaViewDialogProps
                             <VideoPlayer videoSrc={src} />
                         )}
                     </ModalBody>
-
-
                 </>
             </ModalContent>
         </Modal>

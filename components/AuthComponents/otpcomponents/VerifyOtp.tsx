@@ -71,7 +71,6 @@ const InputHandler = ({ onOtpChange }: { onOtpChange: (otp: string) => void }) =
     };
 
     return (
-
         <div id="inputs" ref={inputsRef} className="flex space-x-2 justify-center">
             <input
                 type="text"
@@ -268,7 +267,7 @@ function VerifyOtp() {
                         className={`w-1/2 h-10 rounded-lg text-white font-medium text-sm 
                                     ${isLoading || otp.length === 6 ? 'bg-[#7400e0] hover:bg-[#6D0DCC]  cursor-pointer' : 'bg-[#d4a9fc] cursor-not-allowed'} 
                                     transition-colors duration-150 
-                                    active:opacity-50 shadow-inner-button
+                                    active:opacity-50
                                     flex items-center justify-center`}
                         onClick={handleSubmit}
                         disabled={isLoading || otp.length !== 6} // Ensure disabled when loading or OTP not filled

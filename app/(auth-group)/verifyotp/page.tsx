@@ -2,11 +2,7 @@
 import Image from 'next/image';
 import VerifyOtp from '@/components/AuthComponents/otpcomponents/VerifyOtp';
 
-
-
 export default function Verify() {
- 
-
   return (
     <div className='flex flex-row  w-full h-screen bg-[#f7f8fb]'>
       <VerifyOtp />

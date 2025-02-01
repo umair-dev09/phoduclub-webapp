@@ -227,20 +227,20 @@ function GroupName({ communityId, isAdmin }: groupNameProps) {
                 <PopoverTrigger className="w-[206px] px-0">
                   <div className='flex flex-row gap-2 items-center justify-between h-10 w-full px-4 hover:bg-[#EAECF0] cursor-pointer'>
                     <div className='flex flex-row gap-2'>
-                      <Image
+                      {/* <Image
                         src="/icons/mute.svg"
                         width={18}
                         height={18}
                         alt="mute-icon"
-                      />
-                      {/* <Image
+                      /> */}
+                      <Image
                         src="/icons/notification-off.svg"
                         width={18}
                         height={18}
                         alt="mute-icon"
-                      /> */}
-                      <span className='font-normal text-[#0C111D] text-sm'>Mute</span>
-                      {/* <span className='font-normal text-[#0C111D] text-sm'>Muted</span> */}
+                      />
+                      {/* <span className='font-normal text-[#0C111D] text-sm'>Mute</span> */}
+                      <span className='font-normal text-[#0C111D] text-sm'>Muted</span>
                     </div>
                     <Image
                       src="/icons/arrow-right-01-round.svg"
