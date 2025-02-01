@@ -59,7 +59,7 @@ type chatHeadProps = {
         }[] | null;
         channelRequests: {
             id: string;
-            requestDate: string;
+            requestDate: string; 
         }[] | null;
         declinedRequests: string[];
     } | null>>;
@@ -343,7 +343,7 @@ function ChatHead({ channelName, channelId, notificationsMuted, channelEmoji, me
                         </button>
 
 
-
+  
                     </PopoverContent>
                 </Popover>
             </div>

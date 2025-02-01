@@ -1,4 +1,4 @@
-"use client";
+"use client"; 
 
 import React, { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
@@ -710,7 +710,7 @@ export default function CommunityName() {
                 <p className="text-[13px] font-semibold text-[#4B5563]">All Bookmarks</p>
               </div>
             </button>
-          </div>
+          </div>    
         </div> */}
       </div>
 
