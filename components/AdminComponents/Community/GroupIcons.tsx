@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { getFirestore, collection, getDocs, query, onSnapshot } from "firebase/firestore";
+import { getFirestore, collection, getDocs, query, onSnapshot, where } from "firebase/firestore";
 import { onAuthStateChanged, User } from 'firebase/auth'; // Import the User type from Firebase
 import { auth } from "@/firebase";
 import { useRouter } from 'next/navigation';
@@ -10,9 +10,10 @@ import AddMembersGroup from "./AllDialogs/AddMembersGroup";
 
 type CommunityData = {
   communityName: string | null;
-  communityId: string | null;
-  communityImg: string | null;
+  communityId: string | null;   
+  communityImg: string | null;    
   members: { id: string, isAdmin: boolean }[] | null;
+  totalNotifications: number;
 };
 
 function GroupIcons() {
@@ -38,49 +39,63 @@ function GroupIcons() {
     return () => unsubscribe();
   }, []);
 
-  useEffect(() => {
-    const fetchUserCommunitiesRealtime = () => {
-      if (user) {
-        const userId = user.uid; // Get the current user's ID
-        const communityRef = collection(db, "communities");
+useEffect(() => {
+  const communityRef = collection(db, "communities");
 
-        // Set up a real-time listener on the "communities" collection
-        const unsubscribe = onSnapshot(communityRef, (snapshot) => {
-          const userCommunities: CommunityData[] = [];
+  const unsubscribe = onSnapshot(communityRef, (snapshot) => {
+    const allCommunities: CommunityData[] = [];
+    const notificationCounters: { [key: string]: number } = {};
 
-          snapshot.forEach((doc) => {
-            const community = doc.data();
-            const members = community.members || [];
+    const communityUnsubscribes = snapshot.docs.map(doc => {
+      const community = doc.data();
+      const communityId = community.communityId;
+      notificationCounters[communityId] = 0;
 
-            // Check if the current user ID exists in the members array
-            const isUserInCommunity = members.some((member: { id: string }) => member.id === userId);
+      allCommunities.push({
+        communityName: community.communityName,
+        communityId: communityId,
+        members: community.members,
+        communityImg: community.communityImg,
+        totalNotifications: 0,
+      });
 
-            if (isUserInCommunity) {
-              userCommunities.push({
-                communityName: community.communityName,
-                communityId: community.communityId,
-                members,
-                communityImg: community.communityImg,
-              });
-            }
+      const channelsRef = collection(db, "communities", communityId, "channelsHeading");
+      return onSnapshot(channelsRef, (headingSnapshot) => {
+        const channelUnsubscribes = headingSnapshot.docs.map(headingDoc => {
+          const channelsCollectionRef = collection(headingDoc.ref, "channels");
+          return onSnapshot(channelsCollectionRef, (channelsSnapshot) => {
+            let communityNotifications = 0;
+
+            channelsSnapshot.docs.forEach(channelDoc => {
+              const channelData = channelDoc.data();
+              const notifications = channelData.channelNotification || [];
+              if (notifications.includes(user?.uid)) {
+                communityNotifications++;
+              }
+            });
+
+            notificationCounters[communityId] = communityNotifications;
+            const updatedCommunities = allCommunities.map(comm => ({
+              ...comm,
+              totalNotifications: notificationCounters[comm.communityId || ''] || 0
+            }));
+            setCommunities(updatedCommunities);
           });
-
-          setCommunities(userCommunities); // Update the state
         });
 
-        // Cleanup the listener when the component unmounts
-        return () => unsubscribe();
-      }
-    };
+        return () => channelUnsubscribes.forEach(unsub => unsub());
+      });
+    });
 
-    const unsubscribe = fetchUserCommunitiesRealtime();
+    setCommunities(allCommunities);
 
     return () => {
-      if (unsubscribe) {
-        unsubscribe();
-      }
+      communityUnsubscribes.forEach(unsubscribe => unsubscribe());
     };
-  }, [user, db]);
+  });
+
+  return () => unsubscribe();
+}, [db, user]);
 
   const onItemClick = (communityName: string | null, communityId: string | null) => {
     if (communityName && communityId) {
@@ -119,10 +134,11 @@ function GroupIcons() {
             onClick={() => onItemClick(community.communityName, community.communityId)}
           >
             <Image className="w-10 h-10 rounded-full object-cover" src={community.communityImg || "/icons/messageIcon.svg"} alt="group icon" width={42} height={42} quality={100} />
-
-            {/* <div className="absolute top-6 left-6 px-2 py-1 bg-red-600 rounded-full text-white text-xs font-medium hidden group-hover:flex">
-              {index + 1}
-            </div> */}
+            {community.totalNotifications >= 1 && selectedCommunityId !== community.communityId && (
+            <div className="absolute top-6 left-6 px-2 py-1 bg-red-600 rounded-full text-white text-xs font-medium ">
+              {community.totalNotifications}
+            </div>
+            )}
           </button>
         ))}
         <button className='flex items-center justify-center mt-1'

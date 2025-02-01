@@ -5,8 +5,6 @@ import Image from 'next/image';
 import { useRouter } from "next/navigation";
 import { Popover, PopoverContent, PopoverTrigger } from "@nextui-org/popover";
 import CreateChannelDialogue from '@/components/AdminComponents/InternalChat/CreateChannelDialogue';
-import OwnChats from '@/components/AdminComponents/Community/Chats/OwnChats';
-import OtherChats from '@/components/AdminComponents/Community/Chats/OtherChats';
 import { auth, db } from '@/firebase';
 import { doc, getDoc, getDocs, collection, query, orderBy, onSnapshot } from 'firebase/firestore';
 import LoadingData from '@/components/Loading';
@@ -19,7 +17,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import MembersDetailsArea from '@/components/AdminComponents/InternalChat/MembersDetailsArea';
 type Channel = {
   channelId: string;
-  channelName: string;
+  channelName: string;    
   channelEmoji: string;
   members: { id: string }[] | null;
 };
