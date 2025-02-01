@@ -86,7 +86,6 @@ function Purchase() {
         }
     };
 
-
     const handleCopy = (transactionId: string) => {
         if (transactionId) {
             navigator.clipboard.writeText(transactionId)
@@ -130,7 +129,7 @@ function Purchase() {
                                 <th className="w-[28%] text-xs text-left py-4 px-6 font-semibold leading-[18px]">ITEMS</th>
                                 <th className="text-xs text-center py-4 px-6 font-semibold leading-[18px]">DATE</th>
                                 <th className="text-xs text-center py-4 px-6 font-semibold leading-[18px]">PRICE</th>
-                                <th className="text-xs text-left py-4 pl-10 font-semibold leading-[18px]">TRANSACTION ID</th>
+                                <th className="text-xs py-4 pr-9 font-semibold leading-[18px]">TRANSACTION ID</th>
                                 <th className="w-[10%] text-xs text-center py-4 px-6 font-semibold leading-[18px]">ACTIONS</th>
                             </tr>
                         </thead>
@@ -149,10 +148,10 @@ function Purchase() {
                                         <td className="px-6 py-4 text-center text-[#667085] font-normal leading-6 whitespace-nowrap">{formatDate(transaction.dateOfPurchase)}</td>
                                         <td className="px-6 py-4 text-center text-[#667085] font-normal leading-6 whitespace-nowrap">₹ {transaction.purchasedPrice}</td>
                                         <td className="px-6 py-4 text-center text-[#667085] font-normal leading-6 whitespace-nowrap">
-                                            <div className="flex items-center justify-center relative">
+                                            <div className="flex items-center justify-center">
                                                 <span>{transaction.transactionId}</span>
                                                 <button
-                                                    className={`ml-2 transition-opacity duration-200 ${hoveredRow === index ? 'opacity-100' : 'opacity-0'
+                                                    className={`ml-2 transition-opacity duration-200 relative ${hoveredRow === index ? 'opacity-100' : 'opacity-0'
                                                         }`}
                                                     onClick={() => handleCopy(transaction.transactionId)}
                                                 >
@@ -162,12 +161,12 @@ function Purchase() {
                                                         height={22}
                                                         width={22}
                                                     />
+                                                    {copied === transaction.transactionId && (
+                                                        <span className="absolute left-10 top-1/2 transform -translate-y-1/2 px-2 bg-[#1D2939] rounded-[6px] text-white font-medium text-[11px] transition-all duration-200">
+                                                            Copied!
+                                                        </span>
+                                                    )}
                                                 </button>
-                                                {copied === transaction.transactionId && (
-                                                    <span className="absolute -right-10 top-1/2 transform -translate-y-1/2 px-2 bg-[#1D2939] rounded-[6px] text-white font-medium text-[11px] transition-all duration-200">
-                                                        Copied!
-                                                    </span>
-                                                )}
                                             </div>
                                         </td>
                                         <td className="px-6 py-4 text-right">
