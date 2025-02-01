@@ -15,6 +15,7 @@ import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import BlockUser from "@/components/DashboardComponents/CommunityComponents/BlockUser";
 import MemberClickDialogP from "@/components/DashboardComponents/CommunityComponents/PrivateChatComponents/MemberClickDialogP";
+import MediaDialog from "@/components/DashboardComponents/CommunityComponents/MediaDialog";
 
 interface UserData {
   name: string;
@@ -50,6 +51,7 @@ function PrivateChatArea() {
   const [openDialogue, setOpenDialogue] = useState(false);
   const [loading, setLoading] = useState(true);
   const currentUserId = auth.currentUser?.uid;
+  const [mediaDialog, setMediaDialog] = useState(false);
   const pChatId = searchParams.get('pId');
   const isAdmin = searchParams.get('admin') === 'true'; // Convert string to boolean
   const chatUserId = pChatId ? pChatId.split('_').filter(id => id !== currentUserId)[0] : null;
@@ -424,7 +426,7 @@ function PrivateChatArea() {
             {(chatStatus === 'accepted' || chatStatus === 'blocked') && (
               <button
                 className='flex flex-row items-center gap-2 w-[183px] px-4 py-[10px] transition-colors  hover:bg-neutral-100'
-              // onClick={closePopover}
+              onClick={() => {setMediaDialog(true); setIsPopoverOpen(false)}}
               >
                 <Image src='/icons/folder-02.svg' alt='media' width={18} height={18} />
                 <p className='text-sm'>Media</p>
@@ -589,7 +591,7 @@ function PrivateChatArea() {
                         height={22}
                       />
                     </button>
-                  )}
+                  )}   
                   <BottomTextP
                     showReplyLayout={showReplyLayout}
                     setShowReplyLayout={setShowReplyLayout}
@@ -618,6 +620,7 @@ function PrivateChatArea() {
       )}
       <ToastContainer />
       {blockUserDialog && < BlockUser open={blockUserDialog} onClose={() => setBlockUserDilaog(false)} userId={chatUserId || ''} userName={userData?.name || ''} pChatId={pChatId || ''} />}
+      {mediaDialog && <MediaDialog isOpen={mediaDialog} setIsOpen={() => setMediaDialog(false)} chats={chats} />}
 
     </div>
   );

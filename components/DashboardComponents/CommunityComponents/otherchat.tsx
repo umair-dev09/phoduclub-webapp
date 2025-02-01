@@ -260,7 +260,7 @@ function OtherChat({ message, currentUserId, adminThatDeletedId, isDeletedByAdmi
             href={text}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-blue-200 hover:underline"
+            className="text-blue-500 hover:underline"
           >
             {text}
           </a>
@@ -536,7 +536,7 @@ function OtherChat({ message, currentUserId, adminThatDeletedId, isDeletedByAdmi
           <span className="font-normal text-sm text-[#475467]">{sender?.role}</span>
         )}
         <span className="font-normal text-sm text-[#475467]">{formattedTime}</span>
-        {showBookmark && (<Image src='/icons/bookmark1.svg' alt='Bookmark icon' width={12} height={12} />)}
+        {/* {showBookmark && (<Image src='/icons/bookmark1.svg' alt='Bookmark icon' width={12} height={12} />)} */}
       </div>
 
       <div className="ml-11 flex flex-row gap-2 items-center relative group">
@@ -672,28 +672,17 @@ function OtherChat({ message, currentUserId, adminThatDeletedId, isDeletedByAdmi
                   <span className='font-normal text-[#0C111D] text-sm'>Copy</span>
                 </button>
               )}
-              <button className='flex flex-row items-center gap-2 w-30 px-4 py-[10px] transition-colors hover:bg-neutral-100' onClick={() => { setShowBookmark(true); setIsOpen(false); }}>
+              {/* <button className='flex flex-row items-center gap-2 w-30 px-4 py-[10px] transition-colors hover:bg-neutral-100' onClick={() => { setShowBookmark(true); setIsOpen(false); }}>
                 <Image src='/icons/Bookmark.svg' alt='search icon' width={18} height={18} />
                 <span className='font-normal text-[#0C111D] text-sm'>Bookmark</span>
-              </button>
-              {!isCurrentUserAdmin && !isAdmin && (
-                <Tooltip
-                  content="Launching Soon!!!!!"
-                  placement="right"
-                  offset={15}
-                  closeDelay={100}
-                  classNames={{
-                    content: [
-                      "bg-[#222222] text-white text-sm py-2 px-4 rounded-md",
-                    ],
-                  }}
-                >
+              </button> */}
+              {/* {!isCurrentUserAdmin && !isAdmin && (
+      
                   <button className='flex flex-row items-center gap-2 w-30 px-4 pt-[10px] pb-3 transition-colors hover:bg-neutral-100 rounded-br-md rounded-bl-md cursor-not-allowed'>
                     <Image src='/icons/Report.svg' alt='search icon' width={17} height={17} />
                     <span className='font-normal text-[#0C111D] text-sm'>Report Message</span>
                   </button>
-                </Tooltip>
-              )}
+              )} */}
               {isCurrentUserAdmin && !isAdmin && (
                 <button className='flex flex-row items-center gap-2 w-30 px-4 pt-[10px] pb-3 transition-colors hover:bg-neutral-100 rounded-br-md rounded-bl-md '>
                   <Image src='/icons/user-block-red-01.svg' alt='search icon' width={17} height={17} />
