@@ -126,8 +126,6 @@ const Sections: React.FC<SectionsProps> = ({
   const [popoveropen, setPopoveropen] = useState(false);
   const isSectionButtonDisabled = !sectionName || !sectionScheduleDate;
   const [scrollBehavior, setScrollBehavior] = useState<"inside" | "outside">("outside");
-  const [isOpen, setIsOpen] = useState(true); // true to be open by default
-
   const formatScheduleDate = (dateString: string): string => {
     const date = new Date(dateString);
     return format(date, 'dd MMM, yyyy  hh:mm a');
@@ -842,7 +840,7 @@ const Sections: React.FC<SectionsProps> = ({
             <div className="flex flex-row justify-end p-4 gap-3">
               <button
                 onClick={handleCancelQuestions}
-                className="py-2 px-6 border-[1.5px] border-lightGrey rounded-md text-[#1D2939] font-semibold text-sm hover:bg-[#F2F4F7]"
+                className="py-2 px-6 border-[1.5px] border-lightGrey rounded-md text-[#1D2939] font-semibold text-sm"
               >
                 Cancel
               </button>
@@ -861,7 +859,7 @@ const Sections: React.FC<SectionsProps> = ({
                   }
                 }}
                 disabled={isSaveButtonDisabled}
-                className={`py-2 px-7 text-white shadow-inner-button border border-white ${isSaveButtonDisabled ? 'bg-[#CDA0FC]' : 'bg-[#9012FF] hover:bg-[#6D0DCC]'
+                className={`py-2 px-7 text-white shadow-inner-button border border-white ${isSaveButtonDisabled ? 'bg-[#CDA0FC]' : 'bg-[#9012FF]'
                   } rounded-md font-semibold text-sm`}
               >
                 Save
@@ -1043,8 +1041,6 @@ const Sections: React.FC<SectionsProps> = ({
               {sectionss.map((section) => (
                 <div key={section.id} className="border border-solid border-[#EAECF0] bg-[#FFFFFF] rounded-[16px] mb-3">
                   <Collapsible
-                    open={isOpen}
-                    onChange={() => setIsOpen(prev => !prev)}
                     trigger={
                       <div className="flex flex-row justify-between items-start w-full p-4 bg-[#FCFCFD] rounded-[16px]">
                         <div className="flex flex-col gap-1">

@@ -842,7 +842,7 @@ const Sections: React.FC<SectionsProps> = ({
             <div className="flex flex-row justify-end p-4 gap-3">
               <button
                 onClick={handleCancelQuestions}
-                className="py-2 px-6 border-[1.5px] border-lightGrey rounded-md text-[#1D2939] font-semibold text-sm hover:bg-[#F2F4F7]"
+                className="py-2 px-6 border-[1.5px] border-lightGrey rounded-md text-[#1D2939] font-semibold text-sm"
               >
                 Cancel
               </button>
@@ -861,7 +861,7 @@ const Sections: React.FC<SectionsProps> = ({
                   }
                 }}
                 disabled={isSaveButtonDisabled}
-                className={`py-2 px-7 text-white shadow-inner-button border border-white ${isSaveButtonDisabled ? 'bg-[#CDA0FC]' : 'bg-[#9012FF] hover:bg-[#6D0DCC]'
+                className={`py-2 px-7 text-white shadow-inner-button border border-white ${isSaveButtonDisabled ? 'bg-[#CDA0FC]' : 'bg-[#9012FF]'
                   } rounded-md font-semibold text-sm`}
               >
                 Save

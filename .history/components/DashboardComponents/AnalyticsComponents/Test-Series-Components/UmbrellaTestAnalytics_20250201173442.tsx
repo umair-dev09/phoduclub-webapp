@@ -8,7 +8,6 @@ import DifficultyAnalysis from "@/components/DashboardComponents/AnalyticsCompon
 import Attemptsoverthehours from "@/components/DashboardComponents/AnalyticsComponents/Test-Series-Components/AllSubjectsComponents/Attemptsoverthehours";
 import CompleteAnalysis from "@/components/DashboardComponents/AnalyticsComponents/Test-Series-Components/AllSubjectsComponents/CompleteAnalysis";
 import Overview from "@/components/DashboardComponents/AnalyticsComponents/Test-Series-Components/AllSubjectsComponents/Overview";
-import { Tooltip } from "@nextui-org/react"
 import { Tabs, Tab } from "@nextui-org/react";
 import { Key } from '@react-types/shared';
 import React, { useEffect, useRef, useState } from "react";
@@ -561,111 +560,51 @@ function UmbrellaTestAnalytics({ onClose, attemptedDetails = [], sectionName, te
                                         </div>
                                     </th>
                                     <th className="w-[20%] py-3">
-                                        <div className="flex flex-row justify-center cursor-pointer">
+                                        <div className="flex flex-row justify-center">
                                             Perfect
-                                            <Tooltip
-                                                content="Correct attempt within the time limit"
-                                                placement="top"
-                                                offset={15}
-                                                closeDelay={100}
-                                                classNames={{
-                                                    content: [
-                                                        "bg-black text-white py-3 max-w-[240px]",
-                                                        "rounded-md text-center font-normal text-[12px]",
-                                                        "after:content-[''] after:absolute after:top-full after:left-1/2 after:-ml-2",
-                                                        "after:border-8 after:border-transparent after:border-t-black",
-                                                    ],
-                                                }}
-                                            >
-                                                <Image
-                                                    src="/icons/information-circle.svg"
-                                                    width={16}
-                                                    height={16}
-                                                    alt="information-icon"
-                                                    className="ml-1"
-                                                />
-                                            </Tooltip>
+                                            <Image
+                                                src="/icons/information-circle.svg"
+                                                width={16}
+                                                height={16}
+                                                alt="information-icon"
+                                                className="ml-1"
+                                            />
                                         </div>
                                     </th>
                                     <th className="w-[20%] py-3">
-                                        <div className="flex flex-row justify-center cursor-pointer">
+                                        <div className="flex flex-row justify-center">
                                             Wasted
-                                            <Tooltip
-                                                content=" Incorrect attempt solved quickly"
-                                                placement="top"
-                                                offset={15}
-                                                closeDelay={100}
-                                                classNames={{
-                                                    content: [
-                                                        "bg-black text-white py-3 max-w-[240px]",
-                                                        "rounded-md text-center font-normal text-[12px]",
-                                                        "after:content-[''] after:absolute after:top-full after:left-1/2 after:-ml-2",
-                                                        "after:border-8 after:border-transparent after:border-t-black",
-                                                    ],
-                                                }}
-                                            >
-                                                <Image
-                                                    src="/icons/information-circle.svg"
-                                                    width={16}
-                                                    height={16}
-                                                    alt="information-icon"
-                                                    className="ml-1"
-                                                />
-                                            </Tooltip>
+                                            <Image
+                                                src="/icons/information-circle.svg"
+                                                width={16}
+                                                height={16}
+                                                alt="information-icon"
+                                                className="ml-1"
+                                            />
                                         </div>
                                     </th>
                                     <th className="w-[20%] py-3">
-                                        <div className="flex flex-row justify-center cursor-pointer">
+                                        <div className="flex flex-row justify-center">
                                             Overtime
-                                            <Tooltip
-                                                content="Correct attempt exceeding the time limit"
-                                                placement="top"
-                                                offset={15}
-                                                closeDelay={100}
-                                                classNames={{
-                                                    content: [
-                                                        "bg-black text-white py-3 max-w-[240px]",
-                                                        "rounded-md text-center font-normal text-[12px]",
-                                                        "after:content-[''] after:absolute after:top-full after:left-1/2 after:-ml-2",
-                                                        "after:border-8 after:border-transparent after:border-t-black",
-                                                    ],
-                                                }}
-                                            >
-                                                <Image
-                                                    src="/icons/information-circle.svg"
-                                                    width={16}
-                                                    height={16}
-                                                    alt="information-icon"
-                                                    className="ml-1"
-                                                />
-                                            </Tooltip>
+                                            <Image
+                                                src="/icons/information-circle.svg"
+                                                width={16}
+                                                height={16}
+                                                alt="information-icon"
+                                                className="ml-1"
+                                            />
                                         </div>
                                     </th>
                                     <th className="w-[20%] py-3">
-                                        <div className="flex flex-row justify-center cursor-pointer">
+                                        <div className="flex flex-row justify-center">
                                             Confused
-                                            <Tooltip
-                                                content="Time spent but no attempt made"
-                                                placement="top"
-                                                offset={15}
-                                                closeDelay={100}
-                                                classNames={{
-                                                    content: [
-                                                        "bg-black text-white py-3 max-w-[240px]",
-                                                        "rounded-md text-center font-normal text-[12px]",
-                                                        "after:content-[''] after:absolute after:top-full after:left-1/2 after:-ml-2",
-                                                        "after:border-8 after:border-transparent after:border-t-black",
-                                                    ],
-                                                }}
-                                            >
-                                                <Image
-                                                    src="/icons/information-circle.svg"
-                                                    width={16}
-                                                    height={16}
-                                                    alt="information-icon"
-                                                    className="ml-1"
-                                                />
-                                            </Tooltip>
+                                            <Image
+                                                src="/icons/information-circle.svg"
+                                                width={16}
+                                                height={16}
+                                                alt="information-icon"
+                                                className="ml-1"
+                                            />
                                         </div>
                                     </th>
                                 </tr>

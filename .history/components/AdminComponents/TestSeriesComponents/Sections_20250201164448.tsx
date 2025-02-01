@@ -125,9 +125,6 @@ const Sections: React.FC<SectionsProps> = ({
   const [subsectionToDelete, setSubsectionToDelete] = useState<{ parentSectionId: string, sectionId: string } | null>(null);
   const [popoveropen, setPopoveropen] = useState(false);
   const isSectionButtonDisabled = !sectionName || !sectionScheduleDate;
-  const [scrollBehavior, setScrollBehavior] = useState<"inside" | "outside">("outside");
-  const [isOpen, setIsOpen] = useState(true); // true to be open by default
-
   const formatScheduleDate = (dateString: string): string => {
     const date = new Date(dateString);
     return format(date, 'dd MMM, yyyy  hh:mm a');
@@ -842,7 +839,7 @@ const Sections: React.FC<SectionsProps> = ({
             <div className="flex flex-row justify-end p-4 gap-3">
               <button
                 onClick={handleCancelQuestions}
-                className="py-2 px-6 border-[1.5px] border-lightGrey rounded-md text-[#1D2939] font-semibold text-sm hover:bg-[#F2F4F7]"
+                className="py-2 px-6 border-[1.5px] border-lightGrey rounded-md text-[#1D2939] font-semibold text-sm"
               >
                 Cancel
               </button>
@@ -861,7 +858,7 @@ const Sections: React.FC<SectionsProps> = ({
                   }
                 }}
                 disabled={isSaveButtonDisabled}
-                className={`py-2 px-7 text-white shadow-inner-button border border-white ${isSaveButtonDisabled ? 'bg-[#CDA0FC]' : 'bg-[#9012FF] hover:bg-[#6D0DCC]'
+                className={`py-2 px-7 text-white shadow-inner-button border border-white ${isSaveButtonDisabled ? 'bg-[#CDA0FC]' : 'bg-[#9012FF]'
                   } rounded-md font-semibold text-sm`}
               >
                 Save
@@ -1043,8 +1040,6 @@ const Sections: React.FC<SectionsProps> = ({
               {sectionss.map((section) => (
                 <div key={section.id} className="border border-solid border-[#EAECF0] bg-[#FFFFFF] rounded-[16px] mb-3">
                   <Collapsible
-                    open={isOpen}
-                    onChange={() => setIsOpen(prev => !prev)}
                     trigger={
                       <div className="flex flex-row justify-between items-start w-full p-4 bg-[#FCFCFD] rounded-[16px]">
                         <div className="flex flex-col gap-1">
@@ -1551,134 +1546,6 @@ const Sections: React.FC<SectionsProps> = ({
           </DialogPanel>
         </div>
       </Dialog> */}
-
-
-      <Modal
-        isOpen={saveQuestionDialog}
-        onOpenChange={(isOpen) => !isOpen && setSaveQuestionDialog(false)}
-        size="lg"
-        hideCloseButton
-        scrollBehavior={scrollBehavior}
-        isDismissable={false}
-      >
-        <ModalContent>
-          <>
-            {/* Modal Header */}
-            <ModalHeader className="flex flex-row justify-between gap-1">
-              <h3 className="text-xl font-semibold text-[#1D2939]">Set Section Time and Marks</h3>
-              <button
-                className="w-[32px] h-[32px] rounded-full flex items-center justify-center hover:bg-[#F2F4F7]"
-              >
-                <button onClick={() => setSaveQuestionDialog(false)}>
-                  <Image src="/icons/cancel.svg" alt="Cancel" width={20} height={20} />
-                </button>
-              </button>
-            </ModalHeader>
-
-            {/* Modal Body */}
-            <ModalBody>
-              <div className='flex flex-col w-full gap-1'>
-                <p className='text-sm font-medium text-[#1D2939]'> Section Description</p>
-                <input type="text" placeholder="Description"
-                  value={description}
-                  onChange={(e) => {
-                    setDescription(e.target.value); // Stores the input value as a string
-                  }}
-                  className="w-full py-2 px-3 text-sm text-[#1D2939] break-words font-normal placeholder:text-[#667085] border border-lightGrey rounded-md focus:border-[#D7BBFC] focus:ring-4 focus:ring-[#E8DEFB] outline-none transition-colors" />
-
-              </div>
-              <div className='flex flex-col w-full gap-1'>
-                <p className='text-sm font-medium text-[#1D2939]'> Section Time Duration</p>
-                <div className='flex flex-row items-center w-[200px] py-2 px-3 border border-lightGrey rounded-md gap-1 focus-within:border-[#D7BBFC] focus-within:ring-4 focus-within:ring-[#E8DEFB] focus-within:outline-none transition-colors'>
-                  <input type="text" placeholder="0"
-                    maxLength={3} // Limits input to 2 characters
-                    pattern="\d*" // Restricts input to numbers only
-                    value={timeNumber}
-                    onChange={(e) => {
-                      const value = e.target.value.replace(/[^0-9]/g, ""); // Allows only numbers
-                      setTimeNumber(value); // Stores the input value as a string
-                    }}
-                    className="w-full text-sm text-[#1D2939] font-normal placeholder:text-[#667085] outline-none" />
-                  {/* <p className="text-sm text-[#1D2939] font-medium">Min</p> */}
-                  <Popover placement='bottom' isOpen={isOpenT} onOpenChange={(open) => setIsOpenT(open)}>
-                    <PopoverTrigger>
-                      <button className='flex flex-row w-[150px] gap-1 pr-2'>
-                        <div className={`w-full text-sm text-start`}>{timeText}</div>
-                        <Image src='/icons/arrow-down-01-round.svg' alt='open popup' width={20} height={20} />
-                      </button>
-                    </PopoverTrigger>
-                    <PopoverContent className='flex flex-col justify-start w-[120px] h-auto py-1 px-0  bg-white '>
-                      {["Minutes", "Hours"].map(time => (
-                        <button
-                          key={time}
-                          onClick={() => { setTimeText(time); setIsOpenT(false); }}
-                          className='w-full text-sm text-left text-[#0C111D] px-4 py-[0.625rem] hover:bg-[#F2F4F7]'
-                        >
-                          {time}
-                        </button>
-                      ))}
-                    </PopoverContent>
-                  </Popover>
-                </div>
-                <p className="mt-1 text-[0.813rem] text-[#475467] font-normal">
-                  Students must finish the quiz in time.
-                </p>
-              </div>
-              <div className="flex flex-row gap-3 w-full">
-                <div className='flex flex-col w-1/2 gap-1'>
-                  <p className='text-sm font-medium text-[#1D2939]'>Marks per question</p>
-                  <input type="text" placeholder="0"
-                    maxLength={2} // Limits input to 2 characters
-                    pattern="\d*" // Restricts input to numbers only
-                    value={marksPerQ}
-                    onChange={(e) => {
-                      const value = e.target.value.replace(/[^0-9]/g, ""); // Allows only numbers
-                      setMarksPerQ(Number(value)); // Convert string to number before setting state
-                    }}
-                    className="w-full py-2 px-3 text-sm text-[#1D2939] font-normal placeholder:text-[#667085] border border-lightGrey rounded-md focus:border-[#D7BBFC] focus:ring-4 focus:ring-[#E8DEFB] outline-none transition-colors" />
-                  <p className="mt-1 text-[0.813rem] text-[#475467] font-normal">
-                    Applies only to the correct answers.
-                  </p>
-                </div>
-                <div className='flex flex-col w-1/2 gap-1'>
-                  <p className='text-sm font-medium text-[#1D2939] text-left'>Negative marks per question(-)</p>
-                  <input type="text" placeholder="0"
-                    maxLength={2} // Limits input to 2 characters
-                    pattern="\d*" // Restricts input to numbers only
-                    value={nMarksPerQ}
-                    onChange={(e) => {
-                      const value = e.target.value.replace(/[^0-9]/g, ""); // Allows only numbers
-                      setnMarksPerQ(Number(value)); // Convert string to number before setting state
-                    }}
-                    className="w-full py-2 px-3 text-sm text-[#1D2939] font-normal placeholder:text-[#667085] border border-lightGrey rounded-md focus:border-[#D7BBFC] focus:ring-4 focus:ring-[#E8DEFB] outline-none transition-colors" />
-                  <p className="mt-1 text-[0.813rem] text-[#475467] font-normal">
-                    Applies only to the incorrect answers.
-                  </p>
-                </div>
-              </div>
-
-            </ModalBody>
-
-            {/* Modal Footer */}
-            <ModalFooter className="border-t border-lightGrey">
-              <Button variant="light"
-                onClick={() => setSaveQuestionDialog(false)}
-                className="py-[0.625rem] px-6 border-[1.5px] border-lightGrey rounded-md text-[#1D2939] font-semibold text-sm"
-              >
-                Cancel
-              </Button>
-              <Button
-                onClick={() => handleSaveQuestionsWithDetails(saveQuestionSectionId, isUmbrellaTest)}
-                disabled={!isDoneWithQuestionDetailsButton}
-                className={`py-[0.625rem] px-6 text-white shadow-inner-button border border-white ${!isDoneWithQuestionDetailsButton ? 'bg-[#CDA0FC]' : 'bg-[#9012FF] hover:bg-[#6D0DCC]'
-                  } rounded-md font-semibold text-sm`}
-              >
-                Done
-              </Button>
-            </ModalFooter>
-          </>
-        </ModalContent>
-      </Modal>
       {/*CSV Upload Dialog */}
       {/* <Dialog open={csvUploadDialog} onClose={() => setCsvUploadDialog(false)}>
         <DialogBackdrop className="fixed inset-0 bg-black/30 " />
@@ -1795,3 +1662,130 @@ export default Sections;
 
 
 
+
+
+<Modal
+  isOpen={saveQuestionDialog}
+  onOpenChange={(isOpen) => !isOpen && setSaveQuestionDialog(false)}
+  hideCloseButton
+>
+  <ModalContent>
+    <>
+      {/* Modal Header */}
+      <ModalHeader className="flex flex-row justify-between gap-1">
+        <h1 className="text-[#1D2939] font-bold text-lg">
+          Delete
+        </h1>
+        <button
+          className="w-[32px] h-[32px] rounded-full flex items-center justify-center hover:bg-[#F2F4F7]"
+          onClick={() => setDeletedialog(false)}
+          aria-label="Close dialog"
+        >
+          <Image src="/icons/cancel.svg" alt="Cancel" width={20} height={20} />
+        </button>
+      </ModalHeader>
+
+      {/* Modal Body */}
+      <ModalBody>
+        <div className='flex flex-col w-full gap-1'>
+          <p className='text-sm font-medium text-[#1D2939]'>Description</p>
+          <input type="text" placeholder="Description"
+            value={description}
+            onChange={(e) => {
+              setDescription(e.target.value); // Stores the input value as a string
+            }}
+            className="w-full py-2 px-3 text-sm text-[#1D2939] break-words font-normal placeholder:text-[#667085] border border-lightGrey rounded-md focus:border-[#D7BBFC] focus:ring-4 focus:ring-[#E8DEFB] outline-none transition-colors" />
+
+        </div>
+        <div className='flex flex-col w-full gap-1'>
+          <p className='text-sm font-medium text-[#1D2939]'>Time Duration</p>
+          <div className='flex flex-row items-center w-[200px] py-2 px-3 border border-lightGrey rounded-md gap-1 focus-within:border-[#D7BBFC] focus-within:ring-4 focus-within:ring-[#E8DEFB] focus-within:outline-none transition-colors'>
+            <input type="text" placeholder="0"
+              maxLength={3} // Limits input to 2 characters
+              pattern="\d*" // Restricts input to numbers only
+              value={timeNumber}
+              onChange={(e) => {
+                const value = e.target.value.replace(/[^0-9]/g, ""); // Allows only numbers
+                setTimeNumber(value); // Stores the input value as a string
+              }}
+              className="w-full text-sm text-[#1D2939] font-normal placeholder:text-[#667085] outline-none" />
+            {/* <p className="text-sm text-[#1D2939] font-medium">Min</p> */}
+            <Popover placement='bottom' isOpen={isOpenT} onOpenChange={(open) => setIsOpenT(open)}>
+              <PopoverTrigger>
+                <button className='flex flex-row w-[150px] gap-1 pr-2'>
+                  <div className={`w-full text-sm text-start`}>{timeText}</div>
+                  <Image src='/icons/arrow-down-01-round.svg' alt='open popup' width={20} height={20} />
+                </button>
+              </PopoverTrigger>
+              <PopoverContent className='flex flex-col justify-start w-[120px] h-auto py-1 px-0  bg-white '>
+                {["Minutes", "Hours"].map(time => (
+                  <button
+                    key={time}
+                    onClick={() => { setTimeText(time); setIsOpenT(false); }}
+                    className='w-full text-sm text-left text-[#0C111D] px-4 py-[0.625rem] hover:bg-[#F2F4F7]'
+                  >
+                    {time}
+                  </button>
+                ))}
+              </PopoverContent>
+            </Popover>
+          </div>
+          <p className="mt-1 text-[0.813rem] text-[#475467] font-normal">
+            Students must finish the quiz in time.
+          </p>
+        </div>
+        <div className="flex flex-row gap-3">
+          <div className='flex flex-col w-full gap-1'>
+            <p className='text-sm font-medium text-[#1D2939]'>Marks per question</p>
+            <input type="text" placeholder="0"
+              maxLength={2} // Limits input to 2 characters
+              pattern="\d*" // Restricts input to numbers only
+              value={marksPerQ}
+              onChange={(e) => {
+                const value = e.target.value.replace(/[^0-9]/g, ""); // Allows only numbers
+                setMarksPerQ(Number(value)); // Convert string to number before setting state
+              }}
+              className="w-full py-2 px-3 text-sm text-[#1D2939] font-normal placeholder:text-[#667085] border border-lightGrey rounded-md focus:border-[#D7BBFC] focus:ring-4 focus:ring-[#E8DEFB] outline-none transition-colors" />
+            <p className="mt-1 text-[0.813rem] text-[#475467] font-normal">
+              Applies only to the correct answers.
+            </p>
+          </div>
+          <div className='flex flex-col w-full gap-1'>
+            <p className='text-sm font-medium text-[#1D2939]'>Negative marks per question (-)</p>
+            <input type="text" placeholder="0"
+              maxLength={2} // Limits input to 2 characters
+              pattern="\d*" // Restricts input to numbers only
+              value={nMarksPerQ}
+              onChange={(e) => {
+                const value = e.target.value.replace(/[^0-9]/g, ""); // Allows only numbers
+                setnMarksPerQ(Number(value)); // Convert string to number before setting state
+              }}
+              className="w-full py-2 px-3 text-sm text-[#1D2939] font-normal placeholder:text-[#667085] border border-lightGrey rounded-md focus:border-[#D7BBFC] focus:ring-4 focus:ring-[#E8DEFB] outline-none transition-colors" />
+            <p className="mt-1 text-[0.813rem] text-[#475467] font-normal">
+              Applies only to the incorrect answers.
+            </p>
+          </div>
+        </div>
+
+      </ModalBody>
+
+      {/* Modal Footer */}
+      <ModalFooter className="border-t border-lightGrey">
+        <Button variant="light"
+          onClick={() => setSaveQuestionDialog(false)}
+          className="py-[0.625rem] px-6 border-[1.5px] border-lightGrey rounded-md text-[#1D2939] font-semibold text-sm"
+        >
+          Cancel
+        </Button>
+        <Button
+          onClick={() => handleSaveQuestionsWithDetails(saveQuestionSectionId, isUmbrellaTest)}
+          disabled={!isDoneWithQuestionDetailsButton}
+          className={`py-[0.625rem] px-6 text-white shadow-inner-button border border-white ${!isDoneWithQuestionDetailsButton ? 'bg-[#CDA0FC]' : 'bg-[#9012FF] hover:bg-[#6D0DCC]'
+            } rounded-md font-semibold text-sm`}
+        >
+          Done
+        </Button>
+      </ModalFooter>
+    </>
+  </ModalContent>
+</Modal>
