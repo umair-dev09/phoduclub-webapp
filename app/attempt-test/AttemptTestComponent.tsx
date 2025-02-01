@@ -1182,14 +1182,12 @@ function ReviewTestView() {
     //       setIsSubmitButtonDisabled(false);
     //       toast.error('Failed to submit test');
     //     }
-    //   };
-
-
+    //   };\
 
     const handleSubmit = async () => {
         const loadingToastId = toast.loading('Submitting your test responses...');
-        updateCurrentQuestionTime();
         setIsSubmitButtonDisabled(true);
+        updateCurrentQuestionTime();
 
         if (!currentUserId) {
             toast.dismiss(loadingToastId);

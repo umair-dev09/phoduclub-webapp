@@ -95,11 +95,11 @@ function QuizContent({ lessonHeading, isAdmin, courseId, sectionId, lessonOvervi
             {/* ------------------------------------------------------------------------------------------------------------------------------------------------> */}
 
             <div className="flex flex-col ml-8 gap-[20px] ">
-            
+
                 <span className="w-[140px] h-[24px] text-[#1D2939] text-base font-bold">
                     Quiz Information
                 </span>
-            
+
             </div>
             <div className='text-[#667085] text-base font-normal break-all ml-8 mr-4 mt-2 text-start' dangerouslySetInnerHTML={{
                 __html: lessonOverview || '',
@@ -144,27 +144,24 @@ function QuizContent({ lessonHeading, isAdmin, courseId, sectionId, lessonOvervi
             {!isAdmin && (
                 <div className="h-[65px]  " style={{ borderRadius: "5px", position: "relative" }}>
                     <div className="relative flex justify-between items-end h-full ml-8">
-                          {!quizAttempt ? (
+                        {!quizAttempt ? (
                             <button
                                 onClick={onStartQuiz}
-                                className="bg-[#8501FF] text-[#FFFFFF] text-sm font-semibold py-2 px-5 rounded-md w-[118px] h-[44px] ml-auto border-[1px] border-[#800EE2] shadow-[inset_0px_-4px_4px_0px_#1018281F,inset_0px_3px_2px_0px_#FFFFFF3D] hover:bg-[#6D0DCC]"
-
+                                className="bg-[#8501FF] text-[#FFFFFF] text-sm font-semibold py-2 px-5 rounded-md w-[118px] h-[44px] ml-auto border-[1px] border-[#800EE2] shadow-inner-button hover:bg-[#6D0DCC]"
                             >
                                 Start Quiz
                             </button>
-                          ) : (
+                        ) : (
                             <div className="absolute flex flex-row justify-between w-full">
-                                <button className="border border-[#9012FF] bg-white text-[#1D2939] text-sm font-semibold px-6 py-[0.625rem] hover:bg-[#F5F0FF]   rounded-md" 
-                                onClick={() => setShowReviewSheet(true)}
+                                <button className="border border-[#9012FF] bg-white text-[#1D2939] text-sm font-semibold px-6 py-[0.625rem] hover:bg-[#F5F0FF] rounded-md"
+                                    onClick={() => setShowReviewSheet(true)}
                                 >Review your attempt</button>
-                                <button className="border border-[#800EE2] bg-[#800EE2] text-white text-sm font-semibold px-6 py-[0.625rem] rounded-md" onClick={onStartQuiz}>Re-Attempt</button>
+                                <button className="border border-[#800EE2] bg-[#800EE2] text-white text-sm font-semibold px-6 py-[0.625rem] rounded-md shadow-inner-button" onClick={onStartQuiz}>Re-Attempt</button>
                             </div>
-                          )}
+                        )}
                     </div>
                 </div>
             )}
- 
-
 
             {showQuizDialog && (
                 <QuizAttendingArea
@@ -181,7 +178,7 @@ function QuizContent({ lessonHeading, isAdmin, courseId, sectionId, lessonOvervi
                     questionsList={questionsList || []}
                 />
             )}
-            <ReviewTest setShowReviewSheet={setShowReviewSheet} showReviewSheet={showReviewSheet} questionsList={questionsList} answeredQuestions={quizAttempt?.AnsweredQuestions || []} timeTaken={quizAttempt?.timeTaken || 0}/>
+            <ReviewTest setShowReviewSheet={setShowReviewSheet} showReviewSheet={showReviewSheet} questionsList={questionsList} answeredQuestions={quizAttempt?.AnsweredQuestions || []} timeTaken={quizAttempt?.timeTaken || 0} />
 
         </div>
 
