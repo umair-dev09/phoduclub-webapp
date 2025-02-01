@@ -7,7 +7,8 @@ import Delete from '@/components/AdminComponents/Community/AllDialogs/DeleteChan
 import { Tooltip } from "@nextui-org/react";
 import ExitChannel from "@/components/DashboardComponents/CommunityComponents/ExitChannel";
 import MediaDialog from './MediaDialog';
-import { auth } from '@/firebase';
+import { auth, db } from '@/firebase';
+import { arrayRemove, doc, updateDoc } from 'firebase/firestore';
 
 type Chat = {
     message: string;
@@ -82,6 +83,18 @@ function ChatHead({ channelName, channelId, channelEmoji, members, chats, commun
     // Toggles mute state
     const toggleMute = () => setIsMuted(prev => !prev);
 
+    const handleMarkAsRead = async () => {
+        try {
+            const channelRef = doc(db, 'communities', communityId || '', 'channelsHeading', categoryId || '', 'channels', channelId || '');
+            await updateDoc(channelRef, {
+                channelNotification: arrayRemove(currentUserId)
+            });
+            closePopover();
+        } catch (error) {
+            console.error("Error marking channel as read:", error);
+        }
+    };
+
     return (
 
 
@@ -108,19 +121,8 @@ function ChatHead({ channelName, channelId, channelEmoji, members, chats, commun
                     <PopoverContent className="w-auto py-1 px-0 bg-white border border-lightGrey rounded-md flex flex-col">
                         {members?.some(member => member.id === currentUserId) ? (
                             <>
-                                <Tooltip
-                                    content="Launching Soon!!!!!"
-                                    placement="right"
-                                    offset={15}
-                                    closeDelay={100}
-                                    classNames={{
-                                        content: [
-                                            "bg-[#222222] text-white text-sm py-2 px-4 rounded-md",
-                                        ],
-                                    }}
-                                >
-
-                                    <button className='flex flex-row gap-2 items-center h-10 w-[206px] px-4 hover:bg-[#EAECF0] cursor-not-allowed'>
+                                    <button className='flex flex-row gap-2 items-center h-10 w-[206px] px-4 hover:bg-[#EAECF0] '
+                                    onClick={handleMarkAsRead}>
                                         <Image
                                             src="/icons/mark as read.svg"
                                             width={18}
@@ -130,19 +132,8 @@ function ChatHead({ channelName, channelId, channelEmoji, members, chats, commun
                                         <span className='font-normal text-[#0C111D] text-sm'>Mark as read</span>
 
                                     </button>
-                                </Tooltip>
-                                <Tooltip
-                                    content="Launching Soon!!!!!"
-                                    placement="right"
-                                    offset={15}
-                                    closeDelay={100}
-                                    classNames={{
-                                        content: [
-                                            "bg-[#222222] text-white text-sm py-2 px-4 rounded-md",
-                                        ],
-                                    }}
-                                >
-                                    <button className='flex flex-row gap-2 items-center justify-between h-10 w-[206px] px-4 hover:bg-[#EAECF0] cursor-not-allowed'>
+    
+                                    <button className='flex flex-row gap-2 items-center justify-between h-10 w-[206px] px-4 hover:bg-[#EAECF0] '>
                                         <div className='flex flex-row gap-2'>
                                             <Image
                                                 src="/icons/mute.svg"
@@ -159,7 +150,6 @@ function ChatHead({ channelName, channelId, channelEmoji, members, chats, commun
                                             alt="arrow-right-01-round"
                                         />
                                     </button>
-                                </Tooltip>
 
                                 {!isAdmin && (
                                     <button className='flex flex-row gap-2 items-center h-10 w-[206px] px-4 hover:bg-[#FEE4E2]'

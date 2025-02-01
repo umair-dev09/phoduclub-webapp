@@ -5,8 +5,8 @@ import { PopoverContent, PopoverTrigger, Popover } from '@nextui-org/popover';
 import Image from "next/image";
 import { onAuthStateChanged, User } from "firebase/auth";
 import { auth, db } from "@/firebase";
-import { doc, onSnapshot } from "firebase/firestore";
-import Skeleton, { SkeletonTheme } from 'react-loading-skeleton'
+import { arrayRemove, collection, doc, getDoc, getDocs, onSnapshot, updateDoc } from "firebase/firestore";
+import Skeleton from 'react-loading-skeleton'
 import 'react-loading-skeleton/dist/skeleton.css'
 import Groupinfo from "@/components/AdminComponents/Community/AllDialogs/Groupinfo";
 import DeleteGroup from "@/components/AdminComponents/Community/AllDialogs/DeleteGroup";
@@ -86,6 +86,52 @@ function GroupName({ communityId, isAdmin }: groupNameProps) {
     }
   }, [user, communityId]);
 
+  const handleMarkAsRead = async () => {
+    if (!user || !communityId) {
+      console.log('Missing user or communityId');
+      return;
+    }
+
+    try {
+      const communityRef = doc(db, 'communities', communityId);
+      const docSnap = await getDoc(communityRef);
+      
+      if (!docSnap.exists()) {
+        console.log('Community document does not exist');
+        return;
+      }
+
+      // Get all channelsHeadings subcollection
+      const channelsHeadingRef = collection(db, 'communities', communityId, 'channelsHeading');
+      const headingsSnap = await getDocs(channelsHeadingRef);
+
+      if (headingsSnap.empty) {
+        console.log('No channels heading found');
+        return;
+      }
+
+      for (const headingDoc of headingsSnap.docs) {
+        const channelsRef = collection(headingDoc.ref, 'channels');
+        const channelsSnap = await getDocs(channelsRef);
+        
+        if (!channelsSnap.empty) {
+          const updatePromises = channelsSnap.docs.map(channelDoc => 
+            updateDoc(channelDoc.ref, {
+              channelNotification: arrayRemove(user.uid)
+            })
+          );
+          await Promise.all(updatePromises);
+        }
+      }
+
+      console.log('Successfully marked all channels as read');
+      closePopover();
+    } catch (error) {
+      console.error('Error marking as read:', error);
+      alert('Failed to mark messages as read. Please try again.');
+    }
+  };
+
   // Function to close both popovers
   const closePopover = () => setIsPopoverOpen(false);
   const closeMutePopover = () => setIsMutePopoverOpen(false);
@@ -156,19 +202,9 @@ function GroupName({ communityId, isAdmin }: groupNameProps) {
             </div>
           </PopoverTrigger>
           <PopoverContent className="w-auto py-1 px-0 bg-white border border-lightGrey rounded-md flex flex-col">
-            <Tooltip
-              content="Launching Soon!!!!!"
-              placement="right"
-              offset={15}
-              closeDelay={100}
-              classNames={{
-                content: [
-                  "bg-[#222222] text-white text-sm py-2 px-4 rounded-md",
-                ],
-              }}
-            >
-              <button className='flex flex-row gap-2 items-center h-10 w-[206px] px-4 hover:bg-[#EAECF0] cursor-not-allowed'
-              >
+
+              <button className='flex flex-row gap-2 items-center h-10 w-[206px] px-4 hover:bg-[#EAECF0] '
+               onClick={() => {handleMarkAsRead();}}>
                 <Image
                   src="/icons/mark as read.svg"
                   width={18}
@@ -177,7 +213,6 @@ function GroupName({ communityId, isAdmin }: groupNameProps) {
                 />
                 <span className='font-normal text-[#0C111D] text-sm'>Mark as read</span>
               </button>
-            </Tooltip>
             <Tooltip
               content="Launching Soon!!!!!"
               placement="right"
