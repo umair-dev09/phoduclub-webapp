@@ -142,6 +142,8 @@ function ChatHead({ channelName, channelId, notificationsMuted, channelEmoji, me
 
 
   return (
+
+
     <div className='flex items-center justify-between h-[72px] bg-white border-b border-lightGrey gap-2'>
       <div className='flex items-center justify-center mr-6 ml-4'>
         <Popover
@@ -149,6 +151,7 @@ function ChatHead({ channelName, channelId, notificationsMuted, channelEmoji, me
           isOpen={isPopoverOpen}
           onOpenChange={(open) => setIsPopoverOpen(open)}
         >
+
           <PopoverTrigger>
             <button className="flex flex-row gap-2 focus:outline-none">
               <p>{channelEmoji}</p>
@@ -177,16 +180,7 @@ function ChatHead({ channelName, channelId, notificationsMuted, channelEmoji, me
                     alt="mark as read"
                   />
                   <span className='font-normal text-[#0C111D] text-sm'>Mark as read</span>
-                </button>
-                <button className='flex flex-row gap-2 items-center justify-between h-10 w-[206px] px-4 hover:bg-[#EAECF0] '>
-                  {/* <div className='flex flex-row gap-2'> */}
-                  <Image
-                    src="/icons/mute.svg"
-                    width={18}
-                    height={18}
-                    alt="mute-icon"
-                  />
-                  <span className='font-normal text-[#0C111D] text-sm'>Mark as read</span>
+
                 </button>
 
                 <Popover placement="right-start">
@@ -213,6 +207,7 @@ function ChatHead({ channelName, channelId, notificationsMuted, channelEmoji, me
                         ) : (
                           <span className='font-normal text-[#0C111D] text-sm'>Mute</span>
                         )}
+
                       </div>
                       <Image
                         src="/icons/arrow-right-01-round.svg"
@@ -257,6 +252,7 @@ function ChatHead({ channelName, channelId, notificationsMuted, channelEmoji, me
                     <span className='font-normal text-[#DE3024] text-sm'>Exit channel</span>
                   </button>
                 )}
+
                 {isAdmin && (
                   // <Tooltip
                   //     content="Launching Soon!!!!!"
@@ -327,6 +323,7 @@ function ChatHead({ channelName, channelId, notificationsMuted, channelEmoji, me
                     <span className='font-normal text-[#DE3024] text-sm'>Delete</span>
                   </button>
                 )}
+
               </>
             ) : (
               <></>
@@ -355,6 +352,7 @@ function ChatHead({ channelName, channelId, notificationsMuted, channelEmoji, me
       {deleteDialog && <Delete open={deleteDialog} onClose={() => setDeleteDialog(false)} communityId={communityId || ''} categoryId={categoryId || ''} channelId={channelId || ''} channelName={channelName || ''} setSelectedChannel={setSelectedChannel} />}
       {exitchannel && <ExitChannel open={exitchannel} onClose={() => setExitchannel(false)} communityId={communityId || ''} channelHeadingId={categoryId || ''} channelId={channelId || ''} channelName={channelName || ''} />}
       {mediaDialog && <MediaDialog isOpen={mediaDialog} setIsOpen={() => setMediaDialog(false)} chats={chats} />}
+
     </div>
   );
 }
