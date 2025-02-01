@@ -107,8 +107,6 @@ function Profile() {
         return <LoadingData />;
     }
 
-
-
     const handleEditProfile = () => {
         setIsEditing(!isEditing);
     };
@@ -133,21 +131,34 @@ function Profile() {
     };
 
     const updateNameInFirestore = async () => {
+        const loadingToastId = toast.loading('Updating Name...');
+        setHasChanges(false);
+
         if (user && nameInput !== originalName) {
             try {
                 const userDocRef = doc(db, `users/${user.uid}`);
                 await updateDoc(userDocRef, {
                     name: nameInput, // Update the name field
                 });
+                toast.dismiss(loadingToastId);
+                toast.success('Name updated successfully!');
                 setOriginalName(nameInput); // Reset original name to new value
                 setHasChanges(false); // Disable save button after saving
                 setIsEditing(false); // Exit editing mode
             } catch (error) {
                 console.error('Error updating name:', error);
+                toast.dismiss(loadingToastId);
+                toast.error('Failed to update name. Please try again or contact support if the issue persists.', {
+                    autoClose: 5000,
+                    position: 'top-center'
+                });
             }
         }
     };
     const onRemoveClick = async () => {
+        const loadingToastId = toast.loading('Submitting responses...');
+        setHasChanges(false);
+
         const imageUrls: string[] = [
             "https://firebasestorage.googleapis.com/v0/b/phodu-club.appspot.com/o/Default%20Avatar%2Favatar1.png?alt=media&token=f794198a-0d5b-4542-a7bd-8c8586e4ef85",
             "https://firebasestorage.googleapis.com/v0/b/phodu-club.appspot.com/o/Default%20Avatar%2Favatar2.png?alt=media&token=003f3358-5134-49e7-a414-edd89366b5fb",
@@ -167,10 +178,13 @@ function Profile() {
                     profilePic: profilePic,
                     isAvatar: true
                 });
+                toast.dismiss(loadingToastId);
                 toast.success("Profile Picture Removed!");
                 setIsEditing(false);
             } catch (error) {
                 console.error('Error Removing Profile Pic:', error);
+                toast.dismiss(loadingToastId);
+                toast.error('Failed to update Profile Pic. Please try again or contact support if the issue persists.');
             }
         }
 
@@ -291,7 +305,6 @@ function Profile() {
                                     default:
                                         examColor = '#CCCCCC'; // Default gray color
                                         break;
-
                                 }
 
                                 return (

@@ -268,7 +268,7 @@ function VerifyOtp() {
                         className={`w-1/2 h-10 rounded-lg text-white font-medium text-sm 
                                     ${isLoading || otp.length === 6 ? 'bg-[#7400e0] hover:bg-[#6D0DCC]  cursor-pointer' : 'bg-[#d4a9fc] cursor-not-allowed'} 
                                     transition-colors duration-150 
-                                    active:opacity-50
+                                    active:opacity-50 shadow-inner-button
                                     flex items-center justify-center`}
                         onClick={handleSubmit}
                         disabled={isLoading || otp.length !== 6} // Ensure disabled when loading or OTP not filled

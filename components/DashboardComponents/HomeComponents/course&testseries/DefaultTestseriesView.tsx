@@ -143,10 +143,11 @@ function TestSeriesComp() {
     return (
         <div className="flex flex-1 flex-row mx-0 gap-6 flex-wrap pr-2">
             {tests.slice(0, 2).map((test, index) => (
-                <div key={index} className="flex flex-col flex-1 rounded-lg relative overflow-hidden transition-transform duration-300 h-auto max-w-[calc(50%-12px)]">
-                    {/* Container for the suggestion badge and course image */}
-                    <div>
-                        {/* Suggestion badge with icon and text */}
+                <div
+                    key={index}
+                    className="w-[239px] rounded-lg relative overflow-hidden transition-transform duration-300"
+                >
+                    <div className="w-full">
                         <div className="flex items-center absolute top-3 left-3 mr-5 bg-[#FFEC45] border border-[#FFEC45] text-xs font-medium rounded-full py-1 px-3 z-10 transition-transform transition-font-size duration-300 ease-in-out">
                             <Image
                                 className="mr-[5px]"
@@ -157,58 +158,35 @@ function TestSeriesComp() {
                             />
                             <p>Suggested for you</p>
                         </div>
-                        {/* Course image */}
-                        <Image className="w-full h-[160px] object-cover border border-[#EAECF0] rounded-tl-lg rounded-tr-lg" src={test.testImage || "/images/course_img.svg"} alt="Course image" width={300} height={300} />
+                        <Image
+                            className="w-full h-[160px] object-cover border border-[#EAECF0] rounded-tl-lg rounded-tr-lg"
+                            src={test.testImage || "/images/course_img.svg"}
+                            alt="Course image"
+                            width={239}
+                            height={160}
+                        />
                     </div>
 
-                    {/* Container for course details and buy button */}
-                    <div className="flex w-full flex-col border border-[#EAECF0] border-t-0 bg-white rounded-br-lg rounded-bl-lg">
-                        {/* <div className="mt-4">
-                                    <div className="text-lg font-semibold leading-6 ml-4">
-                                        <p>{course.courseName}</p>
-                                    </div>
-                                    <div className="text-xs mx-4 font-normal leading-4 text-[#667085] flex items-center gap-1">
-                                        <p>{course.totalContentCount} Lessons</p>
-                                        <span>&#x2022;</span>
-                                        <p>3hr 14m</p>
-                                    </div>
-                                </div>
-                                <div className="flex justify-between mt-2 mb-4 mx-4 text-lg font-semibold">
-                                    <div className="flex items-end">
-                                        <h4>&#8377; {course.discountPrice}</h4>
-                                    </div>
-                                    <div>
-                                        <button className="text-xs font-semibold py-2.5 px-3.5 shadow-inner-button rounded-md bg-[#9012FF] text-white hover:bg-[#6D0DCC]"
-                                            onClick={() => handleTabClick(`/learn/courses/purchase/${course.courseName.toLowerCase().replace(/\s+/g, '-')}/?cId=${course.courseId}`)}
-                                        >
-                                            Buy Now
-                                        </button>
-                                    </div>
-                                </div> */}
-
-                        <div className="flex w-full flex-col border border-[#EAECF0] border-t-0 bg-white rounded-br-lg rounded-bl-lg">
-                            <div className="mt-4">
-                                <div className="text-base font-semibold leading-6 ml-4">
-                                    <p>{test.testName}</p>
-                                </div>
-                                <div className="text-xs mx-4 font-normal leading-[18px] text-[#667085] flex items-center gap-1">
-                                    <p>{test.totalSectionsWithQuestions} Tests</p>
-                                    {/* <span>&#x2022;</span>
-                                            <p>3hr 14m</p> */}
-                                </div>
+                    <div className="w-full border border-[#EAECF0] border-t-0 bg-white rounded-br-lg rounded-bl-lg">
+                        <div className="mt-4">
+                            <div className="text-base font-semibold leading-6 ml-4">
+                                <p>{test.testName}</p>
                             </div>
-                            <div className="flex justify-between mt-2 mb-4 mx-4 text-base font-semibold">
-                                <div className="flex items-end">
-                                    <h4>&#8377; {test.discountPrice}</h4>
-                                </div>
-                                <div>
-                                    <button
-                                        className="text-xs font-semibold leading-5 py-[10px] px-[14px] shadow-inner-button rounded-md bg-[#9012FF]  text-white hover:bg-[#6D0DCC] transition-colors"
-                                        onClick={() => handleTabClick(`/learn/courses/purchase/${test.testName.toLowerCase().replace(/\s+/g, '-')}/?cId=${test.testId}`)}
-                                    >
-                                        Buy Now
-                                    </button>
-                                </div>
+                            <div className="text-xs mx-4 font-normal leading-[18px] text-[#667085] flex items-center gap-1">
+                                <p>{test.totalSectionsWithQuestions} Tests</p>
+                            </div>
+                        </div>
+                        <div className="flex justify-between mt-2 mb-4 mx-4 text-base font-semibold">
+                            <div className="flex items-end">
+                                <h4>&#8377; {test.discountPrice}</h4>
+                            </div>
+                            <div>
+                                <button
+                                    className="text-xs font-semibold leading-5 py-[10px] px-[14px] shadow-inner-button rounded-md bg-[#9012FF] text-white hover:bg-[#6D0DCC] transition-colors"
+                                    onClick={() => handleTabClick(`/learn/courses/purchase/${test.testName.toLowerCase().replace(/\s+/g, '-')}/?cId=${test.testId}`)}
+                                >
+                                    Buy Now
+                                </button>
                             </div>
                         </div>
                     </div>

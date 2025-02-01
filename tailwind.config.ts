@@ -50,6 +50,9 @@ const config: Config = {
 				phoduGrey: "#f7f8fb",
 				colors: "#9012FF",
 			},
+			gridTemplateColumns: {
+        'auto-fit': 'repeat(auto-fit, minmax(239px, 1fr))',
+    },
 		},
 		keyframes: {
 			slideUp: {
