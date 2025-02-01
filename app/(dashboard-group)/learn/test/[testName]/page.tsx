@@ -130,6 +130,7 @@ function Test() {
     const [marksPerQ, setMarksPerQ] = useState('');
     const [isUmbrellaTest, setIsUmbrellaTest] = useState(false);
     const [passedSectionId, setPassedSectionId] = useState('');
+    const [testName, setTestName] = useState('');
     const [noOfTests, setNoOfTests] = useState(0);
     const [noOfQuestions, setNoOfQuestions] = useState(0);
     const [loading, setLoading] = useState(true); // Track loading state 
@@ -225,6 +226,13 @@ function Test() {
             setSectionLoading(true);
 
             try {
+                // Fetch test name from testseries collection
+                const testDocRef = doc(db, 'testseries', testId || '');
+                const testDoc = await getDoc(testDocRef);
+                if (testDoc.exists()) {
+                    setTestName(testDoc.data().testName);
+                }
+
                 const path = currentPath.reduce((acc, id) => `${acc}/sections/${id}`, `testseries/${testId}`);
                 const sectionCollection = collection(db, `${path}/sections`);
 
@@ -447,8 +455,7 @@ function Test() {
                     <div className="flex flex-row items-center gap-2 ml-8 mt-8">
                         <div className="flex flex-row">
                             <button
-                                onClick={resetNavigation}
-                                // onClick={() => { router.back() }}
+                                onClick={() => breadcrumbs.length < 1 ? router.back() : resetNavigation()}
                                 className="font-medium text-[#667085] hover:underline "
                             >Tests
                             </button>
@@ -970,7 +977,7 @@ function Test() {
                                                                                 </div>
                                                                             </div>
                                                                             <button className="flex flex-row justify-center items-center hover:bg-[#F5F0FF] px-3 py-1 rounded-2xl"
-                                                                                onClick={() => router.replace('/analytics/test-series')}>
+                                                                                onClick={() => router.replace(`/analytics/test-series/${testName.toLowerCase().replace(/\s+/g, '-')}?tId=${testId}`)}>
                                                                                 <span className="relative font-semibold text-[#9012FF] text-sm mr-1 inline-block">
                                                                                     View Detailed Analytics
                                                                                     <span className="absolute left-0 bottom-[2px] w-full h-[1px] bg-[#9012FF]"></span>

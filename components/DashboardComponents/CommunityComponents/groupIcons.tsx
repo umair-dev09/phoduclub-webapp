@@ -12,6 +12,7 @@ type CommunityData = {
   communityId: string | null;
   communityImg: string | null;
   members: { id: string, isAdmin: boolean }[] | null;
+  totalNotifications: number;
 };
 
 
@@ -72,29 +73,65 @@ function GroupIcons() {
 }, [currentUserId]);
 
   useEffect(() => {
-    if (user) {
-      const userId = user.uid; // Get the current user's ID
-      const communityRef = collection(db, "communities");
-      const q = query(communityRef, where("members", "array-contains", { id: userId, isAdmin: false }));
+    if (!user) return;
 
-      const unsubscribe = onSnapshot(q, (snapshot) => {
-        const userCommunities: CommunityData[] = [];
+    const userId = user.uid;
+    const communityRef = collection(db, "communities");
+    const q = query(communityRef, where("members", "array-contains", { id: userId, isAdmin: false }));
 
-        snapshot.forEach((doc) => {
-          const community = doc.data();
-          userCommunities.push({
-            communityName: community.communityName,
-            communityId: community.communityId,
-            members: community.members,
-            communityImg: community.communityImg,
-          });
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      const userCommunities: CommunityData[] = [];
+      const notificationCounters: { [key: string]: number } = {};
+
+      const communityUnsubscribes = snapshot.docs.map(doc => {
+        const community = doc.data();
+        const communityId = community.communityId;
+        notificationCounters[communityId] = 0;
+
+        userCommunities.push({
+          communityName: community.communityName,
+          communityId: communityId,
+          members: community.members,
+          communityImg: community.communityImg,
+          totalNotifications: 0,
         });
 
-        setCommunities(userCommunities);
+        const channelsRef = collection(db, "communities", communityId, "channelsHeading");
+        return onSnapshot(channelsRef, (headingSnapshot) => {
+          const channelUnsubscribes = headingSnapshot.docs.map(headingDoc => {
+            const channelsCollectionRef = collection(headingDoc.ref, "channels");
+            return onSnapshot(channelsCollectionRef, (channelsSnapshot) => {
+              let communityNotifications = 0;
+              
+              channelsSnapshot.docs.forEach(channelDoc => {
+                const channelData = channelDoc.data();
+                const notifications = channelData.channelNotification || [];
+                if (notifications.includes(userId)) {
+                  communityNotifications++;
+                }
+              });
+
+              notificationCounters[communityId] = communityNotifications;
+              const updatedCommunities = userCommunities.map(comm => ({
+                ...comm,
+                totalNotifications: notificationCounters[comm.communityId || ''] || 0
+              }));
+              setCommunities(updatedCommunities);
+            });
+          });
+
+          return () => channelUnsubscribes.forEach(unsub => unsub());
+        });
       });
 
-      return () => unsubscribe();
-    }
+      setCommunities(userCommunities);
+
+      return () => {
+        communityUnsubscribes.forEach(unsubscribe => unsubscribe());
+      };
+    });
+
+    return () => unsubscribe();
   }, [user, db]);
 
   const onItemClick = (communityName: string | null, communityId: string | null) => {
@@ -131,17 +168,18 @@ function GroupIcons() {
 
       <div className="flex flex-col justify-start items-center pt-[15px]">
         {communities.map((community, index) => (
-          <button
+            <button
             key={community.communityId}
             className={`group flex items-center justify-center relative w-[46px] h-[46px] mb-[10px] rounded-full border-2  ${selectedCommunityId === community.communityId ? "border-darkPurple" : "hover:border-darkPurple"}`}
             onClick={() => onItemClick(community.communityName, community.communityId)}
-          >
+            >
             <Image className="w-10 h-10 rounded-full" src={community.communityImg || "/icons/messageIcon.svg"} alt="group icon" width={42} height={42} quality={100} />
-
-            {/* <div className="absolute top-6 left-6 px-2 py-1 bg-red-600 rounded-full text-white text-xs font-medium hidden group-hover:flex">
-              {index + 1}
-            </div> */}
-          </button>
+            {community.totalNotifications >= 1 && selectedCommunityId !== community.communityId && (
+            <div className="absolute top-6 left-6 px-2 py-1 bg-red-600 rounded-full text-white text-xs font-medium ">
+              {community.totalNotifications}
+            </div>
+            )}
+            </button>
         ))}
       </div>
     </div>

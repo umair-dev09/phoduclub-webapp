@@ -4,21 +4,17 @@ import React, { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
 import GroupName from '@/components/DashboardComponents/CommunityComponents/groupName';
 import ChatHead from '@/components/DashboardComponents/CommunityComponents/chatHead';
-import Bottomtext from '@/components/DashboardComponents/CommunityComponents/BottomText';
 import LoadingData from '@/components/Loading';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { onAuthStateChanged, User } from 'firebase/auth';
 import { auth, db } from '@/firebase';
-import { doc, getDoc, getDocs, collection, query, orderBy, onSnapshot, updateDoc, arrayUnion } from 'firebase/firestore';
-import DetailsHead from '@/components/DashboardComponents/CommunityComponents/detailsHead';
-import DetailsContent from '@/components/DashboardComponents/CommunityComponents/detailsContent';
+import { doc, getDoc, getDocs, collection, query, orderBy, onSnapshot, updateDoc, arrayUnion, arrayRemove } from 'firebase/firestore';
 import OtherChat from '@/components/DashboardComponents/CommunityComponents/otherchat';
 import BottomText from '@/components/DashboardComponents/CommunityComponents/BottomText';
 import OwnChat from '@/components/DashboardComponents/CommunityComponents/ownChat';
 import { PopoverContent, PopoverTrigger, Popover } from '@nextui-org/popover';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import Delete from '@/components/DashboardComponents/CommunityComponents/Delete';
 import MembersDetailsArea from '@/components/DashboardComponents/CommunityComponents/MembersDetailsArea';
 
 type Channel = {
@@ -218,7 +214,9 @@ export default function CommunityName() {
                     },
                   ].sort((a, b) => a.headingName.localeCompare(b.headingName));
                 });
-
+                
+               
+                
                 // Update notification status after processing channels
                 setNotificationStatus((prev) => ({
                   ...prev,
@@ -237,6 +235,7 @@ export default function CommunityName() {
       Object.values(channelListeners).forEach((unsubscribe) => unsubscribe());
     };
   }, [user, communityId]);
+
 
 
   // Second useEffect to handle ONLY selected channel updates
@@ -686,9 +685,9 @@ export default function CommunityName() {
                             <p className="text-[13px] font-semibold text-[#4B5563]">{channel.channelName}</p>
                           </div>
                           {/* Conditionally render notification */}
-                          {hasNotification && (
+                            {hasNotification && selectedChannel?.channelId !== channel.channelId && (
                             <div className="w-2 h-2 rounded-full bg-[#DE3024]"></div> // Notification Indicator
-                          )}
+                            )}
                         </div>
                       </button>
                     );

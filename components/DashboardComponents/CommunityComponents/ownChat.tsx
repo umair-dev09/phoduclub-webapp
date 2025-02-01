@@ -412,10 +412,15 @@ function OwnChat({ message, isDeleted, mentions, adminThatDeletedId, isDeletedBy
                     <span className='font-normal text-[#0C111D] text-sm'>Bookmark</span>
                   </button>
                   {/* Delete Message Button */}
-                  <button onClick={() => { setDeleteDialog(true); setIsOpen(false); }} className='flex flex-row items-center gap-2 w-30 px-4 pt-[10px] pb-3 transition-colors hover:bg-[#FEE4E2] rounded-br-md rounded-bl-md'>
-                    <Image src='/icons/delete.svg' alt='search icon' width={17} height={17} />
-                    <span className='font-normal text-[#DE3024] text-sm'>Delete Message</span>
-                  </button>
+                    {timestamp && (new Date().getTime() - timestamp.toMillis() < 60000) && (
+                    <button 
+                      onClick={() => { setDeleteDialog(true); setIsOpen(false); }} 
+                      className='flex flex-row items-center gap-2 w-30 px-4 pt-[10px] pb-3 transition-colors hover:bg-[#FEE4E2] rounded-br-md rounded-bl-md'
+                    >
+                      <Image src='/icons/delete.svg' alt='search icon' width={17} height={17} />
+                      <span className='font-normal text-[#DE3024] text-sm'>Delete Message</span>
+                    </button>
+                    )}
                 </div>
               </PopoverContent>
             </Popover>

@@ -11,9 +11,35 @@ import {
 
 interface InstructionsDialogProps {
     onClose: () => void;
+    description: string;
+    marksPerQuestion: string;
+    negativeMarksPerQuestion: string;
+    testDuration: number;
 }
 
-function InstructionsDialog({ onClose }: InstructionsDialogProps) {
+function formatTimeForReview(seconds: number): string {
+    const totalSeconds = seconds;
+    const hours = Math.floor(totalSeconds / 3600); // Calculate hours
+    const minutes = Math.floor((totalSeconds % 3600) / 60); // Calculate remaining minutes
+    let formattedTime = '';
+
+    if (hours > 0) {
+        formattedTime += `${hours} Hours`; // Add hours if present
+    }
+    if (minutes > 0 || hours === 0) {
+        formattedTime += (formattedTime ? ' ' : '') + `${minutes} Minutes`; // Add minutes
+    }
+
+    return formattedTime;
+}
+
+interface SubSectionTimer {
+    timeSpent: number;
+    lastStartTime: number;
+}
+
+
+function InstructionsDialog({ onClose, description, marksPerQuestion, negativeMarksPerQuestion, testDuration }: InstructionsDialogProps) {
     return (
         <Modal
             size="xl"
@@ -47,22 +73,20 @@ function InstructionsDialog({ onClose }: InstructionsDialogProps) {
                             <div className="flex flex-col gap-1">
                                 <p className="text-base font-medium text-[#1D2939]">Description</p>
                                 <p className="text-sm font-normal text-[#667085]">
-                                    This test evaluates your problem-solving skills,
-                                    accuracy, and time management. Work efficiently and
-                                    stay focused to achieve the best results.
+                                   {description}
                                 </p>
                             </div>
                             <div className="flex flex-col gap-1">
                                 <p className="text-base font-medium text-[#1D2939]">Test Duration</p>
                                 <p className="text-sm font-normal text-[#667085]">
-                                    15 minutes
+                                    {formatTimeForReview(testDuration)}
                                 </p>
                             </div>
                             <div className="flex flex-col gap-1">
                                 <p className="text-base font-medium text-[#1D2939]">Scoring</p>
                                 <div className="text-sm font-normal text-[#667085]">
-                                    <p><span className="font-semibold text-[#344054]">Marks per Question:</span> 4</p>
-                                    <p><span className="font-semibold text-[#344054]">Negative Marks per Question:</span> 1</p>
+                                    <p><span className="font-semibold text-[#344054]">Marks per Question:</span> {marksPerQuestion}</p>
+                                    <p><span className="font-semibold text-[#344054]">Negative Marks per Question:</span> {negativeMarksPerQuestion}</p>
                                 </div>
                             </div>
                             <div className="flex flex-col gap-1">
