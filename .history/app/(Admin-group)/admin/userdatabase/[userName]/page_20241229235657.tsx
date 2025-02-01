@@ -20,9 +20,9 @@ function UserInfo() {
             case "PersonalDetails":
                 return <UserDetails userId={userId || ''} />;
             case "Products":
-                return <Products userId={userId || ''}/>;
+                return <Products />;
             case "Community":
-                return <Community userId={userId || ''}/>;
+                return <Community />;
             case "Support":
                 return <SupportAndFeedBack />;
             default:
@@ -35,7 +35,7 @@ function UserInfo() {
         <div className=" bg-[#FFFFFF] mx-8 mt-8 border border-solid border-[#E5E7EB] h-auto w-full rounded-[12px] flex flex-row ">
             <div className="w-[320px] border-r border-solid border-[#E5E7EB] px-8 pt-8 gap-2 flex flex-col">
                 <button
-                    className={`h-12 hover:bg-[#F5F0FF] outline-none text-left ${activeComponent === "PersonalDetails" ? "bg-[#F5F0FF] border border-solid border-[#DDCDFF]" : ""
+                    className={`h-12 hover:bg-[#F5F0FF] text-left ${activeComponent === "PersonalDetails" ? "bg-[#F5F0FF] border border-solid border-[#DDCDFF]" : ""
                         } rounded-md px-4 py-2`}
                     onClick={() => setActiveComponent("PersonalDetails")}
                 >
@@ -43,7 +43,7 @@ function UserInfo() {
                         } text-base`}>User Details</span>
                 </button>
                 <button
-                    className={`h-12 hover:bg-[#F5F0FF] outline-none  text-left ${activeComponent === "Products" ? "bg-[#F5F0FF] border border-solid border-[#DDCDFF]" : ""
+                    className={`h-12 hover:bg-[#F5F0FF] text-left ${activeComponent === "Products" ? "bg-[#F5F0FF] border border-solid border-[#DDCDFF]" : ""
                         } rounded-md px-4 py-2`}
                     onClick={() => setActiveComponent("Products")}
                 >
@@ -51,21 +51,21 @@ function UserInfo() {
                         } text-base`}>Products</span>
                 </button>
                 <button
-                    className={`h-12 hover:bg-[#F5F0FF] outline-none  text-left ${activeComponent === "Community" ? "bg-[#F5F0FF] border border-solid border-[#DDCDFF]" : ""
+                    className={`h-12 hover:bg-[#F5F0FF] text-left ${activeComponent === "Community" ? "bg-[#F5F0FF] border border-solid border-[#DDCDFF]" : ""
                         } rounded-md px-4 py-2`}
                     onClick={() => setActiveComponent("Community")}
                 >
                     <span className={`font-medium ${activeComponent === "Community" ? "text-[#7400E0]" : "text-[#1D2939]"
                         } text-base`}>Community</span>
                 </button>
-                {/* <button
-                    className={`h-auto hover:bg-[#F5F0FF]  outline-none  text-left ${activeComponent === "Support" ? "bg-[#F5F0FF] border border-solid border-[#DDCDFF]" : ""
+                <button
+                    className={`h-auto hover:bg-[#F5F0FF] text-left ${activeComponent === "Support" ? "bg-[#F5F0FF] border border-solid border-[#DDCDFF]" : ""
                         } rounded-md px-4 py-2`}
                     onClick={() => setActiveComponent("Support")}
                 >
                     <span className={`font-medium ${activeComponent === "Support" ? "text-[#7400E0]" : "text-[#1D2939]"
                         } text-base`}>Support & FeedBack</span>
-                </button> */}
+                </button>
             </div>
             <div className=" flex-grow h-auto w-full overflow-y-auto ">
                 {renderComponent()}

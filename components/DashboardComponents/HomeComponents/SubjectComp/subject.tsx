@@ -160,13 +160,12 @@ const SubjectLayout: React.FC = () => {
             {/* {subjectsData.map((subject,index) => {
                 const percentage =
                 const isComplete = percentage === 100;
-
                 return ( */}
 
             <div
                 // onClick={() => openBottomSheet('overall')}
                 className={`border border-gray-200 rounded-lg px-6 py-2 flex items-center justify-between 
-                           ${calculatePercentage(userInSubjectCounts.total, subjectCounts.total) === 100 ? 'bg-[#F9FAFB] ' : 'bg-white  '}`}
+                            ${calculatePercentage(userInSubjectCounts.total, subjectCounts.total) === 100 ? 'bg-[#F9FAFB] ' : 'bg-white  '}`}
             >
                 <div className="pt-2">
                     <div className="flex items-center flex-row gap-[6px]">
@@ -199,7 +198,7 @@ const SubjectLayout: React.FC = () => {
             <button
                 onClick={() => openBottomSheet('physics')}
                 className={`border border-gray-200 rounded-lg px-6 py-2 flex items-center justify-between transition-transform duration-300 ease-in-out hover:border-[#7400E03D] hover:shadow-lg hover:scale-105 
-                          ${calculatePercentage(userInSubjectCounts.physics, subjectCounts.physics) === 100 ? 'bg-[#F9FAFB] hover:border-gray-200' : 'bg-white hover:border-[#7400E03D] '} `}
+                            ${calculatePercentage(userInSubjectCounts.physics, subjectCounts.physics) === 100 ? 'bg-[#F9FAFB] hover:border-gray-200' : 'bg-white hover:border-[#7400E03D] '} `}
             >
                 <div className="pt-2">
                     <div className="flex items-center flex-row gap-[6px]">
@@ -231,7 +230,7 @@ const SubjectLayout: React.FC = () => {
             </button> <button
                 onClick={() => openBottomSheet('chemistry')}
                 className={`border border-gray-200 rounded-lg px-6 py-2 flex items-center justify-between transition-transform duration-300 ease-in-out hover:border-[#7400E03D] hover:shadow-lg hover:scale-105 
-                             ${calculatePercentage(userInSubjectCounts.chemistry, subjectCounts.chemistry) === 100 ? 'bg-[#F9FAFB] hover:border-gray-200' : 'bg-white hover:border-[#7400E03D] '} `}
+                            ${calculatePercentage(userInSubjectCounts.chemistry, subjectCounts.chemistry) === 100 ? 'bg-[#F9FAFB] hover:border-gray-200' : 'bg-white hover:border-[#7400E03D] '} `}
 
             >
                 <div className="pt-2">

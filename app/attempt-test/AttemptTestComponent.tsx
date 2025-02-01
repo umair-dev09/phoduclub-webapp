@@ -16,7 +16,6 @@ import ReviewTest from "@/components/DashboardComponents/LearnComponents/TestsCo
 import { useRouter } from "next/navigation";
 import { set, sub } from "date-fns";
 import InstructionsDialog from "./AttemptTestDialogues/InstructionsDialogue";
-import InformationDialog from "./AttemptTestDialogues/InformationDialogue";
 
 interface Section {
     id: string;
@@ -980,8 +979,8 @@ function ReviewTestView() {
 
     const handleSubmit = async () => {
         const loadingToastId = toast.loading('Submitting your test responses...');
-        updateCurrentQuestionTime();
         setIsSubmitButtonDisabled(true);
+        updateCurrentQuestionTime();
 
         if (!currentUserId) {
             toast.dismiss(loadingToastId);
@@ -1187,8 +1186,6 @@ function ReviewTestView() {
         }
     };
 
-
-
     const handleClearResponse = () => {
         setSelectedOption(null);
         updateQuestionState(currentQuestionIndex, {
@@ -1207,7 +1204,6 @@ function ReviewTestView() {
     const currentQuestionState = questionStates[currentQuestionIndex];
 
     const [instructionsDialogue, setInstructionsDialogue] = useState(false);
-    const [informationDialogue, setInformationDialogue] = useState(false);
 
     return (
         <div className="Main Layout flex flex-col w-full h-screen overflow-y-hidden">
@@ -1246,9 +1242,6 @@ function ReviewTestView() {
                                             }`}>
                                             {subSection.sectionName}
                                         </span>
-                                        <button onClick={() => { setInformationDialogue(true) }}>
-                                            <Image src="/icons/instructions.svg" alt="Instructions Icon" width={12} height={12} />
-                                        </button>
                                     </button>
                                 ))}
                             </div>
@@ -1481,7 +1474,6 @@ function ReviewTestView() {
             </Modal>
             <ReviewTest setShowReviewSheet={setShowReviewSheet} showReviewSheet={showReviewSheet} questionsList={questions} answeredQuestions={questionStates} timeTaken={timeTaken} />
             {instructionsDialogue && <InstructionsDialog onClose={() => { setInstructionsDialogue(false) }} description={currentSection?.description || ''} marksPerQuestion={currentSection?.marksPerQ || ""} negativeMarksPerQuestion={currentSection?.nMarksPerQ || ""} testDuration={currentSection?.testTime || 0}/>}
-            {informationDialogue && <InformationDialog onClose={() => { setInformationDialogue(false) }} />}
             <ToastContainer />
         </div>
     );

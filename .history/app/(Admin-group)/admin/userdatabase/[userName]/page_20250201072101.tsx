@@ -20,9 +20,9 @@ function UserInfo() {
             case "PersonalDetails":
                 return <UserDetails userId={userId || ''} />;
             case "Products":
-                return <Products userId={userId || ''}/>;
+                return <Products />;
             case "Community":
-                return <Community userId={userId || ''}/>;
+                return <Community />;
             case "Support":
                 return <SupportAndFeedBack />;
             default:
@@ -58,14 +58,14 @@ function UserInfo() {
                     <span className={`font-medium ${activeComponent === "Community" ? "text-[#7400E0]" : "text-[#1D2939]"
                         } text-base`}>Community</span>
                 </button>
-                {/* <button
+                <button
                     className={`h-auto hover:bg-[#F5F0FF]  outline-none  text-left ${activeComponent === "Support" ? "bg-[#F5F0FF] border border-solid border-[#DDCDFF]" : ""
                         } rounded-md px-4 py-2`}
                     onClick={() => setActiveComponent("Support")}
                 >
                     <span className={`font-medium ${activeComponent === "Support" ? "text-[#7400E0]" : "text-[#1D2939]"
                         } text-base`}>Support & FeedBack</span>
-                </button> */}
+                </button>
             </div>
             <div className=" flex-grow h-auto w-full overflow-y-auto ">
                 {renderComponent()}

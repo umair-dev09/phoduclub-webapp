@@ -20,9 +20,9 @@ function UserInfo() {
             case "PersonalDetails":
                 return <UserDetails userId={userId || ''} />;
             case "Products":
-                return <Products userId={userId || ''}/>;
+                return <Products />;
             case "Community":
-                return <Community userId={userId || ''}/>;
+                return <Community />;
             case "Support":
                 return <SupportAndFeedBack />;
             default:

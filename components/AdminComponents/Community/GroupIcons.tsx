@@ -120,9 +120,9 @@ function GroupIcons() {
           >
             <Image className="w-10 h-10 rounded-full object-cover" src={community.communityImg || "/icons/messageIcon.svg"} alt="group icon" width={42} height={42} quality={100} />
 
-            <div className="absolute top-6 left-6 px-2 py-1 bg-red-600 rounded-full text-white text-xs font-medium hidden group-hover:flex">
+            {/* <div className="absolute top-6 left-6 px-2 py-1 bg-red-600 rounded-full text-white text-xs font-medium hidden group-hover:flex">
               {index + 1}
-            </div>
+            </div> */}
           </button>
         ))}
         <button className='flex items-center justify-center mt-1'

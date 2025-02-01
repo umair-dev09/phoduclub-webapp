@@ -86,7 +86,7 @@ export default function CommunityName() {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
-  const [isCollapsed, setIsCollapsed] = useState(false);
+  const [isCollapsed, setIsCollapsed] = useState(true);
   const [searchOpen, setSearchOpen] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
   const [chats, setChats] = useState<Chat[]>([]); // State to hold chat messages
@@ -948,7 +948,6 @@ export default function CommunityName() {
             <h3 className="text-lg font-semibold text-gray-600">Select a channel</h3>
           </div>
         )}
-
       </div>
 
       {/* Right Sidebar */}

@@ -16,11 +16,20 @@ import OwnChat from '@/components/DashboardComponents/CommunityComponents/ownCha
 import { PopoverContent, PopoverTrigger, Popover } from '@nextui-org/popover';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import Skeleton, { SkeletonTheme } from 'react-loading-skeleton'
 import 'react-loading-skeleton/dist/skeleton.css'
 import MembersDetailsArea from '@/components/DashboardComponents/CommunityComponents/MembersDetailsArea';
+import Delete from "@/components/AdminComponents/Community/AllDialogs/DeleteChannel";
+import ChannelRequests from "@/components/AdminComponents/Community/AllDialogs/ChannelRequests";
+import Channelinfo from "@/components/AdminComponents/Community/AllDialogs/Channelinfo";
+import Groupinfo from "@/components/AdminComponents/Community/AllDialogs/Groupinfo";
+import DeleteGroup from "@/components/AdminComponents/Community/AllDialogs/DeleteGroup";
 import DeleteCategory from "@/components/AdminComponents/Community/AllDialogs/DeleteCategory";
+import EditDetails from "@/components/AdminComponents/Community/AllDialogs/EditDetails";
 import CreateCategory from "@/components/AdminComponents/Community/AllDialogs/CreateCategory";
 import CreateChannel from "@/components/AdminComponents/Community/AllDialogs/Createchannel";
+import OwnChats from "@/components/AdminComponents/Community/Chats/OwnChats";
+import OtherChats from "@/components/AdminComponents/Community/Chats/OtherChats";
 import BottomText from '@/components/AdminComponents/Community/BottomText';
 import AddMembersChannel from '@/components/AdminComponents/Community/AllDialogs/AddMembersChannel';
 
@@ -80,7 +89,7 @@ function Chatinfo() {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
-  const [isCollapsed, setIsCollapsed] = useState(true);
+  const [isCollapsed, setIsCollapsed] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
   const [chats, setChats] = useState<Chat[]>([]); // State to hold chat messages

@@ -409,7 +409,11 @@ function Discussion({ courseId, sectionId, contentId }: DiscussionProps) {
                             ref={quillRef}
                             value={value}
                             onChange={handleChange}
-                            onKeyDown={handleKeyDown}
+                            onKeyDown={
+                                handleKeyDown
+                            }
+
+
                             modules={modules}
                             placeholder="Type your response here..."
                             className="text-[#1D2939] focus:outline-none rounded-b-[12px] custom-quill  placeholder:not-italic min-h-[66px] max-h-[350px] overflow-y-auto border-none font-normal"

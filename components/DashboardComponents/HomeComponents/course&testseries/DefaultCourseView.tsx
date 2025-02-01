@@ -125,7 +125,10 @@ function CoursesList() {
     return (
         <div className="flex flex-1 flex-row mx-0 gap-6 flex-wrap pr-2">
             {courses.slice(0, 2).map((course, index) => (
-                <div key={index} className="flex flex-col flex-1 rounded-lg relative overflow-hidden transition-transform duration-300 h-auto max-w-[calc(50%-12px)]">
+                <div
+                    key={index}
+                    className="w-[239px] rounded-lg relative overflow-hidden transition-transform duration-300"
+                >
                     {/* Container for the suggestion badge and course image */}
                     <div>
                         {/* Suggestion badge with icon and text */}

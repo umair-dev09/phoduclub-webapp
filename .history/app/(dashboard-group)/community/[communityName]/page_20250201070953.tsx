@@ -1,4 +1,5 @@
-'use client';
+"use client";
+
 import React, { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
 import GroupName from '@/components/DashboardComponents/CommunityComponents/groupName';
@@ -8,21 +9,17 @@ import LoadingData from '@/components/Loading';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { onAuthStateChanged, User } from 'firebase/auth';
 import { auth, db } from '@/firebase';
-import { doc, getDoc, getDocs, collection, query, orderBy, onSnapshot, updateDoc } from 'firebase/firestore';
+import { doc, getDoc, getDocs, collection, query, orderBy, onSnapshot, updateDoc, arrayUnion } from 'firebase/firestore';
 import DetailsHead from '@/components/DashboardComponents/CommunityComponents/detailsHead';
 import DetailsContent from '@/components/DashboardComponents/CommunityComponents/detailsContent';
 import OtherChat from '@/components/DashboardComponents/CommunityComponents/otherchat';
+import BottomText from '@/components/DashboardComponents/CommunityComponents/BottomText';
 import OwnChat from '@/components/DashboardComponents/CommunityComponents/ownChat';
 import { PopoverContent, PopoverTrigger, Popover } from '@nextui-org/popover';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import 'react-loading-skeleton/dist/skeleton.css'
+import Delete from '@/components/DashboardComponents/CommunityComponents/Delete';
 import MembersDetailsArea from '@/components/DashboardComponents/CommunityComponents/MembersDetailsArea';
-import DeleteCategory from "@/components/AdminComponents/Community/AllDialogs/DeleteCategory";
-import CreateCategory from "@/components/AdminComponents/Community/AllDialogs/CreateCategory";
-import CreateChannel from "@/components/AdminComponents/Community/AllDialogs/Createchannel";
-import BottomText from '@/components/AdminComponents/Community/BottomText';
-import AddMembersChannel from '@/components/AdminComponents/Community/AllDialogs/AddMembersChannel';
 
 type Channel = {
   channelId: string;
@@ -43,6 +40,7 @@ type ChannelHeading = {
 type GroupData = {
   communityName: string | null;
   members: { id: string, isAdmin: boolean }[] | null;
+  groupExitedMembers: string[],
 };
 
 type Chat = {
@@ -68,13 +66,25 @@ type Chat = {
   mentions: { userId: string; id: string, isAdmin: boolean, }[];
 };
 
+interface chatHeadProps {
+  isAdmin: boolean;
+  channelId: string | null;
+  channelName: string | null;
+  channelEmoji: string | null;
+  communityId: string | null;
+  categoryId: string;
+  channelDescription: string;
+  channelRequests: { id: string; requestDate: string; }[];
+  setSelectedChannel: React.Dispatch<React.SetStateAction<any>>;
+  members: { id: string; isAdmin: boolean; }[] | null;
+  chats: Chat[]; // Make sure this matches your Chat type
+}
 
-function Chatinfo() {
+export default function CommunityName() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const communityId = searchParams.get('communityId');
   // const { communityName } = params;
-  const isAutoScrolling = useRef(false);
   const [groupData, setGroupData] = useState<GroupData | null>(null);
   const [channelHeadings, setChannelHeadings] = useState<ChannelHeading[]>([]);
   const [user, setUser] = useState<User | null>(null);
@@ -95,6 +105,7 @@ function Chatinfo() {
   const [currentResultIndex, setCurrentResultIndex] = useState(-1); // Tracks which result is currently active
   const [showScrollButton, setShowScrollButton] = useState(false); // New state to control button visibility
   const containerRef = useRef<HTMLDivElement | null>(null); // Ref for the scrollable container
+  const isAutoScrolling = useRef(false);
   const [notificationStatus, setNotificationStatus] = useState<{ [key: string]: boolean }>({});
   const currentUserId = auth.currentUser?.uid;
   // State for selected channel info
@@ -103,29 +114,17 @@ function Chatinfo() {
     channelName: string;
     channelEmoji: string;
     channelDescription: string;
-    headingId?: string; // Adding headingId to the selected channel state
-    members: { id: string, isAdmin: boolean }[] | null;
-    channelRequests: { id: string, requestDate: string }[] | null;
+    headingId?: string;
+    members: {
+      id: string;
+      isAdmin: boolean;
+    }[] | null;
+    channelRequests: {
+      id: string;
+      requestDate: string;
+    }[] | null;
     declinedRequests: string[];
   } | null>(null);
-
-  const [text, setText] = useState("");
-  const [height, setHeight] = useState("32px");
-  const [isDetailsVisible, setIsDetailsVisible] = useState(true);
-  // STATES FOR THE DIALOGS
-  const [createChannel, setCreateChannel] = useState(false);
-  const [deleteCategoryDialog, setDeleteCategoryDialog] = useState(false);
-  const [isEditingCategory, setIsEditingCategory] = useState(false);
-  const [createCategoryDialog, setCreateCategoryDialog] = useState(false);
-  const [categoryName, setCategoryName] = useState('');
-  const [categoryId, setCategoryId] = useState('');
-  const [channelName, setChannelName] = useState('');
-  const [channelDescription, setChannelDescription] = useState('');
-  const [channelId, setChannelId] = useState('');
-  const [isEditingChannel, setIsEditingChannel] = useState(false);
-  const [channelEmoji, setChannelEmoji] = useState("");
-  const [addMembersChannelDialog, setAddMembersChannelDialog] = useState(false);
-  const [activePopover, setActivePopover] = useState<string | null>(null);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
@@ -142,6 +141,7 @@ function Chatinfo() {
 
     return () => unsubscribe();
   }, [router]);
+
 
   useEffect(() => {
     if (!user || !communityId || !auth.currentUser) return;
@@ -314,6 +314,40 @@ function Chatinfo() {
     return () => unsubscribe();
   }, [user, communityId]);
 
+  const handleChannelRequest = async () => {
+    if (!selectedChannel || !user?.uid) return;
+
+    try {
+      const channelRef = doc(db, `communities/${communityId}/channelsHeading/${selectedChannel.headingId}/channels/${selectedChannel.channelId}`);
+
+      // Create request object with ID and timestamp
+      const requestData = {
+        id: user.uid,
+        requestDate: new Date(),
+      };
+
+      // Get current channel data
+      const channelDoc = await getDoc(channelRef);
+      const channelData = channelDoc.data();
+
+      // Filter out the user's ID from declinedRequests
+      const updatedDeclinedRequests = (channelData?.declinedRequests || []).filter(
+        (id: string) => id !== user.uid
+      );
+
+      // Update both channelRequests and declinedRequests
+      await updateDoc(channelRef, {
+        channelRequests: arrayUnion(requestData),
+        declinedRequests: updatedDeclinedRequests,
+      });
+
+      toast.success("Request sent successfully!");
+    } catch (error) {
+      console.error("Error sending request:", error);
+      toast.error("Failed to send request");
+    }
+  };
+
   // Scroll to the last message immediately after chats are updated
   const initialLoadRef = useRef(true); // Tracks if the user just selected a channel
 
@@ -331,16 +365,7 @@ function Chatinfo() {
     };
   }, []);
 
-
-
-  // Reset the flag whenever a new channel is selected
-  useEffect(() => {
-    if (selectedChannel) {
-      initialLoadRef.current = true; // Reset the initial load flag
-    }
-  }, [selectedChannel]);
-
-  // Update the effect that handles scrolling when new messages are added
+  // Effect to handle scrolling when new messages are added
   useEffect(() => {
     if (bottomRef.current && chats.length > 0) {
       const lastChat = chats[chats.length - 1];
@@ -359,9 +384,59 @@ function Chatinfo() {
         // User's own message or already near bottom - scroll smoothly
         scrollToBottom('smooth');
       }
+      //   const fetchNotifications = async () => {
+      //   if (!currentUserId) return;
+
+      //   try {
+      //     // Reference to the channel document in Firestore
+      //     const channelRef = doc(
+      //       db,
+      //       `communities/${communityId}/channelsHeading/${selectedChannel?.headingId}/channels/${selectedChannel?.channelId}`
+      //     );
+
+      //     // Get current channel data
+      //     const channelSnap = await getDoc(channelRef);
+
+      //     if (channelSnap.exists()) {
+      //       const channelData = channelSnap.data();
+      //       const channelNotification = channelData.channelNotification || [];
+
+      //       // Remove the currentUserId from the channelNotification array
+      //       const updatedChannelNotification = channelNotification.filter(
+      //         (userId: string) => userId !== currentUserId
+      //       );
+
+      //       // Update the Firestore document with the new channelNotification array
+      //       await updateDoc(channelRef, {
+      //         channelNotification: updatedChannelNotification,
+      //       });
+
+      //       // Update the local notificationStatus state to reflect this change
+      //       setNotificationStatus((prevStatus) => {
+      //         const updatedStatus = { ...prevStatus };
+      //         const notificationKey = `${selectedChannel?.headingId}-${selectedChannel?.channelId}`;
+      //         delete updatedStatus[notificationKey]; // Remove the entry for the specific channel
+      //         return updatedStatus;
+      //       });
+
+      //       console.log('Notification removed successfully');
+      //     } else {
+      //       console.error('Channel not found');
+      //     }
+      //   } catch (error) {
+      //     console.error('Error removing notification:', error);
+      //   }
+      // };
+      // fetchNotifications();
     }
   }, [chats, user?.uid]);
 
+  // Reset the flag whenever a new channel is selected
+  useEffect(() => {
+    if (selectedChannel) {
+      initialLoadRef.current = true; // Reset the initial load flag
+    }
+  }, [selectedChannel]);
 
   useEffect(() => {
     if (searchQuery.trim() === "") {
@@ -398,6 +473,7 @@ function Chatinfo() {
       }
     }
   }, [currentResultIndex, chats, searchResults]);
+
   const handleSearchUp = () => {
     if (searchResults.length === 0) return;
 
@@ -405,9 +481,8 @@ function Chatinfo() {
     if (searchResults.length === 1) {
       setCurrentResultIndex(0);
       const chatId = chats[searchResults[0]]?.chatId;
-      const chatElement = chatId && chatRefs.current ? chatRefs.current[chatId] : null;
-      if (chatElement) {
-        chatElement.scrollIntoView({
+      if (chatId && chatRefs.current[chatId]) {
+        chatRefs.current[chatId]?.scrollIntoView({
           behavior: "auto",
           block: "center"
         });
@@ -428,9 +503,8 @@ function Chatinfo() {
     if (searchResults.length === 1) {
       setCurrentResultIndex(0);
       const chatId = chats[searchResults[0]]?.chatId;
-      const element = chatId && chatRefs.current ? chatRefs.current[chatId] : null;
-      if (element) {
-        element.scrollIntoView({
+      if (chatId && chatRefs.current[chatId]) {
+        chatRefs.current[chatId]?.scrollIntoView({
           behavior: "auto",
           block: "center"
         });
@@ -443,7 +517,7 @@ function Chatinfo() {
       prevIndex < searchResults.length - 1 ? prevIndex + 1 : 0
     );
   };
-  // Modify the handleScroll function to prevent interference during auto-scroll
+
   const handleScroll = () => {
     if (containerRef.current && !isAutoScrolling.current) {
       const { scrollTop, scrollHeight, clientHeight } = containerRef.current;
@@ -452,7 +526,6 @@ function Chatinfo() {
     }
   };
 
-  // Modify the scrollToBottom function
   const scrollToBottom = (behavior: ScrollBehavior = 'auto') => {
     if (bottomRef.current && containerRef.current) {
       isAutoScrolling.current = true;
@@ -472,38 +545,6 @@ function Chatinfo() {
       setShowScrollButton(false);
     }
   };
-
-
-  const handlePopoverOpen = (headingId: string) => {
-    setActivePopover(headingId);
-
-  };
-
-  // Update the scrollToReply function with correct types
-  const scrollToReply = (replyingToChatId: string) => {
-    const element = chatRefs.current[replyingToChatId];
-    if (element) {
-      isAutoScrolling.current = true;
-
-      const scrollOptions: ScrollIntoViewOptions = {
-        behavior: 'auto',
-        block: 'center' as ScrollLogicalPosition
-      };
-
-      element.scrollIntoView(scrollOptions);
-
-      // Highlight the message
-      setHighlightedChatId(replyingToChatId);
-
-      // Reset auto-scrolling flag and remove highlight
-      setTimeout(() => {
-        isAutoScrolling.current = false;
-        setHighlightedChatId(null);
-      }, 700);
-    }
-  };
-
-
 
   useEffect(() => {
     setIsMounted(true);
@@ -542,6 +583,29 @@ function Chatinfo() {
     setShowReplyLayout(true); // Show the reply layout
   };
 
+
+  const scrollToReply = (replyingToChatId: string) => {
+    const element = chatRefs.current[replyingToChatId];
+    if (element) {
+      isAutoScrolling.current = true;
+
+      const scrollOptions: ScrollIntoViewOptions = {
+        behavior: 'auto',
+        block: 'center' as ScrollLogicalPosition
+      };
+
+      element.scrollIntoView(scrollOptions);
+
+      // Highlight the message
+      setHighlightedChatId(replyingToChatId);
+
+      // Reset auto-scrolling flag and remove highlight
+      setTimeout(() => {
+        isAutoScrolling.current = false;
+        setHighlightedChatId(null);
+      }, 700);
+    }
+  };
 
   const handleRemoveNotification = async (headingId: string, channelId: string) => {
     if (!currentUserId) return;
@@ -588,87 +652,18 @@ function Chatinfo() {
   };
 
 
-
   return (
     <div className="flex h-full flex-row">
       {/* Middle Section */}
       <div className="flex flex-col w-[230px] bg-white border-r border-b border-lightGrey">
-        <GroupName communityId={communityId} isAdmin={true} />
-        <div className="flex flex-col justify-start items-center h-full mt-[15px] gap-6">
-          <div className="ChannelHeadingDiv w-full h-auto px-4 overflow-y-auto">
+        <GroupName communityId={communityId} isAdmin={false} />
+        <div className="flex flex-col justify-start items-center mx-4 mt-[15px] gap-6">
+          <div className="ChannelHeadingDiv w-full h-auto">
             {channelHeadings.map((heading) => (
               <div key={heading.headingId} className="ChannelHeadingDiv w-full h-auto mb-[13px]">
-                <div className="flex flex-row justify-between items-center mb-[12px] px-2">
+                <div className="mb-[12px] px-2">
                   <h3 className="ChannelHeading text-base text-[#182230]">{heading.headingName}</h3>
-                  <Popover placement="bottom-start"
-                    isOpen={activePopover === heading.headingId}  // Use heading.headingId instead of heading
-                    onOpenChange={(open) => open ? handlePopoverOpen(heading.headingId) : setActivePopover(null)}
-                  >
-                    <PopoverTrigger>
-                      <button className='focus:outline-none'>
-                        <Image src="/icons/plus-dark.svg" alt="plus-dark" width={18} height={18} />
-                      </button>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-auto py-1 px-0 bg-white border border-lightGrey rounded-md flex flex-col">
-                      <button className='flex flex-row gap-2 items-center h-10 w-[173px] px-4 hover:bg-[#EAECF0]'
-                        onClick={() => {
-                          setCreateCategoryDialog(true); setCategoryName(''); setCategoryId(''); setIsEditingCategory(false);
-                          setActivePopover(null);
-                        }}>
-                        <Image
-                          src="/icons/Create-category.svg"
-                          width={18}
-                          height={18}
-                          alt="Create-category"
-                        />
-                        <span className='font-normal text-[#0C111D] text-sm'>Create category</span>
-                      </button>
-                      <button className='flex flex-row gap-2 items-center h-10 w-[173px] px-4 hover:bg-[#EAECF0]'
-                        onClick={() => {
-                          setIsEditingCategory(true); setCreateCategoryDialog(true); setCategoryName(heading.headingName); setCategoryId(heading.headingId);
-                          setActivePopover(null);
-                        }}>
-                        <Image
-                          src="/icons/edit-02.svg"
-                          width={18}
-                          height={18}
-                          alt="pencil-edit"
-                        />
-                        <span className='font-normal text-[#0C111D] text-sm'>Edit details</span>
-                      </button>
-                      <button className='flex flex-row gap-2 items-center h-10 w-[173px] px-4 hover:bg-[#FEE4E2]'
-                        onClick={() => {
-                          setDeleteCategoryDialog(true); setCategoryName(heading.headingName); setCategoryId(heading.headingId);
-                          setActivePopover(null);
-                        }}>
-                        <Image
-                          src="/icons/delete.svg"
-                          width={18}
-                          height={18}
-                          alt="delete"
-                        />
-                        <span className='font-normal text-[#DE3024] text-sm'>Delete category</span>
-                      </button>
-                    </PopoverContent>
-                  </Popover>
                 </div>
-
-                {/* <div className="flex flex-col gap-2">
-                  {heading.channels.map((channel) => (
-                    <button
-                      key={channel.channelId}
-                      className={`ChannelName flex flex-row items-center justify-between pr-3 group rounded-[7px] transition-colors hover:bg-[#F8F0FF] ${selectedChannel?.channelId === channel.channelId ? 'bg-[#F8F0FF]' : 'bg-[#FFFFFF]'} `}
-                      onClick={() => {
-                        setSelectedChannel({ ...channel, headingId: heading.headingId });
-                      }}                    >
-                      <div className="flex flex-row items-center gap-2 p-[6px]">
-                        <p>{channel.channelEmoji}</p>
-                        <p className="text-[13px] font-semibold text-[#4B5563]">{channel.channelName}</p>
-                      </div>
-                    </button>
-                  ))}
-                
-                </div> */}
 
                 <div className="flex flex-col gap-2">
                   {heading.channels.map((channel) => {
@@ -698,21 +693,9 @@ function Chatinfo() {
                       </button>
                     );
                   })}
-                  <button className='flex flex-row items-center justify-center w-full px-2 py-[0.375rem] gap-2 border border-lightGrey rounded-full'
-                    onClick={() => { setCreateChannel(true); setCategoryId(heading.headingId); setIsEditingChannel(false); setChannelName(''); setChannelDescription(''); setChannelEmoji(''); }}>
-                    <Image src='/icons/plus-dark.svg' alt='create channel' width={18} height={18} />
-                    <p className='text-[0.813rem] text-[#182230] font-semibold leading-6'>Create Channel</p>
-                  </button>
                 </div>
               </div>
             ))}
-            {channelHeadings.length < 1 && (
-              <button className='flex flex-row items-center justify-center w-full px-2 py-[0.375rem] gap-2 border border-lightGrey rounded-full'
-                onClick={() => { setCreateCategoryDialog(true); setCategoryName(''); setCategoryId(''); setIsEditingCategory(false); }}>
-                <Image src='/icons/plus-dark.svg' alt='create channel' width={18} height={18} />
-                <p className='text-[0.813rem] text-[#182230] font-semibold leading-6'>Create Category</p>
-              </button>
-            )}
 
           </div>
         </div>
@@ -737,12 +720,25 @@ function Chatinfo() {
 
             <div className="flex items-center justify-between h-[72px] bg-white border-b border-lightGrey">
               {/* Pass the selected channel info to ChatHead */}
-              <ChatHead chats={chats} isAdmin={true} channelDescription={selectedChannel.channelDescription || ''} communityId={communityId} categoryId={selectedChannel.headingId || ''} channelId={selectedChannel?.channelId ?? null} channelName={selectedChannel?.channelName ?? null} channelEmoji={selectedChannel?.channelEmoji ?? null} channelRequests={selectedChannel.channelRequests || []} setSelectedChannel={setSelectedChannel} members={selectedChannel.members} />
+              {/* <ChatHead isAdmin={false} channelId={selectedChannel?.channelId ?? null} channelName={selectedChannel?.channelName ?? null} channelEmoji={selectedChannel?.channelEmoji ?? null} communityId={communityId} categoryId={selectedChannel.headingId || ''} channelDescription={''} channelRequests={selectedChannel.channelRequests || []} setSelectedChannel={setSelectedChannel} members={selectedChannel.members} /> */}
+              <ChatHead
+                isAdmin={false}
+                channelId={selectedChannel?.channelId ?? null}
+                channelName={selectedChannel?.channelName ?? null}
+                channelEmoji={selectedChannel?.channelEmoji ?? null}
+                communityId={communityId}
+                categoryId={selectedChannel.headingId || ''}
+                channelDescription={''}
+                channelRequests={selectedChannel.channelRequests || []}
+                setSelectedChannel={setSelectedChannel}
+                members={selectedChannel.members}
+                chats={chats} // Add the chats prop here
+              />
               <div className="flex flex-row mr-4 gap-4">
                 <Popover placement="bottom" isOpen={searchOpen} onClose={() => { setSearchOpen(false); setSearchQuery('') }}>
                   <PopoverTrigger>
                     <button onClick={() => setSearchOpen(true)}>
-                      <Image className='w-[18px] h-[18px]' src="/icons/search.svg" alt="search icon" width={18} height={18} />
+                      <Image src="/icons/search.svg" alt="search icon" width={18} height={18} />
                     </button>
                   </PopoverTrigger>
                   <PopoverContent>
@@ -763,9 +759,6 @@ function Chatinfo() {
                     </div>
                   </PopoverContent>
                 </Popover>
-                {/* <button className="transition-colors hover:bg-neutral-100" onClick={() => setIsCollapsed(!isCollapsed)}>
-                  <Image src="/icons/collapseDetails.svg" alt="collapse details icon" width={24} height={24} />
-                </button> */}
                 <button
                   className="flex w-[30px] h-[30px] transition-colors hover:bg-neutral-100 rounded-full items-center"
                   onClick={() => setIsCollapsed(!isCollapsed)}
@@ -845,7 +838,7 @@ function Chatinfo() {
                           channelId={selectedChannel.channelId}
                           headingId={selectedChannel.headingId ?? ""}
                           isAdmin={chat.isAdmin}
-                          isCurrentUserAdmin={true}
+                          isCurrentUserAdmin={false}
                           message={chat.message}
                           isDeleted={chat.isDeleted}
                           isDeletedByAdmin={chat.isDeletedByAdmin}
@@ -878,7 +871,7 @@ function Chatinfo() {
                           channelId={selectedChannel.channelId}
                           headingId={selectedChannel.headingId ?? ""}
                           isAdmin={chat.isAdmin}
-                          isCurrentUserAdmin={true}
+                          isCurrentUserAdmin={false}
                           message={chat.message}
                           isDeleted={chat.isDeleted}
                           isDeletedByAdmin={chat.isDeletedByAdmin}
@@ -895,10 +888,9 @@ function Chatinfo() {
 
             <div className='relative'>
               {showScrollButton && (
-
                 <button
                   onClick={() => scrollToBottom()}
-                  className="flex items-center justify-center absolute bottom-[85px] right-4 bg-white border pt-[2px] text-white rounded-full shadow-md hover:bg-[#f7f7f7] transition-all w-[38px] h-[38px]"
+                  className="flex items-center justify-center absolute bottom-[85px]  right-4 bg-white border pt-[2px] text-white rounded-full shadow-md hover:bg-[#f7f7f7] transition-all w-[38px] h-[38px]"
                 >
                   <Image
                     src="/icons/Arrow-down-1.svg"
@@ -908,7 +900,48 @@ function Chatinfo() {
                   />
                 </button>
               )}
-              <BottomText channelName={selectedChannel.channelName} channelEmoji={selectedChannel.channelEmoji} showReplyLayout={showReplyLayout} setShowReplyLayout={setShowReplyLayout} replyData={replyData} channelId={selectedChannel?.channelId} communityId={communityId} headingId={selectedChannel.headingId ?? ''} channelMembers={selectedChannel.members || []} />
+              {(groupData?.groupExitedMembers ?? []).includes(user?.uid ?? '') ? (
+                <div className='flex flex-col z-10 items-center justify-center w-full h-auto py-4 bg-white'>
+                  <p className='text-sm text-center px-4'>
+                    You can’t send message to this cannel because you have left the group.
+                  </p>
+                </div>
+              ) : (
+                <>
+                  {selectedChannel.members?.some(member => member.id === user?.uid) ? (
+
+                    <BottomText
+                      showReplyLayout={showReplyLayout}
+                      setShowReplyLayout={setShowReplyLayout}
+                      replyData={replyData}
+                      channelId={selectedChannel?.channelId}
+                      communityId={communityId}
+                      headingId={selectedChannel.headingId ?? ''}
+                      channelMembers={selectedChannel.members || []}
+                    />
+                  ) : (
+                    <div className='flex flex-col items-center justify-center z-10 w-full h-auto py-4 bg-white'>
+                      {(selectedChannel.channelRequests ?? []).some(request => request.id === (user?.uid ?? '')) ? (
+                        <p className='text-sm text-center px-4'>
+                          Your request to join this channel has been sent successfully. You will be able to view messages and interact with others once the admin approves your request.
+                        </p>
+                      ) : (
+                        <>
+                          {(selectedChannel.declinedRequests ?? []).includes(user?.uid ?? '') ? (
+                            <p className='text-sm'>Your request was declined by the admin. Please try again.</p>
+                          ) : (
+                            <p className='text-sm'>You need to be a member of this channel to send messages.</p>
+                          )}
+                          <button onClick={handleChannelRequest}>
+                            <p className='text-purple underline text-sm'>Request to join</p>
+                          </button>
+                        </>
+                      )}
+                    </div>
+                  )}
+                </>
+              )}
+
             </div>
           </>
         ) : (
@@ -936,277 +969,13 @@ function Chatinfo() {
               </div>
             </div>
           </div>
-          <div className='flex flex-col flex-grow overflow-y-auto'><MembersDetailsArea members={selectedChannel.members || []} isCurrentUserAdmin={true} /></div>
-
+          <div className='flex flex-col flex-grow overflow-y-auto'><MembersDetailsArea members={selectedChannel.members || []} isCurrentUserAdmin={false} /></div>
         </div>
       ) : (
         <>
         </>
       )}
-      {createChannel && <CreateChannel open={createChannel} openAddMembers={() => setAddMembersChannelDialog(true)} onClose={() => setCreateChannel(false)} headingId={categoryId} channelEmoji={channelEmoji} setChannelEmoji={setChannelEmoji} channelId={channelId} isEditing={isEditingChannel} communityId={communityId || ''} channelName={channelName} setChannelName={setChannelName} channelDescription={channelDescription} setChannelDescription={setChannelDescription} setChannelId={setChannelId} />}
-      {createCategoryDialog && <CreateCategory open={createCategoryDialog} onClose={() => setCreateCategoryDialog(false)} communityId={communityId || ''} isEditing={isEditingCategory} categoryName={categoryName} setCategoryName={setCategoryName} categoryId={categoryId} />}
-      {deleteCategoryDialog && <DeleteCategory open={deleteCategoryDialog} onClose={() => setDeleteCategoryDialog(false)} communityId={communityId || ''} categoryName={categoryName} categoryId={categoryId} />}
-      {addMembersChannelDialog && <AddMembersChannel communityId={communityId || ''} headingId={categoryId} channelId={channelId} open={addMembersChannelDialog} onClose={() => setAddMembersChannelDialog(false)} groupMembers={groupData?.members || []} />}
       <ToastContainer />
     </div>
-
-    // <div className="grid grid-cols-[16.875rem_1fr_auto] w-full h-full">
-    //     {/* Sidebar */}
-    //     <div className="grid grid-rows-[4.5rem_1fr] w-full bg-white border-r border-lightGrey">
-    //         <div className="flex flex-row items-center p-6 justify-between group gap-2 border-b border-lightGrey">
-    //             <div className='flex flex-row gap-2 items-center'>
-    //                 <div className="rounded-full w-[44px] h-[44px] bg-[#C0EAFF] items-center flex justify-center border-2 border-solid border-[#FFFFFF]">
-    //                     <h1 className="text-[#124B68] text-base font-bold">J</h1>
-    //                 </div>
-    //                 <div className='flex flex-col '>
-    //                     <p className='font-semibold text-normal text-sm'>JEE - 2024</p>
-    //                     <div className='gap-1 flex flex-row'>
-    //                         <Image
-    //                             src="/icons/communityicon.svg"
-    //                             width={18}
-    //                             height={18}
-    //                             alt="communiy-icon" />
-    //                         <span className='text-sm text-[#4B5563] font-normal'>100</span>
-    //                     </div>
-    //                 </div>
-    //             </div>
-
-    //         </div>
-
-    //         <div className="flex flex-col p-4 gap-2">
-    //             <div className='flex flex-row justify-between items-center px-2'>
-    //                 <span className='text-base text-[#182230] font-semibold'>General</span>
-    //                 <Popover placement="bottom-start">
-    //                     <PopoverTrigger>
-    //                         <button className='focus:outline-none'>
-    //                             <Image src="/icons/plus-dark.svg" alt="plus-dark" width={18} height={18} />
-    //                         </button>
-    //                     </PopoverTrigger>
-    //                     <PopoverContent className="w-auto py-1 px-0 bg-white border border-lightGrey rounded-md flex flex-col">
-    //                         <button className='flex flex-row gap-2 items-center h-10 w-[173px] px-4 hover:bg-[#EAECF0]'
-    //                             onClick={() => setCreateCategoryDialog(true)}>
-    //                             <Image
-    //                                 src="/icons/Create-category.svg"
-    //                                 width={18}
-    //                                 height={18}
-    //                                 alt="Create-category"
-    //                             />
-    //                             <span className='font-normal text-[#0C111D] text-sm'>Create category</span>
-    //                         </button>
-    //                         <button className='flex flex-row gap-2 items-center h-10 w-[173px] px-4 hover:bg-[#EAECF0]'
-    //                             onClick={() => setEditDetailsDialog(true)}>
-    //                             <Image
-    //                                 src="/icons/edit-02.svg"
-    //                                 width={18}
-    //                                 height={18}
-    //                                 alt="pencil-edit"
-    //                             />
-    //                             <span className='font-normal text-[#0C111D] text-sm'>Edit details</span>
-    //                         </button>
-    //                         <button className='flex flex-row gap-2 items-center h-10 w-[173px] px-4 hover:bg-[#EAECF0]'
-    //                             onClick={() => setDeleteCategoryDialog(true)}>
-    //                             <Image
-    //                                 src="/icons/delete.svg"
-    //                                 width={18}
-    //                                 height={18}
-    //                                 alt="delete"
-    //                             />
-    //                             <span className='font-normal text-[#DE3024] text-sm'>Delete category</span>
-    //                         </button>
-    //                     </PopoverContent>
-    //                 </Popover>
-    //             </div>
-    //             {["Admin Only", "Marketing", "Sales", "Customer Support"].map((item, idx) => (
-    //                 <button
-    //                     key={idx}
-    //                     className="flex flex-row w-full px-2 py-[0.375rem] gap-2 rounded-[0.438rem] transition-colors duration-200 hover:bg-[#F8F0FF]"
-    //                 >
-    //                     <div>{["😎", "📢", "📊", "🎧"][idx]}</div>
-    //                     <p className="text-[0.813rem] text-[#4B5563] font-semibold leading-6">{item}</p>
-    //                 </button>
-    //             ))}
-    //             <button className='flex flex-row items-center justify-center w-full px-2 py-[0.375rem] gap-2 border border-lightGrey rounded-full'
-    //                 onClick={() => setCreateChannel(true)}>
-    //                 <Image src='/icons/plus-dark.svg' alt='create channel' width={18} height={18} />
-    //                 <p className='text-[0.813rem] text-[#182230] font-semibold leading-6'>Create Channel</p>
-    //             </button>
-    //         </div>
-    //     </div>
-
-    //     {/* Main Chat Area */}
-    //     <div className="grid grid-rows-[4.5rem_1fr_auto] w-full">
-    //         <div className="flex flex-row items-center justify-between px-6 bg-white border-b border-lightGrey">
-
-    //             <div className="flex flex-row gap-4">
-    //                 <button>
-    //                     <Image src="/icons/search.svg" alt="search" width={18} height={18} />
-    //                 </button>
-    //                 <button onClick={() => setIsDetailsVisible(!isDetailsVisible)}>
-    //                     <Image src="/icons/collapseDetails.svg" alt="collapse" width={24} height={24} />
-    //                 </button>
-    //             </div>
-    //         </div>
-    //         <div className="w-full pt-6 shadow-[0_8px_32px_0_rgba(0,0,0,0.02)]">
-    //             {/* <OwnChats /> */}
-    //             <OtherChats />
-    //         </div>
-    //         <div className="flex flex-row items-center min-h-[6.25rem] px-6 py-6 gap-2 bg-white">
-    //             <div className="border border-solid bg-[#FCFCFD] border-[#D0D5DD] h-auto w-full rounded-md flex flex-row items-center p-2 justify-between">
-    //                 <textarea
-    //                     placeholder="Type your message here..."
-    //                     className="w-full max-h-[120px] bg-[#FCFCFD] overflow-y-auto resize-none px-3 rounded-md outline-none font-normal text-sm leading-tight pt-[5px]"
-    //                     style={{ height: height }}
-    //                     value={text}
-    //                     onChange={handleInput}
-    //                 />
-    //                 <Popover placement="bottom">
-    //                     <PopoverTrigger>
-    //                         <button className="transition-colors hover:bg-neutral-100 hover:rounded-[100px] focus:outline-none">
-    //                             <Image src="/icons/files.svg" alt="attachment icon" width={21} height={21} />
-    //                         </button>
-    //                     </PopoverTrigger>
-    //                     <PopoverContent className="w-auto py-1 px-0 bg-white border border-lightGrey rounded-md">
-    //                         {["Image", "Video", "Documents"].map((item, idx) => (
-    //                             <button
-    //                                 key={idx}
-    //                                 className="flex flex-row items-center justify-start w-full px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7]"
-    //                             >
-    //                                 <Image
-    //                                     src={`/icons/${item.toLowerCase()}-icon.svg`}
-    //                                     alt={`${item} icon`}
-    //                                     width={20}
-    //                                     height={20}
-    //                                 />
-    //                                 <span className="font-normal text-[#0C111D] text-sm">{item}</span>
-    //                             </button>
-    //                         ))}
-    //                     </PopoverContent>
-    //                 </Popover>
-    //             </div>
-    //             <button disabled={!text.trim()}>
-    //                 <Image
-    //                     src={text.trim() ? "/icons/sendCommunity.svg" : "/icons/send.svg"}
-    //                     alt="send icon"
-    //                     width={24}
-    //                     height={24}
-    //                 />
-    //             </button>
-    //         </div>
-    //     </div>
-
-    //     {/* Collapsible Details Section */}
-    //     <div
-    //         className={`h-full transition-all duration-500 ease-in-out overflow-hidden ${isDetailsVisible ? "max-w-[16.875rem]" : "max-w-0"
-    //             }`}
-    //         style={{
-    //             width: isDetailsVisible ? "16.875rem" : "0",
-    //         }}
-    //     >
-    //         <div className="grid grid-rows-[4.5rem_1fr] w-full h-full bg-white border-l border-lightGrey">
-    //             <div className="flex flex-row items-center justify-between px-4 border-b border-lightGrey">
-    //                 <h4 className="text-base text-[#182230] font-semibold leading-[1.26rem]">Details</h4>
-    //                 <div className="flex flex-row items-center gap-1">
-    //                     <Image src="/icons/membersIcon.svg" alt="members" width={18} height={18} />
-    //                     <p className="flex items-center text-sm text-[#4B5563] font-normal leading-6">6</p>
-    //                 </div>
-    //             </div>
-    //             <div className="flex flex-col p-4 gap-4">
-    //                 <div className="flex flex-col px-2 gap-2 overflow-auto">
-    //                     <div className="flex flex-row justify-between whitespace-nowrap">
-    //                         <h4 className="text-base text-[#182230] font-semibold leading-6">Admin</h4>
-    //                         <p className="flex items-center justify-center w-6 h-6 text-xs text-[#4B5563] font-normal bg-[#F7F8FB] border border-lightGrey rounded-sm">
-    //                             1
-    //                         </p>
-    //                     </div>
-    //                     <div className="flex flex-col gap-4">
-    //                         {["Darlene Robertson"].map((name, idx) => (
-    //                             <div
-    //                                 key={idx}
-    //                                 className="flex flex-row items-center group py-1 gap-2 whitespace-nowrap"
-    //                             >
-    //                                 {/* Profile Picture Container */}
-    //                                 <div className="relative flex-shrink-0 w-9 h-9">
-    //                                     <Image
-    //                                         className="rounded-full"
-    //                                         src="/images/DP.png"
-    //                                         alt="dp"
-    //                                         width={36}
-    //                                         height={36}
-    //                                     />
-    //                                     {/* Status Indicator */}
-    //                                     <div className="absolute right-0 bottom-0 w-3 h-3 bg-[#98A2B3] border-2 border-white rounded-full transition-colors duration-150 group-hover:bg-[#17B26A]"></div>
-    //                                 </div>
-    //                                 <p className="text-[0.813rem] text-[#4B5563] font-medium leading-6 whitespace-nowrap">{name}</p>
-    //                             </div>
-    //                         ))}
-    //                     </div>
-    //                 </div>
-    //                 <div className="flex flex-col px-2 gap-2 overflow-auto">
-    //                     <div className="flex flex-row justify-between whitespace-nowrap">
-    //                         <h4 className="text-base text-[#182230] font-semibold leading-6">Chief Moderator</h4>
-    //                         <p className="flex items-center justify-center w-6 h-6 text-xs text-[#4B5563] font-normal bg-[#F7F8FB] border border-lightGrey rounded-sm">
-    //                             1
-    //                         </p>
-    //                     </div>
-    //                     <div className="flex flex-col gap-4">
-    //                         {["Darlene Robertson"].map((name, idx) => (
-    //                             <div
-    //                                 key={idx}
-    //                                 className="flex flex-row items-center group py-1 gap-2 whitespace-nowrap"
-    //                             >
-    //                                 {/* Profile Picture Container */}
-    //                                 <div className="relative flex-shrink-0 w-9 h-9">
-    //                                     <Image
-    //                                         className="rounded-full"
-    //                                         src="/images/DP.png"
-    //                                         alt="dp"
-    //                                         width={36}
-    //                                         height={36}
-    //                                     />
-    //                                     {/* Status Indicator */}
-    //                                     <div className="absolute right-0 bottom-0 w-3 h-3 bg-[#98A2B3] border-2 border-white rounded-full transition-colors duration-150 group-hover:bg-[#17B26A]"></div>
-    //                                 </div>
-    //                                 <p className="text-[0.813rem] text-[#4B5563] font-medium leading-6 whitespace-nowrap">{name}</p>
-    //                             </div>
-    //                         ))}
-    //                     </div>
-    //                 </div>
-    //                 <div className="flex flex-col px-2 gap-2 overflow-auto">
-    //                     <div className="flex flex-row justify-between whitespace-nowrap">
-    //                         <h4 className="text-base text-[#182230] font-semibold leading-6">Teachers</h4>
-    //                         <p className="flex items-center justify-center w-6 h-6 text-xs text-[#4B5563] font-normal bg-[#F7F8FB] border border-lightGrey rounded-sm">
-    //                             4
-    //                         </p>
-    //                     </div>
-    //                     <div className="flex flex-col gap-4">
-    //                         {["Darlene Robertson", "John Doe", "Jane Cooper", "Devon Lane"].map((name, idx) => (
-    //                             <div
-    //                                 key={idx}
-    //                                 className="flex flex-row items-center group py-1 gap-2 whitespace-nowrap"
-    //                             >
-    //                                 {/* Profile Picture Container */}
-    //                                 <div className="relative flex-shrink-0 w-9 h-9">
-    //                                     <Image
-    //                                         className="rounded-full"
-    //                                         src="/images/DP.png"
-    //                                         alt="dp"
-    //                                         width={36}
-    //                                         height={36}
-    //                                     />
-    //                                     {/* Status Indicator */}
-    //                                     <div className="absolute right-0 bottom-0 w-3 h-3 bg-[#98A2B3] border-2 border-white rounded-full transition-colors duration-150 group-hover:bg-[#17B26A]"></div>
-    //                                 </div>
-    //                                 <p className="text-[0.813rem] text-[#4B5563] font-medium leading-6 whitespace-nowrap">{name}</p>
-    //                             </div>
-    //                         ))}
-    //                     </div>
-    //                 </div>
-    //             </div>
-    //         </div>
-    //     </div>
-
-    // </div>
   );
 }
-
-export default Chatinfo;

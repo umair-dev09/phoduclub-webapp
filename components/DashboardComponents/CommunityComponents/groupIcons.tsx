@@ -17,8 +17,8 @@ type CommunityData = {
 
 
 function GroupIcons() {
-   const searchParams = useSearchParams(); // Get query params, e.g., "?qId=B8yw93YJcBaGL3x0KRvN"
-      
+  const searchParams = useSearchParams(); // Get query params, e.g., "?qId=B8yw93YJcBaGL3x0KRvN"
+
   const [communities, setCommunities] = useState<CommunityData[]>([]);
   const [user, setUser] = useState<User | null>(null);
   const [selectedCommunityId, setSelectedCommunityId] = useState<string | null>(null); // State to track selected item
@@ -30,22 +30,22 @@ function GroupIcons() {
   const pCheck = pathname === '/community/private-chat';
   const pId = searchParams?.get('pId');
   const currentUserId = auth.currentUser?.uid;
-      const [personalChatNotifications, setPersonalChatNotifications] = useState<number>(0);
-  
+  const [personalChatNotifications, setPersonalChatNotifications] = useState<number>(0);
+
   useEffect(() => {
     if (pCheck || pId) {
       setSelectedCommunityId(null);
       setSelectedButton('message');
     }
-  
+
   }, [pCheck, pId]);
 
   useEffect(() => {
-    if(cId){
+    if (cId) {
       setSelectedCommunityId(cId);
       setSelectedButton(null);
     }
-  },[cId]);
+  }, [cId]);
 
 
   useEffect(() => {
@@ -65,12 +65,12 @@ function GroupIcons() {
     if (!currentUserId) return;
 
     const unsubscribe = onSnapshot(doc(db, 'users', currentUserId), (docSnapshot) => {
-        const personalChatNotifications = docSnapshot.data()?.personalChatNotifications || [];
-        setPersonalChatNotifications(personalChatNotifications.length);
+      const personalChatNotifications = docSnapshot.data()?.personalChatNotifications || [];
+      setPersonalChatNotifications(personalChatNotifications.length);
     });
 
     return () => unsubscribe();
-}, [currentUserId]);
+  }, [currentUserId]);
 
   useEffect(() => {
     if (!user) return;
@@ -157,12 +157,12 @@ function GroupIcons() {
           <div className={`flex items-center justify-center w-[42px] h-[42px] rounded-full bg-[#C74FE6] border-[#C74FE6] border-2 text-[#624C18] font-bold ${selectedButton === "message" ? "border-white" : "group-hover:border-white"}`}>
             <Image src="/icons/messageIcon.svg" alt="message icon" width={18} height={18} />
           </div>
-          {personalChatNotifications >= 1 &&(
-          <div className="absolute top-6 left-6 px-2 py-1 bg-red-600 rounded-full text-white text-xs font-medium">
-          {personalChatNotifications}
-        </div>
+          {personalChatNotifications >= 1 && (
+            <div className="absolute top-6 left-6 px-2 py-1 bg-red-600 rounded-full text-white text-xs font-medium">
+              {personalChatNotifications}
+            </div>
           )}
-        
+
         </button>
       </div>
 

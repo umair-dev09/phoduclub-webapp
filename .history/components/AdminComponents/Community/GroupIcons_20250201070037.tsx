@@ -94,13 +94,13 @@ function GroupIcons() {
   const onMessageButtonClick = () => {
     setSelectedButton("message"); // Mark the message button as selected
     setSelectedCommunityId(null); // Deselect any selected community
-    router.push('/community/general-chat')
+    router.push('/admin/community/private-chat');
   };
   return (
     <div className="flex flex-col h-full">
       <div className="flex items-center justify-center h-[72px] py-3  border-b border-lightGrey">
         <button className={`group flex items-center justify-center relative w-[46px] h-[46px] rounded-full border-[#C74FE6] border-2 ${selectedButton === "message" ? "border-darkPurple" : "hover:border-darkPurple"}`}
-        // onClick={onMessageButtonClick}
+          onClick={onMessageButtonClick}
         >
           <div className={`flex items-center justify-center w-[42px] h-[42px] rounded-full bg-[#C74FE6] border-[#C74FE6] border-2 text-[#624C18] font-bold ${selectedButton === "message" ? "border-white" : "group-hover:border-white"}`}>
             <Image src="/icons/messageIcon.svg" alt="message icon" width={18} height={18} />
@@ -111,7 +111,7 @@ function GroupIcons() {
         </button>
       </div>
 
-      <div className="flex flex-col justify-start items-center pt-[15px] overflow-y-auto ">
+      <div className="flex flex-col justify-start items-center py-[15px] overflow-y-auto ">
         {communities.map((community, index) => (
           <button
             key={community.communityId}
@@ -120,9 +120,9 @@ function GroupIcons() {
           >
             <Image className="w-10 h-10 rounded-full object-cover" src={community.communityImg || "/icons/messageIcon.svg"} alt="group icon" width={42} height={42} quality={100} />
 
-            <div className="absolute top-6 left-6 px-2 py-1 bg-red-600 rounded-full text-white text-xs font-medium hidden group-hover:flex">
+            {/* <div className="absolute top-6 left-6 px-2 py-1 bg-red-600 rounded-full text-white text-xs font-medium hidden group-hover:flex">
               {index + 1}
-            </div>
+            </div> */}
           </button>
         ))}
         <button className='flex items-center justify-center mt-1'

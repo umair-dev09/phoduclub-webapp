@@ -266,7 +266,7 @@ function TargetYearUpdate({ setIsEditing }: TargetYearUpdateProps) {
 
             <ModalFooter className="border-t border-lightGrey">
               <Button onClick={() => setIsOpen(false)} variant="light" className=" border border-lightGrey font-semibold text-[#1D2939]">Cancel</Button>
-              <Button className="text-sm font-semibold bg-[#8501FF] text-white   border border-solid border-[#9012FF] hover:bg-[#6D0DCC]" onClick={onContinueClick}
+              <Button className="text-sm font-semibold bg-[#8501FF] text-white border border-solid border-[#9012FF] hover:bg-[#6D0DCC] shadow-inner-button" onClick={onContinueClick}
               >Continue</Button>
             </ModalFooter>
           </>

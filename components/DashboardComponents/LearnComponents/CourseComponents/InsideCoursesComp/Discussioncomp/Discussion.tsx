@@ -172,7 +172,7 @@ function Discussion({ courseId, sectionId, contentId }: DiscussionProps) {
     }, []);
 
     // This will clear formatting when the user types
-    const handleKeyDown = () => {
+    const handleKeyDown = (e: React.KeyboardEvent) => {
         if (quill) {
             const range = quill.getSelection();
             if (range) {
@@ -187,6 +187,10 @@ function Discussion({ courseId, sectionId, contentId }: DiscussionProps) {
                     quill.format('underline', false);
                 }
             }
+        }
+        if (e.key === "Enter" && !e.shiftKey) {
+            e.preventDefault(); // Prevents new line in ReactQuill
+            handleSendMessage(); // Send the message
         }
     };
 
