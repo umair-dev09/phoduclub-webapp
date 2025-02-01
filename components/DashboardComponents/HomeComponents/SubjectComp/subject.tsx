@@ -150,8 +150,6 @@ const SubjectLayout: React.FC = () => {
         setShowDrawer(true);
     };
 
-
-
     const calculatePercentage = (userTotal: number, totalSubjects: number): number => {
         if (totalSubjects === 0) return 0;
         return Math.round((userTotal / totalSubjects) * 100);
@@ -267,7 +265,7 @@ const SubjectLayout: React.FC = () => {
             <button
                 onClick={() => openBottomSheet('maths')}
                 className={`border border-gray-200 rounded-lg px-6 py-2 flex items-center justify-between transition-transform duration-300 ease-in-out hover:border-[#7400E03D] hover:shadow-lg hover:scale-105 
-                             ${calculatePercentage(userInSubjectCounts.maths, subjectCounts.maths) === 100 ? 'bg-[#F9FAFB] hover:border-gray-200' : 'bg-white hover:border-[#7400E03D] '} `}
+                            ${calculatePercentage(userInSubjectCounts.maths, subjectCounts.maths) === 100 ? 'bg-[#F9FAFB] hover:border-gray-200' : 'bg-white hover:border-[#7400E03D] '} `}
             >
                 <div className="pt-2">
                     <div className="flex items-center flex-row gap-[6px]">
