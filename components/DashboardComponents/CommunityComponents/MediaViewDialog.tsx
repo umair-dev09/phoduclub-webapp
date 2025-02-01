@@ -16,8 +16,24 @@ function MediaViewDialog({ open, onClose, src, mediaType }: MediaViewDialogProps
     const [popoveropen, setPopoveropen] = useState(false);
     const [scrollBehavior, setScrollBehavior] = useState<"inside" | "outside">("outside");
 
-    return (
+    const handleSave = () => {
+        try {
+            const fileName = src.split('/').pop() || 'download';
+            const link = document.createElement('a');
+            link.href = src;
+            link.setAttribute('download', fileName);
+            link.setAttribute('target', '_blank');
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            setPopoveropen(false);
+        } catch (error) {
+            console.error('Download failed:', error);
+            alert('Failed to download file. Please try again later.');
+        }
+    };
 
+    return (
         <Modal
             isOpen={open}
             onOpenChange={(isOpen) => !isOpen && onClose()}
@@ -46,12 +62,12 @@ function MediaViewDialog({ open, onClose, src, mediaType }: MediaViewDialogProps
                                 <PopoverContent className="flex flex-col px-0 text-sm font-normal bg-white border border-lightGrey rounded-md w-[167px] shadow-md">
                                     <button
                                         className="p-3 gap-2 flex-row flex h-[40px] hover:bg-[#F2F4F7] w-full outline-none"
-                                        onClick={() => setPopoveropen(false)}
+                                        onClick={() => handleSave()}
                                     >
                                         <Image src="/icons/download-02.svg" alt="learn-icon" width={20} height={20} />
                                         <span className="text-sm text-[#0C111D] font-normal">Save</span>
                                     </button>
-                                    <button
+                                    {/* <button
                                         className="p-3 gap-2 flex-row flex h-[40px] hover:bg-[#F2F4F7] w-full outline-none"
                                         onClick={() => setPopoveropen(false)}
                                     >
@@ -64,7 +80,7 @@ function MediaViewDialog({ open, onClose, src, mediaType }: MediaViewDialogProps
                                     >
                                         <Image src="/icons/Bookmark.svg" alt="test-icon" width={20} height={20} />
                                         <span className="text-sm text-[#0C111D] font-normal">Bookmark</span>
-                                    </button>
+                                    </button> */}
                                 </PopoverContent>
                             </Popover>
                             <button className="w-[32px] h-[32px] rounded-full flex items-center justify-center transition-all duration-300 ease-in-out hover:bg-[#F2F4F7]"
@@ -85,8 +101,6 @@ function MediaViewDialog({ open, onClose, src, mediaType }: MediaViewDialogProps
                             <VideoPlayer videoSrc={src} />
                         )}
                     </ModalBody>
-
-
                 </>
             </ModalContent>
         </Modal>

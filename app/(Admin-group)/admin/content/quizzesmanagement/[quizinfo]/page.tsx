@@ -43,7 +43,7 @@ type QuestionData = {
     question: string;
     correctAnswer: string;
     answerExplanation: string;
-    options: Options;   
+    options: Options;
     questionId: string;
     order: number;
 
@@ -51,14 +51,14 @@ type QuestionData = {
 
 function formatQuizTime(seconds: number | string): string {
     const minutes = Number(seconds) / 60;
-  
+
     if (minutes < 60) {
-      return `${Math.round(minutes)} Minutes`;
+        return `${Math.round(minutes)} Minutes`;
     } else {
-      const hours = minutes / 60;
-      return `${hours % 1 === 0 ? hours : hours.toFixed(1)} Hours`;
+        const hours = minutes / 60;
+        return `${hours % 1 === 0 ? hours : hours.toFixed(1)} Hours`;
     }
-  }
+}
 
 const cleanQuizDescription = (description: string) => {
     let sanitizedDescription = DOMPurify.sanitize(description);
@@ -443,7 +443,7 @@ function Quizinfo() {
                             </div>
                         }
                     >
-                        <StudentsAttempts quizId={quizId || ''}/>
+                        <StudentsAttempts quizId={quizId || ''} />
                     </Tab>
                 </Tabs>
             </div>

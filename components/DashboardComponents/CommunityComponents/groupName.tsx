@@ -31,7 +31,7 @@ type groupNameProps = {
 function GroupName({ communityId, isAdmin }: groupNameProps) {
   const [groupData, setGroupData] = useState<GroupData | null>(null);
   const [user, setUser] = useState<User | null>(null);
-  const [isPopoverOpen, setIsPopoverOpen] = useState(false);
+  const [isPopoverOpen, setIsPopoverOpen] = useState(false);    
   const [loading, setLoading] = useState(true);
   const [groupInfoDialog, setGroupInfoDialog] = useState(false);
   const [deleteGroupDialog, setDeleteGroupDialog] = useState(false);
@@ -144,10 +144,10 @@ function GroupName({ communityId, isAdmin }: groupNameProps) {
       const now = new Date();
       switch (duration) {
         case 'eightHours':
-            mutedUntil = new Date(now.getTime() + (8 * 60 * 60 * 1000)).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' });
-            break;
-          case 'oneWeek':
-            mutedUntil = new Date(now.getTime() + (7 * 24 * 60 * 60 * 1000)).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' });
+          mutedUntil = new Date(now.getTime() + (8 * 60 * 60 * 1000)).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' });
+          break;
+        case 'oneWeek':
+          mutedUntil = new Date(now.getTime() + (7 * 24 * 60 * 60 * 1000)).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' });
           break;
         case 'always':
           mutedUntil = 'always';
@@ -173,7 +173,7 @@ function GroupName({ communityId, isAdmin }: groupNameProps) {
     try {
       const communityRef = doc(db, 'communities', communityId);
       const notificationToRemove = groupData?.notificationsMuted?.find(muted => muted.id === user.uid);
-      
+
       if (notificationToRemove) {
         await updateDoc(communityRef, {
           notificationsMuted: arrayRemove(notificationToRemove)
@@ -190,7 +190,7 @@ function GroupName({ communityId, isAdmin }: groupNameProps) {
   return (
     <div className='flex flex-row items-center justify-between min-h-[72px] border-b border-lightGrey'>
       <div className='flex items-center justify-center w-full h-full'>
-      
+
         <Popover placement="bottom-end"
           isOpen={isPopoverOpen}
           onOpenChange={(open) => setIsPopoverOpen(open)}
@@ -226,8 +226,8 @@ function GroupName({ communityId, isAdmin }: groupNameProps) {
                     <div className='flex flex-row gap-2 text-[#4B5563]'>
                       <Image src='/icons/membersIcon.svg' alt='members icon' width={18} height={18} />
                       <p>{groupData?.members ? groupData.members.length : 0}</p>
-                      {groupData?.notificationsMuted?.find(muted => muted.id === user?.uid) && ( 
-                      <Image className={`{isMuted ? 'flex : 'none'}`} src='/icons/notification-off-02.svg' alt="Muted" width={16} height={16} />
+                      {groupData?.notificationsMuted?.find(muted => muted.id === user?.uid) && (
+                        <Image className={`{isMuted ? 'flex : 'none'}`} src='/icons/notification-off-02.svg' alt="Muted" width={16} height={16} />
                       )}
                     </div>
                   )}
@@ -255,59 +255,59 @@ function GroupName({ communityId, isAdmin }: groupNameProps) {
               />
               <span className='font-normal text-[#0C111D] text-sm'>Mark as read</span>
             </button>
-              <Popover placement="right-start">
-                <PopoverTrigger className="w-[206px] px-0">
-                  <div className='flex flex-row gap-2 items-center justify-between h-10 w-full px-4 hover:bg-[#EAECF0] cursor-pointer'>
-                    <div className='flex flex-row gap-2'>
+            <Popover placement="right-start">
+              <PopoverTrigger className="w-[206px] px-0">
+                <div className='flex flex-row gap-2 items-center justify-between h-10 w-full px-4 hover:bg-[#EAECF0] cursor-pointer'>
+                  <div className='flex flex-row gap-2'>
                     {groupData?.notificationsMuted?.find(muted => muted.id === user?.uid) ? (
                       <Image
-                      src="/icons/notification-off.svg"
-                      width={18}
-                      height={18}
-                      alt="unmute-icon"
-                    />
+                        src="/icons/notification-off.svg"
+                        width={18}
+                        height={18}
+                        alt="unmute-icon"
+                      />
                     ) : (
                       <Image
-                      src="/icons/mute.svg"
-                      width={18}
-                      height={18}
-                      alt="mute-icon"
-                    />
+                        src="/icons/mute.svg"
+                        width={18}
+                        height={18}
+                        alt="mute-icon"
+                      />
                     )}
-                      {groupData?.notificationsMuted?.find(muted => muted.id === user?.uid) ? (
-                        <span className='font-normal text-[#0C111D] text-sm'>Muted</span>
-                      ) : (
-                        <span className='font-normal text-[#0C111D] text-sm'>Mute</span>
-                      )}
-                 
-                    </div>
-                    <Image
-                      src="/icons/arrow-right-01-round.svg"
-                      width={18}
-                      height={18}
-                      alt="arrow-right-01-round"
-                    />
-                  </div>
-                </PopoverTrigger>
-                <PopoverContent className="w-auto py-1 px-0 rounded-md border border-lightGrey">
-                  <div>
                     {groupData?.notificationsMuted?.find(muted => muted.id === user?.uid) ? (
+                      <span className='font-normal text-[#0C111D] text-sm'>Muted</span>
+                    ) : (
+                      <span className='font-normal text-[#0C111D] text-sm'>Mute</span>
+                    )}
+
+                  </div>
+                  <Image
+                    src="/icons/arrow-right-01-round.svg"
+                    width={18}
+                    height={18}
+                    alt="arrow-right-01-round"
+                  />
+                </div>
+              </PopoverTrigger>
+              <PopoverContent className="w-auto py-1 px-0 rounded-md border border-lightGrey">
+                <div>
+                  {groupData?.notificationsMuted?.find(muted => muted.id === user?.uid) ? (
                     <div className="flex flex-col">
-                    <div className="w-[182px] px-4 py-[10px] text-left text-sm font-normal leading-5 text-[#667085]">Muted until {groupData.notificationsMuted.find(muted => muted.id === user?.uid)?.mutedUntil}</div>
-                    <button className="w-[182px] px-4 py-[10px] text-left text-sm font-normal leading-5 text-[#0C111D] hover:bg-[#EAECF0] transition-colors" onClick={handleUnmute}>Unmute</button>
+                      <div className="w-[182px] px-4 py-[10px] text-left text-sm font-normal leading-5 text-[#667085]">Muted until {groupData.notificationsMuted.find(muted => muted.id === user?.uid)?.mutedUntil}</div>
+                      <button className="w-[182px] px-4 py-[10px] text-left text-sm font-normal leading-5 text-[#0C111D] hover:bg-[#EAECF0] transition-colors" onClick={handleUnmute}>Unmute</button>
                     </div>
-                    ) :(
-                      <div className="flex flex-col">
+                  ) : (
+                    <div className="flex flex-col">
                       <button className="w-[128px] px-4 py-[10px] text-left text-sm font-normal leading-5 text-[#0C111D] hover:bg-[#EAECF0] transition-colors" onClick={() => handleMute('eightHours')}>For 8 hours</button>
                       <button className="w-[128px] px-4 py-[10px] text-left text-sm font-normal leading-5 text-[#0C111D] hover:bg-[#EAECF0] transition-colors" onClick={() => handleMute('oneWeek')}>For 1 week</button>
                       <button className="w-[128px] px-4 py-[10px] text-left text-sm font-normal leading-5 text-[#0C111D] hover:bg-[#EAECF0] transition-colors" onClick={() => handleMute('always')}>Always</button>
                     </div>
-                    )}
-                   
-                   
-                  </div>
-                </PopoverContent>
-              </Popover>
+                  )}
+
+
+                </div>
+              </PopoverContent>
+            </Popover>
             {!isAdmin && (
               (groupData?.groupExitedMembers ?? []).includes(user?.uid ?? '') ? (
                 <button className='flex flex-row gap-2 items-center h-10 w-[206px] px-4 hover:bg-[#FEE4E2]'

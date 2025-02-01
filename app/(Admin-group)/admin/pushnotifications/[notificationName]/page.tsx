@@ -31,8 +31,8 @@ type NotificationData = {
     notificationId: string;
     startDate: string;
     status: string;
-    premiumUsersClicks: {userId: string, clickedAt: string}[];
-    freeUsersClicks: {userId: string, clickedAt: string}[];
+    premiumUsersClicks: { userId: string, clickedAt: string }[];
+    freeUsersClicks: { userId: string, clickedAt: string }[];
 }
 
 type UserClickData = {
@@ -44,7 +44,6 @@ type UserClickData = {
     isPremium: boolean;
     clickedAt: string;
 }
-
 
 function NotificationName() {
     const searchParams = useSearchParams();
@@ -68,7 +67,7 @@ function NotificationName() {
                 if (docSnapshot.exists()) {
                     const notificationData = docSnapshot.data() as NotificationData;
                     setData(notificationData);
-                    
+
                     // Combine premium and free user clicks
                     const allClicks = [
                         ...notificationData.premiumUsersClicks.map(click => ({ ...click, isPremium: true })),
@@ -80,7 +79,7 @@ function NotificationName() {
                         allClicks.map(async (click) => {
                             const userDocRef = doc(db, 'users', click.userId);
                             const userDocSnap = await getDoc(userDocRef);
-                            
+
                             if (userDocSnap.exists()) {
                                 const userData = userDocSnap.data();
                                 return {
@@ -137,7 +136,7 @@ function NotificationName() {
     return (
         <div className="py-8 flex flex-col w-full h-auto overflow-y-auto">
             <div className="flex flex-col px-8 gap-1">
-                <div className="flex flex-row  w-full justify-between items-center">
+                <div className="flex flex-row w-full justify-between items-center">
                     <div className="flex flex-row gap-2 items-center">
                         <Image
                             src={data?.notificationIcon || ''}
@@ -146,44 +145,42 @@ function NotificationName() {
                             alt="idea-icon" />
                         <h1 className="text-[#1D2939] font-semibold text-2xl">{data?.name}</h1>
                         <div>{<QuizStatus status={data?.status || ''} />}</div>
-
                     </div>
                     <div className="flex flex-row gap-2 ">
                         {data?.status === 'live' && (
-                        <button className=" p-3 gap-2 flex-row flex bg-[#FFFFFF] border border-solid border-[#EAECF0] rounded-[8px] h-[40px] items-center"
-                        onClick={() => setIsPausedDialogOpen(true)}>
-                            <Image src="/icons/pausequiz.svg" width={18} height={18} alt="Paused-quiz" />
-                            <span className="text-sm text-[#0C111D] font-normal">Pause</span>
-                        </button>
+                            <button className=" p-3 gap-2 flex-row flex bg-[#FFFFFF] border border-solid border-[#EAECF0] rounded-[8px] h-[40px] items-center"
+                                onClick={() => setIsPausedDialogOpen(true)}>
+                                <Image src="/icons/pausequiz.svg" width={18} height={18} alt="Paused-quiz" />
+                                <span className="text-sm text-[#0C111D] font-normal">Pause</span>
+                            </button>
                         )}
                         {data?.status === 'live' && (
-                        <button className=" p-3 gap-2 flex-row flex bg-[#FFFFFF] border border-solid border-[#EAECF0] rounded-[8px] h-[40px] items-center"
-                        onClick={() => setIsEndDialogOpen(true)}>
-                            <Image src="/icons/endquiz.svg" width={18} height={18} alt="End-quiz" />
-                            <span className="text-sm text-[#DE3024]  font-normal">End </span>
-                        </button>
+                            <button className=" p-3 gap-2 flex-row flex bg-[#FFFFFF] border border-solid border-[#EAECF0] rounded-[8px] h-[40px] items-center"
+                                onClick={() => setIsEndDialogOpen(true)}>
+                                <Image src="/icons/endquiz.svg" width={18} height={18} alt="End-quiz" />
+                                <span className="text-sm text-[#DE3024]  font-normal">End </span>
+                            </button>
                         )}
                         {data?.status === 'paused' && (
-                        <button
-                            className=" p-3 gap-2 flex-row flex rounded-[8px] h-[40px] items-center"
-                            onClick={() => setIsResumeOpen(true)}>
-                            <Image src="/icons/resume.svg" width={18} height={18} alt="Resume Quiz" />
-                            <span className="text-sm text-[#9012FF]  font-medium">Resume </span>
-                        </button>
+                            <button
+                                className=" p-3 gap-2 flex-row flex rounded-[8px] h-[40px] items-center"
+                                onClick={() => setIsResumeOpen(true)}>
+                                <Image src="/icons/resume.svg" width={18} height={18} alt="Resume Quiz" />
+                                <span className="text-sm text-[#9012FF]  font-medium">Resume </span>
+                            </button>
                         )}
-                        {( data?.status === 'paused' || data?.status === 'scheduled')  && (
-                        <button className=" p-3 gap-2 flex-row flex h-[40px] hover:bg-[#F2F4F7] bg-[#FFFFFF] border border-solid border-[#EAECF0] rounded-[8px] items-center">
-                            <Image src="/icons/edit-icon.svg" width={18} height={18} alt="Edit" />
-                            <span className="text-sm text-[#0C111D] font-normal">Edit</span>
-                        </button>
+                        {(data?.status === 'paused' || data?.status === 'scheduled') && (
+                            <button className=" p-3 gap-2 flex-row flex h-[40px] hover:bg-[#F2F4F7] bg-[#FFFFFF] border border-solid border-[#EAECF0] rounded-[8px] items-center">
+                                <Image src="/icons/edit-icon.svg" width={18} height={18} alt="Edit" />
+                                <span className="text-sm text-[#0C111D] font-normal">Edit</span>
+                            </button>
                         )}
-                        {(data?.status === 'finished' || data?.status === 'paused' || data?.status === 'scheduled')  && (
-                        <button className=" p-3 gap-2 flex-row flex h-[40px] hover:bg-[#F2F4F7]  items-center">
-                            <Image src="/icons/delete.svg" width={18} height={18} alt="delete-quiz" />
-                            <span className="text-sm text-[#DE3024] font-normal">Delete </span>
-                        </button>
+                        {(data?.status === 'finished' || data?.status === 'paused' || data?.status === 'scheduled') && (
+                            <button className=" p-3 gap-2 flex-row flex h-[40px] hover:bg-[#F2F4F7]  items-center">
+                                <Image src="/icons/delete.svg" width={18} height={18} alt="delete-quiz" />
+                                <span className="text-sm text-[#DE3024] font-normal">Delete </span>
+                            </button>
                         )}
-                        
                     </div>
                 </div>
                 {/* <div className="flex flex-row gap-2">
@@ -201,12 +198,22 @@ function NotificationName() {
                     </button>
                 </div> */}
                 <span className="font-normal text-sm text-[#1D2939]">{data?.description}</span>
+                <div className="w-full h-auto mt-4 flex flex-row gap-4 ">
+                    <div className="w-full flex flex-col p-4 border border-solid border-[#EAECF0] bg-[#FFFFFF] rounded-xl">
+                        <span className="text-[#667085] font-normal text-sm">Notification starts</span>
+                        <span className="font-medium text-[#1D2939] text-base">[today]</span>
+                    </div>
+                    <div className="w-full flex flex-col p-4 border border-solid border-[#EAECF0] bg-[#FFFFFF] rounded-xl">
+                        <span className="text-[#667085] font-normal text-sm">Notification ends</span>
+                        <span className="font-medium text-[#1D2939] text-base">[tomorrow]</span>
+                    </div>
+                </div>
             </div>
             <hr className="my-8" />
             <h2 className="mb-4 px-8 text-base text-[#1D2939] font-semibold">Notification Click Activity</h2>
             <div className="flex flex-col justify-between h-full px-8">
                 <div className="flex border border-[#EAECF0] rounded-xl">
-                <table className="w-full h-auto bg-white rounded-xl">
+                    <table className="w-full h-auto bg-white rounded-xl">
                         <thead>
                             <tr>
                                 <th className="text-left px-8 py-4 text-[#667085] font-medium text-sm">Name</th>
@@ -227,12 +234,12 @@ function NotificationName() {
                                                         <div className="relative">
                                                             <Image src={user.profilePic} alt="DP" width={40} height={40} />
                                                             {user.isPremium && (
-                                                                <Image 
-                                                                    className="absolute right-0 bottom-0" 
-                                                                    src='/icons/winnerBatch.svg' 
-                                                                    alt="Premium Badge" 
-                                                                    width={18} 
-                                                                    height={18} 
+                                                                <Image
+                                                                    className="absolute right-0 bottom-0"
+                                                                    src='/icons/winnerBatch.svg'
+                                                                    alt="Premium Badge"
+                                                                    width={18}
+                                                                    height={18}
                                                                 />
                                                             )}
                                                         </div>
@@ -241,7 +248,7 @@ function NotificationName() {
                                                         <div className="font-semibold cursor-pointer">
                                                             {user.userName}
                                                         </div>
-                                                      
+
                                                     </div>
                                                 </div>
                                             </td>
@@ -266,7 +273,7 @@ function NotificationName() {
                 </div>
 
                 {/* Pagination Section */}
-                
+
                 {userClicksData.length > itemsPerPage && (
                     <div className="flex items-end justify-end h-auto">
                         <div className="flex justify-right h-auto">

@@ -7,7 +7,7 @@ import { toast, ToastContainer } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
 interface CommunityProps {
     children: ReactNode;
-}
+}     
 
 function Community({ children }: CommunityProps) {
     const router = useRouter();

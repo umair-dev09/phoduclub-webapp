@@ -27,7 +27,13 @@ const AdminVerify: React.FC<OTPInputProps> = ({
     const [verificationError, setVerificationError] = useState<string | null>(null);
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
-        const value = e.target.value.slice(-1);
+        let value = e.target.value.slice(-1);
+
+        // Ensure the value is numeric
+        if (!/^\d$/.test(value)) {
+            return;
+        }
+
         const newInputValues = [...inputValues];
         newInputValues[index] = value;
         setInputValues(newInputValues);
@@ -74,6 +80,20 @@ const AdminVerify: React.FC<OTPInputProps> = ({
         // Check if all inputs are filled and trigger onComplete
         if (value && !newInputValues.includes('')) {
             onComplete?.(newInputValues.join(''));
+        }
+    };
+
+    const handlePaste = (e: React.ClipboardEvent<HTMLInputElement>, index: number) => {
+        e.preventDefault();
+        const pastedData = e.clipboardData.getData('text');
+
+        // Only allow numeric paste
+        const numericData = pastedData.replace(/\D/g, ''); // Remove any non-digit characters
+        if (numericData) {
+            const event = {
+                target: { value: numericData },
+            } as React.ChangeEvent<HTMLInputElement>;
+            handleInputChange(event, index);
         }
     };
 
@@ -207,12 +227,13 @@ const AdminVerify: React.FC<OTPInputProps> = ({
                             key={index}
                             ref={(el) => (inputRefs.current[index] = el)}
                             className={`w-16 h-16 
-                                ${verificationError ? 'border-2 border-[#F04438]' : 'border-2'} 
-                                ${disabled ? 'bg-gray-100 cursor-not-allowed' : ''}
-                                rounded-lg py-1 px-2 text-center text-4xl font-semibold 
-                                text-[#0E2138] placeholder-gray-400 
-                                focus:border-[#8601FF] focus:outline-none focus:ring-4 focus:ring-[#D3A7FC]`
-                            }
+                                        border-2 rounded-lg py-1 px-2 text-center text-4xl font-semibold 
+                                        text-[#0E2138] placeholder-gray-400 focus:outline-none focus:ring-4 transition-colors
+                                        ${verificationError
+                                    ? 'border-[#F04438] focus:border-[#F04438] focus:ring-[#F8D7DA]'
+                                    : 'border-[#D0D5DD] focus:border-[#8601FF] focus:ring-[#D3A7FC]'}
+                                        ${disabled ? 'bg-gray-100 cursor-not-allowed' : ''}
+                                    `}
                             type="text"
                             inputMode="numeric"
                             maxLength={1}
@@ -225,11 +246,9 @@ const AdminVerify: React.FC<OTPInputProps> = ({
                                 e.preventDefault();
                                 const pastedData = e.clipboardData.getData('text');
                                 if (!/^\d+$/.test(pastedData)) return; // Only allow numeric paste
-
                                 const event = {
                                     target: { value: pastedData },
                                 } as React.ChangeEvent<HTMLInputElement>;
-
                                 handleInputChange(event, index);
                             }}
                         />

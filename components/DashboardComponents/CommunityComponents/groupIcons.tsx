@@ -13,7 +13,7 @@ type CommunityData = {
   communityImg: string | null;
   members: { id: string, isAdmin: boolean }[] | null;
   totalNotifications: number;
-};
+};   
 
 
 function GroupIcons() {

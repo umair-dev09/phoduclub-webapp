@@ -32,6 +32,7 @@ type Channel = {
   members: { id: string, isAdmin: boolean }[] | null;
   channelRequests: { id: string, requestDate: string }[];
   declinedRequests: string[];
+  notificationsMuted: { id: string, mutedUntil: string }[];
 };
 
 type ChannelHeading = {
@@ -102,6 +103,7 @@ function Chatinfo() {
     channelId: string;
     channelName: string;
     channelEmoji: string;
+    notificationsMuted: { id: string, mutedUntil: string }[] | null;
     channelDescription: string;
     headingId?: string; // Adding headingId to the selected channel state
     members: { id: string, isAdmin: boolean }[] | null;
@@ -201,6 +203,7 @@ function Chatinfo() {
                     members: channelData.members || [],
                     channelRequests: channelData.channelRequests || [],
                     declinedRequests: channelData.declinedRequests || [],
+                    notificationsMuted: channelData.notificationsMuted || [],
                   };
                 });
 
@@ -261,6 +264,7 @@ function Chatinfo() {
               members: channelData.members,
               channelRequests: channelData.channelRequests,
               declinedRequests: channelData.declinedRequests,
+              notificationsMuted: channelData.notificationsMuted,
             };
           }
           return current;
@@ -587,8 +591,6 @@ function Chatinfo() {
     }
   };
 
-
-
   return (
     <div className="flex h-full flex-row">
       {/* Middle Section */}
@@ -689,9 +691,22 @@ function Chatinfo() {
                           <div className="flex flex-row items-center gap-2">
                             <p>{channel.channelEmoji}</p>
                             <p className="text-[13px] font-semibold text-[#4B5563]">{channel.channelName}</p>
+                             {Array.isArray(channel?.notificationsMuted) && 
+                                                      channel.notificationsMuted.some(mute => mute.id === currentUserId) && (
+                                                        <Image 
+                                                          src='/icons/notification-off-02.svg' 
+                                                          alt="Muted" 
+                                                          width={16} 
+                                                          height={16} 
+                                                          />
+                                                    )}
                           </div>
                           {/* Conditionally render notification */}
-                          {hasNotification && (
+                          {hasNotification && 
+                             selectedChannel?.channelId !== channel.channelId && 
+                             !channel.notificationsMuted?.some(mute => 
+                             mute.id === currentUserId
+                             ) && (
                             <div className="w-2 h-2 rounded-full bg-[#DE3024]"></div> // Notification Indicator
                           )}
                         </div>
@@ -727,17 +742,16 @@ function Chatinfo() {
               </div>
             </button>
           </div>
-        </div> */}
+        </div> */}  
       </div>
 
       {/* Chat Area */}
       <div className="flex flex-1 flex-col border-r border-b border-lightGrey h-auto">
         {selectedChannel ? (
           <>
-
             <div className="flex items-center justify-between h-[72px] bg-white border-b border-lightGrey">
               {/* Pass the selected channel info to ChatHead */}
-              <ChatHead chats={chats} isAdmin={true} channelDescription={selectedChannel.channelDescription || ''} communityId={communityId} categoryId={selectedChannel.headingId || ''} channelId={selectedChannel?.channelId ?? null} channelName={selectedChannel?.channelName ?? null} channelEmoji={selectedChannel?.channelEmoji ?? null} channelRequests={selectedChannel.channelRequests || []} setSelectedChannel={setSelectedChannel} members={selectedChannel.members} />
+              <ChatHead notificationsMuted={selectedChannel.notificationsMuted} chats={chats} isAdmin={true} channelDescription={selectedChannel.channelDescription || ''} communityId={communityId} categoryId={selectedChannel.headingId || ''} channelId={selectedChannel?.channelId ?? null} channelName={selectedChannel?.channelName ?? null} channelEmoji={selectedChannel?.channelEmoji ?? null} channelRequests={selectedChannel.channelRequests || []} setSelectedChannel={setSelectedChannel} members={selectedChannel.members} />
               <div className="flex flex-row mr-4 gap-4">
                 <Popover placement="bottom" isOpen={searchOpen} onClose={() => { setSearchOpen(false); setSearchQuery('') }}>
                   <PopoverTrigger>
@@ -810,7 +824,6 @@ function Chatinfo() {
                         if (el) {
                           // Store reference for the current chat message
                           chatRefs.current[chat.chatId] = el;
-
                           // Assign the bottom reference to the last message for initial scrolling
                           if (index === chats.length - 1) {
                             bottomRef.current = el;
@@ -890,12 +903,10 @@ function Chatinfo() {
                   </React.Fragment>
                 );
               })}
-
             </div>
 
             <div className='relative'>
               {showScrollButton && (
-
                 <button
                   onClick={() => scrollToBottom()}
                   className="flex items-center justify-center absolute bottom-[85px] right-4 bg-white border pt-[2px] text-white rounded-full shadow-md hover:bg-[#f7f7f7] transition-all w-[38px] h-[38px]"
@@ -937,7 +948,6 @@ function Chatinfo() {
             </div>
           </div>
           <div className='flex flex-col flex-grow overflow-y-auto'><MembersDetailsArea members={selectedChannel.members || []} isCurrentUserAdmin={true} /></div>
-
         </div>
       ) : (
         <>

@@ -195,7 +195,7 @@ function MyTestSeries() {
                         <p>{test.courseName}</p>
                       </div>
                     )}
-                    <Image className="w-full h-[300px] border border-lightGrey rounded-t-md overflow-hidden group-hover:opacity-85 transition-opacity duration-150" src={test.testImage || "/images/course_img.svg"} alt="Test" width={300} height={300} />
+                    <Image className="w-full h-[300px] border border-lightGrey rounded-t-md overflow-hidden group-hover:opacity-85 transition-opacity duration-150 object-cover" src={test.testImage || "/images/course_img.svg"} alt="Test" width={300} height={300} />
                   </div>
                   {/* Test details container */}
                   <div className="flex w-full h-full flex-col bg-white border-x border-b border-[#EAECF0] rounded-br-lg rounded-bl-lg px-6 group-hover:bg-[#F9FAFB] transition-opacity duration-150">
