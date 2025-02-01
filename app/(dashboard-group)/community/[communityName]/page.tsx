@@ -25,6 +25,7 @@ type Channel = {
   members: { id: string, isAdmin: boolean }[] | null;
   channelRequests: { id: string, requestDate: string }[];
   declinedRequests: string[];
+  notificationsMuted: { id: string, mutedUntil: string }[];
 };
 
 type ChannelHeading = {
@@ -62,19 +63,6 @@ type Chat = {
   mentions: { userId: string; id: string, isAdmin: boolean, }[];
 };
 
-interface chatHeadProps {
-  isAdmin: boolean;
-  channelId: string | null;
-  channelName: string | null;
-  channelEmoji: string | null;
-  communityId: string | null;
-  categoryId: string;
-  channelDescription: string;
-  channelRequests: { id: string; requestDate: string; }[];
-  setSelectedChannel: React.Dispatch<React.SetStateAction<any>>;
-  members: { id: string; isAdmin: boolean; }[] | null;
-  chats: Chat[]; // Make sure this matches your Chat type
-}
 
 export default function CommunityName() {
   const router = useRouter();
@@ -110,6 +98,7 @@ export default function CommunityName() {
     channelName: string;
     channelEmoji: string;
     channelDescription: string;
+    notificationsMuted: { id: string, mutedUntil: string }[] | null;
     headingId?: string;
     members: {
       id: string;
@@ -197,6 +186,7 @@ export default function CommunityName() {
                     members: channelData.members || [],
                     channelRequests: channelData.channelRequests || [],
                     declinedRequests: channelData.declinedRequests || [],
+                    notificationsMuted: channelData.notificationsMuted || { id: '', mutedUntil: '' },
                   };
                 });
 
@@ -258,6 +248,7 @@ export default function CommunityName() {
               members: channelData.members,
               channelRequests: channelData.channelRequests,
               declinedRequests: channelData.declinedRequests,
+              notificationsMuted: channelData.notificationsMuted,
             };
           }
           return current;
@@ -682,8 +673,21 @@ export default function CommunityName() {
                             <p>{channel.channelEmoji}</p>
                             <p className="text-[13px] font-semibold text-[#4B5563]">{channel.channelName}</p>
                           </div>
+                          {Array.isArray(channel?.notificationsMuted) && 
+                          channel.notificationsMuted.some(mute => mute.id === currentUserId) && (
+                            <Image 
+                              src='/icons/notification-off-02.svg' 
+                              alt="Muted" 
+                              width={16} 
+                              height={16} 
+                            />
+                        )}
                           {/* Conditionally render notification */}
-                          {hasNotification && selectedChannel?.channelId !== channel.channelId && (
+                            {hasNotification && 
+                             selectedChannel?.channelId !== channel.channelId && 
+                             !channel.notificationsMuted?.some(mute => 
+                             mute.id === currentUserId
+                             ) && (
                             <div className="w-2 h-2 rounded-full bg-[#DE3024]"></div> // Notification Indicator
                           )}
                         </div>
@@ -720,6 +724,7 @@ export default function CommunityName() {
               {/* <ChatHead isAdmin={false} channelId={selectedChannel?.channelId ?? null} channelName={selectedChannel?.channelName ?? null} channelEmoji={selectedChannel?.channelEmoji ?? null} communityId={communityId} categoryId={selectedChannel.headingId || ''} channelDescription={''} channelRequests={selectedChannel.channelRequests || []} setSelectedChannel={setSelectedChannel} members={selectedChannel.members} /> */}
               <ChatHead
                 isAdmin={false}
+                notificationsMuted={selectedChannel.notificationsMuted}
                 channelId={selectedChannel?.channelId ?? null}
                 channelName={selectedChannel?.channelName ?? null}
                 channelEmoji={selectedChannel?.channelEmoji ?? null}

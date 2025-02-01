@@ -33,13 +33,14 @@ type UserData = {
 
 function MemberClickDialogP({ open, onClose, id, isAdmin }: MemberClickDialogProps) {
   const [user, setUser] = useState<UserData | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [messageButtonLoading, setMessageButtonLoading] = useState(false);
   const currentUserId = auth.currentUser?.uid;
   const [sendrequestDialog, setSendrequestDialog] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
+    setLoading(true); // Set loading to true while fetching data
     if (!id) return;
 
     const userDocRef = doc(db, isAdmin ? "admin" : "users", id);
@@ -63,10 +64,6 @@ function MemberClickDialogP({ open, onClose, id, isAdmin }: MemberClickDialogPro
 
   const colors = ['bg-red-500', 'bg-orange-500', 'bg-green-500', 'bg-blue-500']
 
-  if (loading) {
-    return <LoadingData />
-  }
-
   return (
 
     <div>
@@ -77,6 +74,10 @@ function MemberClickDialogP({ open, onClose, id, isAdmin }: MemberClickDialogPro
       >
         <ModalContent>
           <>
+          {loading ? (
+            <MessageLoading />
+          ) : (
+            <>
             <ModalHeader className="flex flex-col gap-1 bg-purple p-4 ">
               <div className="flex flex-row justify-between">
                 <div className="flex flex-row gap-3">
@@ -195,6 +196,8 @@ function MemberClickDialogP({ open, onClose, id, isAdmin }: MemberClickDialogPro
                 </div>
               )}
             </ModalBody>
+            </>
+            )}
           </>
         </ModalContent>
       </Modal>

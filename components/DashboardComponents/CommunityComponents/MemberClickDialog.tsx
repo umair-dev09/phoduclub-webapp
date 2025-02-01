@@ -11,6 +11,7 @@ import { Tooltip } from "@nextui-org/react";
 import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button } from "@nextui-org/react";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
+import DashboardLoading from "@/components/DashboardLoading";
 
 interface MemberClickDialogProps {
   open: boolean;
@@ -214,9 +215,6 @@ function MemberClickDialog({ open, onClose, id, isAdmin, isCurrentUserAdmin }: M
   };
 
 
-  if (loading) {
-    return <LoadingData />
-  }
 
   return (
 
@@ -323,6 +321,10 @@ function MemberClickDialog({ open, onClose, id, isAdmin, isCurrentUserAdmin }: M
       >
         <ModalContent>
           <>
+          {loading ? (
+            <DashboardLoading />
+          ) : (
+            <>
             <ModalHeader className="flex flex-col gap-1 bg-purple p-4 ">
               <div className="flex flex-row justify-between">
                 <div className="flex flex-row gap-3">
@@ -458,6 +460,8 @@ function MemberClickDialog({ open, onClose, id, isAdmin, isCurrentUserAdmin }: M
                 </div>
               )}
             </ModalBody>
+            </>
+          )}
           </>
         </ModalContent>
       </Modal>

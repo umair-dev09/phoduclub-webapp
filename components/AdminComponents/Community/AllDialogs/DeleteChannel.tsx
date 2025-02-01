@@ -40,12 +40,14 @@ interface Deleteprops {
     categoryId: string;
     channelId: string;
     channelName: string;
+    
     setSelectedChannel: React.Dispatch<React.SetStateAction<{
         channelId: string;
         channelName: string;
         channelEmoji: string;
         channelDescription: string;
         headingId?: string;
+        notificationsMuted: { id: string, mutedUntil: string }[] | null;
         members: {
             id: string;
             isAdmin: boolean;

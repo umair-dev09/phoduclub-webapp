@@ -68,15 +68,9 @@ function PrivateChatLayout({ children }: GeneralChatLayoutProps) {
             const currentBlockedUsers = docSnapshot.data()?.blockedUsers || [];
             const currentChatNotifications = docSnapshot.data()?.personalChatNotifications || [];
 
-            // Sort chatList by lastMessageTime, handling undefined times
-            const sortedChatList = [...chatList].sort((a, b) => {
-                const timeA = a.lastMessageTime ? new Date(a.lastMessageTime).getTime() : 0;
-                const timeB = b.lastMessageTime ? new Date(b.lastMessageTime).getTime() : 0;
-                return timeB - timeA; // Most recent first
-            });
 
             const usersData = await Promise.all(
-                sortedChatList.map(async (chatItem: { id: string; isAdmin: boolean; lastMessageTime: string }) => {
+                chatList.map(async (chatItem: { id: string; isAdmin: boolean; lastMessageTime: string }) => {
                     const collection = chatItem.isAdmin ? 'admin' : 'users';
                     const userDoc = await getDoc(doc(db, collection, chatItem.id));
                     const userData = userDoc.data();
@@ -97,7 +91,7 @@ function PrivateChatLayout({ children }: GeneralChatLayoutProps) {
             setChatUsers(usersData);
             setLoading(false);
     
-            const userUnsubscribes = sortedChatList.map((chatItem: { id: string; isAdmin: boolean }) =>
+            const userUnsubscribes = chatList.map((chatItem: { id: string; isAdmin: boolean }) =>
                 onSnapshot(doc(db, chatItem.isAdmin ? 'admin' : 'users', chatItem.id), (userSnapshot) => {
                     const updatedUserData = userSnapshot.data();
                     setChatUsers((prevUsers) =>
@@ -156,9 +150,9 @@ function PrivateChatLayout({ children }: GeneralChatLayoutProps) {
                     )}
                
                     {chatUsers.sort((a, b) => {
-                            // Default to 0 (oldest) if lastMessageTime is undefined
-                            const timeA = a.lastMessageTime ? new Date(a.lastMessageTime).getTime() : 0;
-                            const timeB = b.lastMessageTime ? new Date(b.lastMessageTime).getTime() : 0;
+                            // Parse date strings and default to 0 (oldest) if lastMessageTime is undefined
+                            const timeA = a.lastMessageTime ? new Date(a.lastMessageTime.replace(' at ', ' ')).getTime() : 0;
+                            const timeB = b.lastMessageTime ? new Date(b.lastMessageTime.replace(' at ', ' ')).getTime() : 0;
                             return timeB - timeA;  // Most recent first
                         }).map((user, index) => (
                         <button key={index} 
