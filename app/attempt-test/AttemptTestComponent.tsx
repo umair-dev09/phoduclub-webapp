@@ -206,13 +206,17 @@ function formatTimeForReview(seconds: number): string {
     const totalSeconds = seconds;
     const hours = Math.floor(totalSeconds / 3600); // Calculate hours
     const minutes = Math.floor((totalSeconds % 3600) / 60); // Calculate remaining minutes
+    const remainingSeconds = totalSeconds % 60; // Calculate remaining seconds
     let formattedTime = '';
 
     if (hours > 0) {
         formattedTime += `${hours}h`; // Add hours if present
     }
-    if (minutes > 0 || hours === 0) {
+    if (minutes > 0) {
         formattedTime += (formattedTime ? ' ' : '') + `${minutes}m`; // Add minutes
+    }
+    if (remainingSeconds > 0 || (hours === 0 && minutes === 0)) {
+        formattedTime += (formattedTime ? ' ' : '') + `${remainingSeconds}s`; // Add seconds
     }
 
     return formattedTime;

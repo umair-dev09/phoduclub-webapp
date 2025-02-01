@@ -191,11 +191,14 @@ const convertToTimeFormat = (seconds: number): string => {
     const totalMinutes = Math.floor(seconds / 60);
     const hours = Math.floor(totalMinutes / 60);
     const minutes = totalMinutes % 60;
+    const remainingSeconds = seconds % 60;
 
     if (hours > 0) {
         return `${hours} ${hours === 1 ? 'Hour' : 'Hours'}`;
-    } else {
+    } else if (minutes > 0) {
         return `${minutes} ${minutes === 1 ? 'Minute' : 'Minutes'}`;
+    } else {
+        return `${remainingSeconds} ${remainingSeconds === 1 ? 'Second' : 'Seconds'}`;
     }
 };
 
