@@ -233,7 +233,14 @@ function GroupName({ communityId, isAdmin }: groupNameProps) {
                         height={18}
                         alt="mute-icon"
                       />
+                      {/* <Image
+                        src="/icons/notification-off.svg"
+                        width={18}
+                        height={18}
+                        alt="mute-icon"
+                      /> */}
                       <span className='font-normal text-[#0C111D] text-sm'>Mute</span>
+                      {/* <span className='font-normal text-[#0C111D] text-sm'>Muted</span> */}
                     </div>
                     <Image
                       src="/icons/arrow-right-01-round.svg"
@@ -243,11 +250,17 @@ function GroupName({ communityId, isAdmin }: groupNameProps) {
                     />
                   </div>
                 </PopoverTrigger>
-                <PopoverContent className="w-[128px] py-1 px-0 rounded-md border border-lightGrey">
-                  <div className="">
-                    <button className="w-full px-4 py-[10px] text-left text-sm font-normal leading-5 text-[#0C111D] hover:bg-[#EAECF0] transition-colors">For 8 hours</button>
-                    <button className="w-full px-4 py-[10px] text-left text-sm font-normal leading-5 text-[#0C111D] hover:bg-[#EAECF0] transition-colors">For 1 week</button>
-                    <button className="w-full px-4 py-[10px] text-left text-sm font-normal leading-5 text-[#0C111D] hover:bg-[#EAECF0] transition-colors">Always</button>
+                <PopoverContent className="w-auto py-1 px-0 rounded-md border border-lightGrey">
+                  <div>
+                    {/* <div className="flex flex-col">
+                      <button className="w-[128px] px-4 py-[10px] text-left text-sm font-normal leading-5 text-[#0C111D] hover:bg-[#EAECF0] transition-colors">For 8 hours</button>
+                      <button className="w-[128px] px-4 py-[10px] text-left text-sm font-normal leading-5 text-[#0C111D] hover:bg-[#EAECF0] transition-colors">For 1 week</button>
+                      <button className="w-[128px] px-4 py-[10px] text-left text-sm font-normal leading-5 text-[#0C111D] hover:bg-[#EAECF0] transition-colors">Always</button>
+                    </div> */}
+                    <div className="flex flex-col">
+                      <button className="w-[182px] px-4 py-[10px] text-left text-sm font-normal leading-5 text-[#667085]">Muted until [time]</button>
+                      <button className="w-[182px] px-4 py-[10px] text-left text-sm font-normal leading-5 text-[#0C111D] hover:bg-[#EAECF0] transition-colors">Unmute</button>
+                    </div>
                   </div>
                 </PopoverContent>
               </Popover>
