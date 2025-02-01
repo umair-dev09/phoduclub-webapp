@@ -414,7 +414,7 @@ function Quiz() {
                 <ModalContent>
                     <>
                         <ModalHeader className="flex flex-row justify-between items-center gap-1">
-                            <span className="text-[#1D2939] font-semibold text-lg">Start Quiz</span>
+                            <span className="text-[#1D2939] font-semibold text-lg">Start Test</span>
                             <button className="w-[32px] h-[32px]  rounded-full flex items-center justify-center transition-all duration-300 ease-in-out hover:bg-[#F2F4F7]"
                                 onClick={() => setShowQuizDialog(false)}>
                                 <button>

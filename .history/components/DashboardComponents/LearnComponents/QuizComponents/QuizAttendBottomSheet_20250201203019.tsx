@@ -384,7 +384,7 @@ function QuizAttendBottomSheet({
                                         return (
                                             <div key={q.questionId} className="w-auto h-auto rounded-[12px] px-4 border-2 border-[#EAECF0] flex py-4 flex-col items-center justify-center">
                                                 <div className="bg-[#FFFFFF] w-[832px] h-auto flex flex-col gap-[20px]">
-                                                    <div className="w-[832px] h-auto">
+                                                    <div className="w-[832px] h-[24px]">
                                                         <span className="flex flex-row gap-1 text-[#1D2939] font-semibold text-base">
                                                             {index + 1}. <div dangerouslySetInnerHTML={{ __html: q.question || '' }} />
                                                         </span>
@@ -425,7 +425,7 @@ function QuizAttendBottomSheet({
                     {/* Bottom Button Section */}
                     <div className="flex flex-row items-center justify-end font-semibold border-t border-lightGrey px-4 py-3">
                         <button
-                            className={`border rounded-lg py-2.5 px-6 text-sm text-white hover:bg-[#6D0DCC] bg-purple font-semibold`}
+                            className={`border rounded-lg py-2.5 px-6 text-sm text-white hover:bg-[#6D0DCC] bg-purple`}
 
                             onClick={handleSubmit}
                         >

@@ -1137,7 +1137,7 @@ function Test() {
                                     setShowTestDialog(false);
                                 }}
                             >
-                                Start Test
+                                Start Now
                             </Button>
 
                         </ModalFooter>
