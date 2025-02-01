@@ -174,7 +174,13 @@ export type IconsType =
   | "Subject Chapters-1"
   | "Subject Chapters-2"
   | "plus-white-sign"
-  | "exit-channel-red";
+  | "exit-channel-red"
+  | "arrow-up-01-round(2)-white"
+  | "arrow-down-01-round(2)-white"
+  | "white-arrow-up"
+  | "white-arrow-down"
+  | "download-02"
+  | "message-multiple-01(2)"
 
 
 
