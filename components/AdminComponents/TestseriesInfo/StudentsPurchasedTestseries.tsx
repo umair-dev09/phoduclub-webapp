@@ -48,7 +48,7 @@ function formatDateString(dateStr: string): string {
     });
 }
 
-function StudentsAttemptedTestseries({testId}: StudentsAttemptsProps) {
+function StudentsPurchasedTestseries({testId}: StudentsAttemptsProps) {
     const [data, setData] = useState<StudentAttempts[]>([]);
     const [studentAttempts, setStudentAttempts] = useState<StudentAttempts[]>([]);
     const [currentPage, setCurrentPage] = useState(1);
@@ -201,8 +201,9 @@ function StudentsAttemptedTestseries({testId}: StudentsAttemptsProps) {
         const handleRemoveUser = async (userId: string) => {
             try {
                 const attemptRef = doc(db, 'testseries', testId, 'StudentsPurchased', userId);
+                const transactionRef = doc(db, 'users', userId, 'transactions', testId);
                 await deleteDoc(attemptRef);
-                
+                await deleteDoc(transactionRef);
                 // Update local state to remove the user
                 setStudentAttempts(prev => prev.filter(student => student.userId !== userId));
                 setData(prev => prev.filter(student => student.userId !== userId));
@@ -239,7 +240,13 @@ function StudentsAttemptedTestseries({testId}: StudentsAttemptsProps) {
                     enrollmentType: 'free',
                     // uniqueId: uniqueId
                 });
-
+                const transactionRef = doc(db, 'users', userDoc.id, 'transactions', testId);
+                await setDoc(transactionRef, {
+                   contentId: testId,
+                   contentType: "testseries",
+                   dateOfPurchase: new Date().toISOString(),
+                   paymentType: 'free',
+                });
                 // Update local state
                 setStudentAttempts(prev => [...prev, {
                     userId: userDoc.id,
@@ -820,5 +827,5 @@ function PaginationSection({
     );
 }
 
-export default StudentsAttemptedTestseries;
+export default StudentsPurchasedTestseries;
 

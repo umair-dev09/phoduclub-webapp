@@ -47,7 +47,7 @@ function formatDateString(dateStr: string): string {
     });
 }
 
-function StudentsAttemptedCourseInfo({courseId}: StudentsAttemptsProps) {
+function StudentsPurchasedCourseInfo({courseId}: StudentsAttemptsProps) {
     const [data, setData] = useState<StudentAttempts[]>([]);
     const [studentAttempts, setStudentAttempts] = useState<StudentAttempts[]>([]);
     const [currentPage, setCurrentPage] = useState(1);
@@ -151,8 +151,9 @@ function StudentsAttemptedCourseInfo({courseId}: StudentsAttemptsProps) {
         const handleRemoveUser = async (userId: string) => {
             try {
                 const attemptRef = doc(db, 'course', courseId, 'StudentsPurchased', userId);
+                const transactionRef = doc(db, 'users', userId, 'transactions', courseId);
                 await deleteDoc(attemptRef);
-                
+                await deleteDoc(transactionRef);
                 // Update local state to remove the user
                 setStudentAttempts(prev => prev.filter(student => student.userId !== userId));
                 setData(prev => prev.filter(student => student.userId !== userId));
@@ -199,6 +200,14 @@ function StudentsAttemptedCourseInfo({courseId}: StudentsAttemptsProps) {
                     userId: userDoc.id,
                     enrollmentDate: new Date().toISOString(),
                     enrollmentType: 'free',
+                });
+                
+                const transactionRef = doc(db, 'users', userDoc.id, 'transactions', courseId);
+                await setDoc(transactionRef, {
+                   contentId: courseId,
+                   contentType: "course",
+                   dateOfPurchase: new Date().toISOString(),
+                   paymentType: 'free',
                 });
 
                 // Update local state
@@ -780,5 +789,5 @@ function PaginationSection({
     );
 }
 
-export default StudentsAttemptedCourseInfo;
+export default StudentsPurchasedCourseInfo;
 

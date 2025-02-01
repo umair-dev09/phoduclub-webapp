@@ -7,7 +7,6 @@ import Delete from "@/components/AdminComponents/QuizInfoDailogs/DeleteDailogue"
 import End from "@/components/AdminComponents/QuizInfoDailogs/EndDailogue";
 import Paused from "@/components/AdminComponents/QuizInfoDailogs/PauseDailogue";
 import Resume from "@/components/AdminComponents/QuizInfoDailogs/ResumeDailogue";
-import StudentsAttemptedTestseries from '@/components/AdminComponents/TestseriesInfo/StudentsAttemptedTestseries';
 import Content from '@/components/AdminComponents/TestseriesInfo/Content';
 import { Popover, PopoverContent, PopoverTrigger } from "@nextui-org/popover";
 import { Tabs, Tab } from "@nextui-org/react";
@@ -22,6 +21,7 @@ import DeleteDialog from "@/components/AdminComponents/QuizInfoDailogs/DeleteDai
 import { ToastContainer } from "react-toastify";
 import DeleteTest from "@/components/AdminComponents/TestseriesDialogs/DeleteTest";
 import { format } from 'date-fns';
+import StudentsPurchasedTestseries from "@/components/AdminComponents/TestseriesInfo/StudentsPurchasedTestseries";
 
 interface Section {
     id: string;
@@ -716,7 +716,7 @@ function TestSeriesInfo() {
                             </div>
                         }
                     >
-                        <StudentsAttemptedTestseries  testId={testId || ''}/>
+                        <StudentsPurchasedTestseries  testId={testId || ''}/>
                     </Tab>
                 </Tabs>
             </div>
