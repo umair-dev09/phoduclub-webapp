@@ -95,12 +95,13 @@ function TesstseriesInfo() {
     const [dateFilter, setDateFilter] = useState(null);
     const [statusFilter, setStatusFilter] = useState(null);
     const isTextSearch = searchTerm.trim().length > 0 && !dateFilter && !statusFilter;
+
     const [sortConfig, setSortConfig] = useState<{
         key: string;
-        direction: 'asc' | 'desc' | null;
+        direction: 'asc' | null | 'desc';
     }>({
-        key: '',
-        direction: null
+        key: 'publishedOn',
+        direction: 'desc'
     });
 
     useEffect(() => {

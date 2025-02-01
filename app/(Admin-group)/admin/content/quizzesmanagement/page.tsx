@@ -93,6 +93,7 @@ const fetchQuizzes = (callback: (quizzes: Quiz[]) => void) => {
     return unsubscribe;
 };
 
+type SortDirection = 'asc' | 'desc' | null;
 
 const Quizz = () => {
     const [data, setData] = useState<Quiz[]>([]);
@@ -148,10 +149,10 @@ const Quizz = () => {
 
     const [sortConfig, setSortConfig] = useState<{
         key: string;
-        direction: 'asc' | 'desc' | null;
+        direction: 'asc' | null | 'desc';
     }>({
-        key: '',
-        direction: null
+        key: 'publishedOn',
+        direction: 'desc'
     });
 
     useEffect(() => {
@@ -226,13 +227,19 @@ const Quizz = () => {
     const handleSort = (key: string) => {
         if (key === 'questions' || key === 'publishedOn' || key === 'students') {
             setSortConfig((prevConfig) => {
-                // Cycle through: no sort -> asc -> desc -> no sort
-                if (prevConfig.key !== key || !prevConfig.direction) {
-                    return { key, direction: 'asc' };
-                } else if (prevConfig.direction === 'asc') {
-                    return { key, direction: 'desc' };
-                } else {
-                    return { key: '', direction: null }; // Reset to original order
+                // If clicking on a new column or the column wasn't sorted
+                if (prevConfig.key !== key) {
+                    return { key, direction: 'desc' }; // Default to descending order
+                }
+
+                // If clicking on the same column, cycle through: desc -> asc -> null
+                switch (prevConfig.direction) {
+                    case 'desc':
+                        return { key, direction: 'asc' };
+                    case 'asc':
+                        return { key: '', direction: null };
+                    default:
+                        return { key, direction: 'desc' };
                 }
             });
         }

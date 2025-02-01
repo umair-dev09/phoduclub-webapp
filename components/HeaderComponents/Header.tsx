@@ -88,7 +88,7 @@ function Header() {
                     </h2>
                 </div>
                 <div className=" flex flex-row items-center">
-                    <HelpDropDown />
+                    {/* <HelpDropDown /> */}
                     <NotficationDropDown />
                     <div className="w-[1.5px] h-[14px] bg-[#eaecf0] border-none ml-[14px] mr-[14px]" />
                     <Popover placement="bottom" isOpen={open} onOpenChange={(open) => setOpen(open)} onClose={() => setOpen(false)}>

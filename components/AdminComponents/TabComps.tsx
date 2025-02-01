@@ -261,7 +261,7 @@ function TabComps({ isCollapsed, setIsCollapsed }: TabCompsProps) {
                                         height={22}
                                         alt="Content"
                                     />
-                                    <span className="ml-2 whitespace-nowrap">Content</span>
+                                    <span className="ml-2 text-sm whitespace-nowrap">Content</span>
                                 </div>
 
                                 {/* Right section: Arrow icon */}

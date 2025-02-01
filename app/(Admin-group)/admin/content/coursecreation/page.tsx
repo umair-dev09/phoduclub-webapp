@@ -101,12 +101,12 @@ function Course() {
             const coursesData = await Promise.all(snapshot.docs.map(async (courseDoc) => {
                 const courseData = courseDoc.data();
                 const courseDocId = courseDoc.id;
-                
+
                 // Get StudentsPurchased collection count
                 const studentsPurchasedRef = collection(db, 'course', courseDocId, 'StudentsPurchased');
                 const studentsPurchasedSnapshot = await getDocs(studentsPurchasedRef);
                 const studentsPurchasedCount = studentsPurchasedSnapshot.size;
-                
+
                 return {
                     courseName: courseData.courseName,
                     courseId: courseData.courseId,
@@ -129,10 +129,10 @@ function Course() {
 
     const [sortConfig, setSortConfig] = useState<{
         key: string;
-        direction: 'asc' | 'desc' | null;
+        direction: 'asc' | null | 'desc';
     }>({
-        key: '',
-        direction: null
+        key: 'publishedOn',
+        direction: 'desc'
     });
 
     useEffect(() => {
@@ -191,6 +191,11 @@ function Course() {
 
         if (sortConfig.key && sortConfig.direction) {
             filteredCourses = filteredCourses.sort((a, b) => {
+                if (sortConfig.key === 'studentsPurchased') {
+                    return sortConfig.direction === 'asc'
+                        ? a.studentsPurchased - b.studentsPurchased
+                        : b.studentsPurchased - a.studentsPurchased;
+                }
                 if (sortConfig.key === 'discountPrice') {
                     return sortConfig.direction === 'asc'
                         ? a.discountPrice - b.discountPrice
@@ -213,7 +218,7 @@ function Course() {
     }, [searchTerm, checkedState, selectedDate, sortConfig]);
 
     const handleSort = (key: string) => {
-        if (key === 'discountPrice' || key === 'publishedOn') {
+        if (key === 'discountPrice' || key === 'publishedOn' || key === 'studentsPurchased') {
             setSortConfig((prevConfig) => {
                 // Cycle through: no sort -> asc -> desc -> no sort
                 if (prevConfig.key !== key || !prevConfig.direction) {
@@ -250,7 +255,6 @@ function Course() {
             [index]: false,
         }));
     };
-
 
     // State to manage each dialog's visibility
 
@@ -496,11 +500,10 @@ function Course() {
                                         </th>
                                         <th className="w-[20%] text-center px-8 py-4 text-[#667085] font-medium text-sm">
                                             <div className="flex flex-row justify-center gap-1">
-                                                <p>Students Purchased</p>
+                                                <p className="whitespace-nowrap">Students Purchased</p>
                                                 <Image src='/icons/unfold-more-round.svg' alt="more" width={16} height={16} />
                                             </div>
                                         </th>
-                                   
                                         <th className="w-[12%] text-center px-8 py-4 rounded-tr-xl text-[#667085] font-medium text-sm">
                                             <span className="">
                                                 Status
