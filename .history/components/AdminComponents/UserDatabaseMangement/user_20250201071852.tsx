@@ -439,11 +439,11 @@ function User() {
                         )}
                     </div>
                     <div className="flex flex-row gap-2">
-                        <button className="flex flex-row items-center px-[0.875rem] py-[0.625rem] gap-1 bg-white border border-lightGrey hover:bg-[#FEE4E2] rounded-md">
+                        <button className="flex flex-row items-center px-[0.875rem] py-[0.625rem] gap-1 bg-white border border-lightGrey rounded-md">
                             <Image src='/icons/user-block-red-01.svg' alt="revoke ban" width={20} height={20} />
                             <p className="text-sm text-[#DE3024] font-medium leading-[1.125rem]">Ban</p>
                         </button>
-                        <button className="flex flex-row items-center px-[0.875rem] py-[0.625rem] gap-1 bg-white border border-lightGrey hover:bg-[#FEE4E2] rounded-md">
+                        <button className="flex flex-row items-center px-[0.875rem] py-[0.625rem] gap-1 bg-white border border-lightGrey rounded-md">
                             <Image src='/icons/delete.svg' alt="revoke ban" width={20} height={20} />
                             <p className="text-sm text-[#DE3024] font-medium leading-[1.125rem]">Delete</p>
                         </button>

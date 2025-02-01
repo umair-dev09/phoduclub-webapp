@@ -1,7 +1,7 @@
 "use client";
 import Image from "next/image";
 import React, { useState, useEffect, useRef } from "react";
-import 'react-quill/dist/quill.snow.css';
+import 'quill/dist/quill.snow.css';
 import ReactQuill from 'react-quill-new'; // Ensure correct import
 import Quill from 'quill'; // Import Quill to use it for types
 import { Popover, PopoverTrigger, PopoverContent } from '@nextui-org/popover';
@@ -11,6 +11,7 @@ import { collection, doc, onSnapshot, orderBy, query, setDoc } from "firebase/fi
 import { auth, db } from "@/firebase";
 import DiscussionDisplay from "./DiscussionDisplay";
 import LoadingData from "@/components/Loading";
+import MessageLoading from "@/components/MessageLoading";
 
 interface DiscussionProps {
     courseId: string;
@@ -24,6 +25,14 @@ interface DiscussionData {
     userId: string;
     timestamp: string;
     messageId: string;
+    upvotes: string[];
+    deleted: boolean;
+    isPinned: boolean;
+    isReplying: boolean;
+    replyingToId: string;
+    replyingToMsgId: string;
+    isReplyingToMainMsg: boolean;
+    replyingToAdmin: boolean;
 }
 
 
@@ -34,11 +43,18 @@ function Discussion({ courseId, sectionId, contentId }: DiscussionProps) {
     const [quill, setQuill] = useState<Quill | null>(null);
     const [alignment, setAlignment] = useState<string | null>(null); // State to hold Quill instance
     const [loading, setLoading] = useState(true);
-
+    const [showReplyLayout, setShowReplyLayout] = useState(false);
+    const [handleReply, setHandleReply] = useState({
+        message: '', senderId: '', chatId: '', displayUserId: '', isReplying: false, replyingToMsgId: '', replyingToAdmin: false
+    });
     const isFormValid = value.trim();
 
     const handleChange = (content: string) => {
-        setValue(content);
+        if (quill && quill.getText().trim() === '') {
+            setValue('');
+        } else {
+            setValue(content);
+        }
     };
 
     const [discussions, setDiscussions] = useState<DiscussionData[]>([]);
@@ -72,25 +88,52 @@ function Discussion({ courseId, sectionId, contentId }: DiscussionProps) {
     }, [courseId, sectionId, contentId]);
 
     const handleSendMessage = async () => {
+        if (value === '') { return; }
         if (auth.currentUser?.uid) {
-            try {
-                const ref = doc(collection(db, 'course', courseId, 'sections', sectionId, 'content', contentId, 'Disscussion'));
-
-                const currentUserId = auth.currentUser.uid;
-
-                const disscusionData = {
-                    message: value,
-                    userId: currentUserId,
-                    timestamp: new Date().toISOString(),
-                    messageId: ref.id,
-                    isAdmin: false,
-                };
-                await setDoc(ref, disscusionData);
-                setValue('');
-                toast.success('Message sent!');
-            } catch (error) {
-                console.error('Error updating course document:', error);
-                toast.error('Failed to mark lesson completed');
+            if (showReplyLayout) {
+                try {
+                    const ref = doc(collection(db, 'course', courseId, 'sections', sectionId, 'content', contentId, 'Disscussion'));
+                    const currentUserId = auth.currentUser.uid;
+                    const disscusionData = {
+                        message: value,
+                        userId: currentUserId,
+                        timestamp: new Date().toISOString(),
+                        messageId: ref.id,
+                        isAdmin: false,
+                        isReplying: true,
+                        replyingToId: handleReply.senderId,
+                        replyingToMsgId: handleReply.isReplying ? handleReply.replyingToMsgId : handleReply.chatId,
+                        isReplyingToMainMsg: handleReply.isReplying ? false : true,
+                        replyingToAdmin: handleReply.replyingToAdmin,
+                    };
+                    await setDoc(ref, disscusionData);
+                    setValue('');
+                    setShowReplyLayout(false);
+                    setHandleReply({ message: '', senderId: '', chatId: '', displayUserId: '', isReplying: false, replyingToMsgId: '', replyingToAdmin: false });
+                    toast.success('Message sent!');
+                } catch (error) {
+                    console.error('Error updating course document:', error);
+                    toast.error('Failed to mark lesson completed');
+                }
+            }
+            else {
+                try {
+                    const ref = doc(collection(db, 'course', courseId, 'sections', sectionId, 'content', contentId, 'Disscussion'));
+                    const currentUserId = auth.currentUser.uid;
+                    const disscusionData = {
+                        message: value,
+                        userId: currentUserId,
+                        timestamp: new Date().toISOString(),
+                        messageId: ref.id,
+                        isAdmin: false,
+                    };
+                    await setDoc(ref, disscusionData);
+                    setValue('');
+                    toast.success('Message sent!');
+                } catch (error) {
+                    console.error('Error updating course document:', error);
+                    toast.error('Failed to mark lesson completed');
+                }
             }
         }
     };
@@ -129,7 +172,7 @@ function Discussion({ courseId, sectionId, contentId }: DiscussionProps) {
     }, []);
 
     // This will clear formatting when the user types
-    const handleKeyDown = () => {
+    const handleKeyDown = (e: React.KeyboardEvent) => {
         if (quill) {
             const range = quill.getSelection();
             if (range) {
@@ -143,10 +186,11 @@ function Discussion({ courseId, sectionId, contentId }: DiscussionProps) {
                 if (currentFormats.underline) {
                     quill.format('underline', false);
                 }
-
-
-
             }
+        }
+        if (e.key === "Enter" && !e.shiftKey) {
+            e.preventDefault(); // Prevents new line in ReactQuill
+            handleSendMessage(); // Send the message
         }
     };
 
@@ -158,15 +202,37 @@ function Discussion({ courseId, sectionId, contentId }: DiscussionProps) {
     return (
 
         <div className="flex flex-col overflow-y-auto h-auto  w-auto">
-            <span className="ml-[24px] mt-[20px] w-[149px] h-[24px] text-1g text-[#1D2939] font-medium">Share your doubts</span>
+            <span id="discussion-input" className="ml-[24px] mt-[20px] w-[149px] h-[24px] text-1g text-[#1D2939] font-medium">Share your doubts</span>
+            {showReplyLayout && (
+                <div className="mx-[24px] mt-[20px] mb-[-12px] flex flex-row items-start gap-4 w-fit h-auto text-sm text-purple font-normal bg-gray-50 border border-gray-200 rounded-md px-4 py-2">
+                    <span>
+                        Replying to @{handleReply.displayUserId} <div className={`text-[#3b3b3b] text-sm font-normal break-all line-clamp-1`} dangerouslySetInnerHTML={{
+                            __html: handleReply.message || '',
+                        }} />
+                    </span>
+                    <button className="mt-[2px]"
+                        onClick={() => {
+                            setShowReplyLayout(false);
+                            setHandleReply({ message: '', senderId: '', chatId: '', displayUserId: '', isReplying: false, replyingToMsgId: '', replyingToAdmin: false });
+                        }}>
+                        <Image
+                            src="/icons/cancel.svg"
+                            alt="cancel icon"
+                            width={15}
+                            height={15}
+                        />
+                    </button>
+                </div>
+            )}
 
             {/* -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- */}
             {/* THIS HEADER PART OF THE DISCUSSION WHERE USER WRITES THE COMMENT */}
             <div className="mr-[24px] mt-[20px] ml-[24px] bg-[#F7F8FB] border border-solid border-[#EAECF0] rounded-[12px] h-auto">
 
-
                 {/* Textarea for writing the comment */}
-                <div className="bg-[#F7F8FB] border-b border-solid border-b-[#EAECF0] rounded-tl-[12px] rounded-tr-[12px]">
+                <div
+                    className="bg-[#F7F8FB] border-b border-solid border-b-[#EAECF0] rounded-tl-[12px] rounded-tr-[12px]"
+                >
                     <ReactQuill
                         ref={quillRef}
                         value={value}
@@ -174,19 +240,8 @@ function Discussion({ courseId, sectionId, contentId }: DiscussionProps) {
                         onKeyDown={handleKeyDown}
                         modules={{ toolbar: false }}
                         placeholder="Type your response here..."
-                        className=" text-[#1D2939] focus:outline-none rounded-b-[12px] custom-quill placeholder:not-italic"
-                        style={{
-                            minHeight: "10px", // Initial height
-                            maxHeight: "150px", // Maximum height before scrolling
-                            overflowY: "auto",  // Enable scrolling if content exceeds max height
-                            padding: "1rem",   // Padding to create space inside the editor
-                            border: 'none',
-                            fontStyle: 'normal',
-                        }}
+                        className=" text-[#1D2939] focus:outline-none rounded-b-[12px] break-all custom-quill placeholder:not-italic min-h-[10px] max-h-[150px] overflow-y-auto p-4 border-none not-italic"
                     />
-
-
-
                 </div>
 
                 {/* ---------------------------------------------------------------- */}
@@ -201,17 +256,12 @@ function Discussion({ courseId, sectionId, contentId }: DiscussionProps) {
                                 className="hover:bg-[#EAECF0]"
                             >
                                 <Image src="/icons/Bold.svg" width={24} height={24} alt="bold" />
-
-
-
                             </button>
                             <button
                                 className="hover:bg-[#EAECF0]"
                                 onClick={() => handleIconClick('italic')}>
-
                                 <Image src="/icons/italic-icon.svg" width={24} height={24} alt="italic-icon" />
                             </button>
-
                             <button
                                 className="hover:bg-[#EAECF0]"
                                 onClick={() => handleIconClick('underline')}>
@@ -244,12 +294,8 @@ function Discussion({ courseId, sectionId, contentId }: DiscussionProps) {
                                     <button onClick={() => handleIconClick("align-right")} className="flex items-center justify-center hover:bg-[#EAECF0]">
                                         <Image src="/icons/align-right.svg" width={30} height={30} alt="align-right" />
                                     </button>
-
                                 </PopoverContent>
                             </Popover>
-
-
-
 
                             {/* --------------------------------------------------------------------------------------------------------------------------------- */}
 
@@ -258,16 +304,11 @@ function Discussion({ courseId, sectionId, contentId }: DiscussionProps) {
                                 onClick={() => handleIconClick('ordered')}>
                                 <Image src="/icons/dropdown-icon-2.svg" width={27} height={27} alt="dropdown-icon" />
                             </button>
-
-
-
                         </div>
                         {/* Button */}
                         <button
                             className={` w-[88px] h-[36px] flex justify-center items-center rounded-md shadow-inner-button 
-                                  ${!isFormValid ? 'bg-[#d8acff]' : 'bg-[#8501FF]'} 
-                                     ${!isFormValid ? '' : 'border border-solid border-[#800EE2]'}`}
-
+                                        ${!isFormValid ? 'bg-[#d8acff] cursor-not-allowed' : 'border border-[#800EE2] bg-[#8501FF] transition-colors duration-150 hover:bg-[#6D0DCC]'}`}
                             disabled={!isFormValid} // Disable button if needed
                             onClick={handleSendMessage}
                         >
@@ -275,189 +316,51 @@ function Discussion({ courseId, sectionId, contentId }: DiscussionProps) {
                         </button>
                     </div>
                 </div>
-
             </div>
 
             {/* -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- */}
             {/* THIS IS THE MIDDLE-LINE */}
             <div className="mt-[30px]" />
             {loading ? (
-                <LoadingData />
+                <MessageLoading />
             ) : (
                 <>
-                    {discussions.map((d) => (
-                        <div key={d.messageId} >
-                            <DiscussionDisplay userId={d.userId} message={d.message} messageId={d.userId} isAdmin={d.isAdmin} timestamp={d.timestamp} />
-                        </div>
-                    ))}
+                    {discussions
+                        .sort((a, b) => (b.isPinned ? 1 : 0) - (a.isPinned ? 1 : 0))
+                        .filter(message => !message.isReplying)
+                        .map((parentMessage) => {
+                            // Find all replies for this message
+                            const replies = discussions.filter(
+                                reply => reply.isReplying && reply.replyingToMsgId === parentMessage.messageId
+                            ).map(reply => ({
+                                ...reply,
+                                courseId,
+                                sectionId,
+                                contentId,
+                                setShowReplyLayout,
+                                setHandleReply
+                            }));
+
+                            // Only pass replies if there are any
+                            const props = {
+                                ...parentMessage,
+                                courseId,
+                                sectionId,
+                                contentId,
+                                replies: replies.length > 0 ? replies : undefined
+                            };
+
+                            return (
+                                <div key={parentMessage.messageId}>
+                                    <DiscussionDisplay setShowReplyLayout={setShowReplyLayout} setHandleReply={setHandleReply} {...props} />
+                                </div>
+                            );
+                        })
+                    }
+
                 </>
             )}
 
-
-            {/* second comment */}
-            {/* <div className="flex flex-row w-full justify-between">
-                    <div className=" flex flex-row gap-3">
-                        <Image
-                            src="/images/photo.png"
-                            width={46}
-                            height={46}
-                            alt=" Proflie -Image" />
-                        <div className="flex flex-col gap-2">
-                            <span className="font-medium text-sm text-[#1D2939]">Devon Lane</span>
-                            <span className="font-normal text-sm text-[#1D2939] opacity-[50%]">devon#8852</span>
-                        </div>
-                    </div>
-                    <span className="text-sm font-normal text-[#1D2939] opacity-[50%] flex items-center">
-                        3 min ago
-                    </span>
-                </div>
-                <div className=" flex flex-col ml-12 gap-3">
-                    <div className="font-normal text-[#1D2939] text-sm opacity-[70%] leading-relaxed">
-                        <ExpandableText content={content} />
-                    </div>
-                    <div className=" flex flex-row gap-6 items-center">
-                        <button className="flex flex-row gap-1">
-                            <Image
-                                src="/icons/upvote.svg"
-                                width={20}
-                                height={20}
-                                alt="upvote_button"
-                                className=""
-
-                            />
-                            <span className="font-normal text-[#141B34] text-sm">24</span>
-                            <span className=" font-normal text-[#141B34] text-sm">upvote</span>
-                        </button>
-                        <button className="flex flex-row gap-1 items-center">
-                            <Image
-                                src="/icons/comment-icon.svg"
-                                width={20}
-                                height={20}
-                                alt="three-icon" />
-                            <span className="text-[#1D2939] font-normal text-sm">30 Reply</span>
-                        </button>
-                    </div>
-                    <div className="flex flex-col gap-3 mt-2">
-                        <div className="flex flex-row gap-3">
-                            <div className="flex items-center">
-                                <div className="relative">
-                                    <Image src='/images/DP_Lion.svg' alt="DP" width={40} height={40} />
-                                    <Image className="absolute right-0 bottom-0" src='/icons/winnerBatch.svg' alt="Batch" width={18} height={18} />
-                                </div>
-                            </div>
-                            <div className="flex flex-col gap-1">
-                                <div className="flex flex-row gap-2">
-                                    <span className="font-semibold text-sm text-[#1D2939]">John Smith</span>
-                                    <div className="w-[66px] h-6 rounded-sm bg-[#EAECF0] flex items-center justify-center">
-                                        <span className="text-[#1D2939] font-semibold text-xs">Teacher</span>
-                                    </div>
-                                </div>
-                                <span className="font-normal text-sm text-[#1D2939] opacity-[50%]">jhon#2355asas</span>
-                            </div>
-                        </div>
-                        <p className="text-[#1D2939] font-normal text-sm">Students will learn how to efficiently solve problems using bitwise operations and gain hands-on experience through coding exercises and projects.</p>
-                        <div className=" flex flex-row gap-6 items-center">
-                            <button className="flex flex-row gap-1">
-                                <Image
-                                    src="/icons/upvote.svg"
-                                    width={20}
-                                    height={20}
-                                    alt="upvote_button"
-                                    className=""
-
-                                />
-                                <span className="font-normal text-[#141B34] text-sm">24</span>
-                                <span className=" font-normal text-[#141B34] text-sm">upvote</span>
-                            </button>
-                            <button className="flex flex-row gap-1 items-center">
-                                <Image
-                                    src="/icons/comment-icon.svg"
-                                    width={20}
-                                    height={20}
-                                    alt="three-icon" />
-                                <span className="text-[#1D2939] font-normal text-sm">30 Reply</span>
-                            </button>
-                        </div>
-                    </div>
-                    <div className="flex flex-col gap-3 mt-2">
-                        <div className="flex flex-row gap-3">
-                            <div className="flex items-center">
-                                <div className="relative">
-                                    <Image src='/images/DP_Lion.svg' alt="DP" width={40} height={40} />
-                                    <Image className="absolute right-0 bottom-0" src='/icons/winnerBatch.svg' alt="Batch" width={18} height={18} />
-                                </div>
-                            </div>
-                            <div className="flex flex-col gap-1">
-                                <div className="flex flex-row gap-2">
-                                    <span className="font-semibold text-sm text-[#1D2939]">Cameron Williamson</span>
-                                </div>
-                                <span className="font-normal text-sm text-[#1D2939] opacity-[50%]">jhon#2355asas</span>
-                            </div>
-                        </div>
-                        <p className="text-[#1D2939] font-normal text-sm">Students will learn how to efficiently solve problems using bitwise operations and gain hands-on experience through coding exercises and projects.</p>
-                        <div className=" flex flex-row gap-6 items-center">
-                            <button className="flex flex-row gap-1">
-                                <Image
-                                    src="/icons/upvote.svg"
-                                    width={20}
-                                    height={20}
-                                    alt="upvote_button"
-                                    className=""
-
-                                />
-                                <span className="font-normal text-[#141B34] text-sm">0</span>
-                                <span className=" font-normal text-[#141B34] text-sm">Like</span>
-                            </button>
-                            <button className="flex flex-row gap-1 items-center">
-                                <Image
-                                    src="/icons/comment-icon.svg"
-                                    width={20}
-                                    height={20}
-                                    alt="three-icon" />
-                                <span className="text-[#1D2939] font-normal text-sm">30 Reply</span>
-                            </button>
-                        </div>
-                    </div>
-
-                </div>
-                <div className="flex flex-col  gap-3 ">
-                    <div className="flex flex-row w-full justify-between">
-                        <div className=" flex flex-row gap-3">
-                            <Image
-                                src="/icons/profile-pic.png"
-                                width={46}
-                                height={46}
-                                alt=" Proflie -Image" />
-                            <div className="flex flex-col gap-2">
-                                <span className="font-medium text-sm text-[#1D2939]">Devon Lane</span>
-                                <span className="font-normal text-sm text-[#1D2939] opacity-[50%]">devon#8852</span>
-                            </div>
-                        </div>
-                        <span className="text-sm font-normal text-[#1D2939] opacity-[50%] flex items-center">
-                            1 hr ago
-                        </span>
-                    </div>
-                    <div className="  font-normal text-[#1D2939] text-sm opacity-[70%] leading-relaxed">
-                        <ExpandableText content={content} />
-                    </div>
-                    <div className="flex flex-row gap-6 items-center">
-                        <button className="flex flex-row gap-1">
-                            <Image
-                                src="/icons/upvote.svg"
-                                width={20}
-                                height={20}
-                                alt="upvote_button"
-                                className=""
-
-                            />
-                            <span className="font-normal text-[#141B34] text-sm">24</span>
-                            <span className=" font-normal text-[#141B34] text-sm">upvote</span>
-                        </button>
-                        <button>
-                            <span className="view-replies font-semibold text-sm text-[#9012FF]">View all 30 Reply</span>
-                        </button>
-                    </div>
-                </div> */}
         </div>
     )
 }

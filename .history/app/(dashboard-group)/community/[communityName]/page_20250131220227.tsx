@@ -90,7 +90,7 @@ export default function CommunityName() {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
-  const [isCollapsed, setIsCollapsed] = useState(true);
+  const [isCollapsed, setIsCollapsed] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
   const [chats, setChats] = useState<Chat[]>([]); // State to hold chat messages

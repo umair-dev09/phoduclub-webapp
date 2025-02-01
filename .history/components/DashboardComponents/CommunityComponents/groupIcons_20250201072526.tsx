@@ -1,9 +1,9 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { getFirestore, collection, getDocs, query, where } from "firebase/firestore";
+import { getFirestore, collection, getDocs, query, where, onSnapshot, doc } from "firebase/firestore";
 import { onAuthStateChanged, User } from 'firebase/auth'; // Import the User type from Firebase
 import { auth } from "@/firebase";
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams, usePathname } from 'next/navigation';
 import Image from "next/image";
 
 
@@ -14,13 +14,38 @@ type CommunityData = {
   members: { id: string, isAdmin: boolean }[] | null;
 };
 
+
 function GroupIcons() {
+  const searchParams = useSearchParams(); // Get query params, e.g., "?qId=B8yw93YJcBaGL3x0KRvN"
+
   const [communities, setCommunities] = useState<CommunityData[]>([]);
   const [user, setUser] = useState<User | null>(null);
   const [selectedCommunityId, setSelectedCommunityId] = useState<string | null>(null); // State to track selected item
   const [selectedButton, setSelectedButton] = useState<string | null>(null); // State to track selected button
   const db = getFirestore();
   const router = useRouter();
+  const cId = searchParams?.get('communityId');
+  const pathname = usePathname();
+  const pCheck = pathname === '/community/private-chat';
+  const pId = searchParams?.get('pId');
+  const currentUserId = auth.currentUser?.uid;
+  const [personalChatNotifications, setPersonalChatNotifications] = useState<number>(0);
+
+  useEffect(() => {
+    if (pCheck || pId) {
+      setSelectedCommunityId(null);
+      setSelectedButton('message');
+    }
+
+  }, [pCheck, pId]);
+
+  useEffect(() => {
+    if (cId) {
+      setSelectedCommunityId(cId);
+      setSelectedButton(null);
+    }
+  }, [cId]);
+
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
@@ -36,52 +61,56 @@ function GroupIcons() {
   }, []);
 
   useEffect(() => {
-    const fetchUserCommunities = async () => {
-      if (user) {
-        const userId = user.uid; // Get the current user's ID
-        const communityRef = collection(db, "communities");
-        const communitySnapshot = await getDocs(communityRef);
+    if (!currentUserId) return;
 
+    const unsubscribe = onSnapshot(doc(db, 'users', currentUserId), (docSnapshot) => {
+      const personalChatNotifications = docSnapshot.data()?.personalChatNotifications || [];
+      setPersonalChatNotifications(personalChatNotifications.length);
+    });
+
+    return () => unsubscribe();
+  }, [currentUserId]);
+
+  useEffect(() => {
+    if (user) {
+      const userId = user.uid; // Get the current user's ID
+      const communityRef = collection(db, "communities");
+      const q = query(communityRef, where("members", "array-contains", { id: userId, isAdmin: false }));
+
+      const unsubscribe = onSnapshot(q, (snapshot) => {
         const userCommunities: CommunityData[] = [];
 
-        communitySnapshot.forEach((doc) => {
+        snapshot.forEach((doc) => {
           const community = doc.data();
-          const members = community.members || [];
-
-          // Check if the current user ID exists in the members array
-          const isUserInCommunity = members.some((member: { id: string }) => member.id === userId);
-
-          if (isUserInCommunity) {
-            userCommunities.push({
-              communityName: community.communityName,
-              communityId: community.communityId,
-              members,
-              communityImg: community.communityImg,
-            });
-          }
+          userCommunities.push({
+            communityName: community.communityName,
+            communityId: community.communityId,
+            members: community.members,
+            communityImg: community.communityImg,
+          });
         });
 
         setCommunities(userCommunities);
-      }
-    };
+      });
 
-    fetchUserCommunities();
+      return () => unsubscribe();
+    }
   }, [user, db]);
 
   const onItemClick = (communityName: string | null, communityId: string | null) => {
     if (communityName && communityId) {
 
       setSelectedCommunityId(communityId);
-      setSelectedButton(null); // Reset the message button when a community is selected
+      setSelectedButton(null);
       router.push(`/community/${communityName.toLowerCase().replace(/\s+/g, '-')}/?communityId=${communityId}`);
 
     }
   };
 
   const onMessageButtonClick = () => {
-    setSelectedButton("message"); // Mark the message button as selected
-    setSelectedCommunityId(null); // Deselect any selected community
-    router.push('/community/general-chat')
+    setSelectedButton("message");
+    setSelectedCommunityId(null);
+    router.push('/community/private-chat');
   };
   return (
     <div>
@@ -91,9 +120,12 @@ function GroupIcons() {
           <div className={`flex items-center justify-center w-[42px] h-[42px] rounded-full bg-[#C74FE6] border-[#C74FE6] border-2 text-[#624C18] font-bold ${selectedButton === "message" ? "border-white" : "group-hover:border-white"}`}>
             <Image src="/icons/messageIcon.svg" alt="message icon" width={18} height={18} />
           </div>
-          <div className="absolute top-6 left-6 px-2 py-1 bg-red-600 rounded-full text-white text-xs font-medium hidden group-hover:flex">
-            6
-          </div>
+          {personalChatNotifications >= 1 && (
+            <div className="absolute top-6 left-6 px-2 py-1 bg-red-600 rounded-full text-white text-xs font-medium">
+              {personalChatNotifications}
+            </div>
+          )}
+
         </button>
       </div>
 

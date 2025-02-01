@@ -202,7 +202,7 @@ function Discussion({ courseId, sectionId, contentId }: DiscussionProps) {
 
 
     // This will clear formatting when the user types
-    const handleKeyDown = (e: React.KeyboardEvent) => {
+    const handleKeyDown = () => {
         if (quill) {
             const range = quill.getSelection();
             if (range) {
@@ -220,10 +220,6 @@ function Discussion({ courseId, sectionId, contentId }: DiscussionProps) {
 
 
             }
-        }
-        if (e.key === "Enter" && !e.shiftKey) {
-            e.preventDefault(); // Prevents new line in ReactQuill
-            handleSendMessage(); // Send the message
         }
     };
     useEffect(() => {
@@ -409,7 +405,12 @@ function Discussion({ courseId, sectionId, contentId }: DiscussionProps) {
                             ref={quillRef}
                             value={value}
                             onChange={handleChange}
-                            onKeyDown={handleKeyDown}
+                            onKeyDown={(e) => {
+                                if (e.key === "Enter" && !isButtonDisabled) {
+                                    handleKeyDown();
+                                }
+                            }}
+
                             modules={modules}
                             placeholder="Type your response here..."
                             className="text-[#1D2939] focus:outline-none rounded-b-[12px] custom-quill  placeholder:not-italic min-h-[66px] max-h-[350px] overflow-y-auto border-none font-normal"
