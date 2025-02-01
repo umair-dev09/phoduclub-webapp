@@ -7,7 +7,8 @@ import Delete from '@/components/AdminComponents/Community/AllDialogs/DeleteChan
 import { Tooltip } from "@nextui-org/react";
 import ExitChannel from "@/components/DashboardComponents/CommunityComponents/ExitChannel";
 import MediaDialog from './MediaDialog';
-import { auth } from '@/firebase';
+import { auth, db } from '@/firebase';
+import { arrayRemove, arrayUnion, doc, updateDoc } from 'firebase/firestore';
 
 type Chat = {
     message: string;
@@ -40,6 +41,7 @@ type chatHeadProps = {
     communityId: string | null;
     categoryId: string | null;
     channelDescription: string | null;
+    notificationsMuted: { id: string, mutedUntil: string }[] | null;
     isAdmin: boolean;
     channelRequests: { id: string, requestDate: string }[];
     members: { id: string, isAdmin: boolean }[] | null;
@@ -49,6 +51,7 @@ type chatHeadProps = {
         channelName: string;
         channelEmoji: string;
         channelDescription: string;
+        notificationsMuted: { id: string, mutedUntil: string }[] | null;
         headingId?: string;
         members: {
             id: string;
@@ -62,25 +65,81 @@ type chatHeadProps = {
     } | null>>;
 }
 
-function ChatHead({ channelName, channelId, channelEmoji, members, chats, communityId, categoryId, channelDescription, isAdmin, channelRequests, setSelectedChannel }: chatHeadProps) {
+function ChatHead({ channelName, channelId, notificationsMuted, channelEmoji, members, chats, communityId, categoryId, channelDescription, isAdmin, channelRequests, setSelectedChannel }: chatHeadProps) {
     const [exitchannel, setExitchannel] = useState(false);
     const [isPopoverOpen, setIsPopoverOpen] = useState(false);
-    const [isMutePopoverOpen, setIsMutePopoverOpen] = useState(false);
-    const [isMuted, setIsMuted] = useState(false);
     const [deleteDialog, setDeleteDialog] = useState(false);
     const [mediaDialog, setMediaDialog] = useState(false);
     const [channelRequestsDialog, setChannelRequestsDialog] = useState(false);
     const [channelInfoDialog, setChannelInfoDialog] = useState(false);
     const currentUserId = auth.currentUser?.uid;
     const closePopover = () => setIsPopoverOpen(false);
-    const closeMutePopover = () => setIsMutePopoverOpen(false);
-    const closeBothPopovers = () => {
-        closeMutePopover();
-        closePopover();
+
+
+    const handleMarkAsRead = async () => {
+        try {
+            const channelRef = doc(db, 'communities', communityId || '', 'channelsHeading', categoryId || '', 'channels', channelId || '');
+            await updateDoc(channelRef, {
+                channelNotification: arrayRemove(currentUserId)
+            });
+            closePopover();
+        } catch (error) {
+            console.error("Error marking channel as read:", error);
+        }
     };
 
-    // Toggles mute state
-    const toggleMute = () => setIsMuted(prev => !prev);
+    const handleMute = async (duration: 'eightHours' | 'oneWeek' | 'always') => {
+        if (!currentUserId || !communityId || !categoryId || !channelId) return;
+    
+        try {
+          const communityRef = doc(db, 'communities', communityId, 'channelsHeading', categoryId, 'channels', channelId);
+          let mutedUntil: string;
+    
+          const now = new Date();
+          switch (duration) {
+            case 'eightHours':
+                mutedUntil = new Date(now.getTime() + (8 * 60 * 60 * 1000)).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' });
+                break;
+              case 'oneWeek':
+                mutedUntil = new Date(now.getTime() + (7 * 24 * 60 * 60 * 1000)).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' });
+              break;
+            case 'always':
+              mutedUntil = 'always';
+              break;
+          }
+    
+          await updateDoc(communityRef, {
+            notificationsMuted: arrayUnion({
+              id: currentUserId,
+              mutedUntil
+            })
+          });
+    
+          closePopover();
+        } catch (error) {
+          console.error('Error muting notifications:', error);
+        }
+      };
+    
+      const handleUnmute = async () => {
+        if (!currentUserId || !communityId || !categoryId || !channelId) return;
+    
+        try {
+          const communityRef = doc(db, 'communities', communityId,'channelsHeading', categoryId, 'channels', channelId);
+          const notificationToRemove =  notificationsMuted?.find(muted => muted.id === currentUserId);
+          
+          if (notificationToRemove) {
+            await updateDoc(communityRef, {
+              notificationsMuted: arrayRemove(notificationToRemove)
+            });
+          }
+    
+          closePopover();
+        } catch (error) {
+          console.error('Error unmuting notifications:', error);
+        }
+      };
+    
 
     return (
 
@@ -97,6 +156,10 @@ function ChatHead({ channelName, channelId, channelEmoji, members, chats, commun
                         <button className="flex flex-row gap-2 focus:outline-none">
                             <p>{channelEmoji}</p>
                             <h4 className="text-base text-[#182230] font-semibold leading-[1.26rem]">{channelName}</h4>
+                            {Array.isArray(notificationsMuted) && notificationsMuted.find(muted => muted.id === currentUserId) && (
+                            <Image className={`{isMuted ? 'flex : 'none'}`} src='/icons/notification-off-02.svg' alt="Muted" width={16} height={16} />
+                            )}
+
                             <Image
                                 src="/icons/selectdate-Arrowdown.svg"
                                 width={20}
@@ -108,19 +171,8 @@ function ChatHead({ channelName, channelId, channelEmoji, members, chats, commun
                     <PopoverContent className="w-auto py-1 px-0 bg-white border border-lightGrey rounded-md flex flex-col">
                         {members?.some(member => member.id === currentUserId) ? (
                             <>
-                                <Tooltip
-                                    content="Launching Soon!!!!!"
-                                    placement="right"
-                                    offset={15}
-                                    closeDelay={100}
-                                    classNames={{
-                                        content: [
-                                            "bg-[#222222] text-white text-sm py-2 px-4 rounded-md",
-                                        ],
-                                    }}
-                                >
-
-                                    <button className='flex flex-row gap-2 items-center h-10 w-[206px] px-4 hover:bg-[#EAECF0] cursor-not-allowed'>
+                                    <button className='flex flex-row gap-2 items-center h-10 w-[206px] px-4 hover:bg-[#EAECF0] '
+                                    onClick={handleMarkAsRead}>
                                         <Image
                                             src="/icons/mark as read.svg"
                                             width={18}
@@ -130,36 +182,60 @@ function ChatHead({ channelName, channelId, channelEmoji, members, chats, commun
                                         <span className='font-normal text-[#0C111D] text-sm'>Mark as read</span>
 
                                     </button>
-                                </Tooltip>
-                                <Tooltip
-                                    content="Launching Soon!!!!!"
-                                    placement="right"
-                                    offset={15}
-                                    closeDelay={100}
-                                    classNames={{
-                                        content: [
-                                            "bg-[#222222] text-white text-sm py-2 px-4 rounded-md",
-                                        ],
-                                    }}
-                                >
-                                    <button className='flex flex-row gap-2 items-center justify-between h-10 w-[206px] px-4 hover:bg-[#EAECF0] cursor-not-allowed'>
-                                        <div className='flex flex-row gap-2'>
-                                            <Image
-                                                src="/icons/mute.svg"
-                                                width={18}
-                                                height={18}
-                                                alt="mute-icon"
-                                            />
-                                            <span className='font-normal text-[#0C111D] text-sm'>Mute</span>
-                                        </div>
-                                        <Image
-                                            src="/icons/arrow-right-01-round.svg"
-                                            width={18}
-                                            height={18}
-                                            alt="arrow-right-01-round"
-                                        />
-                                    </button>
-                                </Tooltip>
+    
+                                     <Popover placement="right-start">
+                                                    <PopoverTrigger className="w-[206px] px-0">
+                                                      <div className='flex flex-row gap-2 items-center justify-between h-10 w-full px-4 hover:bg-[#EAECF0] cursor-pointer'>
+                                                        <div className='flex flex-row gap-2'>
+                                                        {notificationsMuted?.find(muted => muted.id === currentUserId) ? (
+                                                          <Image
+                                                          src="/icons/notification-off.svg"
+                                                          width={18}
+                                                          height={18}
+                                                          alt="unmute-icon"
+                                                        />
+                                                        ) : (
+                                                          <Image
+                                                          src="/icons/mute.svg"
+                                                          width={18}
+                                                          height={18}
+                                                          alt="mute-icon"
+                                                        />
+                                                        )}
+                                                          {notificationsMuted?.find(muted => muted.id === currentUserId) ? (
+                                                            <span className='font-normal text-[#0C111D] text-sm'>Muted</span>
+                                                          ) : (
+                                                            <span className='font-normal text-[#0C111D] text-sm'>Mute</span>
+                                                          )}
+                                                     
+                                                        </div>
+                                                        <Image
+                                                          src="/icons/arrow-right-01-round.svg"
+                                                          width={18}
+                                                          height={18}
+                                                          alt="arrow-right-01-round"
+                                                        />
+                                                      </div>
+                                                    </PopoverTrigger>
+                                                    <PopoverContent className="w-auto py-1 px-0 rounded-md border border-lightGrey">
+                                                      <div>
+                                                        {notificationsMuted?.find(muted => muted.id === currentUserId) ? (
+                                                        <div className="flex flex-col">
+                                                        <div className="w-[182px] px-4 py-[10px] text-left text-sm font-normal leading-5 text-[#667085]">Muted until {notificationsMuted.find(muted => muted.id === currentUserId)?.mutedUntil}</div>
+                                                        <button className="w-[182px] px-4 py-[10px] text-left text-sm font-normal leading-5 text-[#0C111D] hover:bg-[#EAECF0] transition-colors" onClick={handleUnmute}>Unmute</button>
+                                                        </div>
+                                                        ) :(
+                                                          <div className="flex flex-col">
+                                                          <button className="w-[128px] px-4 py-[10px] text-left text-sm font-normal leading-5 text-[#0C111D] hover:bg-[#EAECF0] transition-colors" onClick={() => handleMute('eightHours')}>For 8 hours</button>
+                                                          <button className="w-[128px] px-4 py-[10px] text-left text-sm font-normal leading-5 text-[#0C111D] hover:bg-[#EAECF0] transition-colors" onClick={() => handleMute('oneWeek')}>For 1 week</button>
+                                                          <button className="w-[128px] px-4 py-[10px] text-left text-sm font-normal leading-5 text-[#0C111D] hover:bg-[#EAECF0] transition-colors" onClick={() => handleMute('always')}>Always</button>
+                                                        </div>
+                                                        )}
+                                                       
+                                                       
+                                                      </div>
+                                                    </PopoverContent>
+                                                  </Popover>
 
                                 {!isAdmin && (
                                     <button className='flex flex-row gap-2 items-center h-10 w-[206px] px-4 hover:bg-[#FEE4E2]'

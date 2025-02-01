@@ -150,6 +150,41 @@ function BottomTextP({
       await updateDoc(userDoc, {
          personalChatNotifications: arrayUnion(user.uid),
       });
+
+      const currentTime = new Date().toLocaleString('en-US', { 
+        timeZone: 'Asia/Kolkata',
+        dateStyle: 'full',
+        timeStyle: 'long'
+      });
+
+      // Update current user's chatList
+      const currentUserDoc = doc(db, isAdmin ? "admin" : "users", user.uid);
+      const currentUserSnapshot = await getDoc(currentUserDoc);
+      if (currentUserSnapshot.exists()) {
+        const chatList = currentUserSnapshot.data().chatList || [];
+        const updatedChatList = chatList.map((chat: any) => 
+          chat.id === chatWithId ? {...chat, lastMessageTime: currentTime} : chat
+        );
+        await updateDoc(currentUserDoc, { 
+          chatList: updatedChatList,
+          lastUpdated: serverTimestamp()
+        });
+      }
+
+      // Update chat partner's chatList
+      const chatWithUserDoc = doc(db, isAdmin ? "admin" : "users", chatWithId);
+      const chatWithUserSnapshot = await getDoc(chatWithUserDoc);
+      if (chatWithUserSnapshot.exists()) {
+        const chatList = chatWithUserSnapshot.data().chatList || [];
+        const updatedChatList = chatList.map((chat: any) => 
+          chat.id === user.uid ? {...chat, lastMessageTime: currentTime} : chat
+        );
+        await updateDoc(chatWithUserDoc, { 
+          chatList: updatedChatList,
+          lastUpdated: serverTimestamp()
+        });
+      }
+
       // Reset states after sending message
       setFileUrl(null);
       setProgress(null);
@@ -162,7 +197,6 @@ function BottomTextP({
       console.error("Error sending message:", error);
     }
   };
-  
 
 
   const handleMediaUpload = async (file: File, type: "image" | "video" | "document") => {

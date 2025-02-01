@@ -144,7 +144,15 @@ const BottomSheet: React.FC<BottomUpSheet> = ({ closeModal, isOpen, subjectName 
 
   // Save all changes to Firestore
   const handleSave = async () => {
-    if (!currentUserId) return;
+    const loadingToastId = toast.loading('Submitting your responses...');
+    setHasUnsavedChanges(true);
+
+    if (!currentUserId) {
+      toast.dismiss(loadingToastId);
+      toast.error('User authentication required');
+      setHasUnsavedChanges(false);
+      return;
+    };
 
     const batch = writeBatch(db);
 
@@ -168,11 +176,14 @@ const BottomSheet: React.FC<BottomUpSheet> = ({ closeModal, isOpen, subjectName 
       );
 
       setHasUnsavedChanges(false);
+      toast.dismiss(loadingToastId);
       toast.success('Changes saved successfully!');
       closeModal();
     } catch (error) {
       console.error('Error saving changes:', error);
-      // You might want to add error handling UI here
+      setHasUnsavedChanges(false);
+      toast.dismiss(loadingToastId);
+      toast.error('Failed to save changes. Please try again.');
     }
   };
 

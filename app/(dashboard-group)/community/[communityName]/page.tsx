@@ -4,21 +4,17 @@ import React, { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
 import GroupName from '@/components/DashboardComponents/CommunityComponents/groupName';
 import ChatHead from '@/components/DashboardComponents/CommunityComponents/chatHead';
-import Bottomtext from '@/components/DashboardComponents/CommunityComponents/BottomText';
 import LoadingData from '@/components/Loading';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { onAuthStateChanged, User } from 'firebase/auth';
 import { auth, db } from '@/firebase';
-import { doc, getDoc, getDocs, collection, query, orderBy, onSnapshot, updateDoc, arrayUnion } from 'firebase/firestore';
-import DetailsHead from '@/components/DashboardComponents/CommunityComponents/detailsHead';
-import DetailsContent from '@/components/DashboardComponents/CommunityComponents/detailsContent';
+import { doc, getDoc, getDocs, collection, query, orderBy, onSnapshot, updateDoc, arrayUnion, arrayRemove } from 'firebase/firestore';
 import OtherChat from '@/components/DashboardComponents/CommunityComponents/otherchat';
 import BottomText from '@/components/DashboardComponents/CommunityComponents/BottomText';
 import OwnChat from '@/components/DashboardComponents/CommunityComponents/ownChat';
 import { PopoverContent, PopoverTrigger, Popover } from '@nextui-org/popover';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import Delete from '@/components/DashboardComponents/CommunityComponents/Delete';
 import MembersDetailsArea from '@/components/DashboardComponents/CommunityComponents/MembersDetailsArea';
 
 type Channel = {
@@ -29,6 +25,7 @@ type Channel = {
   members: { id: string, isAdmin: boolean }[] | null;
   channelRequests: { id: string, requestDate: string }[];
   declinedRequests: string[];
+  notificationsMuted: { id: string, mutedUntil: string }[];
 };
 
 type ChannelHeading = {
@@ -66,19 +63,6 @@ type Chat = {
   mentions: { userId: string; id: string, isAdmin: boolean, }[];
 };
 
-interface chatHeadProps {
-  isAdmin: boolean;
-  channelId: string | null;
-  channelName: string | null;
-  channelEmoji: string | null;
-  communityId: string | null;
-  categoryId: string;
-  channelDescription: string;
-  channelRequests: { id: string; requestDate: string; }[];
-  setSelectedChannel: React.Dispatch<React.SetStateAction<any>>;
-  members: { id: string; isAdmin: boolean; }[] | null;
-  chats: Chat[]; // Make sure this matches your Chat type
-}
 
 export default function CommunityName() {
   const router = useRouter();
@@ -114,6 +98,7 @@ export default function CommunityName() {
     channelName: string;
     channelEmoji: string;
     channelDescription: string;
+    notificationsMuted: { id: string, mutedUntil: string }[] | null;
     headingId?: string;
     members: {
       id: string;
@@ -201,6 +186,7 @@ export default function CommunityName() {
                     members: channelData.members || [],
                     channelRequests: channelData.channelRequests || [],
                     declinedRequests: channelData.declinedRequests || [],
+                    notificationsMuted: channelData.notificationsMuted || { id: '', mutedUntil: '' },
                   };
                 });
 
@@ -239,6 +225,7 @@ export default function CommunityName() {
   }, [user, communityId]);
 
 
+
   // Second useEffect to handle ONLY selected channel updates
   useEffect(() => {
     if (!selectedChannel?.channelId || !selectedChannel.headingId || !communityId) return;
@@ -261,6 +248,7 @@ export default function CommunityName() {
               members: channelData.members,
               channelRequests: channelData.channelRequests,
               declinedRequests: channelData.declinedRequests,
+              notificationsMuted: channelData.notificationsMuted,
             };
           }
           return current;
@@ -685,8 +673,21 @@ export default function CommunityName() {
                             <p>{channel.channelEmoji}</p>
                             <p className="text-[13px] font-semibold text-[#4B5563]">{channel.channelName}</p>
                           </div>
+                          {Array.isArray(channel?.notificationsMuted) && 
+                          channel.notificationsMuted.some(mute => mute.id === currentUserId) && (
+                            <Image 
+                              src='/icons/notification-off-02.svg' 
+                              alt="Muted" 
+                              width={16} 
+                              height={16} 
+                            />
+                        )}
                           {/* Conditionally render notification */}
-                          {hasNotification && (
+                            {hasNotification && 
+                             selectedChannel?.channelId !== channel.channelId && 
+                             !channel.notificationsMuted?.some(mute => 
+                             mute.id === currentUserId
+                             ) && (
                             <div className="w-2 h-2 rounded-full bg-[#DE3024]"></div> // Notification Indicator
                           )}
                         </div>
@@ -723,6 +724,7 @@ export default function CommunityName() {
               {/* <ChatHead isAdmin={false} channelId={selectedChannel?.channelId ?? null} channelName={selectedChannel?.channelName ?? null} channelEmoji={selectedChannel?.channelEmoji ?? null} communityId={communityId} categoryId={selectedChannel.headingId || ''} channelDescription={''} channelRequests={selectedChannel.channelRequests || []} setSelectedChannel={setSelectedChannel} members={selectedChannel.members} /> */}
               <ChatHead
                 isAdmin={false}
+                notificationsMuted={selectedChannel.notificationsMuted}
                 channelId={selectedChannel?.channelId ?? null}
                 channelName={selectedChannel?.channelName ?? null}
                 channelEmoji={selectedChannel?.channelEmoji ?? null}
@@ -949,7 +951,6 @@ export default function CommunityName() {
             <h3 className="text-lg font-semibold text-gray-600">Select a channel</h3>
           </div>
         )}
-
       </div>
 
       {/* Right Sidebar */}

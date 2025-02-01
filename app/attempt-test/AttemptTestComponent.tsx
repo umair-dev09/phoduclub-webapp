@@ -16,7 +16,6 @@ import ReviewTest from "@/components/DashboardComponents/LearnComponents/TestsCo
 import { useRouter } from "next/navigation";
 import { set, sub } from "date-fns";
 import InstructionsDialog from "./AttemptTestDialogues/InstructionsDialogue";
-import InformationDialog from "./AttemptTestDialogues/InformationDialogue";
 
 interface Section {
     id: string;
@@ -207,13 +206,17 @@ function formatTimeForReview(seconds: number): string {
     const totalSeconds = seconds;
     const hours = Math.floor(totalSeconds / 3600); // Calculate hours
     const minutes = Math.floor((totalSeconds % 3600) / 60); // Calculate remaining minutes
+    const remainingSeconds = totalSeconds % 60; // Calculate remaining seconds
     let formattedTime = '';
 
     if (hours > 0) {
         formattedTime += `${hours}h`; // Add hours if present
     }
-    if (minutes > 0 || hours === 0) {
+    if (minutes > 0) {
         formattedTime += (formattedTime ? ' ' : '') + `${minutes}m`; // Add minutes
+    }
+    if (remainingSeconds > 0 || (hours === 0 && minutes === 0)) {
+        formattedTime += (formattedTime ? ' ' : '') + `${remainingSeconds}s`; // Add seconds
     }
 
     return formattedTime;
@@ -977,220 +980,11 @@ function ReviewTestView() {
         };
     }, [currentQuestionIndex, activeSubSectionIndex]);
 
-    // const handleSubmit = async () => {
-    //     setIsSubmitButtonDisabled(true);
-    //     if (!currentUserId) {
-    //       console.error('User not authenticated');
-    //       setIsSubmitButtonDisabled(false);
-    //       return;
-    //     }
-
-    //     try {
-    //         const now = Date.now();
-    //         // const finalTimeTaken = Math.floor((now - overallTestStartTime) / 1000);
-
-
-    //       // Calculate final section times for umbrella test
-    //     //   if (currentSection?.isUmbrellaTest) {
-    //     //     const currentSectionId = subSections[activeSubSectionIndex].id;
-    //     //     const timeSpent = Math.floor((now - (lastSectionTimestamp[currentSectionId] || now)) / 1000);
-
-    //     //     setSectionTimers(prev => ({
-    //     //       ...prev,
-    //     //       [currentSectionId]: (prev[currentSectionId] || 0) + timeSpent
-    //     //     }));
-    //     //   }
-    //       const timestamp = serverTimestamp();
-    //       let currentPath = `testseries/${tId}`;
-    //       for (const sectionId of sections) {
-    //           currentPath += `/sections/${sectionId}`;
-    //       }
-    //       currentPath += `/attempts`;
-    //       const attemptsRef = collection(db, currentPath);
-    //       const newAttemptRef = doc(attemptsRef);
-
-    //       // Combine all questions and their states for umbrella test
-    //       const allQuestions = currentSection?.isUmbrellaTest
-    //         ? subSections.flatMap(section => section.questions || [])
-    //         : questions;
-
-    //       const allStates = currentSection?.isUmbrellaTest
-    //         ? subSections.flatMap(section => section.states || [])
-    //         : questionStates;
-
-    //       // Calculate overall results
-    //       const results = calculateSectionResults(
-    //         currentSection as SubSection,
-    //         allQuestions,
-    //         allStates
-    //       );
-
-    //       // Prepare question data with new fields
-    //       const enhancedQuestionData = allQuestions.map((q, index) => {
-    //         const state = allStates[index];
-    //         // const spentTime = questionTimers[q.questionId] || 0;
-    //         const allotedTime = calculateAllotedTime(q.difficulty);
-
-    //     //     return {
-    //     //       questionId: q.questionId,
-    //     //       difficulty: q.difficulty,
-    //     //       selectedOption: state?.selectedOption || null,
-    //     //       answeredCorrect: state?.answeredCorrect || null,
-    //     //       status: state?.status || 'not-visited',
-    //     //       answered: state?.answered || false,
-    //     //       allotedTime,
-    //     //       spentTime,
-    //     //       remarks: determineRemarks(
-    //     //         allotedTime,
-    //     //         spentTime,
-    //     //         state?.answeredCorrect,
-    //     //         state?.answered || false
-    //     //       )
-    //     //     };
-    //     //   });
-
-    //       // Base document data
-    //     const attemptData: any = {
-    //         userId: currentUserId,
-    //         attemptNumber: (await getDocs(query(attemptsRef, where('userId', '==', currentUserId)))).size + 1,
-    //         attemptDateAndTime: timestamp,
-    //         isUmbrellaTest: currentSection?.isUmbrellaTest || false,
-    //         ...results,
-    //         questions: enhancedQuestionData,
-    //         // timeTaken: finalTimeTaken,
-    //         testTime: currentSection?.isUmbrellaTest
-    //         //   ? subSections.reduce((acc, section) => acc + convertTimeToSeconds(section.testTime), 0)
-    //         //   : convertTimeToSeconds(currentSection?.testTime || ""),
-    //     };
-
-
-    //       // Store the attempt
-    //       await setDoc(newAttemptRef, attemptData);
-
-    //       // Handle umbrella test sections
-    //       if (currentSection?.isUmbrellaTest) {
-    //         // attemptData.sectionTimers = sectionTimers;
-    //         const subattemptsRef = collection(newAttemptRef, 'subattempts');
-    //         for (const section of subSections) {
-    //           if (!section.questions || !section.states) continue;
-
-    //           const sectionResults = calculateSectionResults(
-    //             section,
-    //             section.questions,
-    //             section.states,
-    //           );
-
-    //         //   const sectionTime = sectionTimers[section.id];
-    //           const subattemptData = {
-    //             sectionName: section.sectionName,
-    //             ...sectionResults,
-    //             // timeTaken: sectionTimers[section.id] || 0,
-    //             // testTime: convertTimeToSeconds(section.testTime),
-    //             questions: section.questions.map((q, index) => ({
-    //             //   ...enhancedQuestionData.find(eq => eq.questionId === q.questionId)
-    //             }))
-    //           };
-
-    //           await setDoc(doc(subattemptsRef), subattemptData);
-    //         }
-
-    //         // Set combined questions and states for umbrella test
-    //         setQuestions(allQuestions);
-    //         setQuestionStates(allStates);
-    //       } else {
-    //         // For regular tests, use the enhanced question data
-    //         // setQuestionStates(enhancedQuestionData);
-    //       }
-
-    //       setAttemptedQuestions(results.attemptedQuestions);
-    //       setAnsweredCorrect(results.answeredCorrect);
-    //       setAnsweredIncorrect(results.answeredIncorrect);
-    //       setScore(results.score);
-    //       setAccuracy(results.accuracy);
-    //     //   setTimeTaken(results.timeTaken);
-    //     //   setTestTime(currentSection?.testTime || "");
-    //       setIsSubmitButtonDisabled(false);
-    //       onCloseFirst();
-    //       onOpenSecond();
-
-    //     } catch (error) {
-    //       console.error('Error storing test attempt details:', error);
-    //       setIsSubmitButtonDisabled(false);
-    //       toast.error('Failed to submit test');
-    //     }
-    // };
-
-    //   const handleSubmit = async () => {
-    //     // Update time for current question
-    //     updateCurrentQuestionTime();
-    //     const getFinalSubsectionTimes = () => {
-    //         const finalTimes: { [key: string]: number } = {};
-
-    //         Object.entries(subsectionTimers).forEach(([sectionId, timer]) => {
-    //           finalTimes[sectionId] = getTotalTimeSpent(timer);
-    //         });
-
-    //         return finalTimes;
-    //       };
-
-    //     // Function to calculate remarks and format question data
-    //     const getFinalQuestionData = (states: QuestionState[]) => {
-    //       return states.map(state => ({
-    //         ...state,
-    //         remarks: determineRemarks(
-    //             state.allotedTime,
-    //             state.spentTime,
-    //             state.answeredCorrect,
-    //             state.answered,
-    //         )
-    //       }));
-    //     };
-
-    //     try {
-    //       if (currentSection?.isUmbrellaTest) {
-    //         // Process all subsections
-    //         const allSectionsData = subSections.map(section => {
-    //           return getFinalQuestionData(section.states || []);
-    //         });
-
-    //         // Combine all questions data
-    //         const combinedQuestionsData = allSectionsData.flat();
-
-    //         // Log individual sections
-    //         console.log('Individual Sections Data:', allSectionsData);
-    //         console.log('Combined Questions Data:', combinedQuestionsData);
-
-    //         // Update states with remarks
-    //         const updatedSubSections = subSections.map((section, index) => ({
-    //           ...section,
-    //           states: allSectionsData[index]
-    //         }));
-    //         setSubSections(updatedSubSections);
-    //       } else {
-    //         // Regular test - process current section only
-    //         const finalQuestionData = getFinalQuestionData(questionStates);
-    //         console.log('Final Question Data:', finalQuestionData);
-    //         setQuestionStates(finalQuestionData);
-    //       }
-
-    //       setIsSubmitButtonDisabled(true);
-    //       console.log('Remaining Time:', remainingTime);
-    //       console.log('Sections Time:', getFinalSubsectionTimes());
-
-    //       // ... continue with existing submit logic ...
-    //     } catch (error) {
-    //       console.error('Error in handleSubmit:', error);
-    //       setIsSubmitButtonDisabled(false);
-    //       toast.error('Failed to submit test');
-    //     }
-    //   };
-
-
 
     const handleSubmit = async () => {
         const loadingToastId = toast.loading('Submitting your test responses...');
-        updateCurrentQuestionTime();
         setIsSubmitButtonDisabled(true);
+        updateCurrentQuestionTime();
 
         if (!currentUserId) {
             toast.dismiss(loadingToastId);
@@ -1353,9 +1147,12 @@ function ReviewTestView() {
                 const combinedMetrics = calculateMetrics(combinedQuestionsData);
                 const timeTaken = (currentSection?.testTime ?? 0) - remainingTime;
                 const allQuestions = subSections.flatMap(section => section.questions || []);
+                const allQuestionStates = subSections.flatMap(section => section.states || []);
 
                 setAttemptedQuestions(combinedMetrics.attemptedQuestions);
                 setQuestions(allQuestions);
+                setQuestionStates(allQuestionStates);
+                
                 setAnsweredCorrect(combinedMetrics.answeredCorrect);
                 setAnsweredIncorrect(combinedMetrics.answeredIncorrect);
                 setScore(combinedMetrics.score);
@@ -1393,8 +1190,6 @@ function ReviewTestView() {
         }
     };
 
-
-
     const handleClearResponse = () => {
         setSelectedOption(null);
         updateQuestionState(currentQuestionIndex, {
@@ -1413,7 +1208,6 @@ function ReviewTestView() {
     const currentQuestionState = questionStates[currentQuestionIndex];
 
     const [instructionsDialogue, setInstructionsDialogue] = useState(false);
-    const [informationDialogue, setInformationDialogue] = useState(false);
 
     return (
         <div className="Main Layout flex flex-col w-full h-screen overflow-y-hidden">
@@ -1428,8 +1222,8 @@ function ReviewTestView() {
                             {/* Section */}
                         </p>
                         <div className="flex flex-row gap-3">
-                            <button className="flex flex-row gap-1 items-center">
-                                <button onClick={() => { setInstructionsDialogue(true) }}>
+                            <button className="flex flex-row gap-1 items-center" onClick={() => { setInstructionsDialogue(true) }}>
+                                <button >
                                     <Image src="/icons/instructions.svg" alt="Instructions Icon" width={12} height={12} />
                                 </button>
                                 <p className="font-[Inter] font-medium text-[12px] ">Instructions</p>
@@ -1452,9 +1246,6 @@ function ReviewTestView() {
                                             }`}>
                                             {subSection.sectionName}
                                         </span>
-                                        <button onClick={() => { setInformationDialogue(true) }}>
-                                            <Image src="/icons/instructions.svg" alt="Instructions Icon" width={12} height={12} />
-                                        </button>
                                     </button>
                                 ))}
                             </div>
@@ -1686,8 +1477,7 @@ function ReviewTestView() {
                 </ModalContent>
             </Modal>
             <ReviewTest setShowReviewSheet={setShowReviewSheet} showReviewSheet={showReviewSheet} questionsList={questions} answeredQuestions={questionStates} timeTaken={timeTaken} />
-            {instructionsDialogue && <InstructionsDialog onClose={() => { setInstructionsDialogue(false) }} />}
-            {informationDialogue && <InformationDialog onClose={() => { setInformationDialogue(false) }} />}
+            {instructionsDialogue && <InstructionsDialog onClose={() => { setInstructionsDialogue(false) }} description={currentSection?.description || ''} marksPerQuestion={currentSection?.marksPerQ || ""} negativeMarksPerQuestion={currentSection?.nMarksPerQ || ""} testDuration={currentSection?.testTime || 0}/>}
             <ToastContainer />
         </div>
     );

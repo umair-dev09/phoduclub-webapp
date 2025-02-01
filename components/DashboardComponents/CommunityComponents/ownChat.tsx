@@ -354,7 +354,7 @@ function OwnChat({ message, isDeleted, mentions, adminThatDeletedId, isDeletedBy
 
       <div className="flex flex-col items-end  text-white">
         <div className="flex flex-row gap-1 justify-center mb-2">
-          {showBookmark && (<Image src='/icons/bookmark1.svg' alt='Bookmark icon' width={12} height={12} />)}
+          {/* {showBookmark && (<Image src='/icons/bookmark1.svg' alt='Bookmark icon' width={12} height={12} />)} */}
           <div className="text-xs text-neutral-600">{formattedTime}</div>
         </div>
         <div className="flex flex-row items-center justify-end gap-3 group">
@@ -407,15 +407,20 @@ function OwnChat({ message, isDeleted, mentions, adminThatDeletedId, isDeletedBy
                       <span className='font-normal text-[#0C111D] text-sm'>Copy</span>
                     </button>
                   )}
-                  <button className='flex flex-row items-center gap-2 w-30 px-4 py-[10px] transition-colors hover:bg-neutral-100' onClick={() => { setShowBookmark(true); setIsOpen(false); }}>
+                  {/* <button className='flex flex-row items-center gap-2 w-30 px-4 py-[10px] transition-colors hover:bg-neutral-100' onClick={() => { setShowBookmark(true); setIsOpen(false); }}>
                     <Image src='/icons/Bookmark.svg' alt='search icon' width={18} height={18} />
                     <span className='font-normal text-[#0C111D] text-sm'>Bookmark</span>
-                  </button>
+                  </button> */}
                   {/* Delete Message Button */}
-                  <button onClick={() => { setDeleteDialog(true); setIsOpen(false); }} className='flex flex-row items-center gap-2 w-30 px-4 pt-[10px] pb-3 transition-colors hover:bg-[#FEE4E2] rounded-br-md rounded-bl-md'>
-                    <Image src='/icons/delete.svg' alt='search icon' width={17} height={17} />
-                    <span className='font-normal text-[#DE3024] text-sm'>Delete Message</span>
-                  </button>
+                    {timestamp && (new Date().getTime() - timestamp.toMillis() < 60000) && (
+                    <button 
+                      onClick={() => { setDeleteDialog(true); setIsOpen(false); }} 
+                      className='flex flex-row items-center gap-2 w-30 px-4 pt-[10px] pb-3 transition-colors hover:bg-[#FEE4E2] rounded-br-md rounded-bl-md'
+                    >
+                      <Image src='/icons/delete.svg' alt='search icon' width={17} height={17} />
+                      <span className='font-normal text-[#DE3024] text-sm'>Delete Message</span>
+                    </button>
+                    )}
                 </div>
               </PopoverContent>
             </Popover>

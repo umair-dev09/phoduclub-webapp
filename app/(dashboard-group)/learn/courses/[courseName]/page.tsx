@@ -562,7 +562,6 @@ function Course() {
       try {
         const currentUserId = auth.currentUser.uid;
 
-
         const ref = firestoreDoc(db, 'course', courseId, 'sections', sectionId, 'content', contentId);
 
         // Add the user if they are not in StudentsCompleted

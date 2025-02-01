@@ -6,6 +6,7 @@ import { auth, db, storage } from "@/firebase";
 import { addDoc, collection, doc, getDoc,getDocs, serverTimestamp, setDoc, updateDoc } from "firebase/firestore";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import MuxUploader from "@mux/mux-uploader-react";
+import { toast } from "react-toastify";
 type BottomTextProps = {
   showReplyLayout: boolean;
   setShowReplyLayout: (value: boolean) => void;
@@ -56,6 +57,14 @@ function BottomText({
   const [cursorPosition, setCursorPosition] = useState<number | null>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const [mentions, setMentions] = useState<Mention[]>([]);
+  // Add this array at the top of your file with other imports
+  const BAD_WORDS = [
+    // English
+    'fuck', 'bitch', 'nigga', 'shit', 'ass', 'bastard', 'lauda', 'chutiya', 'madarchod', 'bhenchod', 'jhatu', 'lawde', 'gay', 'chinal', 'randi',
+    'laudi', 'motherfucker', 'chut', 
+    // Hindi (add more as needed)
+    'बहनचोद', 'मादरचोद', 'चूतिया', 'भोसडीके', 'लौड़ा'
+  ];
 
   useEffect(() => {
     const fetchReplyName = async () => {
@@ -218,41 +227,50 @@ function BottomText({
     setText((prevText) => prevText + emoji.emoji);
   };
 
+
+  const containsBadWords = (text: string): boolean => {
+    const lowerText = text.toLowerCase();
+    return BAD_WORDS.some(word => lowerText.includes(word.toLowerCase()));
+  };
+
   const handleSend = async () => {
     if ((!text.trim() && !fileUrl) || !communityId || !headingId || !channelId) {
       console.error("Missing required information");
       return;
     }
-  
+
+    // Check for bad words
+    if (text && containsBadWords(text)) {
+      toast.error("Message contains inappropriate language. Please revise your message.");
+      return;
+    }
+
     try {
       const user = auth.currentUser;
       if (!user) {
         console.error("User is not authenticated");
         return;
       }
-  
+
       const chatsRef = collection(
         db,
         `communities/${communityId}/channelsHeading/${headingId}/channels/${channelId}/chats`
       );
-  
+
       const newChatRef = doc(chatsRef);
       const chatId = newChatRef.id;
-  
-      // Fetch channel data to get channelMembers
+
       const channelRef = doc(db, `communities/${communityId}/channelsHeading/${headingId}/channels/${channelId}`);
       
       if (!Array.isArray(channelMembers)) {
         console.error("Invalid channelMembers format");
         return;
       }
-  
-      // Filter out current user ID from channelMembers
+
       const channelNotification = channelMembers
-        .filter((member) => member.id !== user.uid) // Exclude current user
-        .map((member) => member.id); // Extract user IDs
-  
-      // Prepare message data
+        .filter((member) => member.id !== user.uid)
+        .map((member) => member.id);
+
       const messageData = {
         message: text || null,
         chatId: chatId,
@@ -265,30 +283,27 @@ function BottomText({
         replyingToMsgType: showReplyLayout ? replyData?.messageType : null,
         replyingToFileUrl: showReplyLayout ? replyData?.fileUrl : null,
         replyingToFileName: showReplyLayout ? replyData?.fileName : null,
-        messageType: fileUrl ? fileType : "text", // Set message type based on file upload
+        messageType: fileUrl ? fileType : "text",
         fileUrl: fileUrl || null,
         fileName: fileName || null,
         fileSize: selectedFile?.size || null,
-        mentions: mentions.length ? mentions : [], // Store mentions as an array of objects
+        mentions: mentions.length ? mentions : [],
       };
-  
-      // Store the message with mentions in Firestore
+
       await setDoc(newChatRef, messageData);
       console.log("Message stored successfully");
-  
-      // Update the channel document with channelNotification
+
       await updateDoc(channelRef, {
         channelNotification: channelNotification,
       });
       console.log("Channel notification updated successfully");
-  
-      // Reset states after sending message
+
       setText("");
       setFileUrl(null);
       setProgress(null);
       setFileName(null);
       setSelectedFile(null);
-      setMentions([]); // Clear mentions
+      setMentions([]);
       setShowReplyLayout(false);
       setHeight("33px");
     } catch (error) {

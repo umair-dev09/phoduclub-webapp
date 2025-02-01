@@ -472,12 +472,11 @@ function TestAnalytics() {
                         <div className="flex flex-1 flex-col  overflow-y-auto w-full">
                             <div className="flex flex-row items-center gap-2 ml-8 mt-4">
                                 <div className="flex flex-row">
-                                    <button
-                                        onClick={resetNavigation}
-                                        // onClick={() => { router.back() }}
-                                        className="font-medium text-[#667085] hover:underline "
-                                    >Test-Series
-                                    </button>
+                                <button
+                                onClick={() => breadcrumbs.length < 1 ? router.back() : resetNavigation()}
+                                className="font-medium text-[#667085] hover:underline "
+                            >Tests
+                            </button>
                                 </div>
                                 {breadcrumbs.map((breadcrumb, index) => (
                                     <div key={breadcrumb.id} className="flex flex-row items-center gap-2">

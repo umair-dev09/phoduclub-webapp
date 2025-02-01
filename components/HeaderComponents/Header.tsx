@@ -28,6 +28,7 @@ function Header() {
     const [open, setOpen] = useState(false);
     const [user, setUser] = useState<User | null>(null);
     const [logoutdialog, setLogoutdialog] = useState(false);
+    const [isLogoutButtonDisabled, setIsLogoutButtonDisabled] = useState(false);
     const db = getFirestore();
 
     useEffect(() => {
@@ -61,11 +62,15 @@ function Header() {
     }, [db, router]);
 
     const handleLogout = async () => {
+        const loadingToastId = toast.loading('Logged out...');
+        setIsLogoutButtonDisabled(true);
         try {
             await signOut(auth);
+            toast.dismiss(loadingToastId)
             toast.success("Logged out successfully!");
             router.push("/login");
         } catch (error) {
+            toast.dismiss(loadingToastId)
             toast.error("Error logging out. Please try again.");
             console.error("Error logging out:", error);
         }
@@ -83,7 +88,7 @@ function Header() {
                     </h2>
                 </div>
                 <div className=" flex flex-row items-center">
-                    <HelpDropDown />
+                    {/* <HelpDropDown /> */}
                     <NotficationDropDown />
                     <div className="w-[1.5px] h-[14px] bg-[#eaecf0] border-none ml-[14px] mr-[14px]" />
                     <Popover placement="bottom" isOpen={open} onOpenChange={(open) => setOpen(open)} onClose={() => setOpen(false)}>
@@ -127,9 +132,7 @@ function Header() {
                     </Popover>
                 </div>
             </div>
-            <Modal isOpen={logoutdialog} onOpenChange={(isOpen) => !isOpen && setLogoutdialog(false)} hideCloseButton
-            >
-
+            <Modal isOpen={logoutdialog} onOpenChange={(isOpen) => !isOpen && setLogoutdialog(false)} hideCloseButton>
                 <ModalContent>
                     <>
                         <ModalHeader className="flex flex-row justify-between items-center gap-1">
@@ -142,16 +145,22 @@ function Header() {
                             </button>
                         </ModalHeader>
                         <ModalBody>
-                            <div className=" h-auto   flex flex-col">
+                            <div className=" h-auto flex flex-col">
                                 <span className="text-sm font-normal text-[#667085]">
                                     Are you sure you want to log out? You will need to log in again to access your account.</span>
                             </div>
-
                         </ModalBody>
                         <ModalFooter className="border-t border-lightGrey">
                             <Button variant="light" className="py-[0.625rem] px-6 border-[1.5px] border-lightGrey font-semibold text-sm text-[#1D2939] rounded-md" onClick={() => setLogoutdialog(false)}>Cancel</Button>
-                            <Button className="py-[0.625rem] px-6 text-white font-semibold shadow-inner-button  hover:bg-[#B0201A] bg-[#BB241A] border border-white rounded-md " onClick={handleLogout} > Log out</Button>
-
+                            <Button
+                                className="py-[0.625rem] px-6 text-white font-semibold shadow-inner-button hover:bg-[#B0201A] bg-[#BB241A] border border-white rounded-md"
+                                onClick={() => {
+                                    setIsLogoutButtonDisabled(true);
+                                    handleLogout();
+                                }}
+                            >
+                                Log out
+                            </Button>
                         </ModalFooter>
                     </>
                 </ModalContent>
