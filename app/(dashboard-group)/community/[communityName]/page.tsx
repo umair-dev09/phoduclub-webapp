@@ -214,9 +214,7 @@ export default function CommunityName() {
                     },
                   ].sort((a, b) => a.headingName.localeCompare(b.headingName));
                 });
-                
-               
-                
+
                 // Update notification status after processing channels
                 setNotificationStatus((prev) => ({
                   ...prev,
@@ -685,9 +683,9 @@ export default function CommunityName() {
                             <p className="text-[13px] font-semibold text-[#4B5563]">{channel.channelName}</p>
                           </div>
                           {/* Conditionally render notification */}
-                            {hasNotification && selectedChannel?.channelId !== channel.channelId && (
+                          {hasNotification && selectedChannel?.channelId !== channel.channelId && (
                             <div className="w-2 h-2 rounded-full bg-[#DE3024]"></div> // Notification Indicator
-                            )}
+                          )}
                         </div>
                       </button>
                     );

@@ -95,7 +95,7 @@ function GroupName({ communityId, isAdmin }: groupNameProps) {
     try {
       const communityRef = doc(db, 'communities', communityId);
       const docSnap = await getDoc(communityRef);
-      
+
       if (!docSnap.exists()) {
         console.log('Community document does not exist');
         return;
@@ -113,9 +113,9 @@ function GroupName({ communityId, isAdmin }: groupNameProps) {
       for (const headingDoc of headingsSnap.docs) {
         const channelsRef = collection(headingDoc.ref, 'channels');
         const channelsSnap = await getDocs(channelsRef);
-        
+
         if (!channelsSnap.empty) {
-          const updatePromises = channelsSnap.docs.map(channelDoc => 
+          const updatePromises = channelsSnap.docs.map(channelDoc =>
             updateDoc(channelDoc.ref, {
               channelNotification: arrayRemove(user.uid)
             })
@@ -202,17 +202,16 @@ function GroupName({ communityId, isAdmin }: groupNameProps) {
             </div>
           </PopoverTrigger>
           <PopoverContent className="w-auto py-1 px-0 bg-white border border-lightGrey rounded-md flex flex-col">
-
-              <button className='flex flex-row gap-2 items-center h-10 w-[206px] px-4 hover:bg-[#EAECF0] '
-               onClick={() => {handleMarkAsRead();}}>
-                <Image
-                  src="/icons/mark as read.svg"
-                  width={18}
-                  height={18}
-                  alt="mark as read"
-                />
-                <span className='font-normal text-[#0C111D] text-sm'>Mark as read</span>
-              </button>
+            <button className='flex flex-row gap-2 items-center h-10 w-[206px] px-4 hover:bg-[#EAECF0] '
+              onClick={() => { handleMarkAsRead(); }}>
+              <Image
+                src="/icons/mark as read.svg"
+                width={18}
+                height={18}
+                alt="mark as read"
+              />
+              <span className='font-normal text-[#0C111D] text-sm'>Mark as read</span>
+            </button>
             <Tooltip
               content="Launching Soon!!!!!"
               placement="right"
@@ -224,23 +223,47 @@ function GroupName({ communityId, isAdmin }: groupNameProps) {
                 ],
               }}
             >
-              <button className='flex flex-row gap-2 items-center justify-between h-10 w-[206px] px-4 hover:bg-[#EAECF0] cursor-not-allowed'>
-                <div className='flex flex-row gap-2'>
-                  <Image
-                    src="/icons/mute.svg"
-                    width={18}
-                    height={18}
-                    alt="mute-icon"
-                  />
-                  <span className='font-normal text-[#0C111D] text-sm'>Mute</span>
-                </div>
-                <Image
-                  src="/icons/arrow-right-01-round.svg"
-                  width={18}
-                  height={18}
-                  alt="arrow-right-01-round"
-                />
-              </button>
+              <Popover placement="right-start">
+                <PopoverTrigger className="w-[206px] px-0">
+                  <div className='flex flex-row gap-2 items-center justify-between h-10 w-full px-4 hover:bg-[#EAECF0] cursor-pointer'>
+                    <div className='flex flex-row gap-2'>
+                      <Image
+                        src="/icons/mute.svg"
+                        width={18}
+                        height={18}
+                        alt="mute-icon"
+                      />
+                      {/* <Image
+                        src="/icons/notification-off.svg"
+                        width={18}
+                        height={18}
+                        alt="mute-icon"
+                      /> */}
+                      <span className='font-normal text-[#0C111D] text-sm'>Mute</span>
+                      {/* <span className='font-normal text-[#0C111D] text-sm'>Muted</span> */}
+                    </div>
+                    <Image
+                      src="/icons/arrow-right-01-round.svg"
+                      width={18}
+                      height={18}
+                      alt="arrow-right-01-round"
+                    />
+                  </div>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto py-1 px-0 rounded-md border border-lightGrey">
+                  <div>
+                    {/* <div className="flex flex-col">
+                      <button className="w-[128px] px-4 py-[10px] text-left text-sm font-normal leading-5 text-[#0C111D] hover:bg-[#EAECF0] transition-colors">For 8 hours</button>
+                      <button className="w-[128px] px-4 py-[10px] text-left text-sm font-normal leading-5 text-[#0C111D] hover:bg-[#EAECF0] transition-colors">For 1 week</button>
+                      <button className="w-[128px] px-4 py-[10px] text-left text-sm font-normal leading-5 text-[#0C111D] hover:bg-[#EAECF0] transition-colors">Always</button>
+                    </div> */}
+                    <div className="flex flex-col">
+                      <button className="w-[182px] px-4 py-[10px] text-left text-sm font-normal leading-5 text-[#667085]">Muted until [time]</button>
+                      <button className="w-[182px] px-4 py-[10px] text-left text-sm font-normal leading-5 text-[#0C111D] hover:bg-[#EAECF0] transition-colors">Unmute</button>
+                    </div>
+                  </div>
+                </PopoverContent>
+              </Popover>
             </Tooltip>
             {!isAdmin && (
               (groupData?.groupExitedMembers ?? []).includes(user?.uid ?? '') ? (
