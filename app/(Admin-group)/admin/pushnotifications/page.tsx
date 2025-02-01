@@ -591,8 +591,8 @@ function Messenger() {
                                             </div>
                                         </td>
                                         {/* <td className="px-8 py-4 text-center text-[#101828] text-sm whitespace-nowrap">{formatDate(noti.createdAt)}</td> */}
-                                        <td className="px-8 py-4 text-center text-[#101828] text-sm whitespace-nowrap">today</td>
-                                        <td className="px-8 py-4 text-center text-[#101828] text-sm whitespace-nowrap">tomorrow</td>
+                                        <td className="px-8 py-4 text-center text-[#101828] text-sm whitespace-nowrap">{formatScheduleDate(noti.startDate)}</td>
+                                        <td className="px-8 py-4 text-center text-[#101828] text-sm whitespace-nowrap">{formatScheduleDate(noti.endDate)}</td>
                                         <td className="px-8 py-4 text-center text-[#101828] text-sm">{noti.freeUsersClicks.length + noti.premiumUsersClicks.length || 0}</td>
                                         <td className="px-8 py-4 text-[#101828] text-sm">
                                             <span className='flex items-start justify-start ml-[25%] rounded-full'>

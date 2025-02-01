@@ -17,7 +17,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import MembersDetailsArea from '@/components/AdminComponents/InternalChat/MembersDetailsArea';
 type Channel = {
   channelId: string;
-  channelName: string;
+  channelName: string;    
   channelEmoji: string;
   members: { id: string }[] | null;
 };

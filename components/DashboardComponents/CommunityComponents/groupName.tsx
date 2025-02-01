@@ -31,7 +31,7 @@ type groupNameProps = {
 function GroupName({ communityId, isAdmin }: groupNameProps) {
   const [groupData, setGroupData] = useState<GroupData | null>(null);
   const [user, setUser] = useState<User | null>(null);
-  const [isPopoverOpen, setIsPopoverOpen] = useState(false);
+  const [isPopoverOpen, setIsPopoverOpen] = useState(false);    
   const [loading, setLoading] = useState(true);
   const [groupInfoDialog, setGroupInfoDialog] = useState(false);
   const [deleteGroupDialog, setDeleteGroupDialog] = useState(false);

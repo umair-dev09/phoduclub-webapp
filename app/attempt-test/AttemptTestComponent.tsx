@@ -1017,6 +1017,8 @@ function ReviewTestView() {
             }
         };
 
+
+
         const processedQuestions = processQuestions();
         const combinedQuestionsData = currentSection?.isUmbrellaTest
             ? (processedQuestions as SubSection[]).flatMap(section => section.states || [])
@@ -1147,12 +1149,10 @@ function ReviewTestView() {
                 const combinedMetrics = calculateMetrics(combinedQuestionsData);
                 const timeTaken = (currentSection?.testTime ?? 0) - remainingTime;
                 const allQuestions = subSections.flatMap(section => section.questions || []);
-                const allQuestionStates = subSections.flatMap(section => section.states || []);
+                // const allQuestionStates = subSections.flatMap(section => section.states || []);
 
                 setAttemptedQuestions(combinedMetrics.attemptedQuestions);
                 setQuestions(allQuestions);
-                setQuestionStates(allQuestionStates);
-                
                 setAnsweredCorrect(combinedMetrics.answeredCorrect);
                 setAnsweredIncorrect(combinedMetrics.answeredIncorrect);
                 setScore(combinedMetrics.score);
