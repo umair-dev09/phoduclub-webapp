@@ -95,155 +95,304 @@ function OwnChat({ message, isDeleted, mentions, adminThatDeletedId, isDeletedBy
     return () => unsubscribe();
   }, [reactionsRef]);
 
+  // const renderMessageWithMentions = () => {
+  //   if (!highlightedText || !mentions) return highlightedText;
+
+  //   const maxWords = 30;
+
+  //   const isUrl = (text: string) => {
+  //     try {
+  //       new URL(text);
+  //       return true;
+  //     } catch {
+  //       return false;
+  //     }
+  //   };
+
+  //   const processTextPart = (text: string, key: number | string) => {
+  //     if (isUrl(text)) {
+  //       return (
+  //         <a
+  //           key={key}
+  //           href={text}
+  //           target="_blank"
+  //           rel="noopener noreferrer"
+  //           className="text-blue-200 hover:underline"
+  //         >
+  //           {text}
+  //         </a>
+  //       );
+  //     }
+  //     return text;
+  //   };
+
+  //   const processMention = (part: string, index: number | string) => {
+  //     if (part.startsWith("@")) {
+  //       const mentionName = part.substring(1).trim();
+  //       const mention = mentions.find((m) => m.userId === mentionName || m.id === mentionName);
+
+  //       if (mention) {
+  //         return (
+  //           <span
+  //             key={index}
+  //             style={{ color: "yellow", cursor: "pointer" }}
+  //             onClick={() => {
+  //               setOpenDialogue(true);
+  //               setId(mention.id);
+  //               setAdmin(mention.isAdmin);
+  //             }}
+  //           >
+  //             {part}
+  //           </span>
+  //         );
+  //       }
+  //     }
+  //     return processTextPart(part, index);
+  //   };
+
+  //   const mentionRegex = /(@[\w#]+|[^@\w]+|\s+)/;
+
+  //   const processHighlightedText = () => {
+  //     if (typeof highlightedText === "string") {
+  //       const parts = highlightedText.split(mentionRegex);
+  //       return parts.map((part, index) => processMention(part, index));
+  //     }
+
+  //     if (Array.isArray(highlightedText)) {
+  //       return highlightedText.map((node, index) => {
+  //         if (typeof node === "string") {
+  //           const parts = node.split(mentionRegex);
+  //           return parts.map((part, innerIndex) => processMention(part, `${index}-${innerIndex}`));
+  //         }
+  //         return node;
+  //       });
+  //     }
+  //     return null;
+  //   };
+
+  //   const fullContent = processHighlightedText();
+
+  //   const getWordCount = (content: any): number => {
+  //     if (typeof content === "string") {
+  //       return content.trim().split(/\s+/).length;
+  //     }
+  //     if (Array.isArray(content)) {
+  //       return content.reduce((count, node) => {
+  //         if (typeof node === "string") {
+  //           return count + node.trim().split(/\s+/).length;
+  //         }
+  //         return count;
+  //       }, 0);
+  //     }
+  //     return 0;
+  //   };
+
+  //   const wordCount = getWordCount(highlightedText);
+
+  //   // Updated truncation logic
+  //   const getTruncatedContent = () => {
+  //     if (typeof highlightedText === "string") {
+  //       if (wordCount <= maxWords) return highlightedText;
+  //       const words = highlightedText.split(/\s+/);
+  //       return words.slice(0, maxWords).join(" ") + "...";
+  //     }
+
+  //     if (Array.isArray(fullContent)) {
+  //       if (wordCount <= maxWords) return fullContent;
+
+  //       let wordCounter = 0;
+  //       return fullContent.reduce((acc: React.ReactNode[], node) => {
+  //         if (wordCounter >= maxWords) return acc;
+
+  //         if (typeof node === "string") {
+  //           const words = node.split(/\s+/);
+  //           const remainingWords = maxWords - wordCounter;
+
+  //           if (wordCounter + words.length > maxWords) {
+  //             // Only add ellipsis when we actually truncate
+  //             acc.push(words.slice(0, remainingWords).join(" ") + "...");
+  //             wordCounter = maxWords;
+  //           } else {
+  //             acc.push(node);
+  //             wordCounter += words.length;
+  //           }
+  //         } else {
+  //           acc.push(node);
+  //           wordCounter += 1;
+  //         }
+  //         return acc;
+  //       }, []);
+  //     }
+  //     return null;
+  //   };
+
+  //   return (
+  //     <div>
+  //       {isExpanded ? (
+  //         <span>{fullContent}</span>
+  //       ) : (
+  //         <span>{getTruncatedContent()}</span>
+  //       )}
+  //       {wordCount > maxWords && !isExpanded && (
+  //         <button
+  //           onClick={() => setIsExpanded(true)}
+  //           className="text-blue-300 hover:underline ml-2"
+  //         >
+  //           View More
+  //         </button>
+  //       )}
+  //     </div>
+  //   );
+  // };
+
   const renderMessageWithMentions = () => {
-    if (!highlightedText || !mentions) return highlightedText;
-
-    const maxWords = 30;
-
-    const isUrl = (text: string) => {
-      try {
-        new URL(text);
-        return true;
-      } catch {
-        return false;
-      }
-    };
-
-    const processTextPart = (text: string, key: number | string) => {
-      if (isUrl(text)) {
-        return (
-          <a
-            key={key}
-            href={text}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-blue-200 hover:underline"
-          >
-            {text}
-          </a>
-        );
-      }
-      return text;
-    };
-
-    const processMention = (part: string, index: number | string) => {
-      if (part.startsWith("@")) {
-        const mentionName = part.substring(1).trim();
-        const mention = mentions.find((m) => m.userId === mentionName || m.id === mentionName);
-
-        if (mention) {
+      if (!highlightedText || !mentions) return highlightedText;
+  
+      const maxWords = 30;
+  
+      const isUrl = (text: string) => {
+        try {
+          new URL(text);
+          return true;
+        } catch {
+          return false;
+        }
+      };
+  
+      const processTextPart = (text: string, key: number | string) => {
+        if (isUrl(text)) {
           return (
-            <span
-              key={index}
-              style={{ color: "yellow", cursor: "pointer" }}
-              onClick={() => {
-                setOpenDialogue(true);
-                setId(mention.id);
-                setAdmin(mention.isAdmin);
-              }}
+            <a
+              key={key}
+              href={text}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-blue-300 hover:underline"
             >
-              {part}
-            </span>
+              {text}
+            </a>
           );
         }
-      }
-      return processTextPart(part, index);
-    };
-
-    const mentionRegex = /(@[\w#]+|[^@\w]+|\s+)/;
-
-    const processHighlightedText = () => {
-      if (typeof highlightedText === "string") {
-        const parts = highlightedText.split(mentionRegex);
-        return parts.map((part, index) => processMention(part, index));
-      }
-
-      if (Array.isArray(highlightedText)) {
-        return highlightedText.map((node, index) => {
-          if (typeof node === "string") {
-            const parts = node.split(mentionRegex);
-            return parts.map((part, innerIndex) => processMention(part, `${index}-${innerIndex}`));
+        return text;
+      };
+  
+      const processMention = (part: string, index: number | string) => {
+        if (part.startsWith("@")) {
+          const mentionName = part.substring(1).trim();
+          const mention = mentions.find((m) => m.userId === mentionName || m.id === mentionName);
+  
+          if (mention) {
+            return (
+              <span
+                key={index}
+                style={{ color: "yellow", cursor: "pointer" }}
+                onClick={() => {
+                  setOpenDialogue(true);
+                  setId(mention.id);
+                  setAdmin(mention.isAdmin);
+                }}
+              >
+                {part}
+              </span>
+            );
           }
-          return node;
-        });
-      }
-      return null;
-    };
-
-    const fullContent = processHighlightedText();
-
-    const getWordCount = (content: any): number => {
-      if (typeof content === "string") {
-        return content.trim().split(/\s+/).length;
-      }
-      if (Array.isArray(content)) {
-        return content.reduce((count, node) => {
-          if (typeof node === "string") {
-            return count + node.trim().split(/\s+/).length;
-          }
-          return count;
-        }, 0);
-      }
-      return 0;
-    };
-
-    const wordCount = getWordCount(highlightedText);
-
-    // Updated truncation logic
-    const getTruncatedContent = () => {
-      if (typeof highlightedText === "string") {
-        if (wordCount <= maxWords) return highlightedText;
-        const words = highlightedText.split(/\s+/);
-        return words.slice(0, maxWords).join(" ") + "...";
-      }
-
-      if (Array.isArray(fullContent)) {
-        if (wordCount <= maxWords) return fullContent;
-
-        let wordCounter = 0;
-        return fullContent.reduce((acc: React.ReactNode[], node) => {
-          if (wordCounter >= maxWords) return acc;
-
-          if (typeof node === "string") {
-            const words = node.split(/\s+/);
-            const remainingWords = maxWords - wordCounter;
-
-            if (wordCounter + words.length > maxWords) {
-              // Only add ellipsis when we actually truncate
-              acc.push(words.slice(0, remainingWords).join(" ") + "...");
-              wordCounter = maxWords;
+        }
+        return processTextPart(part, index);
+      };
+  
+      // Regex to find mentions
+      const mentionRegex = /(@[\w#]+)/g;
+  
+      const processHighlightedText = () => {
+        if (typeof highlightedText === "string") {
+          const parts = highlightedText.split(mentionRegex);
+          return parts.map((part, index) => processMention(part, index));
+        }
+  
+        if (Array.isArray(highlightedText)) {
+          return highlightedText.map((node, index) => {
+            if (typeof node === "string") {
+              const parts = node.split(mentionRegex);
+              return parts.map((part, innerIndex) => processMention(part, `${index}-${innerIndex}`));
+            }
+            return node;
+          });
+        }
+        return null;
+      };
+  
+      const fullContent = processHighlightedText();
+  
+      const getWordCount = (content: any): number => {
+        if (typeof content === "string") {
+          return content.trim().split(/\s+/).length;
+        }
+        if (Array.isArray(content)) {
+          return content.reduce((count, node) => {
+            if (typeof node === "string") {
+              return count + node.trim().split(/\s+/).length;
+            }
+            return count;
+          }, 0);
+        }
+        return 0;
+      };
+  
+      const wordCount = getWordCount(fullContent);
+  
+      // Limit to 20 words initially if not expanded
+      const getTruncatedContent = () => {
+        if (isExpanded) {
+          return fullContent;  // Show full content when expanded
+        }
+  
+        if (wordCount <= maxWords) {
+          return fullContent;  // Show full content if less than maxWords
+        }
+  
+        if (typeof highlightedText === "string") {
+          const words = highlightedText.split(/\s+/);
+          return words.slice(0, maxWords).join(" ") + "...";  // Show truncated content
+        }
+  
+        if (Array.isArray(fullContent)) {
+          let wordCounter = 0;
+          return fullContent.reduce((acc: React.ReactNode[], node) => {
+            if (wordCounter >= maxWords) return acc;
+  
+            if (typeof node === "string") {
+              const words = node.split(/\s+/);
+              const remainingWords = maxWords - wordCounter;
+              wordCounter += words.length;
+              if (wordCounter > maxWords) {
+                acc.push(words.slice(0, remainingWords).join(" ") + "...");
+              } else {
+                acc.push(node);
+              }
             } else {
               acc.push(node);
-              wordCounter += words.length;
+              wordCounter += 1;
             }
-          } else {
-            acc.push(node);
-            wordCounter += 1;
-          }
-          return acc;
-        }, []);
-      }
-      return null;
-    };
-
-    return (
-      <div>
-        {isExpanded ? (
-          <span>{fullContent}</span>
-        ) : (
+            return acc;
+          }, []);
+        }
+        return null;
+      };
+  
+      return (
+        <div>
           <span>{getTruncatedContent()}</span>
-        )}
-        {wordCount > maxWords && !isExpanded && (
-          <button
-            onClick={() => setIsExpanded(true)}
-            className="text-blue-500 hover:underline ml-2"
-          >
-            View More
-          </button>
-        )}
-      </div>
-    );
-  };
+          {wordCount > maxWords && !isExpanded && (
+            <button
+              onClick={() => setIsExpanded(true)}
+              className="text-blue-300 hover:underline ml-2"
+            >
+              View More
+            </button>
+          )}
+        </div>
+      );
+    };
 
   const handleReplyMessage = () => {
     setShowReplyLayout(true);
