@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Dialog, DialogBackdrop, DialogPanel } from "@headlessui/react";
 import Image from "next/image";
 import Radio from "@mui/material/Radio";
@@ -217,13 +217,8 @@ function convertSecondsToHHMM(seconds: number): string {
 
 // export default ReviewTest;
 function ReviewTest({ showReviewSheet, setShowReviewSheet, questionsList, answeredQuestions, timeTaken }: ReviewTestProps) {
+    const [showexplanation, setshowexplanation] = useState(false);
     const [currentQuestionIndex, setCurrentQuestionIndex] = React.useState(0);
-    const [showexplanation, setshowexplanation] = React.useState(false);
-
-    // Reset explanation state whenever the current question changes.
-    React.useEffect(() => {
-        setshowexplanation(false);
-    }, [currentQuestionIndex]);
 
     const getAnsweredQuestionData = (questionId: string) => {
         return answeredQuestions.find(aq => aq.questionId === questionId);
@@ -279,9 +274,9 @@ function ReviewTest({ showReviewSheet, setShowReviewSheet, questionsList, answer
                         </button>
                     </div>
 
-                    <div className="overflow-y-auto flex-1 ">
-                        <div className="flex flex-col w-full items-center justify-center">
-                            <div className="flex p-5  justify-center">
+                    <div className="items-center justify-center overflow-y-auto flex p-5 flex-1">
+                        <div className="flex flex-col w-full">
+                            <div className="flex items-center justify-center">
                                 <div className="w-auto h-auto rounded-[12px] px-4 border-2 border-[#EAECF0] flex py-4 flex-col items-center justify-center">
                                     <div className="bg-[#FFFFFF] w-[800px] h-auto flex flex-col gap-[20px]">
                                         <div className="w-auto h-auto flex flex-row gap-1 mb-1">
@@ -356,38 +351,26 @@ function ReviewTest({ showReviewSheet, setShowReviewSheet, questionsList, answer
                                         {isAnswered && !isCorrect && (
 
                                             <div className='flex flex-row justify-between items-center '>
+                                                <button className='text-white px-2 py-1 font-medium rounded-md bg-purple  hover:bg-[#6D0DCC] '
+                                                    onClick={() => setshowexplanation(true)}>
+                                                    Show Explanation
+                                                </button>
+
                                                 <div className="w-[121px] h-10 px-2 flex flex-row items-center bg-[#FEF3F2] border border-solid border-[#FFCDC9] rounded-[6px] gap-1">
                                                     <Image src="/icons/red-cancel-icon.svg" width={24} height={24} alt="red-cancel-icon" />
                                                     <span className="text-[#9A221A] font-medium text-base">Incorrect</span>
                                                 </div>
-                                                <button
-                                                    className='text-white px-2 py-1 font-medium text-base rounded-md shadow-inner-button bg-purple hover:bg-[#6D0DCC]'
-                                                    onClick={() => setshowexplanation(true)}
-                                                >
-                                                    Show Explanation
-                                                </button>
-
                                             </div>
                                         )}
 
                                         {!isAnswered && (
-
-                                            <div className='flex flex-row justify-between items-center '>
-                                                <div className="w-[135px] h-10 px-2 flex flex-row items-center bg-[#f0f0f0] border border-solid border-[#cecece] rounded-[6px] gap-1">
-                                                    <span className="text-[#979797] font-medium text-base">Not Answered</span>
-                                                </div>
-                                                <button
-                                                    className='text-white px-2 py-1 font-medium rounded-md shadow-inner-button text-base bg-purple hover:bg-[#6D0DCC]'
-                                                    onClick={() => setshowexplanation(true)}
-                                                >
-                                                    Show Explanation
-                                                </button>
+                                            <div className="w-[135px] h-10 px-2 flex flex-row items-center bg-[#f0f0f0] border border-solid border-[#cecece] rounded-[6px] gap-1">
+                                                <span className="text-[#979797] font-medium text-base">Not Answered</span>
                                             </div>
-
                                         )}
 
                                         {/* Show explanation for incorrect or unanswered questions */}
-                                        {((!isAnswered || (isAnswered && !isCorrect)) && showexplanation) && (
+                                        {(!isAnswered || (isAnswered && !isCorrect)) || !showexplanation && (
                                             <div className="w-full h-auto bg-[#F9FAFB] border-2 border-solid border-[#F2F4F7] rounded-[8px] flex p-4">
                                                 <div className="text-[#1D2939] font-normal text-sm italic leading-[25px]"
                                                     dangerouslySetInnerHTML={{

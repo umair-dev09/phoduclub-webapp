@@ -279,9 +279,9 @@ function ReviewTest({ showReviewSheet, setShowReviewSheet, questionsList, answer
                         </button>
                     </div>
 
-                    <div className="overflow-y-auto flex-1 ">
-                        <div className="flex flex-col w-full items-center justify-center">
-                            <div className="flex p-5  justify-center">
+                    <div className="items-center justify-center overflow-y-auto flex p-5 flex-1 h-auto">
+                        <div className="flex flex-col w-full flex-1">
+                            <div className="flex items-center justify-center flex-1">
                                 <div className="w-auto h-auto rounded-[12px] px-4 border-2 border-[#EAECF0] flex py-4 flex-col items-center justify-center">
                                     <div className="bg-[#FFFFFF] w-[800px] h-auto flex flex-col gap-[20px]">
                                         <div className="w-auto h-auto flex flex-row gap-1 mb-1">
@@ -387,7 +387,7 @@ function ReviewTest({ showReviewSheet, setShowReviewSheet, questionsList, answer
                                         )}
 
                                         {/* Show explanation for incorrect or unanswered questions */}
-                                        {((!isAnswered || (isAnswered && !isCorrect)) && showexplanation) && (
+                                        {(!isAnswered || (isAnswered && !isCorrect) && showexplanation) && (
                                             <div className="w-full h-auto bg-[#F9FAFB] border-2 border-solid border-[#F2F4F7] rounded-[8px] flex p-4">
                                                 <div className="text-[#1D2939] font-normal text-sm italic leading-[25px]"
                                                     dangerouslySetInnerHTML={{

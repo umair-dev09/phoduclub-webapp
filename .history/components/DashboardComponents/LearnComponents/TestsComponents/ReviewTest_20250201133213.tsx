@@ -280,8 +280,8 @@ function ReviewTest({ showReviewSheet, setShowReviewSheet, questionsList, answer
                     </div>
 
                     <div className="overflow-y-auto flex-1 ">
-                        <div className="flex flex-col w-full items-center justify-center">
-                            <div className="flex p-5  justify-center">
+                        <div className="flex flex-col w-full">
+                            <div className="flex p-5 justify-center">
                                 <div className="w-auto h-auto rounded-[12px] px-4 border-2 border-[#EAECF0] flex py-4 flex-col items-center justify-center">
                                     <div className="bg-[#FFFFFF] w-[800px] h-auto flex flex-col gap-[20px]">
                                         <div className="w-auto h-auto flex flex-row gap-1 mb-1">

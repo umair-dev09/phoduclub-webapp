@@ -279,123 +279,125 @@ function ReviewTest({ showReviewSheet, setShowReviewSheet, questionsList, answer
                         </button>
                     </div>
 
-                    <div className="overflow-y-auto flex-1 ">
-                        <div className="flex flex-col w-full items-center justify-center">
-                            <div className="flex p-5  justify-center">
-                                <div className="w-auto h-auto rounded-[12px] px-4 border-2 border-[#EAECF0] flex py-4 flex-col items-center justify-center">
-                                    <div className="bg-[#FFFFFF] w-[800px] h-auto flex flex-col gap-[20px]">
-                                        <div className="w-auto h-auto flex flex-row gap-1 mb-1">
-                                            <span className="text-[#1D2939] font-semibold text-base">
-                                                {currentQuestionIndex + 1}.
-                                            </span>
-                                            <div
-                                                className="question-content text-[#1D2939] font-semibold text-base"
-                                                dangerouslySetInnerHTML={{
-                                                    __html: currentQuestion?.question || 'Question not available'
-                                                }}
-                                            />
-                                        </div>
-                                        <div className="w-auto h-auto gap-[15px] flex flex-col">
-                                            <div className="flex flex-col gap-1">
-                                                {Object.entries(currentQuestion?.options || {}).map(([key, value]) => {
-                                                    const isSelectedOption = isAnswered && selectedOption === key;
-                                                    const isCorrectOption = key === currentQuestion?.correctAnswer;
-
-                                                    let radioColor = '#D0D5DD';
-                                                    if (isAnswered && !isCorrect) {
-                                                        if (isSelectedOption) {
-                                                            radioColor = '#FF4D4F';
-                                                        } else if (isCorrectOption) {
-                                                            radioColor = '#0B9055';
-                                                        }
-                                                    } else if (isCorrectOption) {
-                                                        radioColor = '#0B9055';
-                                                    }
-
-                                                    let checked = false;
-                                                    if (isAnswered && !isCorrect) {
-                                                        checked = isSelectedOption || isCorrectOption;
-                                                    } else {
-                                                        checked = (isAnswered && isSelectedOption) || (!isAnswered && isCorrectOption);
-                                                    }
-
-                                                    return (
-                                                        <FormControlLabel
-                                                            key={key}
-                                                            value={key}
-                                                            className="break-all flex flex-row "
-                                                            checked={checked}
-                                                            control={
-                                                                <Radio
-                                                                    disabled
-                                                                    checked={checked}
-                                                                    sx={{
-                                                                        color: radioColor,
-                                                                        '&.Mui-checked': {
-                                                                            color: radioColor,
-                                                                        },
-                                                                    }}
-                                                                />
-                                                            }
-                                                            label={<p className='text-[#667085]'>{value}</p>}
-                                                        />
-                                                    );
-                                                })}
-                                            </div>
-                                        </div>
-                                        <hr />
-
-                                        {/* Status indicators */}
-                                        {isAnswered && isCorrect && (
-                                            <div className="w-[121px] h-10 items-center px-2 flex flex-row bg-[#EDFCF3] border border-solid border-[#AAF0C7] rounded-[6px] gap-1">
-                                                <Image src="/icons/green-right-mark.svg" width={24} height={24} alt="right-mark-icon" />
-                                                <span className="text-[#0A5B39] font-medium text-base">Correct</span>
-                                            </div>
-                                        )}
-
-                                        {isAnswered && !isCorrect && (
-
-                                            <div className='flex flex-row justify-between items-center '>
-                                                <div className="w-[121px] h-10 px-2 flex flex-row items-center bg-[#FEF3F2] border border-solid border-[#FFCDC9] rounded-[6px] gap-1">
-                                                    <Image src="/icons/red-cancel-icon.svg" width={24} height={24} alt="red-cancel-icon" />
-                                                    <span className="text-[#9A221A] font-medium text-base">Incorrect</span>
-                                                </div>
-                                                <button
-                                                    className='text-white px-2 py-1 font-medium text-base rounded-md shadow-inner-button bg-purple hover:bg-[#6D0DCC]'
-                                                    onClick={() => setshowexplanation(true)}
-                                                >
-                                                    Show Explanation
-                                                </button>
-
-                                            </div>
-                                        )}
-
-                                        {!isAnswered && (
-
-                                            <div className='flex flex-row justify-between items-center '>
-                                                <div className="w-[135px] h-10 px-2 flex flex-row items-center bg-[#f0f0f0] border border-solid border-[#cecece] rounded-[6px] gap-1">
-                                                    <span className="text-[#979797] font-medium text-base">Not Answered</span>
-                                                </div>
-                                                <button
-                                                    className='text-white px-2 py-1 font-medium rounded-md shadow-inner-button text-base bg-purple hover:bg-[#6D0DCC]'
-                                                    onClick={() => setshowexplanation(true)}
-                                                >
-                                                    Show Explanation
-                                                </button>
-                                            </div>
-
-                                        )}
-
-                                        {/* Show explanation for incorrect or unanswered questions */}
-                                        {((!isAnswered || (isAnswered && !isCorrect)) && showexplanation) && (
-                                            <div className="w-full h-auto bg-[#F9FAFB] border-2 border-solid border-[#F2F4F7] rounded-[8px] flex p-4">
-                                                <div className="text-[#1D2939] font-normal text-sm italic leading-[25px]"
+                    <div className="overflow-y-auto flex-1">
+                        <div className='flex items-center justify-center'>
+                            <div className="flex flex-col w-full ">
+                                <div className="flex p-5  justify-center">
+                                    <div className="w-auto h-auto rounded-[12px] px-4 border-2 border-[#EAECF0] flex py-4 flex-col items-center justify-center">
+                                        <div className="bg-[#FFFFFF] w-[800px] h-auto flex flex-col gap-[20px]">
+                                            <div className="w-auto h-auto flex flex-row gap-1 mb-1">
+                                                <span className="text-[#1D2939] font-semibold text-base">
+                                                    {currentQuestionIndex + 1}.
+                                                </span>
+                                                <div
+                                                    className="question-content text-[#1D2939] font-semibold text-base"
                                                     dangerouslySetInnerHTML={{
-                                                        __html: currentQuestion?.answerExplanation || 'No explanation available'
+                                                        __html: currentQuestion?.question || 'Question not available'
                                                     }}
                                                 />
                                             </div>
-                                        )}
+                                            <div className="w-auto h-auto gap-[15px] flex flex-col">
+                                                <div className="flex flex-col gap-1">
+                                                    {Object.entries(currentQuestion?.options || {}).map(([key, value]) => {
+                                                        const isSelectedOption = isAnswered && selectedOption === key;
+                                                        const isCorrectOption = key === currentQuestion?.correctAnswer;
+
+                                                        let radioColor = '#D0D5DD';
+                                                        if (isAnswered && !isCorrect) {
+                                                            if (isSelectedOption) {
+                                                                radioColor = '#FF4D4F';
+                                                            } else if (isCorrectOption) {
+                                                                radioColor = '#0B9055';
+                                                            }
+                                                        } else if (isCorrectOption) {
+                                                            radioColor = '#0B9055';
+                                                        }
+
+                                                        let checked = false;
+                                                        if (isAnswered && !isCorrect) {
+                                                            checked = isSelectedOption || isCorrectOption;
+                                                        } else {
+                                                            checked = (isAnswered && isSelectedOption) || (!isAnswered && isCorrectOption);
+                                                        }
+
+                                                        return (
+                                                            <FormControlLabel
+                                                                key={key}
+                                                                value={key}
+                                                                className="break-all flex flex-row "
+                                                                checked={checked}
+                                                                control={
+                                                                    <Radio
+                                                                        disabled
+                                                                        checked={checked}
+                                                                        sx={{
+                                                                            color: radioColor,
+                                                                            '&.Mui-checked': {
+                                                                                color: radioColor,
+                                                                            },
+                                                                        }}
+                                                                    />
+                                                                }
+                                                                label={<p className='text-[#667085]'>{value}</p>}
+                                                            />
+                                                        );
+                                                    })}
+                                                </div>
+                                            </div>
+                                            <hr />
+
+                                            {/* Status indicators */}
+                                            {isAnswered && isCorrect && (
+                                                <div className="w-[121px] h-10 items-center px-2 flex flex-row bg-[#EDFCF3] border border-solid border-[#AAF0C7] rounded-[6px] gap-1">
+                                                    <Image src="/icons/green-right-mark.svg" width={24} height={24} alt="right-mark-icon" />
+                                                    <span className="text-[#0A5B39] font-medium text-base">Correct</span>
+                                                </div>
+                                            )}
+
+                                            {isAnswered && !isCorrect && (
+
+                                                <div className='flex flex-row justify-between items-center '>
+                                                    <div className="w-[121px] h-10 px-2 flex flex-row items-center bg-[#FEF3F2] border border-solid border-[#FFCDC9] rounded-[6px] gap-1">
+                                                        <Image src="/icons/red-cancel-icon.svg" width={24} height={24} alt="red-cancel-icon" />
+                                                        <span className="text-[#9A221A] font-medium text-base">Incorrect</span>
+                                                    </div>
+                                                    <button
+                                                        className='text-white px-2 py-1 font-medium text-base rounded-md shadow-inner-button bg-purple hover:bg-[#6D0DCC]'
+                                                        onClick={() => setshowexplanation(true)}
+                                                    >
+                                                        Show Explanation
+                                                    </button>
+
+                                                </div>
+                                            )}
+
+                                            {!isAnswered && (
+
+                                                <div className='flex flex-row justify-between items-center '>
+                                                    <div className="w-[135px] h-10 px-2 flex flex-row items-center bg-[#f0f0f0] border border-solid border-[#cecece] rounded-[6px] gap-1">
+                                                        <span className="text-[#979797] font-medium text-base">Not Answered</span>
+                                                    </div>
+                                                    <button
+                                                        className='text-white px-2 py-1 font-medium rounded-md shadow-inner-button text-base bg-purple hover:bg-[#6D0DCC]'
+                                                        onClick={() => setshowexplanation(true)}
+                                                    >
+                                                        Show Explanation
+                                                    </button>
+                                                </div>
+
+                                            )}
+
+                                            {/* Show explanation for incorrect or unanswered questions */}
+                                            {((!isAnswered || (isAnswered && !isCorrect)) && showexplanation) && (
+                                                <div className="w-full h-auto bg-[#F9FAFB] border-2 border-solid border-[#F2F4F7] rounded-[8px] flex p-4">
+                                                    <div className="text-[#1D2939] font-normal text-sm italic leading-[25px]"
+                                                        dangerouslySetInnerHTML={{
+                                                            __html: currentQuestion?.answerExplanation || 'No explanation available'
+                                                        }}
+                                                    />
+                                                </div>
+                                            )}
+                                        </div>
                                     </div>
                                 </div>
                             </div>

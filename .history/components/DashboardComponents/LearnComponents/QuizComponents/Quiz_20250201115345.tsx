@@ -26,7 +26,6 @@ interface Quiz {
     marksPerQuestion: number;
     nMarksPerQuestion: number;
     questionsList: Question[];
-    quizDescription: string;
 }
 interface Options {
     A: string;
@@ -145,7 +144,6 @@ const fetchQuizzes = (callback: (quizzes: Quiz[] | ((prevQuizzes: Quiz[]) => Qui
                     title: quizData.quizName,
                     questions: questionsSnapshot.size,
                     quizId: quizData.quizId,
-                    quizDescription: quizData.quizDescription,
                     status: quizData.status,
                     startDate: quizData.startDate,
                     endDate: quizData.endDate,
@@ -207,7 +205,6 @@ function Quiz() {
     const [isPremiumQuiz, setIsPremiumQuiz] = useState(true);
     const [product, setProduct] = useState<{ productId: string; productName: string; productType: string } | null>(null);
     const [showBottomSheet, setShowBottomSheet] = useState(false);
-    const [quizDescription, setQuizDescription] = useState('');
     const [marksPerQ, setMarksPerQ] = useState(0);
     const [nMarksPerQ, setnMarksPerQ] = useState(0);
     const [noOfQuestions, setNoOfQuestions] = useState(0);
@@ -325,10 +322,7 @@ function Quiz() {
                                 )}
                                 {/* Start Quiz Button */}
                                 <button
-                                    onClick={() => {
-                                        onStartQuiz(); setTimeOfQuiz(quiz.quizTime); setProduct(quiz.product); setIsPremiumQuiz(quiz.isPremiumQuiz); setFormattedQTime(convertToTimeFormat(quiz.quizTime)); setMarksPerQ(quiz.marksPerQuestion); setnMarksPerQ(quiz.nMarksPerQuestion); setQuizId(quiz.quizId); setNoOfQuestions(quiz.questions); setPassedQuestionList(quiz.questionsList);
-                                        setQuizDescription(quiz.quizDescription);
-                                    }}
+                                    onClick={() => { onStartQuiz(); setTimeOfQuiz(quiz.quizTime); setProduct(quiz.product); setIsPremiumQuiz(quiz.isPremiumQuiz); setFormattedQTime(convertToTimeFormat(quiz.quizTime)); setMarksPerQ(quiz.marksPerQuestion); setnMarksPerQ(quiz.nMarksPerQuestion); setQuizId(quiz.quizId); setNoOfQuestions(quiz.questions); setPassedQuestionList(quiz.questionsList) }}
                                     disabled={quiz.status === 'scheduled'}
                                     className={`flex items-center justify-center w-full px-[14px] py-[10px] text-xs text-white font-semibold rounded-[6px] shadow-inner-button transition-colors ${quiz.status === 'live' ? 'bg-[#9012FF] hover:bg-[#6D0DCC]' : 'bg-[#D8ACFF] cursor-not-allowed'}`}>
                                     Start Quiz
@@ -421,10 +415,9 @@ function Quiz() {
                         </ModalHeader>
                         <ModalBody>
                             <div className=" h-auto ">
-                                <span className="text-sm text-[#667085] font-normal"
-
-                                    dangerouslySetInnerHTML={{ __html: quizDescription || "No description available" }} />
-
+                                <span className="text-sm text-[#667085] font-normal">
+                                    Ready to begin? Click &apos;Start&apos; to attempt this quiz
+                                </span>
                             </div>
                             <div className="my-8 flex-row flex items-center ">
                                 <div className="gap-1 flex-col flex items-center w-full border-r border-lightGrey">

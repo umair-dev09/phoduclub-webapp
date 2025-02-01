@@ -422,9 +422,9 @@ function Quiz() {
                         <ModalBody>
                             <div className=" h-auto ">
                                 <span className="text-sm text-[#667085] font-normal"
-
-                                    dangerouslySetInnerHTML={{ __html: quizDescription || "No description available" }} />
-
+                                >
+                                    dangerouslySetInnerHTML={{ __html: quizDescription || "No description available" }}
+                                </span>
                             </div>
                             <div className="my-8 flex-row flex items-center ">
                                 <div className="gap-1 flex-col flex items-center w-full border-r border-lightGrey">
