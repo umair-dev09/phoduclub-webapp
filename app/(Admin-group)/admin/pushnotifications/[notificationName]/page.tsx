@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { useState, useEffect } from "react";
-import { doc, getDoc, collection, getDocs } from 'firebase/firestore';
+import { doc, getDoc, collection, getDocs, onSnapshot } from 'firebase/firestore';
 import { db } from "@/firebase";
 import {
     Pagination,
@@ -16,6 +16,9 @@ import {
 import { useRouter, useSearchParams } from 'next/navigation';
 import QuizStatus from "@/components/AdminComponents/StatusDisplay";
 import LoadingData from "@/components/Loading";
+import EndDialog from "@/components/AdminComponents/QuizInfoDailogs/EndDailogue";
+import PausedDialog from "@/components/AdminComponents/QuizInfoDailogs/PauseDailogue";
+import Resume from "@/components/AdminComponents/QuizInfoDailogs/ResumeDailogue";
 
 type NotificationData = {
     name: string;
@@ -51,17 +54,19 @@ function NotificationName() {
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage] = useState(5);
     const [loading, setLoading] = useState(true);
+    const [isPausedDialogOpen, setIsPausedDialogOpen] = useState(false);
+    const [isResumeOpen, setIsResumeOpen] = useState(false);
+    const [isEndDialogOpen, setIsEndDialogOpen] = useState(false);
 
     useEffect(() => {
-        const fetchNotiData = async () => {
-            if (!notiId) return;
+        if (!notiId) return;
 
+        // Set up real-time listener for notification document
+        const notiDocRef = doc(db, 'notifications', notiId);
+        const unsubscribe = onSnapshot(notiDocRef, async (docSnapshot) => {
             try {
-                const notiDocRef = doc(db, 'notifications', notiId);
-                const notiDocSnap = await getDoc(notiDocRef);
-
-                if (notiDocSnap.exists()) {
-                    const notificationData = notiDocSnap.data() as NotificationData;
+                if (docSnapshot.exists()) {
+                    const notificationData = docSnapshot.data() as NotificationData;
                     setData(notificationData);
                     
                     // Combine premium and free user clicks
@@ -107,9 +112,10 @@ function NotificationName() {
                 console.error('Error fetching data:', error);
                 setLoading(false);
             }
-        };
+        });
 
-        fetchNotiData();
+        // Cleanup subscription on unmount
+        return () => unsubscribe();
     }, [notiId]);
 
     const lastItemIndex = currentPage * itemsPerPage;
@@ -144,20 +150,23 @@ function NotificationName() {
                     </div>
                     <div className="flex flex-row gap-2 ">
                         {data?.status === 'live' && (
-                        <button className=" p-3 gap-2 flex-row flex bg-[#FFFFFF] border border-solid border-[#EAECF0] rounded-[8px] h-[40px] items-center">
+                        <button className=" p-3 gap-2 flex-row flex bg-[#FFFFFF] border border-solid border-[#EAECF0] rounded-[8px] h-[40px] items-center"
+                        onClick={() => setIsPausedDialogOpen(true)}>
                             <Image src="/icons/pausequiz.svg" width={18} height={18} alt="Paused-quiz" />
                             <span className="text-sm text-[#0C111D] font-normal">Pause</span>
                         </button>
                         )}
                         {data?.status === 'live' && (
-                        <button className=" p-3 gap-2 flex-row flex bg-[#FFFFFF] border border-solid border-[#EAECF0] rounded-[8px] h-[40px] items-center">
+                        <button className=" p-3 gap-2 flex-row flex bg-[#FFFFFF] border border-solid border-[#EAECF0] rounded-[8px] h-[40px] items-center"
+                        onClick={() => setIsEndDialogOpen(true)}>
                             <Image src="/icons/endquiz.svg" width={18} height={18} alt="End-quiz" />
                             <span className="text-sm text-[#DE3024]  font-normal">End </span>
                         </button>
                         )}
                         {data?.status === 'paused' && (
                         <button
-                            className=" p-3 gap-2 flex-row flex rounded-[8px] h-[40px] items-center">
+                            className=" p-3 gap-2 flex-row flex rounded-[8px] h-[40px] items-center"
+                            onClick={() => setIsResumeOpen(true)}>
                             <Image src="/icons/resume.svg" width={18} height={18} alt="Resume Quiz" />
                             <span className="text-sm text-[#9012FF]  font-medium">Resume </span>
                         </button>
@@ -253,6 +262,7 @@ function NotificationName() {
                             )}
                         </tbody>
                     </table>
+
                 </div>
 
                 {/* Pagination Section */}
@@ -270,6 +280,10 @@ function NotificationName() {
                     </div>
                 )}
             </div>
+
+            {isEndDialogOpen && <EndDialog onClose={() => setIsEndDialogOpen(false)} fromContent="notifications" contentId={notiId || ''} />}
+            {isPausedDialogOpen && <PausedDialog onClose={() => setIsPausedDialogOpen(false)} fromContent="notifications" contentId={notiId || ''} />}
+            {isResumeOpen && < Resume open={isResumeOpen} onClose={() => setIsResumeOpen(false)} fromContent="notifications" contentId={notiId || ''} />}
         </div>
     );
 }

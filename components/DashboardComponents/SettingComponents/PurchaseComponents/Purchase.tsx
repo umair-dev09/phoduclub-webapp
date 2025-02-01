@@ -50,7 +50,9 @@ function Purchase() {
             try {
                 const transactionsCollection = collection(db, `users/${userId}/transactions`);
                 const transactionsSnapshot = await getDocs(transactionsCollection);
-                const fetchedTransactions = transactionsSnapshot.docs.map((doc) => doc.data() as PurchaseData);
+                const fetchedTransactions = transactionsSnapshot.docs
+                    .map((doc) => doc.data() as PurchaseData)
+                    .filter((transaction) => transaction.paymentType !== "free");
                 setTransactions(fetchedTransactions);
             } catch (error) {
                 console.error('Error fetching transactions: ', error);

@@ -9,12 +9,9 @@ import { db } from "@/firebase"; // Adjust the path based on your project setup
 import LoadingData from "@/components/Loading";
 import { toast, ToastContainer } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
-import { Dialog, DialogBackdrop, DialogPanel } from "@headlessui/react";
-import { DatePicker } from "@nextui-org/react";
 import { now, today, CalendarDate, getLocalTimeZone, parseDateTime } from "@internationalized/date";
 import StatusDisplay from "@/components/AdminComponents/StatusDisplay";
 import { Popover, PopoverContent, PopoverTrigger } from "@nextui-org/popover";
-import StudentsAttemptedCourseInfo from '@/components/AdminComponents/Courseinfo/StudentsPurchasedCourseInfo';
 import DeleteCourse from "@/components/AdminComponents/Courseinfo/DeleteCourse";
 import { Tabs, Tab } from "@nextui-org/react";
 import ScheduledDialog from "@/components/AdminComponents/QuizInfoDailogs/scheduledDailog";
@@ -22,6 +19,7 @@ import EndDialog from "@/components/AdminComponents/QuizInfoDailogs/EndDailogue"
 import PausedDDialog from "@/components/AdminComponents/QuizInfoDailogs/PauseDailogue";
 import ResumeQuiz from "@/components/AdminComponents/QuizInfoDailogs/ResumeDailogue";
 import { format } from 'date-fns';
+import StudentsPurchasedCourseInfo from "@/components/AdminComponents/Courseinfo/StudentsPurchasedCourseInfo";
 
 type priceprops = {
     Price: number;
@@ -403,7 +401,7 @@ function Courses() {
                             </div>
                         }
                     >
-                        <StudentsAttemptedCourseInfo  courseId={courseId || ''}/>
+                        <StudentsPurchasedCourseInfo  courseId={courseId || ''}/>
                     </Tab>
                 </Tabs>
             </div>

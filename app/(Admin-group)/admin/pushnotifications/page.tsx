@@ -121,7 +121,7 @@ function Messenger() {
     // const [activePopover, setActivePopover] = useState<number | null>(null);
     const [remove, setRemove] = useState(false);
     const [isOpen, setIsOpen] = useState(false);
-    const [isPausedDialogOpen, setIsPausedDialogOpen] = useState(false);
+    const [isPausedDialogOpen, setIsPausedDialogOpen] = useState(false); 
     const [isResumeOpen, setIsResumeOpen] = useState(false);
     const [isEndDialogOpen, setIsEndDialogOpen] = useState(false);
     const [openPopovers, setOpenPopovers] = React.useState<{ [key: number]: boolean }>({});

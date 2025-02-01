@@ -48,7 +48,7 @@ const formatFirestoreTimestamp = (timestamp: Timestamp | string): string => {
     });
 };
 
-function UserDetails({ userId }: UserDetailsProps) {
+function UserDetails({ userId }: UserDetailsProps) {   
     const [phone, setPhone] = useState("");
     const [openDialog, setOpenDialog] = useState(false);
     const [user, setUser] = useState<UserData | null>(null);
