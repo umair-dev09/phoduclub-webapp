@@ -17,7 +17,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import MembersDetailsArea from '@/components/AdminComponents/InternalChat/MembersDetailsArea';
 type Channel = {
   channelId: string;
-  channelName: string;    
+  channelName: string;
   channelEmoji: string;
   members: { id: string }[] | null;
 };
@@ -39,7 +39,8 @@ type Chat = {
   replyingToFileUrl: string;
   replyingToFileName: string;
   isDeleted: boolean;
-  mentions: { userId: string, id: string }[];
+  mentions: { userId: string; id: string, isAdmin: boolean, }[];
+
 };
 
 function InternalChat() {
@@ -403,7 +404,6 @@ function InternalChat() {
                         if (el) {
                           // Store reference for the current chat message
                           chatRefs.current[chat.chatId] = el;
-
                           // Assign the bottom reference to the last message for initial scrolling
                           if (index === chats.length - 1) {
                             bottomRef.current = el;
@@ -470,12 +470,10 @@ function InternalChat() {
                   </React.Fragment>
                 );
               })}
-
             </div>
 
             <div className='relative'>
               {showScrollButton && (
-
                 <button
                   onClick={scrollToBottom}
                   className="flex items-center justify-center absolute bottom-[85px] right-3 bg-white border pt-[2px] text-white rounded-full shadow-md hover:bg-[#f7f7f7] transition-all w-[38px] h-[38px]"

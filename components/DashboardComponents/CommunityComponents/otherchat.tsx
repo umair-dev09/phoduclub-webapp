@@ -156,88 +156,6 @@ function OtherChat({ message, currentUserId, adminThatDeletedId, isDeletedByAdmi
     return () => unsubscribe();
   }, [reactionsRef]);
 
-
-  // const renderMessageWithMentions = () => {
-  //   if (!highlightedText || !mentions) return highlightedText;
-
-  //   // Helper function to check if text is a URL
-  //   const isUrl = (text: string) => {
-  //     try {
-  //       new URL(text);
-  //       return true;
-  //     } catch {
-  //       return false;
-  //     }
-  //   };
-
-  //   // Helper function to process text parts
-  //   const processTextPart = (text: string, key: number | string) => {
-  //     // Check if the text is a URL
-  //     if (isUrl(text)) {
-  //       return (
-  //         <a
-  //           key={key}
-  //           href={text}
-  //           target="_blank"
-  //           rel="noopener noreferrer"
-  //           className="text-blue-200 hover:underline"
-  //         >
-  //           {text}
-  //         </a>
-  //       );
-  //     }
-  //     return text;
-  //   };
-
-  //   const processMention = (part: string, index: number | string) => {
-  //     if (part.startsWith("@")) {
-  //       const mentionName = part.substring(1).trim(); // Remove '@' and trim whitespace
-
-  //       // Match mention by checking userId or id
-  //       const mention = mentions.find((m) => m.userId === mentionName || m.id === mentionName);
-
-  //       if (mention) {
-  //         return (
-  //           <span
-  //             key={index}
-  //             style={{ color: "#C74FE6", cursor: "pointer" }}
-  //             onClick={() => {
-  //               setOpenDialogue(true);
-  //               setId(mention.id);
-  //               setAdmin(mention.isAdmin);
-  //             }}
-  //           >
-  //             {part} {/* Keep the full mention, including '@' */}
-  //           </span>
-  //         );
-  //       }
-
-  //       console.log("Mention Not Found for:", mentionName);
-  //     }
-  //     return processTextPart(part, index);
-  //   };
-
-  //   // Updated regex to handle @mentions including # and numbers
-  //   const mentionRegex = /(@[\w#]+|\s+)/;
-
-  //   if (typeof highlightedText === "string") {
-  //     const parts = highlightedText.split(mentionRegex);
-  //     return parts.map((part, index) => processMention(part, index));
-  //   }
-
-  //   if (Array.isArray(highlightedText)) {
-  //     return highlightedText.map((node, index) => {
-  //       if (typeof node === "string") {
-  //         const parts = node.split(mentionRegex);
-  //         return parts.map((part, innerIndex) => processMention(part, `${index}-${innerIndex}`));
-  //       }
-  //       return node;
-  //     });
-  //   }
-
-  //   return null;
-  // };
-
   const renderMessageWithMentions = () => {
     if (!highlightedText || !mentions) return highlightedText;
 
@@ -419,14 +337,12 @@ function OtherChat({ message, currentUserId, adminThatDeletedId, isDeletedByAdmi
     }
   };
 
-
   const formatFileSize = (size: number): string => {
     if (size < 1024) return `${size} bytes`;
     else if (size >= 1024 && size < 1024 * 1024) return `${(size / 1024).toFixed(2)} KB`;
     else if (size >= 1024 * 1024 && size < 1024 * 1024 * 1024) return `${(size / (1024 * 1024)).toFixed(2)} MB`;
     else return `${(size / (1024 * 1024 * 1024)).toFixed(2)} GB`;
   };
-
 
   const handleDownload = (fileUrl: string, fileName: string) => {
     // Create an anchor element
@@ -652,7 +568,6 @@ function OtherChat({ message, currentUserId, adminThatDeletedId, isDeletedByAdmi
               <EmojiPicker onEmojiClick={handleAddReaction} height={280} searchDisabled={true} reactions={['1f44d', '1f496', '1f602', '1f60d', '1f62e']}
                 style={{
                   border: "none",
-
                 }}
                 previewConfig={
                   {

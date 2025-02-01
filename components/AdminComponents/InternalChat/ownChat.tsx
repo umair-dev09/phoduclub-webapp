@@ -35,7 +35,7 @@ type OwnChatProps = {
   internalChatId: string;
   channelId: string;
   isDeleted: boolean;
-  mentions: { userId: string, id: string }[];
+  mentions: { userId: string; id: string, isAdmin: boolean, }[];
   highlightedText: string | React.ReactNode[];
   isHighlighted: boolean; // New prop
   scrollToReply: (replyingToChatId: string) => void;
@@ -48,8 +48,6 @@ type ReactionCount = {
   count: number;
 };
 
-
-
 function OwnChat({ message, isDeleted, mentions, currentUserId, highlightedText, messageType, fileUrl, fileName, isHighlighted, scrollToReply, fileSize, senderId, timestamp, internalChatId, channelId, chatId, isReplying, replyingToId, replyingToChatId, replyingToFileName, replyingToFileUrl, replyingToMsg, replyingToMsgType, setShowReplyLayout, handleReply }: OwnChatProps) {
   const [reactions, setReactions] = useState<ReactionCount[]>([]);
   const [isOpen, setIsOpen] = useState(false);
@@ -59,6 +57,7 @@ function OwnChat({ message, isDeleted, mentions, currentUserId, highlightedText,
   const [id, setId] = useState<string>('');
   const [admin, setAdmin] = useState<boolean>(false);
   const [openDialogue, setOpenDialogue] = useState(false);
+  const [isExpanded, setIsExpanded] = useState(false);
 
   const reactionsRef = useMemo(() => {
     return collection(
@@ -90,67 +89,154 @@ function OwnChat({ message, isDeleted, mentions, currentUserId, highlightedText,
     return () => unsubscribe();
   }, [reactionsRef]);
 
-
   const renderMessageWithMentions = () => {
     if (!highlightedText || !mentions) return highlightedText;
 
-    // If highlightedText is a string, process mentions
-    if (typeof highlightedText === "string") {
-      const parts = highlightedText.split(/(@\w+)/); // Match mentions starting with "@"
-      return parts.map((part, index) => {
-        if (part.startsWith("@")) {
-          const mentionName = part.substring(1); // Extract mention name without "@"
-          const mention = mentions.find((m) => m.userId === mentionName);
+    const maxWords = 30;
 
-          if (mention) {
-            // If the part is a mention, render it as a clickable span
-            return (
-              <span
-                key={index}
-                style={{ color: "yellow", cursor: "pointer" }}
-                onClick={() => { setOpenDialogue(true); setId(mention.id); }} >
-                {part}
-              </span>
-            );
+    const isUrl = (text: string) => {
+      try {
+        new URL(text);
+        return true;
+      } catch {
+        return false;
+      }
+    };
+
+    const processTextPart = (text: string, key: number | string) => {
+      if (isUrl(text)) {
+        return (
+          <a
+            key={key}
+            href={text}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-blue-300 hover:underline"
+          >
+            {text}
+          </a>
+        );
+      }
+      return text;
+    };
+
+    const processMention = (part: string, index: number | string) => {
+      if (part.startsWith("@")) {
+        const mentionName = part.substring(1).trim();
+        const mention = mentions.find((m) => m.userId === mentionName || m.id === mentionName);
+
+        if (mention) {
+          return (
+            <span
+              key={index}
+              style={{ color: "yellow", cursor: "pointer" }}
+              onClick={() => {
+                setOpenDialogue(true);
+                setId(mention.id);
+                setAdmin(mention.isAdmin);
+              }}
+            >
+              {part}
+            </span>
+          );
+        }
+      }
+      return processTextPart(part, index);
+    };
+
+    // Regex to find mentions
+    const mentionRegex = /(@[\w#]+)/g;
+
+    const processHighlightedText = () => {
+      if (typeof highlightedText === "string") {
+        const parts = highlightedText.split(mentionRegex);
+        return parts.map((part, index) => processMention(part, index));
+      }
+
+      if (Array.isArray(highlightedText)) {
+        return highlightedText.map((node, index) => {
+          if (typeof node === "string") {
+            const parts = node.split(mentionRegex);
+            return parts.map((part, innerIndex) => processMention(part, `${index}-${innerIndex}`));
           }
-        }
-        return part; // Render non-mention parts as normal text
-      });
-    }
+          return node;
+        });
+      }
+      return null;
+    };
 
-    // If highlightedText is an array of ReactNode, iterate through it
-    if (Array.isArray(highlightedText)) {
-      return highlightedText.map((node, index) => {
-        if (typeof node === "string") {
-          const parts = node.split(/(@\w+)/);
-          return parts.map((part, innerIndex) => {
-            if (part.startsWith("@")) {
-              const mentionName = part.substring(1);
-              const mention = mentions.find((m) => m.userId === mentionName);
+    const fullContent = processHighlightedText();
 
-              if (mention) {
-                return (
-                  <span
-                    key={`${index}-${innerIndex}`}
-                    style={{ color: "yellow", cursor: "pointer" }}
-                    onClick={() => { setOpenDialogue(true); setId(mention.id); }}
-                  >
-                    {part}
-                  </span>
-                );
-              }
+    const getWordCount = (content: any): number => {
+      if (typeof content === "string") {
+        return content.trim().split(/\s+/).length;
+      }
+      if (Array.isArray(content)) {
+        return content.reduce((count, node) => {
+          if (typeof node === "string") {
+            return count + node.trim().split(/\s+/).length;
+          }
+          return count;
+        }, 0);
+      }
+      return 0;
+    };
+
+    const wordCount = getWordCount(fullContent);
+
+    // Limit to 30 words initially if not expanded
+    const getTruncatedContent = () => {
+      if (isExpanded) {
+        return fullContent;  // Show full content when expanded
+      }
+
+      if (wordCount <= maxWords) {
+        return fullContent;  // Show full content if less than maxWords
+      }
+
+      if (typeof highlightedText === "string") {
+        const words = highlightedText.split(/\s+/);
+        return words.slice(0, maxWords).join(" ") + "...";  // Show truncated content
+      }
+
+      if (Array.isArray(fullContent)) {
+        let wordCounter = 0;
+        return fullContent.reduce((acc: React.ReactNode[], node) => {
+          if (wordCounter >= maxWords) return acc;
+
+          if (typeof node === "string") {
+            const words = node.split(/\s+/);
+            const remainingWords = maxWords - wordCounter;
+            wordCounter += words.length;
+            if (wordCounter > maxWords) {
+              acc.push(words.slice(0, remainingWords).join(" ") + "...");
+            } else {
+              acc.push(node);
             }
-            return part;
-          });
-        }
-        return node; // Render non-string nodes as they are
-      });
-    }
+          } else {
+            acc.push(node);
+            wordCounter += 1;
+          }
+          return acc;
+        }, []);
+      }
+      return null;
+    };
 
-    return null; // Return null if highlightedText is neither string nor ReactNode[]
+    return (
+      <div>
+        <span>{getTruncatedContent()}</span>
+        {wordCount > maxWords && !isExpanded && (
+          <button
+            onClick={() => setIsExpanded(true)}
+            className="text-blue-300 hover:underline ml-2"
+          >
+            View More
+          </button>
+        )}
+      </div>
+    );
   };
-
-
 
   const handleReplyMessage = () => {
     setShowReplyLayout(true);
@@ -252,7 +338,6 @@ function OwnChat({ message, isDeleted, mentions, currentUserId, highlightedText,
               <PopoverTrigger>
                 <button
                   className='w-[48px] h-[26px] rounded-[54px] border border-solid border-[#6770A9]  hover:bg-[#D0D5DD] flex min-w-[46px]  invisible items-center justify-center focus:outline-none bg-[#F2F4F7] ml-1 transition-all group-hover:flex group-hover:visible '
-
                 >
                   <Image
                     src="/icons/arrow-down.svg"
@@ -410,7 +495,7 @@ function OwnChat({ message, isDeleted, mentions, currentUserId, highlightedText,
 
       </div>
       {openDialogue && (
-        <MemberClickDialog open={true} onClose={() => setOpenDialogue(false)} id={id} isAdmin={true} isCurrentUserAdmin={false}/>
+        <MemberClickDialog open={true} onClose={() => setOpenDialogue(false)} id={id} isAdmin={true} isCurrentUserAdmin={false} />
       )}
       {showMediaDialog && <MediaViewDialog open={true} onClose={() => setShowMediaDialog(false)} src={fileUrl} mediaType={messageType || ''} />}
       {deleteDialog && <Delete internalChatId={internalChatId} channelId={channelId} chatId={chatId} open={true} onClose={() => setDeleteDialog(false)} />}

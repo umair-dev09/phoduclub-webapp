@@ -6,6 +6,8 @@ import { auth, db, storage } from "@/firebase";
 import { addDoc, collection, doc, getDoc, getDocs, serverTimestamp, setDoc, updateDoc } from "firebase/firestore";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import MuxUploader from "@mux/mux-uploader-react";
+import MessageLoading from "@/components/MessageLoading";
+
 type BottomTextProps = {
   showReplyLayout: boolean;
   setShowReplyLayout: (value: boolean) => void;
@@ -61,6 +63,7 @@ function BottomText({
   const [cursorPosition, setCursorPosition] = useState<number | null>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const [mentions, setMentions] = useState<Mention[]>([]);
+  const [isSending, setIsSending] = useState(false);
 
   useEffect(() => {
     const fetchReplyName = async () => {
@@ -229,6 +232,7 @@ function BottomText({
     }
 
     try {
+      setIsSending(true);
       const user = auth.currentUser;
       if (!user) {
         console.error("User is not authenticated");
@@ -239,8 +243,6 @@ function BottomText({
         db,
         `communities/${communityId}/channelsHeading/${headingId}/channels/${channelId}/chats`
       );
-
-
 
       const newChatRef = doc(chatsRef);
       const chatId = newChatRef.id;
@@ -326,10 +328,10 @@ function BottomText({
       setIsAnnouncement(false);
     } catch (error) {
       console.error("Error sending message:", error);
+    } finally {
+      setIsSending(false);
     }
   };
-
-
 
   const handleMediaUpload = async (file: File, type: "image" | "video" | "document") => {
     if (!communityId || !headingId || !channelId) return;
@@ -590,17 +592,25 @@ function BottomText({
           </div>
         </div>
 
-        <button className="ml-3 mr-3 mb-1"
-          style={{ cursor: text.trim() || fileUrl ? 'pointer' : 'not-allowed' }}
+        <button
+          className="ml-3 mr-3 mb-1"
+          style={{
+            cursor: (text.trim() || fileUrl) && !isSending ? 'pointer' : 'not-allowed',
+            opacity: isSending ? 0.5 : 1
+          }}
           onClick={handleSend}
-          disabled={!text.trim() && !fileUrl}
+          disabled={!text.trim() && !fileUrl || isSending}
         >
-          <Image
-            src={text.trim() || fileUrl ? '/icons/sendCommunity.svg' : '/icons/send.svg'}
-            alt='send icon'
-            width={24}
-            height={24}
-          />
+          {isSending ? (
+            <MessageLoading />
+          ) : (
+            <Image
+              src={text.trim() || fileUrl ? '/icons/sendCommunity.svg' : '/icons/send.svg'}
+              alt='send icon'
+              width={24}
+              height={24}
+            />
+          )}
         </button>
       </div>
     </div>

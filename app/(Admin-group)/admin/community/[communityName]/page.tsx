@@ -691,24 +691,24 @@ function Chatinfo() {
                           <div className="flex flex-row items-center gap-2">
                             <p>{channel.channelEmoji}</p>
                             <p className="text-[13px] font-semibold text-[#4B5563]">{channel.channelName}</p>
-                             {Array.isArray(channel?.notificationsMuted) && 
-                                                      channel.notificationsMuted.some(mute => mute.id === currentUserId) && (
-                                                        <Image 
-                                                          src='/icons/notification-off-02.svg' 
-                                                          alt="Muted" 
-                                                          width={16} 
-                                                          height={16} 
-                                                          />
-                                                    )}
+                            {Array.isArray(channel?.notificationsMuted) &&
+                              channel.notificationsMuted.some(mute => mute.id === currentUserId) && (
+                                <Image
+                                  src='/icons/notification-off-02.svg'
+                                  alt="Muted"
+                                  width={16}
+                                  height={16}
+                                />
+                              )}
                           </div>
                           {/* Conditionally render notification */}
-                          {hasNotification && 
-                             selectedChannel?.channelId !== channel.channelId && 
-                             !channel.notificationsMuted?.some(mute => 
-                             mute.id === currentUserId
-                             ) && (
-                            <div className="w-2 h-2 rounded-full bg-[#DE3024]"></div> // Notification Indicator
-                          )}
+                          {hasNotification &&
+                            selectedChannel?.channelId !== channel.channelId &&
+                            !channel.notificationsMuted?.some(mute =>
+                              mute.id === currentUserId
+                            ) && (
+                              <div className="w-2 h-2 rounded-full bg-[#DE3024]"></div> // Notification Indicator
+                            )}
                         </div>
                       </button>
                     );
@@ -742,7 +742,7 @@ function Chatinfo() {
               </div>
             </button>
           </div>
-        </div> */}  
+        </div> */}
       </div>
 
       {/* Chat Area */}
