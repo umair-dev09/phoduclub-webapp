@@ -142,8 +142,6 @@ function ChatHead({ channelName, channelId, notificationsMuted, channelEmoji, me
 
 
   return (
-
-
     <div className='flex items-center justify-between h-[72px] bg-white border-b border-lightGrey gap-2'>
       <div className='flex items-center justify-center mr-6 ml-4'>
         <Popover
@@ -151,7 +149,6 @@ function ChatHead({ channelName, channelId, notificationsMuted, channelEmoji, me
           isOpen={isPopoverOpen}
           onOpenChange={(open) => setIsPopoverOpen(open)}
         >
-
           <PopoverTrigger>
             <button className="flex flex-row gap-2 focus:outline-none">
               <p>{channelEmoji}</p>
@@ -159,7 +156,6 @@ function ChatHead({ channelName, channelId, notificationsMuted, channelEmoji, me
               {Array.isArray(notificationsMuted) && notificationsMuted.find(muted => muted.id === currentUserId) && (
                 <Image className={`{isMuted ? 'flex : 'none'}`} src='/icons/notification-off-02.svg' alt="Muted" width={16} height={16} />
               )}
-
               <Image
                 src="/icons/selectdate-Arrowdown.svg"
                 width={20}
