@@ -34,7 +34,6 @@ function MediaViewDialog({ open, onClose, src, mediaType }: MediaViewDialogProps
     };
 
     return (
-
         <Modal
             isOpen={open}
             onOpenChange={(isOpen) => !isOpen && onClose()}
@@ -102,8 +101,6 @@ function MediaViewDialog({ open, onClose, src, mediaType }: MediaViewDialogProps
                             <VideoPlayer videoSrc={src} />
                         )}
                     </ModalBody>
-
-
                 </>
             </ModalContent>
         </Modal>

@@ -225,11 +225,9 @@ const AdminVerify: React.FC<OTPInputProps> = ({
                                 e.preventDefault();
                                 const pastedData = e.clipboardData.getData('text');
                                 if (!/^\d+$/.test(pastedData)) return; // Only allow numeric paste
-
                                 const event = {
                                     target: { value: pastedData },
                                 } as React.ChangeEvent<HTMLInputElement>;
-
                                 handleInputChange(event, index);
                             }}
                         />

@@ -480,25 +480,30 @@ function Course() {
                                         <th className="w-[28%] text-left px-8 py-4 pl-8 rounded-tl-xl text-[#667085] font-medium text-sm">
                                             Courses
                                         </th>
-                                        <th className="text-center px-8 py-4 text-[#667085] font-medium text-sm">
+                                        <th
+                                            className="text-center px-8 py-4 text-[#667085] font-medium text-sm cursor-pointer"
+                                            onClick={() => handleSort('discountPrice')}
+                                        >
                                             <div
-                                                className="flex flex-row justify-center gap-1 cursor-pointer"
-                                                onClick={() => handleSort('discountPrice')}
+                                                className="flex flex-row justify-center gap-1"
                                             >
                                                 <p>Price</p>
                                                 <Image src='/icons/unfold-more-round.svg' alt="more" width={16} height={16} />
                                             </div>
                                         </th>
-                                        <th className="text-center px-8 py-4 text-[#667085] font-medium text-sm">
-                                            <div
-                                                className="flex flex-row justify-center gap-1 cursor-pointer"
-                                                onClick={() => handleSort('publishedOn')}
-                                            >
+                                        <th
+                                            className="text-center px-8 py-4 text-[#667085] font-medium text-sm cursor-pointer"
+                                            onClick={() => handleSort('publishedOn')}
+                                        >
+                                            <div className="flex flex-row justify-center gap-1">
                                                 <p>Published on</p>
                                                 <Image src='/icons/unfold-more-round.svg' alt="more" width={16} height={16} />
                                             </div>
                                         </th>
-                                        <th className="w-[20%] text-center px-8 py-4 text-[#667085] font-medium text-sm">
+                                        <th
+                                            className="w-[20%] text-center px-8 py-4 text-[#667085] font-medium text-sm cursor-pointer"
+                                            onClick={() => handleSort('studentsPurchased')}
+                                        >
                                             <div className="flex flex-row justify-center gap-1">
                                                 <p className="whitespace-nowrap">Students Purchased</p>
                                                 <Image src='/icons/unfold-more-round.svg' alt="more" width={16} height={16} />

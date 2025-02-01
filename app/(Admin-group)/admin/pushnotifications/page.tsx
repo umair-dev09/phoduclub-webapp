@@ -10,7 +10,7 @@ import {
     Pagination,
     PaginationContent,
     PaginationEllipsis,
-    PaginationItem, 
+    PaginationItem,
     PaginationLink,
     PaginationNext,
     PaginationPrevious,
@@ -40,8 +40,8 @@ interface NotificationData {
     startDate: string;
     status: string;
     usersClosedNotification: string[];
-    premiumUsersClicks: {userId: string, clickedAt: string}[];
-    freeUsersClicks: {userId: string, clickedAt: string}[];
+    premiumUsersClicks: { userId: string, clickedAt: string }[];
+    freeUsersClicks: { userId: string, clickedAt: string }[];
 
 }
 
@@ -103,7 +103,7 @@ function Messenger() {
     const [name, setName] = useState('');
     const [notificationId, setNotificationId] = useState('');
     const [description, setDescription] = useState("");
-        const [isScheduledDialogOpen, setIsScheduledDialogOpen] = useState(false);
+    const [isScheduledDialogOpen, setIsScheduledDialogOpen] = useState(false);
     const [cta, setCta] = useState("");
     const [hyperLink, setHyperLink] = useState("");
     const [timer, setTimer] = useState("");
@@ -117,27 +117,27 @@ function Messenger() {
     const [scrollBehavior, setScrollBehavior] = useState<"inside" | "outside">("outside");
     const isFormValid = name && description && cta && hyperLink && startDate && endDate;
     const isEditFormValid = name && description && cta && hyperLink;
-    const isScheduleFormValid =  startDate && endDate;
+    const isScheduleFormValid = startDate && endDate;
     // const [activePopover, setActivePopover] = useState<number | null>(null);
     const [remove, setRemove] = useState(false);
     const [isOpen, setIsOpen] = useState(false);
-    const [isPausedDialogOpen, setIsPausedDialogOpen] = useState(false); 
+    const [isPausedDialogOpen, setIsPausedDialogOpen] = useState(false);
     const [isResumeOpen, setIsResumeOpen] = useState(false);
     const [isEndDialogOpen, setIsEndDialogOpen] = useState(false);
     const [openPopovers, setOpenPopovers] = React.useState<{ [key: number]: boolean }>({});
-        const togglePopover = (index: number) => {
-            setOpenPopovers((prev) => ({
-                ...prev,
-                [index]: !prev[index],
-            }));
-        };
+    const togglePopover = (index: number) => {
+        setOpenPopovers((prev) => ({
+            ...prev,
+            [index]: !prev[index],
+        }));
+    };
 
-        const closePopover = (index: number) => {
-            setOpenPopovers((prev) => ({
-                ...prev,
-                [index]: false,
-            }));
-        };
+    const closePopover = (index: number) => {
+        setOpenPopovers((prev) => ({
+            ...prev,
+            [index]: false,
+        }));
+    };
     // Handler to open the dialog
     const handleCreate = () => {
         setIsOpen(true);
@@ -206,7 +206,7 @@ function Messenger() {
                     name: userData.name,
                     description: userData.description,
                     cta: userData.cta,
-                    createdAt: userData.createdAt, 
+                    createdAt: userData.createdAt,
                     endDate: userData.endDate,
                     hyperLink: userData.hyperLink,
                     notificationIcon: userData.notificationIcon,
@@ -256,7 +256,7 @@ function Messenger() {
                 // Check if new notification overlaps with live notification's date range
                 const liveStartDate = new Date(liveNotification.startDate);
                 const liveEndDate = new Date(liveNotification.endDate);
-                
+
                 if (newStartDate >= liveStartDate && newStartDate <= liveEndDate) {
                     toast.error("A notification is already live during this time period. Please select a different start time.");
                     return false;
@@ -266,14 +266,14 @@ function Messenger() {
             // Check for paused notifications
             const pausedNotification = notifications.find(n => n.status === 'paused');
             if (pausedNotification) {
-                  // Check if new notification overlaps with live notification's date range
-                  const liveStartDate = new Date(pausedNotification.startDate);
-                  const liveEndDate = new Date(pausedNotification.endDate);
-                  
-                  if (newStartDate >= liveStartDate && newStartDate <= liveEndDate) {
-                toast.error("A notification is currently paused and already available during this time period. Please resume or delete it before creating a new notification.");
-                return false;
-                  }
+                // Check if new notification overlaps with live notification's date range
+                const liveStartDate = new Date(pausedNotification.startDate);
+                const liveEndDate = new Date(pausedNotification.endDate);
+
+                if (newStartDate >= liveStartDate && newStartDate <= liveEndDate) {
+                    toast.error("A notification is currently paused and already available during this time period. Please resume or delete it before creating a new notification.");
+                    return false;
+                }
             }
 
             // Check for scheduling conflicts with other scheduled notifications
@@ -327,7 +327,7 @@ function Messenger() {
             // Get the notification document to check its current dates
             const notificationRef = doc(db, "notifications", notificationId);
             const notificationDoc = await getDoc(notificationRef);
-            
+
             if (!notificationDoc.exists()) {
                 toast.error("Notification not found");
                 return;
@@ -399,7 +399,7 @@ function Messenger() {
                 name,
                 description,
                 cta,
-                hyperLink, 
+                hyperLink,
                 startDate,
                 endDate,
                 notificationIcon,
@@ -412,10 +412,10 @@ function Messenger() {
 
             // Update the document with the generated notificationId
             await setDoc(docRef, { notificationId: docRef.id }, { merge: true });
-            
+
             toast.success("Notification Added Successfully!");
             setIsOpen(false);
-            
+
             // Reset form
             setName('');
             setDescription('');
@@ -440,13 +440,13 @@ function Messenger() {
             }
 
             // Get the notification document to check its current dates
-            const notificationRef = doc(db, "notifications", notificationId);            
+            const notificationRef = doc(db, "notifications", notificationId);
             // Update notification schedule in Firestore
             await setDoc(notificationRef, {
                 name,
                 description,
                 cta,
-                hyperLink, 
+                hyperLink,
                 startDate,
                 endDate,
                 notificationIcon,
@@ -455,15 +455,15 @@ function Messenger() {
             toast.success("Notification updated successfully!");
             setIsScheduledDialogOpen(false);
             // Reset form
-                 setName('');
-                 setDescription('');
-                 setCta('');
-                 setHyperLink('');
-                 setStartDate('');
-                 setEndDate('');
-                 setNotificationIcon('/icons/idea-2.svg');
-                 setNotificationId('');
-                 setIsEditing(false);
+            setName('');
+            setDescription('');
+            setCta('');
+            setHyperLink('');
+            setStartDate('');
+            setEndDate('');
+            setNotificationIcon('/icons/idea-2.svg');
+            setNotificationId('');
+            setIsEditing(false);
         } catch (error) {
             console.error("Error updating notification :", error);
             toast.error("Failed to update notification. Please try again.");
@@ -540,8 +540,14 @@ function Messenger() {
                                 <th className="text-left w-1/3 px-8 py-4 pl-8 text-[#667085] font-medium text-sm">
                                     Notification
                                 </th>
-                                <th className="text-center px-8 py-4 text-[#667085] font-medium text-sm">
+                                {/* <th className="text-center px-8 py-4 text-[#667085] font-medium text-sm">
                                     Created On
+                                </th> */}
+                                <th className="text-center px-8 py-4 text-[#667085] font-medium text-sm whitespace-nowrap">
+                                    Scheduled On
+                                </th>
+                                <th className="text-center px-8 py-4 text-[#667085] font-medium text-sm whitespace-nowrap">
+                                    End Date
                                 </th>
                                 <th className="text-center px-8 py-4 text-[#667085] font-medium text-sm">
                                     Clicked
@@ -564,114 +570,116 @@ function Messenger() {
                                     return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
                                 })
                                 .map((noti, index) => (
-                                <tr key={index} className="border-t border-solid border-[#EAECF0] ">
-                                    <td className="text-[#667085] text-center font-medium text-sm">
-                                        {index + 1}
-                                    </td>
-                                    <td className="py-2">
-                                        <div className="flex flex-row items-start ml-8 gap-2">
-                                            <Image className='w-5 h-5' src={noti.notificationIcon} alt="idea" width={24} height={24} />
-                                            <div className="flex items-start justify-start flex-col whitespace-nowrap">
-                                                <button
-                                                    className="text-sm text-[#9012FF] font-semibold underline"
-                                                    onClick={() => handleButtonClick(`/admin/pushnotifications/${noti.name.toLowerCase().replace(/\s+/g, '-')}?nId=${noti.notificationId}`)}
-                                                >
-                                                    {noti.name}
-                                                </button>
-                                                <p className="text-[0.813rem] text-[#667085] font-medium truncate">
-                                                    <TruncatedText text={noti.description} maxLength={50} />
-                                                </p>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td className="px-8 py-4 text-center text-[#101828] text-sm whitespace-nowrap">{formatDate(noti.createdAt)}</td>
-                                    <td className="px-8 py-4 text-center text-[#101828] text-sm">{noti.freeUsersClicks.length + noti.premiumUsersClicks.length || 0}</td>
-                                    <td className="px-8 py-4 text-[#101828] text-sm">
-                                        <span className='flex items-start justify-start ml-[25%] rounded-full'>
-                                            <QuizStatus status={noti.status} />
-                                        </span>
-                                    </td>
-                                    <td className="flex items-center justify-center px-8 py-4 text-[#101828] text-sm">
-                                        <Popover placement="bottom-end"
-                                           isOpen={!!openPopovers[index]}
-                                           onOpenChange={() => closePopover(index)}>
-                                            <PopoverTrigger>
-                                                <button className="w-[32px] h-[32px] outline-none  rounded-full flex items-center justify-center transition-all duration-300 ease-in-out hover:bg-[#F2F4F7]"
-                                                    onClick={() => togglePopover(index)}>
-                                                    <Image
-                                                        src="/icons/three-dots.svg"
-                                                        width={20}
-                                                        height={20}
-                                                        alt="More Actions"
-                                                    />
-
-                                                </button>
-                                            </PopoverTrigger>
-                                            <PopoverContent className="w-[10.438rem] py-1 px-0 bg-white border border-lightGrey rounded-md">
-                                                <div className="w-full">
-                                                {( noti?.status === 'paused' || noti?.status === 'scheduled')  && (
-                                                    <button className="flex flex-row items-center justify-start w-full px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7]"
-                                                        onClick={() => {
-                                                            closePopover(index);
-                                                            setName(noti.name);
-                                                            setDescription(noti.description);
-                                                            setCta(noti.cta);
-                                                            setHyperLink(noti.hyperLink);
-                                                            setNotificationIcon(noti.notificationIcon || '/icons/idea-2.svg');
-                                                            setNotificationId(noti.notificationId);
-                                                            setIsEditing(true);
-                                                        }}>
-
-                                                        <Image src="/icons/edit-02.svg" width={18} height={18} alt="edit" />
-                                                        <span className="text-sm text-[#0C111D] font-normal">Edit details</span>
-                                                    </button>
-                                                    )}
-                                                    {(noti?.status === 'finished' || noti?.status === 'paused' || noti?.status === 'scheduled')  && (
-                                                    <button className=" flex flex-row items-center justify-start w-full px-4 py-[0.625rem] gap-2 hover:bg-[#FEE4E2]"
-                                                        onClick={() => {
-                                                            setRemove(true);
-                                                            setNotificationId(noti.notificationId);
-                                                            closePopover(index);
-                                                        }}
+                                    <tr key={index} className="border-t border-solid border-[#EAECF0] ">
+                                        <td className="text-[#667085] text-center font-medium text-sm">
+                                            {index + 1}
+                                        </td>
+                                        <td className="py-2">
+                                            <div className="flex flex-row items-start ml-8 gap-2">
+                                                <Image className='w-5 h-5' src={noti.notificationIcon} alt="idea" width={24} height={24} />
+                                                <div className="flex items-start justify-start flex-col whitespace-nowrap">
+                                                    <button
+                                                        className="text-sm text-[#9012FF] font-semibold underline"
+                                                        onClick={() => handleButtonClick(`/admin/pushnotifications/${noti.name.toLowerCase().replace(/\s+/g, '-')}?nId=${noti.notificationId}`)}
                                                     >
-                                                        <Image src='/icons/delete.svg' alt="user profile" width={18} height={18} />
-                                                        <p className="text-sm text-[#DE3024] font-normal">Remove</p>
+                                                        {noti.name}
                                                     </button>
-                                                    )}
-                                                    {noti?.status === 'live' && (
-                                                     <button className="flex flex-row w-[10.438rem] px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors"
-                                                     onClick={() => { closePopover(index); setIsPausedDialogOpen(true); setNotificationId(noti.notificationId);}}>
-                                                         <Image src='/icons/pause-dark.svg' alt="pause quiz" width={18} height={18} />
-                                                         <p>Pause</p>
-                                                     </button>
-                                                    )}
-                                                    {noti?.status === 'paused' && (
-                                                     <button className="flex flex-row w-full px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors"
-                                                     onClick={() => { closePopover(index); setIsResumeOpen(true); setNotificationId(noti.notificationId);}} >
-                                                    <Image src='/icons/play-dark.svg' alt="resume quiz" width={20} height={20} />
-                                                    <p>Resume</p>
-                                                     </button>
-                                                    )}
-                                                    {noti?.status === 'scheduled' && (       
-                                                    <button className="flex flex-row w-full px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors"
-                                                     onClick={() => { closePopover(index); setIsScheduledDialogOpen(true); setNotificationId(noti.notificationId);setStartDate(noti.startDate); setEndDate(noti.endDate)}} >   
-                                                    <Image src='/icons/calendar-03.svg' alt="schedule" width={18} height={18} />
-                                                    <p>Reschedule</p>
-                                                    </button>
-                                                    )}          
-                                                    {noti?.status === 'live' && (
-                                                    <button className="flex flex-row w-[10.438rem] px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors"
-                                                    onClick={() => { closePopover(index); setIsEndDialogOpen(true); setNotificationId(noti.notificationId);}} >
-                                                     <Image src='/icons/license-no.svg' alt="end quiz" width={18} height={18} />
-                                                     <p className="text-[#DE3024]">End</p>
-                                                     </button>
-                                                    )}
+                                                    <p className="text-[0.813rem] text-[#667085] font-medium truncate">
+                                                        <TruncatedText text={noti.description} maxLength={50} />
+                                                    </p>
                                                 </div>
-                                            </PopoverContent>
-                                        </Popover>
-                                    </td>
-                                </tr>
-                            ))}
+                                            </div>
+                                        </td>
+                                        {/* <td className="px-8 py-4 text-center text-[#101828] text-sm whitespace-nowrap">{formatDate(noti.createdAt)}</td> */}
+                                        <td className="px-8 py-4 text-center text-[#101828] text-sm whitespace-nowrap">today</td>
+                                        <td className="px-8 py-4 text-center text-[#101828] text-sm whitespace-nowrap">tomorrow</td>
+                                        <td className="px-8 py-4 text-center text-[#101828] text-sm">{noti.freeUsersClicks.length + noti.premiumUsersClicks.length || 0}</td>
+                                        <td className="px-8 py-4 text-[#101828] text-sm">
+                                            <span className='flex items-start justify-start ml-[25%] rounded-full'>
+                                                <QuizStatus status={noti.status} />
+                                            </span>
+                                        </td>
+                                        <td className="flex items-center justify-center px-8 py-4 text-[#101828] text-sm">
+                                            <Popover placement="bottom-end"
+                                                isOpen={!!openPopovers[index]}
+                                                onOpenChange={() => closePopover(index)}>
+                                                <PopoverTrigger>
+                                                    <button className="w-[32px] h-[32px] outline-none  rounded-full flex items-center justify-center transition-all duration-300 ease-in-out hover:bg-[#F2F4F7]"
+                                                        onClick={() => togglePopover(index)}>
+                                                        <Image
+                                                            src="/icons/three-dots.svg"
+                                                            width={20}
+                                                            height={20}
+                                                            alt="More Actions"
+                                                        />
+
+                                                    </button>
+                                                </PopoverTrigger>
+                                                <PopoverContent className="w-[10.438rem] py-1 px-0 bg-white border border-lightGrey rounded-md">
+                                                    <div className="w-full">
+                                                        {(noti?.status === 'paused' || noti?.status === 'scheduled') && (
+                                                            <button className="flex flex-row items-center justify-start w-full px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7]"
+                                                                onClick={() => {
+                                                                    closePopover(index);
+                                                                    setName(noti.name);
+                                                                    setDescription(noti.description);
+                                                                    setCta(noti.cta);
+                                                                    setHyperLink(noti.hyperLink);
+                                                                    setNotificationIcon(noti.notificationIcon || '/icons/idea-2.svg');
+                                                                    setNotificationId(noti.notificationId);
+                                                                    setIsEditing(true);
+                                                                }}>
+
+                                                                <Image src="/icons/edit-02.svg" width={18} height={18} alt="edit" />
+                                                                <span className="text-sm text-[#0C111D] font-normal">Edit details</span>
+                                                            </button>
+                                                        )}
+                                                        {(noti?.status === 'finished' || noti?.status === 'paused' || noti?.status === 'scheduled') && (
+                                                            <button className=" flex flex-row items-center justify-start w-full px-4 py-[0.625rem] gap-2 hover:bg-[#FEE4E2]"
+                                                                onClick={() => {
+                                                                    setRemove(true);
+                                                                    setNotificationId(noti.notificationId);
+                                                                    closePopover(index);
+                                                                }}
+                                                            >
+                                                                <Image src='/icons/delete.svg' alt="user profile" width={18} height={18} />
+                                                                <p className="text-sm text-[#DE3024] font-normal">Remove</p>
+                                                            </button>
+                                                        )}
+                                                        {noti?.status === 'live' && (
+                                                            <button className="flex flex-row w-[10.438rem] px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors"
+                                                                onClick={() => { closePopover(index); setIsPausedDialogOpen(true); setNotificationId(noti.notificationId); }}>
+                                                                <Image src='/icons/pause-dark.svg' alt="pause quiz" width={18} height={18} />
+                                                                <p>Pause</p>
+                                                            </button>
+                                                        )}
+                                                        {noti?.status === 'paused' && (
+                                                            <button className="flex flex-row w-full px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors"
+                                                                onClick={() => { closePopover(index); setIsResumeOpen(true); setNotificationId(noti.notificationId); }} >
+                                                                <Image src='/icons/play-dark.svg' alt="resume quiz" width={20} height={20} />
+                                                                <p>Resume</p>
+                                                            </button>
+                                                        )}
+                                                        {noti?.status === 'scheduled' && (
+                                                            <button className="flex flex-row w-full px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors"
+                                                                onClick={() => { closePopover(index); setIsScheduledDialogOpen(true); setNotificationId(noti.notificationId); setStartDate(noti.startDate); setEndDate(noti.endDate) }} >
+                                                                <Image src='/icons/calendar-03.svg' alt="schedule" width={18} height={18} />
+                                                                <p>Reschedule</p>
+                                                            </button>
+                                                        )}
+                                                        {noti?.status === 'live' && (
+                                                            <button className="flex flex-row w-[10.438rem] px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors"
+                                                                onClick={() => { closePopover(index); setIsEndDialogOpen(true); setNotificationId(noti.notificationId); }} >
+                                                                <Image src='/icons/license-no.svg' alt="end quiz" width={18} height={18} />
+                                                                <p className="text-[#DE3024]">End</p>
+                                                            </button>
+                                                        )}
+                                                    </div>
+                                                </PopoverContent>
+                                            </Popover>
+                                        </td>
+                                    </tr>
+                                ))}
                         </tbody>
                     </table>
                 </div>
@@ -1010,7 +1018,7 @@ function Messenger() {
                                 />
                             </div>
                             <hr className="my-3" />
-                           
+
                         </ModalBody>
 
                         <ModalFooter className='border-t border-lightGrey'>
@@ -1064,88 +1072,88 @@ function Messenger() {
             {isResumeOpen && < ResumeQuiz open={isResumeOpen} onClose={() => setIsResumeOpen(false)} fromContent="notifications" contentId={notificationId || ''} />}
 
             <Modal
-            isOpen={isScheduledDialogOpen}
-            onClose={() => setIsScheduledDialogOpen(false)}
-            size="2xl"
-            hideCloseButton
-            classNames={{
-                base: "max-w-2xl mx-auto",
-                header: "border-b border-[#E5E7EB] pb-4",
-                body: "py-6",
-                footer: "border-t border-[#E5E7EB] pt-4"
-            }}
-        >
-            <ModalContent>
-                <>
-                    <ModalHeader className="flex justify-between items-center">
-                        <h3 className="text-xl font-semibold text-[#1D2939]">
-                            Schedule notification
-                        </h3>
-                        <button
-                            className="w-8 h-8 rounded-full flex items-center justify-center hover:bg-[#F2F4F7] transition-all duration-300"
-                            onClick={() => setIsScheduledDialogOpen(false)}
-                        >
-                            <Image src="/icons/cancel.svg" alt="Cancel" width={20} height={20} />
-                        </button>
-                    </ModalHeader>
+                isOpen={isScheduledDialogOpen}
+                onClose={() => setIsScheduledDialogOpen(false)}
+                size="2xl"
+                hideCloseButton
+                classNames={{
+                    base: "max-w-2xl mx-auto",
+                    header: "border-b border-[#E5E7EB] pb-4",
+                    body: "py-6",
+                    footer: "border-t border-[#E5E7EB] pt-4"
+                }}
+            >
+                <ModalContent>
+                    <>
+                        <ModalHeader className="flex justify-between items-center">
+                            <h3 className="text-xl font-semibold text-[#1D2939]">
+                                Schedule notification
+                            </h3>
+                            <button
+                                className="w-8 h-8 rounded-full flex items-center justify-center hover:bg-[#F2F4F7] transition-all duration-300"
+                                onClick={() => setIsScheduledDialogOpen(false)}
+                            >
+                                <Image src="/icons/cancel.svg" alt="Cancel" width={20} height={20} />
+                            </button>
+                        </ModalHeader>
 
-                    <ModalBody>
-                        <div className="space-y-6">
+                        <ModalBody>
+                            <div className="space-y-6">
 
-                            <div className="grid grid-cols-2 gap-6">
-                                <div className="space-y-2">
-                                    <span className="font-medium text-[#1D2939] text-sm">Start Date & Time</span>
-                                    <DatePicker
-                                        granularity="minute"
-                                        minValue={today(getLocalTimeZone())}
-                                        value={startDate ? parseDateTime(startDate) : undefined}
-                                        hideTimeZone
-                                        onChange={(date) => {
-                                            const dateString = date ? date.toString() : "";
-                                            setStartDate(dateString);
-                                        }}
-                                    />
+                                <div className="grid grid-cols-2 gap-6">
+                                    <div className="space-y-2">
+                                        <span className="font-medium text-[#1D2939] text-sm">Start Date & Time</span>
+                                        <DatePicker
+                                            granularity="minute"
+                                            minValue={today(getLocalTimeZone())}
+                                            value={startDate ? parseDateTime(startDate) : undefined}
+                                            hideTimeZone
+                                            onChange={(date) => {
+                                                const dateString = date ? date.toString() : "";
+                                                setStartDate(dateString);
+                                            }}
+                                        />
 
-                                </div>
+                                    </div>
 
-                                <div className="space-y-2">
-                                    <span className="font-medium text-[#1D2939] text-sm">End Date & Time</span>
-                                    <DatePicker
-                                        granularity="minute"
-                                        minValue={today(getLocalTimeZone())}
-                                        value={endDate ? parseDateTime(endDate) : undefined}
-                                        hideTimeZone
-                                        onChange={(date) => {
-                                            const dateString = date ? date.toString() : "";
-                                            setEndDate(dateString);
-                                        }}
-                                    />
+                                    <div className="space-y-2">
+                                        <span className="font-medium text-[#1D2939] text-sm">End Date & Time</span>
+                                        <DatePicker
+                                            granularity="minute"
+                                            minValue={today(getLocalTimeZone())}
+                                            value={endDate ? parseDateTime(endDate) : undefined}
+                                            hideTimeZone
+                                            onChange={(date) => {
+                                                const dateString = date ? date.toString() : "";
+                                                setEndDate(dateString);
+                                            }}
+                                        />
 
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    </ModalBody>
+                        </ModalBody>
 
-                    <ModalFooter>
-                        <Button
-                            variant="light"
-                            className="px-6 py-2.5 border border-[#E5E7EB] text-[#1D2939] hover:bg-[#F2F4F7] font-semibold text-sm rounded-md"
-                            onClick={() => setIsScheduledDialogOpen(false)}
-                        >
-                            Cancel
-                        </Button>
-                        <Button
-                            className={`px-6 py-2.5 rounded-md text-white font-medium ${!isScheduleFormValid ? 'bg-[#CDA0FC]' : 'bg-[#9012FF] hover:bg-[#6D0DCC]'
-                                } transition-colors`}
-                            onClick={() => updateNotificationSchedule()}
-                            disabled={!isScheduleFormValid}
-                        >
-                            Schedule notification
-                        </Button>
-                    </ModalFooter>
-                </>
-            </ModalContent>
-        </Modal>
+                        <ModalFooter>
+                            <Button
+                                variant="light"
+                                className="px-6 py-2.5 border border-[#E5E7EB] text-[#1D2939] hover:bg-[#F2F4F7] font-semibold text-sm rounded-md"
+                                onClick={() => setIsScheduledDialogOpen(false)}
+                            >
+                                Cancel
+                            </Button>
+                            <Button
+                                className={`px-6 py-2.5 rounded-md text-white font-medium ${!isScheduleFormValid ? 'bg-[#CDA0FC]' : 'bg-[#9012FF] hover:bg-[#6D0DCC]'
+                                    } transition-colors`}
+                                onClick={() => updateNotificationSchedule()}
+                                disabled={!isScheduleFormValid}
+                            >
+                                Schedule notification
+                            </Button>
+                        </ModalFooter>
+                    </>
+                </ModalContent>
+            </Modal>
         </div>
     );
 }

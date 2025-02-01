@@ -104,6 +104,12 @@ export default function Login_Page() {
         }
     };
 
+    const handleKeyPress = (e: React.KeyboardEvent) => {
+        if (e.key === 'Enter' && isPhoneValid && !isLoading) {
+            handleSendVerificationCode(e);
+        }
+    };
+
     return (
         <div className="flex flex-row w-full h-screen bg-[#F7F8FB]">
             <div className="w-1/2 flex flex-col">
@@ -142,6 +148,7 @@ export default function Login_Page() {
                                     }}
                                     onFocus={(e) => e.target.style.boxShadow = "0 0 0 2px #D6BBFB"}
                                     onBlur={(e) => e.target.style.boxShadow = "0px 1px 2px 0px rgba(16, 24, 40, 0.05)"}
+                                    onKeyDown={handleKeyPress}
                                 />
                                 {errorMessage && <p className="text-red-500 text-sm mt-2">{errorMessage}</p>}
                             </div>
