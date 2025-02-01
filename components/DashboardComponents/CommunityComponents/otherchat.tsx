@@ -260,7 +260,7 @@ function OtherChat({ message, currentUserId, adminThatDeletedId, isDeletedByAdmi
             href={text}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-blue-200 hover:underline"
+            className="text-blue-500 hover:underline"
           >
             {text}
           </a>
