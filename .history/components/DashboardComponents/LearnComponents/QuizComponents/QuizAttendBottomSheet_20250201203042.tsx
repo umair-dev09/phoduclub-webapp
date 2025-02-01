@@ -384,7 +384,7 @@ function QuizAttendBottomSheet({
                                         return (
                                             <div key={q.questionId} className="w-auto h-auto rounded-[12px] px-4 border-2 border-[#EAECF0] flex py-4 flex-col items-center justify-center">
                                                 <div className="bg-[#FFFFFF] w-[832px] h-auto flex flex-col gap-[20px]">
-                                                    <div className="w-[832px] h-auto">
+                                                    <div className="w-[832px] h-[24px]">
                                                         <span className="flex flex-row gap-1 text-[#1D2939] font-semibold text-base">
                                                             {index + 1}. <div dangerouslySetInnerHTML={{ __html: q.question || '' }} />
                                                         </span>

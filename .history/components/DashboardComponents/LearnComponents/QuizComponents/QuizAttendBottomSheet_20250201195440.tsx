@@ -425,7 +425,7 @@ function QuizAttendBottomSheet({
                     {/* Bottom Button Section */}
                     <div className="flex flex-row items-center justify-end font-semibold border-t border-lightGrey px-4 py-3">
                         <button
-                            className={`border rounded-lg py-2.5 px-6 text-sm text-white hover:bg-[#6D0DCC] bg-purple font-semibold`}
+                            className={`border rounded-lg py-2.5 px-6 text-sm text-white hover:bg-[#6D0DCC] bg-purple`}
 
                             onClick={handleSubmit}
                         >
