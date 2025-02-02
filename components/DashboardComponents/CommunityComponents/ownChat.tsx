@@ -52,8 +52,6 @@ type ReactionCount = {
   count: number;
 };
 
-
-
 function OwnChat({ message, isDeleted, mentions, adminThatDeletedId, isDeletedByAdmin, handleReply, isCurrentUserAdmin, currentUserId, highlightedText, messageType, fileUrl, fileName, isHighlighted, isAdmin, scrollToReply, fileSize, senderId, timestamp, communityId, headingId, channelId, chatId, isReplying, replyingToId, replyingToChatId, replyingToFileName, replyingToFileUrl, replyingToMsg, replyingToMsgType, setShowReplyLayout }: OwnChatProps) {
   const [reactions, setReactions] = useState<ReactionCount[]>([]);
   const [isOpen, setIsOpen] = useState(false);
@@ -95,304 +93,154 @@ function OwnChat({ message, isDeleted, mentions, adminThatDeletedId, isDeletedBy
     return () => unsubscribe();
   }, [reactionsRef]);
 
-  // const renderMessageWithMentions = () => {
-  //   if (!highlightedText || !mentions) return highlightedText;
-
-  //   const maxWords = 30;
-
-  //   const isUrl = (text: string) => {
-  //     try {
-  //       new URL(text);
-  //       return true;
-  //     } catch {
-  //       return false;
-  //     }
-  //   };
-
-  //   const processTextPart = (text: string, key: number | string) => {
-  //     if (isUrl(text)) {
-  //       return (
-  //         <a
-  //           key={key}
-  //           href={text}
-  //           target="_blank"
-  //           rel="noopener noreferrer"
-  //           className="text-blue-200 hover:underline"
-  //         >
-  //           {text}
-  //         </a>
-  //       );
-  //     }
-  //     return text;
-  //   };
-
-  //   const processMention = (part: string, index: number | string) => {
-  //     if (part.startsWith("@")) {
-  //       const mentionName = part.substring(1).trim();
-  //       const mention = mentions.find((m) => m.userId === mentionName || m.id === mentionName);
-
-  //       if (mention) {
-  //         return (
-  //           <span
-  //             key={index}
-  //             style={{ color: "yellow", cursor: "pointer" }}
-  //             onClick={() => {
-  //               setOpenDialogue(true);
-  //               setId(mention.id);
-  //               setAdmin(mention.isAdmin);
-  //             }}
-  //           >
-  //             {part}
-  //           </span>
-  //         );
-  //       }
-  //     }
-  //     return processTextPart(part, index);
-  //   };
-
-  //   const mentionRegex = /(@[\w#]+|[^@\w]+|\s+)/;
-
-  //   const processHighlightedText = () => {
-  //     if (typeof highlightedText === "string") {
-  //       const parts = highlightedText.split(mentionRegex);
-  //       return parts.map((part, index) => processMention(part, index));
-  //     }
-
-  //     if (Array.isArray(highlightedText)) {
-  //       return highlightedText.map((node, index) => {
-  //         if (typeof node === "string") {
-  //           const parts = node.split(mentionRegex);
-  //           return parts.map((part, innerIndex) => processMention(part, `${index}-${innerIndex}`));
-  //         }
-  //         return node;
-  //       });
-  //     }
-  //     return null;
-  //   };
-
-  //   const fullContent = processHighlightedText();
-
-  //   const getWordCount = (content: any): number => {
-  //     if (typeof content === "string") {
-  //       return content.trim().split(/\s+/).length;
-  //     }
-  //     if (Array.isArray(content)) {
-  //       return content.reduce((count, node) => {
-  //         if (typeof node === "string") {
-  //           return count + node.trim().split(/\s+/).length;
-  //         }
-  //         return count;
-  //       }, 0);
-  //     }
-  //     return 0;
-  //   };
-
-  //   const wordCount = getWordCount(highlightedText);
-
-  //   // Updated truncation logic
-  //   const getTruncatedContent = () => {
-  //     if (typeof highlightedText === "string") {
-  //       if (wordCount <= maxWords) return highlightedText;
-  //       const words = highlightedText.split(/\s+/);
-  //       return words.slice(0, maxWords).join(" ") + "...";
-  //     }
-
-  //     if (Array.isArray(fullContent)) {
-  //       if (wordCount <= maxWords) return fullContent;
-
-  //       let wordCounter = 0;
-  //       return fullContent.reduce((acc: React.ReactNode[], node) => {
-  //         if (wordCounter >= maxWords) return acc;
-
-  //         if (typeof node === "string") {
-  //           const words = node.split(/\s+/);
-  //           const remainingWords = maxWords - wordCounter;
-
-  //           if (wordCounter + words.length > maxWords) {
-  //             // Only add ellipsis when we actually truncate
-  //             acc.push(words.slice(0, remainingWords).join(" ") + "...");
-  //             wordCounter = maxWords;
-  //           } else {
-  //             acc.push(node);
-  //             wordCounter += words.length;
-  //           }
-  //         } else {
-  //           acc.push(node);
-  //           wordCounter += 1;
-  //         }
-  //         return acc;
-  //       }, []);
-  //     }
-  //     return null;
-  //   };
-
-  //   return (
-  //     <div>
-  //       {isExpanded ? (
-  //         <span>{fullContent}</span>
-  //       ) : (
-  //         <span>{getTruncatedContent()}</span>
-  //       )}
-  //       {wordCount > maxWords && !isExpanded && (
-  //         <button
-  //           onClick={() => setIsExpanded(true)}
-  //           className="text-blue-300 hover:underline ml-2"
-  //         >
-  //           View More
-  //         </button>
-  //       )}
-  //     </div>
-  //   );
-  // };
-
   const renderMessageWithMentions = () => {
-      if (!highlightedText || !mentions) return highlightedText;
-  
-      const maxWords = 30;
-  
-      const isUrl = (text: string) => {
-        try {
-          new URL(text);
-          return true;
-        } catch {
-          return false;
-        }
-      };
-  
-      const processTextPart = (text: string, key: number | string) => {
-        if (isUrl(text)) {
+    if (!highlightedText || !mentions) return highlightedText;
+
+    const maxWords = 30;
+
+    const isUrl = (text: string) => {
+      try {
+        new URL(text);
+        return true;
+      } catch {
+        return false;
+      }
+    };
+
+    const processTextPart = (text: string, key: number | string) => {
+      if (isUrl(text)) {
+        return (
+          <a
+            key={key}
+            href={text}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-blue-300 hover:underline"
+          >
+            {text}
+          </a>
+        );
+      }
+      return text;
+    };
+
+    const processMention = (part: string, index: number | string) => {
+      if (part.startsWith("@")) {
+        const mentionName = part.substring(1).trim();
+        const mention = mentions.find((m) => m.userId === mentionName || m.id === mentionName);
+
+        if (mention) {
           return (
-            <a
-              key={key}
-              href={text}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-blue-300 hover:underline"
+            <span
+              key={index}
+              style={{ color: "yellow", cursor: "pointer" }}
+              onClick={() => {
+                setOpenDialogue(true);
+                setId(mention.id);
+                setAdmin(mention.isAdmin);
+              }}
             >
-              {text}
-            </a>
+              {part}
+            </span>
           );
         }
-        return text;
-      };
-  
-      const processMention = (part: string, index: number | string) => {
-        if (part.startsWith("@")) {
-          const mentionName = part.substring(1).trim();
-          const mention = mentions.find((m) => m.userId === mentionName || m.id === mentionName);
-  
-          if (mention) {
-            return (
-              <span
-                key={index}
-                style={{ color: "yellow", cursor: "pointer" }}
-                onClick={() => {
-                  setOpenDialogue(true);
-                  setId(mention.id);
-                  setAdmin(mention.isAdmin);
-                }}
-              >
-                {part}
-              </span>
-            );
+      }
+      return processTextPart(part, index);
+    };
+
+    // Regex to find mentions
+    const mentionRegex = /(@[\w#]+)/g;
+
+    const processHighlightedText = () => {
+      if (typeof highlightedText === "string") {
+        const parts = highlightedText.split(mentionRegex);
+        return parts.map((part, index) => processMention(part, index));
+      }
+
+      if (Array.isArray(highlightedText)) {
+        return highlightedText.map((node, index) => {
+          if (typeof node === "string") {
+            const parts = node.split(mentionRegex);
+            return parts.map((part, innerIndex) => processMention(part, `${index}-${innerIndex}`));
           }
-        }
-        return processTextPart(part, index);
-      };
-  
-      // Regex to find mentions
-      const mentionRegex = /(@[\w#]+)/g;
-  
-      const processHighlightedText = () => {
-        if (typeof highlightedText === "string") {
-          const parts = highlightedText.split(mentionRegex);
-          return parts.map((part, index) => processMention(part, index));
-        }
-  
-        if (Array.isArray(highlightedText)) {
-          return highlightedText.map((node, index) => {
-            if (typeof node === "string") {
-              const parts = node.split(mentionRegex);
-              return parts.map((part, innerIndex) => processMention(part, `${index}-${innerIndex}`));
-            }
-            return node;
-          });
-        }
-        return null;
-      };
-  
-      const fullContent = processHighlightedText();
-  
-      const getWordCount = (content: any): number => {
-        if (typeof content === "string") {
-          return content.trim().split(/\s+/).length;
-        }
-        if (Array.isArray(content)) {
-          return content.reduce((count, node) => {
-            if (typeof node === "string") {
-              return count + node.trim().split(/\s+/).length;
-            }
-            return count;
-          }, 0);
-        }
-        return 0;
-      };
-  
-      const wordCount = getWordCount(fullContent);
-  
-      // Limit to 20 words initially if not expanded
-      const getTruncatedContent = () => {
-        if (isExpanded) {
-          return fullContent;  // Show full content when expanded
-        }
-  
-        if (wordCount <= maxWords) {
-          return fullContent;  // Show full content if less than maxWords
-        }
-  
-        if (typeof highlightedText === "string") {
-          const words = highlightedText.split(/\s+/);
-          return words.slice(0, maxWords).join(" ") + "...";  // Show truncated content
-        }
-  
-        if (Array.isArray(fullContent)) {
-          let wordCounter = 0;
-          return fullContent.reduce((acc: React.ReactNode[], node) => {
-            if (wordCounter >= maxWords) return acc;
-  
-            if (typeof node === "string") {
-              const words = node.split(/\s+/);
-              const remainingWords = maxWords - wordCounter;
-              wordCounter += words.length;
-              if (wordCounter > maxWords) {
-                acc.push(words.slice(0, remainingWords).join(" ") + "...");
-              } else {
-                acc.push(node);
-              }
+          return node;
+        });
+      }
+      return null;
+    };
+
+    const fullContent = processHighlightedText();
+
+    const getWordCount = (content: any): number => {
+      if (typeof content === "string") {
+        return content.trim().split(/\s+/).length;
+      }
+      if (Array.isArray(content)) {
+        return content.reduce((count, node) => {
+          if (typeof node === "string") {
+            return count + node.trim().split(/\s+/).length;
+          }
+          return count;
+        }, 0);
+      }
+      return 0;
+    };
+
+    const wordCount = getWordCount(fullContent);
+
+    // Limit to 20 words initially if not expanded
+    const getTruncatedContent = () => {
+      if (isExpanded) {
+        return fullContent;  // Show full content when expanded
+      }
+
+      if (wordCount <= maxWords) {
+        return fullContent;  // Show full content if less than maxWords
+      }
+
+      if (typeof highlightedText === "string") {
+        const words = highlightedText.split(/\s+/);
+        return words.slice(0, maxWords).join(" ") + "...";  // Show truncated content
+      }
+
+      if (Array.isArray(fullContent)) {
+        let wordCounter = 0;
+        return fullContent.reduce((acc: React.ReactNode[], node) => {
+          if (wordCounter >= maxWords) return acc;
+
+          if (typeof node === "string") {
+            const words = node.split(/\s+/);
+            const remainingWords = maxWords - wordCounter;
+            wordCounter += words.length;
+            if (wordCounter > maxWords) {
+              acc.push(words.slice(0, remainingWords).join(" ") + "...");
             } else {
               acc.push(node);
-              wordCounter += 1;
             }
-            return acc;
-          }, []);
-        }
-        return null;
-      };
-  
-      return (
-        <div>
-          <span>{getTruncatedContent()}</span>
-          {wordCount > maxWords && !isExpanded && (
-            <button
-              onClick={() => setIsExpanded(true)}
-              className="text-blue-300 hover:underline ml-2"
-            >
-              View More
-            </button>
-          )}
-        </div>
-      );
+          } else {
+            acc.push(node);
+            wordCounter += 1;
+          }
+          return acc;
+        }, []);
+      }
+      return null;
     };
+
+    return (
+      <div>
+        <span>{getTruncatedContent()}</span>
+        {wordCount > maxWords && !isExpanded && (
+          <button
+            onClick={() => setIsExpanded(true)}
+            className="text-blue-300 hover:underline ml-2"
+          >
+            View More
+          </button>
+        )}
+      </div>
+    );
+  };
 
   const handleReplyMessage = () => {
     setShowReplyLayout(true);
@@ -496,6 +344,14 @@ function OwnChat({ message, isDeleted, mentions, adminThatDeletedId, isDeletedBy
     }
   };
 
+  const truncateMessage = (text: string | null, maxLength: number = 30) => {
+    if (!text) return '';
+    // Split by newlines and only take first line
+    const firstLine = text.split('\n')[0];
+    if (firstLine.length <= maxLength) return firstLine;
+    return firstLine.substring(0, maxLength) + '...';
+  };
+
   return (
     <div className="flex mr-3 justify-end pl-[15%] ">
 
@@ -561,15 +417,15 @@ function OwnChat({ message, isDeleted, mentions, adminThatDeletedId, isDeletedBy
                     <span className='font-normal text-[#0C111D] text-sm'>Bookmark</span>
                   </button> */}
                   {/* Delete Message Button */}
-                    {timestamp && (new Date().getTime() - timestamp.toMillis() < 60000) && (
-                    <button 
-                      onClick={() => { setDeleteDialog(true); setIsOpen(false); }} 
+                  {timestamp && (new Date().getTime() - timestamp.toMillis() < 60000) && (
+                    <button
+                      onClick={() => { setDeleteDialog(true); setIsOpen(false); }}
                       className='flex flex-row items-center gap-2 w-30 px-4 pt-[10px] pb-3 transition-colors hover:bg-[#FEE4E2] rounded-br-md rounded-bl-md'
                     >
                       <Image src='/icons/delete.svg' alt='search icon' width={17} height={17} />
                       <span className='font-normal text-[#DE3024] text-sm'>Delete Message</span>
                     </button>
-                    )}
+                  )}
                 </div>
               </PopoverContent>
             </Popover>
@@ -605,7 +461,7 @@ function OwnChat({ message, isDeleted, mentions, adminThatDeletedId, isDeletedBy
             )}
 
             {/* */}
-            {isReplying && !isDeleted && (
+            {/* {isReplying && !isDeleted && (
               <div className="flex flex-row p-[10px] bg-[#973AFF] border border-[#AD72FF] rounded-md text-xs gap-1 justify-between cursor-pointer"
                 onClick={() => scrollToReply(replyingToChatId || '')}>
                 <div className="flex flex-col mr-6 justify-center">
@@ -615,7 +471,6 @@ function OwnChat({ message, isDeleted, mentions, adminThatDeletedId, isDeletedBy
                     ) : (
                       <h4 className="font-semibold">Marvin McKinney</h4>
                     )}
-                    {/* <div className="">Admin</div> */}
                   </div>
                   <div className="flex flex-row gap-1 mt-[2px] ">
                     {replyingToMsgType === 'image' && (
@@ -631,10 +486,47 @@ function OwnChat({ message, isDeleted, mentions, adminThatDeletedId, isDeletedBy
                       {replyingToMsg !== null && replyingToMsgType !== 'document'
                         ? replyingToMsg // Show message if it's not null and not a document
                         : replyingToMsgType === 'document'
-                          ? replyingToFileName // Always show fileName for document
+                          ? truncateMessage(replyingToFileName) // Always show fileName for document
                           : (replyingToMsgType === 'image' && 'Image') ||
                           (replyingToMsgType === 'video' && 'Video') ||
                           'Unknown Type'}</div>
+                  </div>
+                </div>
+                {replyingToMsgType === 'image' && (
+                  <Image className="rounded-sm min-h-[40px] object-cover" src={replyingToFileUrl} alt='Image' width={50} height={45} />
+                )}
+              </div>
+            )} */}
+            {isReplying && !isDeleted && (
+              <div className="flex flex-row p-[10px] bg-[#973AFF] border border-[#AD72FF] rounded-md text-xs gap-1 justify-between cursor-pointer"
+                onClick={() => scrollToReply(replyingToChatId || '')}>
+                <div className="flex flex-col mr-6 justify-center">
+                  <div className="flex flex-row gap-2">
+                    {replyingToId === currentUserId ? (
+                      <h4 className="font-semibold">You</h4>
+                    ) : (
+                      <h4 className="font-semibold">Marvin McKinney</h4>
+                    )}
+                  </div>
+                  <div className="flex flex-row gap-1 mt-[2px] overflow-hidden whitespace-nowrap">
+                    {replyingToMsgType === 'image' && (
+                      <Image src='/icons/image.svg' alt='attachment icon' width={12} height={12} />
+                    )}
+                    {replyingToMsgType === 'video' && (
+                      <Image src='/icons/vedio.svg' alt='attachment icon' width={12} height={12} />
+                    )}
+                    {replyingToMsgType === 'document' && (
+                      <Image src='/icons/file-02.svg' alt='attachment icon' width={12} height={12} />
+                    )}
+                    <div className="break-all overflow-hidden text-ellipsis">
+                      {replyingToMsg !== null && replyingToMsgType !== 'document'
+                        ? truncateMessage(replyingToMsg)
+                        : replyingToMsgType === 'document'
+                          ? truncateMessage(replyingToFileName)
+                          : (replyingToMsgType === 'image' && 'Image') ||
+                          (replyingToMsgType === 'video' && 'Video') ||
+                          'Unknown Type'}
+                    </div>
                   </div>
                 </div>
                 {replyingToMsgType === 'image' && (

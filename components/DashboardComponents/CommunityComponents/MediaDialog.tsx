@@ -23,9 +23,9 @@ type Chat = {
   replyingToFileUrl: string;
   replyingToFileName: string;
   isDeleted: boolean;
-  adminThatDeletedId: string;
-  isDeletedByAdmin: boolean;
-  isAdmin: boolean;
+  adminThatDeletedId?: string;
+  isDeletedByAdmin?: boolean;
+  isAdmin?: boolean;
   mentions: { userId: string; id: string; isAdmin: boolean }[];
 };
 
@@ -72,7 +72,7 @@ function MediaDialog({ isOpen, setIsOpen, chats }: MediaDialogProps) {
                 <Image onClick={() => { setShowMediaDialog(true); setFileUrl(chat.fileUrl); setMessageType('image'); }}
                   src={chat.fileUrl}
                   alt={chat.fileName || `Image ${index + 1}`}
-                  className="w-[130px] h-[110px] object-cover rounded-lg"
+                  className="w-[140px] h-[120px] object-cover rounded-lg cursor-pointer"
                   width={200}
                   height={200}
                 />
@@ -218,15 +218,15 @@ function MediaDialog({ isOpen, setIsOpen, chats }: MediaDialogProps) {
             </div>
           </DialogPanel>
         </div>
-        {showMediaDialog && <MediaViewDialog open={true} onClose={() => setShowMediaDialog(false)} src={fileUrl} mediaType={messageType || ''} />}
       </Dialog> */}
       <Modal
         scrollBehavior={scrollBehavior}
         isOpen={isOpen}
         hideCloseButton
         onClose={handleCancel}
+        size="lg"
       >
-        <ModalContent>
+        <ModalContent >
           <ModalHeader className="border-b border-solid border-[#EAECF0] px-[24px] py-[20px] flex justify-between">
             <span className="text-lg font-bold text-[#1D2939] fontstyle-sora">Media</span>
             <button onClick={handleCancel}>
@@ -234,7 +234,7 @@ function MediaDialog({ isOpen, setIsOpen, chats }: MediaDialogProps) {
             </button>
           </ModalHeader>
           <ModalBody>
-            <div className="mx-[24px] mt-4">
+            <div className="mt-4">
               <div className="rounded-lg h-[44px] bg-[#F9FAFB] border border-solid border-[#EAECF0] gap-1 flex flex-row">
                 {(['Images', 'Videos', 'Documents', 'Links'] as const).map((section) => (
                   <button
@@ -253,10 +253,12 @@ function MediaDialog({ isOpen, setIsOpen, chats }: MediaDialogProps) {
             {/* <div className="mx-[24px] pt-4 pb-4 h-[428px] overflow-y-auto">
               {renderContent()}
             </div> */}
-            <div className="h-[428px] overflow-auto px-6">{renderContent()}</div>
+            <div className="w-auto h-[428px] overflow-auto ">{renderContent()}</div>
           </ModalBody>
         </ModalContent>
       </Modal>
+      {showMediaDialog && <MediaViewDialog open={true} onClose={() => setShowMediaDialog(false)} src={fileUrl} mediaType={messageType || ''} />}
+
     </div>
 
   );

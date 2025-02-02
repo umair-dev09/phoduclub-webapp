@@ -34,8 +34,8 @@ function CommunityVideoPlayer({ videoSrc }: VideoPlayerProps) {
         },
         responsive: true,
         fluid: false, // Set to false to use specific dimensions
-        width: 130,
-        height: 100,
+        width: 140,
+        height: 120,
       });
 
       // Add Fantasy theme
@@ -64,7 +64,7 @@ function CommunityVideoPlayer({ videoSrc }: VideoPlayerProps) {
       <Image src="/icons/video-01.svg" width={16} height={16} alt="Video-Player"/>
       <span className="text-white">{duration}</span>
     </div> */}
-    <div className="flex flex-row gap-1 absolute top-[35px] left-1/2 transform -translate-x-1/2 text-white text-[12px] font-medium z-10 bg-transparent ">
+    <div className="flex flex-row gap-1 absolute top-[45px] left-1/2 transform -translate-x-1/2 text-white text-[12px] font-medium z-10 bg-transparent ">
     <button>
     <Image src="/icons/play-vid.svg" width={25} height={25} alt="Video-Player"/>
     </button>

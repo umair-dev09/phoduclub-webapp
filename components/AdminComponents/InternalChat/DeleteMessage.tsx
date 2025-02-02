@@ -11,19 +11,18 @@ import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button } from
 interface DeleteProps {
     open: boolean; // Prop to control dialog visibility
     onClose: () => void; // Define onClose as a function
-    internalChatId: string;
     channelId: string;
     chatId: string;
 
 }
 
-function Delete({ open, onClose, internalChatId, channelId, chatId }: DeleteProps) {
+function Delete({ open, onClose, channelId, chatId }: DeleteProps) {
 
 
     const handleDeleteMessage = async () => {
         try {
 
-            await setDoc(doc(db, `internalchat/${internalChatId}/channels/${channelId}/chats`, chatId), {
+            await setDoc(doc(db, `internalchat/${channelId}/chats`, chatId), {
                 isDeleted: true,
                 message: 'deleted',
             }, { merge: true });

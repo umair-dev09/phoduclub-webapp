@@ -10,8 +10,8 @@ import AddMembersGroup from "./AllDialogs/AddMembersGroup";
 
 type CommunityData = {
   communityName: string | null;
-  communityId: string | null;   
-  communityImg: string | null;    
+  communityId: string | null;
+  communityImg: string | null;
   members: { id: string, isAdmin: boolean }[] | null;
   totalNotifications: number;
 };
@@ -39,63 +39,63 @@ function GroupIcons() {
     return () => unsubscribe();
   }, []);
 
-useEffect(() => {
-  const communityRef = collection(db, "communities");
+  useEffect(() => {
+    const communityRef = collection(db, "communities");
 
-  const unsubscribe = onSnapshot(communityRef, (snapshot) => {
-    const allCommunities: CommunityData[] = [];
-    const notificationCounters: { [key: string]: number } = {};
+    const unsubscribe = onSnapshot(communityRef, (snapshot) => {
+      const allCommunities: CommunityData[] = [];
+      const notificationCounters: { [key: string]: number } = {};
 
-    const communityUnsubscribes = snapshot.docs.map(doc => {
-      const community = doc.data();
-      const communityId = community.communityId;
-      notificationCounters[communityId] = 0;
+      const communityUnsubscribes = snapshot.docs.map(doc => {
+        const community = doc.data();
+        const communityId = community.communityId;
+        notificationCounters[communityId] = 0;
 
-      allCommunities.push({
-        communityName: community.communityName,
-        communityId: communityId,
-        members: community.members,
-        communityImg: community.communityImg,
-        totalNotifications: 0,
-      });
-
-      const channelsRef = collection(db, "communities", communityId, "channelsHeading");
-      return onSnapshot(channelsRef, (headingSnapshot) => {
-        const channelUnsubscribes = headingSnapshot.docs.map(headingDoc => {
-          const channelsCollectionRef = collection(headingDoc.ref, "channels");
-          return onSnapshot(channelsCollectionRef, (channelsSnapshot) => {
-            let communityNotifications = 0;
-
-            channelsSnapshot.docs.forEach(channelDoc => {
-              const channelData = channelDoc.data();
-              const notifications = channelData.channelNotification || [];
-              if (notifications.includes(user?.uid)) {
-                communityNotifications++;
-              }
-            });
-
-            notificationCounters[communityId] = communityNotifications;
-            const updatedCommunities = allCommunities.map(comm => ({
-              ...comm,
-              totalNotifications: notificationCounters[comm.communityId || ''] || 0
-            }));
-            setCommunities(updatedCommunities);
-          });
+        allCommunities.push({
+          communityName: community.communityName,
+          communityId: communityId,
+          members: community.members,
+          communityImg: community.communityImg,
+          totalNotifications: 0,
         });
 
-        return () => channelUnsubscribes.forEach(unsub => unsub());
+        const channelsRef = collection(db, "communities", communityId, "channelsHeading");
+        return onSnapshot(channelsRef, (headingSnapshot) => {
+          const channelUnsubscribes = headingSnapshot.docs.map(headingDoc => {
+            const channelsCollectionRef = collection(headingDoc.ref, "channels");
+            return onSnapshot(channelsCollectionRef, (channelsSnapshot) => {
+              let communityNotifications = 0;
+
+              channelsSnapshot.docs.forEach(channelDoc => {
+                const channelData = channelDoc.data();
+                const notifications = channelData.channelNotification || [];
+                if (notifications.includes(user?.uid)) {
+                  communityNotifications++;
+                }
+              });
+
+              notificationCounters[communityId] = communityNotifications;
+              const updatedCommunities = allCommunities.map(comm => ({
+                ...comm,
+                totalNotifications: notificationCounters[comm.communityId || ''] || 0
+              }));
+              setCommunities(updatedCommunities);
+            });
+          });
+
+          return () => channelUnsubscribes.forEach(unsub => unsub());
+        });
       });
+
+      setCommunities(allCommunities);
+
+      return () => {
+        communityUnsubscribes.forEach(unsubscribe => unsubscribe());
+      };
     });
 
-    setCommunities(allCommunities);
-
-    return () => {
-      communityUnsubscribes.forEach(unsubscribe => unsubscribe());
-    };
-  });
-
-  return () => unsubscribe();
-}, [db, user]);
+    return () => unsubscribe();
+  }, [db, user]);
 
   const onItemClick = (communityName: string | null, communityId: string | null) => {
     if (communityName && communityId) {
@@ -133,11 +133,18 @@ useEffect(() => {
             className={`group flex items-center justify-center relative w-[46px] h-[46px] mb-[10px] rounded-full border-2  ${selectedCommunityId === community.communityId ? "border-darkPurple" : "hover:border-darkPurple"}`}
             onClick={() => onItemClick(community.communityName, community.communityId)}
           >
-            <Image className="w-10 h-10 rounded-full object-cover" src={community.communityImg || "/icons/messageIcon.svg"} alt="group icon" width={42} height={42} quality={100} />
+            <Image
+              className="w-10 h-10 rounded-full object-cover my-[1px]"
+              src={community.communityImg || "/icons/messageIcon.svg"}
+              alt="group icon"
+              width={42}
+              height={42}
+              quality={100}
+            />
             {community.totalNotifications >= 1 && selectedCommunityId !== community.communityId && (
-            <div className="absolute top-6 left-6 px-2 py-1 bg-red-600 rounded-full text-white text-xs font-medium ">
-              {community.totalNotifications}
-            </div>
+              <div className="absolute top-6 left-6 px-2 py-1 bg-red-600 rounded-full text-white text-xs font-medium ">
+                {community.totalNotifications}
+              </div>
             )}
           </button>
         ))}
@@ -148,11 +155,12 @@ useEffect(() => {
           </div>
         </button>
       </div>
+
       {setcreategroup && <CreateGroup open={creategroup} onClose={() => setcreategroup(false)} openAddMembers={() => setOpenAddMembers(true)} setCommunityId={setCommunityId} />}
       {openAddMembers && <AddMembersGroup open={openAddMembers} onClose={() => setOpenAddMembers(false)} communityId={communityId} />}
     </div>
 
-  );
+  );   
 }
 
 export default GroupIcons;

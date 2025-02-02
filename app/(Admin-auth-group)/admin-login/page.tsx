@@ -187,7 +187,7 @@ function Login() {
                                     onChange={(e) => setName(e.target.value)}
                                     onKeyDown={handleKeyDown}
                                     onFocus={() => setCurrentInputField('userId')}
-                                    maxLength={30}
+                                    maxLength={25}
                                     className="w-full rounded-md h-[40px] pl-2 text-[#344054] font-normal text-sm border-none focus:ring-0 focus:border-black focus:outline-none shadow-[0px_1px_2px_0px_rgba(16,24,40,0.05)]"
                                 />
                             </div>
