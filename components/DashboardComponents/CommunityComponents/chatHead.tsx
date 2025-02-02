@@ -153,7 +153,7 @@ function ChatHead({ channelName, channelId, notificationsMuted, channelEmoji, me
             <button className="flex flex-row gap-2 focus:outline-none">
               <p>{channelEmoji}</p>
               <h4 className="text-base text-[#182230] font-semibold leading-[1.26rem]">{channelName}</h4>
-              {(notificationsMuted || [])?.find(muted => muted.id === currentUserId) && (
+              {(notificationsMuted || []).find(muted => muted.id === currentUserId) && (
                 <Image className={`{isMuted ? 'flex : 'none'}`} src='/icons/notification-off-02.svg' alt="Muted" width={16} height={16} />
               )}
               <Image
@@ -198,7 +198,7 @@ function ChatHead({ channelName, channelId, notificationsMuted, channelEmoji, me
                             alt="mute-icon"
                           />
                         )}
-                        {(notificationsMuted || [])?.find(muted => muted.id === currentUserId) ? (
+                        {(notificationsMuted || []).find(muted => muted.id === currentUserId) ? (
                           <span className='font-normal text-[#0C111D] text-sm'>Muted</span>
                         ) : (
                           <span className='font-normal text-[#0C111D] text-sm'>Mute</span>
@@ -215,7 +215,7 @@ function ChatHead({ channelName, channelId, notificationsMuted, channelEmoji, me
                   </PopoverTrigger>
                   <PopoverContent className="w-auto py-1 px-0 rounded-md border border-lightGrey">
                     <div>
-                      {(notificationsMuted || [])?.find(muted => muted.id === currentUserId) ? (
+                      {(notificationsMuted || []).find(muted => muted.id === currentUserId) ? (
                         <div className="flex flex-col">
                           <div className="w-[182px] px-4 py-[10px] text-left text-sm font-normal leading-5 text-[#667085]">Muted until {(notificationsMuted || []).find(muted => muted.id === currentUserId)?.mutedUntil}</div>
                           <button className="w-[182px] px-4 py-[10px] text-left text-sm font-normal leading-5 text-[#0C111D] hover:bg-[#EAECF0] transition-colors" onClick={handleUnmute}>Unmute</button>
