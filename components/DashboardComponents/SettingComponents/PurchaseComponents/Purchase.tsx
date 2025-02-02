@@ -145,7 +145,7 @@ function Purchase() {
                                         </td>
                                         <td className="px-6 py-4 text-center text-[#667085] font-normal leading-6 whitespace-nowrap">{formatDate(transaction.dateOfPurchase)}</td>
                                         <td className="px-6 py-4 text-center text-[#667085] font-normal leading-6 whitespace-nowrap">
-                                            {transaction.purchasedPrice ? `₹ ${transaction.purchasedPrice}` : "0"}
+                                            {transaction.purchasedPrice ? `₹ ${transaction.purchasedPrice}` : "₹ 0"}
                                         </td>
                                         <td className="px-6 py-4 text-center text-[#667085] font-normal leading-6 whitespace-nowrap">
                                             <div className="flex items-center justify-center">
@@ -171,24 +171,6 @@ function Purchase() {
                                                         </button>
                                                     </div>
                                                 ) : "-"}
-                                                <span>{transaction.transactionId}</span>
-                                                <button
-                                                    className={`ml-2 transition-opacity duration-200 relative ${hoveredRow === index ? 'opacity-100' : 'opacity-0'
-                                                        }`}
-                                                    onClick={() => handleCopy(transaction.transactionId)}
-                                                >
-                                                    <Image
-                                                        src="/icons/CopyButton.svg"
-                                                        alt="copy button"
-                                                        height={22}
-                                                        width={22}
-                                                    />
-                                                    {copied === transaction.transactionId && (
-                                                        <span className="absolute left-10 top-1/2 transform -translate-y-1/2 px-2 bg-[#1D2939] rounded-[6px] text-white font-medium text-[11px] transition-all duration-200">
-                                                            Copied!
-                                                        </span>
-                                                    )}
-                                                </button>
                                             </div>
                                         </td>
                                         <td className="px-6 py-4 text-right">
