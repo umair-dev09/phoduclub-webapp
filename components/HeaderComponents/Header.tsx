@@ -89,8 +89,8 @@ function Header() {
                 </div>
                 <div className=" flex flex-row items-center">
                     {/* <HelpDropDown /> */}
-                    <NotficationDropDown />
-                    <div className="w-[1.5px] h-[14px] bg-[#eaecf0] border-none ml-[14px] mr-[14px]" />
+                    {/* <NotficationDropDown /> */}
+                    {/* <div className="w-[1.5px] h-[14px] bg-[#eaecf0] border-none ml-[14px] mr-[14px]" /> */}
                     <Popover placement="bottom" isOpen={open} onOpenChange={(open) => setOpen(open)} onClose={() => setOpen(false)}>
                         <PopoverTrigger>
                             <button className='flex flex-row items-center focus:outline-none'>
