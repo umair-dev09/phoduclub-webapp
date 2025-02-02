@@ -51,12 +51,12 @@ function InternalChat() {
   const [channelId, setChannelId] = useState("");
   const [height, setHeight] = useState("32px");
   const [isDetailsVisible, setIsDetailsVisible] = useState(true);
-   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
-    const [deleteDialog, setDeleteDialog] = useState(false);
-    const [mediaDialog, setMediaDialog] = useState(false);
+  const [isPopoverOpen, setIsPopoverOpen] = useState(false);
+  const [deleteDialog, setDeleteDialog] = useState(false);
+  const [mediaDialog, setMediaDialog] = useState(false);
   const router = useRouter();
   const [openAddMembers, setOpenAddMembers] = useState(false);
-  const [isCollapsed, setIsCollapsed] = useState(false);
+  const [isCollapsed, setIsCollapsed] = useState(true);
   const [user, setUser] = useState<User | null>(null);
   const [showReplyLayout, setShowReplyLayout] = useState(false); // State lifted to parent
   const [replyData, setReplyData] = useState<{ message: string | null; senderId: string | null; messageType: string | null; fileUrl: string | null; fileName: string | null; chatId: string | null; } | null>(null); // Holds reply message data
@@ -68,9 +68,9 @@ function InternalChat() {
   const [searchOpen, setSearchOpen] = useState(false);
   const [selectedChannel, setSelectedChannel] = useState<{
     channelId: string;
-  channelName: string;
-  channelEmoji: string;
-  members: { id: string, isAdmin: boolean }[] | null;
+    channelName: string;
+    channelEmoji: string;
+    members: { id: string, isAdmin: boolean }[] | null;
   } | null>(null);
   const chatRefs = useRef<{ [key: string]: HTMLDivElement | null }>({});
   const bottomRef = useRef<HTMLDivElement | null>(null);
@@ -159,7 +159,7 @@ function InternalChat() {
 
       fetchChats();
     }
-  }, [ selectedChannel]);
+  }, [selectedChannel]);
 
   // Scroll to the latest message
   useEffect(() => {
@@ -313,15 +313,15 @@ function InternalChat() {
                     setSelectedChannel({ ...channel });
                   }}
                 >
-                    <div className="flex flex-row items-center gap-2 p-[6px] ">
+                  <div className="flex flex-row items-center gap-2 p-[6px] ">
                     <p className='text-medium'>{channel.channelEmoji}</p>
                     <p className="text-[14px] text-left font-semibold text-[#4B5563]">
                       {channel.channelName}
                     </p>
                   </div>
-                  
 
-                  
+
+
                 </button>
               ))}
               <button className='flex flex-row items-center justify-center w-full px-2 py-[0.375rem] gap-2 border border-lightGrey rounded-full outline-none'
@@ -342,23 +342,23 @@ function InternalChat() {
             <div className="flex items-center justify-between h-[72px] bg-white border-b border-lightGrey">
               {/* Pass the selected channel info to ChatHead */}
               <Popover
-                 placement="bottom"
-                 isOpen={isPopoverOpen}
-                 onOpenChange={(open) => setIsPopoverOpen(open)}
-               >
-                  <PopoverTrigger>
+                placement="bottom"
+                isOpen={isPopoverOpen}
+                onOpenChange={(open) => setIsPopoverOpen(open)}
+              >
+                <PopoverTrigger>
                   <div className="flex flex-row items-center gap-2 p-[6px] ml-3 cursor-pointer">
-                <p className='text-medium'>{selectedChannel.channelEmoji}</p>
-                <p className="text-[15px]  font-semibold text-[#4B5563]">{selectedChannel.channelName}</p>
-                <Image
-                                src="/icons/selectdate-Arrowdown.svg"
-                                width={20}
-                                height={20}
-                                alt="Arrow-Down Button"
-                              />
-              </div>
-                  </PopoverTrigger>
-                 <PopoverContent className="w-auto py-1 px-0 bg-white border border-lightGrey rounded-md flex flex-col">
+                    <p className='text-medium'>{selectedChannel.channelEmoji}</p>
+                    <p className="text-[15px]  font-semibold text-[#4B5563]">{selectedChannel.channelName}</p>
+                    <Image
+                      src="/icons/selectdate-Arrowdown.svg"
+                      width={20}
+                      height={20}
+                      alt="Arrow-Down Button"
+                    />
+                  </div>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto py-1 px-0 bg-white border border-lightGrey rounded-md flex flex-col">
                   <button className='flex flex-row gap-2 items-center h-10 w-[206px] px-4 hover:bg-[#EAECF0] '
                     onClick={() => {
                       setMediaDialog(true);
@@ -371,24 +371,24 @@ function InternalChat() {
                       alt="media-icon"
                     />
                     <span className='font-normal text-[#0C111D] text-sm'>Media</span>
-                   </button>
-                 <button className='flex flex-row gap-2 items-center h-10 w-[206px] px-4 hover:bg-[#FEE4E2]'
-                  onClick={() => {
-                    setDeleteDialog(true);
-                    setIsPopoverOpen(false);
-                  }}>
-                  <Image
-                    src="/icons/delete.svg"
-                    width={18}
-                    height={18}
-                    alt="delete"
-                  />
-                  <span className='font-normal text-[#DE3024] text-sm'>Delete</span>
-                 </button>
+                  </button>
+                  <button className='flex flex-row gap-2 items-center h-10 w-[206px] px-4 hover:bg-[#FEE4E2]'
+                    onClick={() => {
+                      setDeleteDialog(true);
+                      setIsPopoverOpen(false);
+                    }}>
+                    <Image
+                      src="/icons/delete.svg"
+                      width={18}
+                      height={18}
+                      alt="delete"
+                    />
+                    <span className='font-normal text-[#DE3024] text-sm'>Delete</span>
+                  </button>
 
                 </PopoverContent>
-                  </Popover>
-              
+              </Popover>
+
               <div className="flex flex-row mr-4 gap-4">
                 <Popover placement="bottom" isOpen={searchOpen} onClose={() => { setSearchOpen(false); setSearchQuery('') }}>
                   <PopoverTrigger>
@@ -492,8 +492,8 @@ function InternalChat() {
                           chatId={chat.chatId}
                           channelId={selectedChannel.channelId}
                           message={chat.message}
-                          isDeleted={chat.isDeleted} 
-                          />
+                          isDeleted={chat.isDeleted}
+                        />
                       ) : (
                         <OtherChat
                           handleReply={handleReply}
@@ -520,7 +520,7 @@ function InternalChat() {
                           channelId={selectedChannel.channelId}
                           message={chat.message}
                           isDeleted={chat.isDeleted}
-                           />
+                        />
                       )}
                     </div>
                   </React.Fragment>
@@ -543,10 +543,10 @@ function InternalChat() {
                 </button>
               )}
               {selectedChannel.members?.some(member => member.id === user?.uid) ? (
-              <MessageTypeArea channelMembers={selectedChannel.members} showReplyLayout={showReplyLayout} setShowReplyLayout={setShowReplyLayout} replyData={replyData} channelId={selectedChannel?.channelId} />
+                <MessageTypeArea channelMembers={selectedChannel.members} showReplyLayout={showReplyLayout} setShowReplyLayout={setShowReplyLayout} replyData={replyData} channelId={selectedChannel?.channelId} />
               ) : (
                 <div className="flex bg-white items-center justify-center h-auto py-4">
-                <p className='text-sm'>You need to be a member of this channel to send messages.</p>
+                  <p className='text-sm'>You need to be a member of this channel to send messages.</p>
                 </div>
               )}
             </div>
@@ -585,7 +585,7 @@ function InternalChat() {
       )}
 
       {openDialogue && <CreateChannelDialogue setChannelId={setChannelId} open={true} onClose={() => setOpenDialogue(false)} openAddMembers={() => setOpenAddMembers(true)} />}
-      {openAddMembers && <AddMembersInternalChat open={openAddMembers} onClose={() => setOpenAddMembers(false)} channelId= {channelId} />}
+      {openAddMembers && <AddMembersInternalChat open={openAddMembers} onClose={() => setOpenAddMembers(false)} channelId={channelId} />}
       {mediaDialog && <MediaDialog isOpen={mediaDialog} setIsOpen={() => setMediaDialog(false)} chats={chats} />}
       {deleteDialog && <DeleteChannel open={deleteDialog} onClose={() => setDeleteDialog(false)} channelId={selectedChannel?.channelId || ''} channelName={selectedChannel?.channelName || ''} setSelectedChannel={setSelectedChannel} />}
 

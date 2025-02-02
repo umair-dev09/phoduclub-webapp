@@ -71,7 +71,7 @@ interface Mention {
   isAdmin: boolean;
 }
 
-interface Props {   
+interface Props {
   highlightedText: string | React.ReactNode[];
   mentions: Mention[];
   setOpenDialogue: (open: boolean) => void;
@@ -405,6 +405,15 @@ function OtherChat({ message, currentUserId, adminThatDeletedId, isDeletedByAdmi
       console.error("Error deleting reaction: ", error);
     }
   };
+
+  const truncateMessage = (text: string | null, maxLength: number = 30) => {
+    if (!text) return '';
+    // Split by newlines and only take first line
+    const firstLine = text.split('\n')[0];
+    if (firstLine.length <= maxLength) return firstLine;
+    return firstLine.substring(0, maxLength) + '...';
+  };
+
   // const [adminId, setAdminId] = useState('');
 
   // useEffect(() => {
@@ -486,7 +495,7 @@ function OtherChat({ message, currentUserId, adminThatDeletedId, isDeletedByAdmi
             </div>
           )}
 
-          {isReplying && !isDeleted && (
+          {/* {isReplying && !isDeleted && (
             <div className="flex flex-row p-[10px] bg-[#F2F4F7] border border-[#D0D5DD] rounded-md text-xs gap-1 justify-between cursor-pointer"
               onClick={() => scrollToReply(replyingToChatId || '')}>
               <div className="flex flex-col mr-6 justify-center">
@@ -495,7 +504,7 @@ function OtherChat({ message, currentUserId, adminThatDeletedId, isDeletedByAdmi
                     <h4 className="font-semibold">You</h4>
                   ) : (
                     <h4 className="font-semibold">Marvin McKinney</h4>
-                  )}                        {/* <div className="">Admin</div> */}
+                  )}                       
                 </div>
                 <div className="flex flex-row gap-1 mt-[2px] ">
                   {replyingToMsgType === 'image' && (
@@ -511,7 +520,7 @@ function OtherChat({ message, currentUserId, adminThatDeletedId, isDeletedByAdmi
                     {replyingToMsg !== null && replyingToMsgType !== 'document'
                       ? replyingToMsg // Show message if it's not null and not a document
                       : replyingToMsgType === 'document'
-                        ? replyingToFileName // Always show fileName for document
+                        ? truncateMessage(replyingToFileName) // Always show fileName for document
                         : (replyingToMsgType === 'image' && 'Image') ||
                         (replyingToMsgType === 'video' && 'Video') ||
                         'Unknown Type'}</div>
@@ -521,7 +530,46 @@ function OtherChat({ message, currentUserId, adminThatDeletedId, isDeletedByAdmi
                 <Image className="rounded-sm min-h-[40px] object-cover" src={replyingToFileUrl} alt='Image' width={50} height={45} />
               )}
             </div>
+          )} */}
+
+          {isReplying && !isDeleted && (
+            <div className="flex flex-row p-[10px] bg-[#F2F4F7] border border-[#D0D5DD] rounded-md text-xs gap-1 justify-between cursor-pointer"
+              onClick={() => scrollToReply(replyingToChatId || '')}>
+              <div className="flex flex-col mr-6 justify-center">
+                <div className="flex flex-row gap-2">
+                  {replyingToId === currentUserId ? (
+                    <h4 className="font-semibold">You</h4>
+                  ) : (
+                    <h4 className="font-semibold">Marvin McKinney</h4>
+                  )}
+                </div>
+                <div className="flex flex-row gap-1 mt-[2px] overflow-hidden whitespace-nowrap">
+                  {replyingToMsgType === 'image' && (
+                    <Image src='/icons/image.svg' alt='attachment icon' width={12} height={12} />
+                  )}
+                  {replyingToMsgType === 'video' && (
+                    <Image src='/icons/vedio.svg' alt='attachment icon' width={12} height={12} />
+                  )}
+                  {replyingToMsgType === 'document' && (
+                    <Image src='/icons/file-02.svg' alt='attachment icon' width={12} height={12} />
+                  )}
+                  <div className="break-all overflow-hidden text-ellipsis">
+                    {replyingToMsg !== null && replyingToMsgType !== 'document'
+                      ? truncateMessage(replyingToMsg)
+                      : replyingToMsgType === 'document'
+                        ? truncateMessage(replyingToFileName)
+                        : (replyingToMsgType === 'image' && 'Image') ||
+                        (replyingToMsgType === 'video' && 'Video') ||
+                        'Unknown Type'}
+                  </div>
+                </div>
+              </div>
+              {replyingToMsgType === 'image' && (
+                <Image className="rounded-sm min-h-[40px] object-cover" src={replyingToFileUrl} alt='Image' width={50} height={45} />
+              )}
+            </div>
           )}
+
           <div className="text-sm break-all w-full max-w-full ">
             {isDeleted ? (
               <div className="italic text-[#475467]">{isDeletedByAdmin ? <>

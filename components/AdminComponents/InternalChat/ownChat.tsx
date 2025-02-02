@@ -847,6 +847,14 @@ function OwnChat({ message, isDeleted, mentions, handleReply, currentUserId, hig
     }
   };
 
+  const truncateMessage = (text: string | null, maxLength: number = 30) => {
+    if (!text) return '';
+    // Split by newlines and only take first line
+    const firstLine = text.split('\n')[0];
+    if (firstLine.length <= maxLength) return firstLine;
+    return firstLine.substring(0, maxLength) + '...';
+  };
+
   return (
     <div className="flex mr-3 justify-end pl-[15%] ">
 
@@ -913,13 +921,13 @@ function OwnChat({ message, isDeleted, mentions, handleReply, currentUserId, hig
                   </button> */}
                   {/* Delete Message Button */}
                   {/* {timestamp && (new Date().getTime() - timestamp.toMillis() < 60000) && ( */}
-                    <button
-                      onClick={() => { setDeleteDialog(true); setIsOpen(false); }}
-                      className='flex flex-row items-center gap-2 w-30 px-4 pt-[10px] pb-3 transition-colors hover:bg-[#FEE4E2] rounded-br-md rounded-bl-md'
-                    >
-                      <Image src='/icons/delete.svg' alt='search icon' width={17} height={17} />
-                      <span className='font-normal text-[#DE3024] text-sm'>Delete Message</span>
-                    </button>
+                  <button
+                    onClick={() => { setDeleteDialog(true); setIsOpen(false); }}
+                    className='flex flex-row items-center gap-2 w-30 px-4 pt-[10px] pb-3 transition-colors hover:bg-[#FEE4E2] rounded-br-md rounded-bl-md'
+                  >
+                    <Image src='/icons/delete.svg' alt='search icon' width={17} height={17} />
+                    <span className='font-normal text-[#DE3024] text-sm'>Delete Message</span>
+                  </button>
                   {/* )} */}
                 </div>
               </PopoverContent>
@@ -966,26 +974,26 @@ function OwnChat({ message, isDeleted, mentions, handleReply, currentUserId, hig
                     ) : (
                       <h4 className="font-semibold">Marvin McKinney</h4>
                     )}
-                    {/* <div className="">Admin</div> */}
                   </div>
-                  <div className="flex flex-row gap-1 mt-[2px] ">
+                  <div className="flex flex-row gap-1 mt-[2px] overflow-hidden whitespace-nowrap">
                     {replyingToMsgType === 'image' && (
-                      <Image src='/icons/image-white.svg' alt='attachment icon' width={12} height={12} />
+                      <Image src='/icons/image.svg' alt='attachment icon' width={12} height={12} />
                     )}
                     {replyingToMsgType === 'video' && (
-                      <Image src='/icons/video-01.svg' alt='attachment icon' width={12} height={12} />
+                      <Image src='/icons/vedio.svg' alt='attachment icon' width={12} height={12} />
                     )}
                     {replyingToMsgType === 'document' && (
-                      <Image src='/icons/file-white.svg' alt='attachment icon' width={12} height={12} />
+                      <Image src='/icons/file-02.svg' alt='attachment icon' width={12} height={12} />
                     )}
-                    <div className="break-all">
+                    <div className="break-all overflow-hidden text-ellipsis">
                       {replyingToMsg !== null && replyingToMsgType !== 'document'
-                        ? replyingToMsg // Show message if it's not null and not a document
+                        ? truncateMessage(replyingToMsg)
                         : replyingToMsgType === 'document'
-                          ? replyingToFileName // Always show fileName for document
+                          ? truncateMessage(replyingToFileName)
                           : (replyingToMsgType === 'image' && 'Image') ||
                           (replyingToMsgType === 'video' && 'Video') ||
-                          'Unknown Type'}</div>
+                          'Unknown Type'}
+                    </div>
                   </div>
                 </div>
                 {replyingToMsgType === 'image' && (
@@ -1027,7 +1035,7 @@ function OwnChat({ message, isDeleted, mentions, handleReply, currentUserId, hig
         <MemberClickDialog open={true} onClose={() => setOpenDialogue(false)} id={id} isAdmin={admin} isCurrentUserAdmin={false} />
       )}
       {showMediaDialog && <MediaViewDialog open={true} onClose={() => setShowMediaDialog(false)} src={fileUrl} mediaType={messageType || ''} />}
-      {deleteDialog && <Delete channelId={channelId} chatId={chatId} open={true} onClose={() => setDeleteDialog(false)}  />}
+      {deleteDialog && <Delete channelId={channelId} chatId={chatId} open={true} onClose={() => setDeleteDialog(false)} />}
 
     </div>
   );

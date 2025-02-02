@@ -68,7 +68,7 @@ function MessageTypeArea({
             } else {
               setReplyName("Unknown User");
             }
-          } 
+          }
         } catch (error) {
           console.error("Error fetching sender name:", error);
           setReplyName("Unknown User");
@@ -105,11 +105,11 @@ function MessageTypeArea({
           }))
           .filter((user) => user.adminId !== currentUserId); // Exclude current user
 
-          const filteredMembers = userList.filter((admin) => {
-            if (!channelMembers) return false;
-            return channelMembers.some((member) => member.id === admin.adminId);
-          });
-  
+        const filteredMembers = userList.filter((admin) => {
+          if (!channelMembers) return false;
+          return channelMembers.some((member) => member.id === admin.adminId);
+        });
+
 
         setUsers(filteredMembers);
       } catch (error) {
@@ -134,7 +134,7 @@ function MessageTypeArea({
 
     // Detect `@` symbol
     const caretPosition = e.target.selectionStart;
-    setCursorPosition(caretPosition); 
+    setCursorPosition(caretPosition);
 
     const words = value.slice(0, caretPosition).split(" ");
     const lastWord = words[words.length - 1];
@@ -302,6 +302,14 @@ function MessageTypeArea({
     }
   };
 
+  const truncateMessage = (text: string | null | undefined, maxLength: number = 50) => {
+    if (!text) return '';
+    // Split by newlines and only take first line
+    const firstLine = text.split('\n')[0];
+    if (firstLine.length <= maxLength) return firstLine;
+    return firstLine.substring(0, maxLength) + '...';
+  };
+
   return (
     <div className="flex flex-col bg-white h-auto px-4 py-4">
       {/* Media Layout Start */}
@@ -353,40 +361,40 @@ function MessageTypeArea({
         </div>
       )}
       {/* Media Layout End */}
+
       {/* Reply Layout Start */}
       {showReplyLayout && (
-        <div className="flex flex-row rounded-md bg-[#F2F4F7] w-full h-auto border border-[#D0D5DD] p-[12px] mb-2 justify-between items-start">
+        <div className="flex flex-row rounded-md bg-[#F2F4F7] z-10 w-full h-auto border border-[#D0D5DD] p-[12px] mb-2 justify-between items-start">
           <div className="flex flex-col gap-[2px] w-[92%]">
             <h3 className="text-[13px] font-semibold">{replyName}</h3>
-            <div className="flex flex-row gap-1">
+            <div className="flex flex-row gap-1 items-center overflow-hidden">
               {/* Conditionally render the icon based on messageType */}
               {replyData?.messageType === 'image' && (
-                <Image src='/icons/image.svg' alt='attachment icon' width={15} height={15} />
+                <Image src='/icons/image.svg' alt='attachment icon' width={15} height={15} className="flex-shrink-0" />
               )}
               {replyData?.messageType === 'video' && (
-                <Image src='/icons/video-icon.svg' alt='attachment icon' width={15} height={15} />
+                <Image src='/icons/video-icon.svg' alt='attachment icon' width={15} height={15} className="flex-shrink-0" />
               )}
               {replyData?.messageType === 'document' && (
-                <Image src='/icons/documents.svg' alt='attachment icon' width={15} height={15} />
+                <Image src='/icons/documents.svg' alt='attachment icon' width={15} height={15} className="flex-shrink-0" />
               )}
               {/* Render the message */}
-              <p className="text-[13px] ">
+              <p className="text-[13px] overflow-hidden whitespace-nowrap text-ellipsis">
                 {replyData?.message !== null && replyData?.messageType !== 'document'
-                  ? replyData?.message // Show message if it's not null and not a document
+                  ? truncateMessage(replyData?.message)
                   : replyData?.messageType === 'document'
-                    ? replyData?.fileName // Always show fileName for document
+                    ? truncateMessage(replyData?.fileName)
                     : (replyData?.messageType === 'image' && 'Image') ||
                     (replyData?.messageType === 'video' && 'Video') ||
                     'Unknown Type'}
               </p>
             </div>
           </div>
-          <button onClick={() => setShowReplyLayout(false)}>
+          <button onClick={() => setShowReplyLayout(false)} className="flex-shrink-0">
             <Image src='/icons/cancel.svg' alt='cancel icon' width={18} height={18} />
           </button>
         </div>
       )}
-
       {/* Reply Layout End */}
 
       {showUserList && (

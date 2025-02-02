@@ -943,7 +943,6 @@ export default function CommunityName() {
                   )}
                 </>
               )}
-
             </div>
           </>
         ) : (
