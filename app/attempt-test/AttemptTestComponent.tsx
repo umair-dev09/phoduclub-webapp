@@ -838,210 +838,208 @@ useEffect(() => {
         const loadingToastId = toast.loading('Submitting your test responses...');
         setIsSubmitButtonDisabled(true);
         updateCurrentQuestionTime();
-
+      
         if (!currentUserId) {
-            toast.dismiss(loadingToastId);
-            toast.error('User authentication required');
-            setIsSubmitButtonDisabled(false);
-            return;
+          toast.dismiss(loadingToastId);
+          toast.error('User authentication required');
+          setIsSubmitButtonDisabled(false);
+          return;
         }
-
+      
         // Enhanced function to calculate remarks for each question
-        const getFinalQuestionData = (states: QuestionState[]) => states.map(state => ({
+        const getFinalQuestionData = (states: QuestionState[]) =>
+          states.map((state) => ({
             ...state,
             remarks: determineRemarks(
-                state.allotedTime,
-                state.spentTime,
-                state.answeredCorrect,
-                state.answered
+              state.allotedTime,
+              state.spentTime,
+              state.answeredCorrect,
+              state.answered
             )
-        }));
-
+          }));
+      
         // Process questions for both regular and umbrella tests
         const processQuestions = () => {
-            if (currentSection?.isUmbrellaTest) {
-                // Process each subsection's questions with remarks
-                return subSections.map(section => ({
-                    ...section,
-                    states: getFinalQuestionData(section.states || [])
-                }));
-            } else {
-                return getFinalQuestionData(questionStates);
-            }
+          if (currentSection?.isUmbrellaTest) {
+            // Process each subsection's questions with remarks
+            return subSections.map((section) => ({
+              ...section,
+              states: getFinalQuestionData(section.states || [])
+            }));
+          } else {
+            return getFinalQuestionData(questionStates);
+          }
         };
-
-
-
+      
         const processedQuestions = processQuestions();
         const combinedQuestionsData = currentSection?.isUmbrellaTest
-            ? (processedQuestions as SubSection[]).flatMap(section => section.states || [])
-            : processedQuestions;
-
+          ? (processedQuestions as SubSection[]).flatMap((section) => section.states || [])
+          : processedQuestions;
+      
         try {
-            let currentPath = `testseries/${tId}`;
-            for (const sectionId of sections) {
-                currentPath += `/sections/${sectionId}`;
+          let currentPath = `testseries/${tId}`;
+          for (const sectionId of sections) {
+            currentPath += `/sections/${sectionId}`;
+          }
+          currentPath += `/attempts`;
+      
+          const batch = writeBatch(db);
+          const attemptsRef = collection(db, currentPath);
+          const userAttempts = await getDocs(
+            query(attemptsRef, where('userId', '==', currentUserId))
+          );
+          const attemptNumber = userAttempts.size + 1;
+      
+          const calculateMetrics = (questions: any[], section?: Section) => {
+            const totalQuestions = questions.length;
+            const attemptedQuestions = questions.filter(q => q.answered).length;
+            const correctAnswers = questions.filter(q => q.answeredCorrect).length;
+            const incorrectAnswers = attemptedQuestions - correctAnswers;
+            let marksPerCorrect, marksPerIncorrect;
+      
+            if (section?.isParentUmbrellaTest) {
+              marksPerCorrect = parseFloat(currentSection?.marksPerQ || "0");
+              marksPerIncorrect = parseFloat(currentSection?.nMarksPerQ || "0");
+            } else if (currentSection?.isUmbrellaTest) {
+              marksPerCorrect = parseFloat(currentSection?.marksPerQ || "0");
+              marksPerIncorrect = parseFloat(currentSection?.nMarksPerQ || "0");
+            } else {
+              marksPerCorrect = parseFloat(section?.marksPerQ || "0");
+              marksPerIncorrect = parseFloat(section?.nMarksPerQ || "0");
             }
-            currentPath += `/attempts`;
-
-            const batch = writeBatch(db);
-            const attemptsRef = collection(db, currentPath);
-            const userAttempts = await getDocs(
-                query(attemptsRef, where('userId', '==', currentUserId))
-            );
-            const attemptNumber = userAttempts.size + 1;
-
-            const calculateMetrics = (questions: any[], section?: Section) => {
-                const totalQuestions = questions.length;
-                const attemptedQuestions = questions.filter(q => q.answered).length;
-                const correctAnswers = questions.filter(q => q.answeredCorrect).length;
-                const incorrectAnswers = attemptedQuestions - correctAnswers;
-                let marksPerCorrect, marksPerIncorrect;
-
-                if (section?.isParentUmbrellaTest) {
-                    marksPerCorrect = parseFloat(currentSection?.marksPerQ || "0");
-                    marksPerIncorrect = parseFloat(currentSection?.nMarksPerQ || "0");
-
-                }
-                else if (currentSection?.isUmbrellaTest) {
-                    marksPerCorrect = parseFloat(currentSection?.marksPerQ || "0");
-                    marksPerIncorrect = parseFloat(currentSection?.nMarksPerQ || "0");
-                }
-                else {
-                    marksPerCorrect = parseFloat(section?.marksPerQ || "0");
-                    marksPerIncorrect = parseFloat(section?.nMarksPerQ || "0");
-                }
-
-                const totalScore = (correctAnswers * marksPerCorrect) - (incorrectAnswers * marksPerIncorrect);
-                const maxPossibleScore = totalQuestions * marksPerCorrect;
-                const accuracy = attemptedQuestions > 0 ? (correctAnswers / attemptedQuestions) * 100 : 0;
-
-                return {
-                    attemptedQuestions: `${attemptedQuestions}/${totalQuestions}`,
-                    answeredCorrect: `${correctAnswers}/${totalQuestions}`,
-                    answeredIncorrect: `${incorrectAnswers}/${totalQuestions}`,
-                    score: `${totalScore}/${maxPossibleScore}`,
-                    accuracy: `${accuracy.toFixed(2)}%`
-                };
+      
+            const totalScore = (correctAnswers * marksPerCorrect) - (incorrectAnswers * marksPerIncorrect);
+            const maxPossibleScore = totalQuestions * marksPerCorrect;
+            const accuracy = attemptedQuestions > 0 ? (correctAnswers / attemptedQuestions) * 100 : 0;
+      
+            return {
+              attemptedQuestions: `${attemptedQuestions}/${totalQuestions}`,
+              answeredCorrect: `${correctAnswers}/${totalQuestions}`,
+              answeredIncorrect: `${incorrectAnswers}/${totalQuestions}`,
+              score: `${totalScore}/${maxPossibleScore}`,
+              accuracy: `${accuracy.toFixed(2)}%`
             };
-
-            if (currentSection?.isUmbrellaTest) {
-                const mainAttemptRef = doc(attemptsRef);
-                const combinedMetrics = calculateMetrics(combinedQuestionsData);
-                const totalTestTime = subSections.reduce((sum, section) =>
-                    sum + section.testTime, 0);
-                const timeTaken = (currentSection?.testTime ?? 0) - remainingTime;
-
-                const mainAttemptData = {
-                    attemptDateAndTime: serverTimestamp(),
-                    isUmbrellaTest: true,
-                    testTime: currentSection?.testTime,
-                    timeTaken: timeTaken,
-                    userId: currentUserId,
-                    attemptNumber,
-                    ...combinedMetrics,
-                    questions: combinedQuestionsData
-                };
-
-                batch.set(mainAttemptRef, mainAttemptData);
-
-                const getFinalSubsectionTimes = () => {
-                    const finalTimes: { [key: string]: number } = {};
-
-                    Object.entries(subsectionTimers).forEach(([sectionId, timer]) => {
-                        finalTimes[sectionId] = getTotalTimeSpent(timer);
-                    });
-
-                    return finalTimes;
-                };
-                const sectionTimes = getFinalSubsectionTimes();
-                const subattemptsRef = collection(mainAttemptRef, 'subattempts');
-
-                // Process each subsection with remarks
-                processedQuestions.forEach((section: any) => {
-                    const sectionMetrics = calculateMetrics(section.states || [], section);
-                    const subattemptRef = doc(subattemptsRef);
-
-                    batch.set(subattemptRef, {
-                        sectionId: section.id,
-                        sectionName: section.sectionName,
-                        timeTaken: sectionTimes[section.id] || 0,
-                        // testTime: section.testTime,
-                        ...sectionMetrics,
-                        questions: section.states // These now include remarks
-                    });
-                });
-
-            } else {
-                const metrics = calculateMetrics(processedQuestions, currentSection || undefined);
-                const attemptRef = doc(attemptsRef);
-                const timeTaken = (currentSection?.testTime ?? 0) - remainingTime;
-
-                batch.set(attemptRef, {
-                    attemptDateAndTime: serverTimestamp(),
-                    isUmbrellaTest: false,
-                    testTime: currentSection?.testTime,
-                    timeTaken: timeTaken,
-                    userId: currentUserId,
-                    attemptNumber,
-                    ...metrics,
-                    questions: processedQuestions // These now include remarks
-                });
-            }
-
-            await batch.commit();
-
-            toast.dismiss(loadingToastId);
-            toast.success('Test submitted successfully! Redirecting to results...', {
-                autoClose: 3000,
-                position: 'top-center'
+          };
+      
+          if (currentSection?.isUmbrellaTest) {
+            const mainAttemptRef = doc(attemptsRef);
+            const combinedMetrics = calculateMetrics(combinedQuestionsData);
+            const totalTestTime = subSections.reduce((sum, section) => sum + section.testTime, 0);
+            const timeTaken = (currentSection?.testTime ?? 0) - remainingTime;
+      
+            const mainAttemptData = {
+              attemptDateAndTime: serverTimestamp(),
+              isUmbrellaTest: true,
+              testTime: currentSection?.testTime,
+              timeTaken: timeTaken,
+              userId: currentUserId,
+              attemptNumber,
+              ...combinedMetrics,
+              questions: combinedQuestionsData // Final processed question states (with remarks)
+            };
+      
+            batch.set(mainAttemptRef, mainAttemptData);
+      
+            const getFinalSubsectionTimes = () => {
+              const finalTimes: { [key: string]: number } = {};
+              Object.entries(subsectionTimers).forEach(([sectionId, timer]) => {
+                finalTimes[sectionId] = getTotalTimeSpent(timer);
+              });
+              return finalTimes;
+            };
+            const sectionTimes = getFinalSubsectionTimes();
+            const subattemptsRef = collection(mainAttemptRef, 'subattempts');
+      
+            // Process each subsection with remarks
+            processedQuestions.forEach((section: any) => {
+              const sectionMetrics = calculateMetrics(section.states || [], section);
+              const subattemptRef = doc(subattemptsRef);
+              batch.set(subattemptRef, {
+                sectionId: section.id,
+                sectionName: section.sectionName,
+                timeTaken: sectionTimes[section.id] || 0,
+                // testTime: section.testTime,
+                ...sectionMetrics,
+                questions: section.states // These now include remarks
+              });
             });
-
-            // Update UI state
-            if (currentSection?.isUmbrellaTest) {
-                const combinedMetrics = calculateMetrics(combinedQuestionsData);
-                const timeTaken = (currentSection?.testTime ?? 0) - remainingTime;
-                const allQuestions = subSections.flatMap(section => section.questions || []);
-                // const allQuestionStates = subSections.flatMap(section => section.states || []);
-
-                setAttemptedQuestions(combinedMetrics.attemptedQuestions);
-                setQuestions(allQuestions);
-                setAnsweredCorrect(combinedMetrics.answeredCorrect);
-                setAnsweredIncorrect(combinedMetrics.answeredIncorrect);
-                setScore(combinedMetrics.score);
-                setAccuracy(combinedMetrics.accuracy);
-                setTimeTaken(timeTaken);
-                setTestTime(currentSection?.testTime ?? 0);
-            } else {
-                const metrics = calculateMetrics(processedQuestions, currentSection || undefined);
-                const timeTaken = (currentSection?.testTime ?? 0) - remainingTime;
-
-                setAttemptedQuestions(metrics.attemptedQuestions);
-                setAnsweredCorrect(metrics.answeredCorrect);
-                setAnsweredIncorrect(metrics.answeredIncorrect);
-                setScore(metrics.score);
-                setAccuracy(metrics.accuracy);
-                setTimeTaken(timeTaken);
-                setTestTime(currentSection?.testTime ?? 0);
+          } else {
+            const metrics = calculateMetrics(processedQuestions, currentSection || undefined);
+            const attemptRef = doc(attemptsRef);
+            const timeTaken = (currentSection?.testTime ?? 0) - remainingTime;
+            batch.set(attemptRef, {
+              attemptDateAndTime: serverTimestamp(),
+              isUmbrellaTest: false,
+              testTime: currentSection?.testTime,
+              timeTaken: timeTaken,
+              userId: currentUserId,
+              attemptNumber,
+              ...metrics,
+              questions: processedQuestions // These now include remarks
+            });
+          }
+      
+          await batch.commit();
+      
+          toast.dismiss(loadingToastId);
+          toast.success('Test submitted successfully! Redirecting to results...', {
+            autoClose: 3000,
+            position: 'top-center'
+          });
+      
+          // Update UI state after submission
+          if (currentSection?.isUmbrellaTest) {
+            const combinedMetrics = calculateMetrics(combinedQuestionsData);
+            const timeTaken = (currentSection?.testTime ?? 0) - remainingTime;
+            const allQuestions = subSections.flatMap(section => section.questions || []);
+            
+            // IMPORTANT: Set the local questionStates to match exactly what was stored in Firestore.
+            // Ensure the data is of type QuestionState[] before setting it
+            if (Array.isArray(combinedQuestionsData) && !('states' in combinedQuestionsData[0])) {
+                setQuestionStates(combinedQuestionsData as QuestionState[]);
+            } else if (Array.isArray(combinedQuestionsData)) {
+                // Handle umbrella test case by flattening the states
+                const flattenedStates = (combinedQuestionsData as any[]).flatMap(section => section.states || []);
+                setQuestionStates(flattenedStates);
             }
-
-            setIsSubmitButtonDisabled(true);
-
-            setTimeout(() => {
-                onCloseFirst();
-                onOpenSecond();
-            }, 1000);
-
+            
+            setAttemptedQuestions(combinedMetrics.attemptedQuestions);
+            setQuestions(allQuestions);
+            setAnsweredCorrect(combinedMetrics.answeredCorrect);
+            setAnsweredIncorrect(combinedMetrics.answeredIncorrect);
+            setScore(combinedMetrics.score);
+            setAccuracy(combinedMetrics.accuracy);
+            setTimeTaken(timeTaken);
+            setTestTime(currentSection?.testTime ?? 0);
+          } else {
+            const metrics = calculateMetrics(processedQuestions, currentSection || undefined);
+            const timeTaken = (currentSection?.testTime ?? 0) - remainingTime;
+            setAttemptedQuestions(metrics.attemptedQuestions);
+            setAnsweredCorrect(metrics.answeredCorrect);
+            setAnsweredIncorrect(metrics.answeredIncorrect);
+            setScore(metrics.score);
+            setAccuracy(metrics.accuracy);
+            setTimeTaken(timeTaken);
+            setTestTime(currentSection?.testTime ?? 0);
+          }
+      
+          setIsSubmitButtonDisabled(true);
+      
+          setTimeout(() => {
+            onCloseFirst();
+            onOpenSecond();
+          }, 1000);
         } catch (error) {
-            console.error('Error in handleSubmit:', error);
-            toast.dismiss(loadingToastId);
-            toast.error('Failed to submit test. Please try again or contact support if the issue persists.', {
-                autoClose: 5000,
-                position: 'top-center'
-            });
-            setIsSubmitButtonDisabled(false);
+          console.error('Error in handleSubmit:', error);
+          toast.dismiss(loadingToastId);
+          toast.error('Failed to submit test. Please try again or contact support if the issue persists.', {
+            autoClose: 5000,
+            position: 'top-center'
+          });
+          setIsSubmitButtonDisabled(false);
         }
-    };
+      };
+      
 
     const handleClearResponse = () => {
         setSelectedOption(null);
