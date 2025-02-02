@@ -123,59 +123,66 @@ function CoursesList() {
     }
 
     return (
-        <div className="flex flex-1 flex-row mx-0 gap-6 flex-wrap pr-2">
-            {courses.slice(0, 2).map((course, index) => (
-                <div
-                    key={index}
-                    className="w-[239px] rounded-lg relative overflow-hidden transition-transform duration-300"
-                >
-                    {/* Container for the suggestion badge and course image */}
-                    <div>
-                        {/* Suggestion badge with icon and text */}
-                        <div className="flex items-center absolute top-3 left-3 mr-5 bg-[#FFEC45] border border-[#FFEC45] text-xs font-medium rounded-full py-1 px-3 z-10 transition-transform transition-font-size duration-300 ease-in-out">
-                            <Image
-                                className="mr-[5px]"
-                                src="/icons/suggestion_icon.svg"
-                                alt="suggestion icon"
-                                width={16}
-                                height={16}
-                            />
-                            <p>Suggested for you</p>
+        <div className="flex flex-1 flex-row mx-0 gap-6 flex-wrap">
+            {courses.length > 0 ? (
+                courses.slice(0, 4).map((course, index) => (
+                    <div
+                        key={index}
+                        className="w-[239px] rounded-lg relative overflow-hidden transition-transform duration-300"
+                    >
+                        {/* Container for the suggestion badge and course image */}
+                        <div>
+                            {/* Suggestion badge with icon and text */}
+                            <div className="flex items-center absolute top-3 left-3 mr-5 bg-[#FFEC45] border border-[#FFEC45] text-xs font-medium rounded-full py-1 px-3 z-10 transition-transform transition-font-size duration-300 ease-in-out">
+                                <Image
+                                    className="mr-[5px]"
+                                    src="/icons/suggestion_icon.svg"
+                                    alt="suggestion icon"
+                                    width={16}
+                                    height={16}
+                                />
+                                <p>Suggested for you</p>
+                            </div>
+                            {/* Course image */}
+                            <Image className="w-full h-[160px] object-cover border border-[#EAECF0] rounded-tl-lg rounded-tr-lg" src={course.courseImage || "/images/course_img.svg"} alt="Course image" width={300} height={300} />
                         </div>
-                        {/* Course image */}
-                        <Image className="w-full h-[160px] object-cover border border-[#EAECF0] rounded-tl-lg rounded-tr-lg" src={course.courseImage || "/images/course_img.svg"} alt="Course image" width={300} height={300} />
-                    </div>
 
-                    {/* Container for course details and buy button */}
-                    <div className="flex w-full flex-col border border-[#EAECF0] border-t-0 bg-white rounded-br-lg rounded-bl-lg">
+                        {/* Container for course details and buy button */}
                         <div className="flex w-full flex-col border border-[#EAECF0] border-t-0 bg-white rounded-br-lg rounded-bl-lg">
-                            <div className="mt-4">
-                                <div className="text-base font-semibold leading-6 ml-4">
-                                    <p>{course.courseName}</p>
+                            <div className="flex w-full flex-col border border-[#EAECF0] border-t-0 bg-white rounded-br-lg rounded-bl-lg">
+                                <div className="mt-4">
+                                    <div className="text-base font-semibold leading-6 ml-4">
+                                        <p>{course.courseName}</p>
+                                    </div>
+                                    <div className="text-xs mx-4 font-normal leading-[18px] text-[#667085] flex items-center gap-1">
+                                        <p>{course.totalContentCount} Lessons</p>
+                                        <span>&#x2022;</span>
+                                        <p>3hr 14m</p>
+                                    </div>
                                 </div>
-                                <div className="text-xs mx-4 font-normal leading-[18px] text-[#667085] flex items-center gap-1">
-                                    <p>{course.totalContentCount} Lessons</p>
-                                    <span>&#x2022;</span>
-                                    <p>3hr 14m</p>
-                                </div>
-                            </div>
-                            <div className="flex justify-between mt-2 mb-4 mx-4 text-base font-semibold">
-                                <div className="flex items-end">
-                                    <h4>&#8377; {course.discountPrice}</h4>
-                                </div>
-                                <div>
-                                    <button
-                                        className="text-xs font-semibold leading-5 py-[10px] px-[14px] shadow-inner-button rounded-md bg-[#9012FF]  text-white hover:bg-[#6D0DCC] transition-colors"
-                                        onClick={() => handleTabClick(`/learn/courses/purchase/${course.courseName.toLowerCase().replace(/\s+/g, '-')}/?cId=${course.courseId}`)}
-                                    >
-                                        Buy Now
-                                    </button>
+                                <div className="flex justify-between mt-2 mb-4 mx-4 text-base font-semibold">
+                                    <div className="flex items-end">
+                                        <h4>&#8377; {course.discountPrice}</h4>
+                                    </div>
+                                    <div>
+                                        <button
+                                            className="text-xs font-semibold leading-5 py-[10px] px-[14px] shadow-inner-button rounded-md bg-[#9012FF]  text-white hover:bg-[#6D0DCC] transition-colors"
+                                            onClick={() => handleTabClick(`/learn/courses/purchase/${course.courseName.toLowerCase().replace(/\s+/g, '-')}/?cId=${course.courseId}`)}
+                                        >
+                                            Buy Now
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
+                ))
+            ) : (
+                <div className="flex flex-1 flex-col items-center justify-center m-6 gap-4">
+                    <Image src={'/images/A-B-Testing-2--Streamline-Brooklyn.svg'} alt="Image" width={140} height={140} />
+                    <h4 className="text-base text-[#101828] font-bold leading-6">No Suggestions</h4>
                 </div>
-            ))}
+            )}
         </div>
     );
 }

@@ -292,22 +292,27 @@ function InternalChat() {
       {/* Middle Section */}
       <div className="flex flex-col w-[230px] bg-white border-r border-b border-lightGrey">
         {/* <GroupName communityId={communityId} /> */}
-        <div className='border-b h-[72px]'>
-
-        </div>
+        <div className='border-b h-[72px]'></div>
         <div className="flex flex-col justify-start items-center mx-4 mt-[15px] gap-6">
           <div className="ChannelHeadingDiv w-full h-auto">
             <div className="flex flex-col gap-2">
               {channels.map((channel, index) => (
                 <button
                   key={channel.channelId}
-                  className="ChannelName flex flex-row items-center justify-between pr-3 group rounded-[7px] transition-colors hover:bg-[#F8F0FF]"
+                  className={`ChannelName flex flex-row items-center justify-between pr-3 group rounded-[7px] transition-colors ${selectedChannel?.channelId === channel.channelId
+                    ? 'bg-[#F8F0FF]'
+                    // : 'hover:bg-[#F2F4F7]'
+                    : 'hover:bg-[#F8F0FF]'
+                    }`}
                   onClick={() => {
                     setSelectedChannel({ ...channel });
-                  }}                    >
+                  }}
+                >
                   <div className="flex flex-row items-center gap-2 p-[6px]">
                     <p className='text-medium'>{channel.channelEmoji}</p>
-                    <p className="text-[14px] text-left font-semibold text-[#4B5563]">{channel.channelName}</p>
+                    <p className="text-[14px] text-left font-semibold text-[#4B5563]">
+                      {channel.channelName}
+                    </p>
                   </div>
                 </button>
               ))}
@@ -326,7 +331,6 @@ function InternalChat() {
       <div className="flex flex-1 flex-col border-r border-b border-lightGrey h-auto">
         {selectedChannel ? (
           <>
-
             <div className="flex items-center justify-between h-[72px] bg-white border-b border-lightGrey">
               {/* Pass the selected channel info to ChatHead */}
               <div className="flex flex-row items-center gap-2 p-[6px] ml-3">
