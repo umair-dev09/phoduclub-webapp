@@ -927,7 +927,6 @@ function Chatinfo() {
             <h3 className="text-lg font-semibold text-gray-600">Select a channel</h3>
           </div>
         )}
-
       </div>
 
       {/* Right Sidebar */}

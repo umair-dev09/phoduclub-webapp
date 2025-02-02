@@ -1,4 +1,4 @@
-"use client"; 
+"use client";
 
 import React, { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
@@ -6,7 +6,7 @@ import GroupName from '@/components/DashboardComponents/CommunityComponents/grou
 import ChatHead from '@/components/DashboardComponents/CommunityComponents/chatHead';
 import LoadingData from '@/components/Loading';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { onAuthStateChanged, User } from 'firebase/auth';  
+import { onAuthStateChanged, User } from 'firebase/auth';
 import { auth, db } from '@/firebase';
 import { doc, getDoc, getDocs, collection, query, orderBy, onSnapshot, updateDoc, arrayUnion, arrayRemove } from 'firebase/firestore';
 import OtherChat from '@/components/DashboardComponents/CommunityComponents/otherchat';
@@ -673,23 +673,23 @@ export default function CommunityName() {
                             <p>{channel.channelEmoji}</p>
                             <p className="text-[13px] font-semibold text-[#4B5563]">{channel.channelName}</p>
                           </div>
-                          {Array.isArray(channel?.notificationsMuted) && 
-                          channel.notificationsMuted.some(mute => mute.id === currentUserId) && (
-                            <Image 
-                              src='/icons/notification-off-02.svg' 
-                              alt="Muted" 
-                              width={16} 
-                              height={16} 
-                            />
-                        )}
+                          {Array.isArray(channel?.notificationsMuted) &&
+                            channel.notificationsMuted.some(mute => mute.id === currentUserId) && (
+                              <Image
+                                src='/icons/notification-off-02.svg'
+                                alt="Muted"
+                                width={16}
+                                height={16}
+                              />
+                            )}
                           {/* Conditionally render notification */}
-                            {hasNotification && 
-                             selectedChannel?.channelId !== channel.channelId && 
-                             !channel.notificationsMuted?.some(mute => 
-                             mute.id === currentUserId
-                             ) && (
-                            <div className="w-2 h-2 rounded-full bg-[#DE3024]"></div> // Notification Indicator
-                          )}
+                          {hasNotification &&
+                            selectedChannel?.channelId !== channel.channelId &&
+                            !channel.notificationsMuted?.some(mute =>
+                              mute.id === currentUserId
+                            ) && (
+                              <div className="w-2 h-2 rounded-full bg-[#DE3024]"></div> // Notification Indicator
+                            )}
                         </div>
                       </button>
                     );

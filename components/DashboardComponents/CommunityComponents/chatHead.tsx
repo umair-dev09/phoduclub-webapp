@@ -176,7 +176,6 @@ function ChatHead({ channelName, channelId, notificationsMuted, channelEmoji, me
                     alt="mark as read"
                   />
                   <span className='font-normal text-[#0C111D] text-sm'>Mark as read</span>
-
                 </button>
 
                 <Popover placement="right-start">
