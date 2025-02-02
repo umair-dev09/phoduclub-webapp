@@ -269,11 +269,11 @@ function AddNewUser({
                         </button>
                     </ModalHeader>
                     <ModalBody >
-                        <div className="flex flex-row w-full gap-4">
+                        <div className="flex flex-row gap-2">
                             <div className="flex flex-col gap-1 w-1/2 flex-grow">
                                 <label className="text-[#1D2939] text-sm font-medium">First Name</label>
                                 <input
-                                    className="w-full text-sm font-medium text-[#1D2939] placeholder:text-[#A1A1A1] rounded-md border border-[#D0D5DD] px-4 py-2 focus:outline-none"
+                                    className='p-[7px] text-base rounded-[5px] border border-gray-300  h-10 focus:outline focus:outline-[1.5px] focus:outline-[#D6BBFB] hover:outline hover:outline-[1.5px] hover:outline-[#D6BBFB]'
                                     type="text"
                                     placeholder="First Name"
                                     value={firstName}
@@ -284,7 +284,7 @@ function AddNewUser({
                             <div className="flex flex-col gap-1 w-1/2 flex-grow">
                                 <label className="text-[#1D2939] text-sm font-medium">Last Name</label>
                                 <input
-                                    className="w-full text-sm font-medium text-[#1D2939] placeholder:text-[#A1A1A1] rounded-md border border-[#D0D5DD] px-4 py-2 focus:outline-none"
+                                    className='p-[7px] text-base rounded-[5px] border border-gray-300  h-10 focus:outline focus:outline-[1.5px] focus:outline-[#D6BBFB] hover:outline hover:outline-[1.5px] hover:outline-[#D6BBFB]'
                                     type="text"
                                     placeholder="Last Name"
                                     value={lastName}
@@ -293,6 +293,7 @@ function AddNewUser({
                                 />
                             </div>
                         </div>
+
                         <div className="flex flex-col gap-1 w-full">
                             <label className="text-[#1D2939] text-sm font-medium">{isEditing ? "User Id" : "Create User Id"}</label>
                             <input

@@ -317,7 +317,7 @@ function QuizAttendingArea({
                         </ModalHeader>
 
                         <ModalBody>
-                            <span className="text-sm text-[#667085] font-normal pb-2">
+                            <span className="text-sm text-[#667085] font-normal">
                                 You are about to start the quiz. Make sure you are prepared, as the timer will begin as soon as you start. Once started, you cannot pause or exit without saving your progress. Good luck!
                             </span>
 
@@ -517,10 +517,12 @@ function QuizAttendingArea({
                         </ModalHeader>
 
                         <ModalBody>
-                            <span className="text-sm text-[#667085] font-normal pb-2">
-                                Are you sure you want to submit your answers? Once submitted, you won’t be able to change them. Ensure you have answered all questions before proceeding.
+                            <span className="text-sm text-[#667085] font-normal">
+                                Lorem ipsum is a dummy text widely used in the digital industry and will be used here as a preview.
                             </span>
-
+                            <span className="text-sm text-[#667085] font-normal">
+                                Lorem ipsum is a dummy text widely used in the digital industry and will be used here as a preview.
+                            </span>
                         </ModalBody>
 
                         <ModalFooter className='border-t border-lightGrey'>

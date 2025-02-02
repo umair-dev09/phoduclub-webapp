@@ -156,7 +156,7 @@ function QuizContent({ lessonHeading, isAdmin, courseId, sectionId, lessonOvervi
                                 <button className="border border-[#9012FF] bg-white text-[#1D2939] text-sm font-semibold px-6 py-[0.625rem] hover:bg-[#F5F0FF] rounded-md"
                                     onClick={() => setShowReviewSheet(true)}
                                 >Review your attempt</button>
-                                <button className="border border-[#800EE2] bg-[#800EE2] text-white text-sm font-semibold px-6 py-[0.625rem] rounded-md shadow-inner-button" onClick={onStartQuiz}>Re-Attempt</button>
+                                <button className="border border-[#800EE2] bg-[#800EE2] hover:bg-[#6D0DCC] text-white text-sm font-semibold px-6 py-[0.625rem] rounded-md shadow-inner-button" onClick={onStartQuiz}>Re-Attempt</button>
                             </div>
                         )}
                     </div>

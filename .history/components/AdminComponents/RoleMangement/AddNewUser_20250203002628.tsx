@@ -293,6 +293,7 @@ function AddNewUser({
                                 />
                             </div>
                         </div>
+
                         <div className="flex flex-col gap-1 w-full">
                             <label className="text-[#1D2939] text-sm font-medium">{isEditing ? "User Id" : "Create User Id"}</label>
                             <input
