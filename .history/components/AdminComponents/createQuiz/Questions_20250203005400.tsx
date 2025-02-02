@@ -451,7 +451,7 @@ function Questions({ questionsList, setQuestionsList, deletedQuestionIds, setDel
                                                 </div>
                                                 <input
                                                     className="font-medium pl-3 text-[#101828] text-sm placeholder:text-[#A1A1A1] rounded-md w-full placeholder:font-normal
-                                                focus:outline-none focus:ring-0 border border-solid border-[#D0D5DD] h-[40px] focus:border-[#D6BBFB]
+                                                focus:outline-none focus:ring-0 border border-solid border-[#D0D5DD] min-h-10 max-h-auto  focus:border-[#D6BBFB]
                                                 focus:shadow-[0px_0px_0px_4px_rgba(158,119,237,0.25),0px_1px_2px_0px_rgba(16,24,40,0.05)]"
                                                     placeholder={`Option ${optionKey}`}
                                                     value={question.options[optionKey]}

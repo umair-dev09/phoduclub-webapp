@@ -470,7 +470,7 @@ function Questions({ questionsList, setQuestionsList, deletedQuestionIds, setDel
                                 >
                                     <PopoverTrigger>
                                         <button
-                                            className={`min-h-10 max-h-auto px-3 items-center w-full justify-between flex flex-row rounded-md border border-solid ${isActive(index)
+                                            className={`h-auto px-3 items-center w-full justify-between flex flex-row rounded-md border border-solid ${isActive(index)
                                                 ? 'border-[#D6BBFB] shadow-[0px_0px_0px_4px_rgba(158,119,237,0.25),0px_1px_2px_0px_rgba(16,24,40,0.05)]'
                                                 : 'border-[#D0D5DD]'
                                                 } bg-[#FFFFFF] focus:outline-none`}
@@ -489,7 +489,7 @@ function Questions({ questionsList, setQuestionsList, deletedQuestionIds, setDel
                                         {(Object.keys(question.options) as Array<keyof Options>).map((optionKey) => (
                                             <div
                                                 key={optionKey}
-                                                className="flex flex-row justify-between w-full min-h-10 max-h-auto  items-center hover:bg-[#F2F4F7] px-2 cursor-pointer my-1"
+                                                className="flex flex-row justify-between w-full h-auto items-center hover:bg-[#F2F4F7] px-2 cursor-pointer"
                                                 onClick={() => handleCorrectAnswerSelect(index, optionKey)} // Pass the index
                                             >
                                                 <span className="font-normal text-[#0C111D] text-sm">

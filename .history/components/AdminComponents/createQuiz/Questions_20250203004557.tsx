@@ -489,7 +489,7 @@ function Questions({ questionsList, setQuestionsList, deletedQuestionIds, setDel
                                         {(Object.keys(question.options) as Array<keyof Options>).map((optionKey) => (
                                             <div
                                                 key={optionKey}
-                                                className="flex flex-row justify-between w-full min-h-10 max-h-auto  items-center hover:bg-[#F2F4F7] px-2 cursor-pointer my-1"
+                                                className="flex flex-row justify-between w-full min-h-10 max-h-auto  items-center hover:bg-[#F2F4F7] px-2 cursor-pointer my-2"
                                                 onClick={() => handleCorrectAnswerSelect(index, optionKey)} // Pass the index
                                             >
                                                 <span className="font-normal text-[#0C111D] text-sm">
