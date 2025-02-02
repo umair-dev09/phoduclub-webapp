@@ -616,7 +616,7 @@ interface Mention {
   isAdmin: boolean;
 }
 
-interface Props {   
+interface Props {
   highlightedText: string | React.ReactNode[];
   mentions: Mention[];
   setOpenDialogue: (open: boolean) => void;
@@ -648,8 +648,8 @@ function OtherChat({ message, currentUserId, mentions, isDeleted, highlightedTex
     const fetchUserData = async () => {
       try {
         // Reference the document in Firestore
-        const userDocRef = 
-           doc(db, "admin", senderId)
+        const userDocRef =
+          doc(db, "admin", senderId)
         const userDoc = await getDoc(userDocRef);
 
         if (userDoc.exists()) {
@@ -977,6 +977,15 @@ function OtherChat({ message, currentUserId, mentions, isDeleted, highlightedTex
 
   //   fetchAdminName();
   // }, [isDeletedByAdmin, adminThatDeletedId]);
+
+  const truncateMessage = (text: string | null, maxLength: number = 30) => {
+    if (!text) return '';
+    // Split by newlines and only take first line
+    const firstLine = text.split('\n')[0];
+    if (firstLine.length <= maxLength) return firstLine;
+    return firstLine.substring(0, maxLength) + '...';
+  };
+
   return (
     <div className="w-full h-auto flex flex-col pr-[10%] ">
       <div className="gap-2 flex items-center">
@@ -986,11 +995,11 @@ function OtherChat({ message, currentUserId, mentions, isDeleted, highlightedTex
           ) : (
             <Image className="w-[40px] h-[40px] rounded-full" src={sender?.profilePic || '/icons/profile-pic2.svg'} alt="DP" width={40} height={40} />
           )}
-        
+
         </button>
-        <button className="flex items-center justify-center" onClick={() => { setOpenDialogue(true); setId(senderId || '');}}>
+        <button className="flex items-center justify-center" onClick={() => { setOpenDialogue(true); setId(senderId || ''); }}>
           <span className={`text-[#182230] font-semibold text-sm self-center ${userLoading ? 'mt-[-4px]' : ''}`}>{sender?.name || <Skeleton width={120} height={20} />}</span> </button>
-          <span className="font-normal text-sm text-[#475467]">{sender?.role}</span>
+        <span className="font-normal text-sm text-[#475467]">{sender?.role}</span>
         <span className="font-normal text-sm text-[#475467]">{formattedTime}</span>
         {/* {showBookmark && (<Image src='/icons/bookmark1.svg' alt='Bookmark icon' width={12} height={12} />)} */}
       </div>
@@ -1035,9 +1044,9 @@ function OtherChat({ message, currentUserId, mentions, isDeleted, highlightedTex
                     <h4 className="font-semibold">You</h4>
                   ) : (
                     <h4 className="font-semibold">Marvin McKinney</h4>
-                  )}                        {/* <div className="">Admin</div> */}
+                  )}
                 </div>
-                <div className="flex flex-row gap-1 mt-[2px] ">
+                <div className="flex flex-row gap-1 mt-[2px] overflow-hidden whitespace-nowrap">
                   {replyingToMsgType === 'image' && (
                     <Image src='/icons/image.svg' alt='attachment icon' width={12} height={12} />
                   )}
@@ -1047,14 +1056,15 @@ function OtherChat({ message, currentUserId, mentions, isDeleted, highlightedTex
                   {replyingToMsgType === 'document' && (
                     <Image src='/icons/file-02.svg' alt='attachment icon' width={12} height={12} />
                   )}
-                  <div className="break-all">
+                  <div className="break-all overflow-hidden text-ellipsis">
                     {replyingToMsg !== null && replyingToMsgType !== 'document'
-                      ? replyingToMsg // Show message if it's not null and not a document
+                      ? truncateMessage(replyingToMsg)
                       : replyingToMsgType === 'document'
-                        ? replyingToFileName // Always show fileName for document
+                        ? truncateMessage(replyingToFileName)
                         : (replyingToMsgType === 'image' && 'Image') ||
                         (replyingToMsgType === 'video' && 'Video') ||
-                        'Unknown Type'}</div>
+                        'Unknown Type'}
+                  </div>
                 </div>
               </div>
               {replyingToMsgType === 'image' && (
@@ -1062,6 +1072,7 @@ function OtherChat({ message, currentUserId, mentions, isDeleted, highlightedTex
               )}
             </div>
           )}
+
           <div className="text-sm break-all w-full max-w-full ">
             {isDeleted ? (
               <div className="italic text-[#475467]">This message was deleted</div>

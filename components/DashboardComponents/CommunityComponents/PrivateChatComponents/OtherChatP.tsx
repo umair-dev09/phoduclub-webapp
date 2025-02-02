@@ -225,6 +225,15 @@ function OtherChatP({ message, currentUserId, isDeleted, highlightedText, messag
 
   //   fetchAdminName();
   // }, [isDeletedByAdmin, adminThatDeletedId]);
+
+  const truncateMessage = (text: string | null, maxLength: number = 30) => {
+    if (!text) return '';
+    // Split by newlines and only take first line
+    const firstLine = text.split('\n')[0];
+    if (firstLine.length <= maxLength) return firstLine;
+    return firstLine.substring(0, maxLength) + '...';
+  };
+
   return (
     <div className="w-full h-auto flex flex-col pr-[10%] ">
 
@@ -293,9 +302,9 @@ function OtherChatP({ message, currentUserId, isDeleted, highlightedText, messag
                     <h4 className="font-semibold">You</h4>
                   ) : (
                     <h4 className="font-semibold">Marvin McKinney</h4>
-                  )}                        {/* <div className="">Admin</div> */}
+                  )}
                 </div>
-                <div className="flex flex-row gap-1 mt-[2px] ">
+                <div className="flex flex-row gap-1 mt-[2px] overflow-hidden whitespace-nowrap">
                   {replyingToMsgType === 'image' && (
                     <Image src='/icons/image.svg' alt='attachment icon' width={12} height={12} />
                   )}
@@ -305,14 +314,15 @@ function OtherChatP({ message, currentUserId, isDeleted, highlightedText, messag
                   {replyingToMsgType === 'document' && (
                     <Image src='/icons/file-02.svg' alt='attachment icon' width={12} height={12} />
                   )}
-                  <div className="break-all">
+                  <div className="break-all overflow-hidden text-ellipsis">
                     {replyingToMsg !== null && replyingToMsgType !== 'document'
-                      ? replyingToMsg // Show message if it's not null and not a document
+                      ? truncateMessage(replyingToMsg)
                       : replyingToMsgType === 'document'
-                        ? replyingToFileName // Always show fileName for document
+                        ? truncateMessage(replyingToFileName)
                         : (replyingToMsgType === 'image' && 'Image') ||
                         (replyingToMsgType === 'video' && 'Video') ||
-                        'Unknown Type'}</div>
+                        'Unknown Type'}
+                  </div>
                 </div>
               </div>
               {replyingToMsgType === 'image' && (
