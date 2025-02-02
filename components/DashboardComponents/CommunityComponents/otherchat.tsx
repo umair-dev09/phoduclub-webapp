@@ -71,7 +71,7 @@ interface Mention {
   isAdmin: boolean;
 }
 
-interface Props {
+interface Props {   
   highlightedText: string | React.ReactNode[];
   mentions: Mention[];
   setOpenDialogue: (open: boolean) => void;

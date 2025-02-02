@@ -12,7 +12,7 @@ type BottomTextProps = {
   showReplyLayout: boolean;
   setShowReplyLayout: (value: boolean) => void;
   channelId: string | null;
-  internalChatId: string | null;
+  channelMembers: { id: string, isAdmin: boolean }[] | null;
   replyData: { message: string | null; senderId: string | null; messageType: string | null; fileUrl: string | null; fileName: string | null; chatId: string | null; } | null;
 };
 
@@ -31,9 +31,9 @@ interface Mention {
 function MessageTypeArea({
   showReplyLayout,
   replyData,
+  channelMembers,
   setShowReplyLayout,
   channelId,
-  internalChatId,
 }: BottomTextProps) {
   const [text, setText] = useState("");
   const [height, setHeight] = useState("32px");
@@ -68,7 +68,7 @@ function MessageTypeArea({
             } else {
               setReplyName("Unknown User");
             }
-          }
+          } 
         } catch (error) {
           console.error("Error fetching sender name:", error);
           setReplyName("Unknown User");
@@ -105,7 +105,13 @@ function MessageTypeArea({
           }))
           .filter((user) => user.adminId !== currentUserId); // Exclude current user
 
-        setUsers(userList);
+          const filteredMembers = userList.filter((admin) => {
+            if (!channelMembers) return false;
+            return channelMembers.some((member) => member.id === admin.adminId);
+          });
+  
+
+        setUsers(filteredMembers);
       } catch (error) {
         console.error("Error fetching users:", error);
       }
@@ -128,7 +134,7 @@ function MessageTypeArea({
 
     // Detect `@` symbol
     const caretPosition = e.target.selectionStart;
-    setCursorPosition(caretPosition);
+    setCursorPosition(caretPosition); 
 
     const words = value.slice(0, caretPosition).split(" ");
     const lastWord = words[words.length - 1];
@@ -167,7 +173,7 @@ function MessageTypeArea({
     // Store the mention with both name and uniqueId
     setMentions((prevMentions) => [
       ...prevMentions,
-      { userId: user.userId, id: user.adminId, },
+      { userId: user.userId, id: user.adminId, isAdmin: true },
     ]);
 
     // Set the cursor position after the inserted username
@@ -200,7 +206,7 @@ function MessageTypeArea({
 
       const chatsRef = collection(
         db,
-        `internalchat/${internalChatId}/channels/${channelId}/chats`
+        `internalchat/${channelId}/chats`
       );
 
       const newChatRef = doc(chatsRef);
@@ -250,7 +256,7 @@ function MessageTypeArea({
     if (!channelId) return;
 
     try {
-      const storageRef = ref(storage, `uploads/${channelId}/${internalChatId}/${file.name}`);
+      const storageRef = ref(storage, `uploads/internalchat/${channelId}/${file.name}`);
       const uploadTask = uploadBytesResumable(storageRef, file);
       setUploadTaskRef(uploadTask); // Set the upload task reference
 

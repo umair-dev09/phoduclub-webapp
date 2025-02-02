@@ -6,7 +6,7 @@ import GroupName from '@/components/DashboardComponents/CommunityComponents/grou
 import ChatHead from '@/components/DashboardComponents/CommunityComponents/chatHead';
 import LoadingData from '@/components/Loading';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { onAuthStateChanged, User } from 'firebase/auth';
+import { onAuthStateChanged, User } from 'firebase/auth';  
 import { auth, db } from '@/firebase';
 import { doc, getDoc, getDocs, collection, query, orderBy, onSnapshot, updateDoc, arrayUnion, arrayRemove } from 'firebase/firestore';
 import OtherChat from '@/components/DashboardComponents/CommunityComponents/otherchat';

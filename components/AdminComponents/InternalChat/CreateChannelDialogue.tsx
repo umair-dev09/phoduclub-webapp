@@ -11,31 +11,33 @@ import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button } from
 interface CreateChannelDialogueProps {
     open: boolean;
     onClose: () => void;
-    internalChatId: string;
+    openAddMembers: () => void;
+    setChannelId: (channelId: string) => void;
 }
 import { toast } from "react-toastify";
 
 
 
-function CreateChannelDialogue({ open, onClose, internalChatId }: CreateChannelDialogueProps) {
+function CreateChannelDialogue({ open, onClose, openAddMembers, setChannelId }: CreateChannelDialogueProps) {
     const [showCreateChannel, setShowCreateChannel] = useState(true);
     const [channelName, setChannelName] = useState("");
     const [channelEmoji, setChannelEmoji] = useState("");
     const [isEmojiPopupOpen, setIsEmojiPopupOpen] = useState(false);
+
     const handleCreateChannel = async () => {
 
         try {
-            // Add new user data to Firestore
-            const docRef = await addDoc(collection(db, `internalchat/${internalChatId}/channels`), {
+            const docRef = await addDoc(collection(db, `internalchat`), {
                 channelName,
                 channelEmoji,
             });
 
-            // Update the document with the generated adminId
             await setDoc(docRef, { channelId: docRef.id }, { merge: true });
+            setChannelId(docRef.id);
             toast.success("Channel Added Successfully!");
             setChannelName('');
             setChannelEmoji('');
+            openAddMembers();
             onClose();
 
         } catch (error) {

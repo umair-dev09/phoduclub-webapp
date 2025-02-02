@@ -160,7 +160,7 @@ function GroupIcons() {
       {openAddMembers && <AddMembersGroup open={openAddMembers} onClose={() => setOpenAddMembers(false)} communityId={communityId} />}
     </div>
 
-  );
+  );   
 }
 
 export default GroupIcons;
