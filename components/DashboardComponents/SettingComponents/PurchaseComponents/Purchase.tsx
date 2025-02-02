@@ -150,7 +150,7 @@ function Purchase() {
                                         <td className="px-6 py-4 text-center text-[#667085] font-normal leading-6 whitespace-nowrap">
                                             <div className="flex items-center justify-center">
                                                 {transaction.purchasedPrice ? (
-                                                    <div>
+                                                    <div className="flex flex-row items-center">
                                                         <span>{transaction.transactionId}</span>
                                                         <button
                                                             className={`ml-2 transition-opacity duration-200 relative ${hoveredRow === index ? 'opacity-100' : 'opacity-0'
