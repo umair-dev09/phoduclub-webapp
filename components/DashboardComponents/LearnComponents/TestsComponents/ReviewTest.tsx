@@ -243,6 +243,7 @@ function ReviewTest({ showReviewSheet, setShowReviewSheet, questionsList, answer
 
     const sortedQuestions = React.useMemo(() => {
         return [...questionsList].sort((a, b) => a.order - b.order);
+
     }, [questionsList]);
 
     const isLastQuestion = currentQuestionIndex === sortedQuestions.length - 1;
@@ -297,7 +298,9 @@ function ReviewTest({ showReviewSheet, setShowReviewSheet, questionsList, answer
                                         </div>
                                         <div className="w-auto h-auto gap-[15px] flex flex-col">
                                             <div className="flex flex-col gap-1">
-                                                {Object.entries(currentQuestion?.options || {}).map(([key, value]) => {
+                                                {Object.entries(currentQuestion?.options || {})
+                                                .sort()
+                                                .map(([key, value]) => {
                                                     const isSelectedOption = isAnswered && selectedOption === key;
                                                     const isCorrectOption = key === currentQuestion?.correctAnswer;
 
