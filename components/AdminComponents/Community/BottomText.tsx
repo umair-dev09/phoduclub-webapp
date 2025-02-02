@@ -6,7 +6,6 @@ import { auth, db, storage } from "@/firebase";
 import { addDoc, collection, doc, getDoc, getDocs, serverTimestamp, setDoc, updateDoc } from "firebase/firestore";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import MuxUploader from "@mux/mux-uploader-react";
-import MessageLoading from "@/components/MessageLoading";
 
 type BottomTextProps = {
   showReplyLayout: boolean;
@@ -593,7 +592,7 @@ function BottomText({
         </div>
 
         <button
-          className="ml-3 mr-3 mb-1"
+          className="ml-3 mr-3"
           style={{
             cursor: (text.trim() || fileUrl) && !isSending ? 'pointer' : 'not-allowed',
             opacity: isSending ? 0.5 : 1
@@ -602,7 +601,7 @@ function BottomText({
           disabled={!text.trim() && !fileUrl || isSending}
         >
           {isSending ? (
-            <MessageLoading />
+            <div className='w-6 h-6 animate-spin-loading rounded-[50%] shadow-inner-button border-2 border-lightGrey border-solid border-t-2 border-t-progressPurple'></div> // Show spinner
           ) : (
             <Image
               src={text.trim() || fileUrl ? '/icons/sendCommunity.svg' : '/icons/send.svg'}
