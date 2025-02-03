@@ -40,7 +40,7 @@ function RoleMangement() {
     const [lastName, setLastName] = useState('');
     const [userId, setUserId] = useState('');
     const [phone, setPhone] = useState('');
-    const [selectedRole, setSelectedRole] = useState('');
+    const [selectedRole, setSelectedRole] = useState('Select Role');
     const [adminIdd, setAdminIdd] = useState('');
     const [actionDialog, setActionDialog] = useState<string | null>(null);
     const [data, setData] = useState<RoleManagementInfo[]>([]);
@@ -65,14 +65,15 @@ function RoleMangement() {
     const openRemove = () => setIsRemoveOpen(true);
     const closeRemove = () => setIsRemoveOpen(false);
 
-    const handleAddNewUser = (editMode = false) => {
+    const handleAddNewUser = () => {
         setisAddUser(true);
-        setIsEditing(editMode);
+        setIsEditing(false);
         setFirstName('');
         setLastName('');
         setUserId('');
         setPhone('');
-        setSelectedRole('');
+        setAdminIdd('');
+        setSelectedRole('Select Role');
         setProfilePic('');
     };
 
@@ -114,9 +115,9 @@ function RoleMangement() {
         router.push(path);
     };
 
-    const handleEditDetails = (editMode = false, user?: RoleManagementInfo) => {
+    const handleEditDetails = ( user?: RoleManagementInfo) => {
         setisAddUser(true);
-        setIsEditing(editMode);
+        setIsEditing(true);
         if (user) {
             const nameParts = user.name.split(' ');
             setFirstName(nameParts[0] || '');
@@ -383,7 +384,7 @@ function RoleMangement() {
                                                     <PopoverContent className="flex px-0 rounded-md w-auto py-2">
                                                         <div >
                                                             <button className="flex flex-row items-center justify-start w-full py-2 gap-2 hover:bg-[#F2F4F7] pl-4 pr-9"
-                                                                onClick={() => { handleEditDetails(true, users); setPopoverOpen(null); }} >
+                                                                onClick={() => { handleEditDetails(users); setPopoverOpen(null); }} >
                                                                 <Image src="/icons/edit-02.svg" width={18} height={18} alt="edit" />
                                                                 <span className="text-sm text-[#0C111D] font-normal">Edit details</span>
                                                             </button>

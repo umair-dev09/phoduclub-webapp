@@ -15,7 +15,6 @@ interface DeleteProps {
 }
 
 function Delete({ open, onClose, name, authId }: DeleteProps) {
-    const router = useRouter();
     const [confirmedName, setConfirmedName] = useState('');
     const isFormValid = name === confirmedName;
 
@@ -24,7 +23,6 @@ function Delete({ open, onClose, name, authId }: DeleteProps) {
             await deleteDoc(doc(db, 'admin', authId));
             toast.success('User Removed Successfully!');
             onClose();
-            router.back();
         } catch (error) {
             console.error('Error removing user from Firestore:', error);
             toast.error('Failed to remove user. Please try again.');
