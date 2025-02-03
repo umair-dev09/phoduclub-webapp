@@ -92,6 +92,10 @@ export default function CommunityName() {
   const isAutoScrolling = useRef(false);
   const [notificationStatus, setNotificationStatus] = useState<{ [key: string]: boolean }>({});
   const currentUserId = auth.currentUser?.uid;
+  const aChannelId = searchParams.get('cId');
+  const aChatId = searchParams.get('mId');
+  const hasHandledAnnouncement = useRef(false);
+  const isRemovingParams = useRef(false);
   // State for selected channel info
   const [selectedChannel, setSelectedChannel] = useState<{
     channelId: string;
@@ -302,6 +306,75 @@ export default function CommunityName() {
     return () => unsubscribe();
   }, [user, communityId]);
 
+
+  const [isViewingAnnouncement, setIsViewingAnnouncement] = useState(false);
+  const announcementChatRef = useRef<string | null>(null);
+
+  // Add this new useEffect for handling announcements only
+  useEffect(() => {
+    const handleAnnouncementRedirect = async () => {
+      if (!aChannelId || !aChatId || !communityId || channelHeadings.length === 0 || hasHandledAnnouncement.current) return;
+
+      // Find the channel in channelHeadings
+      for (const heading of channelHeadings) {
+        const channel = heading.channels.find(c => c.channelId === aChannelId);
+        if (channel) {
+          // Set the selected channel
+          setSelectedChannel({ ...channel, headingId: heading.headingId });
+          
+          // Wait for chats to load
+          const checkForChat = setInterval(() => {
+            if (chats.length > 0) {
+              clearInterval(checkForChat);
+              
+              // Scroll to the specific chat after a short delay to ensure DOM is updated
+              setTimeout(() => {
+                const element = chatRefs.current[aChatId];
+                if (element) {
+                  element.scrollIntoView({
+                    behavior: 'auto',
+                    block: 'center'
+                  });
+                  
+                  // Highlight the message
+                  setHighlightedChatId(aChatId);
+                  
+                  // Remove highlight and update URL after animation
+                  setTimeout(async () => {
+                    setHighlightedChatId(null);
+                    hasHandledAnnouncement.current = true;
+                    
+                    // Set flag before removing params
+                    isRemovingParams.current = true;
+                    
+                    // Update URL to remove cId and mId parameters
+                    const newUrl = new URL(window.location.href);
+                    newUrl.searchParams.delete('cId');
+                    newUrl.searchParams.delete('mId');
+                    
+                    await router.replace(newUrl.pathname + newUrl.search, { 
+                      scroll: false 
+                    });
+                    // Reset flag after a short delay to allow for any state updates
+                    setTimeout(() => {
+                      isRemovingParams.current = false;
+                    }, 100);
+                  }, 700);
+                }
+              }, 100);
+            }
+          }, 100);
+
+          // Clear interval after 5 seconds if chat isn't found
+          setTimeout(() => clearInterval(checkForChat), 5000);
+          break;
+        }
+      }
+    };
+
+    handleAnnouncementRedirect();
+  }, [aChannelId, aChatId, communityId, channelHeadings, chats, router]);
+
   const handleChannelRequest = async () => {
     if (!selectedChannel || !user?.uid) return;
 
@@ -354,70 +427,30 @@ export default function CommunityName() {
   }, []);
 
   // Effect to handle scrolling when new messages are added
-  useEffect(() => {
-    if (bottomRef.current && chats.length > 0) {
-      const lastChat = chats[chats.length - 1];
-      const chatContainer = containerRef.current;
+ // Modify the existing chat container scroll behavior
+ useEffect(() => {
+  if (bottomRef.current && chats.length > 0) {
+    const lastChat = chats[chats.length - 1];
+    const chatContainer = containerRef.current;
 
-      if (!chatContainer) return;
+    if (!chatContainer) return;
 
-      const { scrollTop, scrollHeight, clientHeight } = chatContainer;
-      const isNearBottom = scrollHeight - scrollTop - clientHeight <= 150;
-
-      if (initialLoadRef.current) {
-        // Initial load - scroll instantly
-        scrollToBottom('auto');
-        initialLoadRef.current = false;
-      } else if (lastChat.senderId === user?.uid || isNearBottom) {
-        // User's own message or already near bottom - scroll smoothly
-        scrollToBottom('smooth');
-      }
-      //   const fetchNotifications = async () => {
-      //   if (!currentUserId) return;
-
-      //   try {
-      //     // Reference to the channel document in Firestore
-      //     const channelRef = doc(
-      //       db,
-      //       `communities/${communityId}/channelsHeading/${selectedChannel?.headingId}/channels/${selectedChannel?.channelId}`
-      //     );
-
-      //     // Get current channel data
-      //     const channelSnap = await getDoc(channelRef);
-
-      //     if (channelSnap.exists()) {
-      //       const channelData = channelSnap.data();
-      //       const channelNotification = channelData.channelNotification || [];
-
-      //       // Remove the currentUserId from the channelNotification array
-      //       const updatedChannelNotification = channelNotification.filter(
-      //         (userId: string) => userId !== currentUserId
-      //       );
-
-      //       // Update the Firestore document with the new channelNotification array
-      //       await updateDoc(channelRef, {
-      //         channelNotification: updatedChannelNotification,
-      //       });
-
-      //       // Update the local notificationStatus state to reflect this change
-      //       setNotificationStatus((prevStatus) => {
-      //         const updatedStatus = { ...prevStatus };
-      //         const notificationKey = `${selectedChannel?.headingId}-${selectedChannel?.channelId}`;
-      //         delete updatedStatus[notificationKey]; // Remove the entry for the specific channel
-      //         return updatedStatus;
-      //       });
-
-      //       console.log('Notification removed successfully');
-      //     } else {
-      //       console.error('Channel not found');
-      //     }
-      //   } catch (error) {
-      //     console.error('Error removing notification:', error);
-      //   }
-      // };
-      // fetchNotifications();
+    // Add check for URL param removal
+    if (isRemovingParams.current) {
+      return;
     }
-  }, [chats, user?.uid]);
+
+    const { scrollTop, scrollHeight, clientHeight } = chatContainer;
+    const isNearBottom = scrollHeight - scrollTop - clientHeight <= 150;
+
+    if (initialLoadRef.current) {
+      scrollToBottom('auto');
+      initialLoadRef.current = false;
+    } else if (lastChat.senderId === user?.uid || isNearBottom) {
+      scrollToBottom('smooth');
+    }
+  }
+}, [chats, user?.uid]);
 
   // Reset the flag whenever a new channel is selected
   useEffect(() => {
