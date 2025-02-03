@@ -12,6 +12,7 @@ import { toast } from "react-toastify";
 import { Checkbox } from "@nextui-org/react";
 import Select, { SingleValue } from 'react-select';
 import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button } from "@nextui-org/react";
+import { kMaxLength } from "buffer";
 
 type AddNewUserProps = {
     open: boolean;
@@ -128,6 +129,13 @@ function AddNewUser({
     type CustomState = {
         isSelected: boolean;
         isFocused: boolean;
+    };
+
+    const handlePhoneChange = (value: string) => {
+        // Limit the total length to 15 characters (including "+")
+        if (value.length <= 14) { // 14 because we're adding "+" later
+            setPhone("+" + value);
+        }
     };
 
     return (
@@ -301,6 +309,7 @@ function AddNewUser({
                                 placeholder="User Id"
                                 value={userId}
                                 disabled={isEditing}
+                                maxLength={25}
                                 onChange={(e) => setUserId(e.target.value)}
                             />
                         </div>
@@ -314,7 +323,8 @@ function AddNewUser({
                                 inputProps={{
                                     required: true,
                                     autoFocus: true,
-                                    placeholder: "+91 00000-00000"
+                                    placeholder: "+91 00000-00000",
+                                    kMaxLength: 15
                                 }}
                                 inputStyle={{
                                     width: "100%",
