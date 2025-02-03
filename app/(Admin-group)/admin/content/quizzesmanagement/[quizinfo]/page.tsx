@@ -49,6 +49,38 @@ type QuestionData = {
 
 };
 
+// Helper function to format timestamp
+const formatFirebaseTimestamp = (timestamp: any): string => {
+    if (!timestamp) return '';
+    
+    // Handle Firebase Timestamp
+    if (timestamp?.seconds) {
+      const date = new Date(timestamp.seconds * 1000);
+      return date.toLocaleString('en-US', {
+        month: 'long',
+        day: 'numeric',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+      });
+    }
+    
+    // Handle string date
+    if (typeof timestamp === 'string') {
+      const date = new Date(timestamp);
+      return date.toLocaleString('en-US', {
+        month: 'long',
+        day: 'numeric',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+      });
+    }
+  
+    return '';
+  };
+  
+
 function formatQuizTime(seconds: number | string): string {
     const minutes = Number(seconds) / 60;
 

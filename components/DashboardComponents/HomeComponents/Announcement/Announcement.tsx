@@ -89,7 +89,7 @@ function Announcement() {
                 // Display announcements if they exist
                 announcements.map((announcement, index) => (
                     <div key={index} className=' flex flex-col gap-4 pt-6 px-6 items-start w-full h-auto cursor-pointer hover:bg-[#F9FAFB]'
-                        onClick={() => router.push(`/community/${(announcement.communityName || 'default').toLowerCase().replace(/\s+/g, '-')}?communityId=${announcement.communityId}`)}>
+                        onClick={() => router.push(`/community/${(announcement.communityName || 'default').toLowerCase().replace(/\s+/g, '-')}?communityId=${announcement.communityId}&cId=${announcement.channelId}&mId=${announcement.chatId}`)}>
                         <div className=' flex flex-row gap-3 items-start'>
                             <div className='flex flex-row gap-3 items-center'>
                                 <Image className='rounded-full w-10 h-10'

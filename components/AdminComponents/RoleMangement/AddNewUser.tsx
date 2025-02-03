@@ -57,8 +57,8 @@ function AddNewUser({
     setProfilePic,
     phone,
     setPhone,
-    // selectedRole,
-    // setSelectedRole,
+    selectedRole,
+    setSelectedRole,
 }: AddNewUserProps) {
     const [loading, setLoading] = useState(false); // Loading state
     // const [selectedCourses, setSelectedCourses] = useState<string[]>([]); // Track selected courses
@@ -73,8 +73,9 @@ function AddNewUser({
     // Check if all required fields are filled
     // const isFormValid = firstName && lastName && userId && phone && selectedRole;
     const [scrollBehavior, setScrollBehavior] = useState<"inside" | "outside">("outside");
-    const isFormValid = firstName && lastName && userId && phone;
+    const isFormValid = firstName && lastName && userId && phone && selectedRole !== 'Select Role';
     // const isFormValid = firstName && lastName && userId && phone;
+    const [isRoleOpen, setIsRoleOpen] = useState(false);
 
     const handleAddUser = async () => {
         if (!isFormValid || loading) return; // Prevent submission if fields are empty or loading
@@ -276,7 +277,7 @@ function AddNewUser({
                             </button>
                         </button>
                     </ModalHeader>
-                    <ModalBody >
+                    <ModalBody className="flex flex-col gap-4">
                         <div className="flex flex-row w-full gap-4">
                             <div className="flex flex-col gap-1 w-1/2 flex-grow">
                                 <label className="text-[#1D2939] text-sm font-medium">First Name</label>

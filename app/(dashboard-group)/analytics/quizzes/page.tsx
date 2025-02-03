@@ -8,6 +8,7 @@ import Image from "next/image";
 import { Popover, PopoverContent, PopoverTrigger } from "@nextui-org/popover";
 import { collection, doc, getDoc, getDocs, query } from "firebase/firestore";
 import { auth, db } from "@/firebase";
+import LoadingData from "@/components/Loading";
 
 interface AttemptData {
     score?: number;
@@ -32,7 +33,7 @@ function formatTime(seconds: number): string {
 
 
 function QuizAnalytics() {
-
+    const [loading, setLoading] = useState(true);
     const [leaderboard, setLeaderboard] = useState<any[]>([]);
     const [currentUserRank, setCurrentUserRank] = useState<any>(null);
     const currentUserId = auth.currentUser?.uid;
@@ -73,7 +74,7 @@ function QuizAnalytics() {
 
     useEffect(() => {
         if (!currentUserId) return;
-
+        setLoading(true);
         const fetchPremiumAttempts = async () => {
             try {
                 const premiumQuizSnapshot = await getDocs(collection(db, "premiumQuizAttemptsData"));
@@ -107,6 +108,7 @@ function QuizAnalytics() {
                 }
 
                 setPremiumAttempts(filteredAttempts);
+                setLoading(false);
             } catch (error) {
                 console.error("Error fetching premium attempts:", error);
             }
@@ -196,8 +198,10 @@ function QuizAnalytics() {
                     });
                 }
             }
+            setLoading(false);
         } catch (error) {
             console.error("Error fetching leaderboard data:", error);
+            setLoading(false);
         }
     };
 
@@ -218,7 +222,9 @@ function QuizAnalytics() {
         setSelectedAttemptFilter(filter);
     };
 
-      
+      if(loading){
+        return <LoadingData />
+      }
 
     return (
         <div className="flex flex-1 flex-col py-6 mx-8">
@@ -391,7 +397,8 @@ function QuizAnalytics() {
                             <td className="flex items-center justify-center w-[12%]"><p>{leaderboard[0]?.attemptedQuestions || 0}/{leaderboard[0]?.totalQuestions || 0}</p></td>
                             <td className="flex items-center justify-center w-[12%]"><p>{leaderboard[0]?.answeredCorrect || 0}</p></td>
                             <td className="flex items-center justify-center w-[12%]"><p>{leaderboard[0]?.answeredIncorrect || 0}</p></td>
-                            <td className="flex items-center justify-center w-[12%]"><p>99%</p></td>
+                            <td className="flex items-center justify-center w-[12%]"><p>{leaderboard[0]?.attemptedQuestions > 0 ? Math.round((leaderboard[0]?.answeredCorrect / leaderboard[0]?.attemptedQuestions) * 100) : 0}%</p>
+                            </td>
                             <td className="flex items-center justify-center w-[12%]"><p className="w-20 text-end">{formatTime(leaderboard[0]?.timeTaken) || 0}</p></td>
                         </tr>
                         <tr className="flex flex-1 py-3 text-[#1D2939] border-t border-lightGrey hover:bg-[#F2F4F7]">
@@ -416,7 +423,9 @@ function QuizAnalytics() {
                             <td className="flex items-center justify-center w-[12%]"><p>{leaderboard[1]?.attemptedQuestions || 0}/{leaderboard[1]?.totalQuestions || 0}</p></td>
                             <td className="flex items-center justify-center w-[12%]"><p>{leaderboard[1]?.answeredCorrect || 0}</p></td>
                             <td className="flex items-center justify-center w-[12%]"><p>{leaderboard[1]?.answeredIncorrect || 0}</p></td>
-                            <td className="flex items-center justify-center w-[12%]"><p>99%</p></td>
+                            <td className="flex items-center justify-center w-[12%]">
+                              <p>{leaderboard[1]?.attemptedQuestions > 0 ? Math.round((leaderboard[1]?.answeredCorrect / leaderboard[1]?.attemptedQuestions) * 100) : 0}%</p>
+                            </td>
                             <td className="flex items-center justify-center w-[12%]"><p className="w-20 text-end">{formatTime(leaderboard[1]?.timeTaken) || 0}</p></td>
                         </tr>
                         <tr className="flex flex-1 py-3 text-[#1D2939] border-t border-lightGrey hover:bg-[#F2F4F7]">
@@ -441,7 +450,7 @@ function QuizAnalytics() {
                             <td className="flex items-center justify-center w-[12%]"><p>{leaderboard[2]?.attemptedQuestions || 0}/{leaderboard[2]?.totalQuestions || 0}</p></td>
                             <td className="flex items-center justify-center w-[12%]"><p>{leaderboard[2]?.answeredCorrect || 0}</p></td>
                             <td className="flex items-center justify-center w-[12%]"><p>{leaderboard[2]?.answeredIncorrect || 0}</p></td>
-                            <td className="flex items-center justify-center w-[12%]"><p>99%</p></td>
+                            <td className="flex items-center justify-center w-[12%]"><p>{leaderboard[2]?.attemptedQuestions > 0 ? Math.round((leaderboard[2]?.answeredCorrect / leaderboard[2]?.attemptedQuestions) * 100) : 0}%</p></td>
                             <td className="flex items-center justify-center w-[12%]"><p className="w-20 text-end">{formatTime(leaderboard[2]?.timeTaken) || 0}</p></td>
                         </tr>
                         {leaderboard.slice(3, 10).map((user, index) => (
@@ -467,7 +476,7 @@ function QuizAnalytics() {
                                 <td className="flex items-center justify-center w-[12%]"><p>{user.attemptedQuestions || 0}/{user.totalQuestions || 0}</p></td>
                                 <td className="flex items-center justify-center w-[12%]"><p>{user.answeredCorrect || 0}</p></td>
                                 <td className="flex items-center justify-center w-[12%]"><p>{user.answeredIncorrect || 0}</p></td>
-                                <td className="flex items-center justify-center w-[12%]"><p>99%</p></td>
+                                <td className="flex items-center justify-center w-[12%]"><p>{user.attemptedQuestions > 0 ? Math.round((user.answeredCorrect / user.attemptedQuestions) * 100) : 0}%</p></td>
                                 <td className="flex items-center justify-center w-[12%]"><p className="w-20 text-end">{formatTime(user.timeTaken) || 0}</p></td>
                             </tr>
                         ))}

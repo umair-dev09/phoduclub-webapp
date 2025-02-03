@@ -56,7 +56,7 @@ function CourseIcons() {
   const onItemClick = (courseName: string | null, courseId: string | null) => {
     if (courseName && courseId) {
       setSelectedCourseId(courseId);
-      router.push(`/admin/discussionform/${courseName.toLowerCase().replace(/\s+/g, "-")}/?cId=${courseId}`);
+      router.push(`/admin/discussionform/${courseName.toLowerCase().replace(/\s+/g, "-")}/?dId=${courseId}`);
     }
   };
 

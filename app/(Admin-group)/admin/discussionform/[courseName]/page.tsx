@@ -58,7 +58,7 @@ type CourseData = {
 function Courses() {
     const router = useRouter();
     const searchParams = useSearchParams();
-    const courseId = searchParams.get('cId');
+    const courseId = searchParams.get('dId');
     const [courseData, setCourseData] = useState<CourseData | null>(null);
     const [loading, setLoading] = useState(true); // Track loading state 
     const [sections, setSections] = useState<Sections[]>([]);

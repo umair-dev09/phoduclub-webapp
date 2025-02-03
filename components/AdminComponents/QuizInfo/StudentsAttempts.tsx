@@ -20,11 +20,15 @@ import { collection, getDoc, onSnapshot, doc as firestoreDoc, getDocs, query, wh
 import LoadingData from "@/components/Loading";
 import { Modal, ModalBody, ModalContent, ModalFooter, ModalHeader } from "@nextui-org/modal";
 import { Button } from "@nextui-org/button";
+import { format } from "date-fns";
 
 // Define types for students attempted data
 interface StudentsAttempts {
     userId: string;
-    attemptDate: string;
+    attemptDate: {
+        seconds: number;
+        nanoseconds: number;
+    };
     score: number;
     timeTaken: number;
     ranking: number;
@@ -50,14 +54,14 @@ const formatTime = (seconds: number): string => {
 
 function StudentsAttemptedQuiz({ quizId }: StudentsAttemptsProps) {
     const [data, setData] = useState<StudentsAttempts[]>([]);
-    const [StudentsAttempts, setStudentAttempts] = useState<StudentsAttempts[]>([]);
+    const [filteredAttempts, setFilteredAttempts] = useState<StudentsAttempts[]>([]);
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage] = useState(5);
     const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState('');
     const router = useRouter();
     const [isSelcetDateOpen, setIsSelectDateOpen] = useState(false);
-    const [dateFilter, setDateFilter] = useState(null);
+    const [dateFilter, setDateFilter] = useState<Date | null>(null);
     const [popoveropen, setPopoveropen] = useState<number | null>(null);
     const isTextSearch = searchTerm.trim().length > 0 && !dateFilter;
 
@@ -106,7 +110,6 @@ function StudentsAttemptedQuiz({ quizId }: StudentsAttemptsProps) {
                     attempt.ranking = index + 1;
                 });
 
-                setStudentAttempts(attemptsData);
                 setData(attemptsData);
             } catch (error) {
                 console.error('Error fetching attempts:', error);
@@ -136,7 +139,6 @@ function StudentsAttemptedQuiz({ quizId }: StudentsAttemptsProps) {
             await deleteDoc(attemptRef);
 
             // Update local state to remove the user
-            setStudentAttempts(prev => prev.filter(student => student.userId !== userId));
             setData(prev => prev.filter(student => student.userId !== userId));
 
             // Close the remove dialog
@@ -186,7 +188,7 @@ function StudentsAttemptedQuiz({ quizId }: StudentsAttemptsProps) {
     };
 
     useEffect(() => {
-        let filterStudentsAttempts = StudentsAttempts;
+        let filterStudentsAttempts = data;
 
         // Filter by search term
         if (searchTerm) {
@@ -203,7 +205,7 @@ function StudentsAttemptedQuiz({ quizId }: StudentsAttemptsProps) {
 
             if (selectedDateString) {
                 filterStudentsAttempts = filterStudentsAttempts.filter(student => {
-                    const studentAttemptsDate = new Date(student.attemptDate); // Convert StudentAttempts.date string to Date object
+                    const studentAttemptsDate = new Date(student.attemptDate.seconds * 1000); // Convert StudentAttempts.date string to Date object
                     const studentAttemptsDateString = studentAttemptsDate instanceof Date && !isNaN(studentAttemptsDate.getTime())
                         ? studentAttemptsDate.toISOString().split('T')[0]
                         : null;
@@ -215,8 +217,8 @@ function StudentsAttemptedQuiz({ quizId }: StudentsAttemptsProps) {
 
         // Sort by StudentAttemptsPublishedDate in ascending order (earliest date first)
         filterStudentsAttempts = filterStudentsAttempts.sort((a, b) => {
-            const dateA = new Date(a.attemptDate).getTime();
-            const dateB = new Date(b.attemptDate).getTime();
+            const dateA = new Date(a.attemptDate.seconds * 1000).getTime();
+            const dateB = new Date(b.attemptDate.seconds * 1000).getTime();
 
             // Handle invalid date values (e.g., when date cannot be parsed)
             if (isNaN(dateA) || isNaN(dateB)) {
@@ -249,9 +251,9 @@ function StudentsAttemptedQuiz({ quizId }: StudentsAttemptsProps) {
         }
 
         // Update state with filtered and sorted StudentAttempts
-        setData(filterStudentsAttempts);
+        setFilteredAttempts(filterStudentsAttempts);
         setCurrentPage(1); // Reset to first page when filters change
-    }, [searchTerm, StudentsAttempts, selectedDate, sortConfig]);
+    }, [searchTerm, data, selectedDate, sortConfig]);
 
     const handleSort = (key: string) => {
         if (key === 'score' || key === 'ranking' || key === 'timeTaken') {  // Added 'timeTaken'
@@ -284,7 +286,7 @@ function StudentsAttemptedQuiz({ quizId }: StudentsAttemptsProps) {
     return (
         <div className="flex flex-col w-full mt-4 gap-4">
             <div className="flex flex-row justify-between items-center">
-                <span className="text-lg font-semibold text-[#1D2939]">Students attempted ({StudentsAttempts.length || 0})</span>
+                <span className="text-lg font-semibold text-[#1D2939]">Students attempted ({data.length || 0})</span>
                 <div className="flex flex-row gap-3">
                     {/* Search Button */}
                     <button className="h-[44px] w-[250px] rounded-md bg-[#FFFFFF] border border-solid border-[#D0D5DD] flex items-center">
@@ -412,7 +414,7 @@ function StudentsAttemptedQuiz({ quizId }: StudentsAttemptsProps) {
                                                 </div>
                                             </div>
                                         </td>
-                                        <td className="px-8 py-4 text-center text-[#101828] text-sm">{students.attemptDate || '-'}</td>
+                                        <td className="px-8 py-4 text-center text-[#101828] text-sm">{students.attemptDate ? format(new Date(students.attemptDate.seconds * 1000), 'MMM d, yyyy h:mm a') : '-'}</td>
                                         <td className="px-8 py-4 text-center text-[#101828] text-sm">{students.score || 0}</td>
                                         <td className="px-8 py-4 text-center text-[#101828] text-sm">{formatTime(students.timeTaken || 0)}</td>
                                         <td className="px-8 py-4 text-center text-[#101828] text-sm">{students.ranking || 0}</td>
