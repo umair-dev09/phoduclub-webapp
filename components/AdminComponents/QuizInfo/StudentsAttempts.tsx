@@ -31,7 +31,7 @@ interface StudentsAttempts {
     };
     score: number;
     timeTaken: number;
-    ranking: number; 
+    ranking: number;
     name: string;
     profilePic: string;
     isPremium: boolean;
@@ -52,7 +52,7 @@ const formatTime = (seconds: number): string => {
     }
 };
 
-function StudentsAttemptedQuiz({quizId}: StudentsAttemptsProps) {
+function StudentsAttemptedQuiz({ quizId }: StudentsAttemptsProps) {
     const [data, setData] = useState<StudentsAttempts[]>([]);
     const [filteredAttempts, setFilteredAttempts] = useState<StudentsAttempts[]>([]);
     const [currentPage, setCurrentPage] = useState(1);
@@ -72,14 +72,14 @@ function StudentsAttemptedQuiz({quizId}: StudentsAttemptsProps) {
             try {
                 const attemptsRef = collection(db, 'quiz', quizId, 'attempts');
                 const attemptsSnapshot = await getDocs(attemptsRef);
-                
+
                 // Group all user IDs to fetch them in a single batch
                 const userIds = new Set(attemptsSnapshot.docs.map(doc => doc.data().userId));
-                
+
                 // Fetch all user data in a single batch
                 const userRefs = Array.from(userIds).map(uid => firestoreDoc(db, 'users', uid));
                 const userDocs = await getDocs(query(collection(db, 'users'), where('__name__', 'in', Array.from(userIds))));
-                
+
                 // Create a map of user data for quick lookup
                 const userDataMap = new Map();
                 userDocs.forEach(doc => {
@@ -90,7 +90,7 @@ function StudentsAttemptedQuiz({quizId}: StudentsAttemptsProps) {
                 const attemptsData = attemptsSnapshot.docs.map(doc => {
                     const attemptData = doc.data();
                     const userData = userDataMap.get(attemptData.userId) || {};
-                    
+
                     return {
                         userId: attemptData.userId,
                         attemptDate: attemptData.attemptDate,
@@ -137,10 +137,10 @@ function StudentsAttemptedQuiz({quizId}: StudentsAttemptsProps) {
         try {
             const attemptRef = firestoreDoc(db, 'quiz', quizId, 'attempts', userId);
             await deleteDoc(attemptRef);
-            
+
             // Update local state to remove the user
             setData(prev => prev.filter(student => student.userId !== userId));
-            
+
             // Close the remove dialog
             closeRemove();
         } catch (error) {
@@ -279,7 +279,7 @@ function StudentsAttemptedQuiz({quizId}: StudentsAttemptsProps) {
         setPopoveropen(index);
     };
 
-    if(loading){
+    if (loading) {
         return <LoadingData />;
     }
 
@@ -440,10 +440,10 @@ function StudentsAttemptedQuiz({quizId}: StudentsAttemptsProps) {
                                                 <PopoverContent className="w-[10.438rem]  px-0 py-1 bg-white border border-lightGrey rounded-md">
 
                                                     <button className="flex flex-row items-center justify-start w-full py-[0.625rem] px-4 gap-2 hover:bg-[#F2F4F7]"
-                                                    onClick={() => handleTabClick(`/admin/userdatabase/${students.name.toLowerCase().replace(/\s+/g, '-')}?uId=${students.userId}`)}>
+                                                        onClick={() => handleTabClick(`/admin/userdatabase/${students.name.toLowerCase().replace(/\s+/g, '-')}?uId=${students.userId}`)}>
                                                         <Image src='/icons/user-account.svg' alt="user profile" width={18} height={18} />
                                                         <p className="text-sm text-[#0C111D] font-normal">Go to Profile</p>
-                                                        </button>
+                                                    </button>
                                                     <button className=" flex flex-row items-center justify-start w-full py-[0.625rem] px-4 gap-2 hover:bg-[#FEE4E2]"
                                                         onClick={() => {
                                                             setIsRemoveOpen(true);
@@ -494,35 +494,35 @@ function StudentsAttemptedQuiz({quizId}: StudentsAttemptsProps) {
             {/* {isRemoveOpen && < Remove onClose={() => setIsRemoveOpen(false)} open={isRemoveOpen} />} */}
 
             <Modal isOpen={isRemoveOpen} onOpenChange={(isOpen) => !isOpen && setIsRemoveOpen(false)} hideCloseButton >
-            <ModalContent>
-                <>
-                    <ModalHeader className="flex flex-row justify-between items-center gap-1">
-                        <h3 className=" font-bold task-[#1D2939]">Remove user from quiz attempt?</h3>
-                        <button
-                            className="w-[32px] h-[32px] rounded-full flex items-center justify-center transition-all duration-300 ease-in-out hover:bg-[#F2F4F7]"
-                            onClick={() => setIsRemoveOpen(false)}
-                        >
-                            <Image
-                                src="/icons/cancel.svg"
-                                alt="Cancel"
-                                width={20}
-                                height={20}
-                            />
-                        </button>
-                    </ModalHeader>
-                    <ModalBody >
-                        <p className="pb-2 text-sm font-normal text-[#667085]">Lorem ipsum is placeholder text commonly used</p>
-                    </ModalBody>
-                    <ModalFooter className="border-t border-lightGrey">
-                        <Button
-                            className="py-[0.625rem] px-6 border border-solid border-[#EAECF0] bg-white font-semibold text-sm text-[#1D2939] rounded-md hover:bg-[#F2F4F7]"
-                            onClick={() => setIsRemoveOpen(false)}
-                        >Cancel
-                        </Button>
-                        <Button onClick={() => handleRemoveUser(userToRemove)} className="py-[0.625rem] px-6 text-white shadow-inner-button bg-[#BB241A] border border-[#DE3024] hover:bg-[#B0201A] font-semibold rounded-md">Remove</Button>
-                    </ModalFooter>
-                </>
-            </ModalContent>
+                <ModalContent>
+                    <>
+                        <ModalHeader className="flex flex-row justify-between items-center gap-1">
+                            <h3 className=" font-bold task-[#1D2939]">Remove user from quiz attempt?</h3>
+                            <button
+                                className="w-[32px] h-[32px] rounded-full flex items-center justify-center transition-all duration-300 ease-in-out hover:bg-[#F2F4F7]"
+                                onClick={() => setIsRemoveOpen(false)}
+                            >
+                                <Image
+                                    src="/icons/cancel.svg"
+                                    alt="Cancel"
+                                    width={20}
+                                    height={20}
+                                />
+                            </button>
+                        </ModalHeader>
+                        <ModalBody >
+                            <p className="pb-2 text-sm font-normal text-[#667085]"> Are you sure you want to remove this user from the quiz attempt? This action cannot be undone.</p>
+                        </ModalBody>
+                        <ModalFooter className="border-t border-lightGrey">
+                            <Button
+                                className="py-[0.625rem] px-6 border border-solid border-[#EAECF0] bg-white font-semibold text-sm text-[#1D2939] rounded-md hover:bg-[#F2F4F7]"
+                                onClick={() => setIsRemoveOpen(false)}
+                            >Cancel
+                            </Button>
+                            <Button onClick={() => handleRemoveUser(userToRemove)} className="py-[0.625rem] px-6 text-white shadow-inner-button bg-[#BB241A] border border-[#DE3024] hover:bg-[#B0201A] font-semibold rounded-md">Remove</Button>
+                        </ModalFooter>
+                    </>
+                </ModalContent>
             </Modal >
         </div>
     );
