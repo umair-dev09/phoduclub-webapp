@@ -765,7 +765,7 @@ function TestQuestions({ questionsList, setQuestionsList }: QuestionsProps) {
                                         >
                                             <PopoverTrigger>
                                                 <button
-                                                    className={`min-h-10 max-h-auto py-2 px-3 z-0 items-center w-full justify-between flex flex-row rounded-md border border-solid ${isActive(index)
+                                                    className={`min-h-auto max-h-auto px-3 z-0 items-center w-full justify-between flex flex-row rounded-md border border-solid ${isActive(index)
                                                         ? 'border-[#D6BBFB] shadow-[0px_0px_0px_4px_rgba(158,119,237,0.25),0px_1px_2px_0px_rgba(16,24,40,0.05)]'
                                                         : 'border-[#D0D5DD]'
                                                         } bg-[#FFFFFF] focus:outline-none`}
@@ -779,12 +779,12 @@ function TestQuestions({ questionsList, setQuestionsList }: QuestionsProps) {
                                                     </span>
                                                 </button>
                                             </PopoverTrigger>
-                                            <PopoverContent className="px-0 w-[60.813rem] rounded-md border border-solid border-[#EAECF0] bg-[#FFFFFF] flex flex-col pt-[8px] shadow-lg my-1">
+                                            <PopoverContent className="px-0 w-[60.813rem] rounded-md border border-solid border-[#EAECF0] bg-[#FFFFFF] flex flex-col pt-[8px] shadow-lg">
 
                                                 {(Object.keys(question.options) as Array<keyof Options>).map((optionKey) => (
                                                     <div
                                                         key={optionKey}
-                                                        className="flex flex-row justify-between w-full min-h-10 max-h-auto items-center hover:bg-[#F2F4F7] px-2 cursor-pointer"
+                                                        className="flex flex-row justify-between w-full h-[40px] items-center hover:bg-[#F2F4F7] px-2 cursor-pointer"
                                                         onClick={() => handleCorrectAnswerSelect(index, optionKey)} // Pass the index
                                                     >
                                                         <span className="font-normal text-[#0C111D] text-sm">

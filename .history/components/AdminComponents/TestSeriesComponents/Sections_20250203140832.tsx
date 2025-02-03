@@ -1109,8 +1109,9 @@ const Sections: React.FC<SectionsProps> = ({
                                 }
                               }}
                             >
-
-                              <span className=" px-3 py-1 transition duration-200 ease-in-out text-[#9012FF] hover:bg-[#F5F0FF] font-semibold rounded-xl text-sm">View Questions</span>
+                              <div className="px-3 py-1 transition duration-200 ease-in-out">
+                                <span className=" text-[#9012FF] font-semibold text-sm">View Questions</span>
+                              </div>
                             </button>
                           ) : (
                             !section.isParentUmbrellaTest && (
@@ -1126,7 +1127,9 @@ const Sections: React.FC<SectionsProps> = ({
                                   }
                                 }}
                               >
-                                <span className="text-[#9012FF] px-3 py-1 transition duration-200 ease-in-out font-semibold  hover:bg-[#F5F0FF]  rounded-xl text-sm">View Section</span>
+                                <div className="px-3 py-1 transition duration-200 ease-in-out">
+                                  <span className="text-[#9012FF] px-3 py-1 transition duration-200 ease-in-out font-semibold text-sm">View Section</span>
+                                </div>
                               </button>
                             )
                           )}

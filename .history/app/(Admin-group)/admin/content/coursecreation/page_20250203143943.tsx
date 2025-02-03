@@ -553,43 +553,43 @@ function Course() {
                                                         </PopoverTrigger>
                                                         <PopoverContent className={`flex flex-col items-center text-sm font-normal py-1 px-0 bg-white border border-lightGrey rounded-md ${course.status === 'paused' ? 'w-[11.563rem]' : 'w-[10.438rem]'}`}>
                                                             {/* Option 1: Edit Course */}
-
-                                                            {course.status === 'paused' && (
-                                                                <button className="flex flex-row w-full px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors"
-                                                                    onClick={() => router.push(`/admin/content/coursecreation/createcourse/?s=${course.status}&cId=${course.courseId}`)}>
-                                                                    <Image src='/icons/edit-icon.svg' alt="edit" width={18} height={18} />
-                                                                    <p>Edit</p>
-                                                                </button>
-                                                            )}
-                                                            {course.status === 'scheduled' && (
-                                                                <button className="flex flex-row w-full px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors"
-                                                                    onClick={() => router.push(`/admin/content/coursecreation/createcourse/?s=${course.status}&cId=${course.courseId}`)}>
-                                                                    <Image src='/icons/edit-icon.svg' alt="edit" width={18} height={18} />
-                                                                    <p>Edit</p>
-                                                                </button>
-                                                            )}
-                                                            {course.status === 'saved' && (
-                                                                <button className="flex flex-row w-full px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors"
-                                                                    onClick={() => router.push(`/admin/content/coursecreation/createcourse/?s=${course.status}&cId=${course.courseId}`)}>
-                                                                    <Image src='/icons/edit-icon.svg' alt="edit" width={18} height={18} />
-                                                                    <p>Edit</p>
-                                                                </button>
-                                                            )}
-                                                            {course.status === 'live' && (
-                                                                <button className="flex flex-row w-full px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors"
-                                                                    onClick={() => { closePopover(index); openPausedQuiz(course.courseId) }}>
-                                                                    <Image src='/icons/pause-dark.svg' alt="pause" width={18} height={18} />
-                                                                    <p>Pause</p>
-                                                                </button>
-                                                            )}
-                                                            {course.status === 'finished' && (
-                                                                <button className="flex flex-row w-full px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors"
-                                                                    onClick={() => { closePopover(index); openViewAnalytics; setIsViewAnalyticsOpen(true) }}>
-                                                                    <Image src='/icons/analytics-01.svg' alt="view analytics" width={18} height={18} />
-                                                                    <p>View Analytics</p>
-                                                                </button>
-                                                            )}
-
+                                                            <div>
+                                                                {course.status === 'paused' && (
+                                                                    <button className="flex flex-row w-[11.563rem] px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors"
+                                                                        onClick={() => router.push(`/admin/content/coursecreation/createcourse/?s=${course.status}&cId=${course.courseId}`)}>
+                                                                        <Image src='/icons/edit-icon.svg' alt="edit" width={18} height={18} />
+                                                                        <p>Edit</p>
+                                                                    </button>
+                                                                )}
+                                                                {course.status === 'scheduled' && (
+                                                                    <button className="flex flex-row w-[10.438rem] px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors"
+                                                                        onClick={() => router.push(`/admin/content/coursecreation/createcourse/?s=${course.status}&cId=${course.courseId}`)}>
+                                                                        <Image src='/icons/edit-icon.svg' alt="edit" width={18} height={18} />
+                                                                        <p>Edit</p>
+                                                                    </button>
+                                                                )}
+                                                                {course.status === 'saved' && (
+                                                                    <button className="flex flex-row w-[10.438rem] px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors"
+                                                                        onClick={() => router.push(`/admin/content/coursecreation/createcourse/?s=${course.status}&cId=${course.courseId}`)}>
+                                                                        <Image src='/icons/edit-icon.svg' alt="edit" width={18} height={18} />
+                                                                        <p>Edit</p>
+                                                                    </button>
+                                                                )}
+                                                                {course.status === 'live' && (
+                                                                    <button className="flex flex-row w-[10.438rem] px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors"
+                                                                        onClick={() => { closePopover(index); openPausedQuiz(course.courseId) }}>
+                                                                        <Image src='/icons/pause-dark.svg' alt="pause" width={18} height={18} />
+                                                                        <p>Pause</p>
+                                                                    </button>
+                                                                )}
+                                                                {course.status === 'finished' && (
+                                                                    <button className="flex flex-row w-[10.438rem] px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors"
+                                                                        onClick={() => { closePopover(index); openViewAnalytics; setIsViewAnalyticsOpen(true) }}>
+                                                                        <Image src='/icons/analytics-01.svg' alt="view analytics" width={18} height={18} />
+                                                                        <p>View Analytics</p>
+                                                                    </button>
+                                                                )}
+                                                            </div>
                                                             {/* Option 3: Resume Course (only if status is Paused) */}
                                                             {course.status === 'paused' && (
                                                                 <button className="flex flex-row w-full px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors"
@@ -607,43 +607,43 @@ function Course() {
                                                                 </button>
                                                             )}
                                                             {/* Option 4: Delete Course */}
-
-                                                            {course.status === 'paused' && (
-                                                                <button className="flex flex-row w-full px-4 py-[0.625rem] gap-2 hover:bg-[#FEE4E2] transition-colors"
-                                                                    onClick={() => { closePopover(index); openDeleteDialog(course.courseId, course.courseName) }}>
-                                                                    <Image src='/icons/delete.svg' alt="delete" width={18} height={18} />
-                                                                    <p className="text-[#DE3024]">Delete</p>
-                                                                </button>
-                                                            )}
-                                                            {course.status === 'scheduled' && (
-                                                                <button className="flex flex-row w-full px-4 py-[0.625rem] gap-2 hover:bg-[#FEE4E2] transition-colors"
-                                                                    onClick={() => { closePopover(index); openDeleteDialog(course.courseId, course.courseName) }}>
-                                                                    <Image src='/icons/delete.svg' alt="delete" width={18} height={18} />
-                                                                    <p className="text-[#DE3024]">Delete</p>
-                                                                </button>
-                                                            )}
-                                                            {course.status === 'finished' && (
-                                                                <button className="flex flex-row w-full px-4 py-[0.625rem] gap-2 hover:bg-[#FEE4E2] transition-colors"
-                                                                    onClick={() => { closePopover(index); openDeleteDialog(course.courseId, course.courseName) }}>
-                                                                    <Image src='/icons/delete.svg' alt="delete" width={18} height={18} />
-                                                                    <p className="text-[#DE3024]">Delete</p>
-                                                                </button>
-                                                            )}
-                                                            {course.status === 'saved' && (
-                                                                <button className="flex flex-row w-full px-4 py-[0.625rem] gap-2 hover:bg-[#FEE4E2] transition-colors"
-                                                                    onClick={() => { closePopover(index); openDeleteDialog(course.courseId, course.courseName) }}>
-                                                                    <Image src='/icons/delete.svg' alt="delete" width={18} height={18} />
-                                                                    <p className="text-[#DE3024]">Delete</p>
-                                                                </button>
-                                                            )}
-                                                            {course.status === 'live' && (
-                                                                <button className="flex flex-row w-full px-4 py-[0.625rem] gap-2 hover:bg-[#FEE4E2] transition-colors"
-                                                                    onClick={() => { closePopover(index); openEndQuiz(course.courseName) }}>
-                                                                    <Image src='/icons/license-no.svg' alt="end" width={18} height={18} />
-                                                                    <p className="text-[#DE3024]">End</p>
-                                                                </button>
-                                                            )}
-
+                                                            <div>
+                                                                {course.status === 'paused' && (
+                                                                    <button className="flex flex-row w-[11.563rem] px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors"
+                                                                        onClick={() => { closePopover(index); openDeleteDialog(course.courseId, course.courseName) }}>
+                                                                        <Image src='/icons/delete.svg' alt="delete" width={18} height={18} />
+                                                                        <p className="text-[#DE3024]">Delete</p>
+                                                                    </button>
+                                                                )}
+                                                                {course.status === 'scheduled' && (
+                                                                    <button className="flex flex-row w-[10.438rem] px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors"
+                                                                        onClick={() => { closePopover(index); openDeleteDialog(course.courseId, course.courseName) }}>
+                                                                        <Image src='/icons/delete.svg' alt="delete" width={18} height={18} />
+                                                                        <p className="text-[#DE3024]">Delete</p>
+                                                                    </button>
+                                                                )}
+                                                                {course.status === 'finished' && (
+                                                                    <button className="flex flex-row w-[10.438rem] px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors"
+                                                                        onClick={() => { closePopover(index); openDeleteDialog(course.courseId, course.courseName) }}>
+                                                                        <Image src='/icons/delete.svg' alt="delete" width={18} height={18} />
+                                                                        <p className="text-[#DE3024]">Delete</p>
+                                                                    </button>
+                                                                )}
+                                                                {course.status === 'saved' && (
+                                                                    <button className="flex flex-row w-[10.438rem] px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors"
+                                                                        onClick={() => { closePopover(index); openDeleteDialog(course.courseId, course.courseName) }}>
+                                                                        <Image src='/icons/delete.svg' alt="delete" width={18} height={18} />
+                                                                        <p className="text-[#DE3024]">Delete</p>
+                                                                    </button>
+                                                                )}
+                                                                {course.status === 'live' && (
+                                                                    <button className="flex flex-row w-[10.438rem] px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors"
+                                                                        onClick={() => { closePopover(index); openEndQuiz(course.courseName) }}>
+                                                                        <Image src='/icons/license-no.svg' alt="end" width={18} height={18} />
+                                                                        <p className="text-[#DE3024]">End</p>
+                                                                    </button>
+                                                                )}
+                                                            </div>
                                                         </PopoverContent>
                                                     </Popover>
                                                 </td>

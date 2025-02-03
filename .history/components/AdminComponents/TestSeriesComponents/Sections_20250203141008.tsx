@@ -1126,7 +1126,7 @@ const Sections: React.FC<SectionsProps> = ({
                                   }
                                 }}
                               >
-                                <span className="text-[#9012FF] px-3 py-1 transition duration-200 ease-in-out font-semibold  hover:bg-[#F5F0FF]  rounded-xl text-sm">View Section</span>
+                                <span className="text-[#9012FF] px-3 py-1 transition duration-200 ease-in-out font-semibold  hover:bg-[#F5F0FF]  rounded-md text-sm">View Section</span>
                               </button>
                             )
                           )}

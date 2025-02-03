@@ -423,7 +423,7 @@ function TestSeriesInfo() {
                                     <span className="text-sm text-[#0C111D] font-normal">Pause</span>
                                 </button>
                                 {/* Button for End */}
-                                <button className="w-auto p-3 gap-2 flex-row flex hover:bg-[#FEE4E2] hover:border-[#FEE4E2] bg-[#FFFFFF] border border-solid border-[#EAECF0] rounded-[8px] h-[40px] items-center"
+                                <button className="w-auto p-3 gap-2 flex-row flex hover:bg-[#F2F4F7] bg-[#FFFFFF] border border-solid border-[#EAECF0] rounded-[8px] h-[40px] items-center"
                                     onClick={() => { setIsEndDialogOpen(true) }}
                                 >
                                     <Image src="/icons/endquiz.svg" width={18} height={18} alt="End-icon" />
@@ -457,7 +457,7 @@ function TestSeriesInfo() {
                             <>
                                 {/* Button for Delete */}
                                 <button
-                                    className="w-auto p-3 gap-2 flex-row flex bg-[#FFFFFF] hover:bg-[#FEE4E2]  border border-solid border-[#EAECF0] rounded-[8px] h-[40px] items-center"
+                                    className="w-auto p-3 gap-2 flex-row flex bg-[#FFFFFF] hover:bg-[#F2F4F7] border border-solid border-[#EAECF0] rounded-[8px] h-[40px] items-center"
                                     onClick={() => { setTestName(testData?.testName || ''); setIsDeleteDialogOpen(true) }}
                                 >
                                     <Image src="/icons/delete.svg" width={18} height={18} alt="Delete" />
@@ -485,7 +485,7 @@ function TestSeriesInfo() {
                                             <Image src="/icons/edit-icon.svg" width={18} height={18} alt="Edit-icon" />
                                             <p className="text-sm text-[#0C111D] font-normal">Edit</p>
                                         </button>
-                                        <button className=" flex flex-row items-center justify-start w-full py-[0.625rem] px-4 gap-2 hover:bg-[#FEE4E2] "
+                                        <button className=" flex flex-row items-center justify-start w-full py-[0.625rem] px-4 gap-2 hover:bg-[#F2F4F7]"
                                             onClick={() => {
                                                 setTestName(testData?.testName || '');
                                                 setIsDeleteDialogOpen(true);
@@ -716,7 +716,7 @@ function TestSeriesInfo() {
                             </div>
                         }
                     >
-                        <StudentsPurchasedTestseries testId={testId || ''} />
+                        <StudentsPurchasedTestseries  testId={testId || ''}/>
                     </Tab>
                 </Tabs>
             </div>

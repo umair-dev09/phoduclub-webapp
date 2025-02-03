@@ -328,7 +328,7 @@ function Quizinfo() {
                                         <Image src="/icons/duplicate.svg" width={18} height={18} alt="Edit-quiz" />
                                         <span className="text-sm text-[#0C111D] font-normal">Duplicate</span>
                                     </button>
-                                    <button className=" p-3 gap-2 flex-row flex h-[40px] hover:bg-[#FEE4E2]  w-full"
+                                    <button className=" p-3 gap-2 flex-row flex h-[40px] hover:bg-[#F2F4F7] w-full"
                                         onClick={() => { openDeleteDialog(quizData?.quizName || ''); setPopoveropen(false) }}
                                     >
                                         <Image src="/icons/delete.svg" width={18} height={18} alt="delete-quiz" />

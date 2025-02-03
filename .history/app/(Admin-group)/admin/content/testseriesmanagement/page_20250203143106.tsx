@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Calendar } from "@nextui-org/calendar";
 import { today, getLocalTimeZone } from "@internationalized/date";
 import {
@@ -22,28 +22,30 @@ import End from "@/components/AdminComponents/QuizInfoDailogs/EndDailogue";
 import Paused from "@/components/AdminComponents/QuizInfoDailogs/PauseDailogue";
 import Resume from "@/components/AdminComponents/QuizInfoDailogs/ResumeDailogue";
 import ViewAnalytics from "@/components/AdminComponents/QuizInfoDailogs/ViewAnalytics";
-import StatusDisplay from "@/components/AdminComponents/StatusDisplay";
-import { collection, getDocs, query, where, doc, getDoc, onSnapshot } from 'firebase/firestore';
+import Status from '@/components/AdminComponents/StatusDisplay';
+import test from "node:test";
+import { collection, getDocs, onSnapshot } from "firebase/firestore";
 import { db } from "@/firebase";
 import LoadingData from "@/components/Loading";
-import React from "react";
 import EndDialog from "@/components/AdminComponents/QuizInfoDailogs/EndDailogue";
 import PausedDialog from "@/components/AdminComponents/QuizInfoDailogs/PauseDailogue";
 import ResumeQuiz from "@/components/AdminComponents/QuizInfoDailogs/ResumeDailogue";
 import DeleteDialog from "@/components/AdminComponents/QuizInfoDailogs/DeleteDailogue";
-interface Course {
-    courseName: string;
+import { ToastContainer } from "react-toastify";
+
+interface Test {
+    testName: string;
     price: number;
-    discountPrice: number;
-    courseId: string;
+    discountPrice: string;
+    testId: string;
     date: string; // Can be Date type if desired
-    courseImage: string;
+    testImage: string;
     status: string;
     publishDate: string;
     startDate: string;
     endDate: string;
-    studentsPurchased: number;
 }
+
 
 function formatDate(dateString: string): string {
     const date = new Date(dateString);
@@ -57,17 +59,16 @@ function formatDate(dateString: string): string {
 
 type Option = 'Saved' | 'Live' | 'Scheduled' | 'Pause' | 'Finished' | 'Canceled';
 
-
-function Course() {
-    const [data, setData] = useState<Course[]>([]);
-    const [Courses, setCourses] = useState<Course[]>([]);
+function TesstseriesInfo() {
+    const [data, setData] = useState<Test[]>([]);
+    const [tests, setTests] = useState<Test[]>([]);
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage] = useState(10);
     const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState('');
     const router = useRouter();
-    const [courseId, setCourseId] = useState('');
-    const [courseName, setCourseName] = useState('');
+    const [testId, setTestId] = useState('');
+    const [testName, setTestName] = useState('');
     const [startDate, setStartDate] = useState('');
     const [endDate, setEndDate] = useState('');
     const [liveCourseNow, setLiveCourseNow] = useState(false);
@@ -76,7 +77,6 @@ function Course() {
     const [isEndDialogOpen, setIsEndDialogOpen] = useState(false);
     const [isPausedDialogOpen, setIsPausedDialogOpen] = useState(false);
     // const [isMakeLiveNowDialogOpen, setIsMakeLiveNowDialogOpen] = useState(false);
-
     const [isResumeOpen, setIsResumeOpen] = useState(false);
     const [isViewAnalyticsOpen, setIsViewAnalyticsOpen] = useState(false);
     const [isSelcetDateOpen, setIsSelectDateOpen] = useState(false);
@@ -91,41 +91,10 @@ function Course() {
 
     const selectedCount = Object.values(checkedState).filter(Boolean).length;
     const [selectedDate, setSelectedDate] = useState<Date | null>(null); // Store selected date as Date object
+    const isInitiallySorted = useRef(false); // To track initial sorting
     const [dateFilter, setDateFilter] = useState(null);
     const [statusFilter, setStatusFilter] = useState(null);
     const isTextSearch = searchTerm.trim().length > 0 && !dateFilter && !statusFilter;
-    useEffect(() => {
-        const coursesCollection = collection(db, 'course');
-        const unsubscribe = onSnapshot(coursesCollection, async (snapshot) => {
-            // Use Promise.all to wait for all student counts to be fetched
-            const coursesData = await Promise.all(snapshot.docs.map(async (courseDoc) => {
-                const courseData = courseDoc.data();
-                const courseDocId = courseDoc.id;
-
-                // Get StudentsPurchased collection count
-                const studentsPurchasedRef = collection(db, 'course', courseDocId, 'StudentsPurchased');
-                const studentsPurchasedSnapshot = await getDocs(studentsPurchasedRef);
-                const studentsPurchasedCount = studentsPurchasedSnapshot.size;
-
-                return {
-                    courseName: courseData.courseName,
-                    courseId: courseData.courseId,
-                    date: formatDate(courseData.publishDate),
-                    status: courseData.status,
-                    courseImage: courseData.courseImage,
-                    price: courseData.price,
-                    discountPrice: courseData.discountPrice,
-                    studentsPurchased: studentsPurchasedCount
-                } as Course;
-            }));
-
-            setCourses(coursesData);
-            setData(coursesData);
-            setLoading(false);
-        });
-
-        return () => unsubscribe();
-    }, []);
 
     const [sortConfig, setSortConfig] = useState<{
         key: string;
@@ -136,12 +105,50 @@ function Course() {
     });
 
     useEffect(() => {
-        let filteredCourses = Courses;
+        const testCollection = collection(db, "testseries");
+        const unsubscribe = onSnapshot(testCollection, (snapshot) => {
+            const testseriesData = snapshot.docs.map((courseDoc) => {
+                const testData = courseDoc.data();
+                const courseId = courseDoc.id;
+
+                return {
+                    testName: testData.testName,
+                    testId: testData.testId,
+                    date: formatDate(testData.publishDate),
+                    status: testData.status,
+                    testImage: testData.testImage,
+                    price: testData.price,
+                    discountPrice: testData.discountPrice,
+                    startDate: testData.startDate,
+                    endDate: testData.endDate,
+                } as Test;
+            });
+
+            setTests(testseriesData);
+
+            // Only set the initial data once, to avoid re-sorting
+            if (!isInitiallySorted.current) {
+                isInitiallySorted.current = true;
+                const initialSortedData = [...testseriesData].sort((a, b) => {
+                    const dateA = new Date(a.date).getTime();
+                    const dateB = new Date(b.date).getTime();
+                    return dateA - dateB;
+                });
+                setData(initialSortedData);
+            }
+
+            setLoading(false);
+        });
+
+        return () => unsubscribe();
+    }, []);
+    useEffect(() => {
+        let filteredTests = [...tests]; // Use a shallow copy to avoid mutating state
 
         // Filter by search term
         if (searchTerm) {
-            filteredCourses = filteredCourses.filter(course =>
-                course.courseName.toLowerCase().includes(searchTerm.toLowerCase())
+            filteredTests = filteredTests.filter((test) =>
+                test.testName.toLowerCase().includes(searchTerm.toLowerCase())
             );
         }
 
@@ -152,73 +159,72 @@ function Course() {
             .flat();
 
         if (selectedStatuses.length > 0) {
-            filteredCourses = filteredCourses.filter(course =>
-                selectedStatuses.includes(course.status)
+            filteredTests = filteredTests.filter((test) =>
+                selectedStatuses.includes(test.status)
             );
         }
 
         // Filter by selected date
         if (selectedDate) {
-            const selectedDateString = selectedDate instanceof Date && !isNaN(selectedDate.getTime())
-                ? selectedDate.toISOString().split('T')[0] // Convert to YYYY-MM-DD
-                : null;
+            const selectedDateString =
+                selectedDate instanceof Date && !isNaN(selectedDate.getTime())
+                    ? selectedDate.toISOString().split("T")[0]
+                    : null;
 
             if (selectedDateString) {
-                filteredCourses = filteredCourses.filter(course => {
-                    const courseDate = new Date(course.date); // Convert quiz.date string to Date object
-                    const courseDateString = courseDate instanceof Date && !isNaN(courseDate.getTime())
-                        ? courseDate.toISOString().split('T')[0]
-                        : null;
+                filteredTests = filteredTests.filter((test) => {
+                    const testDate = new Date(test.date);
+                    const testDateString =
+                        testDate instanceof Date && !isNaN(testDate.getTime())
+                            ? testDate.toISOString().split("T")[0]
+                            : null;
 
-                    return courseDateString === selectedDateString; // Compare only the date part (not time)
+                    return testDateString === selectedDateString;
                 });
             }
         }
 
-        // Sort by quizPublishedDate in ascending order (earliest date first)
-        filteredCourses = filteredCourses.sort((a, b) => {
+        // Sort only if filteredTests changes or sorting criteria change
+        const sortedTests = filteredTests.sort((a, b) => {
             const dateA = new Date(a.date).getTime();
             const dateB = new Date(b.date).getTime();
-
-            // Handle invalid date values (e.g., when date cannot be parsed)
-            if (isNaN(dateA) || isNaN(dateB)) {
-                console.error("Invalid date value", a.date, b.date);
-                return 0; // If dates are invalid, no sorting will occur
-            }
-
-            return dateA - dateB; // Sort by time in ascending order (earliest first)
+            return dateA - dateB;
         });
 
+        // Only update data if the sorted list changes
+        if (JSON.stringify(sortedTests) !== JSON.stringify(data)) {
+            setData(sortedTests);
+        }
+
         if (sortConfig.key && sortConfig.direction) {
-            filteredCourses = filteredCourses.sort((a, b) => {
-                if (sortConfig.key === 'studentsPurchased') {
-                    return sortConfig.direction === 'asc'
-                        ? a.studentsPurchased - b.studentsPurchased
-                        : b.studentsPurchased - a.studentsPurchased;
-                }
-                if (sortConfig.key === 'discountPrice') {
-                    return sortConfig.direction === 'asc'
-                        ? a.discountPrice - b.discountPrice
-                        : b.discountPrice - a.discountPrice;
+            filteredTests.sort((a, b) => {
+                if (sortConfig.key === 'price') {
+                    const priceA = parseFloat(a.discountPrice.replace(/[^0-9.-]+/g, ""));
+                    const priceB = parseFloat(b.discountPrice.replace(/[^0-9.-]+/g, ""));
+                    return sortConfig.direction === 'asc' ? priceA - priceB : priceB - priceA;
                 }
                 if (sortConfig.key === 'publishedOn') {
                     const dateA = new Date(a.date).getTime();
                     const dateB = new Date(b.date).getTime();
-                    return sortConfig.direction === 'asc'
-                        ? dateA - dateB
-                        : dateB - dateA;
+                    return sortConfig.direction === 'asc' ? dateA - dateB : dateB - dateA;
                 }
                 return 0;
             });
+        } else if (!sortConfig.key) {
+            // Only apply default date sorting if no other sort is active
+            filteredTests.sort((a, b) => {
+                const dateA = new Date(a.date).getTime();
+                const dateB = new Date(b.date).getTime();
+                return dateA - dateB;
+            });
         }
 
-        // Update state with filtered and sorted quizzes
-        setData(filteredCourses);
+        setData(filteredTests);
         setCurrentPage(1); // Reset to first page when filters change
-    }, [searchTerm, checkedState, selectedDate, sortConfig]);
+    }, [searchTerm, checkedState, tests, selectedDate, sortConfig]);
 
     const handleSort = (key: string) => {
-        if (key === 'discountPrice' || key === 'publishedOn' || key === 'studentsPurchased') {
+        if (key === 'questions' || key === 'publishedOn') {
             setSortConfig((prevConfig) => {
                 // Cycle through: no sort -> asc -> desc -> no sort
                 if (prevConfig.key !== key || !prevConfig.direction) {
@@ -239,7 +245,6 @@ function Course() {
     // Function to handle tab click and navigate to a new route
     const handleTabClick = (path: string) => {
         router.push(path);
-
     };
     const [openPopovers, setOpenPopovers] = React.useState<{ [key: number]: boolean }>({});
     const togglePopover = (index: number) => {
@@ -256,11 +261,8 @@ function Course() {
         }));
     };
 
-    // State to manage each dialog's visibility
-
-
-    const openScheduledDialog = (courseId: string, startDate: string, endDate: string) => {
-        setCourseId(courseId);
+    const openScheduledDialog = (testId: string, startDate: string, endDate: string) => {
+        setTestId(testId);
         setStartDate(startDate);
         setEndDate(endDate);
         setIsScheduledDialogOpen(true);
@@ -269,39 +271,38 @@ function Course() {
     const closeScheduledDialog = () => setIsScheduledDialogOpen(false);
 
     // Handlers for DeleteQuiz dialog
-    const openDeleteDialog = (courseId: string, courseName: string) => {
+    const openDeleteDialog = (testId: string, testName: string) => {
         setIsDeleteDialogOpen(true);
-        setCourseId(courseId);
-        setCourseName(courseName);
+        setTestId(testId);
+        setTestName(testName);
     }
     const closeDeleteDialog = () => setIsDeleteDialogOpen(false);
 
     // Handlers for EndQuiz dialog
-    const openEndQuiz = (courseId: string) => {
-        setCourseId(courseId);
+    const openEndQuiz = (testId: string) => {
+        setTestId(testId);
         setIsEndDialogOpen(true);
     }
     const closeEndQuiz = () => setIsEndDialogOpen(false);
 
     // Handlers for  PausedQuiz dialog
-    const openPausedQuiz = (courseId: string) => {
-        setCourseId(courseId);
+    const openPausedQuiz = (testId: string) => {
+        setTestId(testId);
         setIsPausedDialogOpen(true);
     }
     const closePausedQuiz = () => setIsPausedDialogOpen(false);
 
     // Handlers for ResumeQuiz dialog
-    const openResumeQuiz = (courseId: string) => {
-        setCourseId(courseId);
+    const openResumeQuiz = (testId: string) => {
+        setTestId(testId);
         setIsResumeOpen(true);
     }
     const closeResumeQuiz = () => setIsResumeOpen(false);
 
+
     // Handlers for ViewAnalytics dialog
     const openViewAnalytics = () => setIsViewAnalyticsOpen(true);
     const closeViewAnalytics = () => setIsViewAnalyticsOpen(false);
-
-    const options: Option[] = ["Saved", "Live", "Scheduled", "Pause", "Finished", "Canceled"];
 
     const statusMapping: Record<Option, string[]> = {
         'Saved': ['saved'],
@@ -311,14 +312,6 @@ function Course() {
         'Finished': ['finished'],
         'Canceled': ['ended']  // Map 'Canceled' to 'ended' status
     };
-
-
-
-    // Format selected date as 'Nov 9, 2024'
-    const formattedDate = selectedDate
-        ? selectedDate.toLocaleDateString("en-US", { year: 'numeric', month: 'short', day: 'numeric' })
-        : "Select dates";
-
     const toggleCheckbox = (option: Option) => {
         setCheckedState((prevState) => ({
             ...prevState,
@@ -326,7 +319,13 @@ function Course() {
         }));
     };
 
+    const options: Option[] = ["Saved", "Live", "Scheduled", "Pause", "Finished", "Canceled"];
 
+
+    // Format selected date as 'Nov 9, 2024'
+    const formattedDate = selectedDate
+        ? selectedDate.toLocaleDateString("en-US", { year: 'numeric', month: 'short', day: 'numeric' })
+        : "Select dates";
 
     const statusColors: Record<Option, string> = {
         Saved: '#7400E0',
@@ -341,13 +340,13 @@ function Course() {
     const selectedStatuses = options.filter((option) => checkedState[option]);
 
     return (
-        <div className="flex flex-col px-[32px] w-full gap-4 overflow-y-auto overflow-x-hidden h-auto my-5">
+        <div className="flex flex-col px-[32px] w-full gap-4 overflow-y-auto h-auto py-5">
             <div className="flex flex-row justify-between items-center">
-                <span className="text-lg font-semibold text-[#1D2939]">Courses</span>
+                <span className="text-lg font-semibold text-[#1D2939]">Test series</span>
                 <div className="flex flex-row gap-3">
                     {/* Search Button */}
                     <button className="h-[44px] w-[250px] rounded-md bg-[#FFFFFF] border border-solid border-[#D0D5DD] flex items-center">
-                        <div className="flex flex-row items-center gap-2 w-full pl-2">
+                        <div className="flex flex-row items-center gap-2 pl-2">
                             <Image
                                 src="/icons/search-button.svg"
                                 width={20}
@@ -355,7 +354,7 @@ function Course() {
                                 alt="Search Button"
                             />
                             <input
-                                className="font-normal text-[#667085] text-sm placeholder:text-[#A1A1A1] rounded-md w-full px-1 py-1 focus:outline-none focus:ring-0 border-none"
+                                className="font-normal text-[#667085] text-sm placeholder:text-[#A1A1A1] rounded-md px-1 py-1 focus:outline-none focus:ring-0 border-none"
                                 placeholder="Search"
                                 type="text"
                                 value={searchTerm}
@@ -368,7 +367,7 @@ function Course() {
                     {/* Select Date Button */}
                     <Popover placement="bottom" isOpen={isSelcetDateOpen} onOpenChange={(open) => setIsSelectDateOpen(open)}>
                         <PopoverTrigger>
-                            <button className="h-[44px] w-[143px] hover:bg-[#F2F4F7] rounded-md bg-[#FFFFFF] border border-solid border-[#D0D5DD] flex items-center p-3 outline-none">
+                            <button className="h-[44px] w-[143px]  hover:bg-[#F2F4F7] rounded-md bg-[#FFFFFF] border border-solid border-[#D0D5DD] outline-none flex items-center p-3">
                                 <Image
                                     src="/icons/select-Date.svg"
                                     width={20}
@@ -388,11 +387,10 @@ function Course() {
                                     setIsSelectDateOpen(false);
                                 }}
                             />
-
                             {/* Conditionally render the "Clear" button */}
                             {selectedDate && (
                                 <button
-                                    className="min-w-[84px] min-h-[30px] rounded-md bg-[#9012FF] text-[14px] font-medium text-white mb-2"
+                                    className="min-w-[84px] min-h-[30px] rounded-md bg-[#9012FF] text-[14px] font-medium text-white mb-2 border border-[#800EE2] shadow-inner-button transition-colors duration-150 hover:bg-[#6D0DCC]"
                                     onClick={() => {
                                         setSelectedDate(null); // Clear the selected date
                                         setIsSelectDateOpen(false);
@@ -441,12 +439,12 @@ function Course() {
                         </PopoverContent>
                     </Popover>
 
-                    {/* Create Course Button */}
+                    {/* Create TestSeries Button */}
                     <button
-                        className="h-[44px] w-[135px] bg-[#8501FF] rounded-md shadow-inner-button border border-[#800EE2] flex items-center justify-center transition-colors duration-150 hover:bg-[#6D0DCC]"
-                        onClick={() => handleTabClick('/admin/content/coursecreation/createcourse')}
+                        className="h-[44px] w-auto px-6 py-2 bg-[#8501FF] rounded-md shadow-inner-button border border-solid border-[#800EE2] flex items-center justify-center transition-colors duration-150 hover:bg-[#6D0DCC]"
+                        onClick={() => handleTabClick('/admin/content/testseriesmanagement/createtestseries')}
                     >
-                        <span className="text-[#FFFFFF] font-semibold text-sm">Create Course</span>
+                        <span className="text-[#FFFFFF] font-semibold text-sm">Create Test Series</span>
                     </button>
                 </div>
             </div>
@@ -473,75 +471,58 @@ function Course() {
                         )}
                     </div>
                     <div className="h-full">
-                        <div className="border border-[#EAECF0] rounded-xl overflow-x-auto h-full">
+                        <div className="border border-[#EAECF0] rounded-xl overflow-x-auto">
                             <table className="w-full bg-white rounded-xl">
                                 <thead>
                                     <tr>
-                                        <th className="w-[28%] text-left px-8 py-4 pl-8 rounded-tl-xl text-[#667085] font-medium text-sm">
-                                            Courses
-                                        </th>
-                                        <th
-                                            className="text-center px-8 py-4 text-[#667085] font-medium text-sm cursor-pointer"
-                                            onClick={() => handleSort('discountPrice')}
-                                        >
+                                        <th className="w-[30%] text-left px-8 py-4 pl-8 rounded-tl-xl text-[#667085] font-medium text-sm">Test Series</th>
+                                        <th className="w-[20%] text-center px-8 py-4 text-[#667085] font-medium text-sm">
                                             <div
-                                                className="flex flex-row justify-center gap-1"
+                                                className="flex flex-row justify-center gap-1 cursor-pointer"
+                                                onClick={() => handleSort('price')}
                                             >
                                                 <p>Price</p>
                                                 <Image src='/icons/unfold-more-round.svg' alt="more" width={16} height={16} />
                                             </div>
                                         </th>
-                                        <th
-                                            className="text-center px-8 py-4 text-[#667085] font-medium text-sm cursor-pointer"
-                                            onClick={() => handleSort('publishedOn')}
-                                        >
-                                            <div className="flex flex-row justify-center gap-1">
+                                        <th className="w-[20%] text-center px-8 py-4 text-[#667085] font-medium text-sm">
+                                            <div
+                                                className="flex flex-row justify-center gap-1 cursor-pointer"
+                                                onClick={() => handleSort('publishedOn')}
+                                            >
                                                 <p>Published on</p>
                                                 <Image src='/icons/unfold-more-round.svg' alt="more" width={16} height={16} />
                                             </div>
                                         </th>
-                                        <th
-                                            className="w-[20%] text-center px-8 py-4 text-[#667085] font-medium text-sm cursor-pointer"
-                                            onClick={() => handleSort('studentsPurchased')}
-                                        >
-                                            <div className="flex flex-row justify-center gap-1">
-                                                <p className="whitespace-nowrap">Students Purchased</p>
-                                                <Image src='/icons/unfold-more-round.svg' alt="more" width={16} height={16} />
-                                            </div>
-                                        </th>
-                                        <th className="w-[12%] text-center px-8 py-4 rounded-tr-xl text-[#667085] font-medium text-sm">
-                                            <span className="">
-                                                Status
-                                            </span>
-                                        </th>
-                                        <th className="w-[12%] text-center px-8 py-4 rounded-tr-xl text-[#667085] font-medium text-sm">Actions</th>
+                                        <th className="flex w-[20%] ml-[15%] px-8 py-4 rounded-tr-xl text-[#667085] font-medium text-sm">Status</th>
+                                        <th className="w-[10%] text-center px-8 py-4 rounded-tr-xl text-[#667085] font-medium text-sm">Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     {data.length > 0 ? (
-                                        currentItems.map((course, index) => (
+                                        currentItems.map((test, index) => (
                                             <tr key={index} className="border-t border-solid border-[#EAECF0]">
-                                                <td onClick={() => handleTabClick(`/admin/content/coursecreation/${course.courseName.toLowerCase().replace(/\s+/g, '-')}/?cId=${course.courseId}`)}>
+                                                <td onClick={() => handleTabClick(`/admin/content/testseriesmanagement/${test.testName.toLowerCase().replace(/\s+/g, '-')}/?tId=${test.testId}`)}>
                                                     <button className="flex flex-row items-center px-8 py-3 gap-2 text-[#9012FF] underline text-sm font-medium">
-                                                        <Image className="w-10 h-10 rounded-full object-cover" src={course.courseImage || '/icons/Default_DP.svg'} alt="DP" width={40} height={40} />
-                                                        <p className="text-start whitespace-nowrap">{course.courseName || '-'}</p>
+                                                        <Image className="w-10 h-10 rounded-full object-cover" src={test.testImage || '/icons/Default_DP.svg'} alt="DP" width={40} height={40} />
+                                                        <p className="text-start whitespace-nowrap">{test.testName}</p>
                                                     </button>
                                                 </td>
-                                                <td className="px-8 py-4 text-center text-[#101828] text-sm"><span className="mr-1">&#8377;</span>{course.discountPrice || '-'}</td>
-                                                <td className="px-8 py-4 text-center text-[#101828] text-sm whitespace-nowrap">{course.date || '-'}</td>
-                                                <td className="px-8 py-4 text-center text-[#101828] text-sm">{course.studentsPurchased || 0}</td>
-                                                {/* <td className="px-8 py-4 text-center text-[#101828] text-sm">134</td> */}
-                                                <td className="px-8 py-4 text-[#101828] text-sm">
-                                                    <span className='flex items-center justify-center rounded-full'>
-                                                        <StatusDisplay status={course.status} />
+                                                <td className="px-8 py-4 text-center text-[#101828] text-sm"><span className="mr-1">&#8377;</span>{test.discountPrice}</td>
+                                                <td className="px-8 py-4 text-center text-[#101828] text-sm whitespace-nowrap">{test.date}</td>
+                                                <td className="px-8 py-4 text-center text-[#101828] text-sm">
+                                                    <span className='flex items-center justify-start ml-[20%] rounded-full'>
+                                                        <Status status={test.status} />
                                                     </span>
                                                 </td>
-                                                <td className="flex items-center justify-center px-8 py-4 text-center text-[#101828] text-sm">
+                                                <td className="text-center px-8 py-4 text-[#101828] text-sm">
                                                     <Popover placement="bottom-end" isOpen={!!openPopovers[index]}
                                                         onOpenChange={() => closePopover(index)}>
-                                                        <PopoverTrigger className="flex outline-none">
-                                                            <button className="ml-[30%]" onClick={(e) => { e.stopPropagation(); togglePopover(index) }}>
+                                                        <PopoverTrigger>
+
+                                                            <button onClick={(e) => { e.stopPropagation(); togglePopover(index) }} type='button' className="ml-[60%] outline-none cursor-pointer">
                                                                 <button className="w-[32px] h-[32px] rounded-full flex items-center justify-center transition-all duration-300 ease-in-out hover:bg-[#F2F4F7]">
+
                                                                     <Image
                                                                         src="/icons/three-dots.svg"
                                                                         width={20}
@@ -551,99 +532,100 @@ function Course() {
                                                                 </button>
                                                             </button>
                                                         </PopoverTrigger>
-                                                        <PopoverContent className={`flex flex-col items-center text-sm font-normal py-1 px-0 bg-white border border-lightGrey rounded-md ${course.status === 'paused' ? 'w-[11.563rem]' : 'w-[10.438rem]'}`}>
-                                                            {/* Option 1: Edit Course */}
-
-                                                            {course.status === 'paused' && (
-                                                                <button className="flex flex-row w-full px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors"
-                                                                    onClick={() => router.push(`/admin/content/coursecreation/createcourse/?s=${course.status}&cId=${course.courseId}`)}>
-                                                                    <Image src='/icons/edit-icon.svg' alt="edit" width={18} height={18} />
-                                                                    <p>Edit</p>
-                                                                </button>
-                                                            )}
-                                                            {course.status === 'scheduled' && (
-                                                                <button className="flex flex-row w-full px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors"
-                                                                    onClick={() => router.push(`/admin/content/coursecreation/createcourse/?s=${course.status}&cId=${course.courseId}`)}>
-                                                                    <Image src='/icons/edit-icon.svg' alt="edit" width={18} height={18} />
-                                                                    <p>Edit</p>
-                                                                </button>
-                                                            )}
-                                                            {course.status === 'saved' && (
-                                                                <button className="flex flex-row w-full px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors"
-                                                                    onClick={() => router.push(`/admin/content/coursecreation/createcourse/?s=${course.status}&cId=${course.courseId}`)}>
-                                                                    <Image src='/icons/edit-icon.svg' alt="edit" width={18} height={18} />
-                                                                    <p>Edit</p>
-                                                                </button>
-                                                            )}
-                                                            {course.status === 'live' && (
-                                                                <button className="flex flex-row w-full px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors"
-                                                                    onClick={() => { closePopover(index); openPausedQuiz(course.courseId) }}>
-                                                                    <Image src='/icons/pause-dark.svg' alt="pause" width={18} height={18} />
-                                                                    <p>Pause</p>
-                                                                </button>
-                                                            )}
-                                                            {course.status === 'finished' && (
-                                                                <button className="flex flex-row w-full px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors"
-                                                                    onClick={() => { closePopover(index); openViewAnalytics; setIsViewAnalyticsOpen(true) }}>
-                                                                    <Image src='/icons/analytics-01.svg' alt="view analytics" width={18} height={18} />
-                                                                    <p>View Analytics</p>
-                                                                </button>
-                                                            )}
-
-                                                            {/* Option 3: Resume Course (only if status is Paused) */}
-                                                            {course.status === 'paused' && (
-                                                                <button className="flex flex-row w-full px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors"
-                                                                    onClick={() => { closePopover(index); openResumeQuiz(course.courseId) }}>
-                                                                    <Image src='/icons/play-dark.svg' alt="resume" width={20} height={20} />
-                                                                    <p>Resume</p>
-                                                                </button>
-                                                            )}
-                                                            {/* Option 3: Schedule Course (only if status is Paused) */}
-                                                            {course.status === 'paused' && (
-                                                                <button className="flex flex-row w-full px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors"
-                                                                    onClick={() => { closePopover(index); openScheduledDialog(course.courseId, course.startDate, course.endDate) }}>
+                                                        <PopoverContent className={`flex flex-col items-start text-sm font-normal py-1 px-0 bg-white border border-lightGrey rounded-md ${test.status === 'paused' ? 'w-[11.563rem]' : 'w-[10.438rem]'}`}>
+                                                            {test.status === 'paused' && (
+                                                                <button className="flex flex-row w-full px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors" onClick={() => { closePopover(index); openScheduledDialog(test.testId, test.startDate, test.endDate) }}>
                                                                     <Image src='/icons/calendar-03.svg' alt="schedule" width={18} height={18} />
                                                                     <p>Schedule</p>
                                                                 </button>
-                                                            )}
-                                                            {/* Option 4: Delete Course */}
 
-                                                            {course.status === 'paused' && (
-                                                                <button className="flex flex-row w-full px-4 py-[0.625rem] gap-2 hover:bg-[#FEE4E2] transition-colors"
-                                                                    onClick={() => { closePopover(index); openDeleteDialog(course.courseId, course.courseName) }}>
-                                                                    <Image src='/icons/delete.svg' alt="delete" width={18} height={18} />
-                                                                    <p className="text-[#DE3024]">Delete</p>
-                                                                </button>
                                                             )}
-                                                            {course.status === 'scheduled' && (
-                                                                <button className="flex flex-row w-full px-4 py-[0.625rem] gap-2 hover:bg-[#FEE4E2] transition-colors"
-                                                                    onClick={() => { closePopover(index); openDeleteDialog(course.courseId, course.courseName) }}>
-                                                                    <Image src='/icons/delete.svg' alt="delete" width={18} height={18} />
-                                                                    <p className="text-[#DE3024]">Delete</p>
+                                                            {test.status === 'paused' && (
+                                                                <button className="flex flex-row w-full px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors"
+                                                                    onClick={() => { closePopover(index); openResumeQuiz(test.testId) }}>
+                                                                    <Image src='/icons/play-dark.svg' alt="resume quiz" width={20} height={20} />
+                                                                    <p>Resume</p>
                                                                 </button>
-                                                            )}
-                                                            {course.status === 'finished' && (
-                                                                <button className="flex flex-row w-full px-4 py-[0.625rem] gap-2 hover:bg-[#FEE4E2] transition-colors"
-                                                                    onClick={() => { closePopover(index); openDeleteDialog(course.courseId, course.courseName) }}>
-                                                                    <Image src='/icons/delete.svg' alt="delete" width={18} height={18} />
-                                                                    <p className="text-[#DE3024]">Delete</p>
-                                                                </button>
-                                                            )}
-                                                            {course.status === 'saved' && (
-                                                                <button className="flex flex-row w-full px-4 py-[0.625rem] gap-2 hover:bg-[#FEE4E2] transition-colors"
-                                                                    onClick={() => { closePopover(index); openDeleteDialog(course.courseId, course.courseName) }}>
-                                                                    <Image src='/icons/delete.svg' alt="delete" width={18} height={18} />
-                                                                    <p className="text-[#DE3024]">Delete</p>
-                                                                </button>
-                                                            )}
-                                                            {course.status === 'live' && (
-                                                                <button className="flex flex-row w-full px-4 py-[0.625rem] gap-2 hover:bg-[#FEE4E2] transition-colors"
-                                                                    onClick={() => { closePopover(index); openEndQuiz(course.courseName) }}>
-                                                                    <Image src='/icons/license-no.svg' alt="end" width={18} height={18} />
-                                                                    <p className="text-[#DE3024]">End</p>
-                                                                </button>
+
                                                             )}
 
+                                                            {/* Option 1 */}
+                                                            <div>
+                                                                {test.status === 'paused' && (
+                                                                    <button className="flex flex-row w-[11.563rem] px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors"
+                                                                        onClick={() => router.push(`/admin/content/testseriesmanagement/createtestseries/?s=${test.status}&tId=${test.testId}`)}>
+                                                                        <Image src='/icons/edit-icon.svg' alt="edit" width={18} height={18} />
+                                                                        <p>Edit</p>
+                                                                    </button>
+                                                                )}
+                                                                {test.status === 'scheduled' && (
+                                                                    <button className="flex flex-row w-[10.438rem] px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors"
+                                                                        onClick={() => router.push(`/admin/content/testseriesmanagement/createtestseries/?s=${test.status}&tId=${test.testId}`)}>
+                                                                        <Image src='/icons/edit-icon.svg' alt="edit" width={18} height={18} />
+                                                                        <p>Edit</p>
+                                                                    </button>
+                                                                )}
+                                                                {test.status === 'saved' && (
+                                                                    <button className="flex flex-row w-[10.438rem] px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors"
+                                                                        onClick={() => router.push(`/admin/content/testseriesmanagement/createtestseries/?s=${test.status}&tId=${test.testId}`)}>
+                                                                        <Image src='/icons/edit-icon.svg' alt="edit" width={18} height={18} />
+                                                                        <p>Edit</p>
+                                                                    </button>
+                                                                )}
+                                                                {test.status === 'live' && (
+                                                                    <button className="flex flex-row w-[10.438rem] px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors"
+                                                                        onClick={() => { closePopover(index); openPausedQuiz(test.testId) }}>
+                                                                        <Image src='/icons/pause-dark.svg' alt="pause" width={18} height={18} />
+                                                                        <p>Pause</p>
+                                                                    </button>
+                                                                )}
+                                                            </div>
+                                                            {/* Option 3: Resume test (only if status is Paused) */}
+                                                            {/* {test.status === 'Paused' && (
+                                                                <div className="flex flex-row w-full px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors"
+                                                                    onClick={openResume}>
+                                                                    <Image src='/icons/play-dark.svg' alt="resume" width={20} height={20} />
+                                                                    <p>Resume</p>
+                                                                </div>
+                                                            )} */}
+                                                            {/* Option 4: Delete test */}
+                                                            <div>
+                                                                {test.status === 'paused' && (
+                                                                    <button className="flex flex-row w-[11.563rem] px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors"
+                                                                        onClick={() => { closePopover(index); openDeleteDialog(test.testId, test.testName) }}>
+                                                                        <Image src='/icons/delete.svg' alt="delete" width={18} height={18} />
+                                                                        <p className="text-[#DE3024]">Delete</p>
+                                                                    </button>
+                                                                )}
+                                                                {test.status === 'scheduled' && (
+                                                                    <button className="flex flex-row w-[10.438rem] px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors"
+                                                                        onClick={() => { closePopover(index); openDeleteDialog(test.testId, test.testName) }}>
+                                                                        <Image src='/icons/delete.svg' alt="delete" width={18} height={18} />
+                                                                        <p className="text-[#DE3024]">Delete</p>
+                                                                    </button>
+                                                                )}
+                                                                {test.status === 'finished' && (
+                                                                    <button className="flex flex-row w-[10.438rem] px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors"
+                                                                        onClick={() => { closePopover(index); openDeleteDialog(test.testId, test.testName) }}>
+                                                                        <Image src='/icons/delete.svg' alt="delete" width={18} height={18} />
+                                                                        <p className="text-[#DE3024]">Delete</p>
+                                                                    </button>
+                                                                )}
+                                                                {test.status === 'saved' && (
+                                                                    <button className="flex flex-row w-[10.438rem] px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors"
+                                                                        onClick={() => { closePopover(index); openDeleteDialog(test.testId, test.testName) }}>
+                                                                        <Image src='/icons/delete.svg' alt="delete" width={18} height={18} />
+                                                                        <p className="text-[#DE3024]">Delete</p>
+                                                                    </button>
+                                                                )}
+                                                                {test.status === 'live' && (
+                                                                    <button className="flex flex-row w-[10.438rem] px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors"
+                                                                        onClick={() => { closePopover(index); openEndQuiz(test.testId) }}>
+                                                                        <Image src='/icons/license-no.svg' alt="end" width={18} height={18} />
+                                                                        <p className="text-[#DE3024]">End</p>
+                                                                    </button>
+                                                                )}
+                                                            </div>
                                                         </PopoverContent>
                                                     </Popover>
                                                 </td>
@@ -651,15 +633,15 @@ function Course() {
                                         ))
                                     ) : (
                                         <tr className='border-t border-lightGrey'>
-                                            <td colSpan={7} className="text-center py-8">
+                                            <td colSpan={5} className="text-center py-8">
                                                 {isTextSearch && (
                                                     <p className="text-[#667085] text-sm">
-                                                        No courses found for &quot;{searchTerm}&quot;
+                                                        No test series found for &quot;{searchTerm}&quot;
                                                     </p>
                                                 )}
                                                 {!isTextSearch && (
                                                     <p className="text-[#667085] text-sm">
-                                                        No courses found
+                                                        No test series found
                                                     </p>
                                                 )}
                                             </td>
@@ -684,13 +666,13 @@ function Course() {
                 </div>
             )}
             {/* Dialog components with conditional rendering */}
-            {isScheduledDialogOpen && <ScheduledDialog onClose={() => setIsScheduledDialogOpen(false)} fromContent="course" contentId={courseId || ''} startDate={startDate} endDate={endDate} setEndDate={setEndDate} setLiveNow={setLiveCourseNow} liveNow={liveCourseNow} setStartDate={setStartDate} />}
-            {isEndDialogOpen && <EndDialog onClose={() => setIsEndDialogOpen(false)} fromContent="course" contentId={courseId || ''} />}
-            {isPausedDialogOpen && <PausedDialog onClose={() => setIsPausedDialogOpen(false)} fromContent="course" contentId={courseId || ''} />}
-            {isResumeOpen && < ResumeQuiz open={isResumeOpen} onClose={() => setIsResumeOpen(false)} fromContent="course" contentId={courseId || ''} />}
-            {isDeleteDialogOpen && <DeleteDialog onClose={closeDeleteDialog} open={true} fromContent="course" contentId={courseId || ''} contentName={courseName} />}
-            {isViewAnalyticsOpen && < ViewAnalytics onClose={() => setIsViewAnalyticsOpen(false)} open={isViewAnalyticsOpen} />}
-
+            {isScheduledDialogOpen && <ScheduledDialog onClose={() => setIsScheduledDialogOpen(false)} fromContent="testseries" contentId={testId || ''} startDate={startDate} endDate={endDate} setEndDate={setEndDate} setLiveNow={setLiveCourseNow} liveNow={liveCourseNow} setStartDate={setStartDate} />}
+            {isEndDialogOpen && <EndDialog onClose={() => setIsEndDialogOpen(false)} fromContent="testseries" contentId={testId || ''} />}
+            {isPausedDialogOpen && <PausedDialog onClose={() => setIsPausedDialogOpen(false)} fromContent="testseries" contentId={testId || ''} />}
+            {isResumeOpen && < ResumeQuiz open={isResumeOpen} onClose={() => setIsResumeOpen(false)} fromContent="testseries" contentId={testId || ''} />}
+            {isDeleteDialogOpen && <DeleteDialog onClose={closeDeleteDialog} open={true} fromContent="testseries" contentId={testId || ''} contentName={testName} />}
+            {isViewAnalyticsOpen && < ViewAnalytics onClose={closeViewAnalytics} open={true} />}
+            <ToastContainer />
         </div>
     );
 }
@@ -813,4 +795,4 @@ function PaginationSection({
     );
 }
 
-export default Course;
+export default TesstseriesInfo;

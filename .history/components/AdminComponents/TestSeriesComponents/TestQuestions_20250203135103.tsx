@@ -765,7 +765,7 @@ function TestQuestions({ questionsList, setQuestionsList }: QuestionsProps) {
                                         >
                                             <PopoverTrigger>
                                                 <button
-                                                    className={`min-h-10 max-h-auto py-2 px-3 z-0 items-center w-full justify-between flex flex-row rounded-md border border-solid ${isActive(index)
+                                                    className={`min-h-10 max-h-auto my-1 px-3 z-0 items-center w-full justify-between flex flex-row rounded-md border border-solid ${isActive(index)
                                                         ? 'border-[#D6BBFB] shadow-[0px_0px_0px_4px_rgba(158,119,237,0.25),0px_1px_2px_0px_rgba(16,24,40,0.05)]'
                                                         : 'border-[#D0D5DD]'
                                                         } bg-[#FFFFFF] focus:outline-none`}

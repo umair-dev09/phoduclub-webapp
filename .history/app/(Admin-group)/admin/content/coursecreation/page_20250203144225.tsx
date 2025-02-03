@@ -609,35 +609,35 @@ function Course() {
                                                             {/* Option 4: Delete Course */}
 
                                                             {course.status === 'paused' && (
-                                                                <button className="flex flex-row w-full px-4 py-[0.625rem] gap-2 hover:bg-[#FEE4E2] transition-colors"
+                                                                <button className="flex flex-row w-full px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors"
                                                                     onClick={() => { closePopover(index); openDeleteDialog(course.courseId, course.courseName) }}>
                                                                     <Image src='/icons/delete.svg' alt="delete" width={18} height={18} />
                                                                     <p className="text-[#DE3024]">Delete</p>
                                                                 </button>
                                                             )}
                                                             {course.status === 'scheduled' && (
-                                                                <button className="flex flex-row w-full px-4 py-[0.625rem] gap-2 hover:bg-[#FEE4E2] transition-colors"
+                                                                <button className="flex flex-row w-full px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors"
                                                                     onClick={() => { closePopover(index); openDeleteDialog(course.courseId, course.courseName) }}>
                                                                     <Image src='/icons/delete.svg' alt="delete" width={18} height={18} />
                                                                     <p className="text-[#DE3024]">Delete</p>
                                                                 </button>
                                                             )}
                                                             {course.status === 'finished' && (
-                                                                <button className="flex flex-row w-full px-4 py-[0.625rem] gap-2 hover:bg-[#FEE4E2] transition-colors"
+                                                                <button className="flex flex-row w-full px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors"
                                                                     onClick={() => { closePopover(index); openDeleteDialog(course.courseId, course.courseName) }}>
                                                                     <Image src='/icons/delete.svg' alt="delete" width={18} height={18} />
                                                                     <p className="text-[#DE3024]">Delete</p>
                                                                 </button>
                                                             )}
                                                             {course.status === 'saved' && (
-                                                                <button className="flex flex-row w-full px-4 py-[0.625rem] gap-2 hover:bg-[#FEE4E2] transition-colors"
+                                                                <button className="flex flex-row w-full px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors"
                                                                     onClick={() => { closePopover(index); openDeleteDialog(course.courseId, course.courseName) }}>
                                                                     <Image src='/icons/delete.svg' alt="delete" width={18} height={18} />
                                                                     <p className="text-[#DE3024]">Delete</p>
                                                                 </button>
                                                             )}
                                                             {course.status === 'live' && (
-                                                                <button className="flex flex-row w-full px-4 py-[0.625rem] gap-2 hover:bg-[#FEE4E2] transition-colors"
+                                                                <button className="flex flex-row w-full px-4 py-[0.625rem] gap-2 hover:bg-[#F2F4F7] transition-colors"
                                                                     onClick={() => { closePopover(index); openEndQuiz(course.courseName) }}>
                                                                     <Image src='/icons/license-no.svg' alt="end" width={18} height={18} />
                                                                     <p className="text-[#DE3024]">End</p>

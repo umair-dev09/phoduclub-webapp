@@ -270,7 +270,7 @@ function Quizinfo() {
                                     <span className="text-sm text-[#0C111D] font-normal">Pause Quiz</span>
                                 </button>
 
-                                <button className="w-auto p-3 gap-2 flex-row flex bg-[#FFFFFF]  border border-solid border-[#EAECF0] rounded-[8px] h-[40px] items-center  hover:bg-[#FEE4E2] hover:border-[#FEE4E2]"
+                                <button className="w-auto p-3 gap-2 flex-row flex bg-[#FFFFFF]  border border-solid border-[#EAECF0] rounded-[8px] h-[40px] items-center  hover:bg-[#F2F4F7]"
                                     onClick={openEndQuiz}>
                                     <Image src="/icons/endquiz.svg" width={18} height={18} alt="End-quiz" />
                                     <span className="text-sm text-[#DE3024]  font-normal">End Quiz</span>
@@ -328,7 +328,7 @@ function Quizinfo() {
                                         <Image src="/icons/duplicate.svg" width={18} height={18} alt="Edit-quiz" />
                                         <span className="text-sm text-[#0C111D] font-normal">Duplicate</span>
                                     </button>
-                                    <button className=" p-3 gap-2 flex-row flex h-[40px] hover:bg-[#FEE4E2]  w-full"
+                                    <button className=" p-3 gap-2 flex-row flex h-[40px] hover:bg-[#F2F4F7] w-full"
                                         onClick={() => { openDeleteDialog(quizData?.quizName || ''); setPopoveropen(false) }}
                                     >
                                         <Image src="/icons/delete.svg" width={18} height={18} alt="delete-quiz" />

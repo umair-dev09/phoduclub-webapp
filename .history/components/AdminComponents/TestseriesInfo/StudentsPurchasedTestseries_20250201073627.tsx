@@ -43,12 +43,12 @@ function formatDateString(dateStr: string): string {
     const date = new Date(dateStr);
     return date.toLocaleDateString("en-US", {
         month: 'short',
-        day: 'numeric',
+        day: 'numeric', 
         year: 'numeric'
     });
 }
 
-function StudentsPurchasedTestseries({ testId }: StudentsAttemptsProps) {
+function StudentsPurchasedTestseries({testId}: StudentsAttemptsProps) {
     const [data, setData] = useState<StudentAttempts[]>([]);
     const [studentAttempts, setStudentAttempts] = useState<StudentAttempts[]>([]);
     const [currentPage, setCurrentPage] = useState(1);
@@ -64,108 +64,108 @@ function StudentsPurchasedTestseries({ testId }: StudentsAttemptsProps) {
     const [popoveropen2, setPopoveropen2] = useState<number | null>(null);
     const [popoveropen1, setPopoveropen1] = useState(false);
     // Fetch StudentAttempts when component mounts
-    // Fetch StudentAttempts when component mounts
-    useEffect(() => {
-        const loadStudentsAttempts = async () => {
-            setLoading(true);
-            try {
-                const attemptsRef = collection(db, 'testseries', testId, 'StudentsPurchased');
-                const attemptsSnapshot = await getDocs(attemptsRef);
+   // Fetch StudentAttempts when component mounts
+   useEffect(() => {
+    const loadStudentsAttempts = async () => {
+        setLoading(true);
+        try {
+            const attemptsRef = collection(db, 'testseries', testId, 'StudentsPurchased');
+            const attemptsSnapshot = await getDocs(attemptsRef);
+            
+            // Group all user IDs to fetch them in a single batch
+            const userIds = new Set(attemptsSnapshot.docs.map(doc => doc.data().userId));
+            
+            // Fetch all user data in a single batch
+            const userDocs = await getDocs(query(collection(db, 'users'), where('__name__', 'in', Array.from(userIds))));
+            
+            // Create a map of user data for quick lookup
+            const userDataMap = new Map();
+            userDocs.forEach(doc => {
+                userDataMap.set(doc.id, doc.data());
+            });
 
-                // Group all user IDs to fetch them in a single batch
-                const userIds = new Set(attemptsSnapshot.docs.map(doc => doc.data().userId));
+            // Initialize a map to store user progress
+            const userProgressMap = new Map();
 
-                // Fetch all user data in a single batch
-                const userDocs = await getDocs(query(collection(db, 'users'), where('__name__', 'in', Array.from(userIds))));
+            // Calculate progress for each user
+            for (const doc of attemptsSnapshot.docs) {
+                const userId = doc.data().userId;
+                let sectionsWithQuestionsCount = 0;
+                let sectionsWithAttemptsCount = 0;
 
-                // Create a map of user data for quick lookup
-                const userDataMap = new Map();
-                userDocs.forEach(doc => {
-                    userDataMap.set(doc.id, doc.data());
-                });
+                // Function to count sections and attempts
+                const countSectionsWithQuestionsAndAttempts = async (path: string) => {
+                    const sectionCollection = collection(db, path);
+                    const sectionSnapshot = await getDocs(sectionCollection);
 
-                // Initialize a map to store user progress
-                const userProgressMap = new Map();
+                    for (const sectionDoc of sectionSnapshot.docs) {
+                        const sectionData = sectionDoc.data();
 
-                // Calculate progress for each user
-                for (const doc of attemptsSnapshot.docs) {
-                    const userId = doc.data().userId;
-                    let sectionsWithQuestionsCount = 0;
-                    let sectionsWithAttemptsCount = 0;
+                        // Count sections with questions or umbrella tests
+                        if ((sectionData.hasQuestions === true && !sectionData.isParentUmbrellaTest) || 
+                            (sectionData.isUmbrellaTest === true && !sectionData.isParentUmbrellaTest)) {
+                            sectionsWithQuestionsCount += 1;
 
-                    // Function to count sections and attempts
-                    const countSectionsWithQuestionsAndAttempts = async (path: string) => {
-                        const sectionCollection = collection(db, path);
-                        const sectionSnapshot = await getDocs(sectionCollection);
+                            // Check attempts for this user
+                            const attemptsCollection = collection(sectionDoc.ref, 'attempts');
+                            const attemptsSnapshot = await getDocs(query(
+                                attemptsCollection,
+                                where('userId', '==', userId)
+                            ));
 
-                        for (const sectionDoc of sectionSnapshot.docs) {
-                            const sectionData = sectionDoc.data();
-
-                            // Count sections with questions or umbrella tests
-                            if ((sectionData.hasQuestions === true && !sectionData.isParentUmbrellaTest) ||
-                                (sectionData.isUmbrellaTest === true && !sectionData.isParentUmbrellaTest)) {
-                                sectionsWithQuestionsCount += 1;
-
-                                // Check attempts for this user
-                                const attemptsCollection = collection(sectionDoc.ref, 'attempts');
-                                const attemptsSnapshot = await getDocs(query(
-                                    attemptsCollection,
-                                    where('userId', '==', userId)
-                                ));
-
-                                if (attemptsSnapshot.docs.length > 0) {
-                                    sectionsWithAttemptsCount += 1;
-                                }
+                            if (attemptsSnapshot.docs.length > 0) {
+                                sectionsWithAttemptsCount += 1;
                             }
-
-                            // Check subsections
-                            await countSectionsWithQuestionsAndAttempts(`${path}/${sectionDoc.id}/sections`);
                         }
-                    };
 
-                    // Calculate progress for this user
-                    await countSectionsWithQuestionsAndAttempts(`testseries/${testId}/sections`);
-                    const progress = sectionsWithQuestionsCount > 0
-                        ? Math.round((sectionsWithAttemptsCount / sectionsWithQuestionsCount) * 100)
-                        : 0;
+                        // Check subsections
+                        await countSectionsWithQuestionsAndAttempts(`${path}/${sectionDoc.id}/sections`);
+                    }
+                };
 
-                    userProgressMap.set(userId, progress);
-                }
+                // Calculate progress for this user
+                await countSectionsWithQuestionsAndAttempts(`testseries/${testId}/sections`);
+                const progress = sectionsWithQuestionsCount > 0
+                    ? Math.round((sectionsWithAttemptsCount / sectionsWithQuestionsCount) * 100)
+                    : 0;
 
-                // Process attempts data with user info
-                const attemptsData = attemptsSnapshot.docs.map(doc => {
-                    const attemptData = doc.data();
-                    const userData = userDataMap.get(attemptData.userId) || {};
-
-                    return {
-                        userId: attemptData.userId,
-                        name: userData.name || 'Unknown',
-                        profilePic: userData.profilePic || '',
-                        isPremium: userData.isPremium || false,
-                        displayUserId: userData.userId || '',
-                        enrollmentDate: attemptData.enrollmentDate || '',
-                        enrollmentType: attemptData.enrollmentType || '',
-                        studentProgress: userProgressMap.get(attemptData.userId) || 0
-                    };
-                });
-
-                // // Sort by score and assign rankings
-                // attemptsData.sort((a, b) => b.score - a.score);
-                // attemptsData.forEach((attempt, index) => {
-                //     attempt.ranking = index + 1;
-                // });
-
-                setStudentAttempts(attemptsData);
-                setData(attemptsData);
-            } catch (error) {
-                console.error('Error fetching attempts:', error);
-            } finally {
-                setLoading(false);
+                userProgressMap.set(userId, progress);
             }
-        };
 
-        loadStudentsAttempts();
-    }, [testId]);
+            // Process attempts data with user info
+            const attemptsData = attemptsSnapshot.docs.map(doc => {
+                const attemptData = doc.data();
+                const userData = userDataMap.get(attemptData.userId) || {};
+                
+                return {
+                    userId: attemptData.userId,
+                    name: userData.name || 'Unknown',
+                    profilePic: userData.profilePic || '',
+                    isPremium: userData.isPremium || false,
+                    displayUserId: userData.userId || '',
+                    enrollmentDate: attemptData.enrollmentDate || '',
+                    enrollmentType: attemptData.enrollmentType || '',
+                    studentProgress: userProgressMap.get(attemptData.userId) || 0
+                };
+            });
+
+            // // Sort by score and assign rankings
+            // attemptsData.sort((a, b) => b.score - a.score);
+            // attemptsData.forEach((attempt, index) => {
+            //     attempt.ranking = index + 1;
+            // });
+
+            setStudentAttempts(attemptsData);
+            setData(attemptsData);
+        } catch (error) {
+            console.error('Error fetching attempts:', error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    loadStudentsAttempts();
+}, [testId]);
 
     const lastItemIndex = currentPage * itemsPerPage;
     const firstItemIndex = lastItemIndex - itemsPerPage;
@@ -197,75 +197,75 @@ function StudentsPurchasedTestseries({ testId }: StudentsAttemptsProps) {
         direction: null
     });
 
-
-    const handleRemoveUser = async (userId: string) => {
-        try {
-            const attemptRef = doc(db, 'testseries', testId, 'StudentsPurchased', userId);
-            const transactionRef = doc(db, 'users', userId, 'transactions', testId);
-            await deleteDoc(attemptRef);
-            await deleteDoc(transactionRef);
-            // Update local state to remove the user
-            setStudentAttempts(prev => prev.filter(student => student.userId !== userId));
-            setData(prev => prev.filter(student => student.userId !== userId));
-
-            // Close the remove dialog
-            closeRemove();
-        } catch (error) {
-            console.error('Error removing user attempt:', error);
-        }
-    };
-
-    const handleAddUser = async (userId: string) => {
-        try {
-            // Query the users collection for the document with matching userId
-            const usersRef = collection(db, 'users');
-            const q = query(usersRef, where('userId', '==', userId));
-            const querySnapshot = await getDocs(q);
-
-            if (querySnapshot.empty) {
-                console.error('User not found');
-                return;
+    
+        const handleRemoveUser = async (userId: string) => {
+            try {
+                const attemptRef = doc(db, 'testseries', testId, 'StudentsPurchased', userId);
+                const transactionRef = doc(db, 'users', userId, 'transactions', testId);
+                await deleteDoc(attemptRef);
+                await deleteDoc(transactionRef);
+                // Update local state to remove the user
+                setStudentAttempts(prev => prev.filter(student => student.userId !== userId));
+                setData(prev => prev.filter(student => student.userId !== userId));
+                
+                // Close the remove dialog
+                closeRemove();
+            } catch (error) {
+                console.error('Error removing user attempt:', error);
             }
+        };
 
-            // Get the first matching document
-            const userDoc = querySnapshot.docs[0];
-            const userData = userDoc.data();
-            // const uniqueId = userData.uniqueId;
+        const handleAddUser = async (userId: string) => {
+            try {
+                // Query the users collection for the document with matching userId
+                const usersRef = collection(db, 'users');
+                const q = query(usersRef, where('userId', '==', userId));
+                const querySnapshot = await getDocs(q);
 
-            // Add the user to the StudentsPurchased subcollection
-            const studentRef = doc(db, 'testseries', testId, 'StudentsPurchased', userDoc.id);
-            await setDoc(studentRef, {
-                userId: userDoc.id,
-                enrollmentDate: new Date().toISOString(),
-                enrollmentType: 'free',
-                // uniqueId: uniqueId
-            });
-            const transactionRef = doc(db, 'users', userDoc.id, 'transactions', testId);
-            await setDoc(transactionRef, {
-                contentId: testId,
-                contentType: "testseries",
-                dateOfPurchase: new Date().toISOString(),
-                paymentType: 'free',
-            });
-            // Update local state
-            setStudentAttempts(prev => [...prev, {
-                userId: userDoc.id,
-                name: userData.name || 'Unknown',
-                profilePic: userData.profilePic || '',
-                isPremium: userData.isPremium || false,
-                displayUserId: userData.userId || '',
-                enrollmentDate: new Date().toISOString(),
-                enrollmentType: 'free',
-                studentProgress: 0
-            }]);
+                if (querySnapshot.empty) {
+                    console.error('User not found');
+                    return;
+                }
 
-            setPopoveropen(false);
-            setUniqueId('');
-            toast.success('User added successfully');
-        } catch (error) {
-            console.error('Error adding user:', error);
-        }
-    };
+                // Get the first matching document
+                const userDoc = querySnapshot.docs[0];
+                const userData = userDoc.data();
+                // const uniqueId = userData.uniqueId;
+
+                // Add the user to the StudentsPurchased subcollection
+                const studentRef = doc(db, 'testseries', testId, 'StudentsPurchased', userDoc.id);
+                await setDoc(studentRef, {
+                    userId: userDoc.id,
+                    enrollmentDate: new Date().toISOString(),
+                    enrollmentType: 'free',
+                    // uniqueId: uniqueId
+                });
+                const transactionRef = doc(db, 'users', userDoc.id, 'transactions', testId);
+                await setDoc(transactionRef, {
+                   contentId: testId,
+                   contentType: "testseries",
+                   dateOfPurchase: new Date().toISOString(),
+                   paymentType: 'free',
+                });
+                // Update local state
+                setStudentAttempts(prev => [...prev, {
+                    userId: userDoc.id,
+                    name: userData.name || 'Unknown',
+                    profilePic: userData.profilePic || '',
+                    isPremium: userData.isPremium || false,
+                    displayUserId: userData.userId || '',
+                    enrollmentDate: new Date().toISOString(),
+                    enrollmentType: 'free',
+                    studentProgress: 0
+                }]);
+
+                setPopoveropen(false);
+                setUniqueId('');
+                toast.success('User added successfully');
+            } catch (error) {
+                console.error('Error adding user:', error);
+            }
+        };
 
     const handleClear = () => {
         setSortConfig({ key: '', direction: null }); // Reset sorting
@@ -295,8 +295,8 @@ function StudentsPurchasedTestseries({ testId }: StudentsAttemptsProps) {
         // Filter by selected date
         if (selectedDate) {
             filterStudentsAttempts = filterStudentsAttempts.filter(student => {
-                const studentDate = new Date(student.enrollmentDate);
-                return studentDate.toDateString() === selectedDate.toDateString();
+            const studentDate = new Date(student.enrollmentDate);
+            return studentDate.toDateString() === selectedDate.toDateString();
             });
         }
 
@@ -371,13 +371,13 @@ function StudentsPurchasedTestseries({ testId }: StudentsAttemptsProps) {
         : "Select dates";
 
     // Check if all fields are filled
-    const isAddButtonDisabled = !uniqueId;
+    const isAddButtonDisabled = !uniqueId ;
 
     const handlePopoverOpen = (index: number) => {
         setPopoveropen2(index);
     };
 
-    if (loading) {
+    if(loading) {
         return <LoadingData />
     }
 
@@ -536,7 +536,7 @@ function StudentsPurchasedTestseries({ testId }: StudentsAttemptsProps) {
                                                     bg-[#9012FF] border-[#800EE2] text-white 
                                                     ${isAddButtonDisabled ? 'opacity-35 cursor-not-allowed' : 'opacity-100'}`}
                                     disabled={isAddButtonDisabled}
-                                    onClick={() => { handleAddUser(uniqueId); }}>
+                                    onClick={() => { handleAddUser(uniqueId);}}>
                                     Add
                                 </button>
                             </div>
@@ -577,7 +577,7 @@ function StudentsPurchasedTestseries({ testId }: StudentsAttemptsProps) {
                                         <Image src='/icons/unfold-more-round.svg' alt="" width={16} height={16} />
                                     </div>
                                 </th>
-
+                              
                                 <th className="w-[12%] text-center px-8 py-4 rounded-tr-xl text-[#667085] font-medium text-sm">Action</th>
                             </tr>
                         </thead>
@@ -589,8 +589,8 @@ function StudentsPurchasedTestseries({ testId }: StudentsAttemptsProps) {
                                             <div className="flex flex-row ml-8 gap-2">
                                                 <div className="flex items-center">
                                                     <div className="relative">
-                                                        <Image className="rounded-full w-10 h-10" src={students.profilePic || '/images/DP_Lion.svg'} alt="DP" width={40} height={40} />
-                                                        {students.isPremium && <Image className="absolute right-0 bottom-0" src='/icons/winnerBatch.svg' alt="Batch" width={18} height={18} />}
+                                                       <Image className="rounded-full w-10 h-10" src={students.profilePic || '/images/DP_Lion.svg'} alt="DP" width={40} height={40} />
+                                                     {students.isPremium && <Image className="absolute right-0 bottom-0" src='/icons/winnerBatch.svg' alt="Batch" width={18} height={18} />}
                                                     </div>
                                                 </div>
                                                 <div className="flex items-start justify-start flex-col">
@@ -623,7 +623,7 @@ function StudentsPurchasedTestseries({ testId }: StudentsAttemptsProps) {
                                                 </PopoverTrigger>
                                                 <PopoverContent className="w-[10.438rem] py-1 px-0 bg-white border border-lightGrey rounded-md">
                                                     <button className="flex flex-row items-center justify-start w-full py-[0.625rem] px-4 gap-2 hover:bg-[#F2F4F7] outline-none"
-                                                        onClick={() => handleTabClick(`/admin/userdatabase/${students.name.toLowerCase().replace(/\s+/g, '-')}?uId=${students.userId}`)}>
+                                                     onClick={() => handleTabClick(`/admin/userdatabase/${students.name.toLowerCase().replace(/\s+/g, '-')}?uId=${students.userId}`)}>
                                                         <Image src='/icons/user-account.svg' alt="user profile" width={18} height={18} />
                                                         <p className="text-sm text-[#0C111D] font-normal">Go to Profile</p>
                                                     </button>
@@ -675,35 +675,35 @@ function StudentsPurchasedTestseries({ testId }: StudentsAttemptsProps) {
             </div>
             {/* {isRemoveOpen && < Remove onClose={() => setIsRemoveOpen(false)} open={isRemoveOpen} />} */}
             <Modal isOpen={isRemoveOpen} onOpenChange={(isOpen) => !isOpen && setIsRemoveOpen(false)} hideCloseButton >
-                <ModalContent>
-                    <>
-                        <ModalHeader className="flex flex-row justify-between items-center gap-1">
-                            <h3 className=" font-bold task-[#1D2939]">Remove user from this testseries?</h3>
-                            <button
-                                className="w-[32px] h-[32px] rounded-full flex items-center justify-center transition-all duration-300 ease-in-out hover:bg-[#F2F4F7]"
-                                onClick={() => setIsRemoveOpen(false)}
-                            >
-                                <Image
-                                    src="/icons/cancel.svg"
-                                    alt="Cancel"
-                                    width={20}
-                                    height={20}
-                                />
-                            </button>
-                        </ModalHeader>
-                        <ModalBody >
-                            <p className="pb-2 text-sm font-normal text-[#667085]"> Are you sure you want to remove this user from the testseries? This action cannot be undone.</p>
-                        </ModalBody>
-                        <ModalFooter className="border-t border-lightGrey">
-                            <Button
-                                className="py-[0.625rem] px-6 border border-solid border-[#EAECF0] bg-white font-semibold text-sm text-[#1D2939] rounded-md hover:bg-[#F2F4F7]"
-                                onClick={() => setIsRemoveOpen(false)}
-                            >Cancel
-                            </Button>
-                            <Button onClick={() => handleRemoveUser(userToRemove)} className="py-[0.625rem] px-6 text-white shadow-inner-button bg-[#BB241A] border border-[#DE3024] hover:bg-[#B0201A] font-semibold rounded-md">Remove</Button>
-                        </ModalFooter>
-                    </>
-                </ModalContent>
+            <ModalContent>
+                <>
+                    <ModalHeader className="flex flex-row justify-between items-center gap-1">
+                        <h3 className=" font-bold task-[#1D2939]">Remove user from this testseries?</h3>
+                        <button
+                            className="w-[32px] h-[32px] rounded-full flex items-center justify-center transition-all duration-300 ease-in-out hover:bg-[#F2F4F7]"
+                            onClick={() => setIsRemoveOpen(false)}
+                        >
+                            <Image
+                                src="/icons/cancel.svg"
+                                alt="Cancel"
+                                width={20}
+                                height={20}
+                            />
+                        </button>
+                    </ModalHeader>
+                    <ModalBody >
+                        <p className="pb-2 text-sm font-normal text-[#667085]">Lorem ipsum is placeholder text commonly used</p>
+                    </ModalBody>
+                    <ModalFooter className="border-t border-lightGrey">
+                        <Button
+                            className="py-[0.625rem] px-6 border border-solid border-[#EAECF0] bg-white font-semibold text-sm text-[#1D2939] rounded-md hover:bg-[#F2F4F7]"
+                            onClick={() => setIsRemoveOpen(false)}
+                        >Cancel
+                        </Button>
+                        <Button onClick={() => handleRemoveUser(userToRemove)} className="py-[0.625rem] px-6 text-white shadow-inner-button bg-[#BB241A] border border-[#DE3024] hover:bg-[#B0201A] font-semibold rounded-md">Remove</Button>
+                    </ModalFooter>
+                </>
+            </ModalContent>
             </Modal >
         </div>
     );

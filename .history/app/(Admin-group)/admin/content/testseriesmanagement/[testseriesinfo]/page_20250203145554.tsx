@@ -485,7 +485,7 @@ function TestSeriesInfo() {
                                             <Image src="/icons/edit-icon.svg" width={18} height={18} alt="Edit-icon" />
                                             <p className="text-sm text-[#0C111D] font-normal">Edit</p>
                                         </button>
-                                        <button className=" flex flex-row items-center justify-start w-full py-[0.625rem] px-4 gap-2 hover:bg-[#FEE4E2] "
+                                        <button className=" flex flex-row items-center justify-start w-full py-[0.625rem] px-4 gap-2 hover:bg-[#F2F4F7]"
                                             onClick={() => {
                                                 setTestName(testData?.testName || '');
                                                 setIsDeleteDialogOpen(true);
