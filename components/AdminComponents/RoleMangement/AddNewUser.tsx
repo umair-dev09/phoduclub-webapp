@@ -12,6 +12,7 @@ import { toast } from "react-toastify";
 import { Checkbox } from "@nextui-org/react";
 import Select, { SingleValue } from 'react-select';
 import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button } from "@nextui-org/react";
+import { kMaxLength } from "buffer";
 
 type AddNewUserProps = {
     open: boolean;
@@ -118,7 +119,7 @@ function AddNewUser({
     };
 
     return (
-       
+
         <Modal isOpen={open} onOpenChange={(isOpen) => !isOpen && close()} hideCloseButton
             scrollBehavior={scrollBehavior}>
 
@@ -167,6 +168,7 @@ function AddNewUser({
                                 placeholder="User Id"
                                 value={userId}
                                 disabled={isEditing}
+                                maxLength={25}
                                 onChange={(e) => setUserId(e.target.value)}
                             />
                         </div>
@@ -180,7 +182,8 @@ function AddNewUser({
                                 inputProps={{
                                     required: true,
                                     autoFocus: true,
-                                    placeholder: "+91 00000-00000"
+                                    placeholder: "+91 00000-00000",
+                                    kMaxLength: 15
                                 }}
                                 inputStyle={{
                                     width: "100%",
@@ -196,8 +199,8 @@ function AddNewUser({
                         </div>
 
                         <div className="flex flex-col gap-1">
-                        <label className='text-[14px] text-[#344054] font-medium'>Role</label>
-                        <Popover placement='bottom' isOpen={isRoleOpen} onOpenChange={(open) => setIsRoleOpen(open)}>
+                            <label className='text-[14px] text-[#344054] font-medium'>Role</label>
+                            <Popover placement='bottom' isOpen={isRoleOpen} onOpenChange={(open) => setIsRoleOpen(open)}>
                                 <PopoverTrigger>
                                     <button className='flex flex-row w-full gap-1 text-sm text-[#1D2939] font-medium rounded-md border border-[#D0D5DD] px-4 py-2 focus:outline-none mb-2'>
                                         <div className={`w-full text-sm text-start`}>{selectedRole}</div>
@@ -205,7 +208,7 @@ function AddNewUser({
                                     </button>
                                 </PopoverTrigger>
                                 <PopoverContent className='flex flex-col justify-start w-[300px] h-auto py-1 px-0 bg-white '>
-                                    {["Admin", "Teacher", "Customer Care", "Editor", "Chief Moderator" ].map(role => (
+                                    {["Admin", "Teacher", "Customer Care", "Editor", "Chief Moderator"].map(role => (
                                         <button
                                             key={role}
                                             onClick={() => { setSelectedRole(role); setIsRoleOpen(false); }}
@@ -217,11 +220,8 @@ function AddNewUser({
                                 </PopoverContent>
                             </Popover>
                         </div>
-                         
-
                     </ModalBody>
                     <ModalFooter className="border-t border-lightGrey">
-
                         <Button variant="light" onClick={close} className="py-[0.625rem] px-6 border-[1.5px] border-lightGrey rounded-md text-[#1D2939] font-semibold hover:bg-[#F2F4F7] text-sm">Cancel</Button>
                         <Button
                             onClick={handleAddUser}
