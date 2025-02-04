@@ -519,10 +519,8 @@ function TesstseriesInfo() {
                                                     <Popover placement="bottom-end" isOpen={!!openPopovers[index]}
                                                         onOpenChange={() => closePopover(index)}>
                                                         <PopoverTrigger>
-
                                                             <button onClick={(e) => { e.stopPropagation(); togglePopover(index) }} type='button' className="ml-[60%] outline-none cursor-pointer">
                                                                 <button className="w-[32px] h-[32px] rounded-full flex items-center justify-center transition-all duration-300 ease-in-out hover:bg-[#F2F4F7]">
-
                                                                     <Image
                                                                         src="/icons/three-dots.svg"
                                                                         width={20}

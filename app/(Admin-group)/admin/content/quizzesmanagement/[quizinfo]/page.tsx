@@ -52,34 +52,34 @@ type QuestionData = {
 // Helper function to format timestamp
 const formatFirebaseTimestamp = (timestamp: any): string => {
     if (!timestamp) return '';
-    
+
     // Handle Firebase Timestamp
     if (timestamp?.seconds) {
-      const date = new Date(timestamp.seconds * 1000);
-      return date.toLocaleString('en-US', {
-        month: 'long',
-        day: 'numeric',
-        year: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit'
-      });
+        const date = new Date(timestamp.seconds * 1000);
+        return date.toLocaleString('en-US', {
+            month: 'long',
+            day: 'numeric',
+            year: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+        });
     }
-    
+
     // Handle string date
     if (typeof timestamp === 'string') {
-      const date = new Date(timestamp);
-      return date.toLocaleString('en-US', {
-        month: 'long',
-        day: 'numeric',
-        year: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit'
-      });
+        const date = new Date(timestamp);
+        return date.toLocaleString('en-US', {
+            month: 'long',
+            day: 'numeric',
+            year: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+        });
     }
-  
+
     return '';
-  };
-  
+};
+
 
 function formatQuizTime(seconds: number | string): string {
     const minutes = Number(seconds) / 60;
@@ -405,7 +405,7 @@ function Quizinfo() {
                     height={24}
                     alt="profile-icons"
                 />
-                <p className="text-[#1D2939] font-medium text-sm">{adminDetails?.name}</p>
+                <p className="text-[#1D2939] font-medium text-sm">{adminDetails?.name || 'Phodu Admin'}</p>
             </div>
             <div className="w-full h-auto mt-4 flex flex-row gap-4 ">
                 <div className="w-full flex flex-col p-4 border border-solid border-[#EAECF0] bg-[#FFFFFF] rounded-xl">
