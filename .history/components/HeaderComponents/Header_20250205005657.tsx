@@ -77,7 +77,7 @@ function Header() {
     };
     useEffect(() => {
         const handleKeyPress = (event: KeyboardEvent) => {
-            if (event.key === "Enter" && logoutdialog) {
+            if (event.key === "Enter" && isOpen) {
                 handleLogout();
             }
         };
@@ -87,7 +87,7 @@ function Header() {
         return () => {
             document.removeEventListener("keydown", handleKeyPress);
         };
-    }, [logoutdialog, handleLogout]);
+    }, [isOpen, handleLogout]);
 
 
     if (loading || error) {

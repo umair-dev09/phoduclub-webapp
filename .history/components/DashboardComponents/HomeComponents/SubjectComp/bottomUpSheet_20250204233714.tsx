@@ -209,10 +209,19 @@ const BottomSheet: React.FC<BottomUpSheet> = ({ closeModal, isOpen, subjectName 
     }));
   };
 
-  useEffect(() => {
+  const hasUnsavedChangesRef = React.useRef(hasUnsavedChanges);
+
+  // Update the ref whenever hasUnsavedChanges changes
+  React.useEffect(() => {
+    hasUnsavedChangesRef.current = hasUnsavedChanges;
+  }, [hasUnsavedChanges]);
+
+  // Modify the keydown effect
+  React.useEffect(() => {
     const handleKeyPress = (event: KeyboardEvent) => {
-      if (event.key === "Enter" && hasUnsavedChanges) {
+      if (event.key === "Enter" && hasUnsavedChangesRef.current) {
         handleSave();
+        event.preventDefault(); // Prevent default form submission if any
       }
     };
 
@@ -223,8 +232,7 @@ const BottomSheet: React.FC<BottomUpSheet> = ({ closeModal, isOpen, subjectName 
     return () => {
       document.removeEventListener("keydown", handleKeyPress);
     };
-  }, [isOpen, hasUnsavedChanges, handleSave]);
-
+  }, [isOpen]);
 
 
   return (

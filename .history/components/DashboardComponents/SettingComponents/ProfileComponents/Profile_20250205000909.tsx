@@ -50,19 +50,20 @@ function Profile() {
 
     useEffect(() => {
         const handleKeyPress = (event: KeyboardEvent) => {
-            if (event.key === "Enter" && hasChanges) { // ✅ Only trigger when there are changes
+            if (event.key === "Enter" && !hasChanges) {
                 updateNameInFirestore();
             }
         };
 
-        if (isEditing && hasChanges) { // ✅ Only listen when editing and changes exist
-            document.addEventListener("keydown", handleKeyPress);
-        }
+        // Attach event listener when component mounts
+        document.addEventListener("keydown", handleKeyPress);
 
+        // Cleanup: Remove the event listener when component unmounts or dependencies change
         return () => {
             document.removeEventListener("keydown", handleKeyPress);
         };
-    }, [isEditing, hasChanges]);
+    }, [hasChanges]); // Ensure `updateNameInFirestore` is in dependencies if it's a function
+
 
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, (currentUser) => {

@@ -77,17 +77,24 @@ function Header() {
     };
     useEffect(() => {
         const handleKeyPress = (event: KeyboardEvent) => {
-            if (event.key === "Enter" && logoutdialog) {
+            if (event.key === "Enter") {
                 handleLogout();
             }
         };
 
-        document.addEventListener("keydown", handleKeyPress);
+        if (open) {
+            // Add event listener when the modal opens
+            document.addEventListener("keydown", handleKeyPress);
+        } else {
+            // Cleanup when the modal closes
+            document.removeEventListener("keydown", handleKeyPress);
+        }
 
+        // Ensure cleanup is done when component unmounts
         return () => {
             document.removeEventListener("keydown", handleKeyPress);
         };
-    }, [logoutdialog, handleLogout]);
+    }, [open]); // Depend on 'open' state to toggle the event listener
 
 
     if (loading || error) {

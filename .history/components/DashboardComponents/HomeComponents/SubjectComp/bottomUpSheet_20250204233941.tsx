@@ -212,7 +212,12 @@ const BottomSheet: React.FC<BottomUpSheet> = ({ closeModal, isOpen, subjectName 
   useEffect(() => {
     const handleKeyPress = (event: KeyboardEvent) => {
       if (event.key === "Enter" && hasUnsavedChanges) {
+        // Trigger handleSave() when "Enter" is pressed and there are unsaved changes
         handleSave();
+
+        // Optionally trigger handleCheckboxChange for the specific chapter and field
+        // You would need to specify chapterId and field (from the context or state you're working with)
+        handleCheckboxChange(chapter.chapterId, field as keyof StudentProgress);
       }
     };
 
@@ -223,7 +228,8 @@ const BottomSheet: React.FC<BottomUpSheet> = ({ closeModal, isOpen, subjectName 
     return () => {
       document.removeEventListener("keydown", handleKeyPress);
     };
-  }, [isOpen, hasUnsavedChanges, handleSave]);
+  }, [isOpen, hasUnsavedChanges, chapter.chapterId, field, handleSave, handleCheckboxChange]);
+
 
 
 

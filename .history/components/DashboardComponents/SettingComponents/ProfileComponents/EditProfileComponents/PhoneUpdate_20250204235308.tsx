@@ -36,23 +36,6 @@ function PhoneUpdate({ setIsEditing }: PhoneUpdateProps) {
   const [isFormValid, setIsFormValid] = useState(true);
 
   useEffect(() => {
-    const handleKeyPress = (event: KeyboardEvent) => {
-      if (event.key === "Enter" && !isFormValid) {
-        handleButtonClick();
-      }
-    };
-
-    if (isOpen && !isFormValid) { // Add check for isFormValid
-      document.addEventListener("keydown", handleKeyPress);
-    }
-
-    return () => {
-      document.removeEventListener("keydown", handleKeyPress);
-    };
-  }, [isOpen, isFormValid]);
-
-
-  useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       if (currentUser) {
         setUser(currentUser);
@@ -155,7 +138,21 @@ function PhoneUpdate({ setIsEditing }: PhoneUpdateProps) {
     //   setIsFormValid(false);
     // }
   };
+  useEffect(() => {
+    const handleKeyPress = (event: KeyboardEvent) => {
+      if (event.key === "Enter") {
+        handleButtonClick();
+      }
+    };
 
+    if (isOpen) {
+      document.addEventListener("keydown", handleKeyPress);
+    }
+
+    return () => {
+      document.removeEventListener("keydown", handleKeyPress);
+    };
+  }, [isOpen]);
 
   function handleInputChange(phone: string, value: any): void {
     throw new Error('Function not implemented.');

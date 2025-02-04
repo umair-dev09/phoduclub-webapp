@@ -48,21 +48,8 @@ function Profile() {
     const db = getFirestore();
     const router = useRouter();
 
-    useEffect(() => {
-        const handleKeyPress = (event: KeyboardEvent) => {
-            if (event.key === "Enter" && hasChanges) { // ✅ Only trigger when there are changes
-                updateNameInFirestore();
-            }
-        };
+    // Ensure `updateNameInFirestore` is in dependencies if it's a function
 
-        if (isEditing && hasChanges) { // ✅ Only listen when editing and changes exist
-            document.addEventListener("keydown", handleKeyPress);
-        }
-
-        return () => {
-            document.removeEventListener("keydown", handleKeyPress);
-        };
-    }, [isEditing, hasChanges]);
 
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
@@ -170,6 +157,22 @@ function Profile() {
             }
         }
     };
+    useEffect(() => {
+        const handleKeyPress = (event: KeyboardEvent) => {
+            if (event.key === "Enter" && !hasChanges) {
+                updateNameInFirestore();
+            }
+        };
+
+        // Attach event listener when component mounts
+        document.addEventListener("keydown", handleKeyPress);
+
+        // Cleanup: Remove the event listener when component unmounts or dependencies change
+        return () => {
+            document.removeEventListener("keydown", handleKeyPress);
+        };
+    }, [hasChanges, updateNameInFirestore]); // Ensure `updateNameInFirestore` is in dependencies if it's a function
+
     const onRemoveClick = async () => {
         const loadingToastId = toast.loading('Submitting responses...');
         setHasChanges(false);

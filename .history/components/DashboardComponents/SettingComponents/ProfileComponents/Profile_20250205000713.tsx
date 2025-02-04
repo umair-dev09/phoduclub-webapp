@@ -48,21 +48,6 @@ function Profile() {
     const db = getFirestore();
     const router = useRouter();
 
-    useEffect(() => {
-        const handleKeyPress = (event: KeyboardEvent) => {
-            if (event.key === "Enter" && hasChanges) { // ✅ Only trigger when there are changes
-                updateNameInFirestore();
-            }
-        };
-
-        if (isEditing && hasChanges) { // ✅ Only listen when editing and changes exist
-            document.addEventListener("keydown", handleKeyPress);
-        }
-
-        return () => {
-            document.removeEventListener("keydown", handleKeyPress);
-        };
-    }, [isEditing, hasChanges]);
 
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
@@ -207,7 +192,19 @@ function Profile() {
 
     const colors = [styles.red, styles.orange, styles.green, styles.blue];
 
+    useEffect(() => {
+        const handleKeyPress = (event: KeyboardEvent) => {
+            if (event.key === "Enter" && !hasChanges) {
+                updateNameInFirestore();
+            }
+        };
 
+
+
+        return () => {
+            document.removeEventListener("keydown", handleKeyPress);
+        };
+    }, [hasChanges]);
 
     return (
         <div className="flex flex-col h-full w-full justify-between">

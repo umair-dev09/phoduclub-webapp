@@ -34,22 +34,21 @@ function PhoneUpdate({ setIsEditing }: PhoneUpdateProps) {
   const db = getFirestore();
   const [newPhone, setNewPhone] = useState(''); // State for the new email input
   const [isFormValid, setIsFormValid] = useState(true);
-
   useEffect(() => {
     const handleKeyPress = (event: KeyboardEvent) => {
-      if (event.key === "Enter" && !isFormValid) {
+      if (event.key === "Enter" && isFormValid) {
         handleButtonClick();
       }
     };
 
-    if (isOpen && !isFormValid) { // Add check for isFormValid
+    if (isOpen) {
       document.addEventListener("keydown", handleKeyPress);
     }
 
     return () => {
       document.removeEventListener("keydown", handleKeyPress);
     };
-  }, [isOpen, isFormValid]);
+  }, [isOpen, isFormValid, handleButtonClick]);
 
 
   useEffect(() => {
@@ -160,6 +159,7 @@ function PhoneUpdate({ setIsEditing }: PhoneUpdateProps) {
   function handleInputChange(phone: string, value: any): void {
     throw new Error('Function not implemented.');
   }
+
 
   return (
     <div className={styles.updateMob}>

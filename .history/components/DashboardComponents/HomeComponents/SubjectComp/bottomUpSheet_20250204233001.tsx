@@ -212,6 +212,10 @@ const BottomSheet: React.FC<BottomUpSheet> = ({ closeModal, isOpen, subjectName 
   useEffect(() => {
     const handleKeyPress = (event: KeyboardEvent) => {
       if (event.key === "Enter" && hasUnsavedChanges) {
+        const activeElement = document.activeElement;
+        if (activeElement && (activeElement.tagName === "INPUT" || activeElement.tagName === "TEXTAREA")) {
+          return; // Prevent saving if an input field is focused
+        }
         handleSave();
       }
     };
@@ -223,8 +227,7 @@ const BottomSheet: React.FC<BottomUpSheet> = ({ closeModal, isOpen, subjectName 
     return () => {
       document.removeEventListener("keydown", handleKeyPress);
     };
-  }, [isOpen, hasUnsavedChanges, handleSave]);
-
+  }, [isOpen, hasUnsavedChanges]);
 
 
   return (

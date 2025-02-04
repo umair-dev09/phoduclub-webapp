@@ -212,7 +212,7 @@ const BottomSheet: React.FC<BottomUpSheet> = ({ closeModal, isOpen, subjectName 
   useEffect(() => {
     const handleKeyPress = (event: KeyboardEvent) => {
       if (event.key === "Enter" && hasUnsavedChanges) {
-        handleSave();
+        handleSave(); // ✅ Trigger delete if input is valid
       }
     };
 
@@ -223,9 +223,7 @@ const BottomSheet: React.FC<BottomUpSheet> = ({ closeModal, isOpen, subjectName 
     return () => {
       document.removeEventListener("keydown", handleKeyPress);
     };
-  }, [isOpen, hasUnsavedChanges, handleSave]);
-
-
+  }, [handleSave, isOpen]);
 
   return (
     <Drawer

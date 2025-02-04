@@ -11,11 +11,10 @@ import "react-modern-drawer/dist/index.css"
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { auth, db } from "@/firebase";
-import { arrayUnion, collection, doc, getDoc, increment, setDoc } from "firebase/firestore";
+import { collection, doc, setDoc } from "firebase/firestore";
 import QuizTimer from "@/components/QuizTImer";
-import { set } from "date-fns";
 import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, useDisclosure } from "@nextui-org/react";
-import ReviewTest from "../TestsComponents/ReviewTest";
+import { on } from "events";
 interface Options {
     A: string;
     B: string;
@@ -25,15 +24,14 @@ interface Options {
 
 interface Question {
     question: string;
+    isChecked: boolean;
+    isActive: boolean;
     options: Options;
     correctAnswer: string | null;
     answerExplanation: string;
     questionId: string;
-    isChecked: boolean;
-    isActive: boolean;
     order: number;
 }
-
 interface QuestionState {
     questionId: string;
     selectedOption: string | null;
@@ -41,30 +39,38 @@ interface QuestionState {
     answered: boolean;
 }
 
+interface QuizAttempt {
+    AnsweredQuestions: QuestionState[];
+    userId: string;
+    timeTaken: number;
+    totalTime: number;
+}
 type QuizProps = {
+    isOpen: boolean;
+    onClose: () => void;
     setShowBottomSheet: (show: boolean) => void;
+    onSubmit: () => void;
     showBottomSheet: boolean;
+    contentId: string;
     questionsList: Question[];
+    courseId: string;
+    sectionId: string;
     quizTime: number;
-    quizId: string;
-    marksPerQuestion: number;
-    nMarksPerQuestion: number;
-    isPremiumQuiz: boolean;
-    product: { productId: string; productName: string; productType: string } | null;
 };
-function QuizAttendBottomSheet({
+
+function QuizAttendingArea({
+    isOpen,
+    onClose,
     showBottomSheet,
     setShowBottomSheet,
-    questionsList, quizId, quizTime, marksPerQuestion, nMarksPerQuestion, isPremiumQuiz, product
+    onSubmit, contentId, questionsList, courseId, sectionId, quizTime
 }: QuizProps) {
     const contentRef = React.useRef<HTMLDivElement>(null);
     const [isDialogOpen, setIsDialogOpen] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
-    const [showReviewSheet, setShowReviewSheet] = useState(false);
     const [questionStates, setQuestionStates] = useState<QuestionState[]>([]);
     const userId = auth.currentUser?.uid;
-    const [displayUserId, setDisplayUserId] = useState('');
-    const { isOpen: isOpenReviewD, onOpen: onOpenReviewD, onClose: onCloseReviewD } = useDisclosure();
+    const [currentTime, setCurrentTime] = useState<number>(0);
     const [remainingTime, setRemainingTime] = useState<number>(0);
     const [formattedTime, setFormattedTime] = useState<string>("00:00:00");
     const [timerStarted, setTimerStarted] = useState(false);
@@ -90,38 +96,17 @@ function QuizAttendBottomSheet({
         const totalSeconds = seconds;
         const hours = Math.floor(totalSeconds / 3600); // Calculate hours
         const minutes = Math.floor((totalSeconds % 3600) / 60); // Calculate remaining minutes
-        const remainingSeconds = totalSeconds % 60; // Calculate remaining seconds
         let formattedTime = '';
 
         if (hours > 0) {
             formattedTime += `${hours}h`; // Add hours if present
         }
-        if (minutes > 0) {
+        if (minutes > 0 || hours === 0) {
             formattedTime += (formattedTime ? ' ' : '') + `${minutes}m`; // Add minutes
-        }
-        if (remainingSeconds > 0 || (hours === 0 && minutes === 0)) {
-            formattedTime += (formattedTime ? ' ' : '') + `${remainingSeconds}s`; // Add seconds
         }
 
         return formattedTime;
     }
-
-    useEffect(() => {
-        const fetchUserId = async () => {
-            if (auth.currentUser) {
-                const userDocRef = doc(db, 'users', auth.currentUser.uid);
-                const userDoc = await getDoc(userDocRef);
-                if (userDoc.exists()) {
-                    const userData = userDoc.data();
-                    setDisplayUserId(userData.userId);
-                } else {
-                    console.error("No such document!");
-                }
-            }
-        };
-
-        fetchUserId();
-    }, []);
 
     // Initialize timer when bottom sheet opens
     useEffect(() => {
@@ -166,7 +151,6 @@ function QuizAttendBottomSheet({
                 selectedOption: null,
                 answeredCorrect: null,
                 answered: false,
-                status: '',
             }));
             setQuestionStates(initialStates);
         }
@@ -177,6 +161,45 @@ function QuizAttendBottomSheet({
             contentRef.current.scrollTo({ top: 0, behavior: 'auto' });
         }
     }, [showBottomSheet]);
+
+    useEffect(() => {
+        const handleKeyPress = (event: KeyboardEvent) => {
+            if (event.key === "Enter" && areAllQuestionsAnswered()) { // ✅ Call function correctly
+                handleSubmit();
+            }
+        };
+
+        if (showBottomSheet) { // ✅ Only listen when the quiz is open
+            document.addEventListener("keydown", handleKeyPress);
+        }
+
+        return () => {
+            document.removeEventListener("keydown", handleKeyPress);
+        };
+    }, [showBottomSheet, questionStates]); // ✅ Track question states
+
+    useEffect(() => {
+        const handleKeyPress = (event: KeyboardEvent) => {
+            if (event.key === "Enter") {
+                if (isOpen) {
+                    openBottomSheet();
+                } else {
+                    handleDialogSubmit();
+                }
+            }
+        };
+
+        if (isOpen) {
+            document.addEventListener("keydown", handleKeyPress);
+        }
+
+        return () => {
+            document.removeEventListener("keydown", handleKeyPress);
+        };
+    }, [isOpen, openBottomSheet, handleDialogSubmit]); // ✅ Added dependencies
+
+
+
 
     // Handle option selection for a question
     const handleOptionSelect = (questionId: string, selectedOption: string) => {
@@ -196,121 +219,50 @@ function QuizAttendBottomSheet({
             });
         });
     };
-
-    const calculateQuizStats = () => {
-        const totalQuestions = questionsList.length;
-        const attemptedQuestions = questionStates.filter(q => q.answered).length;
-        const answeredCorrect = questionStates.filter(q => q.answeredCorrect === true).length;
-        const answeredIncorrect = questionStates.filter(q => q.answeredCorrect === false).length;
-        const totalScore = (answeredCorrect * marksPerQuestion) - (answeredIncorrect * nMarksPerQuestion);
-        const maxPossibleScore = totalQuestions * marksPerQuestion;
-
-        return {
-            totalScore,
-            answeredIncorrect,
-            answeredCorrect,
-            attemptedQuestions,
-            totalQuestions,
-            maxPossibleScore
-        };
-    };
-
     // Store quiz attempt in Firestore
     const storeQuizAttempt = async () => {
+        const loadingToastId = toast.loading('Submitting your test responses...');
+        setIsSubmitting(true);
         if (!userId) {
             console.error("No user found");
+            toast.dismiss(loadingToastId);
+            toast.error('User authentication required');
+            setIsSubmitting(false);
             return;
         }
-        setIsSubmitting(true);
         try {
             const quizAttempt = {
                 AnsweredQuestions: questionStates,
                 userId: userId,
                 timeTaken: quizTime - remainingTime,
                 totalTime: quizTime,
-                score: calculateQuizStats().totalScore,
-                attemptedQuestions: calculateQuizStats().attemptedQuestions,
-                answeredCorrect: calculateQuizStats().answeredCorrect,
-                answeredIncorrect: calculateQuizStats().answeredIncorrect,
-                totalQuestions: calculateQuizStats().totalQuestions,
                 attemptDate: new Date(),
             };
             // Fixed Firestore path structure
-            const quizPath = `quiz/${quizId}/attempts`;
+            const quizPath = `course/${courseId}/sections/${sectionId}/content/${contentId}/attempts`;
             const studentAttemptRef = doc(db, quizPath, userId);
             await setDoc(studentAttemptRef, quizAttempt);
-            if (!isPremiumQuiz && userId) {
-                const userStatsRef = doc(db, 'globalQuizAttemptsData', userId);
-                try {
-                    const stats = calculateQuizStats();
-                    await setDoc(userStatsRef, {
-                        score: increment(stats.totalScore),
-                        attemptedQuestions: increment(stats.attemptedQuestions),
-                        answeredCorrect: increment(stats.answeredCorrect),
-                        answeredIncorrect: increment(stats.answeredIncorrect),
-                        totalQuestions: increment(stats.totalQuestions),
-                        timeTaken: increment(quizTime - remainingTime),
-                        totalTime: increment(quizTime),
-                        lastUpdatedTime: new Date(),
-                        userId: userId,
-                        displayUserId: displayUserId,
-                    }, { merge: true });
-
-                } catch (error) {
-                    console.error('Error updating global stats:', error);
-                    toast.error('Failed to update global statistics');
-                }
-            }
-            else {
-                if (!product?.productId) return;
-                // Store product info at product level
-                const productRef = doc(db, 'premiumQuizAttemptsData', product.productId);
-                await setDoc(productRef, {
-                    productType: product.productType,
-                    productId: product.productId,
-                    quizIds: arrayUnion(quizId),
-                }, { merge: true });
-
-                // Store user attempts under the product
-                const userStatsRef = doc(db, 'premiumQuizAttemptsData', product.productId, 'userAttempts', userId);
-                try {
-                    const stats = calculateQuizStats();
-                    await setDoc(userStatsRef, {
-                        score: increment(stats.totalScore),
-                        attemptedQuestions: increment(stats.attemptedQuestions),
-                        answeredCorrect: increment(stats.answeredCorrect),
-                        answeredIncorrect: increment(stats.answeredIncorrect),
-                        totalQuestions: increment(stats.totalQuestions),
-                        timeTaken: increment(quizTime - remainingTime),
-                        totalTime: increment(quizTime),
-                        lastUpdatedTime: new Date(),
-                        userId: userId,
-                        displayUserId: displayUserId,
-                    }, { merge: true });
-
-                } catch (error) {
-                    console.error('Error updating global stats:', error);
-                    toast.error('Failed to update premium statistics');
-                }
-            }
-            onOpenReviewD();
-            toast.success('Quiz attempt saved successfully!');
-
+            toast.dismiss(loadingToastId);
+            toast.success('Quiz attempt saved successfully');
+            setShowBottomSheet(false);
         } catch (error) {
             console.error('Error storing quiz attempt:', error);
+            toast.dismiss(loadingToastId);
             toast.error('Failed to  store quiz attempt');
             // You might want to show an error message to the user here
         } finally {
             setIsSubmitting(false);
         }
     };
+    // Check if all questions have been answered
+    const areAllQuestionsAnswered = () => {
+        return questionStates.every(state => state.selectedOption !== null);
+    };
 
-    // Calculate quiz statistics
-
-    // // Check if all questions have been answered
-    // const areAllQuestionsAnswered = () => {
-    //     return questionStates.every(state => state.selectedOption !== null);
-    // };
+    const openBottomSheet = () => {
+        onClose();
+        setShowBottomSheet(true);
+    };
 
     const handleSubmit = () => {
         console.log('Final Question States:', questionStates);
@@ -319,12 +271,9 @@ function QuizAttendBottomSheet({
     };
 
 
-
     const handleSaveExit = () => {
-        // setIsOpen(false);
+        onClose();
         setShowBottomSheet(false);
-        setIsTimeEnded(false);
-        setQuestionStates([]);
     };
 
     const handleDialogSubmit = async () => {
@@ -333,16 +282,87 @@ function QuizAttendBottomSheet({
         setShowBottomSheet(false);
         await storeQuizAttempt();
     };
+    useEffect(() => {
+        const handleKeyPress = (event: KeyboardEvent) => {
+            if (event.key === "Enter") {
+                if (isOpen) {
+                    openBottomSheet();
+                } else {
+                    handleDialogSubmit();
+                }
+            }
+        };
+
+        if (isOpen) {
+            document.addEventListener("keydown", handleKeyPress);
+        }
+
+        return () => {
+            document.removeEventListener("keydown", handleKeyPress);
+        };
+    }, [isOpen, openBottomSheet, handleDialogSubmit]); // ✅ Added dependencies
+
 
     return (
         <>
+            {/* Initial Dialog */}
+
+            <Modal
+                isOpen={isOpen}
+                onOpenChange={(isOpen) => !isOpen && onClose()}
+                hideCloseButton
+            >
+                <ModalContent>
+                    <>
+                        <ModalHeader className="flex flex-row justify-between items-center gap-1">
+                            <h1 className="text-lg font-bold text-[#1D2939]">Confirmation</h1>
+                            <button className="w-[32px] h-[32px]  rounded-full flex items-center justify-center transition-all duration-300 ease-in-out hover:bg-[#F2F4F7]">
+                                <button onClick={() => onClose()}>
+                                    <Image src="/icons/cancel.svg" alt="cancel" width={18} height={18} />
+                                </button>
+                            </button>
+                        </ModalHeader>
+
+                        <ModalBody>
+                            <span className="text-sm text-[#667085] font-normal pb-2">
+                                You are about to start the quiz. Make sure you are prepared, as the timer will begin as soon as you start. Once started, you cannot pause or exit without saving your progress. Good luck!
+                            </span>
+
+                        </ModalBody>
+
+                        <ModalFooter className='border-t border-lightGrey'>
+
+                            <Button
+                                className="bg-[#FFFFFF] text-[#1D2939] text-sm font-semibold py-2 px-5 rounded-md w-[118px] h-[44px] hover:bg-[#F2F4F7]"
+                                style={{ border: "1.5px solid #EAECF0" }}
+                                onClick={() => onClose()}
+                            >
+                                Cancel
+                            </Button>
+
+
+                            <Button
+                                onClick={openBottomSheet}
+                                className="bg-[#8501FF] text-[#FFFFFF] text-sm font-semibold py-2 px-5 rounded-md w-[118px] h-[44px] hover:bg-[#6D0DCC]"
+                                style={{
+                                    border: "1px solid #800EE2",
+                                    boxShadow: "0px -4px 4px 0px #1018281F inset, 0px 3px 2px 0px #FFFFFF3D inset",
+                                }}
+                            >
+                                Start Now
+                            </Button>
+                        </ModalFooter>
+                    </>
+                </ModalContent>
+            </Modal>
+
+
             <Drawer
                 open={showBottomSheet}
                 direction="bottom"
                 className="rounded-tl-md rounded-tr-md "
                 style={{ height: "98vh" }}
             >
-
                 <div className="flex flex-col h-full  overflow-y-auto">
                     <div className="p-5 flex justify-between items-center h-[69px] w-full border-b-[1.5px] border-t-[1.5px] border-[#EAECF0]  rounded-tl-[18px] rounded-tr-[16px]">
                         <span className="text-lg font-semibold text-[#1D2939]">Quiz</span>
@@ -358,14 +378,12 @@ function QuizAttendBottomSheet({
                                 onClick={handleSaveExit}
                                 className="w-full h-full flex items-center justify-center text-sm font-semibold text-[#1D2939] border-none p-[10px_24px] z-50  hover:bg-[#F2F4F7]"
                             >
-                                Close & Exit
+                                Save and Exit
                             </button>
                         </div>
 
-
                     </div>
 
-                    {/* Quiz Content */}
                     <div ref={contentRef} className="overflow-y-auto p-5 h-full">
                         {isTimeEnded ? (
                             <div className="flex items-center justify-center h-full text-red-500">
@@ -418,48 +436,50 @@ function QuizAttendBottomSheet({
                                             </div>
                                         );
                                     })}
-
                             </div>
                         )}
                     </div>
                     {/* Bottom Button Section */}
-                    <div className="flex flex-row items-center justify-end font-semibold border-t border-lightGrey px-4 py-3">
+                    <div className="flex flex-row items-center justify-end border-t border-lightGrey px-4 py-3 font-semibold">
                         <button
-                            className={`border rounded-lg py-2.5 px-6 text-sm text-white hover:bg-[#6D0DCC] bg-purple font-semibold`}
-
+                            className={`border rounded-lg py-2.5 px-6 text-sm text-white shadow-inner-button ${areAllQuestionsAnswered() ? 'bg-purple hover:bg-[#6D0DCC] ' : 'bg-[#CDA0FC] cursor-not-allowed'}`}
                             onClick={handleSubmit}
+                            disabled={!areAllQuestionsAnswered()}
                         >
                             <p>Submit</p>
                         </button>
                     </div>
                 </div>
-
             </Drawer >
 
-            <Modal isOpen={isDialogOpen} onOpenChange={(isOpen) => !isOpen && setIsDialogOpen(false)} hideCloseButton
-
+            <Modal
+                isOpen={isDialogOpen}
+                onOpenChange={(isOpen) => !isOpen && setIsDialogOpen(false)}
+                hideCloseButton
             >
                 <ModalContent>
                     <>
                         <ModalHeader className="flex flex-row justify-between items-center gap-1">
-                            <span className="text-lg font-bold text-[#1D2939]">Submit Quiz</span>
+                            <h1 className="text-lg font-bold text-[#1D2939]">Submit Quiz</h1>
                             <button className="w-[32px] h-[32px]  rounded-full flex items-center justify-center transition-all duration-300 ease-in-out hover:bg-[#F2F4F7]">
                                 <button onClick={() => setIsDialogOpen(false)}>
                                     <Image src="/icons/cancel.svg" alt="cancel" width={18} height={18} />
                                 </button>
                             </button>
                         </ModalHeader>
-                        <ModalBody>
-                            <p className="text-sm text-[#667085] font-normal">
-                                Are you sure you want to submit your quiz now? Please double-check your answers before submitting, as you won&apos;t be able to make any changes afterwards.
-                            </p>
-                        </ModalBody>
-                        <ModalFooter className="border-t border-lightGrey">
 
-                            <Button variant="light"
+                        <ModalBody>
+                            <span className="text-sm text-[#667085] font-normal pb-2">
+                                Are you sure you want to submit your answers? Once submitted, you won’t be able to change them. Ensure you have answered all questions before proceeding.
+                            </span>
+
+                        </ModalBody>
+
+                        <ModalFooter className='border-t border-lightGrey'>
+                            <Button
                                 className="bg-[#FFFFFF] text-[#1D2939] text-sm font-semibold py-2 px-5 rounded-md w-[118px] h-[44px] hover:bg-[#F2F4F7]"
                                 style={{ border: "1.5px solid #EAECF0" }}
-                                onClick={() => { setIsDialogOpen(false); setShowBottomSheet(true); }}
+                                onClick={() => setIsDialogOpen(false)}
                             >
                                 Cancel
                             </Button>
@@ -469,7 +489,7 @@ function QuizAttendBottomSheet({
                                     handleDialogSubmit();
                                 }}
                                 disabled={isSubmitting}
-                                className="bg-[#8501FF] text-[#FFFFFF] hover:bg-[#6D0DCC] text-sm font-semibold py-2 px-5 rounded-md w-[118px] h-[44px]"
+                                className="bg-[#8501FF] text-[#FFFFFF] text-sm font-semibold py-2 px-5 rounded-md w-[118px] h-[44px] shadow-inner-button"
                                 style={{
                                     border: "1px solid #800EE2",
                                     boxShadow: "0px -4px 4px 0px #1018281F inset, 0px 3px 2px 0px #FFFFFF3D inset",
@@ -478,55 +498,16 @@ function QuizAttendBottomSheet({
                                 Submit
                             </Button>
 
-
                         </ModalFooter>
                     </>
                 </ModalContent>
-            </Modal >
-
-            <Modal isOpen={isOpenReviewD} size="2xl" onOpenChange={(isOpen) => !isOpen && onCloseReviewD()} isDismissable={false}
-                isKeyboardDismissDisabled={false} hideCloseButton={true}>
-                <ModalContent>
-                    {(onClose) => (
-                        <ModalBody className="px-0">
-                            <div className="flex flex-col items-center gap-2 mt-6 px-6 py-3">
-                                <div className="flex justify-center items-center w-[86px] h-[86px] rounded-full bg-[#F8E8FF] border border-[#F0D3FB]">
-                                    <Image src='/icons/tick-03.svg' alt="completed" width={36} height={36} />
-                                </div>
-                                <h2 className="text-[#000000] text-xl font-bold">Quiz Completed!</h2>
-                            </div>
-                            <div className="flex flex-col gap-6 mt-6 mb-6">
-                                <div className="flex flex-row">
-                                    <div className="w-full text-center border-r border-lightGrey">
-                                        <p className="text-sm text-[#667085] font-normal leading-5 mb-2">Attempted Questions</p>
-                                        <p className="text-lg text-[1D2939] font-semibold leading-5">{calculateQuizStats().attemptedQuestions + '/' + calculateQuizStats().totalQuestions}</p>
-                                    </div>
-                                    <div className="w-full text-center border-r border-lightGrey">
-                                        <p className="text-sm text-[#667085] font-normal leading-5 mb-2">Time Taken</p>
-                                        <p className="text-lg text-[1D2939] font-semibold leading-5">{formatTimeForReview(quizTime - remainingTime)} of {formatTimeForReview(quizTime)}</p>
-                                    </div>
-                                    <div className="w-full text-center border-r border-lightGrey">
-                                        <p className="text-sm text-[#667085] font-normal leading-5 mb-2">Score</p>
-                                        <p className="text-lg text-[1D2939] font-semibold leading-5">{calculateQuizStats().totalScore + '/' + calculateQuizStats().maxPossibleScore}</p>
-                                    </div>
-
-                                </div>
-                            </div>
-                            <hr />
-                            <div className="flex flex-row justify-end mx-6 mb-2 mt-1 gap-4">
-                                <button className="py-[0.625rem] px-6 border-[1.5px] border-lightGrey rounded-md font-semibold text-sm hover:bg-[#F2F4F7] " onClick={() => { onCloseReviewD(); }}>Close</button>
-                                <button className="py-[0.625rem] px-6 text-white shadow-inner-button bg-[#8501FF] hover:bg-[#6D0DCC]  font-semibold text-sm border border-[#800EE2] rounded-md" onClick={() => { setShowReviewSheet(true); onCloseReviewD(); }}>Review Answers</button>
-                            </div>
-                        </ModalBody>
-                    )}
-                </ModalContent>
             </Modal>
-            <ReviewTest setShowReviewSheet={setShowReviewSheet} showReviewSheet={showReviewSheet} questionsList={questionsList} answeredQuestions={questionStates} timeTaken={quizTime - remainingTime} />
-
-
+            <ToastContainer />
         </>
     );
 }
 
-export default QuizAttendBottomSheet;
+export default QuizAttendingArea;
+
+
 

@@ -50,19 +50,17 @@ function Profile() {
 
     useEffect(() => {
         const handleKeyPress = (event: KeyboardEvent) => {
-            if (event.key === "Enter" && hasChanges) { // ✅ Only trigger when there are changes
+            if (event.key === "Enter" && !hasChanges) {
                 updateNameInFirestore();
             }
         };
 
-        if (isEditing && hasChanges) { // ✅ Only listen when editing and changes exist
-            document.addEventListener("keydown", handleKeyPress);
-        }
+
 
         return () => {
             document.removeEventListener("keydown", handleKeyPress);
         };
-    }, [isEditing, hasChanges]);
+    }, [hasChanges]);
 
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, (currentUser) => {

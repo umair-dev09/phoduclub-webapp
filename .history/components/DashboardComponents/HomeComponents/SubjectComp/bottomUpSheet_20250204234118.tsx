@@ -213,6 +213,14 @@ const BottomSheet: React.FC<BottomUpSheet> = ({ closeModal, isOpen, subjectName 
     const handleKeyPress = (event: KeyboardEvent) => {
       if (event.key === "Enter" && hasUnsavedChanges) {
         handleSave();
+
+        // Iterate through chapters and apply the change
+        chapters.forEach((chapter) => {
+          // Ensure 'field' is properly defined in the scope
+          if (field) {
+            handleCheckboxChange(chapter.chapterId, field as keyof StudentProgress);
+          }
+        });
       }
     };
 
@@ -223,7 +231,7 @@ const BottomSheet: React.FC<BottomUpSheet> = ({ closeModal, isOpen, subjectName 
     return () => {
       document.removeEventListener("keydown", handleKeyPress);
     };
-  }, [isOpen, hasUnsavedChanges, handleSave]);
+  }, [isOpen, hasUnsavedChanges, chapters, field, handleSave, handleCheckboxChange]);
 
 
 

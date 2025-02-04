@@ -36,23 +36,6 @@ function PhoneUpdate({ setIsEditing }: PhoneUpdateProps) {
   const [isFormValid, setIsFormValid] = useState(true);
 
   useEffect(() => {
-    const handleKeyPress = (event: KeyboardEvent) => {
-      if (event.key === "Enter" && !isFormValid) {
-        handleButtonClick();
-      }
-    };
-
-    if (isOpen && !isFormValid) { // Add check for isFormValid
-      document.addEventListener("keydown", handleKeyPress);
-    }
-
-    return () => {
-      document.removeEventListener("keydown", handleKeyPress);
-    };
-  }, [isOpen, isFormValid]);
-
-
-  useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       if (currentUser) {
         setUser(currentUser);
@@ -117,6 +100,21 @@ function PhoneUpdate({ setIsEditing }: PhoneUpdateProps) {
       console.log('Recaptcha already rendered');
     }
   };
+  useEffect(() => {
+    const handleKeyPress = (event: KeyboardEvent) => {
+      if (event.key === "Enter" && isFormValid) {
+        handleButtonClick();
+      }
+    };
+
+    if (isOpen) {
+      document.addEventListener("keydown", handleKeyPress);
+    }
+
+    return () => {
+      document.removeEventListener("keydown", handleKeyPress);
+    };
+  }, [isOpen, isFormValid]);
 
   const handleButtonClick = () => {
     toast.warning('Currently this feature is disabled due to data cost.')
@@ -160,6 +158,7 @@ function PhoneUpdate({ setIsEditing }: PhoneUpdateProps) {
   function handleInputChange(phone: string, value: any): void {
     throw new Error('Function not implemented.');
   }
+
 
   return (
     <div className={styles.updateMob}>
