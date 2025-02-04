@@ -113,7 +113,7 @@ function PageHeader({
         else if (cId) pageName = 'Back to Course Management';
         else if (rId) pageName = 'Back to Role Management';
         else if (uId) pageName = 'Back to User Database';
-        else if (dId) pageName = 'Discussion Form';
+        else if (dId)
         else if (nId) pageName = 'Back to Messenger';
         else if (communityId) pageName = 'Community';
         else {
