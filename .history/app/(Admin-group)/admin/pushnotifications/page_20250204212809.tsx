@@ -482,9 +482,18 @@ function Messenger() {
             toast.error("Failed to remove notification. Please try again.");
         }
     };
+    useEffect(() => {
+        const handleKeyPress = (event: KeyboardEvent) => {
+            if (event.key === "Enter" && isScheduleFormValid) {
+                updateNotificationSchedule();
+            }
+        };
 
-
-
+        document.addEventListener("keydown", handleKeyPress);
+        return () => {
+            document.removeEventListener("keydown", handleKeyPress);
+        };
+    }, [isScheduleFormValid, updateNotificationSchedule]);
 
     if (loading) {
         return <LoadingData />

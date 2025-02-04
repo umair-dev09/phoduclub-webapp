@@ -482,7 +482,18 @@ function Messenger() {
             toast.error("Failed to remove notification. Please try again.");
         }
     };
+    useEffect(() => {
+        const handleKeyPress = (event: KeyboardEvent) => {
+            if (event.key === "Enter") {
+                handleRemoveNotification(notificationId);
+            }
+        };
 
+        document.addEventListener("keydown", handleKeyPress);
+        return () => {
+            document.removeEventListener("keydown", handleKeyPress);
+        };
+    }, [handleRemoveNotification(notificationId)]);
 
 
 
