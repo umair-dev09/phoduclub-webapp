@@ -345,8 +345,6 @@ function StudentsAttemptedQuiz({ quizId }: StudentsAttemptsProps) {
                             )}
                         </PopoverContent>
                     </Popover>
-
-
                 </div>
             </div>
 
@@ -404,13 +402,13 @@ function StudentsAttemptedQuiz({ quizId }: StudentsAttemptsProps) {
                                             <div className="flex flex-row ml-8 gap-2">
                                                 <div className="flex items-center">
                                                     <div className="relative">
-                                                        <Image className="rounded-full w-10 h-10" src={students.profilePic || '/images/DP_Lion.svg'} alt="DP" width={40} height={40} />
+                                                        <Image className="rounded-full w-10 h-10" src={students.profilePic || '/default/DefaultUserDp.svg'} alt="DP" width={40} height={40} />
                                                         {students.isPremium && <Image className="absolute right-0 bottom-0" src='/icons/winnerBatch.svg' alt="Batch" width={18} height={18} />}
                                                     </div>
                                                 </div>
                                                 <div className="flex items-start justify-start flex-col">
-                                                    <div className="font-semibold">{students.name}</div>
-                                                    <div className="flex justify-start items-start text-[13px] text-[#667085]">{students.displayUserId}</div>
+                                                    <div className="font-semibold">{students.name || 'Phodu User'}</div>
+                                                    <div className="flex justify-start items-start text-[13px] text-[#667085]">{students.displayUserId || 'PhoduId'}</div>
                                                 </div>
                                             </div>
                                         </td>
