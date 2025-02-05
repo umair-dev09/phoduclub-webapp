@@ -46,7 +46,6 @@ type QuestionData = {
     options: Options;
     questionId: string;
     order: number;
-
 };
 
 // Helper function to format timestamp
