@@ -99,7 +99,7 @@ function Announcement() {
                                     width={40}
                                 />
                                 <div className='flex flex-col gap-[2px]'>
-                                    <span className='font-medium text-sm text-[#1F2937]'>{announcement.senderName || 'John'}</span>
+                                    <span className='font-medium text-sm text-[#1F2937]'>{announcement.senderName || 'Phodu Admin'}</span>
                                     <span className='font-normal text-xs text-[#475467]'>
                                         {announcement.timestamp.toDate().toLocaleTimeString('en-US', {
                                             hour: 'numeric',
