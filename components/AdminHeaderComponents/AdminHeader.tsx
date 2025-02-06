@@ -145,10 +145,10 @@ function Header({ currentPage }: HeaderProps) {
                     onOpenChange={(isOpen) => setPopoveropen(isOpen)}>
                     <PopoverTrigger>
                         <button className='flex flex-row gap-3 items-center justify-center outline-none'>
-                            <Image className='rounded-full' src={userData?.profilePic || "/defaultDP.svg"} alt="DP" width={40} height={40} />
+                            <Image className='rounded-full' src={userData?.profilePic || "/icons/default-community.svg"} alt="DP" width={40} height={40} />
                             <div className='flex flex-col items-center justify-center'>
-                                <span className='text-[#1D2939] font-semibold text-sm mt-[4px] mb-[-5px]'>{userData?.name}</span>
-                                <span className='text-[#667085] text-[13px] font-medium self-start'>{userData?.role}</span>
+                                <span className='text-[#1D2939] font-semibold text-sm mt-[4px] mb-[-5px]'>{userData?.name || "phodu admin"}</span>
+                                <span className='text-[#667085] text-[13px] font-medium self-start'>{userData?.role || "phodu role"}</span>
                             </div>
                             <Image src="/icons/by-role-arrow-down.svg" width={20} height={20} alt="Select-date Button" />
                         </button>
