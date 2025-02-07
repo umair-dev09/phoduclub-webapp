@@ -122,6 +122,7 @@ const InputHandler = ({ onOtpChange, length = 6, hasError = false, onSubmit }: I
                     key={index}
                     type="text"
                     inputMode="numeric"
+                    placeholder="-"
                     maxLength={1}
                     pattern="[0-9]*"
                     autoComplete="one-time-code"

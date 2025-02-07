@@ -41,122 +41,122 @@ function TestSeriesComp() {
   const [loading, setLoading] = useState(true);
   const router = useRouter();
   useEffect(() => {
-      const fetchTests = async (currentUserId: string) => {
-        const testsCollection = collection(db, 'testseries');
-  
-        const unsubscribe = onSnapshot(testsCollection, async (snapshot) => {
-          const allTests: TestData[] = [];
-  
-          // Loop through each test in the snapshot
-          for (const doc of snapshot.docs) {
-            const testData = doc.data();
-  
-            // Only process tests that are 'live'
-            if (testData.status === 'live') {
-              let shouldIncludeTest = false;
-              let courseName = '';
-  
-              // Check if test is part of a course
-              if (testData.isInCourse) {
-                // Check if user exists in studentsFromCourse map
-                const studentsFromCourse = testData.studentsFromCourse || [];
-                const studentData = studentsFromCourse.find(
-                  (student: { id: string; courseId: string }) =>
-                    student.id === currentUserId
-                );
-  
-                if (studentData) {
-                  shouldIncludeTest = true;
-                }
-              } else {
-                // Check individual purchase using StudentsPurchased collection
-                const studentsPurchasedCollection = collection(doc.ref, 'StudentsPurchased');
-                const studentDoc = await getDocs(studentsPurchasedCollection);
-                shouldIncludeTest = studentDoc.docs.some(student => student.id === currentUserId);
+    const fetchTests = async (currentUserId: string) => {
+      const testsCollection = collection(db, 'testseries');
+
+      const unsubscribe = onSnapshot(testsCollection, async (snapshot) => {
+        const allTests: TestData[] = [];
+
+        // Loop through each test in the snapshot
+        for (const doc of snapshot.docs) {
+          const testData = doc.data();
+
+          // Only process tests that are 'live'
+          if (testData.status === 'live') {
+            let shouldIncludeTest = false;
+            let courseName = '';
+
+            // Check if test is part of a course
+            if (testData.isInCourse) {
+              // Check if user exists in studentsFromCourse map
+              const studentsFromCourse = testData.studentsFromCourse || [];
+              const studentData = studentsFromCourse.find(
+                (student: { id: string; courseId: string }) =>
+                  student.id === currentUserId
+              );
+
+              if (studentData) {
+                shouldIncludeTest = true;
               }
-  
-              if (shouldIncludeTest) {
-                // Initialize the counters for sections with questions and sections with attempts
-                let sectionsWithQuestionsCount = 0;
-                let sectionsWithAttemptsCount = 0;
-  
-                // Recursive function to count sections with hasQuestions = true or isUmbrellaTest = true
-                const countSectionsWithQuestionsAndAttempts = async (path: string) => {
-                  const sectionCollection = collection(db, path);
-                  const sectionSnapshot = await getDocs(sectionCollection);
-  
-                  for (const sectionDoc of sectionSnapshot.docs) {
-                    const sectionData = sectionDoc.data();
-  
-                    // Count section if it has questions or is an umbrella test, but not if it's a parent umbrella test
-                    if ((sectionData.hasQuestions === true && !sectionData.isParentUmbrellaTest) ||
-                      (sectionData.isUmbrellaTest === true && !sectionData.isParentUmbrellaTest)) {
-                      sectionsWithQuestionsCount += 1;
-  
-                      // Check attempts collection
-                      const attemptsCollection = collection(sectionDoc.ref, 'attempts');
-                      const attemptsSnapshot = await getDocs(attemptsCollection);
-  
-                      // Count only one attempt per section if user has attempted
-                      if (attemptsSnapshot.docs.some(attempt => attempt.data().userId === currentUserId)) {
-                        sectionsWithAttemptsCount += 1;
-                      }
+            } else {
+              // Check individual purchase using StudentsPurchased collection
+              const studentsPurchasedCollection = collection(doc.ref, 'StudentsPurchased');
+              const studentDoc = await getDocs(studentsPurchasedCollection);
+              shouldIncludeTest = studentDoc.docs.some(student => student.id === currentUserId);
+            }
+
+            if (shouldIncludeTest) {
+              // Initialize the counters for sections with questions and sections with attempts
+              let sectionsWithQuestionsCount = 0;
+              let sectionsWithAttemptsCount = 0;
+
+              // Recursive function to count sections with hasQuestions = true or isUmbrellaTest = true
+              const countSectionsWithQuestionsAndAttempts = async (path: string) => {
+                const sectionCollection = collection(db, path);
+                const sectionSnapshot = await getDocs(sectionCollection);
+
+                for (const sectionDoc of sectionSnapshot.docs) {
+                  const sectionData = sectionDoc.data();
+
+                  // Count section if it has questions or is an umbrella test, but not if it's a parent umbrella test
+                  if ((sectionData.hasQuestions === true && !sectionData.isParentUmbrellaTest) ||
+                    (sectionData.isUmbrellaTest === true && !sectionData.isParentUmbrellaTest)) {
+                    sectionsWithQuestionsCount += 1;
+
+                    // Check attempts collection
+                    const attemptsCollection = collection(sectionDoc.ref, 'attempts');
+                    const attemptsSnapshot = await getDocs(attemptsCollection);
+
+                    // Count only one attempt per section if user has attempted
+                    if (attemptsSnapshot.docs.some(attempt => attempt.data().userId === currentUserId)) {
+                      sectionsWithAttemptsCount += 1;
                     }
-  
-                    // Recursively check subsections
-                    const subSectionPath = `${path}/${sectionDoc.id}/sections`;
-                    await countSectionsWithQuestionsAndAttempts(subSectionPath);
                   }
-                };
-  
-                await countSectionsWithQuestionsAndAttempts(`${doc.ref.path}/sections`);
-  
-                const studentProgress = sectionsWithQuestionsCount > 0
-                  ? (sectionsWithAttemptsCount / sectionsWithQuestionsCount) * 100
-                  : 0;
-                const roundedProgress = Math.round(studentProgress);
-  
-                allTests.push({
-                  testName: testData.testName,
-                  price: testData.price,
-                  discountPrice: testData.discountPrice,
-                  testId: testData.testId,
-                  testImage: testData.testImage,
-                  status: testData.status,
-                  testDescription: testData.testDescription,
-                  endDate: testData.endDate,
-                  totalSectionsWithQuestions: sectionsWithQuestionsCount,
-                  totalSectionsWithStudentsAttempted: sectionsWithAttemptsCount,
-                  studentProgress: roundedProgress,
-                });
-              }
+
+                  // Recursively check subsections
+                  const subSectionPath = `${path}/${sectionDoc.id}/sections`;
+                  await countSectionsWithQuestionsAndAttempts(subSectionPath);
+                }
+              };
+
+              await countSectionsWithQuestionsAndAttempts(`${doc.ref.path}/sections`);
+
+              const studentProgress = sectionsWithQuestionsCount > 0
+                ? (sectionsWithAttemptsCount / sectionsWithQuestionsCount) * 100
+                : 0;
+              const roundedProgress = Math.round(studentProgress);
+
+              allTests.push({
+                testName: testData.testName,
+                price: testData.price,
+                discountPrice: testData.discountPrice,
+                testId: testData.testId,
+                testImage: testData.testImage,
+                status: testData.status,
+                testDescription: testData.testDescription,
+                endDate: testData.endDate,
+                totalSectionsWithQuestions: sectionsWithQuestionsCount,
+                totalSectionsWithStudentsAttempted: sectionsWithAttemptsCount,
+                studentProgress: roundedProgress,
+              });
             }
           }
-  
-          setTests(allTests);
+        }
+
+        setTests(allTests);
+        setLoading(false);
+      });
+
+      return () => unsubscribe();
+    };
+
+    const initialize = () => {
+      setLoading(true);
+      const unsubscribeAuth = onAuthStateChanged(auth, (user) => {
+        if (user?.uid) {
+          fetchTests(user.uid);
+        } else {
+          setTests([]);
           setLoading(false);
-        });
-  
-        return () => unsubscribe();
-      };
-  
-      const initialize = () => {
-        setLoading(true);
-        const unsubscribeAuth = onAuthStateChanged(auth, (user) => {
-          if (user?.uid) {
-            fetchTests(user.uid);
-          } else {
-            setTests([]);
-            setLoading(false);
-          }
-        });
-  
-        return () => unsubscribeAuth();
-      };
-  
-      initialize();
-    }, []);
-  
+        }
+      });
+
+      return () => unsubscribeAuth();
+    };
+
+    initialize();
+  }, []);
+
 
   const handleTabClick = (path: string) => {
     router.push(path);
@@ -177,7 +177,7 @@ function TestSeriesComp() {
           <div key={index} className="flex flex-col mt-3 mx-6">
             <div className="flex justify-between items-center">
               <div className="flex items-center">
-                <h3 className="font-semibold text-lg">{test.testName}</h3>
+                <h3 className="font-semibold text-lg">{test.testName || 'Phodu Test Series'}</h3>
                 {/* <span className="mx-2 text-gray-400 font-semibold">/</span>
                                 <p className="font-normal text-gray-800"></p> */}
               </div>

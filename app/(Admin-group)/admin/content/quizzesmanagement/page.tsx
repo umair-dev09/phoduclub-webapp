@@ -537,7 +537,11 @@ const Quizz = () => {
                                     {data.length > 0 ? (
                                         currentItems.map((quiz, index) => (
                                             <tr key={index} className="border-t border-solid border-[#EAECF0]">
-                                                <td onClick={() => handleTabClick(`/admin/content/quizzesmanagement/${quiz.title.toLowerCase().replace(/\s+/g, '-')}/?qId=${quiz.quizId}`)}><button className="px-8 py-4 text-[#9012FF] text-left underline text-sm font-medium whitespace-nowrap">{quiz.title}</button></td>
+                                                <td onClick={() => handleTabClick(`/admin/content/quizzesmanagement/${quiz.title.toLowerCase().replace(/\s+/g, '-')}/?qId=${quiz.quizId}`)}>
+                                                    <button className="px-8 py-4 text-[#9012FF] text-left underline text-sm font-medium whitespace-nowrap">
+                                                        {quiz.title || 'Phodu Quiz'}
+                                                    </button>
+                                                </td>
                                                 <td className="px-8 py-4 text-center text-[#101828] text-sm"><button>{quiz.questions}</button></td>
                                                 <td className="px-8 py-4 text-center text-[#101828] text-sm whitespace-nowrap">{quiz.date}</td>
                                                 <td className="px-8 py-4 text-center text-[#101828] text-sm">{quiz.students}</td>
