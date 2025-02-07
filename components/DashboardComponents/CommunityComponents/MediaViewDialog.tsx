@@ -39,6 +39,7 @@ function MediaViewDialog({ open, onClose, src, mediaType }: MediaViewDialogProps
             onOpenChange={(isOpen) => !isOpen && onClose()}
             hideCloseButton
             className="min-w-[900px] min-h-[600px] max-w-[900px] max-h-[600px]"
+            // size="full"
         // scrollBehavior={scrollBehavior}
         >
             <ModalContent>
