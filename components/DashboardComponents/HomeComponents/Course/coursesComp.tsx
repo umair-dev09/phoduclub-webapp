@@ -166,15 +166,15 @@ function CoursesComp() {
   }
 
   return (
-    <div className="space-y-6 px-4 w-full mt-3">
+    <div className="space-y-6 w-full mt-3">
       {courses.length > 0 ? (
         courses.map((course, index) => (
-          <div key={index} className="flex flex-col border-b border-gray-200 pb-6">
+          <div key={index} className="flex flex-col border-b border-gray-200 px-6 py-4 hover:bg-[#F9FAFB] transition-all ease-in-out cursor-pointer">
             <div className="flex items-center justify-between">
               <h3 className="text-lg  text-gray-800">
                 {course.courseName || 'Phodu Course'}
               </h3>
-              <button className="w-8 h-8 rounded-full flex items-center justify-center hover:bg-gray-100" onClick={() => handleTabClick(`/learn/courses/${course.courseName.toLowerCase().replace(/\s+/g, '-')}/?cId=${course.courseId}`)}>
+              <button className="w-8 h-8 rounded-full flex items-center justify-center" onClick={() => handleTabClick(`/learn/courses/${course.courseName.toLowerCase().replace(/\s+/g, '-')}/?cId=${course.courseId}`)}>
                 <Image alt="Collapse Icon Right" src="/icons/collapse-right.svg" width={8} height={8} />
               </button>
             </div>
