@@ -206,10 +206,8 @@ function MyTestSeries() {
                       {/* Test name with a collapse icon */}
                       <div className="flex flex-1 text-base font-semibold leading-6 w-full items-center justify-between mt-3">
                         <p>{test.testName || ''}</p>
-                        <button className="w-[32px] h-[32px]  rounded-full flex items-center justify-center transition-all duration-300 ease-in-out hover:bg-[#F2F4F7]">
-                          <button>
-                            <Image alt="Collapse Icon Right" src="/icons/collapse-right.svg" width={8} height={8} />
-                          </button>
+                        <button className="w-[32px] h-[32px] rounded-full flex items-center justify-center">
+                          <Image alt="Collapse Icon Right" src="/icons/collapse-right.svg" width={8} height={8} />
                         </button>
                       </div>
 

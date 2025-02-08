@@ -174,14 +174,14 @@ function TestSeriesComp() {
     <div>
       {tests.length > 0 ? (
         tests.map((test, index) => (
-          <div key={index} className="flex flex-col mt-3 mx-6">
+          <div key={index} className="flex flex-col pt-3 px-6 hover:bg-[#F9FAFB] transition-all ease-in-out cursor-pointer">
             <div className="flex justify-between items-center">
               <div className="flex items-center">
                 <h3 className="font-semibold text-lg">{test.testName || 'Phodu Test Series'}</h3>
                 {/* <span className="mx-2 text-gray-400 font-semibold">/</span>
                                 <p className="font-normal text-gray-800"></p> */}
               </div>
-              <button className="w-8 h-8 rounded-full flex items-center justify-center transition-all duration-300 ease-in-out hover:bg-gray-100"
+              <button className="w-8 h-8 rounded-full flex items-center justify-center"
                 onClick={() => handleTabClick(`/learn/test/${test.testName.toLowerCase().replace(/\s+/g, '-')}/?tId=${test.testId}`)}>
                 <Image alt="Collapse Icon Right" src="/icons/collapse-right.svg" width={8} height={8} />
               </button>
