@@ -380,7 +380,7 @@ function TestPurchasePage() {
           </div>
         </button>
         <div className="text-[#667085] h-full w-auto -ml-1" style={{ fontSize: "16px", fontWeight: "500" }}>
-          {testData?.testName}
+          {testData?.testName || 'Phodu Test Series'}
         </div>
       </div>
 
@@ -397,10 +397,10 @@ function TestPurchasePage() {
         <div className="flex flex-col flex-1 min-h-[300px] h-auto bg-[#FFFFFF] border border-lightGrey rounded-xl justify-center">
           <div className="flex  flex-col h-[105px] p-4">
             <div className='text-[#1D2939] mt-2 ml-2'>
-              <h3>{testData?.testName}</h3>
+              <h3>{testData?.testName || 'Phodu Test Series'}</h3>
             </div>
             <div className=' text-[#667085] text-sm font-normal break-all ml-2 mt-2' dangerouslySetInnerHTML={{
-              __html: testData?.testDescription || '',
+              __html: testData?.testDescription || '-',
             }} />
           </div>
           {/* this code below is for rating  */}
@@ -419,6 +419,7 @@ function TestPurchasePage() {
               </div>
             </div>
           </div>
+
           {/* ------------------------------------------------------------------------------------------------------------------------------------------------- */}
 
           <div className="flex items-center justify-between h-full">
@@ -439,7 +440,6 @@ function TestPurchasePage() {
                 </div>
               )}
             </div>
-
 
             <div className="m-7">
               {testAlreadyPurchased ? (
@@ -476,8 +476,8 @@ function TestPurchasePage() {
         </div>
       </div>
       <div className='flex flex-row gap-3 mt-4 ml-1 mb-2'>
-        <p >{totalNoOfTests} Tests</p>
-        <p>{totalNoOfQuestions} Questions</p>
+        <p >{totalNoOfTests ? totalNoOfTests + ' Tests' : '-'}</p>
+        <p>{totalNoOfQuestions ? totalNoOfQuestions + ' Questions' : '-'}</p>
       </div>
       <div>
         <div className="flex flex-row items-center gap-2 mb-4">
@@ -534,11 +534,11 @@ function TestPurchasePage() {
                       navigateToSection(section.id, section.sectionName);
                     }} >
                     <div className='flex flex-col gap-1'>
-                      <p className='text-left text-base text-[#1D2939] font-semibold'>{section.sectionName}</p>
+                      <p className='text-left text-base text-[#1D2939] font-semibold'>{section.sectionName ? section.sectionName : '-'}</p>
                       {section.hasQuestions ? (
-                        <p className='text-left text-sm text-[#667085] font-normal'>{section.Questions?.length} Questions</p>
+                        <p className='text-left text-sm text-[#667085] font-normal'>{section.Questions?.length ? section.Questions?.length + ' Questions' : '-'}</p>
                       ) : (
-                        <p className='text-left text-sm text-[#667085] font-normal'>{section.sections?.length} Tests</p>
+                        <p className='text-left text-sm text-[#667085] font-normal'>{section.sections?.length ? section.sections?.length + ' Tests' : '-'}</p>
                       )}
                     </div>
                     <div>

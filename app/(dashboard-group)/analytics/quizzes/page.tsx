@@ -222,9 +222,9 @@ function QuizAnalytics() {
         setSelectedAttemptFilter(filter);
     };
 
-      if(loading){
+    if (loading) {
         return <LoadingData />
-      }
+    }
 
     return (
         <div className="flex flex-1 flex-col py-6 mx-8">
@@ -259,7 +259,6 @@ function QuizAnalytics() {
                                 </div>
                             </PopoverTrigger>
                             <PopoverContent className="flex flex-col bg-white w-auto h-auto px-0 items-start border border-lightGrey rounded-md">
-
                                 <button
                                     onClick={() => { handleAttemptFilterChange('All'); setPopoveropen(false) }}
                                     className="flex w-full px-[10px] py-[10px] hover:bg-[#EAECF0] rounded-t-8">
@@ -274,9 +273,6 @@ function QuizAnalytics() {
                                         {attempt.name || 'loading...'}
                                     </button>
                                 ))}
-
-
-
                             </PopoverContent>
                         </Popover>
                     )
@@ -297,9 +293,6 @@ function QuizAnalytics() {
                                 </div>
                             </div>
                         )}
-
-
-
                 </div>
             </div>
             <div className="mt-5 mb-4">
@@ -358,7 +351,6 @@ function QuizAnalytics() {
                     </div>
                 </div>
             </div>
-
 
             <div className="py-5 text-[#1D2939]"><h3>Leaderboard Analytics</h3></div>
             <div className="flex flex-col w-full h-auto gap-2">
@@ -424,7 +416,7 @@ function QuizAnalytics() {
                             <td className="flex items-center justify-center w-[12%]"><p>{leaderboard[1]?.answeredCorrect || 0}</p></td>
                             <td className="flex items-center justify-center w-[12%]"><p>{leaderboard[1]?.answeredIncorrect || 0}</p></td>
                             <td className="flex items-center justify-center w-[12%]">
-                              <p>{leaderboard[1]?.attemptedQuestions > 0 ? Math.round((leaderboard[1]?.answeredCorrect / leaderboard[1]?.attemptedQuestions) * 100) : 0}%</p>
+                                <p>{leaderboard[1]?.attemptedQuestions > 0 ? Math.round((leaderboard[1]?.answeredCorrect / leaderboard[1]?.attemptedQuestions) * 100) : 0}%</p>
                             </td>
                             <td className="flex items-center justify-center w-[12%]"><p className="w-20 text-end">{formatTime(leaderboard[1]?.timeTaken) || 0}</p></td>
                         </tr>

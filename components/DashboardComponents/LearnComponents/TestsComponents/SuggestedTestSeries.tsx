@@ -145,11 +145,12 @@ function SuggestedTestSeries() {
                 <div className="mt-4">
                   {/* Test name */}
                   <div className="text-lg font-semibold leading-6 ml-4">
-                    <p>{test.testName}</p>
+                    <p>{test.testName || 'Phodu Test Series'}</p>
                   </div>
                   {/* Test details: lessons, duration */}
                   <div className="text-xs mx-4 font-normal leading-4 text-[#667085] flex items-center gap-1">
-                    <p>{test.totalNoOfTests} Tests</p>
+                    {/* <p>{test.totalNoOfTests || '-'} Tests</p> */}
+                    <p>{test.totalNoOfTests ? test.totalNoOfTests + 'Tests' : '-'}</p>
                     {/* <span>&#x2022;</span>
                       <p>3hr 14m</p> */}
                   </div>
@@ -158,7 +159,8 @@ function SuggestedTestSeries() {
                 <div className="flex justify-between mt-2 mb-4 mx-4 text-lg font-semibold">
                   {/* Price */}
                   <div className="flex items-end">
-                    <h4>&#8377; {test.discountPrice}</h4>
+                    {/* <h4>&#8377; {test.discountPrice || '0'}</h4> */}
+                    <h4>{test.discountPrice ? '\u20B9 ' + test.discountPrice : '-'}</h4>
                   </div>
                   {/* Buy Now button */}
                   <div>

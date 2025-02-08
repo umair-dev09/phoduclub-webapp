@@ -205,7 +205,7 @@ function MyTestSeries() {
 
                       {/* Test name with a collapse icon */}
                       <div className="flex flex-1 text-base font-semibold leading-6 w-full items-center justify-between mt-3">
-                        <p>{test.testName || ''}</p>
+                        <p>{test.testName || 'Phodu Test Series'}</p>
                         <button className="w-[32px] h-[32px] rounded-full flex items-center justify-center">
                           <Image alt="Collapse Icon Right" src="/icons/collapse-right.svg" width={8} height={8} />
                         </button>
@@ -215,11 +215,12 @@ function MyTestSeries() {
                       <div className="flex flex-1 text-xs font-normal leading-4 gap-1 items-center w-full justify-between">
                         <div className="flex flex-col gap-2">
                           <div className="flex items-center justify-center text-[#667085]">Attempted</div>
-                          <div className="flex items-center justify-start font-semibold pl-[2px]">{test.totalSectionsWithStudentsAttempted || 0}/{test.totalSectionsWithQuestions || 0}</div>
+                          {/* <div className="flex items-center justify-start font-semibold pl-[2px]">{test.totalSectionsWithStudentsAttempted || '0'}/{test.totalSectionsWithQuestions || '0'}</div> */}
+                          <div className="flex items-center justify-start font-semibold pl-[2px]">{test.totalSectionsWithQuestions ? `${test.totalSectionsWithStudentsAttempted || '-'}/${test.totalSectionsWithQuestions}` : '-'}</div>
                         </div>
                         <div className="flex flex-col gap-2">
                           <div className="flex items-center justify-center text-[#667085]">Expire on</div>
-                          <div className="flex items-center justify-center font-semibold">{formatExpiryDate(test.endDate)}</div>
+                          <div className="flex items-center justify-center font-semibold">{formatExpiryDate(test.endDate) || '-'}</div>
                         </div>
                       </div>
                     </div>
@@ -231,7 +232,7 @@ function MyTestSeries() {
 
                       {/* Test status - completed percentage and time left */}
                       <div className="flex flex-row justify-between text-xs w-full">
-                        <div className="flex flex-row gap-1">Completed: <span className="font-semibold">{test.studentProgress || 0}%</span></div>
+                        <div className="flex flex-row gap-1">Completed: <span className="font-semibold">{test.studentProgress ? test.studentProgress + '%' : '-'}</span></div>
                       </div>
                     </div>
                   </div>

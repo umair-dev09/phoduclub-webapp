@@ -197,7 +197,7 @@ function MyCourses() {
                     {/* Course name with a collapse icon */}
                     <div className="flex flex-1 text-lg font-semibold leading-6 w-full items-end justify-between mt-5">
                       <div>
-                        <p>{course.courseName}</p>
+                        <p>{course.courseName || 'Phodu Course'}</p>
                       </div>
                       <button className="w-[32px] h-[32px] rounded-full flex items-center justify-center">
                         <button>
@@ -208,7 +208,8 @@ function MyCourses() {
 
                     {/* Course details - number of lessons and total duration */}
                     <div className="flex flex-1 text-xs font-normal leading-4 text-[#667085] gap-1 items-start w-full justify-start mt-1.5">
-                      <p>{course.totalContentCount} Lessons</p>
+                      {/* <p>{course.totalContentCount || '0'} Lessons</p> */}
+                      <p>{course.totalContentCount ? course.totalContentCount + ' Lessons' : '-'}</p>
                       {/* <span>&#x2022;</span>
                             <p>3hr 14m</p> */}
                     </div>
@@ -217,12 +218,13 @@ function MyCourses() {
                   {/* Progress bar and additional course info (completion, time left) */}
                   <div className="flex h-[40%] flex-col mb-2">
                     {/* Progress bar */}
-                    <Progress aria-label="Loading..." className="max-w-md h-2 mt-3" value={course.studentProgress} />
+                    <Progress aria-label="Loading..." className="max-w-md h-2 mt-3" value={course.studentProgress || 0} />
 
                     {/* Course status - completed percentage and time left */}
                     <div className="flex flex-1 flex-row justify-between mt-2 text-xs pb-3">
-                      <div className="flex flex-row gap-1">Completed: <span className="font-semibold">{course.studentProgress}%</span></div>
-                      <div className="flex flex-row gap-1">Time Left: <span className="font-semibold">{timeLeft(course.endDate)}</span></div>
+                      {/* <div className="flex flex-row gap-1">Completed: <span className="font-semibold">{course.studentProgress || '-'}%</span></div> */}
+                      <div className="flex flex-row gap-1">Completed: <span className="font-semibold">{course.studentProgress ? course.studentProgress + '%' : '-'}</span></div>
+                      <div className="flex flex-row gap-1">Time Left: <span className="font-semibold">{timeLeft(course.endDate) || '-'}</span></div>
                     </div>
                   </div>
                 </div>
