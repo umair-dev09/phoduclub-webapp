@@ -66,9 +66,9 @@ function Header() {
         setIsLogoutButtonDisabled(true);
         try {
             await signOut(auth);
+            router.push("/login");
             toast.dismiss(loadingToastId)
             toast.success("Logged out successfully!");
-            router.push("/login");
         } catch (error) {
             toast.dismiss(loadingToastId)
             toast.error("Error logging out. Please try again.");

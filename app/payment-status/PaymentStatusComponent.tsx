@@ -40,6 +40,7 @@ export default function PaymentStatusPage() {
   const productType = searchParams.get('product_type');
   const productId = searchParams.get('product_id');
   const uid = searchParams.get('uid');
+  const orderId = searchParams.get('order_id');
   const router = useRouter();
 
   useEffect(() => {
@@ -91,6 +92,7 @@ export default function PaymentStatusPage() {
         purchasedPrice: status.amount_paid,
         paymentType: getMainPaymentMethod(status.payment_method),
         transactionId: status.transaction_id,
+        orderId: orderId,
       };
 
       try {

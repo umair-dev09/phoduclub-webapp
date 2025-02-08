@@ -35,6 +35,7 @@ interface PurchaseData {
     paymentType: string;
     transactionId: string;
     contentName?: string;
+    orderId: string;
 }
 
 function Purchase() {
@@ -125,11 +126,11 @@ function Purchase() {
                     <table className="w-full min-w-[800px] border-collapse border-spacing-0"> {/* Add min-width to ensure table is scrollable */}
                         <thead className="bg-gray-100 sticky top-0 z-10">
                             <tr className="text-[#667085]">
-                                <th className="w-[28%] text-xs text-left py-4 px-6 font-semibold leading-[18px]">ITEMS</th>
-                                <th className="text-xs text-center py-4 px-6 font-semibold leading-[18px]">DATE</th>
-                                <th className="text-xs text-center py-4 px-6 font-semibold leading-[18px]">PRICE</th>
+                                <th className="w-[20%] text-xs text-left py-4 px-6 font-semibold leading-[18px]">ITEMS</th>
+                                <th className="text-xs text-center py-4 px-7 font-semibold leading-[18px]">DATE</th>
+                                <th className="text-xs text-center py-4 px-7 font-semibold leading-[18px]">PRICE</th>
                                 <th className="text-xs py-4 pr-9 font-semibold leading-[18px]">TRANSACTION ID</th>
-                                <th className="w-[10%] text-xs text-center py-4 px-6 font-semibold leading-[18px]">ACTIONS</th>
+                                <th className="text-xs py-4 pr-9 font-semibold leading-[18px]">ORDER ID</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-gray-200">
@@ -151,13 +152,18 @@ function Purchase() {
                                             <div className="flex items-center justify-center">
                                                 {transaction.purchasedPrice ? (
                                                     <div className="flex flex-row items-center">
-                                                        <span>{transaction.transactionId}</span>
+                                                        <span>
+                                                            {transaction.transactionId 
+                                                                ? `${String(transaction.transactionId).slice(0, 10)}${String(transaction.transactionId).length > 10 ? '..' : ''}`
+                                                                : '-'
+                                                            }
+                                                        </span>
                                                         <button
                                                             className={`ml-2 transition-opacity duration-200 relative ${hoveredRow === index ? 'opacity-100' : 'opacity-0'
                                                                 }`}
                                                             onClick={() => handleCopy(transaction.transactionId)}
                                                         >
-                                                            <Image
+                                                            <Image className="min-w-5 min-h-5"
                                                                 src="/icons/CopyButton.svg"
                                                                 alt="copy button"
                                                                 height={22}
@@ -173,8 +179,36 @@ function Purchase() {
                                                 ) : "-"}
                                             </div>
                                         </td>
-                                        <td className="px-6 py-4 text-right">
-                                            <Popover placement="bottom-end">
+                                        <td className="px-6 py-4 text-center text-[#667085] font-normal leading-6 whitespace-nowrap">
+                                        <div className="flex items-center justify-center">
+                                                {transaction.purchasedPrice ? (
+                                                    <div className="flex flex-row items-center">
+                                                        <span>
+                                                            {transaction.orderId 
+                                                                ? `${String(transaction.orderId).slice(0, 12)}${String(transaction.orderId).length > 10 ? '..' : ''}`
+                                                                : '-'
+                                                            }
+                                                        </span>                                                        <button
+                                                            className={`ml-2 transition-opacity duration-200 relative ${hoveredRow === index ? 'opacity-100' : 'opacity-0'
+                                                                }`}
+                                                            onClick={() => handleCopy(transaction.orderId)}
+                                                        >
+                                                            <Image className="min-w-5 min-h-5"
+                                                                src="/icons/CopyButton.svg"
+                                                                alt="copy button"
+                                                                height={22}
+                                                                width={22}
+                                                            />
+                                                            {copied === transaction.orderId && (
+                                                                <span className="absolute left-10 top-1/2 transform -translate-y-1/2 px-2 bg-[#1D2939] rounded-[6px] text-white font-medium text-[11px] transition-all duration-200">
+                                                                    Copied!
+                                                                </span>
+                                                            )}
+                                                        </button>
+                                                    </div>
+                                                ) : "-"}
+                                            </div>
+                                            {/* <Popover placement="bottom-end">
                                                 <PopoverTrigger>
                                                     <button className="focus:outline-none">
                                                         <Image
@@ -197,7 +231,8 @@ function Purchase() {
                                                         label="Download Invoice"
                                                     />
                                                 </PopoverContent>
-                                            </Popover>
+                                            </Popover> */}
+
                                         </td>
                                     </tr>
                                 ))

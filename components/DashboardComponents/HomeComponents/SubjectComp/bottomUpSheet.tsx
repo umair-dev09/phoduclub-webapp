@@ -225,8 +225,6 @@ const BottomSheet: React.FC<BottomUpSheet> = ({ closeModal, isOpen, subjectName 
     };
   }, [isOpen, hasUnsavedChanges, handleSave]);
 
-
-
   return (
     <Drawer
       open={isOpen}
@@ -248,8 +246,8 @@ const BottomSheet: React.FC<BottomUpSheet> = ({ closeModal, isOpen, subjectName 
                     ? 'Chemistry'
                     : subjectName === 'maths'
                       ? 'Maths'
-                      : subjectName || 'Subject'}</h3>
-
+                      : subjectName || 'Subject'}
+              </h3>
               <div className="w-[32px] h-[32px] mr-6  rounded-full flex items-center justify-center transition-all duration-300 ease-in-out hover:bg-[#F2F4F7] cursor-pointer"
                 onClick={closeModal} >
                 <div >
@@ -284,7 +282,7 @@ const BottomSheet: React.FC<BottomUpSheet> = ({ closeModal, isOpen, subjectName 
                       <tr key={index} className='h-[84px] border-t border-lightGrey'>
                         <td>
                           <div className='ml-6 text-[14px] font-medium'>
-                            <p>{chapter.chapterName}</p>
+                            <p>{chapter.chapterName || 'Phodu Chapter'}</p>
                           </div>
                           <div className="flex flex-row items-center ml-6 mt-1 w-[80%]">
                             <Progress

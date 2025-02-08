@@ -38,6 +38,7 @@ interface Question {
   correctAnswer: string | null;
   explanation: string;
   questionId: string;
+  isBonus: boolean;
   difficulty: string;
   order: number;
 }
@@ -166,6 +167,7 @@ const Sections: React.FC<SectionsProps> = ({
     explanation: '',
     questionId: '',
     difficulty: 'Easy',
+    isBonus: false,
     order: 1,
   }]);
 
@@ -311,6 +313,7 @@ const Sections: React.FC<SectionsProps> = ({
           correctAnswer: data.correctAnswer || null,
           explanation: data.answerExplanation || '',
           difficulty: data.difficulty || 'Easy',
+          isBonus: data.isBonus || false,
           order: data.order || 1,
         };
       });
@@ -326,6 +329,7 @@ const Sections: React.FC<SectionsProps> = ({
             explanation: '',
             questionId: '',
             difficulty: 'Easy',
+            isBonus: false,
             order: 1,
           },
         ]);
@@ -493,6 +497,7 @@ const Sections: React.FC<SectionsProps> = ({
           options: question.options,
           correctAnswer: question.correctAnswer,
           answerExplanation: question.explanation,
+          isBonus: question.isBonus,
           difficulty: question.difficulty,
           order: question.order !== undefined ? question.order : 0,
         };
@@ -581,6 +586,7 @@ const Sections: React.FC<SectionsProps> = ({
             correctAnswer: question.correctAnswer,
             answerExplanation: question.explanation,
             difficulty: question.difficulty,
+            isBonus: question.isBonus,
             order: question.order !== undefined ? question.order : 0,
           };
 
@@ -630,6 +636,7 @@ const Sections: React.FC<SectionsProps> = ({
       correctAnswer: null,
       explanation: '',
       questionId: '',
+      isBonus: false,
       difficulty: 'Easy',
       order: 1,
     }]);
@@ -642,6 +649,7 @@ const Sections: React.FC<SectionsProps> = ({
       options: { A: '', B: '', C: '', D: '' },
       correctAnswer: null,
       explanation: '',
+      isBonus: false,
       difficulty: 'Easy',
       questionId: `temp-${Date.now()}`, // Temporary ID for new questions
       order: questionsList.length + 1,
@@ -680,6 +688,7 @@ const Sections: React.FC<SectionsProps> = ({
               correctAnswer: row.correctAnswer || null,
               explanation: row.explanation || '',
               difficulty: row.difficulty || 'Easy',
+              isBonus: row.isBonus || false,
               questionId: doc(collection(db, 'questions')).id,
               order: index + 1, // Assign order based on position in CSV
             }));
@@ -726,6 +735,7 @@ const Sections: React.FC<SectionsProps> = ({
             correctAnswer: row[headers.indexOf('correctAnswer')] || null,
             explanation: row[headers.indexOf('explanation')] || '',
             difficulty: row[headers.indexOf('difficulty')] || 'Easy',
+            isBonus: row[headers.indexOf('isBonus')] || false,
             questionId: doc(collection(db, 'questions')).id,
             order: index + 1, // Assign order based on position in XLSX
           }));

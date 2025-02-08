@@ -23,7 +23,8 @@ export default function Sign() {
     const [termsAccepted, setTermsAccepted] = useState(false);
     const [errors, setErrors] = useState({ firstName: '', lastName: '', email: '', phone: '', terms: '' });
     const [isSubmitted, setIsSubmitted] = useState(false);
-    const [isLoading, setIsLoading] = useState(false); // Loading state
+    const [isLoading, setIsLoading] = useState(false);
+
     // useEffect(() => {
     //     const unsubscribe = onAuthStateChanged(auth, (user) => {
     //         if (user) {
@@ -44,6 +45,7 @@ export default function Sign() {
     //         <LoadingData/>
     //     );
     // }  
+
     onAuthStateChanged(auth, (user) => {
         if (user) {
             router.push("/dashboard");
@@ -59,11 +61,9 @@ export default function Sign() {
         );
     }
 
-
     const navigateLogin = () => {
         router.push('/login');
     }
-
 
     const validateForm = () => {
         let formIsValid = true;
@@ -209,7 +209,6 @@ export default function Sign() {
                                     />
                                     {isSubmitted && errors.firstName && <div id="firstName_error" className='text-red-500 text-[12px] mt-[2px]'>{errors.firstName}</div>}
                                 </div>
-
                                 <div className='flex flex-col'>
                                     <input
                                         type="text"
@@ -222,7 +221,6 @@ export default function Sign() {
                                     />
                                     {isSubmitted && errors.lastName && <div id="username_error" className='text-red-500 text-[12px] mt-[2px]'>{errors.lastName}</div>}
                                 </div>
-
                             </div>
                         </div>
                         <div >
@@ -300,7 +298,6 @@ export default function Sign() {
                                 ) : (
                                     'Send verification code'
                                 )}
-
                             </button>
                             {/* {isLoading && (
                                 <div className='flex items-center justify-center mt-2.5'>
@@ -312,15 +309,13 @@ export default function Sign() {
                         <div className='flex flex-row mt-2 mb-4'>
                             <p className='text-[#7d7d8a] font-semibold text-[15px]'>Already have an account? <span className='text-[#9012ff] font-semibold text-[15px] cursor-pointer hover:underline' onClick={navigateLogin}>Log In</span></p>
                         </div>
-
-
                         {/* <ToastContainer /> */}
                     </form>
                 </div>
             </div>
-            <div className="w-1/2 flex items-center justify-center  bg-[#0E2138] rounded-lg m-2">
+            <div className="w-1/2 flex items-center justify-center bg-[#0E2138] rounded-lg m-2">
                 <div className="absolute top-4 right-4 w-[400px] h-[400px] bg-[url('/icons/god-rays.png')] bg-cover bg-center bg-no-repeat mix-blend-plus-lighter blur-[12px] pointer-events-none"></div>
-                <div className="w-[554px] flex flex-col gap-10 h-auto">
+                <div className="w-[554px] mx-3 flex flex-col gap-10 h-auto">
                     <Image
                         src="/icons/coma.svg"
                         width={80}
@@ -332,8 +327,6 @@ export default function Sign() {
                 </div>
             </div>
             <div id="recaptcha-container"></div>
-
-
         </div>
     );
 }
