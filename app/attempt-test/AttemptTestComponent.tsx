@@ -878,7 +878,6 @@ useEffect(() => {
           if (currentSection?.isUmbrellaTest) {
             const mainAttemptRef = doc(attemptsRef);
             const combinedMetrics = calculateMetrics(combinedQuestionsData);
-            const totalTestTime = subSections.reduce((sum, section) => sum + section.testTime, 0);
             const timeTaken = (currentSection?.testTime ?? 0) - remainingTime;
       
             const mainAttemptData = {
@@ -946,7 +945,6 @@ useEffect(() => {
             const combinedMetrics = calculateMetrics(combinedQuestionsData);
             const timeTaken = (currentSection?.testTime ?? 0) - remainingTime;
             const allQuestions = subSections.flatMap(section => section.questions || []);
-            
             // IMPORTANT: Set the local questionStates to match exactly what was stored in Firestore.
             // Ensure the data is of type QuestionState[] before setting it
             if (Array.isArray(combinedQuestionsData) && !('states' in combinedQuestionsData[0])) {
