@@ -44,7 +44,6 @@ type Sections = {
   sectionName: string;
   sectionId: string;
   sectionScheduleDate: string;
-  status: string;
   noOfLessons: string;
   content?: Content[];
 }
@@ -95,18 +94,6 @@ type CourseData = {
   status: string | null;
   StudentsPurchased: string[];
 };
-
-function formatDate(dateString: string): string {
-  const date = new Date(dateString);
-  const month = (date.getMonth() + 1).toString().padStart(2, '0');
-  const day = date.getDate().toString().padStart(2, '0');
-  const year = date.getFullYear();
-  const hours = date.getHours() % 12 || 12;
-  const minutes = date.getMinutes().toString().padStart(2, '0');
-  const ampm = date.getHours() >= 12 ? 'PM' : 'AM';
-
-  return `${month}/${day}/${year}, ${hours.toString().padStart(2, '0')}:${minutes} ${ampm}`;
-}
 
 function Course() {
   const router = useRouter();
@@ -197,7 +184,6 @@ function Course() {
           const sectionsData: Sections[] = snapshot.docs.map((doc) => ({
             sectionName: doc.data().sectionName,
             sectionScheduleDate: doc.data().sectionScheduleDate,
-            status: doc.data().status,
             noOfLessons: doc.data().noOfLessons,
             sectionId: doc.data().sectionId,
             content: [],
@@ -713,15 +699,10 @@ function Course() {
                   key={index}
                   trigger={
                     <div
-                      className={`h-[60px] flex flex-row justify-between py-2 px-4 items-center transition-colors duration-300 ${section.status === 'live' ? 'bg-white hover:bg-[#F9FAFB]' : 'bg-gray-100'} `}
+                      className="h-[60px] flex flex-row justify-between py-2 px-4 items-center transition-colors duration-300 hover:bg-[#F9FAFB]"
                       onClick={() => toggleCollapsible(index)} // Pass section name to toggle function
                     >
-                      <div className="flex flex-col gap-1">
                       <span className="font-semibold text-base text-[#1D2939] text-left">{index + 1}. {section.sectionName}</span>
-                      {section.status === 'scheduled' && (
-                      <span className="text-[12px] text-gray-500 font-medium">Live at: {formatDate(section.sectionScheduleDate || '')}</span>
-                    )}
-                      </div>
                       <Image
                         src={isOpenArray[index] ? '/icons/arrow-up-dark.svg' : '/icons/arrow-down-dark.svg'}
                         width={20}
@@ -733,7 +714,7 @@ function Course() {
                   // transitionTime={350}
                   open={isOpenArray[index]}
                 >
-                  <div className={`flex flex-col border-t py-2 ${section.status === 'live' ? 'bg-white' : 'bg-gray-100'}`}>
+                  <div className="flex flex-col border-t py-2">
                     {section.content && section.content.length > 0 ? (
                       <>
                         {section.content?.map((content, index) => {
@@ -746,106 +727,94 @@ function Course() {
                           return (
                             <button
                               key={index}
-                              className={`${section.status !== 'live' 
-                              ? 'bg-gray-50'
-                              : selectedContent?.contentId === content.contentId
+                              className={`${selectedContent?.contentId === content.contentId
                                 ? 'bg-[#F8F0FF]'
                                 : isCompleted
-                                ? 'bg-green-100'
-                                : isLessonViewed
-                                  ? 'bg-gray-100'
-                                  : 'bg-[#FFFFFF]'
-                              } w-auto mx-2 mb-[6px] rounded-md flex flex-row items-top justify-center gap-2 h-auto py-3 px-4 ${section.status === 'live' ? 'hover:bg-[#F8F0FF]' : ''}`}
+                                  ? 'bg-green-100'
+                                  : isLessonViewed
+                                    ? 'bg-gray-100'
+                                    : 'bg-[#FFFFFF]'
+                                } w-auto mx-2 mb-[6px] rounded-md flex flex-row items-top justify-center gap-2 h-auto py-3 px-4 hover:bg-[#F8F0FF]`}
                               onClick={() => {
-                              if(section.status === 'live') {
                                 setSelectedContent(content);
                                 setSectionId(section.sectionId);
                                 if (!isLessonViewed) {
-                                handleMarkContentViewed(content.contentId, section.sectionId);
+                                  handleMarkContentViewed(content.contentId, section.sectionId);
                                 }
-                              }
                               }}
-                              disabled={section.status !== 'live'}
                             >
                               {!isCompleted ? (
-                                
-                              <Tooltip
-                                content="Mark as Complete"
-                                placement="left"
-                                offset={15}
-                                closeDelay={100}
-                                classNames={{
-                                content: [
-                                  "bg-[#222222] text-white text-sm py-2 px-4 rounded-md",
-                                ],
-                                }}
-                              >
-                                                                {section.status === 'live' && (
-                                <Checkbox
-                                size="md"
-                                color="secondary"
-                                radius="full"
-                                isSelected={isCompleted}
-                                onClick={() => handleMarkContentCompleted(content.contentId, section.sectionId, content.StudentsCompleted)}
-                                />
-                                                                )}
-                              </Tooltip>
+                                <Tooltip
+                                  content="Mark as Complete"
+                                  placement="left"
+                                  offset={15}
+                                  closeDelay={100}
+                                  classNames={{
+                                    content: [
+                                      "bg-[#222222] text-white text-sm py-2 px-4 rounded-md",
+                                    ],
+                                  }}
+                                >
+                                  <Checkbox
+                                    size="md"
+                                    color="secondary"
+                                    radius="full"
+                                    isSelected={isCompleted}
+                                    onClick={() => handleMarkContentCompleted(content.contentId, section.sectionId, content.StudentsCompleted)}
+                                  />
+                                </Tooltip>
                               ) : (
-                                <>
-                                {section.status === 'live' && (
-                              <Checkbox
-                                size="md"
-                                color="secondary"
-                                radius="full"
-                                isSelected={isCompleted}
-                                onClick={() => section.status === 'live' && handleMarkContentCompleted(content.contentId, section.sectionId, content.StudentsCompleted)}
-                              />
-                            )}
-                            </>
+                                <Checkbox
+                                  size="md"
+                                  color="secondary"
+                                  radius="full"
+                                  isSelected={isCompleted}
+                                  onClick={() => handleMarkContentCompleted(content.contentId, section.sectionId, content.StudentsCompleted)}
+                                />
                               )}
                               <div className="flex flex-col gap-1 pt-[-2px] w-full">
-                              <span className="font-semibold text-sm text-[#1D2939] text-left">
-                                {index + 1}. {content.lessonHeading}
-                              </span>
-                              {content.type === "Text" && (
-                                <div className="flex flex-row text-sm font-normal it">
-                                <Image
-                                  className="mr-1"
-                                  src="/icons/read.svg"
-                                  alt="test-icon"
-                                  width={16}
-                                  height={16}
-                                />
-                                <div>---</div>
-                                </div>
-                              )}
-                              {content.type === "Video" && (
-                                <div className="flex flex-row text-sm font-normal it">
-                                <Image
-                                  className="mr-1"
-                                  src="/icons/vedio.svg"
-                                  alt="video-icon"
-                                  width={16}
-                                  height={16}
-                                />
-                                <div>
-                                  <VideoDuration videoId={content.videoId} />
-                                </div>
+                                <span className="font-semibold text-sm text-[#1D2939] text-left">
+                                  {index + 1}. {content.lessonHeading}
+                                </span>
+                                {content.type === "Text" && (
+                                  <div className="flex flex-row text-sm font-normal it">
+                                    <Image
+                                      className="mr-1"
+                                      src="/icons/read.svg"
+                                      alt="test-icon"
+                                      width={16}
+                                      height={16}
+                                    />
+                                    <div>---</div>
+                                  </div>
+                                )}
+                                {content.type === "Video" && (
+                                  <div className="flex flex-row text-sm font-normal it">
+                                    <Image
+                                      className="mr-1"
+                                      src="/icons/vedio.svg"
+                                      alt="video-icon"
+                                      width={16}
+                                      height={16}
+                                    />
+                                    <div>
+                                      <VideoDuration videoId={content.videoId} />
+                                    </div>
 
-                                </div>
-                              )}
-                              {content.type === "Quiz" && (
-                                <div className="flex flex-row text-sm font-normal it">
-                                <Image
-                                  className="mr-1"
-                                  src="/icons/test.svg"
-                                  alt="video-icon"
-                                  width={16}
-                                  height={16}
-                                />
-                                <div>{content.questionsCount} Questions</div>
-                                </div>
-                              )}
+                                  </div>
+                                )}
+                                {content.type === "Quiz" && (
+                                  <div className="flex flex-row text-sm font-normal it">
+                                    <Image
+                                      className="mr-1"
+                                      src="/icons/test.svg"
+                                      alt="video-icon"
+                                      width={16}
+                                      height={16}
+                                    />
+                                    <div>{content.questionsCount} Questions</div>
+                                  </div>
+                                )}
                               </div>
                             </button>
                           );

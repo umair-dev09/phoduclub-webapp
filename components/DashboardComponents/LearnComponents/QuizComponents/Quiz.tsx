@@ -301,17 +301,24 @@ function Quiz() {
                                 )}
                                 {/* Quiz Information */}
                                 <div className="flex flex-col gap-1 text-xs">
-                                    <div className="text-base font-semibold">{quiz.title}</div>
-                                    <div>{quiz.questions} Questions</div>
+                                    <div className="text-base font-semibold">{quiz.title || 'Phodu Quiz'}</div>
+                                    <div>{quiz.questions ? quiz.questions + ' Questions' : '-'}</div>
                                 </div>
                                 {quiz.status === 'live' && quizTime && (
                                     <div className="flex flex-row text-[#DE3024]">
                                         <div className="mr-1">
-                                            <Image src="/icons/stop-watch.svg" alt="stop watch" width={18} height={18} />
+                                            {formatTime(quizTime.endTime)
+                                                ? <Image src="/icons/stop-watch.svg" alt="stop watch" width={18} height={18} />
+                                                : null
+                                            }
                                         </div>
                                         <div className="flex items-center text-xs gap-1">
-                                            Quiz ends in
-                                            <span className="font-semibold">{formatTime(quizTime.endTime)}</span>
+                                            {/* Quiz ends in
+                                            <span className="font-semibold">{formatTime(quizTime.endTime) || '-'}</span> */}
+                                            {formatTime(quizTime.endTime)
+                                                ? <span className="font-semibold">Quiz ends in {formatTime(quizTime.endTime)}</span>
+                                                : '-'
+                                            }
                                         </div>
                                     </div>
                                 )}
@@ -321,8 +328,12 @@ function Quiz() {
                                             <Image src="/icons/hourglass.svg" alt="stop watch" width={18} height={18} />
                                         </div>
                                         <div className="flex items-center text-xs gap-1">
-                                            Quiz starts in
-                                            <span className="font-semibold">{formatTime(quizTime.startTime)}</span>
+                                            {/* Quiz starts in
+                                            <span className="font-semibold">{formatTime(quizTime.startTime)}</span> */}
+                                            {formatTime(quizTime.startTime)
+                                                ? <span className="font-semibold">Quiz starts in {formatTime(quizTime.startTime)}</span>
+                                                : '-'
+                                            }
                                         </div>
                                     </div>
                                 )}
@@ -342,9 +353,6 @@ function Quiz() {
                 </div>
             )}
 
-
-
-
             <Modal isOpen={showQuizDialog} onOpenChange={(isOpen) => !isOpen && setShowQuizDialog(false)} hideCloseButton
                 size="lg"
             >
@@ -362,9 +370,8 @@ function Quiz() {
                         <ModalBody>
                             <div className=" h-auto ">
                                 <span className="text-sm text-[#667085] font-normal"
-
-                                    dangerouslySetInnerHTML={{ __html: quizDescription || "No description available" }} />
-
+                                    dangerouslySetInnerHTML={{ __html: quizDescription || "No description available" }}
+                                />
                             </div>
                             <div className="my-8 flex-row flex items-center ">
                                 <div className="gap-1 flex-col flex items-center w-full border-r border-lightGrey">
