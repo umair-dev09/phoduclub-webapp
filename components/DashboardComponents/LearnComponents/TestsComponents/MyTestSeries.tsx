@@ -192,7 +192,7 @@ function MyTestSeries() {
                   <div className="flex w-full h-[50%] items-center flex-col">
                     {test.isInCourse && (
                       <div className="flex items-center absolute top-3 left-5 mr-5 bg-[#c74fe6] bg-opacity-80 text-xs font-medium border border-[#c74fe6] text-white rounded-full px-3 py-2 z-10 transition-transform duration-300 ease-in-out">
-                        <p>{test.courseName}</p>
+                        <p>{test.courseName || 'Phodu Course'}</p>
                       </div>
                     )}
                     <Image className="w-full h-[300px] border border-lightGrey rounded-t-md overflow-hidden group-hover:opacity-85 transition-opacity duration-150 object-cover" src={test.testImage || "/images/course_img.svg"} alt="Test" width={300} height={300} />
