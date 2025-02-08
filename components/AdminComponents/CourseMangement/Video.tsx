@@ -29,8 +29,6 @@ interface VdoCipherResponse {
     playbackInfo: string;
 }
 function Video({ isOpen, toggleDrawer, sectionId, courseId, isEditing, contentId }: VideoProps) {
-    // ALL RELATED TO VIDEOCIPHER FUNCTION
-    // /-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     const [videocipherid, setVideocipherid] = useState('');
     const [videoData, setVideoData] = useState<VdoCipherResponse | null>(null);
     const [error, setError] = useState<string>('');
@@ -87,7 +85,6 @@ function Video({ isOpen, toggleDrawer, sectionId, courseId, isEditing, contentId
     const [videoId, setVideoId] = useState('');
     const [videoDuration, setVideoDuration] = useState<number | null>(null);
     const [videoLink, setVideoLink] = useState<string | null>(null);
-    const [contentScheduleDate, setContentScheduleDate] = useState('');
     const [disscusionOpen, setDisscusionOpen] = useState(false);
     const [fileName, setFileName] = useState<string | null>(null); // State to hold the file name
     const [progress, setProgress] = useState<number | null>(null);
@@ -102,7 +99,7 @@ function Video({ isOpen, toggleDrawer, sectionId, courseId, isEditing, contentId
         window.open("http://localhost:3000/admin/uploadVideo", "_blank", "noopener,noreferrer");
     };
 
-    const isFormValid = lessonHeading && lessonOverView && contentScheduleDate && videocipherid;
+    const isFormValid = lessonHeading && lessonOverView && videocipherid;
 
     const formatScheduleDate = (dateString: string | null): string => {
         if (!dateString) return "-"; // Return "-" if the date is null or undefined
@@ -148,7 +145,6 @@ function Video({ isOpen, toggleDrawer, sectionId, courseId, isEditing, contentId
             setVideoLink(null);
             setProgress(null); // Reset progress
             setFileName(null);
-            setContentScheduleDate('');
             setDisscusionOpen(false);
             setVideocipherid('');
             setSelectedFile(null);
@@ -167,7 +163,6 @@ function Video({ isOpen, toggleDrawer, sectionId, courseId, isEditing, contentId
                 setLessonHeading(content.lessonHeading || '');
                 setLessonOverView(content.lessonOverView || '');
                 setVideoLink(content.videoLink || '');
-                setContentScheduleDate(content.lessonScheduleDate || '');
                 setDisscusionOpen(content.isDisscusionOpen || '');
                 setFileName(content.videoFileName);
                 setVideocipherid(content.videoId);
@@ -425,7 +420,6 @@ function Video({ isOpen, toggleDrawer, sectionId, courseId, isEditing, contentId
                     lessonHeading: lessonHeading,
                     lessonOverView: lessonOverView,
                     // videoLink: videoLink ? videoLink : null,
-                    lessonScheduleDate: contentScheduleDate,
                     isDisscusionOpen: disscusionOpen,
                     videoId: videocipherid,
                     // videoFileName: fileName,
@@ -440,7 +434,6 @@ function Video({ isOpen, toggleDrawer, sectionId, courseId, isEditing, contentId
                 setVideoLink(null);
                 setProgress(null); // Reset progress
                 setFileName(null);
-                setContentScheduleDate('');
                 setDisscusionOpen(false);
                 setSelectedFile(null);
             }
@@ -453,7 +446,6 @@ function Video({ isOpen, toggleDrawer, sectionId, courseId, isEditing, contentId
                     lessonHeading: lessonHeading,
                     lessonOverView: lessonOverView,
                     // videoLink: videoLink ? videoLink : null,
-                    lessonScheduleDate: contentScheduleDate,
                     isDisscusionOpen: disscusionOpen,
                     // videoFileName: fileName,
                     // videoDuration,
@@ -467,7 +459,6 @@ function Video({ isOpen, toggleDrawer, sectionId, courseId, isEditing, contentId
                 setVideoLink(null);
                 setProgress(null); // Reset progress
                 setFileName(null);
-                setContentScheduleDate('');
                 setDisscusionOpen(false);
                 setSelectedFile(null);
             }
@@ -748,28 +739,6 @@ function Video({ isOpen, toggleDrawer, sectionId, courseId, isEditing, contentId
                                     onChange={(e) => setVideoId(e.target.value)}
                                 />
                             </div> */}
-
-
-                                <div className="flex flex-col gap-2 mb-3 mt-1">
-                                    <span className="text-[#1D2939] font-semibold text-sm">Schedule Lesson</span>
-
-
-                                    <DatePicker
-                                        granularity="minute"
-                                        minValue={today(getLocalTimeZone())}
-                                        value={contentScheduleDate || undefined ? parseDateTime(contentScheduleDate) || undefined : undefined}
-                                        hideTimeZone
-                                        onChange={(date) => {
-                                            const dateString = date ? date.toString() : "";
-                                            setContentScheduleDate(dateString);
-
-                                        }}
-
-                                    />
-
-
-
-                                </div>
 
                                 <div className="flex flex-row justify-between border border-solid border-[#EAECF0] h-12 p-3 bg-[#F9FAFB] rounded-md">
                                     <span className="text-[#1D2939] font-semibold text-sm">Discussion forum</span>

@@ -22,6 +22,7 @@ type Sections = {
     sectionName: string;
     sectionId: string;
     sectionScheduleDate: string;
+    status: string;
     noOfLessons: string;
     content?: Content[];
 }
@@ -33,7 +34,6 @@ type Content = {
     lessonContent: string;
     lessonHeading: string;
     lessonOverView: string;
-    lessonScheduleDate: string;
     pdfLink: string;
     videoLink: string;
     marksPerQuestion: string;
@@ -120,6 +120,7 @@ function CourseContent({ courseId }: CourseContentProps) {
                 const sectionsData: Sections[] = snapshot.docs.map((doc) => ({
                     sectionName: doc.data().sectionName,
                     sectionScheduleDate: doc.data().sectionScheduleDate,
+                    status: doc.data().status,
                     noOfLessons: doc.data().noOfLessons,
                     sectionId: doc.data().sectionId,
                     content: [], // Initialize an empty content array
@@ -136,7 +137,6 @@ function CourseContent({ courseId }: CourseContentProps) {
                     onSnapshot(contentQuery, (contentSnapshot) => {
                         const contentData: Content[] = contentSnapshot.docs.map((contentDoc) => ({
                             lessonHeading: contentDoc.data().lessonHeading,
-                            lessonScheduleDate: contentDoc.data().lessonScheduleDate,
                             type: contentDoc.data().type,
                             contentId: contentDoc.id,
                             isDisscusionOpen: contentDoc.data().isDisscusionOpen,
@@ -226,9 +226,14 @@ function CourseContent({ courseId }: CourseContentProps) {
                 const newSectionRef = doc(db, `course/${courseId}/sections/${passedSectionId}`);
 
                 // Update the section
+                const currentDate = new Date();
+                const scheduleDate = new Date(sectionScheduleDate);
+                const status = scheduleDate <= currentDate ? 'live' : 'scheduled';
+
                 await updateDoc(newSectionRef, {
                     sectionName: name,
                     sectionScheduleDate: sectionScheduleDate,
+                    status: status,
                 });
 
                 toast.success('Changes saved successfully');
@@ -249,10 +254,15 @@ function CourseContent({ courseId }: CourseContentProps) {
             try {
                 // Generate a unique section ID (Firestore will auto-generate if you use addDoc)
                 const newSectionRef = doc(collection(db, 'course', courseId, 'sections')); // No need for custom sectionId generation if using Firestore auto-ID
+                 // Update the section
+                 const currentDate = new Date();
+                 const scheduleDate = new Date(sectionScheduleDate);
+                 const status = scheduleDate <= currentDate ? 'live' : 'scheduled';
                 await setDoc(newSectionRef, {
                     sectionName: name,
                     sectionScheduleDate: sectionScheduleDate,
                     sectionId: newSectionRef.id,
+                    status: status,
                 });
                 toast.success('Section added successfully');
                 closeCreateSection();
@@ -395,10 +405,12 @@ function CourseContent({ courseId }: CourseContentProps) {
                                     <span className="font-semibold text-[16px] text-[#1D2939]">{section.sectionName}</span>
                                     <span className="text-[#667085] font-normal text-sm">{section.content?.length || 0} Lessons</span>
                                 </div>
-                                <div className="flex flex-row gap-16">
+                                <div className="flex flex-row gap-16 ">
                                     <div className="flex flex-col gap-[2px]">
                                         <span className="text-[#667085] font-normal text-sm">Schedule</span>
-                                        <span className="font-semibold text-[15px] text-[#1D2939]">{formatScheduleDate(section.sectionScheduleDate)}</span>
+                                        <span className="font-semibold text-[15px] text-[#1D2939]">
+                                            {section.status === 'live' ? 'Live' : formatScheduleDate(section.sectionScheduleDate) }
+                                            </span>
                                     </div>
                                     <div className="flex flex-row items-center">
 
@@ -498,7 +510,6 @@ function CourseContent({ courseId }: CourseContentProps) {
                                 <thead className="bg-[#F2F4F7]">
                                     <tr>
                                         <th className="w-[58%] text-left px-5 py-4   text-[#667085] font-medium text-sm">Lessons</th>
-                                        <th className="w-[25%] text-start px-5 py-4 text-[#667085] font-medium text-sm">Schedule Date</th>
                                         <th className="w-[12%] text-start px-5 py-4 text-[#667085] font-medium text-sm">Type</th>
                                         <th className="w-[5%] text-start px-5 py-4 text-[#667085] font-medium text-sm">Action</th>
                                     </tr>
@@ -512,7 +523,6 @@ function CourseContent({ courseId }: CourseContentProps) {
                                                     {content.lessonHeading}
                                                 </div>
                                             </td>
-                                            <td className="px-5 py-4 text-start text-[#101828] text-sm">{formatScheduleDate(content.lessonScheduleDate)}</td>
                                             <td className="px-5 py-4 text-start text-[#101828] text-sm">{content.type}</td>
                                             <td className="flex items-center justify-center px-8 py-4 text-[#101828] text-sm">
                                                 <Popover
