@@ -44,6 +44,7 @@ interface BaseQuestion {
     isChecked: boolean;
     isActive: boolean;
     options: Options;
+    isBonus: boolean;
     correctAnswer: string | null;
     answerExplanation: string;
     questionId: string;
@@ -264,8 +265,8 @@ function ReviewTestView() {
     const [formattedTime, setFormattedTime] = useState<string>("00:00:00");
     const [timerStarted, setTimerStarted] = useState(false);
     const [subsectionTimers, setSubsectionTimers] = useState<{ [key: string]: SubSectionTimer }>({});
-    const [allQuestions, setAllQuestions] = useState<Question[]>([]);
-    const [allQuestionStates, setAllQuestionStates] = useState<QuestionState[]>([]);
+    // const [allQuestions, setAllQuestions] = useState<Question[]>([]);
+    // const [allQuestionStates, setAllQuestionStates] = useState<QuestionState[]>([]);
     // Add helper function to format time
     const formatTime = (seconds: number): string => {
         const hours = Math.floor(seconds / 3600);
@@ -761,53 +762,6 @@ useEffect(() => {
 }, [questionStates]);
 
 
-
-    // const startSubsectionTimer = (sectionId: string) => {
-    //     setSubsectionTimers(prev => ({
-    //         ...prev,
-    //         [sectionId]: {
-    //             timeSpent: prev[sectionId]?.timeSpent || 0,
-    //             lastStartTime: Date.now()
-    //         }
-    //     }));
-    // };
-
-    // const stopSubsectionTimer = (sectionId: string) => {
-    //     setSubsectionTimers(prev => {
-    //         const timer = prev[sectionId];
-    //         if (!timer) return prev;
-
-    //         return {
-    //             ...prev,
-    //             [sectionId]: {
-    //                 timeSpent: getTotalTimeSpent(timer),
-    //                 lastStartTime: 0
-    //             }
-    //         };
-    //     });
-    // };
-
-
-    // Initialize timer on component mount
-    // useEffect(() => {
-    //     if (currentSection?.isUmbrellaTest && subSections.length > 0) {
-    //         const initialSectionId = subSections[activeSubSectionIndex].id;
-    //         startSubsectionTimer(initialSectionId);
-    //     }
-    // }, [currentSection, subSections]);
-
-    // Add cleanup on unmount
-    // useEffect(() => {
-    //     return () => {
-    //         if (currentSection?.isUmbrellaTest) {
-    //             const currentSectionId = subSections[activeSubSectionIndex]?.id;
-    //             if (currentSectionId) {
-    //                 stopSubsectionTimer(currentSectionId);
-    //             }
-    //         }
-    //     };
-    // }, []);
-
         // Add effect to initialize section timers
         useEffect(() => {
             if (currentSection?.isUmbrellaTest && subSections.length > 0) {
@@ -1163,10 +1117,10 @@ useEffect(() => {
                 <div className="flex flex-col w-[365px]  border-l border-r border-[#A1A1A199] pb-[77px] bg-[#DEF7FE]">
 
                     <div className="flex flex-row bg-[#DEF7FE] h-[120px] border-t border-b border-[#A1A1A199] items-center pl-6">
-                        <Image className="w-20 h-20 rounded-full border border-black  " src={userData?.profilePic || "/defaultDP.svg"} alt="Profile Pic" width={80} height={80} />
-                        <div className="flex flex-col ml-3 items-center justify-center h-20">
-                            <p className="font-semibold font-['Inter'] text-[16px] text-[#131313] ml-[-2px]">{userData?.name}</p>
-                            <p className="font-normal font-['Inter'] text-[14px] text-[#667085]">{userData?.userId}</p>
+                        <Image className="w-20 h-20 rounded-full border border-black  " src={userData?.profilePic || "/default/DefaultUserDp.svg"} alt="Profile Pic" width={80} height={80} />
+                        <div className="flex flex-col ml-3 items-start justify-center h-20">
+                            <p className="font-semibold font-['Inter'] text-[16px] text-[#131313] ml-[-2px]">{userData?.name || 'Phodu User'}</p>
+                            <p className="font-normal font-['Inter'] text-[14px] text-[#667085] text-start">{userData?.userId || 'phodu123'}</p>
                         </div>
                     </div>
 
@@ -1246,10 +1200,25 @@ useEffect(() => {
                     </div>
                 )}
 
-                <div className="flex flex-col w-[365px] h-full border-l border-r border-[#A1A1A199] bg-[#def7fe] items-center justify-center py-[4px]">
-                    <button className=" flex items-center justify-center w-[74px] h-[36px] rounded-[3px] bg-[#4298EB] border border-[#A1A1A199]" onClick={onOpenFirst}>
-                        <span className="font-bold font-['Inter'] text-[12px] text-[#F5F5F5]">Submit</span>
+                <div className="flex flex-row w-[365px] h-full border-l border-r border-[#A1A1A199] bg-[#def7fe] items-center justify-center py-[4px] gap-2">
+                {/* {showBonusButton && ( */}
+                    <button 
+                    className="flex items-center justify-center w-auto h-[36px] rounded-[3px] bg-[#4298EB] border border-[#A1A1A199] px-4"
+                    // onClick={handleUnlockBonusQuestions}
+                    >
+                    <span className="font-bold font-['Inter'] text-[12px] text-[#F5F5F5]">
+                        Unlock Bonus Questions
+                    </span>
                     </button>
+                {/* )} */}
+                <button 
+                    className="flex items-center justify-center w-[74px] h-[36px] rounded-[3px] bg-[#4298EB] border border-[#A1A1A199]" 
+                    onClick={onOpenFirst}
+                >
+                    <span className="font-bold font-['Inter'] text-[12px] text-[#F5F5F5]">
+                    Submit
+                    </span>
+                </button>
                 </div>
             </div>
             <Modal isOpen={isOpenFirst} onOpenChange={(isOpen) => !isOpen && onCloseFirst()}>

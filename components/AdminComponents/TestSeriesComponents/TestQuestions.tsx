@@ -22,6 +22,7 @@ interface Question {
     explanation: string;
     questionId: string;
     difficulty: string;
+    isBonus: boolean;
     order: number;
 }
 
@@ -73,6 +74,7 @@ function TestQuestions({ questionsList, setQuestionsList }: QuestionsProps) {
                 correctAnswer: null,
                 explanation: '',
                 difficulty: 'Easy',
+                isBonus: false,
                 questionId: `temp-${Date.now()}`,
                 order: questionsList.length + 1
             };
@@ -119,6 +121,13 @@ function TestQuestions({ questionsList, setQuestionsList }: QuestionsProps) {
     const handleDifficultySelect = (questionIndex: number, value: string) => {
         const newQuestionsList = [...questionsList];
         newQuestionsList[questionIndex].difficulty = value;
+        setQuestionsList(newQuestionsList);
+        handlePopoverClose(questionIndex);
+    };
+
+    const handleIsBonusSelect = (questionIndex: number, value: boolean) => {
+        const newQuestionsList = [...questionsList];
+        newQuestionsList[questionIndex].isBonus = value;
         setQuestionsList(newQuestionsList);
         handlePopoverClose(questionIndex);
     };
@@ -540,11 +549,12 @@ function TestQuestions({ questionsList, setQuestionsList }: QuestionsProps) {
                                     Questions
                                 </p>
                             </div>
-                            <div className="w-[20%] py-3">
+                            <div className="w-[15%] py-3">
                                 <p className="text-sm text-[#667085] font-medium leading-6">
                                     Difficulty
                                 </p>
                             </div>
+                           
                             <div className="w-[10%] pr-4 py-3 text-right">
                                 <p className="text-sm text-[#667085] font-medium leading-6">
                                     Action
@@ -575,9 +585,13 @@ function TestQuestions({ questionsList, setQuestionsList }: QuestionsProps) {
                                                     <div className={`"h-auto w-auto rounded-[4px]  bg-[#EAECF0] flex justify-center py-[2px] px-2 "${visited[index] && isDataMissing(question) ? " bg-[#F04438] mt-1 text-white" : "bg-[#EAECF0] mt-1 text-[#1D2939]"}`}>
                                                         <span className=" font-semibold text-[12px] ">{index + 1}</span>
                                                     </div>
-                                                    <div className={`"font-normal text-sm break-all "${visited[index] && isDataMissing(question) ? " text-[#F04438] ml-1 mt-1" : " text-[#1D2939]  ml-1 mt-1"}`} dangerouslySetInnerHTML={{ __html: question.question || "Question" }}></div>
+                                                    <div className={`"font-normal text-sm break-all "${visited[index] && isDataMissing(question) ? " text-[#F04438] ml-1 mt-1" : " text-[#1D2939]  ml-1 mt-1"}`} dangerouslySetInnerHTML={{ __html: question.question || "Question" }}></div> {question.isBonus && (
+                                            <div className="bg-purple text-white text-[13px] font-medium rounded-full min-w-5 min-h-5 items-center flex justify-center self-center">B</div>
+                                             )}
                                                 </div>
                                             </div>
+
+                                            
                                             <div className="w-[20%] py-1">
                                                 {/* index Difficulty Dropdown */}
                                                 <Popover placement="bottom" isOpen={!!openPopovers[index]}
@@ -617,6 +631,7 @@ function TestQuestions({ questionsList, setQuestionsList }: QuestionsProps) {
                                                     </PopoverContent>
                                                 </Popover>
                                             </div>
+                                           
                                             <div className="w-[10%] pr-4 py-1">
                                                 <div className="flex justify-end w-full">
                                                     <Popover placement="bottom-end"
@@ -633,7 +648,14 @@ function TestQuestions({ questionsList, setQuestionsList }: QuestionsProps) {
                                                                 />
                                                             </button>
                                                         </PopoverTrigger>
-                                                        <PopoverContent className="h-[88px] w-[167px] px-0 border border-solid border-[#EAECF0] bg-[#FFFFFF] rounded-md flex flex-col py-[4px] shadow-lg">
+                                                        <PopoverContent className="h-auto w-[167px] px-0 border border-solid border-[#EAECF0] bg-[#FFFFFF] rounded-md flex flex-col py-[4px] shadow-lg">
+                                                        <button
+                                                                className="flex flex-row h-[40px] w-full px-3 gap-2 hover:bg-[#F2F4F7] items-center"
+                                                                onClick={(e) => { handleIsBonusSelect(index, !questionsList[index].isBonus); e.stopPropagation(); closePopoverA(index); }}
+                                                            >
+                                                                <div className="bg-purple text-white text-[13px] font-medium rounded-full w-5 h-5 ">B</div>
+                                                                <span className="text-[#0C111D] text-sm font-medium">{question.isBonus ? 'Remove Bonus' : 'Mark Bonus'}</span>
+                                                            </button>
                                                             <button
                                                                 className="flex flex-row h-[40px] w-full px-3 gap-2 hover:bg-[#F2F4F7] items-center"
                                                                 onClick={(e) => { handleAddQuestionduplicate(question); e.stopPropagation(); closePopoverA(index); }}
