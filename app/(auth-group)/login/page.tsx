@@ -122,7 +122,7 @@ export default function Login_Page() {
                 <div className="flex flex-col gap-4 justify-center items-center h-full w-full">
                     {/* <p className="text-2xl font-bold text-[#101828]">Welcome Back!</p>
                     <span className="text-[#667085] font-medium text-base">Make yourself prepared, before time ✌️</span> */}
-                    <form onSubmit={(e) => e.preventDefault()} className="flex flex-col items-center justify-center gap-6 max-w-[420px] w-full">
+                    <form onSubmit={(e) => e.preventDefault()} className="flex flex-col items-center justify-center gap-6 max-w-[26.25rem] w-full">
                         <div className="flex flex-col items-center justify-center">
                             <p className="text-2xl font-bold text-[#101828]">Welcome Back!</p>
                             <span className="text-[#667085] font-medium text-base">Make yourself prepared, before time ✌️</span>

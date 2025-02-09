@@ -195,7 +195,7 @@ export default function Sign() {
                         <h3 className='font-bold text-[24px]'>Get Started</h3>
                         <p className='mt-2'>Make yourself prepared, before time ✌️</p>
                     </div>
-                    <form className='flex flex-col items-center justify-center gap-4' onSubmit={handleSubmit}>
+                    <form className='flex flex-col items-center justify-center gap-4 max-w-[26.25rem] w-full' onSubmit={handleSubmit}>
                         <div className='w-full'>
                             <label className='text-[14px] text-[#080808] font-medium'>Name</label>
                             <div className='flex flex-row w-full justify-between gap-3'>
