@@ -332,32 +332,38 @@ export default function Sign() {
             {/* Left Area */}
             <div className='w-full md:w-1/2 flex flex-col pt-6 px-6 md:pl-6'>
                 <Image src="/images/phoduclublogo.png" width={140} height={10} quality={100} alt="Phodu Club Logo" />
-                <div className='Signup Main Div flex flex-col self-center mt-10 md:mt-20 items-center w-full'>
+                <div className='Signup Main Div flex flex-col self-center mt-10 md:mt-20 items-center w-full justify-center'>
                     <h3 className='font-bold text-[20px] md:text-[24px]'>Get Started</h3>
                     <p className='mt-2 text-sm md:text-base text-center md:text-left'>Make yourself prepared, before time ✌️</p>
                     <form className='flex flex-col items-center justify-center gap-4 pt-[30px] md:pt-[40px] w-full' onSubmit={handleSubmit}>
                         {/* Name Input */}
                         <div className='w-full max-w-[375px] px-4 md:px-0'>
                             <label className='text-[14px] text-[#080808] font-medium'>Name</label>
-                            <div className='flex flex-col md:flex-row w-full justify-between gap-2'>
-                                <input
-                                    type="text"
-                                    id='firstName'
-                                    placeholder='First Name'
-                                    value={firstName}
-                                    onChange={(e) => handleInputChange('firstName', e.target.value)}
-                                    maxLength={25}
-                                    className='p-[7px] text-base rounded-[5px] border border-gray-300 text-gray-900 w-full md:w-44 h-10 focus:outline-[#D6BBFB] hover:outline-[#D6BBFB]'
-                                />
-                                <input
-                                    type="text"
-                                    id='lastName'
-                                    placeholder='Last Name'
-                                    value={lastName}
-                                    onChange={(e) => handleInputChange('lastName', e.target.value)}
-                                    maxLength={25}
-                                    className='p-[7px] text-base rounded-[5px] border border-gray-300 text-gray-900 w-full md:w-44 h-10 focus:outline-[#D6BBFB] hover:outline-[#D6BBFB]'
-                                />
+                            <div className='flex flex-row w-full max-w-[375px] justify-between'>
+                                <div className='flex flex-col w-[48%] md:w-44'>
+                                    <input
+                                        type="text"
+                                        id='firstName'
+                                        placeholder='First Name'
+                                        value={firstName}
+                                        onChange={(e) => handleInputChange('firstName', e.target.value)}
+                                        maxLength={25}
+                                        className='p-[7px] text-base rounded-[5px] border border-gray-300 text-gray-900 w-full h-10 box-border mr-2 focus:outline focus:outline-[1.5px] focus:outline-[#D6BBFB] hover:outline hover:outline-[1.5px] hover:outline-[#D6BBFB]'
+                                    />
+                                    {isSubmitted && errors.firstName && <div id="firstName_error" className='text-red-500 text-[12px] mt-[2px]'>{errors.firstName}</div>}
+                                </div>
+                                <div className='flex flex-col w-[48%] md:w-44'>
+                                    <input
+                                        type="text"
+                                        id='lastName'
+                                        placeholder='Last Name'
+                                        value={lastName}
+                                        onChange={(e) => handleInputChange('lastName', e.target.value)}
+                                        maxLength={25}
+                                        className='p-[7px] text-base rounded-[5px] border border-gray-300 text-gray-900 w-full h-10 box-border focus:outline focus:outline-[1.5px] focus:outline-[#D6BBFB] hover:outline hover:outline-[1.5px] hover:outline-[#D6BBFB]'
+                                    />
+                                    {isSubmitted && errors.lastName && <div id="username_error" className='text-red-500 text-[12px] mt-[2px]'>{errors.lastName}</div>}
+                                </div>
                             </div>
                         </div>
 
@@ -445,7 +451,7 @@ export default function Sign() {
             </div>
 
             {/* Right Section (Hidden on Mobile, Shown on Tablet/Desktop) */}
-            <div className="hidden md:flex w-full md:w-1/2 items-center justify-center bg-[#0E2138] rounded-lg m-2">
+            <div className="hidden lg:flex  items-center justify-center bg-[#0E2138] rounded-lg m-2">
                 <div className="absolute top-4 right-4 w-[400px] h-[400px] bg-[url('/icons/god-rays.png')] bg-cover bg-center bg-no-repeat mix-blend-plus-lighter blur-[12px] pointer-events-none"></div>
                 <div className="w-[554px] mx-3 flex flex-col gap-10 h-auto">
                     <Image

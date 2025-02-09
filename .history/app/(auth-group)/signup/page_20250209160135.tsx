@@ -339,25 +339,31 @@ export default function Sign() {
                         {/* Name Input */}
                         <div className='w-full max-w-[375px] px-4 md:px-0'>
                             <label className='text-[14px] text-[#080808] font-medium'>Name</label>
-                            <div className='flex flex-col md:flex-row w-full justify-between gap-2'>
-                                <input
-                                    type="text"
-                                    id='firstName'
-                                    placeholder='First Name'
-                                    value={firstName}
-                                    onChange={(e) => handleInputChange('firstName', e.target.value)}
-                                    maxLength={25}
-                                    className='p-[7px] text-base rounded-[5px] border border-gray-300 text-gray-900 w-full md:w-44 h-10 focus:outline-[#D6BBFB] hover:outline-[#D6BBFB]'
-                                />
-                                <input
-                                    type="text"
-                                    id='lastName'
-                                    placeholder='Last Name'
-                                    value={lastName}
-                                    onChange={(e) => handleInputChange('lastName', e.target.value)}
-                                    maxLength={25}
-                                    className='p-[7px] text-base rounded-[5px] border border-gray-300 text-gray-900 w-full md:w-44 h-10 focus:outline-[#D6BBFB] hover:outline-[#D6BBFB]'
-                                />
+                            <div className='flex flex-row w-full max-w-[375px] justify-between'>
+                                <div className='flex flex-col w-[48%] md:w-44'>
+                                    <input
+                                        type="text"
+                                        id='firstName'
+                                        placeholder='First Name'
+                                        value={firstName}
+                                        onChange={(e) => handleInputChange('firstName', e.target.value)}
+                                        maxLength={25}
+                                        className='p-[7px] text-base rounded-[5px] border border-gray-300 text-gray-900 w-full h-10 box-border mr-2 focus:outline focus:outline-[1.5px] focus:outline-[#D6BBFB] hover:outline hover:outline-[1.5px] hover:outline-[#D6BBFB]'
+                                    />
+                                    {isSubmitted && errors.firstName && <div id="firstName_error" className='text-red-500 text-[12px] mt-[2px]'>{errors.firstName}</div>}
+                                </div>
+                                <div className='flex flex-col w-[48%] md:w-44'>
+                                    <input
+                                        type="text"
+                                        id='lastName'
+                                        placeholder='Last Name'
+                                        value={lastName}
+                                        onChange={(e) => handleInputChange('lastName', e.target.value)}
+                                        maxLength={25}
+                                        className='p-[7px] text-base rounded-[5px] border border-gray-300 text-gray-900 w-full h-10 box-border focus:outline focus:outline-[1.5px] focus:outline-[#D6BBFB] hover:outline hover:outline-[1.5px] hover:outline-[#D6BBFB]'
+                                    />
+                                    {isSubmitted && errors.lastName && <div id="username_error" className='text-red-500 text-[12px] mt-[2px]'>{errors.lastName}</div>}
+                                </div>
                             </div>
                         </div>
 
@@ -445,7 +451,7 @@ export default function Sign() {
             </div>
 
             {/* Right Section (Hidden on Mobile, Shown on Tablet/Desktop) */}
-            <div className="hidden md:flex w-full md:w-1/2 items-center justify-center bg-[#0E2138] rounded-lg m-2">
+            <div className="hidden lg:flex w-full md:w-1/2 items-center justify-center bg-[#0E2138] rounded-lg m-2">
                 <div className="absolute top-4 right-4 w-[400px] h-[400px] bg-[url('/icons/god-rays.png')] bg-cover bg-center bg-no-repeat mix-blend-plus-lighter blur-[12px] pointer-events-none"></div>
                 <div className="w-[554px] mx-3 flex flex-col gap-10 h-auto">
                     <Image
