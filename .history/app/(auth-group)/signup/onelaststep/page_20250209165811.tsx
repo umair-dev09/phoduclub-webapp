@@ -8,7 +8,7 @@ export default function OneLastStep() {
 
   return (
     <div className="flex flex-row w-full h-screen bg-[#F7F8FB]">
-      <div className="lg:w-1/2 w-full  p-6 flex flex-col">
+      <div className="lg:w-1/2 w-full  m-6 flex flex-col">
 
         <Image
           src="/images/phoduclublogo.png"
@@ -23,11 +23,11 @@ export default function OneLastStep() {
           <p>&larr;</p>
           <span className="font-medium text-base text-[#98a2b3]">Back</span>
         </div>
-        <div className="h-full flex items-center   justify-center flex-col gap-8  ">
+        <div className="h-full flex items-center   flex-col gap-8 mt-10 ">
           <div className="flex items-center justify-center">
             <p className="text-2xl font-bold text-[#101828]">One Last Step</p>
           </div>
-          <div className="flex flex-col max-w-[420px] w-full items-center justify-center">
+          <div className="flex flex-col w-full items-center justify-center">
             <Dropdown />
           </div>
 

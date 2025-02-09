@@ -264,7 +264,7 @@ function VerifyOtp() {
     };
 
     return (
-        <div className="w-full flex flex-col h-full p-6 lg:w-1/2">
+        <div className="w-1/2 flex flex-col h-full">
 
             <Image
                 src="/images/phoduclublogo.png"
@@ -273,7 +273,7 @@ function VerifyOtp() {
                 height={25}
             />
 
-            <button className="flex flex-row gap-2 items-center mt-[20px]  "
+            <button className="flex flex-row gap-2 items-center mt-[20px] ml-10 "
                 onClick={() => router.back()}>
                 <p>&larr;</p>
                 <span className="font-medium text-base text-[#98a2b3]">Back</span>

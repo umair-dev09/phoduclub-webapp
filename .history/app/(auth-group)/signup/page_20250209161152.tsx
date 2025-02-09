@@ -188,14 +188,14 @@ export default function Sign() {
 
     return (
         <div className='flex flex-row  w-full h-screen bg-[#f7f8fb]'>
-            <div className='Left Area w-full lg:w-1/2 lg:pl-6 lg:pt-6 flex flex-col py-6 px-6 overflow-y-auto'>
+            <div className='Left Area w-full lg:w-1/2 lg:ml-6 lg:mt-6 flex flex-col my-6 mx-6 overflow-y-auto'>
                 <Image src="/images/phoduclublogo.png" width={140} height={10} quality={100} alt="Phodu Club Logo" />
                 <div className='Signup Main Div flex flex-1 flex-col justify-center items-center gap-10'>
                     <div className='flex flex-col items-center justify-center gap-2'>
                         <h3 className='font-bold text-[24px]'>Get Started</h3>
                         <p className='mt-2'>Make yourself prepared, before time ✌️</p>
                     </div>
-                    <form className='flex flex-col items-center justify-center gap-4 max-w-[26.25rem] w-full' onSubmit={handleSubmit}>
+                    <form className='flex flex-col items-center justify-center gap-4' onSubmit={handleSubmit}>
                         <div className='w-full'>
                             <label className='text-[14px] text-[#080808] font-medium'>Name</label>
                             <div className='flex flex-row w-full justify-between gap-3'>
@@ -207,7 +207,6 @@ export default function Sign() {
                                         value={firstName}
                                         onChange={(e) => handleInputChange('firstName', e.target.value)}
                                         maxLength={25}
-                                        autoFocus
                                         className='p-[7px] text-base rounded-[5px] border border-gray-300 text-gray-900 w-full h-auto box-border focus:outline focus:outline-[1.5px] focus:outline-[#D6BBFB] hover:outline hover:outline-[1.5px] hover:outline-[#D6BBFB]'
                                     />
                                     {isSubmitted && errors.firstName && <div id="firstName_error" className='text-red-500 text-[12px] mt-[2px]'>{errors.firstName}</div>}
@@ -252,7 +251,7 @@ export default function Sign() {
                                     inputProps={{
                                         name: 'phone',
                                         required: true,
-                                        autoFocus: false
+                                        autoFocus: true
                                     }}
                                     inputStyle={{
                                         width: "100%",

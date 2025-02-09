@@ -120,9 +120,9 @@ function Header() {
                                         />
                                     )}
                                 </div>
-                                <div className='flex flex-col ml-1 mr-1'>
-                                    <p className='font-semibold text-[14px] mb-[-2px] text-start'>{userData?.name}</p>
-                                    <p className='text-[13px] text-[#667085]'>{userData?.userId}</p>
+                                <div className='flex flex-col ml-2 mr-1'>
+                                    <p className='font-semibold text-[14px] mb-[-2px] text-start'>{userData?.name || 'Phodu User'}</p>
+                                    <p className='text-[13px] text-left text-[#667085]'>{userData?.userId || 'PhoduId'}</p>
                                 </div>
                                 <button className="w-[22px] h-[22px] flex items-center justify-center ml-[12px] mb-[2px]">
                                     <Image className="w-[15px] h-[15px] min-h-[15px] max-h-[15px]" src="/icons/arrowHeader.svg" width={15} height={15} alt="Arrow Icon" />

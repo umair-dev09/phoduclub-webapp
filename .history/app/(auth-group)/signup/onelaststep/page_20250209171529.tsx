@@ -8,7 +8,7 @@ export default function OneLastStep() {
 
   return (
     <div className="flex flex-row w-full h-screen bg-[#F7F8FB]">
-      <div className="lg:w-1/2 w-full  p-6 flex flex-col">
+      <div className="lg:w-1/2 w-full  m-6 flex flex-col">
 
         <Image
           src="/images/phoduclublogo.png"

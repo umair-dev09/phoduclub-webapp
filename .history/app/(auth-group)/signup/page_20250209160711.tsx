@@ -187,19 +187,17 @@ export default function Sign() {
     };
 
     return (
-        <div className='flex flex-row  w-full h-screen bg-[#f7f8fb]'>
-            <div className='Left Area w-full lg:w-1/2 lg:pl-6 lg:pt-6 flex flex-col py-6 px-6 overflow-y-auto'>
+        <div className='flex flex-row  w-full h-screen bg-[#f7f8fb] '>
+            <div className='Left Area w-1/2 flex flex-col pt-6 pl-6'>
                 <Image src="/images/phoduclublogo.png" width={140} height={10} quality={100} alt="Phodu Club Logo" />
-                <div className='Signup Main Div flex flex-1 flex-col justify-center items-center gap-10'>
-                    <div className='flex flex-col items-center justify-center gap-2'>
-                        <h3 className='font-bold text-[24px]'>Get Started</h3>
-                        <p className='mt-2'>Make yourself prepared, before time ✌️</p>
-                    </div>
-                    <form className='flex flex-col items-center justify-center gap-4 max-w-[26.25rem] w-full' onSubmit={handleSubmit}>
-                        <div className='w-full'>
+                <div className='Signup Main Div flex flex-col self-center mt-20 items-center'>
+                    <h3 className='font-bold text-[24px]'>Get Started</h3>
+                    <p className='mt-2'>Make yourself prepared, before time ✌️</p>
+                    <form className='flex flex-col items-center justify-center gap-4 pt-[40px]' onSubmit={handleSubmit}>
+                        <div>
                             <label className='text-[14px] text-[#080808] font-medium'>Name</label>
-                            <div className='flex flex-row w-full justify-between gap-3'>
-                                <div className='flex flex-col w-full'>
+                            <div className='flex flex-row w-[375px] justify-between'>
+                                <div className='flex flex-col'>
                                     <input
                                         type="text"
                                         id='firstName'
@@ -207,12 +205,11 @@ export default function Sign() {
                                         value={firstName}
                                         onChange={(e) => handleInputChange('firstName', e.target.value)}
                                         maxLength={25}
-                                        autoFocus
-                                        className='p-[7px] text-base rounded-[5px] border border-gray-300 text-gray-900 w-full h-auto box-border focus:outline focus:outline-[1.5px] focus:outline-[#D6BBFB] hover:outline hover:outline-[1.5px] hover:outline-[#D6BBFB]'
+                                        className='p-[7px] text-base rounded-[5px] border border-gray-300 text-gray-900 w-44 h-10 box-border mr-2  focus:outline focus:outline-[1.5px] focus:outline-[#D6BBFB] hover:outline hover:outline-[1.5px] hover:outline-[#D6BBFB]'
                                     />
                                     {isSubmitted && errors.firstName && <div id="firstName_error" className='text-red-500 text-[12px] mt-[2px]'>{errors.firstName}</div>}
                                 </div>
-                                <div className='flex flex-col w-full'>
+                                <div className='flex flex-col'>
                                     <input
                                         type="text"
                                         id='lastName'
@@ -220,13 +217,13 @@ export default function Sign() {
                                         value={lastName}
                                         onChange={(e) => handleInputChange('lastName', e.target.value)}
                                         maxLength={25}
-                                        className='p-[7px] text-base rounded-[5px] border border-gray-300 text-gray-900 w-full h-auto box-border focus:outline focus:outline-[1.5px] focus:outline-[#D6BBFB] hover:outline hover:outline-[1.5px] hover:outline-[#D6BBFB]'
+                                        className='p-[7px] text-base rounded-[5px] border border-gray-300 text-gray-900 w-44 h-10 box-border focus:outline focus:outline-[1.5px] focus:outline-[#D6BBFB] hover:outline hover:outline-[1.5px] hover:outline-[#D6BBFB]'
                                     />
                                     {isSubmitted && errors.lastName && <div id="username_error" className='text-red-500 text-[12px] mt-[2px]'>{errors.lastName}</div>}
                                 </div>
                             </div>
                         </div>
-                        <div className='w-full'>
+                        <div >
                             <label className='text-[14px] text-[#080808] font-medium' htmlFor="Email">Email</label>
                             <div >
                                 <input
@@ -236,23 +233,23 @@ export default function Sign() {
                                     value={email}
                                     onChange={(e) => handleInputChange('email', e.target.value)}
                                     maxLength={50}
-                                    className='p-[7px] text-base rounded-[5px] border border-gray-300 w-full h-auto focus:outline focus:outline-[1.5px] focus:outline-[#D6BBFB] hover:outline hover:outline-[1.5px] hover:outline-[#D6BBFB]'
+                                    className='p-[7px] text-base rounded-[5px] border border-gray-300 w-[375px] h-10 focus:outline focus:outline-[1.5px] focus:outline-[#D6BBFB] hover:outline hover:outline-[1.5px] hover:outline-[#D6BBFB]'
                                 />
                                 {isSubmitted && errors.email && <div id="email_error" className='text-red-500 text-[12px] mt-[2px]'>{errors.email}</div>}
                             </div>
                         </div>
-                        <div className='w-full'>
+                        <div >
                             <label className='text-[14px] text-[#080808] font-medium' htmlFor="Number">Phone Number</label>
-                            <div className='w-full'>
+                            <div className='w-[375px] '>
                                 <PhoneInput
                                     country={'in'}
                                     value={phone}
                                     onChange={(value: any) => handleInputChange('phone', value)}
-                                    placeholder="+91 00000-00000"
+                                    placeholder="+91 000000000"
                                     inputProps={{
                                         name: 'phone',
                                         required: true,
-                                        autoFocus: false
+                                        autoFocus: true
                                     }}
                                     inputStyle={{
                                         width: "100%",
@@ -269,7 +266,7 @@ export default function Sign() {
                             </div>
                         </div>
                         <div id="recaptcha-container"></div> {/* Recaptcha container */}
-                        <div className='w-full'>
+                        <div className='w-[375px] ml-[10px]'>
                             <Checkbox
                                 size="sm"
                                 color="primary"
@@ -286,9 +283,9 @@ export default function Sign() {
                                 </div>
                             )}
                         </div>
-                        <div className='flex items-center justify-center w-full mt-[12px]'>
+                        <div className='flex items-center justify-center mt-[12px]'>
                             <button
-                                className='font-medium w-full h-auto py-2 border-none bg-[#e39ff6] rounded-[7px] text-sm text-white cursor-pointer flex items-center justify-center hover:bg-[#7400e0] active:bg-[#7400e0] active:opacity-70 transition-colors duration-150'
+                                className='font-medium w-[375px] h-10 border-none bg-[#e39ff6] rounded-[7px] text-sm text-white cursor-pointer flex items-center justify-center hover:bg-[#7400e0] active:bg-[#7400e0] active:opacity-70 transition-colors duration-150'
                                 type="submit"
                                 style={{
                                     backgroundColor: isFormValid() && !isLoading ? '#7400e0' : '#E39FF6',
@@ -316,10 +313,9 @@ export default function Sign() {
                     </form>
                 </div>
             </div>
-            {/* <div className="w-1/2 flex items-center justify-center bg-[#0E2138] rounded-lg m-2"> */}
-            <div className="hidden lg:flex w-1/2 items-center justify-center bg-[#0E2138] rounded-lg m-2">
+            <div className="hidden lg:flex   items-center justify-center bg-[#0E2138] rounded-lg m-2">
                 <div className="absolute top-4 right-4 w-[400px] h-[400px] bg-[url('/icons/god-rays.png')] bg-cover bg-center bg-no-repeat mix-blend-plus-lighter blur-[12px] pointer-events-none"></div>
-                <div className="w-[554px] mx-6 flex flex-col gap-10 h-auto">
+                <div className="w-[554px] mx-3 flex flex-col gap-10 h-auto">
                     <Image
                         src="/icons/coma.svg"
                         width={80}
@@ -332,6 +328,7 @@ export default function Sign() {
             </div>
             <div id="recaptcha-container"></div>
         </div>
+
     );
 }
 

@@ -264,7 +264,7 @@ function VerifyOtp() {
     };
 
     return (
-        <div className="w-full flex flex-col h-full p-6 lg:w-1/2">
+        <div className="w-1/2 flex flex-col h-full m-6 lg:w-1/2">
 
             <Image
                 src="/images/phoduclublogo.png"
