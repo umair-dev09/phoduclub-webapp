@@ -188,7 +188,7 @@ export default function Sign() {
 
     return (
         <div className='flex flex-row  w-full h-screen bg-[#f7f8fb]'>
-            <div className='Left Area w-full lg:w-1/2 lg:ml-6 lg:mt-6 flex flex-col my-6 mx-6 overflow-y-auto'>
+            <div className='Left Area w-full lg:w-1/2 lg:pl-6 lg:pt-6 flex flex-col py-6 px-6 overflow-y-auto'>
                 <Image src="/images/phoduclublogo.png" width={140} height={10} quality={100} alt="Phodu Club Logo" />
                 <div className='Signup Main Div flex flex-1 flex-col justify-center items-center gap-10'>
                     <div className='flex flex-col items-center justify-center gap-2'>

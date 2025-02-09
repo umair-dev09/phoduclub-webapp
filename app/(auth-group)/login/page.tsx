@@ -112,7 +112,7 @@ export default function Login_Page() {
 
     return (
         <div className="flex flex-row w-full h-screen bg-[#F7F8FB]">
-            <div className="lg:w-1/2 w-full flex flex-col m-6">
+            <div className="lg:w-1/2 w-full flex flex-col p-6">
                 <Image
                     src="/images/phoduclublogo.png"
                     alt="Logo"
