@@ -264,21 +264,21 @@ function VerifyOtp() {
     };
 
     return (
-        <div className="w-1/2 flex flex-col h-full">
-            <div className="mt-10 ml-10">
-                <Image
-                    src="/images/phoduclublogo.png"
-                    alt="Logo"
-                    width={150}
-                    height={25}
-                />
-            </div>
-            <button className="flex flex-row gap-2 items-center mt-[20px] ml-10 "
+        <div className="w-full flex flex-col h-full m-6 lg:w-1/2">
+
+            <Image
+                src="/images/phoduclublogo.png"
+                alt="Logo"
+                width={150}
+                height={25}
+            />
+
+            <button className="flex flex-row gap-2 items-center mt-[20px]  "
                 onClick={() => router.back()}>
                 <p>&larr;</p>
                 <span className="font-medium text-base text-[#98a2b3]">Back</span>
             </button>
-            <div className="flex flex-col mt-[60px] items-center h-full gap-4">
+            <div className="flex flex-col  items-center  justify-center h-full gap-4">
                 <h1 className=" text-[#101828] font-bold text-2xl">Verification Code</h1>
                 <p className="text-[#667085] font-medium text-base w-[313px] text-center">Please enter the verification code we sent to your mobile <span id="mobile">{phoneNumber}</span></p>
                 <div className="flex items-center justify-center pt-4">

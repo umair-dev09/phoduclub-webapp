@@ -3,119 +3,143 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useState, useEffect, useRef, Suspense } from "react";
 import { auth } from '../../../firebase'; // Adjust path as needed
 import { getAuth, PhoneAuthProvider, signInWithCredential, onAuthStateChanged } from "firebase/auth";
-import { getFirestore, doc, getDoc, setDoc, query, where, getDocs, collection } from "firebase/firestore"; // Import Firestore functions
-import { toast } from "react-toastify";
+import { getFirestore, doc, getDoc, setDoc, query, where, getDocs, collection, Timestamp } from "firebase/firestore"; // Import Firestore functions
 import Image from 'next/image';
 import styles from './VerifyOtp.module.css'; // Ensure you import the CSS module
 import LoadingData from "@/components/Loading";
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { KeyboardEvent as ReactKeyboardEvent, ClipboardEvent as ReactClipboardEvent } from 'react';
 
-const InputHandler = ({ onOtpChange }: { onOtpChange: (otp: string) => void }) => {
+interface InputHandlerProps {
+    onOtpChange: (otp: string) => void;
+    length?: number;
+    hasError?: boolean;
+    onSubmit?: () => void;
+}
+
+const InputHandler = ({ onOtpChange, length = 6, hasError = false, onSubmit }: InputHandlerProps) => {
     const inputsRef = useRef<HTMLDivElement>(null);
-    const router = useRouter();
+
     useEffect(() => {
         const inputs = inputsRef.current?.querySelectorAll("input");
-
         if (inputs) {
-            inputs.forEach((input, index) => {
-                input.addEventListener("input", (e: Event) => handleInput(e, index));
-                input.addEventListener("keyup", handleKeyup);
-            });
-
-            return () => {
-                inputs.forEach((input) => {
-                    input.removeEventListener("keyup", handleKeyup);
-                });
-            };
+            inputs[0]?.focus();
         }
     }, []);
 
-    const handleInput = (e: Event, index: number) => {
-        const target = e.target as HTMLInputElement;
-        const val = target.value.trim();
+    const updateOTP = () => {
+        const inputs = Array.from(inputsRef.current?.querySelectorAll('input') || []);
+        const otp = inputs.map(input => input.value.trim()).join('');
+        onOtpChange(otp);
+    };
 
-        if (val !== "") {
-            const next = target.nextElementSibling as HTMLInputElement | null;
-            if (next) {
-                next.focus();
+    const handleInput = (index: number, value: string) => {
+        const inputs = Array.from(inputsRef.current?.querySelectorAll('input') || []);
+
+        // Ensure input is numeric and single digit
+        const sanitizedValue = value.replace(/[^0-9]/g, '').slice(0, 1);
+
+        if (inputs[index]) {
+            inputs[index].value = sanitizedValue;
+
+            if (sanitizedValue && index < inputs.length - 1) {
+                inputs[index + 1]?.focus();
             }
         }
 
-        const otp = Array.from(inputsRef.current?.querySelectorAll('input') || []).map(input => input.value.trim()).join('');
-        onOtpChange(otp);
+        updateOTP();
+    };
 
-        const allFilled = Array.from(inputsRef.current?.querySelectorAll('input') || []).every(
-            input => input.value.trim() !== ""
-        );
+    const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>, index: number) => {
+        const inputs = Array.from(inputsRef.current?.querySelectorAll('input') || []);
+        const input = e.target as HTMLInputElement;
 
-        if (allFilled) {
-            document.querySelector('.button')?.classList.add('enabled');
-            document.querySelector('.button')?.classList.remove('disabled');
-        } else {
-            document.querySelector('.button')?.classList.remove('enabled');
-            document.querySelector('.button')?.classList.add('disabled');
+        switch (e.key) {
+            case 'Enter':
+                onSubmit?.();  // ✅ Safe invocation using optional chaining
+                break;
+
+            case 'Backspace':
+                if (!input.value) {
+                    if (index > 0) {
+                        inputs[index - 1]?.focus();
+                        inputs[index - 1].value = '';
+                    }
+                } else {
+                    input.value = '';
+                }
+                updateOTP();
+                break;
+
+            case 'ArrowLeft':
+                e.preventDefault();
+                if (index > 0) {
+                    inputs[index - 1]?.focus();
+                }
+                break;
+
+            case 'ArrowRight':
+                e.preventDefault();
+                if (index < inputs.length - 1) {
+                    inputs[index + 1]?.focus();
+                }
+                break;
+
+            default:
+                if (!/^[0-9]$/.test(e.key) && !['Tab', 'ArrowLeft', 'ArrowRight'].includes(e.key)) {
+                    e.preventDefault();
+                }
         }
     };
 
-    const handleKeyup = (e: KeyboardEvent) => {
-        const target = e.target as HTMLInputElement;
-        const key = e.key.toLowerCase();
+    const handlePaste = (e: ReactClipboardEvent<HTMLInputElement>, index: number) => {
+        e.preventDefault();
+        const pastedData = e.clipboardData.getData('text').replace(/[^0-9]/g, '');
+        const inputs = Array.from(inputsRef.current?.querySelectorAll('input') || []);
 
-        if (key === "backspace" || key === "delete") {
-            target.value = "";
-            const prev = target.previousElementSibling as HTMLInputElement | null;
-            if (prev) {
-                prev.focus();
+        for (let i = 0; i < Math.min(pastedData.length, inputs.length - index); i++) {
+            const targetIndex = index + i;
+            if (inputs[targetIndex]) {
+                inputs[targetIndex].value = pastedData[i];
+                if (targetIndex < inputs.length - 1) {
+                    inputs[targetIndex + 1]?.focus();
+                }
             }
         }
+
+        updateOTP();
     };
 
     return (
-
-        <div id="inputs" ref={inputsRef} className="flex space-x-2 justify-center">
-            <input
-                type="text"
-                inputMode="numeric"
-                maxLength={1}
-                placeholder="-"
-                className="w-12 h-12 border border-[#98a2b3] rounded-md text-center text-2xl font-medium text-black focus:outline-none focus:border-[#7400e0] appearance-none"
-            />
-            <input
-                type="text"
-                inputMode="numeric"
-                maxLength={1}
-                placeholder="-"
-                className="w-12 h-12 border border-[#98a2b3] rounded-md text-center text-2xl font-medium text-black focus:outline-none focus:border-[#7400e0] appearance-none"
-            />
-            <input
-                type="text"
-                inputMode="numeric"
-                maxLength={1}
-                placeholder="-"
-                className="w-12 h-12 border border-[#98a2b3] rounded-md text-center text-2xl font-medium text-black focus:outline-none focus:border-[#7400e0] appearance-none"
-            />
-            <input
-                type="text"
-                inputMode="numeric"
-                maxLength={1}
-                placeholder="-"
-                className="w-12 h-12 border border-[#98a2b3] rounded-md text-center text-2xl font-medium text-black focus:outline-none focus:border-[#7400e0] appearance-none"
-            />
-            <input
-                type="text"
-                inputMode="numeric"
-                maxLength={1}
-                placeholder="-"
-                className="w-12 h-12 border border-[#98a2b3] rounded-md text-center text-2xl font-medium text-black focus:outline-none focus:border-[#7400e0] appearance-none"
-            />
-            <input
-                type="text"
-                inputMode="numeric"
-                maxLength={1}
-                placeholder="-"
-                className="w-12 h-12 border border-[#98a2b3] rounded-md text-center text-2xl font-medium text-black focus:outline-none focus:border-[#7400e0] appearance-none"
-            />
+        <div
+            id="inputs"
+            ref={inputsRef}
+            className="flex space-x-2 justify-center"
+        >
+            {[...Array(length)].map((_, index) => (
+                <input
+                    key={index}
+                    type="text"
+                    inputMode="numeric"
+                    placeholder="-"
+                    maxLength={1}
+                    pattern="[0-9]*"
+                    autoComplete="one-time-code"
+                    className={`w-12 h-12 border rounded-md text-center 
+                                text-2xl font-medium text-black focus:outline-none 
+                                appearance-none transition-colors duration-200
+                                ${hasError
+                            ? 'border-red-500 focus:border-red-500 focus:ring-[3px] focus:ring-red-200'
+                            : 'border-[#98a2b3] focus:border-[#7400e0] focus:ring-[3px] focus:ring-[#D3A7FC]'
+                        }`}
+                    onInput={(e) => handleInput(index, (e.target as HTMLInputElement).value)}
+                    onKeyDown={(e) => handleKeyDown(e, index)}
+                    onPaste={(e) => handlePaste(e, index)}
+                    aria-label={`Digit ${index + 1} of OTP`}
+                />
+            ))}
         </div>
-
     );
 };
 
@@ -137,7 +161,6 @@ function VerifyOtp() {
     const [verificationError, setVerificationError] = useState<string | null>(null);
     const [isLoading, setIsLoading] = useState(false); // Loading state
     const db = getFirestore(); // Initialize Firestore
-
 
     useEffect(() => {
         setOtp('');
@@ -211,7 +234,11 @@ function VerifyOtp() {
                     email: email,
                     uniqueId: authId,
                     userId: userId,
-                    profilePic: profilePic
+                    profilePic: profilePic,
+                    isAvatar: true,
+                    isPremium: false,
+                    isGuide: false,
+                    createdAt: Timestamp.now(),
                 });
 
                 toast.success("Correct OTP! You are logged in.");
@@ -228,7 +255,6 @@ function VerifyOtp() {
         }
     };
 
-
     const handleResend = async () => {
         if (isResendEnabled) {
             toast.error("Error resending OTP. Please try again.");
@@ -239,40 +265,45 @@ function VerifyOtp() {
 
     return (
         <div className="w-1/2 flex flex-col h-full">
-            <div className="mt-10 ml-10">
-                <Image
-                    src="/images/phoduclublogo.png"
-                    alt="Logo"
-                    width={150}
-                    height={25}
-                />
-            </div>
+
+            <Image
+                src="/images/phoduclublogo.png"
+                alt="Logo"
+                width={150}
+                height={25}
+            />
+
             <button className="flex flex-row gap-2 items-center mt-[20px] ml-10 "
                 onClick={() => router.back()}>
                 <p>&larr;</p>
                 <span className="font-medium text-base text-[#98a2b3]">Back</span>
             </button>
-            <div className="flex flex-col mt-[60px] items-center h-full gap-4">
+            <div className="flex flex-col  items-center  justify-center h-full gap-4">
                 <h1 className=" text-[#101828] font-bold text-2xl">Verification Code</h1>
                 <p className="text-[#667085] font-medium text-base w-[313px] text-center">Please enter the verification code we sent to your mobile <span id="mobile">{phoneNumber}</span></p>
                 <div className="flex items-center justify-center pt-4">
-                    <InputHandler onOtpChange={setOtp} />
+                    <InputHandler
+                        onOtpChange={setOtp}
+                        hasError={verificationError !== null}
+                        onSubmit={() => handleSubmit(new Event('submit'))} // ✅ Ensure proper invocation
+                    />
                 </div>
-                <div className="w-full pt-4 flex items-center justify-center">
+                <div className="w-full pt-4 flex flex-col items-center justify-center">
                     <button
                         className={`w-1/2 h-10 rounded-lg text-white font-medium text-sm 
-                                       ${otp.length === 6 ? 'bg-[#7400e0] cursor-pointer' : 'bg-[#d4a9fc] cursor-not-allowed'} 
-                                      transition-colors duration-150 
-                                   active:opacity-50
-                                   flex items-center justify-center`}
+                                    ${isLoading || otp.length === 6 ? 'bg-[#7400e0] hover:bg-[#6D0DCC] cursor-pointer' : 'bg-[#d4a9fc] cursor-not-allowed'} 
+                                    transition-colors duration-150 
+                                    active:opacity-50 shadow-inner-button
+                                    flex items-center justify-center`}
                         onClick={handleSubmit}
                         disabled={isLoading || otp.length !== 6} // Ensure disabled when loading or OTP not filled
                     >
                         {isLoading ? (
-                            <div className="w-5 h-5 border-4 border-white border-opacity-30 border-t-white rounded-full animate-spin"></div> // Spinner
+                            <div className='w-5 h-5 animate-spin-loading rounded-[50%] border-4 border-[#ffffff4d] border-solid border-t-4 border-t-customWhite '></div> // Show spinner
                         ) : (
                             'Continue'
                         )}
+
                     </button>
                     {verificationError && (
                         <div className="text-red-500 mt-2 text-sm">{verificationError}</div>
@@ -280,19 +311,20 @@ function VerifyOtp() {
                 </div>
                 <div className="pt-4">
                     <p className="text-gray-700">
-                        Didn't receive the code?&nbsp;
+                        Didn&apos;t receive the code?&nbsp;
                         <a
                             href="#"
                             onClick={handleResend}
                             className={`
                                 font-bold transition-colors duration-300 
-                             ${isResendEnabled ? 'text-[#9012FF] cursor-pointer' : 'text-[#AD72FF] cursor-not-allowed'} `}
+                                ${isResendEnabled ? 'text-[#9012FF] cursor-pointer' : 'text-[#AD72FF] cursor-not-allowed'} `}
                         >
                             {isResendEnabled ? 'Resend' : `Resend (${counter})`}
                         </a>
                     </p>
                 </div>
             </div>
+            <ToastContainer />
         </div>
     );
 }
