@@ -207,6 +207,7 @@ export default function Sign() {
                                         value={firstName}
                                         onChange={(e) => handleInputChange('firstName', e.target.value)}
                                         maxLength={25}
+                                        autoFocus
                                         className='p-[7px] text-base rounded-[5px] border border-gray-300 text-gray-900 w-full h-auto box-border focus:outline focus:outline-[1.5px] focus:outline-[#D6BBFB] hover:outline hover:outline-[1.5px] hover:outline-[#D6BBFB]'
                                     />
                                     {isSubmitted && errors.firstName && <div id="firstName_error" className='text-red-500 text-[12px] mt-[2px]'>{errors.firstName}</div>}
@@ -251,7 +252,7 @@ export default function Sign() {
                                     inputProps={{
                                         name: 'phone',
                                         required: true,
-                                        autoFocus: true
+                                        autoFocus: false
                                     }}
                                     inputStyle={{
                                         width: "100%",
