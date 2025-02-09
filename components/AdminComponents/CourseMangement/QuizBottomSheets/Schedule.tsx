@@ -5,8 +5,7 @@ import { DatePicker, TimeInput } from "@nextui-org/react";
 import { now, today, CalendarDate, getLocalTimeZone, parseDateTime } from "@internationalized/date";
 
 type ScheduleProps = {
-    quizScheduleDate: string;
-    setQuizScheduleDate: (quizScheduleDate: string) => void;
+
     marksPerQ: string;
     setMarksPerQ: (marksPerQ: string) => void;
     nMarksPerQ: string;
@@ -20,36 +19,15 @@ type ScheduleProps = {
 }
 
 
-function Schedule({ marksPerQ, setMarksPerQ, nMarksPerQ, setnMarksPerQ, timeNumber, setTimeNumber, timeText, setTimeText, quizScheduleDate, setQuizScheduleDate }: ScheduleProps) {
+function Schedule({ marksPerQ, setMarksPerQ, nMarksPerQ, setnMarksPerQ, timeNumber, setTimeNumber, timeText, setTimeText}: ScheduleProps) {
 
     const [showDatepicker, setShowDatepicker] = useState(false);
     let [isOpenT, setIsOpenT] = useState(false);
     return (
         <div className='flex flex-col pt-4 pb-8 gap-4'>
-            <div className='flex flex-col w-full h-auto p-6 bg-white border border-lightGrey rounded-xl gap-3'>
-                <div className="flex flex-row justify-between w-full items-center">
-                    <span className='font-semibold text-lg text-[#1D2939] pl-1'>Schedule Quiz</span>
-                </div>
-                <div className="flex flex-col gap-2 mb-3 mt-1">
-                    <span className="text-[#1D2939] font-semibold text-sm">Schedule Lesson</span>
-
-                    <DatePicker
-                        granularity="minute"
-                        minValue={today(getLocalTimeZone())}
-                        value={quizScheduleDate || undefined ? parseDateTime(quizScheduleDate) || undefined : undefined}
-                        hideTimeZone
-                        onChange={(date) => {
-                            const dateString = date ? date.toString() : "";
-                            setQuizScheduleDate(dateString);
-
-                        }}
-
-                    />
-
-
-
-                </div>
-                {/* {quizScheduleDate ? (
+            {/* <div className='flex flex-col w-full h-auto p-6 bg-white border border-lightGrey rounded-xl gap-3'>
+            
+                {quizScheduleDate ? (
                         <>
 
                             <div className="flex flex-row justify-between items-center mb-3">
@@ -98,11 +76,11 @@ function Schedule({ marksPerQ, setMarksPerQ, nMarksPerQ, setnMarksPerQ, timeNumb
                                 />
                             )}
                         </>
-                    )} */}
+                    )}
 
 
 
-            </div>
+            </div> */}
 
             <div className='flex flex-col w-full h-auto p-5 bg-white border border-lightGrey rounded-xl gap-3'>
                 <span className='font-semibold text-lg text-[#1D2939]'>About quiz</span>

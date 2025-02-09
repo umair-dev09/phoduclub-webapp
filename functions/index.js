@@ -416,3 +416,69 @@ exports.notificationEndFunction = onSchedule("* * * * *", async (event) => {
         throw error;
     }
 });
+//courseSectionScheduleFunction
+exports.courseSectionScheduleFunction = onSchedule("* * * * *", async (event) => {
+    try {
+        const db = admin.firestore();
+        
+        // Get current time in IST (UTC+5:30)
+        const now = new Date();
+        now.setHours(now.getHours() + 5);
+        now.setMinutes(now.getMinutes() + 30);
+        
+        const currentTime = now.toISOString().split('.')[0];
+        
+        logger.info(`Checking course sections at IST: ${currentTime}`);
+        
+        // Get all courses that are live or paused
+        const courseSnapshot = await db.collection('course')
+            .where('status', 'in', ['live', 'paused'])
+            .get();
+        
+        if (!courseSnapshot.empty) {
+            let totalUpdates = 0;
+            
+            // Process each course
+            for (const courseDoc of courseSnapshot.docs) {
+                // Get sections subcollection for each course
+                const sectionsSnapshot = await courseDoc.ref.collection('sections')
+                    .where('status', '==', 'scheduled')
+                    .get();
+                
+                if (!sectionsSnapshot.empty) {
+                    const batch = db.batch();
+                    let sectionUpdateCount = 0;
+                    
+                    sectionsSnapshot.forEach(sectionDoc => {
+                        const sectionData = sectionDoc.data();
+                        if (sectionData.sectionScheduleDate && sectionData.sectionScheduleDate <= currentTime) {
+                            batch.update(sectionDoc.ref, { 
+                                status: 'live'
+                            });
+                            sectionUpdateCount++;
+                            logger.info(`Marking section ${sectionDoc.id} as live in course ${courseDoc.id}. scheduleDate: ${sectionData.sectionScheduleDate}`);
+                        }
+                    });
+                    
+                    if (sectionUpdateCount > 0) {
+                        await batch.commit();
+                        totalUpdates += sectionUpdateCount;
+                    }
+                }
+            }
+            
+            if (totalUpdates > 0) {
+                logger.info(`Successfully updated ${totalUpdates} sections to live status`);
+            } else {
+                logger.info('No sections needed updating at this time');
+            }
+        } else {
+            logger.info('No active courses found');
+        }
+        
+        return null;
+    } catch (error) {
+        logger.error('Error in courseSectionScheduleFunction:', error);
+        throw error;
+    }
+});

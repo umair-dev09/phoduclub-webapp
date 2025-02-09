@@ -36,7 +36,6 @@ function Text({ isOpen, toggleDrawer, sectionId, courseId, isEditing, contentId 
     const [lessonOverView, setLessonOverView] = useState('');
     const [lessonContent, setLessonContent] = useState('');
     const [pdfLink, setPdfLink] = useState('');
-    const [contentScheduleDate, setContentScheduleDate] = useState('');
     const [disscusionOpen, setDisscusionOpen] = useState(false);
     const [loading, setLoading] = useState(true);
     const [value, setValue] = useState(lessonContent);
@@ -46,7 +45,7 @@ function Text({ isOpen, toggleDrawer, sectionId, courseId, isEditing, contentId 
     const [uploadTaskRef, setUploadTaskRef] = useState<any>(null); // State to hold the upload task reference
     const [showDatepicker, setShowDatepicker] = useState(false);
 
-    const isFormValid = lessonHeading && lessonOverView && lessonContent && contentScheduleDate;
+    const isFormValid = lessonHeading && lessonOverView && lessonContent ;
 
 
 
@@ -58,7 +57,6 @@ function Text({ isOpen, toggleDrawer, sectionId, courseId, isEditing, contentId 
             fetchContentData(contentId || '');
         }
         else {
-            setContentScheduleDate('');
             setLessonHeading('');
             setLessonOverView('');
             setLessonContent('');
@@ -99,7 +97,6 @@ function Text({ isOpen, toggleDrawer, sectionId, courseId, isEditing, contentId 
                 setLessonOverView(content.lessonOverView || '');
                 setLessonContent(content.lessonContent || '');
                 setPdfLink(content.pdfLink || '');
-                setContentScheduleDate(content.lessonScheduleDate || '');
                 setDisscusionOpen(content.isDisscusionOpen || '');
                 setLoading(false);
             } else {
@@ -302,7 +299,6 @@ function Text({ isOpen, toggleDrawer, sectionId, courseId, isEditing, contentId 
                     lessonContent: lessonContent,
                     pdfLink: pdfLink ? pdfLink : null,
                     pdfSize: selectedFile?.size || 0,
-                    lessonScheduleDate: contentScheduleDate,
                     isDisscusionOpen: disscusionOpen,
                 };
                 await updateDoc(contentRef, courseData);
@@ -314,7 +310,6 @@ function Text({ isOpen, toggleDrawer, sectionId, courseId, isEditing, contentId 
                 setPdfLink('');
                 setProgress(null); // Reset progress
                 setFileName(null);
-                setContentScheduleDate('');
                 setDisscusionOpen(false);
                 setValue('');
 
@@ -330,7 +325,6 @@ function Text({ isOpen, toggleDrawer, sectionId, courseId, isEditing, contentId 
                     lessonContent: lessonContent,
                     pdfLink: pdfLink ? pdfLink : null,
                     pdfSize: selectedFile?.size || 0,
-                    lessonScheduleDate: contentScheduleDate,
                     isDisscusionOpen: disscusionOpen,
 
                 });
@@ -342,7 +336,6 @@ function Text({ isOpen, toggleDrawer, sectionId, courseId, isEditing, contentId 
                 setPdfLink('');
                 setProgress(null); // Reset progress
                 setFileName(null);
-                setContentScheduleDate('');
                 setDisscusionOpen(false);
                 setValue('');
             }
@@ -400,8 +393,8 @@ function Text({ isOpen, toggleDrawer, sectionId, courseId, isEditing, contentId 
                         <LoadingData />
                     ) : (
 
-                        <div className="flex justify-center h-auto overflow-y-auto ">
-                            <div className="h-auto gap-4 p-6 rounded-md w-[684px] flex flex-col">
+                        <div className="flex justify-center h-auto overflow-y-auto">
+                            <div className="h-auto gap-4 p-6 rounded-md w-[684px] flex flex-col ">
                                 <div className='flex flex-col gap-2'>
                                     <span className='text-[#1D2939] text-sm font-semibold'>Lesson Heading</span>
                                     <input
@@ -579,23 +572,6 @@ function Text({ isOpen, toggleDrawer, sectionId, courseId, isEditing, contentId 
                                             </div>
                                         </div>
                                     )}
-
-                                </div>
-                                <div className="flex flex-col gap-2 mb-3 mt-1">
-                                    <span className="text-[#1D2939] font-semibold text-sm">Schedule Lesson</span>
-                                    <DatePicker
-                                        granularity="minute"
-                                        minValue={today(getLocalTimeZone())}
-                                        value={contentScheduleDate || undefined ? parseDateTime(contentScheduleDate) || undefined : undefined}
-                                        hideTimeZone
-                                        onChange={(date) => {
-                                            const dateString = date ? date.toString() : "";
-                                            setContentScheduleDate(dateString);
-
-                                        }}
-
-                                    />
-
 
                                 </div>
 

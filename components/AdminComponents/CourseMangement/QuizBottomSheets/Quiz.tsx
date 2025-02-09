@@ -90,7 +90,6 @@ function Quiz({ isOpen, toggleDrawer, courseId, sectionId, isEditing, contentId 
     const [nMarksPerQ, setnMarksPerQ] = useState("");
     const [timeNumber, setTimeNumber] = useState("");
     const [timeText, setTimeText] = useState("Minutes");
-    const [quizScheduleDate, setQuizScheduleDate] = useState("");
     const [quizName, setQuizName] = useState<string>('');
     const [quizDescription, setQuizDescription] = useState<string>('');
     const [anyQuestionAdded, setAnyQuestionAdded] = useState<string>('');
@@ -112,7 +111,6 @@ function Quiz({ isOpen, toggleDrawer, courseId, sectionId, isEditing, contentId 
             setQuizDescription('');
             setMarksPerQ('');
             setnMarksPerQ('');
-            setQuizScheduleDate('');
             setTimeNumber('');
             setTimeText('Minutes');
             setQuestionsList([]);
@@ -131,7 +129,6 @@ function Quiz({ isOpen, toggleDrawer, courseId, sectionId, isEditing, contentId 
                 const content = contentDocSnap.data();
                 setQuizName(content.lessonHeading || '');
                 setQuizDescription(content.lessonOverView || '');
-                setQuizScheduleDate(content.lessonScheduleDate || '');
                 setMarksPerQ(content.marksPerQuestion || '');
                 setnMarksPerQ(content.nMarksPerQuestion || '');
                 setTimeNumber(convertQuizTimeToText(content.quizTime).timeNumber);
@@ -174,7 +171,7 @@ function Quiz({ isOpen, toggleDrawer, courseId, sectionId, isEditing, contentId 
             return quizName.trim() !== '' && quizDescription.trim() !== '';
         }
         else if (currentStep === Step.Schedule) {
-            return marksPerQ.trim() !== '' && quizScheduleDate.trim() !== '' && nMarksPerQ.trim() !== '' && timeNumber.trim() !== '' && timeText.trim() !== '';
+            return marksPerQ.trim() !== '' && nMarksPerQ.trim() !== '' && timeNumber.trim() !== '' && timeText.trim() !== '';
         }
         else if (currentStep === Step.Questions && isEditing) {
             return true;
@@ -195,7 +192,7 @@ function Quiz({ isOpen, toggleDrawer, courseId, sectionId, isEditing, contentId 
 
     const isNextButtonDisabled = !isFormValid();
 
-    const isSaveValid = marksPerQ && nMarksPerQ && timeNumber && timeText && quizScheduleDate && quizName && quizDescription;
+    const isSaveValid = marksPerQ && nMarksPerQ && timeNumber && timeText  && quizName && quizDescription;
 
     const handleNextClick = () => {
         if (currentStep < Step.Schedule) {
@@ -235,7 +232,7 @@ function Quiz({ isOpen, toggleDrawer, courseId, sectionId, isEditing, contentId 
                 return <Review questionsList={questionsList} />;
 
             case Step.Schedule:
-                return <Schedule marksPerQ={marksPerQ} setMarksPerQ={setMarksPerQ} nMarksPerQ={nMarksPerQ} setnMarksPerQ={setnMarksPerQ} timeNumber={timeNumber} setTimeNumber={setTimeNumber} timeText={timeText} setTimeText={setTimeText} quizScheduleDate={quizScheduleDate} setQuizScheduleDate={setQuizScheduleDate} />;
+                return <Schedule marksPerQ={marksPerQ} setMarksPerQ={setMarksPerQ} nMarksPerQ={nMarksPerQ} setnMarksPerQ={setnMarksPerQ} timeNumber={timeNumber} setTimeNumber={setTimeNumber} timeText={timeText} setTimeText={setTimeText} />;
 
             default:
                 return <Quizinfo
@@ -265,7 +262,6 @@ function Quiz({ isOpen, toggleDrawer, courseId, sectionId, isEditing, contentId 
                         const courseData = {
                             lessonHeading: quizName,
                             lessonOverView: quizDescription,
-                            lessonScheduleDate: quizScheduleDate,
                             quizTime: timeNumber && timeText ? convertToSeconds(timeNumber + " " + timeText) : 0,
                             marksPerQuestion: marksPerQ,
                             nMarksPerQuestion: nMarksPerQ,
@@ -318,7 +314,6 @@ function Quiz({ isOpen, toggleDrawer, courseId, sectionId, isEditing, contentId 
                             type: 'Quiz',
                             lessonHeading: quizName,
                             lessonOverView: quizDescription,
-                            lessonScheduleDate: quizScheduleDate,
                             quizTime: timeNumber && timeText ? convertToSeconds(timeNumber + " " + timeText) : 0,
                             marksPerQuestion: marksPerQ,
                             nMarksPerQuestion: nMarksPerQ,
@@ -367,7 +362,6 @@ function Quiz({ isOpen, toggleDrawer, courseId, sectionId, isEditing, contentId 
                         setQuizDescription('');
                         setMarksPerQ('');
                         setnMarksPerQ('');
-                        setQuizScheduleDate('');
                         setTimeNumber('');
                         setTimeText('Minutes');
                         setQuestionsList([]);
