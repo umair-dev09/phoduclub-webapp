@@ -328,19 +328,18 @@ export default function Sign() {
         //     </div>
         //     <div id="recaptcha-container"></div>
         // </div>
-        <div className='flex flex-col md:flex-row w-full min-h-screen bg-[#f7f8fb]'>
-            {/* Left Area */}
-            <div className='w-full md:w-1/2 flex flex-col pt-6 px-6 md:pl-6'>
+
+        <div className='flex flex-col lg:flex-row w-full min-h-screen bg-[#f7f8fb]'>
+            <div className='Left Area w-full lg:w-1/2 flex flex-col p-6 lg:pt-6 lg:pl-6'>
                 <Image src="/images/phoduclublogo.png" width={140} height={10} quality={100} alt="Phodu Club Logo" />
-                <div className='Signup Main Div flex flex-col self-center mt-10 md:mt-20 items-center w-full'>
-                    <h3 className='font-bold text-[20px] md:text-[24px]'>Get Started</h3>
-                    <p className='mt-2 text-sm md:text-base text-center md:text-left'>Make yourself prepared, before time ✌️</p>
-                    <form className='flex flex-col items-center justify-center gap-4 pt-[30px] md:pt-[40px] w-full' onSubmit={handleSubmit}>
-                        {/* Name Input */}
-                        <div className='w-full max-w-[375px] px-4 md:px-0'>
+                <div className='Signup Main Div flex flex-col self-center mt-8 lg:mt-20 items-center w-full px-4 lg:px-0'>
+                    <h3 className='font-bold text-[20px] lg:text-[24px]'>Get Started</h3>
+                    <p className='mt-2 text-center'>Make yourself prepared, before time ✌️</p>
+                    <form className='flex flex-col items-center justify-center gap-4 pt-[30px] lg:pt-[40px] w-full max-w-[375px]' onSubmit={handleSubmit}>
+                        <div className='w-full'>
                             <label className='text-[14px] text-[#080808] font-medium'>Name</label>
-                            <div className='flex flex-row w-full max-w-[375px] justify-between'>
-                                <div className='flex flex-col w-[48%] md:w-44'>
+                            <div className='flex flex-col sm:flex-row w-full gap-2 sm:gap-4'>
+                                <div className='flex flex-col w-full sm:w-1/2'>
                                     <input
                                         type="text"
                                         id='firstName'
@@ -348,11 +347,11 @@ export default function Sign() {
                                         value={firstName}
                                         onChange={(e) => handleInputChange('firstName', e.target.value)}
                                         maxLength={25}
-                                        className='p-[7px] text-base rounded-[5px] border border-gray-300 text-gray-900 w-full h-10 box-border mr-2 focus:outline focus:outline-[1.5px] focus:outline-[#D6BBFB] hover:outline hover:outline-[1.5px] hover:outline-[#D6BBFB]'
+                                        className='p-[7px] text-base rounded-[5px] border border-gray-300 text-gray-900 w-full h-10 box-border focus:outline focus:outline-[1.5px] focus:outline-[#D6BBFB] hover:outline hover:outline-[1.5px] hover:outline-[#D6BBFB]'
                                     />
                                     {isSubmitted && errors.firstName && <div id="firstName_error" className='text-red-500 text-[12px] mt-[2px]'>{errors.firstName}</div>}
                                 </div>
-                                <div className='flex flex-col w-[48%] md:w-44'>
+                                <div className='flex flex-col w-full sm:w-1/2'>
                                     <input
                                         type="text"
                                         id='lastName'
@@ -366,49 +365,50 @@ export default function Sign() {
                                 </div>
                             </div>
                         </div>
-
-                        {/* Email Input */}
-                        <div className='w-full max-w-[375px] px-4 md:px-0'>
-                            <label className='text-[14px] text-[#080808] font-medium'>Email</label>
-                            <input
-                                type="email"
-                                id='Email'
-                                placeholder='Enter email'
-                                value={email}
-                                onChange={(e) => handleInputChange('email', e.target.value)}
-                                maxLength={50}
-                                className='p-[7px] text-base rounded-[5px] border border-gray-300 w-full h-10 focus:outline-[#D6BBFB] hover:outline-[#D6BBFB]'
-                            />
+                        <div className='w-full'>
+                            <label className='text-[14px] text-[#080808] font-medium' htmlFor="Email">Email</label>
+                            <div>
+                                <input
+                                    type="email"
+                                    id='Email'
+                                    placeholder='Enter email'
+                                    value={email}
+                                    onChange={(e) => handleInputChange('email', e.target.value)}
+                                    maxLength={50}
+                                    className='p-[7px] text-base rounded-[5px] border border-gray-300 w-full h-10 focus:outline focus:outline-[1.5px] focus:outline-[#D6BBFB] hover:outline hover:outline-[1.5px] hover:outline-[#D6BBFB]'
+                                />
+                                {isSubmitted && errors.email && <div id="email_error" className='text-red-500 text-[12px] mt-[2px]'>{errors.email}</div>}
+                            </div>
                         </div>
-
-                        {/* Phone Input */}
-                        <div className='w-full max-w-[375px] px-4 md:px-0'>
-                            <label className='text-[14px] text-[#080808] font-medium'>Phone Number</label>
-                            <PhoneInput
-                                country={'in'}
-                                value={phone}
-                                onChange={(value) => handleInputChange('phone', value)}
-                                placeholder="+91 000000000"
-                                inputProps={{
-                                    name: 'phone',
-                                    required: true,
-                                    autoFocus: true
-                                }}
-                                inputStyle={{
-                                    width: "100%",
-                                    borderRadius: "4px",
-                                    border: "1px solid #D0D5DD",
-                                    height: "42px",
-                                    boxShadow: "0px 1px 2px 0px rgba(16, 24, 40, 0.05)",
-                                    outline: "none"
-                                }}
-                                onFocus={(e) => e.target.style.boxShadow = "0 0 0 2px #D6BBFB"}
-                                onBlur={(e) => e.target.style.boxShadow = "0px 1px 2px 0px rgba(16, 24, 40, 0.05)"}
-                            />
+                        <div className='w-full'>
+                            <label className='text-[14px] text-[#080808] font-medium' htmlFor="Number">Phone Number</label>
+                            <div className='w-full'>
+                                <PhoneInput
+                                    country={'in'}
+                                    value={phone}
+                                    onChange={(value: any) => handleInputChange('phone', value)}
+                                    placeholder="+91 000000000"
+                                    inputProps={{
+                                        name: 'phone',
+                                        required: true,
+                                        autoFocus: true
+                                    }}
+                                    inputStyle={{
+                                        width: "100%",
+                                        borderRadius: "4px",
+                                        border: "1px solid #D0D5DD",
+                                        height: "42px",
+                                        boxShadow: "0px 1px 2px 0px rgba(16, 24, 40, 0.05)",
+                                        outline: "none"
+                                    }}
+                                    onFocus={(e) => e.target.style.boxShadow = "0 0 0 2px #D6BBFB"}
+                                    onBlur={(e) => e.target.style.boxShadow = "0px 1px 2px 0px rgba(16, 24, 40, 0.05)"}
+                                />
+                                {isSubmitted && errors.phone && <div id="phone_error" className='text-red-500 text-[12px] mt-[2px]'>{errors.phone}</div>}
+                            </div>
                         </div>
-
-                        {/* Checkbox */}
-                        <div className='w-full max-w-[375px] px-4 md:px-0'>
+                        <div id="recaptcha-container"></div>
+                        <div className='w-full px-2'>
                             <Checkbox
                                 size="sm"
                                 color="primary"
@@ -416,15 +416,18 @@ export default function Sign() {
                                 checked={!termsAccepted}
                                 onChange={() => handleInputChange('terms', '')}
                             />
-                            <label className='text-sm text-gray-900' htmlFor="terms">
+                            <label className='text-sm text-gray-900 mb-1.5' htmlFor="terms">
                                 I agree to the Phodu.club <a href="https://phodu.club/privacy-policy/" className="text-[#6646A2] underline">privacy policy</a> and <a href="https://phodu.club/terms-and-conditions/" className="text-[#6646A2] underline">terms of use</a>.
                             </label>
+                            {isSubmitted && errors.terms && (
+                                <div id="terms_error" className="text-red-500 text-[12px] mt-[2px]">
+                                    {errors.terms}
+                                </div>
+                            )}
                         </div>
-
-                        {/* Submit Button */}
-                        <div className='w-full max-w-[375px] px-4 md:px-0'>
+                        <div className='flex items-center justify-center mt-[12px] w-full'>
                             <button
-                                className='font-medium w-full h-10 border-none bg-[#e39ff6] rounded-[7px] text-sm text-white flex items-center justify-center hover:bg-[#7400e0] active:bg-[#7400e0] active:opacity-70 transition-colors duration-150'
+                                className='font-medium w-full h-10 border-none bg-[#e39ff6] rounded-[7px] text-sm text-white cursor-pointer flex items-center justify-center hover:bg-[#7400e0] active:bg-[#7400e0] active:opacity-70 transition-colors duration-150'
                                 type="submit"
                                 style={{
                                     backgroundColor: isFormValid() && !isLoading ? '#7400e0' : '#E39FF6',
@@ -433,41 +436,35 @@ export default function Sign() {
                                 disabled={isLoading}
                             >
                                 {isLoading ? (
-                                    <div className='w-5 h-5 animate-spin-loading rounded-full border-4 border-[#ffffff4d] border-solid border-t-4 border-t-customWhite'></div>
+                                    <div className='w-5 h-5 animate-spin-loading rounded-[50%] border-4 border-[#ffffff4d] border-solid border-t-4 border-t-customWhite'></div>
                                 ) : (
                                     'Send verification code'
                                 )}
                             </button>
                         </div>
-
-                        {/* Login Link */}
                         <div className='flex flex-row mt-2 mb-4'>
                             <p className='text-[#7d7d8a] font-semibold text-[15px]'>Already have an account? <span className='text-[#9012ff] font-semibold text-[15px] cursor-pointer hover:underline' onClick={navigateLogin}>Log In</span></p>
                         </div>
-
-
                     </form>
                 </div>
             </div>
 
-            {/* Right Section (Hidden on Mobile, Shown on Tablet/Desktop) */}
-            <div className="hidden md:flex w-full md:w-1/2 items-center justify-center bg-[#0E2138] rounded-lg m-2  md:m-2">
-                <div className="absolute top-4 right-4 w-[400px] h-[400px] bg-[url('/icons/god-rays.png')] bg-cover bg-center bg-no-repeat mix-blend-plus-lighter blur-[12px] pointer-events-none"></div>
-                <div className="w-[554px] mx-3 flex flex-col gap-10 h-auto">
+            <div className="hidden md:flex w-full lg:w-1/2 items-center justify-center bg-[#0E2138] rounded-lg m-2">
+                <div className="absolute top-4 right-4 w-[300px] lg:w-[400px] h-[300px] lg:h-[400px] bg-[url('/icons/god-rays.png')] bg-cover bg-center bg-no-repeat mix-blend-plus-lighter blur-[12px] pointer-events-none"></div>
+                <div className="w-full max-w-[554px] mx-3 flex flex-col gap-6 lg:gap-10 h-auto px-4">
                     <Image
                         src="/icons/coma.svg"
-                        width={80}
-                        height={80}
+                        width={60}
+                        height={60}
                         alt="coma-image"
+                        className="lg:w-[80px] lg:h-[80px]"
                     />
-                    <h1 className="text-[#EAECF0CC] font-bold text-2xl text-center md:text-left">
-                        Education is the foundation upon which we build our future.
-                    </h1>
-                    <span className="text-[#667085] font-normal text-base text-right">- Christine Gregoire</span>
+                    <h1 className="text-[#EAECF0CC] font-bold text-xl lg:text-2xl">Education is the foundation upon which we build our future.</h1>
+                    <span className="text-[#667085] font-normal text-sm lg:text-base text-right">- Christine Gregoire</span>
                 </div>
             </div>
+            <div id="recaptcha-container"></div>
         </div>
-
     );
 }
 

@@ -451,21 +451,24 @@ export default function Sign() {
             </div>
 
             {/* Right Section (Hidden on Mobile, Shown on Tablet/Desktop) */}
-            <div className="hidden md:flex w-full md:w-1/2 items-center justify-center bg-[#0E2138] rounded-lg m-2  md:m-2">
+            <div className="hidden md:flex w-full md:w-1/2 items-center justify-center bg-[#0E2138] rounded-lg md:mr-6 lg:mr-0 p-4">
                 <div className="absolute top-4 right-4 w-[400px] h-[400px] bg-[url('/icons/god-rays.png')] bg-cover bg-center bg-no-repeat mix-blend-plus-lighter blur-[12px] pointer-events-none"></div>
-                <div className="w-[554px] mx-3 flex flex-col gap-10 h-auto">
+
+                <div className="w-[554px] mx-auto flex flex-col gap-10 h-auto text-center">
                     <Image
                         src="/icons/coma.svg"
                         width={80}
                         height={80}
                         alt="coma-image"
+                        className="mx-auto"
                     />
-                    <h1 className="text-[#EAECF0CC] font-bold text-2xl text-center md:text-left">
+                    <h1 className="text-[#EAECF0CC] font-bold text-2xl">
                         Education is the foundation upon which we build our future.
                     </h1>
-                    <span className="text-[#667085] font-normal text-base text-right">- Christine Gregoire</span>
+                    <span className="text-[#667085] font-normal text-base">- Christine Gregoire</span>
                 </div>
             </div>
+
         </div>
 
     );

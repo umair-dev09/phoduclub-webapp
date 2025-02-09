@@ -332,6 +332,9 @@ export default function Sign() {
             {/* Left Area */}
             <div className='w-full md:w-1/2 flex flex-col pt-6 px-6 md:pl-6'>
                 <Image src="/images/phoduclublogo.png" width={140} height={10} quality={100} alt="Phodu Club Logo" />
+                <div>
+
+                </div>
                 <div className='Signup Main Div flex flex-col self-center mt-10 md:mt-20 items-center w-full'>
                     <h3 className='font-bold text-[20px] md:text-[24px]'>Get Started</h3>
                     <p className='mt-2 text-sm md:text-base text-center md:text-left'>Make yourself prepared, before time ✌️</p>
@@ -449,24 +452,25 @@ export default function Sign() {
                     </form>
                 </div>
             </div>
-
-            {/* Right Section (Hidden on Mobile, Shown on Tablet/Desktop) */}
-            <div className="hidden md:flex w-full md:w-1/2 items-center justify-center bg-[#0E2138] rounded-lg m-2  md:m-2">
-                <div className="absolute top-4 right-4 w-[400px] h-[400px] bg-[url('/icons/god-rays.png')] bg-cover bg-center bg-no-repeat mix-blend-plus-lighter blur-[12px] pointer-events-none"></div>
-                <div className="w-[554px] mx-3 flex flex-col gap-10 h-auto">
-                    <Image
-                        src="/icons/coma.svg"
-                        width={80}
-                        height={80}
-                        alt="coma-image"
-                    />
-                    <h1 className="text-[#EAECF0CC] font-bold text-2xl text-center md:text-left">
-                        Education is the foundation upon which we build our future.
-                    </h1>
-                    <span className="text-[#667085] font-normal text-base text-right">- Christine Gregoire</span>
-                </div>
-            </div>
         </div>
+
+            {/* Right Section (Hidden on Mobile, Shown on Tablet/Desktop) */ }
+    <div className="hidden md:flex w-full md:w-1/2 items-center justify-center bg-[#0E2138] rounded-lg m-2  md:m-2">
+        <div className="absolute top-4 right-4 w-[400px] h-[400px] bg-[url('/icons/god-rays.png')] bg-cover bg-center bg-no-repeat mix-blend-plus-lighter blur-[12px] pointer-events-none"></div>
+        <div className="w-[554px] mx-3 flex flex-col gap-10 h-auto">
+            <Image
+                src="/icons/coma.svg"
+                width={80}
+                height={80}
+                alt="coma-image"
+            />
+            <h1 className="text-[#EAECF0CC] font-bold text-2xl text-center md:text-left">
+                Education is the foundation upon which we build our future.
+            </h1>
+            <span className="text-[#667085] font-normal text-base text-right">- Christine Gregoire</span>
+        </div>
+    </div>
+        </div >
 
     );
 }
