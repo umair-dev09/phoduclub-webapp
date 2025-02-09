@@ -154,11 +154,11 @@ function CoursesList() {
                 <div className="mt-4">
                   {/* Course name */}
                   <div className="text-lg font-semibold leading-6 ml-4">
-                    <p>{course.courseName}</p>
+                    <p>{course.courseName || 'Phodu Course'}</p>
                   </div>
                   {/* Course details: lessons, duration */}
                   <div className="text-xs mx-4 font-normal leading-4 text-[#667085] flex items-center gap-1">
-                    <p>{course.totalContentCount} Lessons</p>
+                    <p>{course.totalContentCount || '0'} Lessons</p>
                     {/* <span>&#x2022;</span> 
                 <p>3hr 14m</p> */}
                   </div>
@@ -168,7 +168,7 @@ function CoursesList() {
                 <div className="flex justify-between mt-2 mb-4 mx-4 text-lg font-semibold">
                   {/* Price */}
                   <div className="flex items-end">
-                    <h4>&#8377; {course.discountPrice}</h4>
+                    <h4>&#8377; {course.discountPrice || ' 0'}</h4>
                   </div>
                   {/* Buy Now button */}
                   <div>

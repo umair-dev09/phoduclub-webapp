@@ -181,23 +181,23 @@ function CoursesComp() {
 
             <div className="flex justify-between items-center mt-2 gap-8">
               <Progress aria-label="Loading..." className="w-full h-2" value={course.studentProgress} />
-              <span className="text-sm font-medium text-gray-600">{course.studentProgress}%</span>
+              <span className="text-sm font-medium text-gray-600">{course.studentProgress || '0'}%</span>
             </div>
 
             <div className="flex justify-between mt-6">
               <div className="text-center">
                 <p className="text-sm text-gray-500">Lessons</p>
                 <div className="flex items-center space-x-1">
-                  <h3 className="font-semibold text-base">{course.totalCompletedContentCount}</h3>
+                  <h3 className="font-semibold text-base">{course.totalCompletedContentCount || '0'}</h3>
                   <h3 className="text-base text-gray-500">/</h3>
-                  <h3 className="text-base font-semibold">{course.totalContentCount}</h3>
+                  <h3 className="text-base font-semibold">{course.totalContentCount || '0'}</h3>
                 </div>
               </div>
 
               <div className="text-end">
                 <p className="text-sm text-gray-500">Time Left</p>
                 <h3 className="text-base font-semibold">
-                  {timeLeft(course.endDate)}
+                  {timeLeft(course.endDate) || '0'}
                 </h3>
               </div>
             </div>

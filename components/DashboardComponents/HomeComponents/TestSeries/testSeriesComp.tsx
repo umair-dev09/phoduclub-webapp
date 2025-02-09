@@ -189,7 +189,7 @@ function TestSeriesComp() {
 
             <div className="flex justify-between items-center mt-2 gap-8">
               <Progress aria-label="Loading..." className="w-full h-2" value={test.studentProgress || 0} />
-              <span className="text-sm font-medium">{test.studentProgress}%</span>
+              <span className="text-sm font-medium">{test.studentProgress || '0'}%</span>
             </div>
 
             <div className="flex justify-between mt-6 pb-6 border-b border-gray-200">
@@ -210,7 +210,7 @@ function TestSeriesComp() {
               <div className="flex flex-col items-end">
                 <p className="text-gray-500 font-sm ">Time Left</p>
                 <h3 className="font-semibold text-base">
-                  {formatExpiryDate(test.endDate)}
+                  {formatExpiryDate(test.endDate) || '0'}
                 </h3>
               </div>
             </div>

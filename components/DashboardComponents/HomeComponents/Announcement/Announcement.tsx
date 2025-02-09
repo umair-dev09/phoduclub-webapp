@@ -19,6 +19,7 @@ interface Announcement {
     communityName?: string;
     senderName?: string;
     senderProfilePic?: string;
+    senderRole?: string;
 }
 function Announcement() {
     const router = useRouter();
@@ -60,6 +61,7 @@ function Announcement() {
                         message: data.message,
                         senderId: data.senderId,
                         senderName: senderProfile.name || 'Unknown',
+                        senderRole: senderProfile.role || 'Unknown',
                         senderProfilePic: senderProfile.profilePic,
                         timestamp: data.timestamp,
                         communityName: community.data().communityName,
@@ -109,6 +111,7 @@ function Announcement() {
                                     </span>
                                 </div>
                             </div>
+                            {/* <span className='text-sm font-normal'>{announcement.senderRole || 'Admin'}</span>     */}
                             <div className='flex flex-row gap-1 bg-[#F8E9FE] rounded-[19px] h-[26px] w-auto px-3 items-center justify-center'>
                                 <Image
                                     src="/icons/community-pink-color.svg"

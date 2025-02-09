@@ -248,8 +248,7 @@ export default function MyQuiz() {
                                         </div>
                                     </div>
                                 </PopoverTrigger>
-                                <PopoverContent className="flex flex-col bg-white w-auto h-auto px-0 items-start border border-lightGrey rounded-md">
-
+                                <PopoverContent className="flex flex-col bg-white min-w-[102px] h-auto px-0 items-start border border-lightGrey rounded-md">
                                     <button
                                         onClick={() => {
                                             handleAttemptFilterChange('All');
@@ -270,27 +269,25 @@ export default function MyQuiz() {
                                             {attempt.name || 'loading...'}
                                         </button>
                                     ))}
-
                                 </PopoverContent>
                             </Popover>
-                        )
-                            : (
-                                <div className="flex w-[102px] h-[2.313rem] bg-white rounded-md px-3 py-2 text-sm justify-between">
-                                    <div>All</div>
+                        ) : (
+                            <div className="flex w-[102px] h-auto bg-white rounded-md px-3 py-2 text-sm justify-between">
+                                <div>All</div>
+                                <div>
                                     <div>
-                                        <div>
-                                            <button>
-                                                <Image src='/icons/arrowup.svg' alt="popup" width={20} height={20} />
-                                            </button>
-                                        </div>
-                                        <div className="hidden">
-                                            <button>
-                                                <Image src='/icons/arrowdown.svg' alt="popup" width={20} height={20} />
-                                            </button>
-                                        </div>
+                                        <button>
+                                            <Image src='/icons/arrowup.svg' alt="popup" width={20} height={20} />
+                                        </button>
+                                    </div>
+                                    <div className="hidden">
+                                        <button>
+                                            <Image src='/icons/arrowdown.svg' alt="popup" width={20} height={20} />
+                                        </button>
                                     </div>
                                 </div>
-                            )}
+                            </div>
+                        )}
                     </div>
 
                     {/* Quiz Stats */}
@@ -300,7 +297,7 @@ export default function MyQuiz() {
                             <div className="flex flex-1 flex-row justify-between pr-4">
                                 <div className="flex flex-col gap-2">
                                     <div className="font-normal text-xs">Total Questions</div>
-                                    <h3 className="text-[15px]">{currentUserStats.totalQuestions || 0}</h3>
+                                    <h3 className="text-[15px]">{currentUserStats.totalQuestions || '0'}</h3>
                                 </div>
                                 <div className="flex justify-center items-center">
                                     <div className="w-px bg-lightGrey h-4/5"></div>
@@ -311,7 +308,7 @@ export default function MyQuiz() {
                             <div className="flex flex-1 flex-row justify-between pr-4">
                                 <div className="flex flex-col gap-2">
                                     <div className="font-normal text-xs">Attempted Questions</div>
-                                    <h3 className="text-[15px]">{currentUserStats.attemptedQuestions || 0}</h3>
+                                    <h3 className="text-[15px]">{currentUserStats.attemptedQuestions || '0'}</h3>
                                 </div>
                                 <div className="flex justify-center items-center">
                                     <div className="w-px bg-lightGrey h-4/5"></div>
@@ -321,7 +318,7 @@ export default function MyQuiz() {
                             {/* Time Taken */}
                             <div className="flex flex-1 flex-col gap-2">
                                 <div className="font-normal text-xs">Time Taken</div>
-                                <h3 className="text-[15px]">{formatTime(currentUserStats.timeTaken)} of {formatTimeWithSuffix(currentUserStats.totalTime)}</h3>
+                                <h3 className="text-[15px]">{formatTime(currentUserStats.timeTaken) || '0'} of {formatTimeWithSuffix(currentUserStats.totalTime) || '0'}</h3>
                             </div>
                         </div>
 
@@ -330,7 +327,7 @@ export default function MyQuiz() {
                             <div className="flex flex-1 flex-row justify-between pr-4">
                                 <div className="flex flex-col gap-2">
                                     <div className="font-normal text-xs">Answered Correct</div>
-                                    <h3 className="text-[15px]">{currentUserStats.answeredCorrect}</h3>
+                                    <h3 className="text-[15px]">{currentUserStats.answeredCorrect || '0'}</h3>
                                 </div>
                                 <div className="flex justify-center items-center">
                                     <div className="w-px bg-lightGrey h-4/5"></div>
@@ -340,7 +337,7 @@ export default function MyQuiz() {
                             <div className="flex flex-1 flex-row justify-between pr-4">
                                 <div className="flex flex-col gap-2">
                                     <div className="font-normal text-xs">Answered Incorrect</div>
-                                    <h3 className="text-[15px]">{currentUserStats.answeredIncorrect}</h3>
+                                    <h3 className="text-[15px]">{currentUserStats.answeredIncorrect || '0'}</h3>
                                 </div>
                                 <div className="flex justify-center items-center">
                                     <div className="w-px bg-lightGrey h-4/5"></div>
@@ -349,7 +346,7 @@ export default function MyQuiz() {
 
                             <div className="flex flex-1 flex-col gap-2">
                                 <div className="font-normal text-xs">Total Score</div>
-                                <h3 className="text-[15px]">{currentUserStats.score}</h3>
+                                <h3 className="text-[15px]">{currentUserStats.score || '0'}</h3>
                             </div>
                         </div>
                     </div>
@@ -397,9 +394,9 @@ export default function MyQuiz() {
                                 ? leaderboard[1].name.length > 10
                                     ? `${leaderboard[1].name.slice(0, 10)}...`
                                     : leaderboard[1].name
-                                : 'User'}
+                                : 'Phodu User'}
                         </div>
-                        <div className="text-[0.688rem] font-medium">{leaderboard[1]?.score || 0} Score</div>
+                        <div className="text-[0.688rem] font-medium">{leaderboard[1]?.score || '0'} Score</div>
                     </div>
 
                     {/* 1st Place */}
@@ -424,9 +421,9 @@ export default function MyQuiz() {
                                 ? leaderboard[0].name.length > 10
                                     ? `${leaderboard[0].name.slice(0, 10)}...`
                                     : leaderboard[0].name
-                                : 'User'}
+                                : 'Phodu User'}
                         </div>
-                        <div className="text-[0.688rem] font-medium">{leaderboard[0]?.score || 0} Score</div>
+                        <div className="text-[0.688rem] font-medium">{leaderboard[0]?.score || '0'} Score</div>
                     </div>
 
                     {/* 3rd Place */}
@@ -448,9 +445,9 @@ export default function MyQuiz() {
                                 ? leaderboard[2].name.length > 10
                                     ? `${leaderboard[2].name.slice(0, 10)}...`
                                     : leaderboard[2].name
-                                : 'User'}
+                                : 'Phodu User'}
                         </div>
-                        <div className="text-[0.688rem] font-medium">{leaderboard[2]?.score || 0} Score</div>
+                        <div className="text-[0.688rem] font-medium">{leaderboard[2]?.score || '0'} Score</div>
                     </div>
                 </div>
 
@@ -461,8 +458,8 @@ export default function MyQuiz() {
                             <div className="flex items-center gap-2">
                                 <Image src={user.profilePic} alt="Profile" width={40} height={40} className="rounded-full" />
                                 <div>
-                                    <div className="text-sm font-semibold">{user.name}</div>
-                                    <div className="text-xs text-gray-500">{user.score} Score</div>
+                                    <div className="text-sm font-semibold">{user.name || 'Phodu User'}</div>
+                                    <div className="text-xs text-gray-500">{user.score || 0} Score</div>
                                 </div>
                             </div>
                             <div className="text-sm font-semibold">#{index + 4}</div>
@@ -484,10 +481,10 @@ export default function MyQuiz() {
                                 />
                                 <div>
                                     <div className="text-sm font-semibold">You</div>
-                                    <div className="text-xs text-gray-500">{currentUserRank.score} Score</div>
+                                    <div className="text-xs text-gray-500">{currentUserRank.score || 0} Score</div>
                                 </div>
                             </div>
-                            <div className="text-sm font-semibold">#{currentUserRank.rank}</div>
+                            <div className="text-sm font-semibold">#{currentUserRank.rank || 0}</div>
                         </div>
                     </div>
                 )}

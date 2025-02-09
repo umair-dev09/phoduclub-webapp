@@ -120,7 +120,7 @@ function Purchase() {
     }
 
     return (
-        <div className="px-5 overflow-x-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
+        <div className="px-5  scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
             <div className="mx-1 border border-solid border-[#EAECF0] rounded-lg h-fit">
                 <div className="overflow-x-auto min-w-full"> {/* Ensure the table has a minimum width for scrolling */}
                     <table className="w-full min-w-[800px] border-collapse border-spacing-0"> {/* Add min-width to ensure table is scrollable */}
@@ -135,7 +135,9 @@ function Purchase() {
                         </thead>
                         <tbody className="divide-y divide-gray-200">
                             {transactions.length > 0 ? (
-                                transactions.map((transaction, index) => (
+                                [...transactions]
+                                    .sort((a, b) => new Date(b.dateOfPurchase).getTime() - new Date(a.dateOfPurchase).getTime())
+                                    .map((transaction, index) => (
                                     <tr key={index} className="hover:bg-gray-50 text-sm"
                                         onMouseEnter={() => setHoveredRow(index)}
                                         onMouseLeave={() => setHoveredRow(null)}>
@@ -208,31 +210,6 @@ function Purchase() {
                                                     </div>
                                                 ) : "-"}
                                             </div>
-                                            {/* <Popover placement="bottom-end">
-                                                <PopoverTrigger>
-                                                    <button className="focus:outline-none">
-                                                        <Image
-                                                            src="/icons/three-dots.svg"
-                                                            width={24}
-                                                            height={24}
-                                                            alt="Actions Menu"
-                                                        />
-                                                    </button>
-                                                </PopoverTrigger>
-                                                <PopoverContent className="flex flex-col bg-white border border-lightGrey rounded-md w-[195px] px-0 shadow-md">
-                                                    <ActionButton
-                                                        src="/icons/download-reciepts.svg"
-                                                        alt="Download Receipt"
-                                                        label="Download Receipt"
-                                                    />
-                                                    <ActionButton
-                                                        src="/icons/Download Invoice.svg"
-                                                        alt="Download Invoice"
-                                                        label="Download Invoice"
-                                                    />
-                                                </PopoverContent>
-                                            </Popover> */}
-
                                         </td>
                                     </tr>
                                 ))
