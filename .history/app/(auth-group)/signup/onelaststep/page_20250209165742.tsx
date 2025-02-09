@@ -17,17 +17,17 @@ export default function OneLastStep() {
           height={25}
         />
 
-        <div className="font-medium text-base mt-[20px]  text-[#98a2b3] cursor-pointer flex flex-row gap-2"
+        <div className="font-medium text-base mt-[20px] ml-10 text-[#98a2b3] cursor-pointer flex flex-row gap-2"
           onClick={() => router.back()}>
 
           <p>&larr;</p>
           <span className="font-medium text-base text-[#98a2b3]">Back</span>
         </div>
-        <div className="h-full flex items-center   justify-center flex-col gap-8  ">
+        <div className="h-full flex items-center   flex-col gap-8 mt-10 ">
           <div className="flex items-center justify-center">
             <p className="text-2xl font-bold text-[#101828]">One Last Step</p>
           </div>
-          <div className="flex flex-col max-w-[420px] w-full items-center justify-center">
+          <div className="flex flex-col w-full items-center justify-center">
             <Dropdown />
           </div>
 
