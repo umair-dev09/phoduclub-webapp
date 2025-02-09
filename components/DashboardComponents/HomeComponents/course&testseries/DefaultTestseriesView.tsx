@@ -171,15 +171,15 @@ function TestSeriesComp() {
                         <div className="w-full border border-[#EAECF0] border-t-0 bg-white rounded-br-lg rounded-bl-lg">
                             <div className="mt-4">
                                 <div className="text-base font-semibold leading-6 ml-4">
-                                    <p>{test.testName}</p>
+                                    <p>{test.testName || 'Phodu Test Series'}</p>
                                 </div>
                                 <div className="text-xs mx-4 font-normal leading-[18px] text-[#667085] flex items-center gap-1">
-                                    <p>{test.totalSectionsWithQuestions} Tests</p>
+                                    <p>{test.totalSectionsWithQuestions || '0'} Tests</p>
                                 </div>
                             </div>
                             <div className="flex justify-between mt-2 mb-4 mx-4 text-base font-semibold">
                                 <div className="flex items-end">
-                                    <h4>&#8377; {test.discountPrice}</h4>
+                                    <h4>&#8377; {test.discountPrice || 0}</h4>
                                 </div>
                                 <div>
                                     <button

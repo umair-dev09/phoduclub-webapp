@@ -208,8 +208,7 @@ function MyCourses() {
 
                     {/* Course details - number of lessons and total duration */}
                     <div className="flex flex-1 text-xs font-normal leading-4 text-[#667085] gap-1 items-start w-full justify-start mt-1.5">
-                      {/* <p>{course.totalContentCount || '0'} Lessons</p> */}
-                      <p>{course.totalContentCount ? course.totalContentCount + ' Lessons' : '-'}</p>
+                      <p>{course.totalContentCount || '0'} Lessons</p>
                       {/* <span>&#x2022;</span>
                             <p>3hr 14m</p> */}
                     </div>
@@ -222,9 +221,8 @@ function MyCourses() {
 
                     {/* Course status - completed percentage and time left */}
                     <div className="flex flex-1 flex-row justify-between mt-2 text-xs pb-3">
-                      {/* <div className="flex flex-row gap-1">Completed: <span className="font-semibold">{course.studentProgress || '-'}%</span></div> */}
-                      <div className="flex flex-row gap-1">Completed: <span className="font-semibold">{course.studentProgress ? course.studentProgress + '%' : '-'}</span></div>
-                      <div className="flex flex-row gap-1">Time Left: <span className="font-semibold">{timeLeft(course.endDate) || '-'}</span></div>
+                      <div className="flex flex-row gap-1">Completed: <span className="font-semibold">{course.studentProgress || '0'}%</span></div>
+                      <div className="flex flex-row gap-1">Time Left: <span className="font-semibold">{timeLeft(course.endDate) || '0'}</span></div>
                     </div>
                   </div>
                 </div>

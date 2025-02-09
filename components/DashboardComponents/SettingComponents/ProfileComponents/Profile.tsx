@@ -219,7 +219,7 @@ function Profile() {
                             <div className='DP relative mx-3'>
                                 <Image
                                     className='rounded-[50%]'
-                                    src={userData?.profilePic || '/defaultDP.svg'}
+                                    src={userData?.profilePic || '/default/DefaultUserDP.svg'}
                                     alt="profile-image"
                                     width={72}
                                     height={72}
@@ -239,12 +239,12 @@ function Profile() {
                                 {/* Name and ID */}
                                 {!isEditing && (
                                     <div className={styles.johnName}>
-                                        <span className={styles.actualProfileName} >{userData?.name}</span>
+                                        <span className={styles.actualProfileName} >{userData?.name || 'Phodu User'}</span>
                                     </div>
                                 )}
                                 {!isEditing && (
                                     <div className={styles.actualId}>
-                                        <div><span className={styles.id}>{userData?.userId}</span></div>
+                                        <div><span className={styles.id}>{userData?.userId || 'PhoduUserId'}</span></div>
                                         <div className={styles.copyButtons}>
                                             <div className={styles.copyIcon}>
                                                 <button className={styles.copyButton} onClick={handleCopy}>
@@ -297,7 +297,6 @@ function Profile() {
                             {userData?.targetExams?.map((exam, index) => {
                                 let examColor = '';
                                 switch (exam) {
-
                                     case 'JEE':
                                         examColor = '#F04438'; // Red
                                         break;
@@ -362,7 +361,7 @@ function Profile() {
                                     type="text"
                                     value={nameInput}
                                     onChange={handleNameChange} // Handle input changes
-                                    maxLength={50}
+                                    maxLength={30}
                                     className='w-[320px] h-[40px] rounded-md border-solid border-[1px] border-[#d0d5dd] px-[8px] hover:border-none hover:outline hover:outline-[1.5px] hover:outline-[#D6BBFB] focus:outline focus:outline-[1.5px] focus:outline-[#D6BBFB] focus:border-none'
                                 />
                             )}
@@ -393,7 +392,6 @@ function Profile() {
                             {isEditing && (
                                 <p className={styles.afterEdit}>{userData?.email}</p>
                             )}
-
                         </div>
                     </div>
                     {!isEditing && (
@@ -424,7 +422,6 @@ function Profile() {
                             {isEditing && (
                                 <p className={styles.afterEdit}>{userData?.phone}</p>
                             )}
-
                         </div>
                     </div>
                     {!isEditing && (
@@ -455,7 +452,6 @@ function Profile() {
                             {isEditing && (
                                 <p className={styles.afterEdit}>{userData?.targetYear}</p>
                             )}
-
                         </div>
                     </div>
                     {!isEditing && (
@@ -468,26 +464,24 @@ function Profile() {
             </div>
 
             {/* Sticky Footer Div */}
-
             {isEditing && (
                 <div className='flex w-full sticky bottom-0 items-center justify-end p-5 border-t border-solid border-[#eaecf0] h-[70px] bg-white ' style={{ boxShadow: '0 -2px 10px rgba(0, 0, 0, 0.1)' }}>
                     <div className={styles.insideBase}>
-
                         <button className="border-[1px] border-solid border-[#D1D5DB] hover:bg-[#F0F0F0] rounded-[8px] px-[24px] py-[10px] bg-transparent text-[14px] font-semibold" onClick={() => {
-
                             setIsEditing(false);
-                        }}>Cancel</button>
-
+                        }}>
+                            Cancel
+                        </button>
                         <button className={`text-sm rounded-[8px] px-[24px] py-[11px] font-semibold ml-4 mr-2 shadow-inner-button  text-white ${hasChanges ? 'bg-[#7400E0] transition-colors duration-150 hover:bg-[#6D0DCC]' : 'bg-[#d8acff] '}`}
                             disabled={!hasChanges}
                             onClick={updateNameInFirestore} // Call update function on click
-                        >Save Changes</button>
-
+                        >
+                            Save Changes
+                        </button>
                     </div>
                 </div>
             )}
             <ToastContainer />
-
         </div>
     );
 }

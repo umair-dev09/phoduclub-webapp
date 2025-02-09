@@ -470,14 +470,13 @@ function TestPurchasePage() {
                   userId={userData?.uniqueId || ''}
                 />
               )}
-
             </div>
           </div>
         </div>
       </div>
       <div className='flex flex-row gap-3 mt-4 ml-1 mb-2'>
-        <p >{totalNoOfTests ? totalNoOfTests + ' Tests' : '-'}</p>
-        <p>{totalNoOfQuestions ? totalNoOfQuestions + ' Questions' : '-'}</p>
+        <p >{totalNoOfTests || 0} Tests</p>
+        <p>{totalNoOfQuestions || 0} Questions</p>
       </div>
       <div>
         <div className="flex flex-row items-center gap-2 mb-4">
@@ -534,11 +533,11 @@ function TestPurchasePage() {
                       navigateToSection(section.id, section.sectionName);
                     }} >
                     <div className='flex flex-col gap-1'>
-                      <p className='text-left text-base text-[#1D2939] font-semibold'>{section.sectionName ? section.sectionName : '-'}</p>
+                      <p className='text-left text-base text-[#1D2939] font-semibold'>{section.sectionName || 'Section'}</p>
                       {section.hasQuestions ? (
-                        <p className='text-left text-sm text-[#667085] font-normal'>{section.Questions?.length ? section.Questions?.length + ' Questions' : '-'}</p>
+                        <p className='text-left text-sm text-[#667085] font-normal'>{section.Questions?.length || 0} Questions</p>
                       ) : (
-                        <p className='text-left text-sm text-[#667085] font-normal'>{section.sections?.length ? section.sections?.length + ' Tests' : '-'}</p>
+                        <p className='text-left text-sm text-[#667085] font-normal'>{section.sections?.length || 0} Tests</p>
                       )}
                     </div>
                     <div>

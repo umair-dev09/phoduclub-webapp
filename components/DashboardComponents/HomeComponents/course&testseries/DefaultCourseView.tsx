@@ -152,17 +152,17 @@ function CoursesList() {
                             <div className="flex w-full flex-col border border-[#EAECF0] border-t-0 bg-white rounded-br-lg rounded-bl-lg">
                                 <div className="mt-4">
                                     <div className="text-base font-semibold leading-6 ml-4">
-                                        <p>{course.courseName}</p>
+                                        <p>{course.courseName || '0'}</p>
                                     </div>
                                     <div className="text-xs mx-4 font-normal leading-[18px] text-[#667085] flex items-center gap-1">
-                                        <p>{course.totalContentCount} Lessons</p>
+                                        <p>{course.totalContentCount || 0} Lessons</p>
                                         <span>&#x2022;</span>
                                         <p>3hr 14m</p>
                                     </div>
                                 </div>
                                 <div className="flex justify-between mt-2 mb-4 mx-4 text-base font-semibold">
                                     <div className="flex items-end">
-                                        <h4>&#8377; {course.discountPrice}</h4>
+                                        <h4>&#8377; {course.discountPrice || 0}</h4>
                                     </div>
                                     <div>
                                         <button
