@@ -302,7 +302,7 @@ function Quiz() {
                                 {/* Quiz Information */}
                                 <div className="flex flex-col gap-1 text-xs">
                                     <div className="text-base font-semibold">{quiz.title || 'Phodu Quiz'}</div>
-                                    <div>{quiz.questions ? quiz.questions + ' Questions' : '-'}</div>
+                                    <div>{quiz.questions || 0} Questions</div>
                                 </div>
                                 {quiz.status === 'live' && quizTime && (
                                     <div className="flex flex-row text-[#DE3024]">
@@ -313,12 +313,8 @@ function Quiz() {
                                             }
                                         </div>
                                         <div className="flex items-center text-xs gap-1">
-                                            {/* Quiz ends in
-                                            <span className="font-semibold">{formatTime(quizTime.endTime) || '-'}</span> */}
-                                            {formatTime(quizTime.endTime)
-                                                ? <span className="font-semibold">Quiz ends in {formatTime(quizTime.endTime)}</span>
-                                                : '-'
-                                            }
+                                            Quiz ends in
+                                            <span className="font-semibold">{formatTime(quizTime.endTime) || '0'}</span>
                                         </div>
                                     </div>
                                 )}
@@ -328,12 +324,8 @@ function Quiz() {
                                             <Image src="/icons/hourglass.svg" alt="stop watch" width={18} height={18} />
                                         </div>
                                         <div className="flex items-center text-xs gap-1">
-                                            {/* Quiz starts in
-                                            <span className="font-semibold">{formatTime(quizTime.startTime)}</span> */}
-                                            {formatTime(quizTime.startTime)
-                                                ? <span className="font-semibold">Quiz starts in {formatTime(quizTime.startTime)}</span>
-                                                : '-'
-                                            }
+                                            Quiz starts in
+                                            <span className="font-semibold">{formatTime(quizTime.startTime) || 0}</span>
                                         </div>
                                     </div>
                                 )}

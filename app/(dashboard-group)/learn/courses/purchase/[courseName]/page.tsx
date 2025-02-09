@@ -284,7 +284,7 @@ export default function CoursePurchasePage() {
           </div>
         </button>
         <div className="text-[#667085] h-full w-auto -ml-1" style={{ fontSize: "16px", fontWeight: "500" }}>
-          {courseData?.courseName}
+          {courseData?.courseName || 'Phodu Course'}
         </div>
       </div>
 
@@ -301,7 +301,7 @@ export default function CoursePurchasePage() {
         <div className="flex flex-col flex-1 min-h-[300px] h-auto bg-[#FFFFFF] border border-lightGrey rounded-xl justify-center">
           <div className="flex  flex-col h-[105px] p-4">
             <div className='text-[#1D2939] mt-2 ml-2'>
-              <h3>{courseData?.courseName}</h3>
+              <h3>{courseData?.courseName || 'Phodu Course'}</h3>
             </div>
             <div className=' text-[#667085] text-sm font-normal break-all ml-2 mt-2' dangerouslySetInnerHTML={{
               __html: courseData?.courseDescription || '',
@@ -430,7 +430,7 @@ export default function CoursePurchasePage() {
                     className="flex items-center justify-between h-[56px] mx-5 relative"
                     onClick={() => toggleCollapsible(index)} // Toggle first accordion
                   >
-                    <p className="text-base font-bold">Lesson {index + 1}: {section.sectionName}</p>
+                    <p className="text-base font-bold">Lesson {index + 1}: {section.sectionName || 'Section'}</p>
                     <Image
                       src={isOpenArray[index] ? "/icons/arrowdown.svg" : "/icons/arrowup.svg"} // Arrow based on first accordion state
                       width={24}
@@ -449,7 +449,7 @@ export default function CoursePurchasePage() {
                     {section.content?.map((content, index) => (
                       <div key={index} >
                         <div className="mx-5 my-5">
-                          <div className="text-base font-medium">{index + 1}. {content.lessonHeading}</div>
+                          <div className="text-base font-medium">{index + 1}. {content.lessonHeading || 'Heading'}</div>
                           {content.type === 'Text' && (
                             <div className="flex flex-row text-sm font-normal it">
                               <Image className='mr-1'
@@ -478,7 +478,7 @@ export default function CoursePurchasePage() {
                                 alt="video-icon"
                                 width={16}
                                 height={16} />
-                              <div>{content.questionsCount} Questions</div>
+                              <div>{content.questionsCount || 0} Questions</div>
                             </div>
                           )}
 

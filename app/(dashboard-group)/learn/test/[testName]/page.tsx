@@ -785,15 +785,13 @@ function Test() {
                                                             <div className="h-[156px] m-5 flex flex-col space-y-6">
                                                                 <div className="h-[46px] flex flex-col">
                                                                     <div className="flex justify-between h-[24px]">
-                                                                        <span className="font-semibold text-1g text-[#1D2939]">{section.sectionName ? section.sectionName : '-'}</span>
+                                                                        <span className="font-semibold text-1g text-[#1D2939]">{section.sectionName || 'Section'}</span>
                                                                         <button className="w-[32px] h-[32px] rounded-full flex items-center justify-center transition-all duration-300 ease-in-out hover:bg-[#F2F4F7]">
                                                                             <Image alt="Collapse Icon Right" src="/icons/collapse-right.svg" width={8} height={8} />
                                                                         </button>
                                                                     </div>
                                                                     <span className="font-normal text-[12px] text-[#667085] mt-1 text-left">
-                                                                        {section.totalSectionsWithQuestions ? section.totalSectionsWithQuestions + ' Tests' : '-'}
-                                                                        {section.totalSectionsWithQuestions && section.SubsectionsCount ? ' & ' : ''}
-                                                                        {section.SubsectionsCount ? section.SubsectionsCount + ' Sections' : '-'}
+                                                                        {section.totalSectionsWithQuestions || 0} Tests & {section.SubsectionsCount || 0} Sections
                                                                     </span>
                                                                 </div>
 
