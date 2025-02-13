@@ -126,7 +126,7 @@ const InputHandler = ({ onOtpChange, length = 6, hasError = false, onSubmit }: I
                     maxLength={1}
                     pattern="[0-9]*"
                     autoComplete="one-time-code"
-                    className={`w-12 h-12 border rounded-md text-center 
+                    className={`max-w-12 h-12 w-full border rounded-md text-center 
                                 text-2xl font-medium text-black focus:outline-none 
                                 appearance-none transition-colors duration-200
                                 ${hasError
@@ -278,8 +278,8 @@ function VerifyOtp() {
             </button>
             <div className="flex flex-1 justify-center items-center">
                 <div className="flex flex-col items-center justify-center h-full gap-4 w-full max-w-[25.26rem]">
-                    <h1 className=" text-[#101828] font-bold text-2xl">Verification Code</h1>
-                    <p className="text-[#667085] font-medium text-base w-[313px] text-center">Please enter the verification code we sent to your mobile <span id="mobile">{phoneNumber}</span></p>
+                    <h1 className=" text-[#101828] font-bold text-center text-2xl">Verification Code</h1>
+                    <p className="text-[#667085] font-medium text-base w-full text-center">Please enter the verification code we sent to your mobile <span id="mobile">{phoneNumber}</span></p>
                     <div className="flex items-center justify-center pt-4">
                         <InputHandler
                             onOtpChange={setOtp}
