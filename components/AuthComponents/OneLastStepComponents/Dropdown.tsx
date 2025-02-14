@@ -86,6 +86,7 @@ const Dropdown = () => {
           options={years}
           placeholder="Select year..."
           className={styles.yearSelect}
+          isSearchable={false}
           styles={{
             option: (provided, state: CustomState) => ({
               ...provided,
@@ -121,6 +122,7 @@ const Dropdown = () => {
           isMulti
           placeholder="Select exams..."
           className={styles.examSelect}
+          isSearchable={false}
           styles={{
             option: (provided, state: CustomState) => ({
               ...provided,
@@ -178,10 +180,10 @@ const Dropdown = () => {
       <div className="mt-6">
         <button
           className={` w-full h-10 rounded-lg text-white font-medium text-sm 
-                             ${isButtonEnabled ? 'bg-[#7400e0] hover:bg-[#6D0DCC]  cursor-pointer' : 'bg-[#d4a9fc] cursor-not-allowed'} 
-                       transition-all duration-150 
-                             ${isButtonEnabled ? 'hover:bg-[#6D0DCC] ' : ''}
-                                active:opacity-50`}
+                      ${isButtonEnabled ? 'bg-[#7400e0] hover:bg-[#6D0DCC]  cursor-pointer' : 'bg-[#d4a9fc] cursor-not-allowed'} 
+                      transition-all duration-150 
+                      ${isButtonEnabled ? 'hover:bg-[#6D0DCC] ' : ''}
+                      active:opacity-50`}
           onClick={handleSignUp}
           disabled={!isButtonEnabled}
         >

@@ -25,7 +25,7 @@ export default function OneLastStep() {
         </div>
         <div className="h-full flex items-center   justify-center flex-col gap-8  ">
           <div className="flex items-center justify-center">
-            <p className="text-2xl font-bold text-[#101828]">One Last Step</p>
+            <p className="text-2xl font-bold text-[#101828] text-center">One Last Step</p>
           </div>
           <div className="flex flex-col max-w-[420px] w-full items-center justify-center">
             <Dropdown />

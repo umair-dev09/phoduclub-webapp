@@ -272,7 +272,25 @@ function ReviewTestView() {
 const [showBonusQuestions, setShowBonusQuestions] = useState(false);
 const [bonusQuestionStates, setBonusQuestionStates] = useState<QuestionState[]>([]);
 const [showBonusButton, setShowBonusButton] = useState(false);
+// Add warning when user tries to close tab during test
+useEffect(() => {
+    // Only add the warning if the test is in progress
+    if (!isTimeOver && !isInitialLoading) {
+        const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+            const message = "Are you sure you want to leave? Your test progress will be lost!";
+            e.preventDefault();
+            e.returnValue = message;
+            return message;
+        };
 
+        window.addEventListener('beforeunload', handleBeforeUnload);
+
+        // Cleanup function to remove the event listener
+        return () => {
+            window.removeEventListener('beforeunload', handleBeforeUnload);
+        };
+    }
+}, [isTimeOver, isInitialLoading]);
 const separateQuestions = (questions: Question[]) => {
     return questions.reduce(
       (acc, question) => {
@@ -286,7 +304,6 @@ const separateQuestions = (questions: Question[]) => {
       { normalQuestions: [] as Question[], bonusQuestions: [] as Question[] }
     );
   };
-
   
     // Add helper function to format time
     const formatTime = (seconds: number): string => {
@@ -404,37 +421,140 @@ const separateQuestions = (questions: Question[]) => {
         const sectionRef = doc(db, path);
         const questionsRef = collection(sectionRef, 'Questions');
         const questionsSnap = await getDocs(questionsRef);
-      
+    
         const fetchedQuestions: Question[] = [];
         questionsSnap.forEach((questionDoc) => {
-          const questionData = questionDoc.data() as Question;
-          fetchedQuestions.push({
-            ...questionData,
-            questionId: questionDoc.id,
-            isChecked: false,
-            isActive: false
-          });
+            const questionData = questionDoc.data() as Question;
+            fetchedQuestions.push({
+                ...questionData,
+                questionId: questionDoc.id,
+                isChecked: false,
+                isActive: false,
+                isBonus: questionData.isBonus || false
+            });
         });
-      
-        const { normalQuestions, bonusQuestions } = separateQuestions(fetchedQuestions);
-        setBonusQuestions(bonusQuestions);
-        return normalQuestions; // Initially return only normal questions
-      };
+    
+        // Sort questions by order
+        fetchedQuestions.sort((a, b) => (a.order || 0) - (b.order || 0));
+    
+        if (currentSection?.isUmbrellaTest) {
+            // For umbrella tests, return all questions
+            return fetchedQuestions;
+        } else {
+            // For regular tests
+            const { normalQuestions, bonusQuestions } = separateQuestions(fetchedQuestions);
+            
+            // Store bonus questions in state only for regular tests
+            setBonusQuestions(bonusQuestions);
+            
+            // Return only normal questions initially
+            return normalQuestions;
+        }
+    };
       const checkAllQuestionsAttempted = (states: QuestionState[]) => {
         return states.every(state => 
           state.status === 'answered' || state.status === 'answered-marked'
         );
       };
       
-      // Add useEffect to monitor question states
-      useEffect(() => {
-        const allAttempted = checkAllQuestionsAttempted(questionStates);
-        setShowBonusButton(allAttempted && bonusQuestions.length > 0 && !showBonusQuestions);
-      }, [questionStates, bonusQuestions, showBonusQuestions]);
+      const checkAllSubsectionsAttempted = () => {
+        // Log for debugging
+        console.log("Checking subsections:", subSections);
+        
+        return subSections.every(section => {
+            // Get normal questions (non-bonus)
+            const normalQuestions = section.questions?.filter(q => !q.isBonus) || [];
+            
+            // Get states for normal questions
+            const normalStates = section.states?.filter((state, index) => 
+                !section.questions?.[index]?.isBonus
+            ) || [];
+    
+            // Log section check
+            console.log("Section check:", {
+                sectionName: section.sectionName,
+                normalQuestions: normalQuestions.length,
+                normalStates: normalStates.length,
+                allAttempted: normalStates.every(
+                    state => state.status === 'answered' || state.status === 'answered-marked'
+                )
+            });
+    
+            return (
+                normalQuestions.length > 0 && 
+                normalQuestions.length === normalStates.length &&
+                normalStates.every(
+                    state => state.status === 'answered' || state.status === 'answered-marked'
+                )
+            );
+        });
+    };
+    useEffect(() => {
+        if (currentSection?.isUmbrellaTest) {
+            const allAttempted = checkAllSubsectionsAttempted();
+            
+            // Check for bonus questions across all subsections
+            const hasBonusQuestions = subSections.some(section => 
+                section.questions?.some(q => q.isBonus === true)
+            );
+            
+            // Debug logging
+            console.log('Umbrella test check:', {
+                allAttempted,
+                hasBonusQuestions,
+                showBonusQuestions,
+                sections: subSections.map(s => ({
+                    name: s.sectionName,
+                    normalQuestionsAttempted: s.states?.filter(state => 
+                        state.status === 'answered' || state.status === 'answered-marked'
+                    ).length,
+                    hasBonus: s.questions?.some(q => q.isBonus)
+                }))
+            });
+    
+            setShowBonusButton(allAttempted && hasBonusQuestions && !showBonusQuestions);
+        } else {
+            const allAttempted = checkAllQuestionsAttempted(questionStates);
+            setShowBonusButton(allAttempted && bonusQuestions.length > 0 && !showBonusQuestions);
+        }
+    }, [
+        questionStates, 
+        subSections, 
+        showBonusQuestions, 
+        currentSection?.isUmbrellaTest,
+        bonusQuestions,
+        activeSubSectionIndex // Add this dependency
+    ]);
+    const checkForBonusQuestions = () => {
+        if (!currentSection?.isUmbrellaTest) {
+            return bonusQuestions.length > 0;
+        }
+        
+        return subSections.some(section => 
+            section.questions?.some(question => question.isBonus)
+        );
+    };
+  // Add this debug useEffect to track subsections data
+useEffect(() => {
+  if (currentSection?.isUmbrellaTest) {
+    console.log('Current subsections state:', subSections.map(section => ({
+      name: section.sectionName,
+      questions: section.questions?.map(q => ({
+        id: q.questionId,
+        isBonus: q.isBonus
+      })),
+      states: section.states?.map(s => s.status)
+    })));
+  }
+}, [subSections, currentSection?.isUmbrellaTest]);
 
-      const handleUnlockBonusQuestions = () => {
-        // Initialize states for bonus questions
-        const initialBonusStates = bonusQuestions.map(q => ({
+  // Add this useEffect to ensure subsection states are properly tracked
+useEffect(() => {
+  if (currentSection?.isUmbrellaTest) {
+    setSubSections(prev => prev.map(section => {
+      if (!section.states) {
+        const normalQuestions = (section.questions || []).filter(q => !q.isBonus);
+        section.states = normalQuestions.map(q => ({
           questionId: q.questionId,
           status: 'not-visited' as const,
           answered: false,
@@ -445,42 +565,138 @@ const separateQuestions = (questions: Question[]) => {
           remarks: determineRemarks(calculateAllotedTime(q.difficulty), 0, null, false),
           question: q.question,
           difficulty: q.difficulty,
-          isBonus: q.isBonus,
+          isBonus: false,
           order: q.order,
         }));
-      
-        if (currentSection?.isUmbrellaTest) {
-          // Handle umbrella test case
-          setSubSections(prev => {
-            const updated = [...prev];
-            const currentSubSection = updated[activeSubSectionIndex];
-            if (currentSubSection) {
-              currentSubSection.questions = [
-                ...(currentSubSection.questions || []),
-                ...bonusQuestions
-              ];
-              currentSubSection.states = [
-                ...(currentSubSection.states || []),
-                ...initialBonusStates
-              ];
-            }
-            return updated;
-          });
-        } else {
-          // Handle normal test case
-          setQuestions(prev => [...prev, ...bonusQuestions]);
-          setQuestionStates(prev => [...prev, ...initialBonusStates]);
-        }
-      
-        setShowBonusQuestions(true);
-        setShowBonusButton(false);
-        toast.success('Bonus questions unlocked!', {
-          position: 'top-right',
-          autoClose: 3000
-        });
-      };
-      
+      }
+      return section;
+    }));
+  }
+}, [currentSection?.isUmbrellaTest]);
+  
 
+const handleUnlockBonusQuestions = () => {
+    if (currentSection?.isUmbrellaTest) {
+        // First, update all subsections to include their bonus questions
+        setSubSections(prev => {
+            return prev.map(section => {
+                const allQuestions = section.questions || [];
+                const currentStates = section.states || [];
+                const bonusQuestions = allQuestions.filter(q => q.isBonus);
+                
+                if (bonusQuestions.length === 0) return section;
+        
+                // Create states for bonus questions
+                const bonusStates = bonusQuestions.map(q => ({
+                    questionId: q.questionId,
+                    status: 'not-visited' as const,
+                    answered: false,
+                    selectedOption: null,
+                    answeredCorrect: null,
+                    spentTime: 0,
+                    allotedTime: calculateAllotedTime(q.difficulty),
+                    remarks: determineRemarks(calculateAllotedTime(q.difficulty), 0, null, false),
+                    question: q.question,
+                    difficulty: q.difficulty,
+                    isBonus: true,
+                    order: q.order,
+                }));
+        
+                // Return updated section with all questions and states
+                return {
+                    ...section,
+                    questions: allQuestions, // Keep all questions
+                    states: [...currentStates, ...bonusStates]
+                };
+            });
+        });
+
+        // Set active subsection to first (index 0)
+        setActiveSubSectionIndex(0);
+
+        // Update questions and states for the first subsection
+        const firstSubSection = subSections[0];
+        if (firstSubSection) {
+            const allQuestions = firstSubSection.questions || [];
+            
+            // Update questions array to include all questions
+            setQuestions(allQuestions);
+            
+            // Get all states including bonus states
+            const allStates = firstSubSection.states || [];
+            const bonusQuestions = allQuestions.filter(q => q.isBonus);
+            
+            // Create new states for bonus questions if they don't exist
+            const bonusStates = bonusQuestions.map(q => ({
+                questionId: q.questionId,
+                status: 'not-visited' as const,
+                answered: false,
+                selectedOption: null,
+                answeredCorrect: null,
+                spentTime: 0,
+                allotedTime: calculateAllotedTime(q.difficulty),
+                remarks: determineRemarks(calculateAllotedTime(q.difficulty), 0, null, false),
+                question: q.question,
+                difficulty: q.difficulty,
+                isBonus: true,
+                order: q.order,
+            }));
+
+            // Combine existing states with new bonus states
+            const combinedStates = [...allStates];
+            bonusStates.forEach(state => {
+                if (!combinedStates.find(s => s.questionId === state.questionId)) {
+                    combinedStates.push(state);
+                }
+            });
+
+            // Update question states
+            setQuestionStates(combinedStates);
+
+            // Find first bonus question
+            const firstBonusIndex = allQuestions.findIndex(q => q.isBonus);
+            if (firstBonusIndex !== -1) {
+                setCurrentQuestionIndex(firstBonusIndex);
+                setSelectedOption(null);
+            }
+        }
+    } else {
+        // Normal test handling - keep all questions but show only bonus ones
+        const allQuestions = [...questions]; // Keep existing questions
+        const initialBonusStates = bonusQuestions.map(q => ({
+            questionId: q.questionId,
+            status: 'not-visited' as const,
+            answered: false,
+            selectedOption: null,
+            answeredCorrect: null,
+            spentTime: 0,
+            allotedTime: calculateAllotedTime(q.difficulty),
+            remarks: determineRemarks(calculateAllotedTime(q.difficulty), 0, null, false),
+            question: q.question,
+            difficulty: q.difficulty,
+            isBonus: true,
+            order: q.order,
+        }));
+
+        // Update questions to include both normal and bonus questions
+        setQuestions([...allQuestions, ...bonusQuestions]);
+        
+        // Update states to include both normal and bonus states
+        setQuestionStates(prev => [...prev, ...initialBonusStates]);
+
+        // Find the first bonus question index
+        const firstBonusIndex = allQuestions.length;
+        setCurrentQuestionIndex(firstBonusIndex);
+        setSelectedOption(null);
+    }
+
+    setShowBonusQuestions(true);
+    setShowBonusButton(false);
+    toast.success('Bonus questions unlocked!', {
+        position: 'top-right',
+        autoClose: 3000
+    });
+};
     const fetchSubSections = async (path: string) => {
         const sectionRef = doc(db, path);
         const subSectionsRef = collection(sectionRef, 'sections');
@@ -561,8 +777,11 @@ const separateQuestions = (questions: Question[]) => {
                         setFormattedTime(formatTime(sectionTime));
                         if (initializedSubSections.length > 0) {
                             const firstSection = initializedSubSections[0];
-                            setQuestions(firstSection.questions || []);
-                            setQuestionStates(firstSection.states || []);
+                            const filteredQuestions = firstSection.questions?.filter(q => !q.isBonus) || [];
+                            setQuestions(filteredQuestions);
+                            setQuestionStates(firstSection.states?.filter((_, i) => 
+                                !firstSection.questions?.[i]?.isBonus
+                            ) || []);
                         }
                         setIsInitialLoading(false);
 
@@ -616,57 +835,66 @@ const separateQuestions = (questions: Question[]) => {
         };
     }, [tId, sections]);
     const handleTimeOver = useCallback(() => {
-
         setIsTimeOver(true);
         setError("Time's up! Please submit your test.");
+        handleSubmit();
         console.log("Time's up!");
     }, []);
     const updateQuestionState = (index: number, updates: Partial<QuestionState>, subSectionIndex?: number) => {
         if (currentSection?.isUmbrellaTest && typeof subSectionIndex === 'number') {
-          // Update the subSection's stored states
-          setSubSections(prev => {
-            const updated = [...prev];
-            const subsection = updated[subSectionIndex];
-            if (!subsection) return prev;
-            if (!subsection.states) {
-              subsection.states = [];
-            }
-            subsection.states = subsection.states.map((state, i) =>
-              i === index ? { ...state, ...updates } : state
-            );
-            return updated;
-          });
-          // Also update the local questionStates so the UI reflects the change immediately.
-          setQuestionStates(prev => {
-            return prev.map((state, i) =>
-              i === index ? { ...state, ...updates } : state
-            );
-          });
+            // Update the subSection's stored states
+            setSubSections(prev => {
+                const updated = [...prev];
+                const subsection = updated[subSectionIndex];
+                if (!subsection) return prev;
+                if (!subsection.states) {
+                    subsection.states = [];
+                }
+                subsection.states = subsection.states.map((state, i) =>
+                    i === index ? { ...state, ...updates } : state
+                );
+                console.log('Updated subsection states:', subsection.states);
+                return updated;
+            });
+            // Also update the local questionStates so the UI reflects the change immediately.
+            setQuestionStates(prev => {
+                const updatedStates = prev.map((state, i) =>
+                    i === index ? { ...state, ...updates } : state
+                );
+                console.log('Updated questionStates:', updatedStates);
+                return updatedStates;
+            });
         } else {
-          // Regular test mode – update questionStates directly.
-          setQuestionStates(prev =>
-            prev.map((state, i) =>
-              i === index ? { ...state, ...updates } : state
-            )
-          );
-        }
-      };
-
-    const handleQuestionSelect = (index: number) => {
-        if (index >= 0 && index < questions.length) {
-            // Update previous question status if it was visited but not answered
-            const prevState = questionStates[currentQuestionIndex];
-            if (prevState.status === 'not-visited' && !prevState.answered) {
-                updateQuestionState(currentQuestionIndex, {
-                    status: 'not-answered'
-                });
-            }
-
-            setCurrentQuestionIndex(index);
-            // Set the selectedOption from the question's state
-            setSelectedOption(questionStates[index].selectedOption);
+            // Regular test mode – update questionStates directly.
+            setQuestionStates(prev => {
+                const updatedStates = prev.map((state, i) =>
+                    i === index ? { ...state, ...updates } : state
+                );
+                console.log('Updated questionStates:', updatedStates);
+                return updatedStates;
+            });
         }
     };
+
+// Update handleQuestionSelect to prevent selecting normal questions after bonus unlock
+const handleQuestionSelect = (index: number) => {
+    if (
+      index >= 0 && 
+      index < questions.length && 
+      (!showBonusQuestions || questions[index].isBonus)
+    ) {
+      // Update previous question status if it was visited but not answered
+      const prevState = questionStates[currentQuestionIndex];
+      if (prevState.status === 'not-visited' && !prevState.answered) {
+        updateQuestionState(currentQuestionIndex, {
+          status: 'not-answered'
+        });
+      }
+  
+      setCurrentQuestionIndex(index);
+      setSelectedOption(questionStates[index].selectedOption);
+    }
+  };
 
     // Enhanced option selection handling
     const handleOptionSelect = (option: string) => {
@@ -746,101 +974,111 @@ const separateQuestions = (questions: Question[]) => {
 
         if (currentQuestionIndex < questions.length - 1) {
             setCurrentQuestionIndex(currentQuestionIndex + 1);
-            setSelectedOption(null);
+            // Set the selectedOption for the next question from its state
+            const nextQuestionState = questionStates[currentQuestionIndex + 1];
+            setSelectedOption(nextQuestionState?.selectedOption || null);
             setStartQuestionTime(Date.now());
         }
     };
 
  // Modified handleSubSectionChange function
  const handleSubSectionChange = (index: number) => {
-    // For umbrella tests, update the current question’s time before switching
+    // For umbrella tests, update the current question's time before switching
     if (currentSection?.isUmbrellaTest) {
-      updateCurrentQuestionTime();
-      // Save the current sub‑section’s states from the local questionStates
-      setSubSections(prevSubSections => {
-        const updatedSubSections = [...prevSubSections];
-        const currentSubSection = updatedSubSections[activeSubSectionIndex];
-        if (currentSubSection) {
-          // Save all properties (including status and answeredCorrect) from questionStates
-          currentSubSection.states = questionStates.map(state => ({ ...state }));
-          // Optionally update the questions array as well (e.g. to preserve selectedOption)
-          currentSubSection.questions = questions.map((q, idx) => ({
-            ...q,
-            selectedOption: questionStates[idx]?.selectedOption || null
-          }));
-        }
-        return updatedSubSections;
-      });
+        updateCurrentQuestionTime();
+        // Save the current sub‑section's states from the local questionStates
+        setSubSections(prev => {
+            const updated = [...prev];
+            const currentSubSection = updated[activeSubSectionIndex];
+            if (currentSubSection) {
+                currentSubSection.states = questionStates.map(state => ({ ...state }));
+            }
+            return updated;
+        });
     }
-  
+
     // Stop timer for current sub‑section
     const currentSectionId = subSections[activeSubSectionIndex]?.id;
     if (currentSectionId) {
-      const currentTimer = subsectionTimers[currentSectionId];
-      if (currentTimer?.lastStartTime) {
-        const timeSpent = getTotalTimeSpent(currentTimer);
-        setSubsectionTimers(prev => ({
-          ...prev,
-          [currentSectionId]: {
-            timeSpent: timeSpent,
-            lastStartTime: 0
-          }
-        }));
-      }
+        const currentTimer = subsectionTimers[currentSectionId];
+        if (currentTimer?.lastStartTime) {
+            const timeSpent = getTotalTimeSpent(currentTimer);
+            setSubsectionTimers(prev => ({
+                ...prev,
+                [currentSectionId]: {
+                    timeSpent: timeSpent,
+                    lastStartTime: 0
+                }
+            }));
+        }
     }
-  
+
     // Switch to the new sub‑section
     const newSubSection = subSections[index];
     if (newSubSection) {
-      console.log("Switching to new subsection:", index);
-      console.log("New subsection states before setting questionStates:", JSON.stringify(newSubSection.states, null, 2));
-  
-      // Load the new sub‑section’s questions.
-      setQuestions(newSubSection.questions || []);
-  
-      // Load the new sub‑section’s stored states.
-      setQuestionStates(
-        newSubSection.states && newSubSection.states.length > 0
-          ? newSubSection.states.map(state => ({
-              ...state // Preserve all properties (status, answeredCorrect, selectedOption, spentTime, etc.)
-            }))
-          : (newSubSection.questions ?? []).map(q => ({
-              questionId: q.questionId,
-              status: 'not-visited',
-              answered: false,
-              selectedOption: null,
-              answeredCorrect: null,
-              spentTime: 0,
-              isBonus: q.isBonus,
-              allotedTime: calculateAllotedTime(q.difficulty),
-              remarks: determineRemarks(calculateAllotedTime(q.difficulty), 0, null, false),
-              question: q.question,
-              difficulty: q.difficulty,
-              order: q.order,
-            }))
-      );
-      console.log("Loaded questionStates for new subsection:", JSON.stringify(newSubSection.states, null, 2));
-    }
-  
-    // Start timer for the new sub‑section
-    const newSectionId = newSubSection?.id;
-    if (newSectionId) {
-      const existingTimer = subsectionTimers[newSectionId];
-      setSubsectionTimers(prev => ({
-        ...prev,
-        [newSectionId]: {
-          timeSpent: existingTimer?.timeSpent || 0,
-          lastStartTime: Date.now()
+        const allQuestions = showBonusQuestions 
+            ? newSubSection.questions || []
+            : (newSubSection.questions || []).filter(q => !q.isBonus);
+        
+        setQuestions(allQuestions);    
+        
+        // Ensure we're setting the complete state including selectedOption
+        if (newSubSection.states && newSubSection.states.length > 0) {
+            const relevantStates = showBonusQuestions
+                ? newSubSection.states
+                : newSubSection.states.filter((_, index) => !newSubSection.questions?.[index]?.isBonus);
+            
+            setQuestionStates(relevantStates.map(state => ({
+                ...state,
+                selectedOption: state.selectedOption
+            })));
+
+            // If bonus questions are unlocked, find the first bonus question index
+            if (showBonusQuestions) {
+                const firstBonusIndex = allQuestions.findIndex(q => q.isBonus);
+                if (firstBonusIndex !== -1) {
+                    setCurrentQuestionIndex(firstBonusIndex);
+                    setSelectedOption(relevantStates[firstBonusIndex]?.selectedOption || null);
+                } else {
+                    setCurrentQuestionIndex(0);
+                    setSelectedOption(relevantStates[0]?.selectedOption || null);
+                }
+            } else {
+                setCurrentQuestionIndex(0);
+                setSelectedOption(relevantStates[0]?.selectedOption || null);
+            }
+        } else {
+            // Initialize new states if none exist
+            const initialStates = (newSubSection.questions || []).map(q => ({
+                questionId: q.questionId,
+                status: 'not-visited' as const,
+                answered: false,
+                selectedOption: null,
+                answeredCorrect: null,
+                spentTime: 0,
+                allotedTime: calculateAllotedTime(q.difficulty),
+                remarks: determineRemarks(calculateAllotedTime(q.difficulty), 0, null, false),
+                question: q.question,
+                difficulty: q.difficulty,
+                isBonus: q.isBonus,
+                order: q.order,
+            }));
+            setQuestionStates(initialStates);
+            setSelectedOption(null);
+            
+            // If bonus questions are unlocked, find the first bonus question index
+            if (showBonusQuestions) {
+                const firstBonusIndex = allQuestions.findIndex(q => q.isBonus);
+                setCurrentQuestionIndex(firstBonusIndex !== -1 ? firstBonusIndex : 0);
+            } else {
+                setCurrentQuestionIndex(0);
+            }
         }
-      }));
     }
-  
-    // Finally, update the active sub‑section index and reset current question index/selected option
+
     setActiveSubSectionIndex(index);
-    setCurrentQuestionIndex(0);
-    setSelectedOption(null);
     setStartQuestionTime(Date.now());
-  };
+};
 // Ensure updated questionStates are logged correctly
 useEffect(() => {
     console.log("Updated questionStates after switching:", JSON.stringify(questionStates, null, 2));
@@ -1382,9 +1620,13 @@ useEffect(() => {
                     )}
                     <div className="flex h-8 border-b border-[#A1A1A199] items-center px-3">
                         <div className="flex flex-row gap-2 items-center">
-                        <h3 className="font-[Inter] font-semibold text-[14px] ">Question No {currentQuestionIndex + 1}.</h3>
-                         {currentQuestion?.isBonus && (
+                         {currentQuestion?.isBonus ? (
+                            <>
+                        <h3 className="font-[Inter] font-semibold text-[14px] ">Bonus Question.</h3>
                         <div className="bg-purple text-white text-[13px] font-medium rounded-full min-w-5 min-h-5 items-center flex justify-center self-center">B</div>
+                        </>
+                         ) : (
+                            <h3 className="font-[Inter] font-semibold text-[14px] ">Question No {currentQuestionIndex + 1}.</h3>
                          )}
                         </div>
                         
@@ -1471,31 +1713,48 @@ useEffect(() => {
                         <div className="flex flex-row flex-wrap mt-2 gap-3">
                             {/*button for selecting question*/}
                             {!isTimeOver && (
-                                <>
-                                    {questions
-                                        .map((q, index) => (
-                                            <button
-                                                key={index}
-                                                onClick={() => handleQuestionSelect(index)}
-                                            >
-                                                <div className="relative w-[28px] h-[28px]">
-                                                    <Image
-                                                        src={`/icons/${getQuestionButtonStatus(index)}.svg`}
-                                                        alt={`Question ${index + 1}`}
-                                                        width={28}
-                                                        height={28}
-                                                    />
-                                                    <span className={`absolute inset-0 text-xs font-medium ${getQuestionButtonStatus(index) === 'not-visited'
+                            <>
+                                {questions.map((q, index) => {
+                                    // Skip rendering normal questions when bonus questions are shown
+                                    if (showBonusQuestions && !q.isBonus) {
+                                        return null;
+                                    }
+
+                                    // Calculate adjusted index for bonus questions
+                                    let displayIndex = index;
+                                    if (showBonusQuestions) {
+                                        // Get count of bonus questions up to this index (only counting bonus questions)
+                                        displayIndex = questions.slice(0, index + 1)
+                                            .filter(q => q.isBonus)
+                                            .length - 1; // Subtract 1 to start from 0
+                                    }
+
+                                    return (
+                                        <button
+                                            key={index}
+                                            onClick={() => handleQuestionSelect(index)}
+                                            className="hover:opacity-80"
+                                        >
+                                            <div className="relative w-[28px] h-[28px]">
+                                                <Image
+                                                    src={`/icons/${getQuestionButtonStatus(index)}.svg`}
+                                                    alt={`Question ${displayIndex + 1}`}
+                                                    width={28}
+                                                    height={28}
+                                                />
+                                                <span className={`absolute inset-0 text-xs font-medium ${
+                                                    getQuestionButtonStatus(index) === 'not-visited'
                                                         ? 'text-[#242424]'
                                                         : 'text-white'
-                                                        } flex items-center justify-center`}>
-                                                        {q.isBonus ? index + 1 + '*' : index + 1}    
-                                                    </span>
-                                                </div>
-                                            </button>
-                                        ))}
-                                </>
-                            )}
+                                                } flex items-center justify-center`}>
+                                                    {q.isBonus ? displayIndex + 1 + '*' : displayIndex + 1}
+                                                </span>
+                                            </div>
+                                        </button>
+                                    );
+                                })}
+                            </>
+                        )}
 
                         </div>
                     </div>
@@ -1512,13 +1771,14 @@ useEffect(() => {
 
                         <div className="flex flex-row gap-2">
                             <button className="flex border border-[#A1A1A199] items-center justify-center h-[28px] px-4" onClick={handleMarkForReview}>
-                                <span className="font-bold font-['Inter'] text-[12px] text-[#717171]">Mark for Review and Next</span>
+                                <span className="font-bold font-['Inter'] text-[12px] text-[#717171]">{currentQuestionIndex < questions.length - 1 ? 'Mark for Review and Next' : 'Mark for Review'}</span>
                             </button>
                             <button className="flex border border-[#A1A1A199] items-center justify-center h-[28px] px-4" onClick={handleClearResponse}>
                                 <span className="font-bold font-['Inter'] text-[12px] text-[#717171]">Clear Response</span>
                             </button>
                         </div>
-
+                        {/* Only show Save & Next button if not on the last question */}
+                        {currentQuestionIndex < questions.length - 1 && (
                         <button
                             className={`flex items-center justify-center h-[36px] rounded-[3px] ${selectedOption ? 'bg-[#4871CB]' : 'bg-gray-400'
                                 } border border-[#A1A1A199] px-3`}
@@ -1529,6 +1789,7 @@ useEffect(() => {
                                 Save & Next
                             </span>
                         </button>
+                            )}
                     </div>
                 )}
 
