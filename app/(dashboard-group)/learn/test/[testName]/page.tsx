@@ -832,7 +832,7 @@ function Test() {
                                                                             {section.sectionName}
                                                                         </span>
                                                                         <span className="text-[#667085] font-normal text-[12px]">
-                                                                            {section.isUmbrellaTest ? section.subsectionCountUmbrella : section.QuestionsCount} {section.isUmbrellaTest ? 'Tests' : 'Questions'}
+                                                                            {section.isUmbrellaTest ? section.subsectionCountUmbrella : section.QuestionsCount} {section.isUmbrellaTest ? 'Sections' : 'Questions'}
                                                                         </span>
                                                                     </div>
                                                                     <div className="flex items-center p-3 gap-4">
@@ -1102,7 +1102,7 @@ function Test() {
                                 </div>
                                 {isUmbrellaTest ? (
                                     <div className="gap-1 flex-col flex items-center w-full border-r border-lightGrey">
-                                        <span className="font-normal text-sm text-[#667085]">No. of Tests</span>
+                                        <span className="font-normal text-sm text-[#667085]">No. of Sections</span>
                                         <span className="text-[#1D2939] text-lg font-semibold">{noOfTests}</span>
                                     </div>
                                 ) : (

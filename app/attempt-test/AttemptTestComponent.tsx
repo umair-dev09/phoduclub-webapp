@@ -1331,53 +1331,86 @@ useEffect(() => {
           return;
         }
       
-        // Helper function to filter questions based on bonus status
-        const filterQuestionsAndStates = (questions: Question[], states: QuestionState[]) => {
-          return questions.reduce((acc, question, index) => {
-            // Only include non-bonus questions OR bonus questions if they're unlocked
-            if (!question.isBonus || (question.isBonus && showBonusQuestions)) {
-              acc.questions.push(question);
-              acc.states.push(states[index]);
-            }
-            return acc;
-          }, { questions: [] as Question[], states: [] as QuestionState[] });
+        // Helper function to filter questions and create states with proper type checking
+const filterQuestionsAndStates = (questions: Question[], states: QuestionState[]) => {
+    return questions.reduce((acc: { questions: Question[]; states: QuestionState[] }, question, index) => {
+      // Only include non-bonus questions OR bonus questions if they're unlocked
+      if (!question.isBonus || (question.isBonus && showBonusQuestions)) {
+        acc.questions.push(question);
+        // Ensure we have a valid state object
+        const state = states[index] || {
+          questionId: question.questionId,
+          status: 'not-visited' as const,
+          answered: false,
+          selectedOption: null,
+          answeredCorrect: null,
+          spentTime: 0,
+          allotedTime: calculateAllotedTime(question.difficulty),
+          remarks: '-',
+          question: question.question,
+          difficulty: question.difficulty,
+          isBonus: question.isBonus,
+          order: question.order,
         };
+        acc.states.push(state);
+      }
+      return acc;
+    }, { questions: [], states: [] });
+  };
+  
       
-        // Enhanced function to calculate remarks for each question
-        const getFinalQuestionData = (states: QuestionState[]) =>
-          states.map((state) => ({
-            ...state,
-            remarks: determineRemarks(
-              state.allotedTime,
-              state.spentTime,
-              state.answeredCorrect,
-              state.answered
-            )
-          }));
+        // Update getFinalQuestionData with null checks
+const getFinalQuestionData = (states: QuestionState[]) =>
+    states.map((state) => ({
+      ...state,
+      allotedTime: state.allotedTime || calculateAllotedTime(state.difficulty),
+      spentTime: state.spentTime || 0,
+      remarks: determineRemarks(
+        state.allotedTime || calculateAllotedTime(state.difficulty),
+        state.spentTime || 0,
+        state.answeredCorrect || null,
+        state.answered || false
+      )
+    }));
       
-        // Process questions for both regular and umbrella tests
-        const processQuestions = () => {
-          if (currentSection?.isUmbrellaTest) {
-            return subSections.map((section) => {
-              const filtered = filterQuestionsAndStates(
-                section.questions || [],
-                section.states || []
-              );
-              return {
-                ...section,
-                questions: filtered.questions,
-                states: getFinalQuestionData(filtered.states),
-                hasBonusQuestions: showBonusQuestions && section.questions?.some(q => q.isBonus)
-              };
-            });
-          } else {
-            const filtered = filterQuestionsAndStates(questions, questionStates);
-            return {
-              states: getFinalQuestionData(filtered.states),
-              hasBonusQuestions: showBonusQuestions && questions.some(q => q.isBonus)
-            };
-          }
+      // Update processQuestions function with proper type checking
+const processQuestions = () => {
+    if (currentSection?.isUmbrellaTest) {
+      return subSections.map((section) => {
+        if (!section.questions || !section.states) {
+          return {
+            ...section,
+            questions: [],
+            states: [],
+            hasBonusQuestions: false
+          };
+        }
+  
+        const filtered = filterQuestionsAndStates(
+          section.questions,
+          section.states
+        );
+  
+        return {
+          ...section,
+          questions: filtered.questions,
+          states: getFinalQuestionData(filtered.states),
+          hasBonusQuestions: showBonusQuestions && section.questions.some(q => q.isBonus)
         };
+      });
+    } else {
+      // Ensure questions and questionStates are valid arrays
+      const validQuestions = questions || [];
+      const validStates = questionStates || [];
+      const filtered = filterQuestionsAndStates(validQuestions, validStates);
+  
+      return {
+        states: getFinalQuestionData(filtered.states),
+        hasBonusQuestions: showBonusQuestions && validQuestions.some(q => q.isBonus)
+      };
+    }
+  };
+  
       
         // Calculate metrics including only relevant questions
         const calculateMetrics = (states: QuestionState[], questions: Question[], section?: Section) => {
