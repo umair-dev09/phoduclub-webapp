@@ -22,6 +22,7 @@ function Login() {
     const [currentInputField, setCurrentInputField] = useState<'userId' | 'phone'>('userId');
     const db = getFirestore();
     const [isPhoneValid, setIsPhoneValid] = useState(false);
+    const [isMobile, setIsMobile] = useState(false);
     const handlePhoneChange = (value: string): void => {
         // Limit the phone number to 12 digits (including country code)
         if (value.length <= 12) {
@@ -42,6 +43,20 @@ function Login() {
     }, [phone]);
 
 
+    useEffect(() => {
+        const handleResize = () => {
+            setIsMobile(window.innerWidth <= 768); // You can change 768px to your desired mobile width
+        };
+
+        // Initial check
+        handleResize();
+
+        // Add event listener for window resize
+        window.addEventListener("resize", handleResize);
+
+        // Clean up event listener
+        return () => window.removeEventListener("resize", handleResize);
+    }, []);
 
 
 
@@ -160,7 +175,6 @@ function Login() {
             }
         }
     };
-
 
     return (
         <div className="bg-[#f7f8fb] h-screen w-screen flex justify-center items-center ">

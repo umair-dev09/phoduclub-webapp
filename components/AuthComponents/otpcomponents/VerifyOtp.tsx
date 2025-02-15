@@ -126,7 +126,7 @@ const InputHandler = ({ onOtpChange, length = 6, hasError = false, onSubmit }: I
                     maxLength={1}
                     pattern="[0-9]*"
                     autoComplete="one-time-code"
-                    className={`w-12 h-12 border rounded-md text-center 
+                    className={`max-w-12 h-12 w-full border rounded-md text-center 
                                 text-2xl font-medium text-black focus:outline-none 
                                 appearance-none transition-colors duration-200
                                 ${hasError
@@ -265,63 +265,62 @@ function VerifyOtp() {
 
     return (
         <div className="w-full flex flex-col h-full p-6 lg:w-1/2">
-
             <Image
                 src="/images/phoduclublogo.png"
                 alt="Logo"
                 width={150}
                 height={25}
             />
-
             <button className="flex flex-row gap-2 items-center mt-[20px]  "
                 onClick={() => router.back()}>
                 <p>&larr;</p>
                 <span className="font-medium text-base text-[#98a2b3]">Back</span>
             </button>
-            <div className="flex flex-col  items-center  justify-center h-full gap-4">
-                <h1 className=" text-[#101828] font-bold text-2xl">Verification Code</h1>
-                <p className="text-[#667085] font-medium text-base w-[313px] text-center">Please enter the verification code we sent to your mobile <span id="mobile">{phoneNumber}</span></p>
-                <div className="flex items-center justify-center pt-4">
-                    <InputHandler
-                        onOtpChange={setOtp}
-                        hasError={verificationError !== null}
-                        onSubmit={() => handleSubmit(new Event('submit'))} // ✅ Ensure proper invocation
-                    />
-                </div>
-                <div className="w-full pt-4 flex flex-col items-center justify-center">
-                    <button
-                        className={`w-1/2 h-10 rounded-lg text-white font-medium text-sm 
-                                    ${isLoading || otp.length === 6 ? 'bg-[#7400e0] hover:bg-[#6D0DCC] cursor-pointer' : 'bg-[#d4a9fc] cursor-not-allowed'} 
-                                    transition-colors duration-150 
-                                    active:opacity-50 shadow-inner-button
-                                    flex items-center justify-center`}
-                        onClick={handleSubmit}
-                        disabled={isLoading || otp.length !== 6} // Ensure disabled when loading or OTP not filled
-                    >
-                        {isLoading ? (
-                            <div className='w-5 h-5 animate-spin-loading rounded-[50%] border-4 border-[#ffffff4d] border-solid border-t-4 border-t-customWhite '></div> // Show spinner
-                        ) : (
-                            'Continue'
-                        )}
-
-                    </button>
-                    {verificationError && (
-                        <div className="text-red-500 mt-2 text-sm">{verificationError}</div>
-                    )}
-                </div>
-                <div className="pt-4">
-                    <p className="text-gray-700">
-                        Didn&apos;t receive the code?&nbsp;
-                        <a
-                            href="#"
-                            onClick={handleResend}
-                            className={`
-                                font-bold transition-colors duration-300 
-                                ${isResendEnabled ? 'text-[#9012FF] cursor-pointer' : 'text-[#AD72FF] cursor-not-allowed'} `}
+            <div className="flex flex-1 justify-center items-center">
+                <div className="flex flex-col items-center justify-center h-full gap-4 w-full max-w-[25.26rem]">
+                    <h1 className=" text-[#101828] font-bold text-center text-2xl">Verification Code</h1>
+                    <p className="text-[#667085] font-medium text-base w-full text-center">Please enter the verification code we sent to your mobile <span id="mobile">{phoneNumber}</span></p>
+                    <div className="flex items-center justify-center pt-4">
+                        <InputHandler
+                            onOtpChange={setOtp}
+                            hasError={verificationError !== null}
+                            onSubmit={() => handleSubmit(new Event('submit'))} // ✅ Ensure proper invocation
+                        />
+                    </div>
+                    <div className="w-full pt-4 flex flex-col items-center justify-center">
+                        <button
+                            className={`w-full h-10 rounded-lg text-white font-medium text-sm
+                                        ${isLoading || otp.length === 6 ? 'bg-[#7400e0] hover:bg-[#6D0DCC] cursor-pointer' : 'bg-[#d4a9fc] cursor-not-allowed'}
+                                        transition-colors duration-150
+                                        active:opacity-50 shadow-inner-button
+                                        flex items-center justify-center`}
+                            onClick={handleSubmit}
+                            disabled={isLoading || otp.length !== 6} // Ensure disabled when loading or OTP not filled
                         >
-                            {isResendEnabled ? 'Resend' : `Resend (${counter})`}
-                        </a>
-                    </p>
+                            {isLoading ? (
+                                <div className='w-5 h-5 animate-spin-loading rounded-[50%] border-4 border-[#ffffff4d] border-solid border-t-4 border-t-customWhite '></div> // Show spinner
+                            ) : (
+                                'Continue'
+                            )}
+                        </button>
+                        {verificationError && (
+                            <div className="text-red-500 mt-2 text-sm">{verificationError}</div>
+                        )}
+                    </div>
+                    <div className="pt-4">
+                        <p className="text-gray-700">
+                            Didn&apos;t receive the code?&nbsp;
+                            <a
+                                href="#"
+                                onClick={handleResend}
+                                className={`
+                                    font-bold transition-colors duration-300
+                                    ${isResendEnabled ? 'text-[#9012FF] cursor-pointer' : 'text-[#AD72FF] cursor-not-allowed'} `}
+                            >
+                                {isResendEnabled ? 'Resend' : `Resend (${counter})`}
+                            </a>
+                        </p>
+                    </div>
                 </div>
             </div>
             <ToastContainer />

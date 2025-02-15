@@ -4,7 +4,7 @@ import Image from 'next/image';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { onAuthStateChanged } from 'firebase/auth';
 import { auth } from '@/firebase';
 import LoadingData from '@/components/Loading';
@@ -24,6 +24,13 @@ export default function Sign() {
     const [errors, setErrors] = useState({ firstName: '', lastName: '', email: '', phone: '', terms: '' });
     const [isSubmitted, setIsSubmitted] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
+    const inputRef = useRef<HTMLInputElement>(null);
+
+    useEffect(() => {
+        if (inputRef.current) {
+            inputRef.current.focus(); // Ensure the input is focused
+        }
+    }, []);
 
     // useEffect(() => {
     //     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -192,7 +199,7 @@ export default function Sign() {
                 <Image src="/images/phoduclublogo.png" width={140} height={10} quality={100} alt="Phodu Club Logo" />
                 <div className='Signup Main Div flex flex-1 flex-col justify-center items-center gap-10'>
                     <div className='flex flex-col items-center justify-center gap-2'>
-                        <h3 className='font-bold text-[24px]'>Get Started</h3>
+                        <h3 className='font-bold text-[24px] text-center'>Get Started</h3>
                         <p className='mt-2'>Make yourself prepared, before time ✌️</p>
                     </div>
                     <form className='flex flex-col items-center justify-center gap-4 max-w-[26.25rem] w-full' onSubmit={handleSubmit}>
@@ -203,6 +210,7 @@ export default function Sign() {
                                     <input
                                         type="text"
                                         id='firstName'
+                                        ref={inputRef}
                                         placeholder='First Name'
                                         value={firstName}
                                         onChange={(e) => handleInputChange('firstName', e.target.value)}
@@ -269,15 +277,16 @@ export default function Sign() {
                             </div>
                         </div>
                         <div id="recaptcha-container"></div> {/* Recaptcha container */}
-                        <div className='w-full'>
+                        <div className='w-full flex flex-row items-start'>
                             <Checkbox
                                 size="sm"
                                 color="primary"
                                 id="terms"
                                 checked={!termsAccepted}
                                 onChange={() => handleInputChange('terms', '')}
+                                className='pt-[10px]'
                             />
-                            <label className='text-sm text-gray-900 mb-1.5' htmlFor="terms">
+                            <label className='text-sm text-gray-900' htmlFor="terms">
                                 I agree to the Phodu.club <a href="https://phodu.club/privacy-policy/" className="text-[#6646A2] underline">privacy policy</a> and <a href="https://phodu.club/terms-and-conditions/" className="text-[#6646A2] underline">terms of use</a>.
                             </label>
                             {isSubmitted && errors.terms && (
