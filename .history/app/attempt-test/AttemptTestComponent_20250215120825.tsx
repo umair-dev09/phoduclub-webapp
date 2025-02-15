@@ -8,7 +8,7 @@ import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Timer from "@/components/TestTimer";
-import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, useDisclosure, Button } from "@nextui-org/react";
+import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, useDisclosure } from "@nextui-org/modal";
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Drawer from "react-modern-drawer";
@@ -1777,8 +1777,8 @@ function ReviewTestView() {
                                                         height={28}
                                                     />
                                                     <span className={`absolute inset-0 text-xs font-medium ${getQuestionButtonStatus(index) === 'not-visited'
-                                                        ? 'text-[#242424]'
-                                                        : 'text-white'
+                                                            ? 'text-[#242424]'
+                                                            : 'text-white'
                                                         } flex items-center justify-center`}>
                                                         {q.isBonus ? displayIndex + 1 + '*' : displayIndex + 1}
                                                     </span>
@@ -1830,7 +1830,7 @@ function ReviewTestView() {
                     {showBonusButton && (
                         <button
                             className="flex items-center justify-center w-auto h-[36px] rounded-[3px] bg-[#4298EB] border border-[#A1A1A199] px-4"
-                            onClick={() => setUnlockbonusquestion(true)}
+                            onClick={handleUnlockBonusQuestions}
                         >
                             <span className="font-bold font-['Inter'] text-[12px] text-[#F5F5F5]">
                                 Unlock Bonus Questions
@@ -1847,37 +1847,6 @@ function ReviewTestView() {
                     </button>
                 </div>
             </div>
-            <Modal
-                isOpen={unlockbonusquestion}
-                onOpenChange={(isOpen) => setUnlockbonusquestion(isOpen)}
-                hideCloseButton
-            >
-                <ModalContent>
-                    <>
-                        {/* Modal Header */}
-                        <ModalHeader className="flex flex-row justify-between gap-1">
-                            <h1 className='text-[#1D2939] font-bold text-lg'>Bonus Questions</h1>
-                            <button className="w-[32px] h-[32px]  rounded-full flex items-center justify-center transition-all duration-300 ease-in-out hover:bg-[#F2F4F7]">
-                                <Image src="/icons/cancel.svg" alt="Cancel" width={20} height={20} onClick={() => setUnlockbonusquestion(false)} />
-                            </button>
-                        </ModalHeader>
-
-                        {/* Modal Body */}
-                        <ModalBody>
-
-                            <span className="text-sm font-normal text-[#667085]">
-                                Are you sure you want to attempt this question? Once unlocked, you cannot go back.</span>
-                        </ModalBody>
-
-                        {/* Modal Footer */}
-                        <ModalFooter className="border-t border-lightGrey">
-                            <Button variant="light" className="py-[0.625rem] px-6 border-2  border-solid border-[#EAECF0] font-semibold text-sm text-[#1D2939] hover:bg-[#F2F4F7] rounded-md" onClick={() => setUnlockbonusquestion(false)}  >Cancel</Button>
-                            <Button className="py-[0.625rem] px-6 text-white font-semibold shadow-inner-button bg-[#8501FF]   text-sm border border-[#9012FF]  hover:bg-[#6D0DCC] rounded-md" onClick={() => { setUnlockbonusquestion(false); handleUnlockBonusQuestions }} >Unlock Bonus Questions</Button>
-
-                        </ModalFooter>
-                    </>
-                </ModalContent>
-            </Modal>
             <Modal isOpen={isOpenFirst} onOpenChange={(isOpen) => !isOpen && onCloseFirst()}>
                 <ModalContent>
                     {(onClose) => (

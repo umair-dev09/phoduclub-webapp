@@ -1856,7 +1856,7 @@ function ReviewTestView() {
                     <>
                         {/* Modal Header */}
                         <ModalHeader className="flex flex-row justify-between gap-1">
-                            <h1 className='text-[#1D2939] font-bold text-lg'>Bonus Questions</h1>
+                            <h1 className='text-[#1D2939] font-bold text-lg'>Delete message?</h1>
                             <button className="w-[32px] h-[32px]  rounded-full flex items-center justify-center transition-all duration-300 ease-in-out hover:bg-[#F2F4F7]">
                                 <Image src="/icons/cancel.svg" alt="Cancel" width={20} height={20} onClick={() => setUnlockbonusquestion(false)} />
                             </button>
@@ -1865,8 +1865,7 @@ function ReviewTestView() {
                         {/* Modal Body */}
                         <ModalBody>
 
-                            <span className="text-sm font-normal text-[#667085]">
-                                Are you sure you want to attempt this question? Once unlocked, you cannot go back.</span>
+                            <span className="text-sm font-normal text-[#667085]">Once the message is deleted you cannot restore it again.</span>
                         </ModalBody>
 
                         {/* Modal Footer */}
