@@ -144,7 +144,29 @@ function TargetExamUpdate({ setIsEditing }: TargetExamsUpdateProps) {
       console.error('No valid Phone Number');
     }
   };
-
+  const handleResendOtp = async () => {
+    setUpRecaptcha(); // Make sure recaptcha is set up
+    const appVerifier = recaptchaVerifierRef.current;
+    
+    try {
+      if (userData?.phone) {
+        const confirmationResult = await signInWithPhoneNumber(
+          auth,
+          userData.phone,
+          appVerifier
+        );
+        window.confirmationResult = confirmationResult;
+        toast.success('OTP resent successfully!');
+        return Promise.resolve();
+      } else {
+        throw new Error('No valid phone number found');
+      }
+    } catch (error: any) {
+      console.error('Error resending OTP:', error);
+      toast.error(error.message || 'Failed to resend OTP');
+      throw error;
+    }
+  };
   // Map the selected exams to an array of strings
   const selectedExamValues = selectedExams.map((exam) => exam.value);
   useEffect(() => {
@@ -260,7 +282,7 @@ function TargetExamUpdate({ setIsEditing }: TargetExamsUpdateProps) {
           </>
         </ModalContent>
       </Modal>
-      {showComponent && <OtpForUpdate newEmail={''} newPhone='' isOpen={isOtpOpen} setIsOpen={setIsOtpOpen} targetYear={''} setIsEditing={setIsEditing} targetExams={selectedExamValues} />}
+      {showComponent && <OtpForUpdate onResendOtp={handleResendOtp} newEmail={''} newPhone='' isOpen={isOtpOpen} setIsOpen={setIsOtpOpen} targetYear={''} setIsEditing={setIsEditing} targetExams={selectedExamValues} />}
     </div>
   );
 }
