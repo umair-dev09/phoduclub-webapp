@@ -8,7 +8,7 @@ import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Timer from "@/components/TestTimer";
-import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, useDisclosure, Button } from "@nextui-org/react";
+import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, useDisclosure } from "@nextui-org/modal";
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Drawer from "react-modern-drawer";
@@ -132,29 +132,18 @@ type UserData = {
     userId: string;
 }
 
-// Updated getStatusCounts function
-const getStatusCounts = (
-    questionStates: QuestionState[], 
-    questions: Question[],
-    showBonusQuestions: boolean
-) => {
-    // Filter states based on whether we're showing bonus questions
-    const relevantStates = showBonusQuestions 
-        ? questionStates.filter((_, index) => questions[index]?.isBonus)
-        : questionStates.filter((_, index) => !questions[index]?.isBonus);
 
+const getStatusCounts = (questionStates: QuestionState[]) => {
     return {
-        answered: relevantStates.filter(q => q.status === 'answered').length,
-        notAnswered: relevantStates.filter(q => q.status === 'not-answered').length,
-        notVisited: relevantStates.filter(q => q.status === 'not-visited').length,
-        marked: relevantStates.filter(q => q.status === 'marked').length,
-        answeredMarked: relevantStates.filter(q => q.status === 'answered-marked').length,
+        answered: questionStates.filter(q => q.status === 'answered').length,
+        notAnswered: questionStates.filter(q => q.status === 'not-answered').length,
+        notVisited: questionStates.filter(q => q.status === 'not-visited').length,
+        marked: questionStates.filter(q => q.status === 'marked').length,
+        answeredMarked: questionStates.filter(q => q.status === 'answered-marked').length,
     };
 };
 
-// Updated StatusDisplay component
-const StatusDisplay = ({ counts, showBonusQuestions }: { counts: ReturnType<typeof getStatusCounts>,     showBonusQuestions: boolean;
-}) => {
+const StatusDisplay = ({ counts }: { counts: ReturnType<typeof getStatusCounts> }) => {
     return (
         <div className="flex flex-col h-fit bg-[#f5f5f5] p-4 gap-5">
             <div className="flex flex-row gap-6">
@@ -165,9 +154,7 @@ const StatusDisplay = ({ counts, showBonusQuestions }: { counts: ReturnType<type
                             {counts.answered}
                         </span>
                     </div>
-                    <p className="font-medium font-['Inter'] text-[14px] text-[#131313]">
-                        {showBonusQuestions ? 'Bonus Answered' : 'Answered'}
-                    </p>
+                    <p className="font-medium font-['Inter'] text-[14px] text-[#131313]">Answered</p>
                 </div>
                 <div className="flex flex-row gap-[6px] items-center">
                     <div className="relative w-[28px] h-[28px]">
@@ -176,9 +163,7 @@ const StatusDisplay = ({ counts, showBonusQuestions }: { counts: ReturnType<type
                             {counts.notAnswered}
                         </span>
                     </div>
-                    <p className="font-medium font-['Inter'] text-[14px] text-[#131313]">
-                        {showBonusQuestions ? 'Bonus Not Answered' : 'Not Answered'}
-                    </p>
+                    <p className="font-medium font-['Inter'] text-[14px] text-[#131313]">Not Answered</p>
                 </div>
             </div>
 
@@ -190,9 +175,7 @@ const StatusDisplay = ({ counts, showBonusQuestions }: { counts: ReturnType<type
                             {counts.notVisited}
                         </span>
                     </div>
-                    <p className="font-medium font-['Inter'] text-[14px] text-[#131313]">
-                        {showBonusQuestions ? 'Bonus Not Visited' : 'Not Visited'}
-                    </p>
+                    <p className="font-medium font-['Inter'] text-[14px] text-[#131313]">Not Visited</p>
                 </div>
                 <div className="flex flex-row gap-[6px] items-center">
                     <div className="relative w-[28px] h-[28px]">
@@ -201,9 +184,7 @@ const StatusDisplay = ({ counts, showBonusQuestions }: { counts: ReturnType<type
                             {counts.marked}
                         </span>
                     </div>
-                    <p className="font-medium font-['Inter'] text-[14px] text-[#131313]">
-                        {showBonusQuestions ? 'Bonus Marked for Review' : 'Marked for Review'}
-                    </p>
+                    <p className="font-medium font-['Inter'] text-[14px] text-[#131313]">Marked for Review</p>
                 </div>
             </div>
 
@@ -216,9 +197,7 @@ const StatusDisplay = ({ counts, showBonusQuestions }: { counts: ReturnType<type
                         </span>
                     </div>
                     <p className="font-medium font-['Inter'] text-[14px] text-[#131313] w-[250px]">
-                        {showBonusQuestions 
-                            ? 'Bonus Answered and Marked for Review (Will be considered for evaluation)'
-                            : 'Answered and Marked for Review (Will be considered for evaluation)'}
+                        Answered and Marked for Review (Will be considered for evaluation)
                     </p>
                 </div>
             </div>
@@ -1354,85 +1333,84 @@ function ReviewTestView() {
         }
 
         // Helper function to filter questions and create states with proper type checking
-const filterQuestionsAndStates = (questions: Question[], states: QuestionState[]) => {
-    return questions.reduce((acc: { questions: Question[]; states: QuestionState[] }, question, index) => {
-      // Only include non-bonus questions OR bonus questions if they're unlocked
-      if (!question.isBonus || (question.isBonus && showBonusQuestions)) {
-        acc.questions.push(question);
-        // Ensure we have a valid state object
-        const state = states[index] || {
-          questionId: question.questionId,
-          status: 'not-visited' as const,
-          answered: false,
-          selectedOption: null,
-          answeredCorrect: null,
-          spentTime: 0,
-          allotedTime: calculateAllotedTime(question.difficulty),
-          remarks: '-',
-          question: question.question,
-          difficulty: question.difficulty,
-          isBonus: question.isBonus,
-          order: question.order,
+        const filterQuestionsAndStates = (questions: Question[], states: QuestionState[]) => {
+            return questions.reduce((acc: { questions: Question[]; states: QuestionState[] }, question, index) => {
+                // Only include non-bonus questions OR bonus questions if they're unlocked
+                if (!question.isBonus || (question.isBonus && showBonusQuestions)) {
+                    acc.questions.push(question);
+                    // Ensure we have a valid state object
+                    const state = states[index] || {
+                        questionId: question.questionId,
+                        status: 'not-visited' as const,
+                        answered: false,
+                        selectedOption: null,
+                        answeredCorrect: null,
+                        spentTime: 0,
+                        allotedTime: calculateAllotedTime(question.difficulty),
+                        remarks: '-',
+                        question: question.question,
+                        difficulty: question.difficulty,
+                        isBonus: question.isBonus,
+                        order: question.order,
+                    };
+                    acc.states.push(state);
+                }
+                return acc;
+            }, { questions: [], states: [] });
         };
-        acc.states.push(state);
-      }
-      return acc;
-    }, { questions: [], states: [] });
-  };
-  
 
 
-       // Update getFinalQuestionData with null checks
+        // Update getFinalQuestionData with null checks
         const getFinalQuestionData = (states: QuestionState[]) =>
             states.map((state) => ({
-            ...state,
-            allotedTime: state.allotedTime || calculateAllotedTime(state.difficulty),
-            spentTime: state.spentTime || 0,
-            remarks: determineRemarks(
-                state.allotedTime || calculateAllotedTime(state.difficulty),
-                state.spentTime || 0,
-                state.answeredCorrect || null,
-                state.answered || false
-            )
+                ...state,
+                allotedTime: state.allotedTime || calculateAllotedTime(state.difficulty),
+                spentTime: state.spentTime || 0,
+                remarks: determineRemarks(
+                    state.allotedTime || calculateAllotedTime(state.difficulty),
+                    state.spentTime || 0,
+                    state.answeredCorrect || null,
+                    state.answered || false
+                )
             }));
 
         // Update processQuestions function with proper type checking
-const processQuestions = () => {
-    if (currentSection?.isUmbrellaTest) {
-      return subSections.map((section) => {
-        if (!section.questions || !section.states) {
-          return {
-            ...section,
-            questions: [],
-            states: [],
-            hasBonusQuestions: false
-          };
-        }
-  
-        const filtered = filterQuestionsAndStates(
-          section.questions,
-          section.states
-        );
-  
-        return {
-          ...section,
-          questions: filtered.questions,
-          states: getFinalQuestionData(filtered.states),
-          hasBonusQuestions: showBonusQuestions && section.questions.some(q => q.isBonus)
+        const processQuestions = () => {
+            if (currentSection?.isUmbrellaTest) {
+                return subSections.map((section) => {
+                    if (!section.questions || !section.states) {
+                        return {
+                            ...section,
+                            questions: [],
+                            states: [],
+                            hasBonusQuestions: false
+                        };
+                    }
+
+                    const filtered = filterQuestionsAndStates(
+                        section.questions,
+                        section.states
+                    );
+
+                    return {
+                        ...section,
+                        questions: filtered.questions,
+                        states: getFinalQuestionData(filtered.states),
+                        hasBonusQuestions: showBonusQuestions && section.questions.some(q => q.isBonus)
+                    };
+                });
+            } else {
+                // Ensure questions and questionStates are valid arrays
+                const validQuestions = questions || [];
+                const validStates = questionStates || [];
+                const filtered = filterQuestionsAndStates(validQuestions, validStates);
+
+                return {
+                    states: getFinalQuestionData(filtered.states),
+                    hasBonusQuestions: showBonusQuestions && validQuestions.some(q => q.isBonus)
+                };
+            }
         };
-      });
-    } else {
-      // Ensure questions and questionStates are valid arrays
-      const validQuestions = questions || [];
-      const validStates = questionStates || [];
-      const filtered = filterQuestionsAndStates(validQuestions, validStates);
-  
-      return {
-        states: getFinalQuestionData(filtered.states),
-        hasBonusQuestions: showBonusQuestions && validQuestions.some(q => q.isBonus)
-      };
-    }
-  };
 
 
         // Calculate metrics including only relevant questions
@@ -1624,12 +1602,8 @@ const processQuestions = () => {
             status: 'not-answered'
         });
     };
-    const getQuestionButtonStatus = (index: number): 'not-visited' | 'not-answered' | 'marked' | 'answered' | 'answered-marked' => {
-        // Check if questionStates exists and has the index
-        if (!questionStates || !questionStates[index]) {
-            return 'not-visited';
-        }
-        return questionStates[index].status || 'not-visited';
+    const getQuestionButtonStatus = (index: number) => {
+        return questionStates[index]?.status || 'not-visited';
     };
 
     // Current question being displayed
@@ -1758,10 +1732,8 @@ const processQuestions = () => {
                         </div>
                     </div>
 
-                    <StatusDisplay 
-    counts={getStatusCounts(questionStates, questions, showBonusQuestions)} 
-    showBonusQuestions={showBonusQuestions} 
-/>                    {/* Section header */}
+                    <StatusDisplay counts={getStatusCounts(questionStates)} />
+                    {/* Section header */}
                     <div className="flex h-9 bg-[#4871CB] pl-3 border-t border-b border-[#A1A1A199] items-center">
                         <h3 className="text-white text-[14px] font-bold font-[Inter]">
                             {currentSection?.isUmbrellaTest
@@ -1774,46 +1746,49 @@ const processQuestions = () => {
                         <p className=" text-[14px] font-medium font-[Inter]">Choose a Question</p>
                         <div className="flex flex-row flex-wrap mt-2 gap-3">
                             {/*button for selecting question*/}
-                            {!isTimeOver && questions && questions.map((q, index) => {
-                    // Skip rendering normal questions when bonus questions are shown
-                    if (showBonusQuestions && !q.isBonus) {
-                        return null;
-                    }
+                            {!isTimeOver && (
+                                <>
+                                    {questions.map((q, index) => {
+                                        // Skip rendering normal questions when bonus questions are shown
+                                        if (showBonusQuestions && !q.isBonus) {
+                                            return null;
+                                        }
 
-                    // Calculate adjusted index for bonus questions
-                    let displayIndex = index;
-                    if (showBonusQuestions && q.isBonus) {
-                        // Get count of bonus questions up to this index (only counting bonus questions)
-                        displayIndex = questions
-                            .slice(0, index + 1)
-                            .filter(question => question.isBonus)
-                            .length - 1;
-                    }
+                                        // Calculate adjusted index for bonus questions
+                                        let displayIndex = index;
+                                        if (showBonusQuestions) {
+                                            // Get count of bonus questions up to this index (only counting bonus questions)
+                                            displayIndex = questions.slice(0, index + 1)
+                                                .filter(q => q.isBonus)
+                                                .length - 1; // Subtract 1 to start from 0
+                                        }
 
-                    const status = getQuestionButtonStatus(index);
+                                        return (
+                                            <button
+                                                key={index}
+                                                onClick={() => handleQuestionSelect(index)}
+                                                className="hover:opacity-80"
+                                            >
+                                                <div className="relative w-[28px] h-[28px]">
+                                                    <Image
+                                                        src={`/icons/${getQuestionButtonStatus(index)}.svg`}
+                                                        alt={`Question ${displayIndex + 1}`}
+                                                        width={28}
+                                                        height={28}
+                                                    />
+                                                    <span className={`absolute inset-0 text-xs font-medium ${getQuestionButtonStatus(index) === 'not-visited'
+                                                            ? 'text-[#242424]'
+                                                            : 'text-white'
+                                                        } flex items-center justify-center`}>
+                                                        {q.isBonus ? displayIndex + 1 + '*' : displayIndex + 1}
+                                                    </span>
+                                                </div>
+                                            </button>
+                                        );
+                                    })}
+                                </>
+                            )}
 
-                    return (
-                        <button
-                            key={index}
-                            onClick={() => handleQuestionSelect(index)}
-                            className="hover:opacity-80"
-                        >
-                            <div className="relative w-[28px] h-[28px]">
-                                <Image
-                                    src={`/icons/${status}.svg`}
-                                    alt={`Question ${displayIndex + 1}`}
-                                    width={28}
-                                    height={28}
-                                />
-                                <span className={`absolute inset-0 text-xs font-medium ${
-                                    status === 'not-visited' ? 'text-[#242424]' : 'text-white'
-                                } flex items-center justify-center`}>
-                                    {q.isBonus ? `${displayIndex + 1}*` : displayIndex + 1}
-                                </span>
-                            </div>
-                        </button>
-                    );
-                })}
                         </div>
                     </div>
                 </div>
@@ -1855,7 +1830,7 @@ const processQuestions = () => {
                     {showBonusButton && (
                         <button
                             className="flex items-center justify-center w-auto h-[36px] rounded-[3px] bg-[#4298EB] border border-[#A1A1A199] px-4"
-                            onClick={() => setUnlockbonusquestion(true)}
+                            onClick={handleUnlockBonusQuestions}
                         >
                             <span className="font-bold font-['Inter'] text-[12px] text-[#F5F5F5]">
                                 Unlock Bonus Questions
@@ -1872,37 +1847,6 @@ const processQuestions = () => {
                     </button>
                 </div>
             </div>
-            <Modal
-                isOpen={unlockbonusquestion}
-                onOpenChange={(isOpen) => setUnlockbonusquestion(isOpen)}
-                hideCloseButton
-            >
-                <ModalContent>
-                    <>
-                        {/* Modal Header */}
-                        <ModalHeader className="flex flex-row justify-between gap-1">
-                            <h1 className='text-[#1D2939] font-bold text-lg'>Bonus Questions</h1>
-                            <button className="w-[32px] h-[32px]  rounded-full flex items-center justify-center transition-all duration-300 ease-in-out hover:bg-[#F2F4F7]">
-                                <Image src="/icons/cancel.svg" alt="Cancel" width={20} height={20} onClick={() => setUnlockbonusquestion(false)} />
-                            </button>
-                        </ModalHeader>
-
-                        {/* Modal Body */}
-                        <ModalBody>
-
-                            <span className="text-sm font-normal text-[#667085]">
-                                Are you sure you want to attempt this question? Once unlocked, you cannot go back.</span>
-                        </ModalBody>
-
-                        {/* Modal Footer */}
-                        <ModalFooter className="border-t border-lightGrey">
-                            <Button variant="light" className="py-[0.625rem] px-6 border-2  border-solid border-[#EAECF0] font-semibold text-sm text-[#1D2939] hover:bg-[#F2F4F7] rounded-md" onClick={() => setUnlockbonusquestion(false)}  >Cancel</Button>
-                            <Button className="py-[0.625rem] px-6 text-white font-semibold shadow-inner-button bg-[#8501FF]   text-sm border border-[#9012FF]  hover:bg-[#6D0DCC] rounded-md" onClick={() => { setUnlockbonusquestion(false); handleUnlockBonusQuestions(); }} >Unlock Bonus Questions</Button>
-
-                        </ModalFooter>
-                    </>
-                </ModalContent>
-            </Modal>
             <Modal isOpen={isOpenFirst} onOpenChange={(isOpen) => !isOpen && onCloseFirst()}>
                 <ModalContent>
                     {(onClose) => (

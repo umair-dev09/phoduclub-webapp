@@ -18,8 +18,33 @@ export default function Home() {
   const [error, setError] = useState(false);
   const [open, setOpen] = useState(false);
   const [user, setUser] = useState<User | null>(null);
+
+  const [isMobile, setIsMobile] = useState(false);
   const db = getFirestore();
 
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 768); // You can change 768px to your desired mobile width
+    };
+
+    // Initial check
+    handleResize();
+
+    // Add event listener for window resize
+    window.addEventListener("resize", handleResize);
+
+    // Clean up event listener
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  if (isMobile) {
+    return (
+      <div style={{ textAlign: "center", padding: "2rem" }}>
+        <h1>Access Blocked on Mobile Devices</h1>
+        <p>Please use a desktop to view this website.</p>
+      </div>
+    );
+  }
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
       if (currentUser) {

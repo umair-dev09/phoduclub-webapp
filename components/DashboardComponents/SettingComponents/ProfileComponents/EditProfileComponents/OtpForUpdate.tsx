@@ -1,23 +1,28 @@
-import { Dialog, DialogBackdrop, DialogPanel } from '@headlessui/react';
-import { Dispatch, useEffect, useRef, useState } from 'react';
+// OtpForUpdate.tsx
+import { Dialog } from '@headlessui/react';
+import { useEffect, useRef, useState } from 'react';
 import styles from '../Profile.module.css';
 import Image from 'next/image';
 import { doc, getDoc, getFirestore, updateDoc } from 'firebase/firestore';
-import { auth, db } from '@/firebase';
-import { onAuthStateChanged, User } from 'firebase/auth';
+import { auth } from '@/firebase';
+import { onAuthStateChanged, User, updatePhoneNumber, PhoneAuthProvider } from 'firebase/auth';
 import LoadingData from '@/components/Loading';
-import { toast, ToastContainer } from 'react-toastify';
+import { toast } from 'react-toastify';
 import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button } from "@nextui-org/react";
 
+// Update the Props type
 type OtpForUpdateProps = {
   newEmail: string;
   targetYear: string;
   isOpen: boolean;
   setIsOpen: (isOpen: boolean) => void;
-  setIsEditing: (isEditing: boolean) => void; // Add this prop to update isEditing in Profile
+  setIsEditing: (isEditing: boolean) => void;
   targetExams: string[] | null;
   newPhone: string;
+  onResendOtp?: () => Promise<void>; // Add this prop
+  verificationId?: string;
 };
+
 type UserData = {
   uniqueId: string | null;
   phone: string | null;
@@ -37,15 +42,15 @@ const InputHandler = ({
 
     if (inputs) {
       inputs.forEach((input, index) => {
-        input.addEventListener("input", (e: Event) => handleInput(e, index));
+        const handleInputWrapper = (e: Event) => handleInput(e, index);
+        input.addEventListener("input", handleInputWrapper);
         input.addEventListener("keyup", handleKeyup);
-      });
 
-      return () => {
-        inputs.forEach((input) => {
+        return () => {
+          input.removeEventListener("input", handleInputWrapper);
           input.removeEventListener("keyup", handleKeyup);
-        });
-      };
+        };
+      });
     }
   }, []);
 
@@ -60,20 +65,15 @@ const InputHandler = ({
       }
     }
 
-    // Combine all OTP values
-    const otp = Array.from(
-      inputsRef.current?.querySelectorAll("input") || []
-    )
+    const otp = Array.from(inputsRef.current?.querySelectorAll("input") || [])
       .map((input) => input.value.trim())
       .join("");
     onOtpChange(otp);
 
-    // Check if all input fields are filled
     const allFilled = Array.from(inputsRef.current?.querySelectorAll("input") || []).every(
       (input) => input.value.trim() !== ""
     );
 
-    // Disable or enable the button based on whether all fields are filled
     setIsButtonDisabled(!allFilled);
   };
 
@@ -91,15 +91,11 @@ const InputHandler = ({
   };
 
   return (
-    <div
-      id="inputs"
-      ref={inputsRef}
-      className="flex flex-row gap-[6px] items-center justify-center"
-    >
+    <div ref={inputsRef} className="flex flex-row gap-[6px] items-center justify-center">
       {Array.from({ length: 6 }).map((_, index) => (
         <input
           key={index}
-          className="w-[62px]  h-16 font-medium border-solid border-[1.5px] border-[#D0D5DD] m-[5px] text-center text-[30px] text-black rounded-[8px] hover:border-none hover:outline hover:outline-[1.5px] hover:outline-[#D6BBFB] focus:outline focus:outline-[1.5px] focus:outline-[#D6BBFB] focus:border-none"
+          className="w-[62px] h-16 font-medium border-solid border-[1.5px] border-[#D0D5DD] m-[5px] text-center text-[30px] text-black rounded-[8px] hover:border-none hover:outline hover:outline-[1.5px] hover:outline-[#D6BBFB] focus:outline focus:outline-[1.5px] focus:outline-[#D6BBFB] focus:border-none"
           type="text"
           inputMode="numeric"
           maxLength={1}
@@ -110,24 +106,35 @@ const InputHandler = ({
   );
 };
 
-function OtpForUpdate({ isOpen, setIsOpen, newEmail, targetYear, setIsEditing, targetExams, newPhone }: OtpForUpdateProps) {
-  const [error, setError] = useState(false); // Track error state
+function OtpForUpdate({
+  isOpen,
+  setIsOpen,
+  newEmail,
+  targetYear,
+  setIsEditing,
+  targetExams,
+  onResendOtp,
+  newPhone,
+  verificationId,
+}: OtpForUpdateProps) {
+  const [error, setError] = useState(false);
   const [userData, setUserData] = useState<UserData | null>(null);
-  const [loading, setLoading] = useState(true); // Track loading state
+  const [loading, setLoading] = useState(true);
   const [user, setUser] = useState<User | null>(null);
   const db = getFirestore();
   const [otp, setOtp] = useState('');
   const [counter, setCounter] = useState(60);
   const [isResendEnabled, setIsResendEnabled] = useState(false);
-  const [verificationError, setVerificationError] = useState<string | null>(null);
-  const [isButtonDisabled, setIsButtonDisabled] = useState(true); // State to disable/enable the button
-  const [isLoading, setIsLoading] = useState(false); // Loading state
+  const [isButtonDisabled, setIsButtonDisabled] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
+
+
+
 
   useEffect(() => {
     setOtp('');
     setCounter(60);
     setIsResendEnabled(false);
-    setVerificationError(null);
   }, [userData?.phone]);
 
   useEffect(() => {
@@ -141,14 +148,13 @@ function OtpForUpdate({ isOpen, setIsOpen, newEmail, targetYear, setIsEditing, t
     }
   }, [counter]);
 
-
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       if (currentUser) {
         setUser(currentUser);
       } else {
         console.error('No user is logged in');
-        setError(true); // Set error if no user is logged in
+        setError(true);
       }
     });
 
@@ -168,14 +174,14 @@ function OtpForUpdate({ isOpen, setIsOpen, newEmail, targetYear, setIsEditing, t
             setUserData(data);
           } else {
             console.error('No user data found!');
-            setError(true); // Set error if no user data is found
+            setError(true);
           }
         }
       } catch (error) {
         console.error('Error fetching user data:', error);
-        setError(true); // Set error if fetching data fails
+        setError(true);
       } finally {
-        setLoading(false); // Ensure loading is set to false after fetching data
+        setLoading(false);
       }
     };
 
@@ -184,65 +190,95 @@ function OtpForUpdate({ isOpen, setIsOpen, newEmail, targetYear, setIsEditing, t
     }
   }, [user, db]);
 
+  const verifyOTP = async () => {
+    setIsLoading(true);
+    setIsButtonDisabled(true);
+  
+    try {
+      if (newPhone && verificationId) {
+        const credential = PhoneAuthProvider.credential(verificationId, otp);
+        
+        if (user) {
+          // Update phone number in Firebase Auth
+          await updatePhoneNumber(user, credential);
+          
+          // Update phone number in Firestore
+          if (userData?.uniqueId) {
+            await updateDoc(doc(db, "users", userData.uniqueId), {
+              phone: `+${newPhone}`
+            });
+          }
+          
+          toast.success('Phone number updated successfully!');
+          setIsOpen(false);
+          setIsEditing(false);
+        }
+      } else {
+        // Handle other verification cases (email, targetYear, targetExams)
+        await window.confirmationResult.confirm(otp);
+        
+        if (userData?.uniqueId) {
+          const updateData: any = {
+            ...(newEmail && { email: newEmail }),
+            ...(targetYear && { targetYear }),
+            ...(targetExams?.length && { targetExams })
+          };
+          
+          await updateDoc(doc(db, "users", userData.uniqueId), updateData);
+          toast.success('Information updated successfully!');
+        }
+        
+        setIsOpen(false);
+        setIsEditing(false);
+      }
+    } catch (error) {
+      console.error('Verification error:', error);
+      toast.error('Failed to verify OTP. Please try again.');
+    } finally {
+      setIsLoading(false);
+      setIsButtonDisabled(false);
+    }
+  };
+
+  const handleResendOtp = async () => {
+    try {
+      setIsLoading(true);
+      setIsResendEnabled(false);
+      
+      // Call the resend OTP function passed from parent
+      if (onResendOtp) {
+        await onResendOtp();
+        
+        // Reset counter and OTP input
+        setCounter(60);
+        setOtp('');
+        
+        // Clear OTP input fields
+        const inputs = document.querySelectorAll('input[type="text"]') as NodeListOf<HTMLInputElement>;
+        inputs.forEach(input => input.value = '');
+        
+        toast.success('OTP resent successfully!');
+      }
+    } catch (error) {
+      console.error('Error resending OTP:', error);
+      toast.error('Failed to resend OTP. Please try again.');
+      setIsResendEnabled(true);
+    } finally {
+      setIsLoading(false);
+    }
+  };  
+
   if (loading || error) {
     return <LoadingData />;
   }
 
-
-
-
-  const verifyOTP = () => {
-    setIsLoading(true);
-    setIsButtonDisabled(true);
-
-    toast.promise(
-      new Promise((resolve, reject) => {
-        window.confirmationResult.confirm(otp).then(async () => {
-          // OTP verified successfully
-          resolve('Otp Sent!');
-          setIsLoading(false);
-          setIsButtonDisabled(true);
-
-          try {
-            // Store the selected year and exams in Firestore if conditions are met
-            if (userData?.uniqueId) {
-              const updateData: any = {
-                ...(newEmail.trim() !== "" && { email: newEmail }),
-                ...(targetYear.trim() !== "" && { targetYear: targetYear }),
-              };
-
-              // Only include targetExams if it is not empty or null
-              if (targetExams && targetExams.length > 0) {
-                updateData.targetExams = targetExams;
-              }
-
-              await updateDoc(doc(db, "users", userData?.uniqueId), updateData);
-            }
-
-            setIsOpen(false);
-            setIsLoading(false);
-            setIsButtonDisabled(true);
-            setIsEditing(false);
-          } catch (error) {
-            console.error("Error saving data:", error);
-            setIsLoading(false);
-            setIsButtonDisabled(true);
-          }
-        }).catch((error: any) => {
-          reject(new Error('Failed to Verify'));
-          console.error("Invalid OTP", error);
-          setIsLoading(false);
-          setIsButtonDisabled(false);
-        });
-      }),
-      {
-        pending: 'Verifying OTP...',
-        success: 'OTP Verified!',
-        error: 'Failed to Verify OTP',
-      }
-    );
+ // Update the verification message function
+const getVerificationMessage = () => {
+  if (newPhone) {
+    return `Please enter the verification code we sent to your new number ${newPhone.slice(-4)}`;
   }
-
+  return `Please enter the verification code we sent to verify your request`;
+};
 
   return (
     <Modal
@@ -269,7 +305,7 @@ function OtpForUpdate({ isOpen, setIsOpen, newEmail, targetYear, setIsEditing, t
 
           <ModalBody className="w-auto p-6 gap-6">
             <p className="text-sm text-[#667085]">
-              Please enter the verification code we sent to your mobile 99*****99
+              {getVerificationMessage()}
             </p>
             <div>
               <InputHandler
@@ -277,30 +313,47 @@ function OtpForUpdate({ isOpen, setIsOpen, newEmail, targetYear, setIsEditing, t
                 setIsButtonDisabled={setIsButtonDisabled}
               />
             </div>
+            <div className="text-sm text-center text-[#667085]">
+            {isResendEnabled ? (
+              <button
+                onClick={handleResendOtp}
+                className="text-[#8501FF] font-medium"
+                disabled={isLoading}
+              >
+                {isLoading ? 'Resending...' : 'Resend OTP'}
+              </button>
+            ) : (
+              `Resend OTP in ${counter}s`
+            )}
+          </div>
           </ModalBody>
 
           <ModalFooter className="border-t border-lightGrey flex justify-end gap-2 p-4">
-
-            <Button onClick={() => setIsOpen(false)} variant="light" className=" border border-lightGrey font-semibold text-[#1D2939]">Cancel</Button>
             <Button
-              className={`min-w-[100px] flex justify-center items-center px-6 py-[10px] rounded-[8px] text-white font-semibold shadow-inner-button ${isButtonDisabled ? 'bg-[#d8acff]' : ' hover:bg-[#6D0DCC] bg-[#8501FF]'
-                }`}
+              onClick={() => setIsOpen(false)}
+              variant="light"
+              className="border border-lightGrey font-semibold text-[#1D2939]"
+            >
+              Cancel
+            </Button>
+            <Button
+              className={`min-w-[100px] flex justify-center items-center px-6 py-[10px] rounded-[8px] text-white font-semibold shadow-inner-button ${
+                isButtonDisabled ? 'bg-[#d8acff]' : 'hover:bg-[#6D0DCC] bg-[#8501FF]'
+              }`}
               disabled={isButtonDisabled}
               onClick={verifyOTP}
             >
               {isLoading ? (
                 <div className="w-5 h-5 animate-spin-loading rounded-[50%] border-4 border-[#ffffff4d] border-solid border-t-4 border-t-customWhite"></div>
               ) : (
-                'Done'
+                'Verify'
               )}
             </Button>
           </ModalFooter>
         </>
       </ModalContent>
     </Modal>
-
   );
 }
+
 export default OtpForUpdate;
-
-
