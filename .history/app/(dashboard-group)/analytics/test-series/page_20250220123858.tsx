@@ -217,29 +217,30 @@ function TestSeries() {
           <td className="w-[15%] text-center"><p>Total Time</p></td>
         </tr>
         {tests.length > 0 ? (
-          tests.map((test, index) => (
-            <button key={index} className="hover:bg-[#F9FAFB] "
-              onClick={() => handleTabClick(`/analytics/test-series/${test.testName.toLowerCase().replace(/\s+/g, '-')}/?tId=${test.testId}`)}>
+          {
+            tests.map((test, index) => (
+              <button key={index} className="hover:bg-[#F9FAFB] "
+                onClick={() => handleTabClick(`/analytics/test-series/${test.testName.toLowerCase().replace(/\s+/g, '-')}/?tId=${test.testId}`)}>
 
-              <tr className="flex flex-1 py-3 border-t border-lightGrey text-[#1D2939]">
-                <td className="flex flex-col px-8 w-[30%] text-left">
-                  <div className="text-sm text-[#9012FF] font-semibold underline">{test.testName}</div>
-                  <div className="text-[13px] text-[#667085] font-medium">{test.totalSectionsWithQuestions || 0} Tests</div>
-                </td>
-                <td className="flex justify-center items-center w-[15%]">{test.score}</td>
-                <td className="flex justify-center items-center w-[15%]">{test.attempted}</td>
-                <td className="flex justify-center items-center w-[15%]">{test.accuracy}</td>
-                <td className="flex justify-center items-center w-[15%]">{formatTimeInSeconds(test.timeTaken) || '-'}</td>
-                <td className="flex justify-center items-center w-[15%]"><p className="text-end w-16">{formatTimeInSeconds(test.testTime) || '-'}</p></td>
-              </tr>
+                <tr className="flex flex-1 py-3 border-t border-lightGrey text-[#1D2939]">
+                  <td className="flex flex-col px-8 w-[30%] text-left">
+                    <div className="text-sm text-[#9012FF] font-semibold underline">{test.testName}</div>
+                    <div className="text-[13px] text-[#667085] font-medium">{test.totalSectionsWithQuestions || 0} Tests</div>
+                  </td>
+                  <td className="flex justify-center items-center w-[15%]">{test.score}</td>
+                  <td className="flex justify-center items-center w-[15%]">{test.attempted}</td>
+                  <td className="flex justify-center items-center w-[15%]">{test.accuracy}</td>
+                  <td className="flex justify-center items-center w-[15%]">{formatTimeInSeconds(test.timeTaken) || '-'}</td>
+                  <td className="flex justify-center items-center w-[15%]"><p className="text-end w-16">{formatTimeInSeconds(test.testTime) || '-'}</p></td>
+                </tr>
 
-            </button>
-          ))
-        ) : (
+              </button>
+            ))
+      ) : (
           <div className="border-t border-lightGrey text-center py-8">
             <p className="text-[#667085] text-sm">No Test-Series found</p>
           </div>
-        )}
+      }
 
       </table>
 
