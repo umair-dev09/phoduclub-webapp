@@ -34,7 +34,7 @@ const exams: Option[] = [
   { value: 'VITEEE', label: 'VITEEE' },
   { value: 'MET', label: 'MET' },
 ];
-
+ 
 const Dropdown = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
