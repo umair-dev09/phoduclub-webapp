@@ -217,6 +217,7 @@ function TestSeries() {
           <td className="w-[15%] text-center"><p>Total Time</p></td>
         </tr>
         {tests.length > 0 ? (
+
           tests.map((test, index) => (
             <button key={index} className="hover:bg-[#F9FAFB] "
               onClick={() => handleTabClick(`/analytics/test-series/${test.testName.toLowerCase().replace(/\s+/g, '-')}/?tId=${test.testId}`)}>
