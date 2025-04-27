@@ -17,12 +17,12 @@ interface GeneralChatLayoutProps {
 }
 
 interface ChatUser {
-    uniqueId: string;
+    uniqueId: string;  // uniqueId is the document ID
     name: string;
     profilePic: string;
     isOnline: boolean;
     isAdmin: boolean;
-    isBlocked?: boolean;  // Added isBlocked property
+    isBlocked?: boolean;
     isNotification?: boolean;
 }
 
@@ -36,7 +36,6 @@ function PrivateChatLayout({ children }: GeneralChatLayoutProps) {
     const [chatUsers, setChatUsers] = useState<ChatUser[]>([]);
     const [loading, setLoading] = useState(true);
     const [receivedRequestsCount, setReceivedRequestsCount] = useState<number>(0);
-    // const [blockedUsers, setBlockedUsers] = useState<string[]>([]);  // New state for blocked users
     const currentUserId = auth.currentUser?.uid;
     const router = useRouter();
     const [selectedPrivateId, setSelectedPrivateId] = useState<string | null>(null);
@@ -64,8 +63,8 @@ function PrivateChatLayout({ children }: GeneralChatLayoutProps) {
 
         const unsubscribe = onSnapshot(doc(db, 'admin', currentUserId), async (docSnapshot) => {
             const chatList = docSnapshot.data()?.chatList || [];
-            const currentBlockedUsers = docSnapshot.data()?.blockedUsers || [];  // Get current blocked users
-            const currentChatNotifications = docSnapshot.data()?.personalChatNotifications || [];  // Get current blocked users
+            const currentBlockedUsers = docSnapshot.data()?.blockedUsers || [];
+            const currentChatNotifications = docSnapshot.data()?.personalChatNotifications || [];
 
             const usersData = await Promise.all(
                 chatList.map(async (chatItem: { id: string; isAdmin: boolean }) => {
@@ -74,12 +73,12 @@ function PrivateChatLayout({ children }: GeneralChatLayoutProps) {
                     const userData = userDoc.data();
 
                     return {
-                        uniqueId: chatItem.id,
+                        uniqueId: chatItem.id, // uniqueId is consistently the document ID
                         name: userData?.name || 'Unknown User',
                         profilePic: userData?.profilePic || '/images/DP.png',
                         isOnline: userData?.isOnline,
                         isAdmin: chatItem.isAdmin ? true : false,
-                        isBlocked: currentBlockedUsers.includes(chatItem.id),  // Set blocked status
+                        isBlocked: currentBlockedUsers.includes(chatItem.id),
                         isNotification: currentChatNotifications.includes(chatItem.id),
                     };
                 })
@@ -100,7 +99,7 @@ function PrivateChatLayout({ children }: GeneralChatLayoutProps) {
                                     profilePic: updatedUserData?.profilePic || '/images/DP.png',
                                     isOnline: updatedUserData?.isOnline,
                                     isAdmin: chatItem.isAdmin ? true : false,
-                                    isBlocked: currentBlockedUsers.includes(chatItem.id)  // Maintain blocked status
+                                    isBlocked: currentBlockedUsers.includes(chatItem.id)
                                 }
                                 : user
                         )
@@ -170,10 +169,10 @@ function PrivateChatLayout({ children }: GeneralChatLayoutProps) {
                                 <p className="text-[#4B5563] text-[14px] font-medium">{user.name || "phodu user"}</p>
                             </div>
                             <div className="gap-2 flex flex-row items-center justify-center">
-                                {user.isBlocked && (  // Only show blocked icon if user is blocked
+                                {user.isBlocked && (
                                     <Image src='/icons/message-blocked.svg' alt="Blocked icon" width={16} height={16} />
                                 )}
-                                {user.isNotification && (  // Only show blocked icon if user is blocked
+                                {user.isNotification && (
                                     <div className="w-2 h-2 rounded-full bg-[#DE3024]"></div>
                                 )}
                             </div>

@@ -25,34 +25,7 @@ export default function DashboardPage() {
 
      const router = useRouter();
      const [loading, setLoading] = useState(true);
-     const [showNoti, setShowNoti] = useState(true);
-     const [notification, setNotification] = useState<NotificationData[]>([]);
-
-     useEffect(() => {
-          const fetchNotification = async () => {
-               try {
-                    const discussionRef = collection(
-                         db,
-                         `notifications`
-                    );
-                    const discussionQuery = query(discussionRef, orderBy("createdAt", "desc")); // Order by timestamp
-
-                    const unsubscribe = onSnapshot(discussionQuery, (snapshot) => {
-                         const discussionData: NotificationData[] = snapshot.docs.map((doc) => ({
-                              ...doc.data(),
-                         })) as NotificationData[];
-                         setNotification(discussionData); // Update state with the retrieved data
-                         setLoading(false);
-                    });
-
-                    return () => unsubscribe();
-               } catch (error) {
-                    console.error("Error fetching chats: ", error);
-               }
-          };
-
-          fetchNotification();
-     }, []);
+    
 
      onAuthStateChanged(auth, (user) => {
           if (!user) {

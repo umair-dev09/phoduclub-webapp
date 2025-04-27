@@ -20,8 +20,8 @@ type BottomTextProps = {
 
 type UserData = {
   name: string;
-  uniqueId: string;
-  userId: string;
+  uniqueId: string; // Now stores display name (previously in userId)
+  userId: string;   // Now stores auth ID (previously in uniqueId for users, adminId for admins)
   profilePic: string;
   isAdmin: boolean;
 }
@@ -122,23 +122,23 @@ function BottomText({
         const userList: UserData[] = usersSnapshot.docs
           .map((doc) => ({
             name: doc.data().name,
-            uniqueId: doc.data().uniqueId,
-            userId: doc.data().userId,
+            uniqueId: doc.data().uniqueId, // Display name (previously userId)
+            userId: doc.data().userId,     // Auth ID (previously uniqueId)
             profilePic: doc.data().profilePic,
             isAdmin: false,
           }))
-          .filter((user) => user.uniqueId !== currentUserId); // Exclude the current user
+          .filter((user) => user.userId !== currentUserId); // Exclude the current user
 
         // Extract admin data
         const adminList: UserData[] = adminsSnapshot.docs
           .map((doc) => ({
             name: doc.data().name,
-            uniqueId: doc.data().adminId,
-            userId: doc.data().userId,
+            uniqueId: doc.data().uniqueId, // Display name (previously userId)
+            userId: doc.data().userId,     // Auth ID (previously adminId)
             profilePic: doc.data().profilePic,
             isAdmin: true,
           }))
-          .filter((admin) => admin.uniqueId !== currentUserId); // Exclude the current user
+          .filter((admin) => admin.userId !== currentUserId); // Exclude the current user
 
         // Combine user and admin lists
         const combinedList = [...userList, ...adminList];
@@ -146,7 +146,7 @@ function BottomText({
         // Filter only members (users or admins who are members of the channel)
         const filteredMembers = combinedList.filter((userOrAdmin) => {
           if (!channelMembers) return false;
-          return channelMembers.some((member) => member.id === userOrAdmin.uniqueId);
+          return channelMembers.some((member) => member.id === userOrAdmin.userId); // Compare with userId (auth ID)
         });
 
         // Set the filtered members to the state

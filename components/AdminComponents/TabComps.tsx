@@ -11,7 +11,8 @@ import { getFirestore, doc, getDoc, updateDoc, onSnapshot } from 'firebase/fires
 
 type CurrentUserData = {
     role: string;
-    adminId: string;
+    userId: string; // Now uses userId consistently for auth ID
+    uniqueId: string; // Display ID
 }
 
 interface TabCompsProps {
@@ -22,7 +23,6 @@ interface TabCompsProps {
 function TabComps({ isCollapsed, setIsCollapsed }: TabCompsProps) {
     const router = useRouter();
     const pathname = usePathname();
-    // const [isCollapsed, setIsCollapsed] = useState(false);
     const [isOpenArray, setIsOpenArray] = useState([false, false, false]);
     const [currentUserData, setCurrentUserData] = useState<CurrentUserData | null>(null);
     const [loading, setLoading] = useState(true); // Track loading state
@@ -46,13 +46,20 @@ function TabComps({ isCollapsed, setIsCollapsed }: TabCompsProps) {
     useEffect(() => {
         let unsubscribeFromSnapshot: () => void;
         if (user) {
-            const uniqueId = user.uid;
-            const userDocRef = doc(db, `admin/${uniqueId}`);
+            const authId = user.uid;
+            const userDocRef = doc(db, `admin/${authId}`);
 
             unsubscribeFromSnapshot = onSnapshot(userDocRef, (docSnapshot) => {
                 if (docSnapshot.exists()) {
-                    const data = docSnapshot.data() as CurrentUserData;
-                    setCurrentUserData(data);
+                    const data = docSnapshot.data();
+                    // Handle the data using the new structure
+                    // If the document still has old field names, adapt them to the new structure
+                    const formattedData: CurrentUserData = {
+                        role: data.role,
+                        userId: data.userId || data.adminId || authId, // Prefer userId, fallback to adminId, then authId
+                        uniqueId: data.uniqueId || data.userId || '' // Prefer uniqueId, fallback to userId (old display ID)
+                    };
+                    setCurrentUserData(formattedData);
                     setLoading(false);
                 } else {
                     console.error('No user data found!');
@@ -173,15 +180,9 @@ function TabComps({ isCollapsed, setIsCollapsed }: TabCompsProps) {
         <div className={`flex flex-col relative transition-all duration-[500ms] ease-in-out ${isCollapsed ? 'w-[3.5rem]' : 'w-[16rem]'} pl-2 py-[0.625rem] bg-[#131313]`}>
             {/* Logo Section */}
             <div className='overflow-hidden'>
-                {/* <button className={`items-center justify-center w-10 h-10 mt-3 mb-[0.73rem] ml-[0.2rem] text-white font-bold bg-[#3c2f40] rounded-[0.375rem] transition-all ${isCollapsed ? 'flex' : 'hidden'}`}
-                    onClick={() => { router.push("/admin") }}
-                >
-                    P
-                </button> */}
                 <p className={`items-center justify-start mt-3 mb-[0.73rem] ml-[0.2rem] transition-all ${isCollapsed ? 'flex' : 'hidden'}`}
                     onClick={() => { router.push("/admin") }}
                 >
-                    {/* P */}
                     <Image src='/icon.jpg' alt='phodu logo' width={40} height={40} />
                 </p>
                 <div className={`flex-col mt-2 mb-[0.475rem] ml-2 transition-all ${!isCollapsed ? 'flex' : 'hidden'}`}>

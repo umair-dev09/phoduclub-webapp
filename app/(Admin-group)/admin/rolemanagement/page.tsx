@@ -24,9 +24,9 @@ import Delete from '@/components/AdminComponents/RoleMangement/Delete';
 
 // Define types for role data
 interface RoleManagementInfo {
-    adminId: string;
+    uniqueId: string;  // This is now the document ID
     name: string;
-    userId: string;
+    userId: string;    // This is consistently the auth ID
     phone: string;
     role: string;
     profilePic: string;
@@ -89,9 +89,9 @@ function RoleMangement() {
             const updatedUsers: RoleManagementInfo[] = snapshot.docs.map((doc) => {
                 const userData = doc.data();
                 return {
-                    adminId: userData.adminId,
+                    uniqueId: doc.id,  // Document ID
                     name: userData.name,
-                    userId: userData.userId,
+                    userId: userData.userId, // Auth ID
                     phone: userData.phone,
                     role: userData.role,
                     profilePic: userData.profilePic,
@@ -126,15 +126,15 @@ function RoleMangement() {
             setProfilePic(user.profilePic);
             setPhone(user.phone);
             setSelectedRole(user.role);
-            setAdminIdd(user.adminId);
+            setAdminIdd(user.uniqueId);
             setActionDialog(null);
         }
     };
     // Check if all fields are filled
     // const isAddButtonDisabled = !uniqueId || !startDate || !endDate;
-    const handleRemoveUser = async (adminId: string) => {
+    const handleRemoveUser = async (uniqueId: string) => {
         try {
-            await deleteDoc(doc(db, 'admin', adminId));
+            await deleteDoc(doc(db, 'admin', uniqueId));
             toast.success('User Removed Successfully!');
             setActionDialog(null);
             close();
@@ -353,7 +353,7 @@ function RoleMangement() {
                                     currentItems.map((users, index) => (
                                         <tr key={index} className="border-t border-solid border-[#EAECF0]">
                                             <td className="py-[12px]">
-                                                <button onClick={() => handleTabClick(`/admin/rolemanagement/${users.name.toLowerCase().replace(/\s+/g, '-')}?rId=${users.adminId}`)} className="flex flex-row items-center ml-8 gap-[10px] min-w-[260px]">
+                                                <button onClick={() => handleTabClick(`/admin/rolemanagement/${users.name.toLowerCase().replace(/\s+/g, '-')}?rId=${users.uniqueId}`)} className="flex flex-row items-center ml-8 gap-[10px] min-w-[260px]">
                                                     <Image className='rounded-full object-cover' src={users.profilePic || '/defaultAdminDP.jpg'} alt="DP" width={38} height={38} />
                                                     <div className="flex items-start justify-center flex-col mb-[2px]">
                                                         <div className="font-semibold text-sm text-[#9012FF] underline whitespace-nowrap">{users.name || "phodu admin"}</div>
@@ -372,7 +372,7 @@ function RoleMangement() {
                                                     isOpen={popoverOpen === index}
                                                     onOpenChange={(open) => open ? handlePopoverOpen(index) : setPopoverOpen(null)}>
                                                     <PopoverTrigger>
-                                                        <button onClick={() => setActionDialog(actionDialog === users.adminId ? null : users.adminId)}                                                >
+                                                        <button onClick={() => setActionDialog(actionDialog === users.uniqueId ? null : users.uniqueId)}                                                >
                                                             <Image
                                                                 src="/icons/three-dots.svg"
                                                                 width={20}
@@ -389,7 +389,7 @@ function RoleMangement() {
                                                                 <span className="text-sm text-[#0C111D] font-normal">Edit details</span>
                                                             </button>
                                                             <button className=" flex flex-row items-center justify-start w-full py-2 gap-2 hover:bg-[#FEE4E2]  pl-4 pr-9"
-                                                                // onClick={() => handleRemoveUser(users.adminId)}>
+                                                                // onClick={() => handleRemoveUser(users.uniqueId)}>
                                                                 onClick={() => {
                                                                     setUserToDelete(users);
                                                                     setIsDeleteOpen(true);
@@ -444,7 +444,7 @@ function RoleMangement() {
                 <Delete
                     onClose={closeDelete}
                     open={true}
-                    authId={userToDelete.adminId}
+                    authId={userToDelete.uniqueId}
                     name={userToDelete.name}
                 />
             )}

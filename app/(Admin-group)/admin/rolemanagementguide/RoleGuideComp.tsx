@@ -13,9 +13,9 @@ import { db } from '@/firebase';
 import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button } from "@nextui-org/react";
 
 interface UserData {
-    userId: string;
+    userId: string;    // Auth ID
     name: string;
-    uniqueId: string;
+    uniqueId: string;  // Document ID
     phone: string;
     createdAt: string;
     profilePic: string;
@@ -69,6 +69,7 @@ function RoleManagementGuide() {
 
         try {
             const usersCollection = collection(db, 'users');
+            // Search by userId which is the auth ID
             const q = query(usersCollection, where('userId', '==', uniqueID));
             const querySnapshot = await getDocs(q);
 
@@ -77,18 +78,17 @@ function RoleManagementGuide() {
                 return;
             }
 
-            // Assuming `uniqueId` is the document ID
+            // Get the Firestore document ID
             const userDoc = querySnapshot.docs[0];
-            const uniqueId = userDoc.id; // Firestore document ID
+            const docId = userDoc.id; // Firestore document ID
 
             // Update the user document
-            const userRef = doc(db, 'users', uniqueId);
+            const userRef = doc(db, 'users', docId);
             await updateDoc(userRef, { isGuide: true });
 
             toast.success('User successfully updated as a guide');
             setIsOpen(false);
             setUniqueID('');
-            setIsOpen(false);
         } catch (error) {
             console.error('Error updating user document:', error);
             toast.error('Failed to update user');

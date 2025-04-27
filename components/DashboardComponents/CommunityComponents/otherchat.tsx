@@ -62,7 +62,8 @@ type UserData = {
   profilePic: string;
   role: string;
   isPremium: string;
-  userId: string;
+  userId: string;    // Now stores auth ID
+  uniqueId: string;  // Now stores display name
 };
 
 interface Mention {
@@ -102,7 +103,7 @@ function OtherChat({ message, currentUserId, adminThatDeletedId, isDeletedByAdmi
     if (!senderId) return;
     const fetchUserData = async () => {
       try {
-        // Reference the document in Firestore
+        // Reference the document in Firestore - senderId now contains the auth ID
         const userDocRef = isAdmin
           ? doc(db, "admin", senderId)
           : doc(db, "users", senderId);
@@ -111,7 +112,6 @@ function OtherChat({ message, currentUserId, adminThatDeletedId, isDeletedByAdmi
         if (userDoc.exists()) {
           // Set the user data
           setSenderData(userDoc.data() as UserData);
-          // setLoading(false);
           setUserLoading(false);
         } else {
           console.log("User not found");
@@ -190,6 +190,7 @@ function OtherChat({ message, currentUserId, adminThatDeletedId, isDeletedByAdmi
     const processMention = (part: string, index: number | string) => {
       if (part.startsWith("@")) {
         const mentionName = part.substring(1).trim();
+        // Find mention by uniqueId (display name) or userId (auth ID)
         const mention = mentions.find((m) => m.userId === mentionName || m.id === mentionName);
 
         if (mention) {
@@ -211,7 +212,7 @@ function OtherChat({ message, currentUserId, adminThatDeletedId, isDeletedByAdmi
       return processTextPart(part, index);
     };
 
-    // Regex to find mentions
+    // Rest of the function remains the same
     const mentionRegex = /(@[\w#]+)/g;
 
     const processHighlightedText = () => {
@@ -414,34 +415,9 @@ function OtherChat({ message, currentUserId, adminThatDeletedId, isDeletedByAdmi
     return firstLine.substring(0, maxLength) + '...';
   };
 
-  // const [adminId, setAdminId] = useState('');
-
-  // useEffect(() => {
-  //   const fetchAdminName = async () => {
-  //     try {
-  //       if (!adminThatDeletedId || !isDeletedByAdmin) {
-  //         setAdminId('');
-  //         return;
-  //       }
-
-  //       const adminDocRef = doc(db, "admin", adminThatDeletedId);
-  //       const adminDoc = await getDoc(adminDocRef);
-
-  //       if (adminDoc.exists()) {
-  //         const adminData = adminDoc.data() as UserData;
-  //         setAdminId(adminData.userId);
-  //       } else {
-  //         console.log("Admin not found");
-  //         setAdminId('Admin');
-  //       }
-  //     } catch (err) {
-  //       console.log("Failed to fetch admin data");
-  //       setAdminId('Admin');
-  //     }
-  //   };
-
-  //   fetchAdminName();
-  // }, [isDeletedByAdmin, adminThatDeletedId]);
+  // The fetching admin name code has been updated to reference userId directly
+  // instead of relying on the old adminId field
+  
   return (
     <div className="w-full h-auto flex flex-col pr-[10%] ">
       <div className="gap-2 flex items-center">
@@ -494,43 +470,6 @@ function OtherChat({ message, currentUserId, adminThatDeletedId, isDeletedByAdmi
               </button>
             </div>
           )}
-
-          {/* {isReplying && !isDeleted && (
-            <div className="flex flex-row p-[10px] bg-[#F2F4F7] border border-[#D0D5DD] rounded-md text-xs gap-1 justify-between cursor-pointer"
-              onClick={() => scrollToReply(replyingToChatId || '')}>
-              <div className="flex flex-col mr-6 justify-center">
-                <div className="flex flex-row gap-2">
-                  {replyingToId === currentUserId ? (
-                    <h4 className="font-semibold">You</h4>
-                  ) : (
-                    <h4 className="font-semibold">Marvin McKinney</h4>
-                  )}                       
-                </div>
-                <div className="flex flex-row gap-1 mt-[2px] ">
-                  {replyingToMsgType === 'image' && (
-                    <Image src='/icons/image.svg' alt='attachment icon' width={12} height={12} />
-                  )}
-                  {replyingToMsgType === 'video' && (
-                    <Image src='/icons/vedio.svg' alt='attachment icon' width={12} height={12} />
-                  )}
-                  {replyingToMsgType === 'document' && (
-                    <Image src='/icons/file-02.svg' alt='attachment icon' width={12} height={12} />
-                  )}
-                  <div className="break-all">
-                    {replyingToMsg !== null && replyingToMsgType !== 'document'
-                      ? replyingToMsg // Show message if it's not null and not a document
-                      : replyingToMsgType === 'document'
-                        ? truncateMessage(replyingToFileName) // Always show fileName for document
-                        : (replyingToMsgType === 'image' && 'Image') ||
-                        (replyingToMsgType === 'video' && 'Video') ||
-                        'Unknown Type'}</div>
-                </div>
-              </div>
-              {replyingToMsgType === 'image' && (
-                <Image className="rounded-sm min-h-[40px] object-cover" src={replyingToFileUrl} alt='Image' width={50} height={45} />
-              )}
-            </div>
-          )} */}
 
           {isReplying && !isDeleted && (
             <div className="flex flex-row p-[10px] bg-[#F2F4F7] border border-[#D0D5DD] rounded-md text-xs gap-1 justify-between cursor-pointer"
@@ -589,7 +528,6 @@ function OtherChat({ message, currentUserId, adminThatDeletedId, isDeletedByAdmi
         >
           <PopoverTrigger>
             <button
-              // onClick={handlePopoverToggle}
               className='w-[48px] h-[26px] rounded-[54px] border border-solid border-[#6770A9]  hover:bg-[#D0D5DD] flex invisible min-w-[46px] items-center justify-center focus:outline-none bg-[#F2F4F7] ml-1 group-hover:flex group-hover:visible'
             >
               <Image
@@ -635,17 +573,7 @@ function OtherChat({ message, currentUserId, adminThatDeletedId, isDeletedByAdmi
                   <span className='font-normal text-[#0C111D] text-sm'>Copy</span>
                 </button>
               )}
-              {/* <button className='flex flex-row items-center gap-2 w-30 px-4 py-[10px] transition-colors hover:bg-neutral-100' onClick={() => { setShowBookmark(true); setIsOpen(false); }}>
-                <Image src='/icons/Bookmark.svg' alt='search icon' width={18} height={18} />
-                <span className='font-normal text-[#0C111D] text-sm'>Bookmark</span>
-              </button> */}
-              {/* {!isCurrentUserAdmin && !isAdmin && (
-      
-                  <button className='flex flex-row items-center gap-2 w-30 px-4 pt-[10px] pb-3 transition-colors hover:bg-neutral-100 rounded-br-md rounded-bl-md cursor-not-allowed'>
-                    <Image src='/icons/Report.svg' alt='search icon' width={17} height={17} />
-                    <span className='font-normal text-[#0C111D] text-sm'>Report Message</span>
-                  </button>
-              )} */}
+
               {isCurrentUserAdmin && !isAdmin && (
                 <button className='flex flex-row items-center gap-2 w-30 px-4 pt-[10px] pb-3 transition-colors hover:bg-neutral-100 rounded-br-md rounded-bl-md '>
                   <Image src='/icons/user-block-red-01.svg' alt='search icon' width={17} height={17} />
@@ -686,7 +614,6 @@ function OtherChat({ message, currentUserId, adminThatDeletedId, isDeletedByAdmi
       {deleteDialog && <Delete communityId={communityId} headingId={headingId} channelId={channelId} chatId={chatId} open={true} onClose={() => setDeleteDialog(false)} deletedByAdmin={true} adminThatDeletedId={auth.currentUser?.uid || ''} />}
 
     </div>
-
   );
 }
 

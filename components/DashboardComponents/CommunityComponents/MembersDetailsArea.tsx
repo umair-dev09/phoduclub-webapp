@@ -8,8 +8,8 @@ import MemberClickDialog from "./MemberClickDialog";
 type UserData = {
   name: string;
   profilePic: string;
-  uniqueId: string;
-  adminId?: string;
+  uniqueId: string; // Now stores display name (previously in userId)
+  userId: string;   // Now stores auth ID (previously in uniqueId for users, adminId for admins)
   isPremium: boolean;
   role: string;
   isOnline: boolean;
@@ -79,12 +79,10 @@ function MembersDetailsArea({ members, isCurrentUserAdmin }: MembersDetailsAreaP
           if (docSnap.exists()) {
             const userData = docSnap.data() as UserData;
 
-            // Remove user from all categories first
-            const userId = member.isAdmin ? userData.adminId : userData.uniqueId;
+            // Remove user from all categories first using the userId field (auth ID)
+            const userId = userData.userId; // Now consistently using userId for auth ID
             Object.values(categorizedData).forEach(array => {
-              const index = array.findIndex(u =>
-                (member.isAdmin ? u.adminId : u.uniqueId) === userId
-              );
+              const index = array.findIndex(u => u.userId === userId);
               if (index !== -1) array.splice(index, 1);
             });
 
@@ -159,20 +157,16 @@ function MembersDetailsArea({ members, isCurrentUserAdmin }: MembersDetailsAreaP
               </div>
 
               {membersList.map((member) => {
-                const isCurrentUser =
-                  (members.find((m) => m.id === (member.uniqueId || member.adminId))?.isAdmin
-                    ? member.adminId
-                    : member.uniqueId) === currentUserId;
+                // Check if the current user is the same as the member being rendered
+                const isCurrentUser = member.userId === currentUserId;
 
                 // Find the matching member from `members` to get the `isAdmin` value
-                const matchedMember = members.find(
-                  (m) => m.id === (member.uniqueId || member.adminId)
-                );
+                const matchedMember = members.find(m => m.id === member.userId);
 
                 return (
                   <div
-                    key={member.uniqueId || member.adminId || member.name}
-                    className={`h-auto transition-all group  pb-[6px] ${isCurrentUser ? 'cursor-not-allowed' : 'cursor-pointer'}`}
+                    key={member.userId || member.name}
+                    className={`h-auto transition-all group pb-[6px] ${isCurrentUser ? 'cursor-not-allowed' : 'cursor-pointer'}`}
                     onClick={
                       !isCurrentUser
                         ? () =>
@@ -183,7 +177,7 @@ function MembersDetailsArea({ members, isCurrentUserAdmin }: MembersDetailsAreaP
                         : undefined // No action for current user
                     }
                   >
-                    <div className="hover:bg-[#F2F4F7]  rounded-md px-2 py-1">
+                    <div className="hover:bg-[#F2F4F7] rounded-md px-2 py-1">
                       <div className="flex flex-row items-center my-1 gap-2 ">
                         <div className="relative ">
                           <Image
@@ -224,20 +218,16 @@ function MembersDetailsArea({ members, isCurrentUserAdmin }: MembersDetailsAreaP
                   </div>
                 </div>
                 {membersList.map((member) => {
-                  const isCurrentUser =
-                    (members.find((m) => m.id === (member.uniqueId || member.adminId))?.isAdmin
-                      ? member.adminId
-                      : member.uniqueId) === currentUserId;
+                  // Check if the current user is the same as the member being rendered
+                  const isCurrentUser = member.userId === currentUserId;
 
                   // Find the matching member from `members` to get the `isAdmin` value
-                  const matchedMember = members.find(
-                    (m) => m.id === (member.uniqueId || member.adminId)
-                  );
+                  const matchedMember = members.find(m => m.id === member.userId);
 
                   return (
                     <div
-                      key={member.uniqueId || member.adminId || member.name}
-                      className={`h-auto transition-all group  pb-[6px] ${isCurrentUser ? 'cursor-not-allowed' : 'cursor-pointer'}`}
+                      key={member.userId || member.name}
+                      className={`h-auto transition-all group pb-[6px] ${isCurrentUser ? 'cursor-not-allowed' : 'cursor-pointer'}`}
                       onClick={
                         !isCurrentUser
                           ? () =>
@@ -248,7 +238,7 @@ function MembersDetailsArea({ members, isCurrentUserAdmin }: MembersDetailsAreaP
                           : undefined // No action for current user
                       }
                     >
-                      <div className="hover:bg-[#F2F4F7]  rounded-md px-2 py-1">
+                      <div className="hover:bg-[#F2F4F7] rounded-md px-2 py-1">
                         <div className="flex flex-row items-center my-1 gap-2">
                           <div className="relative">
                             <Image
@@ -258,7 +248,7 @@ function MembersDetailsArea({ members, isCurrentUserAdmin }: MembersDetailsAreaP
                               width={35}
                               height={35}
                             />
-                            <div className={`w-[15px] h-[15px]  border-[2.5px] border-white rounded-full ${member.isOnline ? 'bg-[#17B26A]' : 'bg-[#98A2B3]'}  absolute right-[-2px] bottom-[-1px]`} />
+                            <div className={`w-[15px] h-[15px] border-[2.5px] border-white rounded-full ${member.isOnline ? 'bg-[#17B26A]' : 'bg-[#98A2B3]'} absolute right-[-2px] bottom-[-1px]`} />
                           </div>
                           <p className="text-[#4B5563] text-[13px] font-medium">
                             {member.name || "phodu user"}

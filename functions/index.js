@@ -1,10 +1,109 @@
 // The Cloud Functions for Firebase SDK to set up triggers and logging.
 const { onSchedule } = require("firebase-functions/v2/scheduler");
 const { logger } = require("firebase-functions");
+const { onRequest } = require("firebase-functions/v2/https");
 
 // The Firebase Admin SDK
 const admin = require("firebase-admin");
 admin.initializeApp();
+
+// HTTP endpoint to trigger the user data migration manually
+exports.triggerUserDataMigration = onRequest(async (request, response) => {
+    try {
+        const db = admin.firestore();
+        logger.info('Starting manual user data migration process');
+        
+        // Process users collection
+        logger.info('Processing users collection');
+        const usersSnapshot = await db.collection('users').get();
+        
+        if (!usersSnapshot.empty) {
+            const usersBatch = db.batch();
+            let usersCount = 0;
+            
+            usersSnapshot.forEach(doc => {
+                const userData = doc.data();
+                // Check if the document has both userId and uniqueId fields
+                if (userData.userId && userData.uniqueId) {
+                    // Swap userId and uniqueId fields
+                    const tempUniqueId = userData.uniqueId;  // Store Auth ID
+                    const tempUserId = userData.userId;      // Store display name
+                    
+                    usersBatch.update(doc.ref, {
+                        userId: tempUniqueId,    // Auth ID goes to userId
+                        uniqueId: tempUserId     // Display name goes to uniqueId
+                    });
+                    usersCount++;
+                    logger.info(`User ${doc.id}: Swapping userId (${tempUserId}) with uniqueId (${tempUniqueId})`);
+                }
+            });
+            
+            if (usersCount > 0) {
+                await usersBatch.commit();
+                logger.info(`Successfully migrated ${usersCount} user documents`);
+            } else {
+                logger.info('No user documents needed migration');
+            }
+        } else {
+            logger.info('No users found');
+        }
+        
+        // Process admin collection
+        logger.info('Processing admin collection');
+        const adminsSnapshot = await db.collection('admin').get();
+        
+        if (!adminsSnapshot.empty) {
+            const adminsBatch = db.batch();
+            let adminsCount = 0;
+            
+            adminsSnapshot.forEach(doc => {
+                const adminData = doc.data();
+                // Check if the document has both adminId and userId fields
+                if (adminData.adminId && adminData.userId) {
+                    // Move adminId to userId and current userId to uniqueId
+                    const authId = adminData.adminId;       // Store Auth ID
+                    const displayId = adminData.userId;     // Store display name
+                    
+                    let updateData = {
+                        userId: authId,         // Auth ID goes to userId
+                        uniqueId: displayId     // Display name goes to uniqueId
+                    };
+                    
+                    // If adminId field should be removed
+                    if (!adminData.uniqueId) {  // Only if uniqueId doesn't exist yet
+                        // Use admin.firestore.FieldValue.delete() to remove the field
+                        updateData.adminId = admin.firestore.FieldValue.delete();
+                    }
+                    
+                    adminsBatch.update(doc.ref, updateData);
+                    adminsCount++;
+                    logger.info(`Admin ${doc.id}: Moving adminId (${authId}) to userId and userId (${displayId}) to uniqueId`);
+                }
+            });
+            
+            if (adminsCount > 0) {
+                await adminsBatch.commit();
+                logger.info(`Successfully migrated ${adminsCount} admin documents`);
+            } else {
+                logger.info('No admin documents needed migration');
+            }
+        } else {
+            logger.info('No admins found');
+        }
+        
+        response.json({
+            success: true,
+            message: 'User data migration completed successfully'
+        });
+    } catch (error) {
+        logger.error('Error in manual user data migration:', error);
+        response.status(500).json({
+            success: false,
+            error: error.message
+        });
+    }
+});
+
 //courseStartFunction
 exports.courseStartFunction = onSchedule("* * * * *", async (event) => {
     try {
@@ -479,6 +578,97 @@ exports.courseSectionScheduleFunction = onSchedule("* * * * *", async (event) =>
         return null;
     } catch (error) {
         logger.error('Error in courseSectionScheduleFunction:', error);
+        throw error;
+    }
+});
+//userDataMigrationFunction - Swap userId and uniqueId fields for users and admins
+exports.userDataMigrationFunction = onSchedule("0 0 * * *", async (event) => {
+    try {
+        const db = admin.firestore();
+        logger.info('Starting user data migration process');
+        
+        // Process users collection
+        logger.info('Processing users collection');
+        const usersSnapshot = await db.collection('users').get();
+        
+        if (!usersSnapshot.empty) {
+            const usersBatch = db.batch();
+            let usersCount = 0;
+            
+            usersSnapshot.forEach(doc => {
+                const userData = doc.data();
+                // Check if the document has both userId and uniqueId fields
+                if (userData.userId && userData.uniqueId) {
+                    // Swap userId and uniqueId fields
+                    const tempUniqueId = userData.uniqueId;  // Store Auth ID
+                    const tempUserId = userData.userId;      // Store display name
+                    
+                    usersBatch.update(doc.ref, {
+                        userId: tempUniqueId,    // Auth ID goes to userId
+                        uniqueId: tempUserId     // Display name goes to uniqueId
+                    });
+                    usersCount++;
+                    logger.info(`User ${doc.id}: Swapping userId (${tempUserId}) with uniqueId (${tempUniqueId})`);
+                }
+            });
+            
+            if (usersCount > 0) {
+                await usersBatch.commit();
+                logger.info(`Successfully migrated ${usersCount} user documents`);
+            } else {
+                logger.info('No user documents needed migration');
+            }
+        } else {
+            logger.info('No users found');
+        }
+        
+        // Process admin collection
+        logger.info('Processing admin collection');
+        const adminsSnapshot = await db.collection('admin').get();
+        
+        if (!adminsSnapshot.empty) {
+            const adminsBatch = db.batch();
+            let adminsCount = 0;
+            
+            adminsSnapshot.forEach(doc => {
+                const adminData = doc.data();
+                // Check if the document has both adminId and userId fields
+                if (adminData.adminId && adminData.userId) {
+                    // Move adminId to userId and current userId to uniqueId
+                    const authId = adminData.adminId;       // Store Auth ID
+                    const displayId = adminData.userId;     // Store display name
+                    
+                    let updateData = {
+                        userId: authId,         // Auth ID goes to userId
+                        uniqueId: displayId     // Display name goes to uniqueId
+                    };
+                    
+                    // If adminId field should be removed
+                    if (!adminData.uniqueId) {  // Only if uniqueId doesn't exist yet
+                        // Use admin.firestore.FieldValue.delete() to remove the field
+                        updateData.adminId = admin.firestore.FieldValue.delete();
+                    }
+                    
+                    adminsBatch.update(doc.ref, updateData);
+                    adminsCount++;
+                    logger.info(`Admin ${doc.id}: Moving adminId (${authId}) to userId and userId (${displayId}) to uniqueId`);
+                }
+            });
+            
+            if (adminsCount > 0) {
+                await adminsBatch.commit();
+                logger.info(`Successfully migrated ${adminsCount} admin documents`);
+            } else {
+                logger.info('No admin documents needed migration');
+            }
+        } else {
+            logger.info('No admins found');
+        }
+        
+        logger.info('User data migration completed successfully');
+        return null;
+    } catch (error) {
+        logger.error('Error in userDataMigrationFunction:', error);
         throw error;
     }
 });

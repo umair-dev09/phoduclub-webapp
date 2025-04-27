@@ -47,7 +47,7 @@ function Allsubject({ onClose, open, subject, chapterId, chapterName, priority, 
         setLoading(true); // Start loading
         try {
             if (chapterId) {
-                // Update existing user data in Firestore using adminId
+                // Update existing chapter data in Firestore
                 await setDoc(doc(db, "spt", chapterId), {
                     chapterName,
                     priority,

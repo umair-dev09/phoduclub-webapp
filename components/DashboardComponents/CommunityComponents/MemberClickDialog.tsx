@@ -23,12 +23,11 @@ interface MemberClickDialogProps {
 
 type UserData = {
   name: string;
-  userId: string;
-  uniqueId: string;
+  userId: string;     // Auth ID (Firebase authentication ID)
+  uniqueId: string;   // Display name (previously in userId)
   profilePic: string;
   targetYear: string;
   targetExams: string[];
-  adminId: string;
   role: string;
   isPremium: boolean | false;
 }
@@ -54,7 +53,7 @@ function MemberClickDialog({ open, onClose, id, isAdmin, isCurrentUserAdmin }: M
 
     const userDocRef = doc(db, isAdmin ? "admin" : "users", id);
 
-    // Listen for real-time changes in the admin document
+    // Listen for real-time changes in the user/admin document
     const unsubscribe = onSnapshot(userDocRef, (userDocSnap) => {
       if (userDocSnap.exists()) {
         setUser(userDocSnap.data() as UserData);
@@ -69,7 +68,7 @@ function MemberClickDialog({ open, onClose, id, isAdmin, isCurrentUserAdmin }: M
 
     // Cleanup function to unsubscribe from the real-time listener
     return () => unsubscribe();
-  }, [id]); // Re-run this effect when userId changes
+  }, [id]); // Re-run this effect when id changes
 
   const colors = ['bg-red-500', 'bg-orange-500', 'bg-green-500', 'bg-blue-500']
 
@@ -217,102 +216,6 @@ function MemberClickDialog({ open, onClose, id, isAdmin, isCurrentUserAdmin }: M
 
 
   return (
-
-    // <Dialog
-    //   open={open}
-    //   onClose={onClose}
-    //   className="relative z-50"
-    //   aria-label="Create Channel Dialog"
-    // >
-    //   <DialogBackdrop className="fixed inset-0 bg-black/30" />
-    //   <div className="fixed inset-0 flex items-center justify-center">
-    //     <DialogPanel transition className="bg-white rounded-2xl  w-[480px] h-auto">
-    //       {loading ? (
-    //         <div className="flex w-[480px] h-[200px] items-center justify-center">
-    //           <MessageLoading />
-    //         </div>
-    //       ) : (
-    //         <div className="flex flex-col">
-    //           <div className="flex flex-row items-start justify-between bg-purple p-4 rounded-t-2xl">
-    //             <div className="flex flex-row gap-3">
-    //               <div className="relative">
-    //                 <Image className="rounded-full w-[96px] h-[96px]" src={user?.profilePic || '/defaultDP.svg'} alt="Profile Pic" width={96} height={96} />
-    //                 {user?.isPremium === true && (
-    //                   <Image
-    //                     className="absolute right-0 bottom-0"
-    //                     src="/icons/winnerBatch.svg"
-    //                     alt="Batch"
-    //                     width={28}
-    //                     height={28}
-    //                   />
-    //                 )}
-    //               </div>
-
-    //               <div className="flex flex-col justify-center">
-    //                 <h3 className="text-white text-[20px]">{user?.name}</h3>
-    //                 <span className="text-white">{user?.userId}</span>
-
-    //                 <div className="flex flex-row gap-1 bg-white bg-opacity-20 rounded-[30px] py-[2px] px-2 w-fit items-center ml-[-2px] mt-[4px]">
-    //                   {isAdmin ? (
-    //                     <>
-    //                       <h3 className="text-white text-sm ml-[2px]">{user?.role}</h3>
-    //                     </>
-    //                   ) : (
-    //                     <>
-    //                       <Image className="w-[14px] h-[14px]" src='/icons/ey1.svg' alt="icon" width={14} height={14} />
-    //                       <span className="text-white text-[13px]">Exam Year</span>
-    //                       <h3 className="text-white text-base ml-[2px]">{user?.targetYear}</h3>
-    //                     </>
-    //                   )}
-    //                 </div>
-
-    //               </div>
-    //             </div>
-    //             <button onClick={onClose}>
-    //               <Image className="w-[20px] h-[20px] mt-1" src='/icons/cancel-01.svg' alt="close icon" width={20} height={20} />
-    //             </button>
-    //           </div>
-    //           <Tooltip
-    //             content="Launching Soon!!!!!"
-    //             placement="right"
-    //             offset={15}
-    //             closeDelay={100}
-    //             classNames={{
-    //               content: [
-    //                 "bg-[#222222] text-white text-sm py-2 px-4 rounded-md",
-    //               ],
-    //             }}
-    //           >
-    //             <div className="bg-purple p-4">
-    //               <button className="flex flex-row gap-2 items-center justify-center w-full h-[44px] shadow-inner-button bg-white rounded-md cursor-not-allowed">
-    //                 <Image className="w-[17px] h-[17px] " src='/icons/messageicon1.svg' alt="message icon" width={16} height={16} />
-    //                 <span className="text-base font-semibold text-[#182230]">Message</span>
-    //               </button>
-    //             </div>
-    //           </Tooltip>
-    //           {!isAdmin && (
-    //             <div className="flex flex-col gap-2 p-4">
-    //               <span className="text-[#1D2939] text-sm">Preparing Exams</span>
-    //               <div className='flex flex-wrap gap-2'>
-    //                 {user?.targetExams?.map((exam, index) => {
-    //                   const randomColor = colors[Math.floor(Math.random() * colors.length)];
-    //                   return (
-    //                     <div key={index} className='flex items-center gap-1.5 px-3 py-1.5 text-sm text-gray-700 font-medium border border-solid border-[#D0D5DD] rounded-full cursor-pointer hover:bg-gray-100'>
-    //                       <span className={`${'w-2 h-2 rounded-[50%] mr-1'} ${randomColor}`}></span>
-    //                       {exam}
-    //                     </div>
-    //                   );
-    //                 })}
-    //               </div>
-    //             </div>
-    //           )}
-
-    //         </div>
-    //       )}
-
-    //     </DialogPanel>
-    //   </div>
-    // </Dialog>
     <div>
       <Modal
         isOpen={open}
@@ -349,7 +252,7 @@ function MemberClickDialog({ open, onClose, id, isAdmin, isCurrentUserAdmin }: M
 
                   <div className="flex flex-col justify-center">
                     <h3 className="text-white text-[20px]">{user?.name}</h3>
-                    <span className="text-white">{user?.userId}</span>
+                    <span className="text-white">{user?.uniqueId}</span> {/* Display the uniqueId (short name) */}
 
                     <div className="flex flex-row gap-1 bg-white bg-opacity-20 rounded-[30px] py-[2px] px-2 w-fit items-center ml-[-2px] mt-[4px]">
                       {isAdmin ? (

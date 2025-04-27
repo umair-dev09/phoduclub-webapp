@@ -14,7 +14,7 @@ import 'react-toastify/dist/ReactToastify.css';
 type UserData = {
     name: string | null;
     userId: string | null;
-    adminId: string | null;
+    uniqueId: string | null;  // Changed from adminId to uniqueId for consistency
     phone: string | null;
     role: string | null;
     profilePic: string | null;
@@ -142,7 +142,7 @@ function Profile() {
             {/* Dailog for Log out */}
             {islogout && <Logout onclose={closelogout} open={true} />}
             {/* Dialog Component  for Edit*/}
-            {isEdit && <EditProfile close={closeEdit} open={true} adminId={userData?.adminId || ''} />}
+            {isEdit && <EditProfile close={closeEdit} open={true} adminId={userData?.uniqueId || ''} />}
             <ToastContainer />
 
         </div>
