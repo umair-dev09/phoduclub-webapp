@@ -9,10 +9,10 @@ import 'react-toastify/dist/ReactToastify.css';
 import MemberClickDialogP from '@/components/DashboardComponents/CommunityComponents/PrivateChatComponents/MemberClickDialogP';
 
 interface UserDetails {
-  userId: string;
+  userId: string; // Auth ID
   name: string;
   profilePic: string;
-  uniqueId: string;
+  uniqueId: string; // Display/username ID
   isOnline: boolean;
 }
 
@@ -22,26 +22,26 @@ function generateChatId(userId1: string, userId2: string) {
 }
 
 function NewRequest() {
-  const currentUserId = auth.currentUser?.uid;
+  const currentAuthId = auth.currentUser?.uid; // This is the auth ID
   const [requestUsers, setRequestUsers] = useState<UserDetails[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null); // To capture any errors
   const [openDialogue, setOpenDialogue] = useState(false);
   const [id, setId] = useState<string>('');
   useEffect(() => {
-    if (!currentUserId) return;
+    if (!currentAuthId) return;
 
-    const unsubscribe = onSnapshot(doc(db, 'admin', currentUserId), async (docSnapshot) => {
+    const unsubscribe = onSnapshot(doc(db, 'admin', currentAuthId), async (docSnapshot) => {
       try {
         const receivedRequests: string[] = docSnapshot.data()?.receivedRequests || [];
         const usersData: UserDetails[] = await Promise.all(
-          receivedRequests.map(async (uniqueId) => {
-            const userDocRef = doc(db, 'users', uniqueId);
+          receivedRequests.map(async (userUniqueId) => {
+            const userDocRef = doc(db, 'users', userUniqueId);
             const userDoc = await getDoc(userDocRef);
             const userData = userDoc.data();
             return {
-              uniqueId,
-              userId: userData?.userId || '',
+              uniqueId: userUniqueId, // This is the display/username ID
+              userId: userData?.userId || '', // This is the auth ID
               name: userData?.name || 'Unknown User',
               profilePic: userData?.profilePic || '/images/DP.png',
               isOnline: userData?.isOnline || false,
@@ -60,30 +60,30 @@ function NewRequest() {
     return () => {
       unsubscribe();
     };
-  }, [currentUserId]);
+  }, [currentAuthId]);
 
   const handleAccept = useCallback(
-    async (userId: string) => {
-      if (!currentUserId) return;
+    async (userUniqueId: string) => {
+      if (!currentAuthId) return;
 
       try {
         toast.dismiss();
-        const chatId = generateChatId(currentUserId, userId);
+        const chatId = generateChatId(currentAuthId, userUniqueId);
         const chatDocRef = doc(db, 'privatechats', chatId);
         await updateDoc(chatDocRef, { chatStatus: 'accepted' });
 
-        const currentUserDocRef = doc(db, 'admin', currentUserId);
+        const currentUserDocRef = doc(db, 'admin', currentAuthId);
         await updateDoc(currentUserDocRef, {
-          chatList: arrayUnion({ id: userId, isAdmin: false }),
+          chatList: arrayUnion({ id: userUniqueId, isAdmin: false }),
         });
 
         await updateDoc(currentUserDocRef, {
-          receivedRequests: arrayRemove(userId),
+          receivedRequests: arrayRemove(userUniqueId),
         });
 
-        const userDocRef = doc(db, 'users', userId);
+        const userDocRef = doc(db, 'users', userUniqueId);
         await updateDoc(userDocRef, {
-          sentRequests: arrayRemove(currentUserId),
+          sentRequests: arrayRemove(currentAuthId),
         });
 
         toast.success('Chat request accepted!');
@@ -93,27 +93,27 @@ function NewRequest() {
         toast.error('Error accepting chat request.');
       }
     },
-    [currentUserId]
+    [currentAuthId]
   );
 
   const handleDecline = useCallback(
-    async (userId: string) => {
-      if (!currentUserId) return;
+    async (userUniqueId: string) => {
+      if (!currentAuthId) return;
 
       try {
         toast.dismiss();
-        const chatId = generateChatId(currentUserId, userId);
+        const chatId = generateChatId(currentAuthId, userUniqueId);
         const chatDocRef = doc(db, 'privatechats', chatId);
         await updateDoc(chatDocRef, { chatStatus: 'declined' });
 
-        const currentUserDocRef = doc(db, 'admin', currentUserId);
+        const currentUserDocRef = doc(db, 'admin', currentAuthId);
         await updateDoc(currentUserDocRef, {
-          receivedRequests: arrayRemove(userId),
+          receivedRequests: arrayRemove(userUniqueId),
         });
 
-        const userDocRef = doc(db, 'users', userId);
+        const userDocRef = doc(db, 'users', userUniqueId);
         await updateDoc(userDocRef, {
-          sentRequests: arrayRemove(currentUserId),
+          sentRequests: arrayRemove(currentAuthId),
         });
 
         toast.warning('Chat request declined!');
@@ -123,14 +123,13 @@ function NewRequest() {
         toast.error('Error declining chat request.');
       }
     },
-    [currentUserId]
+    [currentAuthId]
   );
 
   const handleClick = (id: string) => {
-    setId(id);           // Set the id of the clicked member
-    setOpenDialogue(true);     // Open the dialog or perform any other action
+    setId(id); // Set the id of the clicked member
+    setOpenDialogue(true); // Open the dialog or perform any other action
   };
-
 
   if (loading) {
     return <LoadingData />;
@@ -162,15 +161,18 @@ function NewRequest() {
                   height={43}
                 />
                 <div
-                  className={`absolute right-0 bottom-0 w-3 h-3 rounded-full border-2 border-white ${user.isOnline ? 'bg-green-500' : 'bg-neutral-400'
-                    }`}
+                  className={`absolute right-0 bottom-0 w-3 h-3 rounded-full border-2 border-white ${
+                    user.isOnline ? 'bg-green-500' : 'bg-neutral-400'
+                  }`}
                 ></div>
               </div>
               <div className="flex flex-col justify-start">
                 <button onClick={() => handleClick(user.uniqueId)}>
-                  <h2 className="text-[#182230] text-normal font-semibold hover:underline">{user.name || "phodu user"}</h2>
+                  <h2 className="text-[#182230] text-normal font-semibold hover:underline">
+                    {user.name || 'phodu user'}
+                  </h2>
                 </button>
-                <p className="text-sm text-[#475467]">{user.userId || "phodu Id"}</p>
+                <p className="text-sm text-[#475467]">{user.userId || 'phodu Id'}</p>
               </div>
             </div>
             <div className="flex flex-row gap-2">

@@ -21,14 +21,14 @@ type BottomTextProps = {
 
 type UserData = {
   name: string;
-  uniqueId: string;
-  userId: string;
+  uniqueId: string;  // Display ID
+  userId: string;    // Auth ID
   profilePic: string;
   isAdmin: boolean;
 }
 
 interface Mention {
-  userId: string;
+  uniqueId: string;
   id: string;
   isAdmin: boolean;
 }
@@ -116,23 +116,23 @@ function BottomText({
         const userList: UserData[] = usersSnapshot.docs
           .map((doc) => ({
             name: doc.data().name,
-            uniqueId: doc.data().uniqueId,
-            userId: doc.data().userId,
+            uniqueId: doc.data().uniqueId || doc.data().userId || '',  // Now uses uniqueId as display ID
+            userId: doc.data().userId || doc.data().uniqueId || '',    // Now uses userId as auth ID
             profilePic: doc.data().profilePic,
             isAdmin: false,
           }))
-          .filter((user) => user.uniqueId !== currentUserId); // Exclude the current user
+          .filter((user) => user.userId !== currentUserId); // Exclude the current user
 
         // Extract admin data
         const adminList: UserData[] = adminsSnapshot.docs
           .map((doc) => ({
             name: doc.data().name,
-            uniqueId: doc.data().adminId,
-            userId: doc.data().userId,
+            uniqueId: doc.data().uniqueId || doc.data().userId || '',  // Now uses uniqueId as display ID (previously userId)
+            userId: doc.data().userId || doc.data().adminId || '',     // Now uses userId as auth ID (previously adminId)
             profilePic: doc.data().profilePic,
             isAdmin: true,
           }))
-          .filter((admin) => admin.uniqueId !== currentUserId); // Exclude the current user
+          .filter((admin) => admin.userId !== currentUserId); // Exclude the current user
 
         // Combine user and admin lists
         const combinedList = [...userList, ...adminList];
@@ -140,7 +140,7 @@ function BottomText({
         // Filter only members (users or admins who are members of the channel)
         const filteredMembers = combinedList.filter((userOrAdmin) => {
           if (!channelMembers) return false;
-          return channelMembers.some((member) => member.id === userOrAdmin.uniqueId);
+          return channelMembers.some((member) => member.id === userOrAdmin.userId); // Compare with auth ID (userId)
         });
 
         // Set the filtered members to the state
@@ -199,7 +199,7 @@ function BottomText({
     // Replace `@text` with selected username
     const words = beforeCursor.split(" ");
     words.pop(); // Remove the partial mention
-    const newText = `${words.join(" ")} @${user.userId} ${afterCursor}`.trim();
+    const newText = `${words.join(" ")} @${user.uniqueId} ${afterCursor}`.trim();
 
     setText(newText);
     setShowUserList(false);
@@ -207,7 +207,7 @@ function BottomText({
     // Store the mention with both name and uniqueId
     setMentions((prevMentions) => [
       ...prevMentions,
-      { userId: user.userId, id: user.uniqueId, isAdmin: user.isAdmin, },
+      { uniqueId: user.uniqueId, id: user.userId, isAdmin: user.isAdmin, },
     ]);
 
     // Set the cursor position after the inserted username
@@ -497,7 +497,7 @@ function BottomText({
                   <Image className="w-[38px] h-[38px] rounded-full" src={user.profilePic} alt='pic' width={38} height={38} />
                   <div className="flex flex-col">
                     <span className="text-sm font-medium">{user.name}</span>
-                    <span className="text-[12px] text-gray-500 ">{'@' + user.userId}</span>
+                    <span className="text-[12px] text-gray-500 ">{'@' + user.uniqueId}</span>
                   </div>
                 </div>
                 <hr className="border-[#f1f1f1]" />

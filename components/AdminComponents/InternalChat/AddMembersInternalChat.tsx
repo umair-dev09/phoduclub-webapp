@@ -8,99 +8,96 @@ import Radio from "@mui/material/Radio";
 import RadioGroup from "@mui/material/RadioGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import EmojiPicker, { EmojiClickData } from "emoji-picker-react";
-import { collection, arrayUnion, doc, setDoc, onSnapshot } from 'firebase/firestore';
+import { collection, arrayUnion, doc, setDoc, onSnapshot, getDocs } from 'firebase/firestore';
 import { db, auth } from '@/firebase'; // Adjust path if needed
 import { toast, ToastContainer } from "react-toastify";
 import { Tabs, Tab } from "@nextui-org/react";
 import LoadingData from "@/components/Loading";
 import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button } from "@nextui-org/react";
 
-interface AddMembersGroupProps {
+interface Member {
+    id: string;
+    name: string;
+    profilePic: string;
+    role: string;
+    userId: string; // Auth ID (previously adminId)
+    uniqueId: string; // Display ID (previously userId)
+}
+
+interface AddMembersInternalChatProps {
     open: boolean;
     onClose: () => void;
     channelId: string;
 }
 
-interface AdminData {
-    userId: string;
-    name: string;
-    adminId: string;
-    profilePic: string;
-    role: string;
-}
-
-
-function AddMembersInternalChat({ open, onClose, channelId  }: AddMembersGroupProps) {
+function AddMembersInternalChat({ open, onClose, channelId }: AddMembersInternalChatProps) {
     const [loading, setLoading] = useState(true);
-    const [admins, setAdmins] = useState<AdminData[]>([]);
+    const [teachers, setTeachers] = useState<Member[]>([]);
     const [searchTerm, setSearchTerm] = useState('');
     const [searchTermA, setSearchTermA] = useState('');
     const [selectedAllUsers, setSelectedAllUsers] = useState(false);
     const [selectedAllAdmins, setSelectedAllAdmins] = useState(false);
-    const [members, setMembers] = useState<{ id: string; isAdmin: boolean }[]>([]);
+    const [selectedMembers, setSelectedMembers] = useState<{ id: string; isAdmin: boolean }[]>([]);
     const currentUserId = auth.currentUser?.uid;
     const [scrollBehavior, setScrollBehavior] = useState<"inside" | "outside">("outside");
 
     useEffect(() => {
-        const usersCollection = collection(db, 'admin');
-        const unsubscribe = onSnapshot(usersCollection, (snapshot) => {
-            const updatedAdmins: AdminData[] = snapshot.docs.map((doc) => {
+        const fetchTeachers = async () => {
+            const adminSnapshot = await getDocs(collection(db, "admin"));
+            const admins = adminSnapshot.docs.map((doc) => {
                 const adminData = doc.data();
                 return {
-                    adminId: adminData.adminId,
-                    name: adminData.name,
-                    userId: adminData.userId,
-                    profilePic: adminData.profilePic,
-                    role: adminData.role,
-                } as AdminData;
-            }).filter((admin) => admin.adminId !== currentUserId && ['Admin', 'Teacher', 'Chief Moderator'].includes(admin.role)); // Exclude current user and filter roles
+                    id: doc.id,
+                    name: adminData.name || '',
+                    profilePic: adminData.profilePic || '/defaultAdminDP.jpg',
+                    role: adminData.role || '',
+                    userId: adminData.userId || '', // Auth ID (previously adminId)
+                    uniqueId: adminData.uniqueId || '' // Display ID (previously userId)
+                };
+            }).filter((admin) => admin.userId !== currentUserId && ['Admin', 'Teacher', 'Chief Moderator'].includes(admin.role)); // Exclude current user and filter roles
 
-            setAdmins(updatedAdmins);
+            setTeachers(admins);
             setLoading(false);
-        });
-        // Cleanup listener on component unmount
-        return () => unsubscribe();
+        };
+
+        fetchTeachers();
     }, [currentUserId]);
 
-
-    const filteredAdmins = admins.filter(admin =>
-        admin.name.toLowerCase().includes(searchTermA.toLowerCase())
+    const filteredTeachers = teachers.filter(teacher =>
+        teacher.name.toLowerCase().includes(searchTermA.toLowerCase())
     );
 
+    const isAddMembersButtonDisabled = !selectedMembers.some(member => member.id);
 
-
-    const isAddMembersButtonDisabled = !members.some(member => member.id);
-
-    const handleAdminCheckbox = (adminId: string, isChecked: boolean) => {
-        setMembers((prev) => {
+    const handleAdminCheckbox = (userId: string, isChecked: boolean) => {
+        setSelectedMembers((prev) => {
             if (isChecked) {
-                return [...prev, { id: adminId, isAdmin: true }];
+                return [...prev, { id: userId, isAdmin: true }];
             } else {
-                return prev.filter((member) => member.id !== adminId);
+                return prev.filter((member) => member.id !== userId);
             }
         });
     };
 
     const handleHeaderCheckbox = (isChecked: boolean) => {
-
-            if (isChecked) {
-                // Select all admins, preserving their `isAdmin` state
-                const allAdmins = admins.map((admin) => ({
-                    id: admin.adminId,
-                    isAdmin: true,
-                }));
-                setMembers((prevMembers) => [
-                    ...prevMembers.filter((member) => !member.isAdmin), // Keep existing users
-                    ...allAdmins,
-                ]);
-                setSelectedAllAdmins(true);
-            } else {
-                // Deselect all admins
-                setMembers((prevMembers) =>
-                    prevMembers.filter((member) => !member.isAdmin) // Keep only users
-                );
-                setSelectedAllAdmins(false);
-            }
+        if (isChecked) {
+            // Select all admins, preserving their `isAdmin` state
+            const allAdmins = teachers.map((teacher) => ({
+                id: teacher.userId,
+                isAdmin: true,
+            }));
+            setSelectedMembers((prevMembers) => [
+                ...prevMembers.filter((member) => !member.isAdmin), // Keep existing users
+                ...allAdmins,
+            ]);
+            setSelectedAllAdmins(true);
+        } else {
+            // Deselect all admins
+            setSelectedMembers((prevMembers) =>
+                prevMembers.filter((member) => !member.isAdmin) // Keep only users
+            );
+            setSelectedAllAdmins(false);
+        }
     };
 
     const handleAddMembers = async () => {
@@ -109,13 +106,13 @@ function AddMembersInternalChat({ open, onClose, channelId  }: AddMembersGroupPr
             await setDoc(
                 doc(db, `internalchat`, channelId),
                 {
-                    members: arrayUnion(...members, { id: currentUserId, isAdmin: true }) // Adds all members from the array and the current user if not already present
+                    members: arrayUnion(...selectedMembers, { id: currentUserId, isAdmin: true }) // Adds all members from the array and the current user if not already present
                 },
                 { merge: true }
             );
 
             toast.success("Members Added Successfully!");
-            setMembers([]); // Clear the members array
+            setSelectedMembers([]); // Clear the members array
             onClose(); // Close the modal or form
         } catch (error) {
             console.error("Error adding members in Firestore:", error);
@@ -128,11 +125,8 @@ function AddMembersInternalChat({ open, onClose, channelId  }: AddMembersGroupPr
     }
 
     return (
-
-       
         <Modal isOpen={open} onOpenChange={(isOpen) => !isOpen && onClose()} hideCloseButton
             scrollBehavior={scrollBehavior}>
-
             <ModalContent>
                 <>
                     <ModalHeader className="flex flex-row justify-between items-center gap-1">
@@ -143,98 +137,90 @@ function AddMembersInternalChat({ open, onClose, channelId  }: AddMembersGroupPr
                     </ModalHeader>
                     <ModalBody>
                         <h3 className="font-semibold text-lg text-[#1D2939] mt-4">Add Members</h3>
-
-                                <div className="flex flex-col gap-3">
-                                    <div className="flex flex-row px-[0.875rem] py-[0.625rem] gap-2 border border-lightGrey rounded-md">
-                                        <Image src="/icons/search-lg.svg" alt="search" width={20} height={20} />
-                                        <input
-                                            type="text"
-                                            placeholder="Search"
-                                            className="w-full outline-none text-sm text-[#182230] font-normal leading-6"
-                                            value={searchTermA}
-                                            onChange={(e) => setSearchTermA(e.target.value)}
-                                        />
-                                    </div>
-                                    <div className="  border border-[#EAECF0] rounded-xl overflow-hidden">
-                                        <div className="max-h-[300px] overflow-y-auto">
-
-                                            {filteredAdmins.length > 0 ? (
-                                                <>
-                                                    <table className="w-full">
-                                                        <thead className="sticky top-0 z-10 bg-white shadow-sm">
-                                                            <tr>
-                                                                <td className="w-[10%] pl-8 pb-1">
-                                                                    <Checkbox
-                                                                        size="sm"
-                                                                        color="primary"
-                                                                        isSelected={selectedAllAdmins}
-                                                                        onChange={(e) => handleHeaderCheckbox(e.target.checked)}
+                        <div className="flex flex-col gap-3">
+                            <div className="flex flex-row px-[0.875rem] py-[0.625rem] gap-2 border border-lightGrey rounded-md">
+                                <Image src="/icons/search-lg.svg" alt="search" width={20} height={20} />
+                                <input
+                                    type="text"
+                                    placeholder="Search"
+                                    className="w-full outline-none text-sm text-[#182230] font-normal leading-6"
+                                    value={searchTermA}
+                                    onChange={(e) => setSearchTermA(e.target.value)}
+                                />
+                            </div>
+                            <div className="border border-[#EAECF0] rounded-xl overflow-hidden">
+                                <div className="max-h-[300px] overflow-y-auto">
+                                    {filteredTeachers.length > 0 ? (
+                                        <>
+                                            <table className="w-full">
+                                                <thead className="sticky top-0 z-10 bg-white shadow-sm">
+                                                    <tr>
+                                                        <td className="w-[10%] pl-8 pb-1">
+                                                            <Checkbox
+                                                                size="sm"
+                                                                color="primary"
+                                                                isSelected={selectedAllAdmins}
+                                                                onChange={(e) => handleHeaderCheckbox(e.target.checked)}
+                                                            />
+                                                        </td>
+                                                        <td className="w-[100%] pl-2 py-3">
+                                                            <p className="text-sm text-[#667085] font-medium leading-6">
+                                                                Name
+                                                            </p>
+                                                        </td>
+                                                        <td className="w-[40%]"></td>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {filteredTeachers.map((teacher, index) => (
+                                                        <tr
+                                                            key={teacher.userId}
+                                                            className="border-t border-lightGrey"
+                                                        >
+                                                            <td className="pl-8 pb-1">
+                                                                <Checkbox
+                                                                    size="sm"
+                                                                    color="primary"
+                                                                    isSelected={selectedMembers.some(
+                                                                        (member) => member.id === teacher.userId && member.isAdmin
+                                                                    )}
+                                                                    onChange={(e) => handleAdminCheckbox(teacher.userId, e.target.checked)}
+                                                                />
+                                                            </td>
+                                                            <td className="pl-2 py-3">
+                                                                <div className="flex flex-row gap-2 items-center">
+                                                                    <Image className="rounded-full w-10 h-10"
+                                                                        src={teacher.profilePic || "/images/DP_Lion.svg"}
+                                                                        alt="DP"
+                                                                        width={40}
+                                                                        height={40}
                                                                     />
-                                                                </td>
-                                                                <td className="w-[100%] pl-2 py-3">
-                                                                    <p className="text-sm text-[#667085] font-medium leading-6">
-                                                                        Name
-                                                                    </p>
-                                                                </td>
-                                                                <td className="w-[40%]"></td>
-                                                            </tr>
-                                                        </thead>
-                                                        <tbody>
-                                                            {filteredAdmins.map((admin, index) => (
-                                                                <tr
-                                                                    key={admin.adminId}
-                                                                    className="border-t border-lightGrey"
-                                                                >
-                                                                    <td className="pl-8 pb-1">
-                                                                        <Checkbox
-                                                                            size="sm"
-                                                                            color="primary"
-                                                                            isSelected={members.some(
-                                                                                (member) => member.id === admin.adminId && member.isAdmin
-                                                                            )}
-                                                                            onChange={(e) => handleAdminCheckbox(admin.adminId, e.target.checked)}
-                                                                        />
-                                                                    </td>
-                                                                    <td className="pl-2 py-3">
-                                                                        <div className="flex flex-row gap-2 items-center">
-                                                                                <Image className="rounded-full w-10 h-10"
-                                                                                    src={admin.profilePic || "/images/DP_Lion.svg"}
-                                                                                    alt="DP"
-                                                                                    width={40}
-                                                                                    height={40}
-                                                                                />
-                                                                            <div className="flex flex-col">
-                                                                                <div className="flex flex-row gap-[6px]">
-                                                                                    <span className="text-sm font-semibold whitespace-nowrap">
-                                                                                        {admin.name}
-                                                                                    </span>
-                                                                                    <span className="text-[13px] text-[#000000]">
-                                                                                        {admin.role}
-                                                                                    </span>
-                                                                                </div>
-                                                                                <span className="text-[13px] text-[#667085]">
-                                                                                    {admin.userId}
-                                                                                </span>
-                                                                            </div>
+                                                                    <div className="flex flex-col">
+                                                                        <div className="flex flex-row gap-[6px]">
+                                                                            <span className="text-sm font-semibold whitespace-nowrap">
+                                                                                {teacher.name}
+                                                                            </span>
+                                                                            <span className="text-[13px] text-[#000000]">
+                                                                                {teacher.role}
+                                                                            </span>
                                                                         </div>
-                                                                    </td>
-
-                                                                </tr>
-                                                            ))}
-                                                        </tbody>
-                                                    </table>
-                                                </>
-                                            ) : (
-                                                <div className='py-6 w-full flex items-center justify-center text-center'><span className="w-full">No user found</span></div>
-                                            )}
-
-                                        </div>
-                                    </div>
+                                                                        <span className="text-[13px] text-[#667085]">
+                                                                            {teacher.uniqueId}
+                                                                        </span>
+                                                                    </div>
+                                                                </div>
+                                                            </td>
+                                                        </tr>
+                                                    ))}
+                                                </tbody>
+                                            </table>
+                                        </>
+                                    ) : (
+                                        <div className='py-6 w-full flex items-center justify-center text-center'><span className="w-full">No user found</span></div>
+                                    )}
                                 </div>
-                          
-
-
-
+                            </div>
+                        </div>
                     </ModalBody>
                     <ModalFooter className="border-t border-lightGrey">
                         <Button
@@ -248,7 +234,6 @@ function AddMembersInternalChat({ open, onClose, channelId  }: AddMembersGroupPr
                             ${isAddMembersButtonDisabled ?
                                     " bg-[#CDA0FC] cursor-not-allowed" : "bg-[#9012FF] hover:bg-[#6D0DCC] border border-solid  border-[#9012FF]"
                                 }`}
-
                             disabled={isAddMembersButtonDisabled}
                             onClick={handleAddMembers}
                         >

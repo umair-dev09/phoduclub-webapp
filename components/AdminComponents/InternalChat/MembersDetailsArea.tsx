@@ -8,8 +8,8 @@ import MemberClickDialog from "@/components/DashboardComponents/CommunityCompone
 type UserData = {
   name: string;
   profilePic: string;
-  uniqueId: string;
-  adminId?: string;
+  uniqueId: string; // Now stores display ID
+  userId: string;   // Now stores auth ID (previously adminId)
   isPremium: boolean;
   role: string;
 };
@@ -122,18 +122,18 @@ function MembersDetailsArea({ members }: MembersDetailsAreaProps) {
                 </div>
                 {membersList.map((member) => {
                 const isCurrentUser =
-                    (members.find((m) => m.id === (member.uniqueId || member.adminId))
-                    ? member.adminId
+                    (members.find((m) => m.id === (member.uniqueId || member.userId))
+                    ? member.userId
                     : member.uniqueId) === currentUserId;
 
                 // Find the matching member from `members` to get the `isAdmin` value
                 const matchedMember = members.find(
-                    (m) => m.id === (member.uniqueId || member.adminId)
+                    (m) => m.id === (member.uniqueId || member.userId)
                 );
 
                 return (
                     <div
-                    key={member.uniqueId || member.adminId || member.name}
+                    key={member.uniqueId || member.userId || member.name}
                     className={`h-auto transition-all group  pb-[6px] ${isCurrentUser ? 'cursor-not-allowed' : 'cursor-pointer'}`}
                     onClick={
                         !isCurrentUser

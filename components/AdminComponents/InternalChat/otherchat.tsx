@@ -591,7 +591,7 @@ type OtherChatProps = {
   highlightedText: string | React.ReactNode[];
   currentUserId: string;
   isHighlighted: boolean; // New prop
-  mentions: { userId: string; id: string, isAdmin: boolean, }[];
+  mentions: { uniqueId: string; id: string, isAdmin: boolean, }[];
   scrollToReply: (replyingToChatId: string) => void;
   setShowReplyLayout: (value: boolean) => void;
   handleReply: (message: string | null, senderId: string | null, messageType: string | null, fileUrl: string | null, fileName: string | null, chatId: string | null) => void; // New prop to handle reply data
@@ -612,7 +612,7 @@ type UserData = {
 
 interface Mention {
   id: string;
-  userId: string;
+  uniqueId: string;
   isAdmin: boolean;
 }
 
@@ -734,7 +734,7 @@ function OtherChat({ message, currentUserId, mentions, isDeleted, highlightedTex
     const processMention = (part: string, index: number | string) => {
       if (part.startsWith("@")) {
         const mentionName = part.substring(1).trim();
-        const mention = mentions.find((m) => m.userId === mentionName || m.id === mentionName);
+        const mention = mentions.find((m) => m.uniqueId === mentionName || m.id === mentionName);
 
         if (mention) {
           return (

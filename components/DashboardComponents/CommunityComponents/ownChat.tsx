@@ -38,7 +38,7 @@ type OwnChatProps = {
   isDeleted: boolean;
   adminThatDeletedId: string;
   isDeletedByAdmin: boolean;
-  mentions: { userId: string; id: string, isAdmin: boolean, }[];
+  mentions: { uniqueId: string; id: string, isAdmin: boolean, }[];
   highlightedText: string | React.ReactNode[];
   isAdmin: boolean;
   isHighlighted: boolean; // New prop
@@ -127,7 +127,7 @@ function OwnChat({ message, isDeleted, mentions, adminThatDeletedId, isDeletedBy
     const processMention = (part: string, index: number | string) => {
       if (part.startsWith("@")) {
         const mentionName = part.substring(1).trim();
-        const mention = mentions.find((m) => m.userId === mentionName || m.id === mentionName);
+        const mention = mentions.find((m) => m.uniqueId === mentionName || m.id === mentionName);
 
         if (mention) {
           return (

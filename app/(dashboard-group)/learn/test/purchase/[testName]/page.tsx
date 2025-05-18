@@ -78,7 +78,7 @@ const RatingStars: React.FC<{ rating: string | null }> = ({ rating }) => {
 };
 
 type UserData = {
-  uniqueId: string;
+  userId: string;
   name: string;
   email: string;
   phone: string;
@@ -463,11 +463,11 @@ function TestPurchasePage() {
                   amount={testData?.discountPrice || 0}
                   customerName={userData?.name || ''}
                   customerEmail={userData?.email || ''}
-                  customerId={userData?.uniqueId || ''}
+                  customerId={userData?.userId || ''}
                   customerPhone={userData?.phone || ''}
                   productType='testseries'
                   productId={testId || ''}
-                  userId={userData?.uniqueId || ''}
+                  userId={userData?.userId || ''}
                 />
               )}
             </div>

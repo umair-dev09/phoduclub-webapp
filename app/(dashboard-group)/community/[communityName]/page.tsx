@@ -60,7 +60,7 @@ type Chat = {
   adminThatDeletedId: string;
   isDeletedByAdmin: boolean;
   isAdmin: boolean;
-  mentions: { userId: string; id: string, isAdmin: boolean, }[];
+  mentions: { uniqueId: string; id: string, isAdmin: boolean, }[];
 };
 
 
@@ -718,9 +718,10 @@ export default function CommunityName() {
                           {/* Conditionally render notification */}
                           {hasNotification &&
                             selectedChannel?.channelId !== channel.channelId &&
-                            !channel.notificationsMuted?.some(mute =>
-                              mute.id === currentUserId
-                            ) && (
+                            !(Array.isArray(channel.notificationsMuted) && 
+                              channel.notificationsMuted.some(mute =>
+                                mute.id === currentUserId
+                              )) && (
                               <div className="w-2 h-2 rounded-full bg-[#DE3024]"></div> // Notification Indicator
                             )}
                         </div>

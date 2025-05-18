@@ -66,7 +66,7 @@ type Chat = {
   adminThatDeletedId: string;
   isDeletedByAdmin: boolean;
   isAdmin: boolean;
-  mentions: { userId: string; id: string, isAdmin: boolean, }[];
+  mentions: { uniqueId: string; id: string, isAdmin: boolean, }[];
 };
 
 

@@ -39,7 +39,7 @@ type UserData = {
     profilePic: string;
     role: string;
     isPremium: string;
-    userId: string;
+    uniqueId: string;
 };
 
 function getTimeAgo(timestamp: string): string {
@@ -84,7 +84,7 @@ function DiscussionDisplay({ message, userId, timestamp, messageId, isReplyingTo
             message: message,
             senderId: userId,
             chatId: messageId,
-            displayUserId: sender?.userId || '',
+            displayUserId: sender?.uniqueId || '',
             isReplying: isReplying,
             replyingToMsgId: replyingToMsgId,
             replyingToAdmin: isAdmin,
@@ -245,7 +245,7 @@ function DiscussionDisplay({ message, userId, timestamp, messageId, isReplyingTo
                                     <span className="text-[#1D2939] text-sm ">{sender?.role || 'Admin'}</span>
                                 )}
                             </div>
-                            <span className="font-normal text-sm text-[#1D2939] opacity-[50%]">{sender?.userId || 'user#123'}</span>
+                            <span className="font-normal text-sm text-[#1D2939] opacity-[50%]">{sender?.uniqueId || 'user#123'}</span>
                         </div>
                     </div>
 
@@ -322,7 +322,7 @@ function DiscussionDisplay({ message, userId, timestamp, messageId, isReplyingTo
                             ? message || ''
                             : isReplyingToMainMsg
                                 ? message || ''
-                                : `<span class="text-purple">@${replySender?.userId}</span> ${message.replace(/<p>/g, '').replace(/<\/p>/g, '')}`
+                                : `<span class="text-purple">@${replySender?.uniqueId}</span> ${message.replace(/<p>/g, '').replace(/<\/p>/g, '')}`
                     }} />
                 </div>
                 {/* <ExpandableText content={message} /> */}

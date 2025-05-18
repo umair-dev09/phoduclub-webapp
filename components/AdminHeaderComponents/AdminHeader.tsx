@@ -14,15 +14,16 @@ import Logout from '../AdminComponents/RoleMangement/Logout';
 
 interface HeaderProps {
     currentPage: string;
-
 }
 
 type UserData = {
     name: string | null;
-    adminId: string | null;
+    userId: string | null; // Now stores Firebase Auth ID (previously adminId)
+    uniqueId: string | null; // User-friendly display ID (previously stored in userId)
     profilePic: string | null;
     role: string | null;
 };
+
 function Header({ currentPage }: HeaderProps) {
     const router = useRouter();
     const [userData, setUserData] = useState<UserData | null>(null);
@@ -84,8 +85,8 @@ function Header({ currentPage }: HeaderProps) {
     useEffect(() => {
         let unsubscribeFromSnapshot: () => void;
         if (user) {
-            const uniqueId = user.uid;
-            const userDocRef = doc(db, `admin/${uniqueId}`);
+            const userId = user.uid;
+            const userDocRef = doc(db, `admin/${userId}`);
 
             unsubscribeFromSnapshot = onSnapshot(userDocRef, (docSnapshot) => {
                 if (docSnapshot.exists()) {

@@ -70,8 +70,8 @@ function EmailUpdate({ setIsEditing }: EmailUpdateProps) {
     const fetchUserData = async () => {
       try {
         if (user) {
-          const uniqueId = user.uid;
-          const userDoc = doc(db, `users/${uniqueId}`);
+          const userId = user.uid;
+          const userDoc = doc(db, `users/${userId}`);
           const userSnapshot = await getDoc(userDoc);
 
           if (userSnapshot.exists()) {

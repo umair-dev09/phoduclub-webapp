@@ -1,9 +1,17 @@
 import React, { useRef, useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Image from 'next/image';
-import { doc, getDoc, setDoc, deleteDoc } from "firebase/firestore";
+import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { auth, db } from '@/firebase';
 import { MoonLoader } from "react-spinners";
+import { RecaptchaVerifier, signInWithPhoneNumber } from "firebase/auth";
+
+declare global {
+    interface Window {
+        recaptchaVerifier?: any;
+        confirmationResult: any;
+    }
+}
 
 interface OTPInputProps {
     onComplete?: (otp: string) => void;
@@ -18,13 +26,50 @@ const AdminVerify: React.FC<OTPInputProps> = ({
 }) => {
     const router = useRouter();
     const searchParams = useSearchParams();
-    const adminId = searchParams.get("adminId");
+    const uniqueId = searchParams.get("uniqueId");
+    const phone = searchParams.get("phone");
     const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
     const [inputValues, setInputValues] = useState<string[]>(Array(6).fill(""));
     const [showLoading, setShowLoading] = useState(false);
     const [timer, setTimer] = useState<number>(60); // Initialize timer to 60 seconds
     const [resendDisabled, setResendDisabled] = useState<boolean>(true); // Disable resend initially
     const [verificationError, setVerificationError] = useState<string | null>(null);
+    const [confirmationResultSent, setConfirmationResultSent] = useState<boolean>(false);
+
+    useEffect(() => {
+        // Check if we need to re-send the OTP when the component loads
+        // This handles cases where the user refreshes the page or confirmation result is lost
+        const checkAndResendOTP = async () => {
+            if (!window.confirmationResult && phone && !confirmationResultSent) {
+                setShowLoading(true);
+                try {
+                    await setupRecaptcha();
+                    const formattedPhone = phone;
+                    const result = await signInWithPhoneNumber(auth, formattedPhone, window.recaptchaVerifier);
+                    window.confirmationResult = result;
+                    setConfirmationResultSent(true);
+                } catch (error) {
+                    console.error("Error re-sending verification code:", error);
+                    setVerificationError("Failed to send verification code. Please go back and try again.");
+                }
+                setShowLoading(false);
+            }
+        };
+        
+        checkAndResendOTP();
+    }, [phone, confirmationResultSent]);
+
+    const setupRecaptcha = () => {
+        if (!window.recaptchaVerifier) {
+            window.recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
+                size: 'invisible',
+                callback: () => {
+                    // reCAPTCHA solved
+                },
+            });
+        }
+        return Promise.resolve();
+    };
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
         let value = e.target.value.slice(-1);
@@ -139,46 +184,54 @@ const AdminVerify: React.FC<OTPInputProps> = ({
     const verifyOTP = async () => {
         const otp = inputValues.join('');
         if (otp.length !== 6) return;
+        
         setShowLoading(true);
+        setVerificationError(null);
+        
         try {
+            if (!window.confirmationResult) {
+                throw new Error("Verification session has expired. Please go back and try again.");
+            }
+            
             const result = await window.confirmationResult.confirm(otp);
-            const currentUserId = result.user.uid;
-            // Check if a document with the authId (currentUserId) already exists
-            const existingAdminDocRef = doc(db, "admin", currentUserId);
+            const currentAuthId = result.user.uid;
+
+            // Check if uniqueId exists
+            if (!uniqueId) {
+                throw new Error("Admin ID not found");
+            }
+            
+            // Get the admin document using the uniqueId from URL parameter
+            const existingAdminDocRef = doc(db, "admin", uniqueId);
             const existingAdminSnapshot = await getDoc(existingAdminDocRef);
 
             if (existingAdminSnapshot.exists()) {
-                // If a document with currentUserId exists, allow login without data migration
+                // Update the document with the auth ID stored in userId field
+                await updateDoc(existingAdminDocRef, {
+                    userId: currentAuthId
+                });
+
+                // Redirect after successfully linking auth ID with admin account
                 router.push('/admin');
-                setShowLoading(false);
-            } else if (adminId) {
-                // If no document with currentUserId exists, proceed with data migration
-                const adminDocRef = doc(db, "admin", adminId);
-                const adminSnapshot = await getDoc(adminDocRef);
-
-                if (adminSnapshot.exists()) {
-                    const adminData = adminSnapshot.data();
-
-                    // Create a new document with currentUserId and migrate data
-                    await setDoc(existingAdminDocRef, {
-                        ...adminData,
-                        adminId: currentUserId // Explicitly set authId as a field in the new document
-                    });
-
-                    // Delete the old admin document
-                    await deleteDoc(adminDocRef);
-                }
-
-                // Redirect to the admin page after OTP verification and data migration
-                router.push('/admin');
-                setShowLoading(false);
                 setVerificationError('');
-
+            } else {
+                throw new Error("Admin document not found");
             }
-        } catch (error) {
-            console.error("OTP verification or data migration failed:", error);
+        } catch (error: any) {
+            console.error("OTP verification failed:", error);
+            
+            // Display more specific error messages
+            if (error.message === "Verification session has expired. Please go back and try again.") {
+                setVerificationError(error.message);
+            } else if (error.code === "auth/invalid-verification-code") {
+                setVerificationError("Invalid verification code. Please try again.");
+            } else if (error.code === "auth/code-expired") {
+                setVerificationError("Verification code has expired. Please request a new code.");
+            } else {
+                setVerificationError("Failed to verify. Please try again or go back to request a new code.");
+            }
+        } finally {
             setShowLoading(false);
-            setVerificationError("Incorrect OTP. Please try again.");
         }
     };
 
@@ -194,11 +247,26 @@ const AdminVerify: React.FC<OTPInputProps> = ({
         }
     }, [timer]);
 
-    const handleResend = () => {
-        // Logic to resend the OTP (e.g., call an API)
+    const handleResend = async () => {
+        if (resendDisabled || !phone) return;
+        
+        setShowLoading(true);
+        setVerificationError(null);
         setTimer(60); // Reset the timer
         setResendDisabled(true); // Disable the resend button
-        console.log("OTP resent");
+        
+        try {
+            await setupRecaptcha();
+            const formattedPhone = phone;
+            const result = await signInWithPhoneNumber(auth, formattedPhone, window.recaptchaVerifier);
+            window.confirmationResult = result;
+            setConfirmationResultSent(true);
+        } catch (error) {
+            console.error("Error resending verification code:", error);
+            setVerificationError("Failed to resend verification code. Please go back and try again.");
+        } finally {
+            setShowLoading(false);
+        }
     };
 
     return (
@@ -267,9 +335,6 @@ const AdminVerify: React.FC<OTPInputProps> = ({
             >
                 Done
             </button>
-            {/* <p className="text-base text-[#7D7D8A] font-medium leading-6">
-                Didn’t receive the code? <span className="text-[#9012FF] font-semibold cursor-pointer hover:underline">Resend(60)</span>
-            </p> */}
             <p className="text-base text-[#7D7D8A] font-medium leading-6">
                 Didn’t receive the code?{" "}
                 <span

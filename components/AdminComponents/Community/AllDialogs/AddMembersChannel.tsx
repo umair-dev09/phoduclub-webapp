@@ -25,18 +25,18 @@ interface AddMembersGroupProps {
 }
 
 interface UserData {
-    userId: string;
+    userId: string;    // Now stores auth ID
     name: string;
-    uniqueId: string;
+    uniqueId: string;  // Now stores display ID
     profilePic: string;
     email: string;
     isPremium: boolean;
 }
 
 interface AdminData {
-    userId: string;
+    userId: string;    // Now stores auth ID (previously adminId)
     name: string;
-    adminId: string;
+    uniqueId: string;  // Now stores display ID (previously userId)
     profilePic: string;
     role: string;
 }
@@ -60,9 +60,9 @@ function AddMembersChannel({ open, onClose, communityId, headingId, channelId, g
             const updatedUsers: UserData[] = snapshot.docs.map((doc) => {
                 const userData = doc.data();
                 return {
-                    uniqueId: userData.uniqueId,
+                    uniqueId: userData.uniqueId || userData.userId || '',  // Now uses uniqueId as display ID, fallback to old userId field
                     name: userData.name,
-                    userId: userData.userId,
+                    userId: userData.userId || userData.uniqueId || '',    // Now uses userId as auth ID, fallback to old uniqueId field
                     profilePic: userData.profilePic,
                     isPremium: userData.isPremium,
                 } as UserData;
@@ -72,7 +72,7 @@ function AddMembersChannel({ open, onClose, communityId, headingId, channelId, g
                 if (!groupMembers) return false;
                 return groupMembers
                     .filter(member => !member.isAdmin)
-                    .some(member => member.id === user.uniqueId);
+                    .some(member => member.id === user.userId); // Compare with auth ID (userId)
             });
 
             setUsers(filteredGroupUsers);
@@ -88,19 +88,19 @@ function AddMembersChannel({ open, onClose, communityId, headingId, channelId, g
             const updatedAdmins: AdminData[] = snapshot.docs.map((doc) => {
                 const adminData = doc.data();
                 return {
-                    adminId: adminData.adminId,
+                    userId: adminData.userId || adminData.adminId || '',  // Now uses userId as auth ID, fallback to old adminId field
                     name: adminData.name,
-                    userId: adminData.userId,
+                    uniqueId: adminData.uniqueId || adminData.userId || '', // Now uses uniqueId as display ID, fallback to old userId field
                     profilePic: adminData.profilePic,
                     role: adminData.role,
                 } as AdminData;
-            }).filter((admin) => admin.adminId !== currentUserId);
+            }).filter((admin) => admin.userId !== currentUserId);
 
             const filteredGroupAdmins = updatedAdmins.filter(admin => {
                 if (!groupMembers) return false;
                 return groupMembers
                     .filter(member => member.isAdmin)
-                    .some(member => member.id === admin.adminId);
+                    .some(member => member.id === admin.userId); // Compare with auth ID (userId), previously adminId
             });
 
             setAdmins(filteredGroupAdmins);
@@ -122,22 +122,22 @@ function AddMembersChannel({ open, onClose, communityId, headingId, channelId, g
 
     const isAddMembersButtonDisabled = !members.some(member => member.id);
 
-    const handleUserCheckbox = (uniqueId: string, isChecked: boolean) => {
+    const handleUserCheckbox = (userId: string, isChecked: boolean) => {
         setMembers((prev) => {
             if (isChecked) {
-                return [...prev, { id: uniqueId, isAdmin: false }];
+                return [...prev, { id: userId, isAdmin: false }];
             } else {
-                return prev.filter((member) => member.id !== uniqueId);
+                return prev.filter((member) => member.id !== userId);
             }
         });
     };
 
-    const handleAdminCheckbox = (adminId: string, isChecked: boolean) => {
+    const handleAdminCheckbox = (userId: string, isChecked: boolean) => {
         setMembers((prev) => {
             if (isChecked) {
-                return [...prev, { id: adminId, isAdmin: true }];
+                return [...prev, { id: userId, isAdmin: true }];
             } else {
-                return prev.filter((member) => member.id !== adminId);
+                return prev.filter((member) => member.id !== userId);
             }
         });
     };
@@ -147,7 +147,7 @@ function AddMembersChannel({ open, onClose, communityId, headingId, channelId, g
             if (isChecked) {
                 // Select all users, preserving their `isAdmin` state
                 const allUsers = users.map((user) => ({
-                    id: user.uniqueId,
+                    id: user.userId, // Now use auth ID (userId)
                     isAdmin: false,
                 }));
                 setMembers((prevMembers) => [
@@ -166,7 +166,7 @@ function AddMembersChannel({ open, onClose, communityId, headingId, channelId, g
             if (isChecked) {
                 // Select all admins, preserving their `isAdmin` state
                 const allAdmins = admins.map((admin) => ({
-                    id: admin.adminId,
+                    id: admin.userId, // Now use auth ID (userId), previously adminId
                     isAdmin: true,
                 }));
                 setMembers((prevMembers) => [
@@ -209,267 +209,6 @@ function AddMembersChannel({ open, onClose, communityId, headingId, channelId, g
     }
 
     return (
-
-        // <Dialog open={open} onClose={onClose} className="relative z-50">
-        //     <DialogBackdrop className="fixed inset-0 bg-black/30" />
-        //     <div className="fixed inset-0 flex items-center justify-center">
-        //         <DialogPanel className="bg-white rounded-2xl w-[568px] h-auto flex flex-col ">
-        //             <div className=' flex flex-col p-6 gap-1 border-solid border-[#EAECF0] border-b rounded-t-2xl'>
-        //                 <div className='flex flex-row justify-between items-center'>
-        //                     <h1 className='text-[#1D2939] font-bold text-lg'>Create Channel</h1>
-        //                     <button className="w-[32px] h-[32px]  rounded-full flex items-center justify-center transition-all duration-300 ease-in-out hover:bg-[#F2F4F7]">
-        //                         <button><Image src="/icons/cancel.svg" alt="Cancel" width={20} height={20} onClick={onClose} /></button>
-        //                     </button>
-        //                 </div>
-        //                 <h3 className="font-semibold text-lg text-[#1D2939] mt-4">Add Members</h3>
-        //                 <Tabs
-        //                     aria-label="Market Integration Tabs"
-        //                     color="primary"
-        //                     variant="underlined"
-        //                     selectedKey={activeTab}
-        //                     onSelectionChange={(key) => setActiveTab(key as string)}
-        //                     classNames={{
-        //                         tabList: "gap-6 w-full relative rounded-none p-0 border-b border-solid border-[#EAECF0]",
-        //                         cursor: "w-full bg-[#7400E0]",
-        //                         tab: "max-w-fit px-0 h-12",
-        //                         tabContent: "group-data-[selected=true]:text-[#7400E0] hover:text-[#7400E0] ",
-        //                     }}
-        //                 >
-        //                     <Tab
-        //                         key="Users"
-        //                         title={
-        //                             <div className="flex items-center space-x-2">
-        //                                 <span className="font-medium text-base">
-        //                                     Users
-        //                                 </span>
-        //                             </div>
-        //                         }
-        //                     >
-        //                         <div className="flex flex-col gap-3">
-        //                             <div className="flex flex-row px-[0.875rem] py-[0.625rem] gap-2 border border-lightGrey rounded-md">
-        //                                 <Image src="/icons/search-lg.svg" alt="search" width={20} height={20} />
-        //                                 <input
-        //                                     type="text"
-        //                                     placeholder="Search"
-        //                                     className="w-full outline-none text-sm text-[#182230] font-normal leading-6"
-        //                                     value={searchTerm}
-        //                                     onChange={(e) => setSearchTerm(e.target.value)}
-        //                                 />
-        //                             </div>
-        //                             <div className="  border border-[#EAECF0] rounded-xl overflow-hidden">
-        //                                 <div className="max-h-[300px] overflow-y-auto">
-
-        //                                     {filteredUsers.length > 0 ? (
-        //                                         <>
-        //                                             <table className="w-full">
-        //                                                 <thead className="sticky top-0 z-10 bg-white shadow-sm">
-        //                                                     <tr>
-        //                                                         <td className="w-[10%] pl-8 pb-1">
-        //                                                             <Checkbox
-        //                                                                 size="sm"
-        //                                                                 color="primary"
-        //                                                                 isSelected={selectedAllUsers}
-        //                                                                 onChange={(e) => handleHeaderCheckbox("user", e.target.checked)}
-        //                                                             />
-        //                                                         </td>
-        //                                                         <td className="w-[50%] pl-2 py-3">
-        //                                                             <p className="text-sm text-[#667085] font-medium leading-6">
-        //                                                                 Name
-        //                                                             </p>
-        //                                                         </td>
-        //                                                         <td className="w-[40%]"></td>
-        //                                                     </tr>
-        //                                                 </thead>
-        //                                                 <tbody>
-        //                                                     {filteredUsers.map((user, index) => (
-        //                                                         <tr
-        //                                                             key={user.uniqueId}
-        //                                                             className="border-t border-lightGrey"
-        //                                                         >
-        //                                                             <td className="pl-8 pb-1">
-        //                                                                 <Checkbox
-        //                                                                     size="sm"
-        //                                                                     color="primary"
-        //                                                                     isSelected={members.some(
-        //                                                                         (member) => member.id === user.uniqueId && !member.isAdmin
-        //                                                                     )}
-        //                                                                     onChange={(e) => handleUserCheckbox(user.uniqueId, e.target.checked)}
-        //                                                                 />
-        //                                                             </td>
-        //                                                             <td className="pl-2 py-3">
-        //                                                                 <div className="flex flex-row gap-2 items-center">
-        //                                                                     <div className="relative">
-        //                                                                         <Image className="rounded-full w-10 h-10"
-        //                                                                             src={user.profilePic || "/images/DP_Lion.svg"}
-        //                                                                             alt="DP"
-        //                                                                             width={40}
-        //                                                                             height={40}
-        //                                                                         />
-        //                                                                         {user.isPremium && (
-        //                                                                             <Image
-        //                                                                                 className="absolute right-0 bottom-0"
-        //                                                                                 src="/icons/winnerBatch.svg"
-        //                                                                                 alt="Batch"
-        //                                                                                 width={18}
-        //                                                                                 height={18}
-        //                                                                             />
-        //                                                                         )}
-
-        //                                                                     </div>
-        //                                                                     <div className="flex flex-col">
-        //                                                                         <span className="text-sm font-semibold whitespace-nowrap">
-        //                                                                             {user.name}
-        //                                                                         </span>
-        //                                                                         <span className="text-[13px] text-[#667085]">
-        //                                                                             {user.userId}
-        //                                                                         </span>
-        //                                                                     </div>
-        //                                                                 </div>
-        //                                                             </td>
-
-        //                                                         </tr>
-        //                                                     ))}
-        //                                                 </tbody>
-        //                                             </table>
-        //                                         </>
-        //                                     ) : (
-        //                                         <div className='py-6 w-full flex items-center justify-center text-center'><span className="w-full">No user found</span></div>
-        //                                     )}
-
-        //                                 </div>
-        //                             </div>
-        //                         </div>
-        //                     </Tab>
-
-        //                     <Tab
-        //                         key="Others"
-        //                         title={
-        //                             <div className="flex items-center space-x-2">
-        //                                 <span className="font-medium text-base">
-        //                                     Others
-        //                                 </span>
-        //                             </div>
-        //                         }
-        //                     >
-        //                         <div className="flex flex-col gap-3">
-        //                             <div className="flex flex-row px-[0.875rem] py-[0.625rem] gap-2 border border-lightGrey rounded-md">
-        //                                 <Image src="/icons/search-lg.svg" alt="search" width={20} height={20} />
-        //                                 <input
-        //                                     type="text"
-        //                                     placeholder="Search"
-        //                                     className="w-full outline-none text-sm text-[#182230] font-normal leading-6"
-        //                                     value={searchTermA}
-        //                                     onChange={(e) => setSearchTermA(e.target.value)}
-        //                                 />
-        //                             </div>
-        //                             <div className="  border border-[#EAECF0] rounded-xl overflow-hidden">
-        //                                 <div className="max-h-[300px] overflow-y-auto">
-
-        //                                     {filteredAdmins.length > 0 ? (
-        //                                         <>
-        //                                             <table className="w-full">
-        //                                                 <thead className="sticky top-0 z-10 bg-white shadow-sm">
-        //                                                     <tr>
-        //                                                         <td className="w-[10%] pl-8 pb-1">
-        //                                                             <Checkbox
-        //                                                                 size="sm"
-        //                                                                 color="primary"
-        //                                                                 isSelected={selectedAllAdmins}
-        //                                                                 onChange={(e) => handleHeaderCheckbox("admin", e.target.checked)}
-        //                                                             />
-        //                                                         </td>
-        //                                                         <td className="w-[50%] pl-2 py-3">
-        //                                                             <p className="text-sm text-[#667085] font-medium leading-6">
-        //                                                                 Name
-        //                                                             </p>
-        //                                                         </td>
-        //                                                         <td className="w-[40%]"></td>
-        //                                                     </tr>
-        //                                                 </thead>
-        //                                                 <tbody>
-        //                                                     {filteredAdmins.map((admin, index) => (
-        //                                                         <tr
-        //                                                             key={admin.adminId}
-        //                                                             className="border-t border-lightGrey"
-        //                                                         >
-        //                                                             <td className="pl-8 pb-1">
-        //                                                                 <Checkbox
-        //                                                                     size="sm"
-        //                                                                     color="primary"
-        //                                                                     isSelected={members.some(
-        //                                                                         (member) => member.id === admin.adminId && member.isAdmin
-        //                                                                     )}
-        //                                                                     onChange={(e) => handleAdminCheckbox(admin.adminId, e.target.checked)}
-        //                                                                 />
-        //                                                             </td>
-        //                                                             <td className="pl-2 py-3">
-        //                                                                 <div className="flex flex-row gap-2 items-center">
-        //                                                                     <div className="relative">
-        //                                                                         <Image className="rounded-full w-10 h-10"
-        //                                                                             src={admin.profilePic || "/images/DP_Lion.svg"}
-        //                                                                             alt="DP"
-        //                                                                             width={40}
-        //                                                                             height={40}
-        //                                                                         />
-
-        //                                                                     </div>
-        //                                                                     <div className="flex flex-col">
-        //                                                                         <div className="flex flex-row gap-[6px]">
-        //                                                                             <span className="text-sm font-semibold whitespace-nowrap">
-        //                                                                                 {admin.name}
-        //                                                                             </span>
-        //                                                                             <span className="text-[13px] text-[#000000]">
-        //                                                                                 {admin.role}
-        //                                                                             </span>
-        //                                                                         </div>
-        //                                                                         <span className="text-[13px] text-[#667085]">
-        //                                                                             {admin.userId}
-        //                                                                         </span>
-        //                                                                     </div>
-        //                                                                 </div>
-        //                                                             </td>
-
-        //                                                         </tr>
-        //                                                     ))}
-        //                                                 </tbody>
-        //                                             </table>
-        //                                         </>
-        //                                     ) : (
-        //                                         <div className='py-6 w-full flex items-center justify-center text-center'><span className="w-full">No user found</span></div>
-        //                                     )}
-
-        //                                 </div>
-        //                             </div>
-        //                         </div>
-        //                     </Tab>
-        //                 </Tabs>
-
-
-        //             </div>
-        //             <div className="flex flex-row justify-end mx-6 my-4 gap-4">
-        //                 <button
-        //                     className="py-[0.625rem] px-6 border-[1.5px] border-lightGrey rounded-md hover:bg-[#F2F4F7]"
-        //                     onClick={onClose}
-        //                 >
-        //                     Cancel
-        //                 </button>
-        //                 <button
-        //                     className={`py-[0.625rem] px-6 text-white shadow-inner-button rounded-md transition-all duration-200 bg-[#8501FF] border border-[#9012FF] hover:bg-[#7001CF]
-        //                     ${isAddMembersButtonDisabled
-        //                             ? 'cursor-not-allowed opacity-35'
-        //                             : 'opacity-100'
-        //                         }`}
-
-        //                     disabled={isAddMembersButtonDisabled}
-        //                     onClick={handleAddMembers}
-        //                 >
-        //                     Add Members
-        //                 </button>
-        //             </div>
-
-        //         </DialogPanel>
-        //     </div >
-        // </Dialog >
 
         <Modal isOpen={open} onOpenChange={(isOpen) => !isOpen && onClose()} hideCloseButton
         >
@@ -545,7 +284,7 @@ function AddMembersChannel({ open, onClose, communityId, headingId, channelId, g
                                                         <tbody>
                                                             {filteredUsers.map((user, index) => (
                                                                 <tr
-                                                                    key={user.uniqueId}
+                                                                    key={user.userId}
                                                                     className="border-t border-lightGrey"
                                                                 >
                                                                     <td className="pl-8 pb-1">
@@ -553,9 +292,9 @@ function AddMembersChannel({ open, onClose, communityId, headingId, channelId, g
                                                                             size="sm"
                                                                             color="primary"
                                                                             isSelected={members.some(
-                                                                                (member) => member.id === user.uniqueId && !member.isAdmin
+                                                                                (member) => member.id === user.userId && !member.isAdmin
                                                                             )}
-                                                                            onChange={(e) => handleUserCheckbox(user.uniqueId, e.target.checked)}
+                                                                            onChange={(e) => handleUserCheckbox(user.userId, e.target.checked)}
                                                                         />
                                                                     </td>
                                                                     <td className="pl-2 py-3">
@@ -583,7 +322,7 @@ function AddMembersChannel({ open, onClose, communityId, headingId, channelId, g
                                                                                     {user.name}
                                                                                 </span>
                                                                                 <span className="text-[13px] text-[#667085]">
-                                                                                    {user.userId}
+                                                                                    {user.uniqueId}
                                                                                 </span>
                                                                             </div>
                                                                         </div>
@@ -651,7 +390,7 @@ function AddMembersChannel({ open, onClose, communityId, headingId, channelId, g
                                                         <tbody>
                                                             {filteredAdmins.map((admin, index) => (
                                                                 <tr
-                                                                    key={admin.adminId}
+                                                                    key={admin.userId}
                                                                     className="border-t border-lightGrey"
                                                                 >
                                                                     <td className="pl-8 pb-1">
@@ -659,9 +398,9 @@ function AddMembersChannel({ open, onClose, communityId, headingId, channelId, g
                                                                             size="sm"
                                                                             color="primary"
                                                                             isSelected={members.some(
-                                                                                (member) => member.id === admin.adminId && member.isAdmin
+                                                                                (member) => member.id === admin.userId && member.isAdmin
                                                                             )}
-                                                                            onChange={(e) => handleAdminCheckbox(admin.adminId, e.target.checked)}
+                                                                            onChange={(e) => handleAdminCheckbox(admin.userId, e.target.checked)}
                                                                         />
                                                                     </td>
                                                                     <td className="pl-2 py-3">
@@ -682,7 +421,7 @@ function AddMembersChannel({ open, onClose, communityId, headingId, channelId, g
                                                                                     </span>
                                                                                 </div>
                                                                                 <span className="text-[13px] text-[#667085]">
-                                                                                    {admin.userId}
+                                                                                    {admin.uniqueId}
                                                                                 </span>
                                                                             </div>
                                                                         </div>
@@ -713,7 +452,7 @@ function AddMembersChannel({ open, onClose, communityId, headingId, channelId, g
                         </Button>
                         <Button
                             className={`py-[0.625rem] px-6 text-white shadow-inner-button rounded-md transition-all duration-200 font-semibold
-                            ${isAddMembersButtonDisabled ?
+                            ${isAddMembersButtonDisabled ? 
                                     "bg-[#CDA0FC] cursor-not-allowed" : " hover:bg-[#6D0DCC] bg-[#9012FF]"
                                 }`}
 

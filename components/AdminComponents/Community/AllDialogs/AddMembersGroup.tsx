@@ -22,22 +22,21 @@ interface AddMembersGroupProps {
 }
 
 interface UserData {
-    userId: string;
+    userId: string;    // Now stores auth ID
     name: string;
-    uniqueId: string;
+    uniqueId: string;  // Now stores display ID
     profilePic: string;
     email: string;
     isPremium: boolean;
 }
 
 interface AdminData {
-    userId: string;
+    userId: string;    // Now stores auth ID (previously adminId)
     name: string;
-    adminId: string;
+    uniqueId: string;  // Now stores display ID (previously userId)
     profilePic: string;
     role: string;
 }
-
 
 function AddMembersGroup({ open, onClose, communityId }: AddMembersGroupProps) {
     const [activeTab, setActiveTab] = useState("Users");
@@ -58,9 +57,9 @@ function AddMembersGroup({ open, onClose, communityId }: AddMembersGroupProps) {
             const updatedUsers: UserData[] = snapshot.docs.map((doc) => {
                 const userData = doc.data();
                 return {
-                    uniqueId: userData.uniqueId,
+                    uniqueId: userData.uniqueId || userData.userId || '',  // Now uses uniqueId as display ID
                     name: userData.name,
-                    userId: userData.userId,
+                    userId: userData.userId || userData.uniqueId || '',    // Now uses userId as auth ID
                     profilePic: userData.profilePic,
                     isPremium: userData.isPremium,
                 } as UserData;
@@ -78,13 +77,13 @@ function AddMembersGroup({ open, onClose, communityId }: AddMembersGroupProps) {
             const updatedAdmins: AdminData[] = snapshot.docs.map((doc) => {
                 const adminData = doc.data();
                 return {
-                    adminId: adminData.adminId,
+                    userId: adminData.userId || adminData.adminId || '',  // Now uses userId as auth ID
                     name: adminData.name,
-                    userId: adminData.userId,
+                    uniqueId: adminData.uniqueId || adminData.userId || '', // Now uses uniqueId as display ID
                     profilePic: adminData.profilePic,
                     role: adminData.role,
                 } as AdminData;
-            }).filter((admin) => admin.adminId !== currentUserId); // Exclude current user
+            }).filter((admin) => admin.userId !== currentUserId); // Exclude current user
 
             setAdmins(updatedAdmins);
             setLoading(false);
@@ -101,26 +100,24 @@ function AddMembersGroup({ open, onClose, communityId }: AddMembersGroupProps) {
         admin.name.toLowerCase().includes(searchTermA.toLowerCase())
     );
 
-
-
     const isAddMembersButtonDisabled = !members.some(member => member.id);
 
-    const handleUserCheckbox = (uniqueId: string, isChecked: boolean) => {
+    const handleUserCheckbox = (userId: string, isChecked: boolean) => {
         setMembers((prev) => {
             if (isChecked) {
-                return [...prev, { id: uniqueId, isAdmin: false }];
+                return [...prev, { id: userId, isAdmin: false }];
             } else {
-                return prev.filter((member) => member.id !== uniqueId);
+                return prev.filter((member) => member.id !== userId);
             }
         });
     };
 
-    const handleAdminCheckbox = (adminId: string, isChecked: boolean) => {
+    const handleAdminCheckbox = (userId: string, isChecked: boolean) => {
         setMembers((prev) => {
             if (isChecked) {
-                return [...prev, { id: adminId, isAdmin: true }];
+                return [...prev, { id: userId, isAdmin: true }];
             } else {
-                return prev.filter((member) => member.id !== adminId);
+                return prev.filter((member) => member.id !== userId);
             }
         });
     };
@@ -130,7 +127,7 @@ function AddMembersGroup({ open, onClose, communityId }: AddMembersGroupProps) {
             if (isChecked) {
                 // Select all users, preserving their `isAdmin` state
                 const allUsers = users.map((user) => ({
-                    id: user.uniqueId,
+                    id: user.userId,  // Now use userId as auth ID
                     isAdmin: false,
                 }));
                 setMembers((prevMembers) => [
@@ -149,7 +146,7 @@ function AddMembersGroup({ open, onClose, communityId }: AddMembersGroupProps) {
             if (isChecked) {
                 // Select all admins, preserving their `isAdmin` state
                 const allAdmins = admins.map((admin) => ({
-                    id: admin.adminId,
+                    id: admin.userId,  // Now use userId as auth ID
                     isAdmin: true,
                 }));
                 setMembers((prevMembers) => [
@@ -267,7 +264,7 @@ function AddMembersGroup({ open, onClose, communityId }: AddMembersGroupProps) {
                                                         <tbody>
                                                             {filteredUsers.map((user, index) => (
                                                                 <tr
-                                                                    key={user.uniqueId}
+                                                                    key={user.userId}
                                                                     className="border-t border-lightGrey"
                                                                 >
                                                                     <td className="pl-8 pb-1">
@@ -275,9 +272,9 @@ function AddMembersGroup({ open, onClose, communityId }: AddMembersGroupProps) {
                                                                             size="sm"
                                                                             color="primary"
                                                                             isSelected={members.some(
-                                                                                (member) => member.id === user.uniqueId && !member.isAdmin
+                                                                                (member) => member.id === user.userId && !member.isAdmin
                                                                             )}
-                                                                            onChange={(e) => handleUserCheckbox(user.uniqueId, e.target.checked)}
+                                                                            onChange={(e) => handleUserCheckbox(user.userId, e.target.checked)}
                                                                         />
                                                                     </td>
                                                                     <td className="pl-2 py-3">
@@ -305,7 +302,7 @@ function AddMembersGroup({ open, onClose, communityId }: AddMembersGroupProps) {
                                                                                     {user.name}
                                                                                 </span>
                                                                                 <span className="text-[13px] text-[#667085]">
-                                                                                    {user.userId}
+                                                                                    {user.uniqueId}
                                                                                 </span>
                                                                             </div>
                                                                         </div>
@@ -373,7 +370,7 @@ function AddMembersGroup({ open, onClose, communityId }: AddMembersGroupProps) {
                                                         <tbody>
                                                             {filteredAdmins.map((admin, index) => (
                                                                 <tr
-                                                                    key={admin.adminId}
+                                                                    key={admin.userId}
                                                                     className="border-t border-lightGrey"
                                                                 >
                                                                     <td className="pl-8 pb-1">
@@ -381,9 +378,9 @@ function AddMembersGroup({ open, onClose, communityId }: AddMembersGroupProps) {
                                                                             size="sm"
                                                                             color="primary"
                                                                             isSelected={members.some(
-                                                                                (member) => member.id === admin.adminId && member.isAdmin
+                                                                                (member) => member.id === admin.userId && member.isAdmin
                                                                             )}
-                                                                            onChange={(e) => handleAdminCheckbox(admin.adminId, e.target.checked)}
+                                                                            onChange={(e) => handleAdminCheckbox(admin.userId, e.target.checked)}
                                                                         />
                                                                     </td>
                                                                     <td className="pl-2 py-3">
@@ -404,7 +401,7 @@ function AddMembersGroup({ open, onClose, communityId }: AddMembersGroupProps) {
                                                                                     </span>
                                                                                 </div>
                                                                                 <span className="text-[13px] text-[#667085]">
-                                                                                    {admin.userId}
+                                                                                    {admin.uniqueId}
                                                                                 </span>
                                                                             </div>
                                                                         </div>

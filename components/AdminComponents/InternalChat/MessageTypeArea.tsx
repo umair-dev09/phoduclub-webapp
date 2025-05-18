@@ -18,14 +18,14 @@ type BottomTextProps = {
 
 type UserData = {
   name: string;
-  adminId: string;
-  userId: string;
+  userId: string;    // Now stores auth ID (previously adminId)
+  uniqueId: string;  // Now stores display ID (previously userId)
   profilePic: string;
 }
 
 interface Mention {
-  userId: string;
-  id: string;
+  uniqueId: string;  // Display ID
+  id: string;        // Auth ID
 }
 
 function MessageTypeArea({
@@ -99,17 +99,16 @@ function MessageTypeArea({
         const userList: UserData[] = querySnapshot.docs
           .map((doc) => ({
             name: doc.data().name,
-            adminId: doc.data().adminId,
-            userId: doc.data().userId,
+            userId: doc.data().userId || doc.data().adminId || '',  // Now uses userId as auth ID, fallback to old adminId field
+            uniqueId: doc.data().uniqueId || doc.data().userId || '', // Now uses uniqueId as display ID, fallback to old userId field
             profilePic: doc.data().profilePic,
           }))
-          .filter((user) => user.adminId !== currentUserId); // Exclude current user
+          .filter((user) => user.userId !== currentUserId); // Exclude current user
 
         const filteredMembers = userList.filter((admin) => {
           if (!channelMembers) return false;
-          return channelMembers.some((member) => member.id === admin.adminId);
+          return channelMembers.some((member) => member.id === admin.userId); // Compare with auth ID (userId)
         });
-
 
         setUsers(filteredMembers);
       } catch (error) {
@@ -165,7 +164,7 @@ function MessageTypeArea({
     // Replace `@text` with selected username
     const words = beforeCursor.split(" ");
     words.pop(); // Remove the partial mention
-    const newText = `${words.join(" ")} @${user.userId} ${afterCursor}`.trim();
+    const newText = `${words.join(" ")} @${user.uniqueId} ${afterCursor}`.trim();
 
     setText(newText);
     setShowUserList(false);
@@ -173,7 +172,7 @@ function MessageTypeArea({
     // Store the mention with both name and uniqueId
     setMentions((prevMentions) => [
       ...prevMentions,
-      { userId: user.userId, id: user.adminId, isAdmin: true },
+      { uniqueId: user.uniqueId, id: user.userId },
     ]);
 
     // Set the cursor position after the inserted username
@@ -403,14 +402,14 @@ function MessageTypeArea({
             filteredUsers.map((user, index) => (
               <div key={index} className="flex flex-col w-full">
                 <div
-                  key={user.adminId}
+                  key={user.userId}
                   className="flex flex-row gap-2 p-2 cursor-pointer w-full hover:bg-gray-100 items-center"
                   onClick={() => handleUserSelect(user)}
                 >
                   <Image className="w-[38px] h-[38px] rounded-full" src={user.profilePic} alt='pic' width={38} height={38} />
                   <div className="flex flex-col">
                     <span className="text-sm font-medium">{user.name}</span>
-                    <span className="text-[12px] text-gray-500 ">{'@' + user.userId}</span>
+                    <span className="text-[12px] text-gray-500 ">{'@' + user.uniqueId}</span>
                   </div>
                 </div>
                 <hr className="border-[#f1f1f1]" />

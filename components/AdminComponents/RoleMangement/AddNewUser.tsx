@@ -14,68 +14,58 @@ import Select, { SingleValue } from 'react-select';
 import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button } from "@nextui-org/react";
 import { kMaxLength } from "buffer";
 
-type AddNewUserProps = {
+interface AddNewUserProps {
     open: boolean;
     close: () => void;
-    isEditing?: boolean;
     firstName: string;
     setFirstName: (firstName: string) => void;
     lastName: string;
     setLastName: (lastName: string) => void;
-    userId: string;
+    userId: string;  // This is now the Firebase Auth ID / document ID
     setUserId: (userId: string) => void;
-    profilePic: string;
-    setProfilePic: (userId: string) => void;
     phone: string;
     setPhone: (phone: string) => void;
     selectedRole: string;
     setSelectedRole: (selectedRole: string) => void;
-    adminIdd: string;
-    setAdminId: (adminIdd: string) => void;
+    isEditing: boolean;
+    profilePic: string;
+    setProfilePic: (profilePic: string) => void;
+    uniqueId: string;  // This is the user-friendly display ID
+    setUniqueId: (uniqueId: string) => void;
 }
 
 const courses: string[] = ["Physics - 101", "BITSET Full Course", "JEE - 2024", "Physics - 201"]
 
-type Option = {
-    value: string;
-    label: string;
-};
-
-function AddNewUser({
+function Addnewuser({
     open,
     close,
-    isEditing = false,
     firstName,
     setFirstName,
     lastName,
     setLastName,
-    adminIdd,
-    setAdminId,
     userId,
     setUserId,
-    profilePic,
-    setProfilePic,
     phone,
     setPhone,
     selectedRole,
     setSelectedRole,
+    isEditing,
+    profilePic,
+    setProfilePic,
+    uniqueId,
+    setUniqueId,
 }: AddNewUserProps) {
     const [loading, setLoading] = useState(false); // Loading state
-    // const [selectedCourses, setSelectedCourses] = useState<string[]>([]); // Track selected courses
-
-    // Toggle course selection
-    // const toggleCourse = (course: string) => {
-    //     setSelectedCourses((prev) =>
-    //         prev.includes(course) ? prev.filter((item) => item !== course) : [...prev, course]
-    //     );
-    // }
-
-    // Check if all required fields are filled
-    // const isFormValid = firstName && lastName && userId && phone && selectedRole;
     const [scrollBehavior, setScrollBehavior] = useState<"inside" | "outside">("outside");
-    const isFormValid = firstName && lastName && userId && phone && selectedRole !== 'Select Role';
-    // const isFormValid = firstName && lastName && userId && phone;
+    const isFormValid = firstName && lastName && uniqueId && phone && selectedRole !== 'Select Role';
     const [isRoleOpen, setIsRoleOpen] = useState(false);
+
+    // Generate a user-friendly display ID format
+    const generateUniqueDisplayId = (name: string) => {
+        const baseName = name.toLowerCase().split(" ")[0] || "user";
+        const randomNum = Math.floor(1000 + Math.random() * 9000); // 4-digit number
+        return `${baseName}#${randomNum}`;
+    };
 
     const handleAddUser = async () => {
         if (!isFormValid || loading) return; // Prevent submission if fields are empty or loading
@@ -84,37 +74,42 @@ function AddNewUser({
         const fullName = `${firstName} ${lastName}`;
 
         try {
-            if (adminIdd) {
-                // Update existing user data in Firestore using adminId
-                await setDoc(doc(db, "admin", adminIdd), {
+            if (isEditing && userId) {
+                // Update existing user data in Firestore using userId as document ID
+                await setDoc(doc(db, "admin", userId), {
+                    uniqueId: uniqueId, // User-friendly display ID
                     name: fullName,
-                    userId,
-                    phone,
+                    phone: phone,
                     role: selectedRole,
                     profilePic: profilePic,
                 }, { merge: true });
-                toast.success("User Updated Successfully!");
+
+                toast.success('User Updated Successfully');
             } else {
                 // Add new user data to Firestore
+                // For new users, we're creating a document with a generated ID (which becomes userId)
+                const displayId = uniqueId || generateUniqueDisplayId(fullName);
+                
                 const docRef = await addDoc(collection(db, "admin"), {
+                    uniqueId: displayId, // User-friendly display ID for display in UI
                     name: fullName,
-                    userId,
-                    phone,
+                    phone: phone,
                     role: selectedRole,
                     profilePic: 'https://firebasestorage.googleapis.com/v0/b/phodu-club.appspot.com/o/Default%20Avatar%2Fdefault-avatar-icon-of-social-media-user-vector%20(1).jpg?alt=media&token=211d97f7-c1f5-45a7-bce2-911e9bc195f8',
                 });
 
-                // Update the document with the generated adminId
-                await setDoc(docRef, { adminId: docRef.id }, { merge: true });
-                toast.success("User Added Successfully!");
+                // Now docRef.id becomes the userId (Firebase Auth ID / document ID)
+                // Update the userId field in the document
+                await setDoc(docRef, { userId: docRef.id }, { merge: true });
+                toast.success('User Added Successfully');
             }
 
             close(); // Close dialog after successful submission
         } catch (error) {
-            console.error("Error updating or adding user in Firestore:", error);
-            toast.error("Failed to save user. Please try again.");
+            console.error("Error adding/updating user in Firestore:", error);
+            toast.error('Failed to save user. Please try again.');
         } finally {
-            setLoading(false); // End loading
+            setLoading(false); // End loading regardless of outcome
         }
     };
 
@@ -161,16 +156,17 @@ function AddNewUser({
                             </div>
                         </div>
                         <div className="flex flex-col gap-1 w-full">
-                            <label className="text-[#1D2939] text-sm font-medium">{isEditing ? "User Id" : "Create User Id"}</label>
+                            <label className="text-[#1D2939] text-sm font-medium">{isEditing ? "Display ID" : "Create Display ID"}</label>
                             <input
                                 className="w-full text-sm font-medium text-[#1D2939] placeholder:font-normal placeholder:text-[#A1A1A1] rounded-md  border border-gray-300  h-10 focus:outline focus:outline-[1.5px] focus:outline-[#D6BBFB] hover:outline hover:outline-[1.5px] hover:outline-[#D6BBFB] py-2 px-4"
                                 type="text"
-                                placeholder="User Id"
-                                value={userId}
-                                disabled={isEditing}
+                                placeholder="Display ID (e.g. username#1234)"
+                                value={uniqueId}
                                 maxLength={25}
-                                onChange={(e) => setUserId(e.target.value)}
+                                disabled={isEditing}
+                                onChange={(e) => setUniqueId(e.target.value)}
                             />
+                         
                         </div>
 
                         <div className="flex flex-col gap-1">
@@ -193,8 +189,10 @@ function AddNewUser({
                                     boxShadow: "0px 1px 2px 0px rgba(16, 24, 40, 0.05)",
                                     outline: "none"
                                 }}
-                                onFocus={(e) => e.target.style.boxShadow = "0 0 0 2px #D6BBFB"}
-                                onBlur={(e) => e.target.style.boxShadow = "0px 1px 2px 0px rgba(16, 24, 40, 0.05)"}
+                                onFocus={(e) => e.target.style.boxShadow = "0 0 0 2px #D6BBFB"
+                                }
+                                onBlur={(e) => e.target.style.boxShadow = "0px 1px 2px 0px rgba(16, 24, 40, 0.05)"
+                                }
                             />
                         </div>
 
@@ -236,5 +234,5 @@ function AddNewUser({
     );
 };
 
-export default AddNewUser;
+export default Addnewuser;
 

@@ -45,7 +45,7 @@ type OtherChatProps = {
   isCurrentUserAdmin: boolean;
   currentUserId: string;
   isHighlighted: boolean; // New prop
-  mentions: { userId: string; id: string, isAdmin: boolean, }[];
+  mentions: { uniqueId: string; id: string, isAdmin: boolean, }[];
   scrollToReply: (replyingToChatId: string) => void;
   setShowReplyLayout: (value: boolean) => void;
   setLoading: (value: boolean) => void;
@@ -68,7 +68,7 @@ type UserData = {
 
 interface Mention {
   id: string;
-  userId: string;
+  uniqueId: string;
   isAdmin: boolean;
 }
 
@@ -190,8 +190,8 @@ function OtherChat({ message, currentUserId, adminThatDeletedId, isDeletedByAdmi
     const processMention = (part: string, index: number | string) => {
       if (part.startsWith("@")) {
         const mentionName = part.substring(1).trim();
-        // Find mention by uniqueId (display name) or userId (auth ID)
-        const mention = mentions.find((m) => m.userId === mentionName || m.id === mentionName);
+        // Find mention by uniqueId (display name) or id (auth ID)
+        const mention = mentions.find((m) => m.uniqueId === mentionName || m.id === mentionName);
 
         if (mention) {
           return (

@@ -28,9 +28,9 @@ import Select, { SingleValue } from 'react-select';
 import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button } from "@nextui-org/react";
 
 interface UserData {
-    userId: string;
+    userId: string;    // Now stores auth ID
     name: string;
-    uniqueId: string;
+    uniqueId: string;  // Now stores display ID
     phone: string;
     createdAt: string;
     profilePic: string;
@@ -163,9 +163,9 @@ function User() {
             const updatedUsers: UserData[] = snapshot.docs.map((doc) => {
                 const userData = doc.data();
                 return {
-                    uniqueId: userData.uniqueId,
+                    uniqueId: userData.uniqueId || userData.userId || '',  // Now uses uniqueId as display ID, fallback to old userId field
                     name: userData.name,
-                    userId: userData.userId,
+                    userId: userData.userId || userData.uniqueId || '',    // Now uses userId as auth ID, fallback to old uniqueId field
                     phone: userData.phone,
                     email: userData.email,
                     profilePic: userData.profilePic,
@@ -233,7 +233,7 @@ function User() {
 
         try {
             if (authId) {
-                //  Update existing user data in Firestore using adminId
+                //  Update existing user data in Firestore using userId (previously uniqueId)
                 await setDoc(doc(db, "users", authId), {
                     name: fullName,
                     phone,
@@ -259,8 +259,11 @@ function User() {
                     targetExams: selectedExams.map(exam => exam.value),
                 });
 
-                // Update the document with the generated adminId
-                await setDoc(docRef, { uniqueId: docRef.id }, { merge: true });
+                // Update the document with the generated uniqueId for display
+                await setDoc(docRef, { 
+                    uniqueId: docRef.id,  // Store doc ID in uniqueId field
+                    userId: docRef.id      // Store doc ID in userId field for now (auth ID will be updated later)
+                }, { merge: true });
                 toast.success("User Added Successfully!");
                 setFirstName('');
                 setLastName('');
@@ -789,203 +792,6 @@ function User() {
                     </>
                 </ModalContent>
             </Modal >
-            {/* <Dialog open={openDialog} onClose={closeDialog} className="relative z-50">
-                <DialogBackdrop className="fixed inset-0 bg-black/30" />
-                <div className="fixed inset-0 flex items-center justify-center">
-                    <DialogPanel className="bg-white rounded-2xl w-[500px] max-h-[92%] overflow-y-auto">
-                        <div className="flex flex-col relative gap-6">
-                            <div className="flex flex-col px-6 gap-6">
-                                <div className="flex flex-row justify-between mt-6">
-                                    <h3 className="text-lg font-bold text-[#1D2939]">{!authId ? 'Add New User' : 'Edit User Details'}</h3>
-                                    <button className="w-[32px] h-[32px]  rounded-full flex items-center justify-center transition-all duration-300 ease-in-out hover:bg-[#F2F4F7] ">
-                                        <button onClick={closeDialog}>
-                                            <Image src="/icons/cancel.svg" alt="Cancel" width={20} height={20} />
-                                        </button>
-                                    </button>
-                                </div>
-                                <div className="flex flex-col gap-3 items-center">
-                                    <div className="relative">
-                                        <Image className="rounded-full" src={pic || "/images/DP_Lion.svg"} alt="DP" width={130} height={130} />
-                                    </div>
-                                    {/* <span className="font-semibold text-sm text-[#9012FF]">Change</span> 
-                                </div>
-                                {/* Input Fields 
-                                <div className="flex flex-row w-full gap-4">
-                                    <div className="flex flex-col gap-1 w-1/2 flex-grow">
-                                        <label className="text-[#1D2939] text-sm font-medium">First Name</label>
-                                        <input
-                                            className="w-full text-sm font-medium text-[#1D2939] placeholder:text-[#A1A1A1] rounded-md  px-4 py-2 border border-gray-300  h-10 focus:outline focus:outline-[1.5px] focus:outline-[#D6BBFB] hover:outline hover:outline-[1.5px] hover:outline-[#D6BBFB]"
-                                            type="text"
-                                            placeholder="First Name"
-                                            value={firstName}
-                                            onChange={(e) => setFirstName(e.target.value)}
-                                        />
-                                    </div>
-                                    <div className="flex flex-col gap-1 w-1/2 flex-grow">
-                                        <label className="text-[#1D2939] text-sm font-medium">Last Name</label>
-                                        <input
-                                            className="w-full text-sm font-medium text-[#1D2939] placeholder:text-[#A1A1A1] rounded-md border border-gray-300  h-10 focus:outline focus:outline-[1.5px] focus:outline-[#D6BBFB] hover:outline hover:outline-[1.5px] hover:outline-[#D6BBFB] px-4 py-2 "
-                                            type="text"
-                                            placeholder="Last Name"
-                                            value={lastName}
-                                            onChange={(e) => setLastName(e.target.value)}
-                                        />
-                                    </div>
-                                </div>
-
-
-                                <div className="flex flex-col gap-1 w-full ">
-                                    <label htmlFor="num-ratings" className="text-[#1D2939] text-sm font-medium">
-                                        Email Id
-                                    </label>
-                                    <div className="flex flex-row py-2 px-4 w-full gap-2 border border-gray-300  h-10 focus:outline focus:outline-[1.5px] focus:outline-[#D6BBFB] hover:outline hover:outline-[1.5px] hover:outline-[#D6BBFB] rounded-md transition duration-200 ease-in-out ">
-                                        <input
-                                            className="w-full text-sm font-medium text-[#1D2939] placeholder:font-normal placeholder:text-[#A1A1A1] rounded-md outline-none"
-                                            type="text"
-                                            placeholder="Email Id"
-                                            value={emailId}
-                                            onChange={(e) => setEmailId(e.target.value)}
-                                        />
-                                    </div>
-                                </div>
-                                <div className="flex flex-col gap-1 w-full ">
-                                    <label htmlFor="num-ratings" className="text-[#1D2939] text-sm font-medium">
-                                        User Id
-                                    </label>
-                                    <div className="flex flex-row  w-full gap-2 border border-gray-300  h-10 focus:outline focus:outline-[1.5px] focus:outline-[#D6BBFB] hover:outline hover:outline-[1.5px] hover:outline-[#D6BBFB] rounded-md transition duration-200 ease-in-out ">
-                                        <input
-                                            className="w-full text-sm py-2 px-4 font-medium text-[#1D2939] placeholder:font-normal placeholder:text-[#A1A1A1] rounded-md outline-none"
-                                            type="text"
-                                            placeholder="User Id"
-                                            value={userId}
-                                            // onChange={(e) => setUserId(e.target.value)}
-                                            disabled={true}
-                                        />
-                                    </div>
-                                </div>
-                                <div className="flex flex-col gap-1">
-                                    <label className="text-[#344054] text-sm font-medium">Mobile No.</label>
-                                    <PhoneInput
-                                        country="in"
-                                        value={phone}
-                                        onChange={(phone) => setPhone("+" + phone)}
-                                        inputProps={{ required: true }}
-                                        inputStyle={{
-                                            width: "100%",
-                                            borderRadius: "4px",
-                                            border: "1px solid #D0D5DD",
-                                            height: "42px",
-                                            boxShadow: "0px 1px 2px 0px rgba(16, 24, 40, 0.05)",
-                                            outline: "none"
-                                        }}
-                                        onFocus={(e) => e.target.style.boxShadow = "0 0 0 2px #D6BBFB"}
-                                        onBlur={(e) => e.target.style.boxShadow = "0px 1px 2px 0px rgba(16, 24, 40, 0.05)"}
-                                    />
-                                </div>
-
-                                <div className='w-full'>
-                                    <p className='mb-1 font-medium text-sm'>Target Exam</p>
-                                    <Select
-                                        id="target-exam"
-                                        value={selectedExams}
-                                        onChange={(newValue) => setSelectedExams(newValue as Option[])}  // Explicit type casting
-                                        options={exams}
-                                        isMulti
-                                        placeholder="Select exams..."
-                                        styles={{
-                                            option: (provided, state) => ({
-                                                ...provided,
-                                                color: 'black',
-                                                backgroundColor: state.isFocused ? '#E39FF6' : 'white',
-                                            }),
-                                            multiValue: (provided) => ({
-                                                ...provided,
-                                                backgroundColor: 'white',
-                                                border: '1.2px solid #D0D5DD',
-                                                borderRadius: '8px',
-                                                fontWeight: '500',
-                                                marginRight: '7px',
-                                            }),
-                                            multiValueLabel: (provided) => ({
-                                                ...provided,
-                                                color: 'black',
-                                            }),
-                                            multiValueRemove: (provided) => ({
-                                                ...provided,
-                                                color: 'gray',
-                                                cursor: 'pointer',
-                                                ':hover': {
-                                                    backgroundColor: '#ffffff',
-                                                    borderRadius: '8px',
-                                                },
-                                            }),
-                                            menu: (provided) => ({
-                                                ...provided,
-                                                backgroundColor: 'white',
-                                            }),
-                                            menuList: (provided) => ({
-                                                ...provided,
-                                                padding: '0',
-                                            }),
-                                            control: (provided) => ({
-                                                ...provided,
-                                                border: '1px solid #e6e6e6',
-                                                borderRadius: '8px',
-                                                padding: '4px',
-                                                boxShadow: 'none',
-                                                '&:hover': {
-                                                    outline: '1px solid #e5a1f5',
-                                                },
-                                            }),
-                                        }}
-                                    />
-                                </div>
-
-                                <div className='w-full'>
-                                    <label htmlFor="target-year" className='mb-1 font-medium text-sm'>Target Year</label>
-                                    <Select
-                                        id="target-year"
-                                        value={selectedYear}
-                                        onChange={setSelectedYear}
-                                        options={years}
-                                        placeholder="Select year..."
-                                        styles={{
-                                            option: (provided, state: CustomState) => ({
-                                                ...provided,
-                                                color: 'black',
-                                                backgroundColor: state.isFocused ? '#E39FF6' : 'white', // Purple color when focused
-                                            }),
-                                            singleValue: (provided) => ({
-                                                ...provided,
-                                                color: 'black',
-                                                fontWeight: '500'
-                                            }),
-                                            control: (provided) => ({
-                                                ...provided,
-                                                border: '1px solid #e6e6e6',
-                                                borderRadius: '8px',
-                                                padding: '4px',
-                                                boxShadow: 'none',
-                                                '&:hover': {
-                                                    outline: '1px solid #e5a1f5',
-                                                },
-                                            }),
-                                        }}
-                                    />
-                                </div>
-                            </div>
-                            <div className="flex justify-end gap-4 border-t p-4">
-                                <button onClick={closeDialog} className="px-6 py-2 border rounded-md text-sm font-semibold hover:bg-[#F2F4F7]">
-                                    Discard
-                                </button>
-                                <button onClick={handleAddUser} disabled={!isFormValid} className={`px-6 py-2  text-white rounded-md text-sm border border-[#800EE2] shadow-inner-button ${!isFormValid ? 'bg-[#CDA0FC] border-[#CCA6F2]' : 'bg-[#9012FF] transition-colors duration-150 hover:bg-[#6D0DCC]'}`}>
-                                    {!authId ? 'Add New User' : 'Save Changes'}
-                                </button>
-                            </div>
-                        </div>
-                    </DialogPanel>
-                </div>
-            </Dialog> */}
             <ToastContainer />
         </div>
     );

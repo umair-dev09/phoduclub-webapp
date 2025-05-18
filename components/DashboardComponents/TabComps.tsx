@@ -117,11 +117,10 @@ function TabComps() {
                 {/* <p className={`items-center justify-center w-10 h-10 mt-3 mb-[0.73rem] ml-[0.2rem] text-white font-bold bg-[#3c2f40] rounded-[0.375rem] transition-all ${isCollapsed ? 'flex' : 'hidden'}`}> */}
                 <button onClick={() => { router.push('/dashboard') }} className={`items-center justify-start mt-3 mb-[0.73rem] ml-[0.2rem] transition-all ${isCollapsed ? 'flex' : 'hidden'}`}>
                     {/* P */}
-                    <Image src='/icon.jpg' alt='phodu logo' width={40} height={40} />
+                    {/* <Image src='/icon.jpg' alt='phodu logo' width={40} height={40} /> */}
                 </button>
                 <div className={`flex-col mt-2 mb-[0.475rem] ml-2 transition-all ${!isCollapsed ? 'flex' : 'hidden'}`}>
-                    <button onClick={() => { router.push('/dashboard') }} className='text-left text-white text-lg font-bold mt-3 mb-2'>phodu<span className='text-[#e29ff5] text-lg font-bold'>.club</span></button>
-                    {/* <p className='text-sm text-[#131313] font-normal'>xxxxx</p> */}
+                    <button onClick={() => { router.push('/dashboard') }} className='text-left text-black text-lg font-bold mt-3 mb-2'>phodu<span className='text-black text-lg font-bold'>.club</span></button>
                 </div>
             </div>
 

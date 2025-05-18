@@ -11,8 +11,8 @@ import { getFirestore, doc, getDoc, updateDoc, onSnapshot } from 'firebase/fires
 
 type CurrentUserData = {
     role: string;
-    userId: string; // Now uses userId consistently for auth ID
-    uniqueId: string; // Display ID
+    userId: string; // Now stores auth ID (previously adminId)
+    uniqueId: string; // Now stores display ID (previously userId)
 }
 
 interface TabCompsProps {
@@ -56,8 +56,8 @@ function TabComps({ isCollapsed, setIsCollapsed }: TabCompsProps) {
                     // If the document still has old field names, adapt them to the new structure
                     const formattedData: CurrentUserData = {
                         role: data.role,
-                        userId: data.userId || data.adminId || authId, // Prefer userId, fallback to adminId, then authId
-                        uniqueId: data.uniqueId || data.userId || '' // Prefer uniqueId, fallback to userId (old display ID)
+                        userId: data.userId || data.adminId || authId, // Use userId consistently (new auth ID field), fallback to adminId (old auth ID field), then authId
+                        uniqueId: data.uniqueId || data.userId || '' // Use uniqueId consistently (new display ID field), fallback to userId (old display ID field)
                     };
                     setCurrentUserData(formattedData);
                     setLoading(false);
@@ -183,7 +183,7 @@ function TabComps({ isCollapsed, setIsCollapsed }: TabCompsProps) {
                 <p className={`items-center justify-start mt-3 mb-[0.73rem] ml-[0.2rem] transition-all ${isCollapsed ? 'flex' : 'hidden'}`}
                     onClick={() => { router.push("/admin") }}
                 >
-                    <Image src='/icon.jpg' alt='phodu logo' width={40} height={40} />
+                    {/* <Image src='/icon.jpg' alt='phodu logo' width={40} height={40} /> */}
                 </p>
                 <div className={`flex-col mt-2 mb-[0.475rem] ml-2 transition-all ${!isCollapsed ? 'flex' : 'hidden'}`}>
                     <p className='text-white text-left text-lg font-bold'>

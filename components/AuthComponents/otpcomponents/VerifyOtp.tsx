@@ -200,7 +200,8 @@ function VerifyOtp() {
             const authId = user.uid;
 
             const usersRef = collection(db, "users");
-            const q = query(usersRef, where("uniqueId", "==", authId));
+            // Check if user exists by userId (auth ID) now, not uniqueId
+            const q = query(usersRef, where("userId", "==", authId));
             const querySnapshot = await getDocs(q);
 
             if (!querySnapshot.empty) {
@@ -213,7 +214,7 @@ function VerifyOtp() {
                 const firstNamePart = firstName.slice(0, 4).toLowerCase();
                 const lastNamePart = lastName.slice(0, 4).toLowerCase();
                 const phoneNumberPart = phoneNumber.slice(-4);
-                const userId = `${firstNamePart}${lastNamePart}${phoneNumberPart}`;
+                const displayId = `${firstNamePart}${lastNamePart}${phoneNumberPart}`;
                 const imageUrls: string[] = [
                     "https://firebasestorage.googleapis.com/v0/b/phodu-club.appspot.com/o/Default%20Avatar%2Favatar1.png?alt=media&token=f794198a-0d5b-4542-a7bd-8c8586e4ef85",
                     "https://firebasestorage.googleapis.com/v0/b/phodu-club.appspot.com/o/Default%20Avatar%2Favatar2.png?alt=media&token=003f3358-5134-49e7-a414-edd89366b5fb",
@@ -227,13 +228,13 @@ function VerifyOtp() {
 
                 const profilePic = getRandomImageUrl(imageUrls);
 
-                // Store user data in Firestore
+                // Store user data in Firestore with updated field structure
                 await setDoc(doc(db, "users", authId), {
                     name: firstName + " " + lastName,
                     phone: phoneNumber,
                     email: email,
-                    uniqueId: authId,
-                    userId: userId,
+                    userId: authId,      // Auth ID goes in userId (previously in uniqueId)
+                    uniqueId: displayId, // Display ID goes in uniqueId (previously in userId)
                     profilePic: profilePic,
                     isAvatar: true,
                     isPremium: false,
@@ -243,7 +244,7 @@ function VerifyOtp() {
 
                 toast.success("Correct OTP! You are logged in.");
 
-                // Redirect to /signup/onelaststep with userId as a query parameter
+                // Use userId (auth ID) as the parameter
                 router.push(`/signup/onelaststep?userId=${authId}`);
             }
         } catch (error) {

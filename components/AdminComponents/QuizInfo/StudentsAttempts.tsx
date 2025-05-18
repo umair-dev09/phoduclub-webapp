@@ -24,7 +24,7 @@ import { format } from "date-fns";
 
 // Define types for students attempted data
 interface StudentsAttempts {
-    userId: string;
+    userId: string;      // Auth ID
     attemptDate: {
         seconds: number;
         nanoseconds: number;
@@ -35,7 +35,7 @@ interface StudentsAttempts {
     name: string;
     profilePic: string;
     isPremium: boolean;
-    displayUserId: string;
+    uniqueId: string;    // Display ID (previously displayUserId)
 }
 
 interface StudentsAttemptsProps {
@@ -99,7 +99,7 @@ function StudentsAttemptedQuiz({ quizId }: StudentsAttemptsProps) {
                         name: userData.name || 'Unknown',
                         profilePic: userData.profilePic || '',
                         isPremium: userData.isPremium || false,
-                        displayUserId: userData.userId || '',
+                        uniqueId: userData.uniqueId || userData.userId || '', // Now use uniqueId as display ID, fallback to old userId field
                         ranking: 0 // Will be calculated after sorting
                     };
                 });
@@ -408,7 +408,7 @@ function StudentsAttemptedQuiz({ quizId }: StudentsAttemptsProps) {
                                                 </div>
                                                 <div className="flex items-start justify-start flex-col">
                                                     <div className="font-semibold">{students.name || 'Phodu User'}</div>
-                                                    <div className="flex justify-start items-start text-[13px] text-[#667085]">{students.displayUserId || 'PhoduId'}</div>
+                                                    <div className="flex justify-start items-start text-[13px] text-[#667085]">{students.uniqueId || 'PhoduId'}</div>
                                                 </div>
                                             </div>
                                         </td>

@@ -49,7 +49,7 @@ type CourseData = {
   StudentsPurchased: string[];
 };
 type UserData = {
-  uniqueId: string;
+  userId: string;
   name: string;
   email: string;
   phone: string;
@@ -369,11 +369,11 @@ export default function CoursePurchasePage() {
                   amount={courseData?.discountPrice || 0}
                   customerName={userData?.name || ''}
                   customerEmail={userData?.email || ''}
-                  customerId={userData?.uniqueId || ''}
+                  customerId={userData?.userId || ''}
                   customerPhone={userData?.phone || ''}
                   productType='course'
                   productId={courseId || ''}
-                  userId={userData?.uniqueId || ''}
+                  userId={userData?.userId || ''}
                 />
               )}
 

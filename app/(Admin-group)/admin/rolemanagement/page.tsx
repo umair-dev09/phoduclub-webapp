@@ -24,9 +24,9 @@ import Delete from '@/components/AdminComponents/RoleMangement/Delete';
 
 // Define types for role data
 interface RoleManagementInfo {
-    uniqueId: string;  // This is now the document ID
+    uniqueId: string;  // This is the display ID (e.g., "kushal#123")
     name: string;
-    userId: string;    // This is consistently the auth ID
+    userId: string;    // This is the auth ID and document ID
     phone: string;
     role: string;
     profilePic: string;
@@ -36,12 +36,12 @@ type Option = "Admin" | "Customer Care" | "Teacher" | "Chief Modrator" | "Editor
 
 function RoleMangement() {
     const [firstName, setFirstName] = useState('');
-    const [profilePic, setProfilePic] = useState('');
     const [lastName, setLastName] = useState('');
+    const [profilePic, setProfilePic] = useState('');
     const [userId, setUserId] = useState('');
     const [phone, setPhone] = useState('');
     const [selectedRole, setSelectedRole] = useState('Select Role');
-    const [adminIdd, setAdminIdd] = useState('');
+    const [uniqueId, setUniqueId] = useState('');  // Renamed from adminIdd to uniqueId
     const [actionDialog, setActionDialog] = useState<string | null>(null);
     const [data, setData] = useState<RoleManagementInfo[]>([]);
     const [users, setUsers] = useState<RoleManagementInfo[]>([]);
@@ -68,18 +68,22 @@ function RoleMangement() {
     const handleAddNewUser = () => {
         setisAddUser(true);
         setIsEditing(false);
-        setFirstName('');
-        setLastName('');
-        setUserId('');
-        setPhone('');
-        setAdminIdd('');
-        setSelectedRole('Select Role');
-        setProfilePic('');
+        clearFields();
     };
 
     const closeAddUser = () => {
         setisAddUser(false);
         setIsEditing(false);
+    };
+
+    const clearFields = () => {
+        setFirstName('');
+        setLastName('');
+        setUserId('');
+        setPhone('');
+        setSelectedRole('Select Role');
+        setUniqueId('');  // Renamed from adminIdd to uniqueId
+        setProfilePic('');
     };
 
     // Real-time listener to fetch users and update state when data changes
@@ -89,9 +93,9 @@ function RoleMangement() {
             const updatedUsers: RoleManagementInfo[] = snapshot.docs.map((doc) => {
                 const userData = doc.data();
                 return {
-                    uniqueId: doc.id,  // Document ID
+                    uniqueId: userData.uniqueId,  // Display ID (e.g., "kushal#123")
                     name: userData.name,
-                    userId: userData.userId, // Auth ID
+                    userId: doc.id, // Auth ID and document ID
                     phone: userData.phone,
                     role: userData.role,
                     profilePic: userData.profilePic,
@@ -126,15 +130,15 @@ function RoleMangement() {
             setProfilePic(user.profilePic);
             setPhone(user.phone);
             setSelectedRole(user.role);
-            setAdminIdd(user.uniqueId);
+            setUniqueId(user.uniqueId);  // Renamed from adminIdd to uniqueId
             setActionDialog(null);
         }
     };
     // Check if all fields are filled
     // const isAddButtonDisabled = !uniqueId || !startDate || !endDate;
-    const handleRemoveUser = async (uniqueId: string) => {
+    const handleRemoveUser = async (userId: string) => {
         try {
-            await deleteDoc(doc(db, 'admin', uniqueId));
+            await deleteDoc(doc(db, 'admin', userId));
             toast.success('User Removed Successfully!');
             setActionDialog(null);
             close();
@@ -353,14 +357,16 @@ function RoleMangement() {
                                     currentItems.map((users, index) => (
                                         <tr key={index} className="border-t border-solid border-[#EAECF0]">
                                             <td className="py-[12px]">
-                                                <button onClick={() => handleTabClick(`/admin/rolemanagement/${users.name.toLowerCase().replace(/\s+/g, '-')}?rId=${users.uniqueId}`)} className="flex flex-row items-center ml-8 gap-[10px] min-w-[260px]">
+                                                <button onClick={() => handleTabClick(`/admin/rolemanagement/${users.name.toLowerCase().replace(/\s+/g, '-')}?rId=${users.userId}`)} className="flex flex-row items-center ml-8 gap-[10px] min-w-[260px]">
                                                     <Image className='rounded-full object-cover' src={users.profilePic || '/defaultAdminDP.jpg'} alt="DP" width={38} height={38} />
                                                     <div className="flex items-start justify-center flex-col mb-[2px]">
                                                         <div className="font-semibold text-sm text-[#9012FF] underline whitespace-nowrap">{users.name || "phodu admin"}</div>
                                                     </div>
                                                 </button>
                                             </td>
-                                            <td className="px-8 py-4 text-start text-[#101828] text-sm "><span className="flex min-w-fit">{users.userId || "phodu id"}</span></td>
+                                            <td className="px-8 py-4 text-start text-[#101828] text-sm ">
+                                                <span className="flex min-w-fit">{users.uniqueId || "phodu id"}</span>
+                                            </td>
                                             <td className="px-8 py-4 text-start text-[#101828] text-sm "><span className="flex min-w-fit">{users.phone || "-"}</span></td>
                                             <td className="px-8 py-4 text-start text-[#101828] text-sm">
                                                 <span className="flex min-w-[200px]">
@@ -389,7 +395,6 @@ function RoleMangement() {
                                                                 <span className="text-sm text-[#0C111D] font-normal">Edit details</span>
                                                             </button>
                                                             <button className=" flex flex-row items-center justify-start w-full py-2 gap-2 hover:bg-[#FEE4E2]  pl-4 pr-9"
-                                                                // onClick={() => handleRemoveUser(users.uniqueId)}>
                                                                 onClick={() => {
                                                                     setUserToDelete(users);
                                                                     setIsDeleteOpen(true);
@@ -439,12 +444,12 @@ function RoleMangement() {
                 </div>
             )}
             {/* Dialog Component  for AddNewUser*/}
-            {isAddUser && <Addnewuser close={closeAddUser} open={true} isEditing={isEditing} profilePic={profilePic} setProfilePic={setProfilePic} firstName={firstName} setFirstName={setFirstName} lastName={lastName} setLastName={setLastName} userId={userId} setUserId={setUserId} phone={phone} setPhone={setPhone} selectedRole={selectedRole} setSelectedRole={setSelectedRole} adminIdd={adminIdd} setAdminId={setAdminIdd} />}
+            {isAddUser && <Addnewuser close={closeAddUser} open={true} isEditing={isEditing} profilePic={profilePic} setProfilePic={setProfilePic} firstName={firstName} setFirstName={setFirstName} lastName={lastName} setLastName={setLastName} userId={userId} setUserId={setUserId} phone={phone} setPhone={setPhone} selectedRole={selectedRole} setSelectedRole={setSelectedRole} uniqueId={uniqueId} setUniqueId={setUniqueId} />}  {/* Renamed adminIdd to uniqueId, setAdminId to setUniqueId */}
             {isDeleteOpen && userToDelete && (
                 <Delete
                     onClose={closeDelete}
                     open={true}
-                    authId={userToDelete.uniqueId}
+                    authId={userToDelete.userId}
                     name={userToDelete.name}
                 />
             )}

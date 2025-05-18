@@ -2,7 +2,6 @@
 import { useState, useEffect } from "react";
 import React from 'react';
 import Image from "next/image";
-import { Dialog, DialogBackdrop, DialogPanel } from "@headlessui/react";
 import PhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/style.css';
 import { Popover, PopoverContent, PopoverTrigger } from "@nextui-org/popover";
@@ -16,24 +15,24 @@ import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button } from
 type EditProfileProps = {
     open: boolean;
     close: () => void;
-    adminId: string | null;
+    uniqueId: string | null;  // This is actually the Firebase Auth ID (user.uid)
 }
 
 interface UserData {
     name: string;
-    userId: string;  // This is the auth ID
-    uniqueId: string; // This is the display name
+    userId: string;  // Firebase Auth ID (auth ID)
+    uniqueId: string; // User-friendly display ID (like "kushal#123")
     profilePic: string;
     phone: string;
     role: string;
 }
 
-function Editprofile({ open, close, adminId }: EditProfileProps) {
+function Editprofile({ open, close, uniqueId }: EditProfileProps) {  // uniqueId here is actually the Firebase Auth ID
     const [phone, setPhone] = useState('');
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
     const [profilePic, setProfilePic] = useState('');
-    const [userId, setUserId] = useState('');
+    const [displayId, setDisplayId] = useState(''); // User-friendly display ID
     const [selectedRole, setSelectedRole] = useState('');
     const [roleDialogOpen, setRoleDialogOpen] = useState(false);
     const [loading, setLoading] = useState(true);
@@ -48,7 +47,7 @@ function Editprofile({ open, close, adminId }: EditProfileProps) {
 
     const isFormValid = firstName &&
         lastName &&
-        userId &&
+        displayId &&
         phone &&
         getDigitCount(phone) <= 12 &&
         selectedRole;
@@ -58,34 +57,35 @@ function Editprofile({ open, close, adminId }: EditProfileProps) {
         setSelectedRole(role);
     };
 
-    // Fetch admin data from Firestore when adminId changes
+    // Fetch admin data from Firestore when uniqueId (Firebase Auth ID) changes
     useEffect(() => {
-        if (adminId) {
-            // Real-time listener for admin data
-            const docRef = doc(db, "admin", adminId);
-            const unsubscribe = onSnapshot(docRef, (docSnap) => {
-                if (docSnap.exists()) {
-                    const data = docSnap.data() as UserData;
-
-                    // Split full name into first and last names
-                    const [first, ...last] = (data.name || '').split(' ');
-                    setFirstName(first || '');
-                    setLastName(last.join(' ') || '');
-                    setUserId(data.userId || '');  // userId is now consistently the auth ID
-                    setProfilePic(data.profilePic || '');
-                    setPhone(data.phone || '');
-                    setSelectedRole(data.role || '');
+        if (uniqueId) {  // uniqueId here is the Firebase Auth ID (user.uid)
+            const docRef = doc(db, "admin", uniqueId);
+            const fetchData = async () => {
+                try {
+                    const docSnap = await getDoc(docRef);
+                    if (docSnap.exists()) {
+                        const userData = docSnap.data();
+                        // Split the name into first and last name
+                        const nameParts = userData.name?.split(' ') || ["", ""];
+                        setFirstName(nameParts[0] || "");
+                        setLastName(nameParts.slice(1).join(" ") || "");
+                        setPhone(userData.phone || "");
+                        setProfilePic(userData.profilePic || "/defaultAdminDP.jpg");
+                        setSelectedRole(userData.role || "");
+                        setDisplayId(userData.uniqueId || ""); // Set the user-friendly display ID
+                    } else {
+                        console.error('No user data found!');
+                    }
                     setLoading(false);
-                } else {
-                    console.log("No such document!");
+                } catch (error) {
+                    console.error("Error fetching user data:", error);
                     setLoading(false);
                 }
-            });
-
-            // Cleanup listener on unmount
-            return () => unsubscribe();
+            };
+            fetchData();
         }
-    }, [adminId]);
+    }, [uniqueId]);
 
     const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0];
@@ -102,7 +102,6 @@ function Editprofile({ open, close, adminId }: EditProfileProps) {
             setUploadedImage(file);
             setShowCropper(true);
             setShowImageCropper(true);
-            //   close();
         }
     };
 
@@ -112,11 +111,15 @@ function Editprofile({ open, close, adminId }: EditProfileProps) {
         setLoading(true); // Start loading
         const fullName = `${firstName} ${lastName}`;
         try {
-            // Update existing user data in Firestore using adminId
-            await setDoc(doc(db, "admin", adminId || ''), {
+            // Update existing user data in Firestore using uniqueId (Firebase Auth ID)
+            await setDoc(doc(db, "admin", uniqueId || ''), {
                 name: fullName,
                 phone,
                 role: selectedRole,
+                profilePic,
+                // Keep the userId (Firebase Auth ID) and uniqueId (display ID) intact
+                userId: uniqueId, // Firebase Auth ID
+                uniqueId: displayId // User-friendly display ID
             }, { merge: true });
             toast.success("Changes Saved!");
             close(); // Close dialog after successful submission
@@ -209,7 +212,7 @@ function Editprofile({ open, close, adminId }: EditProfileProps) {
                                                 className="w-full text-sm font-medium py-2 px-4 text-[#1D2939] placeholder:font-normal placeholder:text-[#A1A1A1] rounded-md outline-none"
                                                 type="text"
                                                 placeholder="User Id"
-                                                value={userId}
+                                                value={displayId} // Display the user-friendly ID here
                                                 disabled={true}
                                             />
                                         </div>

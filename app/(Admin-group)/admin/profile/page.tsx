@@ -13,13 +13,12 @@ import 'react-toastify/dist/ReactToastify.css';
 
 type UserData = {
     name: string | null;
-    userId: string | null;
-    uniqueId: string | null;  // Changed from adminId to uniqueId for consistency
+    uniqueId: string | null;  // This is the display ID (like "kushal#123") shown to users
+    userId: string | null;     // This is the Firebase Authentication ID
     phone: string | null;
     role: string | null;
     profilePic: string | null;
 };
-
 
 function Profile() {
     const [userData, setUserData] = useState<UserData | null>(null);
@@ -51,8 +50,8 @@ function Profile() {
     useEffect(() => {
         let unsubscribeFromSnapshot: () => void;
         if (user) {
-            const uniqueId = user.uid;
-            const userDocRef = doc(db, `admin/${uniqueId}`);
+            // Use auth UID as the document ID (userId)
+            const userDocRef = doc(db, `admin/${user.uid}`);
 
             unsubscribeFromSnapshot = onSnapshot(userDocRef, (docSnapshot) => {
                 if (docSnapshot.exists()) {
@@ -130,7 +129,7 @@ function Profile() {
                 <div className="flex flex-row w-full">
                     <div className="flex flex-col w-1/2">
                         <span className="font-normal text-[#667085] text-[16px]">User ID</span>
-                        <span className="font-semibold text-[#1D2939] text-[16px]">{userData?.userId}</span>
+                        <span className="font-semibold text-[#1D2939] text-[16px]">{userData?.uniqueId}</span>
                     </div>
                     <div className="flex flex-col w-1/2">
                         <span className="font-normal text-[#667085] text-[16px]">Mobile No.</span>
@@ -142,7 +141,7 @@ function Profile() {
             {/* Dailog for Log out */}
             {islogout && <Logout onclose={closelogout} open={true} />}
             {/* Dialog Component  for Edit*/}
-            {isEdit && <EditProfile close={closeEdit} open={true} adminId={userData?.uniqueId || ''} />}
+            {isEdit && <EditProfile close={closeEdit} open={true} uniqueId={user?.uid || ''} />}
             <ToastContainer />
 
         </div>

@@ -16,9 +16,9 @@ import Delete from '@/components/AdminComponents/RoleMangement/Delete';
 import Addnewuser from "@/components/AdminComponents/RoleMangement/AddNewUser";
 
 interface UserData {
-  adminId: string;
   name: string;
-  userId: string;
+  userId: string;    // Auth ID
+  uniqueId: string;  // Renamed from adminId - This is the document ID
   phone: string;
   role: string;
   profilePic: string;
@@ -29,24 +29,21 @@ interface CourseData {
   courseId: string;
   courseImage: string;
   TeachersAssigned: string[]; // Array of teacher IDs
-
 }
 
 function UsersRoleName() {
   const router = useRouter(); // Initialize useRouter
   const searchParams = useSearchParams();
-  const userId = searchParams.get('rId');
+  const rId = searchParams.get('rId');
   const [loading, setLoading] = useState(true);
   const [assignOpen, setAssignOpen] = useState(false);
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
-  const [firstNamee, setFirstNamee] = useState('');
-  const [lastNamee, setLastNamee] = useState('');
-  const [userIdd, setUserIdd] = useState('');
   const [profilePic, setProfilePic] = useState('');
+  const [userIdd, setUserIdd] = useState('');
   const [phone, setPhone] = useState('');
-  const [selectedRole, setSelectedRole] = useState('');
-  const [adminIdd, setAdminIdd] = useState('');
+  const [selectedRole, setSelectedRole] = useState('Select Role');
+  const [uniqueId, setUniqueId] = useState('');  // Renamed from adminIdd
   const [data, setData] = useState<UserData | null>(null);
   const [assignedC, setAssignedC] = useState<CourseData[]>([]);
   const [courses, setCourses] = useState<CourseData[]>([]);
@@ -59,6 +56,7 @@ function UsersRoleName() {
     setIsEditing(false);
   };
   const [popoveropen, setPopoveropen] = useState(false);
+
   useEffect(() => {
     // Listen for real-time updates to the course collection
     const unsubscribe = onSnapshot(collection(db, 'course'), (courseSnapshot) => {
@@ -69,7 +67,7 @@ function UsersRoleName() {
         const teachersAssigned: string[] = courseData.TeachersAssigned || []; // Get the TeachersAssigned array or an empty array
 
         // Include the course only if userId is in the TeachersAssigned array
-        if (!teachersAssigned.includes(userId || '')) {
+        if (!teachersAssigned.includes(rId || '')) {
           filteredCourses.push({
             courseName: courseData.courseName,
             courseId: courseDoc.id,
@@ -85,7 +83,7 @@ function UsersRoleName() {
 
     // Cleanup listener for the course collection
     return () => unsubscribe();
-  }, [userId]);
+  }, [rId]);
 
   useEffect(() => {
     // Listen for real-time updates to the course collection
@@ -97,7 +95,7 @@ function UsersRoleName() {
         const teachersAssigned: string[] = courseData.TeachersAssigned || []; // Get the TeachersAssigned array or an empty array
 
         // Include the course only if userId is in the TeachersAssigned array
-        if (teachersAssigned.includes(userId || '')) {
+        if (teachersAssigned.includes(rId || '')) {
           filteredCourses.push({
             courseName: courseData.courseName,
             courseId: courseDoc.id,
@@ -113,38 +111,44 @@ function UsersRoleName() {
 
     // Cleanup listener for the course collection
     return () => unsubscribe();
-  }, [userId]);
+  }, [rId]);
 
   useEffect(() => {
-    if (!userId) return;
+    // Fetch user data using uniqueId
+    if (rId) {
+      const docRef = doc(db, 'admin', rId);
+      getDoc(docRef)
+        .then((docSnap) => {
+          if (docSnap.exists()) {
+            const userData = docSnap.data();
+            setData({
+              name: userData.name,
+              userId: rId,
+              uniqueId: userData.uniqueId,  // This is the document ID
+              phone: userData.phone,
+              role: userData.role,
+              profilePic: userData.profilePic,
+            });
 
-    const userDocRef = doc(db, 'admin', userId);
-
-    // Listen for real-time changes in the admin document
-    const unsubscribe = onSnapshot(userDocRef, (userDocSnap) => {
-      if (userDocSnap.exists()) {
-        setData(userDocSnap.data() as UserData);
-      } else {
-        console.error('User data not found');
-      }
-      setLoading(false); // Set loading to false after fetching data
-    }, (error) => {
-      console.error('Error fetching real-time data:', error);
-      setLoading(false);
-    });
-
-    // Cleanup function to unsubscribe from the real-time listener
-    return () => unsubscribe();
-  }, [userId]); // Re-run this effect when userId changes
-
-  useEffect(() => {
-    if (data) {
-      const nameParts = data?.name.split(' ');
-      setFirstNamee(nameParts[0] || '');
-      setLastNamee(nameParts[1] || '');
-
+            // Set states for editing
+            const nameParts = userData.name.split(' ');
+            setFirstName(nameParts[0] || '');
+            setLastName(nameParts.slice(1).join(' ') || '');
+            setUserIdd(userData.userId);
+            setPhone(userData.phone);
+            setSelectedRole(userData.role);
+            setUniqueId(rId);  // Renamed from adminIdd
+          } else {
+            console.log('No such document!');
+          }
+          setLoading(false);
+        })
+        .catch((error) => {
+          console.log('Error getting document:', error);
+          setLoading(false);
+        });
     }
-  });
+  }, [rId, searchParams]);
 
   const [selectedCourses, setSelectedCourses] = useState<string[]>([]);
 
@@ -180,7 +184,7 @@ function UsersRoleName() {
         const teachersAssigned = Array.isArray(courseData.TeachersAssigned) ? courseData.TeachersAssigned : [];
 
         // Add the userId to the TeachersAssigned array
-        const updatedTeachersAssigned = [...teachersAssigned, userId];
+        const updatedTeachersAssigned = [...teachersAssigned, rId];
 
         // Update the course document with the new TeachersAssigned array
         await updateDoc(courseRef, {
@@ -214,7 +218,7 @@ function UsersRoleName() {
 
       // Remove the userId from the TeachersAssigned array
       const updatedTeachersAssigned = courseData.TeachersAssigned.filter(
-        (teacherId) => teacherId !== userId // Remove the current userId
+        (teacherId) => teacherId !== rId // Remove the current userId
       );
 
       // Update the course document with the new TeachersAssigned array
@@ -240,7 +244,7 @@ function UsersRoleName() {
       setUserIdd(data.userId);
       setPhone(data.phone);
       setSelectedRole(data.role);
-      setAdminIdd(data.adminId);
+      setUniqueId(data.uniqueId);
     }
   }
 
@@ -306,17 +310,17 @@ function UsersRoleName() {
           <div className="flex flex-row w-full">
             <div className="flex flex-col w-1/2">
               <span className="font-normal text-[#667085] text-[16px]">First Name</span>
-              <span className="font-medium text-[#1D2939] text-[16px]">{firstNamee}</span>
+              <span className="font-medium text-[#1D2939] text-[16px]">{firstName}</span>
             </div>
             <div className="flex flex-col w-1/2">
               <span className="font-normal text-[#667085] text-[16px]">Last Name</span>
-              <span className="font-medium text-[#1D2939] text-[16px]">{lastNamee}</span>
+              <span className="font-medium text-[#1D2939] text-[16px]">{lastName}</span>
             </div>
           </div>
           <div className="flex flex-row w-full">
             <div className="flex flex-col w-1/2">
               <span className="font-normal text-[#667085] text-[16px]">User ID</span>
-              <span className="font-medium text-[#1D2939] text-[16px]">{data?.userId}</span>
+              <span className="font-medium text-[#1D2939] text-[16px]">{data?.uniqueId}</span>
             </div>
             <div className="flex flex-col w-1/2">
               <span className="font-normal text-[#667085] text-[16px]">Mobile No.</span>
@@ -419,8 +423,8 @@ function UsersRoleName() {
 
       </div>
       <ToastContainer />
-      {isDeleteOpen && <Delete onClose={closeDelete} open={true} authId={data?.adminId || ''} name={data?.name || ''} />}
-      {isAddUser && <Addnewuser close={closeAddUser} open={true} isEditing={isEditing} profilePic={profilePic} setProfilePic={setProfilePic} firstName={firstName} setFirstName={setFirstName} lastName={lastName} setLastName={setLastName} userId={userIdd} setUserId={setUserIdd} phone={phone} setPhone={setPhone} selectedRole={selectedRole} setSelectedRole={setSelectedRole} adminIdd={adminIdd} setAdminId={setAdminIdd} />}
+      {isDeleteOpen && <Delete onClose={closeDelete} open={true} authId={data?.uniqueId || ''} name={data?.name || ''} />}
+      {isAddUser && <Addnewuser close={closeAddUser} open={true} isEditing={isEditing} profilePic={profilePic} setProfilePic={setProfilePic} firstName={firstName} setFirstName={setFirstName} lastName={lastName} setLastName={setLastName} userId={userIdd} setUserId={setUserIdd} phone={phone} setPhone={setPhone} selectedRole={selectedRole} setSelectedRole={setSelectedRole} uniqueId={uniqueId} setUniqueId={setUniqueId} />}
 
     </div>
   );

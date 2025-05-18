@@ -24,7 +24,7 @@ type OtpForUpdateProps = {
 };
 
 type UserData = {
-  uniqueId: string | null;
+  userId: string | null;
   phone: string | null;
 };
 
@@ -203,8 +203,8 @@ function OtpForUpdate({
           await updatePhoneNumber(user, credential);
           
           // Update phone number in Firestore
-          if (userData?.uniqueId) {
-            await updateDoc(doc(db, "users", userData.uniqueId), {
+          if (userData?.userId) {
+            await updateDoc(doc(db, "users", userData.userId), {
               phone: `+${newPhone}`
             });
           }
@@ -217,14 +217,14 @@ function OtpForUpdate({
         // Handle other verification cases (email, targetYear, targetExams)
         await window.confirmationResult.confirm(otp);
         
-        if (userData?.uniqueId) {
+        if (userData?.userId) {
           const updateData: any = {
             ...(newEmail && { email: newEmail }),
             ...(targetYear && { targetYear }),
             ...(targetExams?.length && { targetExams })
           };
           
-          await updateDoc(doc(db, "users", userData.uniqueId), updateData);
+          await updateDoc(doc(db, "users", userData.userId), updateData);
           toast.success('Information updated successfully!');
         }
         

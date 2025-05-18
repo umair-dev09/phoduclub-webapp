@@ -159,7 +159,7 @@ function TargetExamUpdate({ setIsEditing }: TargetExamsUpdateProps) {
         toast.success('OTP resent successfully!');
         return Promise.resolve();
       } else {
-        throw new Error('No valid phone number found');
+        throw new Error('No valid phone number found');  
       }
     } catch (error: any) {
       console.error('Error resending OTP:', error);

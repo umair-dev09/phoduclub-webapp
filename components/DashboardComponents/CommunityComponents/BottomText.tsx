@@ -11,7 +11,7 @@ import { toast } from "react-toastify";
 type BottomTextProps = {
   showReplyLayout: boolean;
   setShowReplyLayout: (value: boolean) => void;
-  channelId: string | null;
+  channelId: string | null; 
   headingId: string | null;
   communityId: string | null;
   replyData: { message: string | null; senderId: string | null; messageType: string | null; fileUrl: string | null; fileName: string | null; chatId: string | null; } | null;
@@ -27,7 +27,7 @@ type UserData = {
 }
 
 interface Mention {
-  userId: string;
+  uniqueId: string;
   id: string;
   isAdmin: boolean;
 }
@@ -205,7 +205,7 @@ function BottomText({
     // Replace `@text` with selected username
     const words = beforeCursor.split(" ");
     words.pop(); // Remove the partial mention
-    const newText = `${words.join(" ")} @${user.userId} ${afterCursor}`.trim();
+    const newText = `${words.join(" ")} @${user.uniqueId} ${afterCursor}`.trim();
 
     setText(newText);
     setShowUserList(false);
@@ -213,7 +213,7 @@ function BottomText({
     // Store the mention with both name and uniqueId
     setMentions((prevMentions) => [
       ...prevMentions,
-      { userId: user.userId, id: user.uniqueId, isAdmin: user.isAdmin, },
+      { uniqueId: user.uniqueId, id: user.userId, isAdmin: user.isAdmin, },
     ]);
 
     // Set the cursor position after the inserted username
@@ -470,7 +470,7 @@ function BottomText({
                   <Image className="w-[38px] h-[38px] rounded-full" src={user.profilePic} alt='pic' width={38} height={38} />
                   <div className="flex flex-col">
                     <span className="text-sm font-medium">{user.name}</span>
-                    <span className="text-[12px] text-gray-500 ">{'@' + user.userId}</span>
+                    <span className="text-[12px] text-gray-500 ">{'@' + user.uniqueId}</span>
                   </div>
                 </div>
                 <hr className="border-[#f1f1f1]" />

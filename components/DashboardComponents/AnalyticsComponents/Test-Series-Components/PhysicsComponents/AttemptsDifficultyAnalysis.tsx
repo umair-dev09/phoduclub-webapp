@@ -172,7 +172,7 @@ function AttemptsDifficultyAnalysis({ questions }: AttemptsDifficultyAnalysispro
     return (
         <div className="flex flex-row w-[100%] gap-4 h-auto">
             <div className="flex flex-col w-1/2 bg-white rounded-xl p-4 h-[320px]">
-                <div><h3>Score by Subjects</h3></div>
+                <div><h3>Attempts</h3></div>
                 <div className="flex flex-1 items-center">
                     <ResponsiveContainer className='flex w-[50%]'>
                         <ChartContainer config={chartConfig} className="h-auto w-[70%]">
