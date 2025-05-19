@@ -468,6 +468,7 @@ function TestPurchasePage() {
                   productType='testseries'
                   productId={testId || ''}
                   userId={userData?.userId || ''}
+                  deviceType='web'
                 />
               )}
             </div>

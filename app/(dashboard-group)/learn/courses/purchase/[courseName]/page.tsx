@@ -374,8 +374,9 @@ export default function CoursePurchasePage() {
                   productType='course'
                   productId={courseId || ''}
                   userId={userData?.userId || ''}
+                  deviceType='web'
                 />
-              )}
+              )} 
 
             </div>
           </div>
